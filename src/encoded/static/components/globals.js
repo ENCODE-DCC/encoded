@@ -193,6 +193,39 @@ module.exports.encodeVersion = function(context) {
     return encodevers;
 };
 
+const parseError = function (response) {
+    if (response instanceof Error) {
+        return Promise.resolve({
+            status: 'error',
+            title: response.message,
+            '@type': ['AjaxError', 'Error'],
+        });
+    }
+    let contentType = response.headers.get('Content-Type') || '';
+    contentType = contentType.split(';')[0];
+    if (contentType === 'application/json') {
+        return response.json();
+    }
+    return Promise.resolve({
+        status: 'error',
+        title: response.statusText,
+        code: response.status,
+        '@type': ['AjaxError', 'Error'],
+    });
+}
+module.exports.parseError = parseError;
+
+module.exports.parseAndLogError = function (cause, response) {
+    const promise = parseError(response);
+    promise.then((data) => {
+        ga('send', 'exception', {
+            exDescription: `${cause}:${data.code}:${data.title}`,
+            location: window.location.href,
+        });
+    });
+    return promise;
+}
+
 module.exports.dbxref_prefix_map = {
     "UniProtKB": "http://www.uniprot.org/uniprot/",
     "HGNC": "http://www.genecards.org/cgi-bin/carddisp.pl?gene=",

@@ -5,7 +5,6 @@
 var React = require('react');
 var globals = require('./globals');
 var _ = require('underscore');
-var parseAndLogError = require('./mixins').parseAndLogError;
 var navigation = require('./navigation');
 var { Modal, ModalHeader, ModalBody, ModalFooter } = require('../libs/bootstrap/modal');
 var ItemStore = require('./lib/store').ItemStore;

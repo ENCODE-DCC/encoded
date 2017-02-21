@@ -5,7 +5,6 @@ var fetched = require('./fetched');
 var search = require('./search');
 var url = require('url');
 var globals = require('./globals');
-var parseAndLogError = require('./mixins').parseAndLogError;
 var StickyHeader = require('./StickyHeader');
 var _ = require('underscore');
 
@@ -416,7 +415,7 @@ var Report = React.createClass({
             if (!response.ok) throw response;
             return response.json();
         })
-        .catch(parseAndLogError.bind(undefined, 'loadMore'))
+        .catch(globals.parseAndLogError.bind(undefined, 'loadMore'))
         .then(data => {
             this.setState({
                 more: this.state.more.concat(data['@graph']),

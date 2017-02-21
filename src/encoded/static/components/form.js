@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-for */
 
 const React = require('react');
-const parseAndLogError = require('./mixins').parseAndLogError;
+const parseAndLogError = require('./globals').parseAndLogError;
 const offset = require('../libs/offset');
 const fetched = require('./fetched');
 const inputs = require('./inputs');

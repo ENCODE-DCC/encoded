@@ -20,7 +20,6 @@ require('./doc');
 require('./file');
 require('./item');
 require('./page');
-require('./mixins');
 require('./platform');
 require('./statuslabel');
 require('./search');

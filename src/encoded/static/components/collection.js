@@ -2,7 +2,6 @@
 var React = require('react');
 var url = require('url');
 var globals = require('./globals');
-var parseAndLogError = require('./mixins').parseAndLogError;
 var StickyHeader = require('./StickyHeader');
 
 
@@ -225,7 +224,7 @@ var Table = module.exports.Table = React.createClass({
             .then(data => {
                 self.extractData({context: data});
                 self.setState({communicating: false});
-            }, parseAndLogError.bind(undefined, 'allRequest'));
+            }, globals.parseAndLogError.bind(undefined, 'allRequest'));
             this.setState({
                 allRequest: request,
                 communicating: true

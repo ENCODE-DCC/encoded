@@ -1,7 +1,6 @@
 'use strict';
 var React = require('react');
 var globals = require('./globals');
-var parseAndLogError = require('./mixins').parseAndLogError;
 var fetched = require('./fetched');
 var _ = require('underscore');
 var ga = require('google-analytics');
@@ -138,7 +137,7 @@ var EditForm = module.exports.EditForm = React.createClass({
             if (!response.ok) throw response;
             return response.json();
         })
-        .catch(parseAndLogError.bind(undefined, 'putRequest'))
+        .catch(globals.parseAndLogError.bind(undefined, 'putRequest'))
         .then(this.receive);
         this.setState({
             communicating: true,

@@ -1,6 +1,5 @@
 'use strict';
 var React = require('react');
-var parseAndLogError = require('./mixins').parseAndLogError;
 var globals = require('./globals');
 var ga = require('google-analytics');
 var _ = require('underscore');
@@ -26,14 +25,6 @@ var Param = module.exports.Param = React.createClass({
         this.fetch(this.props.url);
     },
 
-    componentWillUnmount: function () {
-        var xhr = this.state.fetchedRequest;
-        if (xhr) {
-            console.log('abort param xhr');
-            xhr.abort();
-        }
-    },
-
     componentWillReceiveProps: function (nextProps, nextContext) {
         if (!this.state.fetchedRequest && nextProps.url === undefined) return;
         if (this.state.fetchedRequest &&
@@ -43,8 +34,7 @@ var Param = module.exports.Param = React.createClass({
     },
 
     fetch: function (url) {
-        var request = this.state.fetchedRequest;
-        if (request) request.abort();
+        let request;
 
         if (!url) {
             this.props.handleFetch();
@@ -61,7 +51,7 @@ var Param = module.exports.Param = React.createClass({
                 if (!response.ok) throw response;
                 return response.json();
             })
-            .catch(parseAndLogError.bind(undefined, 'fetchedRequest'))
+            .catch(globals.parseAndLogError.bind(undefined, 'fetchedRequest'))
             .then(this.receive);
         } else if (this.props.type === 'text') {
             request = this.context.fetch(url);
@@ -69,7 +59,7 @@ var Param = module.exports.Param = React.createClass({
                 if (!response.ok) throw response;
                 return response.text();
             })
-            .catch(parseAndLogError.bind(undefined, 'fetchedRequest'))
+            .catch(globals.parseAndLogError.bind(undefined, 'fetchedRequest'))
             .then(this.receive);
         } else if (this.props.type === 'blob') {
             request = this.context.fetch(url);
@@ -77,7 +67,7 @@ var Param = module.exports.Param = React.createClass({
                 if (!response.ok) throw response;
                 return response.blob();
             })
-            .catch(parseAndLogError.bind(undefined, 'fetchedRequest'))
+            .catch(globals.parseAndLogError.bind(undefined, 'fetchedRequest'))
             .then(this.receive);
         } else {
             throw "Unsupported type: " + this.props.type;

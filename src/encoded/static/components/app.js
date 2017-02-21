@@ -1,9 +1,10 @@
 import React from 'react';
-import cookie from 'cookie-monster';
-import Lock from 'auth0-lock';
+import serialize from 'form-serialize';
+import ga from 'google-analytics';
 import _ from 'underscore';
 import url from 'url';
 import jsonScriptEscape from '../libs/jsonScriptEscape';
+import origin from '../libs/origin';
 import globals from './globals';
 import DataColors from './datacolors';
 import Navigation from './navigation';
@@ -97,31 +98,15 @@ Title.propTypes = {
 };
 
 
-function parseError(response) {
-    if (response instanceof Error) {
-        return Promise.resolve({
-            status: 'error',
-            title: response.message,
-            '@type': ['AjaxError', 'Error'],
-        });
-    }
-    let contentType = response.headers.get('Content-Type') || '';
-    contentType = contentType.split(';')[0];
-    if (contentType === 'application/json') {
-        return response.json();
-    }
-    return Promise.resolve({
-        status: 'error',
-        title: response.statusText,
-        code: response.status,
-        '@type': ['AjaxError', 'Error'],
-    });
+// Get the current browser cookie from the DOM.
+function extractSessionCookie() {
+    const cookie = require('cookie-monster');
+    return cookie(document).get('session');
 }
 
 
-// Get the current browser cookie from the DOM.
-function extractSessionCookie() {
-    return cookie(document).get('session');
+function contentTypeIsJSON(contentType) {
+    return (contentType || '').split(';')[0].split('/').pop().split('+').pop() === 'json';
 }
 
 
@@ -144,10 +129,69 @@ function parseSessionCookie(sessionCookie) {
 }
 
 
+function recordServerStats(serverStats, timingVar) {
+    // server_stats *_time are microsecond values...
+    Object.keys(serverStats).forEach((name) => {
+        if (name.indexOf('_time') !== -1) {
+            ga('send', 'timing', {
+                timingCategory: name,
+                timingVar: timingVar,
+                timingValue: Math.round(serverStats[name] / 1000),
+            });
+        }
+    });
+}
+
+
+function recordBrowserStats(browserStats, timingVar) {
+    Object.keys(browserStats).forEach((name) => {
+        if (name.indexOf('_time') !== -1) {
+            ga('send', 'timing', {
+                timingCategory: name,
+                timingVar: timingVar,
+                timingValue: browserStats[name],
+            });
+        }
+    });
+}
+
+
+class UnsavedChangesToken {
+    constructor(manager) {
+        this.manager = manager;
+    }
+
+    release() {
+        this.manager.releaseUnsavedChanges(this);
+    }
+}
+
+
+const SLOW_REQUEST_TIME = 250;
+class Timeout {
+    constructor(timeout) {
+        this.promise = new Promise(resolve => setTimeout(resolve.bind(undefined, this), timeout));
+    }
+}
+
+
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
 // App maintains state for the
-export default class App extends React.Component {
+class App extends React.Component {
+    static historyEnabled() {
+        return !!(typeof window !== 'undefined' && window.history && window.history.pushState);
+    }
+
+    static scrollTo() {
+        const hash = window.location.hash;
+        if (hash && document.getElementById(hash.slice(1))) {
+            window.location.replace(hash);
+        } else {
+            window.scrollTo(0, 0);
+        }
+    }
+
     constructor(props) {
         super();
         this.state = {
@@ -159,6 +203,9 @@ export default class App extends React.Component {
             session: null,
             session_properties: {},
             session_cookie: '',
+            contextRequest: null,
+            unsavedChanges: [],
+            promisePending: false,
         };
 
         this.triggers = {
@@ -168,6 +215,22 @@ export default class App extends React.Component {
         };
 
         // Bind this to non-React methods.
+        this.fetch = this.fetch.bind(this);
+        this.fetchSessionProperties = this.fetchSessionProperties.bind(this);
+        this.handleAuth0Login = this.handleAuth0Login.bind(this);
+        this.triggerLogin = this.triggerLogin.bind(this);
+        this.triggerLogout = this.triggerLogout.bind(this);
+        this.adviseUnsavedChanges = this.adviseUnsavedChanges.bind(this);
+        this.releaseUnsavedChanges = this.releaseUnsavedChanges.bind(this);
+        this.trigger = this.trigger.bind(this);
+        this.handleError = this.handleError.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handlePopState = this.handlePopState.bind(this);
+        this.confirmNavigation = this.confirmNavigation.bind(this);
+        this.handleBeforeUnload = this.handleBeforeUnload.bind(this);
+        this.navigate = this.navigate.bind(this);
+        this.receiveContextResponse = this.receiveContextResponse.bind(this);
         this.listActionsFor = this.listActionsFor.bind(this);
         this.currentResource = this.currentResource.bind(this);
         this.currentAction = this.currentAction.bind(this);
@@ -186,6 +249,9 @@ export default class App extends React.Component {
             portal: portal,
             projectColors: projectColors,
             biosampleTypeColors: biosampleTypeColors,
+            fetch: this.fetch,
+            session: this.state.session,
+            session_properties: this.state.session_properties,
         };
     }
 
@@ -212,7 +278,8 @@ export default class App extends React.Component {
         };
         const logoUrl = url.format(logoHrefInfo);
 
-        this.lock = new Lock.default('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
+        const lock_ = require('auth0-lock');
+        this.lock = new lock_.default('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
             auth: {
                 redirect: false,
             },
@@ -226,6 +293,47 @@ export default class App extends React.Component {
             allowedConnections: ['github', 'google-oauth2', 'facebook', 'linkedin'],
         });
         this.lock.on('authenticated', this.handleAuth0Login);
+
+        // Initialize browesr history mechanism
+        if (this.constructor.historyEnabled()) {
+            const data = this.props.context;
+            try {
+                window.history.replaceState(data, '', window.location.href);
+            } catch (exc) {
+                // Might fail due to too large data
+                window.history.replaceState(null, '', window.location.href);
+            }
+
+            // If it looks like an anchor target link, scroll to it, plus an offset for the fixed navbar
+            // Hints from https://dev.opera.com/articles/fixing-the-scrolltop-bug/
+            if (this.props.href) {
+                const splitHref = this.props.href.split('#');
+                if (splitHref.length >= 2 && splitHref[1][0] !== '!') {
+                    // URL has hash tag, but not the '#!edit' type
+                    const hashTarget = splitHref[1];
+                    const domTarget = document.getElementById(hashTarget);
+                    if (domTarget) {
+                        // DOM has a matching anchor; scroll to it
+                        const elTop = domTarget.getBoundingClientRect().top;
+                        const docTop = document.documentElement.scrollTop || document.body.scrollTop;
+                        const scrollTop = (elTop + docTop) - (window.innerWidth >= 960 ? 75 : 0);
+                        document.documentElement.scrollTop = scrollTop;
+                        document.body.scrollTop = scrollTop;
+                    }
+                }
+            }
+
+            // Avoid popState on load, see: http://stackoverflow.com/q/6421769/199100
+            const register = window.addEventListener.bind(window, 'popstate', this.handlePopState, true);
+            if (window._onload_event_fired) {
+                register();
+            } else {
+                window.addEventListener('load', setTimeout.bind(window, register));
+            }
+        } else {
+            window.onhashchange = this.onHashChange;
+        }
+        window.onbeforeunload = this.handleBeforeUnload;
     }
 
     componentWillUpdate(nextProps, nextState) {
@@ -256,6 +364,27 @@ export default class App extends React.Component {
                 }
             });
         }
+
+        const xhr = this.state.contextRequest;
+        if (!xhr || !xhr.xhr_end || xhr.browser_stats) {
+            return;
+        }
+        const browserEnd = 1 * new Date();
+
+        ga('set', 'location', window.location.href);
+        ga('send', 'pageview');
+        recordServerStats(xhr.server_stats, 'contextRequest');
+
+        xhr.browser_stats = {};
+        xhr.browser_stats.xhr_time = xhr.xhr_end - xhr.xhr_begin;
+        xhr.browser_stats.browser_time = browserEnd - xhr.xhr_end;
+        xhr.browser_stats.total_time = browserEnd - xhr.xhr_begin;
+        recordBrowserStats(xhr.browser_stats, 'contextRequest');
+    }
+
+    onHashChange() {
+        // IE8/9
+        this.setState({ href: window.location.href });
     }
 
     // Handle http requests to the server, using the given URL and options.
@@ -336,7 +465,7 @@ export default class App extends React.Component {
             this.navigate(nextUrl, { replace: true });
         }, (err) => {
             this.sessionPropertiesRequest = null;
-            parseError(err).then((data) => {
+            globals.parseError(err).then((data) => {
                 // Server session creds might have changed.
                 if (data.code === 400 && data.detail.indexOf('CSRF') !== -1) {
                     if (!retrying) {
@@ -348,6 +477,376 @@ export default class App extends React.Component {
                 this.setState({ context: data });
             });
         });
+    }
+
+    triggerLogin() {
+        if (this.state.session && !this.state.session._csrft_) {
+            this.fetch('/session');
+        }
+        this.lock.show();
+    }
+
+    triggerLogout() {
+        console.log('Logging out (Auth0)');
+        const session = this.state.session;
+        if (!(session && session['auth.userid'])) return;
+        this.fetch('/logout?redirect=false', {
+            headers: { Accept: 'application/json' },
+        }).then((response) => {
+            if (!response.ok) throw response;
+            return response.json();
+        }).then(() => {
+            this.DISABLE_POPSTATE = true;
+            const oldPath = window.location.pathname + window.location.search;
+            window.location.assign('/#logged-out');
+            if (oldPath === '/') {
+                window.location.reload();
+            }
+        }, (err) => {
+            globals.parseError(err).then((data) => {
+                data.title = `Logout failure: ${data.title}`;
+                this.setState({ context: data });
+            });
+        });
+    }
+
+    adviseUnsavedChanges() {
+        const token = new UnsavedChangesToken(this);
+        this.setState({ unsavedChanges: this.state.unsavedChanges.concat([token]) });
+        return token;
+    }
+
+    releaseUnsavedChanges(token) {
+        console.assert(this.state.unsavedChanges.indexOf(token) !== -1);
+        this.setState({ unsavedChanges: this.state.unsavedChanges.filter(x => x !== token) });
+    }
+
+    trigger(name) {
+        const methodName = this.triggers[name];
+        if (methodName) {
+            this.props[methodName].call(this);
+        }
+    }
+
+    handleError(msg, uri, line, column) {
+        let mutatableUri = uri;
+
+        // When an unhandled exception occurs, reload the page on navigation
+        this.constructor.historyEnabled = false;
+        const parsed = mutatableUri && require('url').parse(mutatableUri);
+        if (mutatableUri && parsed.hostname === window.location.hostname) {
+            mutatableUri = parsed.path;
+        }
+        ga('send', 'exception', {
+            exDescription: `${mutatableUri}@${line},${column}: ${msg}`,
+            exFatal: true,
+            location: window.location.href,
+        });
+    }
+
+    /* eslint no-script-url: 0 */ // We're not *using* a javascript: link -- just checking them.
+    handleClick(event) {
+        // https://github.com/facebook/react/issues/1691
+        if (event.isDefaultPrevented()) {
+            return;
+        }
+
+        let target = event.target;
+        const nativeEvent = event.nativeEvent;
+
+        // SVG anchor elements have tagName == 'a' while HTML anchor elements have tagName == 'A'
+        while (target && (target.tagName.toLowerCase() !== 'a' || target.getAttribute('data-href'))) {
+            target = target.parentElement;
+        }
+        if (!target) {
+            return;
+        }
+
+        if (target.getAttribute('disabled')) {
+            event.preventDefault();
+            return;
+        }
+
+        // data-trigger links invoke custom handlers.
+        const dataTrigger = target.getAttribute('data-trigger');
+        if (dataTrigger !== null) {
+            event.preventDefault();
+            this.trigger(dataTrigger);
+            return;
+        }
+
+        // Ensure this is a plain click
+        if (nativeEvent.which > 1 || nativeEvent.shiftKey || nativeEvent.altKey || nativeEvent.metaKey) {
+            return;
+        }
+
+        // Skip links with a data-bypass attribute.
+        if (target.getAttribute('data-bypass')) {
+            return;
+        }
+
+        let href = target.getAttribute('href');
+        if (href === null) {
+            href = target.getAttribute('data-href');
+        }
+        if (href === null) {
+            return;
+        }
+
+        // Skip javascript links
+        if (href.indexOf('javascript:') === 0) {
+            return;
+        }
+
+        // Skip external links
+        if (!origin.same(href)) {
+            return;
+        }
+
+        // Skip links with a different target
+        if (target.getAttribute('target')) {
+            return;
+        }
+
+        // Skip @@download links
+        if (href.indexOf('/@@download') !== -1) {
+            return;
+        }
+
+        // With HTML5 history supported, local navigation is passed
+        // through the navigate method.
+        if (this.constructor.historyEnabled) {
+            event.preventDefault();
+            this.navigate(href);
+        }
+    }
+
+    // Submitted forms are treated the same as links
+    handleSubmit(event) {
+        const target = event.target;
+
+        // Skip POST forms
+        if (target.method !== 'get') {
+            return;
+        }
+
+        // Skip forms with a data-bypass attribute.
+        if (target.getAttribute('data-bypass')) {
+            return;
+        }
+
+        // Skip external forms
+        if (!origin.same(target.action)) {
+            return;
+        }
+
+        const options = {};
+        const actionUrl = url.parse(url.resolve(this.props.href, target.action));
+        options.replace = actionUrl.pathname === url.parse(this.props.href).pathname;
+        let search = serialize(target);
+        if (target.getAttribute('data-removeempty')) {
+            search = search.split('&').filter(item => item.slice(-1) !== '=').join('&');
+        }
+        let href = actionUrl.pathname;
+        if (search) {
+            href += `?${search}`;
+        }
+        options.skipRequest = target.getAttribute('data-skiprequest');
+
+        if (this.constructor.historyEnabled) {
+            event.preventDefault();
+            this.navigate(href, options);
+        }
+    }
+
+    handlePopState(event) {
+        if (this.DISABLE_POPSTATE) {
+            return;
+        }
+        if (!this.confirmNavigation()) {
+            window.history.pushState(window.state, '', this.props.href);
+            return;
+        }
+        if (!this.constructor.historyEnabled) {
+            window.location.reload();
+            return;
+        }
+        const request = this.state.contextRequest;
+        const href = window.location.href;
+        if (event.state) {
+            // Abort inflight xhr before setProps
+            if (request && this.requestCurrent) {
+                // Abort the current request, then remember we've aborted it so that we don't render
+                // the Network Request Error page.
+                request.abort();
+                this.requestAborted = true;
+                this.requestCurrent = false;
+            }
+            this.setState({
+                href: href,  // href should be consistent with context
+                context: event.state,
+            });
+        }
+        // Always async update in case of server side changes.
+        // Triggers standard analytics handling.
+        this.navigate(href, { replace: true });
+    }
+
+    /* eslint no-alert: 0 */
+    confirmNavigation() {
+        // check for beforeunload confirmation
+        if (this.state.unsavedChanges.length) {
+            const res = window.confirm('You have unsaved changes. Are you sure you want to lose them?');
+            if (res) {
+                this.setState({ unsavedChanges: [] });
+            }
+            return res;
+        }
+        return true;
+    }
+
+    handleBeforeUnload() {
+        if (this.state.unsavedChanges.length) {
+            return 'You have unsaved changes.';
+        }
+        return null;
+    }
+
+    navigate(href, options) {
+        const mutatableOptions = options || {};
+        if (!this.confirmNavigation()) {
+            return null;
+        }
+
+        // options.skipRequest only used by collection search form
+        // options.replace only used handleSubmit, handlePopState, handleAuth0Login
+        let mutatableHref = url.resolve(this.props.href, href);
+
+        // Strip url fragment.
+        let fragment = '';
+        const hrefHashPos = mutatableHref.indexOf('#');
+        if (hrefHashPos > -1) {
+            fragment = mutatableHref.slice(hrefHashPos);
+            mutatableHref = mutatableHref.slice(0, hrefHashPos);
+        }
+
+        if (!this.constructor.historyEnabled()) {
+            if (mutatableOptions.replace) {
+                window.location.replace(mutatableHref + fragment);
+            } else {
+                const oldPath = (window.location.toString()).split('#')[0];
+                window.location.assign(mutatableHref + fragment);
+                if (oldPath === mutatableHref) {
+                    window.location.reload();
+                }
+            }
+            return null;
+        }
+
+        let request = this.state.contextRequest;
+
+        if (request && this.requestCurrent) {
+            // Abort the current request, then remember we've aborted the request so that we
+            // don't render the Network Request Error page.
+            console.log('REQ %s:%o', this.requestCurrent, request);
+            request.abort();
+            this.requestAborted = true;
+            this.requestCurrent = false;
+        }
+
+        if (mutatableOptions.skipRequest) {
+            if (mutatableOptions.replace) {
+                window.history.replaceState(window.state, '', mutatableHref + fragment);
+            } else {
+                window.history.pushState(window.state, '', mutatableHref + fragment);
+            }
+            this.setState({ href: mutatableHref + fragment });
+            return null;
+        }
+
+        request = this.fetch(mutatableHref, {
+            headers: { Accept: 'application/json' },
+        });
+        this.requestCurrent = true; // Remember we have an outstanding GET request
+
+        const timeout = new Timeout(SLOW_REQUEST_TIME);
+
+        Promise.race([request, timeout.promise]).then((v) => {
+            if (v instanceof Timeout) {
+                this.setState({ slow: true });
+            } else {
+                // Request has returned data
+                this.requestCurrent = false;
+            }
+        });
+
+        const promise = request.then((response) => {
+            // Request has returned data
+            this.requestCurrent = false;
+
+            // navigate normally to URL of unexpected non-JSON response so back button works.
+            if (!contentTypeIsJSON(response.headers.get('Content-Type'))) {
+                if (mutatableOptions.replace) {
+                    window.location.replace(mutatableHref + fragment);
+                } else {
+                    const oldPath = (window.location.toString()).split('#')[0];
+                    window.location.assign(mutatableHref + fragment);
+                    if (oldPath === mutatableHref) {
+                        window.location.reload();
+                    }
+                }
+            }
+            // The URL may have redirected
+            const responseUrl = (response.url || mutatableHref) + fragment;
+            if (mutatableOptions.replace) {
+                window.history.replaceState(null, '', responseUrl);
+            } else {
+                window.history.pushState(null, '', responseUrl);
+            }
+            this.setState({
+                href: responseUrl,
+            });
+            if (!response.ok) {
+                throw response;
+            }
+            return response.json();
+        })
+        .catch(globals.parseAndLogError.bind(undefined, 'contextRequest'))
+        .then(this.receiveContextResponse);
+
+        if (!mutatableOptions.replace) {
+            promise.then(this.constructor.scrollTo);
+        }
+
+        this.setState({
+            contextRequest: request,
+        });
+        return request;
+    }
+
+    receiveContextResponse(data) {
+        // title currently ignored by browsers
+        try {
+            window.history.replaceState(data, '', window.location.href);
+        } catch (exc) {
+            // Might fail due to too large data
+            window.history.replaceState(null, '', window.location.href);
+        }
+
+        // Set up new properties for the page after a navigation click. First disable slow now that we've
+        // gotten a response. If the requestAborted flag is set, then a request was aborted and so we have
+        // the data for a Network Request Error. Don't render that, but clear the requestAboerted flag.
+        // Otherwise we have good page data to render.
+        const newState = { slow: false };
+        if (!this.requestAborted) {
+            // Real page to render
+            this.setState({ context: data });
+        } else {
+            // data holds network error. Don't render that, but clear the requestAborted flag so we're ready
+            // for the next navigation click.
+            this.requestAborted = false;
+        }
+        this.setState(newState);
     }
 
     listActionsFor(category) {
@@ -444,7 +943,7 @@ export default class App extends React.Component {
         if (({ 'http://www.encodeproject.org/': 1, 'http://encodeproject.org/': 1 })[canonical]) {
             base = 'https://www.encodeproject.org/';
             canonical = base;
-            this.historyEnabled = false;
+            this.constructor.historyEnabled = false;
         }
 
         return (
@@ -466,7 +965,7 @@ export default class App extends React.Component {
                         data-prop-name="context"
                         type="application/ld+json"
                         dangerouslySetInnerHTML={{
-                            __html: `\n\n'${jsonScriptEscape(JSON.stringify(this.state.context))}\n\n`,
+                            __html: `\n\n${jsonScriptEscape(JSON.stringify(this.state.context))}\n\n`,
                         }}
                     />
                     <div id="slot-application">
@@ -502,7 +1001,12 @@ App.childContextTypes = {
     listActionsFor: React.PropTypes.func,
     currentResource: React.PropTypes.func,
     location_href: React.PropTypes.string,
+    fetch: React.PropTypes.func,
     portal: React.PropTypes.object,
     projectColors: React.PropTypes.object,
     biosampleTypeColors: React.PropTypes.object,
+    session: React.PropTypes.object,
+    session_properties: React.PropTypes.object,
 };
+
+module.exports = App;
