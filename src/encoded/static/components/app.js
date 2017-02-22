@@ -195,7 +195,7 @@ class App extends React.Component {
     constructor(props) {
         super();
         this.state = {
-            href: '', // Current URL bar
+            href: props.href, // Current URL bar
             slow: false, // `true` if we expect response from server, but it seems slow
             errors: [],
             assayTermNameColors: null,
@@ -270,7 +270,7 @@ class App extends React.Component {
         });
 
         // Make a URL for the logo.
-        const hrefInfo = url.parse(this.props.href);
+        const hrefInfo = url.parse(this.state.href);
         const logoHrefInfo = {
             hostname: hrefInfo.hostname,
             port: hrefInfo.port,
@@ -307,8 +307,8 @@ class App extends React.Component {
 
             // If it looks like an anchor target link, scroll to it, plus an offset for the fixed navbar
             // Hints from https://dev.opera.com/articles/fixing-the-scrolltop-bug/
-            if (this.props.href) {
-                const splitHref = this.props.href.split('#');
+            if (this.state.href) {
+                const splitHref = this.state.href.split('#');
                 if (splitHref.length >= 2 && splitHref[1][0] !== '!') {
                     // URL has hash tag, but not the '#!edit' type
                     const hashTarget = splitHref[1];
@@ -642,8 +642,8 @@ class App extends React.Component {
         }
 
         const options = {};
-        const actionUrl = url.parse(url.resolve(this.props.href, target.action));
-        options.replace = actionUrl.pathname === url.parse(this.props.href).pathname;
+        const actionUrl = url.parse(url.resolve(this.state.href, target.action));
+        options.replace = actionUrl.pathname === url.parse(this.state.href).pathname;
         let search = serialize(target);
         if (target.getAttribute('data-removeempty')) {
             search = search.split('&').filter(item => item.slice(-1) !== '=').join('&');
@@ -665,7 +665,7 @@ class App extends React.Component {
             return;
         }
         if (!this.confirmNavigation()) {
-            window.history.pushState(window.state, '', this.props.href);
+            window.history.pushState(window.state, '', this.state.href);
             return;
         }
         if (!this.constructor.historyEnabled) {
@@ -721,7 +721,7 @@ class App extends React.Component {
 
         // options.skipRequest only used by collection search form
         // options.replace only used handleSubmit, handlePopState, handleAuth0Login
-        let mutatableHref = url.resolve(this.props.href, href);
+        let mutatableHref = url.resolve(this.state.href, href);
 
         // Strip url fragment.
         let fragment = '';
