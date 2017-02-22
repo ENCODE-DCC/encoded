@@ -1569,10 +1569,10 @@ const FilterMenu = React.createClass({
 
     render: function () {
         const { filterOptions, handleFilterChange } = this.props;
-        const selectedFilterValue = this.props.selectedFilterValue ? this.props.selectedFilterValue : 'default';
+        const selectedFilterValue = this.props.selectedFilterValue ? this.props.selectedFilterValue : '0';
 
         return (
-            <select className="form-control" defaultValue="0" value={selectedFilterValue} onChange={handleFilterChange}>
+            <select className="form-control" value={selectedFilterValue} onChange={handleFilterChange}>
                 <option value="default">All Assemblies and Annotations</option>
                 <option disabled="disabled" />
                 {filterOptions.map((option, i) =>
