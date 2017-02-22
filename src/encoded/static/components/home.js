@@ -283,10 +283,9 @@ const OrganismSelector = (props) => {
     const { organism, selected, clickHandler } = props;
 
     return (
-        <button
-            className={`single-tab${selected ? ' selected' : ''}`}
-            onClick={() => { clickHandler(organism.toUpperCase(organism)); }}
-        />
+        <button className={`organism-selector__tab${selected ? ' organism-selector--selected' : ''}`} onClick={() => { clickHandler(organism.toUpperCase(organism)); }}>
+            {organism}
+        </button>
     );
 };
 
@@ -394,63 +393,65 @@ class HomepageChart extends React.Component {
 
             // Pass the assay_title counts to the charting library to render it.
             const canvas = document.getElementById('myChart');
-            const ctx = canvas.getContext('2d');
-            this.myPieChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: colors,
-                    }],
-                },
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                this.myPieChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: colors,
+                        }],
+                    },
 
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    legend: {
-                        display: false, // Hide automatically generated legend; we draw it ourselves
-                    },
-                    animation: {
-                        duration: 200,
-                    },
-                    legendCallback: (chart) => { // allows for legend clicking
-                        const chartData = chart.data.datasets[0].data;
-                        const text = [];
-                        text.push('<ul>');
-                        for (let i = 0; i < chartData.length; i += 1) {
-                            if (chartData[i]) {
-                                text.push('<li>');
-                                text.push(`<a href="/matrix/${this.props.query}&award.project=${chart.data.labels[i]}">`); // go to matrix view when clicked
-                                text.push(`<span class="chart-legend-chip" style="background-color:${chart.data.datasets[0].backgroundColor[i]}"></span>`);
-                                if (chart.data.labels[i]) {
-                                    text.push(`<span class="chart-legend-label">${chart.data.labels[i]}</span>`);
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            display: false, // Hide automatically generated legend; we draw it ourselves
+                        },
+                        animation: {
+                            duration: 200,
+                        },
+                        legendCallback: (chart) => { // allows for legend clicking
+                            const chartData = chart.data.datasets[0].data;
+                            const text = [];
+                            text.push('<ul>');
+                            for (let i = 0; i < chartData.length; i += 1) {
+                                if (chartData[i]) {
+                                    text.push('<li>');
+                                    text.push(`<a href="/matrix/${this.props.query}&award.project=${chart.data.labels[i]}">`); // go to matrix view when clicked
+                                    text.push(`<span class="chart-legend-chip" style="background-color:${chart.data.datasets[0].backgroundColor[i]}"></span>`);
+                                    if (chart.data.labels[i]) {
+                                        text.push(`<span class="chart-legend-label">${chart.data.labels[i]}</span>`);
+                                    }
+                                    text.push('</a></li>');
                                 }
-                                text.push('</a></li>');
                             }
-                        }
-                        text.push('</ul>');
-                        return text.join('');
+                            text.push('</ul>');
+                            return text.join('');
+                        },
+                        onClick: (e) => {
+                            // React to clicks on pie sections
+                            const activePoints = this.myPieChart.getElementAtEvent(e);
+
+                            if (activePoints[0]) { // if click on wrong area, do nothing
+                                const clickedElementIndex = activePoints[0]._index;
+                                const term = this.myPieChart.data.labels[clickedElementIndex];
+                                this.context.navigate(`/matrix/${this.props.query}&award.project=${term}`);
+                            }
+                        },
                     },
-                    onClick: (e) => {
-                        // React to clicks on pie sections
-                        const activePoints = this.myPieChart.getElementAtEvent(e);
+                });
 
-                        if (activePoints[0]) { // if click on wrong area, do nothing
-                            const clickedElementIndex = activePoints[0]._index;
-                            const term = this.myPieChart.data.labels[clickedElementIndex];
-                            this.context.navigate(`/matrix/${this.props.query}&award.project=${term}`);
-                        }
-                    },
-                },
-            });
+                // Have chartjs draw the legend into the DOM.
+                document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend();
 
-            // Have chartjs draw the legend into the DOM.
-            document.getElementById('chart-legend').innerHTML = this.myPieChart.generateLegend();
-
-            // Save the chart <div> height so we can set it to that value when no data's available.
-            const chartWrapperDiv = document.getElementById('chart-wrapper-1');
-            this.wrapperHeight = chartWrapperDiv.clientHeight;
+                // Save the chart <div> height so we can set it to that value when no data's available.
+                const chartWrapperDiv = document.getElementById('chart-wrapper-1');
+                this.wrapperHeight = chartWrapperDiv.clientHeight;
+            }
         });
     }
 
@@ -583,63 +584,65 @@ class HomepageChart2 extends React.Component {
 
             // Pass the assay_title counts to the charting library to render it.
             const canvas = document.getElementById('myChart2');
-            const ctx = canvas.getContext('2d');
-            this.myPieChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: colors,
-                    }],
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    legend: {
-                        display: false, // hiding automatically generated legend
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                this.myPieChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: colors,
+                        }],
                     },
-                    animation: {
-                        duration: 200,
-                    },
-                    legendCallback: (chart) => { // allows for legend clicking
-                        const chartData = chart.data.datasets[0].data;
-                        const text = [];
-                        const query = this.computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
-                        text.push('<ul>');
-                        for (let i = 0; i < chartData.length; i += 1) {
-                            if (chartData[i]) {
-                                text.push('<li>');
-                                text.push(`<a href="/matrix/${this.props.query}&${query}${chart.data.labels[i]}">`); // go to matrix view when clicked
-                                text.push(`<span class="chart-legend-chip" style="background-color:${chart.data.datasets[0].backgroundColor[i]}"></span>`);
-                                if (chart.data.labels[i]) {
-                                    text.push(`<span class="chart-legend-label">${chart.data.labels[i]}</span>`);
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            display: false, // hiding automatically generated legend
+                        },
+                        animation: {
+                            duration: 200,
+                        },
+                        legendCallback: (chart) => { // allows for legend clicking
+                            const chartData = chart.data.datasets[0].data;
+                            const text = [];
+                            const query = this.computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
+                            text.push('<ul>');
+                            for (let i = 0; i < chartData.length; i += 1) {
+                                if (chartData[i]) {
+                                    text.push('<li>');
+                                    text.push(`<a href="/matrix/${this.props.query}&${query}${chart.data.labels[i]}">`); // go to matrix view when clicked
+                                    text.push(`<span class="chart-legend-chip" style="background-color:${chart.data.datasets[0].backgroundColor[i]}"></span>`);
+                                    if (chart.data.labels[i]) {
+                                        text.push(`<span class="chart-legend-label">${chart.data.labels[i]}</span>`);
+                                    }
+                                    text.push('</a></li>');
                                 }
-                                text.push('</a></li>');
                             }
-                        }
-                        text.push('</ul>');
-                        return text.join('');
+                            text.push('</ul>');
+                            return text.join('');
+                        },
+                        onClick: (e) => {
+                            // React to clicks on pie sections
+                            const query = this.computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
+                            const activePoints = this.myPieChart.getElementAtEvent(e);
+                            if (activePoints[0]) {
+                                const clickedElementIndex = activePoints[0]._index;
+                                const term = this.myPieChart.data.labels[clickedElementIndex];
+                                this.context.navigate(`/matrix/${this.props.query}&${query}${term}`); // go to matrix view
+                            }
+                        },
                     },
-                    onClick: (e) => {
-                        // React to clicks on pie sections
-                        const query = this.computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
-                        const activePoints = this.myPieChart.getElementAtEvent(e);
-                        if (activePoints[0]) {
-                            const clickedElementIndex = activePoints[0]._index;
-                            const term = this.myPieChart.data.labels[clickedElementIndex];
-                            this.context.navigate(`/matrix/${this.props.query}&${query}${term}`); // go to matrix view
-                        }
-                    },
-                },
-            });
+                });
 
-            // Have chartjs draw the legend into the DOM.
-            document.getElementById('chart-legend-2').innerHTML = this.myPieChart.generateLegend();
+                // Have chartjs draw the legend into the DOM.
+                document.getElementById('chart-legend-2').innerHTML = this.myPieChart.generateLegend();
 
-            // Save the chart <div> height so we can set it to that value when no data's available.
-            const chartWrapperDiv = document.getElementById('chart-wrapper-2');
-            this.wrapperHeight = chartWrapperDiv.clientHeight;
+                // Save the chart <div> height so we can set it to that value when no data's available.
+                const chartWrapperDiv = document.getElementById('chart-wrapper-2');
+                this.wrapperHeight = chartWrapperDiv.clientHeight;
+            }
         });
     }
 
@@ -771,51 +774,53 @@ class HomepageChart3 extends React.Component {
 
             // Pass the counts to the charting library to render it.
             const canvas = document.getElementById('myChart3');
-            const ctx = canvas.getContext('2d');
-            this.myPieChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels, // full labels
-                    datasets: [{
-                        data: data,
-                        backgroundColor: colors,
-                    }],
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    legend: {
-                        display: false, // hiding automatically generated legend
-                    },
-                    animation: {
-                        duration: 200,
-                    },
-                    scales: {
-                        xAxes: [{
-                            gridLines: {
-                                display: false,
-                            },
-                            ticks: {
-                                autoSkip: false,
-                            },
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                this.myPieChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels, // full labels
+                        datasets: [{
+                            data: data,
+                            backgroundColor: colors,
                         }],
                     },
-                    onClick: (e) => {
-                        // React to clicks on pie sections
-                        const query = 'assay_slims=';
-                        const activePoints = this.myPieChart.getElementAtEvent(e);
-                        if (activePoints[0]) {
-                            const clickedElementIndex = activePoints[0]._index;
-                            const term = this.myPieChart.data.labels[clickedElementIndex];
-                            this.context.navigate(`/matrix/${this.props.query}&${query}${term}`); // go to matrix view
-                        }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            display: false, // hiding automatically generated legend
+                        },
+                        animation: {
+                            duration: 200,
+                        },
+                        scales: {
+                            xAxes: [{
+                                gridLines: {
+                                    display: false,
+                                },
+                                ticks: {
+                                    autoSkip: false,
+                                },
+                            }],
+                        },
+                        onClick: (e) => {
+                            // React to clicks on pie sections
+                            const query = 'assay_slims=';
+                            const activePoints = this.myPieChart.getElementAtEvent(e);
+                            if (activePoints[0]) {
+                                const clickedElementIndex = activePoints[0]._index;
+                                const term = this.myPieChart.data.labels[clickedElementIndex];
+                                this.context.navigate(`/matrix/${this.props.query}&${query}${term}`); // go to matrix view
+                            }
+                        },
                     },
-                },
-            });
+                });
 
-            // Save height of wrapper div.
-            const chartWrapperDiv = document.getElementById('chart-wrapper-3');
-            this.wrapperHeight = chartWrapperDiv.clientHeight;
+                // Save height of wrapper div.
+                const chartWrapperDiv = document.getElementById('chart-wrapper-3');
+                this.wrapperHeight = chartWrapperDiv.clientHeight;
+            }
         });
     }
 
