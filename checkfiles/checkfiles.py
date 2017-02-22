@@ -518,34 +518,35 @@ def check_for_fastq_signature_conflicts(session,
                                         signatures_to_check):
     conflicts = []
     for signature in sorted(list(signatures_to_check)):
-        query = '/search/?type=File&status!=replaced&file_format=fastq&' + \
-                'datastore=database&fastq_signature=' + signature
-        try:
-            r = session.get(urljoin(url, query))
-        except requests.exceptions.RequestException as e:  # This is the correct syntax
-            errors['lookup_for_fastq_signature'] = 'Network error occured, while looking for ' + \
-                                                   'fastq signature conflict on the portal. ' + \
-                                                   str(e)
-        else:
-            r_graph = r.json().get('@graph')
-            if len(r_graph) > 0:
-                for entry in r_graph:
-                    if 'accession' in entry and 'accession' in item and \
-                       entry['accession'] != item['accession']:
+        if not signature.endswith('mixed:'):
+            query = '/search/?type=File&status!=replaced&file_format=fastq&' + \
+                    'datastore=database&fastq_signature=' + signature
+            try:
+                r = session.get(urljoin(url, query))
+            except requests.exceptions.RequestException as e:  # This is the correct syntax
+                errors['lookup_for_fastq_signature'] = 'Network error occured, while looking for ' + \
+                                                       'fastq signature conflict on the portal. ' + \
+                                                       str(e)
+            else:
+                r_graph = r.json().get('@graph')
+                if len(r_graph) > 0:
+                    for entry in r_graph:
+                        if 'accession' in entry and 'accession' in item and \
+                           entry['accession'] != item['accession']:
+                                conflicts.append(
+                                    '%s in file %s ' % (
+                                        signature,
+                                        entry['accession']))
+                        elif 'accession' in entry and 'accession' not in item:
                             conflicts.append(
                                 '%s in file %s ' % (
                                     signature,
                                     entry['accession']))
-                    elif 'accession' in entry and 'accession' not in item:
-                        conflicts.append(
-                            '%s in file %s ' % (
-                                signature,
-                                entry['accession']))
-                    elif 'accession' not in entry and 'accession' not in item:
-                        conflicts.append(
-                            '%s ' % (
-                                signature) +
-                            'file on the portal.')
+                        elif 'accession' not in entry and 'accession' not in item:
+                            conflicts.append(
+                                '%s ' % (
+                                    signature) +
+                                'file on the portal.')
     # "Fastq file contains read name signatures that conflict with signatures from file X”]
 
     if len(conflicts) > 0:
@@ -857,7 +858,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.08'
+    version = '1.09'
 
     out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
               (version, search_query, nprocesses, dr, datetime.datetime.now()))
