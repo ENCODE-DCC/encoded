@@ -1431,7 +1431,7 @@ const FileGalleryRenderer = React.createClass({
     },
 
     render: function () {
-        const { context, data, schemas } = this.props;
+        const { context, data, schemas, hideGraph } = this.props;
         let selectedAssembly = '';
         let selectedAnnotation = '';
         let jsonGraph;
@@ -1452,7 +1452,7 @@ const FileGalleryRenderer = React.createClass({
         const graphFiles = _(files).filter(file => file.status !== 'archived');
 
         // Build node graph of the files and analysis steps with this experiment
-        if (graphFiles && graphFiles.length) {
+        if (graphFiles && graphFiles.length && !hideGraph) {
             try {
                 const { graph, graphedFiles } = assembleGraph(context, this.context.session, this.state.infoNodeId, graphFiles, selectedAssembly, selectedAnnotation);
                 jsonGraph = graph;
@@ -1490,7 +1490,7 @@ const FileGalleryRenderer = React.createClass({
                     </div>
                 </PanelHeading>
 
-                {!this.props.hideGraph ?
+                {!hideGraph ?
                     <FileGraph
                         context={context}
                         items={graphFiles}
