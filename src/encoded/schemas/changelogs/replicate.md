@@ -1,6 +1,11 @@
 Change log for replicate.json
 =============================
 
+Schema version 6
+----------------
+
+* array property *aliases* is now only allowed to contain unique elements
+
 Schema version 5
 ----------------
 
