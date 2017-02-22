@@ -554,7 +554,7 @@ const RawSequencingTable = React.createClass({
                                     }
 
                                     // Determine if accession should be a button or not
-                                    const buttonEnabled = !!meta.graphedFiles[file['@id']];
+                                    const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
 
                                     return (
                                         <tr key={i} className={file.restricted ? 'file-restricted' : ''}>
@@ -588,7 +588,7 @@ const RawSequencingTable = React.createClass({
                                 ];
 
                                 // Determine if accession should be a button or not.
-                                const buttonEnabled = !!meta.graphedFiles[file['@id']];
+                                const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
 
                                 return (
                                     <tr key={i} className={rowClasses.join(' ')}>
@@ -730,7 +730,7 @@ const RawFileTable = React.createClass({
                                     }
 
                                     // Determine if the accession should be a button or not.
-                                    const buttonEnabled = !!meta.graphedFiles[file['@id']];
+                                    const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
 
                                     // Prepare for run_type display
                                     return (
@@ -759,7 +759,7 @@ const RawFileTable = React.createClass({
                                 ];
 
                                 // Determine if accession should be a button or not.
-                                const buttonEnabled = !!meta.graphedFiles[file['@id']];
+                                const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
 
                                 return (
                                     <tr key={i} className={rowClasses.join(' ')}>
