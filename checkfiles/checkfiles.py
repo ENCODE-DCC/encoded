@@ -795,15 +795,8 @@ def patch_file(session, url, job):
     if not errors:
         data = {
             'status': 'in progress',
-            'file_size': result['file_size']
+
         }
-        if 'read_count' in result:
-            data['read_count'] = result['read_count']
-        if 'fastq_signature' in result and \
-           result['fastq_signature'] != []:
-            data['fastq_signature'] = result['fastq_signature']
-        if 'content_md5sum' in result:
-            data['content_md5sum'] = result['content_md5sum']
     else:
         if 'fastq_format_readname' in errors:
             update_content_error(errors,
@@ -819,6 +812,16 @@ def patch_file(session, url, job):
             data = {
                 'status': 'upload failed'
                 }
+    if 'file_size' in result:
+        data['file_size'] = result['file_size']
+    if 'read_count' in result:
+        data['read_count'] = result['read_count']
+    if 'fastq_signature' in result and \
+       result['fastq_signature'] != []:
+        data['fastq_signature'] = result['fastq_signature']
+    if 'content_md5sum' in result:
+        data['content_md5sum'] = result['content_md5sum']
+
     if data:
         item_url = urljoin(url, job['@id'])
         r = session.patch(
