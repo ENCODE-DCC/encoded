@@ -511,6 +511,24 @@ def process_read_lengths(read_lengths_dict,
                                  ', '.join(map(str, lengths_list))))
 
 
+def create_a_list_of_barcodes(details):
+    barcodes = set()
+    for entry in details:
+        barcode = entry.get('barcode')
+        lane = entry.get('lane')
+        if lane and barcode:
+            barcodes.add((lane, barcode))
+    return barcodes
+
+
+def compare_flowcell_details(flowcell_details_1, flowcell_details_2):
+    barcodes_1 = create_a_list_of_barcodes(flowcell_details_1)
+    barcodes_2 = create_a_list_of_barcodes(flowcell_details_1)
+    if barcodes_1 & barcodes_2:
+        return True  # intersection found
+    return False  # no intersection
+
+
 def check_for_fastq_signature_conflicts(session,
                                         url,
                                         errors,
@@ -529,24 +547,31 @@ def check_for_fastq_signature_conflicts(session,
                                                        str(e)
             else:
                 r_graph = r.json().get('@graph')
-                if len(r_graph) > 0:
+                if len(r_graph) > 0:  # found a conflict
+                    #  the conflict in case of missing barcode in read names could be resolved with metadata flowcell details
                     for entry in r_graph:
-                        if 'accession' in entry and 'accession' in item and \
-                           entry['accession'] != item['accession']:
-                                conflicts.append(
-                                    '%s in file %s ' % (
-                                        signature,
-                                        entry['accession']))
-                        elif 'accession' in entry and 'accession' not in item:
-                            conflicts.append(
-                                '%s in file %s ' % (
-                                    signature,
-                                    entry['accession']))
-                        elif 'accession' not in entry and 'accession' not in item:
-                            conflicts.append(
-                                '%s ' % (
-                                    signature) +
-                                'file on the portal.')
+                        if (not signature.endswith('::') or
+                            (signature.endswith('::') and entry.get('flowcell_details') and
+                             item.get('flowcell_details') and
+                             compare_flowcell_details(entry.get('flowcell_details'),
+                                                      item.get('flowcell_details')))):
+                                if 'accession' in entry and 'accession' in item and \
+                                   entry['accession'] != item['accession']:
+                                        conflicts.append(
+                                            '%s in file %s ' % (
+                                                signature,
+                                                entry['accession']))
+                                elif 'accession' in entry and 'accession' not in item:
+                                    conflicts.append(
+                                        '%s in file %s ' % (
+                                            signature,
+                                            entry['accession']))
+                                elif 'accession' not in entry and 'accession' not in item:
+                                    conflicts.append(
+                                        '%s ' % (
+                                            signature) +
+                                        'file on the portal.')
+                    
     # "Fastq file contains read name signatures that conflict with signatures from file X”]
 
     if len(conflicts) > 0:
@@ -816,8 +841,7 @@ def patch_file(session, url, job):
         data['file_size'] = result['file_size']
     if 'read_count' in result:
         data['read_count'] = result['read_count']
-    if 'fastq_signature' in result and \
-       result['fastq_signature'] != []:
+    if result.get('fastq_signature'):
         data['fastq_signature'] = result['fastq_signature']
     if 'content_md5sum' in result:
         data['content_md5sum'] = result['content_md5sum']
