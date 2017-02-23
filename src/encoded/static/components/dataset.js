@@ -1304,6 +1304,9 @@ export const Series = React.createClass({
         // Calculate the donor diversity.
         const diversity = donorDiversity(context);
 
+        // Filter out any files we shouldn't see.
+        const experimentList = context.related_datasets.filter(dataset => dataset.status !== 'revoked' && dataset.status !== 'replaced' && dataset.status !== 'deleted');
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -1421,7 +1424,7 @@ export const Series = React.createClass({
                     <div>
                         <SortTablePanel title={`Experiments in ${seriesTitle} ${context.accession}`}>
                             <SortTable
-                                list={context.related_datasets}
+                                list={experimentList}
                                 columns={seriesComponent.table}
                                 meta={{
                                     adminUser: adminUser,
