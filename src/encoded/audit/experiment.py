@@ -3438,19 +3438,18 @@ def audit_experiment_antibody_characterized(value, system):
                             'any cell type or tissue in {}'.format(organism)
                         yield AuditFailure('uncharacterized antibody',
                                            detail, level='NOT_COMPLIANT')
+                    elif lot_review['status'] in ['not characterized to standards', 'not pursued']:
+                        detail = '{} has not been '.format(antibody['@id']) + \
+                            'characterized to the standard for {}: {}'.format(organism, lot_review['detail'])
+                        yield AuditFailure('antibody not characterized to standard', detail,
+                                           level='NOT_COMPLIANT')
                     elif lot_review['status'] in ['pending dcc review',
                                                   'partially characterized']:
-                            detail = '{} has characterization attempts '.format(antibody['@id']) + \
-                                     'but does not have the full complement of characterizations ' + \
-                                     'meeting the standard in {}: {}'.format(
-                                organism, lot_review['detail'])
-                            yield AuditFailure('partially characterized antibody',
-                                               detail, level='NOT_COMPLIANT')
-                    elif lot_review['status'] in ['not characterized to standard', 'not pursued']:
-                            detail = '{} has not been '.format(antibody['@id']) + \
-                                'characterized to the standard for {}: {}'.format(organism, lot_review['detail'])
-                            yield AuditFailure('antibody not characterized to standard', detail,
-                                               level='NOT_COMPLIANT')
+                        detail = '{} has characterization attempts '.format(antibody['@id']) + \
+                                 'but does not have the full complement of characterizations ' + \
+                                 'meeting the standard in {}: {}'.format(organism, lot_review['detail'])
+                        yield AuditFailure('partially characterized antibody',
+                                           detail, level='NOT_COMPLIANT')
                     else:
                         # This should only leave the characterized to standards case
                         pass
@@ -3474,22 +3473,17 @@ def audit_experiment_antibody_characterized(value, system):
                             antibody['@id'], biosample_term_name, organism)
                         yield AuditFailure('uncharacterized antibody',
                                            detail, level='NOT_COMPLIANT')
-                    elif lot_review['status'] in ['not characterized to standards', 'pending dcc review']:
-                        if lot_review['detail'] in ['Awaiting submission of primary characterization(s).',
-                                                    'Awaiting submission of secondary characterization(s).',
-                                                    'One or more characterization(s) is pending review.',
-                                                    'Pending review of a secondary characterization.']:
-                            detail = '{} has characterization attempts '.format(antibody['@id']) + \
-                                     'but does not have the full complement of characterizations ' + \
-                                     'meeting the standard in {}: {}'.format(
-                                organism, lot_review['detail'])
-                            yield AuditFailure('partially characterized antibody',
-                                               detail, level='NOT_COMPLIANT')
-                        else:
-                            detail = '{} has not been '.format(antibody['@id']) + \
-                                'characterized to the standard for {}: {}'.format(organism, lot_review['detail'])
-                            yield AuditFailure('antibody not characterized to standard', detail,
-                                               level='NOT_COMPLIANT')
+                    elif lot_review['status'] in ['partially characterized', 'pending dcc review']:
+                        detail = '{} has characterization attempts '.format(antibody['@id']) + \
+                                 'but does not have the full complement of characterizations ' + \
+                                 'meeting the standard in {}: {}'.format(organism, lot_review['detail'])
+                        yield AuditFailure('partially characterized antibody',
+                                           detail, level='NOT_COMPLIANT')
+                    elif lot_review['status'] in ['not characterized to standards', 'not pursued']:
+                        detail = '{} has not been '.format(antibody['@id']) + \
+                                 'characterized to the standard for {}: {}'.format(organism, lot_review['detail'])
+                        yield AuditFailure('antibody not characterized to standard', detail,
+                                           level='NOT_COMPLIANT')
                     else:
                         # This should only leave the characterized to standards case
                         pass
