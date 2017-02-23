@@ -57,6 +57,7 @@
             "enum": [
                 "binding sites",
                 "blacklist",
+                "candidate regulatory regions",
                 "chromatin state",
                 "enhancer-like regions",
                 "gene expression",
@@ -65,6 +66,7 @@
                 "enhancer predictions",
                 "in vivo enhancer evaluations",
                 "DNase master peaks",
+                "representative DNase hypersensitivity sites",
                 "transcription factor motifs",
                 "transcript expression",
                 "validated enhancers",
