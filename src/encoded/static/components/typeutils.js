@@ -95,7 +95,7 @@ export function CollectBiosampleDocs(biosample) {
         donorCharacterizations,
         donorConstructs,
         talenDocuments,
-        treatmentDocuments
+        treatmentDocuments,
     )).chain().uniq(doc => (doc ? doc.uuid : null)).compact()
     .value();
 
@@ -173,17 +173,28 @@ export const BiosampleTableFooter = React.createClass({
 // Display a reference to an award page as a definition list item.
 export const AwardRef = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // Object containing the award property
+        context: React.PropTypes.object.isRequired, // Object containing the award property
+        adminUser: React.PropTypes.bool.isRequired, // True if current user is a logged-in admin
     },
 
     render: function () {
-        const { context } = this.props;
+        const { context, adminUser } = this.props;
+        const award = context.award;
 
-        if (context.award && context.award.pi && context.award.pi.lab) {
+        if (award && award.pi && award.pi.lab) {
             return (
                 <div data-test="awardpi">
                     <dt>Award</dt>
-                    <dd>{context.award.pi.lab.title}</dd>
+                    <dd>
+                        {adminUser || award.status === 'current' || award.status === 'disabled' ?
+                            <a href={award['@id']} title={`View page for award ${award.name}`}>{award.name}</a>
+                        :
+                            <span>{award.name}</span>
+                        }
+                        {award.pi && award.pi.lab ?
+                            <span> ({award.pi.lab.title})</span>
+                        : null}
+                    </dd>
                 </div>
             );
         }
