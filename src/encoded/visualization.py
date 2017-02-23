@@ -1176,6 +1176,107 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
     return tracks
 
 
+def fill_if_missing(target, target_key, source, source_key=None, exclude=['','unknown']):
+    '''Fill source value into target value if appropriate.'''
+    if target_key in target:
+        return
+    if not source_key:
+        source_key = [target_key]
+
+    if not isinstance(source_key,list):
+        source_key = [source_key]
+    for key in source_key:
+        if key in source and source[key] not in exclude:
+            target[target_key] = source[key]
+            return
+
+def add_biosample_details(target, dataset):
+    '''Add additional terms from library and biosample for IHEC, among others.'''
+
+    for term in ['biosample_term_name', 'biosample_term_id', 'biosample_summary', 'biosample_type']:
+        if term in dataset:
+            target[term] = dataset[term]
+
+    # Filled:
+    # 'sex'
+    # 'age'
+    # 'age_units'
+    # 'life_stage'
+    # 'ethnicity'
+    # 'health_status'
+    # 'donor_id'
+
+    # Wanted:
+    # 'differentiation_stage'
+    # 'disease',
+    # 'disease_ontology_uri',"CUI:C0277545")    # UNKNOWN
+    # 'lineage'
+    # 'medium'
+    # 'culture_conditions'
+    # "tissue_type"
+    # 'tissue_depot'
+
+    replicates = dataset.get("replicates", [])
+    for rep in replicates:
+
+        # library values
+        library = rep.get("library")
+        if library is None:
+            continue
+        if "molecule" not in target:
+            molecule = library.get("nucleic_acid_term_name")
+            if molecule:
+                if molecule == "RNA":
+                    descr = dataset.get('description', '').lower()
+                    if 'total' in descr:
+                        molecule = "total RNA"
+                    elif 'poly' in descr:
+                        molecule = "polyA RNA"
+            target['molecule'] = molecule
+
+        # biosample:
+        biosample = library.get("biosample")
+        if biosample is None:
+            continue
+
+        fill_if_missing(target, 'taxon_id', biosample.get("organism",{}))
+        fill_if_missing(target, 'age', biosample,['age','model_organism_age'])
+        fill_if_missing(target, 'age_units', biosample,['model_organism_age_units'])
+        fill_if_missing(target, 'sex', biosample,['sex','model_organism_sex'])
+        fill_if_missing(target, 'health_status', biosample,['health_status','model_organism_health_status'])
+        fill_if_missing(target, 'life_stage', biosample,['life_stage','mouse_life_stage','fly_life_stage','worm_life_stage'])
+        # ?? fill_if_missing(target, 'differentiation_stage', biosample,['fly_synchronization_stage','worm_synchronization_stage'])
+
+        # other biosample values
+        # "treatments" = [{},{}]  "treatments.treatment_type",
+        # "phase": S1,S2,etc.
+        # "subcellular_fraction_term_name": nucleus,cytosol,etc.
+
+        # donor:
+        donor = biosample.get('donor')
+        if donor is None:
+            continue
+
+        fill_if_missing(target, 'sex', donor)
+        fill_if_missing(target, 'age', donor)
+        fill_if_missing(target, 'age_units', donor)
+        fill_if_missing(target, 'life_stage', donor)
+        fill_if_missing(target, 'ethnicity', donor)
+        fill_if_missing(target, 'health_status', donor)
+        fill_if_missing(target, 'donor_id', donor, ['accession'])
+        #fill_if_missing(target, 'donor_id', donor, ['dbxrefs'])
+        #if 'donor_id' in target and isinstance(target['donor_id'],list):
+        #    if len(target['donor_id']) == 0:
+        #        target['donor_id'] = None
+        #    else:
+        #        target['donor_id'] = target['donor_id'][0]
+        # ?? fill_if_missing(target, 'lineage', donor, ['strain_name','accession'])
+
+        # other donor values
+        # "strain_name", "strain_background", "source", "genetic_modifications",
+        # "mutated_gene", "mutagen", "genotype"
+
+
 def make_acc_composite(dataset, assembly, host=None, hide=False):
     '''Converts experiment composite static definitions to live composite object'''
     if dataset["status"] not in VISIBLE_DATASET_STATUSES:
@@ -1198,27 +1299,12 @@ def make_acc_composite(dataset, assembly, host=None, hide=False):
         composite['assembly'] = assembly
     composite['ucsc_assembly'] = ucsc_assembly
 
-    # plumbing for ihec, among other things:
-    for term in ['biosample_term_name', 'biosample_term_id', 'biosample_summary',
-                 'biosample_type', 'assay_term_id', 'assay_term_name']:
+    for term in ['assay_term_id', 'assay_term_name']:
         if term in dataset:
             composite[term] = dataset[term]
-    replicates = dataset.get("replicates", [])
-    molecule = "DNA"  # default
-    if len(replicates) > 0:
-        taxon_id = replicates[0].get("library", {}).get("biosample", {}).get("organism",
-                                                                             {}).get("taxon_id")
-        if taxon_id:
-            composite['taxon_id'] = taxon_id
-        molecule = replicates[0].get("library", {}).get("nucleic_acid_term_name")
-        if molecule:
-            if molecule == "RNA":
-                descr = dataset.get('description', '').lower()
-                if 'total' in descr:
-                    molecule = "total RNA"
-                elif 'poly' in descr:
-                    molecule = "polyA RNA"
-    composite['molecule'] = molecule
+
+    # plumbing for ihec, among other things:
+    add_biosample_details(composite, dataset)
 
     longLabel = vis_defs.get('longLabel',
                              '{assay_term_name} of {biosample_term_name} - {accession}')
@@ -1543,6 +1629,150 @@ def ucsc_trackDb_composite_blob(composite, title):
     return blob
 
 
+def get_ihec_experiment_type(vis_type,assay_type,modifier=None):
+    '''Returns ihec approved experiment/assay types.'''
+
+    if vis_type == "ChIP":
+        if modifier is not None and modifier.lower() == "control":
+            return "ChIP-Seq Input"
+        return "ChIP-Seq"
+        # peak_calls: ["Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks","Replicated peaks", "Peaks"]
+        # signal_unstranded: {"Fold change over control", "Signal p-value", "Signal"]
+    if vis_type == "DNASE":
+        return "Chromatin Accessibility"
+        # peak_calls??: ["Peaks", "Hotspots"]
+        # signal_unstranded: "Signal",
+    if vis_type == "HIST":
+        if modifier is not None:
+            return "Histone %s" % (modifier)
+        return "Histone"
+        # peak_calls??: ["Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks", "Replicated peaks", "Peaks"]
+        # signal_unstranded: ["Fold change over control", "Signal p-value", "Signal"]
+    if vis_type in ["LRNA","scRNA","tkRNA"]:  # signal_forward (uniq/all), signal_reverse (uniq/all), signal_unstranded (uniq/all/raw)
+        if modifier is not None and modifier.lower() == "total":
+            return "total RNA"
+        return "mRNA-Seq"
+        # signal_forward: ["Plus signal of unique reads", "Plus signal of all reads"]
+        # signal_reverse: ["Minus signal of unique reads", "Minus signal of all reads"]
+        # signal_unstranded: ["Signal of unique reads", "Signal of all reads", "Raw signal"]
+    if vis_type == ["SRNA","miRNA"]:  # signal_forward (uniq/all), signal_reverse (uniq/all), bb (microRNA quantifications)
+        return "smRNA-Seq signal"
+        # peak_calls??: ["microRNA quantifications"]
+        # signal_forward: ["Plus signal of unique reads", "Plus signal of all reads"]
+        # signal_reverse: ["Minus signal of unique reads", "Minus signal of all reads"]
+    if vis_type == "WGBS":  # bb (Methylation at CpG, Methylation at CHG, Methylation at CHH), signal_unstranded
+        return "DNA Methylation"  # TODO: track_type: methylation_profile BAM!
+        # peak_calls??: ["Methylation at CpG","Methylation at CHG","Methylation at CHH"]
+        # signal_unstranded: "Signal"
+
+    # Hypothetical:
+    if vis_type == "ANNO":
+        return "Encyclopedia annotation"
+        # peak_calls??: ["Candidate enhancers", "Candidate promoters", "Chromatin state", "HMM predicted chromatin state", "Peaks"]
+    if vis_type == "ChIA":
+        return "Long Range Interactions"
+        # peak_calls??: ["Long range interactions"]
+        # signal_unstranded: "Signal of unique reads", "Signal of all reads"
+    if vis_type == "HiC":
+        return "Topologically Associated Domains"
+        # peak_calls??: ["Topologically associated domains", "Nested TADs"]
+        # signal_unstranded: "Genome compartments"
+    if vis_type == "TSS":
+        return "Transcription Start Sites"
+        # peak_calls??: ["Replicated TSSs","TSSs"]
+        # signal_forward: ["Plus signal of unique reads", "Plus signal of all reads"]
+        # signal_reverse: ["Minus signal of unique reads", "Minus signal of all reads"]
+        # signal_unstranded: "Signal of unique reads","Signal of all reads",
+    if vis_type == "eCLIP":
+        return "RNA-Protein Binding"
+        # peak_calls: ["Peaks"]
+        # signal_unstranded: "Signal"
+    if vis_type == "opaque":
+        return assay_type
+        # peak_calls: ["Peaks"]
+        # signal_unstranded: "Signal"
+
+    return None
+
+
+def get_ihec_track_type(vis_type,view,file_type):
+    '''Returns ihec approved track type.'''
+
+    #log.warn("get_ihec_track_type(%s,%s,%s)" % (vis_type,view,file_type))
+    if file_type == "bigWig":
+        if view.lower().find("plus signal") != -1:
+            return "signal_forward"
+            # ["Plus signal of unique reads", "Plus signal of all reads"]
+        elif view.lower().find("minus signal") != -1:
+            return "signal_reverse"
+            # ["Minus signal of unique reads", "Minus signal of all reads"]
+        else:
+            return "signal_unstranded"
+            # ["Fold change over control", "Signal p-value", "Signal", "Signal of unique reads",
+            #  "Signal of all reads", "Raw signal", "Genome compartments"]
+
+    if file_type.startswith("bigBed"):
+        return "peak_calls"
+        # Alternatives: vis_type: peak views
+        # ChIP: ["Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks", "Replicated peaks", "Peaks"]
+        # HIST: ["Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks", "Replicated peaks", "Peaks"]
+        # DNase: ["Peaks", "Hotspots"]
+        # miRNA: ["microRNA quantifications"]
+        # WGBS: ["Methylation at CpG", "Methylation at CHG", "Methylation at CHH"]
+        # ANNO: ["Candidate enhancers", "Candidate promoters", "Chromatin state", "HMM predicted chromatin state", "Peaks"]
+        # ChIA: ["Long range interactions"]
+        # HiC: ["Topologically associated domains", "Nested TADs"]
+        # TSS: ["Replicated TSSs", "TSSs"]
+
+
+def get_ihec_sample(acc_composite):
+    '''Returns ihec sample for a detected biomaterial_type.'''
+      # TODO: All the required properties make this impossible?!
+    biosample_type = acc_composite.get('biosample_type')
+    if biosample_type is None:
+        return {}
+    sample = {}
+    sample["molecule"] = acc_composite.get('molecule', 'none')
+    sample["sample_ontology_uri"] = acc_composite.get('biosample_term_id',"unknown")
+    sample["disease"] = acc_composite.get('disease',"unknown")                                 # UNKNOWN
+    sample["disease_ontology_uri"] = acc_composite.get('disease_ontology_uri',"CUI:C0277545")  # UNKNOWN
+
+    # one of "Cell Line", "Primary Cell", "Primary Cell Culture", "Primary Tissue"
+    if biosample_type in ["immortalized cell line","in vitro differentiated cells",
+                          "induced pluripotent stem cell line","stem cell"]:
+        # "required": ["biomaterial_type", "line", "lineage", "differentiation_stage", "medium", "sex"]
+        sample["biomaterial_type"] = "Cell Line"
+        sample["line"] = acc_composite.get('biosample_term_name', 'none')
+        sample["lineage"] = acc_composite.get('lineage', 'unknown')  # UNKNOWN
+        sample["differentiation_stage"] = acc_composite.get('differentiation_stage', 'unknown')  # UNKNOWN
+        sample["medium"] = acc_composite.get('medium', 'unknown')  # UNKNOWN
+        sample["sex"] = acc_composite.get('sex', 'Unknown').title()
+
+    else:
+        if biosample_type in ["primary cell"]:
+            # "required": ["biomaterial_type", "cell_type"]
+            sample["biomaterial_type"] = "Primary Cell"
+            sample["cell_type"] = acc_composite.get('biosample_term_name', 'none')
+        elif biosample_type in ["in vitro sample"]:
+            # "required": ["biomaterial_type", "cell_type", "culture_conditions"]
+            sample["biomaterial_type"] = "Primary Cell Culture"
+            sample["cell_type"] = acc_composite.get('biosample_term_name', 'none')
+            sample["culture_conditions"] = acc_composite.get('culture_conditions', 'unknown')  # UNKNOWN
+        elif biosample_type in ["tissue","whole organisms"]:
+            # "required": ["biomaterial_type", "tissue_type", "tissue_depot"]
+            sample["biomaterial_type"] = "Primary Tissue"
+            sample["tissue_type"] = acc_composite.get('biosample_term_name', 'none')
+            sample["tissue_depot"] = acc_composite.get('tissue_depot', 'unknown')  # UNKNOWN
+        # ALL except "Cell Line" require:
+        sample["donor_id"] = acc_composite.get('donor_id', 'unknown')
+        sample["donor_age"] = int(acc_composite.get('age', 'NA'))
+        sample["donor_age_unit"] = acc_composite.get('age_units', 'year')
+        sample["donor_life_stage"] = acc_composite.get('life_stage', 'unknown')
+        sample["donor_health_status"] = acc_composite.get('health_status', 'NA')
+        sample["donor_sex"] = acc_composite.get('sex', 'Unknown').title()
+        sample["donor_ethnicity"] = acc_composite.get('ethnicity', 'NA')
+    return sample
+
 def remodel_acc_to_ihec_json(acc_composites, request=None):
     '''TODO: remodels 1+ acc_composites into an IHEC hub json structure.'''
     if acc_composites is None or len(acc_composites) == 0:
@@ -1552,83 +1782,17 @@ def remodel_acc_to_ihec_json(acc_composites, request=None):
         host = request.host_url
     else:
         host = "https://www.encodeproject.org"
-    # {
-    # "hub_description": { ... },  similar to hub.txt/genome.txt
-    # "datasets": { ... },         one per experiment, contains "browser" objects, one per track
-    # "samples": { ... }           one per biosample
-    # }
     ihec_json = {}
 
-    # "hub_description": {     similar to hub.txt/genome.txt
-    #     "taxon_id": ...,           Species taxonomy id. (e.g. human = 9606, Mus mus. 10090)
-    #     "assembly": "...",         UCSC: hg19, hg38
-    #     "publishing_group": "...", ENCODE
-    #     "email": "...",            encode-help@lists.stanford.edu
-    #     "date": "...",             ISO 8601 format: YYYY-MM-DD
-    #     "description": "...",      (optional)
-    #     "description_url": "...",  (optional) If single composite: html  (e.g. ANNO.html)
-    # }
     hub_description = {}
     hub_description["publishing_group"] = "ENCODE"
     hub_description["email"] = "encode-help@lists.stanford.edu"
     hub_description["date"] = time.strftime('%Y-%m-%d', time.gmtime())
-    # hub_description["description"] = "...",      (optional)
-    # hub_description["description_url"] = "...",  (optional)
-    #                                    If single composite: html (e.g. ANNO.html)
     ihec_json["hub_description"] = hub_description
 
-    # "samples": {             one per biosample
-    #     "sample_id_1": {                   biosample term
-    #         "sample_ontology_uri": "...",  UBERON or CL
-    #         "molecule": "...",             ["total RNA", "polyA RNA", "cytoplasmic RNA",
-    #                                         "nuclear RNA", "genomic DNA", "protein", "other"]
-    #         "disease": "...",              optional?
-    #         "disease_ontology_uri": "...", optional?
-    #         "biomaterial_type": "...",     ["Cell Line", "Primary Cell", "Primary Cell Culture",
-    #                                         "Primary Tissue"]
-    #     },
-    #     "sample_id_2": { ... }
-    # }
     samples = {}
     ihec_json["samples"] = samples
 
-    # "datasets": {
-    #    "experiment_1": {    one per experiment    accession
-    #        "sample_id": "...",                    biosample_term
-    #        "experiment_attributes": {
-    #            "experiment_type": "...",
-    #            "assay_type": "...",               assay_term_name  Match ontology URI
-    #                                                           (e.g. 'DNA Methylation')
-    #            "experiment_ontology_uri": "...",  assay_term_id (e.g. OBI:0000716)
-    #            "reference_registry_id": "..."     IHEC Reference Epigenome registry ID,
-    #                                                 assigned after submitting to EpiRR
-    #        },
-    #        "analysis_attributes": {
-    #            "analysis_group": "...",              metadata_pairs['laboratory']
-    #            "alignment_software": "...",          pipeline?
-    #            "alignment_software_version": "...",
-    #            "analysis_software": "...",
-    #            "analysis_software_version": "..."
-    #        },
-    #        "browser": {
-    #            "signal_forward": [               view
-    #                {
-    #                    "big_data_url": "...",    obvious
-    #                    "description_url": "...", Perhaps not
-    #                    "md5sum": "...",          Add this to metadata pairs?
-    #                    "subtype": "...",         More details?
-    #                    "sample_source": "...",   pooled,rep1,rep2
-    #                    "primary":                pooled or rep1 ?
-    #                },
-    #                { ... }
-    #            ],
-    #            "signal_reverse": [ { ... } ]
-    #        }
-    #    },
-    #    "experiment_2": {
-    #        ...
-    #    },
-    # }
     datasets = {}
     ihec_json["datasets"] = datasets
 
@@ -1641,13 +1805,15 @@ def remodel_acc_to_ihec_json(acc_composites, request=None):
         if acc_composite is None or len(acc_composite) == 0:
             # log.debug("Found empty acc_composite for %s" % (acc))
             continue  # wounded composite can be dropped or added for evidence
+        vis_type = acc_composite["vis_type"]
 
         # From any acc_composite, update these:
         if "assembly" not in hub_description:
             ucsc_assembly = acc_composite.get('ucsc_assembly')
             if ucsc_assembly:
                 hub_description["assembly"] = ucsc_assembly
-            taxon_id = acc_composite.get('taxon_id')
+        if "taxon_id" not in hub_description:
+            taxon_id = int(acc_composite.get('taxon_id'))
             if taxon_id:
                 hub_description["taxon_id"] = taxon_id
 
@@ -1663,16 +1829,7 @@ def remodel_acc_to_ihec_json(acc_composites, request=None):
             log.warn("acc_composite %s is missing molecule", acc)
         sample_id = "%s; %s" % (biosample_name, molecule)
         if sample_id not in samples:
-            sample = {}
-            biosample_term_id = acc_composite.get('biosample_term_id')
-            if biosample_term_id:
-                sample["sample_ontology_uri"] = biosample_term_id
-            biosample_type = acc_composite.get('biosample_type')  # ["Cell Line","Primary Cell", ...
-            if biosample_type:
-                sample["biomaterial_type"] = biosample_type
-            sample["molecule"] = molecule
-            # sample["disease"] =
-            # sample["disease_ontology_uri"] =
+            sample = get_ihec_sample(acc_composite)
             samples[sample_id] = sample
         dataset["sample_id"] = sample_id
 
@@ -1687,7 +1844,13 @@ def remodel_acc_to_ihec_json(acc_composites, request=None):
                 assay_name = acc_composite.get('assay_term_name')
                 if assay_name:
                     experiment_attributes["assay_type"] = assay_name
-                # "experiment_type": assay_name # EpiRR
+                    modifier=None
+                    if vis_type in ["ChIP","HIST"]:
+                        # TODO: add target to vis_blob json
+                        modifier = acc_composite["longLabel"].split()[0]
+                    # TODO: How to detect Total RNA?
+                    experiment_attributes["experiment_type"] = get_ihec_experiment_type(vis_type,assay_name,modifier)
+                    experiment_attributes["assay_type"] = assay_name
                 # "reference_registry_id": "..."     IHEC Reference Epigenome registry ID,
                 #                                     assigned after submitting to EpiRR
                 assays[assay_id] = experiment_attributes
@@ -1705,9 +1868,13 @@ def remodel_acc_to_ihec_json(acc_composites, request=None):
                 if pipeline_group:
                     analysis_attributes["analysis_group"] = pipeline_group     # "ENCODE DCC"
                 analysis_attributes["analysis_software"] = pipeline_title
+                analysis_attributes["analysis_software_version"] = acc_composite.get('pipeline_version','unknown')  # TODO: Required but not easily found
+                # TODO: To fill in alignment_software/version:
+                # For each file, look through derived from for bam,
+                # Look through bam's analysis_step_version's, software_versions for an aligner.
+                analysis_attributes["alignment_software"] = acc_composite.get('aligner','unknown')                  # TODO: Required but not easily found
+                analysis_attributes["alignment_software_version"] = acc_composite.get('aligner_version','unknown')  # TODO: Required but not easily found
                 # "analysis_software_version": "..."  # NOTE: version is hard for the whole exp
-                # "alignment_software": "...",        # NOTE: sw *could* be found but not worth it
-                # "alignment_software_version": "...",
                 #        },
                 pipelines[pipeline_title] = analysis_attributes
             dataset["analysis_attributes"] = analysis_attributes
@@ -1716,8 +1883,7 @@ def remodel_acc_to_ihec_json(acc_composites, request=None):
         browser = {}
         dataset["browser"] = browser
 
-        # create views, which will hold tracks
-        # ihec_views = {}
+        # create track_sets, which will hold tracks
         views = acc_composite.get("view", [])
         for view_tag in views["group_order"]:
             view = views["groups"][view_tag]
@@ -1726,9 +1892,15 @@ def remodel_acc_to_ihec_json(acc_composites, request=None):
             tracks = view.get("tracks", [])
             if len(tracks) == 0:
                 continue
-            ihec_view = []
 
             for track in tracks:
+                track_type = get_ihec_track_type(vis_type,view["title"],track["type"])
+                if track_type is None:
+                    continue
+                ihec_track_set = []
+                if track_type in browser.keys():
+                    ihec_track_set = browser[track_type]
+
                 ihec_track = {}
                 # ["bigDataUrl","longLabel","shortLabel","type","color","altColor"]
                 ihec_track["big_data_url"] = host + track["bigDataUrl"]  # contains ?proxy=true
@@ -1748,6 +1920,8 @@ def remodel_acc_to_ihec_json(acc_composites, request=None):
                         ihec_track["sample_source"] = rep_group[rep_membership]["title"]
                         subgroup_order = sorted(rep_group["groups"].keys())
                         ihec_track["primary"] = (rep_membership == subgroup_order[0])
+                if "primary" not in ihec_track:
+                    ihec_track["primary"] = False
 
                 # extra fields
                 for term in ["type", "color", "altColor"]:
@@ -1763,11 +1937,72 @@ def remodel_acc_to_ihec_json(acc_composites, request=None):
                 #     if file_download:
                 #         file_download = file_download.split()[1][6:-1]
                 #         ihec_track["file download"] = file_download
-                ihec_view.append(ihec_track)
-            if len(ihec_view) > 0:
-                browser[view["title"]] = ihec_view
+                ihec_track_set.append(ihec_track)
+                #if track_type not in browser.keys():
+                browser[track_type] = ihec_track_set
+
+        for track_type in browser.keys():
+            ihec_track_set = browser[track_type]
+            if len(ihec_track_set) > 1:
+                a_primary = False
+                for ihec_track in ihec_track_set:
+                    if "primary" in ihec_track and ihec_track["primary"]:
+                        a_primary = True
+                        break
+                if not a_primary:
+                    ihec_track_set[0]["primary"] = True
+
+
+    # Anything missing?
+    if "taxon_id" not in hub_description:
+        if hub_description["assembly"] in ["hg38","hg19"]:
+            hub_description["taxon_id"] = 9606
+        elif hub_description["assembly"] in ["mm10"]:
+            hub_description["taxon_id"] = 10090
+        else:
+            hub_description["taxon_id"] = 0
 
     return ihec_json
+
+
+HOST_OF_PARTY = None
+
+def host_of_the_party(request=None):
+    '''returns the host'''
+    global HOST_OF_PARTY
+
+    if request:  # prefer the request version
+        host = request.host_url
+        if host is not None and host.find("localhost") == -1:
+            HOST_OF_PARTY = host
+    if HOST_OF_PARTY is not None:
+        return HOST_OF_PARTY
+    try:
+        # Using instance-id query aws about the instance Name (in tags)
+        instance_id = subprocess.check_output(["ec2metadata","--instance-id"]).strip().decode("utf-8")
+        session = boto3.Session(region_name='us-west-2')
+        ec2 = session.resource('ec2')
+        instance = ec2.Instance(instance_id)
+        instance_name = None
+        for tag in instance.tags:  # a list of dicts containing literally "Key"/"Value" keys
+            if tag["Key"] == 'Name':
+                instance_name = tag["Value"]
+                break
+
+        if instance_name is not None:
+            if instance_name.find("master") > -1:
+                if instance_name.find("test") > -1:
+                    HOST_OF_PARTY = "https://test.encodedcc.org"
+                if instance_name.find("rc") == -1:  # Not an RC
+                    HOST_OF_PARTY = "https://www.encodeproject.org"
+            if HOST_OF_PARTY is None:
+                HOST_OF_PARTY = ("https://%s.demo.encodedcc.org" % instance_name)
+            log.info("DISCOVERED HOST: %s  instance-id: %s  name:%s" %
+                                                (HOST_OF_PARTY,instance_id,instance_name))
+            return HOST_OF_PARTY
+    except:
+        pass
+    return "https://www.encodeproject.org"  # If all else fails return the production site
 
 
 def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False, regen=False):
@@ -1784,6 +2019,7 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
             dataset = request.embed("/datasets/" + acc + '/', as_user=True)
             # log.debug("find_or_make_acc_composite len(results) = %d   %.3f secs" %
             #           (len(results),(time.time() - PROFILE_START_TIME)))
+        #host = host_of_the_party(request)
         host=request.host_url
         if host is None or host.find("localhost") > -1:
             host = "https://www.encodeproject.org"
@@ -1847,8 +2083,6 @@ def generate_batch_trackDb(request, hide=False, regen=False):
     if not regen:
         regen = (request.url.find("regenvis") > -1)
         # ...&assembly=hg19&regenvis/hg19/trackDb.txt  regenvis=1 causes an error
-        if not regen:  # TODO temporary
-            regen = (request.url.find("ihecjson") > -1)  # ...&bly=hg19&ihecjson/hg19/trackDb.txt
 
     assembly = str(request.matchdict['assembly'])
     log.debug("Request for %s trackDb begins   %.3f secs" %
@@ -1927,20 +2161,21 @@ def generate_batch_trackDb(request, hide=False, regen=False):
     blob = ""
     set_composites = {}
     if found > 0 or made > 0:
-        ihec_out = (request.url.find("ihecjson") > -1)  # ...&ambly=hg19&ihecjson/hg19/trackDb.txt
-        if ihec_out:
-            ihec_json = remodel_acc_to_ihec_json(acc_composites, request)
-            blob = json.dumps(ihec_json, indent=4, sort_keys=True)
-        else:
-            set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100)
+        # NEW PLAN: for IHEC, only support single dataset at a time
+        #ihec_out = (request.url.find("ihecjson") > -1)  # ...&ambly=hg19&ihecjson/hg19/trackDb.txt
+        #if ihec_out:
+        #    ihec_json = remodel_acc_to_ihec_json(acc_composites, request)
+        #    blob = json.dumps(ihec_json, indent=4, sort_keys=True)
+        #else:
+        set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100)
 
-            json_out = (request.url.find("jsonout") > -1)  # ...&bly=hg19&jsonout/hg19/trackDb.txt
-            if json_out:
-                blob = json.dumps(set_composites, indent=4, sort_keys=True)
-            else:
-                for composite_tag in sorted(set_composites.keys()):
-                    blob += ucsc_trackDb_composite_blob(set_composites[composite_tag],
-                                                        composite_tag)
+        json_out = (request.url.find("jsonout") > -1)  # ...&bly=hg19&jsonout/hg19/trackDb.txt
+        if json_out:
+            blob = json.dumps(set_composites, indent=4, sort_keys=True)
+        else:
+            for composite_tag in sorted(set_composites.keys()):
+                blob += ucsc_trackDb_composite_blob(set_composites[composite_tag],
+                                                    composite_tag)
 
     if regen:  # Want to see message if regen was requested
         log.info("acc_composites: %s generated, %d found, %d set(s). len(txt):%s  %.3f secs" %
@@ -1995,6 +2230,8 @@ def prime_vis_es_cache(event):
         log.info("Starting prime_vis_es_cache: %d uuids" % (raw_count))
     else:
         log.debug("Starting prime_vis_es_cache: %d uuids" % (raw_count))
+
+    request.datastore = 'elasticsearch'
 
     visualizabe_types = set(VISIBLE_DATASET_TYPES)
     count = 0
@@ -2210,7 +2447,8 @@ def hub(context, request):
         return Response(g_text, content_type='text/plain')
 
     elif url_ret[1][1:].endswith(TRACKDB_TXT):
-        trackDb = generate_trackDb(request, embedded, url_ret[1][1:].split('/')[0])
+        trackDb = generate_trackDb(request, embedded, url_ret[1][1:].split('/')[0],
+                                   hide=False, regen=True)
         return Response(trackDb, content_type='text/plain')
     else:
         data_policy = ('<br /><a href="http://encodeproject.org/ENCODE/terms.html">'
