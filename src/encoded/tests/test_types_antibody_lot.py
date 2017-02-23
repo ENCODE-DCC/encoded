@@ -126,7 +126,8 @@ def test_have_primary_missing_secondary(testapp,
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
     assert ab['lot_reviews'][0]['status'] == 'pending dcc review'
-    assert ab['lot_reviews'][0]['detail'] == 'One or more characterization(s) is pending review.'
+    assert ab['lot_reviews'][0]['detail'] == 'One or more characterization(s) is pending review ' + \
+        'and awaiting submission of a secondary characterization.'
 
     # No secondary and a primary that is not submitted for review should result in
     # ab status = not pursued
@@ -180,25 +181,24 @@ def test_have_secondary_missing_primary(testapp,
     assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of primary characterization(s) and a ' + \
         'compliant secondary characterization.'
 
-    # A compliant secondary without primaries should be not characterized to standards as per
-    # Cricket's wishes
+    # A compliant secondary without primaries is partially characterized
     testapp.patch_json(char1['@id'], {'status': 'compliant',
                                       'reviewed_by': wrangler['@id'],
                                       'documents': [document['@id']]})
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
-    assert ab['lot_reviews'][0]['status'] == 'not characterized to standards'
+    assert ab['lot_reviews'][0]['status'] == 'partially characterized'
     assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of primary characterization(s).'
 
     # Adding another secondary, regardless of status, should not change the ab status from
-    # not characterized to standards
+    # partially characterized.
     char2 = testapp.post_json('/antibody_characterization', motif_enrichment).json['@graph'][0]
     testapp.patch_json(char2['@id'], {'status': 'not compliant',
                                       'reviewed_by': wrangler['@id'],
                                       'documents': [document['@id']]})
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
-    assert ab['lot_reviews'][0]['status'] == 'not characterized to standards'
+    assert ab['lot_reviews'][0]['status'] == 'partially characterized'
     assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of primary characterization(s).'
 
 
@@ -321,7 +321,8 @@ def test_histone_mod_characterizations(testapp,
 
         if mouse['@id'] in review['organisms']:
             assert review['status'] == 'not characterized to standards'
-            assert review['detail'] == 'Awaiting a compliant primary characterization.'
+            assert review['detail'] == 'Awaiting a compliant primary characterization in any ' + \
+                'cell type and tissues.'
     '''
     Adding another primary in mouse that is exempt from standards should make mouse now exempt
     '''
@@ -411,15 +412,18 @@ def test_multi_lane_primary(testapp,
             assert review['detail'] == 'Fully characterized with exemption.'
         if review['biosample_term_name'] == 'HepG2':
             assert review['status'] == 'not characterized to standards'
-            assert review['detail'] == 'Awaiting a compliant primary characterization.'
+            assert review['detail'] == 'Awaiting a compliant primary characterization in HepG2.'
 
-    # Now, if we change the secondary to be not reviewed, all statuses will be not characterized to
-    # standard since we absolutely need a compliant or exempted secondary to be characterized to
-    # standards.
+    # Now, if we change the secondary to be not reviewed, the antibody should now only be
+    # partially characterized on the strength of the compliant and exempt primaries. The
+    # not compliant primary should now be not characterized to standards.
     testapp.patch_json(sec_char['@id'], {'status': 'not reviewed'})
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
     assert len(ab['lot_reviews']) == 3
     for review in ab['lot_reviews']:
+        if review['biosample_term_name'] in ['K562', 'GM12878']:
+            assert review['status'] == 'partially characterized'
+        if review['biosample_term_name'] == 'HepG2':
             assert review['status'] == 'not characterized to standards'
-            assert review['detail'] == 'Awaiting a compliant secondary characterization.'
+            assert review['detail'] == 'Awaiting compliant primary and secondary characterizations.'
