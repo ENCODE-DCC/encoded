@@ -6,6 +6,7 @@ import { FetchedItems } from './fetched';
 import globals from './globals';
 import { ProjectBadge } from './image';
 import { PickerActionsMixin } from './search';
+import { StatusLabel } from './statuslabel';
 
 
 const labChartId = 'lab-chart'; // Lab chart <div> id attribute
@@ -515,12 +516,18 @@ const Award = React.createClass({
 
     render: function () {
         const { context } = this.props;
+        const statuses = [{ status: context.status, title: 'Status' }];
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
                         <h2>{context.title || context.name}</h2>
+                        <div className="status-line">
+                            <div className="characterization-status-labels">
+                                <StatusLabel status={statuses} />
+                            </div>
+                        </div>
                     </div>
                 </header>
 

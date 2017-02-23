@@ -198,9 +198,9 @@ module.exports.dbxref_prefix_map = {
     "HGNC": "http://www.genecards.org/cgi-bin/carddisp.pl?gene=",
     // ENSEMBL link only works for human
     "ENSEMBL": "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=",
-    "GeneID": "http://www.ncbi.nlm.nih.gov/gene/",
-    "GEO": "http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
-    "GEOSAMN": "http://www.ncbi.nlm.nih.gov/biosample/",
+    "GeneID": "https://www.ncbi.nlm.nih.gov/gene/",
+    "GEO": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
+    "GEOSAMN": "https://www.ncbi.nlm.nih.gov/biosample/",
     "IHEC": "http://www.ebi.ac.uk/vg/epirr/view/",
     "Caltech": "http://jumpgate.caltech.edu/library/",
     "Cellosaurus": "http://web.expasy.org/cellosaurus/",
@@ -216,7 +216,7 @@ module.exports.dbxref_prefix_map = {
     "DSSC": "https://stockcenter.ucsd.edu/index.php?action=view&q=",
     "MGI": "http://www.informatics.jax.org/marker/",
     "MGI.D": "http://www.informatics.jax.org/external/festing/mouse/docs/",
-    "RefSeq": "http://www.ncbi.nlm.nih.gov/gene/?term=",
+    "RefSeq": "https://www.ncbi.nlm.nih.gov/gene/?term=",
     // UCSC links need assembly (&db=) and accession (&hgt_mdbVal1=) added to url
     "UCSC-ENCODE-mm9": "http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=mm9&hgt_mdbVal1=",
     "UCSC-ENCODE-hg19": "http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1=",
@@ -224,8 +224,8 @@ module.exports.dbxref_prefix_map = {
     "UCSC-GB-mm9": "http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=mm9&g=",
     "UCSC-GB-hg19": "http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g=",
     // Dataset, experiment, and document references
-    "PMID": "http://www.ncbi.nlm.nih.gov/pubmed/?term=",
-    "PMCID": "http://www.ncbi.nlm.nih.gov/pmc/articles/",
+    "PMID": "https://www.ncbi.nlm.nih.gov/pubmed/?term=",
+    "PMCID": "https://www.ncbi.nlm.nih.gov/pmc/articles/",
     "doi": "http://dx.doi.org/doi:",
     // Antibody RRids
     "AR": "http://antibodyregistry.org/search.php?q=",
