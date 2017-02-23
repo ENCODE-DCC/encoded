@@ -117,25 +117,7 @@ class File(Item):
         'quality_metrics',
         'step_run',
     ]
-    audit_inherit = [
-        'replicate',
-        'replicate.experiment',
-        'replicate.experiment.lab',
-        'replicate.experiment.target',
-        'replicate.library',
-        'replicate.experiment.lab',
-        'replicate.experiment.target',
-        'lab',
-        'submitted_by',
-        'analysis_step_version.analysis_step',
-        'analysis_step_version.analysis_step.pipelines',
-        'analysis_step_version.analysis_step.versions',
-        'analysis_step_version.analysis_step.versions.software_versions',
-        'analysis_step_version.analysis_step.versions.software_versions.software',
-        'analysis_step_version.software_versions',
-        'analysis_step_version.software_versions.software',
-        'quality_metrics.step_run.analysis_step_version.analysis_step',
-    ]
+   
 
     @property
     def __name__(self):

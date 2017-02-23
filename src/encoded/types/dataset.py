@@ -85,15 +85,7 @@ class Dataset(Item):
         'documents.submitted_by',
         'references'
     ]
-    audit_inherit = [
-        'original_files',
-        'revoked_files',
-        'contributing_files'
-        'submitted_by',
-        'lab',
-        'award',
-        'documents.lab',
-    ]
+  
     name_key = 'accession'
     rev = {
         'original_files': ('File', 'dataset'),
