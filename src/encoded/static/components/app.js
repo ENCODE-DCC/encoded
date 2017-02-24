@@ -948,7 +948,7 @@ class App extends React.Component {
         }
 
         return (
-            <html lang="en" ref={node => this.props.domReader(node)}>
+            <html lang="en" ref={this.props.domReader ? node => this.props.domReader(node) : null}>
                 <head>
                     <meta charSet="utf-8" />
                     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />

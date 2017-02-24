@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "domready held back.",
   "scripts": {
-    "test": "jest",
+    "test": "jest --silent",
     "build": "gulp build",
     "dev": "gulp dev"
   },
