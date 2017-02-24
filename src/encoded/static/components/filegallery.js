@@ -543,7 +543,7 @@ const RawSequencingTable = React.createClass({
                                     }
 
                                     // Determine if accession should be a button or not
-                                    const buttonEnabled = !!meta.graphedFiles[file['@id']];
+                                    const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
 
                                     return (
                                         <tr key={file['@id']} className={file.restricted ? 'file-restricted' : ''}>
@@ -582,7 +582,7 @@ const RawSequencingTable = React.createClass({
                                 ];
 
                                 // Determine if accession should be a button or not.
-                                const buttonEnabled = !!meta.graphedFiles[file['@id']];
+                                const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
 
                                 return (
                                     <tr key={file['@id']} className={rowClasses.join(' ')}>
@@ -724,7 +724,7 @@ const RawFileTable = React.createClass({
                                     }
 
                                     // Determine if the accession should be a button or not.
-                                    const buttonEnabled = !!meta.graphedFiles[file['@id']];
+                                    const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
 
                                     // Prepare for run_type display
                                     return (
@@ -753,7 +753,7 @@ const RawFileTable = React.createClass({
                                 ];
 
                                 // Determine if accession should be a button or not.
-                                const buttonEnabled = !!meta.graphedFiles[file['@id']];
+                                const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
 
                                 return (
                                     <tr key={file['@id']} className={rowClasses.join(' ')}>
@@ -1425,7 +1425,7 @@ const FileGalleryRenderer = React.createClass({
     },
 
     render: function () {
-        const { context, data, schemas } = this.props;
+        const { context, data, schemas, hideGraph } = this.props;
         let selectedAssembly = '';
         let selectedAnnotation = '';
         let jsonGraph;
@@ -1446,7 +1446,7 @@ const FileGalleryRenderer = React.createClass({
         const graphFiles = _(files).filter(file => file.status !== 'archived');
 
         // Build node graph of the files and analysis steps with this experiment
-        if (graphFiles && graphFiles.length) {
+        if (graphFiles && graphFiles.length && !hideGraph) {
             try {
                 const { graph, graphedFiles } = assembleGraph(context, this.context.session, this.state.infoNodeId, graphFiles, selectedAssembly, selectedAnnotation);
                 jsonGraph = graph;
@@ -1484,7 +1484,7 @@ const FileGalleryRenderer = React.createClass({
                     </div>
                 </PanelHeading>
 
-                {!this.props.hideGraph ?
+                {!hideGraph ?
                     <FileGraph
                         context={context}
                         items={graphFiles}

@@ -341,7 +341,9 @@ const FetchedFieldset = React.createClass({
 
     updateChild(name, value) {
         // Pass new value up to our parent.
-        value['@id'] = this.state.url;
+        if (this.state.url) {
+            value['@id'] = this.state.url;
+        }
         this.props.updateChild(this.props.name, value);
     },
 
