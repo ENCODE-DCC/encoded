@@ -1,6 +1,7 @@
 'use strict';
 var Registry = require('../libs/registry');
 var _ = require('underscore');
+const ga = require('google-analytics');
 
 // Item pages
 module.exports.content_views = new Registry();

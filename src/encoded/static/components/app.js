@@ -948,7 +948,7 @@ class App extends React.Component {
         }
 
         return (
-            <html lang="en">
+            <html lang="en" ref={node => this.props.domReader(node)}>
                 <head>
                     <meta charSet="utf-8" />
                     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
@@ -957,8 +957,8 @@ class App extends React.Component {
                     {base ? <base href={base} /> : null}
                     <link rel="canonical" href={canonical} />
                     <script async src="://www.google-analytics.com/analytics.js" />
-                    <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} />
-                    <link rel="stylesheet" href={this.props.styles} />
+                    {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
+                    {this.props.styles ? <link rel="stylesheet" href={this.props.styles} /> : null}
                     {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
@@ -992,10 +992,17 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-    href: React.PropTypes.string.isRequired,
-    styles: React.PropTypes.string.isRequired,
-    inline: React.PropTypes.string.isRequired,
     context: React.PropTypes.object.isRequired,
+    href: React.PropTypes.string.isRequired,
+    styles: React.PropTypes.string,
+    inline: React.PropTypes.string,
+    domReader: React.PropTypes.func, // Only for Jest test
+};
+
+App.defaultProps = {
+    styles: '',
+    inline: '',
+    domReader: null,
 };
 
 App.childContextTypes = {
@@ -1012,3 +1019,24 @@ App.childContextTypes = {
 };
 
 module.exports = App;
+
+
+// Only used for Jest tests.
+module.exports.getRenderedProps = function (document) {
+    const props = {};
+
+    // Ensure the initial render is exactly the same
+    props.href = document.querySelector('link[rel="canonical"]').getAttribute('href');
+    props.styles = document.querySelector('link[rel="stylesheet"]').getAttribute('href');
+    const scriptProps = document.querySelectorAll('script[data-prop-name]');
+    for (let i = 0; i < scriptProps.length; i += 1) {
+        const elem = scriptProps[i];
+        let value = elem.text;
+        const elemType = elem.getAttribute('type') || '';
+        if (elemType == 'application/json' || elemType.slice(-5) === '+json') {
+            value = JSON.parse(value);
+        }
+        props[elem.getAttribute('data-prop-name')] = value;
+    }
+    return props;
+};

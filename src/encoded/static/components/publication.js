@@ -58,6 +58,7 @@ var PublicationComponent = React.createClass({
 });
 
 const Publication = auditDecor(PublicationComponent);
+module.exports.Publication = Publication; // Only need to export for Jest tests
 
 globals.content_views.register(Publication, 'Publication');
 
@@ -126,9 +127,8 @@ var SupplementaryData = React.createClass({
     render: function() {
         var data = this.props.data;
         return (
-            <section>
-                {this.props.key > 0 ? <hr /> : null}
-                <dl className="key-value" key={this.props.key}>
+            <section className="supplementary-data">
+                <dl className="key-value">
                     {data.supplementary_data_type ?
                         <div data-test="availabledata">
                             <dt>Available data</dt>

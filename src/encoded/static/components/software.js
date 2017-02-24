@@ -14,7 +14,7 @@ var Breadcrumbs = navigation.Breadcrumbs;
 var FetchedItems = fetched.FetchedItems;
 
 
-var Software = module.exports.Software = React.createClass({
+var SoftwareComponent = React.createClass({
     contextTypes: {
         location_href: React.PropTypes.string
     },
@@ -116,6 +116,9 @@ var Software = module.exports.Software = React.createClass({
         );
     }
 });
+
+const Software = module.exports.Software = auditDecor(SoftwareComponent);
+
 globals.content_views.register(Software, 'Software');
 
 
