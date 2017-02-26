@@ -262,9 +262,7 @@ const QCIndividualPanel = React.createClass({
     componentDidMount: function () {
         // If the body of the panel is shorter than the collapsed height of the panel, we don't
         // need the trigger.
-        const panelHeading = this.refs.qcPanelHeading.getDOMNode();
-        const panelBody = this.refs.qcPanelBody.getDOMNode();
-        if (panelBody.clientHeight + panelHeading.clientHeight <= collapsedHeight) {
+        if (this.qcPanelBody.clientHeight + this.qcPanelHeading.clientHeight <= collapsedHeight) {
             this.setState({ triggerVisible: false });
         }
     },
@@ -284,11 +282,11 @@ const QCIndividualPanel = React.createClass({
         return (
             <div className="qc-individual-panel__wrapper">
                 <Panel id={qcMetric.uuid} addClasses={panelClasses} aria-expanded={this.state.expanded} aria-labelledby={`${qcMetric.uuid}-label`}>
-                    <PanelHeading ref="qcPanelHeading" addClasses="qc-individual-panel__heading">
+                    <PanelHeading ref={(div) => { console.log('COMP: %o', div); this.qcPanelHeading = div; }} addClasses="qc-individual-panel__heading">
                         <h4 id={`${qcMetric.uuid}-label`} className="qc-individual-panel__title">{qcIdToDisplay(qcMetric)}</h4>
                         <QualityMetricsModal qc={qcMetric} file={file} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />
                     </PanelHeading>
-                    <PanelBody ref="qcPanelBody">
+                    <PanelBody ref={(div) => { this.qcPanelBody = div; }}>
                         <QCDataDisplay qcMetric={qcMetric} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />
                     </PanelBody>
                     {this.state.triggerVisible ?
@@ -305,8 +303,14 @@ const QCIndividualPanel = React.createClass({
 const QualityMetricsPanelRenderer = React.createClass({
     propTypes: {
         qcMetrics: React.PropTypes.array.isRequired, // Array of quality metrics objects to display
-        schemas: React.PropTypes.object.isRequired, // All schemas in the system keyed by @type; used to get QC titles
         file: React.PropTypes.object.isRequired, // File whose QC objects we're displaying
+        schemas: React.PropTypes.object, // All schemas in the system keyed by @type; used to get QC titles
+    },
+
+    getDefaultProps: function () {
+        return {
+            schemas: null,
+        };
     },
 
     render: function () {
@@ -329,7 +333,7 @@ const QualityMetricsPanelRenderer = React.createClass({
                     {qcMetrics.map((qcMetric) => {
                         // Get the schema specific for this quality metric, as identified by the
                         // first @type in this QC metric.
-                        const qcSchema = schemas[qcMetric['@type'][0]];
+                        const qcSchema = schemas && schemas[qcMetric['@type'][0]];
                         if (qcSchema && qcSchema.properties) {
                             return <QCIndividualPanel key={qcMetric.uuid} qcMetric={qcMetric} qcSchema={qcSchema} genericQCSchema={genericQCSchema} file={file} />;
                         }

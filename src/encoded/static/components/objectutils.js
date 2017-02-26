@@ -325,7 +325,7 @@ export const RestrictedDownloadButton = React.createClass({
 
         // If the user provided us with a component for downloading files, add the download
         // properties to the component before rendering.
-        const downloadComponent = this.props.downloadComponent ? React.cloneelemet(this.props.downloadComponent, {
+        const downloadComponent = this.props.downloadComponent ? React.cloneElement(this.props.downloadComponent, {
             file: file,
             href: file.href,
             download: file.href.substr(file.href.lastIndexOf('/') + 1),

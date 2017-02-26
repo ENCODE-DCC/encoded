@@ -415,6 +415,7 @@ FileComponent.propTypes = {
 
 FileComponent.contextTypes = {
     session: React.PropTypes.object, // Login information
+    session_properties: React.PropTypes.object,
 };
 
 const File = auditDecor(FileComponent);
