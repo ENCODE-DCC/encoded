@@ -262,7 +262,7 @@ const QCIndividualPanel = React.createClass({
     componentDidMount: function () {
         // If the body of the panel is shorter than the collapsed height of the panel, we don't
         // need the trigger.
-        if (this.qcPanelBody.clientHeight + this.qcPanelHeading.clientHeight <= collapsedHeight) {
+        if (this.qcHeading && this.qcBody && (this.qcHeading.clientHeight + this.qcBody.clientHeight <= collapsedHeight)) {
             this.setState({ triggerVisible: false });
         }
     },
@@ -282,12 +282,16 @@ const QCIndividualPanel = React.createClass({
         return (
             <div className="qc-individual-panel__wrapper">
                 <Panel id={qcMetric.uuid} addClasses={panelClasses} aria-expanded={this.state.expanded} aria-labelledby={`${qcMetric.uuid}-label`}>
-                    <PanelHeading ref={(div) => { console.log('COMP: %o', div); this.qcPanelHeading = div; }} addClasses="qc-individual-panel__heading">
-                        <h4 id={`${qcMetric.uuid}-label`} className="qc-individual-panel__title">{qcIdToDisplay(qcMetric)}</h4>
-                        <QualityMetricsModal qc={qcMetric} file={file} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />
+                    <PanelHeading addClasses="qc-individual-panel__heading">
+                        <div ref={(comp) => { this.qcHeading = comp; }}>
+                            <h4 id={`${qcMetric.uuid}-label`} className="qc-individual-panel__title">{qcIdToDisplay(qcMetric)}</h4>
+                            <QualityMetricsModal qc={qcMetric} file={file} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />
+                        </div>
                     </PanelHeading>
-                    <PanelBody ref={(div) => { this.qcPanelBody = div; }}>
-                        <QCDataDisplay qcMetric={qcMetric} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />
+                    <PanelBody>
+                        <div ref={(comp) => { this.qcBody = comp; }}>
+                            <QCDataDisplay qcMetric={qcMetric} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />
+                        </div>
                     </PanelBody>
                     {this.state.triggerVisible ?
                         <ExpandTrigger expanded={this.state.expanded} clickHandler={this.expandClick} id={qcMetric.uuid} />
