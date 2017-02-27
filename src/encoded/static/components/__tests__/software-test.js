@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import _ from 'underscore';
 
 // Import test component and data.
-import { Software } from '../software';
+import Software from '../software';
 import context from '../testdata/software';
 
 

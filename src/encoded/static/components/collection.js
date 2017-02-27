@@ -129,9 +129,11 @@ var Table = module.exports.Table = React.createClass({
         if (updateData) {
             var columns = this.guessColumns(nextProps);
             this.extractData(nextProps, columns);
+            this.setState({ columns: columns });
         }
         if (nextContext.location_href !== this.context.location_href) {
-            this.extractParams(nextProps, nextContext);
+            const newState = this.extractParams(nextProps, nextContext);
+            this.setState(newState);
         }
 
     },
@@ -147,7 +149,6 @@ var Table = module.exports.Table = React.createClass({
             reversed: params.reversed || false,
             searchTerm: params.q || ''
         };
-        this.setState(state);
         return state;
     },
 
@@ -167,7 +168,6 @@ var Table = module.exports.Table = React.createClass({
                 columns.push(column);
             }
         }
-        this.setState({columns: columns});
         return columns;
     },
 
@@ -210,7 +210,6 @@ var Table = module.exports.Table = React.createClass({
         var context = props.context;
         var communicating;
         var request = this.state.allRequest;
-        if (request) request.abort();
         var self = this;
         if (context.all) {
             communicating = true;
@@ -253,14 +252,14 @@ var Table = module.exports.Table = React.createClass({
                 className += reversed ? " icon-chevron-down" : " icon-chevron-up";
             }
             return (
-                <th onClick={self.handleClickHeader} key={index}>
+                <th onClick={self.handleClickHeader} key={column}>
                     {titles[column] && titles[column]['title'] || column}
                     <i className={className}></i>
                 </th>
             );
         });
         var actions = (context.actions || []).map(action =>
-            <span className="table-actions">
+            <span className="table-actions" key={action.name}>
                 <a href={action.href}>
                     <button className={'btn ' + action.className || ''}>{action.title}</button>
                 </a>
