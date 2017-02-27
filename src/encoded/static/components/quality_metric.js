@@ -283,7 +283,7 @@ const QCIndividualPanel = React.createClass({
             <div className="qc-individual-panel__wrapper">
                 <Panel id={qcMetric.uuid} addClasses={panelClasses} aria-expanded={this.state.expanded} aria-labelledby={`${qcMetric.uuid}-label`}>
                     <PanelHeading addClasses="qc-individual-panel__heading">
-                        <div ref={(comp) => { this.qcHeading = comp; }}>
+                        <div className="qc-individual-panel__heading-inner" ref={(comp) => { this.qcHeading = comp; }}>
                             <h4 id={`${qcMetric.uuid}-label`} className="qc-individual-panel__title">{qcIdToDisplay(qcMetric)}</h4>
                             <QualityMetricsModal qc={qcMetric} file={file} qcSchema={qcSchema} genericQCSchema={genericQCSchema} />
                         </div>
