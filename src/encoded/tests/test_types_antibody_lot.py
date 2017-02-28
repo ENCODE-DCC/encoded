@@ -177,7 +177,7 @@ def test_have_secondary_missing_primary(testapp,
     testapp.patch_json(char1['@id'], {'status': 'pending dcc review'})
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
-    assert ab['lot_reviews'][0]['status'] == 'pending dcc review'
+    assert ab['lot_reviews'][0]['status'] == 'awaiting characterization'
     assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of primary characterization(s) and a ' + \
         'compliant secondary characterization.'
 
