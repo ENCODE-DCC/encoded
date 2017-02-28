@@ -203,9 +203,7 @@ def audit_experiment_missing_unfiltered_bams(value, system):
     if len(pipelines) == 0:  # no pipelines detected
         return
 
-    if 'Histone ChIP-seq' in pipelines or \
-       'Transcription factor ChIP-seq' in pipelines:
-
+    if 'ChIP-seq read mapping' in pipelines:
         for filtered_file in alignment_files:
             if has_only_raw_files_in_derived_from(filtered_file) and \
                has_no_unfiltered(filtered_file, unfiltered_alignment_files):
@@ -1157,7 +1155,7 @@ def check_experiment_chip_seq_standards(experiment,
 
     pipeline_title = scanFilesForPipelineTitle_yes_chipseq(
         alignment_files,
-        ['Histone ChIP-seq', 'Transcription factor ChIP-seq pipeline (modERN)']
+        ['ChIP-seq read mapping', 'Transcription factor ChIP-seq pipeline (modERN)']
     )
     if pipeline_title is False:
         return
@@ -1750,7 +1748,7 @@ def check_file_chip_seq_read_depth(file_to_check,
     # check read depth on Raw files, while it is required for Histone
     pipeline_title = scanFilesForPipelineTitle_yes_chipseq(
         [file_to_check],
-        ['Histone ChIP-seq',
+        ['ChIP-seq read mapping',
          'Transcription factor ChIP-seq pipeline (modERN)'])
     pipeline_objects = get_pipeline_objects([file_to_check])
     if pipeline_title is False:
@@ -1843,7 +1841,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                                        detail, level='ERROR')
     elif 'broad histone mark' in target_investigated_as and \
          standards_version != 'modERN':  # target_name in broad_peaks_targets:
-        pipeline_object = get_pipeline_by_name(pipeline_objects, 'Histone ChIP-seq')
+        pipeline_object = get_pipeline_by_name(pipeline_objects, 'ChIP-seq read mapping')
         if pipeline_object:
             if target_name in ['H3K9me3-human', 'H3K9me3-mouse']:
                 if read_depth < 45000000:
@@ -1917,7 +1915,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                                        detail, level='ERROR')
     elif 'narrow histone mark' in target_investigated_as and \
             standards_version != 'modERN':
-        pipeline_object = get_pipeline_by_name(pipeline_objects, 'Histone ChIP-seq')
+        pipeline_object = get_pipeline_by_name(pipeline_objects, 'ChIP-seq read mapping')
         if pipeline_object:
             if 'assembly' in file_to_check:
                 detail = 'Alignment file {} '.format(file_to_check['@id']) + \
@@ -1965,7 +1963,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                                    detail, level='NOT_COMPLIANT')
         else:
             pipeline_object = get_pipeline_by_name(pipeline_objects,
-                                                   'Transcription factor ChIP-seq')
+                                                   'ChIP-seq read mapping')
             if pipeline_object:
                 if 'assembly' in file_to_check:
                     detail = 'Alignment file {} '.format(file_to_check['@id']) + \
@@ -2226,7 +2224,7 @@ def audit_experiment_needs_pipeline(value, system):
                       'RNA-seq-long-single': ['RNA-seq of long RNAs (single-end, unstranded)'],
                       'RNA-seq-short': ['Small RNA-seq single-end pipeline'],
                       'RAMPAGE': ['RAMPAGE (paired-end, stranded)'],
-                      'ChIP': ['Histone ChIP-seq']}
+                      'ChIP': ['ChIP-seq read mapping']}
 
     if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
         if scanFilesForPipeline(value['original_files'], pipelines_dict['WGBS']) is False:
