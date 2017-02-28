@@ -129,7 +129,6 @@ class AntibodyLot(SharedItem):
                 "default": "awaiting characterization",
                 "enum": [
                     "awaiting characterization",
-                    "pending dcc review",
                     "characterized to standards",
                     "characterized to standards with exemption",
                     "not characterized to standards",
@@ -218,16 +217,16 @@ def lot_reviews(characterizations, targets, request):
     # Go through the secondary characterizations first
 
     status_ranking = {
-        'characterized to standards': 9,
-        'characterized to standards with exemption': 8,
-        'compliant': 7,
-        'exempt from standards': 6,
-        'pending dcc review': 5,
-        'partially characterized': 4,
-        'awaiting characterization': 3,
-        'not characterized to standards': 2,
-        'not pursued': 1,
-        'not compliant': 0,
+        'characterized to standards': 10,
+        'characterized to standards with exemption': 9,
+        'compliant': 8,
+        'exempt from standards': 7,
+        'pending dcc review': 6,
+        'partially characterized': 5,
+        'awaiting characterization': 4,
+        'not characterized to standards': 3,
+        'not pursued': 2,
+        'not compliant': 1,
         'not reviewed': 0,
         'not submitted for review by lab': 0,
         'deleted': 0,
@@ -275,16 +274,15 @@ def build_lot_reviews(primary_chars,
             'compliant secondary characterization.'
         if secondary_status == 'not submitted for review by lab':
             base_review['status'] = 'not pursued'
-        elif secondary_status == 'pending dcc review':
-            base_review['status'] = 'pending dcc review'
         elif secondary_status in ['compliant', 'exempt from standards']:
             base_review['status'] = 'partially characterized'
             base_review['detail'] = 'Awaiting submission of primary characterization(s).'
         elif secondary_status == 'not compliant':
             base_review['status'] = 'not characterized to standards'
         else:
-            # Only no secondary or secondary_status in in progress, not reviewed or deleted
-            # should be left. The status should already be awaiting characterization by default.
+            # Only no secondary or secondary_status in pending dcc review, in progress,
+            # not reviewed or deleted should be left. The status should already be
+            # awaiting characterization by default.
             pass
         return [base_review]
     else:
