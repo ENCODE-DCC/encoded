@@ -49,7 +49,6 @@
             "description": "A place to provide a curated discription of the pipeline.  Only wranglers can post",
             "type": "string",
             "permission": "import_items",
-            "default": "",
             "elasticsearch_mapping_index_type": {
                 "title": "Field mapping index type",
                 "description": "Defines one of three types of indexing available",
