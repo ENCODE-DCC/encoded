@@ -402,7 +402,6 @@ var Table = module.exports.Table = React.createClass({
             clearTimeout(this.submitTimer);
         }
         var request = this.state.allRequest;
-        if (request) request.abort();
     }
 
 });

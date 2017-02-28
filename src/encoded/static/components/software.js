@@ -165,7 +165,7 @@ SoftwareVersionTable.defaultProps = {
 
 
 const ListingComponent = (props) => {
-    const result = this.props.context;
+    const result = props.context;
     return (
         <li>
             <div className="clearfix">
@@ -173,7 +173,7 @@ const ListingComponent = (props) => {
                 <div className="pull-right search-meta">
                     <p className="type meta-title">Software</p>
                     {result.status ? <p className="type meta-status">{` ${result.status}`}</p> : ''}
-                    {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
+                    {props.auditIndicators(result.audit, result['@id'], { search: true })}
                 </div>
                 <div className="accession">
                     <a href={result['@id']}>{result.title}</a>
@@ -190,9 +190,15 @@ const ListingComponent = (props) => {
 
                 </div>
             </div>
-            {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
+            {props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
         </li>
     );
+};
+
+ListingComponent.propTypes = {
+    context: React.PropTypes.object.isRequired, // Software object being rendered as a search result.
+    auditIndicators: React.PropTypes.func.isRequired, // From auditDecor
+    auditDetail: React.PropTypes.func.isRequired, // From auditDecor
 };
 
 const Listing = auditDecor(ListingComponent);
