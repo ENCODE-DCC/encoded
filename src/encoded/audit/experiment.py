@@ -1756,8 +1756,7 @@ def check_file_chip_seq_read_depth(file_to_check,
     if pipeline_title is False:
         return
 
-
-    marks = pipelines_with_read_depth['Histone ChIP-seq']
+    marks = pipelines_with_read_depth['ChIP-seq read mapping']
     modERN_cutoff = pipelines_with_read_depth['Transcription factor ChIP-seq pipeline (modERN)']
     if read_depth is False:
         detail = 'ENCODE Processed alignment file {} has no read depth information.'.format(
