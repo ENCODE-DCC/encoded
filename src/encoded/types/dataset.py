@@ -538,6 +538,20 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
             if item_is_revoked(request, path)
         ]
 
+    @calculated_property(define=True, schema={
+        "title": "Assembly",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assembly(self, request, original_files, related_datasets, status):
+        dataset_files = ()
+        for path in related_datasets:
+            if request.embed(path, '@@object').get('status') in ('in progress', 'released'):
+                dataset_files.add(request.embed(path, '@@object').get('original_files'))
+        return calculate_assembly(request, set(original_files + dataset_files), status)
+
 
 @collection(
     name='matched-sets',
