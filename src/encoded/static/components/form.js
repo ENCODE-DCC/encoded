@@ -605,7 +605,10 @@ const Field = module.exports.Field = React.createClass({
         } else if (schema.type === 'integer' || schema.type === 'number') {
             input = <input type="number" {...inputProps} />;
         } else {
-            input = <input type="text" {...inputProps} />;
+            if (name === 'antigen_description') {
+                console.log('PROPS: %o', inputProps);
+            }
+            input = <input type="text" {...inputProps} value={value || ''} />;
         }
         // Provide a CSS hook to indicate fields with errors
         if (!isValid) {
@@ -774,7 +777,7 @@ const Form = module.exports.Form = React.createClass({
         // Update validation state.
         const validation = this.validate(value);
         const nextState = {
-            value: value || '',
+            value,
             isDirty: true,
             isValid: validation.valid,
             errors: validation.errorsByPath,
