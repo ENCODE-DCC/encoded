@@ -244,7 +244,7 @@ const LayoutToolbar = React.createClass({
     },
 
     componentDidMount() {
-        this.origTop = offset(this.getDOMNode()).top;
+        this.origTop = offset(this.domNode).top;
         globals.bindEvent(window, 'scroll', this.scrollspy);
     },
 
@@ -259,7 +259,7 @@ const LayoutToolbar = React.createClass({
     render() {
         const blocks = globals.blocks.getAll();
         const toolbar = (
-            <div className={'layout-toolbar navbar navbar-default'}>
+            <div className={'layout-toolbar navbar navbar-default'} ref={(comp) => { this.domNode = comp; }}>
               <div className="container-fluid">
                 <div className="navbar-left">
                     {Object.keys(blocks).map((b) => {
@@ -582,6 +582,7 @@ module.exports.Layout = React.createClass({
     },
 
     dragOver(e, target) {
+        console.log('TARGET %o', target);
         if (this.isBlockDragEvent(e)) {
             e.preventDefault();
         }
@@ -682,7 +683,7 @@ module.exports.Layout = React.createClass({
         }
         const classStr = Object.keys(classes).join(' ');
         return (
-            <div className={classStr} onDragOver={this.dragOver} onDrop={this.drop}>
+            <div className={classStr} onDragOver={this.dragOver} onDrop={this.drop} ref={(comp) => { this.domNode = comp; }}>
                 {this.props.editable ? <LayoutToolbar /> : ''}
                 {this.state.value.rows.map((row, i) => <Row value={row} key={i} pos={[i]} />)}
                 <canvas id="drag-marker" height="1" width="1" />

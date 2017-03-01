@@ -29,7 +29,7 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
     setupEditor: function() {
         var ck = require('ckeditor');
         ck.disableAutoInline = true;
-        this.editor = ck.inline(this.getDOMNode(), {
+        this.editor = ck.inline(this.domNode, {
             language: 'en',
             toolbar: [
                 { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat' ] },
@@ -57,7 +57,7 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
 
     render: function() {
         return (
-            <div contentEditable={this.context.editable} dangerouslySetInnerHTML={{__html: this.state.value.body}} />
+            <div contentEditable={this.context.editable} dangerouslySetInnerHTML={{__html: this.state.value.body}} ref={(comp) => { this.domNode = comp; }} />
         );
     }
 });
