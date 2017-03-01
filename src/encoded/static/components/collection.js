@@ -75,23 +75,52 @@ class Data {
     }
 }
 
-var RowView = function (props) {
-    var row = props.row;
-    var id = row.item['@id'];
-    var tds = row.cells.map( function (cell, index) {
-        if (index === 0) {
-            return (
-                <td key={index}><a href={row.item['@id']}>{cell.value}</a></td>
-            );
+const RowView = (props) => {
+    const { row, hidden } = props;
+    const id = row.item['@id'];
+    const tds = row.cells.map((cell, index) => {
+        let cellValue;
+        if (typeof cell.value === 'object') {
+            // Cell contains an array or object, so render specially.
+            if (Array.isArray(cell.value)) {
+                // The cell contains an array. Determine if it's empty or not.
+                if (cell.value.length) {
+                    // Non-empty array. Arrays of simple values get comma separated. Arrays of
+                    // objects get displayed as "[Objects]".
+                    cellValue = (typeof cell.value[0] === 'object') ? '[Objects]' : cell.value.join();
+                }
+            } else {
+                // The cell contains an object. Display "[Object]"
+                cellValue = '[Object]';
+            }
+        } else {
+            // Cell contains a simple value; just display it.
+            cellValue = cell.value;
         }
+
+        // Render a cell, but Make the first column in the row a link to the object.
         return (
-            <td key={index}>{cell.value}</td>
+            <td key={row.item['@id']}>
+                {index === 0 ?
+                    <a href={row.item['@id']}>{cellValue}</a>
+                :
+                    <span>{cellValue}</span>
+                }
+            </td>
         );
     });
-    return (
-        <tr key={id} hidden={props.hidden} data-href={id}>{tds}</tr>
-    );
+    return <tr key={id} hidden={hidden} data-href={id}>{tds}</tr>;
 };
+
+RowView.propTypes = {
+    row: React.PropTypes.object.isRequired, // Properties to render in the row
+    hidden: React.PropTypes.bool, // True if row is hidden; usually because of entered search terms
+};
+
+RowView.defaultProps = {
+    hidden: false,
+};
+
 
 var Table = module.exports.Table = React.createClass({
     contextTypes: {

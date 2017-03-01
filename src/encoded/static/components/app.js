@@ -251,6 +251,7 @@ class App extends React.Component {
             biosampleTypeColors: biosampleTypeColors,
             fetch: this.fetch,
             navigate: this.navigate,
+            adviseUnsavedChanges: this.adviseUnsavedChanges,
             session: this.state.session,
             session_properties: this.state.session_properties,
         };
@@ -1014,6 +1015,7 @@ App.childContextTypes = {
     portal: React.PropTypes.object,
     projectColors: React.PropTypes.object,
     biosampleTypeColors: React.PropTypes.object,
+    adviseUnsavedChanges: React.PropTypes.func,
     session: React.PropTypes.object,
     session_properties: React.PropTypes.object,
 };

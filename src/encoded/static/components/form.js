@@ -774,7 +774,7 @@ const Form = module.exports.Form = React.createClass({
         // Update validation state.
         const validation = this.validate(value);
         const nextState = {
-            value,
+            value: value || '',
             isDirty: true,
             isValid: validation.valid,
             errors: validation.errorsByPath,
