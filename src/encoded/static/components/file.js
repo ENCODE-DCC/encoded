@@ -4,9 +4,11 @@ import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import globals from './globals';
 import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import { DbxrefList } from './dbxref';
+import { DocumentsPanel } from './doc';
 import { FetchedItems } from './fetched';
-import { requestFiles } from './objectutils';
+import { requestFiles, requestObjects, RestrictedDownloadButton } from './objectutils';
 import { ProjectBadge } from './image';
+import { QualityMetricsPanel } from './quality_metric';
 import { PickerActionsMixin } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import { StatusLabel } from './statuslabel';
@@ -89,6 +91,45 @@ const DerivedFromFiles = React.createClass({
 });
 
 
+// Display a file download button.
+const FileDownloadButton = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object, // File we're possibly downloading by clicking this button
+        hoverDL: React.PropTypes.func, // Function to call when hovering starts/stops over button
+        buttonEnabled: React.PropTypes.bool, // `true` if button is enabled
+    },
+
+    onMouseEnter: function () {
+        this.props.hoverDL(true);
+    },
+
+    onMouseLeave: function () {
+        this.props.hoverDL(false);
+    },
+
+    render: function () {
+        const { file, buttonEnabled } = this.props;
+
+        return (
+            <div className="tooltip-button-wrapper">
+                <a
+                    className="btn btn-info"
+                    href={file.href}
+                    download={file.href.substr(file.href.lastIndexOf('/') + 1)}
+                    data-bypass="true"
+                    disabled={!buttonEnabled}
+                    onMouseEnter={file.restricted ? this.onMouseEnter : null}
+                    onMouseLeave={file.restricted ? this.onMouseLeave : null}
+                >Download {file.accession}</a>
+                {!buttonEnabled ?
+                    <div className="tooltip-button-overlay" onMouseEnter={file.restricted ? this.onMouseEnter : null} onMouseLeave={file.restricted ? this.onMouseLeave : null} />
+                : null}
+            </div>
+        );
+    },
+});
+
+
 const File = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // File object being displayed
@@ -96,6 +137,7 @@ const File = React.createClass({
 
     contextTypes: {
         session: React.PropTypes.object, // Login information
+        session_properties: React.PropTypes.object,
     },
 
     mixins: [AuditMixin],
@@ -103,15 +145,50 @@ const File = React.createClass({
     getInitialState: function () {
         return {
             derivedFromFiles: [], // List of derived-from files
+            fileFormatSpecs: [], // List of file_format_specifications
         };
     },
 
     componentDidMount: function () {
-        const { context } = this.props;
-        const derivedFromFileIds = context.derived_from && context.derived_from.length ? context.derived_from : [];
+        // Now that this page is mounted, request the list of derived_from files and file
+        // documents.
+        this.requestFileDependencies();
+
+        // In case the logged-in state changes, we have to keep track of the old logged-in state.
+        this.loggedIn = !!(this.context.session && this.context.session['auth.userid']);
+    },
+
+    componentWillReceiveProps: function () {
+        // If the logged-in state has changed since the last time we rendered, request files again
+        // in case logging in changes the list of dependent files.
+        const currLoggedIn = !!(this.context.session && this.context.session['auth.userid']);
+        if (this.loggedIn !== currLoggedIn) {
+            this.requestFileDependencies();
+            this.loggedIn = currLoggedIn;
+        }
+    },
+
+    requestFileDependencies: function () {
+        // Perform GET requests of files that derive from this one, as well as file format
+        // specification documents. This avoids embedding these arrays of objects in the file
+        // object.
+        const file = this.props.context;
+
+        // Retrieve an array of file @ids that this file derives from. Once this array arrives.
+        // it sets the derivedFromFiles React state that causes the list to render.
+        const derivedFromFileIds = file.derived_from && file.derived_from.length ? file.derived_from : [];
         if (derivedFromFileIds.length) {
             requestFiles(derivedFromFileIds).then((derivedFromFiles) => {
                 this.setState({ derivedFromFiles: derivedFromFiles });
+            });
+        }
+
+        // Retrieve an array of file format specification document @ids. Once the array arrives,
+        // set the fileFormatSpecs React state that causes the list to render.
+        const fileFormatSpecs = file.file_format_specifications && file.file_format_specifications.length ? file.file_format_specifications : [];
+        if (fileFormatSpecs.length) {
+            requestObjects(fileFormatSpecs, '/search/?type=Document&limit=all&status!=deleted&status!=revoked&status!=replaced').then((docs) => {
+                this.setState({ fileFormatSpecs: docs });
             });
         }
     },
@@ -122,11 +199,18 @@ const File = React.createClass({
         const altacc = (context.alternate_accessions && context.alternate_accessions.length) ? context.alternate_accessions.join(', ') : null;
         const aliasList = (context.aliases && context.aliases.length) ? context.aliases.join(', ') : '';
         const datasetAccession = globals.atIdToAccession(context.dataset);
+        const adminUser = !!this.context.session_properties.admin;
 
         // Make array of superceded_by accessions.
         let supersededBys = [];
         if (context.superseded_by && context.superseded_by.length) {
             supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
+        }
+
+        // Make array of supersedes accessions
+        let supersedes = [];
+        if (context.supersedes && context.supersedes.length) {
+            supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
         }
 
         // Collect up relevant pipelines.
@@ -142,6 +226,7 @@ const File = React.createClass({
                         <h2>File summary for {context.accession}{' / '}<span className="sentence-case">{`${context.file_format}${context.file_format_type ? ` (${context.file_format_type})` : ''}`}</span></h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
+                        {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
                         <div className="status-line">
                             {context.status ?
                                 <div className="characterization-status-labels">
@@ -227,6 +312,10 @@ const File = React.createClass({
                                             <dd>{context.mapped_read_length}</dd>
                                         </div>
                                     : null}
+
+                                    <div className="file-download-section">
+                                        <RestrictedDownloadButton file={context} adminUser={adminUser} downloadComponent={<FileDownloadButton />} />
+                                    </div>
                                 </dl>
                             </div>
                         </div>
@@ -316,6 +405,14 @@ const File = React.createClass({
                     session={this.context.session}
                     ignoreErrors
                 />
+
+                {this.state.fileFormatSpecs.length ?
+                    <DocumentsPanel title="File format specifications" documentSpecs={[{ documents: this.state.fileFormatSpecs }]} />
+                : null}
+
+                {context.quality_metrics && context.quality_metrics.length ?
+                    <QualityMetricsPanel qcMetrics={context.quality_metrics} file={context} />
+                : null}
             </div>
         );
     },

@@ -219,7 +219,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 }
 
 .doc-panel-outer {
-    padding-bottom: 0;
+    padding: 3px 6px;
 }
 
 .doc-panel-inner {
@@ -231,7 +231,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 }
 
 .attachment-panel-outer {
-    padding-bottom: 0;
+    padding: 3px 6px;
 }
 
 .attachment-panel-inner {
@@ -344,6 +344,12 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     &.hiding {
         background-image: url('data:image/svg+xml;utf8,<svg data-name="Hiding Dots" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760.67 139.33"><defs><style>.cls-1{fill:#808080;}</style></defs><title>Indicates hiddent content</title><circle class="cls-1" cx="380.33" cy="69.67" r="64.11"/><circle class="cls-1" cx="692.4" cy="69.67" r="64.11"/><circle class="cls-1" cx="68.27" cy="69.67" r="64.11"/></svg>');
     }
+}
+
+.file-download-section {
+    padding: 5px 0;
+    text-align: center;
+    border-top: 1px solid #c0c0c0;
 }
 
 // Collapsing title bar

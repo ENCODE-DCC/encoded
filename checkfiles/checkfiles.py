@@ -518,8 +518,8 @@ def check_for_fastq_signature_conflicts(session,
                                         signatures_to_check):
     conflicts = []
     for signature in sorted(list(signatures_to_check)):
-        query = '/search/?type=File&status!=replaced&file_format=fastq&fastq_signature=' + \
-                signature
+        query = '/search/?type=File&status!=replaced&file_format=fastq&' + \
+                'datastore=database&fastq_signature=' + signature
         try:
             r = session.get(urljoin(url, query))
         except requests.exceptions.RequestException as e:  # This is the correct syntax
@@ -567,9 +567,9 @@ def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url
         int(result['content_md5sum'], 16)
     except ValueError:
         errors['content_md5sum'] = output.decode(errors='replace').rstrip('\n')
-        update_content_error(errors, 'Fastq file content md5sum format error')
+        update_content_error(errors, 'File content md5sum format error')
     else:
-        query = '/search/?type=File&status!=replaced&content_md5sum=' + result[
+        query = '/search/?type=File&status!=replaced&datastore=database&content_md5sum=' + result[
             'content_md5sum']
         try:
             r = session.get(urljoin(url, query))
@@ -599,7 +599,7 @@ def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url
                 if len(conflicts) > 0:
                     errors['content_md5sum'] = str(conflicts)
                     update_content_error(errors,
-                                         'Fastq file content md5sum conflicts with content ' +
+                                         'File content md5sum conflicts with content ' +
                                          'md5sum of existing file(s) {}'.format(
                                              ', '.join(map(str, conflicts))))
 
@@ -623,7 +623,6 @@ def check_file(config, session, url, job):
         file_stat = os.stat(local_path)
     except FileNotFoundError:
         errors['file_not_found'] = 'File has not been uploaded yet.'
-        update_content_error(errors, 'File was not uploaded to S3')
         if job['run'] < job['upload_expiration']:
             job['skip'] = True
         return job
@@ -631,7 +630,7 @@ def check_file(config, session, url, job):
     if 'file_size' in item and file_stat.st_size != item['file_size']:
         errors['file_size'] = 'uploaded {} does not match item {}'.format(
             file_stat.st_size, item['file_size'])
-        update_content_error(errors, 'Fastq metadata-specified file size {} '.format(
+        update_content_error(errors, 'Metadata-specified file size {} '.format(
             item['file_size']) +
             'doesn’t match the calculated file size {}'.format(file_stat.st_size))
 
@@ -655,7 +654,7 @@ def check_file(config, session, url, job):
             errors['md5sum'] = \
                 'checked %s does not match item %s' % (result['md5sum'], item['md5sum'])
             update_content_error(errors,
-                                 'Fastq file metadata-specified md5sum {} '.format(item['md5sum']) +
+                                 'File metadata-specified md5sum {} '.format(item['md5sum']) +
                                  'does not match the calculated md5sum {}'.format(result['md5sum']))
     is_gzipped = is_path_gzipped(local_path)
     if item['file_format'] not in GZIP_TYPES:
@@ -725,9 +724,6 @@ def check_file(config, session, url, job):
     if item['status'] != 'uploading':
         errors['status_check'] = \
             "status '{}' is not 'uploading'".format(item['status'])
-        update_content_error(errors, 'Submitted file status was {} '.format(
-            item['status']) +
-            'instead of \'uploading\'.')
     if errors:
         errors['gathered information'] = 'Gathered information about the file was: {}.'.format(
             str(result))
@@ -750,7 +746,7 @@ def remove_local_file(path_to_the_file, errors):
 
 def fetch_files(session, url, search_query, out, include_unexpired_upload=False):
     r = session.get(
-        urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
+        urljoin(url, '/search/?field=@id&limit=all&type=File&datastore=database&' + search_query))
     r.raise_for_status()
     out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
     for result in r.json()['@graph']:
@@ -805,36 +801,21 @@ def patch_file(session, url, job):
         if 'fastq_signature' in result and \
            result['fastq_signature'] != []:
             data['fastq_signature'] = result['fastq_signature']
-
         if 'content_md5sum' in result:
             data['content_md5sum'] = result['content_md5sum']
     else:
-        to_patch = True
-        for e in errors.keys():
-            if e in [
-               'unzipped_fastq_streaming',
-               'lookup_for_fastq_signature',
-               'lookup_for_content_md5sum',
-               'file_not_found',
-               'bed_unzip_failure',
-               'grep_bed_problem',
-               'bed_comments_remove_failure',
-               'content_md5sum_calculation',
-               'file_remove_error',
-               'lookup_for_fastq_signature',
-               'fastq_information_extraction']:
-                to_patch = False
-                break
-        if to_patch:  # will change into if 'content_error' in errors
-            if 'fastq_format_readname' in errors:
-                update_content_error(errors,
-                                     'Fastq file contains read names that don’t follow ' +
-                                     'the Illumina standard naming schema; for example {}'.format(
-                                         errors['fastq_format_readname']))
+        if 'fastq_format_readname' in errors:
+            update_content_error(errors,
+                                 'Fastq file contains read names that don’t follow ' +
+                                 'the Illumina standard naming schema; for example {}'.format(
+                                     errors['fastq_format_readname']))
+        if 'content_error' in errors:
             data = {
-                # place holder for content_error patching
-                # 'content_error': errors['content_error'],
-                #
+                'status': 'content error',
+                'content_error_detail': errors['content_error'].strip()
+                }
+        if 'file_not_found' in errors:
+            data = {
                 'status': 'upload failed'
                 }
     if data:
@@ -876,7 +857,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.06'
+    version = '1.08'
 
     out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
               (version, search_query, nprocesses, dr, datetime.datetime.now()))
