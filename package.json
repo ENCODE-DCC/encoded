@@ -80,7 +80,7 @@
     "source-map-support": "^0.4.11",
     "subprocess-middleware": "^0.1.0",
     "underscore": "^1.8.3",
-    "whatwg-fetch": "^2.0.2",
+    "whatwg-fetch": "git+https://github.com/ENCODE-DCC/fetch",
     "winchan": "^0.1.2",
     "xhr2": "^0.1.4"
   }

@@ -1259,8 +1259,8 @@
     },
     "whatwg-fetch": {
       "version": "2.0.2",
-      "from": "whatwg-fetch@latest",
-      "resolved": "https://registry.npmjs.org/whatwg-fetch/-/whatwg-fetch-2.0.2.tgz"
+      "from": "git+https://github.com/ENCODE-DCC/fetch.git",
+      "resolved": "git+https://github.com/ENCODE-DCC/fetch.git#b27a565855708cbb1d8f0c645b0800cde1f73dae"
     },
     "winchan": {
       "version": "0.1.2",
