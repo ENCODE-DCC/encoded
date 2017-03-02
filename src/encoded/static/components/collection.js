@@ -35,8 +35,9 @@ globals.content_views.register(Collection, 'Collection');
 
 
 class Cell {
-    constructor(value, sortable) {
+    constructor(value, name, sortable) {
         this.value = value;
+        this.name = name;
         this.sortable = sortable;
     }
 }
@@ -100,7 +101,7 @@ const RowView = (props) => {
 
         // Render a cell, but Make the first column in the row a link to the object.
         return (
-            <td key={row.item['@id']}>
+            <td key={cell.name}>
                 {index === 0 ?
                     <a href={row.item['@id']}>{cellValue}</a>
                 :
@@ -223,7 +224,7 @@ var Table = module.exports.Table = React.createClass({
                     value = factory({context: value});
                 }
                 var sortable = ('' + value).toLowerCase();
-                return new Cell(value, sortable);
+                return new Cell(value, column, sortable);
             });
             var text = cells.map(function (cell) {
                 return cell.value;
@@ -239,6 +240,10 @@ var Table = module.exports.Table = React.createClass({
         var context = props.context;
         var communicating;
         var request = this.state.allRequest;
+        if (request) {
+            console.log('FETCHALL ABORT');
+            request.abort();
+        }
         var self = this;
         if (context.all) {
             communicating = true;
@@ -431,6 +436,10 @@ var Table = module.exports.Table = React.createClass({
             clearTimeout(this.submitTimer);
         }
         var request = this.state.allRequest;
+        if (request) {
+            console.log('UNMOUNT ABORT');
+            request.abort();
+        }
     }
 
 });

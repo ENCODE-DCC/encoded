@@ -1260,7 +1260,7 @@
     "whatwg-fetch": {
       "version": "2.0.2",
       "from": "git+https://github.com/ENCODE-DCC/fetch.git",
-      "resolved": "git+https://github.com/ENCODE-DCC/fetch.git#b27a565855708cbb1d8f0c645b0800cde1f73dae"
+      "resolved": "git+https://github.com/ENCODE-DCC/fetch.git#3c035083632a46a228a2b9d3e4221703c4e9442e"
     },
     "winchan": {
       "version": "0.1.2",

@@ -33,8 +33,17 @@ var Param = module.exports.Param = React.createClass({
         this.fetch(nextProps.url);
     },
 
+    componentWillUnmount: function () {
+        var xhr = this.state.fetchedRequest;
+        if (xhr) {
+            console.log('abort param xhr');
+            xhr.abort();
+        }
+    },
+
     fetch: function (url) {
-        let request;
+        var request = this.state.fetchedRequest;
+        if (request) request.abort();
 
         if (!url) {
             this.props.handleFetch();
