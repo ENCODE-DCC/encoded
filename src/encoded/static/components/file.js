@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import shortid from 'shortid';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
 import { DbxrefList } from './dbxref';
@@ -430,6 +431,13 @@ class SequenceFileInfo extends React.Component {
         const pairedWithAccession = file.paired_with ? globals.atIdToAccession(file.paired_with) : '';
         const platformAccession = file.platform ? decodeURIComponent(globals.atIdToAccession(file.platform)) : '';
 
+        // Generate keys for the flowcell details.
+        if (file.flowcell_details && file.flowcell_details.map) {
+            file.flowcell_details.forEach((detail) => {
+                detail.id = shortid.generate();
+            });
+        }
+
         return (
             <Panel>
                 <PanelHeading>
@@ -456,7 +464,7 @@ class SequenceFileInfo extends React.Component {
                                             detail.lane ? detail.lane : '',
                                             detail.barcode ? detail.barcode : '',
                                         ];
-                                        return <span className="line-item">{items.join(':')}</span>;
+                                        return <span className="line-item" key={detail.id}>{items.join(':')}</span>;
                                     })}
                                 </dd>
                             </div>
@@ -496,7 +504,7 @@ class SequenceFileInfo extends React.Component {
                                     {file.controlled_by.map((controlFile, i) => {
                                         const controlFileAccession = globals.atIdToAccession(controlFile);
                                         return (
-                                            <span>
+                                            <span key={controlFile}>
                                                 {i > 0 ? <span>, </span> : null}
                                                 <a href={controlFile} title={`View page for file ${controlFileAccession}`}>{controlFileAccession}</a>
                                             </span>

@@ -496,9 +496,9 @@
       "resolved": "https://registry.npmjs.org/w3c-blob/-/w3c-blob-0.0.1.tgz"
     },
     "whatwg-fetch": {
-      "version": "0.7.0",
-      "from": "git+https://github.com/lrowe/fetch.git#bf5d58b738fb2ed6d60791b944d36075fee8604a",
-      "resolved": "git+https://github.com/lrowe/fetch.git#bf5d58b738fb2ed6d60791b944d36075fee8604a"
+      "version": "2.0.2",
+      "from": "git+https://github.com/ENCODE-DCC/fetch.git",
+      "resolved": "git+https://github.com/ENCODE-DCC/fetch.git#d3941e75b8430cb3c880a421b219f5a317cae391"
     },
     "winchan": {
       "version": "0.1.4",

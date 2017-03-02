@@ -705,10 +705,10 @@ const RawFileTable = React.createClass({
                                 // the first row of files, spanned to all rows for that replicate and
                                 // library
                                 const spanned = [
-                                    <td key="br" rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
+                                    <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
                                         {groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
                                     </td>,
-                                    <td key="lib" rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged`}>
+                                    <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged`}>
                                         {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
                                     </td>,
                                 ];
