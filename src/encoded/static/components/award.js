@@ -74,7 +74,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                     }],
                 },
                 options: {
-                    maintainAspectRatio: true,
+                    maintainAspectRatio: false,
                     legend: {
                         display: false,
                     },
@@ -120,48 +120,9 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
 
 
 // Display and handle clicks in the chart of labs.
-const LabChart = React.createClass({
-    propTypes: {
-        award: React.PropTypes.object, // Award being displayed
-        labs: React.PropTypes.array, // Array of labs facet data
-    },
-
-    contextTypes: {
-        navigate: React.PropTypes.func,
-    },
-
-    componentDidMount: function () {
-        this.createChart(labChartId, this.props.labs);
-    },
-
-    componentDidUpdate: function () {
-        if (this.chart) {
-            this.updateChart(this.chart, this.props.labs);
-        }
-    },
-
-    createChart: function (chartId, facetData) {
-        // Extract the non-zero values, and corresponding labels and colors for the data.
-        const values = [];
-        const labels = [];
-        facetData.forEach((item) => {
-            if (item.doc_count) {
-                values.push(item.doc_count);
-                labels.push(item.key);
-            }
-        });
-        const colors = labels.map((label, i) => labColorList[i % labColorList.length]);
-
-        // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, `/matrix/?type=Experiment&award.name=${this.props.award.name}&lab.title=`, (uri) => { this.context.navigate(uri); })
-            .then((chartInstance) => {
-                // Save the created chart instance.
-                this.chart = chartInstance;
-            });
-    },
-
+class LabChart extends React.Component {
     // Update existing chart with new data.
-    updateChart: function (chart, facetData) {
+    static updateChart(chart, facetData) {
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
         const labels = [];
@@ -181,9 +142,45 @@ const LabChart = React.createClass({
 
         // Redraw the updated legend.
         document.getElementById(`${labChartId}-legend`).innerHTML = chart.generateLegend();
-    },
+    }
 
-    render: function () {
+    constructor() {
+        super();
+
+        this.createChart = this.createChart.bind(this);
+    }
+
+    componentDidMount() {
+        this.createChart(labChartId, this.props.labs);
+    }
+
+    componentDidUpdate() {
+        if (this.chart) {
+            this.constructor.updateChart(this.chart, this.props.labs);
+        }
+    }
+
+    createChart(chartId, facetData) {
+        // Extract the non-zero values, and corresponding labels and colors for the data.
+        const values = [];
+        const labels = [];
+        facetData.forEach((item) => {
+            if (item.doc_count) {
+                values.push(item.doc_count);
+                labels.push(item.key);
+            }
+        });
+        const colors = labels.map((label, i) => labColorList[i % labColorList.length]);
+
+        // Create the chart.
+        createDoughnutChart(chartId, values, labels, colors, `/matrix/?type=Experiment&award.name=${this.props.award.name}&lab.title=`, (uri) => { this.context.navigate(uri); })
+            .then((chartInstance) => {
+                // Save the created chart instance.
+                this.chart = chartInstance;
+            });
+    }
+
+    render() {
         const { labs } = this.props;
         return (
             <div className="award-charts__chart">
@@ -202,33 +199,39 @@ const LabChart = React.createClass({
                 }
             </div>
         );
-    },
-});
+    }
+}
+
+LabChart.propTypes = {
+    award: React.PropTypes.object.isRequired, // Award being displayed
+    labs: React.PropTypes.array.isRequired, // Array of labs facet data
+};
+
+LabChart.contextTypes = {
+    navigate: React.PropTypes.func,
+};
 
 
 // Display and handle clicks in the chart of assays.
-const AssayChart = React.createClass({
-    propTypes: {
-        award: React.PropTypes.object, // Award being displayed
-        assays: React.PropTypes.array, // Array of assay types facet data
-        colors: React.PropTypes.object, // Colors for the assay chart
-    },
+class AssayChart extends React.Component {
+    constructor() {
+        super();
 
-    contextTypes: {
-        navigate: React.PropTypes.func,
-    },
+        this.createChart = this.createChart.bind(this);
+        this.updateChart = this.updateChart.bind(this);
+    }
 
-    componentDidMount: function () {
+    componentDidMount() {
         this.createChart(assayChartId, this.props.assays);
-    },
+    }
 
-    componentDidUpdate: function () {
+    componentDidUpdate() {
         if (this.chart) {
             this.updateChart(this.chart, this.props.assays);
         }
-    },
+    }
 
-    createChart: function (chartId, facetData) {
+    createChart(chartId, facetData) {
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
         const labels = [];
@@ -246,10 +249,10 @@ const AssayChart = React.createClass({
                 // Save the created chart instance.
                 this.chart = chartInstance;
             });
-    },
+    }
 
     // Update existing chart with new data.
-    updateChart: function (chart, facetData) {
+    updateChart(chart, facetData) {
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
         const labels = [];
@@ -261,7 +264,7 @@ const AssayChart = React.createClass({
         });
         const colors = this.props.colors.colorList(facetData.map(term => term.key), { shade: 10 });
 
-        // Update chart data and redraw with the new data
+        // Update chart data and redraw with the new data.
         chart.data.datasets[0].data = values;
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
@@ -269,9 +272,9 @@ const AssayChart = React.createClass({
 
         // Redraw the updated legend.
         document.getElementById(`${assayChartId}-legend`).innerHTML = chart.generateLegend();
-    },
+    }
 
-    render: function () {
+    render() {
         const { assays } = this.props;
         return (
             <div className="award-charts__chart">
@@ -290,53 +293,28 @@ const AssayChart = React.createClass({
                 }
             </div>
         );
-    },
-});
+    }
+}
+
+AssayChart.propTypes = {
+    award: React.PropTypes.object.isRequired, // Award being displayed
+    assays: React.PropTypes.array, // Array of assay types facet data
+    colors: React.PropTypes.object.isRequired, // Colors for the assay chart
+};
+
+AssayChart.defaultProps = {
+    assays: [],
+};
+
+AssayChart.contextTypes = {
+    navigate: React.PropTypes.func,
+};
 
 
 // Display and handle clicks in the chart of labs.
-const StatusChart = React.createClass({
-    propTypes: {
-        award: React.PropTypes.object, // Award being displayed
-        statuses: React.PropTypes.array, // Array of status facet data
-    },
-
-    contextTypes: {
-        navigate: React.PropTypes.func,
-    },
-
-    componentDidMount: function () {
-        this.createChart(statusChartId, this.props.statuses);
-    },
-
-    componentDidUpdate: function () {
-        if (this.chart) {
-            this.updateChart(this.chart, this.props.statuses);
-        }
-    },
-
-    createChart: function (chartId, facetData) {
-        // Extract the non-zero values, and corresponding labels and colors for the data.
-        const values = [];
-        const labels = [];
-        facetData.forEach((item) => {
-            if (item.doc_count) {
-                values.push(item.doc_count);
-                labels.push(item.key);
-            }
-        });
-        const colors = labels.map((label, i) => statusColorList[i % statusColorList.length]);
-
-        // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, `/matrix/?type=Experiment&award.name=${this.props.award.name}&status=`, (uri) => { this.context.navigate(uri); })
-            .then((chartInstance) => {
-                // Save the created chart instance.
-                this.chart = chartInstance;
-            });
-    },
-
+class StatusChart extends React.Component {
     // Update existing chart with new data.
-    updateChart: function (chart, facetData) {
+    static updateChart(chart, facetData) {
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
         const labels = [];
@@ -356,9 +334,44 @@ const StatusChart = React.createClass({
 
         // Redraw the updated legend.
         document.getElementById(`${statusChartId}-legend`).innerHTML = chart.generateLegend();
-    },
+    }
 
-    render: function () {
+    constructor() {
+        super();
+        this.createChart = this.createChart.bind(this);
+    }
+
+    componentDidMount() {
+        this.createChart(statusChartId, this.props.statuses);
+    }
+
+    componentDidUpdate() {
+        if (this.chart) {
+            this.constructor.updateChart(this.chart, this.props.statuses);
+        }
+    }
+
+    createChart(chartId, facetData) {
+        // Extract the non-zero values, and corresponding labels and colors for the data.
+        const values = [];
+        const labels = [];
+        facetData.forEach((item) => {
+            if (item.doc_count) {
+                values.push(item.doc_count);
+                labels.push(item.key);
+            }
+        });
+        const colors = labels.map((label, i) => statusColorList[i % statusColorList.length]);
+
+        // Create the chart.
+        createDoughnutChart(chartId, values, labels, colors, `/matrix/?type=Experiment&award.name=${this.props.award.name}&status=`, (uri) => { this.context.navigate(uri); })
+            .then((chartInstance) => {
+                // Save the created chart instance.
+                this.chart = chartInstance;
+            });
+    }
+
+    render() {
         const { statuses } = this.props;
         return (
             <div className="award-charts__chart">
@@ -377,66 +390,79 @@ const StatusChart = React.createClass({
                 }
             </div>
         );
-    },
-});
+    }
+}
+
+StatusChart.propTypes = {
+    award: React.PropTypes.object.isRequired, // Award being displayed
+    statuses: React.PropTypes.array, // Array of status facet data
+};
+
+StatusChart.defaultProps = {
+    statuses: [],
+};
+
+StatusChart.contextTypes = {
+    navigate: React.PropTypes.func,
+};
 
 
-const ChartRenderer = React.createClass({
-    propTypes: {
-        data: React.PropTypes.object, // Array of experiments under this award
-        award: React.PropTypes.object, // Award being displayed
-        colors: React.PropTypes.object, // Color object for assay term names
-    },
+const ChartRenderer = (props) => {
+    const { data, award, colors } = props;
+    let labs; // Array of labs from facet data
+    let assays; // Array of assay types from facet data
+    let statuses; // Array of statuses from facet data
 
-    render: function () {
-        const { data, award, colors } = this.props;
-        let labs; // Array of labs from facet data
-        let assays; // Array of assay types from facet data
-        let statuses; // Array of statuses from facet data
-
-        // Find the chart data in the returned facets.
-        if (data && data.facets && data.facets.length && colors) {
-            // Get the array of lab data.
-            const labFacet = data.facets.find(facet => facet.field === 'lab.title');
-            if (labFacet) {
-                labs = labFacet.terms && labFacet.terms.length ? labFacet.terms.sort((a, b) => (a.key < b.key ? -1 : (a.key > b.key ? 1 : 0))) : null;
-            }
-
-            // Get the array of assay types.
-            const assayFacet = data.facets.find(facet => facet.field === 'assay_title');
-            if (assayFacet) {
-                assays = assayFacet.terms && assayFacet.terms.length ? assayFacet.terms : null;
-            }
-
-            // Get the array of status data.
-            const statusFacet = data.facets.find(facet => facet.field === 'status');
-            if (statusFacet) {
-                statuses = statusFacet.terms && statusFacet.terms.length ? statusFacet.terms : null;
-            }
+    // Find the chart data in the returned facets.
+    if (data && data.facets && data.facets.length && colors) {
+        // Get the array of lab data.
+        const labFacet = data.facets.find(facet => facet.field === 'lab.title');
+        if (labFacet) {
+            labs = labFacet.terms && labFacet.terms.length ? labFacet.terms.sort((a, b) => (a.key < b.key ? -1 : (a.key > b.key ? 1 : 0))) : null;
         }
 
-        if (labs || assays || statuses) {
-            return (
-                <div className="award-charts">
-                    {labs ? <LabChart award={award} labs={labs} /> : null}
-                    {assays ? <AssayChart award={award} assays={assays} colors={colors} /> : null}
-                    {statuses ? <StatusChart award={award} statuses={statuses} /> : null}
-                </div>
-            );
+        // Get the array of assay types.
+        const assayFacet = data.facets.find(facet => facet.field === 'assay_title');
+        if (assayFacet) {
+            assays = assayFacet.terms && assayFacet.terms.length ? assayFacet.terms : null;
         }
-        return <p className="browser-error">No labs nor assays reference this award</p>;
-    },
-});
+
+        // Get the array of status data.
+        const statusFacet = data.facets.find(facet => facet.field === 'status');
+        if (statusFacet) {
+            statuses = statusFacet.terms && statusFacet.terms.length ? statusFacet.terms : null;
+        }
+    }
+
+    if (labs || assays || statuses) {
+        return (
+            <div className="award-charts">
+                {labs ? <LabChart award={award} labs={labs} /> : null}
+                {assays ? <AssayChart award={award} assays={assays} colors={colors} /> : null}
+                {statuses ? <StatusChart award={award} statuses={statuses} /> : null}
+            </div>
+        );
+    }
+    return <p className="browser-error">No labs nor assays reference this award</p>;
+};
+
+ChartRenderer.propTypes = {
+    data: React.PropTypes.object, // Array of experiments under this award
+    award: React.PropTypes.object.isRequired, // Award being displayed
+    colors: React.PropTypes.object, // Color object for assay term names
+};
+
+ChartRenderer.defaultProps = {
+    data: [],
+    colors: null,
+};
 
 
 // Overall component to render the award charts
-const AwardCharts = React.createClass({
-    propTypes: {
-        award: React.PropTypes.object, // Award represented by this chart
-    },
-
-    getInitialState: function () {
-        return {
+class AwardCharts extends React.Component {
+    constructor() {
+        super();
+        this.state = {
             statuses: { // Each set to True if their button is selected in the UI
                 released: false,
                 unreleased: false,
@@ -445,11 +471,13 @@ const AwardCharts = React.createClass({
             },
             assayTermNameColors: null,
         };
-    },
+
+        this.handleStatusSelection = this.handleStatusSelection.bind(this);
+    }
 
     // Get the list of available assay_titles by doing a search of experiments and getting the
     // array of returned assay_titles.
-    componentDidMount: function () {
+    componentDidMount() {
         return fetch('/search/?type=Experiment&field=@id', {
             method: 'GET',
             headers: {
@@ -471,17 +499,17 @@ const AwardCharts = React.createClass({
             }
             return null;
         });
-    },
+    }
 
     // Called when a status selection button gets clicked. The clicked status (either to enable or
     // disable it) gets passed in `status`.
-    handleStatusSelection: function (status) {
+    handleStatusSelection(status) {
         const newStatuses = this.state.statuses;
         newStatuses[status] = !newStatuses[status];
         this.setState({ statuses: newStatuses });
-    },
+    }
 
-    render: function () {
+    render() {
         const { award } = this.props;
 
         return (
@@ -501,82 +529,82 @@ const AwardCharts = React.createClass({
                 </PanelBody>
             </Panel>
         );
-    },
-});
+    }
+}
+
+AwardCharts.propTypes = {
+    award: React.PropTypes.object.isRequired, // Award represented by this chart
+};
 
 
-const Award = React.createClass({
-    propTypes: {
-        context: React.PropTypes.object, // Award object being rendered
-    },
+const Award = (props) => {
+    const { context } = props;
+    const statuses = [{ status: context.status, title: 'Status' }];
 
-    render: function () {
-        const { context } = this.props;
-        const statuses = [{ status: context.status, title: 'Status' }];
-
-        return (
-            <div className={globals.itemClass(context, 'view-item')}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <h2>{context.title || context.name}</h2>
-                        <div className="status-line">
-                            <div className="characterization-status-labels">
-                                <StatusLabel status={statuses} />
-                            </div>
+    return (
+        <div className={globals.itemClass(context, 'view-item')}>
+            <header className="row">
+                <div className="col-sm-12">
+                    <h2>{context.title || context.name}</h2>
+                    <div className="status-line">
+                        <div className="characterization-status-labels">
+                            <StatusLabel status={statuses} />
                         </div>
                     </div>
-                </header>
+                </div>
+            </header>
 
-                <AwardCharts award={context} />
+            <AwardCharts award={context} />
 
-                <Panel>
-                    <PanelHeading>
-                        <h4>Description</h4>
-                    </PanelHeading>
-                    <PanelBody>
-                        {context.description ?
-                            <div className="two-column-long-text two-column-long-text--gap">
-                                <p>{context.description}</p>
-                            </div>
-                        :
-                            <p className="browser-error">Award has no description</p>
-                        }
-                    </PanelBody>
-                </Panel>
-            </div>
-        );
-    },
-});
+            <Panel>
+                <PanelHeading>
+                    <h4>Description</h4>
+                </PanelHeading>
+                <PanelBody>
+                    {context.description ?
+                        <div className="two-column-long-text two-column-long-text--gap">
+                            <p>{context.description}</p>
+                        </div>
+                    :
+                        <p className="browser-error">Award has no description</p>
+                    }
+                </PanelBody>
+            </Panel>
+        </div>
+    );
+};
+
+Award.propTypes = {
+    context: React.PropTypes.object.isRequired, // Award object being rendered
+};
 
 globals.content_views.register(Award, 'Award');
 
 
-const Listing = React.createClass({
-    propTypes: {
-        context: React.PropTypes.object, // Object whose search result we're displaying
-    },
-
-    render: function () {
-        const result = this.props.context;
-        return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Award</p>
-                        <p className="type">{` ${result.name}`}</p>
-                        <p className="type meta-status">{` ${result.status}`}</p>
-                    </div>
-                    <div className="accession">
-                        <a href={result['@id']}>{result.title}</a>
-                    </div>
-                    <div className="data-row">
-                        <div><strong>Project / RFA: </strong>{result.project} / {result.rfa}</div>
-                    </div>
+const Listing = (props) => {
+    const result = props.context;
+    return (
+        <li>
+            <div className="clearfix">
+                <PickerActions {...props} />
+                <div className="pull-right search-meta">
+                    <p className="type meta-title">Award</p>
+                    <p className="type">{` ${result.name}`}</p>
+                    <p className="type meta-status">{` ${result.status}`}</p>
                 </div>
-            </li>
-        );
-    },
-});
+                <div className="accession">
+                    <a href={result['@id']}>{result.title}</a>
+                </div>
+                <div className="data-row">
+                    <div><strong>Project / RFA: </strong>{result.project} / {result.rfa}</div>
+                </div>
+            </div>
+        </li>
+    );
+};
+
+Listing.propTypes = {
+    context: React.PropTypes.object.isRequired, // Object whose search result we're displaying
+};
 
 globals.listing_views.register(Listing, 'Award');

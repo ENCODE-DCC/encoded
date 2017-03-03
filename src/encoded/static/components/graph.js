@@ -513,7 +513,7 @@ export const Graph = React.createClass({
                         <tbody>
                             <tr>
                                 <td className="zoom-indicator"><i className="icon icon-minus" /></td>
-                                <td className="zomm-controller"><input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel} onChange={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
+                                <td className="zomm-controller"><input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel === null ? 0 : this.state.zoomLevel} onChange={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
                                 <td className="zoom-indicator"><i className="icon icon-plus" /></td>
                             </tr>
                         </tbody>
