@@ -62,7 +62,7 @@ const BlockEditModal = React.createClass({
     },
 
     openModal() {
-        this.modal.openModal();
+        this.refs.modal.openModal();
     },
 
     cancel() {
@@ -79,7 +79,7 @@ const BlockEditModal = React.createClass({
         const blocktype = globals.blocks.lookup(this.props.value);
         const BlockEdit = blocktype.edit || FallbackBlockEdit;
         return (
-            <Modal ref={(c) => { this.modal = c; }} actuator={this.props.actuator}>
+            <Modal ref="modal" actuator={this.props.actuator}>
                 <ModalHeader title={`Edit ${blocktype.label}`} closeModal={this.cancel} />
                 <ModalBody>
                     <BlockEdit schema={blocktype.schema} value={this.state.value} onChange={this.onChange} />
@@ -106,10 +106,10 @@ const Block = module.exports.Block = React.createClass({
     },
 
     componentDidMount() {
-        if (this.props.value.is_new) { this.modal.openModal(); }
+        if (this.props.value.is_new) { this.refs.modal.openModal(); }
     },
     componentDidUpdate() {
-        if (this.props.value.is_new) { this.modal.openModal(); }
+        if (this.props.value.is_new) { this.refs.modal.openModal(); }
     },
 
     onChange(value) {
@@ -137,7 +137,7 @@ const Block = module.exports.Block = React.createClass({
 
     renderToolbar() {
         const modal = (<BlockEditModal
-            ref={(c) => { this.modal = c; }}
+            ref="modal"
             modalcontext={_.pick(this.context, Object.keys(MODAL_CONTEXT))}
             value={this.props.value}
             onChange={this.onChange}
