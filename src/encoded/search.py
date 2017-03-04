@@ -473,9 +473,12 @@ def search_result_actions(request, doc_types, es_results, position=None):
     # generate batch hub URL for experiments
     # TODO we could enable them for Datasets as well here, but not sure how well it will work
     if doc_types == ['Experiment'] or doc_types == ['Annotation']:
+        viz = {}
         for bucket in aggregations['assembly']['assembly']['buckets']:
             if bucket['doc_count'] > 0:
                 assembly = bucket['key']
+                if assembly in viz:  # mm10 and mm10-minimal resolve to the same thing
+                    continue
                 search_params = request.query_string.replace('&', ',,')
                 if not request.params.getall('assembly') \
                 or assembly in request.params.getall('assembly'):
@@ -486,14 +489,17 @@ def search_result_actions(request, doc_types, es_results, position=None):
                     pos = None
                     if 'region-search' in request.url and position is not None:
                         pos = position
-                    ucsc_url = vis_format_external_url("ucsc", hub_url, assembly_name, pos)
+                    ucsc_url = vis_format_external_url("ucsc", hub_url, assembly, pos)
                     if ucsc_url is not None:
                         browser_urls['UCSC'] = ucsc_url
                     ensembl_url = vis_format_external_url("ensembl", hub_url, assembly_name, pos)
                     if ensembl_url is not None:
                         browser_urls['Ensembl'] = ensembl_url
                     if browser_urls:
-                        actions.setdefault('visualize_batch', {}) = browser_urls  # formerly 'batch_hub'
+                        vis[assembly] = browser_urls
+                        #actions.setdefault('visualize_batch', {})[assembly] = browser_urls  # formerly 'batch_hub'
+        if viz:
+            actions.setdefault('visualize_batch',viz)
 
     # generate batch download URL for experiments
     # TODO we could enable them for Datasets as well here, but not sure how well it will work

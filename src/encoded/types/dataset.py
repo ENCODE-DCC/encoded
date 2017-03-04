@@ -199,6 +199,8 @@ class Dataset(Item):
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
         for assembly_name in assembly:
+            if assembly_name in viz:  # mm10 and mm10-minimal resolve to the same thing
+                continue
             browser_urls = {}
             ucsc_url = vis_format_external_url("ucsc", hub_url, assembly_name)
             if ucsc_url is not None:
@@ -208,7 +210,7 @@ class Dataset(Item):
                 browser_urls['Ensembl'] = ensembl_url
             if browser_urls:
                 viz[assembly_name] = browser_urls
-        if vis:
+        if viz:
             return viz
         else:
             return None
