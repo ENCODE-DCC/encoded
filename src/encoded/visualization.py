@@ -2150,7 +2150,7 @@ def get_hub(label, comment=None, name=None):
 
 def vis_format_external_url(browser, hub_url, assembly, position=None):
     '''Given a url to hub.txt, returns the url to an external browser or None.'''
-    mapped_assembly = _ASSEMBLY_MAPPER_FULL(assembly)
+    mapped_assembly = _ASSEMBLY_MAPPER_FULL[assembly]
     if not mapped_assembly:
         return None
     if browser == "ucsc":
