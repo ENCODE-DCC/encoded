@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
-import DbxrefList from './dbxref';
+import { DbxrefList } from './dbxref';
 import { DocumentsPanel, DocumentsSubpanels } from './doc';
 import globals from './globals';
 import { RelatedItems } from './item';
