@@ -250,7 +250,7 @@ const File = React.createClass({
                                     </div>
 
                                     <div data-test="outputtype">
-                                        <dt>FIle format</dt>
+                                        <dt>File format</dt>
                                         <dd>{`${context.file_format}${context.file_format_type ? ` ${context.file_format_type}` : ''}`}</dd>
                                     </div>
 
