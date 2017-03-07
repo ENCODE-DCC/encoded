@@ -161,10 +161,16 @@ def test_hub_field(testapp, workbook, expected):
     assert expected in res.json['hub']
 
 
-def test_visualize_ucsc(testapp, workbook):
+def test_visualize(testapp, workbook):
     expected = {
-        'GRCh38': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt&db=hg38',
-        'hg19': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt&db=hg19'
+        'GRCh38': {
+            'Ensembl': 'http://www.ensembl.org/Trackhub?url=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt;species=Homo_sapiens',
+            'UCSC': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt&db=hg38'
+        },
+        'hg19': {
+            'Ensembl': 'http://grch37.ensembl.org/Trackhub?url=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt;species=Homo_sapiens',
+            'UCSC': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt&db=hg19'
+        }
     }
     res = testapp.get("/experiments/ENCSR000AEN/")
-    assert expected == res.json['visualize_ucsc']
+    assert expected == res.json['visualize']

@@ -492,11 +492,11 @@ def search_result_actions(request, doc_types, es_results, position=None):
                     ucsc_url = vis_format_external_url("ucsc", hub_url, assembly, pos)
                     if ucsc_url is not None:
                         browser_urls['UCSC'] = ucsc_url
-                    ensembl_url = vis_format_external_url("ensembl", hub_url, assembly_name, pos)
+                    ensembl_url = vis_format_external_url("ensembl", hub_url, assembly, pos)
                     if ensembl_url is not None:
                         browser_urls['Ensembl'] = ensembl_url
                     if browser_urls:
-                        vis[assembly] = browser_urls
+                        viz[assembly] = browser_urls
                         #actions.setdefault('visualize_batch', {})[assembly] = browser_urls  # formerly 'batch_hub'
         if viz:
             actions.setdefault('visualize_batch',viz)

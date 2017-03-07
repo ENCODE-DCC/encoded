@@ -2165,7 +2165,7 @@ def vis_format_external_url(browser, hub_url, assembly, position=None):
         ensembl_host = mapped_assembly.get('ensembl_host')
         if ensembl_host is not None:
             external_url = 'http://' + ensembl_host + '/Trackhub?url='
-            external_url += hub_url + ';species=' + species
+            external_url += hub_url + ';species=' + mapped_assembly.get('species').replace(' ','_')
             if position is not None:
                 if position.startswith('chr'):
                     position = position[3:]  # ensembl position r=19:7069444-7087968
