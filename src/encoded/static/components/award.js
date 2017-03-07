@@ -454,7 +454,7 @@ const AwardCharts = React.createClass({
     // Get the list of available assay_titles by doing a search of experiments and getting the
     // array of returned assay_titles.
     componentDidMount: function () {
-        return fetch('/search/?type=Experiment&field=@id', {
+        return fetch(globals.encodedURI('/search/?type=Dataset&field=@id'), {
             method: 'GET',
             headers: {
                 Accept: 'application/json',

@@ -116,6 +116,12 @@ module.exports.unreleased_files_url = function (context) {
     return '/search/?limit=all&type=file&dataset=' + context['@id'] + file_states;
 };
 
+// Encode a URI with much less intensity than encodeURIComponent but a bit more than encodeURI.
+// In addition to encodeURI, this function escapes exclamations and at signs.
+module.exports.encodedURI = function (uri) {
+    return encodeURI(uri).replace(/!/g, '%21').replace(/@/g, '%40');
+};
+
 
 // Just like encodeURIComponent, but also encodes parentheses (Redmine #4242). Replace spaces with
 // `space` parameter, or '+' if not provided.
