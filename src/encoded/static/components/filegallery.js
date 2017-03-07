@@ -1469,14 +1469,16 @@ const FileGalleryRenderer = React.createClass({
                 <PanelHeading addClasses="file-gallery-heading">
                     <h4>Files</h4>
                     <div className="file-gallery-controls">
-                        {context.visualize_ucsc && context.status === 'released' ?
+                        {context.visualize && context.status === 'released' ?
                             <div className="file-gallery-control">
                                 <DropdownButton title="Visualize Data" label="visualize-data">
                                     <DropdownMenu>
-                                        {Object.keys(context.visualize_ucsc).map(assembly =>
-                                            <a key={assembly} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize_ucsc[assembly]}>
-                                                {assembly}
-                                            </a>,
+                                        {Object.keys(context.visualize).sort().map(assembly =>
+                                            Object.keys(context.visualize[assembly]).sort().map(browser =>
+                                                <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize[assembly][browser]}>
+                                                {assembly} {browser}
+                                                </a>,
+                                            )
                                         )}
                                     </DropdownMenu>
                                 </DropdownButton>
