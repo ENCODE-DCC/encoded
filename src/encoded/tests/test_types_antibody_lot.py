@@ -116,7 +116,7 @@ def test_have_primary_missing_secondary(testapp,
     assert ab['lot_reviews'][0]['status'] == 'awaiting characterization'
     assert ab['lot_reviews'][0]['detail'] == 'Primary characterization(s) in progress.'
 
-    # Not yet reviewed primary and no secondary should result in ab status = pending dcc review
+    # Not yet reviewed primary and no secondary should result in ab status = awaiting characterization
     characterization_review['lane_status'] = 'pending dcc review'
     testapp.put_json(char['@id'], immunoblot).json['@graph'][0]
     testapp.patch_json(char['@id'], {
@@ -125,9 +125,9 @@ def test_have_primary_missing_secondary(testapp,
     })
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
-    assert ab['lot_reviews'][0]['status'] == 'pending dcc review'
+    assert ab['lot_reviews'][0]['status'] == 'awaiting characterization'
     assert ab['lot_reviews'][0]['detail'] == 'One or more characterization(s) is pending review ' + \
-        'and awaiting submission of a secondary characterization.'
+        'and awaiting a compliant secondary characterization.'
 
     # No secondary and a primary that is not submitted for review should result in
     # ab status = not pursued

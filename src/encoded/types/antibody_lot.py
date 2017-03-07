@@ -290,15 +290,18 @@ def build_lot_reviews(primary_chars,
         for primary in primary_chars:
             if not active_primary:
                 if secondary_status == 'not compliant':
-                    base_review['status'] = 'not characterized to standards',
+                    base_review['status'] = 'not characterized to standards'
+                    # If secondary is not compliant, the status is always not characterized to standards,
+                    # no matter what the primary is.
+                    return [base_review]
                 if primary['status'] == 'not submitted for review by lab' or \
                         secondary_status == 'not submitted for review by lab':
-                    base_review['status'] = 'not pursued'
+                        base_review['status'] = 'not pursued'
                 if secondary_status in ['compliant', 'exempt from standards']:
                         base_review['status'] = 'partially characterized'
                         base_review['detail'] = 'Awaiting one or more compliant primary characterization(s).'
                 if secondary_status == 'pending dcc review':
-                    base_review['status'] = 'pending dcc review'
+                    base_review['status'] = 'awaiting characterization'
                     base_review['detail'] = 'Awaiting one or more compliant primary characterization(s).'
                 if primary['status'] == 'in progress':
                     base_review['detail'] = 'Primary characterization(s) in progress.'
@@ -348,38 +351,58 @@ def build_lot_reviews(primary_chars,
 
         # Go through and calculate the appropriate statuses
         for key in char_reviews:
-            if secondary_status == 'in progress' or secondary_status is None:
-                char_reviews[key]['detail'] = 'Awaiting submission of secondary characterization(s).'
-                if char_reviews[key]['status'] in ['compliant', 'exempt from standards']:
-                    char_reviews[key]['status'] = 'partially characterized'
-                elif char_reviews[key]['status'] == 'pending dcc review':
-                    char_reviews[key]['detail'] = 'One or more characterization(s) is pending review' + \
-                        ' and awaiting submission of a secondary characterization.'
-                else:
-                    # Only the primary = 'not compliant' case should be left
-                    char_reviews[key]['status'] = 'not characterized to standards'
-            elif secondary_status in ['not reviewed',
-                                      'not submitted for review by lab',
-                                      'in progress',
-                                      'deleted']:
+            if secondary_status in ['not reviewed',
+                                    'not submitted for review by lab',
+                                    'in progress',
+                                    'deleted'] or secondary_status is None:
                 char_reviews[key]['detail'] = 'Awaiting a compliant secondary characterization.'
                 if char_reviews[key]['status'] in ['compliant', 'exempt from standards']:
                     char_reviews[key]['status'] = 'partially characterized'
+                    continue
                 elif char_reviews[key]['status'] == 'not compliant':
                     char_reviews[key]['status'] = 'not characterized to standards'
                     char_reviews[key]['detail'] = 'Awaiting compliant primary and secondary characterizations.'
+                    continue
                 else:
                     # Only the primary = pending dcc review case should be left
-                    char_reviews[key]['detail'] = 'One or more characterizsation(s) is pending review' + \
+                    if secondary_status == 'not submitted for review by lab':
+                        char_reviews[key]['status'] = 'not pursued'
+                    else:
+                        char_reviews[key]['status'] = 'awaiting characterization'
+                    char_reviews[key]['detail'] = 'One or more characterization(s) is pending review' + \
                         ' and awaiting a compliant secondary characterization.'
+                    continue
             elif char_reviews[key]['status'] == 'pending dcc review' or secondary_status == \
                     'pending dcc review':
-                char_reviews[key]['status'] = 'pending dcc review'
-                if secondary_status == 'pending dcc review':
-                    char_reviews[key]['detail'] = 'Pending review of a secondary characterization.'
+
+                char_reviews[key]['detail'] = 'Pending review of a secondary characterization.'
+
+                if secondary_status == 'not compliant' or char_reviews[key]['status'] == 'not compliant':
+                    char_reviews[key]['status'] = 'not characterized to standards'
+                    continue
+
+                # If secondary is pending and primary is compliant/exempt then partial - D
+                # If primary is pending and secondary is compliant/exempt then partial - D
+                # If secondary is pending and primary is not compliant then not char to standards - D
+                # If secondary is pending and primary is pending then awaiting
+                # If primary is pending and secondary is not compliant then not char to standards
+                # If primary is pending and secondary is not submitted then not pursued
+                # If secondary is pending and primary is not submitted then not pursued -D
+                # All other not active + pending statuses = awaiting characterization
+
+                # Primary is either compliant, not compliant, exempt or pending
+                if char_reviews[key]['status'] == 'not compliant':
+                    char_reviews[key]['status'] = 'not characterized to standards'
+                    continue
+                elif char_reviews[key]['status'] in ['compliant', 'exempt from standards'] or \
+                        secondary_status in ['compliant', 'exempt from standards']:
+                    char_reviews[key]['status'] = 'partially characterized'
+                    continue
                 else:
+                    char_reviews[key]['status'] = 'awaiting characterization'
                     char_reviews[key]['detail'] = 'Pending review of a primary characterization ' + \
                         'in {}.'.format(char_reviews[key]['biosample_term_name'])
+
             elif char_reviews[key]['status'] == 'not compliant' or secondary_status == 'not compliant':
                 char_reviews[key]['status'] = 'not characterized to standards'
                 if secondary_status == 'not compliant':
@@ -387,6 +410,7 @@ def build_lot_reviews(primary_chars,
                 else:
                     char_reviews[key]['detail'] = 'Awaiting a compliant primary characterization' + \
                         ' in {}.'.format(char_reviews[key]['biosample_term_name'])
+                continue
             elif char_reviews[key]['status'] == 'exempt from standards' or secondary_status == \
                     'exempt from standards':
 
@@ -400,6 +424,7 @@ def build_lot_reviews(primary_chars,
                         char_reviews[key]['status'] = 'partially characterized'
                         char_reviews[key]['detail'] = 'Awaiting a compliant primary ' + \
                             'characterization in {}.'.format(char_reviews[key]['organism'][0])
+                continue
             else:
                 # The only case that should be left is if both primary and secondary are compliant
                 char_reviews[key]['status'] = 'characterized to standards'
@@ -412,6 +437,7 @@ def build_lot_reviews(primary_chars,
                         char_reviews[key]['status'] = 'partially characterized'
                         char_reviews[key]['detail'] = 'Awaiting a compliant primary ' + \
                             'characterization in {}.'.format(char_reviews[key]['organism'][0])
+                continue
 
         if char_reviews:
             return list(char_reviews.values())
