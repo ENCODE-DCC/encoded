@@ -32,6 +32,19 @@ class ConstructCharacterization(Characterization):
     item_type = 'construct_characterization'
     schema = load_schema('encoded:schemas/construct_characterization.json')
 
+    embedded = [
+        'award',
+        'award.pi',
+        'award.pi.lab',
+        'characterizes',
+        'lab',
+        'documents',
+        'documents.lab',
+        'documents.award',
+        'documents.submitted_by',
+        'submitted_by',
+        ]
+
 
 @collection(
     name='rnai-characterizations',
@@ -42,6 +55,18 @@ class ConstructCharacterization(Characterization):
 class RNAiCharacterization(Characterization):
     item_type = 'rnai_characterization'
     schema = load_schema('encoded:schemas/rnai_characterization.json')
+    embedded = [
+        'award',
+        'award.pi',
+        'award.pi.lab',
+        'characterizes',
+        'documents',
+        'documents.lab',
+        'documents.award',
+        'documents.submitted_by',
+        'lab',
+        'submitted_by',
+        ]
 
 
 @collection(
@@ -53,7 +78,19 @@ class RNAiCharacterization(Characterization):
 class DonorCharacterization(Characterization):
     item_type = 'donor_characterization'
     schema = load_schema('encoded:schemas/donor_characterization.json')
-
+    embedded = [
+        'award',
+        'award.pi',
+        'award.pi.lab',
+        'characterizes',
+        'lab',
+        'references',
+        'documents',
+        'documents.lab',
+        'documents.award',
+        'documents.submitted_by',
+        'submitted_by',
+        ]
 
 @collection(
     name='biosample-characterizations',
@@ -64,6 +101,19 @@ class DonorCharacterization(Characterization):
 class BiosampleCharacterization(Characterization):
     item_type = 'biosample_characterization'
     schema = load_schema('encoded:schemas/biosample_characterization.json')
+    embedded = [
+        'award',
+        'award.pi',
+        'award.pi.lab',
+        'characterizes',
+        'documents',
+        'documents.lab',
+        'documents.award',
+        'documents.submitted_by',
+        'lab',
+        'references',
+        'submitted_by',
+        ]
 
 
 @collection(
@@ -79,10 +129,16 @@ class AntibodyCharacterization(Characterization, SharedItem):
         'submitted_by',
         'lab',
         'award',
+        'award.pi',
+        'award.pi.lab',
         'target',
         'target.organism',
         'documents',
+        'documents.lab',
+        'documents.award',
+        'documents.submitted_by',
         'characterizes.targets',
+        'references',
     ]
 
     @calculated_property(schema={
@@ -103,3 +159,15 @@ class AntibodyCharacterization(Characterization, SharedItem):
 class GeneticModificationCharacterization(Characterization):
     item_type = 'genetic_modification_characterization'
     schema = load_schema('encoded:schemas/genetic_modification_characterization.json')
+    embedded = [
+        'award',
+        'award.pi',
+        'award.pi.lab',
+        'lab',
+        'characterizes',
+        'documents',
+        'documents.award',
+        'documents.lab',
+        'documents.submitted_by',
+        'submitted_by',
+        ]

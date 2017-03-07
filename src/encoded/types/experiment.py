@@ -43,6 +43,11 @@ class Experiment(Dataset,
     schema = load_schema('encoded:schemas/experiment.json')
     embedded = Dataset.embedded + [
         'files.platform',
+        'files.dataset',
+        'files.quality_metrics',
+        'files.quality_metrics.step_run',
+        'files.quality_metrics.step_run.analysis_step_version',
+        'files.quality_metrics.step_run.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.documents',
         'files.analysis_step_version.analysis_step.documents.award',
@@ -53,6 +58,13 @@ class Experiment(Dataset,
         'files.analysis_step_version.analysis_step.pipelines.documents.award',
         'files.analysis_step_version.analysis_step.pipelines.documents.lab',
         'files.analysis_step_version.analysis_step.pipelines.documents.submitted_by',
+        'files.analysis_step_version.analysis_step.versions',
+        'files.analysis_step_version.software_versions',
+        'files.analysis_step_version.software_versions.software',
+        'files.analysis_step_version.analysis_step.versions.software_versions',
+        'files.analysis_step_version.analysis_step.versions.software_versions.software',
+        'files.replicate.library',
+        'files.replicate.library.biosample',
         'award.pi.lab',
         'related_series',
         'replicates.antibody',
@@ -586,6 +598,7 @@ class Replicate(Item):
         'library.biosample',
         'library.biosample.donor',
         'library.biosample.donor.organism',
+        'submitted_by',
     ]
 
     def unique_keys(self, properties):

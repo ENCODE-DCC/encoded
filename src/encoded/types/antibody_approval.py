@@ -31,6 +31,24 @@ from pyramid.view import (
 class AntibodyApproval(Item):
     schema = load_schema('encoded:schemas/antibody_approval.json')
     item_type = 'antibody_approval'
+    embedded = [
+        'antibody',
+        'award',
+        'award.pi',
+        'award.pi.lab',
+        'lab',
+        'target',
+        'target.organism',
+        'submitted_by',
+        'characterizations.award',
+        'characterizations.documents',
+        'characterizations.documents.lab',
+        'characterizations.documents.award',
+        'characterizations.documents.submitted_by',
+        'characterizations.lab',
+        'characterizations.submitted_by',
+        'characterizations.target.organism',
+        ]
 
     __acl__ = DELETED
 

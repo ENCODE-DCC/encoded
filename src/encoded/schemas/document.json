@@ -98,7 +98,6 @@
         "description": 1.0,
         "document_type": 1.0,
         "award.title": 1.0,
-        "award.pi": 1.0,
         "award.project": 1.0,
         "submitted_by.email": 1.0,
         "submitted_by.first_name": 1.0,

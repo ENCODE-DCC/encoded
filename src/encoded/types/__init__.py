@@ -26,7 +26,11 @@ class Lab(Item):
     item_type = 'lab'
     schema = load_schema('encoded:schemas/lab.json')
     name_key = 'name'
-    embedded = ['awards']
+    embedded = [
+        'awards',
+        'pi',
+        'pi.lab',
+        ]
 
 
 @collection(
@@ -78,6 +82,14 @@ class Source(Item):
 class Treatment(Item):
     item_type = 'treatment'
     schema = load_schema('encoded:schemas/treatment.json')
+    embedded = [
+        'lab',
+        'documents',
+        'documents.award',
+        'documents.lab',
+        'documents.submitted_by',
+        'submitted_by',
+        ]
     # XXX 'treatment_name' as key?
 
 
@@ -94,7 +106,27 @@ class Construct(Item):
     rev = {
         'characterizations': ('ConstructCharacterization', 'characterizes'),
     }
-    embedded = ['target']
+    embedded = [
+        'target', 
+        'target.organism',
+        'lab',
+        'award',
+        'award.pi',
+        'award.pi.lab',
+        'documents',
+        'documents.lab',
+        'documents.award',
+        'documents.submitted_by',
+        'submitted_by',
+        'source',
+        'characterizations.award',
+        'characterizations.documents',
+        'characterizations.documents.lab',
+        'characterizations.documents.award',
+        'characterizations.documents.submitted_by',
+        'characterizations.lab',
+        'characterizations.submitted_by',
+        ]
 
     @calculated_property(schema={
         "title": "Characterizations",
@@ -123,12 +155,23 @@ class TALEN(Item):
         'characterizations': ('ConstructCharacterization', 'characterizes'),
     }
     embedded = [
+        'award',
+        'award.pi',
+        'award.pi.lab',
+        'source',
         'lab',
         'submitted_by',
         'documents',
         'documents.award',
         'documents.lab',
-        'documents.submitted_by'
+        'documents.submitted_by',
+        'characterizations.award',
+        'characterizations.documents',
+        'characterizations.documents.lab',
+        'characterizations.documents.award',
+        'characterizations.documents.submitted_by',
+        'characterizations.lab',
+        'characterizations.submitted_by',
     ]
 
     @calculated_property(schema={
@@ -152,7 +195,14 @@ class TALEN(Item):
 class Document(ItemWithAttachment, Item):
     item_type = 'document'
     schema = load_schema('encoded:schemas/document.json')
-    embedded = ['lab', 'award', 'submitted_by']
+    embedded = [
+        'lab',
+        'award',
+        'award.pi',
+        'award.pi.lab',
+        'submitted_by',
+        'references',
+        ]
 
 
 @collection(
@@ -166,6 +216,9 @@ class Platform(Item):
     item_type = 'platform'
     schema = load_schema('encoded:schemas/platform.json')
     name_key = 'term_id'
+    embedded = [
+        'submitted_by',
+        ]
 
     @calculated_property(schema={
         "title": "Title",
@@ -187,9 +240,24 @@ class Library(Item):
     schema = load_schema('encoded:schemas/library.json')
     name_key = 'accession'
     embedded = [
+        'award',
+        'award.pi',
+        'award.pi.lab',
+        'lab',
+        'documents',
+        'documents.lab',
+        'documents.award',
+        'documents.submitted_by',
         'biosample',
         'biosample.donor',
         'biosample.donor.organism',
+        'submitted_by',
+        'source',
+        'treatments',
+        'treatments.documents',
+        'treatments.documents.award',
+        'treatments.documents.submitted_by',
+        'treatments.documents.lab',
     ]
 
     @calculated_property(condition='nucleic_acid_term_name', schema={
@@ -237,7 +305,28 @@ class Library(Item):
 class RNAi(Item):
     item_type = 'rnai'
     schema = load_schema('encoded:schemas/rnai.json')
-    embedded = ['source', 'documents', 'target']
+    embedded = [
+        'award',
+        'award.pi',
+        'award.pi.lab',
+        'lab',
+        'source',
+        'documents',
+        'documents.lab',
+        'documents.award',
+        'documents.submitted_by',
+        'target',
+        'target.organism',
+        'submitted_by',
+        'characterizations.award',
+        'characterizations.documents',
+        'characterizations.documents.lab',
+        'characterizations.documents.award',
+        'characterizations.documents.submitted_by',
+        'characterizations.lab',
+        'characterizations.submitted_by',
+        ]
+
     rev = {
         'characterizations': ('RNAiCharacterization', 'characterizes'),
     }
@@ -264,7 +353,14 @@ class RNAi(Item):
 class Publication(Item):
     item_type = 'publication'
     schema = load_schema('encoded:schemas/publication.json')
-    embedded = ['datasets']
+    embedded = [
+        'datasets',
+        'award',
+        'award.pi',
+        'award.pi.lab',
+        'lab',
+        'submitted_by',
+        ]
 
     def unique_keys(self, properties):
         keys = super(Publication, self).unique_keys(properties)
@@ -292,8 +388,13 @@ class Software(Item):
     schema = load_schema('encoded:schemas/software.json')
     name_key = 'name'
     embedded = [
+        'award',
+        'award.pi',
+        'award.pi.lab',
+        'lab',
+        'submitted_by',
         'references',
-        'versions'
+        'versions',
     ]
     rev = {
         'versions': ('SoftwareVersion', 'software')
@@ -320,7 +421,11 @@ class Software(Item):
 class SoftwareVersion(Item):
     item_type = 'software_version'
     schema = load_schema('encoded:schemas/software_version.json')
-    embedded = ['software', 'software.references']
+    embedded = [
+        'software', 
+        'software.references',
+        'submitted_by',
+        ]
 
     def __ac_local_roles__(self):
         # Use lab/award from parent software object for access control.

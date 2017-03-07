@@ -128,7 +128,6 @@
         }
     },
     "boost_values": {
-        "pi": 1.0,
         "name":1.0,
         "awards.title":1.0,
         "institute_name": 1.0,

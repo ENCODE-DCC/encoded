@@ -16,7 +16,18 @@ from .base import (
     })
 class ModificationTechnique(Item):
     base_types = ['ModificationTechnique'] + Item.base_types
-    # embedded = ['lab', 'award', 'source']
+    embedded = [
+        'award',
+        'award.pi',
+        'award.pi.lab',
+        'documents',
+        'documents.award',
+        'documents.lab',
+        'documents.submitted_by',
+        'lab',
+        'source',
+        'submitted_by',
+    ]
 
 
 @collection(
@@ -29,7 +40,6 @@ class Crispr(ModificationTechnique):
     item_type = 'crispr'
     schema = load_schema('encoded:schemas/crispr.json')
     embedded = ModificationTechnique.embedded
-
 
 @collection(
     name='tales',

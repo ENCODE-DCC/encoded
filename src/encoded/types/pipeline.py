@@ -60,7 +60,13 @@ class AnalysisStep(Item):
         'current_version',
         'current_version.software_versions',
         'current_version.software_versions.software',
-        'parents'
+        'documents',
+        'documents.award',
+        'documents.lab',
+        'documents.submitted_by',
+        'parents',
+        'submitted_by',
+        'versions',
     ]
 
     @calculated_property(schema={
@@ -128,6 +134,10 @@ class AnalysisStepRun(Item):
     schema = load_schema('encoded:schemas/analysis_step_run.json')
     embedded = [
         'analysis_step_version.analysis_step',
+        'analysis_step_version.analysis_step.pipelines',
+        'analysis_step_version.software_versions',
+        'analysis_step_version.software_versions.software',
+        'submitted_by',
     ]
     # Avoid using reverse links on this object as invalidating a virtual
     # step_run can cause thousands of objects to be reindexed.

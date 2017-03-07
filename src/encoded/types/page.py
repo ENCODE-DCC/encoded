@@ -39,6 +39,10 @@ class Page(SharedItem):
     embedded = [
         'layout.blocks.image',
         'award',
+        'award.pi',
+        'award.pi.lab',
+        'lab',
+        'submitted_by',
     ]
 
     def unique_keys(self, properties):

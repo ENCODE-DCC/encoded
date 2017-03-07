@@ -24,6 +24,9 @@ class Donor(Item):
         'organism',
         'characterizations',
         'characterizations.award',
+        'characterizations.documents.award',
+        'characterizations.documents.lab',
+        'characterizations.documents.submitted_by',
         'characterizations.lab',
         'characterizations.submitted_by',
         'documents',
@@ -65,7 +68,17 @@ class Donor(Item):
 class MouseDonor(Donor):
     item_type = 'mouse_donor'
     schema = load_schema('encoded:schemas/mouse_donor.json')
-    embedded = Donor.embedded + ['references']
+    embedded = Donor.embedded + [
+        'award.pi.lab',
+        'characterizations.documents',
+        'characterizations.documents.lab',
+        'characterizations.documents.award',
+        'characterizations.documents.submitted_by',
+        'lab',
+        'references',
+        'source',
+        'submitted_by',
+        ]
 
     def __ac_local_roles__(self):
         # Disallow lab submitter edits
@@ -82,7 +95,23 @@ class MouseDonor(Donor):
 class FlyDonor(Donor):
     item_type = 'fly_donor'
     schema = load_schema('encoded:schemas/fly_donor.json')
-    embedded = Donor.embedded + ['organism', 'constructs', 'constructs.target', 'characterizations']
+    embedded = Donor.embedded + [
+        'award.pi.lab',
+        'organism',
+        'constructs',
+        'constructs.documents.award',
+        'constructs.documents.lab',
+        'constructs.documents.submitted_by',
+        'constructs.target',
+        'characterizations',
+        'characterizations.documents',
+        'characterizations.documents.lab',
+        'characterizations.documents.award',
+        'characterizations.documents.submitted_by',
+        'lab',
+        'source',
+        'submitted_by',
+        ]
 
 
 @collection(
@@ -95,7 +124,23 @@ class FlyDonor(Donor):
 class WormDonor(Donor):
     item_type = 'worm_donor'
     schema = load_schema('encoded:schemas/worm_donor.json')
-    embedded = Donor.embedded + ['organism', 'constructs', 'constructs.target']
+    embedded = Donor.embedded + [
+        'award.pi.lab',
+        'lab',
+        'characterizations.documents',
+        'characterizations.documents.lab',
+        'characterizations.documents.award',
+        'characterizations.documents.submitted_by',
+        'constructs',
+        'constructs.target',
+        'constructs.documents',
+        'constructs.documents.award',
+        'constructs.documents.lab',
+        'constructs.documents.submitted_by',
+        'organism',
+        'source',
+        'submitted_by',
+        ]
 
 
 @collection(
@@ -108,4 +153,13 @@ class WormDonor(Donor):
 class HumanDonor(Donor):
     item_type = 'human_donor'
     schema = load_schema('encoded:schemas/human_donor.json')
-    embedded = Donor.embedded + ['references']
+    embedded = Donor.embedded + [
+        'award.pi.lab',
+        'characterizations.documents',
+        'characterizations.documents.lab',
+        'characterizations.documents.award',
+        'characterizations.documents.submitted_by',
+        'lab',
+        'references',
+        'submitted_by'
+        ]
