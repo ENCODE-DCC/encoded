@@ -2,6 +2,7 @@ import React from 'react';
 import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
+import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, DocumentsSubpanels } from './doc';
 import globals from './globals';
@@ -563,8 +564,14 @@ const Donor = React.createClass({
 
                 <RelatedItems
                     title={`Biosamples from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
-                    url={`/search/?type=biosample&donor.uuid=${context.uuid}`}
+                    url={`/search/?type=Biosample&donor.uuid=${context.uuid}`}
                     Component={BiosampleTable}
+                />
+
+                <RelatedItems
+                    title={`Experiments from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
+                    url={`/search/?type=Experiment&replicates.library.biosample.donor.uuid=${context.uuid}`}
+                    Component={ExperimentTable}
                 />
 
                 {combinedDocuments.length ?
