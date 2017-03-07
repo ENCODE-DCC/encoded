@@ -551,7 +551,7 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
             properties = request.embed(path, '@@object')
             if properties['status'] in ('in progress', 'released'):
                 dataset_files.append(properties['original_files'])
-        return calculate_assembly(request, set(original_files + tuple(dataset_files)), status)
+        return calculate_assembly(request, original_files + dataset_files, status)
 
 
 @collection(
