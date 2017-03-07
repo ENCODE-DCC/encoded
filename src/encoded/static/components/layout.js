@@ -184,6 +184,7 @@ const Block = module.exports.Block = React.createClass({
             onMouseLeave={this.mouseLeave}
             onFocus={this.focus}
             onBlur={this.blur}
+            ref={(comp) => { this.domNode = comp; }}
         >
             {this.context.editable ? this.renderToolbar() : ''}
             <BlockView value={block} onChange={this.onChange} />
@@ -324,7 +325,10 @@ const Col = React.createClass({
         const blocks = this.props.value.blocks;
         const classStr = Object.keys(classes).join(' ');
         return (
-            <div className={classStr} onDragOver={this.dragOver}>
+            <div
+                className={classStr} onDragOver={this.dragOver}
+                ref={(comp) => { this.domNode = comp; }}
+            >
                 {blocks.map((blockId, k) => this.renderBlock(blockId, k))}
             </div>
         );
@@ -362,7 +366,10 @@ const Row = React.createClass({
             colClass = 'col-md-12'; break;
         }
         return (
-            <div className={classStr} onDragOver={this.dragOver}>
+            <div
+                className={classStr} onDragOver={this.dragOver}
+                ref={(comp) => { this.domNode = comp; }}
+            >
                 {cols.map((col, j) => <Col
                     value={col} className={col.className || colClass}
                     key={j} pos={this.props.pos.concat([j])}
@@ -588,8 +595,12 @@ module.exports.Layout = React.createClass({
         }
         e.stopPropagation();
 
-        if (typeof target === 'string') return;
-        const targetNode = (target || this).getDOMNode();
+        if (target && target.render === undefined) {
+            // somehow we got something other than a React element
+            return;
+        }
+        // eslint-disable-next-line react/no-find-dom-node
+        const targetNode = (target || this).domNode;
         if (!targetNode.childNodes.length) return;
         const targetOffset = offset(targetNode);
         const x = e.pageX - targetOffset.left;

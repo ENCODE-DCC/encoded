@@ -24,7 +24,10 @@ var SearchBlockEdit = React.createClass({
     render: function() {
         var styles = {maxHeight: 300, overflow: 'scroll', clear: 'both' };
         return (
-            <div className="well" style={styles} onClick={openLinksInNewWindow}>
+            <div
+                className="well" style={styles} onClick={openLinksInNewWindow}
+                ref={(comp) => { this.domNode = comp; }}
+            >
                 <ResultTable {...this.props} mode="picker" />
             </div>
         );
@@ -32,7 +35,7 @@ var SearchBlockEdit = React.createClass({
 
     componentDidMount: function() {
         // focus the first "Select" button in the search results
-        var button = this.getDOMNode().querySelector('button.btn-primary');
+        var button = this.domNode.querySelector('button.btn-primary');
         if (button) {
             button.focus();
         }
