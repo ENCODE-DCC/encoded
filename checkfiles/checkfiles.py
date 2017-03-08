@@ -371,6 +371,12 @@ def process_fastq_file(job, fastq_data_stream, session, url):
         '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
         '+:\d+:\d+:\d+:\d+[/1|/2]*[\s_][12]:[YXN]:[0-9]+:([ACNTG\+]*|[0-9]*))$'
     )
+
+    srr_read_name_pattern = re.compile(
+        '^(@SRR[\d.]+\s[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
+        '+:\d+:\d+:\d+:\d+\slength=[\d]+)$'
+    )
+
     read_numbers_set = set()
     signatures_set = set()
     signatures_no_barcode_set = set()
