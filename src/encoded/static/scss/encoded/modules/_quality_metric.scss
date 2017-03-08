@@ -1,0 +1,88 @@
+// Panel that displays all QC panels.
+.qc-panel {
+    padding: 0;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+}
+
+$horzontal-margin: .5%; // Margin at left and right of qc-individual-panel
+$collapsed-height: 200px; // Height of qc-individual-panel when collapsed
+$collapse-trigger-height: 25px; // Height of collapse trigger
+$qc-actuator-size: 30px; // Height and width of QC modal actuator on file page
+
+.qc-individual-panel__wrapper {
+    @media screen and (min-width: $screen-sm-min) {
+        flex: 0 1 50%;
+    }
+
+    @media screen and (min-width: $screen-md-min) {
+        flex: 0 1 33.3333%;
+    }
+}
+
+
+// Individual QC panels inside .qc-panel.
+.qc-individual-panel {
+    position: relative;
+    margin: 3px;
+    height: $collapsed-height;
+    overflow: hidden;
+
+    &.expanded {
+        height: auto;
+        padding-bottom: $collapse-trigger-height;
+    }
+
+    .panel-body {
+        padding: 5px 10px;
+    }
+
+    // Panel title for individual QC panels.
+    @at-root #{&}__heading {
+        display: flex;
+        padding: 3px 3px 3px 10px;
+    }
+
+    @at-root #{&}__title {
+        flex: 1 1 auto;
+        font-size: 1.1rem;
+        line-height: $qc-actuator-size;
+    }
+
+    @at-root #{&}__modal-actuator {
+        display: block;
+        flex: 0 0 $qc-actuator-size;
+        width: $qc-actuator-size;
+        height: $qc-actuator-size;
+        padding: 0;
+        background-color: #e8e8e8;
+
+        &:hover {
+            background-color: #b8c7d5;
+        }
+    }
+
+    // Collapse trigger for individual QC panels.
+    @at-root #{&}__expand-trigger {
+        position: absolute;
+        bottom: 0;
+        height: $collapse-trigger-height;
+        width: 100%;
+        border: none;
+        border-top: 1px solid #c0c0c0;
+        background-color: #e8e8e8;
+
+        &:hover {
+            background-color: #b8c7d5;
+        }
+
+        &:focus {
+            outline: none;
+            box-shadow: 0 0 3px 2px #94bfe7 inset;
+        }
+    }
+}

@@ -405,7 +405,14 @@
                 "DNA-PET",
                 "Switchgear",
                 "5' RLM RACE",
-                "MNase-seq"
+                "MNase-seq",
+                "5' RACE",
+                "3' RACE",
+                "small RNA-seq",
+                "Bru-seq",
+                "BruChase-seq",
+                "genetic modification followed by DNase-seq",
+                "CRISPRi followed by RNA-seq"
             ]
         }
     },
@@ -431,7 +438,7 @@
             "title": "Term ID",
             "description": "Ontology identifier describing a component in the treatment.",
             "type": "string",
-            "pattern": "^(CHEBI:[0-9]{1,7})|(UniprotKB:P[0-9]{5})|(Taxon:[0-9]{2,7})|(NTR:[0-9]{2,8})$"
+            "pattern": "^(CHEBI:[0-9]{1,7})|(UniprotKB:P[0-9]{5})|(Taxon:[0-9]{2,7})|(NTR:[0-9]{2,8})|(CL:[0-9]{2,8})$"
         },
         "treatment_term_name": {
             "title": "Term name",

@@ -9,11 +9,11 @@ const Panel = React.createClass({
         children: React.PropTypes.node,
     },
 
-    render: function () {
-        const { addClasses, noDefaultClasses } = this.props;
+    render: function() {
+        var { addClasses, noDefaultClasses, ...other } = this.props;
 
         return (
-            <div className={(noDefaultClasses ? '' : 'panel panel-default') + (addClasses ? ` ${addClasses}` : '')}>
+            <div {...other} className={(noDefaultClasses ? '' : 'panel panel-default') + (addClasses ? ' ' + addClasses : '')}>
                 {this.props.children}
             </div>
         );

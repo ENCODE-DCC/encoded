@@ -95,7 +95,7 @@ export function CollectBiosampleDocs(biosample) {
         donorCharacterizations,
         donorConstructs,
         talenDocuments,
-        treatmentDocuments
+        treatmentDocuments,
     )).chain().uniq(doc => (doc ? doc.uuid : null)).compact()
     .value();
 
@@ -109,7 +109,7 @@ export const BiosampleTable = React.createClass({
         items: React.PropTypes.array, // Array of biosamples to display
         total: React.PropTypes.number, // Total number of biosamples matching search criteria (can be more than biosamples in `items`)
         limit: React.PropTypes.number, // Maximum number of biosamples to display in the table
-        title: React.PropTypes.oneOf([ // Title to display in table header, as string or component
+        title: React.PropTypes.oneOfType([ // Title to display in table header, as string or component
             React.PropTypes.string,
             React.PropTypes.node,
         ]),
@@ -173,27 +173,26 @@ export const BiosampleTableFooter = React.createClass({
 // Display a reference to an award page as a definition list item.
 export const AwardRef = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // Object containing the award property
-        loggedIn: React.PropTypes.bool, // True if user's logged in
+        context: React.PropTypes.object.isRequired, // Object containing the award property
+        adminUser: React.PropTypes.bool.isRequired, // True if current user is a logged-in admin
     },
 
     render: function () {
-        const { context, loggedIn } = this.props;
+        const { context, adminUser } = this.props;
+        const award = context.award;
 
-        if (context.award) {
+        if (award && award.pi && award.pi.lab) {
             return (
                 <div data-test="awardpi">
                     <dt>Award</dt>
                     <dd>
-                        {context.award.status === 'current' || loggedIn ?
-                            <a href={context.award['@id']}>
-                                {context.award.name}
-                            </a>
+                        {adminUser || award.status === 'current' || award.status === 'disabled' ?
+                            <a href={award['@id']} title={`View page for award ${award.name}`}>{award.name}</a>
                         :
-                            <span>{context.award.name}</span>
+                            <span>{award.name}</span>
                         }
-                        {context.award.pi && context.award.pi.lab ?
-                            <span> ({context.award.pi.lab.title})</span>
+                        {award.pi && award.pi.lab ?
+                            <span> ({award.pi.lab.title})</span>
                         : null}
                     </dd>
                 </div>

@@ -422,7 +422,7 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                 {context.donor ?
                     <div>
-                        {PanelLookup({context: context.donor, biosample: context, panelTitle: donorPanelTitle})}
+                        {PanelLookup({ context: context.donor, biosample: context })}
                     </div>
                 : null}
 
@@ -508,8 +508,13 @@ var BiosampleTermId = React.createClass({
 
 
 var HumanDonor = module.exports.HumanDonor = React.createClass({
-    render: function() {
-        var {context, biosample, panelTitle} = this.props;
+    propTypes: {
+        context: React.PropTypes.object.isRequired, // Donor being displayed
+        biosample: React.PropTypes.object, // Biosample this donor is associated with
+    },
+
+    render: function () {
+        const { context, biosample } = this.props;
         var references = pubReferenceList(context.references);
 
         // Render tags badges
@@ -522,7 +527,7 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
             <div>
                 <Panel>
                     <PanelHeading>
-                        <h4>{panelTitle}</h4>
+                        <h4>Donor information</h4>
                     </PanelHeading>
                     <PanelBody>
                         <dl className="key-value">
@@ -633,6 +638,9 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
         return (
             <div>
                 <Panel>
+                    <PanelHeading>
+                        <h4>Strain information</h4>
+                    </PanelHeading>
                     <PanelBody>
                         <dl className="key-value">
                             <div data-test="accession">
@@ -759,6 +767,9 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
         return (
             <div>
                 <Panel>
+                    <PanelHeading>
+                        <h4>Strain information</h4>
+                    </PanelHeading>
                     <PanelBody>
                         <dl className="key-value">
                             <div data-test="accession">
@@ -1107,7 +1118,7 @@ var CharacterizationHeader = React.createClass({
         var doc = this.props.doc;
 
         return (
-            <div className="panel-header document-title sentence-case">
+            <div className="document__header">
                 {doc.characterization_method}
             </div>
         );
@@ -1128,7 +1139,7 @@ var CharacterizationCaption = React.createClass({
         }
 
         return (
-            <div className="document-intro document-meta-data">
+            <div className="document__caption">
                 {excerpt || caption ?
                     <div data-test="caption">
                         <strong>{excerpt ? 'Caption excerpt: ' : 'Caption: '}</strong>
@@ -1150,7 +1161,7 @@ var CharacterizationDetail = React.createClass({
 
     render: function() {
         var doc = this.props.doc;
-        var keyClass = 'document-slider' + (this.props.detailOpen ? ' active' : '');
+        var keyClass = 'document__detail' + (this.props.detailOpen ? ' active' : '');
         var excerpt = doc.description && doc.description.length > EXCERPT_LENGTH;
 
         return (

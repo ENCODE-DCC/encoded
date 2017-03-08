@@ -440,7 +440,7 @@ def chip_seq_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, award,
 @pytest.fixture
 def hotspot_quality_metric(testapp, analysis_step_run_bam, file_tsv_1_1, award, encode_lab):
     item = {
-        'SPOT score': 0.2345,
+        'SPOT score': 0.3345,
         'step_run': analysis_step_run_bam['@id'],
         'quality_metric_of': [file_tsv_1_1['@id']],
         'award': award['@id'],
@@ -476,6 +476,32 @@ def mad_quality_metric_1_2(testapp, analysis_step_run_bam, file_tsv_1_2, award, 
     }
 
     return testapp.post_json('/mad_quality_metric', item).json['@graph'][0]
+
+
+@pytest.fixture
+def correlation_quality_metric(testapp, analysis_step_run_bam, file_tsv_1_2, award, lab):
+    item = {
+        'step_run': analysis_step_run_bam['@id'],
+        'quality_metric_of': [file_tsv_1_2['@id']],
+        'Pearson correlation': 0.1,
+        'award': award['@id'],
+        'lab': lab['@id']
+    }
+
+    return testapp.post_json('/correlation_quality_metric', item).json['@graph'][0]
+
+
+@pytest.fixture
+def duplicates_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, lab, award):
+    item = {
+        'step_run': analysis_step_run_bam['@id'],
+        'quality_metric_of': [file_bam_1_1['@id']],
+        'Percent Duplication': 0.23,
+        'award': award['@id'],
+        'lab': lab['@id']
+    }
+
+    return testapp.post_json('/duplicates_quality_metric', item).json['@graph'][0]
 
 
 @pytest.fixture
@@ -1246,7 +1272,7 @@ def test_audit_experiment_not_uploaded_files(testapp, file_bam,
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'not uploaded files' for error in errors_list)
+    assert any(error['category'] == 'file validation error' for error in errors_list)
 
 
 def test_audit_experiment_replicate_with_no_fastq_files(testapp, file_bam,
@@ -2225,6 +2251,93 @@ def test_audit_experiment_dnase_low_read_length(testapp,
     assert any(error['category'] == 'insufficient read length' for error in errors_list)
 
 
+def test_audit_experiment_dnase_low_correlation(testapp,
+                                                base_experiment,
+                                                replicate_1_1,
+                                                replicate_2_1,
+                                                library_1,
+                                                library_2,
+                                                biosample_1,
+                                                mouse_donor_1,
+                                                file_fastq_3,
+                                                bigWig_file,
+                                                file_bam_1_1,
+                                                correlation_quality_metric,
+                                                chip_seq_quality_metric,
+                                                analysis_step_run_bam,
+                                                analysis_step_version_bam,
+                                                analysis_step_bam,
+                                                pipeline_bam):
+    testapp.patch_json(bigWig_file['@id'], {'dataset': base_experiment['@id']})
+    testapp.patch_json(
+        correlation_quality_metric['@id'], {'quality_metric_of': [bigWig_file['@id']],
+                                            'Pearson correlation': 0.15})
+    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10',
+                                             'output_type': 'alignments',
+                                             'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'DNase-HS pipeline (single-end)'})
+    testapp.patch_json(chip_seq_quality_metric['@id'], {'mapped': 23})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released',
+                                                'date_released': '2016-01-01',
+                                                'assay_term_name': 'DNase-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'insufficient replicate concordance' for error in errors_list)
+
+
+def test_audit_experiment_dnase_duplication(testapp,
+                                            base_experiment,
+                                            replicate_1_1,
+                                            replicate_2_1,
+                                            library_1,
+                                            library_2,
+                                            biosample_1,
+                                            mouse_donor_1,
+                                            file_fastq_3,
+                                            file_bam_1_1,
+                                            duplicates_quality_metric,
+                                            analysis_step_run_bam,
+                                            analysis_step_version_bam,
+                                            analysis_step_bam,
+                                            pipeline_bam):
+    testapp.patch_json(
+        duplicates_quality_metric['@id'], {'quality_metric_of': [file_bam_1_1['@id']]})
+    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10',
+                                             'output_type': 'alignments',
+                                             'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'DNase-HS pipeline (single-end)'})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released',
+                                                'date_released': '2016-01-01',
+                                                'assay_term_name': 'DNase-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'extremely high duplication rate' for error in errors_list)
+
+
 def test_audit_experiment_dnase_seq_missing_read_depth(testapp,
                                                        base_experiment,
                                                        replicate_1_1,
@@ -2326,6 +2439,8 @@ def test_audit_experiment_out_of_date_analysis_added_fastq(testapp,
                                                            file_fastq_4,
                                                            file_bam_1_1,
                                                            file_bam_2_1):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file_fastq_4['@id'], {'replicate': replicate_1_1['@id']})
     testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -2344,6 +2459,7 @@ def test_audit_experiment_out_of_date_analysis_removed_fastq(testapp,
                                                              file_fastq_4,
                                                              file_bam_1_1,
                                                              file_bam_2_1):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(file_fastq_3['@id'], {'status': 'deleted'})
@@ -2365,6 +2481,45 @@ def test_audit_experiment_no_out_of_date_analysis(testapp,
                                                   file_bam_2_1):
     testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']]})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'out of date analysis' for error in errors_list)
+
+
+def test_audit_experiment_control_out_of_date_analysis_paired_fastqs(
+    testapp,
+    base_experiment,
+    replicate_1_1,
+    replicate_2_1,
+    file_fastq_3,
+    file_fastq_4,
+    file_bam_1_1,
+    file_bam_2_1,
+    control_target,
+    ctrl_experiment
+):
+
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(ctrl_experiment['@id'], {'target': control_target['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'experiment': ctrl_experiment['@id']})
+
+    testapp.patch_json(file_bam_1_1['@id'], {'assembly': 'mm10',
+                                             'output_type': 'signal of unique reads',
+                                             'file_format': 'bigWig',
+                                             'output_type': 'signal p-value',
+                                             'derived_from': [file_bam_2_1['@id']]})
+    testapp.patch_json(file_fastq_3['@id'], {'dataset': ctrl_experiment['@id'],
+                                             'replicate': replicate_2_1['@id'],
+                                             'paired_end': '1'})
+    testapp.patch_json(file_fastq_4['@id'], {'dataset': ctrl_experiment['@id'],
+                                             'replicate': replicate_2_1['@id'],
+                                             'paired_end': '2',
+                                             'paired_with': file_fastq_3['@id']})
+    testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']],
+                                             'dataset': ctrl_experiment['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -2746,3 +2901,29 @@ def test_audit_experiment_wrong_construct(testapp,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'mismatched construct target' for error in errors_list)
+
+
+def test_audit_experiment_chip_seq_mapped_read_length(testapp,
+                                                      base_experiment,
+                                                      file_fastq_3,
+                                                      file_fastq_4,
+                                                      file_bam_1_1,
+                                                      file_bam_2_1,
+                                                      file_tsv_1_2):
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 100})
+    testapp.patch_json(file_fastq_4['@id'], {'read_length': 130})
+    testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']]})
+    testapp.patch_json(file_tsv_1_2['@id'], {'derived_from': [file_bam_2_1['@id'],
+                                                              file_bam_1_1['@id']],
+                                             'file_format_type': 'narrowPeak',
+                                             'file_format': 'bed',
+                                             'output_type': 'peaks'})
+
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'inconsistent mapped reads lengths' for error in errors_list)

@@ -5,7 +5,20 @@ from snovault import (
 from .conditions import rfa
 
 
-@audit_checker('antibody_lot', frame=[
+@audit_checker('AntibodyLot', frame='object')
+def audit_antibody_dbxrefs_ar(value, system):
+    dbxrefs = value.get('dbxrefs')
+    if dbxrefs:
+        for entry in dbxrefs:
+            if entry.startswith('AR:'):
+                return
+    detail = '{} '.format(value['@id']) + \
+             'does not have AR dbxrefs.'
+    yield AuditFailure('missing antibody registry reference', detail,
+                       level='INTERNAL_ACTION')
+
+
+@audit_checker('AntibodyLot', frame=[
     'targets',
     'characterizations',
     'characterizations.target'],

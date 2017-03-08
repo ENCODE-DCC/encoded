@@ -1,4 +1,5 @@
 import React from 'react';
+import cloneWithProps from 'react/lib/cloneWithProps';
 
 
 // Display a summary sentence for a single treatment.
@@ -35,55 +36,57 @@ export function treatmentDisplay(treatment) {
 }
 
 
-// Do a search of the specific files whose @ids are listed in the `fileIds` parameter. Because we
-// have to specify the @id of each file in the URL of the GET request, the URL can get quite long,
-// so if the number of `fileIds` @ids goes beyond the `chunkSize` constant, we break the
+// Do a search of the specific objects whose @ids are listed in the `atIds` parameter. Because we
+// have to specify the @id of each object in the URL of the GET request, the URL can get quite
+// long, so if the number of `atIds` @ids goes beyond the `chunkSize` constant, we break thev
 // searches into chunks, and the maximum number of @ids in each chunk is `chunkSize`. We
 // then send out all the search GET requests at once, combine them into one array of
 // files returned as a promise.
 //
-// You can also supply an array of file objects in the filteringFiles parameter. Any file @ids in
-// `fileIds` that matches a file['@id'] in `filteringFiles` doesn't get included in the GET
+// You can also supply an array of objects in the filteringObjects parameter. Any file @ids in
+// `atIds` that matches an object['@id'] in `filteringObjects` doesn't get included in the GET
 // request.
 //
 // Note: this function calls `fetch`, so you can't call this function from code that runs on the
 // server or it'll complain that `fetch` isn't defined. If called from a React component, make sure
 // you only call it when you know the component is mounted, like from the componentDidMount method.
 //
-// fileIds: array of file @ids.
-// filteringFiles: Array of files to filter out of the array of file @ids in the fileIds parameter.
-export function requestFiles(fileIds, filteringFiles) {
+// atIds: array of file @ids.
+// uri: Base URI specifying the type and statuses of the objects we want to get. The list of object
+//      @ids gets added to this URI.
+// filteringObjects: Array of files to filter out of the array of file @ids in the fileIds parameter.
+export function requestObjects(atIds, uri, filteringObjects) {
     const chunkSize = 100; // Maximum # of files to search for at once
     const filteringFileIds = {}; // @ids of files we've searched for and don't need retrieval
-    let filteredFileIds = {}; // @ids of files we need to retrieve
+    let filteredObjectIds = {}; // @ids of files we need to retrieve
 
     // Make a searchable object of file IDs for files to filter out of our list.
-    if (filteringFiles && filteringFiles.length) {
-        filteringFiles.forEach((filteringFile) => {
-            filteringFileIds[filteringFile['@id']] = filteringFile;
+    if (filteringObjects && filteringObjects.length) {
+        filteringObjects.forEach((filteringObject) => {
+            filteringFileIds[filteringObject['@id']] = filteringObject;
         });
 
         // Filter the given file @ids to exclude those files we already have in data.@graph,
         // just so we don't use bandwidth getting things we already have.
-        filteredFileIds = fileIds.filter(fileId => !filteringFileIds[fileId]);
+        filteredObjectIds = atIds.filter(atId => !filteringFileIds[atId]);
     } else {
         // The caller didn't supply an array of files to filter out, so filtered files are just
         // all of them.
-        filteredFileIds = fileIds;
+        filteredObjectIds = atIds;
     }
 
     // Break fileIds into an array of arrays of <= `chunkSize` @ids so we don't generate search
     // URLs that are too long for the server to handle.
-    const fileChunks = [];
-    for (let start = 0, chunkIndex = 0; start < filteredFileIds.length; start += chunkSize, chunkIndex += 1) {
-        fileChunks[chunkIndex] = filteredFileIds.slice(start, start + chunkSize);
+    const objectChunks = [];
+    for (let start = 0, chunkIndex = 0; start < filteredObjectIds.length; start += chunkSize, chunkIndex += 1) {
+        objectChunks[chunkIndex] = filteredObjectIds.slice(start, start + chunkSize);
     }
 
     // Going to send out all search chunk GET requests at once, and then wait for all of them to
     // complete.
-    return Promise.all(fileChunks.map((fileChunk) => {
+    return Promise.all(objectChunks.map((objectChunk) => {
         // Build URL containing file search for specific files for each chunk of files.
-        const url = '/search/?type=File&limit=all&status!=deleted&status!=revoked&status!=replaced'.concat(fileChunk.reduce((combined, current) => `${combined}&@id=${current}`, ''));
+        const url = uri.concat(objectChunk.reduce((combined, current) => `${combined}&@id=${current}`, ''));
         return fetch(url, {
             method: 'GET',
             headers: {
@@ -101,12 +104,30 @@ export function requestFiles(fileIds, filteringFiles) {
         // `chunks` -- one per chunk. Now collect their files from their @graphs into one array of
         // files and return them as the promise result.
         if (chunks && chunks.length) {
-            return chunks.reduce((files, chunk) => (chunk && chunk['@graph'].length ? files.concat(chunk['@graph']) : files), []);
+            return chunks.reduce((objects, chunk) => (chunk && chunk['@graph'].length ? objects.concat(chunk['@graph']) : objects), []);
         }
 
         // Didn't get any good chucks back, so just return no results.
         return [];
     });
+}
+
+
+// Do a search of the specific files whose @ids are listed in the `fileIds` parameter.
+//
+// You can also supply an array of objects in the filteringFiles parameter. Any file @ids in
+// `atIds` that matches an object['@id'] in `filteringFiles` doesn't get included in the GET
+// request.
+//
+// Note: this function calls requestObjects which calls `fetch`, so you can't call this function
+// from code that runs on the server or it'll complain that `fetch` isn't defined. If called from a
+// React component, make sure you only call it when you know the component is mounted, like from
+// the componentDidMount method.
+//
+// fileIds: array of file @ids.
+// filteringFiles: Array of files to filter out of the array of file @ids in the fileIds parameter.
+export function requestFiles(fileIds, filteringFiles) {
+    return requestObjects(fileIds, '/search/?type=File&limit=all&status!=deleted&status!=revoked&status!=replaced', filteringFiles);
 }
 
 
@@ -167,4 +188,218 @@ export function donorDiversity(dataset) {
         }
     }
     return diversity;
+}
+
+
+// Render the Download icon while allowing the hovering tooltip.
+const DownloadIcon = React.createClass({
+    propTypes: {
+        hoverDL: React.PropTypes.func, // Function to call when hovering or stop hovering over the icon
+        file: React.PropTypes.object, // File associated with this download button
+        adminUser: React.PropTypes.bool, // True if logged-in user is an admin
+    },
+
+    onMouseEnter: function () {
+        this.props.hoverDL(true);
+    },
+
+    onMouseLeave: function () {
+        this.props.hoverDL(false);
+    },
+
+    render: function () {
+        const { file, adminUser } = this.props;
+
+        return (
+            <i className="icon icon-download" style={!file.restricted || adminUser ? {} : { opacity: '0.3' }} onMouseEnter={file.restricted ? this.onMouseEnter : null} onMouseLeave={file.restricted ? this.onMouseLeave : null}>
+                <span className="sr-only">Download</span>
+            </i>
+        );
+    },
+});
+
+
+// Render an accession as a button if clicking it sets a graph node, or just as text if not.
+const FileAccessionButton = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object.isRequired, // File whose button is being rendered
+    },
+
+    render: function () {
+        const { file } = this.props;
+        return <a href={file['@id']} title={`Go to page for ${file.title}`}>{file.title}</a>;
+    },
+});
+
+
+// Display a button to open the file information modal.
+const FileInfoButton = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object.isRequired, // File whose information is to be displayed
+        clickHandler: React.PropTypes.func, // Function to call when the info button is clicked
+    },
+
+    onClick: function () {
+        this.props.clickHandler(`file:${this.props.file['@id']}`);
+    },
+
+    render: function () {
+        return (
+            <button className="file-table-btn" onClick={this.onClick}>
+                <i className="icon icon-info-circle">
+                    <span className="sr-only">Open file information</span>
+                </i>
+            </button>
+        );
+    },
+});
+
+
+// Render a download button for a file that reacts to login state and admin status to render a
+// tooltip about the restriction based on those things.
+export const RestrictedDownloadButton = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object, // File containing `href` to use as download link
+        adminUser: React.PropTypes.bool, // True if logged in user is admin
+        downloadComponent: React.PropTypes.object, // Optional component to render the download button, insetad of default
+    },
+
+    getInitialState: function () {
+        return {
+            tip: false, // True if tip is visible
+        };
+    },
+
+    timer: null, // Holds timer for the tooltip
+    tipHovering: false, // True if currently hovering over the tooltip
+
+    hoverDL: function (hovering) {
+        if (hovering) {
+            // Started hovering over the DL button; show the tooltip.
+            this.setState({ tip: true });
+
+            // If we happen to have a running timer, clear it so we don't clear the tooltip while
+            // hovering over the DL button.
+            if (this.timer) {
+                clearTimeout(this.timer);
+                this.timer = null;
+            }
+        } else {
+            // No longer hovering over the DL button; start a timer that might hide the tooltip
+            // after a second passes. It won't hide the tooltip if they're now hovering over the
+            // tooltip itself.
+            this.timer = setTimeout(() => {
+                this.timer = null;
+                if (!this.tipHovering) {
+                    this.setState({ tip: false });
+                }
+            }, 1000);
+        }
+    },
+
+    hoverTip: function (hovering) {
+        if (hovering) {
+            // Started hovering over the tooltip. This prevents the timer from hiding the tooltip.
+            this.tipHovering = true;
+        } else {
+            // Stopped hovering over the tooltip. If the DL button hover time isn't running, hide
+            // the tooltip here.
+            this.tipHovering = false;
+            if (!this.timer) {
+                this.setState({ tip: false });
+            }
+        }
+    },
+
+    hoverTipIn: function () {
+        this.hoverTip(true);
+    },
+
+    hoverTipOut: function () {
+        this.hoverTip(false);
+    },
+
+    render: function () {
+        const { file, adminUser } = this.props;
+        const tooltipOpenClass = this.state.tip ? ' tooltip-open' : '';
+        const buttonEnabled = !file.restricted || adminUser;
+
+        // If the user provided us with a component for downloading files, add the download
+        // properties to the component before rendering.
+        const downloadComponent = this.props.downloadComponent ? cloneWithProps(this.props.downloadComponent, {
+            file: file,
+            href: file.href,
+            download: file.href.substr(file.href.lastIndexOf('/') + 1),
+            hoverDL: this.hoverDL,
+            adminUser: adminUser,
+            buttonEnabled: buttonEnabled,
+        }) : null;
+
+        // Supply a default icon for the user to click to download, if the caller didn't supply one
+        // in downloadComponent.
+        const icon = (!downloadComponent ? <DownloadIcon file={file} adminUser={adminUser} hoverDL={this.hoverDL} /> : null);
+
+        return (
+            <div className="dl-tooltip-trigger">
+                {buttonEnabled ?
+                    <span>
+                        {downloadComponent ?
+                            <span>{downloadComponent}</span>
+                        :
+                            <a href={file.href} download={file.href.substr(file.href.lastIndexOf('/') + 1)} data-bypass="true">
+                                {icon}
+                            </a>
+                        }
+                    </span>
+                :
+                    <span>
+                        {downloadComponent ?
+                            <span>{downloadComponent}</span>
+                        :
+                            <span>{icon}</span>
+                        }
+                    </span>
+                }
+                {file.restricted ?
+                    <div className={`tooltip right${tooltipOpenClass}`} role="tooltip" onMouseEnter={this.hoverTipIn} onMouseLeave={this.hoverTipOut}>
+                        <div className="tooltip-arrow" />
+                        <div className="tooltip-inner">
+                            If you are a collaborator or owner of this file,<br />
+                            please contact <a href="mailto:encode-help@lists.stanford.edu">encode-help@lists.stanford.edu</a><br />
+                            to receive a copy of this file
+                        </div>
+                    </div>
+                : null}
+            </div>
+        );
+    },
+});
+
+
+export const DownloadableAccession = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object.isRequired, // File whose accession to render
+        buttonEnabled: React.PropTypes.bool, // True if accession should be a button
+        clickHandler: React.PropTypes.func, // Function to call when button is clicked
+        loggedIn: React.PropTypes.bool, // True if current user is logged in
+        adminUser: React.PropTypes.bool, // True if current user is logged in and admin
+    },
+
+    render: function () {
+        const { file, buttonEnabled, clickHandler, loggedIn, adminUser } = this.props;
+        return (
+            <span className="file-table-accession">
+                <FileAccessionButton file={file} clickHandler={clickHandler} />
+                {buttonEnabled ? <FileInfoButton file={file} clickHandler={clickHandler} /> : null}
+                <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
+            </span>
+        );
+    },
+});
+
+
+// Return `true` if the given dataset is viewable by people not logged in, or people logged in
+// but not as admin.
+export function publicDataset(dataset) {
+    return dataset.status === 'released' || dataset.status === 'archived' || dataset.status === 'revoked';
 }

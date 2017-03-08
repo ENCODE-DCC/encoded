@@ -79,7 +79,7 @@ class Dataset(Item):
         'revoked_files.submitted_by',
         'submitted_by',
         'lab',
-        'award',
+        'award.pi.lab',
         'documents.lab',
         'documents.award',
         'documents.submitted_by',
@@ -328,7 +328,6 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
         'files.quality_metrics.step_run',
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
         'files.replicate.library',
-        'supersedes',
     ]
     rev = Dataset.rev.copy()
     rev.update({
@@ -481,7 +480,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'organism',
         'target',
         'target.organism',
-        'award.pi.lab',
         'references',
         'related_datasets.files',
         'related_datasets.files.analysis_step_version',

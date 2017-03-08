@@ -63,12 +63,14 @@ var Experiment = module.exports.Experiment = React.createClass({
     mixins: [AuditMixin],
 
     contextTypes: {
-        session: React.PropTypes.object
+        session: React.PropTypes.object,
+        session_properties: React.PropTypes.object,
     },
 
     render: function() {
         var condensedReplicates = [];
         var context = this.props.context;
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         var itemClass = globals.itemClass(context, 'view-item');
         var replicates = context.replicates;
         if (replicates) {
@@ -257,6 +259,12 @@ var Experiment = module.exports.Experiment = React.createClass({
             supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
         }
 
+        // Make array of supersedes accessions
+        let supersedes = [];
+        if (context.supersedes && context.supersedes.length) {
+            supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
+        }
+
         // Determine whether the experiment is isogenic or anisogenic. No replication_type indicates isogenic.
         var anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
 
@@ -316,6 +324,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <h2>Experiment summary for {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
+                        {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -437,7 +446,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         <dd>{context.lab.title}</dd>
                                     </div>
 
-                                    <AwardRef context={context} loggedIn={loggedIn} />
+                                    <AwardRef context={context} adminUser={adminUser} />
 
                                     <div data-test="project">
                                         <dt>Project</dt>

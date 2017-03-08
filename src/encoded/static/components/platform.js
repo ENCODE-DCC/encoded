@@ -1,10 +1,7 @@
 'use strict';
 var React = require('react');
 var globals = require('./globals');
-var dbxref = require('./dbxref');
-
-var DbxrefList = dbxref.DbxrefList;
-var Dbxref = dbxref.Dbxref;
+var { DbxrefList, dbxref } = require('./dbxref');
 
 var Panel = module.exports.Panel = React.createClass({
     render: function() {
@@ -20,7 +17,7 @@ var Panel = module.exports.Panel = React.createClass({
 
                     <div data-test="obiid">
                         <dt>OBI ID</dt>
-                        <dd><Dbxref value={context.term_id} /></dd>
+                        <dd>{context.term_id}</dd>
                     </div>
 
                     <div data-test="externalresources">

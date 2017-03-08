@@ -7,13 +7,21 @@ ENCODE Metadata Database
 .. |Build status| image:: https://travis-ci.org/ENCODE-DCC/encoded.png?branch=master
 .. _Build status: https://travis-ci.org/ENCODE-DCC/encoded
 
-
-Step 1: Verify that homebrew is working properly::
+Step 0: (Mac) Verify that homebrew is working properly::
 
     $ sudo brew doctor
 
 
-Step 2: Install or update dependencies::
+Step 1: Encoded requires a UNIX based system (Mac or Linux) and Python 3.4.x or 3.5.x::
+
+    For a mac, follow steps 0/1/2/3.  For Linux use apt-get or yum as your Linux flavor demands.  You can consult
+    cloud-config.yml for other steps.
+    Note:  Python 3.6 is NOT compatible with this version of encoded
+    
+    $ brew install python3
+    (use brew switch or pyenv to downgrade to 3.5x if necessary)
+
+Step 2: (Mac) Install or update dependencies::
 
     $ brew install libevent libmagic libxml2 libxslt openssl postgresql graphviz nginx python3
     $ brew install freetype libjpeg libtiff littlecms webp  # Required by Pillow
@@ -80,7 +88,7 @@ To run with a debugger::
 Specific tests to run locally for schema changes::
 
     $ bin/test -k test_load_workbook
-    $ bin/test -k test_edw_sync
+    $ bin/test -k test_load_schema
 
 Run the Pyramid tests with::
 
@@ -125,7 +133,7 @@ Creating a demo machine
 
 After buildout you (if you have the correct permissions) can run for a single-node "cluster":
 
-     $ bin/deploy --instance-size c4.8xlarge
+    $ bin/deploy --instance-type c4.8xlarge
 
 To initiate a server in the AWS cloud with the current branch, and with a computed nameserver alias based on the branch and AWS username.  Note that this retrieves a Postgres database from the current backup, so "as is" only applies specifically to the ENCODE Project (forkers beware!).   There are options to use a different branch and/or different name and also AWS spotinstnaces.  
 
