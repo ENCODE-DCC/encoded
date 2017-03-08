@@ -21,80 +21,6 @@ const HumanDonor = React.createClass({
         biosample: React.PropTypes.object, // Biosample this donor is associated with
     },
 
-    contextTypes: {
-        session: React.PropTypes.object, // Login information
-    },
-
-    getInitialState: function () {
-        return {
-            parentDonors: [],
-            childDOnors: [],
-        };
-    },
-
-    componentDidMount: function () {
-        // Now that the component has mounted, we can do a GET request of the donor's children and
-        // parents so we can display them once the results come back.
-        this.requestRelations();
-
-        // In case the logged-in state changes, we have to keep track of the old logged-in state.
-        this.loggedIn = !!(this.context.session && this.context.session['auth.userid']);
-    },
-
-    componentWillReceiveProps: function () {
-        // If the logged-in state has changed since the last time we rendered, request files again
-        // in case logging in changes the list of dependent files.
-        const currLoggedIn = !!(this.context.session && this.context.session['auth.userid']);
-        if (this.loggedIn !== currLoggedIn) {
-            this.requestRelations();
-            this.loggedIn = currLoggedIn;
-        }
-    },
-
-    requestRelations: function () {
-        // donor.parents and donor.children aren't embedded in the human donor object -- they're
-        // just arrays of human_donor @ids. This function does a database search to retrieve all
-        // donor.parent and donor.children objects.
-        const donor = this.props.context;
-        const parentAtids = donor.parents && donor.parents.length ? donor.parents : [];
-        const childrenAtids = donor.children && donor.children.length ? donor.children : [];
-
-        // Do both the donor.parent and donor.children as a combined search, and sort the results
-        // out after they get retrieved.
-        const atIds = parentAtids.concat(childrenAtids);
-
-        // atIds now has an array of human_donor parents and children @ids. Send a GET request to
-        // perform a search.
-        if (atIds.length) {
-            requestObjects(atIds, '/search/?type=HumanDonor&limit=all&status!=deleted&status!=revoked&status!=replaced').then((parentChildDonors) => {
-                // Got search results with all human_donor parents and children as one search
-                // result array. Sort them into parents and children based on their locations in
-                // the donor.
-                const relations = _(parentChildDonors).groupBy((parentChildDonor) => {
-                    // Any results that have a matching @id in the array of parents in the donor
-                    // get put into the 'parents' key in the `relations` object as an array. Any
-                    // with a matching @id in the array of children get put into the 'children' key
-                    // as an array.
-                    if (parentAtids.indexOf(parentChildDonor['@id']) !== -1) {
-                        return 'parents';
-                    }
-                    if (childrenAtids.indexOf(parentChildDonor['@id']) !== -1) {
-                        return 'children';
-                    }
-
-                    // This should *never* happen.
-                    return 'unknown';
-                });
-
-                // Rerender the page with the parents and children tables.
-                this.setState({
-                    parentDonors: relations.parents || [],
-                    childDonors: relations.children || [],
-                });
-            });
-        }
-    },
-
     render: function () {
         const { context, biosample } = this.props;
         const references = pubReferenceList(context.references);
@@ -190,20 +116,6 @@ const HumanDonor = React.createClass({
                         </dl>
                     </PanelBody>
                 </Panel>
-
-                <RelatedItems
-                    title={`Biosamples from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
-                    url={`/search/?type=biosample&donor.uuid=${context.uuid}`}
-                    Component={BiosampleTable}
-                />
-
-                {this.state.childDonors && this.state.childDonors.length ?
-                    <DonorTable title="Children of this donor" donors={this.state.childDonors} />
-                : null}
-
-                {this.state.parentDonors && this.state.parentDonors.length ?
-                    <DonorTable title="Parents of this donor" donors={this.state.parentDonors} />
-                : null}
             </div>
         );
     },
@@ -393,12 +305,6 @@ const MouseDonor = React.createClass({
                         : null}
                     </PanelBody>
                 </Panel>
-
-                <RelatedItems
-                    title={`Biosamples from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
-                    url={`/search/?type=biosample&donor.uuid=${context.uuid}`}
-                    Component={BiosampleTable}
-                />
             </div>
         );
     },
@@ -515,12 +421,6 @@ const FlyWormDonor = React.createClass({
                         </dl>
                     </PanelBody>
                 </Panel>
-
-                <RelatedItems
-                    title={`Biosamples from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
-                    url={`/search/?type=biosample&donor.uuid=${context.uuid}`}
-                    Component={BiosampleTable}
-                />
             </div>
         );
     },
@@ -534,6 +434,86 @@ globals.panel_views.register(FlyWormDonor, 'WormDonor');
 const Donor = React.createClass({
     propTypes: {
         context: React.PropTypes.object, // Donor being rendered
+    },
+
+    contextTypes: {
+        session: React.PropTypes.object, // Login information
+    },
+
+    getInitialState: function () {
+        return {
+            parentDonors: [],
+            childDOnors: [],
+        };
+    },
+
+    componentDidMount: function () {
+        // Humans need to do a couple requests to get the parents and children of the donor.
+        if (this.props.context['@type'][0] === 'HumanDonor') {
+            // Now that the component has mounted, we can do a GET request of the donor's children and
+            // parents so we can display them once the results come back.
+            this.requestRelations();
+
+            // In case the logged-in state changes, we have to keep track of the old logged-in state.
+            this.loggedIn = !!(this.context.session && this.context.session['auth.userid']);
+        }
+    },
+
+    componentWillReceiveProps: function () {
+        // Humans need to do a couple requests to get the parents and children of the donor.
+        if (this.props.context['@type'][0] === 'HumanDonor') {
+            // If the logged-in state has changed since the last time we rendered, request files again
+            // in case logging in changes the list of dependent files.
+            const currLoggedIn = !!(this.context.session && this.context.session['auth.userid']);
+            if (this.loggedIn !== currLoggedIn) {
+                this.requestRelations();
+                this.loggedIn = currLoggedIn;
+            }
+        }
+    },
+
+    requestRelations: function () {
+        // donor.parents and donor.children aren't embedded in the human donor object -- they're
+        // just arrays of human_donor @ids. This function does a database search to retrieve all
+        // donor.parent and donor.children objects.
+        const donor = this.props.context;
+        const parentAtids = donor.parents && donor.parents.length ? donor.parents : [];
+        const childrenAtids = donor.children && donor.children.length ? donor.children : [];
+
+        // Do both the donor.parent and donor.children as a combined search, and sort the results
+        // out after they get retrieved.
+        const atIds = parentAtids.concat(childrenAtids);
+
+        // atIds now has an array of human_donor parents and children @ids. Send a GET request to
+        // perform a search.
+        if (atIds.length) {
+            requestObjects(atIds, '/search/?type=HumanDonor&limit=all&status!=deleted&status!=revoked&status!=replaced').then((parentChildDonors) => {
+                // Got search results with all human_donor parents and children as one search
+                // result array. Sort them into parents and children based on their locations in
+                // the donor.
+                const relations = _(parentChildDonors).groupBy((parentChildDonor) => {
+                    // Any results that have a matching @id in the array of parents in the donor
+                    // get put into the 'parents' key in the `relations` object as an array. Any
+                    // with a matching @id in the array of children get put into the 'children' key
+                    // as an array.
+                    if (parentAtids.indexOf(parentChildDonor['@id']) !== -1) {
+                        return 'parents';
+                    }
+                    if (childrenAtids.indexOf(parentChildDonor['@id']) !== -1) {
+                        return 'children';
+                    }
+
+                    // This should *never* happen.
+                    return 'unknown';
+                });
+
+                // Rerender the page with the parents and children tables.
+                this.setState({
+                    parentDonors: relations.parents || [],
+                    childDonors: relations.children || [],
+                });
+            });
+        }
     },
 
     render: function () {
@@ -579,6 +559,20 @@ const Donor = React.createClass({
                 </header>
 
                 <PanelView key={context.uuid} {...this.props} />
+
+                <RelatedItems
+                    title={`Biosamples from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
+                    url={`/search/?type=biosample&donor.uuid=${context.uuid}`}
+                    Component={BiosampleTable}
+                />
+
+                {context['@type'][0] === 'HumanDonor' && this.state.childDonors && this.state.childDonors.length ?
+                    <DonorTable title="Children of this donor" donors={this.state.childDonors} />
+                : null}
+
+                {context['@type'][0] === 'HumanDonor' && this.state.parentDonors && this.state.parentDonors.length ?
+                    <DonorTable title="Parents of this donor" donors={this.state.parentDonors} />
+                : null}
 
                 <RelatedItems
                     title={`Experiments from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
