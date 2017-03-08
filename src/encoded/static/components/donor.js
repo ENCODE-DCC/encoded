@@ -190,12 +190,18 @@ const HumanDonor = React.createClass({
                     </PanelBody>
                 </Panel>
 
-                {this.state.parentDonors && this.state.parentDonors.length ?
-                    <DonorTable title="Parents of this donor" donors={this.state.parentDonors} />
-                : null}
+                <RelatedItems
+                    title={`Biosamples from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
+                    url={`/search/?type=biosample&donor.uuid=${context.uuid}`}
+                    Component={BiosampleTable}
+                />
 
                 {this.state.childDonors && this.state.childDonors.length ?
                     <DonorTable title="Children of this donor" donors={this.state.childDonors} />
+                : null}
+
+                {this.state.parentDonors && this.state.parentDonors.length ?
+                    <DonorTable title="Parents of this donor" donors={this.state.parentDonors} />
                 : null}
             </div>
         );
@@ -386,6 +392,12 @@ const MouseDonor = React.createClass({
                         : null}
                     </PanelBody>
                 </Panel>
+
+                <RelatedItems
+                    title={`Biosamples from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
+                    url={`/search/?type=biosample&donor.uuid=${context.uuid}`}
+                    Component={BiosampleTable}
+                />
             </div>
         );
     },
@@ -502,6 +514,12 @@ const FlyWormDonor = React.createClass({
                         </dl>
                     </PanelBody>
                 </Panel>
+
+                <RelatedItems
+                    title={`Biosamples from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
+                    url={`/search/?type=biosample&donor.uuid=${context.uuid}`}
+                    Component={BiosampleTable}
+                />
             </div>
         );
     },
@@ -560,12 +578,6 @@ const Donor = React.createClass({
                 </header>
 
                 <PanelView key={context.uuid} {...this.props} />
-
-                <RelatedItems
-                    title={`Biosamples from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
-                    url={`/search/?type=biosample&donor.uuid=${context.uuid}`}
-                    Component={BiosampleTable}
-                />
 
                 {combinedDocuments.length ?
                     <DocumentsPanel documentSpecs={[{ documents: combinedDocuments }]} />
