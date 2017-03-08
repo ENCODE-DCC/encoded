@@ -297,6 +297,7 @@ def process_read_name_line(read_name_line,
                            read_name_prefix,
                            read_name_pattern,
                            special_read_name_pattern,
+                           srr_read_name_pattern,
                            old_illumina_current_prefix,
                            read_numbers_set,
                            signatures_no_barcode_set,
@@ -312,6 +313,21 @@ def process_read_name_line(read_name_line,
                                               signatures_set,
                                               signatures_no_barcode_set,
                                               read_numbers_set)
+        elif srr_read_name_pattern.match(read_name) is not None:
+            srr_portion = read_name.split(' ')[0]
+            read_numbers_set.add(srr_portion[-1])
+            illumina_portion = read_name.split(' ')[1]
+            old_illumina_current_prefix = process_read_name_line('@'+illumina_portion,
+                                                                 read_name_prefix,
+                                                                 read_name_pattern,
+                                                                 special_read_name_pattern,
+                                                                 srr_read_name_pattern,
+                                                                 old_illumina_current_prefix,
+                                                                 read_numbers_set,
+                                                                 signatures_no_barcode_set,
+                                                                 signatures_set,
+                                                                 read_lengths_dictionary,
+                                                                 errors)
         else:
             # unrecognized read_name_format
             # current convention is to include WHOLE 
@@ -395,6 +411,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                         read_name_prefix,
                         read_name_pattern,
                         special_read_name_pattern,
+                        srr_read_name_pattern,
                         old_illumina_current_prefix,
                         read_numbers_set,
                         signatures_no_barcode_set,
