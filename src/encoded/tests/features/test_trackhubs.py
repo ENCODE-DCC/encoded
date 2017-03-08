@@ -168,7 +168,6 @@ def test_visualize(testapp, workbook):
             'UCSC': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt&db=hg38'
         },
         'hg19': {
-            'Ensembl': 'http://grch37.ensembl.org/Trackhub?url=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt;species=Homo_sapiens',
             'UCSC': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt&db=hg19'
         }
     }
