@@ -82,7 +82,6 @@ ORDER = [
     'samtools_stats_quality_metric',
     'idr_quality_metric',
     'generic_quality_metric',
-    'atacseq_quality_metric',
     'image',
     'page'
 ]
