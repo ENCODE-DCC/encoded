@@ -1996,6 +1996,9 @@ def prime_vis_es_cache(event):
     else:
         log.debug("Starting prime_vis_es_cache: %d uuids" % (raw_count))
 
+    # NOTE: the request object coming from the peak indexer was not using elasticsearch!
+    request.datastore = 'elasticsearch'
+
     visualizabe_types = set(VISIBLE_DATASET_TYPES)
     count = 0
     for uuid in uuids:
