@@ -44,6 +44,7 @@ _ASSEMBLY_MAPPER_FULL = {
                         'common_name':      'human',
                         'ucsc_assembly':    'hg38',
                         'ensembl_host':     'www.ensembl.org',
+                        'comment':          'Ensembl works'
     },
     'GRCh38-minimal': { 'species':          'Homo sapiens',     'assembly_reference': 'GRCh38',
                         'common_name':      'human',
@@ -53,48 +54,58 @@ _ASSEMBLY_MAPPER_FULL = {
     'hg19': {           'species':          'Homo sapiens',     'assembly_reference': 'GRCh37',
                         'common_name':      'human',
                         'ucsc_assembly':    'hg19',
-                        'ensembl_host':     'grch37.ensembl.org',
+                        'NA_ensembl_host':  'grch37.ensembl.org',
+                        'comment':          'Ensembl DOES NOT WORK'
     },
     'mm10': {           'species':          'Mus musculus',     'assembly_reference': 'GRCm38',
                         'common_name':      'mouse',
                         'ucsc_assembly':    'mm10',
                         'ensembl_host':     'www.ensembl.org',
+                        'comment':          'Ensembl works'
     },
     'mm10-minimal': {   'species':          'Mus musculus',     'assembly_reference': 'GRCm38',
                         'common_name':      'mouse',
                         'ucsc_assembly':    'mm10',
                         'ensembl_host':     'www.ensembl.org',
+                        'comment':          'Should this be removed?'
     },
     'mm9': {            'species':          'Mus musculus',     'assembly_reference': 'NCBI37',
                         'common_name':      'mouse',
                         'ucsc_assembly':    'mm9',
-                        'ensembl_host':     'may2012.archive.ensembl.org',
+                        'NA_ensembl_host':  'may2012.archive.ensembl.org',
+                        'comment':          'Ensembl DOES NOT WORK'
     },
     'dm6': {    'species':          'Drosophila melanogaster',  'assembly_reference': 'BDGP6',
                 'common_name':      'fruit fly',
                 'ucsc_assembly':    'dm6',
-                'ensembl_host':     'www.ensembl.org',
+                'NA_ensembl_host':  'www.ensembl.org',
+                'comment':          'Ensembl DOES NOT WORK'
     },
     'dm3': {    'species':          'Drosophila melanogaster',  'assembly_reference': 'BDGP5',
                 'common_name':      'fruit fly',
                 'ucsc_assembly':    'dm3',
-                'ensembl_host':     'dec2014.archive.ensembl.org',
+                'NA_ensembl_host':  'dec2014.archive.ensembl.org',
+                'comment':          'Ensembl DOES NOT WORK'
     },
     'ce11': {   'species':          'Caenorhabditis elegans',   'assembly_reference': 'WBcel235',
                 'common_name':      'worm',
                 'ucsc_assembly':    'ce11',
-                'ensembl_host':     'www.ensembl.org',
+                'NA_ensembl_host':  'www.ensembl.org',
+                'comment':          'Ensembl DOES NOT WORK'
     },
     'ce10': {   'species':          'Caenorhabditis elegans',   'assembly_reference': 'WS220',
                 'common_name':      'worm',
                 'ucsc_assembly':    'ce10',
+                'comment':          'Never Ensembl'
     },
     'ce6': {    'species':          'Caenorhabditis elegans',   'assembly_reference': 'WS190',
                 'common_name':      'worm',
                 'ucsc_assembly':    'ce6',
+                'comment':          'Never Ensembl, not found in encoded'
     },
     'J02459.1': {   'species':      'Escherichia virus Lambda', 'assembly_reference': 'J02459.1',
                     'common_name':  'lambda phage',
+                    'comment':      'Never visualized'
     },
 }
 
