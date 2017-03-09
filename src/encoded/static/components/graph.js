@@ -156,8 +156,6 @@ export const Graph = React.createClass({
     propTypes: {
         graph: React.PropTypes.object, // JSON graph object to render
         nodeClickHandler: React.PropTypes.func, // Function to call to handle clicks in a node
-        nodeMouseenterHandler: React.PropTypes.func, // Function to call when the mouse begins hovering over a node
-        nodeMouseleaveHandler: React.PropTypes.func, // Function to call when the mouse stops hovering over a node
         noDefaultClasses: React.PropTypes.bool, // True to supress default CSS classes on <Panel> components
         children: React.PropTypes.node,
     },
@@ -391,20 +389,24 @@ export const Graph = React.createClass({
             const sheets = document.styleSheets;
 
             // Search every style in the style sheet(s) for those applying to graphs.
-            // Note: Not using ES5 looping constructs because these aren’t real arrays
-            for (let i = 0; i < sheets.length; i += 1) {
-                const rules = sheets[i].cssRules;
-                for (let j = 0; j < rules.length; j += 1) {
-                    const rule = rules[j];
+            // Note: Not using ES5 looping constructs because these aren’t real arrays.
+            if (sheets) {
+                for (let i = 0; i < sheets.length; i += 1) {
+                    const rules = sheets[i].cssRules;
+                    if (rules) {
+                        for (let j = 0; j < rules.length; j += 1) {
+                            const rule = rules[j];
 
-                    // If a style rule starts with 'g.' (svg group), we know it applies to the graph.
-                    // Note: In some browsers, indexOf is a bit faster; on others substring is a bit faster.
-                    // FF(31)'s substring is much faster than indexOf.
-                    if (typeof (rule.style) !== 'undefined' && rule.selectorText && rule.selectorText.substring(0, 2) === 'g.') {
-                        // If any elements use this style, add the style's CSS text to our style text accumulator.
-                        const elems = el.querySelectorAll(rule.selectorText);
-                        if (elems.length) {
-                            stylesText += `${rule.selectorText} { ${rule.style.cssText} }\n`;
+                            // If a style rule starts with 'g.' (svg group), we know it applies to the graph.
+                            // Note: In some browsers, indexOf is a bit faster; on others substring is a bit faster.
+                            // FF(31)'s substring is much faster than indexOf.
+                            if (typeof (rule.style) !== 'undefined' && rule.selectorText && rule.selectorText.substring(0, 2) === 'g.') {
+                                // If any elements use this style, add the style's CSS text to our style text accumulator.
+                                const elems = el.querySelectorAll(rule.selectorText);
+                                if (elems.length) {
+                                    stylesText += `${rule.selectorText} { ${rule.style.cssText} }\n`;
+                                }
+                            }
                         }
                     }
                 }

@@ -117,6 +117,13 @@ module.exports.unreleased_files_url = function (context) {
 };
 
 
+// Encode a URI with much less intensity than encodeURIComponent but a bit more than encodeURI.
+// In addition to encodeURI, this function escapes exclamations and at signs.
+module.exports.encodedURI = function (uri) {
+    return encodeURI(uri).replace(/!/g, '%21').replace(/@/g, '%40');
+};
+
+ 
 // Just like encodeURIComponent, but also encodes parentheses (Redmine #4242). Replace spaces with
 // `space` parameter, or '+' if not provided.
 // http://stackoverflow.com/questions/8143085/passing-and-through-a-uri-causes-a-403-error-how-can-i-encode-them#answer-8143232
