@@ -315,7 +315,10 @@ def process_read_name_line(read_name_line,
                                               read_numbers_set)
         elif srr_read_name_pattern.match(read_name) is not None:
             srr_portion = read_name.split(' ')[0]
-            read_numbers_set.add(srr_portion[-1])
+            if srr_portion.count('.') == 2:
+                read_numbers_set.add(srr_portion[-1])
+            else:
+                read_numbers_set.add('1')
             illumina_portion = read_name.split(' ')[1]
             old_illumina_current_prefix = process_read_name_line('@'+illumina_portion,
                                                                  read_name_prefix,
