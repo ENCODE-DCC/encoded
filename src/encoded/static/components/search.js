@@ -1012,7 +1012,7 @@ var ResultTable = search.ResultTable = React.createClass({
                                     : null}
 
                                     {visualizeKeys && context.visualize_batch ?
-                                        <BrowserSelector visualizeCfg={context.visualize_batch} />
+                                        <BrowserSelector visualizeCfg={context.visualize_batch} disabled={visualize_disabled} />
                                     : null}
                                 </div>
                             </div>

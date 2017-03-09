@@ -413,14 +413,15 @@ export function publicDataset(dataset) {
 export const BrowserSelector = React.createClass({
     propTypes: {
         visualizeCfg: React.PropTypes.object.isRequired, // Assemblies, browsers, and browser URLs; visualize and visualize_batch contents.
+        disabled: React.PropTypes.bool, // `true` if button should be disabled; usually because more search results than we can handle
     },
 
     render: function () {
-        const { visualizeCfg } = this.props;
+        const { visualizeCfg, disabled } = this.props;
         const assemblyList = _(Object.keys(visualizeCfg)).sortBy(assembly => _(globals.assemblyPriority).indexOf(assembly));
 
         return (
-            <Modal actuator={<button className="btn btn-info btn-sm" >Visualize</button>} addClasses="browser-selector__modal">
+            <Modal actuator={<button disabled={disabled} className="btn btn-info btn-sm" >Visualize</button>} addClasses="browser-selector__modal">
                 <ModalHeader title="Open visualization browser" closeModal />
                 <ModalBody>
                     <div className="browser-selector">
