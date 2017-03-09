@@ -874,19 +874,27 @@ def patch_file(session, url, job):
 
     if data:
         item_url = urljoin(url, job['@id'])
-        r = session.patch(
-            item_url,
-            data=json.dumps(data),
-            headers={
-                'If-Match': job['etag'],
-                'Content-Type': 'application/json',
-            },
-        )
-        if not r.ok:
-            errors['patch_file_request'] = \
-                '{} {}\n{}'.format(r.status_code, r.reason, r.text)
-        else:
-            job['patched'] = True
+
+        etag_r = session.get(item_url + '?frame=edit&datastore=database')
+        if etag_r.ok:
+            if job['etag'] == etag_r.headers['etag']:
+                r = session.patch(
+                    item_url,
+                    data=json.dumps(data),
+                    headers={
+                        'If-Match': job['etag'],
+                        'Content-Type': 'application/json',
+                    },
+                )
+                if not r.ok:
+                    errors['patch_file_request'] = \
+                        '{} {}\n{}'.format(r.status_code, r.reason, r.text)
+                else:
+                    job['patched'] = True
+            else:
+                errors['etag_does_not_match'] = 'Original etag was {}, but the current etag is {}.'.format(
+                    job['etag'], etag_r.headers['etag']) + ' File {} '.format(job['item'].get('accession', 'UNKNOWN')) + \
+                    'was {} and now is {}.'.format(job['item'].get('status', 'UNKNOWN'), etag_r.json()['status'])
     return
 
 def run(out, err, url, username, password, encValData, mirror, search_query,
