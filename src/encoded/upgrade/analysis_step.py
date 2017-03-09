@@ -123,3 +123,10 @@ def analysis_step_3_4(value, system):
 
     if 'documents' in value:
         value['documents'] = list(set(value['documents']))
+
+    # http://redmine.encodedcc.org/issues/3402
+    # disconnecting analysis steps form TF and histone pipelines form mapping step that moves to a new pipeline
+    if value.get('name') in ['tf-spp-peak-calling-step',
+                             'tf-macs2-signal-calling-step',
+                             'histone-peak-calling-step-v-1']:
+        value['parents'] = []

@@ -45,3 +45,19 @@ def pipeline_4_5(value, system):
     # There shouldn't be any pipelines with just assay_term_ids and not names at the time of this upgrade
     if 'assay_term_id' in value:
         del value['assay_term_id']
+    # http://redmine.encodedcc.org/issues/3402
+    if value['accession'] == 'ENCPL138KID':  # TF
+        value["analysis_steps"] = [
+            "/analysis-steps/tf-spp-peak-calling-step/",
+            "/analysis-steps/tf-macs2-signal-calling-step/",
+            "/analysis-steps/tf-idr-step/",
+            "/analysis-steps/tf-peaks-to-bigbed-step/",
+            "/analysis-steps/tf-idr-peaks-to-bigbed-step/"
+        ]
+    if value['accession'] == 'ENCPL272XAE':  # histone
+        value["analysis_steps"] = [
+            "/analysis-steps/histone-overlap-peaks-step-v-1/",
+            "/analysis-steps/histone-replicated-peaks-to-bigbed-step-v-1/",
+            "/analysis-steps/histone-peak-calling-step-v-1/",
+            "/analysis-steps/histone-peaks-to-bigbed-step-v-1/"
+        ]
