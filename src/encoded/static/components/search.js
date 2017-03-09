@@ -928,7 +928,7 @@ var ResultTable = search.ResultTable = React.createClass({
         var context = this.props.context;
         var results = context['@graph'];
         var total = context['total'];
-        var visualize_disabled = total > visualizeLimit;
+        var visualizeDisabled = total > visualizeLimit;
         var columns = context['columns'];
         var filters = context['filters'];
         var label = 'results';
@@ -1014,8 +1014,8 @@ var ResultTable = search.ResultTable = React.createClass({
                                     {visualizeKeys && context.visualize_batch ?
                                         <BrowserSelector
                                             visualizeCfg={context.visualize_batch}
-                                            disabled={visualize_disabled}
-                                            title={visualize_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'}
+                                            disabled={visualizeDisabled}
+                                            title={visualizeDisabled ? 'Filter to ' + visualizeLimit + ' to visualize' : 'Visualize'}
                                         />
                                     : null}
                                 </div>
