@@ -15,6 +15,11 @@
     display: flex;
     justify-content: center;
 
+    // Button to open the browser-selection modal.
+    @at-root #{&}__actuator {
+        display: inline;
+    }
+
     @at-root #{&}__inner {
         flex: 0 1 auto;
 

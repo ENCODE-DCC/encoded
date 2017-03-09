@@ -412,50 +412,76 @@ export function publicDataset(dataset) {
 // in which to display the visualization.
 export const BrowserSelector = React.createClass({
     propTypes: {
-        visualizeCfg: React.PropTypes.object.isRequired, // Assemblies, browsers, and browser URLs; visualize and visualize_batch contents.
+        visualizeCfg: React.PropTypes.object.isRequired, // Assemblies, browsers, and browser URLs; visualize and visualize_batch contents
         disabled: React.PropTypes.bool, // `true` if button should be disabled; usually because more search results than we can handle
+        title: React.PropTypes.string, // Title of Visualize button if "Visualize" isn't desired
+    },
+
+    getInitialState: function () {
+        return { selectorOpen: false };
+    },
+
+    // Called to open the browser-selection modal.
+    openModal: function () {
+        this.setState({ selectorOpen: true });
+    },
+
+    // Called to close the browser-seletino modal.
+    closeModal: function () {
+        this.setState({ selectorOpen: false });
+    },
+
+    // When the link to open a browser gets clicked, this gets called to close the modal in
+    // addition to going to the link.
+    handleClick: function () {
+        this.closeModal();
     },
 
     render: function () {
-        const { visualizeCfg, disabled } = this.props;
+        const { visualizeCfg, disabled, title } = this.props;
         const assemblyList = _(Object.keys(visualizeCfg)).sortBy(assembly => _(globals.assemblyPriority).indexOf(assembly));
 
         return (
-            <Modal actuator={<button disabled={disabled} className="btn btn-info btn-sm" >Visualize</button>} addClasses="browser-selector__modal">
-                <ModalHeader title="Open visualization browser" closeModal />
-                <ModalBody>
-                    <div className="browser-selector">
-                        <div className="browser-selector__inner">
-                            <div className="browser-selector__title">
-                                <div className="browser-selector__assembly-title">
-                                    Assembly
-                                </div>
-                                <div className="browser-selector__browsers-title">
-                                    Visualize with browser…
-                                </div>
-                            </div>
-                            <hr />
-                            {assemblyList.map((assembly) => {
-                                const assemblyBrowsers = visualizeCfg[assembly];
-                                const browserList = _(Object.keys(assemblyBrowsers)).sortBy(browser => _(globals.browserPriority).indexOf(browser));
-                                return (
-                                    <div key={assembly} className="browser-selector__assembly-option">
-                                        <div className="browser-selector__assembly">
-                                            {assembly}:
+            <div className="browser-selector__actuator">
+                <button onClick={this.openModal} disabled={disabled} className="btn btn-info btn-sm" >{title ? <span>{title}</span> : <span>Visualize</span>}</button>
+                {this.state.selectorOpen ?
+                    <Modal closeModal={this.closeModal} addClasses="browser-selector__modal">
+                        <ModalHeader title="Open visualization browser" closeModal={this.closeModal} />
+                        <ModalBody>
+                            <div className="browser-selector">
+                                <div className="browser-selector__inner">
+                                    <div className="browser-selector__title">
+                                        <div className="browser-selector__assembly-title">
+                                            Assembly
                                         </div>
-                                        <div className="browser-selector__browsers">
-                                            {browserList.map(browser => (
-                                                <div key={browser} className="browser-selector__browser"><a href={assemblyBrowsers[browser]} rel="noopener noreferrer" target="_blank">{browser}</a></div>
-                                            ))}
+                                        <div className="browser-selector__browsers-title">
+                                            Visualize with browser…
                                         </div>
                                     </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </ModalBody>
-                <ModalFooter closeModal={<a className="btn btn-info btn-sm">Close</a>} />
-            </Modal>
+                                    <hr />
+                                    {assemblyList.map((assembly) => {
+                                        const assemblyBrowsers = visualizeCfg[assembly];
+                                        const browserList = _(Object.keys(assemblyBrowsers)).sortBy(browser => _(globals.browserPriority).indexOf(browser));
+                                        return (
+                                            <div key={assembly} className="browser-selector__assembly-option">
+                                                <div className="browser-selector__assembly">
+                                                    {assembly}:
+                                                </div>
+                                                <div className="browser-selector__browsers">
+                                                    {browserList.map(browser => (
+                                                        <div key={browser} className="browser-selector__browser"><a href={assemblyBrowsers[browser]} onClick={this.handleClick} rel="noopener noreferrer" target="_blank">{browser}</a></div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </ModalBody>
+                        <ModalFooter closeModal={<button className="btn btn-info" onClick={this.closeModal}>Close</button>} />
+                    </Modal>
+                : null}
+            </div>
         );
     },
 });
