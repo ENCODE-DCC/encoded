@@ -206,6 +206,29 @@
             }
         }
     },
+    "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+        "age": {
+            "title": "Donor age"
+        },
+        "age_units": {
+            "title": "Donor age units"
+        },
+        "health_status": {
+            "title": "Donor health status"
+        },
+        "life_stage": {
+            "title": "Life stage"
+        },
+        "sex": {
+            "title": "Sex"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
     "boost_values": {
         "internal_tags": 1.0
     }
