@@ -381,15 +381,6 @@ def build_lot_reviews(primary_chars,
                     char_reviews[key]['status'] = 'not characterized to standards'
                     continue
 
-                # If secondary is pending and primary is compliant/exempt then partial - D
-                # If primary is pending and secondary is compliant/exempt then partial - D
-                # If secondary is pending and primary is not compliant then not char to standards - D
-                # If secondary is pending and primary is pending then awaiting
-                # If primary is pending and secondary is not compliant then not char to standards
-                # If primary is pending and secondary is not submitted then not pursued
-                # If secondary is pending and primary is not submitted then not pursued -D
-                # All other not active + pending statuses = awaiting characterization
-
                 # Primary is either compliant, not compliant, exempt or pending
                 if char_reviews[key]['status'] == 'not compliant':
                     char_reviews[key]['status'] = 'not characterized to standards'
@@ -423,7 +414,7 @@ def build_lot_reviews(primary_chars,
                     if char_reviews[key]['organisms'][0] not in target_organisms['all']:
                         char_reviews[key]['status'] = 'partially characterized'
                         char_reviews[key]['detail'] = 'Awaiting a compliant primary ' + \
-                            'characterization in {}.'.format(char_reviews[key]['organism'][0])
+                            'characterization in {}.'.format(char_reviews[key]['organisms'][0])
                 continue
             else:
                 # The only case that should be left is if both primary and secondary are compliant
@@ -436,7 +427,7 @@ def build_lot_reviews(primary_chars,
                     if char_reviews[key]['organisms'][0] not in target_organisms['all']:
                         char_reviews[key]['status'] = 'partially characterized'
                         char_reviews[key]['detail'] = 'Awaiting a compliant primary ' + \
-                            'characterization in {}.'.format(char_reviews[key]['organism'][0])
+                            'characterization in {}.'.format(char_reviews[key]['organisms'][0])
                 continue
 
         if char_reviews:
