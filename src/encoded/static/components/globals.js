@@ -188,6 +188,25 @@ var encodeVersionMap = module.exports.encodeVersionMap = {
     "ENCODE3": "3"
 };
 
+// Order that assemblies should appear in lists
+module.exports.assemblyPriority = [
+    'GRCh38',
+    'hg19',
+    'mm10',
+    'mm10-minimal',
+    'mm9',
+    'ce11',
+    'ce10',
+    'dm6',
+    'dm3',
+    'J02459.1',
+];
+
+module.exports.browserPriority = [
+    'UCSC',
+    'Ensembl',
+];
+
 // Determine the given object's ENCODE version
 module.exports.encodeVersion = function(context) {
     var encodevers = "";
