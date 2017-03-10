@@ -781,6 +781,7 @@ def extract_award_version(bam_file):
 
 
 @audit_checker('file', frame=[
+    'award',
     'quality_metrics',
     'analysis_step_version',
     'analysis_step_version.analysis_step',
@@ -821,34 +822,42 @@ def audit_file_chip_seq_control_read_depth(value, system):
     if value['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
         return
 
+    if value['lab'] == '/labs/kevin-white/' and value['award']['rfa'] != 'modERN':
+        return
+
+    prefix = 'ENCODE Processed '
+
+    if value['lab'] == '/labs/kevin-white/':
+        prefix = 'modERN Processed '
+
     if 'analysis_step_version' not in value:
-        detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
-                 'no analysis step version'
+        detail = prefix + 'alignment file {} has '.format(value['@id']) + \
+            'no analysis step version'
         yield AuditFailure('missing analysis step version', detail, level='INTERNAL_ACTION')
         return
 
     if 'analysis_step' not in value['analysis_step_version']:
-        detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
-                 'no analysis step in {}'.format(value['analysis_step_version']['@id'])
+        detail = prefix + 'alignment file {} has '.format(value['@id']) + \
+            'no analysis step in {}'.format(value['analysis_step_version']['@id'])
         yield AuditFailure('missing analysis step', detail, level='INTERNAL_ACTION')
         return
 
     if 'pipelines' not in value['analysis_step_version']['analysis_step']:
-        detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
-                 'no pipelines in {}'.format(value['analysis_step_version']['analysis_step']['@id'])
+        detail = prefix + 'alignment file {} has '.format(value['@id']) + \
+            'no pipelines in {}'.format(value['analysis_step_version']['analysis_step']['@id'])
         yield AuditFailure('missing pipelines in analysis step', detail, level='INTERNAL_ACTION')
         return
 
     if 'software_versions' not in value['analysis_step_version']:
-        detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
-                 'no software_versions in {}'.format(value['analysis_step_version']['@id'])
+        detail = prefix + 'alignment file {} has '.format(value['@id']) + \
+            'no software_versions in {}'.format(value['analysis_step_version']['@id'])
         yield AuditFailure('missing software versions', detail, level='INTERNAL_ACTION')
         return
 
     if value['analysis_step_version']['software_versions'] == []:
-        detail = 'ENCODE Processed alignment file {} has no '.format(value['@id']) + \
-                 'softwares listed in software_versions,' + \
-                 ' under {}'.format(value['analysis_step_version']['@id'])
+        detail = prefix + 'alignment file {} has no '.format(value['@id']) + \
+            'softwares listed in software_versions,' + \
+            ' under {}'.format(value['analysis_step_version']['@id'])
         yield AuditFailure('missing software', detail, level='INTERNAL_ACTION')
         return
 
