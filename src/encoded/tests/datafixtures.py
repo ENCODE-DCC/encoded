@@ -228,6 +228,7 @@ def experiment(testapp, lab, award):
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
 
+
 @pytest.fixture
 def base_experiment(testapp, lab, award):
     item = {
@@ -237,6 +238,7 @@ def base_experiment(testapp, lab, award):
         'status': 'started'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def replicate(testapp, experiment, library):
@@ -400,9 +402,9 @@ def treatment(testapp, organism):
     item = {
         'treatment_term_name': 'ethanol',
         'treatment_type': 'chemical'
-       
     }
     return testapp.post_json('/treatment', item).json['@graph'][0]
+
 
 @pytest.fixture
 def attachment():

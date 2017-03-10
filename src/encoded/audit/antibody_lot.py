@@ -77,7 +77,7 @@ def audit_antibody_missing_characterizations(value, system):
             'Pending review of primary and awaiting submission of secondary characterization(s).',
             'Awaiting compliant primary and secondary characterizations.',
             'Awaiting a compliant primary characterization.',
-            'Characterizations in progress.'
+            'Secondary characterization(s) in progress.'
         ]:
             biosample = lot_review['biosample_term_name']
             if biosample == 'not specified':
