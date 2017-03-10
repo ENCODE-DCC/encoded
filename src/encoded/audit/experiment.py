@@ -2701,17 +2701,6 @@ def audit_experiment_replicate_with_no_files(value, system):
     return
 
 
-@audit_checker('experiment', frame='object')
-def audit_experiment_release_date(value, system):
-    '''
-    Released experiments need release date.
-    This should eventually go to schema
-    '''
-    if value['status'] in ['released', 'revoked'] and 'date_released' not in value:
-        detail = 'Experiment {} is released or revoked and requires a value in date_released'.format(value['@id'])
-        raise AuditFailure('missing date_released', detail, level='INTERNAL_ACTION')
-
-
 @audit_checker('experiment',
                frame=['replicates', 'award', 'target',
                       'replicates.library',
