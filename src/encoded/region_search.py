@@ -8,9 +8,7 @@ from .search import (
     set_facets,
     get_filtered_query,
     format_facets,
-    hgConnect,
-    search_result_actions,
-    _ASSEMBLY_MAPPER
+    search_result_actions
 )
 from .batch_download import get_peak_metadata_links
 from collections import OrderedDict
@@ -295,7 +293,7 @@ def region_search(context, request):
     assembly = request.params.get('genome', '*')
     annotation = request.params.get('annotation', '*')
     chromosome, start, end = ('', '', '')
-    
+
     if annotation != '*':
         if annotation.lower().startswith('ens'):
             chromosome, start, end = get_ensemblid_coordinates(annotation, assembly)
@@ -313,7 +311,7 @@ def region_search(context, request):
             chromosome, start, end = sanitize_coordinates(region)
     else:
         chromosome, start, end = ('', '', '')
-    
+
     # Check if there are valid coordinates
     if not chromosome or not start or not end:
         result['notification'] = 'No annotations found'
