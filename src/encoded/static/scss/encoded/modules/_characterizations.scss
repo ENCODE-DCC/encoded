@@ -1,11 +1,3 @@
-$indicator-eligible:        #00e500;
-$indicator-eligible-exempt: #e38000;
-$indicator-pending:         #33aaff;
-$indicator-noteligible:     #cc0700;
-$indicator-awaiting:        #ebe310;
-$indicator-notreviewed:     #1475c9;
-$indicator-notpursued:      #d0d0d0;
-
 $document-figure-width: 64px;
 $document-figure-height: 64px;
 $characterization-figure-width: 64px;
@@ -307,13 +299,12 @@ $attachment-button-margin: 3px;
 }
 
 // Status indicator glyph colors
-.indicator.status-characterized-to-standards { color: $indicator-eligible; }
-.indicator.status-characterized-to-standards-with-exemption { color: $indicator-eligible-exempt; }
-.indicator.status-pending-dcc-review { color: $indicator-pending; }
-.indicator.status-not-characterized-to-standards { color: $indicator-noteligible; }
-.indicator.status-awaiting-characterization { color: $indicator-awaiting; }
-.indicator.status-not-pursued { color: $indicator-notpursued; }
-.indicator.status-not-reviewed { color: $indicator-notreviewed; }
+.indicator.status-characterized-to-standards { color: #00e500; }
+.indicator.status-characterized-to-standards-with-exemption { color: #fff712; }
+.indicator.status-partially-characterized { color: #ffc300; }
+.indicator.status-awaiting-characterization { color: #e58200; }
+.indicator.status-not-characterized-to-standards { color: #e50400; }
+.indicator.status-not-pursued { color: #d0d0d0; }
 
 %file-icon {
     @include img-responsive();
