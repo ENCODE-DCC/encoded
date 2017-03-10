@@ -2701,17 +2701,6 @@ def audit_experiment_replicate_with_no_files(value, system):
     return
 
 
-@audit_checker('experiment', frame='object')
-def audit_experiment_release_date(value, system):
-    '''
-    Released experiments need release date.
-    This should eventually go to schema
-    '''
-    if value['status'] in ['released', 'revoked'] and 'date_released' not in value:
-        detail = 'Experiment {} is released or revoked and requires a value in date_released'.format(value['@id'])
-        raise AuditFailure('missing date_released', detail, level='INTERNAL_ACTION')
-
-
 @audit_checker('experiment',
                frame=['replicates', 'award', 'target',
                       'replicates.library',
@@ -2932,14 +2921,6 @@ def audit_experiment_assay(value, system):
     if value['status'] == 'deleted':
         return
 
-    if 'assay_term_id' is None:
-        # This means we need to add an assay to the enum list. It should not happen
-        # though since the term enum list is limited.
-        detail = 'Experiment {} is missing assay_term_id'.format(value['@id'])
-        yield AuditFailure('missing assay information', detail, level='ERROR')
-        return
-
-    ontology = system['registry']['ontology']
     term_id = value.get('assay_term_id')
     term_name = value.get('assay_term_name')
 
@@ -2947,35 +2928,6 @@ def audit_experiment_assay(value, system):
         detail = 'Assay_term_id is a New Term Request ({} - {})'.format(term_id, term_name)
         yield AuditFailure('NTR assay', detail, level='INTERNAL_ACTION')
 
-        if NTR_assay_lookup.get(term_id):
-            if term_name != NTR_assay_lookup[term_id]:
-                detail = 'Experiment has a mismatch between ' + \
-                         'assay_term_name "{}" and assay_term_id "{}"'.format(
-                             term_name,
-                             term_id)
-                yield AuditFailure('mismatched assay_term_name', detail, level='INTERNAL_ACTION')
-                return
-        else:
-            detail = 'Assay term id {} not in NTR lookup table'.format(term_id)
-            yield AuditFailure('not updated NTR lookup table', detail, level='INTERNAL_ACTION')
-            return
-
-    elif term_id not in ontology:
-        detail = 'Assay_term_id {} is not found in cached version of ontology'.format(term_id)
-        yield AuditFailure('assay_term_id not in ontology', term_id, level='INTERNAL_ACTION')
-        return
-
-    ontology_term_name = ontology[term_id]['name']
-    modifed_term_name = term_name + ' assay'
-    if (ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']) and \
-        (ontology_term_name != modifed_term_name and
-            modifed_term_name not in ontology[term_id]['synonyms']):
-        detail = 'Experiment has a mismatch between assay_term_name "{}" and assay_term_id "{}"'.format(
-            term_name,
-            term_id,
-            )
-        yield AuditFailure('mismatched assay_term_name', detail, level='INTERNAL_ACTION')
-        return
 
 
 @audit_checker('experiment', frame=['replicates.antibody', 'target', 'replicates.antibody.targets'])
