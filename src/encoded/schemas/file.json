@@ -315,14 +315,16 @@
             "description": "The md5sum of the file being transferred.",
             "comment": "This can vary for files of same content gzipped at different times",
             "type": "string",
-            "format": "hex"
+            "format": "hex",
+            "pattern": "^[a-f\\d]{32}|[A-F\\d]{32}$"
         },
         "content_md5sum": {
             "title": "Content MD5sum",
             "description": "The MD5sum of the uncompressed file.",
             "comment": "This is only relavant for gzipped files.",
             "type": "string",
-            "format": "hex"
+            "format": "hex",
+            "pattern": "^[a-f\\d]{32}|[A-F\\d]{32}$"
         },
         "file_size": {
             "title": "File size",
