@@ -316,7 +316,8 @@
             "comment": "This can vary for files of same content gzipped at different times",
             "type": "string",
             "format": "hex",
-            "pattern": "^[a-f\\d]{32,32}|[A-F\\d]{32,32}$"
+            "maxLength": 32,
+            "pattern": "[a-f\\d]{32}|[A-F\\d]{32}"
         },
         "content_md5sum": {
             "title": "Content MD5sum",
@@ -324,7 +325,8 @@
             "comment": "This is only relavant for gzipped files.",
             "type": "string",
             "format": "hex",
-            "pattern": "^[a-f\\d]{32,32}|[A-F\\d]{32,32}$"
+            "maxLength": 32,
+            "pattern": "[a-f\\d]{32}|[A-F\\d]{32}"
         },
         "file_size": {
             "title": "File size",
