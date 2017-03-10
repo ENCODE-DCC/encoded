@@ -669,7 +669,7 @@ def test_audit_file_bam_derived_from_different_experiment(testapp, file6, file4,
     assert any(error['category'] == 'inconsistent derived_from'
                for error in errors_list)
 
-
+'''
 def test_audit_file_md5sum(testapp, file1):
     testapp.patch_json(file1['@id'], {'md5sum': 'some_random_text'})
     res = testapp.get(file1['@id'] + '@@index-data')
@@ -679,3 +679,4 @@ def test_audit_file_md5sum(testapp, file1):
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent md5sum'
                for error in errors_list)
+'''

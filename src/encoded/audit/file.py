@@ -43,7 +43,7 @@ def audit_file_pipeline_status(value, system):
                 yield AuditFailure('inconsistent pipeline status',
                                    detail, level='INTERNAL_ACTION')
 
-
+'''
 @audit_checker('File', frame=['derived_from'])
 def audit_file_md5sum_integrity(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
@@ -63,6 +63,7 @@ def audit_file_md5sum_integrity(value, system):
                  'which is not a valid hexadecimal number.'
         yield AuditFailure('inconsistent md5sum',
                            detail, level='INTERNAL_ACTION')
+'''
 
 
 @audit_checker('File', frame=['derived_from'])
