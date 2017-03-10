@@ -426,6 +426,7 @@
                         "transcriptome alignments",
                         "maternal haplotype mapping",
                         "paternal haplotype mapping",
+                        "phased mapping",
 
                         "minus strand signal of all reads",
                         "plus strand signal of all reads",
@@ -455,6 +456,7 @@
                         "replication timing profile",
                         "maternal variant calls",
                         "paternal variant calls",
+                        "phased variant calls",
                         "variant calls",
                         "filtered SNPs",
                         "filtered indels",
@@ -503,6 +505,7 @@
                         "optimal idr thresholded peaks",
                         "conservative idr thresholded peaks",
                         "pseudoreplicated idr thresholded peaks",
+                        "stable peaks",
 
                         "enhancer validation",
                         "semi-automated genome annotation",
@@ -836,6 +839,7 @@
         "spike-in alignments": "alignment",
         "maternal haplotype mapping": "alignment",
         "paternal haplotype mapping": "alignment",
+        "phased mapping": "alignment",
 
         "minus strand signal of all reads": "signal",
         "plus strand signal of all reads": "signal",
@@ -903,6 +907,7 @@
         "optimal idr thresholded peaks": "annotation",
         "conservative idr thresholded peaks": "annotation",
         "pseudoreplicated idr thresholded peaks": "annotation",
+        "stable peaks": "annotation",
         "predicted forebrain enhancers": "annotation",
         "predicted heart enhancers": "annotation",
         "predicted whole brain enhancers": "annotation",
@@ -915,6 +920,7 @@
         "variant calls": "annotation",
         "maternal variant calls": "annotation",
         "paternal variant calls": "annotation",
+        "phased variant calls": "annotation",
         "filtered SNPs": "annotation",
         "filtered indels": "annotation",
 

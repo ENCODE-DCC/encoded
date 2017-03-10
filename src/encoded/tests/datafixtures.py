@@ -787,7 +787,7 @@ def pipeline_bam(testapp, lab, award, analysis_step_bam):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'title': "Histone ChIP-seq",
+        'title': "ChIP-seq read mapping",
         'assay_term_name': 'ChIP-seq',
         'analysis_steps': [analysis_step_bam['@id']]
     }

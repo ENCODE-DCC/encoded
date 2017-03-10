@@ -1273,7 +1273,7 @@ def test_audit_experiment_needs_pipeline_chip_seq_and_has_one(testapp, replicate
     testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
     testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id']})
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'Histone ChIP-seq'})
+                                             'ChIP-seq read mapping'})
     testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     res = testapp.get(experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -1976,7 +1976,7 @@ def test_audit_experiment_chip_seq_standards_depth(testapp,
                                              'assembly': 'mm10',
                                              'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'Histone ChIP-seq'})
+                                             'ChIP-seq read mapping'})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
@@ -2036,7 +2036,7 @@ def test_audit_experiment_chip_seq_standards(testapp,
                                              'assembly': 'mm10',
                                              'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'Histone ChIP-seq'})
+                                             'ChIP-seq read mapping'})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
@@ -2097,7 +2097,7 @@ def test_audit_experiment_chip_seq_standards_encode2(testapp,
                                              'assembly': 'mm10',
                                              'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'Histone ChIP-seq'})
+                                             'ChIP-seq read mapping'})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
@@ -2161,7 +2161,7 @@ def test_audit_experiment_chip_seq_no_target_standards(testapp,
                                              'derived_from': [file_fastq_4['@id']]})
 
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'Histone ChIP-seq'})
+                                             'ChIP-seq read mapping'})
 
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
@@ -2222,7 +2222,7 @@ def test_audit_experiment_chip_seq_library_complexity_standards(testapp,
                                              'derived_from': [file_fastq_4['@id']]})
 
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'Histone ChIP-seq'})
+                                             'ChIP-seq read mapping'})
 
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
@@ -2518,7 +2518,7 @@ def test_audit_experiment_chip_seq_unfiltered_missing_read_depth(testapp,
                                              'output_type': 'unfiltered alignments',
                                              'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'Histone ChIP-seq'})
+                                             'ChIP-seq read mapping'})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})

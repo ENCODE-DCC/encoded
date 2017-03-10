@@ -203,9 +203,7 @@ def audit_experiment_missing_unfiltered_bams(value, system):
     if len(pipelines) == 0:  # no pipelines detected
         return
 
-    if 'Histone ChIP-seq' in pipelines or \
-       'Transcription factor ChIP-seq' in pipelines:
-
+    if 'ChIP-seq read mapping' in pipelines:
         for filtered_file in alignment_files:
             if has_only_raw_files_in_derived_from(filtered_file) and \
                has_no_unfiltered(filtered_file, unfiltered_alignment_files):
@@ -1157,7 +1155,7 @@ def check_experiment_chip_seq_standards(experiment,
 
     pipeline_title = scanFilesForPipelineTitle_yes_chipseq(
         alignment_files,
-        ['Histone ChIP-seq', 'Transcription factor ChIP-seq pipeline (modERN)']
+        ['ChIP-seq read mapping', 'Transcription factor ChIP-seq pipeline (modERN)']
     )
     if pipeline_title is False:
         return
@@ -1750,14 +1748,13 @@ def check_file_chip_seq_read_depth(file_to_check,
     # check read depth on Raw files, while it is required for Histone
     pipeline_title = scanFilesForPipelineTitle_yes_chipseq(
         [file_to_check],
-        ['Histone ChIP-seq',
+        ['ChIP-seq read mapping',
          'Transcription factor ChIP-seq pipeline (modERN)'])
     pipeline_objects = get_pipeline_objects([file_to_check])
     if pipeline_title is False:
         return
 
-
-    marks = pipelines_with_read_depth['Histone ChIP-seq']
+    marks = pipelines_with_read_depth['ChIP-seq read mapping']
     modERN_cutoff = pipelines_with_read_depth['Transcription factor ChIP-seq pipeline (modERN)']
     if read_depth is False:
         detail = 'ENCODE Processed alignment file {} has no read depth information.'.format(
@@ -1844,7 +1841,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                                        detail, level='ERROR')
     elif 'broad histone mark' in target_investigated_as and \
          standards_version != 'modERN':  # target_name in broad_peaks_targets:
-        pipeline_object = get_pipeline_by_name(pipeline_objects, 'Histone ChIP-seq')
+        pipeline_object = get_pipeline_by_name(pipeline_objects, 'ChIP-seq read mapping')
         if pipeline_object:
             if target_name in ['H3K9me3-human', 'H3K9me3-mouse']:
                 if read_depth < 45000000:
@@ -1918,7 +1915,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                                        detail, level='ERROR')
     elif 'narrow histone mark' in target_investigated_as and \
             standards_version != 'modERN':
-        pipeline_object = get_pipeline_by_name(pipeline_objects, 'Histone ChIP-seq')
+        pipeline_object = get_pipeline_by_name(pipeline_objects, 'ChIP-seq read mapping')
         if pipeline_object:
             if 'assembly' in file_to_check:
                 detail = 'Alignment file {} '.format(file_to_check['@id']) + \
@@ -1966,7 +1963,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                                    detail, level='NOT_COMPLIANT')
         else:
             pipeline_object = get_pipeline_by_name(pipeline_objects,
-                                                   'Transcription factor ChIP-seq')
+                                                   'ChIP-seq read mapping')
             if pipeline_object:
                 if 'assembly' in file_to_check:
                     detail = 'Alignment file {} '.format(file_to_check['@id']) + \
@@ -2227,7 +2224,7 @@ def audit_experiment_needs_pipeline(value, system):
                       'RNA-seq-long-single': ['RNA-seq of long RNAs (single-end, unstranded)'],
                       'RNA-seq-short': ['Small RNA-seq single-end pipeline'],
                       'RAMPAGE': ['RAMPAGE (paired-end, stranded)'],
-                      'ChIP': ['Histone ChIP-seq']}
+                      'ChIP': ['ChIP-seq read mapping']}
 
     if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
         if scanFilesForPipeline(value['original_files'], pipelines_dict['WGBS']) is False:
@@ -2701,17 +2698,6 @@ def audit_experiment_replicate_with_no_files(value, system):
     return
 
 
-@audit_checker('experiment', frame='object')
-def audit_experiment_release_date(value, system):
-    '''
-    Released experiments need release date.
-    This should eventually go to schema
-    '''
-    if value['status'] in ['released', 'revoked'] and 'date_released' not in value:
-        detail = 'Experiment {} is released or revoked and requires a value in date_released'.format(value['@id'])
-        raise AuditFailure('missing date_released', detail, level='INTERNAL_ACTION')
-
-
 @audit_checker('experiment',
                frame=['replicates', 'award', 'target',
                       'replicates.library',
@@ -2932,14 +2918,6 @@ def audit_experiment_assay(value, system):
     if value['status'] == 'deleted':
         return
 
-    if 'assay_term_id' is None:
-        # This means we need to add an assay to the enum list. It should not happen
-        # though since the term enum list is limited.
-        detail = 'Experiment {} is missing assay_term_id'.format(value['@id'])
-        yield AuditFailure('missing assay information', detail, level='ERROR')
-        return
-
-    ontology = system['registry']['ontology']
     term_id = value.get('assay_term_id')
     term_name = value.get('assay_term_name')
 
@@ -2947,35 +2925,6 @@ def audit_experiment_assay(value, system):
         detail = 'Assay_term_id is a New Term Request ({} - {})'.format(term_id, term_name)
         yield AuditFailure('NTR assay', detail, level='INTERNAL_ACTION')
 
-        if NTR_assay_lookup.get(term_id):
-            if term_name != NTR_assay_lookup[term_id]:
-                detail = 'Experiment has a mismatch between ' + \
-                         'assay_term_name "{}" and assay_term_id "{}"'.format(
-                             term_name,
-                             term_id)
-                yield AuditFailure('mismatched assay_term_name', detail, level='INTERNAL_ACTION')
-                return
-        else:
-            detail = 'Assay term id {} not in NTR lookup table'.format(term_id)
-            yield AuditFailure('not updated NTR lookup table', detail, level='INTERNAL_ACTION')
-            return
-
-    elif term_id not in ontology:
-        detail = 'Assay_term_id {} is not found in cached version of ontology'.format(term_id)
-        yield AuditFailure('assay_term_id not in ontology', term_id, level='INTERNAL_ACTION')
-        return
-
-    ontology_term_name = ontology[term_id]['name']
-    modifed_term_name = term_name + ' assay'
-    if (ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']) and \
-        (ontology_term_name != modifed_term_name and
-            modifed_term_name not in ontology[term_id]['synonyms']):
-        detail = 'Experiment has a mismatch between assay_term_name "{}" and assay_term_id "{}"'.format(
-            term_name,
-            term_id,
-            )
-        yield AuditFailure('mismatched assay_term_name', detail, level='INTERNAL_ACTION')
-        return
 
 
 @audit_checker('experiment', frame=['replicates.antibody', 'target', 'replicates.antibody.targets'])
