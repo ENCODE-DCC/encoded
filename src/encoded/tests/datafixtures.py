@@ -254,7 +254,7 @@ def file(testapp, lab, award, experiment):
     item = {
         'dataset': experiment['@id'],
         'file_format': 'fasta',
-        'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+        'md5sum': '91be74b6e11515393507f4ebfa66d78a',
         'output_type': 'raw data',
         'lab': lab['@id'],
         'award': award['@id'],
@@ -268,7 +268,7 @@ def fastq_file(testapp, lab, award, experiment, replicate):
     item = {
         'dataset': experiment['@id'],
         'file_format': 'fastq',
-        'md5sum': 'd41d8cd9f00b204e9800998ecf8427e',
+        'md5sum': '91be74b6e11515393507f4ebfa66d78b',
         'replicate': replicate['@id'],
         'output_type': 'reads',
         'run_type': 'single-ended',
@@ -284,7 +284,7 @@ def bam_file(testapp, lab, award, experiment):
     item = {
         'dataset': experiment['@id'],
         'file_format': 'bam',
-        'md5sum': 'd41d8cd9f00b204e9800998ecf86674427e',
+        'md5sum': '91be74b6e11515393507f4ebfa66d78c',
         'output_type': 'alignments',
         'assembly': 'hg19',
         'lab': lab['@id'],
@@ -299,7 +299,7 @@ def bigWig_file(testapp, lab, award, experiment):
     item = {
         'dataset': experiment['@id'],
         'file_format': 'bigWig',
-        'md5sum': 'd41d8cd9sf00b204e9800998ecf86674427e',
+        'md5sum': '91be74b6e11515393507f4ebfa66d78d',
         'output_type': 'signal of unique reads',
         'assembly': 'mm10',
         'lab': lab['@id'],
@@ -314,7 +314,7 @@ def file_ucsc_browser_composite(testapp, lab, award, ucsc_browser_composite):
     item = {
         'dataset': ucsc_browser_composite['@id'],
         'file_format': 'fasta',
-        'md5sum': '3f9ae164abb55a93bcd891b192d86164',
+        'md5sum': '91be74b6e11515393507f4ebfa66d77a',
         'output_type': 'raw data',
         'lab': lab['@id'],
         'award': award['@id'],
