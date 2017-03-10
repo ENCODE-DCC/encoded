@@ -804,7 +804,12 @@ def extract_award_version(bam_file):
     'derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step.pipelines',
     'derived_from.controlled_by.dataset.original_files.analysis_step_version.software_versions',
     'derived_from.controlled_by.dataset.original_files.analysis_step_version.software_versions.software'])
-def audit_file_chip_seq_control_read_depth(value, system):
+def audit_file_chip_seq_control_read_depth(value, system,
+                                           condition=rfa('ENCODE3',
+                                                         'ENCODE2-Mouse',
+                                                         'ENCODE2',
+                                                         'ENCODE',
+                                                         'Roadmap')):
     '''
     An alignment file from the ENCODE Processing Pipeline should have read depth
     in accordance with the criteria
@@ -819,43 +824,35 @@ def audit_file_chip_seq_control_read_depth(value, system):
     if value['output_type'] in ['transcriptome alignments', 'unfiltered alignments']:
         return
 
-    if value['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
+    if value['lab'] not in ['/labs/encode-processing-pipeline/']:
         return
-
-    if value['lab'] == '/labs/kevin-white/' and value['award']['rfa'] != 'modERN':
-        return
-
-    prefix = 'ENCODE Processed '
-
-    if value['lab'] == '/labs/kevin-white/':
-        prefix = 'modERN Processed '
 
     if 'analysis_step_version' not in value:
-        detail = prefix + 'alignment file {} has '.format(value['@id']) + \
+        detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
             'no analysis step version'
         yield AuditFailure('missing analysis step version', detail, level='INTERNAL_ACTION')
         return
 
     if 'analysis_step' not in value['analysis_step_version']:
-        detail = prefix + 'alignment file {} has '.format(value['@id']) + \
+        detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
             'no analysis step in {}'.format(value['analysis_step_version']['@id'])
         yield AuditFailure('missing analysis step', detail, level='INTERNAL_ACTION')
         return
 
     if 'pipelines' not in value['analysis_step_version']['analysis_step']:
-        detail = prefix + 'alignment file {} has '.format(value['@id']) + \
+        detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
             'no pipelines in {}'.format(value['analysis_step_version']['analysis_step']['@id'])
         yield AuditFailure('missing pipelines in analysis step', detail, level='INTERNAL_ACTION')
         return
 
     if 'software_versions' not in value['analysis_step_version']:
-        detail = prefix + 'alignment file {} has '.format(value['@id']) + \
+        detail = 'ENCODE Processed alignment file {} has '.format(value['@id']) + \
             'no software_versions in {}'.format(value['analysis_step_version']['@id'])
         yield AuditFailure('missing software versions', detail, level='INTERNAL_ACTION')
         return
 
     if value['analysis_step_version']['software_versions'] == []:
-        detail = prefix + 'alignment file {} has no '.format(value['@id']) + \
+        detail = 'ENCODE Processed alignment file {} has no '.format(value['@id']) + \
             'softwares listed in software_versions,' + \
             ' under {}'.format(value['analysis_step_version']['@id'])
         yield AuditFailure('missing software', detail, level='INTERNAL_ACTION')
@@ -914,7 +911,6 @@ def check_control_read_depth_standards(value,
                                        standards_version):
 
     marks = pipelines_with_read_depth['ChIP-seq read mapping']
-    modERN_cutoff = pipelines_with_read_depth['Transcription factor ChIP-seq pipeline (modERN)']
 
     if is_control_file is True:  # treat this file as control_bam -
         # raising insufficient control read depth
@@ -982,16 +978,6 @@ def check_control_read_depth_standards(value,
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
 
         else:
-            if value['lab'] == '/labs/kevin-white/':
-                if read_depth < modERN_cutoff:
-                    detail = 'Control modERN processed alignment file {} has {} '.format(
-                        value['@id'], read_depth) + 'usable fragments. Control for ChIP-seq ' + \
-                        'assays and target {} '.format(control_to_target) + \
-                        'and investigated as a transcription factor requires ' + \
-                        '{} usable fragments, according to '.format(modERN_cutoff) + \
-                        'the standards defined by the modERN project.'
-                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
-                return
             if 'assembly' in value:
                 detail = 'Control alignment file {} mapped to {} assembly has {} '.format(
                     value['@id'],
