@@ -1,23 +1,34 @@
-import React from 'react';
-import cloneWithProps from 'react/lib/cloneWithProps';
-import cx from 'react/lib/cx';
-import url from 'url';
-import _ from 'underscore';
-import queryString from 'query-string';
-import { DropdownButton } from '../libs/bootstrap/button';
-import { TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
-import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
-import { svgIcon } from '../libs/svg-icons';
-import * as globals from './globals';
-import { Attachment } from './image';
-import { DbxrefList } from './dbxref';
-import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
-import { biosampleSummaryString, biosampleOrganismNames } from './typeutils';
-import GenomeBrowser from './genome_browser';
+'use strict';
+var React = require('react');
+var cloneWithProps = require('react/lib/cloneWithProps');
+var queryString = require('query-string');
+var button = require('../libs/bootstrap/button');
+var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
+var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
+var svgIcon = require('../libs/svg-icons').svgIcon;
+var cx = require('react/lib/cx');
+var url = require('url');
+var _ = require('underscore');
+var globals = require('./globals');
+var image = require('./image');
+var search = module.exports;
+var { donorDiversity, BrowserSelector } = require('./objectutils');
+var dbxref = require('./dbxref');
+var audit = require('./audit');
+var objectutils = require('./objectutils');
+var {BiosampleSummaryString, BiosampleOrganismNames} = require('./typeutils');
 
+var GenomeBrowser = require('./genome_browser');
+var {TabPanel, TabPanelPane} = require('../libs/bootstrap/panel');
 
-const search = module.exports;
+var DbxrefList = dbxref.DbxrefList;
+var statusOrder = globals.statusOrder;
+var SingleTreatment = objectutils.SingleTreatment;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
+var DropdownButton = button.DropdownButton;
+var DropdownMenu = dropdownMenu.DropdownMenu;
 
 // Should really be singular...
 const types = {
@@ -619,12 +630,19 @@ function termSelected(term, facet, filters) {
         if (facet.type === 'exists') {
             if ((filter.field === `${facet.field}!` && term === 'no') ||
                 (filter.field === facet.field && term === 'yes')) {
+<<<<<<< HEAD
                 matchingFilter = filter;
                 return true;
             }
         } else if (filter.field === facet.field && filter.term === term) {
             matchingFilter = filter;
             return true;
+=======
+                selected = true; break;
+            }
+        } else if (filter.field == facet.field && filter.term == term) {
+            selected = true; break;
+>>>>>>> master
         }
         return false;
     });
@@ -906,8 +924,13 @@ const FacetList = search.FacetList = React.createClass({
         }
 
         // See if we need the Clear Filters link or not. context.clear_filters
+<<<<<<< HEAD
         let clearButton; // JSX for the clear button
         const searchQuery = context && context['@id'] && url.parse(context['@id']).search;
+=======
+        var clearButton; // JSX for the clear button
+        var searchQuery = context && context['@id'] && url.parse(context['@id']).search;
+>>>>>>> master
         if (searchQuery) {
             // Convert search query string to a query object for easy parsing
             const terms = queryString.parse(searchQuery);
@@ -998,6 +1021,7 @@ const ResultTable = search.ResultTable = React.createClass({
         };
     },
 
+<<<<<<< HEAD
     getChildContext: function () {
         return {
             actions: this.props.actions,
@@ -1031,6 +1055,21 @@ const ResultTable = search.ResultTable = React.createClass({
         let assemblyChooser;
 
         const facets = context.facets.map((facet) => {
+=======
+    render: function() {
+        const visualizeLimit = 100;
+        var context = this.props.context;
+        var results = context['@graph'];
+        var total = context['total'];
+        var visualizeDisabled = total > visualizeLimit;
+        var columns = context['columns'];
+        var filters = context['filters'];
+        var label = 'results';
+        var searchBase = this.props.searchBase;
+        var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
+
+        var facets = context['facets'].map(function(facet) {
+>>>>>>> master
             if (this.props.restrictions[facet.field] !== undefined) {
                 const workFacet = _.clone(facet);
                 workFacet.restrictions = this.props.restrictions[workFacet.field];
@@ -1051,11 +1090,20 @@ const ResultTable = search.ResultTable = React.createClass({
         }
 
         // Get a sorted list of batch hubs keys with case-insensitive sort
+<<<<<<< HEAD
         let batchHubKeys = [];
         if (context.batch_hub && Object.keys(context.batch_hub).length) {
             batchHubKeys = Object.keys(context.batch_hub).sort((a, b) => {
                 const aLower = a.toLowerCase();
                 const bLower = b.toLowerCase();
+=======
+        // NOTE: Tim thinks this is overkill as opposed to simple sort()
+        var visualizeKeys = [];
+        if (context.visualize_batch && Object.keys(context.visualize_batch).length) {
+            visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
+                var aLower = a.toLowerCase();
+                var bLower = b.toLowerCase();
+>>>>>>> master
                 return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
             });
         }
@@ -1154,16 +1202,12 @@ const ResultTable = search.ResultTable = React.createClass({
                                         <BatchDownload context={context} />
                                     : null}
 
-                                    {batchHubKeys && context.batch_hub ?
-                                        <DropdownButton disabled={batchHubDisabled} label="batchhub" title={batchHubDisabled ? `Filter to ${batchHubLimit} to visualize` : 'Visualize'} wrapperClasses="results-table-button">
-                                            <DropdownMenu>
-                                                {batchHubKeys.map(assembly =>
-                                                    <a key={assembly} data-bypass="true" rel="noopener noreferrer" target="_blank" href={context.batch_hub[assembly]}>
-                                                        {assembly}
-                                                    </a>
-                                                )}
-                                            </DropdownMenu>
-                                        </DropdownButton>
+                                    {visualizeKeys && context.visualize_batch ?
+                                        <BrowserSelector
+                                            visualizeCfg={context.visualize_batch}
+                                            disabled={visualizeDisabled}
+                                            title={visualizeDisabled ? 'Filter to ' + visualizeLimit + ' to visualize' : 'Visualize'}
+                                        />
                                     : null}
                                 </div>
                                 <hr />

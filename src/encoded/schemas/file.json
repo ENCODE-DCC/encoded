@@ -318,14 +318,18 @@
             "description": "The md5sum of the file being transferred.",
             "comment": "This can vary for files of same content gzipped at different times",
             "type": "string",
-            "format": "hex"
+            "format": "hex",
+            "maxLength": 32,
+            "pattern": "[a-f\\d]{32}|[A-F\\d]{32}"
         },
         "content_md5sum": {
             "title": "Content MD5sum",
             "description": "The MD5sum of the uncompressed file.",
             "comment": "This is only relavant for gzipped files.",
             "type": "string",
-            "format": "hex"
+            "format": "hex",
+            "maxLength": 32,
+            "pattern": "[a-f\\d]{32}|[A-F\\d]{32}"
         },
         "file_size": {
             "title": "File size",
@@ -429,6 +433,7 @@
                         "transcriptome alignments",
                         "maternal haplotype mapping",
                         "paternal haplotype mapping",
+                        "phased mapping",
 
                         "minus strand signal of all reads",
                         "plus strand signal of all reads",
@@ -458,6 +463,7 @@
                         "replication timing profile",
                         "maternal variant calls",
                         "paternal variant calls",
+                        "phased variant calls",
                         "variant calls",
                         "filtered SNPs",
                         "filtered indels",
@@ -506,6 +512,7 @@
                         "optimal idr thresholded peaks",
                         "conservative idr thresholded peaks",
                         "pseudoreplicated idr thresholded peaks",
+                        "stable peaks",
 
                         "enhancer validation",
                         "semi-automated genome annotation",
@@ -839,6 +846,7 @@
         "spike-in alignments": "alignment",
         "maternal haplotype mapping": "alignment",
         "paternal haplotype mapping": "alignment",
+        "phased mapping": "alignment",
 
         "minus strand signal of all reads": "signal",
         "plus strand signal of all reads": "signal",
@@ -906,6 +914,7 @@
         "optimal idr thresholded peaks": "annotation",
         "conservative idr thresholded peaks": "annotation",
         "pseudoreplicated idr thresholded peaks": "annotation",
+        "stable peaks": "annotation",
         "predicted forebrain enhancers": "annotation",
         "predicted heart enhancers": "annotation",
         "predicted whole brain enhancers": "annotation",
@@ -918,6 +927,7 @@
         "variant calls": "annotation",
         "maternal variant calls": "annotation",
         "paternal variant calls": "annotation",
+        "phased variant calls": "annotation",
         "filtered SNPs": "annotation",
         "filtered indels": "annotation",
 

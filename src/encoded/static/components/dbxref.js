@@ -51,6 +51,12 @@ export function dbxref(attributes) {
     } else if (prefix === 'DSSC') {
         id = value.substr(sep + 1);
         local = `${id}&table=Species&submit=Search`;
+    } else if (prefix === 'RBPImage') {
+        if (attributes.cell_line) {
+            local = `${attributes.cell_line}&targets=${local}`;
+        } else {
+            return <span>{value}</span>;
+        }
     }
 
     return <a href={base + local}>{value}</a>;
@@ -62,7 +68,7 @@ export const DbxrefList = React.createClass({
         return (
             <ul className={props.className}>
                 {props.values.map((value, index) =>
-                    <li key={index}>{dbxref({ value: value, prefix: props.prefix, target_gene: props.target_gene, target_ref: props.target_ref })}</li>,
+                    <li key={index}>{dbxref({ value: value, prefix: props.prefix, target_gene: props.target_gene, target_ref: props.target_ref, cell_line: props.cell_line })}</li>,
                 )}
             </ul>
         );

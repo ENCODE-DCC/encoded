@@ -30,30 +30,56 @@ import cloneWithProps from 'react/lib/cloneWithProps';
 //     <button class="btn btn-info">Open Modal</button>
 //         ...
 //
+//
+// ...where the <Modal> component automatically adds a click handler to this button to make the
+// modal appear.
+//
+// This is *one* of two ways to use this modal component. The two ways are:
+//
+// 1. Plug-and-play mode: The modal component handles opening and closing itself in reaction to a
+//    click on an actuator component (usually a button). I demonstrated this case above.
+//
+// 2. Self-management mode: The component using the modal component handles opening and closing the
+//    modal.
+//
+// In the second case, the parent component supplies no actuator property to <Modal>. Instead, it
+// either renders the modal to display it opened, or doesn't to hide it. That typically looks
+// something like:
+//
+// {this.state.displayModal ? <Modal>{child components}</Modal> : null}
+//
 // <Modal> usage details:
 // actuator: Component that opens the modal. You don't normally need a click handler for this
 //           component because <Modal> attaches a default click handler that simply opens the
-//           modal. If you handle the visibility of the modal yourself, `actuator` isn't needed.
-// closeModal: Function to close the modal if `actuator` isn't provided. Use this when you handle
-//             the visibility of the modal yourself. Providing this to the <Modal> component simply
-//             allows the ESC key to close the modal without an `actuator` component.
+//           modal. The existence or absence of this property determines whether you're using
+//           plug-and-play mode or self-management mode. Supply `actuator` to use plug-and-play
+//           mode. Don't supply `actuator` to use self-management mode.
+// closeModal: Supply a function to close the modal for self-management mode. This function
+//             normally sets a state that decides whether to render the modal or not. Provide this
+//             function so that <Modal> knows what to call when the user types the ESC key. For
+//             closing the modal with a button in the modal's footer (typically), supply a click
+//             handler for the close button to close the modal.
 //
 // <ModalHeader> usage details:
 // title: Title to display in the header. You can pass this as a string or a React component (e.g.
-//        a link within the title string).
-// closeModal: As a boolean, this displays the standard close button in the header with the
-//             standard close handler. You can also pass a function to use as a click handler on
-//             this button to close the modal if you handle the visibility of the modal yourself.
+//        if you need a link within the title string).
+// closeModal: As a boolean, this displays the standard close button (an "x") in the header with
+//             the standard close handler. You can also pass a function to use as a click handler
+//             on this button to close the modal for self-management mode..
 //
-// <ModalBody> takes no properties.
+// <ModalBody> takes no properties. All it does is render a wrapper <div> for Bootstrap modal
+// bodies.
 //
 // <ModalFooter> usage details:
 // submitBtn: Pass a React component to render as the submit button. You can also supply a function
 //            that gets used as a click handler for a standard Submit button.
-// closeBtn: Pass True to get a standard "Cancel" button that simply closes the modal. You can also
-//           pass a function that gets used as the click handler for the standard cancel button
-//           that gets called before closing the modal. Finally, you can pass a React component
-//           that handles the closing of the modal if you handle modal visibility yourself.
+// closeBtn: Pass True to get a standard "Cancel" button that simply closes the modal in
+//           plug-and-play mode. You can also pass a function that gets used as the click handler
+//           for the standard cancel button that gets called before closing the modal. Finally, you
+//           can pass a React component that handles the closing of the modal in self-management
+//           mode.
+// dontClose: Supply this as a boolean to prevent the submit button from closing the modal. Of
+//            course you'll need to provide some other way to close the modal.
 //
 // The method of rendering the modal to a div appended to <body> rather than into the React virtual
 // DOM comes from: http://jamesknelson.com/rendering-react-components-to-the-document-body/
@@ -215,6 +241,7 @@ export const Modal = React.createClass({
     propTypes: {
         actuator: React.PropTypes.object, // Component (usually a button) that makes the modal appear
         closeModal: React.PropTypes.func, // Called to close the modal if an actuator isn't provided
+        addClasses: React.PropTypes.string, // CSS classes to add to the default
         children: React.PropTypes.node,
     },
 
@@ -281,7 +308,7 @@ export const Modal = React.createClass({
                 {!this.props.actuator || this.state.modalOpen ?
                     <div>
                         <div className="modal" style={{ display: 'block' }}>
-                            <div className="modal-dialog">
+                            <div className={`modal-dialog${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`}>
                                 <div className="modal-content">
                                     {this.modalChildren}
                                 </div>
