@@ -322,12 +322,16 @@ const GenomeBrowser = React.createClass({
         }
 
         this.browserFiles = []
+        let domain = `${location.protocol}//${location.hostname}`;
+        if (domain.includes('localhost')) {
+            domain = domainName;
+        }
         files.forEach((file) => {
             if (file.file_format === 'bigWig') {
                 this.browserFiles.push({
                     name: file.accession,
                     desc: file.output_type,
-                    bwgURI: `${domainName}${file.href}`,
+                    bwgURI: `${domain}${file.href}`,
                     style: [
                         {
                             type: 'default',
@@ -343,7 +347,7 @@ const GenomeBrowser = React.createClass({
                 this.browserFiles.push({
                     name: file.accession,
                     desc: file.output_type,
-                    bwgURI: `${domainName}${file.href}`,
+                    bwgURI: `${domain}${file.href}`,
                     style: [
                         {
                             style: {
@@ -386,7 +390,7 @@ const GenomeBrowser = React.createClass({
             this.browserFiles.forEach((fileSource) => {
                 this.browser.removeTier({
                     name: fileSource.name,
-                    desc: fileSource.desc, 
+                    desc: fileSource.desc,
                     bwgURI: fileSource.bwgURI,
                 });
             });
@@ -394,12 +398,16 @@ const GenomeBrowser = React.createClass({
 
         const files = !this.context.localInstance ? this.props.files.slice(0, maxFilesBrowsed - 1) : dummyFiles;
         if (files && files.length) {
+            let domain = `${location.protocol}//${location.hostname}`;
+            if (domain.includes('localhost')) {
+                domain = domainName;
+            }
             files.forEach((file) => {
                 if (file.file_format === 'bigWig') {
                     this.browser.addTier({
                         name: file.accession,
-                        desc: file.output_type, 
-                        bwgURI: `${domainName}${file.href}`,
+                        desc: file.output_type,
+                        bwgURI: `${domain}${file.href}`,
                         style: [
                             {
                                 type: 'default',
@@ -415,7 +423,7 @@ const GenomeBrowser = React.createClass({
                     this.browser.addTier({
                         name: file.accession,
                         desc: file.output_type,
-                        bwgURI: `${domainName}${file.href}`,
+                        bwgURI: `${domain}${file.href}`,
                         style: [
                             {
                                 style: {
