@@ -188,6 +188,25 @@ var encodeVersionMap = module.exports.encodeVersionMap = {
     "ENCODE3": "3"
 };
 
+// Order that assemblies should appear in lists
+module.exports.assemblyPriority = [
+    'GRCh38',
+    'hg19',
+    'mm10',
+    'mm10-minimal',
+    'mm9',
+    'ce11',
+    'ce10',
+    'dm6',
+    'dm3',
+    'J02459.1',
+];
+
+module.exports.browserPriority = [
+    'UCSC',
+    'Ensembl',
+];
+
 // Determine the given object's ENCODE version
 module.exports.encodeVersion = function(context) {
     var encodevers = "";
@@ -223,6 +242,7 @@ module.exports.dbxref_prefix_map = {
     "DSSC": "https://stockcenter.ucsd.edu/index.php?action=view&q=",
     "MGI": "http://www.informatics.jax.org/marker/",
     "MGI.D": "http://www.informatics.jax.org/external/festing/mouse/docs/",
+    "RBPImage":"http://rnabiology.ircm.qc.ca/RBPImage/gene.php?cells=",
     "RefSeq": "https://www.ncbi.nlm.nih.gov/gene/?term=",
     // UCSC links need assembly (&db=) and accession (&hgt_mdbVal1=) added to url
     "UCSC-ENCODE-mm9": "http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=mm9&hgt_mdbVal1=",
