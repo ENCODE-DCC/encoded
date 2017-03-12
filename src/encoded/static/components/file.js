@@ -312,7 +312,7 @@ const File = React.createClass({
                                     {context.file_size ?
                                         <div data-test="filesize">
                                             <dt>File size</dt>
-                                            <dd>{context.file_size}</dd>
+                                            <dd>{globals.humanFileSize(context.file_size)}</dd>
                                         </div>
                                     : null}
 
