@@ -14,6 +14,7 @@ const assayChartId = 'assay-chart'; // Assay chart <div> id attribute
 const statusChartId = 'status-chart'; // Status chart <div> id attribute
 const labColors = new DataColors(); // Get a list of colors to use for the lab chart
 const labColorList = labColors.colorList();
+const typeSpecificColorList = labColors.colorList();
 const statusColorList = labColors.colorList();
 
 
@@ -125,6 +126,7 @@ const LabChart = React.createClass({
     propTypes: {
         award: React.PropTypes.object, // Award being displayed
         labs: React.PropTypes.array, // Array of labs facet data
+        uriBase: React.PropTypes.string, // Base URI for matrix links
     },
 
     contextTypes: {
@@ -154,7 +156,7 @@ const LabChart = React.createClass({
         const colors = labels.map((label, i) => labColorList[i % labColorList.length]);
 
         // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, `/matrix/?type=Experiment&award.name=${this.props.award.name}&lab.title=`, (uri) => { this.context.navigate(uri); })
+        createDoughnutChart(chartId, values, labels, colors, `${this.props.uriBase}${this.props.award.name}&lab.title=`, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -209,11 +211,12 @@ const LabChart = React.createClass({
 
 
 // Display and handle clicks in the chart of assays.
-const AssayChart = React.createClass({
+const TypeSpecificChart = React.createClass({
     propTypes: {
         award: React.PropTypes.object, // Award being displayed
-        assays: React.PropTypes.array, // Array of assay types facet data
-        colors: React.PropTypes.object, // Colors for the assay chart
+        typeSpecificData: React.PropTypes.array, // Type-specific data to display in a chart
+        uriBase: React.PropTypes.string, // Base URI for matrix links
+        matrixFacet: React.PropTypes.func, // Element of matrix URI to select
     },
 
     contextTypes: {
@@ -221,16 +224,20 @@ const AssayChart = React.createClass({
     },
 
     componentDidMount: function () {
-        this.createChart(assayChartId, this.props.assays);
+        if (this.props.typeSpecificData.length) {
+            this.createChart(assayChartId, this.props.typeSpecificData);
+        }
     },
 
     componentDidUpdate: function () {
         if (this.chart) {
-            this.updateChart(this.chart, this.props.assays);
+            this.updateChart(this.chart, this.props.typeSpecificData);
         }
     },
 
     createChart: function (chartId, facetData) {
+        const { award, matrixFacet } = this.props;
+
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
         const labels = [];
@@ -240,10 +247,10 @@ const AssayChart = React.createClass({
                 labels.push(item.key);
             }
         });
-        const colors = this.props.colors.colorList(facetData.map(term => term.key), { shade: 10 });
+        const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
 
         // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, `/matrix/?type=Experiment&award.name=${this.props.award.name}&assay_title=`, (uri) => { this.context.navigate(uri); })
+        createDoughnutChart(chartId, values, labels, colors, matrixFacet(award), (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -261,7 +268,7 @@ const AssayChart = React.createClass({
                 labels.push(item.key);
             }
         });
-        const colors = this.props.colors.colorList(facetData.map(term => term.key), { shade: 10 });
+        const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
 
         // Update chart data and redraw with the new data
         chart.data.datasets[0].data = values;
@@ -274,14 +281,14 @@ const AssayChart = React.createClass({
     },
 
     render: function () {
-        const { assays } = this.props;
+        const { typeSpecificData, title } = this.props;
         return (
             <div className="award-charts__chart">
                 <div className="title">
-                    Assay Type
+                    {title}
                     <center><hr width="80%" position="static" color="blue" /></center>
                 </div>
-                {assays.length ?
+                {typeSpecificData.length ?
                     <div>
                         <div id={assayChartId} className="award-charts__canvas">
                             <canvas id={`${assayChartId}-chart`} />
@@ -302,6 +309,7 @@ const StatusChart = React.createClass({
     propTypes: {
         award: React.PropTypes.object, // Award being displayed
         statuses: React.PropTypes.array, // Array of status facet data
+        uriBase: React.PropTypes.string, // Base URI to use for matrix links
     },
 
     contextTypes: {
@@ -309,7 +317,9 @@ const StatusChart = React.createClass({
     },
 
     componentDidMount: function () {
-        this.createChart(statusChartId, this.props.statuses);
+        if (this.props.statuses.length) {
+            this.createChart(statusChartId, this.props.statuses);
+        }
     },
 
     componentDidUpdate: function () {
@@ -331,7 +341,7 @@ const StatusChart = React.createClass({
         const colors = labels.map((label, i) => statusColorList[i % statusColorList.length]);
 
         // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, `/matrix/?type=Experiment&award.name=${this.props.award.name}&status=`, (uri) => { this.context.navigate(uri); })
+        createDoughnutChart(chartId, values, labels, colors, `${this.props.uriBase}${this.props.award.name}&status=`, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -385,50 +395,60 @@ const StatusChart = React.createClass({
 });
 
 
+// Once we get chart data to display, render the charts. We render three charts:
+//   1. Lab - The labs the award applies to.
+//   2. TypeSpecificData - A chart of data specific for an object type this award represents. We
+//                         can have more than one data type associated with an award, but we only
+//                         draw the data for one type for this chart. Whatever's the first type to
+//                         return data is what we use.
+//   3. Status - The release statuses of the objects associated with this award.
 const ChartRenderer = React.createClass({
     propTypes: {
-        data: React.PropTypes.object, // Array of experiments under this award
-        award: React.PropTypes.object, // Award being displayed
-        colors: React.PropTypes.object, // Color object for assay term names
+        award: React.PropTypes.object.isRequired, // Award being displayed
+        searchData: React.PropTypes.object, // Array of experiments under this award
+        title: React.PropTypes.string, // Title to display in chart
+        uriBase: React.PropTypes.string, // Base URI to retrieve chart data
+        matrixFacet: React.PropTypes.func, // Element of matrix URL to select
+        legendExtractor: React.PropTypes.func, // Function to extract type-specific data from facets
     },
 
     render: function () {
-        const { data, award, colors } = this.props;
+        const { award, searchData, title, uriBase, matrixFacet, legendExtractor } = this.props;
         let labs; // Array of labs from facet data
-        let assays; // Array of assay types from facet data
+        let typeSpecificData; // Array of type-specific data
         let statuses; // Array of statuses from facet data
 
         // Find the chart data in the returned facets.
-        if (data && data.facets && data.facets.length && colors) {
+        if (searchData && searchData.facets && searchData.facets.length) {
             // Get the array of lab data.
-            const labFacet = data.facets.find(facet => facet.field === 'lab.title');
+            const labFacet = searchData.facets.find(facet => facet.field === 'lab.title');
             if (labFacet) {
                 labs = labFacet.terms && labFacet.terms.length ? labFacet.terms.sort((a, b) => (a.key < b.key ? -1 : (a.key > b.key ? 1 : 0))) : null;
             }
 
             // Get the array of assay types.
-            const assayFacet = data.facets.find(facet => facet.field === 'assay_title');
-            if (assayFacet) {
-                assays = assayFacet.terms && assayFacet.terms.length ? assayFacet.terms : null;
+            const typeSpecificFacet = searchData.facets.find(legendExtractor);
+            if (typeSpecificFacet) {
+                typeSpecificData = typeSpecificFacet.terms && typeSpecificFacet.terms.length ? typeSpecificFacet.terms : null;
             }
 
             // Get the array of status data.
-            const statusFacet = data.facets.find(facet => facet.field === 'status');
+            const statusFacet = searchData.facets.find(facet => facet.field === 'status');
             if (statusFacet) {
                 statuses = statusFacet.terms && statusFacet.terms.length ? statusFacet.terms : null;
             }
         }
 
-        if (labs || assays || statuses) {
+        if (labs) {
             return (
                 <div className="award-charts">
-                    {labs ? <LabChart award={award} labs={labs} /> : null}
-                    {assays ? <AssayChart award={award} assays={assays} colors={colors} /> : null}
-                    {statuses ? <StatusChart award={award} statuses={statuses} /> : null}
+                    <LabChart award={award} labs={labs} uriBase={uriBase} />
+                    <TypeSpecificChart award={award} typeSpecificData={typeSpecificData || []} uriBase={uriBase} matrixFacet={matrixFacet} title={title} />
+                    <StatusChart award={award} statuses={statuses || []} uriBase={uriBase} />
                 </div>
             );
         }
-        return <p className="browser-error">No labs nor assays reference this award</p>;
+        return <p className="browser-error">No labs reference this award</p>;
     },
 });
 
@@ -447,33 +467,36 @@ const AwardCharts = React.createClass({
                 revoked: false,
                 archived: false,
             },
-            assayTermNameColors: null,
+            searchData: {}, // Search data from search of objects using this award.
+            chartSource: {}, // Element of `this.chartSource` that generated the data in `awardData`.
         };
     },
 
-    // Get the list of available assay_titles by doing a search of experiments and getting the
-    // array of returned assay_titles.
+    // Get the data we need to draw the charts. Loop through this.chartSources until we get a search
+    // that returns results.
     componentDidMount: function () {
-        return fetch(globals.encodedURI('/search/?type=Dataset&field=@id'), {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-            },
-        }).then((response) => {
-            // Convert each response response to JSON
-            if (response.ok) {
-                return response.json();
-            }
-            return Promise.resolve(null);
-        }).then((result) => {
-            // Look for the assay_title facet
-            const assayTitleFacet = result.facets.find(facet => facet.field === 'assay_title');
-            if (assayTitleFacet) {
-                const assayTitleList = assayTitleFacet.terms.map(term => term.key);
-                const assayTitleColors = new DataColors(assayTitleList);
-                this.setState({ assayTermNameColors: assayTitleColors });
-            }
-            return null;
+        // Start with a resolved promise with undefined data (no parameter to Promise.resolve is
+        // undefined data).
+        let promise = Promise.resolve({ data: null, chartSource: {} });
+
+        // Loop until we get data from the search.
+        this.chartSources.forEach((chartSource) => {
+            promise = promise.then((results) => {
+                if (results.data) {
+                    return Promise.resolve(results);
+                }
+
+                // Have not received data for the last search. Request data for the next source.
+                return this.retrieveChartData(chartSource);
+            });
+        });
+        promise.then((results) => {
+            // We recieved good data. Set the component state to the new data we we can
+            // render it.
+            this.setState({
+                searchData: results.data,
+                chartSource: results.chartSource,
+            });
         });
     },
 
@@ -485,8 +508,52 @@ const AwardCharts = React.createClass({
         this.setState({ statuses: newStatuses });
     },
 
+    // Retrieve data for the type of search specified in searchConfig, which holds one object in
+    // chartSources array. Returns a promise with the resulting data if any, or null if not.
+    retrieveChartData: function (chartSource) {
+        return fetch(globals.encodedURI(`${chartSource.uriBase}${this.props.award.name}`), {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+            },
+        }).then((response) => {
+            // Convert each response response to JSON
+            if (response.ok) {
+                return response.json();
+            }
+            return Promise.resolve(null);
+        }).then(jsonData => Promise.resolve({ data: jsonData, chartSource: chartSource }));
+    },
+
+    // This array defines the order and some distinguishing aspects of the searches of data to
+    // generate the award graphs. If one search returns no results, move on to the next until we
+    // either get results or we run out of searches and can display no graph. Move to constructor
+    // in React 15.
+    //
+    // title {string} - Displayed to indicate what award data we're seeing.
+    // uriBase {string} - URI fragment to search for datasets that use this award. The award name
+    //                    gets appended to this.
+    // matrixFacet {string} - Element of URI to add to matrix to select a fact item.
+    // legendExtractor { function} = Function to extract facets to use as a legend display for the
+    //                               type-specific chart.
+    chartSources: [
+        {
+            title: 'Assays',
+            uriBase: '/search/?type=Experiment&award.name=',
+            matrixFacet: award => `/matrix/?type=Experiment&award.name=${award.name}&assay_title=`,
+            legendExtractor: facet => facet.field === 'assay_title',
+        },
+        {
+            title: 'Annotation Types',
+            uriBase: '/search/?type=Annotation&award.name=',
+            matrixFacet: award => `/matrix/?type=Annotation&award.name=${award.name}&annotation_type=`,
+            legendExtractor: facet => facet.field === 'annotation_type',
+        },
+    ],
+
     render: function () {
         const { award } = this.props;
+        const { searchData, chartSource } = this.state;
 
         return (
             <Panel>
@@ -495,12 +562,13 @@ const AwardCharts = React.createClass({
                     <ProjectBadge award={award} addClasses="badge-heading" />
                 </PanelHeading>
                 <PanelBody>
-                    <FetchedItems
+                    <ChartRenderer
                         award={award}
-                        colors={this.state.assayTermNameColors}
-                        url={`/search/?type=Experiment&award.name=${award.name}`}
-                        Component={ChartRenderer}
-                        ignoreErrors
+                        searchData={searchData}
+                        title={chartSource.title}
+                        matrixFacet={chartSource.matrixFacet}
+                        uriBase={chartSource.uriBase}
+                        legendExtractor={chartSource.legendExtractor}
                     />
                 </PanelBody>
             </Panel>
