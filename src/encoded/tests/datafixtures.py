@@ -256,7 +256,7 @@ def file(testapp, lab, award, experiment):
     item = {
         'dataset': experiment['@id'],
         'file_format': 'fasta',
-        'md5sum': '91be74b6e11515393507f4ebfa66d78a',
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
         'output_type': 'raw data',
         'lab': lab['@id'],
         'award': award['@id'],
