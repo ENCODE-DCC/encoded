@@ -630,19 +630,10 @@ function termSelected(term, facet, filters) {
         if (facet.type === 'exists') {
             if ((filter.field === `${facet.field}!` && term === 'no') ||
                 (filter.field === facet.field && term === 'yes')) {
-<<<<<<< HEAD
-                matchingFilter = filter;
-                return true;
-            }
-        } else if (filter.field === facet.field && filter.term === term) {
-            matchingFilter = filter;
-            return true;
-=======
                 selected = true; break;
             }
         } else if (filter.field == facet.field && filter.term == term) {
             selected = true; break;
->>>>>>> master
         }
         return false;
     });
@@ -924,13 +915,8 @@ const FacetList = search.FacetList = React.createClass({
         }
 
         // See if we need the Clear Filters link or not. context.clear_filters
-<<<<<<< HEAD
-        let clearButton; // JSX for the clear button
-        const searchQuery = context && context['@id'] && url.parse(context['@id']).search;
-=======
         var clearButton; // JSX for the clear button
         var searchQuery = context && context['@id'] && url.parse(context['@id']).search;
->>>>>>> master
         if (searchQuery) {
             // Convert search query string to a query object for easy parsing
             const terms = queryString.parse(searchQuery);
@@ -1021,41 +1007,6 @@ const ResultTable = search.ResultTable = React.createClass({
         };
     },
 
-<<<<<<< HEAD
-    getChildContext: function () {
-        return {
-            actions: this.props.actions,
-        };
-    },
-
-    onFilter: function (e) {
-        const searchStr = e.currentTarget.getAttribute('href');
-        this.props.onChange(searchStr);
-        e.stopPropagation();
-        e.preventDefault();
-    },
-
-    // Called when new value chosen from assembly dropdown.
-    assemblyChange: function (e) {
-        this.setState({ browserAssembly: e.target.value });
-    },
-
-    render: function () {
-        const batchHubLimit = 100;
-        const { context, searchBase, assemblies } = this.props;
-        const results = context['@graph'];
-        const total = context.total;
-        const batchHubDisabled = total > batchHubLimit;
-        const columns = context.columns;
-        const filters = context.filters;
-        const label = 'results';
-        const trimmedSearchBase = searchBase.replace(/[\?|&]limit=all/, '');
-        let browseAllFiles = true; // True to pass all files to browser
-        let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
-        let assemblyChooser;
-
-        const facets = context.facets.map((facet) => {
-=======
     render: function() {
         const visualizeLimit = 100;
         var context = this.props.context;
@@ -1069,7 +1020,6 @@ const ResultTable = search.ResultTable = React.createClass({
         var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
 
         var facets = context['facets'].map(function(facet) {
->>>>>>> master
             if (this.props.restrictions[facet.field] !== undefined) {
                 const workFacet = _.clone(facet);
                 workFacet.restrictions = this.props.restrictions[workFacet.field];
@@ -1090,20 +1040,12 @@ const ResultTable = search.ResultTable = React.createClass({
         }
 
         // Get a sorted list of batch hubs keys with case-insensitive sort
-<<<<<<< HEAD
-        let batchHubKeys = [];
-        if (context.batch_hub && Object.keys(context.batch_hub).length) {
-            batchHubKeys = Object.keys(context.batch_hub).sort((a, b) => {
-                const aLower = a.toLowerCase();
-                const bLower = b.toLowerCase();
-=======
         // NOTE: Tim thinks this is overkill as opposed to simple sort()
         var visualizeKeys = [];
         if (context.visualize_batch && Object.keys(context.visualize_batch).length) {
             visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
                 var aLower = a.toLowerCase();
                 var bLower = b.toLowerCase();
->>>>>>> master
                 return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
             });
         }
