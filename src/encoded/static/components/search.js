@@ -13,7 +13,7 @@ import * as globals from './globals';
 import { Attachment } from './image';
 import { DbxrefList } from './dbxref';
 import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
-import { biosampleSummaryString, biosampleOrganismNames } from './typeutils';
+import { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
 import GenomeBrowser from './genome_browser';
 import { donorDiversity, BrowserSelector } from './objectutils';
 
@@ -373,7 +373,7 @@ const Experiment = module.exports.Experiment = React.createClass({
         }
 
         // Get all biosample organism names
-        const organismNames = biosamples.length ? biosampleOrganismNames(biosamples) : [];
+        const organismNames = biosamples.length ? BiosampleOrganismNames(biosamples) : [];
 
         // Collect synchronizations
         const synchronizations = _.uniq(result.replicates.filter(replicate =>
