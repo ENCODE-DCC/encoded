@@ -1,34 +1,25 @@
-'use strict';
-var React = require('react');
-var cloneWithProps = require('react/lib/cloneWithProps');
-var queryString = require('query-string');
-var button = require('../libs/bootstrap/button');
-var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
-var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
-var svgIcon = require('../libs/svg-icons').svgIcon;
-var cx = require('react/lib/cx');
-var url = require('url');
-var _ = require('underscore');
-var globals = require('./globals');
-var image = require('./image');
-var search = module.exports;
-var { donorDiversity, BrowserSelector } = require('./objectutils');
-var dbxref = require('./dbxref');
-var audit = require('./audit');
-var objectutils = require('./objectutils');
-var {BiosampleSummaryString, BiosampleOrganismNames} = require('./typeutils');
+import React from 'react';
+import cloneWithProps from 'react/lib/cloneWithProps';
+import cx from 'react/lib/cx';
+import url from 'url';
+import _ from 'underscore';
+import queryString from 'query-string';
+import { DropdownButton } from '../libs/bootstrap/button';
+import { TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
+import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
+import { svgIcon } from '../libs/svg-icons';
+import * as globals from './globals';
+import { Attachment } from './image';
+import { DbxrefList } from './dbxref';
+import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
+import { biosampleSummaryString, biosampleOrganismNames } from './typeutils';
+import GenomeBrowser from './genome_browser';
+import { donorDiversity, BrowserSelector } from './objectutils';
 
-var GenomeBrowser = require('./genome_browser');
-var {TabPanel, TabPanelPane} = require('../libs/bootstrap/panel');
 
-var DbxrefList = dbxref.DbxrefList;
-var statusOrder = globals.statusOrder;
-var SingleTreatment = objectutils.SingleTreatment;
-var AuditIndicators = audit.AuditIndicators;
-var AuditDetail = audit.AuditDetail;
-var AuditMixin = audit.AuditMixin;
-var DropdownButton = button.DropdownButton;
-var DropdownMenu = dropdownMenu.DropdownMenu;
+
+const search = module.exports;
 
 // Should really be singular...
 const types = {
@@ -630,10 +621,12 @@ function termSelected(term, facet, filters) {
         if (facet.type === 'exists') {
             if ((filter.field === `${facet.field}!` && term === 'no') ||
                 (filter.field === facet.field && term === 'yes')) {
-                selected = true; break;
+                matchingFilter = filter;
+                return true;
             }
-        } else if (filter.field == facet.field && filter.term == term) {
-            selected = true; break;
+        } else if (filter.field === facet.field && filter.term === term) {
+            matchingFilter = filter;
+            return true;
         }
         return false;
     });
@@ -915,8 +908,8 @@ const FacetList = search.FacetList = React.createClass({
         }
 
         // See if we need the Clear Filters link or not. context.clear_filters
-        var clearButton; // JSX for the clear button
-        var searchQuery = context && context['@id'] && url.parse(context['@id']).search;
+        let clearButton; // JSX for the clear button
+        const searchQuery = context && context['@id'] && url.parse(context['@id']).search;
         if (searchQuery) {
             // Convert search query string to a query object for easy parsing
             const terms = queryString.parse(searchQuery);
@@ -1007,19 +1000,39 @@ const ResultTable = search.ResultTable = React.createClass({
         };
     },
 
-    render: function() {
-        const visualizeLimit = 100;
-        var context = this.props.context;
-        var results = context['@graph'];
-        var total = context['total'];
-        var visualizeDisabled = total > visualizeLimit;
-        var columns = context['columns'];
-        var filters = context['filters'];
-        var label = 'results';
-        var searchBase = this.props.searchBase;
-        var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
+    getChildContext: function () {
+        return {
+            actions: this.props.actions,
+        };
+    },
 
-        var facets = context['facets'].map(function(facet) {
+    onFilter: function (e) {
+        const searchStr = e.currentTarget.getAttribute('href');
+        this.props.onChange(searchStr);
+        e.stopPropagation();
+        e.preventDefault();
+    },
+
+    // Called when new value chosen from assembly dropdown.
+    assemblyChange: function (e) {
+        this.setState({ browserAssembly: e.target.value });
+    },
+
+    render: function () {
+        const visualizeLimit = 100;
+        const { context, searchBase, assemblies } = this.props;
+        const results = context['@graph'];
+        const total = context.total;
+        const visualizeDisabled = total > visualizeLimit;
+        const columns = context.columns;
+        const filters = context.filters;
+        const label = 'results';
+        const trimmedSearchBase = searchBase.replace(/[\?|&]limit=all/, '');
+        let browseAllFiles = true; // True to pass all files to browser
+        let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
+        let assemblyChooser;
+
+        const facets = context.facets.map((facet) => {
             if (this.props.restrictions[facet.field] !== undefined) {
                 const workFacet = _.clone(facet);
                 workFacet.restrictions = this.props.restrictions[workFacet.field];
@@ -1041,11 +1054,11 @@ const ResultTable = search.ResultTable = React.createClass({
 
         // Get a sorted list of batch hubs keys with case-insensitive sort
         // NOTE: Tim thinks this is overkill as opposed to simple sort()
-        var visualizeKeys = [];
+        let visualizeKeys = [];
         if (context.visualize_batch && Object.keys(context.visualize_batch).length) {
             visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
-                var aLower = a.toLowerCase();
-                var bLower = b.toLowerCase();
+                const aLower = a.toLowerCase();
+                const bLower = b.toLowerCase();
                 return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
             });
         }
