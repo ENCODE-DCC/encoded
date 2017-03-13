@@ -12,7 +12,7 @@ var _ = require('underscore');
 var globals = require('./globals');
 var image = require('./image');
 var search = module.exports;
-var { donorDiversity } = require('./objectutils');
+var { donorDiversity, BrowserSelector } = require('./objectutils');
 var dbxref = require('./dbxref');
 var audit = require('./audit');
 var objectutils = require('./objectutils');
@@ -928,7 +928,7 @@ var ResultTable = search.ResultTable = React.createClass({
         var context = this.props.context;
         var results = context['@graph'];
         var total = context['total'];
-        var visualize_disabled = total > visualizeLimit;
+        var visualizeDisabled = total > visualizeLimit;
         var columns = context['columns'];
         var filters = context['filters'];
         var label = 'results';
@@ -1012,17 +1012,11 @@ var ResultTable = search.ResultTable = React.createClass({
                                     : null}
 
                                     {visualizeKeys && context.visualize_batch ?
-                                        <DropdownButton disabled={visualize_disabled} label="visualize" title={visualize_disabled ? 'Filter to ' + visualizeLimit + ' to visualize' : 'Visualize'} wrapperClasses="results-table-button">
-                                            <DropdownMenu>
-                                                {visualizeKeys.map(assembly =>
-                                                    Object.keys(context.visualize_batch[assembly]).sort().map(browser =>
-                                                        <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" href={context.visualize_batch[assembly][browser]}>
-                                                            {assembly} {browser}
-                                                        </a>
-                                                    )
-                                                )}
-                                            </DropdownMenu>
-                                        </DropdownButton>
+                                        <BrowserSelector
+                                            visualizeCfg={context.visualize_batch}
+                                            disabled={visualizeDisabled}
+                                            title={visualizeDisabled ? 'Filter to ' + visualizeLimit + ' to visualize' : 'Visualize'}
+                                        />
                                     : null}
                                 </div>
                             </div>

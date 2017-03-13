@@ -558,6 +558,9 @@ PHASE1_PIPELINES = {
     'experiment': [
         remove_keys('possible_controls', 'related_files'),
     ],
+    'human_donor': [
+        remove_keys('parents', 'children', 'siblings', 'fraternal_twin', 'identical_twin'),
+    ],
     'publication': [
         remove_keys('datasets'),
     ],
@@ -616,6 +619,9 @@ PHASE2_PIPELINES = {
     ],
     'experiment': [
         skip_rows_missing_all_keys('related_files', 'possible_controls'),
+    ],
+    'human_donor': [
+        skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'fraternal_twin', 'identical_twin'),
     ],
     'annotation': [
         skip_rows_missing_all_keys('related_files', 'software_used'),

@@ -1,0 +1,20 @@
+[
+    {
+        "status": "released",
+        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
+        "uuid": "f082707c-50c6-4dbb-af33-965ef3186e17",
+        "assay_term_name": "ATAC-seq",
+        "quality_metric_of": [ "ENCFF003COS", "ENCFF002COS"],
+        "alignment_rate": 0.92931,
+        "mitochondrial_read_fraction": 0.23366,
+        "post_filtering_read_depth": 38842570,
+        "num_naive_overlap_peaks": 174664,
+        "FRiP": 0.4873,
+        "has_NFR_peak": true,
+        "has_mononucleosome_peak": true,
+        "TSS_enrichment": 14.239,
+        "TSS_annotation": "V24",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/U54HG006996/"
+    }
+]

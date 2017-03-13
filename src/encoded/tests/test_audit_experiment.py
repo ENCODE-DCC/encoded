@@ -89,11 +89,11 @@ def fly_organism(testapp):
 
 
 @pytest.fixture
-def histone_target(testapp, fly_organism):
+def mouse_H3K9me3(testapp, mouse):
     item = {
-        'organism': fly_organism['uuid'],
-        'label': 'Histone',
-        'investigated_as': ['histone modification', 'histone']
+        'organism': mouse['@id'],
+        'label': 'H3K9me3',
+        'investigated_as': ['histone modification', 'histone', 'broad histone mark']
     }
     return testapp.post_json('/target', item, status=201).json['@graph'][0]
 
@@ -278,7 +278,7 @@ def file_fastq(testapp, lab, award, base_experiment, base_replicate):
         'dataset': base_experiment['@id'],
         'replicate': base_replicate['@id'],
         'file_format': 'fastq',
-        'md5sum': 'd41d8cd98f00b2042e9800998ecf8427e',
+        'md5sum': '91b474b6411514393507f4ebfa66d47a',
         'output_type': 'reads',
         'run_type': "single-ended",
         'lab': lab['@id'],
@@ -294,7 +294,7 @@ def file_fastq_2(testapp, lab, award, base_experiment, base_replicate):
         'dataset': base_experiment['@id'],
         'replicate': base_replicate['@id'],
         'file_format': 'fastq',
-        'md5sum': 'd41d8cd98f00b204e9800998ecf8427123e',
+        'md5sum': '94be74b6e14515393547f4ebfa66d77a',
         'run_type': "paired-ended",
         'output_type': 'reads',
         'lab': lab['@id'],
@@ -311,7 +311,7 @@ def file_fastq_3(testapp, lab, award, base_experiment, replicate_1_1):
         'replicate': replicate_1_1['@id'],
         'file_format': 'fastq',
         'output_type': 'reads',
-        'md5sum': 'd41d8cd98f00b204e9dh5800998ecf8427123e',
+        'md5sum': '21be74b6e11515393507f4ebfa66d77a',
         'run_type': "paired-ended",
         'lab': lab['@id'],
         'award': award['@id'],
@@ -326,7 +326,7 @@ def file_fastq_4(testapp, lab, award, base_experiment, replicate_2_1):
         'dataset': base_experiment['@id'],
         'replicate': replicate_2_1['@id'],
         'file_format': 'fastq',
-        'md5sum': 'd41d8cd98f00b204e9800998ecww3f8427123e',
+        'md5sum': '11be74b6e11515393507f4ebfa66d77a',
         'run_type': "paired-ended",
         'output_type': 'reads',
         'lab': lab['@id'],
@@ -342,7 +342,7 @@ def file_fastq_5(testapp, lab, award, base_experiment, replicate_2_1):
         'dataset': base_experiment['@id'],
         'replicate': replicate_2_1['@id'],
         'file_format': 'fastq',
-        'md5sum': 'd41d8cdq427123e',
+        'md5sum': '91be79b6e11515993509f4ebfa66d77a',
         'run_type': "paired-ended",
         'output_type': 'reads',
         'lab': lab['@id'],
@@ -375,7 +375,7 @@ def file_bam_1_1(testapp, encode_lab, award, base_experiment, file_fastq_3):
         'derived_from': [file_fastq_3['@id']],
         'file_format': 'bam',
         'assembly': 'mm10',
-        'md5sum': 'd41d8cd98f03wsqa50b204et3f8427123e',
+        'md5sum': '91be44b6e11515394407f4ebfa66d77a',
         'output_type': 'alignments',
         'lab': encode_lab['@id'],
         'award': award['@id'],
@@ -391,7 +391,7 @@ def file_bam_2_1(testapp, encode_lab, award, base_experiment, file_fastq_4):
         'derived_from': [file_fastq_4['@id']],
         'file_format': 'bam',
         'assembly': 'mm10',
-        'md5sum': 'd41d8cd98f00b204et300gtf8427123e',
+        'md5sum': '91be71b6e11515377807f4ebfa66d77a',
         'output_type': 'alignments',
         'lab': encode_lab['@id'],
         'award': award['@id'],
@@ -525,7 +525,7 @@ def file_bed_methyl(base_experiment, award, encode_lab, testapp, analysis_step_r
         "file_format_type": "bedMethyl",
         "file_size": 66569,
         "assembly": "mm10",
-        "md5sum": "100d8c998f00bfdf2204e9800998ecf8428b",
+        "md5sum": "91be74b6e11515223507f4ebf266d77a",
         "output_type": "methylation state at CpG",
         "award": award["uuid"],
         "lab": encode_lab["uuid"],
@@ -543,7 +543,7 @@ def file_tsv_1_2(base_experiment, award, encode_lab, testapp, analysis_step_run_
         'file_size': 3654,
         'assembly': 'mm10',
         'genome_annotation': 'M4',
-        'md5sum': '100d8c998f00b2204e9800998ecf8428b',
+        'md5sum': '912e7ab6e11515393507f42bfa66d77a',
         'output_type': 'gene quantifications',
         'award': award['uuid'],
         'lab': encode_lab['uuid'],
@@ -561,7 +561,7 @@ def file_tsv_1_1(base_experiment, award, encode_lab, testapp, analysis_step_run_
         'file_size': 36524,
         'assembly': 'mm10',
         'genome_annotation': 'M4',
-        'md5sum': '100d8c998f040b2204e9800998ecf8428b',
+        'md5sum': '91be74b6e315153935a7f4ecfa66d77a',
         'output_type': 'gene quantifications',
         'award': award['uuid'],
         'lab': encode_lab['uuid'],
@@ -800,33 +800,143 @@ def test_audit_experiment_target_mismatch(testapp, base_experiment, base_replica
     assert any(error['category'] == 'inconsistent target' for error in errors_list)
 
 
-def test_audit_experiment_characterized_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, antibody_lot, target, base_antibody_characterization1, base_antibody_characterization2):
-    testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['@id'], 'library': base_library['@id']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 
+def test_audit_experiment_no_characterizations_antibody(testapp,
+                                                        base_experiment,
+                                                        base_replicate,
+                                                        base_library,
+                                                        base_biosample,
+                                                        antibody_lot,
+                                                        target):
+    testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['@id'],
+                                               'library': base_library['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
+                                                'biosample_term_id': 'EFO:0002067',
+                                                'biosample_term_name': 'K562',
+                                                'biosample_type': 'immortalized cell line',
                                                 'target': target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'not characterized antibody' for error in errors_list)
+    assert any(error['category'] == 'uncharacterized antibody' for error in errors_list)
 
 
-def test_audit_experiment_characterized_histone_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, base_antibody, histone_target, base_antibody_characterization1, base_antibody_characterization2, fly_organism):
-    base_antibody['targets'] = [histone_target['@id']]
+def test_audit_experiment_wrong_organism_histone_antibody(testapp,
+                                                          base_experiment,
+                                                          wrangler,
+                                                          base_antibody,
+                                                          base_replicate,
+                                                          base_library,
+                                                          base_biosample,
+                                                          mouse_H3K9me3,
+                                                          target_H3K9me3,
+                                                          base_antibody_characterization1,
+                                                          base_antibody_characterization2,
+                                                          mouse,
+                                                          human):
+    # Mouse biosample in mouse ChIP-seq experiment but supporting antibody characterizations
+    # are compliant in human but not mouse.
+    base_antibody['targets'] = [mouse_H3K9me3['@id'], target_H3K9me3['@id']]
     histone_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
-    testapp.patch_json(base_biosample['@id'], {'organism': fly_organism['uuid']})
-    testapp.patch_json(base_antibody_characterization1['@id'], {'target': histone_target['@id'], 'characterizes': histone_antibody['@id']})
-    testapp.patch_json(base_antibody_characterization2['@id'], {'target': histone_target['@id'], 'characterizes': histone_antibody['@id']})
-    testapp.patch_json(base_replicate['@id'], {'antibody': histone_antibody['@id'], 'library': base_library['@id']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 'target': 
-                                                histone_target['@id']})
+    testapp.patch_json(base_biosample['@id'], {'organism': mouse['@id']})
+    characterization_reviews = [
+        {
+            'biosample_term_name': 'MEL cell line',
+            'biosample_term_id': 'EFO:0003971',
+            'biosample_type': 'immortalized cell line',
+            'organism': mouse['@id'],
+            'lane_status': 'not compliant',
+            'lane': 1
+        },
+        {
+            'biosample_term_name': 'K562',
+            'biosample_term_id': 'EFO:0002067',
+            'biosample_type': 'immortalized cell line',
+            'organism': human['@id'],
+            'lane_status': 'compliant',
+            'lane': 2
+        }
+    ]
+    testapp.patch_json(base_antibody_characterization1['@id'], {'target': target_H3K9me3['@id'],
+                                                                'characterizes': histone_antibody['@id'],
+                                                                'status': 'compliant',
+                                                                'reviewed_by': wrangler['@id'],
+                                                                'characterization_reviews': characterization_reviews})
+    testapp.patch_json(base_antibody_characterization2['@id'], {'target': target_H3K9me3['@id'],
+                                                                'characterizes': histone_antibody['@id'],
+                                                                'status': 'compliant',
+                                                                'reviewed_by': wrangler['@id']})
+    testapp.patch_json(base_replicate['@id'], {'antibody': histone_antibody['@id'],
+                                               'library': base_library['@id'],
+                                               'experiment': base_experiment['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
+                                                'biosample_term_id': 'EFO:0003971',
+                                                'biosample_term_name': 'MEL cell line',
+                                                'biosample_type': 'immortalized cell line',
+                                                'target': mouse_H3K9me3['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'not characterized antibody' for error in errors_list)
+    assert any(error['category'] == 'antibody not characterized to standard' for error in errors_list)
+
+
+def test_audit_experiment_partially_characterized_antibody(testapp,
+                                                           base_experiment,
+                                                           wrangler,
+                                                           base_target,
+                                                           base_antibody,
+                                                           base_replicate,
+                                                           base_library,
+                                                           base_biosample,
+                                                           base_antibody_characterization1,
+                                                           base_antibody_characterization2,
+                                                           human):
+    # K562 biosample in ChIP-seq experiment with exempt primary in K562 and in progress
+    # secondary - leading to partial characterization.
+    base_antibody['targets'] = [base_target['@id']]
+    TF_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
+    characterization_reviews = [
+        {
+            'biosample_term_name': 'HepG2',
+            'biosample_term_id': 'EFO:0001187',
+            'biosample_type': 'immortalized cell line',
+            'organism': human['@id'],
+            'lane_status': 'not compliant',
+            'lane': 1
+        },
+        {
+            'biosample_term_name': 'K562',
+            'biosample_term_id': 'EFO:0002067',
+            'biosample_type': 'immortalized cell line',
+            'organism': human['@id'],
+            'lane_status': 'exempt from standards',
+            'lane': 2
+        }
+    ]
+    testapp.patch_json(base_antibody_characterization1['@id'], {'target': base_target['@id'],
+                                                                'characterizes': TF_antibody['@id'],
+                                                                'status': 'compliant',
+                                                                'reviewed_by': wrangler['@id'],
+                                                                'characterization_reviews': characterization_reviews})
+
+    testapp.patch_json(base_replicate['@id'], {'antibody': TF_antibody['@id'],
+                                               'library': base_library['@id'],
+                                               'experiment': base_experiment['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
+                                                'biosample_term_id': 'EFO:0002067',
+                                                'biosample_term_name': 'K562',
+                                                'biosample_type': 'immortalized cell line',
+                                                'target': base_target['@id']})
+
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'partially characterized antibody' for error in errors_list)
 
 
 def test_audit_experiment_geo_submission(testapp, base_experiment):
@@ -1163,7 +1273,7 @@ def test_audit_experiment_needs_pipeline_chip_seq_and_has_one(testapp, replicate
     testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
     testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id']})
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'Histone ChIP-seq'})
+                                             'ChIP-seq read mapping'})
     testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     res = testapp.get(experiment['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -1866,7 +1976,7 @@ def test_audit_experiment_chip_seq_standards_depth(testapp,
                                              'assembly': 'mm10',
                                              'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'Histone ChIP-seq'})
+                                             'ChIP-seq read mapping'})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
@@ -1926,7 +2036,7 @@ def test_audit_experiment_chip_seq_standards(testapp,
                                              'assembly': 'mm10',
                                              'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'Histone ChIP-seq'})
+                                             'ChIP-seq read mapping'})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
@@ -1987,7 +2097,7 @@ def test_audit_experiment_chip_seq_standards_encode2(testapp,
                                              'assembly': 'mm10',
                                              'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'Histone ChIP-seq'})
+                                             'ChIP-seq read mapping'})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
@@ -2051,7 +2161,7 @@ def test_audit_experiment_chip_seq_no_target_standards(testapp,
                                              'derived_from': [file_fastq_4['@id']]})
 
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'Histone ChIP-seq'})
+                                             'ChIP-seq read mapping'})
 
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
@@ -2112,7 +2222,7 @@ def test_audit_experiment_chip_seq_library_complexity_standards(testapp,
                                              'derived_from': [file_fastq_4['@id']]})
 
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'Histone ChIP-seq'})
+                                             'ChIP-seq read mapping'})
 
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
@@ -2408,7 +2518,7 @@ def test_audit_experiment_chip_seq_unfiltered_missing_read_depth(testapp,
                                              'output_type': 'unfiltered alignments',
                                              'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'Histone ChIP-seq'})
+                                             'ChIP-seq read mapping'})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
