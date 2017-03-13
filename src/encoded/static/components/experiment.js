@@ -20,7 +20,7 @@ var objectutils = require('./objectutils');
 var doc = require('./doc');
 var {FileGallery} = require('./filegallery');
 var {GeneticModificationSummary} = require('./genetic_modification');
-var { BiosampleSummaryString, biosampleOrganismNames, CollectBiosampleDocs, AwardRef } = require('./typeutils');
+var { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef } = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -279,7 +279,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
         var assayName = context[assayTerm];
         var assayQuery = assayTerm + '=' + assayName;
-        var organismNames = biosampleOrganismNames(biosamples);
+        var organismNames = BiosampleOrganismNames(biosamples);
         var nameQuery = '';
         var nameTip = '';
         var names = organismNames.map(function(organismName, i) {
@@ -315,7 +315,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         if (context.internal_tags && context.internal_tags.length) {
             tagBadges = context.internal_tags.map(tag => <img key={tag} src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
-        
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -562,7 +562,7 @@ var ReplicateTable = React.createClass({
 
                 // Else, display biosample summary if the biosample exists
                 if (replicate.library && replicate.library.biosample) {
-                    return <span>{biosampleSummaryString(replicate.library.biosample, true)}</span>;
+                    return <span>{BiosampleSummaryString(replicate.library.biosample, true)}</span>;
                 }
 
                 // Else, display nothing
