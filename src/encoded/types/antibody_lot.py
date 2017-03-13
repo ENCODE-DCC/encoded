@@ -171,7 +171,6 @@ def lot_reviews(characterizations, targets, request):
     review_targets = set()
     primary_chars = []
     secondary_chars = []
-    at_least_one_active_primary = False
     secondary_status = None
 
     # Since characterizations can only take one target (not an array) and primary characterizations
@@ -193,11 +192,6 @@ def lot_reviews(characterizations, targets, request):
         # Split into primary and secondary to treat separately
         if 'primary_characterization_method' in characterization:
             primary_chars.append(characterization)
-            if characterization['status'] in ['compliant',
-                                              'not compliant',
-                                              'pending dcc review',
-                                              'exempt from standards']:
-                at_least_one_active_primary = True
         else:
             secondary_chars.append(characterization)
 
@@ -210,7 +204,7 @@ def lot_reviews(characterizations, targets, request):
         'organisms': sorted(target_organisms['all']),
         'targets': sorted(review_targets),
         'status': 'awaiting characterization',
-        'detail': None
+        'detail': 'Awaiting compliant primary and secondary characterizations.'
     }
 
     # Done with easy cases, the remaining require reviews.
@@ -243,7 +237,6 @@ def lot_reviews(characterizations, targets, request):
                                     base_review,
                                     review_targets,
                                     is_histone_mod,
-                                    at_least_one_active_primary,
                                     target_organisms)
 
     return lot_reviews
@@ -266,7 +259,6 @@ def build_lot_reviews(primary_chars,
                       base_review,
                       review_targets,
                       is_histone_mod,
-                      active_primary,
                       target_organisms):
 
     if not primary_chars:
@@ -288,26 +280,38 @@ def build_lot_reviews(primary_chars,
     else:
         char_reviews = {}
         for primary in primary_chars:
-            if not active_primary:
+            if primary['status'] in ['not reviewed',
+                                     'not submitted for review by lab',
+                                     'in progress']:
+                # Deal with these first as they won't have characterization_reviews
                 if secondary_status == 'not compliant':
-                    base_review['status'] = 'not characterized to standards'
                     # If secondary is not compliant, the status is always not characterized to standards,
                     # no matter what the primary is.
-                    return [base_review]
-                if primary['status'] == 'not submitted for review by lab' or \
+                    base_review['status'] = 'not characterized to standards'
+                elif primary['status'] == 'not submitted for review by lab' or \
                         secondary_status == 'not submitted for review by lab':
-                        base_review['status'] = 'not pursued'
-                if secondary_status in ['compliant', 'exempt from standards']:
-                        base_review['status'] = 'partially characterized'
-                        base_review['detail'] = 'Awaiting one or more compliant primary characterization(s).'
-                if secondary_status == 'pending dcc review':
-                    base_review['status'] = 'awaiting characterization'
+                    base_review['status'] = 'not pursued'
+                elif secondary_status in ['compliant', 'exempt from standards']:
+                    base_review['status'] = 'partially characterized'
                     base_review['detail'] = 'Awaiting one or more compliant primary characterization(s).'
-                if primary['status'] == 'in progress':
-                    base_review['detail'] = 'Primary characterization(s) in progress.'
-                if secondary_status == 'in progress':
-                    base_review['detail'] = 'Secondary characterization(s) in progress.'
-                return [base_review]
+                else:
+                    # Only in progress, not reviewed, pending dcc review secondaries should be left
+                    base_review['status'] = 'awaiting characterization'
+
+                key = (
+                    base_review['biosample_term_name'],
+                    base_review['biosample_term_id'],
+                    base_review['organisms'][0],
+                    primary['target']
+                )
+                if key not in char_reviews:
+                    char_reviews[key] = base_review
+                    continue
+
+                rank = status_ranking[base_review.get('status')]
+                if rank > status_ranking[char_reviews[key].get('status')]:
+                    char_reviews[key] = base_review
+
             elif 'characterization_reviews' in primary:
                 for lane_review in primary.get('characterization_reviews', []):
                     # Get the organism information from the lane, not from the target since
@@ -351,10 +355,21 @@ def build_lot_reviews(primary_chars,
 
         # Go through and calculate the appropriate statuses
         for key in char_reviews:
-            if secondary_status in ['not reviewed',
-                                    'not submitted for review by lab',
-                                    'in progress',
-                                    'deleted'] or secondary_status is None:
+            if char_reviews[key]['status'] in ['not reviewed',
+                                               'not submitted for review by lab',
+                                               'in progress',
+                                               'not pursued',
+                                               'partially characterized',
+                                               'not characterized to standard',
+                                               'awaiting characterization']:
+                # The inactive primary cases had their statuses already set from
+                # the initial review so they should not be reset here.
+                # should have already been set without further review needed.
+                continue
+            elif secondary_status in ['not reviewed',
+                                      'not submitted for review by lab',
+                                      'in progress',
+                                      'deleted'] or secondary_status is None:
                 char_reviews[key]['detail'] = 'Awaiting a compliant secondary characterization.'
                 if char_reviews[key]['status'] in ['compliant', 'exempt from standards']:
                     char_reviews[key]['status'] = 'partially characterized'
@@ -389,11 +404,15 @@ def build_lot_reviews(primary_chars,
                         secondary_status in ['compliant', 'exempt from standards']:
                     char_reviews[key]['status'] = 'partially characterized'
                     continue
-                else:
+                elif char_reviews[key]['status'] == 'pending dcc review':
                     char_reviews[key]['status'] = 'awaiting characterization'
                     char_reviews[key]['detail'] = 'Pending review of a primary characterization ' + \
                         'in {}.'.format(char_reviews[key]['biosample_term_name'])
-
+                    continue
+                else:
+                    # Only the inactive primary cases should be left and their statuses
+                    # should already have been set without further review needed.
+                    continue
             elif char_reviews[key]['status'] == 'not compliant' or secondary_status == 'not compliant':
                 char_reviews[key]['status'] = 'not characterized to standards'
                 if secondary_status == 'not compliant':
@@ -416,8 +435,7 @@ def build_lot_reviews(primary_chars,
                         char_reviews[key]['detail'] = 'Awaiting a compliant primary ' + \
                             'characterization in {}.'.format(char_reviews[key]['organisms'][0])
                 continue
-            else:
-                # The only case that should be left is if both primary and secondary are compliant
+            elif char_reviews[key]['status'] == 'compliant' and secondary_status == 'compliant':
                 char_reviews[key]['status'] = 'characterized to standards'
                 char_reviews[key]['detail'] = 'Fully characterized.'
 
@@ -428,6 +446,10 @@ def build_lot_reviews(primary_chars,
                         char_reviews[key]['status'] = 'partially characterized'
                         char_reviews[key]['detail'] = 'Awaiting a compliant primary ' + \
                             'characterization in {}.'.format(char_reviews[key]['organisms'][0])
+                continue
+            else:
+                # Only the inactive primary cases should be left and their statuses
+                # should already have been set without further review needed.
                 continue
 
         if char_reviews:
