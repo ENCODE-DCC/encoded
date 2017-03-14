@@ -22,6 +22,7 @@ def includeme(config):
     config.add_route('search', '/search{slash:/?}')
     config.add_route('report', '/report{slash:/?}')
     config.add_route('matrix', '/matrix{slash:/?}')
+    config.add_route('news', '/news/')
     config.scan(__name__)
 
 
@@ -1033,5 +1034,74 @@ def matrix(context, request):
         # http://googlewebmastercentral.blogspot.com/2014/02/faceted-navigation-best-and-5-of-worst.html
         request.response.status_code = 404
         result['notification'] = 'No results found'
+
+    return result
+
+@view_config(route_name='news', request_method='GET', permission='search')
+def news(context, request):
+    """
+    Return search results for news Page items.
+    """
+    types = request.registry[TYPES]
+    es = request.registry[ELASTIC_SEARCH]
+    es_index = request.registry.settings['snovault.elasticsearch.index']
+    principals = effective_principals(request)
+    from_, size = get_pagination(request)
+
+    # Set up initial results metadata; we'll add the search results to them later.
+    result = {
+        '@context': request.route_path('jsonld_context'),
+        '@id': request.route_path('news', slash='/'),
+        '@type': ['News'],
+        'filters': [],
+        'notification': '',
+    }
+
+    # We have no query string to specify a type, but we know we want 'Page' for news items.
+    doc_types = ['Page']
+
+    # Get the fields we want to receive from the search.
+    search_fields, highlights = get_search_fields(request, doc_types)
+
+    # Builds filtered query for Page items for news.
+    query = get_filtered_query('*',
+                               search_fields,
+                               sorted(list_result_fields(request, doc_types)),
+                               principals,
+                               doc_types)
+
+    # Set filters; has side effect of setting result['filters'].
+    used_filters = set_filters(request, query, result)
+
+    # Build up the facets to search.
+    facets = []
+    if len(doc_types) == 1 and 'facets' in types[doc_types[0]].schema:
+        facets.extend(types[doc_types[0]].schema['facets'].items())
+
+    # Perform the search of news items.
+    query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
+    es_results = es.search(body=query, index=es_index, from_=from_, size=size)
+    total = es_results['hits']['total']
+
+    # Return 404 if no results found.
+    if not total:
+        # http://googlewebmastercentral.blogspot.com/2014/02/faceted-navigation-best-and-5-of-worst.html
+        request.response.status_code = 404
+        result['notification'] = 'No results found'
+        result['@graph'] = []
+        return result
+
+    # At this stage, we know we have good results.
+    result['notification'] = 'Success'
+    result['total'] = total
+
+    # Place the search results into the @graph property.
+    graph = format_results(request, es_results['hits']['hits'], result)
+    result['@graph'] = list(graph)
+
+    # Insert the facet data into the results.
+    types = request.registry[TYPES]
+    schemas = [types[doc_type].schema for doc_type in doc_types]
+    result['facets'] = format_facets(es_results, facets, used_filters, schemas, total, principals)
 
     return result
