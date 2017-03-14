@@ -174,42 +174,46 @@ var ProjectBadge = module.exports.ProjectBadge = React.createClass({
     },
 
     projectMap: {
-        'ENCODE': {
+        ENCODE: {
             imageClass: 'badge-encode',
-            alt: 'ENCODE project'
+            alt: 'ENCODE project',
         },
-        'ENCODE2': {
+        ENCODE2: {
             imageClass: 'badge-encode2',
-            alt: 'ENCODE2 project'
+            alt: 'ENCODE2 project',
         },
-        'ENCODE3': {
+        ENCODE3: {
             imageClass: 'badge-encode3',
-            alt: 'ENCODE3 project'
+            alt: 'ENCODE3 project',
         },
-        'ENCODE4': {
+        ENCODE4: {
             imageClass: 'badge-encode4',
-            alt: 'ENCODE4 project'
+            alt: 'ENCODE4 project',
         },
-        'Roadmap': {
+        Roadmap: {
             imageClass: 'badge-roadmap',
-            alt: 'Roadmap Epigenomics Mapping Consortium'
+            alt: 'Roadmap Epigenomics Mapping Consortium',
         },
-        'modENCODE': {
+        modENCODE: {
             imageClass: 'badge-modencode',
-            alt: 'modENCODE Project'
+            alt: 'modENCODE Project',
         },
-        'modERN': {
+        modERN: {
             imageClass: 'badge-modern',
-            alt: 'modERN project'
+            alt: 'modERN project',
         },
-        'GGR': {
+        GGR: {
             imageClass: 'badge-ggr',
-            alt: 'Genomics of Gene Regulation Project'
+            alt: 'Genomics of Gene Regulation Project',
         },
         'ENCODE2-Mouse': {
             imageClass: 'badge-mouseencode',
-            alt: 'ENCODE Mouse Project'
-        }
+            alt: 'ENCODE Mouse Project',
+        },
+        community: {
+            imageClass: 'badge-community',
+            alt: 'Community submission',
+        },
     },
 
     render: function() {
