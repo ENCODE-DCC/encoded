@@ -130,6 +130,7 @@ class AntibodyLot(SharedItem):
                 "enum": [
                     "awaiting characterization",
                     "characterized to standards",
+                    "partially characterized",
                     "characterized to standards with exemption",
                     "not characterized to standards",
                     "not pursued"
