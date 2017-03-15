@@ -407,7 +407,7 @@ def test_multi_lane_primary(testapp,
             assert review['status'] == 'partially characterized'
         if review['biosample_term_name'] == 'HepG2':
             assert review['status'] == 'not characterized to standards'
-            assert review['detail'] == 'Awaiting a compliant primary characterization and secondary characterization not reviewed.'
+            assert review['detail'] == 'Awaiting a compliant primary and secondary characterization not reviewed.'
 
 
 # Status calculation test for when primaries have extraneous characterization_reviews
@@ -499,7 +499,5 @@ def test_chars_not_reviewed(testapp,
 
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
-    print("Test: {}".format(ab['lot_reviews']))
-    assert len(ab['lot_reviews']) == 2
     assert ab['lot_reviews'][0]['status'] == 'awaiting characterization'
     assert ab['lot_reviews'][0]['detail'] == 'Primary and secondary characterizations not reviewed.'
