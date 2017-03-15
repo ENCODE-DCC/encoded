@@ -253,25 +253,6 @@ def test_audit_file_size(testapp, file1):
     assert any(error['category'] == 'missing file_size' for error in errors_list)
 
 
-def test_audit_read_length(testapp, file1):
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing read_length' for error in errors_list)
-
-
-def test_audit_read_length_zero(testapp, file1):
-    testapp.patch_json(file1['@id'], {'read_length': 0})
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing read_length' for error in errors_list)
-
-
 def test_audit_file_missing_controlled_by(testapp, file3):
     res = testapp.get(file3['@id'] + '@@index-data')
     errors = res.json['audit']
