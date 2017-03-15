@@ -204,10 +204,8 @@ def lot_reviews(characterizations, targets, request):
 
     # The default if no characterizations have been submitted
     base_review = {
-        'biosample_term_name':
-            'any cell type and tissues' if is_histone_mod
-            else 'not specified',
-        'biosample_term_id': 'NTR:99999999' if is_histone_mod else 'NTR:00000000',
+        'biosample_term_name': 'any cell type and tissues',
+        'biosample_term_id': 'NTR:99999999',
         'organisms': sorted(target_organisms['all']),
         'targets': sorted(review_targets),
         'status': 'awaiting characterization',
