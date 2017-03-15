@@ -101,6 +101,7 @@ def file1(file_exp, award, lab, file_rep, file2, platform1, testapp):
         'file_format': 'fastq',
         'md5sum': '91be74b6e11515393507f4ebfa66d58c',
         'output_type': 'reads',
+        "read_length": 50,
         'run_type': 'single-ended',
         'platform': platform1['uuid'],
         'award': award['uuid'],
@@ -119,6 +120,7 @@ def file3(file_exp, award, lab, file_rep, testapp):
         'file_format': 'fastq',
         'md5sum': '91be74b6e11515393507f4ebfa56d78d',
         'output_type': 'reads',
+        "read_length": 50,
         'run_type': 'single-ended',
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -135,6 +137,7 @@ def file4(file_exp2, award, lab, file_rep2, testapp):
         'file_format': 'fastq',
         'md5sum': '91ae74b6e11515393507f4ebfa66d78a',
         'output_type': 'reads',
+        "read_length": 50,
         'run_type': 'single-ended',
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -362,6 +365,7 @@ def test_audit_file_replicate_match(testapp, file1, file_rep2):
 def test_audit_file_paired_ended_run_type1(testapp, file2, file_rep2):
     testapp.patch_json(file2['@id'] + '?validate=false', {'run_type': 'paired-ended',
                                                           'output_type': 'reads',
+                                                          "read_length": 50,
                                                           'file_size': 23498234})
     res = testapp.get(file2['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -374,6 +378,7 @@ def test_audit_file_paired_ended_run_type1(testapp, file2, file_rep2):
 def test_audit_file_paired_ended_run_type2(testapp, file2, file_rep2):
     testapp.patch_json(file2['@id'] + '?validate=false', {'run_type': 'paired-ended',
                                                           'output_type': 'reads',
+                                                          "read_length": 50,
                                                           'file_size': 23498234,
                                                           'paired_end': 1})
     res = testapp.get(file2['@id'] + '@@index-data')
