@@ -1070,6 +1070,11 @@ def news(context, request):
                                principals,
                                doc_types)
 
+    # Add fixed 'news=true' and 'status=released' to query string.
+    query_filters = query['filter']['and']['filters']
+    query_filters.append(build_terms_filter('news', ['true']))
+    query_filters.append(build_terms_filter('status', ['released']))
+
     # Set filters; has side effect of setting result['filters'].
     used_filters = set_filters(request, query, result)
 
