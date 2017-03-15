@@ -408,3 +408,72 @@ def test_multi_lane_primary(testapp,
         if review['biosample_term_name'] == 'HepG2':
             assert review['status'] == 'not characterized to standards'
             assert review['detail'] == 'Awaiting a compliant primary characterization and secondary characterization not reviewed.'
+
+
+# A test status calculation when primaries have extraneous characterization_reviews
+def test_bonus_char_reviews_in_primary(testapp,
+                                       immunoblot,
+                                       immunoprecipitation,
+                                       mass_spec,
+                                       antibody_lot,
+                                       human,
+                                       target,
+                                       wrangler,
+                                       document):
+
+    # A not submitted for review primary with no secondary should give status of not pursued
+    prim_char1 = testapp.post_json('/antibody_characterization', immunoblot).json['@graph'][0]
+    characterization_review1 = {
+        'biosample_term_name': 'K562',
+        'biosample_term_id': 'EFO:0002067',
+        'biosample_type': 'immortalized cell line',
+        'organism': human['@id'],
+        'lane': 1,
+        'lane_status': 'pending dcc review'
+    }
+    testapp.patch_json(prim_char1['@id'], {'status': 'not submitted for review by lab',
+                                           'target': target['@id'],
+                                           'characterization_reviews': [characterization_review1]})
+    res = testapp.get(antibody_lot['@id'] + '@@index-data')
+    ab = res.json['object']
+    assert ab['lot_reviews'][0]['status'] == 'not pursued'
+    assert ab['lot_reviews'][0]['detail'] == 'Awaiting a compliant primary and submission of a secondary characterization.'
+
+    # Adding an in progress primary in a different cell type should result in the ab awaiting characterization
+    prim_char2 = testapp.post_json('/antibody_characterization', immunoprecipitation).json['@graph'][0]
+    characterization_review2 = {
+        'biosample_term_name': 'HepG2',
+        'biosample_term_id': 'EFO:0001187',
+        'biosample_type': 'immortalized cell line',
+        'organism': human['@id'],
+        'lane': 1,
+        'lane_status': 'pending dcc review'
+    }
+    testapp.patch_json(prim_char2['@id'], {'status': 'in progress',
+                                           'target': target['@id'],
+                                           'characterization_reviews': [characterization_review2]})
+    res = testapp.get(antibody_lot['@id'] + '@@index-data')
+    ab = res.json['object']
+    assert len(ab['lot_reviews']) == 2
+    for review in ab['lot_reviews']:
+        if review['biosample_term_name'] == 'K562':
+            assert review['status'] == 'not pursued'
+        if review['biosample_term_name'] == 'HepG2':
+            assert review['status'] == 'awaiting characterization'
+            assert review['detail'] == 'Awaiting a compliant primary and submission of a secondary characterization.'
+
+    # Adding an exempted secondary should make the ab partially characterized
+    sec_char = testapp.post_json('/antibody_characterization', mass_spec).json['@graph'][0]
+    testapp.patch_json(sec_char['@id'], {'status': 'exempt from standards',
+                                         'target': target['@id'],
+                                         'reviewed_by': wrangler['@id'],
+                                         'documents': [document['@id']],
+                                         'comment': 'Please exempt this.',
+                                         'notes': 'OK.'})
+    res = testapp.get(antibody_lot['@id'] + '@@index-data')
+    ab = res.json['object']
+    assert len(ab['lot_reviews']) == 2
+    for review in ab['lot_reviews']:
+        if review['biosample_term_name'] in ['K562', 'HepG2']:
+            assert review['status'] == 'partially characterized'
+            assert review['detail'] == 'Awaiting a compliant primary characterization.'
