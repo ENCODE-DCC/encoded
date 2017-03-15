@@ -64,7 +64,7 @@ def audit_antibody_missing_characterizations(value, system):
         yield AuditFailure('no secondary characterizations', detail,
                            level='NOT_COMPLIANT')
 
-    if value['lot_reviews'][0]['detail'] in ['Characterizations not reviewed.']:
+    if value['lot_reviews'][0]['detail'] == 'Primary and secondary characterizations not reviewed.':
         detail = '{} has old characterizations that were not reviewed.'.format(
             value['@id'])
         yield AuditFailure('characterizations not reviewed', detail, level='WARNING')
