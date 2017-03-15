@@ -64,34 +64,28 @@ def audit_antibody_missing_characterizations(value, system):
         yield AuditFailure('no secondary characterizations', detail,
                            level='NOT_COMPLIANT')
 
-    if value['lot_reviews'][0]['detail'] == 'Primary and secondary characterizations not reviewed.':
-        detail = '{} has old characterizations that were not reviewed.'.format(
-            value['@id'])
-        yield AuditFailure('characterizations not reviewed', detail, level='WARNING')
-
     for lot_review in value['lot_reviews']:
         if lot_review['detail'] in [
-            'Pending review of primary characterization.',
-            'Primary characterization(s) in progress.',
-            'Pending review of primary and secondary characterizations.',
-            'Pending review of primary and awaiting submission of secondary characterization(s).',
-            'Awaiting compliant primary and secondary characterizations.',
-            'Awaiting a compliant primary characterization.',
-            'Secondary characterization(s) in progress.'
+             'Awaiting a compliant primary and pending review of a secondary characterization.',
+             'Awaiting a compliant primary and secondary characterization was not reviewed.',
+             'Awaiting a compliant primary and submission of a secondary characterization.',
+             'Awaiting a compliant primary characterization.',
+             'Awaiting compliant primary and secondary characterizations.',
+             'Primary characterization not reviewed and awaiting a compliant secondary characterization.',
+             'Primary characterization not reviewed and pending review of a secondary characterization.',
+             'Primary characterization not reviewed.',
+             'Pending review of primary and secondary characterizations.',
+             'Pending review of primary characterization and awaiting a compliant secondary characterization.',
+             'Pending review of primary characterization and secondary characterization not reviewed.',
+             'Pending review of primary characterization.'
         ]:
             biosample = lot_review['biosample_term_name']
-            if biosample == 'not specified':
+            if biosample == 'any cell type and tissues':
                 biosample = 'one or more cell types/tissues.'
 
             detail = '{} needs a compliant primary in {}'.format(
                 value['@id'],
                 lot_review['biosample_term_name'])
-            yield AuditFailure('need compliant primaries', detail,
-                               level='NOT_COMPLIANT')
-
-        if lot_review['detail'] is None and lot_review['status'] == 'awaiting characterization':
-            detail = '{} needs a compliant primary characterization for one or more cell ' + \
-                'types/tissues.'.format(value['@id'])
             yield AuditFailure('need compliant primaries', detail,
                                level='NOT_COMPLIANT')
 

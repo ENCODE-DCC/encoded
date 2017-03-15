@@ -410,7 +410,7 @@ def test_multi_lane_primary(testapp,
             assert review['detail'] == 'Awaiting a compliant primary characterization and secondary characterization not reviewed.'
 
 
-# A test status calculation when primaries have extraneous characterization_reviews
+# Status calculation test for when primaries have extraneous characterization_reviews
 def test_bonus_char_reviews_in_primary(testapp,
                                        immunoblot,
                                        immunoprecipitation,
@@ -477,3 +477,29 @@ def test_bonus_char_reviews_in_primary(testapp,
         if review['biosample_term_name'] in ['K562', 'HepG2']:
             assert review['status'] == 'partially characterized'
             assert review['detail'] == 'Awaiting a compliant primary characterization.'
+
+
+# Status calculation test for when primary and secondary characterizations are both not reviewed
+def test_chars_not_reviewed(testapp,
+                            immunoblot,
+                            mass_spec,
+                            antibody_lot,
+                            target,
+                            wrangler):
+
+    prim_char = testapp.post_json('/antibody_characterization', immunoblot).json['@graph'][0]
+    testapp.patch_json(prim_char['@id'], {'status': 'not reviewed',
+                                          'reviewed_by': wrangler['@id'],
+                                          'target': target['@id']})
+
+    sec_char = testapp.post_json('/antibody_characterization', mass_spec).json['@graph'][0]
+    testapp.patch_json(sec_char['@id'], {'status': 'not reviewed',
+                                         'reviewed_by': wrangler['@id'],
+                                         'target': target['@id']})
+
+    res = testapp.get(antibody_lot['@id'] + '@@index-data')
+    ab = res.json['object']
+    print("Test: {}".format(ab['lot_reviews']))
+    assert len(ab['lot_reviews']) == 2
+    assert ab['lot_reviews'][0]['status'] == 'awaiting characterization'
+    assert ab['lot_reviews'][0]['detail'] == 'Primary and secondary characterizations not reviewed.'
