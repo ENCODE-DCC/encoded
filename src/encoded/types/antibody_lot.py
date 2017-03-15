@@ -132,24 +132,28 @@ class AntibodyLot(SharedItem):
                 "type": "string",
                 "default": "awaiting characterization",
                 "enum": [
-                    "awaiting characterization",
+                    
                     "characterized to standards",
                     "characterized to standards with exemption",
+                    "partially characterized",
+                    "awaiting characterization",
                     "not characterized to standards",
-                    "not pursued",
-                    "partially characterized"
+                    "not pursued"
                 ]
             }
         }
     },
 })
 def lot_reviews(characterizations, targets, request):
+    
     characterizations = paths_filtered_by_status(request, characterizations)
+    
+    # Review the targets of the lot
     target_organisms = dict()
     tmp = list()
-
     is_control = False
     is_histone_mod = False
+    
     for t in targets:
         target = request.embed(t, '@@object')
         if 'control' in target['investigated_as']:
@@ -162,9 +166,19 @@ def lot_reviews(characterizations, targets, request):
         target_organisms[organism] = target['@id']
     target_organisms['all'] = tmp
 
+    # I would move base_review here
+    #    base_review = {
+    #    'biosample_term_name': 'any cell type and tissues',
+    #    'biosample_term_id': 'NTR:99999999',
+    #    'organisms': sorted(target_organisms['all']),
+    #    'targets': sorted(review_targets),
+    #    'status': 'awaiting characterization',
+    #    'detail': 'Awaiting compliant primary and secondary characterizations.'
+    #}
+    
+    # If there are no characterizations, then default to awaiting characterization.
     if not characterizations:
-        # If there are no characterizations, then default to awaiting characterization.
-        return [{
+        return [{ # I would use base review here
             'biosample_term_name': 'any cell type or tissues',
             'biosample_term_id': 'NTR:99999999',
             'organisms': sorted(target_organisms['all']),
@@ -182,27 +196,23 @@ def lot_reviews(characterizations, targets, request):
     # Since characterizations can only take one target (not an array) and primary characterizations
     # for histone modifications may be done in multiple species, we really need to check lane.organism
     # against the antibody.targets.organism list to determine eligibility of use in that organism.
+    # Cricket is not sure that the above statement is true about histones.
 
     for characterization_path in characterizations:
         characterization = request.embed(characterization_path, '@@object')
         target = request.embed(characterization['target'], '@@object')
         organism = request.embed(target['organism'], '@@object')
-
-        # instead of adding to the target_organism list with whatever they put in the
-        # characterization we need to instead compare the lane organism to see if it's in the
-        # target_organism list. If not, we'll need to indicate that they characterized an
-        # organism not in the antibody_lot.targets list so it'll have to be reviewed and
-        # added if legitimate.
         review_targets.add(target['@id'])
         char_organisms[characterization['@id']] = organism['@id']
+        
         # Split into primary and secondary to treat separately
         if 'primary_characterization_method' in characterization:
             primary_chars.append(characterization)
-
         else:
             secondary_chars.append(characterization)
 
     # The default if no characterizations have been submitted
+    # This could be defined above
     base_review = {
         'biosample_term_name': 'any cell type and tissues',
         'biosample_term_id': 'NTR:99999999',
@@ -211,10 +221,8 @@ def lot_reviews(characterizations, targets, request):
         'status': 'awaiting characterization',
         'detail': 'Awaiting compliant primary and secondary characterizations.'
     }
-
-    # Done with easy cases, the remaining require reviews.
-    # Go through the secondary characterizations first
-
+    
+    # These rankings need some explaination like why is not pursused above compliant
     status_ranking = {
         'characterized to standards': 15,
         'characterized to standards with exemption': 14,
@@ -232,10 +240,15 @@ def lot_reviews(characterizations, targets, request):
         'deleted': 2
     }
 
+    # This no longer needs to be a procedure of its own, it is only 2 lines
+    # Determine the consensus secondary characterization statu
     if secondary_chars:
         secondary_status = get_secondary_status(secondary_chars, status_ranking)
-
-    # Now check the primaries and update their status accordingly
+        # secondary_statuses = [item['status'] for item in secondary_chars]
+        # secondary_statuses.sort(key=lambda x: status_ranking[x], reverse=True)
+        # secondary_status = secondary_statuses[0]
+        
+    # Build the lot reviews for each biosample given the simple secondary status
     lot_reviews = build_lot_reviews(primary_chars,
                                     secondary_status,
                                     status_ranking,
@@ -282,7 +295,7 @@ def build_lot_reviews(primary_chars,
 
                 key = (
                     base_review['biosample_term_name'],
-                    base_review['biosample_term_id'],
+                    base_review['biosample_term_id'],   # Why is both the id and the name in the key  
                     lane_organism,
                     primary['target']
                 )
