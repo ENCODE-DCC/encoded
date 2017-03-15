@@ -266,8 +266,8 @@ def build_lot_reviews(primary_chars,
     for primary in primary_chars:
         # The default base review
         base_review = {
-            'biosample_term_name': 'any cell type and tissues',
-            'biosample_term_id': 'NTR:99999999',
+            'biosample_term_name': 'at least one cell type or tissue',
+            'biosample_term_id': 'NTR:00000000',
             'organisms': [char_organisms[primary['@id']]],
             'targets': [primary['target']],
             'status': 'awaiting characterization',
