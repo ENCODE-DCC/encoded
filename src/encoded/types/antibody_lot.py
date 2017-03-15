@@ -310,8 +310,18 @@ def build_lot_reviews(primary_chars,
                     base_review['organisms'] = [lane_organism]
                     base_review['targets'] = sorted(review_targets) \
                         if is_histone_mod else [primary['target']]
-                    base_review['status'] = ab_states[(lane_review['lane_status'], secondary_status)]
-                    base_review['detail'] = ab_state_details[(lane_review['lane_status'], secondary_status)]
+                    base_review['status'] = ab_states[(lane_review['lane_status'], secondary_status)] \
+                        if primary['status'] in ['compliant',
+                                                 'not compliant',
+                                                 'pending dcc review',
+                                                 'exempt from standards'] else \
+                        ab_states[primary['status'], secondary_status]
+                    base_review['detail'] = ab_state_details[(lane_review['lane_status'], secondary_status)] \
+                        if primary['status'] in ['compliant',
+                                                 'not compliant',
+                                                 'pending dcc review',
+                                                 'exempt from standards'] else \
+                        ab_state_details[primary['status'], secondary_status]
 
                     # Need to use status ranking to determine whether or not to
                     # add this review to the list or not if another already exists.
