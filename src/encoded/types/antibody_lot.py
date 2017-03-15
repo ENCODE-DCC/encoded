@@ -137,8 +137,7 @@ class AntibodyLot(SharedItem):
                     "partially characterized",
                     "characterized to standards with exemption",
                     "not characterized to standards",
-                    "not pursued",
-                    "partially characterized"
+                    "not pursued"
                 ]
             }
         }
