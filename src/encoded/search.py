@@ -1070,10 +1070,21 @@ def news(context, request):
                                principals,
                                doc_types)
 
-    # Add fixed 'news=true' and 'status=released' to query string.
+    # Add fixed 'news=true' and 'status=released' as static search terms even though they're not in
+    # the query string. Query string parameters have already been added to query_filters.
     query_filters = query['filter']['and']['filters']
     query_filters.append(build_terms_filter('news', ['true']))
     query_filters.append(build_terms_filter('status', ['released']))
+
+    # Set sort order to sort by date_created.
+    sort = OrderedDict()
+    result_sort = OrderedDict()
+    sort['embedded.date_created.raw'] = result_sort['date_created'] = {
+        'order': 'desc',
+        'ignore_unmapped': True,
+    }
+    query['sort'] = sort
+    result['sort'] = result_sort
 
     # Set filters; has side effect of setting result['filters'].
     used_filters = set_filters(request, query, result)
