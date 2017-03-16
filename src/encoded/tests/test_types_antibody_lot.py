@@ -67,18 +67,6 @@ def mouse_target_H3K9me3(testapp, mouse):
 
 # A single characterization (primary or secondary) associated with an ab that is not submitted
 # for review, should result in a not pursued antibody lot status.
-def test_not_submitted_primary_missing_secondary(testapp, immunoblot, antibody_lot):
-    char = testapp.post_json('/antibody_characterization', immunoblot).json['@graph'][0]
-    testapp.patch_json(char['@id'], {'status': 'not submitted for review by lab'})
-    res = testapp.get(antibody_lot['@id'] + '@@index-data')
-    ab = res.json['object']
-    print("{}".format(ab['characterizations']))
-    print("{}".format(ab['lot_reviews']))
-    assert ab['lot_reviews'][0]['status'] == 'not pursued'
-
-
-# A single characterization (primary or secondary) associated with an ab that is not submitted
-# for review, should result in a not pursued antibody lot status.
 def test_not_submitted_secondary_missing_primary(testapp, motif_enrichment, antibody_lot):
     char = testapp.post_json('/antibody_characterization', motif_enrichment).json['@graph'][0]
     testapp.patch_json(char['@id'], {'status': 'not submitted for review by lab'})
@@ -114,7 +102,7 @@ def test_have_primary_missing_secondary(testapp,
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
     assert ab['lot_reviews'][0]['status'] == 'awaiting characterization'
-    assert ab['lot_reviews'][0]['detail'] == 'Primary characterization(s) in progress.'
+    assert ab['lot_reviews'][0]['detail'] == 'Awaiting compliant primary and secondary characterizations.'
 
     # Not yet reviewed primary and no secondary should result in ab status = awaiting characterization
     characterization_review['lane_status'] = 'pending dcc review'
@@ -136,7 +124,7 @@ def test_have_primary_missing_secondary(testapp,
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
     assert ab['lot_reviews'][0]['status'] == 'not pursued'
-    assert ab['lot_reviews'][0]['detail'] is None
+    assert ab['lot_reviews'][0]['detail'] == 'Awaiting compliant primary and secondary characterizations.'
 
     '''
     # Compliant primary and no secondary should result in ab status = not characterized to standards
