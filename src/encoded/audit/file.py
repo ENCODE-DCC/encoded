@@ -556,7 +556,7 @@ def audit_paired_with(value, system):
             )
             raise AuditFailure('multiple paired_with', detail, level='ERROR')
 
-
+'''
 @audit_checker('file', frame=['step_run',
                               'dataset'], condition=rfa('modERN'))
 def audit_modERN_ChIP_pipeline_steps(value, system):
@@ -620,7 +620,7 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
         if (value['file_format_type'] == 'narrowPeak') and (step['aliases'][0] != 'modern:chip-seq-optimal-idr-step-run-v-1-virtual'):
             detail = 'Optimal IDR thresholded peaks {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
             yield AuditFailure('wrong step_run for IDR peaks', detail, level='WARNING')
-
+'''
 
 @audit_checker('file', frame='object')
 def audit_file_size(value, system):

@@ -455,7 +455,7 @@ def test_audit_file_insufficient_control_read_depth_chip_seq_paired_end(
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'control extremely low read depth' for error in errors_list)
 
-
+'''
 def test_audit_modERN_missing_step_run(testapp, file_exp, file3, award):
     testapp.patch_json(award['@id'], {'rfa': 'modERN'})
     testapp.patch_json(file_exp['@id'], {'assay_term_name': 'ChIP-seq'})
@@ -507,7 +507,7 @@ def test_audit_modERN_unexpected_step_run(testapp, file_exp, file2, award, analy
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'unexpected step_run' for error in errors_list)
-
+'''
 
 def test_audit_file_biological_replicate_number_match(testapp,
                                                       file_exp,
