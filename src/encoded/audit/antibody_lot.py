@@ -70,7 +70,7 @@ def audit_antibody_missing_characterizations(value, system):
              'Pending review of primary characterization and secondary characterization not reviewed.',
              'Pending review of primary characterization.']:
             biosample = lot_review['biosample_term_name']
-            if biosample == 'any cell type and tissues':
+            if biosample == 'any cell type or tissue':
                 biosample = 'one or more cell types/tissues.'
 
             detail = '{} needs a compliant primary in {}'.format(value['@id'], lot_review['biosample_term_name'])
