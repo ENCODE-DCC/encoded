@@ -307,13 +307,12 @@ $attachment-button-margin: 3px;
 }
 
 // Status indicator glyph colors
-.indicator.status-characterized-to-standards { color: $indicator-eligible; }
-.indicator.status-characterized-to-standards-with-exemption { color: $indicator-eligible-exempt; }
-.indicator.status-pending-dcc-review { color: $indicator-pending; }
-.indicator.status-not-characterized-to-standards { color: $indicator-noteligible; }
-.indicator.status-awaiting-characterization { color: $indicator-awaiting; }
-.indicator.status-not-pursued { color: $indicator-notpursued; }
-.indicator.status-not-reviewed { color: $indicator-notreviewed; }
+.indicator.status-characterized-to-standards { color: #00e500; }
+.indicator.status-characterized-to-standards-with-exemption { color: #fff712; }
+.indicator.status-partially-characterized { color: #ffc300; }
+.indicator.status-awaiting-characterization { color: #e58200; }
+.indicator.status-not-characterized-to-standards { color: #e50400; }
+.indicator.status-not-pursued { color: #d0d0d0; }
 
 %file-icon {
     @include img-responsive();
