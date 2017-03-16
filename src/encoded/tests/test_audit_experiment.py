@@ -2699,7 +2699,7 @@ def test_audit_experiment_control_out_of_date_analysis_no_signal_files(testapp,
         errors_list.extend(errors[error_type])
     assert all(error['category'] != 'out of date analysis' for error in errors_list)
 
-
+'''
 def test_audit_experiment_modERN_control_missing_files(testapp,
                                                        award,
                                                        base_experiment,
@@ -2795,7 +2795,7 @@ def test_audit_experiment_modERN_experiment_missing_files(testapp,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'missing pipeline files' for error in errors_list)
-
+'''
 
 def test_audit_experiment_wgbs_standards(testapp,
                                          base_experiment,

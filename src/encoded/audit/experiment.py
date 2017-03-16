@@ -132,7 +132,7 @@ def audit_experiment_pipeline_assay_details(value, system):
                          'which assay_term_id does not match experiments\'s asssay_term_id.'
                 yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
 
-
+'''
 @audit_checker('Experiment', frame=['original_files',
                                     'original_files.replicate',
                                     'original_files.derived_from',
@@ -175,7 +175,7 @@ def audit_experiment_missing_processed_files(value, system):
                                                               'modERN')
             for failure in check_structures(replicate_structures, False, value):
                 yield failure
-
+'''
 
 @audit_checker('Experiment', frame=['original_files',
                                     'original_files.analysis_step_version',
