@@ -127,9 +127,9 @@ module.exports.encodedURI = function (uri) {
 // Just like encodeURIComponent, but also encodes parentheses (Redmine #4242). Replace spaces with
 // `space` parameter, or '+' if not provided.
 // http://stackoverflow.com/questions/8143085/passing-and-through-a-uri-causes-a-403-error-how-can-i-encode-them#answer-8143232
-var encodedURIComponent = module.exports.encodedURIComponent = function(str, space) {
-    var spaceReplace = space ? space : '+';
-    return encodeURIComponent(str).replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/%20/g, spaceReplace);
+module.exports.encodedURIComponent = function (str, space) {
+    const spaceReplace = space || '+';
+    return encodeURI(str).replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/%20/g, spaceReplace);
 };
 
 

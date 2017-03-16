@@ -1045,13 +1045,14 @@ def news(context, request):
     types = request.registry[TYPES]
     es = request.registry[ELASTIC_SEARCH]
     es_index = request.registry.settings['snovault.elasticsearch.index']
+    search_base = normalize_query(request)
     principals = effective_principals(request)
     from_, size = get_pagination(request)
 
     # Set up initial results metadata; we'll add the search results to them later.
     result = {
         '@context': request.route_path('jsonld_context'),
-        '@id': request.route_path('news', slash='/'),
+        '@id': '/news/' + search_base,
         '@type': ['News'],
         'filters': [],
         'notification': '',
@@ -1063,7 +1064,7 @@ def news(context, request):
     # Get the fields we want to receive from the search.
     search_fields, highlights = get_search_fields(request, doc_types)
 
-    # Builds filtered query for Page items for news.
+    # Build filtered query for Page items for news.
     query = get_filtered_query('*',
                                search_fields,
                                sorted(list_result_fields(request, doc_types)),
