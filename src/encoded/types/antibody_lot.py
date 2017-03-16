@@ -164,12 +164,14 @@ def lot_reviews(characterizations, targets, request):
 
     # The default if no characterizations have been submitted
     base_review = {
-        'biosample_term_name': 'any cell type and tissues',
+        'biosample_term_name': 'any cell type or tissue',
         'biosample_term_id': 'NTR:99999999',
         'organisms': sorted(target_organisms['all']),
         'targets': sorted(targets),
-        'status': 'characterized to standards with exemption' if is_control else 'awaiting characterization',
-        'detail': 'IgG does not require further characterization.' if is_control else 'No characterizations submitted for this antibody lot yet.'
+        'status': 'characterized to standards with exemption'
+        if is_control else ab_states[(None, None)],
+        'detail': 'IgG does not require further characterization.'
+        if is_control else ab_state_details[(None, None)]
     }
 
     if not characterizations:
@@ -206,7 +208,6 @@ def lot_reviews(characterizations, targets, request):
     for characterization_path in characterizations:
         characterization = request.embed(characterization_path, '@@object')
         target = request.embed(characterization['target'], '@@object')
-        organism = request.embed(target['organism'], '@@object')
 
         # instead of adding to the target_organism list with whatever they put in the
         # characterization we need to instead compare the lane organism to see if it's in the
@@ -214,7 +215,7 @@ def lot_reviews(characterizations, targets, request):
         # organism not in the antibody_lot.targets list so it'll have to be reviewed and
         # added if legitimate.
         review_targets.add(target['@id'])
-        char_organisms[characterization['@id']] = organism['@id']
+        char_organisms[characterization['@id']] = target['organism']
         # Split into primary and secondary to treat separately
         if 'primary_characterization_method' in characterization:
             primary_chars.append(characterization)
@@ -237,6 +238,9 @@ def lot_reviews(characterizations, targets, request):
         # The default if no primary characterizations have been submitted
         base_review['status'] = ab_states[(None, secondary_status)]
         base_review['detail'] = ab_state_details[(None, secondary_status)]
+        if base_review['status'] == 'not pursued':
+            base_review['biosample_term_name'] = 'at least one cell type or tissue'
+            base_review['biosample_term_id'] = 'NTR:00000000'
         return [base_review]
 
     # Done with easy cases, the remaining require reviews.
@@ -268,13 +272,15 @@ def build_lot_reviews(primary_chars,
             'biosample_term_name': 'at least one cell type or tissue',
             'biosample_term_id': 'NTR:00000000',
             'organisms': [char_organisms[primary['@id']]],
-            'targets': [primary['target']],
-            'status': 'awaiting characterization',
-            'detail': 'No characterizations submitted for this antibody lot yet.'
+            'targets': [primary['target']]
         }
         if not primary.get('characterization_reviews', []):
             base_review['status'] = ab_states[(primary['status'], secondary_status)]
             base_review['detail'] = ab_state_details[(primary['status'], secondary_status)]
+            if base_review['status'] == 'partially characterized':
+                base_review['biosample_term_name'] = 'any cell type or tissue'
+                base_review['biosample_term_id'] = 'NTR:99999999'
+
             # Don't need to rank and unique the primaries with unknown cell types, we can't
             # know if they're distinct or not anyway without characterization reviews.
             char_reviews[(base_review['biosample_term_name'],
@@ -290,7 +296,7 @@ def build_lot_reviews(primary_chars,
                 base_review = dict()
                 lane_organism = lane_review['organism']
 
-                base_review['biosample_term_name'] = 'any cell type and tissues' \
+                base_review['biosample_term_name'] = 'any cell type or tissue' \
                     if is_histone_mod else lane_review['biosample_term_name']
                 base_review['biosample_term_id'] = 'NTR:99999999' \
                     if is_histone_mod else lane_review['biosample_term_id']
