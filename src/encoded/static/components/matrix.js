@@ -9,6 +9,7 @@ var _ = require('underscore');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var navbar = require('../libs/bootstrap/navbar');
+var { BrowserSelector } = require('./objectutils');
 
 var BatchDownload = search.BatchDownload;
 var FacetList = search.FacetList;
@@ -237,17 +238,11 @@ var Matrix = module.exports.Matrix = React.createClass({
                                     : null}
                                     {' '}
                                     {visualizeKeys.length ?
-                                        <DropdownButton disabled={visualize_disabled} title={visualize_disabled ? 'Filter to ' + visualizeLimit + ' to visualize' : 'Visualize'} label="visualize" wrapperClasses="hubs-controls-button">
-                                            <DropdownMenu>
-                                                {visualizeKeys.map(assembly =>
-                                                    Object.keys(context.visualize_batch[assembly]).sort().map(browser =>
-                                                        <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" href={context.visualize_batch[assembly][browser]}>
-                                                            {assembly} {browser}
-                                                        </a>
-                                                    )
-                                                )}
-                                            </DropdownMenu>
-                                        </DropdownButton>
+                                        <BrowserSelector
+                                            visualizeCfg={context.visualize_batch}
+                                            disabled={visualize_disabled}
+                                            title={visualize_disabled ? 'Filter to ' + visualizeLimit + ' to visualize' : 'Visualize'}
+                                        />
                                     : null}
                                 </div>
                             </div>
