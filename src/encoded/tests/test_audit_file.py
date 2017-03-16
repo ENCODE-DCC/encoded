@@ -244,15 +244,6 @@ def test_audit_file_mismatched_paired_with(testapp, file1, file4):
     assert any(error['category'] == 'inconsistent paired_with' for error in errors_list)
 
 
-def test_audit_file_size(testapp, file1):
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing file_size' for error in errors_list)
-
-
 def test_audit_read_length(testapp, file1):
     res = testapp.get(file1['@id'] + '@@index-data')
     errors = res.json['audit']

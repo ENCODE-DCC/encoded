@@ -622,17 +622,6 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
             yield AuditFailure('wrong step_run for IDR peaks', detail, level='WARNING')
 
 
-@audit_checker('file', frame='object')
-def audit_file_size(value, system):
-
-    if value['status'] in ['deleted', 'replaced', 'uploading', 'revoked']:
-        return
-
-    if 'file_size' not in value:
-        detail = 'File {} requires a value for file_size'.format(value['@id'])
-        raise AuditFailure('missing file_size', detail, level='INTERNAL_ACTION')
-
-
 @audit_checker('file', frame=['file_format_specifications'],)
 def audit_file_format_specifications(value, system):
 
