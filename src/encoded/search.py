@@ -289,35 +289,54 @@ def build_terms_filter(field, terms):
                 },
             }
 
-
-def set_filters(request, query, result):
+def set_filters(request, query, result, static_items=None):
     """
     Sets filters in the query
     """
     query_filters = query['filter']['and']['filters']
     used_filters = {}
-    for field in request.params.keys():
+    if static_items is None:
+        static_items = []
+
+    # Get query string items plus any static items, then extract all the fields
+    qs_items = list(request.params.items())
+    total_items = qs_items + static_items
+    qs_fields = [item[0] for item in qs_items]
+    fields = [item[0] for item in total_items]
+    from pprint import pprint
+
+    # Now make lists of terms indexed by field
+    all_terms = {}
+    for item in total_items:
+        if item[0] in all_terms:
+            all_terms[item[0]].append(item[1])
+        else:
+            all_terms[item[0]] = [item[1]]
+
+    for field in fields:
         if field in used_filters:
             continue
 
-        terms = request.params.getall(field)
+        terms = all_terms[field]
         if field in ['type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
                      'format', 'frame', 'datastore', 'field', 'region', 'genome',
                      'sort', 'from', 'referrer']:
             continue
 
         # Add filter to result
-        for term in terms:
-            qs = urlencode([
-                (k.encode('utf-8'), v.encode('utf-8'))
-                for k, v in request.params.items()
-                if '{}={}'.format(k, v) != '{}={}'.format(field, term)
-            ])
-            result['filters'].append({
-                'field': field,
-                'term': term,
-                'remove': '{}?{}'.format(request.path, qs)
-            })
+        if (field in qs_fields):
+            for term in terms:
+                qs = urlencode([
+                    (k.encode('utf-8'), v.encode('utf-8'))
+                    for k, v in qs_items
+                    if '{}={}'.format(k, v) != '{}={}'.format(field, term)
+                ])
+                print('{}:{}'.format(field, qs))
+                result['filters'].append({
+                    'field': field,
+                    'term': term,
+                    'remove': '{}?{}'.format(request.path, qs)
+                })
 
         if field == 'searchTerm':
             continue
@@ -1071,12 +1090,6 @@ def news(context, request):
                                principals,
                                doc_types)
 
-    # Add fixed 'news=true' and 'status=released' as static search terms even though they're not in
-    # the query string. Query string parameters have already been added to query_filters.
-    query_filters = query['filter']['and']['filters']
-    query_filters.append(build_terms_filter('news', ['true']))
-    query_filters.append(build_terms_filter('status', ['released']))
-
     # Set sort order to sort by date_created.
     sort = OrderedDict()
     result_sort = OrderedDict()
@@ -1087,8 +1100,9 @@ def news(context, request):
     query['sort'] = sort
     result['sort'] = result_sort
 
-    # Set filters; has side effect of setting result['filters'].
-    used_filters = set_filters(request, query, result)
+    # Set filters; has side effect of setting result['filters']. We add some static terms since we
+    # have search parameters not specified in the query string.
+    used_filters = set_filters(request, query, result, [('type', 'Page'), ('news', 'true'), ('status', 'released')])
 
     # Build up the facets to search.
     facets = []
