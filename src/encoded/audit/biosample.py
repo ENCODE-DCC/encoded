@@ -156,7 +156,7 @@ def audit_biosample_term(value, system):
         yield AuditFailure('NTR biosample', detail, level='INTERNAL_ACTION')
         return
 
-    biosample_prefix = term_id.split(':')[0]
+    '''biosample_prefix = term_id.split(':')[0]
     if biosample_prefix not in biosampleType_ontologyPrefix[value['biosample_type']]:
         detail = 'Biosample {} of '.format(value['@id']) + \
                  'type {} '.format(value['biosample_type']) + \
@@ -164,7 +164,7 @@ def audit_biosample_term(value, system):
                  'that is not one of ' + \
                  '{}'.format(biosampleType_ontologyPrefix[value['biosample_type']])
         yield AuditFailure('biosample term-type mismatch', detail, level='INTERNAL_ACTION')
-        return
+        return'''
 
     if term_id not in ontology:
         detail = 'Biosample {} has biosample_term_id of {} which is not in ontology'.format(
