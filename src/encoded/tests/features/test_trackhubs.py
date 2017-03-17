@@ -164,7 +164,7 @@ def test_hub_field(testapp, workbook, expected):
 def test_visualize(testapp, workbook):
     expected = {
         'GRCh38': {
-            'Ensembl': 'http://www.ensembl.org/Trackhub?url=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt;species=Homo_sapiens',
+            'Ensembl': 'http://www.ensembl.org/Trackhub?url=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt;species=Homo_sapiens;redirect=no',
             'UCSC': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt&db=hg38'
         },
         'hg19': {

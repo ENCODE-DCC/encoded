@@ -67,31 +67,12 @@ def mouse_target_H3K9me3(testapp, mouse):
 
 # A single characterization (primary or secondary) associated with an ab that is not submitted
 # for review, should result in a not pursued antibody lot status.
-def test_not_submitted_primary_missing_secondary(testapp, immunoblot, antibody_lot):
-    char = testapp.post_json('/antibody_characterization', immunoblot).json['@graph'][0]
-    testapp.patch_json(char['@id'], {'status': 'not submitted for review by lab'})
-    res = testapp.get(antibody_lot['@id'] + '@@index-data')
-    ab = res.json['object']
-    print("{}".format(ab['characterizations']))
-    print("{}".format(ab['lot_reviews']))
-    assert ab['lot_reviews'][0]['status'] == 'not pursued'
-
-
-# A single characterization (primary or secondary) associated with an ab that is not submitted
-# for review, should result in a not pursued antibody lot status.
 def test_not_submitted_secondary_missing_primary(testapp, motif_enrichment, antibody_lot):
     char = testapp.post_json('/antibody_characterization', motif_enrichment).json['@graph'][0]
     testapp.patch_json(char['@id'], {'status': 'not submitted for review by lab'})
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
     assert ab['lot_reviews'][0]['status'] == 'not pursued'
-
-
-def test_awaiting_in_progress_primary_missing_secondary(testapp, immunoblot, antibody_lot):
-    testapp.post_json('/antibody_characterization', immunoblot).json['@graph'][0]
-    res = testapp.get(antibody_lot['@id'] + '@@index-data')
-    ab = res.json['object']
-    assert ab['lot_reviews'][0]['status'] == 'awaiting characterization'
 
 
 def test_have_primary_missing_secondary(testapp,
@@ -114,7 +95,7 @@ def test_have_primary_missing_secondary(testapp,
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
     assert ab['lot_reviews'][0]['status'] == 'awaiting characterization'
-    assert ab['lot_reviews'][0]['detail'] == 'Primary characterization(s) in progress.'
+    assert ab['lot_reviews'][0]['detail'] == 'Awaiting a compliant primary and submission of a secondary characterization.'
 
     # Not yet reviewed primary and no secondary should result in ab status = awaiting characterization
     characterization_review['lane_status'] = 'pending dcc review'
@@ -126,8 +107,8 @@ def test_have_primary_missing_secondary(testapp,
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
     assert ab['lot_reviews'][0]['status'] == 'awaiting characterization'
-    assert ab['lot_reviews'][0]['detail'] == 'One or more characterization(s) is pending review ' + \
-        'and awaiting a compliant secondary characterization.'
+    assert ab['lot_reviews'][0]['detail'] == 'Pending review of primary characterization and ' + \
+        'awaiting submission of a secondary characterization.'
 
     # No secondary and a primary that is not submitted for review should result in
     # ab status = not pursued
@@ -136,7 +117,7 @@ def test_have_primary_missing_secondary(testapp,
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
     assert ab['lot_reviews'][0]['status'] == 'not pursued'
-    assert ab['lot_reviews'][0]['detail'] is None
+    assert ab['lot_reviews'][0]['detail'] == 'Awaiting a compliant primary and submission of a secondary characterization.'
 
     '''
     # Compliant primary and no secondary should result in ab status = not characterized to standards
@@ -156,7 +137,6 @@ def test_have_primary_missing_secondary(testapp,
     '''
 
 
-# An in progress secondary and no primary should have ab status = awaiting characterization
 def test_have_secondary_missing_primary(testapp,
                                         mass_spec,
                                         motif_enrichment,
@@ -170,16 +150,16 @@ def test_have_secondary_missing_primary(testapp,
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
     assert ab['lot_reviews'][0]['status'] == 'awaiting characterization'
-    assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of primary characterization(s) and a ' + \
-        'compliant secondary characterization.'
+    assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of a primary characterization ' + \
+        'and a compliant secondary characterization.'
 
-    # Set the secondary for review and the ab status should be pending dcc review
+    # Set the secondary for review and the ab status should be awaiting characterization
     testapp.patch_json(char1['@id'], {'status': 'pending dcc review'})
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
     assert ab['lot_reviews'][0]['status'] == 'awaiting characterization'
-    assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of primary characterization(s) and a ' + \
-        'compliant secondary characterization.'
+    assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of a primary characterization ' + \
+        'and pending review of a secondary characterization.'
 
     # A compliant secondary without primaries is partially characterized
     testapp.patch_json(char1['@id'], {'status': 'compliant',
@@ -188,7 +168,7 @@ def test_have_secondary_missing_primary(testapp,
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
     assert ab['lot_reviews'][0]['status'] == 'partially characterized'
-    assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of primary characterization(s).'
+    assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of a primary characterization.'
 
     # Adding another secondary, regardless of status, should not change the ab status from
     # partially characterized.
@@ -199,7 +179,7 @@ def test_have_secondary_missing_primary(testapp,
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
     assert ab['lot_reviews'][0]['status'] == 'partially characterized'
-    assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of primary characterization(s).'
+    assert ab['lot_reviews'][0]['detail'] == 'Awaiting submission of a primary characterization.'
 
 
 # If there are multiple secondary characterizations, the one with the highest status ranking should
@@ -278,16 +258,16 @@ def test_histone_mod_characterizations(testapp,
     sec_char = testapp.post_json('/antibody_characterization', mass_spec).json['@graph'][0]
     testapp.patch_json(antibody_lot['@id'], {'targets': [target_H3K9me3['@id'], mouse_target_H3K9me3['@id']]})
     characterization_review_human = {
-        'biosample_term_name': 'K562',
-        'biosample_term_id': 'EFO:0002067',
+        'biosample_term_name': 'liver',
+        'biosample_term_id': 'UBERON:0002107',
         'biosample_type': 'immortalized cell line',
         'organism': human['@id'],
         'lane': 1,
         'lane_status': 'compliant'
     }
     characterization_review_mouse = {
-        'biosample_term_name': 'CH12.LX',
-        'biosample_term_id': 'EFO:0005233',
+        'biosample_term_name': 'liver',
+        'biosample_term_id': 'UBERON:0002107',
         'biosample_type': 'immortalized cell line',
         'organism': mouse['@id'],
         'lane': 1,
@@ -321,11 +301,9 @@ def test_histone_mod_characterizations(testapp,
 
         if mouse['@id'] in review['organisms']:
             assert review['status'] == 'not characterized to standards'
-            assert review['detail'] == 'Awaiting a compliant primary characterization in any ' + \
-                'cell type and tissues.'
-    '''
-    Adding another primary in mouse that is exempt from standards should make mouse now exempt
-    '''
+            assert review['detail'] == 'Awaiting a compliant primary characterization.'
+
+    # Adding another primary in mouse that is exempt from standards should make mouse now exempt
     prim_char_mouse2 = testapp.post_json('/antibody_characterization', immunoblot).json['@graph'][0]
     characterization_review_mouse['lane_status'] = 'not compliant'
     characterization_review_mouse2 = characterization_review_mouse.copy()
@@ -377,16 +355,19 @@ def test_multi_lane_primary(testapp,
         'lane': 1,
         'lane_status': 'compliant'
     }
-    characterization_review_2 = characterization_review.copy()
-    characterization_review_2.update({'biosample_term_name': 'HepG2',
-                                      'biosample_term_id': 'EFO:0001187',
-                                      'lane': 2,
-                                      'lane_status': 'not compliant'})
-    characterization_review_3 = characterization_review.copy()
-    characterization_review_3.update({'biosample_term_name': 'GM12878',
-                                      'biosample_term_id': 'EFO:0002784',
-                                      'lane': 3,
-                                      'lane_status': 'exempt from standards'})
+    characterization_review_2 = {'biosample_term_name': 'HepG2',
+                                 'biosample_term_id': 'EFO:0001187',
+                                 'biosample_type': 'immortalized cell line',
+                                 'organism': human['@id'],
+                                 'lane': 2,
+                                 'lane_status': 'not compliant'}
+
+    characterization_review_3 = {'biosample_term_name': 'GM12878',
+                                 'biosample_term_id': 'EFO:0002784',
+                                 'biosample_type': 'immortalized cell line',
+                                 'organism': human['@id'],
+                                 'lane': 3,
+                                 'lane_status': 'exempt from standards'}
     testapp.patch_json(prim_char['@id'], {'status': 'compliant',
                                           'reviewed_by': wrangler['@id'],
                                           'documents': [document['@id']],
@@ -412,7 +393,7 @@ def test_multi_lane_primary(testapp,
             assert review['detail'] == 'Fully characterized with exemption.'
         if review['biosample_term_name'] == 'HepG2':
             assert review['status'] == 'not characterized to standards'
-            assert review['detail'] == 'Awaiting a compliant primary characterization in HepG2.'
+            assert review['detail'] == 'Awaiting a compliant primary characterization.'
 
     # Now, if we change the secondary to be not reviewed, the antibody should now only be
     # partially characterized on the strength of the compliant and exempt primaries. The
@@ -426,4 +407,97 @@ def test_multi_lane_primary(testapp,
             assert review['status'] == 'partially characterized'
         if review['biosample_term_name'] == 'HepG2':
             assert review['status'] == 'not characterized to standards'
-            assert review['detail'] == 'Awaiting compliant primary and secondary characterizations.'
+            assert review['detail'] == 'Awaiting a compliant primary and secondary characterization not reviewed.'
+
+
+# Status calculation test for when primaries have extraneous characterization_reviews
+def test_bonus_char_reviews_in_primary(testapp,
+                                       immunoblot,
+                                       immunoprecipitation,
+                                       mass_spec,
+                                       antibody_lot,
+                                       human,
+                                       target,
+                                       wrangler,
+                                       document):
+
+    # A not submitted for review primary with no secondary should give status of not pursued
+    prim_char1 = testapp.post_json('/antibody_characterization', immunoblot).json['@graph'][0]
+    characterization_review1 = {
+        'biosample_term_name': 'K562',
+        'biosample_term_id': 'EFO:0002067',
+        'biosample_type': 'immortalized cell line',
+        'organism': human['@id'],
+        'lane': 1,
+        'lane_status': 'pending dcc review'
+    }
+    testapp.patch_json(prim_char1['@id'], {'status': 'not submitted for review by lab',
+                                           'target': target['@id'],
+                                           'characterization_reviews': [characterization_review1]})
+    res = testapp.get(antibody_lot['@id'] + '@@index-data')
+    ab = res.json['object']
+    assert ab['lot_reviews'][0]['status'] == 'not pursued'
+    assert ab['lot_reviews'][0]['detail'] == 'Awaiting a compliant primary and submission of a secondary characterization.'
+
+    # Adding an in progress primary in a different cell type should result in the ab awaiting characterization
+    prim_char2 = testapp.post_json('/antibody_characterization', immunoprecipitation).json['@graph'][0]
+    characterization_review2 = {
+        'biosample_term_name': 'HepG2',
+        'biosample_term_id': 'EFO:0001187',
+        'biosample_type': 'immortalized cell line',
+        'organism': human['@id'],
+        'lane': 1,
+        'lane_status': 'pending dcc review'
+    }
+    testapp.patch_json(prim_char2['@id'], {'status': 'in progress',
+                                           'target': target['@id'],
+                                           'characterization_reviews': [characterization_review2]})
+    res = testapp.get(antibody_lot['@id'] + '@@index-data')
+    ab = res.json['object']
+    assert len(ab['lot_reviews']) == 2
+    for review in ab['lot_reviews']:
+        if review['biosample_term_name'] == 'K562':
+            assert review['status'] == 'not pursued'
+        if review['biosample_term_name'] == 'HepG2':
+            assert review['status'] == 'awaiting characterization'
+            assert review['detail'] == 'Awaiting a compliant primary and submission of a secondary characterization.'
+
+    # Adding an exempted secondary should make the ab partially characterized
+    sec_char = testapp.post_json('/antibody_characterization', mass_spec).json['@graph'][0]
+    testapp.patch_json(sec_char['@id'], {'status': 'exempt from standards',
+                                         'target': target['@id'],
+                                         'reviewed_by': wrangler['@id'],
+                                         'documents': [document['@id']],
+                                         'comment': 'Please exempt this.',
+                                         'notes': 'OK.'})
+    res = testapp.get(antibody_lot['@id'] + '@@index-data')
+    ab = res.json['object']
+    assert len(ab['lot_reviews']) == 2
+    for review in ab['lot_reviews']:
+        if review['biosample_term_name'] in ['K562', 'HepG2']:
+            assert review['status'] == 'partially characterized'
+            assert review['detail'] == 'Awaiting a compliant primary characterization.'
+
+
+# Status calculation test for when primary and secondary characterizations are both not reviewed
+def test_chars_not_reviewed(testapp,
+                            immunoblot,
+                            mass_spec,
+                            antibody_lot,
+                            target,
+                            wrangler):
+
+    prim_char = testapp.post_json('/antibody_characterization', immunoblot).json['@graph'][0]
+    testapp.patch_json(prim_char['@id'], {'status': 'not reviewed',
+                                          'reviewed_by': wrangler['@id'],
+                                          'target': target['@id']})
+
+    sec_char = testapp.post_json('/antibody_characterization', mass_spec).json['@graph'][0]
+    testapp.patch_json(sec_char['@id'], {'status': 'not reviewed',
+                                         'reviewed_by': wrangler['@id'],
+                                         'target': target['@id']})
+
+    res = testapp.get(antibody_lot['@id'] + '@@index-data')
+    ab = res.json['object']
+    assert ab['lot_reviews'][0]['status'] == 'awaiting characterization'
+    assert ab['lot_reviews'][0]['detail'] == 'Primary and secondary characterizations not reviewed.'
