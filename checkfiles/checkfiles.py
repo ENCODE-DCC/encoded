@@ -193,7 +193,8 @@ def check_format(encValData, job, path):
             ['validateFiles'] + validate_args + [path], stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
         errors['validateFiles'] = e.output.decode(errors='replace').rstrip('\n')
-        update_content_error(errors, 'File failed file format specific validation (encValData)')
+        update_content_error(errors, 'File failed file format specific ' +
+                                     'validation (encValData) ' + errors['validateFiles'])
     else:
         result['validateFiles'] = output.decode(errors='replace').rstrip('\n')
 
@@ -297,6 +298,7 @@ def process_read_name_line(read_name_line,
                            read_name_prefix,
                            read_name_pattern,
                            special_read_name_pattern,
+                           srr_read_name_pattern,
                            old_illumina_current_prefix,
                            read_numbers_set,
                            signatures_no_barcode_set,
@@ -312,6 +314,24 @@ def process_read_name_line(read_name_line,
                                               signatures_set,
                                               signatures_no_barcode_set,
                                               read_numbers_set)
+        elif srr_read_name_pattern.match(read_name) is not None:
+            srr_portion = read_name.split(' ')[0]
+            if srr_portion.count('.') == 2:
+                read_numbers_set.add(srr_portion[-1])
+            else:
+                read_numbers_set.add('1')
+            illumina_portion = read_name.split(' ')[1]
+            old_illumina_current_prefix = process_read_name_line('@'+illumina_portion,
+                                                                 read_name_prefix,
+                                                                 read_name_pattern,
+                                                                 special_read_name_pattern,
+                                                                 srr_read_name_pattern,
+                                                                 old_illumina_current_prefix,
+                                                                 set(),
+                                                                 signatures_no_barcode_set,
+                                                                 signatures_set,
+                                                                 read_lengths_dictionary,
+                                                                 errors)
         else:
             # unrecognized read_name_format
             # current convention is to include WHOLE 
@@ -371,6 +391,12 @@ def process_fastq_file(job, fastq_data_stream, session, url):
         '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
         '+:\d+:\d+:\d+:\d+[/1|/2]*[\s_][12]:[YXN]:[0-9]+:([ACNTG\+]*|[0-9]*))$'
     )
+
+    srr_read_name_pattern = re.compile(
+        '^(@SRR[\d.]+\s[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
+        '+:\d+:\d+:\d+:\d+\slength=[\d]+)$'
+    )
+
     read_numbers_set = set()
     signatures_set = set()
     signatures_no_barcode_set = set()
@@ -389,6 +415,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                         read_name_prefix,
                         read_name_pattern,
                         special_read_name_pattern,
+                        srr_read_name_pattern,
                         old_illumina_current_prefix,
                         read_numbers_set,
                         signatures_no_barcode_set,
@@ -848,19 +875,27 @@ def patch_file(session, url, job):
 
     if data:
         item_url = urljoin(url, job['@id'])
-        r = session.patch(
-            item_url,
-            data=json.dumps(data),
-            headers={
-                'If-Match': job['etag'],
-                'Content-Type': 'application/json',
-            },
-        )
-        if not r.ok:
-            errors['patch_file_request'] = \
-                '{} {}\n{}'.format(r.status_code, r.reason, r.text)
-        else:
-            job['patched'] = True
+
+        etag_r = session.get(item_url + '?frame=edit&datastore=database')
+        if etag_r.ok:
+            if job['etag'] == etag_r.headers['etag']:
+                r = session.patch(
+                    item_url,
+                    data=json.dumps(data),
+                    headers={
+                        'If-Match': job['etag'],
+                        'Content-Type': 'application/json',
+                    },
+                )
+                if not r.ok:
+                    errors['patch_file_request'] = \
+                        '{} {}\n{}'.format(r.status_code, r.reason, r.text)
+                else:
+                    job['patched'] = True
+            else:
+                errors['etag_does_not_match'] = 'Original etag was {}, but the current etag is {}.'.format(
+                    job['etag'], etag_r.headers['etag']) + ' File {} '.format(job['item'].get('accession', 'UNKNOWN')) + \
+                    'was {} and now is {}.'.format(job['item'].get('status', 'UNKNOWN'), etag_r.json()['status'])
     return
 
 def run(out, err, url, username, password, encValData, mirror, search_query,
@@ -885,7 +920,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.09'
+    version = '1.11'
 
     out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
               (version, search_query, nprocesses, dr, datetime.datetime.now()))
