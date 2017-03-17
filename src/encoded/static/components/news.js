@@ -110,7 +110,8 @@ const NewsFacets = React.createClass({
                                 if (termFilter && termFilter[termFilter.length - 1] === '?') {
                                     termFilter = termFilter.slice(0, -1);
                                 }
-                                const termHref = termFilter || globals.encodedURIComponent(`${baseUri}${query ? '&' : '?'}${facet.field}=${term.key}`);
+                                const qs = globals.encodedURIComponent(`${facet.field}=${term.key}`);
+                                const termHref = termFilter || `${baseUri}${query ? '&' : '?'}${qs}`;
 
                                 return (
                                     <li className="news-facet__item">

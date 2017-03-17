@@ -129,7 +129,7 @@ module.exports.encodedURI = function (uri) {
 // http://stackoverflow.com/questions/8143085/passing-and-through-a-uri-causes-a-403-error-how-can-i-encode-them#answer-8143232
 module.exports.encodedURIComponent = function (str, space) {
     const spaceReplace = space || '+';
-    return encodeURI(str).replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/%20/g, spaceReplace);
+    return encodeURIComponent(str).replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/%20/g, spaceReplace).replace(/%3D/g, '=');
 };
 
 
