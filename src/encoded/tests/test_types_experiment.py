@@ -111,7 +111,7 @@ def test_experiment_biosample_summary(testapp,
                                             "subcellular_fraction_term_name": "nucleus",
                                             })
     testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id'],
-                                            "biosample_term_id": "EFO:0002784",
+                                            "biosample_term_id": "UBERON:0002784",
                                             "biosample_term_name": "liver",
                                             "biosample_type": "tissue",
                                             'treatments': [treatment['@id']]})
@@ -144,13 +144,13 @@ def test_experiment_biosample_summary_2(testapp,
     testapp.patch_json(donor_1['@id'], {'sex': 'male'})
     testapp.patch_json(donor_2['@id'], {'sex': 'male'})
     testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'],
-                                            "biosample_term_id": "EFO:0002784",
+                                            "biosample_term_id": "UBERON:0002784",
                                             "biosample_term_name": "liver",
                                             "biosample_type": "tissue",
                                             'treatments': [treatment['@id']]})
 
     testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id'],
-                                            "biosample_term_id": "EFO:0002784",
+                                            "biosample_term_id": "UBERON:0002784",
                                             "biosample_term_name": "liver",
                                             "biosample_type": "tissue"})
 
