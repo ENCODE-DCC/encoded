@@ -154,6 +154,9 @@ const News = React.createClass({
                     <PanelBody>
                         <div className="news-page">
                             <div className="news-page__previews">
+                                <div className="news-page__previews-title">
+                                    <h1>News</h1>
+                                </div>
                                 <NewsPreviews items={items} />
                             </div>
                             <div className="news-page__facets">
