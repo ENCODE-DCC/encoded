@@ -20,6 +20,9 @@ module.exports.blocks = new Registry();
 // Graph detail view
 module.exports.graph_detail = new Registry();
 
+// Search facet view
+module.exports.facet_view = new Registry();
+
 // Document panel components
 // +---------------------------------------+
 // | header                                |
