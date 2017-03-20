@@ -177,6 +177,7 @@ const GenomeBrowser = React.createClass({
         files: React.PropTypes.array.isRequired, // Array of files to represent
         assembly: React.PropTypes.string.isRequired, // Assembly to use with browser
         region: React.PropTypes.string, // Region to use with browser
+        visBlobs: React.PropTypes.object, // This should contain one or more vis_blobs for dataset(s)
         limitFiles: React.PropTypes.bool, // True to limit # files to maxFilesBrowsed
     },
 
@@ -191,6 +192,8 @@ const GenomeBrowser = React.createClass({
 
         // Extract only bigWig and bigBed files from the list:
         let files = this.props.files.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
+        files = files.filter(file => ['released', 'in progress'].indexOf(file.status) > -1);  // TODO: list of allowed statuses
+
 
         // Make some fake file objects from "test" just to give the genome browser something to
         // chew on if we're running locally.
@@ -260,6 +263,7 @@ const GenomeBrowser = React.createClass({
                     forceReduction: -1,
                 },
             ];
+        /* TODO: } else if (assembly === 'GRCh38') {} */
         } else if (assembly === 'mm10') {
             browserCfg.chr = '19';
             browserCfg.viewStart = 30000000;
@@ -321,16 +325,17 @@ const GenomeBrowser = React.createClass({
             ];
         }
 
-        this.browserFiles = []
+        this.browserFiles = [];
         let domain = `${location.protocol}//${location.hostname}`;
         if (domain.includes('localhost')) {
             domain = domainName;
         }
         files.forEach((file) => {
+            const trackLabels = this.makeTrackLabel(file);
             if (file.file_format === 'bigWig') {
                 this.browserFiles.push({
-                    name: file.accession,
-                    desc: file.output_type,
+                    name: trackLabels.shortLabel,
+                    desc: trackLabels.longLabel,
                     bwgURI: `${domain}${file.href}`,
                     style: [
                         {
@@ -345,8 +350,8 @@ const GenomeBrowser = React.createClass({
                 });
             } else if (file.file_format === 'bigBed') {
                 this.browserFiles.push({
-                    name: file.accession,
-                    desc: file.output_type,
+                    name: trackLabels.shortLabel,
+                    desc: trackLabels.longLabel,
                     bwgURI: `${domain}${file.href}`,
                     style: [
                         {
@@ -403,10 +408,11 @@ const GenomeBrowser = React.createClass({
                 domain = domainName;
             }
             files.forEach((file) => {
+                const trackLabels = this.makeTrackLabel(file);
                 if (file.file_format === 'bigWig') {
                     this.browser.addTier({
-                        name: file.accession,
-                        desc: file.output_type,
+                        name: trackLabels.shortLabel,
+                        desc: trackLabels.longLabel,
                         bwgURI: `${domain}${file.href}`,
                         style: [
                             {
@@ -421,8 +427,8 @@ const GenomeBrowser = React.createClass({
                     });
                 } else if (file.file_format === 'bigBed') {
                     this.browser.addTier({
-                        name: file.accession,
-                        desc: file.output_type,
+                        name: trackLabels.shortLabel,
+                        desc: trackLabels.longLabel,
                         bwgURI: `${domain}${file.href}`,
                         style: [
                             {
@@ -435,6 +441,32 @@ const GenomeBrowser = React.createClass({
                 }
             });
         }
+    },
+
+    makeTrackLabel: function (file) {
+        const datasetAccession = file.dataset.split('/')[2];
+        // TODO: unreleased files are not in visBlob so get default labels
+        const trackLabels = {
+            shortLabel: file.accession,
+            longLabel: `${file.status} ${file.output_type}`,
+        };
+        if (this.props.visBlobs === undefined || this.props.visBlobs === null) {
+            return trackLabels;
+        }
+        Object.keys(this.props.visBlobs).forEach((blobKey) => {
+            if (blobKey.startsWith(datasetAccession)) {
+                const tracks = this.props.visBlobs[blobKey].tracks;
+                const trackCount = tracks.length;
+                for (let ix = 0; ix < trackCount; ix += 1) {
+                    if (tracks[ix].name === file.accession) {
+                        trackLabels.shortLabel = tracks[ix].shortLabel;
+                        trackLabels.longLabel = tracks[ix].longLabel;
+                        break;
+                    }
+                }
+            }
+        });
+        return trackLabels;
     },
 
     render: function () {

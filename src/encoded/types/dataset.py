@@ -193,21 +193,29 @@ class Dataset(Item):
         "type": "string",
     })
 
-    def visualize(self, request, hub, assembly, status):
-        if status  != 'released':
-            return {}
+    def visualize(self, request, hub, accession, assembly, status):
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
         for assembly_name in assembly:
             if assembly_name in viz:  # mm10 and mm10-minimal resolve to the same thing
                 continue
             browser_urls = {}
-            ucsc_url = vis_format_external_url("ucsc", hub_url, assembly_name)
-            if ucsc_url is not None:
-                browser_urls['UCSC'] = ucsc_url
-            ensembl_url = vis_format_external_url("ensembl", hub_url, assembly_name)
-            if ensembl_url is not None:
-                browser_urls['Ensembl'] = ensembl_url
+            if status  == 'released':  # Non-biodalliance is for released experiments/files only
+                ucsc_url = vis_format_external_url("ucsc", hub_url, assembly_name)
+                if ucsc_url is not None:
+                    browser_urls['UCSC'] = ucsc_url
+                ensembl_url = vis_format_external_url("ensembl", hub_url, assembly_name)
+                if ensembl_url is not None:
+                    browser_urls['Ensembl'] = ensembl_url
+            # Now for biodalliance.  bb and bw already known?  How about non-deleted?
+            # TODO: define (in visualization.py?) supported assemblies list
+            # TODO: define biodalliance visualizable experiment statuses
+            if assembly_name in ['hg19','GRCh38','mm10']:
+                if status in ['released','in progress']:
+                    # '/search/?type=File&file_format=bigBed&file_format=bigWig&assembly={hg19}&dataset=%2Fexperiments%2F{ENCSR000CIZ}%2F#browser
+                    bd_path = ('/search/?type=File&%s&assembly=%s&dataset=/experiments/%s/#browser' %
+                               ('file_format=bigBed&file_format=bigWig',assembly_name,accession))
+                    browser_urls['Biodalliance'] = urljoin(request.host_url, bd_path)
             if browser_urls:
                 viz[assembly_name] = browser_urls
         if viz:

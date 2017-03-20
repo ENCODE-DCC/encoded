@@ -16,6 +16,7 @@ import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
 import GenomeBrowser from './genome_browser';
 import { donorDiversity, BrowserSelector } from './objectutils';
+import { FetchedData, Param } from './fetched';
 
 
 
@@ -336,7 +337,7 @@ const Biosample = module.exports.Biosample = React.createClass({
                     </div>
                     <div className="data-row">
                         <div><strong>Type: </strong>{result.biosample_type}</div>
-                        {result.summary ? <div><strong>Summary: </strong>{biosampleSummaryString(result)}</div> : null}
+                        {result.summary ? <div><strong>Summary: </strong>{BiosampleSummaryString(result)}</div> : null}
                         {rnais ? <div><strong>RNAi target: </strong>{rnais}</div> : null}
                         {constructs ? <div><strong>Construct: </strong>{constructs}</div> : null}
                         {treatment ? <div><strong>Treatment: </strong>{treatment}</div> : null}
@@ -1030,6 +1031,8 @@ const ResultTable = search.ResultTable = React.createClass({
         const trimmedSearchBase = searchBase.replace(/[\?|&]limit=all/, '');
         let browseAllFiles = true; // True to pass all files to browser
         let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
+        let browserDatasets = []; // Datasets will be used to get vis_json blobs
+        let browserFiles = [];   // Files to pass to ResultsBrowser component
         let assemblyChooser;
 
         const facets = context.facets.map((facet) => {
@@ -1082,7 +1085,7 @@ const ResultTable = search.ResultTable = React.createClass({
 
         // If we have only one "type" term in the query string and it's for File, then we can
         // display the List/Browser tabs. Otherwise we just get the list.
-        const browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File';
+        let browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File';
         if (browserAvail) {
             // Determine if we should limit the number of files to browse or not. If 'dataset' is
             // in the query string, we render all the file tracks because the dataset has only a
@@ -1090,21 +1093,37 @@ const ResultTable = search.ResultTable = React.createClass({
             // the file count.
             browseAllFiles = filters.find(filter => filter.field === 'dataset');
 
-            // Now determine if we have a mix of assemblies in the files, or just one. If we have
-            // a mix, we need to render a drop-down.
-            if (assemblies.length === 1) {
-                // Only one assembly in all the files. No menu needed.
-                browserAssembly = assemblies[0];
-            } else {
-                browserAssembly = this.state.browserAssembly;
-                assemblyChooser = (
-                    <div className="browser-assembly-chooser">
-                        <div className="browser-assembly-chooser__title">Assembly:</div>
-                        <div className="browser-assembly-chooser__menu">
-                            <AssemblyChooser assemblies={assemblies} assemblyChange={this.assemblyChange} />
+            // Limit browser option to datasets only!
+            browserAvail = browseAllFiles;
+            if (browserAvail) {
+                // TODO: Maybe a define in globals.js for visualizable types?
+                browserFiles = results.filter(file => ['bigBed', 'bigWig'].indexOf(file.file_format) > -1);
+                if (browserAvail.length > 0) {
+                    browserFiles = browserFiles.filter(file => ['released', 'in progress'].indexOf(file.status) > -1);
+                }
+                browserAvail = (browserFiles.length > 0);
+            }
+
+            if (browserAvail) {
+                // Reduce all found file assemblies so we don't have duplicates in the 'assemblies' array.
+                browserDatasets = browserFiles.reduce((datasets, file) => ((!file.dataset || datasets.indexOf(file.dataset) > -1) ? datasets : datasets.concat(file.dataset)), []);
+
+                // Now determine if we have a mix of assemblies in the files, or just one. If we have
+                // a mix, we need to render a drop-down.
+                if (assemblies.length === 1) {
+                    // Only one assembly in all the files. No menu needed.
+                    browserAssembly = assemblies[0];
+                } else {
+                    browserAssembly = this.state.browserAssembly;
+                    assemblyChooser = (
+                        <div className="browser-assembly-chooser">
+                            <div className="browser-assembly-chooser__title">Assembly:</div>
+                            <div className="browser-assembly-chooser__menu">
+                                <AssemblyChooser assemblies={assemblies} assemblyChange={this.assemblyChange} />
+                            </div>
                         </div>
-                    </div>
-                );
+                    );
+                }
             }
         }
 
@@ -1161,7 +1180,7 @@ const ResultTable = search.ResultTable = React.createClass({
                                         <BrowserSelector
                                             visualizeCfg={context.visualize_batch}
                                             disabled={visualizeDisabled}
-                                            title={visualizeDisabled ? 'Filter to ' + visualizeLimit + ' to visualize' : 'Visualize'}
+                                            title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'}
                                         />
                                     : null}
                                 </div>
@@ -1173,7 +1192,7 @@ const ResultTable = search.ResultTable = React.createClass({
                                         </TabPanelPane>
                                         <TabPanelPane key="browserpane">
                                             {assemblyChooser}
-                                            <ResultBrowser files={results} assembly={browserAssembly} limitFiles={!browseAllFiles} />
+                                            <ResultBrowser files={results} assembly={browserAssembly} datasets={browserDatasets} limitFiles={!browseAllFiles} />
                                         </TabPanelPane>
                                     </TabPanel>
                                 :
@@ -1217,10 +1236,32 @@ const ResultBrowser = React.createClass({
     propTypes: {
         files: React.PropTypes.array, // Array of files whose browser we're rendering
         assembly: React.PropTypes.string, // Filter `files` by this assembly
+        datasets: React.PropTypes.array, // One or more '/dataset/ENCSRnnnXXX/' that files belong to
         limitFiles: React.PropTypes.bool, // True to limit browsing to 20 files
     },
 
     render: function () {
+        let visUrl = '';
+        const datasetCount = this.props.datasets.length;
+        if (datasetCount === 1) {
+            // /datasets/{ENCSR000AEI}/@@hub/{hg19}/jsonout/trackDb.txt
+            visUrl = `${this.props.datasets[0]}/@@hub/${this.props.assembly}/jsonout/trackDb.txt`;
+        } else if (datasetCount > 1) {
+            // /batch_hub/type%3DExperiment%2C%2Caccession%3D{ENCSR000AAA}%2C%2Caccession%3D{ENCSR000AEI}%2C%2Caccjson/{hg19}/trackDb.txt
+            for (let ix = 0; ix < datasetCount; ix += 1) {
+                const accession = this.props.datasets[ix].split('/')[2];
+                visUrl += `accession=${accession}%2C%2C`;
+            }
+            visUrl = `batch_hub/type=Experiment/${visUrl}&accjson/${this.props.assembly}/trackDb.txt`;
+        }
+        if (datasetCount > 0) {
+            return (
+                <FetchedData ignoreErrors>
+                    <Param name="visBlobs" url={visUrl} />
+                    <GenomeBrowser files={this.props.files} assembly={this.props.assembly} limitFiles={this.props.limitFiles} />
+                </FetchedData>
+            );
+        }
         return (
             <div>
                 <GenomeBrowser files={this.props.files} assembly={this.props.assembly} limitFiles={this.props.limitFiles} />
