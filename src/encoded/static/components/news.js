@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import querystring from 'querystring';
 import _ from 'underscore';
 import url from 'url';
 import globals from './globals';
@@ -68,33 +69,38 @@ const DefaultFacet = React.createClass({
         const query = url.parse(baseUri).search;
 
         return (
-            <ul className="news-facet__items">
-                {facet.nonEmptyTerms.map((term) => {
-                    // Make the facet term link either the current URI appended with
-                    // the facet field and term, or from any matching filter’s `remove`
-                    // URI. Have to parse the `remove` URI to trim any vestiges of add
-                    // query string.
-                    let termFilter = searchFilters[facet.field] && searchFilters[facet.field][term.key] && searchFilters[facet.field][term.key].remove;
-                    if (termFilter && termFilter[termFilter.length - 1] === '?') {
-                        termFilter = termFilter.slice(0, -1);
-                    }
-                    const qs = globals.encodedURIComponent(`${facet.field}=${term.key}`);
-                    const termHref = termFilter || `${baseUri}${query ? '&' : '?'}${qs}`;
+            <div key={facet.field} className="news-facet">
+                <div className="news-facet__title">
+                    {facet.title}
+                </div>
+                <ul className="news-facet__items">
+                    {facet.nonEmptyTerms.map((term) => {
+                        // Make the facet term link either the current URI appended with
+                        // the facet field and term, or from any matching filter’s `remove`
+                        // URI. Have to parse the `remove` URI to trim any vestiges of add
+                        // query string.
+                        let termFilter = searchFilters[facet.field] && searchFilters[facet.field][term.key] && searchFilters[facet.field][term.key].remove;
+                        if (termFilter && termFilter[termFilter.length - 1] === '?') {
+                            termFilter = termFilter.slice(0, -1);
+                        }
+                        const qs = globals.encodedURIComponent(`${facet.field}=${term.key}`);
+                        const termHref = termFilter || `${baseUri}${query ? '&' : '?'}${qs}`;
 
-                    return (
-                        <li key={term.key} className="news-facet__item">
-                            <a href={termHref} className={termFilter ? 'selected' : ''}>
-                                <span className="news-facet__item-title">
-                                    {term.key}&nbsp;
-                                </span>
-                                <span className="news-facet__item-count">
-                                    ({term.doc_count})
-                                </span>
-                            </a>
-                        </li>
-                    );
-                })}
-            </ul>
+                        return (
+                            <li key={term.key} className="news-facet__item">
+                                <a href={termHref} className={termFilter ? 'selected' : ''}>
+                                    <span className="news-facet__item-title">
+                                        {term.key}&nbsp;
+                                    </span>
+                                    <span className="news-facet__item-count">
+                                        ({term.doc_count})
+                                    </span>
+                                </a>
+                            </li>
+                        );
+                    })}
+                </ul>
+            </div>
         );
     },
 });
@@ -115,14 +121,47 @@ const DateFacet = React.createClass({
 
     render: function () {
         const { facet, baseUri, searchFilters } = this.props;
+        let yearRemoveUri = '';
+        let monthRemoveUri = '';
+        let queryParms;
+        let yearsSelected;
 
-        // Get the query string portion of the base URI, if any. This tells us if we need to append
-        // new query string parameters with a '?' or a '&'.
-        const query = url.parse(baseUri).search;
+        // Generate the href for the "All years" facet term if we need one. This involves removing
+        // all (normally one) year_released parameters from the query string. Start by getting the
+        // query string portion of the base URI, if any.
+        const baseUriComps = url.parse(baseUri);
+        if (baseUriComps.search) {
+            // A query string exists. Parse it to see if it has one or more year_released
+            // parameters. If it does, delete it. Have to strip the first character off the query
+            // string because it's always a question mark which querystring.parse can't handle.
+            queryParms = querystring.parse(baseUriComps.search.substring(1));
+            if (queryParms.year_released) {
+                // At least one "year_released" query string parameter found. First get what their
+                // values are so we can display it in the facet title.
+                yearsSelected = (typeof queryParms.year_released === 'string') ? [queryParms.year_released] : queryParms.year_released;
+
+                // Now delete the year_released query string parameters and generate an href
+                // without them to use to clear the year while leaving other query string
+                // parameters intact. Use this for the 'All years' static facet item.
+                delete queryParms.year_released;
+                const updatedQs = querystring.stringify(queryParms);
+                yearRemoveUri = `${baseUriComps.pathname}${updatedQs ? `?${updatedQs}` : ''}`;
+            }
+
+            // Now calculate a Uri with month_released removed, for individual month facet term
+            // hrefs while another individual month is selected.
+            if (queryParms.month_released) {
+                delete queryParms.month_released;
+                monthRemoveUri = `${baseUriComps.pathname}?${querystring.stringify(queryParms)}`;
+            } else {
+                monthRemoveUri = baseUri;
+            }
+        }
+        // If no baseUriComps.search exists, then no query string exists.
 
         // If >= 12 (a year) of facets to display, set a flag to know that we need to coalesce
-        // older months into years.
-        const coalesce = facet.nonEmptyTerms.length > 12;
+        // older months into years. Don't coalesce if a year is currently selected.
+        const coalesce = !yearsSelected && facet.nonEmptyTerms.length > 12;
 
         // Generate lists of facet terms to render based on whether we have to coalesce past years
         // or not.
@@ -154,57 +193,81 @@ const DateFacet = React.createClass({
             // and display all available facet terms.
             trimmedMonthTerms = facet.nonEmptyTerms;
         }
+
+        // Sort the individual month terms by date.
         trimmedMonthTerms = trimmedMonthTerms.sort((a, b) => ((a.key < b.key) ? 1 : (b.key < a.key ? -1 : 0)));
 
         return (
-            <ul className="news-facet__items">
-                {trimmedMonthTerms.map((term) => {
-                    // Make the facet term link either the current URI appended with
-                    // the facet field and term, or from any matching filter’s `remove`
-                    // URI. Have to parse the `remove` URI to trim any vestiges of add
-                    // query string.
-                    let termFilter = searchFilters[facet.field] && searchFilters[facet.field][term.key] && searchFilters[facet.field][term.key].remove;
-                    if (termFilter && termFilter[termFilter.length - 1] === '?') {
-                        termFilter = termFilter.slice(0, -1);
-                    }
-                    const qs = globals.encodedURIComponent(`${facet.field}=${term.key}`);
-                    const termHref = termFilter || `${baseUri}${query ? '&' : '?'}${qs}`;
+            <div key={facet.field} className="news-facet">
+                <div className="news-facet__title">
+                    Months
+                    {yearsSelected ? <span> for {yearsSelected.join(', ')}</span> : null}
+                </div>
+                <ul className="news-facet__items">
+                    {trimmedMonthTerms.map((term) => {
+                        // Loop to display the individual month terms. Make the facet term link
+                        // either the current URI appended with the facet field and term, or from
+                        // any matching filter’s `remove` URI. Have to parse the `remove` URI to
+                        // trim any vestiges of add query string.
+                        let termFilter = searchFilters[facet.field] && searchFilters[facet.field][term.key] && searchFilters[facet.field][term.key].remove;
+                        if (termFilter && termFilter[termFilter.length - 1] === '?') {
+                            termFilter = termFilter.slice(0, -1);
+                        }
 
-                    return (
-                        <li key={term.key} className="news-facet__item">
-                            <a href={termHref} className={termFilter ? 'selected' : ''}>
-                                <span className="news-facet__item-title">
-                                    {term.key}&nbsp;
-                                </span>
-                                <span className="news-facet__item-count">
-                                    ({term.doc_count})
-                                </span>
+                        const qs = globals.encodedURIComponent(`${facet.field}=${term.key}`);
+                        const termHref = termFilter || `${monthRemoveUri}${baseUriComps.search ? '&' : '?'}${qs}`;
+
+                        return (
+                            <li key={term.key} className="news-facet__item">
+                                <a href={termHref} className={termFilter ? 'selected' : ''}>
+                                    <span className="news-facet__item-title">
+                                        {term.key}&nbsp;
+                                    </span>
+                                    <span className="news-facet__item-count">
+                                        ({term.doc_count})
+                                    </span>
+                                </a>
+                            </li>
+                        );
+                    })}
+
+                    {years.map((year) => {
+                        // Loop to display the coalesced year terms. Sum up the doc_counts for the
+                        // year being rendered. If we have overlapping term years, we have to add
+                        // those to the total too.
+                        let yearTotal = coYearGroups[year].reduce((total, term) => total + term.doc_count, 0);
+                        if (inYearGroups[year]) {
+                            yearTotal += inYearGroups[year].reduce((total, term) => total + term.doc_count, 0);
+                        }
+
+                        // Calculate the href. Works differently for coalesced facet terms because
+                        // only one can be selected at a time.
+                        const qs = globals.encodedURIComponent(`year_released=${year}`);
+                        const termHref = `${baseUri}${baseUriComps.search ? '&' : '?'}${qs}`;
+
+                        return (
+                            <li key={year} className="news-facet__item">
+                                <a href={termHref}>
+                                    <span className="news-facet__item-title">
+                                        All {year}&nbsp;
+                                    </span>
+                                    <span className="news-facet__item-count">
+                                        ({yearTotal})
+                                    </span>
+                                </a>
+                            </li>
+                        );
+                    })}
+
+                    {yearsSelected ?
+                        <li className="news-facet__item">
+                            <a href={yearRemoveUri}>
+                                <span className="news-facet__item-title">All years</span>
                             </a>
                         </li>
-                    );
-                })}
-                {years.map((year) => {
-                    // Sum up the doc_counts for the year being rendered. If we have overlapping
-                    // term years, we have to add those to the total too.
-                    let yearTotal = coYearGroups[year].reduce((total, term) => total + term.doc_count, 0);
-                    if (inYearGroups[year]) {
-                        yearTotal += inYearGroups[year].reduce((total, term) => total + term.doc_count, 0);
-                    }
-
-                    return (
-                        <li key={year} className="news-facet__item">
-                            <a href="#">
-                                <span className="news-facet__item-title">
-                                    All {year}&nbsp;
-                                </span>
-                                <span className="news-facet__item-count">
-                                    ({yearTotal})
-                                </span>
-                            </a>
-                        </li>
-                    );
-                })}
-            </ul>
+                    : null}
+                </ul>
+            </div>
         );
     },
 });
@@ -258,14 +321,7 @@ const NewsFacets = React.createClass({
                 {nonEmptyFacets.map((facet) => {
                     const FacetView = globals.facet_view.lookup(facet);
 
-                    return (
-                        <div key={facet.field} className="news-facet">
-                            <div className="news-facet__title">
-                                {facet.title}
-                            </div>
-                            <FacetView facet={facet} baseUri={baseUri} searchFilters={searchFilters} />
-                        </div>
-                    );
+                    return <FacetView facet={facet} baseUri={baseUri} searchFilters={searchFilters} />;
                 })}
             </div>
         );
