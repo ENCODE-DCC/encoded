@@ -160,6 +160,7 @@ class HumanDonor(Donor):
         'characterizations.documents.award',
         'characterizations.documents.submitted_by',
         'lab',
+        'parents',
         'references',
-        'submitted_by'
+        'submitted_by',
         ]

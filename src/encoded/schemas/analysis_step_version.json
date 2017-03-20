@@ -22,8 +22,8 @@
         "version": {
             "title": "Version",
             "description": "The version of the analysis step",
-            "type": "integer",
-            "default": 1
+            "type": "string",
+            "default": "1"
         },
         "analysis_step": {
             "title": "Analysis Step",

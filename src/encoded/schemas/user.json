@@ -122,7 +122,6 @@
         }
     },
     "boost_values": {
-        "title": 1.0,
-        "lab": 1.0
+        "title": 1.0
     }
 }

@@ -38,6 +38,8 @@ class Pipeline(Item, CalculatedAssayTermID):
         'analysis_steps.versions.software_versions.software',
         'lab',
         'award.pi.lab',
+        'references',
+        'submitted_by',
     ]
 
 
@@ -115,6 +117,10 @@ class AnalysisStep(Item):
 class AnalysisStepVersion(Item):
     item_type = 'analysis_step_version'
     schema = load_schema('encoded:schemas/analysis_step_version.json')
+
+    embedded = [
+        'submitted_by',
+        ]
 
     def unique_keys(self, properties):
         keys = super(AnalysisStepVersion, self).unique_keys(properties)

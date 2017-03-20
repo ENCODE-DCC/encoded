@@ -21,6 +21,13 @@ from .shared_calculated_properties import CalculatedAssayTermID
 class QualityMetric(ItemWithAttachment, CalculatedAssayTermID, Item):
     base_types = ['QualityMetric'] + Item.base_types
 
+    embedded = [
+        'award.pi.lab',
+        'lab',
+        'step_run',
+        'submitted_by',
+        ]
+
 
 @collection(
     name='star-quality-metrics',

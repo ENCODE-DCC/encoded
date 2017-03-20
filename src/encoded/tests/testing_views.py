@@ -122,6 +122,10 @@ class TestingLinkSource(Item):
         'additionalProperties': False,
     }
 
+    embedded = [
+        'target',
+        ]
+
 
 @collection('testing-link-targets', unique_key='testing_link_target:name')
 class TestingLinkTarget(Item):
