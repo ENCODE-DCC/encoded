@@ -4,8 +4,6 @@ import moment from 'moment';
 import globals from './globals';
 import { Panel, PanelHeading } from '../libs/bootstrap/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
-import { DropdownButton } from '../libs/bootstrap/button';
-import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
 import { StatusLabel } from './statuslabel';
 import { requestFiles, DownloadableAccession, BrowserSelector } from './objectutils';
 import { Graph, JsonGraph } from './graph';
@@ -91,6 +89,17 @@ export const FileTable = React.createClass({
                 const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[item['@id']]);
                 return <DownloadableAccession file={item} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />;
             },
+            objSorter: (a, b) => {
+                // First determine if either or both use an external accession or not.
+                if (!a.accession !== !b.accession) {
+                    // One or the other but not both use an external accession. Sort so that
+                    // regular accession comes first.
+                    return a.accession ? -1 : 1;
+                }
+                const aTitle = a.title.toLowerCase();
+                const bTitle = b.title.toLowerCase();
+                return aTitle > bTitle ? 1 : (aTitle < bTitle ? -1 : 0);
+            },
         },
         file_type: { title: 'File type' },
         output_type: { title: 'Output type' },
@@ -144,6 +153,17 @@ export const FileTable = React.createClass({
                 const { loggedIn, adminUser } = meta;
                 const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[item['@id']]);
                 return <DownloadableAccession file={item} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />;
+            },
+            objSorter: (a, b) => {
+                // First determine if either or both use an external accession or not.
+                if (!a.accession !== !b.accession) {
+                    // One or the other but not both use an external accession. Sort so that
+                    // regular accession comes first.
+                    return a.accession ? -1 : 1;
+                }
+                const aTitle = a.title.toLowerCase();
+                const bTitle = b.title.toLowerCase();
+                return aTitle > bTitle ? 1 : (aTitle < bTitle ? -1 : 0);
             },
         },
         file_type: { title: 'File type' },
