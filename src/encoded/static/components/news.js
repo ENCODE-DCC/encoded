@@ -121,10 +121,11 @@ const DateFacet = React.createClass({
 
     render: function () {
         const { facet, baseUri, searchFilters } = this.props;
-        let yearRemoveUri = '';
-        let monthRemoveUri = '';
-        let queryParms;
+        let allYearsUri = '';
+        let inMonthUri = '';
+        let queryParms = {};
         let yearsSelected;
+        let selectedMonthYears = []; // Array of years for which a month is selected
 
         // Generate the href for the "All years" facet term if we need one. This involves removing
         // all (normally one) year_released parameters from the query string. Start by getting the
@@ -135,6 +136,9 @@ const DateFacet = React.createClass({
             // parameters. If it does, delete it. Have to strip the first character off the query
             // string because it's always a question mark which querystring.parse can't handle.
             queryParms = querystring.parse(baseUriComps.search.substring(1));
+
+            // Generate the "All years" facet term link, but only if one or more years is currently
+            // selected.
             if (queryParms.year_released) {
                 // At least one "year_released" query string parameter found. First get what their
                 // values are so we can display it in the facet title.
@@ -143,18 +147,33 @@ const DateFacet = React.createClass({
                 // Now delete the year_released query string parameters and generate an href
                 // without them to use to clear the year while leaving other query string
                 // parameters intact. Use this for the 'All years' static facet item.
-                delete queryParms.year_released;
-                const updatedQs = querystring.stringify(queryParms);
-                yearRemoveUri = `${baseUriComps.pathname}${updatedQs ? `?${updatedQs}` : ''}`;
+                const allYearsQueries = _(queryParms).omit('year_released');
+                const allYearsQS = querystring.stringify(allYearsQueries);
+                allYearsUri = `${baseUriComps.pathname}${allYearsQS ? `?${allYearsQS}` : ''}`;
             }
 
-            // Now calculate a Uri with month_released removed, for individual month facet term
+            // Now calculate a URI with month_released removed, for individual month facet term
             // hrefs while another individual month is selected.
             if (queryParms.month_released) {
-                delete queryParms.month_released;
-                monthRemoveUri = `${baseUriComps.pathname}?${querystring.stringify(queryParms)}`;
+                // One of more month_released in the given query string. Generate a new query
+                // without any months selected. When we render the link, we'll just add the current
+                // facet term month.
+                const monthRemovedQueries = _(queryParms).omit('month_released');
+                inMonthUri = `${baseUriComps.pathname}?${querystring.stringify(monthRemovedQueries)}`;
+
+                // If at least one month is selected, we'll only show "All {year}" facets for those
+                // selected months. So make an array of years that cover the currently selected
+                // months. Of course through the UI only one month_released can occur -- this
+                // covers the case where the user directly manipulated the URL.
+                if (typeof queryParms.month_released === 'string') {
+                    // Only one month selected. Just get its year.
+                    selectedMonthYears = [queryParms.month_released.substr(0, 4)];
+                } else {
+                    // Multiple months selected in an array, so get all their years.
+                    selectedMonthYears = queryParms.month_released.map(monthReleased => monthReleased.substr(0, 4));
+                }
             } else {
-                monthRemoveUri = baseUri;
+                inMonthUri = baseUri;
             }
         }
         // If no baseUriComps.search exists, then no query string exists.
@@ -188,6 +207,12 @@ const DateFacet = React.createClass({
             coYearGroups = _(trimmedMonthGroups.co).groupBy(term => term.key.substr(0, 4));
             inYearGroups = _(trimmedMonthGroups.in).groupBy(term => term.key.substr(0, 4));
             years = Object.keys(coYearGroups).sort((a, b) => ((a < b) ? 1 : (b < a ? -1 : 0)));
+
+            // If at least one individual month is selected, only include years for those selected
+            // months.
+            if (selectedMonthYears.length) {
+                years = _(years).filter(year => selectedMonthYears.indexOf(year) !== -1);
+            }
         } else {
             // Not enough months to display in a facet to justify coalescing past years. Just sort
             // and display all available facet terms.
@@ -215,7 +240,7 @@ const DateFacet = React.createClass({
                         }
 
                         const qs = globals.encodedURIComponent(`${facet.field}=${term.key}`);
-                        const termHref = termFilter || `${monthRemoveUri}${baseUriComps.search ? '&' : '?'}${qs}`;
+                        const termHref = termFilter || `${inMonthUri}${baseUriComps.search ? '&' : '?'}${qs}`;
 
                         return (
                             <li key={term.key} className="news-facet__item">
@@ -261,7 +286,7 @@ const DateFacet = React.createClass({
 
                     {yearsSelected ?
                         <li className="news-facet__item">
-                            <a href={yearRemoveUri}>
+                            <a href={allYearsUri}>
                                 <span className="news-facet__item-title">All years</span>
                             </a>
                         </li>
