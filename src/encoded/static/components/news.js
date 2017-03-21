@@ -147,7 +147,7 @@ const DateFacet = React.createClass({
                 // Now delete the year_released query string parameters and generate an href
                 // without them to use to clear the year while leaving other query string
                 // parameters intact. Use this for the 'All years' static facet item.
-                const allYearsQueries = _(queryParms).omit('year_released');
+                const allYearsQueries = _(queryParms).omit(['year_released', 'month_released']);
                 const allYearsQS = querystring.stringify(allYearsQueries);
                 allYearsUri = `${baseUriComps.pathname}${allYearsQS ? `?${allYearsQS}` : ''}`;
             }
