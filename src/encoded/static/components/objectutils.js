@@ -1,5 +1,4 @@
 import React from 'react';
-import cloneWithProps from 'react/lib/cloneWithProps';
 import _ from 'underscore';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import globals from './globals';
