@@ -81,7 +81,6 @@
         "status": {
             "title": "Status",
             "type": "string",
-            "default": "waiting",
             "enum" : [
                 "waiting",
                 "running",

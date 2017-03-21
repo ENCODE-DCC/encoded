@@ -38,6 +38,10 @@
         "_test": "has references",
         "accession": "ENCDO000HUM",
         "award": "U41HG006992",
+        "children": [
+            "ENCDO017AAA",
+            "ENCDO275AAA"
+        ],
         "documents": [
             "ENCODE:PanIsletD_Crawford_protocol"
         ],
@@ -46,6 +50,10 @@
         "lab": "j-michael-cherry",
         "life_stage": "unknown",
         "organism": "human",
+        "parents": [
+            "ENCDO058AAA",
+            "ENCDO000AAK"
+        ],
         "references": [
             "4cb65ec0-bd49-11e4-bb52-0800200c9a66",
             "b163ba10-bd4a-11e4-bb52-0800200c9a66"

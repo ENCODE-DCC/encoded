@@ -200,7 +200,7 @@ var RelatedItems = module.exports.RelatedItems = React.createClass({
     },
 
     render: function() {
-        var url = this.props.url + '&status!=deleted&status!=revoked&status!=replaced';
+        var url = globals.encodedURI(this.props.url + '&status!=deleted&status!=revoked&status!=replaced');
         var limited_url = url + '&limit=' + this.props.limit;
         var unlimited_url = url + '&limit=all';
         return (

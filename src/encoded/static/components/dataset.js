@@ -955,14 +955,16 @@ export const FilePanelHeader = React.createClass({
 
         return (
             <div>
-                {context.visualize_ucsc && context.status === 'released' ?
+                {context.visualize && context.status === 'released' ?
                     <span className="pull-right">
                         <DropdownButton title="Visualize Data" label="filepaneheader">
                             <DropdownMenu>
-                                {Object.keys(context.visualize_ucsc).map(assembly =>
-                                    <a key={assembly} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize_ucsc[assembly]}>
-                                        {assembly}
-                                    </a>,
+                                {Object.keys(context.visualize).sort().map(assembly =>
+                                    Object.keys(context.visualize[assembly]).sort().map(browser =>
+                                        <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize[assembly][browser]}>
+                                        {assembly} {browser}
+                                        </a>,
+                                    )
                                 )}
                             </DropdownMenu>
                         </DropdownButton>

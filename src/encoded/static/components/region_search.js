@@ -140,7 +140,7 @@ var AdvSearch = React.createClass({
                                 : null}
                                 <div className="input-group-addon input-group-select-addon">
                                     <select value={this.state.genome} name="genome" onChange={this.handleAssemblySelect}>
-                                        {regionGenomes.map(genomeId => 
+                                        {regionGenomes.map(genomeId =>
                                             <option key={genomeId.value} value={genomeId.value}>{genomeId.display}</option>
                                         )}
                                     </select>
@@ -173,7 +173,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         navigate: React.PropTypes.func
     },
     render: function() {
-        const batchHubLimit = 100;
+        const visualizeLimit = 100;
         var context = this.props.context;
         var results = context['@graph'];
         var columns = context['columns'];
@@ -187,12 +187,12 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         var filters = context['filters'];
         var facets = context['facets'];
         var total = context['total'];
-        var batch_hub_disabled = total > batchHubLimit;
+        var visualize_disabled = total > visualizeLimit;
 
         // Get a sorted list of batch hubs keys with case-insensitive sort
-        var batchHubKeys = [];
-        if (context.batch_hub && Object.keys(context.batch_hub).length) {
-            batchHubKeys = Object.keys(context.batch_hub).sort((a, b) => {
+        var visualizeKeys = [];
+        if (context.visualize_batch && Object.keys(context.visualize_batch).length) {
+            visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
                 var aLower = a.toLowerCase();
                 var bLower = b.toLowerCase();
                 return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
@@ -215,7 +215,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                         <h4>
                                             Showing {results.length} of {total}
                                         </h4>
-                                        <div className="results-table-control">  
+                                        <div className="results-table-control">
                                             {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                                     <a rel="nofollow" className="btn btn-info btn-sm"
                                                          href={searchBase ? searchBase + '&limit=all' : '?limit=all'}
@@ -229,7 +229,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                                     : null}
                                                 </span>
                                             }
-        
+
                                             {context['download_elements'] ?
                                                 <DropdownButton title='Download Elements' label="downloadelements" wrapperClasses="results-table-button">
                                                     <DropdownMenu>
@@ -241,22 +241,24 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                                     </DropdownMenu>
                                                 </DropdownButton>
                                             : null}
-        
-                                            {batchHubKeys ?
-                                                <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'} label="batchhubs" wrapperClasses="results-table-button">
+
+                                            {visualizeKeys ?
+                                                <DropdownButton disabled={visualize_disabled} title={visualize_disabled ? 'Filter to ' + visualizeLimit + ' to visualize' : 'Visualize'} label="batchhubs" wrapperClasses="results-table-button">
                                                     <DropdownMenu>
-                                                        {batchHubKeys.map(assembly =>
-                                                            <a key={assembly} data-bypass="true" target="_blank" private-browsing="true" href={context['batch_hub'][assembly]}>
-                                                                {assembly}
-                                                            </a>
+                                                        {visualizeKeys.map(assembly =>
+                                                            Object.keys(context.visualize_batch[assembly]).sort().map(browser =>
+                                                                <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" private-browsing="true" href={context.visualize_batch[assembly][browser]}>
+                                                                    {assembly} {browser}
+                                                                </a>
+                                                            )
                                                         )}
                                                     </DropdownMenu>
                                                 </DropdownButton>
                                             : null}
-        
-                                        </div>  
+
+                                        </div>
                                     </div>
-                                  
+
                                   <hr />
                                   <ul className="nav result-table" id="result-table">
                                       {results.map(function (result) {
