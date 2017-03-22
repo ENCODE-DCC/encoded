@@ -193,7 +193,8 @@ def check_format(encValData, job, path):
             ['validateFiles'] + validate_args + [path], stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
         errors['validateFiles'] = e.output.decode(errors='replace').rstrip('\n')
-        update_content_error(errors, 'File failed file format specific validation (encValData)')
+        update_content_error(errors, 'File failed file format specific ' +
+                                     'validation (encValData) ' + errors['validateFiles'])
     else:
         result['validateFiles'] = output.decode(errors='replace').rstrip('\n')
 
@@ -919,7 +920,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.10'
+    version = '1.11'
 
     out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
               (version, search_query, nprocesses, dr, datetime.datetime.now()))
