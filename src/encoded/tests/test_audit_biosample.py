@@ -52,6 +52,7 @@ def test_audit_biosample_constructs_whole_organism(testapp, base_biosample,
     testapp.patch_json(base_biosample['@id'], {'biosample_type': 'whole organisms',
                                                'donor': fly_donor['@id'],
                                                'organism': fly['@id'],
+                                               'transfection_type': 'stable',
                                                'constructs': [construct['@id']]})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -116,6 +117,7 @@ def test_audit_biosample_donor_organism(testapp, base_biosample, base_human_dono
 
 def test_audit_biosample_status(testapp, base_biosample, construct):
     testapp.patch_json(base_biosample['@id'], {'status': 'released',
+                                               'transfection_type': 'stable',
                                                'constructs': [construct['@id']]})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
