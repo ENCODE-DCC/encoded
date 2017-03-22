@@ -67,7 +67,8 @@ def test_audit_inconsistent_construct_tag(testapp, rep1,
                                        'label': 'FLAG'})
     testapp.patch_json(rep1['@id'], {'antibody': antibody_lot['@id'],
                                      'library': library_1['@id']})
-    testapp.patch_json(base_biosample['@id'], {'constructs': [construct['@id']]})
+    testapp.patch_json(base_biosample['@id'], {'constructs': [construct['@id']],
+                                               'transfection_type': 'stable'})
 
     res = testapp.get(rep1['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -88,7 +89,8 @@ def test_audit_consistent_construct_tag(testapp, rep1,
     testapp.patch_json(rep1['@id'], {'antibody': antibody_lot['@id'],
                                      'library': library_1['@id']})
     testapp.patch_json(construct['@id'], {'tags': [{'name': 'FLAG', 'location': 'C-terminal'}]})
-    testapp.patch_json(base_biosample['@id'], {'constructs': [construct['@id']]})
+    testapp.patch_json(base_biosample['@id'], {'transfection_type': 'stable',
+                                               'constructs': [construct['@id']]})
 
     res = testapp.get(rep1['@id'] + '@@index-data')
     errors = res.json['audit']
