@@ -259,24 +259,6 @@ def audit_biosample_donor(value, system):
             raise AuditFailure('invalid donor mutated_gene', detail, level='ERROR')
 
 
-@audit_checker('biosample', frame='object')
-def audit_biosample_transfection_type(value, system):
-    '''
-    A biosample with constructs or rnais should have a
-    transfection_type
-    '''
-    if value['status'] == 'deleted':
-        return
-
-    if (value['rnais']) and ('transfection_type' not in value):
-        detail = 'Biosample {} with a value for RNAi requires transfection_type'.format(value['@id'])
-        raise AuditFailure('missing transfection_type', detail, level='ERROR')
-
-    if (value['constructs']) and ('transfection_type' not in value):
-        detail = 'Biosample {} with a value for construct requires transfection_type'.format(value['@id'])
-        raise AuditFailure('missing transfection_type', detail, level='ERROR')
-
-
 def is_part_of(term_id, part_of_term_id, ontology):
     if 'part_of' not in ontology[term_id] or ontology[term_id]['part_of'] == []:
         return False

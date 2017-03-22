@@ -114,26 +114,6 @@ def test_audit_biosample_donor_organism(testapp, base_biosample, base_human_dono
     assert any(error['category'] == 'inconsistent organism' for error in errors_list)
 
 
-def test_audit_rnai_transfection(testapp, base_biosample, rnai):
-    testapp.patch_json(base_biosample['@id'], {'rnais': [rnai['@id']]})
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing transfection_type' for error in errors_list)
-
-
-def test_audit_construct_transfection(testapp, base_biosample, construct):
-    testapp.patch_json(base_biosample['@id'], {'constructs': [construct['@id']]})
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing transfection_type' for error in errors_list)
-
-
 def test_audit_biosample_status(testapp, base_biosample, construct):
     testapp.patch_json(base_biosample['@id'], {'status': 'released',
                                                'constructs': [construct['@id']]})
