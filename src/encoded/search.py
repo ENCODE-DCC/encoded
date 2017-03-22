@@ -12,6 +12,9 @@ from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
 
+import pdb;
+from pprint import pprint as pp
+
 
 
 _ASSEMBLY_MAPPER = {
@@ -83,24 +86,23 @@ def get_filtered_query(term, search_fields, result_fields, principals, doc_types
                 'query': term,
                 'fields': search_fields,
                 'default_operator': 'AND'
-            }
-        },
-        'filter': {
-            'and': {
-                'filters': [
+            },
+            'bool': {
+                'must': [ 
                     {
-                        'terms': {
+                        'match': {
                             'principals_allowed.view': principals
                         }
                     },
                     {
-                        'terms': {
+                        'match': {
                             'embedded.@type.raw': doc_types
                         }
                     }
                 ]
-            }
+            },
         },
+
         '_source': list(result_fields),
     }
 
@@ -283,7 +285,7 @@ def build_terms_filter(field, terms):
         else:
             return {
                 'not': {
-                    'terms': {
+                    'term': {
                         field: terms,
                     }
                 }
@@ -299,7 +301,7 @@ def build_terms_filter(field, terms):
             }
         else:
             return {
-                'terms': {
+                'match': {
                     field: terms,
                 },
             }
@@ -309,7 +311,7 @@ def set_filters(request, query, result):
     """
     Sets filters in the query
     """
-    query_filters = query['filter']['and']['filters']
+    query_filters = query['query']['bool']['must']
     used_filters = {}
     for field in request.params.keys():
         if field in used_filters:
@@ -342,6 +344,10 @@ def set_filters(request, query, result):
 
         # Add filter to query
         query_filters.append(build_terms_filter(field, terms))
+    pp('used and query filters ')
+    pp(used_filters)
+    pp('')
+    pp(query_filters)
 
     return used_filters
 
@@ -738,6 +744,7 @@ def search(context, request, search_type=None, return_generator=False):
     # Decide whether to use scan for results.
     do_scan = size is None or size > 1000
     # Execute the query
+    pdb.set_trace()
     if do_scan:
         es_results = es.search(body=query, index=es_index, search_type='count')
     else:
