@@ -998,6 +998,7 @@ const ResultTable = search.ResultTable = React.createClass({
     getInitialState: function () {
         return {
             browserAssembly: this.props.assemblies[0], // Currently selected assembly for the browser
+            selectedTab: '',
         };
     },
 
@@ -1007,16 +1008,34 @@ const ResultTable = search.ResultTable = React.createClass({
         };
     },
 
+    componentDidMount: function () {
+        if (window !== undefined) {
+            // Determining this in componentDidMount to avoid server/client reactJS conflict.
+            if (window.location.hash === '#browser') {
+                this.setState({ selectedTab: 'browserpane' });
+            }
+        }
+    },
+
     onFilter: function (e) {
         const searchStr = e.currentTarget.getAttribute('href');
         this.props.onChange(searchStr);
         e.stopPropagation();
         e.preventDefault();
+        this.setState({ selectedTab: 'listpane' });  // Always return to listpane so that browser can rerender
     },
 
     // Called when new value chosen from assembly dropdown.
     assemblyChange: function (e) {
         this.setState({ browserAssembly: e.target.value });
+    },
+
+    handleTabClick: function (tab) {
+        // Since we force TabPanel tab selection, we need to keep track of selectedTab.
+        if (this.state.selectedTab !== tab) {
+            this.setState({ selectedTab: tab });
+        }
+        console.log(`selectedTab: ${tab}`);
     },
 
     render: function () {
@@ -1087,43 +1106,50 @@ const ResultTable = search.ResultTable = React.createClass({
         // display the List/Browser tabs. Otherwise we just get the list.
         let browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File';
         if (browserAvail) {
-            // Determine if we should limit the number of files to browse or not. If 'dataset' is
-            // in the query string, we render all the file tracks because the dataset has only a
-            // limited set of files. Otherwise, we'll let the genome browser component itself limit
-            // the file count.
-            browseAllFiles = filters.find(filter => filter.field === 'dataset');
+            // If dataset is in the query string, we can show all files.
+            const datasetFilter = filters.find(filter => filter.field === 'dataset');
+            if (datasetFilter) {
+                browseAllFiles = true;
 
-            // Limit browser option to datasets only!
-            browserAvail = browseAllFiles;
-            if (browserAvail) {
-                // TODO: Maybe a define in globals.js for visualizable types?
+                // TODO: Maybe a define in globals.js for visualizable types and statuses?
                 browserFiles = results.filter(file => ['bigBed', 'bigWig'].indexOf(file.file_format) > -1);
-                if (browserAvail.length > 0) {
+                if (browserFiles.length > 0) {
                     browserFiles = browserFiles.filter(file => ['released', 'in progress'].indexOf(file.status) > -1);
                 }
                 browserAvail = (browserFiles.length > 0);
-            }
 
-            if (browserAvail) {
-                // Reduce all found file assemblies so we don't have duplicates in the 'assemblies' array.
-                browserDatasets = browserFiles.reduce((datasets, file) => ((!file.dataset || datasets.indexOf(file.dataset) > -1) ? datasets : datasets.concat(file.dataset)), []);
-
-                // Now determine if we have a mix of assemblies in the files, or just one. If we have
-                // a mix, we need to render a drop-down.
-                if (assemblies.length === 1) {
-                    // Only one assembly in all the files. No menu needed.
-                    browserAssembly = assemblies[0];
-                } else {
-                    browserAssembly = this.state.browserAssembly;
-                    assemblyChooser = (
-                        <div className="browser-assembly-chooser">
-                            <div className="browser-assembly-chooser__title">Assembly:</div>
-                            <div className="browser-assembly-chooser__menu">
-                                <AssemblyChooser assemblies={assemblies} assemblyChange={this.assemblyChange} />
-                            </div>
-                        </div>
-                    );
+                if (browserAvail) {
+                    // Distill down to a list of datasets so they can be passed to genome_browser code.
+                    browserDatasets = browserFiles.reduce((datasets, file) => (
+                        (!file.dataset || datasets.indexOf(file.dataset) > -1) ? datasets : datasets.concat(file.dataset)
+                    ), []);
                 }
+            } else {
+                browseAllFiles = false;
+                browserAvail = false;    // NEW: Limit browser option to type=File&dataset=... only!
+            }
+        }
+
+        if (browserAvail) {
+            // Now determine if we have a mix of assemblies in the files, or just one. If we have
+            // a mix, we need to render a drop-down.
+            if (assemblies.length === 1) {
+                // Only one assembly in all the files. No menu needed.
+                browserAssembly = assemblies[0];
+                // empty div to avoid warning only.
+                assemblyChooser = (
+                    <div className="browser-assembly-chooser" />
+                );
+            } else {
+                browserAssembly = this.state.browserAssembly;
+                assemblyChooser = (
+                    <div className="browser-assembly-chooser">
+                        <div className="browser-assembly-chooser__title">Assembly:</div>
+                        <div className="browser-assembly-chooser__menu">
+                            <AssemblyChooser assemblies={assemblies} assemblyChange={this.assemblyChange} />
+                        </div>
+                    </div>
+                );
             }
         }
 
@@ -1186,7 +1212,7 @@ const ResultTable = search.ResultTable = React.createClass({
                                 </div>
                                 <hr />
                                 {browserAvail ?
-                                    <TabPanel tabs={{ listpane: 'List', browserpane: 'Browser' }} tabFlange>
+                                    <TabPanel tabs={{ listpane: 'List', browserpane: 'Browser' }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} tabFlange>
                                         <TabPanelPane key="listpane">
                                             <ResultTableList results={results} columns={columns} tabbed />
                                         </TabPanelPane>

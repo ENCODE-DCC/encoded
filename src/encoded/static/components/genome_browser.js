@@ -402,7 +402,7 @@ const GenomeBrowser = React.createClass({
         }
 
         const files = !this.context.localInstance ? this.props.files.slice(0, maxFilesBrowsed - 1) : dummyFiles;
-        if (files && files.length) {
+        if (this.browser && files && files.length) {
             let domain = `${location.protocol}//${location.hostname}`;
             if (domain.includes('localhost')) {
                 domain = domainName;

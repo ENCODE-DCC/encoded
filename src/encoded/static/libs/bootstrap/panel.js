@@ -9,11 +9,11 @@ const Panel = React.createClass({
         children: React.PropTypes.node,
     },
 
-    render: function() {
-        var { addClasses, noDefaultClasses, ...other } = this.props;
+    render: function () {
+        const { addClasses, noDefaultClasses, ...other } = this.props;
 
         return (
-            <div {...other} className={(noDefaultClasses ? '' : 'panel panel-default') + (addClasses ? ' ' + addClasses : '')}>
+            <div {...other} className={(noDefaultClasses ? '' : 'panel panel-default') + (addClasses ? ` ${addClasses}` : '')}>
                 {this.props.children}
             </div>
         );
@@ -112,21 +112,26 @@ const TabPanelPane = React.createClass({
 const TabPanel = React.createClass({
     propTypes: {
         tabs: React.PropTypes.object.isRequired, // Object with tab=>pane specifications
+        selectedTab: React.PropTypes.string, // key of tab to select (must provide handleTabClick) too.
         addClasses: React.PropTypes.string, // Classes to add to navigation <ul>
         moreComponents: React.PropTypes.object, // Other components to render in the tab bar
         moreComponentsClasses: React.PropTypes.string, // Classes to add to moreComponents wrapper <div>
         tabFlange: React.PropTypes.bool, // True to show a small full-width strip under active tab
         decoration: React.PropTypes.object, // Component to render in the tab bar
         decorationClasses: React.PropTypes.string, // CSS classes to wrap decoration in
+        handleTabClick: React.PropTypes.func, // If selectedTab is provided, then parent must keep track of it
         children: React.PropTypes.node,
     },
 
     getInitialState: function () {
-        return { currentTab: '' };
+        return { currentTab: this.props.selectedTab ? this.props.selectedTab : '' };
     },
 
     // Handle a click on a tab
     handleClick: function (tab) {
+        if (this.props.handleTabClick) {
+            this.props.handleTabClick(tab);  // must keep parent aware of selectedTab.
+        }
         if (tab !== this.state.currentTab) {
             this.setState({ currentTab: tab });
         }
@@ -148,7 +153,7 @@ const TabPanel = React.createClass({
                     firstPaneIndex = firstPaneIndex === -1 ? i : firstPaneIndex;
 
                     // Replace the existing child <TabPanelPane> component
-                    return cloneWithProps(child, { id: child.key, active: this.state.currentTab ? this.state.currentTab === child.key : firstPaneIndex === i });
+                    return cloneWithProps(child, { id: child.key, active: this.props.selectedTab ? this.props.selectedTab === child.key : this.state.currentTab ? this.state.currentTab === child.key : firstPaneIndex === i });
                 }
                 return child;
             });
@@ -159,7 +164,7 @@ const TabPanel = React.createClass({
                 <div className="tab-nav">
                     <ul className={`nav nav-tabs${addClasses ? ` ${addClasses}` : ''}`} role="tablist">
                         {Object.keys(tabs).map((tab, i) => {
-                            const currentTab = (i === 0 && this.state.currentTab === '') ? tab : this.state.currentTab;
+                            const currentTab = this.props.selectedTab ? this.props.selectedTab : this.state.currentTab ? this.state.currentTab : i === 0 ? tab : '';
 
                             return (
                                 <li key={tab} role="presentation" aria-controls={tab} className={currentTab === tab ? 'active' : ''}>
@@ -212,5 +217,5 @@ export {
     PanelHeading,
     PanelFooter,
     TabPanel,
-    TabPanelPane,
+    TabPanelPane
 };

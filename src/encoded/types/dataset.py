@@ -215,7 +215,7 @@ class Dataset(Item):
                     # '/search/?type=File&file_format=bigBed&file_format=bigWig&assembly={hg19}&dataset=%2Fexperiments%2F{ENCSR000CIZ}%2F#browser
                     bd_path = ('/search/?type=File&%s&assembly=%s&dataset=/experiments/%s/#browser' %
                                ('file_format=bigBed&file_format=bigWig',assembly_name,accession))
-                    browser_urls['Biodalliance'] = urljoin(request.host_url, bd_path)
+                    browser_urls['Preview'] = urljoin(request.host_url, bd_path)
             if browser_urls:
                 viz[assembly_name] = browser_urls
         if viz:
