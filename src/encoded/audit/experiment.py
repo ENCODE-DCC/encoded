@@ -1598,17 +1598,18 @@ def check_file_chip_seq_library_complexity(alignment_file):
                  'and > 0.8 high complexity. NRF value > 0.8 is recommended, ' + \
                  'but > 0.5 is acceptable. '
 
-    pbc1_detail = 'PBC1 (PCR Bottlenecking Coefficient 1) is equal to the result of the division of ' + \
-                  'the number of genomic locations where exactly one read maps uniquely by ' + \
-                  'the number of distinct genomic locations to which some read maps uniquely. ' + \
+    pbc1_detail = 'PBC1 (PCR Bottlenecking Coefficient 1, M1/M_distinct) ' + \
+                  'is the ratio of the number of genomic ' + \
+                  'locations where exactly one read maps uniquely (M1) to the number of ' + \
+                  'genomic locations where some reads map (M_distinct). ' + \
                   'A PBC1 value in the range 0 - 0.5 is severe bottlenecking, 0.5 - 0.8 ' + \
                   'is moderate bottlenecking, 0.8 - 0.9 is mild bottlenecking, and > 0.9 ' + \
                   'is no bottlenecking. PBC1 value > 0.9 is recommended, but > 0.8 is ' + \
                   'acceptable. '
 
-    pbc2_detail = 'PBC2 (PCR Bottlenecking Coefficient 2) is equal to the result of the division of ' + \
-                  'the number of genomic locations where only one read maps uniquely by ' + \
-                  'the number of genomic locations where 2 reads map uniquely. ' + \
+    pbc2_detail = 'PBC2 (PCR Bottlenecking Coefficient 2, M1/M2) is the ratio of the number of ' + \
+                  'genomic locations where exactly one read maps uniquely (M1) to the number of genomic ' + \
+                  'locations where two reads map uniquely (M2). ' + \
                   'A PBC2 value in the range 0 - 1 is severe bottlenecking, 1 - 3 ' + \
                   'is moderate bottlenecking, 3 - 10 is mild bottlenecking, > 10 is ' + \
                   'no bottlenecking. PBC2 value > 10 is recommended, but > 3 is acceptable. '

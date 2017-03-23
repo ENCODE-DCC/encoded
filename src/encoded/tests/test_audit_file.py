@@ -362,19 +362,6 @@ def test_audit_file_replicate_match(testapp, file1, file_rep2):
     assert any(error['category'] == 'inconsistent replicate' for error in errors_list)
 
 
-def test_audit_file_paired_ended_run_type1(testapp, file2, file_rep2):
-    testapp.patch_json(file2['@id'] + '?validate=false', {'run_type': 'paired-ended',
-                                                          'output_type': 'reads',
-                                                          "read_length": 50,
-                                                          'file_size': 23498234})
-    res = testapp.get(file2['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing paired_end' for error in errors_list)
-
-
 def test_audit_file_paired_ended_run_type2(testapp, file2, file_rep2):
     testapp.patch_json(file2['@id'] + '?validate=false', {'run_type': 'paired-ended',
                                                           'output_type': 'reads',
