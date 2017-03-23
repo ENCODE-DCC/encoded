@@ -55,6 +55,17 @@
     }
 }
 
+
+.award-chart--experiments {
+    flex: 0 0 50%;
+}
+
+
+.award-chart--annotations {
+    flex: 0 0 50%;
+}
+
+
 // Positions tabs with padding, hovering, and changing color if selected
 .status-chooser {
     display: flex;
