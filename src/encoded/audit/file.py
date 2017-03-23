@@ -517,18 +517,6 @@ def audit_paired_with(value, system):
     if 'paired_end' not in value:
         return
 
-    if 'paired_with' not in value:
-        paired_number = "2"
-        if value['paired_end'] == "2":
-            paired_number = "1"
-        detail = 'Sequencing read{} file {} is the result of a '.format(
-            value['paired_end'],
-            value['@id']) + \
-            'paired-end sequencing run according to the submitted metadata. ' + \
-            'An association with a read{} file needs to be specified.'.format(
-                paired_number)
-        raise AuditFailure('missing paired_with', detail, level='ERROR')
-
     if 'replicate' not in value['paired_with']:
         return
 
