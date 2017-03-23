@@ -562,7 +562,7 @@ class Experiment(Dataset,
                 'month_released',
                 'files.file_type',
             ],
-            'group_by': 'assay_title',
+            'group_by': 'target.label',
             'label': 'Assay',
         },
     }
