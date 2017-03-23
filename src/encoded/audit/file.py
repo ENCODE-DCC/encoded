@@ -259,22 +259,20 @@ def audit_file_replicate_match(value, system):
         return
 
 
-@audit_checker('file', frame=['award'],
-               condition=rfa("ENCODE3", "modERN", "GGR"))
+@audit_checker('File', frame=['award'])
 def audit_file_platform(value, system):
     '''
     A raw data file should have a platform specified.
     Should be in the schema.
     '''
 
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
+    '''if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
-
+    '''
     if value['file_format'] not in raw_data_formats:
         return
 
-    if 'award' in value and 'rfa' in value['award'] and \
-       'platform' not in value:
+    if 'platform' not in value:
         detail = 'File {} metadata lacks information on the instrument/platform '.format(value['@id']) + \
                  'used to produce it.'
         raise AuditFailure('missing platform', detail, level='ERROR')

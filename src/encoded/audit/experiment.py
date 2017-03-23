@@ -2049,8 +2049,7 @@ def check_file_read_depth(file_to_check,
 
 def check_file_platform(file_to_check, excluded_platforms):
     if 'platform' not in file_to_check:
-        detail = 'Reads file {} missing platform'.format(file_to_check['@id'])
-        yield AuditFailure('missing platform', detail, level='WARNING')
+        return
     elif file_to_check['platform'] in excluded_platforms:
         detail = 'Reads file {} has not compliant '.format(file_to_check['@id']) + \
                  'platform (SOLiD) {}.'.format(file_to_check['platform'])
