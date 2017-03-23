@@ -83,23 +83,6 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                     animation: {
                         duration: 200,
                     },
-                    legendCallback: (chartInstance) => {
-                        const chartData = chartInstance.data.datasets[0].data;
-                        const chartColors = chartInstance.data.datasets[0].backgroundColor;
-                        const chartLabels = chartInstance.data.labels;
-                        const text = [];
-                        text.push('<ul>');
-                        for (let i = 0; i < chartData.length; i += 1) {
-                            if (chartData[i]) {
-                                text.push(`<li><a href="${baseSearchUri}${chartLabels[i]}">`);
-                                text.push(`<span class="chart-legend-chip" style="background-color:${chartColors[i]}"></span>`);
-                                text.push(`<span class="chart-legend-label">${chartLabels[i]}</span>`);
-                                text.push('</a></li>');
-                            }
-                        }
-                        text.push('</ul>');
-                        return text.join('');
-                    },
                     onClick: function (e) {
                         // React to clicks on pie sections
                         const activePoints = chart.getElementAtEvent(e);
@@ -107,7 +90,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                         if (activePoints[0]) { // if click on wrong area, do nothing
                             const clickedElementIndex = activePoints[0]._index;
                             const term = chart.data.labels[clickedElementIndex];
-                            navigate(`${baseSearchUri}${term}`);
+                            navigate(`${baseSearchUri}${globals.encodedURIComponent(term)}`);
                         }
                     },
                 },
@@ -125,7 +108,7 @@ const LabChart = React.createClass({
     propTypes: {
         award: React.PropTypes.object.isRequired, // Award being displayed
         labs: React.PropTypes.array.isRequired, // Array of labs facet data
-        uriBase: React.PropTypes.string.isRequired, // Base URI for matrix links
+        linkUri: React.PropTypes.string.isRequired, // Base URI for matrix links
         ident: React.PropTypes.string.isRequired, // Unique identifier to `id` the charts
     },
 
@@ -156,7 +139,7 @@ const LabChart = React.createClass({
         const colors = labels.map((label, i) => labColorList[i % labColorList.length]);
 
         // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, `${this.props.uriBase}${this.props.award.name}&lab.title=`, (uri) => { this.context.navigate(uri); })
+        createDoughnutChart(chartId, values, labels, colors, `${this.props.linkUri}${this.props.award.name}&lab.title=`, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -216,8 +199,8 @@ const CategoryChart = React.createClass({
         award: React.PropTypes.object.isRequired, // Award being displayed
         categoryData: React.PropTypes.array.isRequired, // Type-specific data to display in a chart
         title: React.PropTypes.string.isRequired, // Title to display above the chart
-        uriBase: React.PropTypes.string.isRequired, // Base URI for matrix links
-        matrixFacet: React.PropTypes.func.isRequired, // Element of matrix URI to select
+        linkUri: React.PropTypes.string.isRequired, // Element of matrix URI to select
+        categoryFacet: React.PropTypes.string.isRequired, // Add to linkUri to link to matrix facet item
         ident: React.PropTypes.string.isRequired, // Unique identifier to `id` the charts
     },
 
@@ -238,7 +221,7 @@ const CategoryChart = React.createClass({
     },
 
     createChart: function (chartId, facetData) {
-        const { award, matrixFacet } = this.props;
+        const { award, linkUri, categoryFacet } = this.props;
 
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
@@ -252,7 +235,7 @@ const CategoryChart = React.createClass({
         const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
 
         // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, matrixFacet(award), (uri) => { this.context.navigate(uri); })
+        createDoughnutChart(chartId, values, labels, colors, `${linkUri}${award.name}&${categoryFacet}=`, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -277,9 +260,6 @@ const CategoryChart = React.createClass({
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
         chart.update();
-
-        // Redraw the updated legend.
-        document.getElementById(`${categoryChartId}-legend`).innerHTML = chart.generateLegend();
     },
 
     render: function () {
@@ -315,7 +295,7 @@ const StatusChart = React.createClass({
     propTypes: {
         award: React.PropTypes.object.isRequired, // Award being displayed
         statuses: React.PropTypes.array.isRequired, // Array of status facet data
-        uriBase: React.PropTypes.string.isRequired, // Base URI to use for matrix links
+        linkUri: React.PropTypes.string.isRequired, // URI to use for matrix links
         ident: React.PropTypes.string.isRequired, // Unique identifier to `id` the charts
     },
 
@@ -348,7 +328,7 @@ const StatusChart = React.createClass({
         const colors = labels.map((label, i) => statusColorList[i % statusColorList.length]);
 
         // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, `${this.props.uriBase}${this.props.award.name}&status=`, (uri) => { this.context.navigate(uri); })
+        createDoughnutChart(chartId, values, labels, colors, `${this.props.linkUri}${this.props.award.name}&status=`, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -373,9 +353,6 @@ const StatusChart = React.createClass({
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
         chart.update();
-
-        // Redraw the updated legend.
-        document.getElementById(`${statusChartId}-legend`).innerHTML = chart.generateLegend();
     },
 
     render: function () {
@@ -427,6 +404,9 @@ const ChartRenderer = React.createClass({
     //   categoryData: Receives array of data specific to each category from search results.
     //   statuses: Receives array of statuses from search results.
     //   categoryFacet: Specifies the facet to look for data to put into categoryData.
+    //   title: Title of the category-specific chart
+    //   uriBase: URI to search for data for the charts
+    //   linkUri: URI base to link to matrix
     searchData: {
         experiments: {
             ident: 'experiments',
@@ -437,7 +417,7 @@ const ChartRenderer = React.createClass({
             categoryFacet: 'assay_title',
             title: 'Assays',
             uriBase: '/search/?type=Experiment&award.name=',
-            matrixFacet: award => `/matrix/?type=Experiment&award.name=${award.name}&assay_title=`,
+            linkUri: '/matrix/?type=Experiment&award.name=',
         },
         annotations: {
             ident: 'annotations',
@@ -448,12 +428,14 @@ const ChartRenderer = React.createClass({
             categoryFacet: 'annotation_type',
             title: 'Annotation Types',
             uriBase: '/search/?type=Annotation&award.name=',
-            matrixFacet: award => `/matrix/?type=Annotation&award.name=${award.name}&annotation_type=`,
+            linkUri: '/matrix/?type=Annotation&award.name=',
         },
     },
 
     render: function () {
         const { award, experiments, annotations } = this.props;
+        const experimentsConfig = this.searchData.experiments;
+        const annotationsConfig = this.searchData.annotations;
 
         // Find the chart data in the returned facets.
         this.searchData.experiments.data = (experiments && experiments.facets) || [];
@@ -483,11 +465,28 @@ const ChartRenderer = React.createClass({
         return (
             <div className="award-charts">
                 <div className="award-chart--experiments">
-                    {this.searchData.experiments.labs.length ?
+                    {experimentsConfig.labs.length ?
                         <div>
-                            <LabChart award={award} labs={this.searchData.experiments.labs} uriBase={this.searchData.experiments.uriBase} ident={this.searchData.experiments.ident} />
-                            <CategoryChart award={award} categoryData={this.searchData.experiments.categoryData || []} uriBase={this.searchData.experiments.uriBase} ident={this.searchData.experiments.ident} matrixFacet={this.searchData.experiments.matrixFacet} title={this.searchData.experiments.title} />
-                            <StatusChart award={award} statuses={this.searchData.experiments.statuses || []} uriBase={this.searchData.experiments.uriBase} ident={this.searchData.experiments.ident} />
+                            <LabChart
+                                award={award}
+                                labs={experimentsConfig.labs}
+                                linkUri={experimentsConfig.linkUri}
+                                ident={experimentsConfig.ident}
+                            />
+                            <CategoryChart
+                                award={award}
+                                categoryData={experimentsConfig.categoryData || []}
+                                title={experimentsConfig.title}
+                                linkUri={experimentsConfig.linkUri}
+                                categoryFacet={experimentsConfig.categoryFacet}
+                                ident={experimentsConfig.ident}
+                            />
+                            <StatusChart
+                                award={award}
+                                statuses={experimentsConfig.statuses || []}
+                                linkUri={experimentsConfig.linkUri}
+                                ident={experimentsConfig.ident}
+                            />
                         </div>
                     :
                         <div className="browser-error">No labs reference this award for assays</div>
@@ -496,9 +495,26 @@ const ChartRenderer = React.createClass({
                 <div className="award-chart--annotations">
                     {this.searchData.annotations.labs.length ?
                         <div>
-                            <LabChart award={award} labs={this.searchData.annotations.labs} uriBase={this.searchData.annotations.uriBase} ident={this.searchData.annotations.ident} />
-                            <CategoryChart award={award} categoryData={this.searchData.annotations.categoryData || []} uriBase={this.searchData.annotations.uriBase} ident={this.searchData.annotations.ident} matrixFacet={this.searchData.annotations.matrixFacet} title={this.searchData.annotations.title} />
-                            <StatusChart award={award} statuses={this.searchData.experiments.statuses || []} uriBase={this.searchData.annotations.uriBase} ident={this.searchData.annotations.ident} />
+                            <LabChart
+                                award={award}
+                                labs={annotationsConfig.labs}
+                                linkUri={annotationsConfig.linkUri}
+                                ident={annotationsConfig.ident}
+                            />
+                            <CategoryChart
+                                award={award}
+                                categoryData={annotationsConfig.categoryData || []}
+                                linkUri={annotationsConfig.linkUri}
+                                categoryFacet={annotationsConfig.categoryFacet}
+                                title={annotationsConfig.title}
+                                ident={annotationsConfig.ident}
+                            />
+                            <StatusChart
+                                award={award}
+                                statuses={annotationsConfig.statuses || []}
+                                linkUri={annotationsConfig.linkUri}
+                                ident={annotationsConfig.ident}
+                            />
                         </div>
                     :
                         <div className="browser-error">No labs reference this award for annotations</div>
