@@ -3,14 +3,12 @@
 
     @media screen and (min-width: $screen-md-min) {
         display: flex;
-        flex-wrap: nowrap;
-        justify-content: center;
     }
 
     @at-root #{&}__chart {
         display: block;
 
-        @media screen and (min-width: $screen-md-min) {
+        @media screen and (min-width: $screen-sm-min) {
             flex: 0 0 33.3333%;
             width: 33.3333%;
         }
@@ -34,7 +32,7 @@
     @at-root #{&}__legend {
         margin: 50px auto;
 
-        @media screen and (min-width: $screen-md-min) {
+        @media screen and (min-width: $screen-sm-min) {
             margin: 20px auto;
             width: 80%;
         }
@@ -66,12 +64,17 @@
 
 
 .award-chart__group-wrapper {
-    flex: 0 1 50%;
+    @media screen and (min-width: $screen-md-min) {
+        flex: 0 0 50%;
+        width: 50%;
+    }
 }
 
 
 .award-chart__group {
-    display: flex;
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
+    }
 }
 
 

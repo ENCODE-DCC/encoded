@@ -68,6 +68,8 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
             const parent = document.getElementById(chartId);
             canvas.width = parent.offsetWidth;
             canvas.height = parent.offsetHeight;
+            canvas.style.width = `${parent.offsetWidth}px`;
+            canvas.style.height = `${parent.offsetHeight}px`;
             const ctx = canvas.getContext('2d');
             const chart = new Chart(ctx, {
                 type: 'doughnut',
@@ -87,12 +89,23 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                     animation: {
                         duration: 200,
                     },
+                    onClick: function (e) {
+                        // React to clicks on pie sections
+                        const activePoints = chart.getElementAtEvent(e);
+
+                        if (activePoints[0]) { // if click on wrong area, do nothing
+                            const clickedElementIndex = activePoints[0]._index;
+                            const term = chart.data.labels[clickedElementIndex];
+                            navigate(`${baseSearchUri}${term}`);
+                            navigate(`${baseSearchUri}${globals.encodedURIComponent(term)}`);
+                        }
+                    },
                 },
             });
 
             // Resolve the webpack loader promise with the chart instance.
             resolve(chart);
-        });
+        }, 'chartjs');
     });
 }
 
