@@ -485,7 +485,7 @@ def audit_file_controlled_by(value, system):
                                    detail, level='WARNING')
                 return
 
-
+'''
 @audit_checker('file', frame='object')
 def audit_file_flowcells(value, system):
 
@@ -501,7 +501,7 @@ def audit_file_flowcells(value, system):
     if 'flowcell_details' not in value or (value['flowcell_details'] == []):
         detail = 'Fastq file {} is missing flowcell_details'.format(value['@id'])
         raise AuditFailure('missing flowcell_details', detail, level='WARNING')
-
+'''
 
 @audit_checker('file', frame=['paired_with'],)
 def audit_paired_with(value, system):
