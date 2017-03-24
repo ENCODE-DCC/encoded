@@ -461,6 +461,7 @@ const ChartRenderer = React.createClass({
         return (
             <div className="award-charts">
                 <div className="award-chart__group-wrapper">
+                    <h2>Experiments</h2>
                     {experimentsConfig.labs.length ?
                         <div className="award-chart__group">
                             <LabChart
@@ -489,6 +490,7 @@ const ChartRenderer = React.createClass({
                     }
                 </div>
                 <div className="award-chart__group-wrapper">
+                    <h2>Annotations</h2>
                     {this.searchData.annotations.labs.length ?
                         <div className="award-chart__group">
                             <LabChart

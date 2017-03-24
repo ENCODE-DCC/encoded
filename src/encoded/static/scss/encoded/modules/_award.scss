@@ -1,3 +1,4 @@
+// Chart area -- contains all charts.
 .award-charts {
     display: block;
 
@@ -5,6 +6,7 @@
         display: flex;
     }
 
+    // Style for an individual chart.
     @at-root #{&}__chart {
         display: block;
 
@@ -14,10 +16,11 @@
         }
 
         .title {
-            font-size: 1rem;
+            font-size: 1.2rem;
         }
     }
 
+    // Style for the chart.js <canvas> of an individual chart.
     @at-root #{&}__canvas {
         position: relative;
         height: 100px;
@@ -28,49 +31,35 @@
             height: 0;
         }
     }
-
-    @at-root #{&}__legend {
-        margin: 50px auto;
-
-        @media screen and (min-width: $screen-sm-min) {
-            margin: 20px auto;
-            width: 80%;
-        }
-
-        ul {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-
-            li {
-                @extend .clearfix;
-            }
-        }
-
-        a {
-            float: left;
-            height: 18px;
-            margin: 0;
-            padding: 3px;
-            color: black;
-            text-decoration: none;
-
-            &:hover {
-                background-color: #e0e0e0;
-            }
-        }
-    }
 }
 
 
+// Provides the flex structure for a group of charts.
 .award-chart__group-wrapper {
+    margin: 50px 0 0 0;
+
+    &:first-child {
+        margin-top: 0;
+    }
+
     @media screen and (min-width: $screen-md-min) {
-        flex: 0 0 50%;
-        width: 50%;
+        flex: 0 0 44%;
+        width: 44%;
+        margin: 0 3% 0 3%;
+    }
+
+    h2 {
+        margin-top: 5px;
+        padding-bottom: 10px;
+        font-size: 1.8rem;
+        font-weight: normal;
+        text-align: center;
+        border-bottom: 1px solid #a0a0a0;
     }
 }
 
 
+// Style for a group of charts, like for the experiment group or annotation group.
 .award-chart__group {
     @media screen and (min-width: $screen-sm-min) {
         display: flex;
