@@ -440,28 +440,22 @@ const ChartRenderer = React.createClass({
             if (this.searchData[chartCategory].data.length) {
                 // Get the array of lab data.
                 const labFacet = this.searchData[chartCategory].data.find(facet => facet.field === 'lab.title');
-                if (labFacet) {
-                    this.searchData[chartCategory].labs = labFacet.terms && labFacet.terms.length ? labFacet.terms.sort((a, b) => (a.key < b.key ? -1 : (a.key > b.key ? 1 : 0))) : null;
-                }
+                this.searchData[chartCategory].labs = (labFacet && labFacet.terms && labFacet.terms.length) ? labFacet.terms.sort((a, b) => (a.key < b.key ? -1 : (a.key > b.key ? 1 : 0))) : [];
 
                 // Get the array of data specific to experiments or annotations.
                 const categoryFacet = this.searchData[chartCategory].data.find(facet => facet.field === this.searchData[chartCategory].categoryFacet);
-                if (categoryFacet) {
-                    this.searchData[chartCategory].categoryData = categoryFacet.terms && categoryFacet.terms.length ? categoryFacet.terms : null;
-                }
+                this.searchData[chartCategory].categoryData = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length) ? categoryFacet.terms : [];
 
                 // Get the array of status data.
                 const statusFacet = this.searchData[chartCategory].data.find(facet => facet.field === 'status');
-                if (statusFacet) {
-                    this.searchData[chartCategory].statuses = statusFacet.terms && statusFacet.terms.length ? statusFacet.terms : null;
-                }
+                this.searchData[chartCategory].statuses = (statusFacet && statusFacet.terms && statusFacet.terms.length) ? statusFacet.terms : [];
             }
         });
 
         return (
             <div className="award-charts">
                 <div className="award-chart__group-wrapper">
-                    <h2>Experiments</h2>
+                    <h2>Assays</h2>
                     {experimentsConfig.labs.length ?
                         <div className="award-chart__group">
                             <LabChart
