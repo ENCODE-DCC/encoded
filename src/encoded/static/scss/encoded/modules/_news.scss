@@ -163,6 +163,10 @@
             align-items: stretch;
             align-content: stretch;
         }
+
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 80%;
+        }
     }
 
     @at-root #{&}__previews-title {
@@ -179,6 +183,10 @@
             order: 0;
             flex: 0 1 30%;
             padding-right: 20px;
+        }
+
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 20%;
         }
 
         @media screen and (min-width: $screen-lg-min) {
