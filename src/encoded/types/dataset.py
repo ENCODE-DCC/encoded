@@ -549,8 +549,9 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         dataset_files = []
         for path in related_datasets:
             properties = request.embed(path, '@@object')
-            if properties['status'] in ('in progress', 'released'):
-                dataset_files.append(properties['original_files'])
+            if properties['status'] not in ('deleted', 'replaced'):
+                for original_file in properties['original_files']:
+                    dataset_files.append(original_file)
         return calculate_assembly(request, original_files + dataset_files, status)
 
 
