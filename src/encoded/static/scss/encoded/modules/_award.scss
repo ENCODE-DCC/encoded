@@ -11,19 +11,28 @@
         display: block;
 
         @media screen and (min-width: $screen-md-min) {
-            flex: 0 1 auto;
+            flex: 0 0 33.3333%;
             width: 33.3333%;
+        }
+
+        .title {
+            font-size: 1rem;
         }
     }
 
     @at-root #{&}__canvas {
         position: relative;
-        height: 250px;
+        height: 100px;
+
+        canvas {
+            display: block;
+            width: 0;
+            height: 0;
+        }
     }
 
     @at-root #{&}__legend {
         margin: 50px auto;
-        width: 100%;
 
         @media screen and (min-width: $screen-md-min) {
             margin: 20px auto;
@@ -56,13 +65,13 @@
 }
 
 
-.award-chart--experiments {
-    flex: 0 0 50%;
+.award-chart__group-wrapper {
+    flex: 0 1 50%;
 }
 
 
-.award-chart--annotations {
-    flex: 0 0 50%;
+.award-chart__group {
+    display: flex;
 }
 
 

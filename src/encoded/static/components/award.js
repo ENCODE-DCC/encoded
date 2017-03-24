@@ -65,6 +65,9 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
 
             // Create the chart.
             const canvas = document.getElementById(`${chartId}-chart`);
+            const parent = document.getElementById(chartId);
+            canvas.width = parent.offsetWidth;
+            canvas.height = parent.offsetHeight;
             const ctx = canvas.getContext('2d');
             const chart = new Chart(ctx, {
                 type: 'doughnut',
@@ -76,22 +79,13 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                     }],
                 },
                 options: {
-                    maintainAspectRatio: true,
+                    maintainAspectRatio: false,
+                    responsive: true,
                     legend: {
                         display: false,
                     },
                     animation: {
                         duration: 200,
-                    },
-                    onClick: function (e) {
-                        // React to clicks on pie sections
-                        const activePoints = chart.getElementAtEvent(e);
-
-                        if (activePoints[0]) { // if click on wrong area, do nothing
-                            const clickedElementIndex = activePoints[0]._index;
-                            const term = chart.data.labels[clickedElementIndex];
-                            navigate(`${baseSearchUri}${globals.encodedURIComponent(term)}`);
-                        }
                     },
                 },
             });
@@ -178,11 +172,8 @@ const LabChart = React.createClass({
                     Lab
                 </div>
                 {labs.length ?
-                    <div>
-                        <div id={id} className="award-charts__canvas">
-                            <canvas id={`${id}-chart`} />
-                        </div>
-                        <div id={`${id}-legend`} className="award-charts__legend" />
+                    <div id={id} className="award-charts__canvas">
+                        <canvas id={`${id}-chart`} />
                     </div>
                 :
                     <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
@@ -272,14 +263,10 @@ const CategoryChart = React.createClass({
             <div className="award-charts__chart">
                 <div className="title">
                     {title}
-                    <center><hr width="80%" position="static" color="blue" /></center>
                 </div>
                 {categoryData.length ?
-                    <div>
-                        <div id={id} className="award-charts__canvas">
-                            <canvas id={`${id}-chart`} />
-                        </div>
-                        <div id={`${id}-legend`} className="award-charts__legend" />
+                    <div id={id} className="award-charts__canvas">
+                        <canvas id={`${id}-chart`} />
                     </div>
                 :
                     <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
@@ -365,14 +352,10 @@ const StatusChart = React.createClass({
             <div className="award-charts__chart">
                 <div className="title">
                     Status
-                    <center><hr width="80%" position="static" color="blue" /></center>
                 </div>
                 {statuses.length ?
-                    <div>
-                        <div id={id} className="award-charts__canvas">
-                            <canvas id={`${id}-chart`} />
-                        </div>
-                        <div id={`${id}-legend`} className="award-charts__legend" />
+                    <div id={id} className="award-charts__canvas">
+                        <canvas id={`${id}-chart`} />
                     </div>
                 :
                     <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
@@ -398,7 +381,7 @@ const ChartRenderer = React.createClass({
     },
 
     // "Array" of ways to extract from returned search results. It's actually an object keyed by
-    //   chart category. The properties of each are:
+    // chart category. The properties of each are:
     //   data: Receives array of data from search result facets for each category of search.
     //   labs: Receives array of lab.title data from search results.
     //   categoryData: Receives array of data specific to each category from search results.
@@ -464,9 +447,9 @@ const ChartRenderer = React.createClass({
 
         return (
             <div className="award-charts">
-                <div className="award-chart--experiments">
+                <div className="award-chart__group-wrapper">
                     {experimentsConfig.labs.length ?
-                        <div>
+                        <div className="award-chart__group">
                             <LabChart
                                 award={award}
                                 labs={experimentsConfig.labs}
@@ -492,9 +475,9 @@ const ChartRenderer = React.createClass({
                         <div className="browser-error">No labs reference this award for assays</div>
                     }
                 </div>
-                <div className="award-chart--annotations">
+                <div className="award-chart__group-wrapper">
                     {this.searchData.annotations.labs.length ?
-                        <div>
+                        <div className="award-chart__group">
                             <LabChart
                                 award={award}
                                 labs={annotationsConfig.labs}
