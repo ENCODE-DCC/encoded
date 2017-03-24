@@ -488,9 +488,9 @@ def audit_file_controlled_by(value, system):
 
 @audit_checker('file', frame='object')
 def audit_file_flowcells(value, system):
-    '''
-    A fastq file could have its flowcell details.
-    '''
+
+    # A fastq file could have its flowcell details.
+
 
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
