@@ -74,7 +74,7 @@
                    "required": {
                         "properties": {
                             "status": {
-                                "enum": ["NEW STATUS"]
+                                "enum": ["in progress"]
                             }
                         }
                     },
