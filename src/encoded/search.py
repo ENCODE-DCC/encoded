@@ -88,14 +88,14 @@ def get_filtered_query(term, search_fields, result_fields, principals, doc_types
                 'default_operator': 'AND'
             },
             'bool': {
-                'must': [ 
+                'filter': [ 
                     {
-                        'match': {
+                        'terms': {
                             'principals_allowed.view': principals
                         }
                     },
                     {
-                        'match': {
+                        'terms': {
                             'embedded.@type.raw': doc_types
                         }
                     }
@@ -301,7 +301,7 @@ def build_terms_filter(field, terms):
             }
         else:
             return {
-                'match': {
+                'terms': {
                     field: terms,
                 },
             }
@@ -311,7 +311,7 @@ def set_filters(request, query, result):
     """
     Sets filters in the query
     """
-    query_filters = query['query']['bool']['must']
+    query_filters = query['query']['bool']['filter']
     used_filters = {}
     for field in request.params.keys():
         if field in used_filters:
@@ -713,7 +713,7 @@ def search(context, request, search_type=None, return_generator=False):
 
     # If no text search, use match_all query instead of query_string
     if search_term == '*':
-        query['query']['match_all'] = {}
+        # query['query']['match_all'] = {}
         del query['query']['query_string']
     # If searching for more than one type, don't specify which fields to search
     elif len(doc_types) != 1:
@@ -939,7 +939,7 @@ def matrix(context, request):
                                doc_types)
 
     if search_term == '*':
-        query['query']['match_all'] = {}
+        # query['query']['match_all'] = {}
         del query['query']['query_string']
 
     # Setting filters.
