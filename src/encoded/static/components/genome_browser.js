@@ -44,128 +44,171 @@ const dummyFiles = [
 
 
 function rAssemblyToSources(assembly, region) {
-    let browserCfg;
+    const browserCfg = {
+        chr: '22',
+        viewStart: 29890000,
+        viewEnd: 30050000,
+        cookieKey: 'human-grc_h37-fp',
+        coordSystem: {
+            speciesName: 'Human',
+            taxon: 9606,
+            auth: 'GRCh',
+            version: '37',
+            ucscName: 'hg19',
+        },
+        sources: [],
+    };
 
-    if (assembly === 'hg19') {
+    if (assembly === 'GRCh38' || assembly === 'hg19') {
+        // Hopefully region will work for both GRCh38 and hg19
         if (region) {
             const reg = region.split(':');
-            const chr = reg[0].substring(3, reg[0].length);
-            let viewStart;
-            let viewEnd;
+            browserCfg.chr = reg[0].substring(3, reg[0].length);
             const positions = reg[1].split('-');
             for (let i = 0; i < positions.length; i += 1) {
                 positions[i] = parseInt(positions[i].replace(/,/g, ''), 10);
             }
             if (positions.length > 1) {
                 if (positions[0] > 10000) {
-                    viewStart = positions[0] - 10000;
+                    browserCfg.viewStart = positions[0] - 10000;
                 } else {
-                    viewStart = 1;
+                    browserCfg.viewStart = 1;
                 }
-                viewEnd = positions[1] + 10000;
+                browserCfg.viewEnd = positions[1] + 10000;
             } else {
                 if (positions[0] > 10000) {
-                    viewStart = positions[0] - 10000;
+                    browserCfg.viewStart = positions[0] - 10000;
                 } else {
-                    viewStart = 1;
+                    browserCfg.viewStart = 1;
                 }
-                viewEnd = positions[0] + 10000;
+                browserCfg.viewEnd = positions[0] + 10000;
             }
-
-            browserCfg = {
-                chr: chr,
-                viewStart: viewStart,
-                viewEnd: viewEnd,
-                sources: [
-                    {
-                        name: 'Genome',
-                        twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/hg19.2bit',
-                        tier_type: 'sequence',
-                        provides_entrypoints: true,
-                        pinned: true,
-                    },
-                    {
-                        name: 'GENCODE',
-                        bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/gencode.bb',
-                        stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/gencode.xml',
-                        collapseSuperGroups: true,
-                        trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/geneIndex.ix',
-                    },
-                    {
-                        name: 'Repeats',
-                        desc: 'Repeat annotation from RepeatMasker',
-                        bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/repeats.bb',
-                        stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/bb-repeats.xml',
-                        forceReduction: -1,
-                    },
-                ],
-            };
         }
+    }
+
+    if (assembly === 'GRCh38') {
+        // sources:
+        // Genome: faToTwoBit GRCh38_no_alt_analysis_set_GCA_000001405.15.fa.gz
+        // gencode: http://ngs.sanger.ac.uk/production/gencode/trackhub/data/gencode.v24.annotation.bb
+        // repeats: http://www.biodalliance.org/datasets/GRCh38/repeats.bb
+        browserCfg.sources = [
+            {
+                name: 'Genome',
+                desc: 'Human reference genome build GRCh38/hg38 (GRCh38_no_alt_analysis_set_GCA_000001405.15)',
+                twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/GRCh38/GRCh38_no_alt_analysis_set_GCA_000001405.15.2bit',
+                tier_type: 'sequence',
+                provides_entrypoints: true,
+                pinned: true,
+            },
+            {
+                name: 'GENCODE',
+                desc: 'Gene structures from GENCODE v24',
+                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/GRCh38/gencode.v24.annotation.bb',
+                stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/GRCh38/gencode2_v24.xml',
+                collapseSuperGroups: true,
+                trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/GRCh38/gencode.v24.annotation.ix',
+            },
+            {
+                name: 'Repeats',
+                desc: 'Repeat annotation from RepeatMasker',
+                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/GRCh38/repeats_GRCh38.bb',
+                stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/GRCh38/bb-repeats2_GRCh38.xml',
+                forceReduction: -1,
+            },
+        ];
+    } else if (assembly === 'hg19') {
+        // sources:
+        // Genome: faToTwoBit male.hg19.fa.gz
+        // gencode: http://ngs.sanger.ac.uk/production/gencode/trackhub/data/gencode.v19.annotation.bb
+        // repeats: http://www.biodalliance.org/datasets/GRCh38/repeats.bb
+        browserCfg.sources = [
+            {
+                name: 'Genome',
+                desc: 'Human reference genome build GRCh37/hg19',
+                twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/male.hg19.2bit',
+                tier_type: 'sequence',
+                provides_entrypoints: true,
+                pinned: true,
+            },
+            {
+                name: 'GENCODE',
+                desc: 'Gene structures from GENCODE v19',
+                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/gencode.v19.annotation.bb',
+                stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/gencode_v19.xml',
+                collapseSuperGroups: true,
+                trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/gencode.v19.annotation.ix',
+            },
+            {
+                name: 'Repeats',
+                desc: 'Repeat annotation from RepeatMasker',
+                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/repeats_hg19.bb',
+                stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/bb-repeats_hg19.xml',
+                forceReduction: -1,
+            },
+        ];
     } else if (assembly === 'mm10') {
-        browserCfg = {
-            chr: '19',
-            viewStart: 30000000,
-            viewEnd: 30100000,
-            cookieKey: 'mouse38',
-            coordSystem: { speciesName: 'Mouse', taxon: 10090, auth: 'GRCm', version: 38, ucscName: 'mm10' },
-            sources: [
-                {
-                    name: 'Genome',
-                    twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/mm10.2bit',
-                    desc: 'Mouse reference genome build GRCm38',
-                    tier_type: 'sequence',
-                    provides_entrypoints: true,
-                },
-                {
-                    name: 'Genes',
-                    desc: 'Gene structures from GENCODE M2',
-                    bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencodeM2.bb',
-                    stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencode.xml',
-                    collapseSuperGroups: true,
-                    trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencodeM2.ix',
-                },
-                {
-                    name: 'Repeats',
-                    desc: 'Repeat annotation from UCSC',
-                    bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/repeats.bb',
-                    stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/bb-repeats2.xml',
-                },
-            ],
-        };
+        browserCfg.chr = '19';
+        browserCfg.viewStart = 30000000;
+        browserCfg.viewEnd = 30100000;
+        browserCfg.cookieKey = 'mouse38';
+        browserCfg.coordSystem = { speciesName: 'Mouse', taxon: 10090, auth: 'GRCm', version: 38, ucscName: 'mm10' };
+        // sources:
+        // Genome: faToTwoBit mm10_no_alt_analysis_set_ENCODE.fa.gz
+        // gencode: http://ngs.sanger.ac.uk/production/gencode/trackhub/data/gencode.vMm.annotation.bb
+        // repeats: http://www.biodalliance.org/datasets/GRCm38/repeats.bb
+        browserCfg.sources = [
+            {
+                name: 'Genome',
+                twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/mm10_no_alt_analysis_set_ENCODE.2bit',
+                desc: 'Mouse reference genome build GRCm38',
+                tier_type: 'sequence',
+                provides_entrypoints: true,
+            },
+            {
+                name: 'Genes',
+                desc: 'Gene structures from GENCODE M2',
+                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencode.vM4.annotation.bb',
+                stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencode_vM4.xml',
+                collapseSuperGroups: true,
+                trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencode.vM4.annotation.ix',
+            },
+            {
+                name: 'Repeats',
+                desc: 'Repeat annotation from UCSC',
+                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/repeats_mm10.bb',
+                stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/bb-repeats2_mm10.xml',
+            },
+        ];
     } else if (assembly === 'mm9') {
-        browserCfg = {
-            chr: '19',
-            viewStart: 30000000,
-            viewEnd: 30030000,
-            cookieKey: 'mouse',
-            coordSystem: { speciesName: 'Mouse', taxon: 10090, auth: 'NCBIM', version: 37 },
-            sources: [
-                {
-                    name: 'Genome',
-                    twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm9/mm9.2bit',
-                    desc: 'Mouse reference genome build NCBIm37',
-                    tier_type: 'sequence',
-                    provides_entrypoints: true,
-                },
-            ],
-        };
+        browserCfg.chr = '19';
+        browserCfg.viewStart = 30000000;
+        browserCfg.viewEnd = 30030000;
+        browserCfg.cookieKey = 'mouse';
+        browserCfg.coordSystem = { speciesName: 'Mouse', taxon: 10090, auth: 'NCBIM', version: 37 };
+        browserCfg.sources = [
+            {
+                name: 'Genome',
+                twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm9/mm9.2bit',
+                desc: 'Mouse reference genome build NCBIm37',
+                tier_type: 'sequence',
+                provides_entrypoints: true,
+            },
+        ];
     } else if (assembly === 'dm3') {
-        browserCfg = {
-            chr: '3L',
-            viewStart: 15940000,
-            viewEnd: 15985000,
-            cookieKey: 'drosophila',
-            coordSystem: { speciesName: 'Drosophila', taxon: 7227, auth: 'BDGP', version: 5 },
-            sources: [
-                {
-                    name: 'Genome',
-                    twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/dm3.2bit',
-                    desc: 'D. melanogaster reference genome build BDGP R5',
-                    tier_type: 'sequence',
-                    provides_entrypoints: true,
-                },
-            ],
-        };
+        browserCfg.chr = '3L';
+        browserCfg.viewStart = 15940000;
+        browserCfg.viewEnd = 15985000;
+        browserCfg.cookieKey = 'drosophila';
+        browserCfg.coordSystem = { speciesName: 'Drosophila', taxon: 7227, auth: 'BDGP', version: 5 };
+        browserCfg.sources = [
+            {
+                name: 'Genome',
+                twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/dm3.2bit',
+                desc: 'D. melanogaster reference genome build BDGP R5',
+                tier_type: 'sequence',
+                provides_entrypoints: true,
+            },
+        ];
     }
 
     return browserCfg;
@@ -201,129 +244,7 @@ const GenomeBrowser = React.createClass({
             (limitFiles ? files.slice(0, maxFilesBrowsed - 1) : files)
         : dummyFiles;
 
-        const browserCfg = {
-            chr: '22',
-            viewStart: 29890000,
-            viewEnd: 30050000,
-            cookieKey: 'human-grc_h37-fp',
-            coordSystem: {
-                speciesName: 'Human',
-                taxon: 9606,
-                auth: 'GRCh',
-                version: '37',
-                ucscName: 'hg19',
-            },
-            sources: [],
-        };
-
-        if (assembly === 'hg19') {
-            if (this.props.region) {
-                const reg = region.split(':');
-                browserCfg.chr = reg[0].substring(3, reg[0].length);
-                const positions = reg[1].split('-');
-                for (let i = 0; i < positions.length; i += 1) {
-                    positions[i] = parseInt(positions[i].replace(/,/g, ''), 10);
-                }
-                if (positions.length > 1) {
-                    if (positions[0] > 10000) {
-                        browserCfg.viewStart = positions[0] - 10000;
-                    } else {
-                        browserCfg.viewStart = 1;
-                    }
-                    browserCfg.viewEnd = positions[1] + 10000;
-                } else {
-                    if (positions[0] > 10000) {
-                        browserCfg.viewStart = positions[0] - 10000;
-                    } else {
-                        browserCfg.viewStart = 1;
-                    }
-                    browserCfg.viewEnd = positions[0] + 10000;
-                }
-            }
-            browserCfg.sources = [
-                {
-                    name: 'Genome',
-                    twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/hg19.2bit',
-                    tier_type: 'sequence',
-                    provides_entrypoints: true,
-                    pinned: true,
-                },
-                {
-                    name: 'GENCODE',
-                    bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/gencode.bb',
-                    stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/gencode.xml',
-                    collapseSuperGroups: true,
-                    trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/geneIndex.ix',
-                },
-                {
-                    name: 'Repeats',
-                    desc: 'Repeat annotation from RepeatMasker',
-                    bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/repeats.bb',
-                    stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/bb-repeats.xml',
-                    forceReduction: -1,
-                },
-            ];
-        /* TODO: } else if (assembly === 'GRCh38') {} */
-        } else if (assembly === 'mm10') {
-            browserCfg.chr = '19';
-            browserCfg.viewStart = 30000000;
-            browserCfg.viewEnd = 30100000;
-            browserCfg.cookieKey = 'mouse38';
-            browserCfg.coordSystem = { speciesName: 'Mouse', taxon: 10090, auth: 'GRCm', version: 38, ucscName: 'mm10' };
-            browserCfg.sources = [
-                {
-                    name: 'Genome',
-                    twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/mm10.2bit',
-                    desc: 'Mouse reference genome build GRCm38',
-                    tier_type: 'sequence',
-                    provides_entrypoints: true,
-                },
-                {
-                    name: 'Genes',
-                    desc: 'Gene structures from GENCODE M2',
-                    bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencodeM2.bb',
-                    stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencode.xml',
-                    collapseSuperGroups: true,
-                    trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencodeM2.ix',
-                },
-                {
-                    name: 'Repeats',
-                    desc: 'Repeat annotation from UCSC',
-                    bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/repeats.bb',
-                    stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/bb-repeats2.xml',
-                },
-            ];
-        } else if (assembly === 'mm9') {
-            browserCfg.chr = '19';
-            browserCfg.viewStart = 30000000;
-            browserCfg.viewEnd = 30030000;
-            browserCfg.cookieKey = 'mouse';
-            browserCfg.coordSystem = { speciesName: 'Mouse', taxon: 10090, auth: 'NCBIM', version: 37 };
-            browserCfg.sources = [
-                {
-                    name: 'Genome',
-                    twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm9/mm9.2bit',
-                    desc: 'Mouse reference genome build NCBIm37',
-                    tier_type: 'sequence',
-                    provides_entrypoints: true,
-                },
-            ];
-        } else if (assembly === 'dm3') {
-            browserCfg.chr = '3L';
-            browserCfg.viewStart = 15940000;
-            browserCfg.viewEnd = 15985000;
-            browserCfg.cookieKey = 'drosophila';
-            browserCfg.coordSystem = { speciesName: 'Drosophila', taxon: 7227, auth: 'BDGP', version: 5 };
-            browserCfg.sources = [
-                {
-                    name: 'Genome',
-                    twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/dm3.2bit',
-                    desc: 'D. melanogaster reference genome build BDGP R5',
-                    tier_type: 'sequence',
-                    provides_entrypoints: true,
-                },
-            ];
-        }
+        const browserCfg = rAssemblyToSources(assembly, this.props.region);
 
         this.browserFiles = [];
         let domain = `${location.protocol}//${location.hostname}`;
