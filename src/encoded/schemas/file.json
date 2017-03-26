@@ -71,13 +71,6 @@
                     }
                 },
                 {
-                   "required": {
-                        "properties": {
-                            "status": {
-                                "enum": ["in progress"]
-                            }
-                        }
-                    },
                     "properties": {
                         "paired_end": {
                             "enum": ["1,2"]
@@ -119,7 +112,19 @@
                                 }
                             }
                         }
+                        
                     ]
+                },
+                {
+                    "required": ["paired_end"],
+                    "properties": {
+                        "file_format": {
+                            "enum": ["sra"]
+                        },
+                        "paired_end": {
+                            "enum": ["1,2"]
+                        }
+                    }
                 },
                 {
                     "required": ["file_format_type", "assembly"],
