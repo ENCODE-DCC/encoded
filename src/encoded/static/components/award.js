@@ -89,6 +89,23 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                     animation: {
                         duration: 200,
                     },
+                    legendCallback: (chartInstance) => {
+                        const chartData = chartInstance.data.datasets[0].data;
+                        const chartColors = chartInstance.data.datasets[0].backgroundColor;
+                        const chartLabels = chartInstance.data.labels;
+                        const text = [];
+                        text.push('<ul>');
+                        for (let i = 0; i < chartData.length; i += 1) {
+                            if (chartData[i]) {
+                                text.push(`<li><a href="${baseSearchUri}${chartLabels[i]}">`);
+                                text.push(`<span class="chart-legend-chip" style="background-color:${chartColors[i]}"></span>`);
+                                text.push(`<span class="chart-legend-label">${chartLabels[i]}</span>`);
+                                text.push('</a></li>');
+                            }
+                        }
+                        text.push('</ul>');
+                        return text.join('');
+                    },
                     onClick: function (e) {
                         // React to clicks on pie sections
                         const activePoints = chart.getElementAtEvent(e);
@@ -102,6 +119,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                     },
                 },
             });
+            document.getElementById(`${chartId}-legend`).innerHTML = chart.generateLegend();
 
             // Resolve the webpack loader promise with the chart instance.
             resolve(chart);
@@ -185,8 +203,11 @@ const LabChart = React.createClass({
                     Lab
                 </div>
                 {labs.length ?
-                    <div id={id} className="award-charts__canvas">
-                        <canvas id={`${id}-chart`} />
+                    <div className="award-charts__visual">
+                        <div id={id} className="award-charts__canvas">
+                            <canvas id={`${id}-chart`} />
+                        </div>
+                        <div id={`${id}-legend`} className="award-charts__legend" />
                     </div>
                 :
                     <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
@@ -278,8 +299,11 @@ const CategoryChart = React.createClass({
                     {title}
                 </div>
                 {categoryData.length ?
-                    <div id={id} className="award-charts__canvas">
-                        <canvas id={`${id}-chart`} />
+                    <div className="award-charts__visual">
+                        <div id={id} className="award-charts__canvas">
+                            <canvas id={`${id}-chart`} />
+                        </div>
+                        <div id={`${id}-legend`} className="award-charts__legend" />
                     </div>
                 :
                     <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
@@ -367,8 +391,11 @@ const StatusChart = React.createClass({
                     Status
                 </div>
                 {statuses.length ?
-                    <div id={id} className="award-charts__canvas">
-                        <canvas id={`${id}-chart`} />
+                    <div className="award-charts__visual">
+                        <div id={id} className="award-charts__canvas">
+                            <canvas id={`${id}-chart`} />
+                        </div>
+                        <div id={`${id}-legend`} className="award-charts__legend" />
                     </div>
                 :
                     <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
