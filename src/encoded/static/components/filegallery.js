@@ -7,7 +7,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/mo
 import { DropdownButton } from '../libs/bootstrap/button';
 import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
 import { StatusLabel } from './statuslabel';
-import { requestFiles, DownloadableAccession } from './objectutils';
+import { requestFiles, DownloadableAccession, BrowserSelector } from './objectutils';
 import { Graph, JsonGraph } from './graph';
 import { qcModalContent, qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
@@ -18,34 +18,6 @@ import { AuditMixin, AuditIndicators, AuditDetail, AuditIcon } from './audit';
 
 
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
-
-
-// Order that assemblies should appear in filtering menu
-const assemblyPriority = [
-    'GRCh38',
-    'hg19',
-    'mm10',
-    'mm10-minimal',
-    'mm9',
-    'ce11',
-    'ce10',
-    'dm6',
-    'dm3',
-    'J02459.1',
-];
-
-
-// Display a human-redable form of the file size given the size of a file in bytes. Returned as a
-// string
-function humanFileSize(size) {
-    if (size >= 0) {
-        const i = Math.floor(Math.log(size) / Math.log(1024));
-        const adjustedSize = (size / Math.pow(1024, i)).toPrecision(3) * 1;
-        const units = ['B', 'kB', 'MB', 'GB', 'TB'][i];
-        return `${adjustedSize} ${units}`;
-    }
-    return undefined;
-}
 
 
 // Get the audit icon for the highest audit level in the given file.
@@ -139,7 +111,7 @@ export const FileTable = React.createClass({
         },
         file_size: {
             title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>,
+            display: item => <span>{globals.humanFileSize(item.file_size)}</span>,
         },
         audit: {
             title: 'Audit status',
@@ -189,7 +161,7 @@ export const FileTable = React.createClass({
         },
         file_size: {
             title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>,
+            display: item => <span>{globals.humanFileSize(item.file_size)}</span>,
         },
         audit: {
             title: 'Audit status',
@@ -567,7 +539,7 @@ const RawSequencingTable = React.createClass({
                                             <td className={pairClass}>{file.paired_end}</td>
                                             <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                            <td className={pairClass}>{humanFileSize(file.file_size)}</td>
+                                            <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
                                             <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td>
                                         </tr>
@@ -602,7 +574,7 @@ const RawSequencingTable = React.createClass({
                                         <td>{file.paired_end}</td>
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                        <td>{humanFileSize(file.file_size)}</td>
+                                        <td>{globals.humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
                                         <td className="characterization-meta-data"><StatusLabel status={file.status} /></td>
                                     </tr>
@@ -744,7 +716,7 @@ const RawFileTable = React.createClass({
                                             <td className={pairClass}>{file.assembly}</td>
                                             <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                            <td className={pairClass}>{humanFileSize(file.file_size)}</td>
+                                            <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
                                             <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td>
                                         </tr>
@@ -773,7 +745,7 @@ const RawFileTable = React.createClass({
                                         <td>{file.assembly}</td>
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                        <td>{humanFileSize(file.file_size)}</td>
+                                        <td>{globals.humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
                                         <td className="characterization-meta-data"><StatusLabel status={file.status} /></td>
                                     </tr>
@@ -893,8 +865,8 @@ function collectAssembliesAnnotations(files) {
     }).reverse();
 
     // Now sort by assembly priority order as the primary sorting key. assemblyPriority is a global
-    // array at the top of the file.
-    return _(filterOptions).sortBy(option => _(assemblyPriority).indexOf(option.assembly));
+    // array.
+    return _(filterOptions).sortBy(option => _(globals.assemblyPriority).indexOf(option.assembly));
 }
 
 
@@ -1469,17 +1441,9 @@ const FileGalleryRenderer = React.createClass({
                 <PanelHeading addClasses="file-gallery-heading">
                     <h4>Files</h4>
                     <div className="file-gallery-controls">
-                        {context.visualize_ucsc && context.status === 'released' ?
+                        {context.visualize && context.status === 'released' ?
                             <div className="file-gallery-control">
-                                <DropdownButton title="Visualize Data" label="visualize-data">
-                                    <DropdownMenu>
-                                        {Object.keys(context.visualize_ucsc).map(assembly =>
-                                            <a key={assembly} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize_ucsc[assembly]}>
-                                                {assembly}
-                                            </a>,
-                                        )}
-                                    </DropdownMenu>
-                                </DropdownButton>
+                                <BrowserSelector visualizeCfg={context.visualize} />
                             </div>
                         : null}
                         {filterOptions.length ?

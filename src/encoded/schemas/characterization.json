@@ -30,7 +30,6 @@
             "title": "Caption",
             "description": "A plain text description about the characterization. Characterizations for antibodies should include brief methods, expected MW, cell line(s), labels and justification for acceptance, if necessary",
             "type": "string",
-            "default": "",
             "formInput": "textarea",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },

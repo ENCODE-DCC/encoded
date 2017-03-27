@@ -43,7 +43,7 @@ def audit_file_pipeline_status(value, system):
                 yield AuditFailure('inconsistent pipeline status',
                                    detail, level='INTERNAL_ACTION')
 
-
+'''
 @audit_checker('File', frame=['derived_from'])
 def audit_file_md5sum_integrity(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
@@ -63,6 +63,7 @@ def audit_file_md5sum_integrity(value, system):
                  'which is not a valid hexadecimal number.'
         yield AuditFailure('inconsistent md5sum',
                            detail, level='INTERNAL_ACTION')
+'''
 
 
 @audit_checker('File', frame=['derived_from'])
@@ -644,30 +645,6 @@ def audit_file_format_specifications(value, system):
             raise AuditFailure('inconsistent document_type', detail, level='ERROR')
 
 
-@audit_checker('file', frame='object')
-def audit_file_paired_ended_run_type(value, system):
-    '''
-    Audit to catch those files that were upgraded to have run_type = paired ended
-    resulting from its migration out of replicate but lack the paired_end property
-    to specify which read it is. This audit will also catch the case where run_type
-    = paired-ended but there is no paired_end = 2 due to registeration error.
-    '''
-
-    if value['status'] in ['deleted', 'replaced', 'revoked', 'upload failed']:
-        return
-
-    if value['file_format'] not in ['fastq', 'fasta', 'csfasta']:
-        return
-
-    if (value['output_type'] == 'reads') and (value.get('run_type') == 'paired-ended'):
-        if 'paired_end' not in value:
-            detail = 'Sequencing file {} '.format(value['@id']) + \
-                     'is the result of a paired-end sequencing run ' + \
-                     'according to the submitted metadata, but is missing the requisite ' + \
-                     'information to classify it as read1 or read2 in the pair.'
-            raise AuditFailure('missing paired_end', detail, level='ERROR')
-
-
 def get_chip_seq_bam_read_depth(bam_file):
     if bam_file['status'] in ['deleted', 'replaced', 'revoked']:
         return False
@@ -854,7 +831,7 @@ def audit_file_chip_seq_control_read_depth(value, system):
 
     chip_flag = False
     for p in value['analysis_step_version']['analysis_step']['pipelines']:
-        if p['title'] == 'Histone ChIP-seq':
+        if p['title'] == 'ChIP-seq read mapping':
             chip_flag = True
         if p['title'] == 'Raw mapping with no filtration':
             return
@@ -880,7 +857,7 @@ def audit_file_chip_seq_control_read_depth(value, system):
             target_investigated_as = value['dataset']['target']['investigated_as']
 
     if target_name not in ['Control-human', 'Control-mouse']:
-        control_bam = get_control_bam(value, 'Histone ChIP-seq')
+        control_bam = get_control_bam(value, 'ChIP-seq read mapping')
         if control_bam is not False:
             control_depth = get_chip_seq_bam_read_depth(control_bam)
             control_target = get_target_name(control_bam)
@@ -904,7 +881,7 @@ def check_control_read_depth_standards(value,
                                        target_investigated_as,
                                        standards_version):
 
-    marks = pipelines_with_read_depth['Histone ChIP-seq']
+    marks = pipelines_with_read_depth['ChIP-seq read mapping']
     modERN_cutoff = pipelines_with_read_depth['Transcription factor ChIP-seq pipeline (modERN)']
 
     if is_control_file is True:  # treat this file as control_bam -

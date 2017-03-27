@@ -193,7 +193,8 @@ def check_format(encValData, job, path):
             ['validateFiles'] + validate_args + [path], stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
         errors['validateFiles'] = e.output.decode(errors='replace').rstrip('\n')
-        update_content_error(errors, 'File failed file format specific validation (encValData)')
+        update_content_error(errors, 'File failed file format specific ' +
+                                     'validation (encValData) ' + errors['validateFiles'])
     else:
         result['validateFiles'] = output.decode(errors='replace').rstrip('\n')
 
@@ -297,6 +298,7 @@ def process_read_name_line(read_name_line,
                            read_name_prefix,
                            read_name_pattern,
                            special_read_name_pattern,
+                           srr_read_name_pattern,
                            old_illumina_current_prefix,
                            read_numbers_set,
                            signatures_no_barcode_set,
@@ -312,6 +314,24 @@ def process_read_name_line(read_name_line,
                                               signatures_set,
                                               signatures_no_barcode_set,
                                               read_numbers_set)
+        elif srr_read_name_pattern.match(read_name) is not None:
+            srr_portion = read_name.split(' ')[0]
+            if srr_portion.count('.') == 2:
+                read_numbers_set.add(srr_portion[-1])
+            else:
+                read_numbers_set.add('1')
+            illumina_portion = read_name.split(' ')[1]
+            old_illumina_current_prefix = process_read_name_line('@'+illumina_portion,
+                                                                 read_name_prefix,
+                                                                 read_name_pattern,
+                                                                 special_read_name_pattern,
+                                                                 srr_read_name_pattern,
+                                                                 old_illumina_current_prefix,
+                                                                 set(),
+                                                                 signatures_no_barcode_set,
+                                                                 signatures_set,
+                                                                 read_lengths_dictionary,
+                                                                 errors)
         else:
             # unrecognized read_name_format
             # current convention is to include WHOLE 
@@ -371,6 +391,12 @@ def process_fastq_file(job, fastq_data_stream, session, url):
         '^(@[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
         '+:\d+:\d+:\d+:\d+[/1|/2]*[\s_][12]:[YXN]:[0-9]+:([ACNTG\+]*|[0-9]*))$'
     )
+
+    srr_read_name_pattern = re.compile(
+        '^(@SRR[\d.]+\s[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
+        '+:\d+:\d+:\d+:\d+\slength=[\d]+)$'
+    )
+
     read_numbers_set = set()
     signatures_set = set()
     signatures_no_barcode_set = set()
@@ -389,6 +415,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                         read_name_prefix,
                         read_name_pattern,
                         special_read_name_pattern,
+                        srr_read_name_pattern,
                         old_illumina_current_prefix,
                         read_numbers_set,
                         signatures_no_barcode_set,
@@ -511,6 +538,24 @@ def process_read_lengths(read_lengths_dict,
                                  ', '.join(map(str, lengths_list))))
 
 
+def create_a_list_of_barcodes(details):
+    barcodes = set()
+    for entry in details:
+        barcode = entry.get('barcode')
+        lane = entry.get('lane')
+        if lane and barcode:
+            barcodes.add((lane, barcode))
+    return barcodes
+
+
+def compare_flowcell_details(flowcell_details_1, flowcell_details_2):
+    barcodes_1 = create_a_list_of_barcodes(flowcell_details_1)
+    barcodes_2 = create_a_list_of_barcodes(flowcell_details_1)
+    if barcodes_1 & barcodes_2:
+        return True  # intersection found
+    return False  # no intersection
+
+
 def check_for_fastq_signature_conflicts(session,
                                         url,
                                         errors,
@@ -518,34 +563,42 @@ def check_for_fastq_signature_conflicts(session,
                                         signatures_to_check):
     conflicts = []
     for signature in sorted(list(signatures_to_check)):
-        query = '/search/?type=File&status!=replaced&file_format=fastq&' + \
-                'datastore=database&fastq_signature=' + signature
-        try:
-            r = session.get(urljoin(url, query))
-        except requests.exceptions.RequestException as e:  # This is the correct syntax
-            errors['lookup_for_fastq_signature'] = 'Network error occured, while looking for ' + \
-                                                   'fastq signature conflict on the portal. ' + \
-                                                   str(e)
-        else:
-            r_graph = r.json().get('@graph')
-            if len(r_graph) > 0:
-                for entry in r_graph:
-                    if 'accession' in entry and 'accession' in item and \
-                       entry['accession'] != item['accession']:
-                            conflicts.append(
-                                '%s in file %s ' % (
-                                    signature,
-                                    entry['accession']))
-                    elif 'accession' in entry and 'accession' not in item:
-                        conflicts.append(
-                            '%s in file %s ' % (
-                                signature,
-                                entry['accession']))
-                    elif 'accession' not in entry and 'accession' not in item:
-                        conflicts.append(
-                            '%s ' % (
-                                signature) +
-                            'file on the portal.')
+        if not signature.endswith('mixed:'):
+            query = '/search/?type=File&status!=replaced&file_format=fastq&' + \
+                    'datastore=database&fastq_signature=' + signature
+            try:
+                r = session.get(urljoin(url, query))
+            except requests.exceptions.RequestException as e:  # This is the correct syntax
+                errors['lookup_for_fastq_signature'] = 'Network error occured, while looking for ' + \
+                                                       'fastq signature conflict on the portal. ' + \
+                                                       str(e)
+            else:
+                r_graph = r.json().get('@graph')
+                if len(r_graph) > 0:  # found a conflict
+                    #  the conflict in case of missing barcode in read names could be resolved with metadata flowcell details
+                    for entry in r_graph:
+                        if (not signature.endswith('::') or
+                            (signature.endswith('::') and entry.get('flowcell_details') and
+                             item.get('flowcell_details') and
+                             compare_flowcell_details(entry.get('flowcell_details'),
+                                                      item.get('flowcell_details')))):
+                                if 'accession' in entry and 'accession' in item and \
+                                   entry['accession'] != item['accession']:
+                                        conflicts.append(
+                                            '%s in file %s ' % (
+                                                signature,
+                                                entry['accession']))
+                                elif 'accession' in entry and 'accession' not in item:
+                                    conflicts.append(
+                                        '%s in file %s ' % (
+                                            signature,
+                                            entry['accession']))
+                                elif 'accession' not in entry and 'accession' not in item:
+                                    conflicts.append(
+                                        '%s ' % (
+                                            signature) +
+                                        'file on the portal.')
+                    
     # "Fastq file contains read name signatures that conflict with signatures from file X”]
 
     if len(conflicts) > 0:
@@ -794,15 +847,8 @@ def patch_file(session, url, job):
     if not errors:
         data = {
             'status': 'in progress',
-            'file_size': result['file_size']
+
         }
-        if 'read_count' in result:
-            data['read_count'] = result['read_count']
-        if 'fastq_signature' in result and \
-           result['fastq_signature'] != []:
-            data['fastq_signature'] = result['fastq_signature']
-        if 'content_md5sum' in result:
-            data['content_md5sum'] = result['content_md5sum']
     else:
         if 'fastq_format_readname' in errors:
             update_content_error(errors,
@@ -818,21 +864,38 @@ def patch_file(session, url, job):
             data = {
                 'status': 'upload failed'
                 }
+    if 'file_size' in result:
+        data['file_size'] = result['file_size']
+    if 'read_count' in result:
+        data['read_count'] = result['read_count']
+    if result.get('fastq_signature'):
+        data['fastq_signature'] = result['fastq_signature']
+    if 'content_md5sum' in result:
+        data['content_md5sum'] = result['content_md5sum']
+
     if data:
         item_url = urljoin(url, job['@id'])
-        r = session.patch(
-            item_url,
-            data=json.dumps(data),
-            headers={
-                'If-Match': job['etag'],
-                'Content-Type': 'application/json',
-            },
-        )
-        if not r.ok:
-            errors['patch_file_request'] = \
-                '{} {}\n{}'.format(r.status_code, r.reason, r.text)
-        else:
-            job['patched'] = True
+
+        etag_r = session.get(item_url + '?frame=edit&datastore=database')
+        if etag_r.ok:
+            if job['etag'] == etag_r.headers['etag']:
+                r = session.patch(
+                    item_url,
+                    data=json.dumps(data),
+                    headers={
+                        'If-Match': job['etag'],
+                        'Content-Type': 'application/json',
+                    },
+                )
+                if not r.ok:
+                    errors['patch_file_request'] = \
+                        '{} {}\n{}'.format(r.status_code, r.reason, r.text)
+                else:
+                    job['patched'] = True
+            else:
+                errors['etag_does_not_match'] = 'Original etag was {}, but the current etag is {}.'.format(
+                    job['etag'], etag_r.headers['etag']) + ' File {} '.format(job['item'].get('accession', 'UNKNOWN')) + \
+                    'was {} and now is {}.'.format(job['item'].get('status', 'UNKNOWN'), etag_r.json()['status'])
     return
 
 def run(out, err, url, username, password, encValData, mirror, search_query,
@@ -857,7 +920,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.08'
+    version = '1.11'
 
     out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
               (version, search_query, nprocesses, dr, datetime.datetime.now()))
