@@ -282,6 +282,7 @@ def file_fastq(testapp, lab, award, base_experiment, base_replicate):
         'output_type': 'reads',
         "read_length": 50,
         'run_type': "single-ended",
+        'file_size': 34,
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
@@ -299,6 +300,7 @@ def file_fastq_2(testapp, lab, award, base_experiment, base_replicate):
         'run_type': "paired-ended",
         'output_type': 'reads',
         "read_length": 50,
+        'file_size': 34,
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
@@ -312,6 +314,7 @@ def file_fastq_3(testapp, lab, award, base_experiment, replicate_1_1):
         'dataset': base_experiment['@id'],
         'replicate': replicate_1_1['@id'],
         'file_format': 'fastq',
+        'file_size': 34,
         'output_type': 'reads',
         "read_length": 50,
         'md5sum': '21be74b6e11515393507f4ebfa66d77a',
@@ -329,6 +332,7 @@ def file_fastq_4(testapp, lab, award, base_experiment, replicate_2_1):
         'dataset': base_experiment['@id'],
         'replicate': replicate_2_1['@id'],
         'file_format': 'fastq',
+        'file_size': 34,
         'md5sum': '11be74b6e11515393507f4ebfa66d77a',
         'run_type': "paired-ended",
         'output_type': 'reads',
@@ -350,6 +354,7 @@ def file_fastq_5(testapp, lab, award, base_experiment, replicate_2_1):
         'run_type': "paired-ended",
         "read_length": 50,
         'output_type': 'reads',
+        'file_size': 34,
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
@@ -367,6 +372,7 @@ def file_bam(testapp, lab, award, base_experiment, base_replicate):
         'output_type': 'alignments',
         'assembly': 'mm10',
         'lab': lab['@id'],
+        'file_size': 34,
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
     }
@@ -380,6 +386,7 @@ def file_bam_1_1(testapp, encode_lab, award, base_experiment, file_fastq_3):
         'derived_from': [file_fastq_3['@id']],
         'file_format': 'bam',
         'assembly': 'mm10',
+        'file_size': 34,
         'md5sum': '91be44b6e11515394407f4ebfa66d77a',
         'output_type': 'alignments',
         'lab': encode_lab['@id'],
@@ -396,6 +403,7 @@ def file_bam_2_1(testapp, encode_lab, award, base_experiment, file_fastq_4):
         'derived_from': [file_fastq_4['@id']],
         'file_format': 'bam',
         'assembly': 'mm10',
+        'file_size': 34,
         'md5sum': '91be71b6e11515377807f4ebfa66d77a',
         'output_type': 'alignments',
         'lab': encode_lab['@id'],
