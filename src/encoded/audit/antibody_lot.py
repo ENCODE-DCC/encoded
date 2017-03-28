@@ -60,7 +60,7 @@ def audit_antibody_missing_characterizations(value, system):
 
     if need_review:
         detail = '{} has characterization(s) needing review.'.format(value['@id'])
-        yield AuditFailure('characterization(s) pending review', detail, level='DCC_ACTION')
+        yield AuditFailure('characterization(s) pending review', detail, level='INTERNAL_ACTION')
 
     for lot_review in value['lot_reviews']:
         if lot_review['detail'] in \
