@@ -73,7 +73,10 @@
                 {
                     "properties": {
                         "paired_end": {
-                            "enum": ["1,2"]
+                            "enum": ["1,2"],
+                        "file_format": {
+                            "enum": ["sra"]
+                            }
                         }
                     }
                 }
@@ -101,30 +104,8 @@
                                     "enum": ["fastq"]
                                 }
                             }
-                        },
-                        {
-                            "not": {
-                                "required": ["assembly"],
-                                "properties": {
-                                    "file_format": {
-                                        "enum": ["fastq"]
-                                    }
-                                }
-                            }
                         }
-                        
                     ]
-                },
-                {
-                    "required": ["paired_end"],
-                    "properties": {
-                        "file_format": {
-                            "enum": ["sra"]
-                        },
-                        "paired_end": {
-                            "enum": ["1,2"]
-                        }
-                    }
                 },
                 {
                     "required": ["file_format_type", "assembly"],
