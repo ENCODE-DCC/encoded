@@ -10,6 +10,7 @@ def bigbed(testapp, lab, award, experiment, analysis_step_run):
         'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
         'output_type': 'methylation state at CpG',
         'assembly': 'hg19',
+        'file_size': 13224,
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
