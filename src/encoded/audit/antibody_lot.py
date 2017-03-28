@@ -28,8 +28,9 @@ def audit_antibody_missing_characterizations(value, system):
     Check to see what characterizations are lacking for each antibody,
     for the cell lines we know about.
     '''
-    if 'control' in [ t.get('investigated_as') for t in value['targets'] ]:
-        return
+    for t in value['targets']:
+        if 'control' in t.get('investigated_as'):
+            return
 
     if not value['characterizations']:
         detail = '{} does not have any supporting characterizations submitted.'.format(value['@id'])
