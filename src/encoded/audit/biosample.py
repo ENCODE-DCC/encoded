@@ -60,15 +60,13 @@ def audit_biosample_constructs(value, system):
                                        level='INTERNAL_ACTION')
                     return
 
-
+'''
 @audit_checker('biosample', frame=['source', 'part_of', 'donor'])
 def audit_biosample_gtex_children(value, system):
-    '''
-    GTEX children biosamples have to be properly registered.
-    - aliases (column A from plate-maps)
-    - part_of pointing to the parent biosample
-    - source Kristin Ardlie
-    '''
+    #GTEX children biosamples have to be properly registered.
+    #- aliases (column A from plate-maps)
+    #- part_of pointing to the parent biosample
+    #- source Kristin Ardlie
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
     if 'donor' not in value:
@@ -126,7 +124,7 @@ def audit_biosample_gtex_children(value, system):
                 yield AuditFailure('GTEX biosample missing aliases', detail,
                                    level='INTERNAL_ACTION')
     return
-
+'''
 
 @audit_checker('biosample', frame='object')
 def audit_biosample_term(value, system):

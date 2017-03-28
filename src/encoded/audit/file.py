@@ -622,17 +622,6 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
             yield AuditFailure('wrong step_run for IDR peaks', detail, level='WARNING')
 
 
-@audit_checker('file', frame='object')
-def audit_file_size(value, system):
-
-    if value['status'] in ['deleted', 'replaced', 'uploading', 'revoked']:
-        return
-
-    if 'file_size' not in value:
-        detail = 'File {} requires a value for file_size'.format(value['@id'])
-        raise AuditFailure('missing file_size', detail, level='INTERNAL_ACTION')
-
-
 @audit_checker('file', frame=['file_format_specifications'],)
 def audit_file_format_specifications(value, system):
 
@@ -643,30 +632,6 @@ def audit_file_format_specifications(value, system):
                 doc['@id']
                 )
             raise AuditFailure('inconsistent document_type', detail, level='ERROR')
-
-
-@audit_checker('file', frame='object')
-def audit_file_paired_ended_run_type(value, system):
-    '''
-    Audit to catch those files that were upgraded to have run_type = paired ended
-    resulting from its migration out of replicate but lack the paired_end property
-    to specify which read it is. This audit will also catch the case where run_type
-    = paired-ended but there is no paired_end = 2 due to registeration error.
-    '''
-
-    if value['status'] in ['deleted', 'replaced', 'revoked', 'upload failed']:
-        return
-
-    if value['file_format'] not in ['fastq', 'fasta', 'csfasta']:
-        return
-
-    if (value['output_type'] == 'reads') and (value.get('run_type') == 'paired-ended'):
-        if 'paired_end' not in value:
-            detail = 'Sequencing file {} '.format(value['@id']) + \
-                     'is the result of a paired-end sequencing run ' + \
-                     'according to the submitted metadata, but is missing the requisite ' + \
-                     'information to classify it as read1 or read2 in the pair.'
-            raise AuditFailure('missing paired_end', detail, level='ERROR')
 
 
 def get_chip_seq_bam_read_depth(bam_file):

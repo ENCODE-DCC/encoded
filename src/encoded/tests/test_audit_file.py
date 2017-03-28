@@ -68,6 +68,7 @@ def file1_2(file_exp, award, lab, file_rep1_2, testapp):
         'file_format': 'fastq',
         'md5sum': '91be74b6e11515393507f4ebfa66d58a',
         'output_type': 'raw data',
+        'file_size': 34,
         'run_type': 'single-ended',
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -84,6 +85,7 @@ def file2(file_exp2, award, lab, file_rep2, platform1, testapp):
         'file_format': 'fastq',
         'md5sum': '91be74b6e11515393507f4ebfa66d58b',
         'output_type': 'raw data',
+        'file_size': 34,
         'run_type': 'single-ended',
         'platform': platform1['uuid'],
         'award': award['uuid'],
@@ -101,6 +103,7 @@ def file1(file_exp, award, lab, file_rep, file2, platform1, testapp):
         'file_format': 'fastq',
         'md5sum': '91be74b6e11515393507f4ebfa66d58c',
         'output_type': 'reads',
+        'file_size': 34,
         'run_type': 'single-ended',
         'platform': platform1['uuid'],
         'award': award['uuid'],
@@ -117,6 +120,7 @@ def file3(file_exp, award, lab, file_rep, testapp):
         'dataset': file_exp['uuid'],
         'replicate': file_rep['uuid'],
         'file_format': 'fastq',
+        'file_size': 34,
         'md5sum': '91be74b6e11515393507f4ebfa56d78d',
         'output_type': 'reads',
         'run_type': 'single-ended',
@@ -135,6 +139,7 @@ def file4(file_exp2, award, lab, file_rep2, testapp):
         'file_format': 'fastq',
         'md5sum': '91ae74b6e11515393507f4ebfa66d78a',
         'output_type': 'reads',
+        'file_size': 34,
         'run_type': 'single-ended',
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -152,6 +157,7 @@ def file6(file_exp2, award, encode_lab, testapp, analysis_step_run_bam):
         'md5sum': '91ce74b6e11515393507f4ebfa66d78a',
         'output_type': 'alignments',
         'award': award['uuid'],
+        'file_size': 34,
         'assembly': 'hg19',
         'lab': encode_lab['uuid'],
         'status': 'released',
@@ -242,15 +248,6 @@ def test_audit_file_mismatched_paired_with(testapp, file1, file4):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent paired_with' for error in errors_list)
-
-
-def test_audit_file_size(testapp, file1):
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing file_size' for error in errors_list)
 
 
 def test_audit_read_length(testapp, file1):
@@ -376,18 +373,6 @@ def test_audit_file_replicate_match(testapp, file1, file_rep2):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent replicate' for error in errors_list)
-
-
-def test_audit_file_paired_ended_run_type1(testapp, file2, file_rep2):
-    testapp.patch_json(file2['@id'] + '?validate=false', {'run_type': 'paired-ended',
-                                                          'output_type': 'reads',
-                                                          'file_size': 23498234})
-    res = testapp.get(file2['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing paired_end' for error in errors_list)
 
 
 def test_audit_file_paired_ended_run_type2(testapp, file2, file_rep2):
