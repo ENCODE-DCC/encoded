@@ -16,7 +16,8 @@ The CurrentPropSheet_ and TransactionRecord_ tables are used to track all change
 On a standard EC2/Ubuntu install, you will have to su to user encoded to interact with the database on the command line (psql).
 The current production database has a useful VIEW created for querying recent objects, called OBJECT:
 
-```
+::
+
     encoded=> \d+ object
     View "public.object"
     Column   |       Type        | Modifiers | Storage  | Description 
@@ -34,14 +35,12 @@ The current production database has a useful VIEW created for querying recent ob
        JOIN current_propsheets USING (rid)
        JOIN propsheets USING (rid, name, sid)
     WHERE current_propsheets.name::text = ''::text;
-```
-
-As an example query (show me all the files that link back to dataset with uuid: 27311ca3-dc24-4853-94bc-a80825598621
 
 
-```
+As an example query (show me all the files that link back to dataset with uuid: 27311ca3-dc24-4853-94bc-a80825598621::
+
   encoded=> select * from object where item_type='file' and properties ->> 'dataset' = '27311ca3-dc24-4853-94bc-a80825598621';
-```
+
   
 
 
@@ -51,11 +50,10 @@ but these dbs are both destroyed when you kill the dev-servers process
 
 ** CREATING A SPARQL STORE **
 
-After building out the software, it will create an executable called json_rdf
+After building out the software, it will create an executable called json_rdf::
 
-```
   bin/jsonld-rdf  'https://www.encodeproject.org/search/?type=Item&frame=object&limit=all' -s n3 -o encode-rdf.n3
-```
+
 
 The n3 file can be imported into a SPARQL using, for example, Virtuoso ( http://semanticweb.org/wiki/Virtuoso.html_ ) or YasGUI http://yasgui.org/_
 
