@@ -503,7 +503,7 @@ def audit_file_flowcells(value, system):
         raise AuditFailure('missing flowcell_details', detail, level='WARNING')
 
 
-@audit_checker('file', frame=['paired_with'],)
+@audit_checker('file', frame=['paired_with'])
 def audit_paired_with(value, system):
     '''
     A file with a paired_end needs a paired_with.
@@ -518,16 +518,7 @@ def audit_paired_with(value, system):
         return
 
     if 'paired_with' not in value:
-        paired_number = "2"
-        if value['paired_end'] == "2":
-            paired_number = "1"
-        detail = 'Sequencing read{} file {} is the result of a '.format(
-            value['paired_end'],
-            value['@id']) + \
-            'paired-end sequencing run according to the submitted metadata. ' + \
-            'An association with a read{} file needs to be specified.'.format(
-                paired_number)
-        raise AuditFailure('missing paired_with', detail, level='ERROR')
+        return
 
     if 'replicate' not in value['paired_with']:
         return
@@ -536,7 +527,8 @@ def audit_paired_with(value, system):
         detail = 'File {} has paired_end = {}. It requires a replicate'.format(
             value['@id'],
             value['paired_end'])
-        raise AuditFailure('missing replicate', detail, level='INTERNAL_ACTION')
+        yield AuditFailure('missing replicate', detail, level='INTERNAL_ACTION')
+        return
 
     if value['replicate'] != value['paired_with']['replicate']:
         detail = 'File {} has replicate {}. It is paired_with file {} with replicate {}'.format(
@@ -544,7 +536,8 @@ def audit_paired_with(value, system):
             value.get('replicate'),
             value['paired_with']['@id'],
             value['paired_with'].get('replicate'))
-        raise AuditFailure('inconsistent paired_with', detail, level='ERROR')
+        yield AuditFailure('inconsistent paired_with', detail, level='ERROR')
+        return
 
     if value['paired_end'] == '1':
         context = system['context']
@@ -554,7 +547,8 @@ def audit_paired_with(value, system):
                 value['@id'],
                 paired_with,
             )
-            raise AuditFailure('multiple paired_with', detail, level='ERROR')
+            yield AuditFailure('multiple paired_with', detail, level='ERROR')
+            return
 
 
 @audit_checker('file', frame=['step_run',

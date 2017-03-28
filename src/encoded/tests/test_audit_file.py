@@ -230,16 +230,6 @@ def pipeline_short_rna(testapp, lab, award, analysis_step_bam):
     return testapp.post_json('/pipeline', item).json['@graph'][0]
 
 
-def test_audit_file_paired_with(testapp, file1):
-    testapp.patch_json(file1['@id'], {'paired_end': '1'})
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing paired_with' for error in errors_list)
-
-
 def test_audit_file_mismatched_paired_with(testapp, file1, file4):
     testapp.patch_json(file1['@id'], {'paired_end': '2', 'paired_with': file4['uuid']})
     res = testapp.get(file1['@id'] + '@@index-data')
@@ -373,19 +363,6 @@ def test_audit_file_replicate_match(testapp, file1, file_rep2):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent replicate' for error in errors_list)
-
-
-def test_audit_file_paired_ended_run_type2(testapp, file2, file_rep2):
-    testapp.patch_json(file2['@id'] + '?validate=false', {'run_type': 'paired-ended',
-                                                          'output_type': 'reads',
-                                                          'file_size': 23498234,
-                                                          'paired_end': 1})
-    res = testapp.get(file2['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing paired_with' for error in errors_list)
 
 
 def test_audit_file_pipeline_status(testapp, file7, pipeline_bam):
