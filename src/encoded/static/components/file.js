@@ -304,7 +304,7 @@ const File = React.createClass({
 
                                     {context.read_length ?
                                         <div data-test="readlength">
-                                            <dt>Mapped read length</dt>
+                                            <dt>Read length</dt>
                                             <dd>{context.read_length}</dd>
                                         </div>
                                     : null}
