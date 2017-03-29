@@ -2437,16 +2437,16 @@ def is_gtex_experiment(experiment_to_check):
                 return True
     return False
 
-
+'''
 @audit_checker('experiment', frame=['replicates',
                                     'replicates.library',
                                     'replicates.library.biosample',
                                     'replicates.library.biosample.donor'])
 def audit_experiment_gtex_biosample(value, system):
-    '''
-    GTEx experiments should include biosample(s) from the same tissue and same donor
-    The number of biosamples could be > 1.
-    '''
+
+    #GTEx experiments should include biosample(s) from the same tissue and same donor
+    #The number of biosamples could be > 1.
+
     if value['status'] in ['deleted', 'replaced']:
         return
 
@@ -2480,7 +2480,7 @@ def audit_experiment_gtex_biosample(value, system):
         yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='INTERNAL_ACTION')
 
     return
-
+'''
 
 @audit_checker('Experiment', frame=['object'])
 def audit_experiment_geo_submission(value, system):
