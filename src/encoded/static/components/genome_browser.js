@@ -230,138 +230,29 @@ const GenomeBrowser = React.createClass({
     },
 
     componentDidMount: function () {
-        const { assembly, region, limitFiles } = this.props;
-        console.log('ASSEMBLY: %s', assembly);
-
-        // Extract only bigWig and bigBed files from the list:
-        let files = this.props.files.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
-        files = files.filter(file => ['released', 'in progress'].indexOf(file.status) > -1);  // TODO: list of allowed statuses
-
-
-        // Make some fake file objects from "test" just to give the genome browser something to
-        // chew on if we're running locally.
-        files = !this.context.localInstance ?
-            (limitFiles ? files.slice(0, maxFilesBrowsed - 1) : files)
-        : dummyFiles;
-
-        const browserCfg = rAssemblyToSources(assembly, this.props.region);
-
-        this.browserFiles = [];
-        let domain = `${location.protocol}//${location.hostname}`;
-        if (domain.includes('localhost')) {
-            domain = domainName;
-        }
-        files.forEach((file) => {
-            const trackLabels = this.makeTrackLabel(file);
-            if (file.file_format === 'bigWig') {
-                this.browserFiles.push({
-                    name: trackLabels.shortLabel,
-                    desc: trackLabels.longLabel,
-                    bwgURI: `${domain}${file.href}`,
-                    style: [
-                        {
-                            type: 'default',
-                            style: {
-                                glyph: 'HISTOGRAM',
-                                HEIGHT: 30,
-                                BGCOLOR: 'rgb(166,71,71)',
-                            },
-                        },
-                    ],
-                });
-            } else if (file.file_format === 'bigBed') {
-                this.browserFiles.push({
-                    name: trackLabels.shortLabel,
-                    desc: trackLabels.longLabel,
-                    bwgURI: `${domain}${file.href}`,
-                    style: [
-                        {
-                            style: {
-                                HEIGHT: 10,
-                            },
-                        },
-                    ],
-                });
-            }
-        });
-        if (this.browserFiles.length) {
-            browserCfg.sources = browserCfg.sources.concat(this.browserFiles);
-        }
-
-        require.ensure(['dalliance'], (require) => {
-            const Dalliance = require('dalliance').browser;
-
-            this.browser = new Dalliance({
-                maxHeight: 1000,
-                noPersist: true,
-                noPersistView: true,
-                noTrackAdder: true,
-                maxWorkers: 4,
-                noHelp: true,
-                chr: browserCfg.chr,
-                viewStart: browserCfg.viewStart,
-                viewEnd: browserCfg.viewEnd,
-                cookieKey: browserCfg.cookieKey,
-                coordSystem: browserCfg.coordSystem,
-                sources: browserCfg.sources,
-                noTitle: true,
-                disablePoweredBy: true,
-            });
+        require.ensure(['tnt.genome'], (require) => {
+            require('d3');
+            const TntGenomeBoard = require('tnt.genome');
+            const genome = TntGenomeBoard.genome().species("human").gene("brca2").width(818);
+            const geneTrack = TntGenomeBoard.track()
+                .height(200)
+                .color('white')
+                .display(TntGenomeBoard.track.feature.genome.gene().color('#550055'))
+                .data(TntGenomeBoard.track.data.genome.gene());
+            const sequenceTrack = TntGenomeBoard.track()
+                .height(30)
+                .color('white')
+                .display(TntGenomeBoard.track.feature.genome.sequence())
+                .data(TntGenomeBoard.track.data.genome.sequence().limit(150));
+            genome.zoom_in(100)
+                .add_track(sequenceTrack)
+                .add_track(geneTrack);
+            genome(document.getElementById('svgHolder'));
+            genome.start();
         });
     },
 
     componentDidUpdate: function () {
-        // Remove old tiers
-        if (this.browser && this.browserFiles && this.browserFiles.length) {
-            this.browserFiles.forEach((fileSource) => {
-                this.browser.removeTier({
-                    name: fileSource.name,
-                    desc: fileSource.desc,
-                    bwgURI: fileSource.bwgURI,
-                });
-            });
-        }
-
-        const files = !this.context.localInstance ? this.props.files.slice(0, maxFilesBrowsed - 1) : dummyFiles;
-        if (this.browser && files && files.length) {
-            let domain = `${location.protocol}//${location.hostname}`;
-            if (domain.includes('localhost')) {
-                domain = domainName;
-            }
-            files.forEach((file) => {
-                const trackLabels = this.makeTrackLabel(file);
-                if (file.file_format === 'bigWig') {
-                    this.browser.addTier({
-                        name: trackLabels.shortLabel,
-                        desc: trackLabels.longLabel,
-                        bwgURI: `${domain}${file.href}`,
-                        style: [
-                            {
-                                type: 'default',
-                                style: {
-                                    glyph: 'HISTOGRAM',
-                                    HEIGHT: 30,
-                                    BGCOLOR: 'rgb(166,71,71)',
-                                },
-                            },
-                        ],
-                    });
-                } else if (file.file_format === 'bigBed') {
-                    this.browser.addTier({
-                        name: trackLabels.shortLabel,
-                        desc: trackLabels.longLabel,
-                        bwgURI: `${domain}${file.href}`,
-                        style: [
-                            {
-                                style: {
-                                    HEIGHT: 10,
-                                },
-                            },
-                        ],
-                    });
-                }
-            });
-        }
     },
 
     makeTrackLabel: function (file) {
