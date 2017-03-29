@@ -275,17 +275,17 @@ var HomepageChartLoader = React.createClass({
 // Draw the total chart count in the middle of the donut.
 function drawDonutCenter(chart) {
     let canvasId = chart.chart.canvas.id;
+    let width = chart.chart.width;
+    let height = chart.chart.height;
+    let ctx = chart.chart.ctx;
+
+    ctx.fillStyle = '#000000';
+    ctx.restore();
+    let fontSize = (height / 114).toFixed(2);
+    ctx.font = fontSize + "em sans-serif";
+    ctx.textBaseline = "middle";
+
     if (canvasId === 'myChart' || canvasId === 'myChart2') {
-        let width = chart.chart.width;
-        let height = chart.chart.height;
-        let ctx = chart.chart.ctx;
-
-        ctx.fillStyle = '#000000';
-        ctx.restore();
-        let fontSize = (height / 114).toFixed(2);
-        ctx.font = fontSize + "em sans-serif";
-        ctx.textBaseline = "middle";
-
         let data = chart.data.datasets[0].data;
         let total = data.reduce((prev, curr) => prev + curr);
         let textX = Math.round((width - ctx.measureText(total).width) / 2);
@@ -294,6 +294,8 @@ function drawDonutCenter(chart) {
         ctx.clearRect(0, 0, width, height);
         ctx.fillText(total, textX, textY);
         ctx.save();
+    } else {
+        ctx.clearRect(0, 0, width, height);
     }
 }
 

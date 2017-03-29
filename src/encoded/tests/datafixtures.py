@@ -259,6 +259,7 @@ def file(testapp, lab, award, experiment):
         'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
         'output_type': 'raw data',
         'lab': lab['@id'],
+        'file_size': 34,
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
     }
@@ -273,6 +274,8 @@ def fastq_file(testapp, lab, award, experiment, replicate):
         'md5sum': '91be74b6e11515393507f4ebfa66d78b',
         'replicate': replicate['@id'],
         'output_type': 'reads',
+        "read_length": 36,
+        'file_size': 34,
         'run_type': 'single-ended',
         'lab': lab['@id'],
         'award': award['@id'],
@@ -286,6 +289,7 @@ def bam_file(testapp, lab, award, experiment):
     item = {
         'dataset': experiment['@id'],
         'file_format': 'bam',
+        'file_size': 34,
         'md5sum': '91be74b6e11515393507f4ebfa66d78c',
         'output_type': 'alignments',
         'assembly': 'hg19',
@@ -304,6 +308,7 @@ def bigWig_file(testapp, lab, award, experiment):
         'md5sum': '91be74b6e11515393507f4ebfa66d78d',
         'output_type': 'signal of unique reads',
         'assembly': 'mm10',
+        'file_size': 34,
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
@@ -318,6 +323,7 @@ def file_ucsc_browser_composite(testapp, lab, award, ucsc_browser_composite):
         'file_format': 'fasta',
         'md5sum': '91be74b6e11515393507f4ebfa66d77a',
         'output_type': 'raw data',
+        'file_size': 34,
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
