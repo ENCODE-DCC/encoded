@@ -6,7 +6,7 @@ import { Panel, PanelHeading } from '../libs/bootstrap/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { DropdownButton } from '../libs/bootstrap/button';
 import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
-import { StatusLabel } from './statuslabel';
+import StatusLabel from './statuslabel';
 import { requestFiles, DownloadableAccession, BrowserSelector } from './objectutils';
 import { Graph, JsonGraph } from './graph';
 import { qcModalContent, qcIdToDisplay } from './quality_metric';

@@ -9,7 +9,7 @@ var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
 var image = require('./image');
-var statuslabel = require('./statuslabel');
+import StatusLabel from './statuslabel';
 var audit = require('./audit');
 var fetched = require('./fetched');
 var pipeline = require('./pipeline');
@@ -26,7 +26,6 @@ var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var FetchedItems = fetched.FetchedItems;
 var Param = fetched.Param;
-var StatusLabel = statuslabel.StatusLabel;
 var {AuditMixin, AuditIndicators, AuditDetail} = audit;
 var singleTreatment = objectutils.singleTreatment;
 var softwareVersionList = software.softwareVersionList;
@@ -248,7 +247,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var encodevers = globals.encodeVersion(context);
 
         // Make list of statuses
-        var statuses = [{status: context.status, title: "Status"}];
+        const statuses = [{ status: context.status, title: 'Status' }];
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
