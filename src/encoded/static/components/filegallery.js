@@ -18,19 +18,6 @@ import { AuditMixin, AuditIndicators, AuditDetail, AuditIcon } from './audit';
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
 
 
-// Display a human-redable form of the file size given the size of a file in bytes. Returned as a
-// string
-function humanFileSize(size) {
-    if (size >= 0) {
-        const i = Math.floor(Math.log(size) / Math.log(1024));
-        const adjustedSize = (size / Math.pow(1024, i)).toPrecision(3) * 1;
-        const units = ['B', 'kB', 'MB', 'GB', 'TB'][i];
-        return `${adjustedSize} ${units}`;
-    }
-    return undefined;
-}
-
-
 // Get the audit icon for the highest audit level in the given file.
 function fileAuditStatus(file) {
     let highestAuditLevel;
@@ -133,7 +120,7 @@ export const FileTable = React.createClass({
         },
         file_size: {
             title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>,
+            display: item => <span>{globals.humanFileSize(item.file_size)}</span>,
         },
         audit: {
             title: 'Audit status',
@@ -194,7 +181,7 @@ export const FileTable = React.createClass({
         },
         file_size: {
             title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>,
+            display: item => <span>{globals.humanFileSize(item.file_size)}</span>,
         },
         audit: {
             title: 'Audit status',
@@ -572,7 +559,7 @@ const RawSequencingTable = React.createClass({
                                             <td className={pairClass}>{file.paired_end}</td>
                                             <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                            <td className={pairClass}>{humanFileSize(file.file_size)}</td>
+                                            <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
                                             <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td>
                                         </tr>
@@ -607,7 +594,7 @@ const RawSequencingTable = React.createClass({
                                         <td>{file.paired_end}</td>
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                        <td>{humanFileSize(file.file_size)}</td>
+                                        <td>{globals.humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
                                         <td className="characterization-meta-data"><StatusLabel status={file.status} /></td>
                                     </tr>
@@ -749,7 +736,7 @@ const RawFileTable = React.createClass({
                                             <td className={pairClass}>{file.assembly}</td>
                                             <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                            <td className={pairClass}>{humanFileSize(file.file_size)}</td>
+                                            <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
                                             <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td>
                                         </tr>
@@ -778,7 +765,7 @@ const RawFileTable = React.createClass({
                                         <td>{file.assembly}</td>
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                        <td>{humanFileSize(file.file_size)}</td>
+                                        <td>{globals.humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
                                         <td className="characterization-meta-data"><StatusLabel status={file.status} /></td>
                                     </tr>

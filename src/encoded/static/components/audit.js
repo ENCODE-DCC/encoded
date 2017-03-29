@@ -246,19 +246,23 @@ var DetailEmbeddedLink = React.createClass({
         var detail = this.props.detail;
 
         // Get an array of all paths in the detail string, if any.
-        var matches = detail.match(/(\/.*?\/.*?\/)(?=[\t \n,.]|$)/gmi);
+        var matches = detail.match(/([^a-z0-9]|^)(\/.*?\/.*?\/)(?=[\t \n,.]|$)/gmi);
         if (matches) {
             // Build React object of text followed by path for all paths in detail string
             var lastStart = 0;
             var result = matches.map((match, i) => {
+                let preMatchedChar = '';
                 var linkStart = detail.indexOf(match, lastStart);
                 var preText = detail.slice(lastStart, linkStart);
                 lastStart = linkStart + match.length;
                 var linkText = detail.slice(linkStart, lastStart);
+                if (linkText[0] !== '/') {
+                    preMatchedChar = linkText[0];
+                }
                 if (match !== this.props.except || this.props.forcedEditLink) {
-                    return <span key={i}>{preText}<a href={linkText}>{linkText}</a></span>;
+                    return <span key={i}>{preText}{preMatchedChar}<a href={linkText}>{linkText}</a></span>;
                 } else {
-                    return <span key={i}>{preText}{linkText}</span>;
+                    return <span key={i}>{preText}{preMatchedChar}{linkText}</span>;
                 }
             });
 
