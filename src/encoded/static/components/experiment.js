@@ -248,6 +248,9 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Make list of statuses
         const statuses = [{ status: context.status, title: 'Status' }];
+        if (adminUser && context.internal_status) {
+            statuses.push({ status: context.internal_status, title: 'Internal' });
+        }
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
