@@ -672,16 +672,22 @@ var HomepageChart2 = React.createClass({
 });
 
 
-// Draw the small dot above the selected assay in the "Assay Categories" chart if the user has
+// Draw the small triangle above the selected assay in the "Assay Categories" chart if the user has
 // selected an assay from the classic image.
 function drawColumnSelects(currentAssay, ctx, data) {
     // Adapted from https://github.com/chartjs/Chart.js/issues/2477#issuecomment-255042267
     if (currentAssay) {
         ctx.fillStyle = '#2138B2';
+
+        // Find the data with a label matching the currently selected assay.
         const currentColumn = data.labels.indexOf(currentAssay);
         if (currentColumn !== -1) {
+            // Get information on the matching column's coordinates so we know where to draw the
+            // triangle.
             const dataset = data.datasets[0];
             const model = dataset._meta[Object.keys(dataset._meta)[0]].data[currentColumn]._model;
+
+            // Draw the triangle into the HTML5 <canvas> element.
             ctx.beginPath();
             ctx.moveTo(model.x - 5, model.y - 8);
             ctx.lineTo(model.x, model.y - 3);
@@ -715,11 +721,8 @@ let HomepageChart3 = React.createClass({
             const selectedAssay = (this.props.assayCategory && this.props.assayCategory !== 'COMPPRED') ? this.props.assayCategory.replace(/\+/g, ' ') : '';
 
             // For each item, set doc count, add to total doc count, add proper label, and assign
-            // color. Also use this opportunity to find the maximum value to help us scale the
-            // Y-axis with a little margin.
-            let maxValue = 0;
+            // color.
             facetData.forEach((term, i) => {
-                maxValue = term.doc_count > maxValue ? term.doc_count : maxValue;
                 data[i] = term.doc_count;
                 labels[i] = term.key;
                 colors[i] = selectedAssay ? (term.key === selectedAssay ? 'rgb(255,217,98)' : 'rgba(255,217,98,.4)') : '#FFD962';
@@ -760,11 +763,11 @@ let HomepageChart3 = React.createClass({
                                 autoSkip: false
                             }
                         }],
-                        yAxes: [{
-                            ticks: {
-                                max: Math.round(maxValue * 1.1), // Allow for a 10% margin at the top of the graph
-                            }
-                        }],
+                    },
+                    layout: {
+                        padding: {
+                            top: 10,
+                        }
                     },
                     onClick: function (e) {
                         // React to clicks on pie sections
