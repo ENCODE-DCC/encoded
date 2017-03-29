@@ -32,6 +32,22 @@ function fileAuditStatus(file) {
 }
 
 
+// Sort callback to compare the accession/external_accession of two files.
+function fileAccessionSort(a, b) {
+    if (!a.accession !== !b.accession) {
+        // One or the other but not both use an external accession. Sort so regular accession
+        // comes first.
+        return a.accession ? -1 : 1;
+    }
+
+    // We either have two accessions or two external accessions. Do a case-insensitive compare on
+    // the calculated property that gets external_accession if accession isn't available.
+    const aTitle = a.title.toLowerCase();
+    const bTitle = b.title.toLowerCase();
+    return aTitle > bTitle ? 1 : (aTitle < bTitle ? -1 : 0);
+}
+
+
 export const FileTable = React.createClass({
     propTypes: {
         items: React.PropTypes.array.isRequired, // Array of files to appear in the table
@@ -76,17 +92,7 @@ export const FileTable = React.createClass({
                 const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[item['@id']]);
                 return <DownloadableAccession file={item} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />;
             },
-            objSorter: (a, b) => {
-                // First determine if either or both use an external accession or not.
-                if (!a.accession !== !b.accession) {
-                    // One or the other but not both use an external accession. Sort so that
-                    // regular accession comes first.
-                    return a.accession ? -1 : 1;
-                }
-                const aTitle = a.title.toLowerCase();
-                const bTitle = b.title.toLowerCase();
-                return aTitle > bTitle ? 1 : (aTitle < bTitle ? -1 : 0);
-            },
+            objSorter: (a, b) => fileAccessionSort(a, b),
         },
         file_type: { title: 'File type' },
         output_type: { title: 'Output type' },
@@ -141,17 +147,7 @@ export const FileTable = React.createClass({
                 const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[item['@id']]);
                 return <DownloadableAccession file={item} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />;
             },
-            objSorter: (a, b) => {
-                // First determine if either or both use an external accession or not.
-                if (!a.accession !== !b.accession) {
-                    // One or the other but not both use an external accession. Sort so that
-                    // regular accession comes first.
-                    return a.accession ? -1 : 1;
-                }
-                const aTitle = a.title.toLowerCase();
-                const bTitle = b.title.toLowerCase();
-                return aTitle > bTitle ? 1 : (aTitle < bTitle ? -1 : 0);
-            },
+            objSorter: (a, b) => fileAccessionSort(a, b),
         },
         file_type: { title: 'File type' },
         output_type: { title: 'Output type' },
