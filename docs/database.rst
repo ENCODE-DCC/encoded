@@ -13,15 +13,47 @@ The Key_ and Link_ tables are indexes used for performance optimziation.  Keys a
 
 The CurrentPropSheet_ and TransactionRecord_ tables are used to track all changes made to objects via transactions.
 
+On a standard EC2/Ubuntu install, you will have to su to user encoded to interact with the database on the command line (psql).
+The current production database has a useful VIEW created for querying recent objects, called OBJECT:
+
+::
+
+    encoded=> \d+ object
+    View "public.object"
+    Column   |       Type        | Modifiers | Storage  | Description 
+   ------------+-------------------+-----------+----------+-------------
+    rid        | uuid              |           | plain    | 
+    item_type  | character varying |           | extended | 
+    properties | json              |           | extended | 
+    tid        | uuid              |           | plain    | 
+   View definition:
+    SELECT resources.rid,
+      resources.item_type,
+      propsheets.properties,
+      propsheets.tid
+     FROM resources
+       JOIN current_propsheets USING (rid)
+       JOIN propsheets USING (rid, name, sid)
+    WHERE current_propsheets.name::text = ''::text;
+
+
+As an example query (show me all the files that link back to dataset with uuid: 27311ca3-dc24-4853-94bc-a80825598621::
+
+  encoded=> select * from object where item_type='file' and properties ->> 'dataset' = '27311ca3-dc24-4853-94bc-a80825598621';
+
+  
+
+
 ** A LOCAL SERVER **
 The dev-servers command completely drops and restarts a local copy of postgres db. Posts all the objects in tests/data/inserts (plus /tests/data/documents as attachments). Then indexes them all in local elastic search.
 but these dbs are both destroyed when you kill the dev-servers process
 
 ** CREATING A SPARQL STORE **
 
-After building out the software, it will create an executable called json_rdf
+After building out the software, it will create an executable called json_rdf::
 
   bin/jsonld-rdf  'https://www.encodeproject.org/search/?type=Item&frame=object&limit=all' -s n3 -o encode-rdf.n3
+
 
 The n3 file can be imported into a SPARQL using, for example, Virtuoso ( http://semanticweb.org/wiki/Virtuoso.html_ ) or YasGUI http://yasgui.org/_
 
