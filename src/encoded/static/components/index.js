@@ -23,7 +23,6 @@ require('./item');
 require('./page');
 require('./mixins');
 require('./platform');
-require('./statuslabel');
 require('./search');
 require('./report');
 require('./matrix');

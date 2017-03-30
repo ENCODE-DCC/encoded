@@ -7,7 +7,7 @@ const globals = require('./globals');
 const navigation = require('./navigation');
 const dataset = require('./dataset');
 const dbxref = require('./dbxref');
-const statuslabel = require('./statuslabel');
+import StatusLabel from './statuslabel';
 const audit = require('./audit');
 const image = require('./image');
 const item = require('./item');
@@ -19,7 +19,6 @@ const {GeneticModificationSummary} = require('./genetic_modification');
 
 const Breadcrumbs = navigation.Breadcrumbs;
 const DbxrefList = dbxref.DbxrefList;
-const StatusLabel = statuslabel.StatusLabel;
 const AuditIndicators = audit.AuditIndicators;
 const AuditDetail = audit.AuditDetail;
 const AuditMixin = audit.AuditMixin;
