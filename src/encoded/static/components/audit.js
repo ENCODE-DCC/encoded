@@ -122,7 +122,7 @@ class DetailEmbeddedLink extends React.Component {
         const { detail } = this.props;
 
         // Get an array of all paths in the detail string, if any.
-        const matches = detail.match(/(\/.*?\/.*?\/)(?=[\t \n,.]|$)/gmi);
+        const matches = detail.match(/([^a-z0-9]|^)(\/.*?\/.*?\/)(?=[\t \n,.]|$)/gmi);
         if (matches) {
             // Build an array of React objects containing text followed by a path. In effect, the
             // detail text is broken up into pieces, with each piece ending in a @id, combined
@@ -130,14 +130,20 @@ class DetailEmbeddedLink extends React.Component {
             // gets picked up after this loop.
             let lastStart = 0;
             const result = matches.map((match) => {
+                let preMatchedChar = '';
                 const linkStart = detail.indexOf(match, lastStart);
                 const preText = detail.slice(lastStart, linkStart);
                 lastStart = linkStart + match.length;
                 const linkText = detail.slice(linkStart, lastStart);
+                if (linkText[0] !== '/') {
+                    preMatchedChar = linkText[0];
+                }
 
                 // Render the text leading up to the path, and then the path as a link.
                 if (match !== this.props.except || this.props.forcedEditLink) {
-                    return <span key={linkStart}>{preText}<a href={linkText}>{linkText}</a></span>;
+                    return <span key={i}>{preText}{preMatchedChar}<a href={linkText}>{linkText}</a></span>;
+                } else {
+                    return <span key={i}>{preText}{preMatchedChar}{linkText}</span>;
                 }
 
                 // For the case where we have an @id not to be rendered as a link.

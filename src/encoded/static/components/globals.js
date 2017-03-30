@@ -220,6 +220,18 @@ module.exports.encodeVersion = function(context) {
     return encodevers;
 };
 
+// Display a human-redable form of the file size given the size of a file in bytes. Returned as a
+// string.
+module.exports.humanFileSize = function (size) {
+    if (size >= 0) {
+        const i = Math.floor(Math.log(size) / Math.log(1024));
+        const adjustedSize = (size / Math.pow(1024, i)).toPrecision(3) * 1;
+        const units = ['B', 'kB', 'MB', 'GB', 'TB'][i];
+        return `${adjustedSize} ${units}`;
+    }
+}
+
+
 const parseError = function (response) {
     if (response instanceof Error) {
         return Promise.resolve({

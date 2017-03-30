@@ -294,7 +294,7 @@ class FileComponent extends React.Component {
 
                                     {context.read_length ?
                                         <div data-test="readlength">
-                                            <dt>Mapped read length</dt>
+                                            <dt>Read length</dt>
                                             <dd>{context.read_length}</dd>
                                         </div>
                                     : null}
@@ -302,7 +302,7 @@ class FileComponent extends React.Component {
                                     {context.file_size ?
                                         <div data-test="filesize">
                                             <dt>File size</dt>
-                                            <dd>{context.file_size}</dd>
+                                            <dd>{globals.humanFileSize(context.file_size)}</dd>
                                         </div>
                                     : null}
 

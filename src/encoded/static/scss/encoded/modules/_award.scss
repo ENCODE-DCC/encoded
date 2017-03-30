@@ -1,34 +1,31 @@
+// Chart area -- contains all charts.
 .award-charts {
     display: block;
 
-    @media screen and (min-width: $screen-md-min) {
-        display: flex;
-        flex-wrap: nowrap;
-        justify-content: center;
-    }
-
-    @at-root #{&}__title {
-        padding: 0 0 20px 0;
-        margin: 0 20px 10px 20px;
-        border-bottom: 1px solid #e0e0e0;
-        text-align: center;
-        color: gray;
-        font-size: 1.6rem;
-        font-weight: 400;
-    }
-
+    // Style for an individual chart.
     @at-root #{&}__chart {
         display: block;
 
-        @media screen and (min-width: $screen-md-min) {
-            flex: 0 1 auto;
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 0 33.3333%;
             width: 33.3333%;
+        }
+
+        .title {
+            font-size: 1.2rem;
         }
     }
 
+    // Style for the chart.js <canvas> of an individual chart.
     @at-root #{&}__canvas {
         position: relative;
-        height: 250px;
+        height: 180px;
+
+        canvas {
+            display: block;
+            width: 0;
+            height: 0;
+        }
     }
 
     @at-root #{&}__legend {
@@ -52,7 +49,7 @@
 
         a {
             float: left;
-            height: 18px;
+            line-height: 13px;
             margin: 0;
             padding: 3px;
             color: black;
@@ -62,50 +59,46 @@
                 background-color: #e0e0e0;
             }
         }
+
+        .chart-legend-chip {
+            display: inline-block;
+            width: 32px;
+            height: 12px;
+            margin-right: 5px;
+            vertical-align: top;
+        }
+
+        .chart-legend-label {
+            display: inline;
+            position: relative;
+            top: 0;
+        }
     }
 }
 
-// Positions tabs with padding, hovering, and changing color if selected
-.status-chooser {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    margin: -5px;
 
-    @media screen and (min-width: $screen-sm-min) {
-        flex-wrap: nowrap;
+// Provides the flex structure for a group of charts.
+.award-chart__group-wrapper {
+    margin: 50px 0 0 0;
+
+    &:first-child {
+        margin-top: 0;
     }
 
-    @at-root #{&}__button {
-        display: block;
-        margin: 5px;
-        padding: 5px 20px !important;
-        flex: 1 1 40%;
-        font-size: 0.9rem;
+    h2 {
+        margin-top: 5px;
+        padding-bottom: 10px;
+        font-size: 1.8rem;
         font-weight: normal;
-        text-decoration: none;
-        color: #404040;
-        background-color: #c0beff;
-        border: 1px solid #0001ee;
-        text-transform: uppercase;
+        text-align: center;
+        border-bottom: 1px solid #a0a0a0;
+    }
+}
 
-        @media screen and (min-width: $screen-sm-min) {
-            flex: 0 1 auto;
-        }
 
-        &:hover {
-            background-color: #adabf8;
-        }
-
-        @at-root #{&}--selected {
-            color: #000;
-            background-color: #7575f7 !important;
-
-            &:hover {
-                color: #000;
-                background-color: #7575f7;
-            }
-        }
+// Style for a group of charts, like for the experiment group or annotation group.
+.award-chart__group {
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
     }
 }

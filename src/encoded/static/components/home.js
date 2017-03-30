@@ -319,17 +319,17 @@ HomepageChartLoader.propTypes = {
 // Draw the total chart count in the middle of the donut.
 function drawDonutCenter(chart) {
     const canvasId = chart.chart.canvas.id;
+    const width = chart.chart.width;
+    const height = chart.chart.height;
+    const ctx = chart.chart.ctx;
+
+    ctx.fillStyle = '#000000';
+    ctx.restore();
+    const fontSize = (height / 114).toFixed(2);
+    ctx.font = `${fontSize}em sans-serif`;
+    ctx.textBaseline = 'middle';
+
     if (canvasId === 'myChart' || canvasId === 'myChart2') {
-        const width = chart.chart.width;
-        const height = chart.chart.height;
-        const ctx = chart.chart.ctx;
-
-        ctx.fillStyle = '#000000';
-        ctx.restore();
-        const fontSize = (height / 114).toFixed(2);
-        ctx.font = `${fontSize}em sans-serif`;
-        ctx.textBaseline = 'middle';
-
         const data = chart.data.datasets[0].data;
         const total = data.reduce((prev, curr) => prev + curr);
         const textX = Math.round((width - ctx.measureText(total).width) / 2);
@@ -338,6 +338,8 @@ function drawDonutCenter(chart) {
         ctx.clearRect(0, 0, width, height);
         ctx.fillText(total, textX, textY);
         ctx.save();
+    } else {
+        ctx.clearRect(0, 0, width, height);
     }
 }
 
