@@ -103,11 +103,7 @@
                     "required": ["read_length"],
                     "properties": {
                         "file_format": {
-<<<<<<< HEAD
                             "enum": ["fastq", "fasta", "csfasta", "csqual","sra"]
-=======
-                            "enum": ["fastq", "fasta", "csfasta", "csqual"]
->>>>>>> master
                         },
                         "output_type": {
                              "enum": ["reads"]
