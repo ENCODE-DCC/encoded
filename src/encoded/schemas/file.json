@@ -103,7 +103,7 @@
                     "required": ["read_length"],
                     "properties": {
                         "file_format": {
-                            "enum": ["fastq", "fasta", "csfasta", "csqual"]
+                            "enum": ["fastq", "fasta", "csfasta", "csqual","sra"]
                         },
                         "output_type": {
                              "enum": ["reads"]
@@ -165,7 +165,7 @@
                     "not": {
                         "properties": {
                             "file_format": {
-                                "enum": ["fastq", "gff", "gtf", "bed", "bigBed", "bam", "sam"]
+                                "enum": ["fastq", "gff", "gtf", "bed", "bigBed", "bam", "sam","sra"]
                             }
                         }
                     }
