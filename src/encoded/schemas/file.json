@@ -4,7 +4,7 @@
     "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "md5sum", "output_type", "award", "lab"],
+    "required": ["dataset", "file_format", "file_size", "md5sum", "output_type", "award", "lab"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -103,7 +103,11 @@
                     "required": ["read_length"],
                     "properties": {
                         "file_format": {
+<<<<<<< HEAD
                             "enum": ["fastq", "fasta", "csfasta", "csqual","sra"]
+=======
+                            "enum": ["fastq", "fasta", "csfasta", "csqual"]
+>>>>>>> master
                         },
                         "output_type": {
                              "enum": ["reads"]
