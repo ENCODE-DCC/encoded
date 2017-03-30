@@ -71,11 +71,15 @@
                     }
                 },
                 {
+                    "required": {
+                        "properties": {
+                            "file_format": {
+                                "enum": ["sra"],
                     "properties": {
                         "paired_end": {
-                            "enum": ["1,2"],
-                        "file_format": {
-                            "enum": ["sra"]
+                            "enum": ["1,2"]
+                                    }
+                                }
                             }
                         }
                     }
@@ -102,6 +106,16 @@
                             "properties": {
                                 "file_format": {
                                     "enum": ["fastq"]
+                                }
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["assembly"],
+                                "properties": {
+                                    "file_format": {
+                                        "enum": ["fastq"]
+                                    }
                                 }
                             }
                         }
