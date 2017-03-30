@@ -71,16 +71,13 @@
                     }
                 },
                 {
-                    "required": {
-                        "properties": {
-                            "file_format": {
-                                "enum": ["sra"],
+                    "required": [],
                     "properties": {
+                        "file_format": {
+                            "enum": ["sra"]
+                        },
                         "paired_end": {
                             "enum": ["1,2"]
-                                    }
-                                }
-                            }
                         }
                     }
                 }
