@@ -390,8 +390,8 @@ const News = React.createClass({
         // Either the query string or the current data aren't giving us any news items to display.
         // Just show a message.
         return (
-            <Panel>
-                <h2>No news items to display</h2>
+            <Panel addClasses="news-blank">
+                <h2>No matching news items</h2>
                 <a href="/news/">Latest ENCODE News</a>
             </Panel>
         );
