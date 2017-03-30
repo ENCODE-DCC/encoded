@@ -97,6 +97,30 @@
                 }
             }
         },
+        "output_type":{
+            "oneOf":[
+                {
+                    "required": ["read_length"],
+                    "properties": {
+                        "file_format": {
+                            "enum": ["fastq", "fasta", "csfasta", "csqual"]
+                        },
+                        "output_type": {
+                             "enum": ["reads"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "output_type": {
+                                "enum": ["reads"]
+                            }
+                        }
+                    }
+                }
+            ]
+        },
         "file_format":{
             "oneOf": [
                 {
@@ -105,7 +129,7 @@
                             "required": ["replicate", "run_type"],
                             "properties": {
                                 "file_format": {
-                                    "enum": ["fastq"]
+                                    "enum": ["fastq","sra"]
                                 }
                             }
                         },
@@ -114,7 +138,7 @@
                                 "required": ["assembly"],
                                 "properties": {
                                     "file_format": {
-                                        "enum": ["fastq"]
+                                        "enum": ["fastq","sra"]
                                     }
                                 }
                             }
