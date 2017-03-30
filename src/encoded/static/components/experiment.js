@@ -453,7 +453,7 @@ var ExperimentComponent = React.createClass({
                                     {context.dbxrefs.length ?
                                         <div data-test="external-resources">
                                             <dt>External resources</dt>
-                                            <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                            <dd><DbxrefList values={context.dbxrefs} cell_line={context.biosample_term_name} /></dd>
                                         </div>
                                     : null}
 

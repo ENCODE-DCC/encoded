@@ -241,6 +241,7 @@ export const Modal = React.createClass({
     propTypes: {
         actuator: React.PropTypes.object, // Component (usually a button) that makes the modal appear
         closeModal: React.PropTypes.func, // Called to close the modal if an actuator isn't provided
+        addClasses: React.PropTypes.string, // CSS classes to add to the default
         children: React.PropTypes.node,
     },
 
@@ -307,7 +308,7 @@ export const Modal = React.createClass({
                 {!this.props.actuator || this.state.modalOpen ?
                     <div>
                         <div className="modal" style={{ display: 'block' }}>
-                            <div className="modal-dialog">
+                            <div className={`modal-dialog${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`}>
                                 <div className="modal-content">
                                     {this.modalChildren}
                                 </div>

@@ -18,7 +18,7 @@ import { StatusLabel } from './statuslabel';
 const derivingCols = {
     accession: {
         title: 'Accession',
-        display: file => <a href={file['@id']} title={`View page for file ${file.accession}`}>{file.accession}</a>,
+        display: file => <a href={file['@id']} title={`View page for file ${file.title}`}>{file.title}</a>,
     },
     dataset: {
         title: 'Dataset',
@@ -49,7 +49,7 @@ class DerivedFiles extends React.Component {
 
         if (items.length) {
             return (
-                <SortTablePanel header={<h4>{`Files deriving from ${context.accession}`}</h4>}>
+                <SortTablePanel header={<h4>{`Files deriving from ${context.title}`}</h4>}>
                     <SortTable
                         list={items}
                         columns={derivingCols}
@@ -74,7 +74,7 @@ class DerivedFromFiles extends React.Component {
         const { file, derivedFromFiles } = this.props;
 
         return (
-            <SortTablePanel header={<h4>{`Files ${file.accession} derives from`}</h4>}>
+            <SortTablePanel header={<h4>{`Files ${file.title} derives from`}</h4>}>
                 <SortTable
                     list={derivedFromFiles}
                     columns={derivingCols}
@@ -114,7 +114,7 @@ class FileDownloadButton extends React.Component {
                     disabled={!buttonEnabled}
                     onMouseEnter={file.restricted ? this.onMouseEnter : null}
                     onMouseLeave={file.restricted ? this.onMouseLeave : null}
-                >Download {file.accession}</a>
+                >Download {file.title}</a>
                 {!buttonEnabled ?
                     <div className="tooltip-button-overlay" onMouseEnter={file.restricted ? this.onMouseEnter : null} onMouseLeave={file.restricted ? this.onMouseLeave : null} />
                 : null}
@@ -213,7 +213,7 @@ class FileComponent extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <h2>File summary for {context.accession}{' / '}<span className="sentence-case">{`${context.file_format}${context.file_format_type ? ` (${context.file_format_type})` : ''}`}</span></h2>
+                        <h2>File summary for {context.title} (<span className="sentence-case">{context.file_format}</span>)</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
                         {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
@@ -237,6 +237,16 @@ class FileComponent extends React.Component {
                                     <div data-test="term-name">
                                         <dt>Dataset</dt>
                                         <dd><a href={context.dataset} title={`View page for dataset ${datasetAccession}`}>{datasetAccession}</a></dd>
+                                    </div>
+
+                                    <div data-test="outputtype">
+                                        <dt>File format</dt>
+                                        <dd>{`${context.file_format}${context.file_format_type ? ` ${context.file_format_type}` : ''}`}</dd>
+                                    </div>
+
+                                    <div data-test="outputtype">
+                                        <dt>Output type</dt>
+                                        <dd>{context.output_type}</dd>
                                     </div>
 
                                     <div data-test="bioreplicate">
@@ -535,7 +545,7 @@ class Listing extends React.Component {
                 <div className="clearfix">
                     <div className="pull-right search-meta">
                         <p className="type meta-title">File</p>
-                        <p className="type">{` ${result.accession}`}</p>
+                        <p className="type">{` ${result.title}`}</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
                     </div>
                     <div className="accession"><a href={result['@id']}>{`${result.file_format}${result.file_format_type ? ` (${result.file_format_type})` : ''}`}</a></div>

@@ -8,7 +8,7 @@ import { DropdownButton } from '../libs/bootstrap/button';
 import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
 import { auditDecor, auditsDisplayed, AuditIcon } from './audit';
 import { StatusLabel } from './statuslabel';
-import { requestFiles, DownloadableAccession } from './objectutils';
+import { requestFiles, DownloadableAccession, BrowserSelector } from './objectutils';
 import { Graph, JsonGraph } from './graph';
 import { qcModalContent, qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
@@ -18,21 +18,6 @@ import { SortTablePanel, SortTable } from './sorttable';
 
 
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
-
-
-// Order that assemblies should appear in filtering menu
-const assemblyPriority = [
-    'GRCh38',
-    'hg19',
-    'mm10',
-    'mm10-minimal',
-    'mm9',
-    'ce11',
-    'ce10',
-    'dm6',
-    'dm3',
-    'J02459.1',
-];
 
 
 // Display a human-redable form of the file size given the size of a file in bytes. Returned as a
@@ -887,8 +872,8 @@ function collectAssembliesAnnotations(files) {
     }).reverse();
 
     // Now sort by assembly priority order as the primary sorting key. assemblyPriority is a global
-    // array at the top of the file.
-    return _(filterOptions).sortBy(option => _(assemblyPriority).indexOf(option.assembly));
+    // array.
+    return _(filterOptions).sortBy(option => _(globals.assemblyPriority).indexOf(option.assembly));
 }
 
 
@@ -1463,17 +1448,9 @@ const FileGalleryRenderer = React.createClass({
                 <PanelHeading addClasses="file-gallery-heading">
                     <h4>Files</h4>
                     <div className="file-gallery-controls">
-                        {context.visualize_ucsc && context.status === 'released' ?
+                        {context.visualize && context.status === 'released' ?
                             <div className="file-gallery-control">
-                                <DropdownButton title="Visualize Data" label="visualize-data">
-                                    <DropdownMenu>
-                                        {Object.keys(context.visualize_ucsc).map(assembly =>
-                                            <a key={assembly} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize_ucsc[assembly]}>
-                                                {assembly}
-                                            </a>,
-                                        )}
-                                    </DropdownMenu>
-                                </DropdownButton>
+                                <BrowserSelector visualizeCfg={context.visualize} />
                             </div>
                         : null}
                         {filterOptions.length ?

@@ -43,7 +43,7 @@ def audit_file_pipeline_status(value, system):
                 yield AuditFailure('inconsistent pipeline status',
                                    detail, level='INTERNAL_ACTION')
 
-
+'''
 @audit_checker('File', frame=['derived_from'])
 def audit_file_md5sum_integrity(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
@@ -63,6 +63,7 @@ def audit_file_md5sum_integrity(value, system):
                  'which is not a valid hexadecimal number.'
         yield AuditFailure('inconsistent md5sum',
                            detail, level='INTERNAL_ACTION')
+'''
 
 
 @audit_checker('File', frame=['derived_from'])
@@ -854,7 +855,7 @@ def audit_file_chip_seq_control_read_depth(value, system):
 
     chip_flag = False
     for p in value['analysis_step_version']['analysis_step']['pipelines']:
-        if p['title'] == 'Histone ChIP-seq':
+        if p['title'] == 'ChIP-seq read mapping':
             chip_flag = True
         if p['title'] == 'Raw mapping with no filtration':
             return
@@ -880,7 +881,7 @@ def audit_file_chip_seq_control_read_depth(value, system):
             target_investigated_as = value['dataset']['target']['investigated_as']
 
     if target_name not in ['Control-human', 'Control-mouse']:
-        control_bam = get_control_bam(value, 'Histone ChIP-seq')
+        control_bam = get_control_bam(value, 'ChIP-seq read mapping')
         if control_bam is not False:
             control_depth = get_chip_seq_bam_read_depth(control_bam)
             control_target = get_target_name(control_bam)
@@ -904,7 +905,7 @@ def check_control_read_depth_standards(value,
                                        target_investigated_as,
                                        standards_version):
 
-    marks = pipelines_with_read_depth['Histone ChIP-seq']
+    marks = pipelines_with_read_depth['ChIP-seq read mapping']
     modERN_cutoff = pipelines_with_read_depth['Transcription factor ChIP-seq pipeline (modERN)']
 
     if is_control_file is True:  # treat this file as control_bam -
