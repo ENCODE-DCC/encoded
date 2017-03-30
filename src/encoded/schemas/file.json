@@ -71,7 +71,6 @@
                     }
                 },
                 {
-                    "required": [],
                     "properties": {
                         "file_format": {
                             "enum": ["sra"]
