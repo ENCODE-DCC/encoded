@@ -223,11 +223,30 @@ LabChart.contextTypes = {
 
 // Display and handle clicks in the chart of assays.
 class CategoryChart extends React.Component {
+    // Update existing chart with new data.
+    static updateChart(chart, facetData) {
+        // Extract the non-zero values, and corresponding labels and colors for the data.
+        const values = [];
+        const labels = [];
+        facetData.forEach((item) => {
+            if (item.doc_count) {
+                values.push(item.doc_count);
+                labels.push(item.key);
+            }
+        });
+        const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
+
+        // Update chart data and redraw with the new data.
+        chart.data.datasets[0].data = values;
+        chart.data.datasets[0].backgroundColor = colors;
+        chart.data.labels = labels;
+        chart.update();
+    }
+
     constructor() {
         super();
 
         this.createChart = this.createChart.bind(this);
-        this.updateChart = this.updateChart.bind(this);
     }
 
     componentDidMount() {
@@ -238,7 +257,7 @@ class CategoryChart extends React.Component {
 
     componentDidUpdate() {
         if (this.chart) {
-            this.updateChart(this.chart, this.props.categoryData);
+            this.constructor.updateChart(this.chart, this.props.categoryData);
         }
     }
 
@@ -262,29 +281,6 @@ class CategoryChart extends React.Component {
                 // Save the created chart instance.
                 this.chart = chartInstance;
             });
-    }
-
-    // Update existing chart with new data.
-    updateChart(chart, facetData) {
-        // Extract the non-zero values, and corresponding labels and colors for the data.
-        const values = [];
-        const labels = [];
-        facetData.forEach((item) => {
-            if (item.doc_count) {
-                values.push(item.doc_count);
-                labels.push(item.key);
-            }
-        });
-        const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
-
-        // Update chart data and redraw with the new data.
-        chart.data.datasets[0].data = values;
-        chart.data.datasets[0].backgroundColor = colors;
-        chart.data.labels = labels;
-        chart.update();
-
-        // Redraw the updated legend.
-        document.getElementById(`${assayChartId}-legend`).innerHTML = chart.generateLegend();
     }
 
     render() {
@@ -379,7 +375,7 @@ class StatusChart extends React.Component {
         const colors = labels.map((label, i) => statusColorList[i % statusColorList.length]);
 
         // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, `/matrix/?type=Experiment&award.name=${this.props.award.name}&status=`, (uri) => { this.context.navigate(uri); })
+        createDoughnutChart(chartId, values, labels, colors, `${this.props.linkUri}${this.props.award.name}&status=`, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -429,12 +425,10 @@ StatusChart.contextTypes = {
 
 
 const ChartRenderer = (props) => {
-    const { award, experiments, annotations } = this.props;
-    const experimentsConfig = this.searchData.experiments;
-    const annotationsConfig = this.searchData.annotations;
+    const { award, experiments, annotations } = props;
 
     // Put all search-related configuration data in one consistent place.
-    searchData = {
+    const searchData = {
         experiments: {
             ident: 'experiments',
             data: [],
@@ -460,6 +454,8 @@ const ChartRenderer = (props) => {
     };
 
     // Find the chart data in the returned facets.
+    const experimentsConfig = searchData.experiments;
+    const annotationsConfig = searchData.annotations;
     searchData.experiments.data = (experiments && experiments.facets) || [];
     searchData.annotations.data = (annotations && annotations.facets) || [];
     ['experiments', 'annotations'].forEach((chartCategory) => {
@@ -469,7 +465,7 @@ const ChartRenderer = (props) => {
             searchData[chartCategory].labs = (labFacet && labFacet.terms && labFacet.terms.length) ? labFacet.terms.sort((a, b) => (a.key < b.key ? -1 : (a.key > b.key ? 1 : 0))) : [];
 
             // Get the array of data specific to experiments or annotations.
-            const categoryFacet = searchData[chartCategory].data.find(facet => facet.field === this.searchData[chartCategory].categoryFacet);
+            const categoryFacet = searchData[chartCategory].data.find(facet => facet.field === searchData[chartCategory].categoryFacet);
             searchData[chartCategory].categoryData = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length) ? categoryFacet.terms : [];
 
             // Get the array of status data.
@@ -511,7 +507,7 @@ const ChartRenderer = (props) => {
             </div>
             <div className="award-chart__group-wrapper">
                 <h2>Annotations</h2>
-                {this.searchData.annotations.labs.length ?
+                {annotationsConfig.labs.length ?
                     <div className="award-chart__group">
                         <LabChart
                             award={award}
@@ -540,7 +536,7 @@ const ChartRenderer = (props) => {
             </div>
         </div>
     );
-}
+};
 
 ChartRenderer.propTypes = {
     award: React.PropTypes.object.isRequired, // Award being displayed
@@ -555,37 +551,25 @@ ChartRenderer.defaultProps = {
 
 
 // Overall component to render the award charts
-class AwardCharts extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            searchData: {},
-            chartSource: {},
-        };
+const AwardCharts = (props) => {
+    const { award } = props;
 
-        this.handleStatusSelection = this.handleStatusSelection.bind(this);
-    }
-
-    render() {
-        const { award } = this.props;
-
-        return (
-            <Panel>
-                <PanelHeading>
-                    <h4>{award.pi && award.pi.lab ? <span>{award.pi.lab.title}</span> : <span>No PI indicated</span>}</h4>
-                    <ProjectBadge award={award} addClasses="badge-heading" />
-                </PanelHeading>
-                <PanelBody>
-                    <FetchedData ignoreErrors>
-                        <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}`} />
-                        <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}`} />
-                        <ChartRenderer award={award} />
-                    </FetchedData>
-                </PanelBody>
-            </Panel>
-        );
-    }
-}
+    return (
+        <Panel>
+            <PanelHeading>
+                <h4>{award.pi && award.pi.lab ? <span>{award.pi.lab.title}</span> : <span>No PI indicated</span>}</h4>
+                <ProjectBadge award={award} addClasses="badge-heading" />
+            </PanelHeading>
+            <PanelBody>
+                <FetchedData ignoreErrors>
+                    <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}`} />
+                    <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}`} />
+                    <ChartRenderer award={award} />
+                </FetchedData>
+            </PanelBody>
+        </Panel>
+    );
+};
 
 AwardCharts.propTypes = {
     award: React.PropTypes.object.isRequired, // Award represented by this chart

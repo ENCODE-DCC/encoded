@@ -124,10 +124,7 @@ class DetailEmbeddedLink extends React.Component {
         // Get an array of all paths in the detail string, if any.
         const matches = detail.match(/([^a-z0-9]|^)(\/.*?\/.*?\/)(?=[\t \n,.]|$)/gmi);
         if (matches) {
-            // Build an array of React objects containing text followed by a path. In effect, the
-            // detail text is broken up into pieces, with each piece ending in a @id, combined
-            // with the text leading up to it. Any text following the last @id in the detail text
-            // gets picked up after this loop.
+            // Build React object of text followed by path for all paths in detail string
             let lastStart = 0;
             const result = matches.map((match) => {
                 let preMatchedChar = '';
@@ -138,16 +135,10 @@ class DetailEmbeddedLink extends React.Component {
                 if (linkText[0] !== '/') {
                     preMatchedChar = linkText[0];
                 }
-
-                // Render the text leading up to the path, and then the path as a link.
                 if (match !== this.props.except || this.props.forcedEditLink) {
-                    return <span key={i}>{preText}{preMatchedChar}<a href={linkText}>{linkText}</a></span>;
-                } else {
-                    return <span key={i}>{preText}{preMatchedChar}{linkText}</span>;
+                    return <span key={linkStart}>{preText}{preMatchedChar}<a href={linkText}>{linkText}</a></span>;
                 }
-
-                // For the case where we have an @id not to be rendered as a link.
-                return <span key={linkStart}>{preText}{linkText}</span>;
+                return <span key={linkStart}>{preText}{preMatchedChar}{linkText}</span>;
             });
 
             // Pick up any trailing text after the last path, if any
@@ -157,7 +148,7 @@ class DetailEmbeddedLink extends React.Component {
             return <span>{result}{postText}</span>;
         }
 
-        // No links in the detail string; just display it with no links.
+        // No links in the detail string; just display it with no links
         return <span>{detail}</span>;
     }
 }
@@ -262,7 +253,7 @@ function idAudits(audits) {
 export function auditsDisplayed(audits, session) {
     const loggedIn = !!(session && session['auth.userid']);
 
-    return (audits && Object.keys(audits).length) && (loggedIn || !(Object.keys(audits).length === 1 && audits['INTERNAL_ACTION']));
+    return (audits && Object.keys(audits).length) && (loggedIn || !(Object.keys(audits).length === 1 && audits.INTERNAL_ACTION));
 }
 
 
