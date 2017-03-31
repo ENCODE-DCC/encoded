@@ -1,0 +1,190 @@
+ {
+    "title": "Plasmid",
+    "description": "Schema for submitting information general plasmid-based transfections for genetic modification.",
+    "id": "/profiles/plasmid.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["lab", "award", "source", "transfection_type"],
+    "identifyingProperties": ["uuid","aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/product_id" },
+        { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "modification_technique.json#/properties" },
+        { "$ref": "mixins.json#/documents" }
+    ],
+    "dependencies": {
+        "transfection_type": {
+            "anyOf": [
+                {
+                    "required": ["epitope_tags"],
+                    "properties": {
+                        "transfection_type": {
+                            "enum": ["stable", "transient"]
+                        }
+                    }
+
+                },
+                {
+                    "required": ["insert_sequence"],
+                    "properties": {
+                        "transfection_type": {
+                            "enum": ["stable", "transient"]
+                        }
+                    }
+
+                },
+                {
+                    "required": ["insert_genome_coordinates"],
+                    "properties": {
+                        "transfection_type": {
+                            "enum": ["stable", "transient"]
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "description": {
+            "title": "Description",
+            "description": "A plain text description of the construct. May include backbone name, description of the insert or purpose of the construct.",
+            "type": "string",
+            "elasticsearch_mapping_index_type": {
+                "title": "Field mapping index type",
+                "description": "Defines one of three types of indexing available",
+                "type": "string",
+                "default": "analyzed",
+                "enum": [
+                    "analyzed",
+                    "not_analyzed",
+                    "no"
+                ]
+            },
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
+        },
+        "transfection_type": {
+            "title": "Transfection type",
+            "description": "The persistence of the transfection construct.",
+            "type": "string",
+            "enum": [
+                "stable", 
+                "transient"
+            ]
+        },
+        "epitope_tags": {
+            "title": "Epitope tags",
+            "description": "Epitope tags introduced.",
+            "type": "array",
+            "items": {
+                "title": "Epitope tag",
+                "description": "Epitope tag introduced in the modification.",
+                "comment": "Submit tag name and tag location.",
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["name", "location"],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "enum": [
+                            "eGFP",
+                            "V5",
+                            "HA",
+                            "ER",
+                            "3xFLAG",
+                            "DsRed",
+                            "TRE",
+                            "T2A",
+                            "YFP",
+                            "FLAG",
+                            "mCherry"
+                        ]
+                    },
+                    "location": {
+                        "type": "string",
+                        "enum": [
+                            "N-terminal",
+                            "C-terminal",
+                            "internal",
+                            "other",
+                            "unknown"
+                        ]
+                    }
+                }
+            }
+        },
+        "vector_backbone_name": {
+            "title": "Backbone name",
+            "description": "The name of the vector backbone used for the construct.",
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
+        },
+        "url": {
+            "title": "URL",
+            "description": "An external resource with additional information about the construct.",
+            "type": "string",
+            "format": "uri"
+        },
+		"insert_sequence": {
+            "title": "Insert sequence",
+            "description": "Insert sequence",
+        	"type": "string",
+            "pattern": "^[ACTG]+$"	
+		},
+        "insert_genome_coordinates": {
+            "title": "Insert genome coordinates",
+            "description": "Genomic coordinates of the insert. e.g. GRCh38 or dm6.",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "assembly": {
+                    "title": "Genome assembly",
+                    "description": "The genome assembly to which the target coordinates relate. e.g. GRCh38",
+                    "type": "string",
+                    "pattern": "^((GRCh\\d{2})|(GRCm\\d{2})|(WBcel\\d{3})|(ce\\d{2})|(dm\\d{1}))$"
+                },
+                "chromosome": {
+                    "title": "Chromosome",
+                    "description": "The number (or letter) designation for the target chromosome. e.g. 1, 2L, or X",
+                    "type": "string",
+                    "pattern": "^(\\d{1,2}[RL]?|[XYMU]|I|II|III|IV|V|)$"
+                },
+                "start": {
+                    "title": "Start",
+                    "description": "The starting coordinate.",
+                    "type": "integer"
+                },
+                "end": {
+                    "title": "End",
+                    "description": "The ending coordinate (possibly equal to the starting coordinate for one base.)",
+                    "type": "integer"
+                }
+            }
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string"
+            }
+        }
+    }
+}
+        
