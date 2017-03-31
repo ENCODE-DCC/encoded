@@ -99,7 +99,7 @@ var BiosampleComponent = module.exports.Biosample = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root='/search/?type=biosample' crumbs={crumbs} />
+                        <Breadcrumbs root='/search/?type=Biosample' crumbs={crumbs} />
                         <h2>
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
                         </h2>
@@ -424,19 +424,19 @@ var BiosampleComponent = module.exports.Biosample = React.createClass({
 
                 <RelatedItems
                     title="Experiments using this biosample"
-                    url={'/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid}
+                    url={'/search/?type=Experiment&replicates.library.biosample.uuid=' + context.uuid}
                     Component={ExperimentTable} ignoreErrors />
 
                 <RelatedItems title="Biosamples that are part of this biosample"
-                              url={'/search/?type=biosample&part_of.uuid=' + context.uuid}
+                              url={'/search/?type=Biosample&part_of.uuid=' + context.uuid}
                               Component={BiosampleTable} ignoreErrors />
 
                 <RelatedItems title="Biosamples that are derived from this biosample"
-                              url={'/search/?type=biosample&derived_from.uuid=' + context.uuid}
+                              url={'/search/?type=Biosample&derived_from.uuid=' + context.uuid}
                               Component={BiosampleTable} ignoreErrors />
 
                 <RelatedItems title="Biosamples that are pooled from this biosample"
-                              url={'/search/?type=biosample&pooled_from.uuid=' + context.uuid}
+                              url={'/search/?type=Biosample&pooled_from.uuid=' + context.uuid}
                               Component={BiosampleTable} ignoreErrors />
 
                 {combinedDocs.length ?

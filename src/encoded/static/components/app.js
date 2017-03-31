@@ -268,6 +268,7 @@ class App extends React.Component {
         this.setState({
             href: window.location.href,
             session_cookie: sessionCookie,
+            session: session,
         });
 
         // Make a URL for the logo.
@@ -308,7 +309,7 @@ class App extends React.Component {
 
             // If it looks like an anchor target link, scroll to it, plus an offset for the fixed navbar
             // Hints from https://dev.opera.com/articles/fixing-the-scrolltop-bug/
-            if (this.state.href) {
+            if (window.location.href) {
                 const splitHref = this.state.href.split('#');
                 if (splitHref.length >= 2 && splitHref[1][0] !== '!') {
                     // URL has hash tag, but not the '#!edit' type
@@ -338,10 +339,17 @@ class App extends React.Component {
         window.onbeforeunload = this.handleBeforeUnload;
     }
 
-    componentWillUpdate(nextProps, nextState) {
-        if (!this.state.session || (this.state.session_cookie !== nextState.session_cookie)) {
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextState) {
+            return !(_.isEqual(nextState, this.state));
+        }
+        return false;
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (!this.state.session || (this.state.session_cookie !== prevState.session_cookie)) {
             const updateState = {};
-            updateState.session = parseSessionCookie(nextState.session_cookie);
+            updateState.session = parseSessionCookie(this.state.session_cookie);
             if (!updateState.session['auth.userid']) {
                 updateState.session_properties = {};
             } else if (updateState.session['auth.userid'] !== (this.state.session && this.state.session['auth.userid'])) {
@@ -349,9 +357,7 @@ class App extends React.Component {
             }
             this.setState(updateState);
         }
-    }
 
-    componentDidUpdate(prevProps, prevState) {
         if (this.props) {
             Object.keys(this.props).forEach((propKey) => {
                 if (this.props[propKey] !== prevProps[propKey]) {
@@ -415,7 +421,9 @@ class App extends React.Component {
             request.server_stats = require('querystring').parse(statsHeader);
             request.etag = response.headers.get('ETag');
             const sessionCookie = extractSessionCookie();
-            this.setState({ session_cookie: sessionCookie });
+            if (this.state.session_cookie !== sessionCookie) {
+                this.setState({ session_cookie: sessionCookie });
+            }
         });
         return request;
     }
@@ -489,7 +497,6 @@ class App extends React.Component {
     }
 
     triggerLogout() {
-        console.log('Logging out (Auth0)');
         const session = this.state.session;
         if (!(session && session['auth.userid'])) return;
         this.fetch('/logout?redirect=false', {
@@ -750,7 +757,6 @@ class App extends React.Component {
         if (request && this.requestCurrent) {
             // Abort the current request, then remember we've aborted the request so that we
             // don't render the Network Request Error page.
-            console.log('REQ %s:%o', this.requestCurrent, request);
             request.abort();
             this.requestAborted = true;
             this.requestCurrent = false;
@@ -957,7 +963,7 @@ class App extends React.Component {
                     <Title>{title}</Title>
                     {base ? <base href={base} /> : null}
                     <link rel="canonical" href={canonical} />
-                    <script async src="://www.google-analytics.com/analytics.js" />
+                    <script async src="//www.google-analytics.com/analytics.js" />
                     {this.props.inline ? <script data-prop-name="inline" dangerouslySetInnerHTML={{ __html: this.props.inline }} /> : null}
                     {this.props.styles ? <link rel="stylesheet" href={this.props.styles} /> : null}
                     {newsHead(this.props, `${hrefUrl.protocol}//${hrefUrl.host}`)}
@@ -1035,7 +1041,7 @@ module.exports.getRenderedProps = function (document) {
         const elem = scriptProps[i];
         let value = elem.text;
         const elemType = elem.getAttribute('type') || '';
-        if (elemType == 'application/json' || elemType.slice(-5) === '+json') {
+        if (elemType === 'application/json' || elemType.slice(-5) === '+json') {
             value = JSON.parse(value);
         }
         props[elem.getAttribute('data-prop-name')] = value;
