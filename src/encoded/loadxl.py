@@ -30,6 +30,7 @@ ORDER = [
     'talen',
     'tale',
     'crispr',
+    'plasmid',
     'genetic_modification',
     'genetic_modification_characterization',
     'mouse_donor',
