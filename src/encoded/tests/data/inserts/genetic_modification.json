@@ -108,5 +108,37 @@
         "modification_techniques": [
             "69790723-e4de-41d3-ab89-6e06a67d84d6"
         ]
+    },
+    {
+        "status": "in progress",
+        "purpose": "tagging",
+        "target": "eGFP-E2F1-human",
+        "award": "/awards/U54HG006996/",
+        "lab": "/labs/michael-snyder/",
+        "uuid": "963cfae8-a584-4a34-a329-ebea0c6aeb3b",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "modification_type": "insertion",
+        "modification_techniques": [
+            "kevin-white:eGFP-E2F1-plasmid"
+        ]
+    },
+    {
+        "status": "in progress",
+        "purpose": "tagging",
+        "target": "3XFLAG-pab-1-celegans",
+        "award": "/awards/U54HG006996/",
+        "lab": "/labs/michael-snyder/",
+        "uuid": "bbaf6cc2-d19c-412a-a3d0-0911fd0615bc",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "modified_site": {
+            "assembly": "ce10",
+            "chromosome": "IV",
+            "start": 337847,
+            "end": 337847
+        },
+        "modification_type": "insertion",
+        "modification_techniques": [
+            "kevin-white:3XFLAG-pab-1-plasmid"
+        ]
     }
 ]
