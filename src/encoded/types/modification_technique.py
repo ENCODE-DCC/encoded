@@ -41,3 +41,15 @@ class Tale(ModificationTechnique):
     item_type = 'tale'
     schema = load_schema('encoded:schemas/tale.json')
     embedded = ModificationTechnique.embedded
+
+
+@collection(
+    name='plasmids',
+    properties={
+        'title': "General plasmid-based genetic modifications",
+        'description': 'Listing of all general plasmid-based genetic modifications.'
+    })
+class Plasmid(ModificationTechnique):
+    item_type = 'plasmid'
+    schema = load_schema('encoded:schemas/plasmid.json')
+    embedded = ModificationTechnique.embedded
