@@ -8,7 +8,7 @@ const globals = require('./globals');
 const navigation = require('./navigation');
 const dataset = require('./dataset');
 const dbxref = require('./dbxref');
-const statuslabel = require('./statuslabel');
+import StatusLabel from './statuslabel';
 const image = require('./image');
 const item = require('./item');
 const { pubReferenceList } = require('./reference');
@@ -19,7 +19,6 @@ const {GeneticModificationSummary} = require('./genetic_modification');
 
 const Breadcrumbs = navigation.Breadcrumbs;
 const DbxrefList = dbxref.DbxrefList;
-const StatusLabel = statuslabel.StatusLabel;
 const {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = doc;
 const ExperimentTable = dataset.ExperimentTable;
 const RelatedItems = item.RelatedItems;

@@ -11,7 +11,7 @@ import { requestFiles, requestObjects, RestrictedDownloadButton } from './object
 import { ProjectBadge } from './image';
 import { QualityMetricsPanel } from './quality_metric';
 import { SortTablePanel, SortTable } from './sorttable';
-import { StatusLabel } from './statuslabel';
+import StatusLabel from './statuslabel';
 
 
 // Columns to display in Deriving/Derived From file tables

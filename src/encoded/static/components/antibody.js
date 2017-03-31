@@ -11,13 +11,13 @@ var dataset = require('./dataset');
 var dbxref = require('./dbxref');
 var image = require('./image');
 var item = require('./item');
-var statuslabel = require('./statuslabel');
+var audit = require('./audit');
+import StatusLabel from './statuslabel';
 var doc = require('./doc');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var ExperimentTable = dataset.ExperimentTable;
-var StatusLabel = statuslabel.StatusLabel;
 var statusOrder = globals.statusOrder;
 var RelatedItems = item.RelatedItems;
 var {Panel, PanelBody} = panel;

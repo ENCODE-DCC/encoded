@@ -6,7 +6,7 @@ import { collapseIcon } from '../libs/svg-icons';
 import { auditDecor } from './audit';
 import { SortTable } from './sorttable';
 import globals from './globals';
-import { StatusLabel } from './statuslabel';
+import StatusLabel from './statuslabel';
 import { ProjectBadge, Attachment } from './image';
 import { RelatedItems } from './item';
 import { DbxrefList } from './dbxref';

@@ -5,7 +5,7 @@ import { FetchedData, Param } from './fetched';
 import globals from './globals';
 import { ProjectBadge } from './image';
 import { PickerActions } from './search';
-import { StatusLabel } from './statuslabel';
+import StatusLabel from './statuslabel';
 
 
 const labChartId = 'lab-chart'; // Lab chart <div> id attribute

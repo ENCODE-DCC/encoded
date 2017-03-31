@@ -609,12 +609,11 @@ class HomepageChart2 extends React.Component {
                         legendCallback: (chart) => { // allows for legend clicking
                             const chartData = chart.data.datasets[0].data;
                             const text = [];
-                            const query = this.computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
                             text.push('<ul>');
                             for (let i = 0; i < chartData.length; i += 1) {
                                 if (chartData[i]) {
                                     text.push('<li>');
-                                    text.push(`<a href="/matrix/${this.props.query}&${query}${chart.data.labels[i]}">`); // go to matrix view when clicked
+                                    text.push(`<a href="/matrix/${this.props.query}&biosample_type=${chart.data.labels[i]}">`); // go to matrix view when clicked
                                     text.push(`<span class="chart-legend-chip" style="background-color:${chart.data.datasets[0].backgroundColor[i]}"></span>`);
                                     if (chart.data.labels[i]) {
                                         text.push(`<span class="chart-legend-label">${chart.data.labels[i]}</span>`);
@@ -637,12 +636,19 @@ class HomepageChart2 extends React.Component {
                         },
                     },
                 });
+            } else {
+                this.myPieChart = null;
+            }
 
-                // Have chartjs draw the legend into the DOM.
-                document.getElementById('chart-legend-2').innerHTML = this.myPieChart.generateLegend();
+            // Have chartjs draw the legend into the DOM.
+            const legendElement = document.getElementById('chart-legend-2');
+            if (legendElement) {
+                legendElement.innerHTML = this.myPieChart.generateLegend();
+            }
 
-                // Save the chart <div> height so we can set it to that value when no data's available.
-                const chartWrapperDiv = document.getElementById('chart-wrapper-2');
+            // Save the chart <div> height so we can set it to that value when no data's available.
+            const chartWrapperDiv = document.getElementById('chart-wrapper-2');
+            if (chartWrapperDiv) {
                 this.wrapperHeight = chartWrapperDiv.clientHeight;
             }
         });
@@ -676,9 +682,8 @@ class HomepageChart2 extends React.Component {
 
         // Our data source will be different for computational predictions
         if (facets) {
-            let assayFacet;
             this.computationalPredictions = this.props.assayCategory === 'COMPPRED';
-            assayFacet = facets.find(facet => facet.field === 'biosample_type');
+            const assayFacet = facets.find(facet => facet.field === 'biosample_type');
             this.facetData = assayFacet ? assayFacet.terms : [];
             const docCounts = this.facetData.length ? this.facetData.map(data => data.doc_count) : [];
             total = docCounts.length ? docCounts.reduce((prev, curr) => prev + curr) : 0;
@@ -730,6 +735,32 @@ HomepageChart2.contextTypes = {
 };
 
 
+// Draw the small triangle above the selected assay in the "Assay Categories" chart if the user has
+// selected an assay from the classic image.
+function drawColumnSelects(currentAssay, ctx, data) {
+    // Adapted from https://github.com/chartjs/Chart.js/issues/2477#issuecomment-255042267
+    if (currentAssay) {
+        ctx.fillStyle = '#2138B2';
+
+        // Find the data with a label matching the currently selected assay.
+        const currentColumn = data.labels.indexOf(currentAssay);
+        if (currentColumn !== -1) {
+            // Get information on the matching column's coordinates so we know where to draw the
+            // triangle.
+            const dataset = data.datasets[0];
+            const model = dataset._meta[Object.keys(dataset._meta)[0]].data[currentColumn]._model;
+
+            // Draw the triangle into the HTML5 <canvas> element.
+            ctx.beginPath();
+            ctx.moveTo(model.x - 5, model.y - 8);
+            ctx.lineTo(model.x, model.y - 3);
+            ctx.lineTo(model.x + 5, model.y - 8);
+            ctx.fill();
+        }
+    }
+}
+
+
 // Component to display the D3-based chart for Biosample
 class HomepageChart3 extends React.Component {
     constructor(props) {
@@ -767,7 +798,8 @@ class HomepageChart3 extends React.Component {
             const labels = [];
             const selectedAssay = (this.props.assayCategory && this.props.assayCategory !== 'COMPPRED') ? this.props.assayCategory.replace(/\+/g, ' ') : '';
 
-            // for each item, set doc count, add to total doc count, add proper label, and assign color
+            // For each item, set doc count, add to total doc count, add proper label, and assign
+            // color.
             facetData.forEach((term, i) => {
                 data[i] = term.doc_count;
                 labels[i] = term.key;
@@ -793,8 +825,13 @@ class HomepageChart3 extends React.Component {
                         legend: {
                             display: false, // hiding automatically generated legend
                         },
+                        hover: {
+                            mode: false,
+                        },
                         animation: {
-                            duration: 200,
+                            duration: 0,
+                            onProgress: function () { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); },
+                            onComplete: function () { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); },
                         },
                         scales: {
                             xAxes: [{
@@ -805,6 +842,11 @@ class HomepageChart3 extends React.Component {
                                     autoSkip: false,
                                 },
                             }],
+                        },
+                        layout: {
+                            padding: {
+                                top: 10,
+                            },
                         },
                         onClick: (e) => {
                             // React to clicks on pie sections
@@ -844,6 +886,9 @@ class HomepageChart3 extends React.Component {
         Chart.data.datasets[0].data = data;
         Chart.data.labels = labels;
         Chart.data.datasets[0].backgroundColor = colors;
+        Chart.options.hover.mode = false;
+        Chart.options.animation.onProgress = function () { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); };
+        Chart.options.animation.onComplete = function () { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); };
         Chart.update();
     }
 

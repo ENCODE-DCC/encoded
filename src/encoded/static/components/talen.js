@@ -3,11 +3,11 @@ var React = require('react');
 var panel = require('../libs/bootstrap/panel');
 var globals = require('./globals');
 var { PickerActions } = require('./search');
-var statuslabel = require('./statuslabel');
+var search = require('./search');
+import StatusLabel from './statuslabel';
 var navigation = require('./navigation');
 var doc = require('./doc');
 
-var StatusLabel = statuslabel.StatusLabel;
 var Breadcrumbs = navigation.Breadcrumbs;
 var {Panel, PanelBody, PanelHeading} = panel;
 var {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = doc;

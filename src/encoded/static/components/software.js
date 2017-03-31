@@ -5,7 +5,7 @@ import globals from './globals';
 import { Breadcrumbs } from './navigation';
 import search from './search';
 import { pubReferenceList } from './reference';
-import { StatusLabel } from './statuslabel';
+import StatusLabel from './statuslabel';
 import { auditDecor } from './audit';
 
 
