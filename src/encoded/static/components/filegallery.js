@@ -1385,8 +1385,7 @@ const FileGalleryRenderer = React.createClass({
 
     // Set the graph filter based on the given <option> value
     setFilter: function (value) {
-        const stateValue = value === 'default' ? '' : value;
-        this.setState({ selectedFilterValue: stateValue });
+        this.setState({ selectedFilterValue: value });
     },
 
     // React to a filter menu selection. The synthetic event given in `e`
@@ -1530,8 +1529,7 @@ const FilterMenu = React.createClass({
     },
 
     render: function () {
-        const { filterOptions, handleFilterChange } = this.props;
-        const selectedFilterValue = this.props.selectedFilterValue ? this.props.selectedFilterValue : '0';
+        const { filterOptions, handleFilterChange, selectedFilterValue } = this.props;
 
         return (
             <select className="form-control" value={selectedFilterValue} onChange={handleFilterChange}>
