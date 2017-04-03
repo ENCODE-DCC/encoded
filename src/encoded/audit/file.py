@@ -141,51 +141,24 @@ def audit_file_derived_from_revoked(value, system):
                 return
 
 
-@audit_checker('file', frame=['dataset', 'derived_from'])
+@audit_checker('file', frame=['derived_from'])
 def audit_file_assembly(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
-
-    if value['output_category'] in ['raw data']:
-        if value['file_format'] in ['fastq', 'csfasta', 'csqual', 'fasta'] and \
-           'assembly' in value:
-            detail = 'Raw data file {} '.format(value['@id']) + \
-                     'has improperly specified assembly value.'
-            yield AuditFailure('unexpected property',
-                               detail, level='INTERNAL_ACTION')
+    if 'derived_from' not in value:
         return
-    else:  # not row data file
-        # special treatment of RNA-Bind-n-Seq
-        if 'assay_term_name' in value['dataset'] and \
-           value['dataset']['assay_term_name'] == 'RNA Bind-n-Seq':
-            if 'assembly' in value:
-                detail = 'RNA Bind-n-Seq file {} '.format(value['@id']) + \
-                         'has improperly specified assembly value.'
-                yield AuditFailure('unexpected property',
-                                   detail, level='INTERNAL_ACTION')
-                return
-        #  any other asssay processed file
-        else:
-            if 'assembly' not in value:
+    for f in value['derived_from']:
+        if 'assembly' in f:
+            if f['assembly'] != value['assembly']:
                 detail = 'Processed file {} '.format(value['@id']) + \
-                         'does not have assembly specified.'
-                yield AuditFailure('missing assembly',
+                         'assembly {} '.format(value['assembly']) + \
+                         'does not match assembly {} of the file {} '.format(
+                         f['assembly'],
+                         f['@id']) + \
+                    'it was derived from.'
+                yield AuditFailure('inconsistent assembly',
                                    detail, level='INTERNAL_ACTION')
                 return
-            if 'derived_from' not in value:
-                return
-            for f in value['derived_from']:
-                if 'assembly' in f:
-                    if f['assembly'] != value['assembly']:
-                        detail = 'Processed file {} '.format(value['@id']) + \
-                                 'assembly {} '.format(value['assembly']) + \
-                                 'does not match assembly {} of the file {} '.format(
-                                 f['assembly'],
-                                 f['@id']) + \
-                            'it was derived from.'
-                        yield AuditFailure('inconsistent assembly',
-                                           detail, level='INTERNAL_ACTION')
-                        return
 
 
 @audit_checker('file', frame=['replicate', 'replicate.experiment',
