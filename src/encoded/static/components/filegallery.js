@@ -4,8 +4,6 @@ import moment from 'moment';
 import globals from './globals';
 import { Panel, PanelHeading } from '../libs/bootstrap/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
-import { DropdownButton } from '../libs/bootstrap/button';
-import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
 import StatusLabel from './statuslabel';
 import { requestFiles, DownloadableAccession, BrowserSelector } from './objectutils';
 import { Graph, JsonGraph } from './graph';
@@ -31,6 +29,22 @@ function fileAuditStatus(file) {
         highestAuditLevel = 'OK';
     }
     return <AuditIcon level={highestAuditLevel} addClasses="file-audit-status" />;
+}
+
+
+// Sort callback to compare the accession/external_accession of two files.
+function fileAccessionSort(a, b) {
+    if (!a.accession !== !b.accession) {
+        // One or the other but not both use an external accession. Sort so regular accession
+        // comes first.
+        return a.accession ? -1 : 1;
+    }
+
+    // We either have two accessions or two external accessions. Do a case-insensitive compare on
+    // the calculated property that gets external_accession if accession isn't available.
+    const aTitle = a.title.toLowerCase();
+    const bTitle = b.title.toLowerCase();
+    return aTitle > bTitle ? 1 : (aTitle < bTitle ? -1 : 0);
 }
 
 
@@ -78,6 +92,7 @@ export const FileTable = React.createClass({
                 const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[item['@id']]);
                 return <DownloadableAccession file={item} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />;
             },
+            objSorter: (a, b) => fileAccessionSort(a, b),
         },
         file_type: { title: 'File type' },
         output_type: { title: 'Output type' },
@@ -132,6 +147,7 @@ export const FileTable = React.createClass({
                 const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[item['@id']]);
                 return <DownloadableAccession file={item} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />;
             },
+            objSorter: (a, b) => fileAccessionSort(a, b),
         },
         file_type: { title: 'File type' },
         output_type: { title: 'Output type' },
