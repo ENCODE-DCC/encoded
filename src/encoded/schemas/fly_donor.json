@@ -4,7 +4,7 @@
     "id": "/profiles/fly_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "organism"],
+    "required": [ "award", "lab", "organism", "dbxrefs", "genotype"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -23,6 +23,15 @@
         { "$ref": "mixins.json#/genomic_alterations"},
         { "$ref": "mixins.json#/genetic_modifications" }
     ],
+    "dependencies": {
+        "dbxrefs": {
+            "properties": {
+                "dbxrefs": {
+                    "minItems": 1
+                }
+            }
+        }
+    },
     "properties": {
         "schema_version": {
             "default": "3"
