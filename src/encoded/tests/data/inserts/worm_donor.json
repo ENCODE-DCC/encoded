@@ -5,7 +5,8 @@
         "lab": "j-michael-cherry",
         "organism": "celegans",
         "uuid": "08460bf0-d474-11e3-9c1a-0800200c9a66",
-        "dbxrefs": ["CGC:N5"]
+        "dbxrefs": ["CGC:N5"],
+        "genotype": "unc-119(tm4063) III; wgIs493."
     },
     {
         "accession": "ENCDO183YYY",
@@ -14,7 +15,9 @@
         "organism": "celegans",
         "num_times_outcrossed": "x10",
         "constructs": ["893d806f-3a88-43eb-afdf-dcc16c79ee45"],
-        "uuid": "a09ce89d-e73a-4bbb-a3c9-9b46cc3a8e5f"
+        "uuid": "a09ce89d-e73a-4bbb-a3c9-9b46cc3a8e5f",
+        "dbxrefs": ["CGC:N5"],
+        "genotype": "unc-119(tm4063) III; wgIs493."
     },
     {
         "accession": "ENCDO976AYR",
@@ -23,6 +26,7 @@
         "organism": "celegans",
         "aliases": ["CGC:OP493"],
         "outcrossed_strain": "ENCDO244AAA",
+        "dbxrefs": ["CGC:N51"],
         "genotype": "unc-119(tm4063) III; wgIs493.",
         "mutagen": "bombardment",
         "mutated_gene": "mes-4-celegans",

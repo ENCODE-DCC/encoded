@@ -611,6 +611,8 @@ def fly_donor(testapp, award, lab, fly):
         'award': award['@id'],
         'lab': lab['@id'],
         'organism': fly['@id'],
+        'dbxrefs': ['FlyBase:FBst0000005'],
+        'genotype': 'w[1118]; PBac{y[+mDint2] w[+mC]=ab-GFP.FLAG}VK00033'
     }
     return testapp.post_json('/fly_donor', item).json['@graph'][0]
 

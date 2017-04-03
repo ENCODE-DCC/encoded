@@ -5,6 +5,7 @@
         "lab": "j-michael-cherry",
         "organism": "dmelanogaster",
         "uuid": "ea3bec10-d473-11e3-9c1a-0800200c9a66",
+        "genotype": "w[1118]; PBac{y[+mDint2] w[+mC]=ab-GFP.FLAG}VK00033",
         "dbxrefs": ["BDSC:5","DSSC:451-56", "FlyBase:FBst0000005"]
 
     },
@@ -15,7 +16,10 @@
         "organism": "dmelanogaster",
         "constructs": ["893d806f-3a88-43eb-afdf-dcc16c79ee45"],
         "mutated_gene": "cad-dmelanogaster",
-        "uuid": "c9a34c9e-a19a-4bf5-8b50-5d7c39d190b1"
+        "genotype": "w[1118]; PBac{y[+mDint2] w[+mC]=ab-GFP.FLAG}VK00033",
+        "uuid": "c9a34c9e-a19a-4bf5-8b50-5d7c39d190b1",
+        "dbxrefs": ["BDSC:5","DSSC:451-56", "FlyBase:FBst0000005"]
+
     },
     {
         "accession": "ENCDO101XXX",
