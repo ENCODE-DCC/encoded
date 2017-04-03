@@ -37,7 +37,8 @@
             "default": "3"
         },
         "genotype": {
-            "description": "The genotype of the strain according to accepted nomenclature conventions: http://flybase.org/wiki/FlyBase:Nomenclature"
+            "description": "The genotype of the strain according to accepted nomenclature conventions: http://flybase.org/wiki/FlyBase:Nomenclature",
+            "type":  "string"
         },
         "organism":{ 
             "linkEnum": [

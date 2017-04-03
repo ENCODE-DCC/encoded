@@ -37,7 +37,8 @@
             "default": "3"
         },
         "genotype": {
-            "description": "The genotype of the strain according to accepted nomenclature conventions: http://www.wormbase.org/about/userguide/nomenclature#k89607hgcf24ea13jbid5--10."
+            "description": "The genotype of the strain according to accepted nomenclature conventions: http://www.wormbase.org/about/userguide/nomenclature#k89607hgcf24ea13jbid5--10.",
+            "type":  "string"
         },
         "num_times_outcrossed": {
             "title": "Number of times outcrossed",
