@@ -280,34 +280,6 @@ def audit_file_platform(value, system):
         raise AuditFailure('missing platform', detail, level='ERROR')
 
 
-@audit_checker('file', frame=['dataset'],
-               condition=rfa('ENCODE3', 'modERN', 'ENCODE',
-                             'ENCODE2', 'ENCODE2-Mouse'))
-def audit_file_read_length(value, system):
-    '''
-    Reads files should have a read_length
-    '''
-
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
-
-    if value['output_type'] != 'reads':
-        return
-
-    if value['file_format'] == 'csqual':
-        return
-
-    if 'read_length' not in value:
-        detail = 'Reads file {} missing read_length'.format(value['@id'])
-        yield AuditFailure('missing read_length', detail, level='INTERNAL_ACTION')
-        return
-
-    if value['read_length'] == 0:
-        detail = 'Reads file {} has read_length of 0'.format(value['@id'])
-        yield AuditFailure('missing read_length', detail, level='INTERNAL_ACTION')
-        return
-
-
 def check_presence(file_to_check, files_list):
     for f in files_list:
         if f['accession'] == file_to_check['accession']:

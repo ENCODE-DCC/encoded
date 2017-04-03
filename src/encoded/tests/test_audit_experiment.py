@@ -280,6 +280,7 @@ def file_fastq(testapp, lab, award, base_experiment, base_replicate):
         'file_format': 'fastq',
         'md5sum': '91b474b6411514393507f4ebfa66d47a',
         'output_type': 'reads',
+        "read_length": 50,
         'run_type': "single-ended",
         'file_size': 34,
         'lab': lab['@id'],
@@ -298,6 +299,7 @@ def file_fastq_2(testapp, lab, award, base_experiment, base_replicate):
         'md5sum': '94be74b6e14515393547f4ebfa66d77a',
         'run_type': "paired-ended",
         'output_type': 'reads',
+        "read_length": 50,
         'file_size': 34,
         'lab': lab['@id'],
         'award': award['@id'],
@@ -314,6 +316,7 @@ def file_fastq_3(testapp, lab, award, base_experiment, replicate_1_1):
         'file_format': 'fastq',
         'file_size': 34,
         'output_type': 'reads',
+        "read_length": 50,
         'md5sum': '21be74b6e11515393507f4ebfa66d77a',
         'run_type': "paired-ended",
         'lab': lab['@id'],
@@ -333,6 +336,7 @@ def file_fastq_4(testapp, lab, award, base_experiment, replicate_2_1):
         'md5sum': '11be74b6e11515393507f4ebfa66d77a',
         'run_type': "paired-ended",
         'output_type': 'reads',
+        "read_length": 50,
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
@@ -348,6 +352,7 @@ def file_fastq_5(testapp, lab, award, base_experiment, replicate_2_1):
         'file_format': 'fastq',
         'md5sum': '91be79b6e11515993509f4ebfa66d77a',
         'run_type': "paired-ended",
+        "read_length": 50,
         'output_type': 'reads',
         'file_size': 34,
         'lab': lab['@id'],
@@ -3009,8 +3014,10 @@ def test_audit_experiment_wrong_construct(testapp,
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
-    testapp.patch_json(biosample_1['@id'], {'constructs': [construct['@id']]})
-    testapp.patch_json(biosample_2['@id'], {'constructs': [construct['@id']]})
+    testapp.patch_json(biosample_1['@id'], {'constructs': [construct['@id']],
+                                            'transfection_type': 'stable'})
+    testapp.patch_json(biosample_2['@id'], {'constructs': [construct['@id']],
+                                            'transfection_type': 'stable'})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
                                                 'target': recombinant_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
