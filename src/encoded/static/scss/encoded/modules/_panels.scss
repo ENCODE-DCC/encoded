@@ -218,12 +218,20 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     padding: 10px;
 }
 
-.doc-panel-outer {
-    padding: 3px 6px;
-}
+// Panel containing columns of document sub-panels.
+.doc-panel {
+    @at-root #{&}__outer {
+        padding: 3px;
+    }
 
-.doc-panel-inner {
-    padding: 0 5px;
+    @at-root #{&}__inner {
+        padding: 0 5px;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    }
 }
 
 .panel-attachment {
