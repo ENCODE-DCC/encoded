@@ -225,7 +225,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     }
 
     @at-root #{&}__inner {
-        padding: 0 5px;
+        padding: 0;
 
         @media screen and (min-width: $screen-sm-min) {
             display: flex;
