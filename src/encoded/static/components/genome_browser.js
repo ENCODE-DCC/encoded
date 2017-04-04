@@ -48,14 +48,6 @@ function rAssemblyToSources(assembly, region) {
         chr: '22',
         viewStart: 29890000,
         viewEnd: 30050000,
-        cookieKey: 'human-grc_h37-fp',
-        coordSystem: {
-            speciesName: 'Human',
-            taxon: 9606,
-            auth: 'GRCh',
-            version: '37',
-            ucscName: 'hg19',
-        },
         sources: [],
     };
 
@@ -91,6 +83,8 @@ function rAssemblyToSources(assembly, region) {
         // Genome: faToTwoBit GRCh38_no_alt_analysis_set_GCA_000001405.15.fa.gz
         // gencode: http://ngs.sanger.ac.uk/production/gencode/trackhub/data/gencode.v24.annotation.bb
         // repeats: http://www.biodalliance.org/datasets/GRCh38/repeats.bb
+        browserCfg.cookieKey = 'GRCh38';
+        browserCfg.coordSystem = { speciesName: 'Homo sapiens', taxon: 9606, auth: 'GRCh', version: 38, ucscName: 'hg38' };
         browserCfg.sources = [
             {
                 name: 'Genome',
@@ -121,6 +115,8 @@ function rAssemblyToSources(assembly, region) {
         // Genome: faToTwoBit male.hg19.fa.gz
         // gencode: http://ngs.sanger.ac.uk/production/gencode/trackhub/data/gencode.v19.annotation.bb
         // repeats: http://www.biodalliance.org/datasets/GRCh38/repeats.bb
+        browserCfg.cookieKey = 'GRCh37';
+        browserCfg.coordSystem = { speciesName: 'Homo sapiens', taxon: 9606, auth: 'GRCh', version: 37, ucscName: 'hg19' };
         browserCfg.sources = [
             {
                 name: 'Genome',
@@ -150,11 +146,11 @@ function rAssemblyToSources(assembly, region) {
         browserCfg.chr = '19';
         browserCfg.viewStart = 30000000;
         browserCfg.viewEnd = 30100000;
-        browserCfg.cookieKey = 'mouse38';
-        browserCfg.coordSystem = { speciesName: 'Mouse', taxon: 10090, auth: 'GRCm', version: 38, ucscName: 'mm10' };
+        browserCfg.cookieKey = 'GRCm38';
+        browserCfg.coordSystem = { speciesName: 'Mus musculus', taxon: 10090, auth: 'GRCm', version: 38, ucscName: 'mm10' };
         // sources:
         // Genome: faToTwoBit mm10_no_alt_analysis_set_ENCODE.fa.gz
-        // gencode: http://ngs.sanger.ac.uk/production/gencode/trackhub/data/gencode.vMm.annotation.bb
+        // gencode: http://ngs.sanger.ac.uk/production/gencode/trackhub/data/gencode.vM4.annotation.bb
         // repeats: http://www.biodalliance.org/datasets/GRCm38/repeats.bb
         browserCfg.sources = [
             {
@@ -183,8 +179,8 @@ function rAssemblyToSources(assembly, region) {
         browserCfg.chr = '19';
         browserCfg.viewStart = 30000000;
         browserCfg.viewEnd = 30030000;
-        browserCfg.cookieKey = 'mouse';
-        browserCfg.coordSystem = { speciesName: 'Mouse', taxon: 10090, auth: 'NCBIM', version: 37 };
+        browserCfg.cookieKey = 'NCBIM37';
+        browserCfg.coordSystem = { speciesName: 'Mus musculus', taxon: 10090, auth: 'NCBIM', version: 37 };
         browserCfg.sources = [
             {
                 name: 'Genome',
@@ -194,17 +190,49 @@ function rAssemblyToSources(assembly, region) {
                 provides_entrypoints: true,
             },
         ];
+    } else if (assembly === 'dm6') {
+        // Genome: from http://hgdownload.cse.ucsc.edu/goldenPath/dm6/bigZips/dm6.2bit
+        browserCfg.chr = '3L';
+        browserCfg.viewStart = 15940000;
+        browserCfg.viewEnd = 15985000;
+        browserCfg.cookieKey = 'BDGP6';
+        browserCfg.coordSystem = { speciesName: 'Drosophila melanogaster', taxon: 7227, auth: 'BDGP', version: 6 };
+        browserCfg.sources = [
+            {
+                name: 'Genome',
+                twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/dm6.2bit',
+                desc: 'D. melanogaster reference genome build BDGP R6',
+                tier_type: 'sequence',
+                provides_entrypoints: true,
+            },
+        ];
     } else if (assembly === 'dm3') {
         browserCfg.chr = '3L';
         browserCfg.viewStart = 15940000;
         browserCfg.viewEnd = 15985000;
-        browserCfg.cookieKey = 'drosophila';
-        browserCfg.coordSystem = { speciesName: 'Drosophila', taxon: 7227, auth: 'BDGP', version: 5 };
+        browserCfg.cookieKey = 'BDGP5';
+        browserCfg.coordSystem = { speciesName: 'Drosophila melanogaster', taxon: 7227, auth: 'BDGP', version: 5 };
         browserCfg.sources = [
             {
                 name: 'Genome',
                 twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/dm3.2bit',
                 desc: 'D. melanogaster reference genome build BDGP R5',
+                tier_type: 'sequence',
+                provides_entrypoints: true,
+            },
+        ];
+    } else if (assembly === 'ce11') {
+        // Genome: from ftp://hgdownload-sd.sdsc.edu/goldenPath/ce11/bigZips/ce11.2bit
+        browserCfg.chr = 'II';
+        browserCfg.viewStart = 14646376;
+        browserCfg.viewEnd = 14667875;
+        browserCfg.cookieKey = 'WBcel235';
+        browserCfg.coordSystem = { speciesName: 'Caenorhabditis elegans', taxon: 6239, auth: 'WBcel', version: 235 };
+        browserCfg.sources = [
+            {
+                name: 'Genome',
+                twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/ce11.2bit',
+                desc: 'C. elegans reference genome build WBcel235',
                 tier_type: 'sequence',
                 provides_entrypoints: true,
             },
@@ -233,9 +261,12 @@ const GenomeBrowser = React.createClass({
         const { assembly, region, limitFiles } = this.props;
         console.log('ASSEMBLY: %s', assembly);
 
+         // Probably not worth a define in globals.js for visualizable types and statuses.
         // Extract only bigWig and bigBed files from the list:
         let files = this.props.files.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
-        files = files.filter(file => ['released', 'in progress'].indexOf(file.status) > -1);  // TODO: list of allowed statuses
+        files = files.filter(file =>
+                    ['released', 'in progress', 'archived'].indexOf(file.status) > -1
+                );
 
 
         // Make some fake file objects from "test" just to give the genome browser something to
@@ -293,8 +324,8 @@ const GenomeBrowser = React.createClass({
 
             this.browser = new Dalliance({
                 maxHeight: 1000,
-                noPersist: true,
-                noPersistView: true,
+                // noPersist: true,
+                // noPersistView: true,
                 noTrackAdder: true,
                 maxWorkers: 4,
                 noHelp: true,
@@ -366,7 +397,7 @@ const GenomeBrowser = React.createClass({
 
     makeTrackLabel: function (file) {
         const datasetAccession = file.dataset.split('/')[2];
-        // TODO: unreleased files are not in visBlob so get default labels
+        // Unreleased files are not in visBlob so get default labels
         const trackLabels = {
             shortLabel: file.accession,
             longLabel: `${file.status} ${file.output_type}`,

@@ -1104,17 +1104,19 @@ const ResultTable = search.ResultTable = React.createClass({
 
         // If we have only one "type" term in the query string and it's for File, then we can
         // display the List/Browser tabs. Otherwise we just get the list.
-        let browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File';
+        let browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File' && assemblies.length === 1;
         if (browserAvail) {
             // If dataset is in the query string, we can show all files.
             const datasetFilter = filters.find(filter => filter.field === 'dataset');
             if (datasetFilter) {
                 browseAllFiles = true;
 
-                // TODO: Maybe a define in globals.js for visualizable types and statuses?
+                // Probably not worth a define in globals.js for visualizable types and statuses.
                 browserFiles = results.filter(file => ['bigBed', 'bigWig'].indexOf(file.file_format) > -1);
                 if (browserFiles.length > 0) {
-                    browserFiles = browserFiles.filter(file => ['released', 'in progress'].indexOf(file.status) > -1);
+                    browserFiles = browserFiles.filter(file =>
+                        ['released', 'in progress', 'archived'].indexOf(file.status) > -1
+                    );
                 }
                 browserAvail = (browserFiles.length > 0);
 
@@ -1212,7 +1214,7 @@ const ResultTable = search.ResultTable = React.createClass({
                                 </div>
                                 <hr />
                                 {browserAvail ?
-                                    <TabPanel tabs={{ listpane: 'List', browserpane: 'Browser' }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} tabFlange>
+                                    <TabPanel tabs={{ listpane: 'List', browserpane: 'Qick View' }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} tabFlange>
                                         <TabPanelPane key="listpane">
                                             <ResultTableList results={results} columns={columns} tabbed />
                                         </TabPanelPane>
