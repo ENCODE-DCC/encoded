@@ -214,7 +214,7 @@ class Dataset(Item):
                     file_inclusions = '&status=released&status=in+progress&status=archived'
                     bd_path = ('/search/?type=File&assembly=%s&dataset=/experiments/%s/%s%s#browser' %
                                (assembly_name,accession,file_formats,file_inclusions))
-                    browser_urls['Quick View'] = urljoin(request.host_url, bd_path)
+                    browser_urls['Quick View'] = bd_path  # no host to avoid 'test' problems
             if browser_urls:
                 viz[assembly_name] = browser_urls
         if viz:
