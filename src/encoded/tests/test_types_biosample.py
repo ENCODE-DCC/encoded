@@ -158,6 +158,7 @@ def test_biosample_summary_construct(testapp,
                                             'biosample_term_name': 'liver',
                                             'biosample_type': 'tissue',
                                             'constructs': [construct['@id']],
+                                            'transfection_type': 'stable',
                                             'model_organism_age': '10',
                                             'model_organism_age_units': 'day',
                                             'model_organism_sex': 'female',
@@ -166,4 +167,4 @@ def test_biosample_summary_construct(testapp,
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == \
         'Drosophila melanogaster liver tissue ' + \
-        'female (10 days) expressing C-terminal ATF4 fusion protein under daf-2 promoter'
+        'female (10 days) stably expressing C-terminal ATF4 fusion protein under daf-2 promoter'

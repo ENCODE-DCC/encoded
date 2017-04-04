@@ -53,7 +53,7 @@
             },
             "winchan": {
               "version": "0.1.2",
-              "from": "auth0/winchan#v0.1.2",
+              "from": "git://github.com/auth0/winchan.git#d96ec07cb3b7cfed4005b2970f8aa57e90c5bbca",
               "resolved": "git://github.com/auth0/winchan.git#d96ec07cb3b7cfed4005b2970f8aa57e90c5bbca"
             },
             "xtend": {
@@ -256,15 +256,15 @@
       "from": "https://registry.npmjs.org/babel-polyfill/-/babel-polyfill-6.16.0.tgz",
       "resolved": "https://registry.npmjs.org/babel-polyfill/-/babel-polyfill-6.16.0.tgz",
       "dependencies": {
-        "babel-runtime": {
-          "version": "6.11.6",
-          "from": "https://registry.npmjs.org/babel-runtime/-/babel-runtime-6.11.6.tgz",
-          "resolved": "https://registry.npmjs.org/babel-runtime/-/babel-runtime-6.11.6.tgz"
-        },
         "core-js": {
           "version": "2.4.1",
           "from": "https://registry.npmjs.org/core-js/-/core-js-2.4.1.tgz",
           "resolved": "https://registry.npmjs.org/core-js/-/core-js-2.4.1.tgz"
+        },
+        "babel-runtime": {
+          "version": "6.11.6",
+          "from": "https://registry.npmjs.org/babel-runtime/-/babel-runtime-6.11.6.tgz",
+          "resolved": "https://registry.npmjs.org/babel-runtime/-/babel-runtime-6.11.6.tgz"
         },
         "regenerator-runtime": {
           "version": "0.9.5",
@@ -286,31 +286,31 @@
       }
     },
     "chart.js": {
-      "version": "2.3.0",
-      "from": "https://registry.npmjs.org/chart.js/-/chart.js-2.3.0.tgz",
-      "resolved": "https://registry.npmjs.org/chart.js/-/chart.js-2.3.0.tgz",
+      "version": "2.5.0",
+      "from": "chart.js@latest",
+      "resolved": "https://registry.npmjs.org/chart.js/-/chart.js-2.5.0.tgz",
       "dependencies": {
         "chartjs-color": {
-          "version": "2.0.0",
-          "from": "https://registry.npmjs.org/chartjs-color/-/chartjs-color-2.0.0.tgz",
-          "resolved": "https://registry.npmjs.org/chartjs-color/-/chartjs-color-2.0.0.tgz",
+          "version": "2.1.0",
+          "from": "chartjs-color@>=2.0.0 <3.0.0",
+          "resolved": "https://registry.npmjs.org/chartjs-color/-/chartjs-color-2.1.0.tgz",
           "dependencies": {
+            "color-convert": {
+              "version": "0.5.3",
+              "from": "color-convert@>=0.5.3 <0.6.0",
+              "resolved": "https://registry.npmjs.org/color-convert/-/color-convert-0.5.3.tgz"
+            },
             "chartjs-color-string": {
               "version": "0.4.0",
-              "from": "https://registry.npmjs.org/chartjs-color-string/-/chartjs-color-string-0.4.0.tgz",
+              "from": "chartjs-color-string@>=0.4.0 <0.5.0",
               "resolved": "https://registry.npmjs.org/chartjs-color-string/-/chartjs-color-string-0.4.0.tgz",
               "dependencies": {
                 "color-name": {
-                  "version": "1.1.1",
-                  "from": "https://registry.npmjs.org/color-name/-/color-name-1.1.1.tgz",
-                  "resolved": "https://registry.npmjs.org/color-name/-/color-name-1.1.1.tgz"
+                  "version": "1.1.2",
+                  "from": "color-name@>=1.0.0 <2.0.0",
+                  "resolved": "https://registry.npmjs.org/color-name/-/color-name-1.1.2.tgz"
                 }
               }
-            },
-            "color-convert": {
-              "version": "0.5.3",
-              "from": "https://registry.npmjs.org/color-convert/-/color-convert-0.5.3.tgz",
-              "resolved": "https://registry.npmjs.org/color-convert/-/color-convert-0.5.3.tgz"
             }
           }
         }
@@ -357,7 +357,7 @@
     },
     "dagre-d3": {
       "version": "0.4.3-pre",
-      "from": "git+https://github.com/ENCODE-DCC/dagre-d3.git#v1.2.0",
+      "from": "git+https://github.com/ENCODE-DCC/dagre-d3.git#aecd13a26ba47e4d36dce52a39af6ed942456488",
       "resolved": "git+https://github.com/ENCODE-DCC/dagre-d3.git#aecd13a26ba47e4d36dce52a39af6ed942456488",
       "dependencies": {
         "dagre": {
@@ -435,7 +435,7 @@
     },
     "jsonschema": {
       "version": "1.1.0",
-      "from": "jsonschema@latest",
+      "from": "https://registry.npmjs.org/jsonschema/-/jsonschema-1.1.0.tgz",
       "resolved": "https://registry.npmjs.org/jsonschema/-/jsonschema-1.1.0.tgz"
     },
     "marked": {
@@ -460,7 +460,7 @@
         },
         "strict-uri-encode": {
           "version": "1.1.0",
-          "from": "strict-uri-encode@>=1.0.0 <2.0.0",
+          "from": "https://registry.npmjs.org/strict-uri-encode/-/strict-uri-encode-1.1.0.tgz",
           "resolved": "https://registry.npmjs.org/strict-uri-encode/-/strict-uri-encode-1.1.0.tgz"
         }
       }
@@ -475,6 +475,11 @@
           "from": "https://registry.npmjs.org/envify/-/envify-3.4.1.tgz",
           "resolved": "https://registry.npmjs.org/envify/-/envify-3.4.1.tgz",
           "dependencies": {
+            "through": {
+              "version": "2.3.8",
+              "from": "https://registry.npmjs.org/through/-/through-2.3.8.tgz",
+              "resolved": "https://registry.npmjs.org/through/-/through-2.3.8.tgz"
+            },
             "jstransform": {
               "version": "11.0.3",
               "from": "https://registry.npmjs.org/jstransform/-/jstransform-11.0.3.tgz",
@@ -621,11 +626,6 @@
                       "from": "https://registry.npmjs.org/recast/-/recast-0.10.43.tgz",
                       "resolved": "https://registry.npmjs.org/recast/-/recast-0.10.43.tgz",
                       "dependencies": {
-                        "ast-types": {
-                          "version": "0.8.15",
-                          "from": "https://registry.npmjs.org/ast-types/-/ast-types-0.8.15.tgz",
-                          "resolved": "https://registry.npmjs.org/ast-types/-/ast-types-0.8.15.tgz"
-                        },
                         "esprima-fb": {
                           "version": "15001.1001.0-dev-harmony-fb",
                           "from": "https://registry.npmjs.org/esprima-fb/-/esprima-fb-15001.1001.0-dev-harmony-fb.tgz",
@@ -635,6 +635,11 @@
                           "version": "0.5.6",
                           "from": "https://registry.npmjs.org/source-map/-/source-map-0.5.6.tgz",
                           "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.5.6.tgz"
+                        },
+                        "ast-types": {
+                          "version": "0.8.15",
+                          "from": "https://registry.npmjs.org/ast-types/-/ast-types-0.8.15.tgz",
+                          "resolved": "https://registry.npmjs.org/ast-types/-/ast-types-0.8.15.tgz"
                         }
                       }
                     }
@@ -663,11 +668,6 @@
                   }
                 }
               }
-            },
-            "through": {
-              "version": "2.3.8",
-              "from": "https://registry.npmjs.org/through/-/through-2.3.8.tgz",
-              "resolved": "https://registry.npmjs.org/through/-/through-2.3.8.tgz"
             }
           }
         }

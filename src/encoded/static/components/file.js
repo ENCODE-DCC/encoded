@@ -11,7 +11,7 @@ import { ProjectBadge } from './image';
 import { QualityMetricsPanel } from './quality_metric';
 import { PickerActionsMixin } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
-import { StatusLabel } from './statuslabel';
+import StatusLabel from './statuslabel';
 
 
 // Columns to display in Deriving/Derived From file tables
@@ -304,7 +304,7 @@ const File = React.createClass({
 
                                     {context.read_length ?
                                         <div data-test="readlength">
-                                            <dt>Mapped read length</dt>
+                                            <dt>Read length</dt>
                                             <dd>{context.read_length}</dd>
                                         </div>
                                     : null}

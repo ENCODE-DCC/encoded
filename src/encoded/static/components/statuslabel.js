@@ -1,18 +1,26 @@
-'use strict';
-var React = require('react');
-var globals = require('./globals');
+import React from 'react';
+import globals from './globals';
 
-var StatusLabel = module.exports.StatusLabel = React.createClass({
-    render: function() {
-        var status = this.props.status;
-        var title = this.props.title;
+const StatusLabel = React.createClass({
+    propTypes: {
+        status: React.PropTypes.oneOfType([
+            React.PropTypes.string,
+            React.PropTypes.array,
+        ]).isRequired, // Array of status objects with status and badge title
+        title: React.PropTypes.string,
+        buttonLabel: React.PropTypes.string,
+    },
+
+    render: function () {
+        const { status, title, buttonLabel } = this.props;
+
         if (typeof status === 'string') {
             // Display simple string and optional title in badge
             return (
                 <ul className="status-list">
                     <li className={globals.statusClass(status, 'label')}>
-                        {title ? <span className="status-list-title">{title + ': '}</span> : null}
-                        {this.props.buttonLabel ? this.props.buttonLabel : status}
+                        {title ? <span className="status-list-title">{`${title}: `}</span> : null}
+                        {buttonLabel || status}
                     </li>
                 </ul>
             );
@@ -20,18 +28,17 @@ var StatusLabel = module.exports.StatusLabel = React.createClass({
             // Display a list of badges from array of objects with status and optional title
             return (
                 <ul className="status-list">
-                    {status.map(function (status) {
-                        return(
-                            <li key={status.title} className={globals.statusClass(status.status, 'label')}>
-                                {status.title ? <span className="status-list-title">{status.title + ': '}</span> : null}
-                                {status.status}
-                            </li>
-                        );
-                    })}
+                    {status.map(singleStatus => (
+                        <li key={singleStatus.title} className={globals.statusClass(singleStatus.status, 'label')}>
+                            {singleStatus.title ? <span className="status-list-title">{`${singleStatus.title}: `}</span> : null}
+                            {singleStatus.status}
+                        </li>
+                    ))}
                 </ul>
             );
-        } else {
-            return null;
         }
-    }
+        return null;
+    },
 });
+
+export default StatusLabel;

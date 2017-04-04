@@ -6,7 +6,7 @@ var panel = require('../libs/bootstrap/panel');
 var { collapseIcon } = require('../libs/svg-icons');
 var globals = require('./globals');
 var image = require('./image');
-var {StatusLabel} = require('./statuslabel');
+import StatusLabel from './statuslabel';
 var {Panel, PanelHeading, PanelBody} = panel;
 var Attachment = image.Attachment;
 
