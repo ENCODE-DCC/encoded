@@ -94,6 +94,7 @@
             "enum": [
                 "IgA1",
                 "IgA2",
+                "IgG2c",
                 "IgD",
                 "IgG",
                 "IgGκ",

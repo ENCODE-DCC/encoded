@@ -274,6 +274,7 @@ def fastq_file(testapp, lab, award, experiment, replicate):
         'md5sum': '91be74b6e11515393507f4ebfa66d78b',
         'replicate': replicate['@id'],
         'output_type': 'reads',
+        "read_length": 36,
         'file_size': 34,
         'run_type': 'single-ended',
         'lab': lab['@id'],

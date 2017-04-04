@@ -141,51 +141,24 @@ def audit_file_derived_from_revoked(value, system):
                 return
 
 
-@audit_checker('file', frame=['dataset', 'derived_from'])
+@audit_checker('file', frame=['derived_from'])
 def audit_file_assembly(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
-
-    if value['output_category'] in ['raw data']:
-        if value['file_format'] in ['fastq', 'csfasta', 'csqual', 'fasta'] and \
-           'assembly' in value:
-            detail = 'Raw data file {} '.format(value['@id']) + \
-                     'has improperly specified assembly value.'
-            yield AuditFailure('unexpected property',
-                               detail, level='INTERNAL_ACTION')
+    if 'derived_from' not in value:
         return
-    else:  # not row data file
-        # special treatment of RNA-Bind-n-Seq
-        if 'assay_term_name' in value['dataset'] and \
-           value['dataset']['assay_term_name'] == 'RNA Bind-n-Seq':
-            if 'assembly' in value:
-                detail = 'RNA Bind-n-Seq file {} '.format(value['@id']) + \
-                         'has improperly specified assembly value.'
-                yield AuditFailure('unexpected property',
-                                   detail, level='INTERNAL_ACTION')
-                return
-        #  any other asssay processed file
-        else:
-            if 'assembly' not in value:
+    for f in value['derived_from']:
+        if 'assembly' in f:
+            if f['assembly'] != value['assembly']:
                 detail = 'Processed file {} '.format(value['@id']) + \
-                         'does not have assembly specified.'
-                yield AuditFailure('missing assembly',
+                         'assembly {} '.format(value['assembly']) + \
+                         'does not match assembly {} of the file {} '.format(
+                         f['assembly'],
+                         f['@id']) + \
+                    'it was derived from.'
+                yield AuditFailure('inconsistent assembly',
                                    detail, level='INTERNAL_ACTION')
                 return
-            if 'derived_from' not in value:
-                return
-            for f in value['derived_from']:
-                if 'assembly' in f:
-                    if f['assembly'] != value['assembly']:
-                        detail = 'Processed file {} '.format(value['@id']) + \
-                                 'assembly {} '.format(value['assembly']) + \
-                                 'does not match assembly {} of the file {} '.format(
-                                 f['assembly'],
-                                 f['@id']) + \
-                            'it was derived from.'
-                        yield AuditFailure('inconsistent assembly',
-                                           detail, level='INTERNAL_ACTION')
-                        return
 
 
 @audit_checker('file', frame=['replicate', 'replicate.experiment',
@@ -278,34 +251,6 @@ def audit_file_platform(value, system):
         detail = 'File {} metadata lacks information on the instrument/platform '.format(value['@id']) + \
                  'used to produce it.'
         raise AuditFailure('missing platform', detail, level='ERROR')
-
-
-@audit_checker('file', frame=['dataset'],
-               condition=rfa('ENCODE3', 'modERN', 'ENCODE',
-                             'ENCODE2', 'ENCODE2-Mouse'))
-def audit_file_read_length(value, system):
-    '''
-    Reads files should have a read_length
-    '''
-
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
-
-    if value['output_type'] != 'reads':
-        return
-
-    if value['file_format'] == 'csqual':
-        return
-
-    if 'read_length' not in value:
-        detail = 'Reads file {} missing read_length'.format(value['@id'])
-        yield AuditFailure('missing read_length', detail, level='INTERNAL_ACTION')
-        return
-
-    if value['read_length'] == 0:
-        detail = 'Reads file {} has read_length of 0'.format(value['@id'])
-        yield AuditFailure('missing read_length', detail, level='INTERNAL_ACTION')
-        return
 
 
 def check_presence(file_to_check, files_list):
@@ -503,7 +448,7 @@ def audit_file_flowcells(value, system):
         raise AuditFailure('missing flowcell_details', detail, level='WARNING')
 
 
-@audit_checker('file', frame=['paired_with'],)
+@audit_checker('file', frame=['paired_with'])
 def audit_paired_with(value, system):
     '''
     A file with a paired_end needs a paired_with.
@@ -518,16 +463,7 @@ def audit_paired_with(value, system):
         return
 
     if 'paired_with' not in value:
-        paired_number = "2"
-        if value['paired_end'] == "2":
-            paired_number = "1"
-        detail = 'Sequencing read{} file {} is the result of a '.format(
-            value['paired_end'],
-            value['@id']) + \
-            'paired-end sequencing run according to the submitted metadata. ' + \
-            'An association with a read{} file needs to be specified.'.format(
-                paired_number)
-        raise AuditFailure('missing paired_with', detail, level='ERROR')
+        return
 
     if 'replicate' not in value['paired_with']:
         return
@@ -536,7 +472,8 @@ def audit_paired_with(value, system):
         detail = 'File {} has paired_end = {}. It requires a replicate'.format(
             value['@id'],
             value['paired_end'])
-        raise AuditFailure('missing replicate', detail, level='INTERNAL_ACTION')
+        yield AuditFailure('missing replicate', detail, level='INTERNAL_ACTION')
+        return
 
     if value['replicate'] != value['paired_with']['replicate']:
         detail = 'File {} has replicate {}. It is paired_with file {} with replicate {}'.format(
@@ -544,7 +481,8 @@ def audit_paired_with(value, system):
             value.get('replicate'),
             value['paired_with']['@id'],
             value['paired_with'].get('replicate'))
-        raise AuditFailure('inconsistent paired_with', detail, level='ERROR')
+        yield AuditFailure('inconsistent paired_with', detail, level='ERROR')
+        return
 
     if value['paired_end'] == '1':
         context = system['context']
@@ -554,7 +492,8 @@ def audit_paired_with(value, system):
                 value['@id'],
                 paired_with,
             )
-            raise AuditFailure('multiple paired_with', detail, level='ERROR')
+            yield AuditFailure('multiple paired_with', detail, level='ERROR')
+            return
 
 
 @audit_checker('file', frame=['step_run',

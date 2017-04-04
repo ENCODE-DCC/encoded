@@ -4,7 +4,7 @@ import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import { SortTable } from './sorttable';
 import globals from './globals';
-import { StatusLabel } from './statuslabel';
+import StatusLabel from './statuslabel';
 import { ProjectBadge, Attachment } from './image';
 import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import { RelatedItems } from './item';
