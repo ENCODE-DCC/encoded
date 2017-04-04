@@ -78,6 +78,7 @@ def file_no_error(testapp, experiment, award, lab, replicate):
         'file_format': 'fastq',
         'run_type': 'paired-ended',
         'output_type': 'reads',
+        "read_length": 50,
         'md5sum': '136e501c4bacf4aab87debab20d76648',
         'status': 'in progress'
     }
@@ -95,6 +96,7 @@ def file_content_error(testapp, experiment, award, lab, replicate):
         'file_format': 'fastq',
         'run_type': 'paired-ended',
         'output_type': 'reads',
+        "read_length": 36,
         'md5sum': '99378c852c5be68251cbb125ffcf045a',
         'status': 'content error'
     }

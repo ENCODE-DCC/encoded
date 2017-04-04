@@ -5,7 +5,7 @@ var navigation = require('./navigation');
 var search = require('./search');
 var fetched = require('./fetched');
 var { pubReferenceList } = require('./reference');
-var StatusLabel = require('./statuslabel').StatusLabel;
+import StatusLabel from './statuslabel';
 var audit = require('./audit');
 var _ = require('underscore');
 var url = require('url');

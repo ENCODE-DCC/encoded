@@ -103,6 +103,7 @@ def file1(file_exp, award, lab, file_rep, file2, platform1, testapp):
         'file_format': 'fastq',
         'md5sum': '91be74b6e11515393507f4ebfa66d58c',
         'output_type': 'reads',
+        "read_length": 50,
         'file_size': 34,
         'run_type': 'single-ended',
         'platform': platform1['uuid'],
@@ -123,6 +124,7 @@ def file3(file_exp, award, lab, file_rep, testapp):
         'file_size': 34,
         'md5sum': '91be74b6e11515393507f4ebfa56d78d',
         'output_type': 'reads',
+        "read_length": 50,
         'run_type': 'single-ended',
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -139,6 +141,7 @@ def file4(file_exp2, award, lab, file_rep2, testapp):
         'file_format': 'fastq',
         'md5sum': '91ae74b6e11515393507f4ebfa66d78a',
         'output_type': 'reads',
+        "read_length": 50,
         'file_size': 34,
         'run_type': 'single-ended',
         'award': award['uuid'],
@@ -230,16 +233,6 @@ def pipeline_short_rna(testapp, lab, award, analysis_step_bam):
     return testapp.post_json('/pipeline', item).json['@graph'][0]
 
 
-def test_audit_file_paired_with(testapp, file1):
-    testapp.patch_json(file1['@id'], {'paired_end': '1'})
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing paired_with' for error in errors_list)
-
-
 def test_audit_file_mismatched_paired_with(testapp, file1, file4):
     testapp.patch_json(file1['@id'], {'paired_end': '2', 'paired_with': file4['uuid']})
     res = testapp.get(file1['@id'] + '@@index-data')
@@ -248,25 +241,6 @@ def test_audit_file_mismatched_paired_with(testapp, file1, file4):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent paired_with' for error in errors_list)
-
-
-def test_audit_read_length(testapp, file1):
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing read_length' for error in errors_list)
-
-
-def test_audit_read_length_zero(testapp, file1):
-    testapp.patch_json(file1['@id'], {'read_length': 0})
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing read_length' for error in errors_list)
 
 
 def test_audit_file_missing_controlled_by(testapp, file3):
@@ -373,19 +347,6 @@ def test_audit_file_replicate_match(testapp, file1, file_rep2):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent replicate' for error in errors_list)
-
-
-def test_audit_file_paired_ended_run_type2(testapp, file2, file_rep2):
-    testapp.patch_json(file2['@id'] + '?validate=false', {'run_type': 'paired-ended',
-                                                          'output_type': 'reads',
-                                                          'file_size': 23498234,
-                                                          'paired_end': 1})
-    res = testapp.get(file2['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing paired_with' for error in errors_list)
 
 
 def test_audit_file_pipeline_status(testapp, file7, pipeline_bam):
@@ -526,33 +487,6 @@ def test_audit_file_biological_replicate_number_mismatch(testapp,
                for error in errors_list)
 
 
-def test_audit_file_fasta_assembly(testapp, file4):
-    testapp.patch_json(file4['@id'], {'file_format': 'fasta', 'output_type': 'raw data',
-                                      'assembly': 'GRCh38'})
-    res = testapp.get(file4['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'unexpected property'
-               for error in errors_list)
-
-
-def test_audit_file_rbns_assembly(testapp, file4, file_exp):
-    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'RNA Bind-n-Seq'})
-    testapp.patch_json(file4['@id'], {'assembly': 'GRCh38',
-                                      'dataset': file_exp['@id'],
-                                      'file_format': 'bam',
-                                      'output_type': 'alignments'})
-    res = testapp.get(file4['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'unexpected property'
-               for error in errors_list)
-
-
 def test_audit_file_assembly(testapp, file6, file7):
     testapp.patch_json(file6['@id'], {'assembly': 'GRCh38'})
     testapp.patch_json(file7['@id'], {'derived_from': [file6['@id']],
@@ -563,28 +497,6 @@ def test_audit_file_assembly(testapp, file6, file7):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent assembly'
-               for error in errors_list)
-
-
-def test_audit_file_missing_assembly_no_derived(testapp, file7):
-    res = testapp.get(file7['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing assembly'
-               for error in errors_list)
-
-
-def test_audit_file_missing_assembly(testapp, file6, file7):
-    testapp.patch_json(file6['@id'], {'assembly': 'GRCh38'})
-    testapp.patch_json(file7['@id'], {'derived_from': [file6['@id']]})
-    res = testapp.get(file7['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing assembly'
                for error in errors_list)
 
 
