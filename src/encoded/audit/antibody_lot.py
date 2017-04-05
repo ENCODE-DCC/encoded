@@ -28,8 +28,9 @@ def audit_antibody_missing_characterizations(value, system):
     Check to see what characterizations are lacking for each antibody,
     for the cell lines we know about.
     '''
-    if value['targets'][0].get('investigated_as') in ['control']:
-        return
+    for t in value['targets']:
+        if 'control' in t.get('investigated_as'):
+            return
 
     if not value['characterizations']:
         detail = '{} does not have any supporting characterizations submitted.'.format(value['@id'])
@@ -73,7 +74,7 @@ def audit_antibody_missing_characterizations(value, system):
             if biosample == 'any cell type or tissue':
                 biosample = 'one or more cell types/tissues.'
 
-            detail = '{} needs a compliant primary in {}'.format(value['@id'], lot_review['biosample_term_name'])
+            detail = '{} needs a compliant primary in {}'.format(value['@id'], biosample)
             yield AuditFailure('need compliant primaries', detail, level='NOT_COMPLIANT')
 
     if secondary_chars and not compliant_secondary:
