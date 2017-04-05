@@ -60,15 +60,13 @@ def audit_biosample_constructs(value, system):
                                        level='INTERNAL_ACTION')
                     return
 
-
+'''
 @audit_checker('biosample', frame=['source', 'part_of', 'donor'])
 def audit_biosample_gtex_children(value, system):
-    '''
-    GTEX children biosamples have to be properly registered.
-    - aliases (column A from plate-maps)
-    - part_of pointing to the parent biosample
-    - source Kristin Ardlie
-    '''
+    #GTEX children biosamples have to be properly registered.
+    #- aliases (column A from plate-maps)
+    #- part_of pointing to the parent biosample
+    #- source Kristin Ardlie
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
     if 'donor' not in value:
@@ -126,7 +124,7 @@ def audit_biosample_gtex_children(value, system):
                 yield AuditFailure('GTEX biosample missing aliases', detail,
                                    level='INTERNAL_ACTION')
     return
-
+'''
 
 @audit_checker('biosample', frame='object')
 def audit_biosample_term(value, system):
@@ -257,24 +255,6 @@ def audit_biosample_donor(value, system):
                 donor['@id'],
                 donor['mutated_gene']['name'])
             raise AuditFailure('invalid donor mutated_gene', detail, level='ERROR')
-
-
-@audit_checker('biosample', frame='object')
-def audit_biosample_transfection_type(value, system):
-    '''
-    A biosample with constructs or rnais should have a
-    transfection_type
-    '''
-    if value['status'] == 'deleted':
-        return
-
-    if (value['rnais']) and ('transfection_type' not in value):
-        detail = 'Biosample {} with a value for RNAi requires transfection_type'.format(value['@id'])
-        raise AuditFailure('missing transfection_type', detail, level='ERROR')
-
-    if (value['constructs']) and ('transfection_type' not in value):
-        detail = 'Biosample {} with a value for construct requires transfection_type'.format(value['@id'])
-        raise AuditFailure('missing transfection_type', detail, level='ERROR')
 
 
 def is_part_of(term_id, part_of_term_id, ontology):
