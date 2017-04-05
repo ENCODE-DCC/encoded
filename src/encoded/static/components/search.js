@@ -1216,7 +1216,7 @@ const ResultTable = search.ResultTable = React.createClass({
                                 </div>
                                 <hr />
                                 {browserAvail ?
-                                    <TabPanel tabs={{ listpane: 'List', browserpane: 'Qick View' }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} tabFlange>
+                                    <TabPanel tabs={{ listpane: 'List', browserpane: 'Quick View' }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} tabFlange>
                                         <TabPanelPane key="listpane">
                                             <ResultTableList results={results} columns={columns} tabbed />
                                         </TabPanelPane>
