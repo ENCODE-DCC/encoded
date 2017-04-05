@@ -50,7 +50,8 @@
                 "69efae2b-4df5-4957-81da-346f1b93cb98", 
                 "a7e711b9-534c-44a3-a782-2a15af620739", 
                 "451f9e49-685d-40d5-ad89-760b2512262a"
-            ]
+            ],
+            "permission": "import_items"
         },
         "status": {
             "enum" : [

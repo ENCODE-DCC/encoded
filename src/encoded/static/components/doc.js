@@ -65,8 +65,8 @@ var DocumentsPanel = module.exports.DocumentsPanel = React.createClass({
                         <PanelHeading>
                             <h4>{this.props.title ? <span>{this.props.title}</span> : <span>Documents</span>}</h4>
                         </PanelHeading>
-                        <PanelBody addClasses="panel-body-doc doc-panel-outer">
-                            <section className="flexrow doc-panel-inner">
+                        <PanelBody addClasses="panel-body-doc doc-panel__outer">
+                            <section className="doc-panel__inner">
                                 {allDocs.map((doc, i) => {
                                     var PanelView = globals.panel_views.lookup(doc);
                                     return <PanelView key={doc['@id']} label={docLabelMap[doc.uuid]} context={doc} />;
