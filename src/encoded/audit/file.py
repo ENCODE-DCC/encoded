@@ -352,7 +352,7 @@ def audit_file_controlled_by(value, system):
                     if control_file['run_type'] == 'paired-ended':
                         pe_files.append(control_file)
         for pe_file in pe_files:
-            if 'paired_with' not in pe_file and value['paired_end'] not in ['1,2']:
+            if 'paired_with' not in pe_file:
                 detail = 'Fastq file {} '.format(value['@id']) + \
                          'from experiment {} '.format(value['dataset']['@id']) + \
                          'contains in controlled_by list PE fastq file ' + \
@@ -489,7 +489,10 @@ def audit_paired_with(value, system):
     if 'paired_end' not in value:
         return
 
-    if 'paired_with' not in value and value['paired_end'] not in ['1,2']:
+    if value['paired_end'] in ['1,2']:
+        return
+
+    if 'paired_with' not in value:
         paired_number = "2"
         if value['paired_end'] == "2":
             paired_number = "1"
@@ -510,7 +513,7 @@ def audit_paired_with(value, system):
             value['paired_end'])
         raise AuditFailure('missing replicate', detail, level='INTERNAL_ACTION')
 
-    if value['replicate'] != value['paired_with']['replicate'] and value['paired_end'] not in ['1,2']:
+    if value['replicate'] != value['paired_with']['replicate']:
         detail = 'File {} has replicate {}. It is paired_with file {} with replicate {}'.format(
             value['@id'],
             value.get('replicate'),
