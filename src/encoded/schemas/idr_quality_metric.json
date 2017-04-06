@@ -21,6 +21,26 @@
         "schema_version": {
             "default": "4"
         },
+        "Fp": {
+            "title": "FRiP score from pooled pseudoreplicate peaks",
+            "type": "number",
+            "description": "Fraction reads in IDR peaks (FRiP) from pooled pseudoreplicates"
+        },
+        "Ft": {
+            "title": "FRiP score from true replicate peaks",
+            "type": "number",
+            "description": "Fraction reads in IDR peaks (FRiP) from true replicates"
+        },
+        "F1": {
+            "title": "FRiP score from rep1 self-pseudoreplicate peaks",
+            "type": "number",
+            "description": "Fraction reads in peaks (FRiP) from replicate 1 self-pseudoreplicates or the number of stable peaks that pass the internal psuedoreplication IDR threhold, when self-pseudoreplication is done on unreplicated experiments."
+        },
+        "F2": {
+            "title": "FRiP score from rep2 self-pseudoreplicate peaks",
+            "type": "number",
+            "description": "Fraction reads in peaks (FRiP) from replicate 2 self-pseudoreplicates"
+        },
         "Np": {
             "title": "# pooled pseudoreplicate peaks",
             "type": "number",
