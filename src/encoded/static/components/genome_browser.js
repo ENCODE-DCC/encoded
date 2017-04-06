@@ -408,7 +408,7 @@ const GenomeBrowser = React.createClass({
         Object.keys(this.props.visBlobs).forEach((blobKey) => {
             if (blobKey.startsWith(datasetAccession)) {
                 const tracks = this.props.visBlobs[blobKey].tracks;
-                const trackCount = tracks.length;
+                const trackCount = tracks ? tracks.length : 0;
                 for (let ix = 0; ix < trackCount; ix += 1) {
                     if (tracks[ix].name === file.accession) {
                         trackLabels.shortLabel = tracks[ix].shortLabel;
