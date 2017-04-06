@@ -303,7 +303,6 @@ def set_filters(request, query, result, static_items=None):
     total_items = qs_items + static_items
     qs_fields = [item[0] for item in qs_items]
     fields = [item[0] for item in total_items]
-    from pprint import pprint
 
     # Now make lists of terms indexed by field
     all_terms = {}
@@ -324,14 +323,13 @@ def set_filters(request, query, result, static_items=None):
             continue
 
         # Add filter to result
-        if (field in qs_fields):
+        if field in qs_fields:
             for term in terms:
                 qs = urlencode([
                     (k.encode('utf-8'), v.encode('utf-8'))
                     for k, v in qs_items
                     if '{}={}'.format(k, v) != '{}={}'.format(field, term)
                 ])
-                print('{}:{}'.format(field, qs))
                 result['filters'].append({
                     'field': field,
                     'term': term,
@@ -1066,7 +1064,6 @@ def news(context, request):
     es_index = request.registry.settings['snovault.elasticsearch.index']
     search_base = normalize_query(request)
     principals = effective_principals(request)
-    from_, size = get_pagination(request)
 
     # Set up initial results metadata; we'll add the search results to them later.
     result = {
@@ -1111,7 +1108,7 @@ def news(context, request):
 
     # Perform the search of news items.
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
-    es_results = es.search(body=query, index=es_index, from_=from_, size=size)
+    es_results = es.search(body=query, index=es_index, from_=0, size=25)
     total = es_results['hits']['total']
 
     # Return 404 if no results found.
