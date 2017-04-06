@@ -784,6 +784,40 @@ def check_experiment_dnase_seq_standards(experiment,
             if 'assembly' in alignment_file:
                 alignments_assemblies[alignment_file['accession']] = alignment_file['assembly']
 
+        duplicates_quality_metrics = get_metrics(alignment_files,
+                                                 'DuplicatesQualityMetric',
+                                                 desired_assembly)
+        if duplicates_quality_metrics:
+            for metric in duplicates_quality_metrics:
+                percentage = metric.get('Percent Duplication')
+                if percentage:
+                    percentage = percentage * 100
+                    upper_threshold = 12
+                    lower_threshold = 5
+                    if metric.get('UMI Read Duplicates'):
+                        upper_threshold = 7.5
+                    if percentage > lower_threshold:
+                        file_names = []
+                        for f in metric['quality_metric_of']:
+                            file_names.append(f['@id'].split('/')[2])
+                        file_names_string = str(file_names).replace('\'', ' ')
+
+                        detail = 'Alignment file(s) {} '.format(file_names_string) + \
+                                 'produced by {} '.format(pipelines[0]['title']) + \
+                                 '( {} ) '.format(pipelines[0]['@id']) + \
+                                 assemblies_detail(extract_assemblies(alignments_assemblies, file_names)) + \
+                                 'have duplication rate of {0:.2f}%. '.format(percentage) + \
+                                 'According to ENCODE standards, ' + \
+                                 'library duplication rate < 5% is considered a product of high quality ' + \
+                                 'data. For standard libraries and for UMI libraries duplication rate < 12% and 7.5% ' + \
+                                 'respectively is considered acceptable.  ' + \
+                                 '(See {} )'.format(link_to_standards)
+                        if percentage < upper_threshold:
+                            yield AuditFailure('high duplication rate', detail, level='WARNING')
+                        else:
+                            yield AuditFailure('extremely high duplication rate',
+                                               detail, level='ERROR')
+
         hotspot_assemblies = {}
         for hotspot_file in hotspots_files:
             if 'assembly' in hotspot_file:
