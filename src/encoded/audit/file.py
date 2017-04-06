@@ -462,6 +462,9 @@ def audit_paired_with(value, system):
     if 'paired_end' not in value:
         return
 
+    if value['paired_end'] in ['1,2']:
+        return
+
     if 'paired_with' not in value:
         return
 
