@@ -132,50 +132,6 @@ def audit_experiment_pipeline_assay_details(value, system):
                          'which assay_term_id does not match experiments\'s asssay_term_id.'
                 yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
 
-'''
-@audit_checker('Experiment', frame=['original_files',
-                                    'original_files.replicate',
-                                    'original_files.derived_from',
-                                    'original_files.analysis_step_version',
-                                    'original_files.analysis_step_version.analysis_step',
-                                    'original_files.analysis_step_version.analysis_step.pipelines',
-                                    'target',
-                                    'replicates'],
-               condition=rfa('modERN'))
-def audit_experiment_missing_processed_files(value, system):
-    alignment_files = scan_files_for_file_format_output_type(value['original_files'],
-                                                             'bam', 'alignments')
-    alignment_files.extend(scan_files_for_file_format_output_type(value['original_files'],
-                                                                  'bam',
-                                                                  'unfiltered alignments'))
-    alignment_files.extend(scan_files_for_file_format_output_type(value['original_files'],
-                                                                  'bam',
-                                                                  'transcriptome alignments'))
-
-    # if there are no bam files - we don't know what pipeline, exit
-    if len(alignment_files) == 0:
-        return
-    # find out the pipeline
-    pipelines = getPipelines(alignment_files)
-    if len(pipelines) == 0:  # no pipelines detected
-        return
-
-    if 'Transcription factor ChIP-seq pipeline (modERN)' in pipelines:
-        # check if control
-        target = value.get('target')
-        if target is None:
-            return
-        if 'control' in target.get('investigated_as'):
-            replicate_structures = create_pipeline_structures(value['original_files'],
-                                                              'modERN_control')
-            for failure in check_structures(replicate_structures, True, value):
-                yield failure
-        else:
-            replicate_structures = create_pipeline_structures(value['original_files'],
-                                                              'modERN')
-            for failure in check_structures(replicate_structures, False, value):
-                yield failure
-'''
 
 @audit_checker('Experiment', frame=['original_files',
                                     'original_files.analysis_step_version',
