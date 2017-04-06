@@ -4,7 +4,7 @@ import pytest
 @pytest.fixture
 def analysis_step_version_with_alias(testapp, analysis_step, software_version):
     item = {
-        'aliases': ['versionof:' + analysis_step['name']],
+        'aliases': ['encode:' + analysis_step['name']],
         'analysis_step': analysis_step['@id'],
         'software_versions': [
             software_version['@id'],
