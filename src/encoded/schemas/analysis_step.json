@@ -85,6 +85,7 @@
                 "enum": [
                     "bed",
                     "raw data",
+                    "predicted transcription start sites",
                     
                     "idat green channel",
                     "idat red channel",
@@ -190,6 +191,7 @@
                 "type": "string",
                 "enum": [
                     "bigBed",
+                    "predicted transcription start sites",
                     
                     "idat green channel",
                     "idat red channel",
