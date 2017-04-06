@@ -513,7 +513,7 @@
                         "predicted heart enhancers",
                         "predicted whole brain enhancers",
                         "candidate regulatory elements",
-                        "representative dnase hypersensitivity peaks",
+                        "representative dnase hypersensitivity sites",
                         "sequence alignability",
                         
                         "genome reference",
@@ -947,7 +947,7 @@
         "predicted transcription start sites": "annotation",
         "transcription start sites": "annotation",
         "candidate regulatory elements": "annotation",
-        "representative dnase hypersensitivity peaks":"annotation",
+        "representative dnase hypersensitivity sites":"annotation",
         "variant calls": "annotation",
         "maternal variant calls": "annotation",
         "paternal variant calls": "annotation",
