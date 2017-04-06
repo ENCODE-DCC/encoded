@@ -2419,6 +2419,8 @@ def test_audit_experiment_dnase_low_correlation(testapp,
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'insufficient replicate concordance' for error in errors_list)
 
+# duplication rate audit was removed from v54
+
 
 def test_audit_experiment_dnase_seq_missing_read_depth(testapp,
                                                        base_experiment,

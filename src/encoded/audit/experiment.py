@@ -784,6 +784,8 @@ def check_experiment_dnase_seq_standards(experiment,
             if 'assembly' in alignment_file:
                 alignments_assemblies[alignment_file['accession']] = alignment_file['assembly']
 
+        # duplication rate audit was removed from v54
+
         hotspot_assemblies = {}
         for hotspot_file in hotspots_files:
             if 'assembly' in hotspot_file:
