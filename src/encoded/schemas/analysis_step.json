@@ -86,6 +86,7 @@
                     "bed",
                     "raw data",
                     "predicted transcription start sites",
+                    "filtered regions",
                     
                     "idat green channel",
                     "idat red channel",
@@ -192,6 +193,7 @@
                 "enum": [
                     "bigBed",
                     "predicted transcription start sites",
+                    "filtered regions",
                     
                     "idat green channel",
                     "idat red channel",
