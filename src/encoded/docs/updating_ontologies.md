@@ -22,7 +22,7 @@ How to update the ontology versions
 
 2. Run generate-ontology, an example is: 
 
-	$ bin/generate-ontology --uberon-url=http://ontologies.berkeleybop.org/uberon/composite-metazoan.owl --efo-url=http://sourceforge.net/p/efo/code/HEAD/tree/trunk/src/efoinowl/InferredEFOOWLview/EFO_inferred.owl?format=raw --obi-url=http://svn.code.sf.net/p/obi/code/releases/<<<<USE THE MOST RECENT DATE HERE>>>>/obi.owl
+	$ bin/generate-ontology --uberon-url=http://ontologies.berkeleybop.org/uberon/composite-metazoan.owl --efo-url=http://sourceforge.net/p/efo/code/HEAD/tree/trunk/src/efoinowl/InferredEFOOWLview/EFO_inferred.owl?format=raw --obi-url=http://purl.obolibrary.org/obo/obi.owl
 
 3. Rename the ```ontology.json``` to one with the date that it was generated:
 
