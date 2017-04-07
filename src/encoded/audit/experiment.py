@@ -133,6 +133,9 @@ def audit_experiment_pipeline_assay_details(value, system):
                 yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
 
 
+# def audit_experiment_missing_processed_files(value, system): removed from v54
+
+
 @audit_checker('Experiment', frame=['original_files',
                                     'original_files.analysis_step_version',
                                     'original_files.analysis_step_version.analysis_step',
