@@ -220,7 +220,7 @@ var LotComponent = React.createClass({
                 </Panel>
 
                 <RelatedItems title={'Experiments using this antibody'}
-                              url={'/search/?type=experiment&replicates.antibody.accession=' + context.accession}
+                              url={'/search/?type=Experiment&replicates.antibody.accession=' + context.accession}
                               Component={ExperimentTable} />
 
                 <DocumentsPanel title="Characterizations" documentSpecs={documentSpecs} />

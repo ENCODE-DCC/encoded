@@ -29,7 +29,7 @@ var Param = module.exports.Param = React.createClass({
         if (!this.state.fetchedRequest && nextProps.url === undefined) return;
         if (this.state.fetchedRequest &&
             nextProps.url === this.props.url &&
-            nextContext.session === this.context.session) return;
+            _.isEqual(nextContext.session, this.context.session)) return;
         this.fetch(nextProps.url);
     },
 
@@ -161,10 +161,6 @@ var FetchedData = module.exports.FetchedData = React.createClass({
 
         // If we got an error, display the error string on the web page
         if (errors.length) {
-            // If we don't want to see the Network Error in the browser, just render nothing.
-            if (this.props.ignoreErrors) {
-                return null;
-            }
 
             // Render whatever error we got back from the server on the page.
             return (
@@ -211,7 +207,7 @@ var Items = React.createClass({
 
 
 var FetchedItems = module.exports.FetchedItems = React.createClass({
-    
+
     render: function() {
         return (
             <FetchedData ignoreErrors={this.props.ignoreErrors}>

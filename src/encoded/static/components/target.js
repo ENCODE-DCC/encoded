@@ -84,7 +84,7 @@ class Target extends React.Component {
 
                 <RelatedItems
                     title={`Experiments using target ${context.label}`}
-                    url={`/search/?type=experiment&target.uuid=${context.uuid}`}
+                    url={`/search/?type=Experiment&target.uuid=${context.uuid}`}
                     Component={ExperimentTable}
                 />
             </div>

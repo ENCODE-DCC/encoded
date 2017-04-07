@@ -304,7 +304,7 @@ var ExperimentComponent = React.createClass({
             analysisStepDocs
         )).chain().uniq(doc => doc ? doc.uuid : null).compact().value();
 
-        var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
+        var experiments_url = '/search/?type=Experiment&possible_controls.accession=' + context.accession;
 
         // Make a list of reference links, if any
         var references = pubReferenceList(context.references);
@@ -319,7 +319,7 @@ var ExperimentComponent = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root='/search/?type=experiment' crumbs={crumbs} />
+                        <Breadcrumbs root='/search/?type=Experiment' crumbs={crumbs} />
                         <h2>Experiment summary for {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
