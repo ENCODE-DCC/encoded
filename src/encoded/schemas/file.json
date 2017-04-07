@@ -36,6 +36,9 @@
         "award.project": {
             "title": "Project"
         },
+        "assembly": {
+            "title": "Mapping assembly"
+        },
         "lab.title": {
             "title": "Lab"
         }
