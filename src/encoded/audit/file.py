@@ -148,8 +148,8 @@ def audit_file_assembly(value, system):
     if 'derived_from' not in value:
         return
     for f in value['derived_from']:
-        if 'assembly' in f:
-            if f['assembly'] != value['assembly']:
+        if f.get('assembly') and value.get('assembly') and \
+           f.get('assembly') != value.get('assembly'):
                 detail = 'Processed file {} '.format(value['@id']) + \
                          'assembly {} '.format(value['assembly']) + \
                          'does not match assembly {} of the file {} '.format(
