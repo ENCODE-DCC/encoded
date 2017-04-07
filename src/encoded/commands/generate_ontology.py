@@ -305,6 +305,19 @@ ntr_assays = {
         "synonyms": [],
         "systems": [],
         "types": []
+    },
+    "NTR:0004875": {
+        "assay": ['Genotyping'],
+        "category": [],
+        "developmental": [],
+        "name": "genotyping by Hi-C",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "genotyping Hi-C",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
     }
 }
 

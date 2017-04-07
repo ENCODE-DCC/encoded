@@ -30,6 +30,7 @@ require('./target');
 require('./publication');
 require('./pipeline');
 require('./software');
+require('./news');
 require('./testing');
 require('./edit');
 require('./inputs');

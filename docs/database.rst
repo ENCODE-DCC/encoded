@@ -14,6 +14,10 @@ The Key_ and Link_ tables are indexes used for performance optimziation.  Keys a
 The CurrentPropSheet_ and TransactionRecord_ tables are used to track all changes made to objects via transactions.
 
 On a standard EC2/Ubuntu install, you will have to su to user encoded to interact with the database on the command line (psql).
+Using the local "dev-servers" postgresql fixture, you can connect with::
+
+    psql --host=/tmp/snovault/pgdata -U postgres
+
 The current production database has a useful VIEW created for querying recent objects, called OBJECT:
 
 ::
