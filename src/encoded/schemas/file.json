@@ -69,6 +69,16 @@
                             "enum": ["1"]
                         }
                     }
+                },
+                {
+                    "properties": {
+                        "file_format": {
+                            "enum": ["sra"]
+                        },
+                        "paired_end": {
+                            "enum": ["1,2"]
+                        }
+                    }
                 }
             ]
         },
@@ -89,7 +99,7 @@
                     "required": ["read_length"],
                     "properties": {
                         "file_format": {
-                            "enum": ["fastq", "fasta", "csfasta", "csqual"]
+                            "enum": ["fastq", "fasta", "csfasta", "csqual","sra"]
                         },
                         "output_type": {
                              "enum": ["reads"]
@@ -115,7 +125,7 @@
                             "required": ["replicate", "run_type"],
                             "properties": {
                                 "file_format": {
-                                    "enum": ["fastq"]
+                                    "enum": ["fastq","sra"]
                                 }
                             }
                         },
@@ -124,7 +134,7 @@
                                 "required": ["assembly"],
                                 "properties": {
                                     "file_format": {
-                                        "enum": ["fastq"]
+                                        "enum": ["fastq","sra"]
                                     }
                                 }
                             }
@@ -151,7 +161,7 @@
                     "not": {
                         "properties": {
                             "file_format": {
-                                "enum": ["fastq", "gff", "gtf", "bed", "bigBed", "bam", "sam"]
+                                "enum": ["fastq", "gff", "gtf", "bed", "bigBed", "bam", "sam","sra"]
                             }
                         }
                     }
@@ -607,7 +617,8 @@
             "type": "string",
             "enum": [
                 "1",
-                "2"
+                "2",
+                "1,2"
             ]
         },
         "derived_from": {

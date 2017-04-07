@@ -10,13 +10,13 @@
         "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
         "Views":  {
             "tag": "view",
-            "group_order": [ "Signal", "Peaks", "Hotspots" ],
+            "group_order": [ "Signal", "Peaks", "Hotspots", "AutoScale Signal" ],
             "groups": {
                 "Signal": {
                     "tag": "aSIG",
                     "visibility": "full",
                     "type": "bigWig",
-                    "viewLimits": "0:1",
+                    "viewLimits": "0:20",
                     "autoScale": "off",
                     "maxHeightPixels": "32:16:8",
                     "windowingFunction": "mean+whiskers",
@@ -36,6 +36,16 @@
                     "type": "bigBed",
                     "spectrum": "on",
                     "output_type": [ "hotspots" ]
+                },
+                "AutoScale Signal": {
+                    "tag": "dSIG2",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:80",
+                    "autoScale": "on",
+                    "maxHeightPixels": "32:16:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal", "raw signal", "base overlap signal" ]
                 }
             }
         },
