@@ -636,6 +636,7 @@ def getTermStructure():
         'part_of': [],
         'has_part': [],
         'develops_from': [],
+        'derives_from': [],
         'achieves_planned_objective': [],
         'organs': [],
         'closure': [],
