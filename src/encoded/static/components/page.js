@@ -77,10 +77,10 @@ var NewsKeywordList = React.createClass({
         if (post.news_keywords && post.news_keywords.length) {
             return (
                 <div className="news-keyword-list">
-                    <p>View news matching these terms, or all news</p>
-                    <a className="news-keyword" href={'/search/?type=Page&news=true&status=released'} title="Show all news posts">All news</a>
+                    <p>View news matching these terms, or all recent news</p>
+                    <a className="news-keyword" href={'/news/'} title="Show all recent news posts">All recent news</a>
                     {post.news_keywords.map(keyword => {
-                        return <a key={keyword} className="news-keyword" href={'/search/?type=Page&news=true&news_keywords=' + keyword} title={'Show all news posts tagged with ' + keyword}>{keyword}</a>;
+                        return <a key={keyword} className="news-keyword" href={'/news/?news_keywords=' + keyword} title={'Show all news posts tagged with ' + keyword}>{keyword}</a>;
                     })}
                 </div>
             );

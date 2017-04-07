@@ -4,6 +4,7 @@ var _ = require('underscore');
 var moment = require('moment');
 var globals = require('./globals');
 var {FetchedData, FetchedItems, Param} = require('./fetched');
+import NewsPreviews from './news';
 var cloneWithProps = require('react/lib/cloneWithProps');
 var panel = require('../libs/bootstrap/panel');
 var {Panel, PanelBody, PanelHeading} = panel;
@@ -115,7 +116,7 @@ var Home = module.exports.Home = React.createClass({
                             <div className="social">
                                 <div className="social-news">
                                     <div className="news-header">
-                                        <h2>News <a href={newsUri} title="All ENCODE news" className="twitter-ref">All news</a></h2>
+                                        <h2>News <a href="/news/" title="More ENCODE news" className="twitter-ref">More ENCODE news</a></h2>
                                     </div>
                                     <NewsLoader ref="newslisting" newsLoaded={this.newsLoaded} />
                                 </div>
@@ -518,61 +519,70 @@ var HomepageChart2 = React.createClass({
 
             // Pass the assay_title counts to the charting library to render it.
             var canvas = document.getElementById("myChart2");
-            var ctx = canvas.getContext("2d");
-            this.myPieChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: colors
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    legend: {
-                        display: false // hiding automatically generated legend
+            if (canvas) {
+                var ctx = canvas.getContext("2d");
+                this.myPieChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: colors
+                        }]
                     },
-                    animation: {
-                        duration: 200
-                    },
-                    legendCallback: function (chart) { // allows for legend clicking
-                        let data = chart.data.datasets[0].data;
-                        let text = [];
-                        text.push('<ul>');
-                        for (let i = 0; i < data.length; i++) {
-                            if (data[i]) {
-                                text.push('<li>');
-                                text.push(`<a href="/matrix/${this.props.query}&biosample_type=${chart.data.labels[i]}">`); // go to matrix view when clicked
-                                text.push(`<span class="chart-legend-chip" style="background-color:${chart.data.datasets[0].backgroundColor[i]}"></span>`);
-                                if (chart.data.labels[i]) {
-                                    text.push(`<span class="chart-legend-label">${chart.data.labels[i]}</span>`);
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            display: false // hiding automatically generated legend
+                        },
+                        animation: {
+                            duration: 200
+                        },
+                        legendCallback: function (chart) { // allows for legend clicking
+                            let data = chart.data.datasets[0].data;
+                            let text = [];
+                            text.push('<ul>');
+                            for (let i = 0; i < data.length; i++) {
+                                if (data[i]) {
+                                    text.push('<li>');
+                                    text.push(`<a href="/matrix/${this.props.query}&biosample_type=${chart.data.labels[i]}">`); // go to matrix view when clicked
+                                    text.push(`<span class="chart-legend-chip" style="background-color:${chart.data.datasets[0].backgroundColor[i]}"></span>`);
+                                    if (chart.data.labels[i]) {
+                                        text.push(`<span class="chart-legend-label">${chart.data.labels[i]}</span>`);
+                                    }
+                                    text.push('</a></li>');
                                 }
-                                text.push('</a></li>');
                             }
-                        }
-                        text.push('</ul>');
-                        return text.join('');
-                    }.bind(this),
-                    onClick: function (e) {
-                        // React to clicks on pie sections
-                        let activePoints = this.myPieChart.getElementAtEvent(e);
-                        if (activePoints[0]) {
-                            let clickedElementIndex = activePoints[0]._index;
-                            let term = this.myPieChart.data.labels[clickedElementIndex];
-                            this.context.navigate(`/matrix/${this.props.query}&biosample_type=${term}`); // go to matrix view
-                        }
-                    }.bind(this)
-                }
-            });
+                            text.push('</ul>');
+                            return text.join('');
+                        }.bind(this),
+                        onClick: function (e) {
+                            // React to clicks on pie sections
+                            let activePoints = this.myPieChart.getElementAtEvent(e);
+                            if (activePoints[0]) {
+                                let clickedElementIndex = activePoints[0]._index;
+                                let term = this.myPieChart.data.labels[clickedElementIndex];
+                                this.context.navigate(`/matrix/${this.props.query}&biosample_type=${term}`); // go to matrix view
+                            }
+                        }.bind(this)
+                    }
+                });
+            } else {
+                this.myPieChart = null;
+            }
 
             // Have chartjs draw the legend into the DOM.
-            document.getElementById('chart-legend-2').innerHTML = this.myPieChart.generateLegend();
+            const legendElement = document.getElementById('chart-legend-2');
+            if (legendElement) {
+                legendElement.innerHTML = this.myPieChart.generateLegend();
+            }
 
             // Save the chart <div> height so we can set it to that value when no data's available.
             let chartWrapperDiv = document.getElementById('chart-wrapper-2');
-            this.wrapperHeight = chartWrapperDiv.clientHeight;
+            if (chartWrapperDiv) {
+                this.wrapperHeight = chartWrapperDiv.clientHeight;
+            }
         }.bind(this));
     },
 
@@ -663,6 +673,32 @@ var HomepageChart2 = React.createClass({
 });
 
 
+// Draw the small triangle above the selected assay in the "Assay Categories" chart if the user has
+// selected an assay from the classic image.
+function drawColumnSelects(currentAssay, ctx, data) {
+    // Adapted from https://github.com/chartjs/Chart.js/issues/2477#issuecomment-255042267
+    if (currentAssay) {
+        ctx.fillStyle = '#2138B2';
+
+        // Find the data with a label matching the currently selected assay.
+        const currentColumn = data.labels.indexOf(currentAssay);
+        if (currentColumn !== -1) {
+            // Get information on the matching column's coordinates so we know where to draw the
+            // triangle.
+            const dataset = data.datasets[0];
+            const model = dataset._meta[Object.keys(dataset._meta)[0]].data[currentColumn]._model;
+
+            // Draw the triangle into the HTML5 <canvas> element.
+            ctx.beginPath();
+            ctx.moveTo(model.x - 5, model.y - 8);
+            ctx.lineTo(model.x, model.y - 3);
+            ctx.lineTo(model.x + 5, model.y - 8);
+            ctx.fill();
+        }
+    }
+}
+
+
 // Component to display the D3-based chart for Biosample
 let HomepageChart3 = React.createClass({
 
@@ -683,9 +719,10 @@ let HomepageChart3 = React.createClass({
             let colors = [];
             let data = [];
             let labels = [];
-            let selectedAssay = (this.props.assayCategory && this.props.assayCategory !== 'COMPPRED') ? this.props.assayCategory.replace(/\+/g, ' ') : '';
+            const selectedAssay = (this.props.assayCategory && this.props.assayCategory !== 'COMPPRED') ? this.props.assayCategory.replace(/\+/g, ' ') : '';
 
-            // for each item, set doc count, add to total doc count, add proper label, and assign color
+            // For each item, set doc count, add to total doc count, add proper label, and assign
+            // color.
             facetData.forEach((term, i) => {
                 data[i] = term.doc_count;
                 labels[i] = term.key;
@@ -710,8 +747,13 @@ let HomepageChart3 = React.createClass({
                     legend: {
                         display: false // hiding automatically generated legend
                     },
+                    hover: {
+                        mode: false,
+                    },
                     animation: {
-                        duration: 200
+                        duration: 0,
+                        onProgress: function() { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); },
+                        onComplete: function() { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); },
                     },
                     scales: {
                         xAxes: [{
@@ -721,7 +763,12 @@ let HomepageChart3 = React.createClass({
                             ticks: {
                                 autoSkip: false
                             }
-                        }]
+                        }],
+                    },
+                    layout: {
+                        padding: {
+                            top: 10,
+                        }
                     },
                     onClick: function (e) {
                         // React to clicks on pie sections
@@ -761,6 +808,9 @@ let HomepageChart3 = React.createClass({
         Chart.data.datasets[0].data = data;
         Chart.data.labels = labels;
         Chart.data.datasets[0].backgroundColor = colors;
+        Chart.options.hover.mode = false;
+        Chart.options.animation.onProgress = function() { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); }
+        Chart.options.animation.onComplete = function() { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); }
         Chart.update();
     },
 
@@ -854,18 +904,7 @@ var News = React.createClass({
         if (items && items.length) {
             return (
                 <div className="news-listing">
-                    {items.map(item => {
-                        return (
-                            <div key={item['@id']} className="news-listing-item">
-                                <h3>{item.title}</h3>
-                                <h4>{moment.utc(item.date_created).format('MMMM D, YYYY')}</h4>
-                                <div className="news-excerpt">{item.news_excerpt}</div>
-                                <div className="news-listing-readmore">
-                                    <a className="btn btn-info btn-sm" href={item['@id']} title={'View news post for ' + item.title} key={item['@id']}>Read more</a>
-                                </div>
-                            </div>
-                        );
-                    })}
+                    <NewsPreviews items={items} />
                 </div>
             );
         } else {

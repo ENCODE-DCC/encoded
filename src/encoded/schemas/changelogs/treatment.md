@@ -1,14 +1,10 @@
-=========================
- Change log for treatment.json
-=========================
+## Changelog for treatment.json
 
-Schema version 6
-----------------
+### Schema version 6
 
 * *notes* field is no longer allowed to have any leading or trailing whitespace
 
-Schema version 5
-----------------
+### Schema version 5
  
 * *duration_units* is now required for *duration* and vice versa
 * *concentration* and *concentration_units* were renamed to *amount* and *amount_units*
@@ -16,8 +12,7 @@ Schema version 5
 * *antibodies* was renamed to *antibodies_used*
 * *protocols* were renamed to *documents*
 
-Schema version 4
-----------------
+### Schema version 4
 
 * *antibodies* was added 
 * *biosamples_used* was added 

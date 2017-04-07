@@ -419,5 +419,823 @@
                 }
             ]
         }
+    },
+    {
+        "title": "January 2017 Data Release Overview",
+        "news": true,
+        "layout": {
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p>We are pleased to announce that <a href=\"/matrix/?type=Experiment&amp;status=released&amp;month_released=January%2C+2017\"> 393 new datasets</a> were released in the month of January. The assays range from ChIP-seq, ATAC-seq, and various forms of RNA-seq; these datasets come from human (<a href=\"/matrix/?type=Experiment&status=released&month_released=January%2C+2017&replicates.library.biosample.donor.organism.scientific_name=Homo+sapiens\">264</a>), mouse (<a href=\u201c/matrix/?type=Experiment&status=released&month_released=January%2C+2017&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus\u201d>43</a>), and fruit fly (<a href=\u201c/matrix/?type=Experiment&status=released&month_released=January%2C+2017&replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster\u201d>86</a>).</p>\n\n<p>These datasets&nbsp;are free and accessible for download&nbsp;on the ENCODE portal, no logins required.</p>"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "date_created": "2017-02-03T21:53:28.679346+00:00",
+        "news_keywords": [
+            "DNA accessibility",
+            "DNA binding",
+            "Transcription"
+        ],
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "status": "released",
+        "news_excerpt": "393 new datasets were released in the month of January",
+        "uuid": "af6a6e7f-eb79-4605-bbca-ea9a80533fa4",
+        "name": "2017-02-03-january-release"
+    },
+    {
+        "award": "/awards/U41HG007355/",
+        "news_keywords": [
+            "DNA accessibility",
+            "DNA binding",
+            "Transcription"
+        ],
+        "news": true,
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "status": "released",
+        "news_excerpt": "We are pleased to announce that the Garber Lab, under the GGR project, has released 66 new dendritic cell datasets.",
+        "layout": {
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p>We are pleased to announce that the Garber Lab, under the <a href=\"/awards/U01HG007910/\">Genomics of Gene Regulation project</a>, has released <a href=\"/search/?type=Experiment&amp;award.project=GGR&amp;lab.title=Manuel+Garber%2C+UMass&amp;month_released=January%2C+2017\">66 new dendritic cell datasets</a>. These datasets come from ATAC-seq, RNA-seq, and ChIP-seq, providing great look into the genomic and transcriptomic landscape of the dendritic cell. Eleven of these are mouse, 55 are human datasets.&nbsp;</p>\n\n<p>The ENCODE DCC would like to remind all that these <a href=\"/search/?type=Experiment&amp;award.project=GGR&amp;lab.title=Manuel+Garber%2C+UMass&amp;month_released=January%2C+2017&amp;limit=all\">66 datasets</a> are free and accessible for use here on the ENCODE portal, no logins required.</p>\n"
+                }
+            ]
+        },
+        "date_created": "2017-01-20T23:02:58.968100+00:00",
+        "name": "2017-01-20-garber-lab-release",
+        "lab": "/labs/barbara-wold/",
+        "title": "Data Release: 66 new dendritic cell datasets from the Garber Lab"
+    },
+    {
+        "award": "/awards/U41HG007355/",
+        "news_keywords": [
+            "DNA binding"
+        ],
+        "date_created": "2017-01-11T23:35:45.593848+00:00",
+        "news": true,
+        "layout": {
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p>We are pleased to announce that the <a href=\"/about/contributors/#modERN\">modERN project</a> has released <a href=\"/search/?type=Experiment&amp;month_released=January%2C+2017&amp;replicates.library.biosample.donor.organism.scientific_name=Drosophila+melanogaster&award.rfa=modERN&amp;limit=all\">86 new Drosophila melanogaster ChIP-seq data</a> (includes control experiments). Their processed files have been visualized in both dm3 and dm6 genome references, and includes the processing pipelines, steps, and QC metrics.</p>\n\n<p>Please contact us at&nbsp;<a href=\"mailto:encode-help@lists.stanford.edu\">encode-help@lists.stanford.edu</a>&nbsp;for any questions regarding these datasets.</p>\n"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "uuid": "d3c14e74-6392-4eda-9e92-56ceb08e55c1",
+        "lab": "/labs/kevin-white/",
+        "news_excerpt": "We are pleased to announce that the modERN project has released 86 new Drosophila ChIP-seq data.",
+        "title": "Data Release: 86 Drosophila ChIP-seq data",
+        "status": "released",
+        "name": "2017-01-11-modern-drosophila-chipseq"
+    },
+    {
+        "uuid": "6d24ad59-2247-4e5e-8e00-2fe0b6ecfad8",
+        "news_excerpt": "We are pleased to announce that the Reddy Lab has released 48 new ChIP-seq experiments. ",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "name": "2016-12-20-new-chipseq-data",
+        "award": "/awards/U01HG007900/",
+        "news": true,
+        "date_created": "2016-12-21T00:06:46.395305+00:00",
+        "title": "December releases: 48 ChIP-seq from the Reddy Lab",
+        "lab": "/labs/tim-reddy/",
+        "layout": {
+            "blocks": [
+                {
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p>We are pleased to announce that the Reddy Lab has released <a href=\"/search/?type=Experiment&amp;month_released=December%2C+2016&amp;lab.title=Tim+Reddy%2C+Duke&amp;status=released&amp;limit=all\">48 new ChIP-seq experiments</a>. These ChIP-seq experiments were assayed on immortalized cell ine A549, treated with dexamethasone, and each transcription factor has a control per time treatment.&nbsp;</p>\n\n<p>Treatment Time Series<br />\nCTCF:&nbsp;<a href=\"/treatment-time-series/ENCSR738NGQ/\">ENCSR738NGQ</a><br />\nJUN: <a href=\"/treatment-time-series/ENCSR588JLN/\">ENCSR588JLN</a><br />\nJUNB: <a href=\"/treatment-time-series/ENCSR483SDK/\">ENCSR483SDK</a><br />\nControl: <a href=\"/treatment-time-series/ENCSR678VDY/\">ENCSR678VDY</a></p>\n",
+                    "@id": "#block1"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "status": "released",
+        "news_keywords": [
+            "DNA binding"
+        ]
+    },
+    {
+        "title": "Regarding new eCLIP processed data",
+        "lab": "/labs/gene-yeo/",
+        "news": true,
+        "layout": {
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p>The Yeo Lab and the ENCODE DCC have released new <a href=\"/search/?type=Experiment&amp;assay_title=eCLIP&amp;files.file_type=bed+narrowPeak&amp;files.file_type=bigBed+narrowPeak&amp;files.file_type=bigWig\">eCLIP processed files</a>. These new bed, bigBed, and bigWig files include a supersedes property within its metadata to indicate which file it has replaced. <a href=\"http://yeolab.github.io/eric-van-nostrand/\">Dr. Eric Van Nostrad</a> (Yeo Lab) has provided the following statement in regards to the replacement:</p>\n\n<p>&ldquo;We improved the peak calling background detection to avoid issues of false negatives at a specific class of RNAs with short introns. There are very few old peaks that are not found in the new version (i.e., were few false positives in the old set); but there are some datasets with substantially increased number of peaks.&quot;</p>\n\n<p>Please contact the <a href=\"mailto:encode-help@lists.stanford.edu\">ENCODE DCC help desk</a> for any questions.</p>\n"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "date_created": "2016-12-07T21:15:33.915803+00:00",
+        "news_keywords": [
+            "RNA binding"
+        ],
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "status": "released",
+        "news_excerpt": "The Yeo Lab and the ENCODE DCC have released new eCLIP processed files.",
+        "uuid": "2c965d34-ce2c-41f2-85f8-ee8770b449c8",
+        "name": "2016-12-07-new-eclip-data"
+    },
+    {
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "news_keywords": [
+            "Conferences"
+        ],
+        "news": true,
+        "status": "released",
+        "uuid": "3a73ed7f-3153-4efe-94e3-85ca4b83a349",
+        "news_excerpt": "ENCODE Users Meeting 2016 presentations are on youtube.",
+        "layout": {
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p>Happy Monday!</p>\n\n<p>We are excited to announce that the ENCODE Users Meeting presentations have been uploaded onto the NHGRI Youtube channel. See all of them <strong><a href=\"https://www.youtube.com/watch?v=AU3ac8i2PHk&amp;list=PL1ay9ko4A8snaLk1jEzlhodmsFE1siU2V\">HERE</a></strong>. The ENCODE DCC Outreach group will also contact all users who partook in this event to direct them to the videos, and will link each presentation to their respective tutorials in our <strong><a href=\"https://www.encodeproject.org/tutorials/encode-meeting-2016/\">tutorials page</a></strong>.</p>\n\n<p>Cheers,<br />\nENCODE DCC</p>\n\n<p>*Note: Dr. Freedman requested the ENCODE Consortium to not put his own slides or presentation in our tutorial page.</p>\n"
+                }
+            ]
+        },
+        "title": "ENCODE Users Meeting presentations",
+        "name": "2016-11-07-encode-users-presentations",
+        "date_created": "2016-11-07T18:05:52.467197+00:00"
+    },
+    {
+        "award": "/awards/U54HG007004/",
+        "news_excerpt": "72 ChIP-seq experiments from the Reddy Lab (Genomics of Gene Regulation project) have been released to the public.",
+        "name": "2016-10-27-ggr-chipseq",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "news": true,
+        "date_created": "2016-10-28T00:43:29.278724+00:00",
+        "title": "72 GGR ChIP-seq from the Reddy Lab released!",
+        "news_keywords": [
+            "DNA binding"
+        ],
+        "layout": {
+            "blocks": [
+                {
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p>We are pleased to announce that 72 ChIP-seq experiments from the Reddy Lab (Duke University), part of the&nbsp;Genomics of Gene Regulation project, have been released to the public. All ChIP-seq experiments were done on&nbsp;A549 cell line biosamples and 66 were treated with dexamethasone. You can explore all of them <a href=\"/search/?type=Experiment&amp;award.project=GGR&amp;lab.title=Tim+Reddy%2C+Duke&amp;assay_title=ChIP-seq&amp;month_released=October%2C+2016&amp;biosample_term_name=A549&amp;assay_title=ChIP-seq\">here.</a>&nbsp;For more information about the Genomics of Gene Regulation, <a href=\"https://www.genome.gov/27561317/genomics-of-gene-regulation/\">read here</a>. For more information about the Reddy Lab, <a href=\"http://reddylab.org/\">read here</a>.</p>\n",
+                    "@id": "#block1"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "status": "released"
+    },
+    {
+        "award": "/awards/U41HG007355/",
+        "news_excerpt": "modERN ChIP-seq datasets from fly and worm",
+        "name": "2016-09-30-modern-chipseq-released",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "news": true,
+        "date_created": "2016-09-30",
+        "title": "81 new modERN ChIP-seq experiments released",
+        "news_keywords": [
+            "DNA binding"
+        ],
+        "uuid": "44eded52-0dea-4ac5-89a8-638915824b4f",
+        "layout": {
+            "blocks": [
+                {
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p><a href=\"https://www.encodeproject.org/search/?type=Experiment&amp;award.project=modERN&amp;assay_title=ChIP-seq&amp;month_released=September%2C+2016\">81</a>&nbsp;new modERN ChIP-seq experiments released today on the ENCODE portal, 46 in&nbsp;<a href=\"http://bit.ly/2dfJNVI\">fly</a>&nbsp;and 35 in&nbsp;<a href=\"http://bit.ly/2dcVkEu\">worm</a>.&nbsp;</p>\n",
+                    "@id": "#block1"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "status": "released"
+    },
+    {
+        "news_excerpt": "Includes ChIP-seq, ATAC-seq, RNA-seq data, and more",
+        "name": "2016-06-29-182-total-datasets",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "news": true,
+        "date_created": "2016-06-29",
+        "title": "182 new datasets were released this June",
+        "news_keywords": [
+            "DNA binding",
+            "DNA accessibility",
+            "Transcription",
+            "3D chromatin structure",
+            "DNA methylation"
+        ],
+        "uuid": "482bda6a-6ed6-4e59-aa77-a1ef7eb68842",
+        "layout": {
+            "blocks": [
+                {
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/matrix/?type=Experiment&amp;month_released=April%2C+2016\">ENCODE Portal</a>:&nbsp;</p>\n\n<table id=\"fixedheight\">\n\t<tbody>\n\t\t<tr>\n\t\t\t<td><strong>Human:</strong>\n\n\t\t\t<ul>\n\t\t\t\t<li>127&nbsp;ChIP-seq</li>\n\t\t\t\t<li>19 ATAC-seq</li>\n\t\t\t\t<li>16 shRNA followed by RNA-seq</li>\n\t\t\t\t<li>12 RNA-seq</li>\n\t\t\t\t<li>5 ChIA-pet</li>\n\t\t\t\t<li>2 DNase-seq</li>\n\t\t\t\t<li>1 WGBS</li>\n\t\t\t</ul>\n\n\t\t\t<p>Check them all out&nbsp;<a href=\"https://www.encodeproject.org/search/?type=Experiment&amp;status=released&amp;month_released=June%2C+2016\">here</a></p>\n\t\t\t</td>\n\t\t</tr>\n\t</tbody>\n</table>\n",
+                    "@id": "#block1"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "status": "released"
+    },
+    {
+        "award": "/awards/U41HG007355/",
+        "news_excerpt": "Totaling to 198 modERN experiments released in May",
+        "name": "2016-05-24-celegans-chipseq",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "news": true,
+        "date_created": "2016-05-24",
+        "title": "50 more modERN experiments",
+        "news_keywords": [
+            "DNA binding"
+        ],
+        "uuid": "6479c07e-0e2b-4d3a-997e-7bda055d96cf",
+        "layout": {
+            "blocks": [
+                {
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p>We are pleased to announce 50 more modERN C. elegans&nbsp;ChIP-seq experiments ENCODE portal, with now great total of&nbsp;<a href=\"https://www.encodeproject.org/search/?type=Experiment&amp;award.project=modERN&amp;month_released=May%2C+2016\">198 experiments</a>&nbsp;released this month.</p>\n",
+                    "@id": "#block1"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "status": "released"
+    },
+    {
+        "title": "First Hi-C data for the ENCODE Project",
+        "name": "2016-05-13-hic-datasets-3d-chromatin-structure",
+        "news_keywords": [
+            "3D chromatin structure"
+        ],
+        "date_created": "2016-05-13",
+        "layout": {
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "blocks": [
+                {
+                    "body": "<p>We are pleased to announce the first release on the ENCODE portal of&nbsp;<a href=\"https://www.encodeproject.org/search/?type=Experiment&amp;assay_title=Hi-C&amp;status=released\">Hi-C&nbsp;data</a>, from Job Dekker&#39;s lab. &nbsp;We have released the fastq files and associated metadata, and look forward to hosting analysis and visualization files soon. &nbsp;</p>\n",
+                    "@id": "#block1",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ]
+                }
+            ]
+        },
+        "status": "released",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "news_excerpt": "12 Hi-C experiments have been released from the Dekker lab",
+        "uuid": "61ab1382-4b19-4893-8b6e-797c83fcc30a",
+        "news": true
+    },
+    {
+        "news": true,
+        "title": "Second annual ENCODE Users Meeting",
+        "layout": {
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p><strong>We are happy to announce that the second annual ENCODE Users Meeting will be held at Stanford University on June 8th-10th, 2016.</strong></p>\n\n<p><br />\n<strong>More details at&nbsp;<a href=\"http://www.encode2016.org/\">www.encode2016.org</a></strong></p>\n"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "date_created": "2016-03-22",
+        "news_keywords": [
+            "Conferences"
+        ],
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "status": "released",
+        "news_excerpt": "The second annual ENCODE Users Meeting will be held at Stanford University!",
+        "uuid": "3d0233c5-55b8-446d-87e4-47dba86d9867",
+        "name": "2016-03-22-users-meeting"
+    },
+    {
+        "award": "/awards/U01ES017155/",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "news_keywords": [
+            "DNA accessibility",
+            "Transcription",
+            "DNA methylation",
+            "DNA binding"
+        ],
+        "news": true,
+        "status": "released",
+        "uuid": "f5fc4601-d7d4-4146-9a94-93fefad0c87c",
+        "news_excerpt": "The Roadmap Epigenomics Mapping Consortium (Roadmap) metadata has been fully incorporated into this site including the standardization of terms and ontologies.",
+        "layout": {
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p>The&nbsp;<a href=\"http://www.roadmapepigenomics.org/\">Roadmap Epigenomics Mapping Consortium (Roadmap)&nbsp;</a>metadata has been fully incorporated into this site including the standardization of terms and ontologies. The experimental metadata can now be searched and explored alongside the ENCODE data. However, the raw data is still housed at&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/gapl\">dbGAP</a>&nbsp;and the hg19 processed data is housed at&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/geo/\">GEO</a>. Each Roadmap experiment has a link to the corresponding GEO submission.</p>\n\n<p>We are pleased to announce that&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;award.project=Roadmap\">3127 Roadmap experiments&nbsp;</a>have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>&nbsp;including:</p>\n\n<ul>\n\t<li><strong>ChIP-seq:</strong>&nbsp;1884 experiments</li>\n\t<li><strong>Dnase-seq:</strong>&nbsp;373 experiments</li>\n\t<li><strong>RNA-seq:</strong>&nbsp;345 experiments</li>\n\t<li><strong>shotgun bisulfite-seq assay (WGBS):</strong>&nbsp;145 experiments</li>\n</ul>\n"
+                }
+            ]
+        },
+        "date_created": "2015-10-06",
+        "name": "2015-10-06-roadmap",
+        "title": "Roadmap Epigenomics metadata integrated"
+    },
+    {
+        "news_excerpt": "Includes RNA Bind-n-Seq, ChIP-seq, RNA-seq, and WGBS assays",
+        "name": "2015-06-23-data-release",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "news": true,
+        "date_created": "2015-06-23",
+        "title": "Data release: 3 human and 91 mouse datasets",
+        "news_keywords": [
+            "RNA binding",
+            "DNA binding",
+            "Transcription",
+            "DNA methylation"
+        ],
+        "uuid": "5726d4e3-5525-4370-b722-76fc428c6f0b",
+        "layout": {
+            "blocks": [
+                {
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>:</p>\n\n<ul>\n\t<li><strong>Human:</strong>&nbsp;3 RNA Bind-n-Seq ssays</li>\n\t<li><strong>Mouse:</strong>&nbsp;64 ChIP-Seq, 15 RNA-seq, 12 whole genome bisulfite sequencing ssays</li>\n</ul>\n\n<p>These data, along with other released ENCODE data, are available at the ENCODE Portal. Recently released data can be identified by selecting a month under the &quot;Date released&quot; filter. View data from this&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;date_released=2015-06-23\">current release</a>.</p>\n\n<p>The new data are released under a rapid release policy by which primary data (e.g., fastq sequence files) are released immediately after validation to data formatting standards. Processed data from these experiments will be released after quality assessment and uniform processing are complete. Unlike the previous ENCODE production phase, there is no moratorium on external use for these data.</p>\n",
+                    "@id": "#block1"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "status": "released"
+    },
+    {
+        "award": "/awards/U01ES017155/",
+        "news_excerpt": "To improve transparency about the changes to the objects that comprise the ENCODE metadata schema, we are publishing changelogs for each object",
+        "name": "2015-05-28-changelogs",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "news": true,
+        "date_created": "2015-05-28",
+        "title": "Changelogs",
+        "news_keywords": [],
+        "uuid": "6038ecfd-ec47-430d-9660-d9f31a4ba3c0",
+        "layout": {
+            "blocks": [
+                {
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p>A key feature of the ENCODE Portal is the ability to programmatically query metadata and URLs to files via the&nbsp;<a href=\"https://www.encodeproject.org/help/rest-api/\">REST API</a>. To improve transparency about the changes to the objects that comprise the ENCODE metadata schema, we are publishing changelogs for each object. To view the changelog, replace the following URL with the object name:</p>\n\n<pre>\nhttps://www.encodeproject.org/profiles/changelogs/[object_name].md\n</pre>\n\n<p>For example, viewing the changelog for the file.json object would be</p>\n\n<pre>\nhttps://www.encodeproject.org/profiles/changelogs/file.md</pre>\n",
+                    "@id": "#block1"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "status": "released"
+    },
+    {
+        "news_keywords": [
+            "Transcription",
+            "RNA binding"
+        ],
+        "date_created": "2015-04-13",
+        "news": true,
+        "layout": {
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>:</p>\n\n<ul>\n\t<li><strong>Human:</strong>16 RAMPAGE, 12 RNA Bind-n-Seq assays</li>\n</ul>\n\n<p>These data, along with other released ENCODE data, are available at the ENCODE Portal. Recently released data can be identified by selecting a month under the &quot;Date released&quot; filter. View data from this&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;date_released=2015-04-13\">current release</a>.</p>\n\n<p>The new data are released under a rapid release policy by which primary data (e.g., fastq sequence files) are released immediately after validation to data formatting standards. Processed data from these experiments will be released after quality assessment and uniform processing are complete. Unlike the previous ENCODE production phase, there is no moratorium on external use for these data.</p>\n"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "uuid": "608ea22b-dd2d-4b9c-b322-63e0b36eea40",
+        "news_excerpt": "Includes RAMPAGE and RNA Bind-n-Seq assays",
+        "title": "Data release: 28 human datasets",
+        "status": "released",
+        "name": "2015-04-13-human-rampage-rna-bind-n-seq"
+    },
+    {
+        "title": "Data release: 4 human datasets",
+        "status": "released",
+        "uuid": "03b9efa3-f1e9-4c7f-9b3a-cc7690122e37",
+        "news_excerpt": "Four human DNase-seq assays released",
+        "name": "2015-03-15-dnaseseq",
+        "date_created": "2015-03-15",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "news_keywords": [
+            "DNA accessibility"
+        ],
+        "news": true,
+        "layout": {
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>:</p>\n\n<ul>\n\t<li><strong>Human:</strong>&nbsp;4 DNase-seq assays</li>\n</ul>\n\n<p>These data, along with other released ENCODE data, are available at the ENCODE Portal. Recently released data can be identified by selecting a month under the &quot;Date released&quot; filter. View data from this&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;date_released=2015-03-31\">current release</a>.</p>\n\n<p>The new data are released under a rapid release policy by which primary data (e.g., fastq sequence files) are released immediately after validation to data formatting standards. Processed data from these experiments will be released after quality assessment and uniform processing are complete. Unlike the previous ENCODE production phase, there is no moratorium on external use for these data.</p>\n",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ]
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "news_keywords": [
+            "DNA binding",
+            "RNA binding"
+        ],
+        "news": true,
+        "status": "released",
+        "uuid": "00456b8e-42b5-4a86-9ead-76e0eaa84013",
+        "news_excerpt": "Includes ChIP-seq and RNA Bind-n-Seq assays",
+        "layout": {
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>:</p>\n\n<ul>\n\t<li><strong>Human:</strong>&nbsp;1 ChIP-seq assay (control)</li>\n\t<li><strong>Mouse:</strong>&nbsp;3 RNA Bind-n-Seq assays</li>\n</ul>\n\n<p>These data, along with other released ENCODE data, are available at the ENCODE Portal. Recently released data can be identified by selecting a month under the &quot;Date released&quot; filter. View data from this&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;date_released=2015-02-12\">current release</a>.</p>\n\n<p>The new data are released under a rapid release policy by which primary data (e.g., fastq sequence files) are released immediately after validation to data formatting standards. Processed data from these experiments will be released after quality assessment and uniform processing are complete. Unlike the previous ENCODE production phase, there is no moratorium on external use for these data.</p>\n"
+                }
+            ]
+        },
+        "title": "Data release: 1 human and 3 mouse datasets",
+        "name": "2015-02-12-encode-data-release",
+        "date_created": "2015-02-12"
+    },
+    {
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "news_keywords": [
+            "Transcription"
+        ],
+        "news": true,
+        "status": "released",
+        "uuid": "507afeca-5852-4b6e-9cd4-aa21d1dcf9ef",
+        "news_excerpt": "Eight RNA-seq datasets",
+        "layout": {
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p>We are pleased to announce that the following datasets that are part of the&nbsp;<a href=\"https://www.encodeproject.org/publications/4004dc8e-b7af-4e1d-9cdd-e49cc4dd816e/\">Lin S, et al. (2014)&nbsp;<i>Proc Natl Acad Sci U S A</i>&nbsp;48:17224</a>&nbsp;publication have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>:</p>\n\n<ul>\n\t<li><strong>Human:</strong>&nbsp;5&nbsp;RNA-seq assays</li>\n\t<li><strong>Mouse:</strong>&nbsp;3 RNA-seq assays</li>\n</ul>\n\n<p>These data, along with other released ENCODE data, are available at the ENCODE Portal. Recently released data can be identified by selecting a month under the &quot;Date released&quot; filter. View data from this&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;date_released=2015-01-08\">current release</a>.</p>\n\n<p>The new data are released under a rapid release policy by which primary data (e.g., fastq sequence files) are released immediately after validation to data formatting standards. Processed data from these experiments will be released after quality assessment and uniform processing are complete. Unlike the previous ENCODE production phase, there is no moratorium on external use for these data.</p>\n"
+                }
+            ]
+        },
+        "title": "Data release: 5 human and 3 mouse datasets",
+        "name": "2015-01-08-rnaseq",
+        "date_created": "2015-01-08"
+    },
+    {
+        "news_keywords": [
+            "Transcription",
+            "DNA binding"
+        ],
+        "date_created": "2014-12-08",
+        "news": true,
+        "layout": {
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ],
+                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>:</p>\n\n<ul>\n\t<li><strong>Human:</strong>&nbsp;10 RNA-seq</li>\n\t<li><strong>Mouse:</strong>&nbsp;10 RNA-seq, 15 ChIP-seq</li>\n</ul>\n\n<p>These data, along with other released ENCODE data, are available at the ENCODE Portal. Recently released data can be identified by selecting a month under the &quot;Date released&quot; filter. View data from this&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;date_released=2014-12-08\">current release</a>.</p>\n\n<p>The new data are released under a rapid release policy by which primary data (e.g., fastq sequence files) are released immediately after validation to data formatting standards. Processed data from these experiments will be released after quality assessment and uniform processing are complete. Unlike the previous ENCODE production phase, there is no moratorium on external use for these data.</p>\n\n<p>Read the&nbsp;<a href=\"https://www.encodeproject.org/about/data-access\">new data release policy</a>.</p>\n"
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "uuid": "abd9e3ce-e737-439c-bcda-53be2f3bd772",
+        "news_excerpt": "10 human RNA-seq and 25 mouse RNA- and ChIP-seq",
+        "title": "35 Total Released Datasets",
+        "status": "released",
+        "name": "2014-12-08-data-release"
+    },
+    {
+        "title": "Mouse ENCODE Consortium papers published",
+        "status": "released",
+        "uuid": "4ace4f9b-9952-4d43-b34f-64851b03a2fa",
+        "news_excerpt": "Recent findings from the mouse ENCODE Consortium are now published",
+        "name": "2014-11-19-mouse-publications",
+        "date_created": "2014-11-19",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "news_keywords": [],
+        "news": true,
+        "layout": {
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "body": "<p>Recent findings from the mouse ENCODE Consortium investigating the genomic elements in the mouse model organism and its comparison to human are&nbsp;<a href=\"http://www.genome.gov/27559596\">now published</a>. The list of publications and data used in these publications are detailed on the&nbsp;<a href=\"http://mouseencode.org/\">supplemental website</a>.</p>\n",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ]
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "title": "Data release: 23 human and 5 mouse datasets",
+        "status": "released",
+        "uuid": "e74a86c3-a6a8-4662-aee5-e591d989b01b",
+        "news_excerpt": "These datasets are from ChIP-seq, iCLIP, RAMPAGE, RNA-seq, and WGBS assays",
+        "name": "2014-09-12-data-release",
+        "date_created": "2014-09-12",
+        "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
+        "news_keywords": [
+            "DNA binding",
+            "RNA binding",
+            "Transcription",
+            "DNA methylation"
+        ],
+        "news": true,
+        "layout": {
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "body": "<p>We are pleased to announce that the following datasets have been released on the&nbsp;<a href=\"https://www.encodeproject.org/\">ENCODE Portal</a>:</p>\n\n<ul>\n\t<li><strong>Human</strong>: 16 ChIP-seq, 4 iCLIP, and 3 RAMPAGE</li>\n\t<li><strong>Mouse:</strong>&nbsp;4 RNA-seq and 1 Shotgun Bisulfite-seq</li>\n</ul>\n\n<p>This release includes a new assay:</p>\n\n<ul>\n\t<li><strong>iCLIP</strong>&nbsp;(individual-nucleotide resolution UV-cross-linking and immunoprecipitation): identifies the binding site of RNA-binding proteins at individual nucleotide resolution (<a href=\"http://www.ncbi.nlm.nih.gov/pubmed/20601959/\">PMID: 20601959</a>,&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/pubmed/21559008/\">PMID: 2155900</a>)</li>\n</ul>\n\n<p>These data, along with other released ENCODE data, are available at the ENCODE Portal. Recently released data can be identified by selecting a month under the &quot;Date released&quot; filter. View data from this&nbsp;<a href=\"https://www.encodeproject.org/search/?type=experiment&amp;month_released=September,%202014\">current release</a>.</p>\n\n<p>The new data are released under a rapid release policy by which primary data (e.g., fastq sequence files) are released immediately after validation to data formatting standards. Processed data from these experiments will be released after quality assessment and uniform processing are complete. Unlike the previous ENCODE production phase, there is no moratorium on external use for these data.</p>\n\n<p>Read the&nbsp;<a href=\"http://encodeproject.org/ENCODE/terms.html\">new data release policy</a>.</p>\n",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ]
+                }
+            ],
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block1"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
     }
 ]

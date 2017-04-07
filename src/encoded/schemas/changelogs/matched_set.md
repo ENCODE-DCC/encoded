@@ -1,15 +1,11 @@
-===============================
-Change log for matched_set.json
-===============================
+## Changelog for matched_set.json
 
-Schema version 10
------------------
+### Schema version 10
 
 * *description*, *notes*, and *submitter_comment* are now not allowed to have any leading or trailing whitespace
 * *assay_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the term_name
 
-Schema version 9
-----------------
+### Schema version 9
 
 * *status* enum was restricted to:
     "enum" : [
@@ -24,7 +20,6 @@ Schema version 9
         "replaced"
     ]
 
-Schema version 8
-----------------
+### Schema version 8
 
 * Array properties *aliases*, *dbxrefs*, *documents*, and *references* were updated to allow for only unique elements within them.
