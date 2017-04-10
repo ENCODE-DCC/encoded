@@ -15,6 +15,7 @@ import subprocess
 import re
 from urllib.parse import urljoin
 import requests
+import copy
 
 EPILOG = __doc__
 
@@ -797,12 +798,29 @@ def remove_local_file(path_to_the_file, errors):
         pass
 
 
-def fetch_files(session, url, search_query, out, include_unexpired_upload=False):
-    r = session.get(
-        urljoin(url, '/search/?field=@id&limit=all&type=File&datastore=database&' + search_query))
-    r.raise_for_status()
-    out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
-    for result in r.json()['@graph']:
+def fetch_files(session, url, search_query, out, include_unexpired_upload=False, file_list=None):
+    graph = []
+    if file_list:
+        r = None
+        ACCESSIONS = []
+        if os.path.isfile(file_list):
+            ACCESSIONS = [line.rstrip('\n') for line in open(file_list)]
+        for acc in ACCESSIONS:
+            r = session.get(
+                urljoin(url, '/search/?field=@id&limit=all&type=File&accession=' + acc))
+            r.raise_for_status()
+            out.write("PROCESSING: %d files in accessions list file : %s\n" % (len(r.json()['@graph']), file_list))
+            local = copy.deepcopy(r.json()['@graph'])
+            graph.extend(local)
+
+    else:
+        r = session.get(
+            urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
+        r.raise_for_status()
+        out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
+        graph = r.json()['@graph']
+
+    for result in graph:
         job = {
             '@id': result['@id'],
             'errors': {},
