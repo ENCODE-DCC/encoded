@@ -805,15 +805,17 @@ def fetch_files(session, url, search_query, out, include_unexpired_upload=False,
         ACCESSIONS = []
         if os.path.isfile(file_list):
             ACCESSIONS = [line.rstrip('\n') for line in open(file_list)]
+        #print (ACCESSIONS)
         for acc in ACCESSIONS:
             r = session.get(
                 urljoin(url, '/search/?field=@id&limit=all&type=File&accession=' + acc))
             r.raise_for_status()
-            out.write("PROCESSING: %d files in accessions list file : %s\n" % (len(r.json()['@graph']), file_list))
+            #out.write("PROCESSING: %d files in accessions list file : %s\n" % (len(r.json()['@graph']), file_list))
             local = copy.deepcopy(r.json()['@graph'])
             graph.extend(local)
-
     else:
+        print ('NONE')
+        print (ACCESSIONS)
         r = session.get(
             urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
         r.raise_for_status()
