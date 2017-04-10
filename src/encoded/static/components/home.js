@@ -4,6 +4,7 @@ var _ = require('underscore');
 var moment = require('moment');
 var globals = require('./globals');
 var {FetchedData, FetchedItems, Param} = require('./fetched');
+import NewsPreviews from './news';
 var cloneWithProps = require('react/lib/cloneWithProps');
 var panel = require('../libs/bootstrap/panel');
 var {Panel, PanelBody, PanelHeading} = panel;
@@ -115,7 +116,7 @@ var Home = module.exports.Home = React.createClass({
                             <div className="social">
                                 <div className="social-news">
                                     <div className="news-header">
-                                        <h2>News <a href={newsUri} title="All ENCODE news" className="twitter-ref">All news</a></h2>
+                                        <h2>News <a href="/news/" title="More ENCODE news" className="twitter-ref">More ENCODE news</a></h2>
                                     </div>
                                     <NewsLoader ref="newslisting" newsLoaded={this.newsLoaded} />
                                 </div>
@@ -903,18 +904,7 @@ var News = React.createClass({
         if (items && items.length) {
             return (
                 <div className="news-listing">
-                    {items.map(item => {
-                        return (
-                            <div key={item['@id']} className="news-listing-item">
-                                <h3>{item.title}</h3>
-                                <h4>{moment.utc(item.date_created).format('MMMM D, YYYY')}</h4>
-                                <div className="news-excerpt">{item.news_excerpt}</div>
-                                <div className="news-listing-readmore">
-                                    <a className="btn btn-info btn-sm" href={item['@id']} title={'View news post for ' + item.title} key={item['@id']}>Read more</a>
-                                </div>
-                            </div>
-                        );
-                    })}
+                    <NewsPreviews items={items} />
                 </div>
             );
         } else {
