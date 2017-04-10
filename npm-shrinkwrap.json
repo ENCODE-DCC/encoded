@@ -390,14 +390,19 @@
       "resolved": "https://registry.npmjs.org/query-string/-/query-string-4.3.2.tgz"
     },
     "react": {
-      "version": "15.4.2",
-      "from": "https://registry.npmjs.org/react/-/react-15.4.2.tgz",
-      "resolved": "https://registry.npmjs.org/react/-/react-15.4.2.tgz",
+      "version": "15.5.3",
+      "from": "react@latest",
+      "resolved": "https://registry.npmjs.org/react/-/react-15.5.3.tgz",
       "dependencies": {
         "fbjs": {
-          "version": "0.8.9",
-          "from": "https://registry.npmjs.org/fbjs/-/fbjs-0.8.9.tgz",
-          "resolved": "https://registry.npmjs.org/fbjs/-/fbjs-0.8.9.tgz"
+          "version": "0.8.12",
+          "from": "fbjs@>=0.8.9 <0.9.0",
+          "resolved": "https://registry.npmjs.org/fbjs/-/fbjs-0.8.12.tgz"
+        },
+        "prop-types": {
+          "version": "15.5.6",
+          "from": "prop-types@>=15.5.2 <16.0.0",
+          "resolved": "https://registry.npmjs.org/prop-types/-/prop-types-15.5.6.tgz"
         }
       }
     },
@@ -414,14 +419,19 @@
       }
     },
     "react-dom": {
-      "version": "15.4.2",
-      "from": "https://registry.npmjs.org/react-dom/-/react-dom-15.4.2.tgz",
-      "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-15.4.2.tgz",
+      "version": "15.5.3",
+      "from": "react-dom@latest",
+      "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-15.5.3.tgz",
       "dependencies": {
         "fbjs": {
-          "version": "0.8.9",
-          "from": "https://registry.npmjs.org/fbjs/-/fbjs-0.8.9.tgz",
-          "resolved": "https://registry.npmjs.org/fbjs/-/fbjs-0.8.9.tgz"
+          "version": "0.8.12",
+          "from": "fbjs@>=0.8.9 <0.9.0",
+          "resolved": "https://registry.npmjs.org/fbjs/-/fbjs-0.8.12.tgz"
+        },
+        "prop-types": {
+          "version": "15.5.6",
+          "from": "prop-types@>=15.5.0 <15.6.0",
+          "resolved": "https://registry.npmjs.org/prop-types/-/prop-types-15.5.6.tgz"
         }
       }
     },
