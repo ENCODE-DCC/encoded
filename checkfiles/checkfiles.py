@@ -814,12 +814,10 @@ def fetch_files(session, url, search_query, out, include_unexpired_upload=False,
             local = copy.deepcopy(r.json()['@graph'])
             graph.extend(local)
     else:
-        print ('NONE')
-        print (ACCESSIONS)
         r = session.get(
             urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
         r.raise_for_status()
-        out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
+        #out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
         graph = r.json()['@graph']
 
     for result in graph:
