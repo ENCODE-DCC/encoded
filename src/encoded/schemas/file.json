@@ -36,6 +36,9 @@
         "award.project": {
             "title": "Project"
         },
+        "assembly": {
+            "title": "Mapping assembly"
+        },
         "lab.title": {
             "title": "Lab"
         }
@@ -69,6 +72,16 @@
                             "enum": ["1"]
                         }
                     }
+                },
+                {
+                    "properties": {
+                        "file_format": {
+                            "enum": ["sra"]
+                        },
+                        "paired_end": {
+                            "enum": ["1,2"]
+                        }
+                    }
                 }
             ]
         },
@@ -89,7 +102,7 @@
                     "required": ["read_length"],
                     "properties": {
                         "file_format": {
-                            "enum": ["fastq", "fasta", "csfasta", "csqual"]
+                            "enum": ["fastq", "fasta", "csfasta", "csqual","sra"]
                         },
                         "output_type": {
                              "enum": ["reads"]
@@ -115,7 +128,7 @@
                             "required": ["replicate", "run_type"],
                             "properties": {
                                 "file_format": {
-                                    "enum": ["fastq"]
+                                    "enum": ["fastq","sra"]
                                 }
                             }
                         },
@@ -124,7 +137,7 @@
                                 "required": ["assembly"],
                                 "properties": {
                                     "file_format": {
-                                        "enum": ["fastq"]
+                                        "enum": ["fastq","sra"]
                                     }
                                 }
                             }
@@ -151,7 +164,7 @@
                     "not": {
                         "properties": {
                             "file_format": {
-                                "enum": ["fastq", "gff", "gtf", "bed", "bigBed", "bam", "sam"]
+                                "enum": ["fastq", "gff", "gtf", "bed", "bigBed", "bam", "sam","sra"]
                             }
                         }
                     }
@@ -513,6 +526,7 @@
                         "predicted heart enhancers",
                         "predicted whole brain enhancers",
                         "candidate regulatory elements",
+                        "representative dnase hypersensitivity sites",
                         "sequence alignability",
                         
                         "genome reference",
@@ -607,7 +621,8 @@
             "type": "string",
             "enum": [
                 "1",
-                "2"
+                "2",
+                "1,2"
             ]
         },
         "derived_from": {
@@ -946,6 +961,7 @@
         "predicted transcription start sites": "annotation",
         "transcription start sites": "annotation",
         "candidate regulatory elements": "annotation",
+        "representative dnase hypersensitivity sites":"annotation",
         "variant calls": "annotation",
         "maternal variant calls": "annotation",
         "paternal variant calls": "annotation",

@@ -153,3 +153,13 @@ def test_not_content_error_with_message_bad(testapp, file_no_error):
     file_no_error.update({'content_error_detail': 'I am not the pipeline, I cannot use this.'})
     res = testapp.post_json('/file', file_no_error, expect_errors=True)
     assert res.status_code == 422
+
+
+def test_with_paired_end_1_2(testapp, file_no_error):
+    # only sra files should be allowed to have paired_end == 1,2
+    file_no_error.update({'paired_end': '1,2'})
+    res = testapp.post_json('/file', file_no_error, expect_errors=True)
+    assert res.status_code == 422
+    file_no_error.update({'file_format': 'sra'})
+    res = testapp.post_json('/file', file_no_error, expect_errors=True)
+    assert res.status_code == 201

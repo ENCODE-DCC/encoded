@@ -38,11 +38,11 @@ How to update the ontology versions
 
 6.  Update the following information
     
-    Site release version: 53
-    ontology.json file: ontology-2017-02-07.json
-    UBERON release date: 2016-10-23
+    Site release version: 55
+    ontology.json file: ontology-2017-03-24.json
+    UBERON release date: 2017-02-05
     OBI release date: 2016-10-11
-    EFO release date: 2017-01-16
+    EFO release date: 2017-03-15
 
 
 [Uber anatomy ontology (Uberon)]: http://uberon.org/
