@@ -45,7 +45,7 @@
                     "title": "MIME type",
                     "type": "string",
                     "enum": [
-                        "application/gzip",
+                        "application/x-tar",
                         "application/pdf",
                         "image/jpeg",
                         "image/png",
