@@ -30,6 +30,7 @@ export class Param extends React.Component {
         if (xhr) {
             console.log('abort param xhr');
             xhr.abort();
+            this.props.handleAbort();
         }
     }
 
@@ -95,7 +96,8 @@ export class Param extends React.Component {
 
 Param.propTypes = {
     url: React.PropTypes.string.isRequired,
-    handleFetch: React.PropTypes.func,
+    handleFetch: React.PropTypes.func, // Actually required, but added in cloneElement
+    handleAbort: React.PropTypes.func, // Actually required, but added in cloneElement
     type: React.PropTypes.string,
     name: React.PropTypes.string.isRequired,
     etagName: React.PropTypes.string,
@@ -103,8 +105,9 @@ Param.propTypes = {
 
 Param.defaultProps = {
     type: 'json',
-    handleFetch: undefined,
     etagName: undefined,
+    handleFetch: undefined, // Actually required, but added in cloneElement
+    handleAbort: undefined, // Actually required, but added in cloneElement
 };
 
 Param.contextTypes = {
@@ -117,12 +120,21 @@ export class FetchedData extends React.Component {
     constructor() {
         super();
         this.state = {};
+        this.aborted = false;
         this.handleFetch = this.handleFetch.bind(this);
+        this.handleAbort = this.handleAbort.bind(this);
     }
 
     handleFetch(result) {
-        // Set state to returned search result data to cause rerender of child components
-        this.setState(result);
+        // Set state to returned search result data to cause rerender of child components.
+        if (!this.aborted) {
+            this.setState(result);
+        }
+    }
+
+    handleAbort() {
+        // If <Param> aborts a request, we need to know that.
+        this.aborted = true;
     }
 
     render() {
@@ -138,6 +150,7 @@ export class FetchedData extends React.Component {
                     params.push(React.cloneElement(child, {
                         key: child.props.name,
                         handleFetch: this.handleFetch,
+                        handleAbort: this.handleAbort,
                     }));
 
                     // Still communicating with server if handleFetch not yet called
