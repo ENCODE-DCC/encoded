@@ -916,7 +916,7 @@ def patch_file(session, url, job):
                     'was {} and now is {}.'.format(job['item'].get('status', 'UNKNOWN'), etag_r.json()['status'])
     return
 
-def run(out, err, url, username, password, encValData, mirror, search_query,
+def run(out, err, url, username, password, encValData, mirror, search_query, file_list=None,
         processes=None, include_unexpired_upload=False, dry_run=False, json_out=False):
     import functools
     import multiprocessing
@@ -949,7 +949,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
         pool = multiprocessing.Pool(processes=processes)
         imap = pool.imap_unordered
 
-    jobs = fetch_files(session, url, search_query, out, include_unexpired_upload)
+    jobs = fetch_files(session, url, search_query, out, include_unexpired_upload, file_list)
     if not json_out:
         headers = '\t'.join(['Accession', 'Lab', 'Errors', 'Aliases', 'Upload URL',
                              'Upload Expiration'])
@@ -1013,6 +1013,9 @@ def main():
     parser.add_argument(
         '--search-query', default='status=uploading',
         help="override the file search query, e.g. 'accession=ENCFF000ABC'")
+    parser.add_argument(
+        '--file-list', default='',
+        help="list of file accessions to check")
     parser.add_argument('url', help="server to post to")
     args = parser.parse_args()
     run(**vars(args))
