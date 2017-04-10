@@ -38,11 +38,11 @@ How to update the ontology versions
 
 6.  Update the following information
     
-    Site release version: 55
-    ontology.json file: ontology-2017-03-24.json
-    UBERON release date: 2017-02-05
-    OBI release date: 2016-10-11
-    EFO release date: 2017-03-15
+    Site release version: 56
+    ontology.json file: ontology-2017-04-10-expand-organs.json
+    [UBERON release date]: 2017-02-05
+    [OBI release date]: 2016-10-11
+    [EFO release date]: 2017-03-15
 
 
 [Uber anatomy ontology (Uberon)]: http://uberon.org/
@@ -53,3 +53,6 @@ How to update the ontology versions
 [EFO src tree]: https://sourceforge.net/p/efo/code/HEAD/tree/trunk/src/efoinowl/InferredEFOOWLview/
 [OBI releases]: http://svn.code.sf.net/p/obi/code/releases/
 [buildout.cfg]: ../../../buildout.cfg
+[UBERON release date]: http://uberon.github.io/
+[OBI release date]: http://www.ontobee.org/ontology/OBI 
+[EFO release date]: https://sourceforge.net/p/efo/code/HEAD/tree/trunk/src/efoinowl/InferredEFOOWLview/
