@@ -1450,7 +1450,7 @@ const FileGalleryRenderer = React.createClass({
                 <PanelHeading addClasses="file-gallery-heading">
                     <h4>Files</h4>
                     <div className="file-gallery-controls">
-                        {context.visualize && context.status === 'released' ?
+                        {context.visualize ?
                             <div className="file-gallery-control">
                                 <BrowserSelector visualizeCfg={context.visualize} />
                             </div>

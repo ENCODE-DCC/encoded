@@ -65,6 +65,7 @@
     "cookie-monster": "0.0.7",
     "d3": "^3.4.6",
     "dagre-d3": "git+https://github.com/ENCODE-DCC/dagre-d3.git#v1.2.0",
+    "dalliance": "git://github.com/ENCODE-DCC/dalliance.git#commonjs-require-13.x",
     "domready": "^0.3.0",
     "form-serialize": "^0.6.0",
     "google-analytics": "file:node_shims/google-analytics",

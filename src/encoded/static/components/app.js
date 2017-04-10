@@ -254,6 +254,7 @@ class App extends React.Component {
             adviseUnsavedChanges: this.adviseUnsavedChanges,
             session: this.state.session,
             session_properties: this.state.session_properties,
+            localInstance: url.parse(this.props.href).hostname === 'localhost',
         };
     }
 
@@ -1024,6 +1025,7 @@ App.childContextTypes = {
     adviseUnsavedChanges: React.PropTypes.func,
     session: React.PropTypes.object,
     session_properties: React.PropTypes.object,
+    localInstance: React.PropTypes.bool,
 };
 
 module.exports = App;
