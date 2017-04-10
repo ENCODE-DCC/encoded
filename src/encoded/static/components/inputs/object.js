@@ -86,7 +86,7 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
         var previewUrl = url;
         var searchUrl = '/search/' + this.state.search;
         var actions = [
-            <button className="btn btn-primary" onClick={this.handleSelect}>Select</button>
+            <button key={1} className="btn btn-primary" onClick={this.handleSelect}>Select</button>
         ];
         var searchParams = this.state.searchParams || this.props.searchBase;
         if (this.state.search) {

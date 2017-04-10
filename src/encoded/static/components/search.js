@@ -86,7 +86,7 @@ const PickerActions = module.exports.PickerActions = React.createClass ({
         if (this.context.actions && this.context.actions.length) {
             return (
                 <div className="pull-right">
-                    {this.context.actions.map(action => React.cloneElement(action, { id: this.props.context['@id'] }))}
+                    {this.context.actions.map(action => React.cloneElement(action, { key: this.props.context.name, id: this.props.context['@id'] }))}
                 </div>
             );
         } else {
@@ -695,7 +695,7 @@ const Term = search.Term = React.createClass({
 const TypeTerm = search.TypeTerm = React.createClass({
     propTypes: {
         term: React.PropTypes.object,
-        filters: React.PropTypes.object,
+        filters: React.PropTypes.array,
         total: React.PropTypes.number,
     },
 
@@ -807,7 +807,7 @@ const Facet = search.Facet = React.createClass({
 
 const TextFilter = search.TextFilter = React.createClass({
     propTypes: {
-        filters: React.PropTypes.object,
+        filters: React.PropTypes.array,
         searchBase: React.PropTypes.string,
         onChange: React.PropTypes.func,
     },
@@ -972,7 +972,7 @@ const BatchDownload = search.BatchDownload = React.createClass({
 const ResultTable = search.ResultTable = React.createClass({
     propTypes: {
         context: React.PropTypes.object,
-        actions: React.PropTypes.string,
+        actions: React.PropTypes.array,
         restrictions: React.PropTypes.object,
         assemblies: React.PropTypes.array, // List of assemblies of all 'File' objects in search results
         searchBase: React.PropTypes.string,
@@ -991,7 +991,7 @@ const ResultTable = search.ResultTable = React.createClass({
 
     getInitialState: function () {
         return {
-            browserAssembly: this.props.assemblies[0], // Currently selected assembly for the browser
+            browserAssembly: this.props.assemblies && this.props.assemblies[0], // Currently selected assembly for the browser
             selectedTab: '',
         };
     },
