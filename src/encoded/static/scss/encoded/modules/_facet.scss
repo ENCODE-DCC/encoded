@@ -237,8 +237,9 @@ div.meta-status {
     z-index: 10;
     list-style-type: none;
     margin: 0;
-    padding: 0;
+    padding: 10px;
     overflow: hidden;
+    border: 1px solid #a0a0a0;
 
     li {
         margin-top: 10px;
@@ -263,6 +264,10 @@ div.meta-status {
     .pull-right {
         position: relative;
         z-index: 2;
+    }
+
+    &.result-table-tabbed {
+        border-top: 0;
     }
 }
 
