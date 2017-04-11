@@ -44,6 +44,28 @@
         }
     },
     "dependencies": {
+        "run_type": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "run_type": {
+                            "enum": ["single-ended", "unknown"]
+                        }                        
+                    }
+                },
+                {
+                    "required": ["paired_end"],
+                    "properties": {
+                        "run_type": {
+                            "enum": ["paired-ended"]
+                        },
+                        "paired_end":{
+                            "enum": ["1", "2", "1,2"]
+                        }
+                    }
+                }
+            ]
+        },
         "external_accession": {
             "not": {
                 "required": ["accession"]
