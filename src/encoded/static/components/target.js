@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'underscore';
 import globals from './globals';
 import { Breadcrumbs } from './navigation';
@@ -93,7 +94,7 @@ class Target extends React.Component {
 }
 
 Target.propTypes = {
-    context: React.PropTypes.object, // Target object to display
+    context: PropTypes.object, // Target object to display
 };
 
 Target.defaultProps = {

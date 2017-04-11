@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import shortid from 'shortid';
 import _ from 'underscore';
 import { collapseIcon } from '../libs/svg-icons';
@@ -42,9 +43,9 @@ import { Panel } from '../libs/bootstrap/panel';
 //
 //     BlaineComponent.propTypes = {
 //         ...
-//         blaineData: React.PropTypes.object,
-//         auditIndicators: React.PropTypes.func,
-//         auditDetail: React.PropTypes.func,
+//         blaineData: PropTypes.object,
+//         auditIndicators: PropTypes.func,
+//         auditDetail: PropTypes.func,
 //         ...
 //     };
 //
@@ -107,8 +108,8 @@ export class AuditIcon extends React.Component {
 }
 
 AuditIcon.propTypes = {
-    level: React.PropTypes.string.isRequired, // Level name from an audit object
-    addClasses: React.PropTypes.string, // CSS classes to add to default
+    level: PropTypes.string.isRequired, // Level name from an audit object
+    addClasses: PropTypes.string, // CSS classes to add to default
 };
 
 AuditIcon.defaultProps = {
@@ -154,9 +155,9 @@ class DetailEmbeddedLink extends React.Component {
 }
 
 DetailEmbeddedLink.propTypes = {
-    detail: React.PropTypes.string.isRequired, // Test to display in each audit's detail, possibly containing @ids that this component turns into links automatically
-    except: React.PropTypes.string, // @id of object being reported on. Specifying it here prevents it from being converted to a link in the `detail` text
-    forcedEditLink: React.PropTypes.bool, // `true` to display the `except` path as a link anyway
+    detail: PropTypes.string.isRequired, // Test to display in each audit's detail, possibly containing @ids that this component turns into links automatically
+    except: PropTypes.string, // @id of object being reported on. Specifying it here prevents it from being converted to a link in the `detail` text
+    forcedEditLink: PropTypes.bool, // `true` to display the `except` path as a link anyway
 };
 
 DetailEmbeddedLink.defaultProps = {
@@ -214,10 +215,10 @@ class AuditGroup extends React.Component {
 }
 
 AuditGroup.propTypes = {
-    group: React.PropTypes.array.isRequired, // Array of audits in one name/category
-    auditLevelName: React.PropTypes.string.isRequired, // Audit level name
-    except: React.PropTypes.string, // @id of object whose audits are being displayed.
-    forcedEditLink: React.PropTypes.bool, // `true` to display the `except` path as a link anyway
+    group: PropTypes.array.isRequired, // Array of audits in one name/category
+    auditLevelName: PropTypes.string.isRequired, // Audit level name
+    except: PropTypes.string, // @id of object whose audits are being displayed.
+    forcedEditLink: PropTypes.bool, // `true` to display the `except` path as a link anyway
 };
 
 AuditGroup.defaultProps = {

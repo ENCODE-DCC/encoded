@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'underscore';
 import moment from 'moment';
 import { FetchedData, FetchedItems, Param } from './fetched';
@@ -144,7 +145,7 @@ const ChartGallery = props => (
 );
 
 ChartGallery.propTypes = {
-    query: React.PropTypes.string, // Query string to add to /matrix/ URI
+    query: PropTypes.string, // Query string to add to /matrix/ URI
 };
 
 
@@ -224,7 +225,7 @@ class AssayClicking extends React.Component {
 }
 
 AssayClicking.propTypes = {
-    assayCategory: React.PropTypes.string.isRequired, // Test to display in each audit's detail, possibly containing @ids that this component turns into links automatically
+    assayCategory: PropTypes.string.isRequired, // Test to display in each audit's detail, possibly containing @ids that this component turns into links automatically
 };
 
 
@@ -246,13 +247,13 @@ const BannerOverlayButton = (props) => {
 };
 
 BannerOverlayButton.propTypes = {
-    item: React.PropTypes.string, // ID of button being clicked
-    x: React.PropTypes.string, // X coordinate of button
-    y: React.PropTypes.string, // Y coordinate of button
-    width: React.PropTypes.string, // Width of button in pixels
-    height: React.PropTypes.string, // Height of button in pixels
-    selected: React.PropTypes.bool, // `true` if button is selected
-    clickHandler: React.PropTypes.func, // Function to call when the button is clicked
+    item: PropTypes.string, // ID of button being clicked
+    x: PropTypes.string, // X coordinate of button
+    y: PropTypes.string, // Y coordinate of button
+    width: PropTypes.string, // Width of button in pixels
+    height: PropTypes.string, // Height of button in pixels
+    selected: PropTypes.bool, // `true` if button is selected
+    clickHandler: PropTypes.func, // Function to call when the button is clicked
 };
 
 
@@ -274,8 +275,8 @@ class TabClicking extends React.Component {
 }
 
 TabClicking.propTypes = {
-    organisms: React.PropTypes.array, // Array of currently selected tabs
-    handleTabClick: React.PropTypes.func, // Function to call when a tab is clicked
+    organisms: PropTypes.array, // Array of currently selected tabs
+    handleTabClick: PropTypes.func, // Function to call when a tab is clicked
 };
 
 
@@ -290,9 +291,9 @@ const OrganismSelector = (props) => {
 };
 
 OrganismSelector.propTypes = {
-    organism: React.PropTypes.string, // Organism this selector represents
-    selected: React.PropTypes.bool, // `true` if selector is selected
-    clickHandler: React.PropTypes.func, // Function to call to handle a selector click
+    organism: PropTypes.string, // Organism this selector represents
+    selected: PropTypes.bool, // `true` if selector is selected
+    clickHandler: PropTypes.func, // Function to call to handle a selector click
 };
 
 
@@ -310,9 +311,9 @@ const HomepageChartLoader = (props) => {
 };
 
 HomepageChartLoader.propTypes = {
-    query: React.PropTypes.string, // Current search URI based on selected assayCategory
-    organisms: React.PropTypes.array, // Array of selected organism strings
-    assayCategory: React.PropTypes.string, // Selected assay category
+    query: PropTypes.string, // Current search URI based on selected assayCategory
+    organisms: PropTypes.array, // Array of selected organism strings
+    assayCategory: PropTypes.string, // Selected assay category
 };
 
 
@@ -527,13 +528,13 @@ class HomepageChart extends React.Component {
 }
 
 HomepageChart.propTypes = {
-    query: React.PropTypes.string,
-    data: React.PropTypes.object,
+    query: PropTypes.string,
+    data: PropTypes.object,
 };
 
 HomepageChart.contextTypes = {
-    navigate: React.PropTypes.func,
-    projectColors: React.PropTypes.object, // DataColor instance for experiment project
+    navigate: PropTypes.func,
+    projectColors: PropTypes.object, // DataColor instance for experiment project
 };
 
 
@@ -724,14 +725,14 @@ class HomepageChart2 extends React.Component {
 }
 
 HomepageChart2.propTypes = {
-    query: React.PropTypes.string,
-    data: React.PropTypes.object,
-    assayCategory: React.PropTypes.string,
+    query: PropTypes.string,
+    data: PropTypes.object,
+    assayCategory: PropTypes.string,
 };
 
 HomepageChart2.contextTypes = {
-    navigate: React.PropTypes.func,
-    biosampleTypeColors: React.PropTypes.object, // DataColor instance for experiment project
+    navigate: PropTypes.func,
+    biosampleTypeColors: PropTypes.object, // DataColor instance for experiment project
 };
 
 
@@ -938,13 +939,13 @@ class HomepageChart3 extends React.Component {
 }
 
 HomepageChart3.propTypes = {
-    assayCategory: React.PropTypes.string,
-    query: React.PropTypes.string,
-    data: React.PropTypes.object,
+    assayCategory: PropTypes.string,
+    query: PropTypes.string,
+    data: PropTypes.object,
 };
 
 HomepageChart3.contextTypes = {
-    navigate: React.PropTypes.func,
+    navigate: PropTypes.func,
 };
 
 
@@ -977,9 +978,9 @@ class News extends React.Component {
 }
 
 News.propTypes = {
-    items: React.PropTypes.array,
-    newsLoaded: React.PropTypes.func.isRequired, // Called parent once the news is loaded
-    nodeRef: React.PropTypes.func, // React ref callback so we can get the news-listing DOM element in a higher component
+    items: PropTypes.array,
+    newsLoaded: PropTypes.func.isRequired, // Called parent once the news is loaded
+    nodeRef: PropTypes.func, // React ref callback so we can get the news-listing DOM element in a higher component
 };
 
 
@@ -992,7 +993,7 @@ class NewsLoader extends React.Component {
 }
 
 NewsLoader.propTypes = {
-    newsLoaded: React.PropTypes.func.isRequired, // Called parent once the news is loaded
+    newsLoaded: PropTypes.func.isRequired, // Called parent once the news is loaded
 };
 
 
@@ -1051,5 +1052,5 @@ class TwitterWidget extends React.Component {
 }
 
 TwitterWidget.propTypes = {
-    height: React.PropTypes.number.isRequired, // Number of pixels tall to make widget
+    height: PropTypes.number.isRequired, // Number of pixels tall to make widget
 };

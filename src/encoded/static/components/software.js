@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
 import globals from './globals';
@@ -106,13 +107,13 @@ class SoftwareComponent extends React.Component {
 }
 
 SoftwareComponent.propTypes = {
-    context: React.PropTypes.object.isRequired, // Software object being rendered
-    auditIndicators: React.PropTypes.func.isRequired,
-    auditDetail: React.PropTypes.func.isRequired,
+    context: PropTypes.object.isRequired, // Software object being rendered
+    auditIndicators: PropTypes.func.isRequired,
+    auditDetail: PropTypes.func.isRequired,
 };
 
 SoftwareComponent.contextTypes = {
-    location_href: React.PropTypes.string,
+    location_href: PropTypes.string,
 };
 
 // Note: need to export for Jest tests even though no other module imports it.
@@ -155,8 +156,8 @@ const SoftwareVersionTable = (props) => {
 };
 
 SoftwareVersionTable.propTypes = {
-    items: React.PropTypes.array.isRequired, // Software versions to render in the table
-    highlightVersion: React.PropTypes.string, // Version number of row to highlight
+    items: PropTypes.array.isRequired, // Software versions to render in the table
+    highlightVersion: PropTypes.string, // Version number of row to highlight
 };
 
 SoftwareVersionTable.defaultProps = {
@@ -196,9 +197,9 @@ const ListingComponent = (props) => {
 };
 
 ListingComponent.propTypes = {
-    context: React.PropTypes.object.isRequired, // Software object being rendered as a search result.
-    auditIndicators: React.PropTypes.func.isRequired, // From auditDecor
-    auditDetail: React.PropTypes.func.isRequired, // From auditDecor
+    context: PropTypes.object.isRequired, // Software object being rendered as a search result.
+    auditIndicators: PropTypes.func.isRequired, // From auditDecor
+    auditDetail: PropTypes.func.isRequired, // From auditDecor
 };
 
 const Listing = auditDecor(ListingComponent);

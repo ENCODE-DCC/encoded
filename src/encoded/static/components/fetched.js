@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'underscore';
 import globals from './globals';
 
@@ -95,12 +96,12 @@ export class Param extends React.Component {
 }
 
 Param.propTypes = {
-    url: React.PropTypes.string.isRequired,
-    handleFetch: React.PropTypes.func, // Actually required, but added in cloneElement
-    handleAbort: React.PropTypes.func, // Actually required, but added in cloneElement
-    type: React.PropTypes.string,
-    name: React.PropTypes.string.isRequired,
-    etagName: React.PropTypes.string,
+    url: PropTypes.string.isRequired,
+    handleFetch: PropTypes.func, // Actually required, but added in cloneElement
+    handleAbort: PropTypes.func, // Actually required, but added in cloneElement
+    type: PropTypes.string,
+    name: PropTypes.string.isRequired,
+    etagName: PropTypes.string,
 };
 
 Param.defaultProps = {
@@ -111,8 +112,8 @@ Param.defaultProps = {
 };
 
 Param.contextTypes = {
-    fetch: React.PropTypes.func,
-    session: React.PropTypes.object,
+    fetch: PropTypes.func,
+    session: PropTypes.object,
 };
 
 
@@ -216,11 +217,11 @@ export class FetchedData extends React.Component {
 }
 
 FetchedData.contextTypes = {
-    session: React.PropTypes.object,
+    session: PropTypes.object,
 };
 
 FetchedData.propTypes = {
-    children: React.PropTypes.node.isRequired,
+    children: PropTypes.node.isRequired,
 };
 
 
@@ -231,8 +232,8 @@ const Items = (props) => {
 };
 
 Items.propTypes = {
-    Component: React.PropTypes.func.isRequired,
-    data: React.PropTypes.object,
+    Component: PropTypes.func.isRequired,
+    data: PropTypes.object,
 };
 
 Items.defaultProps = {
@@ -248,8 +249,8 @@ export const FetchedItems = props => (
 );
 
 FetchedItems.propTypes = {
-    url: React.PropTypes.string.isRequired,
-    ignoreErrors: React.PropTypes.bool,
+    url: PropTypes.string.isRequired,
+    ignoreErrors: PropTypes.bool,
 };
 
 FetchedItems.defaultProps = {

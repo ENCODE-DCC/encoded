@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var url = require('url');
 var globals = require('./globals');
 var StickyHeader = require('./StickyHeader');
@@ -114,8 +115,8 @@ const RowView = (props) => {
 };
 
 RowView.propTypes = {
-    row: React.PropTypes.object.isRequired, // Properties to render in the row
-    hidden: React.PropTypes.bool, // True if row is hidden; usually because of entered search terms
+    row: PropTypes.object.isRequired, // Properties to render in the row
+    hidden: PropTypes.bool, // True if row is hidden; usually because of entered search terms
 };
 
 RowView.defaultProps = {

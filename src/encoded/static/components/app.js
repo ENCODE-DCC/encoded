@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import serialize from 'form-serialize';
 import ga from 'google-analytics';
 import _ from 'underscore';
@@ -94,7 +95,7 @@ const biosampleTypeList = [
 const Title = props => <title {...props}>{props.children}</title>;
 
 Title.propTypes = {
-    children: React.PropTypes.node.isRequired,
+    children: PropTypes.node.isRequired,
 };
 
 
@@ -1000,11 +1001,11 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-    context: React.PropTypes.object.isRequired,
-    href: React.PropTypes.string.isRequired,
-    styles: React.PropTypes.string,
-    inline: React.PropTypes.string,
-    domReader: React.PropTypes.func, // Only for Jest test
+    context: PropTypes.object.isRequired,
+    href: PropTypes.string.isRequired,
+    styles: PropTypes.string,
+    inline: PropTypes.string,
+    domReader: PropTypes.func, // Only for Jest test
 };
 
 App.defaultProps = {
@@ -1014,18 +1015,18 @@ App.defaultProps = {
 };
 
 App.childContextTypes = {
-    listActionsFor: React.PropTypes.func,
-    currentResource: React.PropTypes.func,
-    location_href: React.PropTypes.string,
-    fetch: React.PropTypes.func,
-    navigate: React.PropTypes.func,
-    portal: React.PropTypes.object,
-    projectColors: React.PropTypes.object,
-    biosampleTypeColors: React.PropTypes.object,
-    adviseUnsavedChanges: React.PropTypes.func,
-    session: React.PropTypes.object,
-    session_properties: React.PropTypes.object,
-    localInstance: React.PropTypes.bool,
+    listActionsFor: PropTypes.func,
+    currentResource: PropTypes.func,
+    location_href: PropTypes.string,
+    fetch: PropTypes.func,
+    navigate: PropTypes.func,
+    portal: PropTypes.object,
+    projectColors: PropTypes.object,
+    biosampleTypeColors: PropTypes.object,
+    adviseUnsavedChanges: PropTypes.func,
+    session: PropTypes.object,
+    session_properties: PropTypes.object,
+    localInstance: PropTypes.bool,
 };
 
 module.exports = App;
