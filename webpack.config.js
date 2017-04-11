@@ -10,43 +10,59 @@ var PATHS = {
     build: path.resolve(__dirname, 'src/encoded/static/build'),
     serverbuild: path.resolve(__dirname, 'src/encoded/static/build-server'),
     fonts: path.resolve(__dirname, 'src/encoded/static/font'),
-    images: path.resolve(__dirname, 'src/encoded/static/img')
+    images: path.resolve(__dirname, 'src/encoded/static/img'),
 };
 
 var plugins = [];
 // don't include momentjs locales (large)
 plugins.push(new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/]));
 var chunkFilename = '[name].js';
-var styleFilename = "./css/[name].css";
+var styleFilename = './css/[name].css';
 
 if (env === 'production') {
     // uglify code for production
-    plugins.push(new webpack.optimize.UglifyJsPlugin({minimize: true}));
+    plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
     // add chunkhash to chunk names for production only (it's slower)
     chunkFilename = '[name].[chunkhash].js';
-    styleFilename = "./css/[name].[chunkhash].css";
+    styleFilename = './css/[name].[chunkhash].css';
 }
+
+var preLoaders = [
+    // Strip @jsx pragma in react-forms, which makes babel abort
+    {
+        test: /(\.js|\.es6)$/,
+        include: path.resolve(__dirname, 'node_modules/react-forms'),
+        loader: 'string-replace',
+        query: {
+            search: '@jsx',
+            replace: 'jsx',
+        },
+    },
+];
 
 var loaders = [
     // add babel to load .js files as ES6 and transpile JSX
     {
         test: /\.js$/,
-        include: PATHS.static,
-        loader: 'babel'
+        include: [
+            PATHS.static,
+            path.resolve(__dirname, 'node_modules/dalliance'),
+        ],
+        loader: 'babel',
     },
     {
         test: /\.json$/,
-        loader: 'json'
+        loader: 'json',
     },
     {
         test: /\.(jpg|png|gif)$/,
         loader: 'url?limit=25000',
-        include: PATHS.images
+        include: PATHS.images,
     },
     {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('css!sass')
-    }    
+        loader: ExtractTextPlugin.extract('css!sass'),
+    },
 ];
 
 module.exports = [
@@ -55,16 +71,16 @@ module.exports = [
         context: PATHS.static,
         entry: {
             inline: './inline',
-            style: './scss/style.scss'
+            style: './scss/style.scss',
         },
         output: {
             path: PATHS.build,
             publicPath: '/static/build/',
             filename: '[name].js',
-            chunkFilename: chunkFilename
+            chunkFilename: chunkFilename,
         },
         module: {
-            loaders: loaders
+            loaders: loaders,
         },
         devtool: 'source-map',
         plugins: plugins.concat(
@@ -72,7 +88,7 @@ module.exports = [
             // external CSS file
             new ExtractTextPlugin(styleFilename, {
                 disable: false,
-                allChunks: true
+                allChunks: true,
             }),
 
             // Add a browser-only plugin executed when webpack is done with all transforms. it
@@ -83,21 +99,21 @@ module.exports = [
                     // Write hash stats to stats.json so we can extract the CSS hashed file name.
                     require('fs').writeFileSync(
                         path.join(PATHS.build, 'stats.json'),
-                        JSON.stringify(stats.toJson({hash: true}, 'none')));
+                        JSON.stringify(stats.toJson({ hash: true }, 'none')));
                 });
             }
         ),
-        debug: true
+        debug: true,
     },
     // for server-side rendering
     {
         entry: {
-            renderer: './src/encoded/static/server.js'
+            renderer: './src/encoded/static/server.js',
         },
         target: 'node',
         // make sure compiled modules can use original __dirname
         node: {
-            __dirname: true
+            __dirname: true,
         },
         externals: [
             'brace',
@@ -106,21 +122,22 @@ module.exports = [
             'd3',
             'dagre-d3',
             'chart.js',
+            'dalliance',
             // avoid bundling babel transpiler, which is not used at runtime
-            'babel-core/register'
+            'babel-core/register',
         ],
         output: {
             path: PATHS.serverbuild,
             publicPath: '/static/build-server',
             filename: '[name].js',
             libraryTarget: 'commonjs2',
-            chunkFilename: chunkFilename
+            chunkFilename: chunkFilename,
         },
         module: {
-            loaders: loaders
+            loaders: loaders,
         },
         devtool: 'source-map',
         plugins: plugins,
-        debug: true
-    }
+        debug: true,
+    },
 ];
