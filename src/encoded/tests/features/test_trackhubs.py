@@ -65,7 +65,7 @@ def test_dataset_trackDb(testapp, workbook, expected):
     "shortLabel ENCODE ChIP-seq",
     "visibility full",
     "html ChIP",
-    "subGroup1 view Views aOIDR=Optimal_IDR_thresholded_peaks bCIDR=Conservative_IDR_thresholded_peaks cRPKS=Replicated_peaks dPKS=Peaks eFCOC=Fold_change_over_control fSPV=Signal_p-value gSIG=Signal",
+    "subGroup1 view Views aOIDR=Optimal_IDR_thresholded_peaks bCIDR=Conservative_IDR_thresholded_peaks cRPKS=Pseudoreplicated_IDR_thresholded_peaks dPKS=Peaks eFCOC=Fold_change_over_control fSPV=Signal_p-value gSIG=Signal",
     "subGroup2 BS Biosample GM12878=GM12878",
     "subGroup3 EXP Experiment ENCSR000DZQ=ENCSR000DZQ",
     "subGroup4 REP Replicates pool=Pooled",
