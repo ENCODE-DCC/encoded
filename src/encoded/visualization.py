@@ -1913,7 +1913,9 @@ def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
     json_out = (request.url.find("jsonout") > -1)
     ihec_out = (request.url.find("ihecjson") > -1)
     if json_out:
-        return json.dumps(acc_composite, indent=4, sort_keys=True)
+        acc_composites = {} # Standardize output for biodalliance use
+        acc_composites[acc] = acc_composite
+        return json.dumps(acc_composites, indent=4, sort_keys=True)
     elif ihec_out:
         ihec_json = remodel_acc_to_ihec_json({acc: acc_composite}, request)
         return json.dumps(ihec_json, indent=4, sort_keys=True)
@@ -2009,9 +2011,12 @@ def generate_batch_trackDb(request, hide=False, regen=False):
     set_composites = {}
     if found > 0 or made > 0:
         ihec_out = (request.url.find("ihecjson") > -1)  # ...&ambly=hg19&ihecjson/hg19/trackDb.txt
+        acc_json = (request.url.find("accjson") > -1)  # ...&bly=hg19&accjson/hg19/trackDb.txt
         if ihec_out:
             ihec_json = remodel_acc_to_ihec_json(acc_composites, request)
             blob = json.dumps(ihec_json, indent=4, sort_keys=True)
+        if acc_json:
+            blob = json.dumps(acc_composites, indent=4, sort_keys=True)
         else:
             set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100)
 
