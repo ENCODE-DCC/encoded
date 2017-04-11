@@ -183,12 +183,12 @@ const StatusIndicator = React.createClass({
     },
 
     render: function() {
-        const classes = { tooltipopen: this.state.tipOpen };
+        const classes = `tooltip-status sentence-case${this.state.tipOpen ? ' tooltipopen' : ''}`;
 
         return (
             <span className="tooltip-status-trigger">
                 <i className={globals.statusClass(this.props.status, 'indicator icon icon-circle')} ref="indicator" onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave} />
-                <div className={`tooltip-status sentence-case ${cx(classes)}`} style={this.state.tipStyles}>
+                <div className={classes} style={this.state.tipStyles}>
                     {this.props.status}<br /><span>{this.props.terms.join(', ')}</span>
                 </div>
             </span>
@@ -199,7 +199,7 @@ const StatusIndicator = React.createClass({
 // Display the status indicators for one target
 const StatusIndicators = React.createClass({
     propTypes: {
-        targetTree: React.PropTypes.array,
+        targetTree: React.PropTypes.object,
         target: React.PropTypes.string,
     },
 
