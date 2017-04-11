@@ -141,6 +141,20 @@
                                     }
                                 }
                             }
+                        },
+                        {
+                            "required": ["platform"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["sra",
+                                             "fastq",
+                                             "csfasta",
+                                             "csqual",
+                                             "rcc",
+                                             "idat",
+                                             "CEL"]
+                                }
+                            }
                         }
                     ]
                 },

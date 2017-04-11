@@ -68,12 +68,13 @@ def file_no_assembly(testapp, experiment, award, lab, replicate):
 
 
 @pytest.fixture
-def file_no_error(testapp, experiment, award, lab, replicate):
+def file_no_error(testapp, experiment, award, lab, replicate, platform1):
     item = {
         'dataset': experiment['@id'],
         'replicate': replicate['@id'],
         'lab': lab['@id'],
         'file_size': 345,
+        'platform': platform1['@id'],
         'award': award['@id'],
         'file_format': 'fastq',
         'run_type': 'paired-ended',
@@ -86,12 +87,13 @@ def file_no_error(testapp, experiment, award, lab, replicate):
 
 
 @pytest.fixture
-def file_content_error(testapp, experiment, award, lab, replicate):
+def file_content_error(testapp, experiment, award, lab, replicate, platform1):
     item = {
         'dataset': experiment['@id'],
         'replicate': replicate['@id'],
         'lab': lab['@id'],
         'file_size': 345,
+        'platform': platform1['@id'],
         'award': award['@id'],
         'file_format': 'fastq',
         'run_type': 'paired-ended',

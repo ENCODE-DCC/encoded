@@ -61,11 +61,12 @@ def file_rep1_2(replicate, file_exp, testapp):
 
 
 @pytest.fixture
-def file1_2(file_exp, award, lab, file_rep1_2, testapp):
+def file1_2(file_exp, award, lab, file_rep1_2, platform1, testapp):
     item = {
         'dataset': file_exp['uuid'],
         'replicate': file_rep1_2['uuid'],
         'file_format': 'fastq',
+        'platform': platform1['@id'],
         'md5sum': '91be74b6e11515393507f4ebfa66d58a',
         'output_type': 'raw data',
         'file_size': 34,
@@ -116,7 +117,7 @@ def file1(file_exp, award, lab, file_rep, file2, platform1, testapp):
 
 
 @pytest.fixture
-def file3(file_exp, award, lab, file_rep, testapp):
+def file3(file_exp, award, lab, file_rep, platform1, testapp):
     item = {
         'dataset': file_exp['uuid'],
         'replicate': file_rep['uuid'],
@@ -125,6 +126,7 @@ def file3(file_exp, award, lab, file_rep, testapp):
         'md5sum': '91be74b6e11515393507f4ebfa56d78d',
         'output_type': 'reads',
         "read_length": 50,
+        'platform': platform1['uuid'],
         'run_type': 'single-ended',
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -134,13 +136,14 @@ def file3(file_exp, award, lab, file_rep, testapp):
 
 
 @pytest.fixture
-def file4(file_exp2, award, lab, file_rep2, testapp):
+def file4(file_exp2, award, lab, file_rep2, platform1, testapp):
     item = {
         'dataset': file_exp2['uuid'],
         'replicate': file_rep2['uuid'],
         'file_format': 'fastq',
         'md5sum': '91ae74b6e11515393507f4ebfa66d78a',
         'output_type': 'reads',
+        'platform': platform1['uuid'],
         "read_length": 50,
         'file_size': 34,
         'run_type': 'single-ended',
