@@ -990,6 +990,10 @@ const ResultTable = search.ResultTable = React.createClass({
 
     childContextTypes: { actions: React.PropTypes.array },
 
+    contextTypes: {
+        session: React.PropTypes.object,
+    },
+
     getDefaultProps: function () {
         return {
             restrictions: {},
@@ -1050,6 +1054,7 @@ const ResultTable = search.ResultTable = React.createClass({
         const filters = context.filters;
         const label = 'results';
         const trimmedSearchBase = searchBase.replace(/[\?|&]limit=all/, '');
+        const loggedIn = this.context.session && this.context.session['auth.userid'];
         let browseAllFiles = true; // True to pass all files to browser
         let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
         let browserDatasets = []; // Datasets will be used to get vis_json blobs
@@ -1106,7 +1111,7 @@ const ResultTable = search.ResultTable = React.createClass({
 
         // If we have only one "type" term in the query string and it's for File, then we can
         // display the List/Browser tabs. Otherwise we just get the list.
-        let browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File' && assemblies.length === 1;
+        let browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File' && assemblies.length === 1 && loggedIn;
         if (browserAvail) {
             // If dataset is in the query string, we can show all files.
             const datasetFilter = filters.find(filter => filter.field === 'dataset');
@@ -1216,7 +1221,7 @@ const ResultTable = search.ResultTable = React.createClass({
                                 </div>
                                 <hr />
                                 {browserAvail ?
-                                    <TabPanel tabs={{ listpane: 'List', browserpane: 'Quick View' }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} tabFlange>
+                                    <TabPanel tabs={{ listpane: 'List', browserpane: <BrowserTabQuickView /> }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} tabFlange>
                                         <TabPanelPane key="listpane">
                                             <ResultTableList results={results} columns={columns} tabbed />
                                         </TabPanelPane>
@@ -1236,6 +1241,13 @@ const ResultTable = search.ResultTable = React.createClass({
                 </div>
             </div>
         );
+    },
+});
+
+
+const BrowserTabQuickView = React.createClass({
+    render: function () {
+        return <div>Quick View <span className="beta-badge">BETA</span></div>;
     },
 });
 
