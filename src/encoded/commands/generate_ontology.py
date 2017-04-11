@@ -106,7 +106,9 @@ organ_slims = {
     'UBERON:0000473': 'testis',
     'UBERON:0001637': 'artery',
     'UBERON:0001638': 'vein',
-    'UBERON:0002050': 'embryonic structure'
+    'UBERON:0002050': 'embryonic structure',
+    'UBERON:0000160': 'intestine',
+    'UBERON:0002384': 'connective tissue'
 }
 
 assay_slims = {
