@@ -7,7 +7,6 @@
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
         "name": "Common RNA filtering counts metric (TXT)"
-
     },
     {
         "status": "released",
@@ -17,7 +16,6 @@
         "uuid": "05d719aa-42d3-4512-a837-48a15b6688aa",
         "attachment": "HAIB_TCF4_WH0006925M2_MassSpec.tsv",
         "name": "Common RNA filtering counts metric (TSV)"
-
     },
     {
         "status": "released",
@@ -72,5 +70,25 @@
         "uuid": "efde5206-bf05-4c9e-a56c-74c9321ef333",
         "attachment": "CH17_pBACGK1.1n.png",
         "name": "Common RNA filtering counts metric (PNG)"
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/U54HG006996/",
+        "quality_metric_of": ["ENCFF002ENO"],
+        "step_run": "a2cc2a38-ad62-4f01-bd5b-0ae31e6f3024",
+        "uuid": "483f5087-21a3-4801-a5e8-8f907750ef24",
+        "attachment": "tarball1.tar.gz",
+        "name": "Collection of all calculated QC1"
+    },
+    {
+        "status": "released",
+        "lab": "/labs/michael-snyder/",
+        "award": "/awards/U54HG006996/",
+        "quality_metric_of": ["ENCFF002ENO"],
+        "step_run": "a2cc2a38-ad62-4f01-bd5b-0ae31e6f3024",
+        "uuid": "2ae50979-55d3-4502-b3cc-a949049a9159",
+        "attachment": "tarball2.tgz",
+        "name": "Collection of all calculated QC2"
     }
 ]
