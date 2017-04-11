@@ -22,7 +22,7 @@ def audit_antibody_dbxrefs_ar(value, system):
     'targets',
     'characterizations',
     'characterizations.target'],
-    condition=rfa('ENCODE3', 'modERN'))
+    condition=rfa('ENCODE3', 'modERN', 'ENCODE4'))
 def audit_antibody_missing_characterizations(value, system):
     '''
     Check to see what characterizations are lacking for each antibody,
@@ -39,10 +39,8 @@ def audit_antibody_missing_characterizations(value, system):
     primary_chars = []
     secondary_chars = []
     compliant_secondary = False
-    need_review = False
+
     for char in value['characterizations']:
-        if char['status'] == 'pending dcc review':
-            need_review = True
         if 'primary_characterization_method' in char:
             primary_chars.append(char)
         if 'secondary_characterization_method' in char:
@@ -57,10 +55,6 @@ def audit_antibody_missing_characterizations(value, system):
     if not secondary_chars:
         detail = '{} does not have any secondary characterizations submitted.'.format(value['@id'])
         yield AuditFailure('no secondary characterizations', detail, level='NOT_COMPLIANT')
-
-    if need_review:
-        detail = '{} has characterization(s) needing review.'.format(value['@id'])
-        yield AuditFailure('characterization(s) pending review', detail, level='INTERNAL_ACTION')
 
     for lot_review in value['lot_reviews']:
         if lot_review['detail'] in \
