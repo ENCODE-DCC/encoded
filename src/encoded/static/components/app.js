@@ -117,6 +117,7 @@ var App = React.createClass({
         hidePublicAudits: React.PropTypes.bool,
         projectColors: React.PropTypes.object,
         biosampleTypeColors: React.PropTypes.object,
+        localInstance: React.PropTypes.bool,
     },
 
     // Retrieve current React context
@@ -135,6 +136,7 @@ var App = React.createClass({
             hidePublicAudits: false, // True if audits should be hidden on the UI while logged out
             projectColors: projectColors,
             biosampleTypeColors: biosampleTypeColors,
+            localInstance: url.parse(this.props.href).hostname === 'localhost',
         };
     },
 

@@ -20,6 +20,9 @@ module.exports.blocks = new Registry();
 // Graph detail view
 module.exports.graph_detail = new Registry();
 
+// Search facet view
+module.exports.facet_view = new Registry();
+
 // Document panel components
 // +---------------------------------------+
 // | header                                |
@@ -116,20 +119,19 @@ module.exports.unreleased_files_url = function (context) {
     return '/search/?limit=all&type=file&dataset=' + context['@id'] + file_states;
 };
 
-
 // Encode a URI with much less intensity than encodeURIComponent but a bit more than encodeURI.
 // In addition to encodeURI, this function escapes exclamations and at signs.
 module.exports.encodedURI = function (uri) {
     return encodeURI(uri).replace(/!/g, '%21').replace(/@/g, '%40');
 };
 
- 
+
 // Just like encodeURIComponent, but also encodes parentheses (Redmine #4242). Replace spaces with
 // `space` parameter, or '+' if not provided.
 // http://stackoverflow.com/questions/8143085/passing-and-through-a-uri-causes-a-403-error-how-can-i-encode-them#answer-8143232
-var encodedURIComponent = module.exports.encodedURIComponent = function(str, space) {
-    var spaceReplace = space ? space : '+';
-    return encodeURIComponent(str).replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/%20/g, spaceReplace);
+module.exports.encodedURIComponent = function (str, space) {
+    const spaceReplace = space || '+';
+    return encodeURIComponent(str).replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/%20/g, spaceReplace).replace(/%3D/g, '=');
 };
 
 
@@ -218,6 +220,19 @@ module.exports.encodeVersion = function(context) {
     }
     return encodevers;
 };
+
+// Display a human-redable form of the file size given the size of a file in bytes. Returned as a
+// string.
+module.exports.humanFileSize = function (size) {
+    if (size >= 0) {
+        const i = Math.floor(Math.log(size) / Math.log(1024));
+        const adjustedSize = (size / Math.pow(1024, i)).toPrecision(3) * 1;
+        const units = ['B', 'kB', 'MB', 'GB', 'TB'][i];
+        return `${adjustedSize} ${units}`;
+    }
+    return undefined;
+}
+
 
 module.exports.dbxref_prefix_map = {
     "UniProtKB": "http://www.uniprot.org/uniprot/",

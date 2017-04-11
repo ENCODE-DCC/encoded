@@ -28,8 +28,9 @@ def audit_antibody_missing_characterizations(value, system):
     Check to see what characterizations are lacking for each antibody,
     for the cell lines we know about.
     '''
-    if value['targets'][0].get('investigated_as') in ['control']:
-        return
+    for t in value['targets']:
+        if 'control' in t.get('investigated_as'):
+            return
 
     if not value['characterizations']:
         detail = '{} does not have any supporting characterizations submitted.'.format(value['@id'])
@@ -39,7 +40,10 @@ def audit_antibody_missing_characterizations(value, system):
     primary_chars = []
     secondary_chars = []
     compliant_secondary = False
+    need_review = False
     for char in value['characterizations']:
+        if char['status'] == 'pending dcc review':
+            need_review = True
         if 'primary_characterization_method' in char:
             primary_chars.append(char)
         if 'secondary_characterization_method' in char:
@@ -54,6 +58,10 @@ def audit_antibody_missing_characterizations(value, system):
     if not secondary_chars:
         detail = '{} does not have any secondary characterizations submitted.'.format(value['@id'])
         yield AuditFailure('no secondary characterizations', detail, level='NOT_COMPLIANT')
+
+    if need_review:
+        detail = '{} has characterization(s) needing review.'.format(value['@id'])
+        yield AuditFailure('characterization(s) pending review', detail, level='INTERNAL_ACTION')
 
     for lot_review in value['lot_reviews']:
         if lot_review['detail'] in \
@@ -73,7 +81,7 @@ def audit_antibody_missing_characterizations(value, system):
             if biosample == 'any cell type or tissue':
                 biosample = 'one or more cell types/tissues.'
 
-            detail = '{} needs a compliant primary in {}'.format(value['@id'], lot_review['biosample_term_name'])
+            detail = '{} needs a compliant primary in {}'.format(value['@id'], biosample)
             yield AuditFailure('need compliant primaries', detail, level='NOT_COMPLIANT')
 
     if secondary_chars and not compliant_secondary:

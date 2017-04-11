@@ -8,6 +8,7 @@ def file_no_replicate(testapp, experiment, award, lab):
         'lab': lab['@id'],
         'award': award['@id'],
         'file_format': 'bam',
+        'file_size': 345,
         'assembly': 'hg19',
         'md5sum': 'e002cd204df36d93dd070ef0712b8eed',
         'output_type': 'alignments',
@@ -24,6 +25,7 @@ def file_with_replicate(testapp, experiment, award, lab, replicate):
         'lab': lab['@id'],
         'award': award['@id'],
         'file_format': 'bam',
+        'file_size': 345,
         'assembly': 'hg19',
         'md5sum': 'e003cd204df36d93dd070ef0712b8eed',
         'output_type': 'alignments',
@@ -40,6 +42,7 @@ def file_with_derived(testapp, experiment, award, lab, file_with_replicate):
         'award': award['@id'],
         'file_format': 'bam',
         'assembly': 'hg19',
+        'file_size': 345,
         'md5sum': 'e004cd204df36d93dd070ef0712b8eed',
         'output_type': 'alignments',
         'status': 'in progress',  # avoid s3 upload codepath
@@ -56,6 +59,7 @@ def file_no_assembly(testapp, experiment, award, lab, replicate):
         'lab': lab['@id'],
         'award': award['@id'],
         'file_format': 'bam',
+        'file_size': 345,
         'md5sum': '82847a2a5beb8095282c68c00f48e347',
         'output_type': 'alignments',
         'status': 'in progress'
@@ -69,10 +73,12 @@ def file_no_error(testapp, experiment, award, lab, replicate):
         'dataset': experiment['@id'],
         'replicate': replicate['@id'],
         'lab': lab['@id'],
+        'file_size': 345,
         'award': award['@id'],
         'file_format': 'fastq',
         'run_type': 'paired-ended',
         'output_type': 'reads',
+        "read_length": 50,
         'md5sum': '136e501c4bacf4aab87debab20d76648',
         'status': 'in progress'
     }
@@ -85,10 +91,12 @@ def file_content_error(testapp, experiment, award, lab, replicate):
         'dataset': experiment['@id'],
         'replicate': replicate['@id'],
         'lab': lab['@id'],
+        'file_size': 345,
         'award': award['@id'],
         'file_format': 'fastq',
         'run_type': 'paired-ended',
         'output_type': 'reads',
+        "read_length": 36,
         'md5sum': '99378c852c5be68251cbb125ffcf045a',
         'status': 'content error'
     }
@@ -145,3 +153,13 @@ def test_not_content_error_with_message_bad(testapp, file_no_error):
     file_no_error.update({'content_error_detail': 'I am not the pipeline, I cannot use this.'})
     res = testapp.post_json('/file', file_no_error, expect_errors=True)
     assert res.status_code == 422
+
+
+def test_with_paired_end_1_2(testapp, file_no_error):
+    # only sra files should be allowed to have paired_end == 1,2
+    file_no_error.update({'paired_end': '1,2'})
+    res = testapp.post_json('/file', file_no_error, expect_errors=True)
+    assert res.status_code == 422
+    file_no_error.update({'file_format': 'sra'})
+    res = testapp.post_json('/file', file_no_error, expect_errors=True)
+    assert res.status_code == 201
