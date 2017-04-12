@@ -155,7 +155,7 @@ const StatusIndicator = createReactClass({
         let whiteSpace = 'nowrap';
         const resultBounds = document.getElementById('result-table').getBoundingClientRect();
         const resultWidth = resultBounds.right - resultBounds.left;
-        const tipBounds = _.clone(getNextElementSibling(this.refs.indicator.getDOMNode()).getBoundingClientRect());
+        const tipBounds = _.clone(getNextElementSibling(this.indicator).getBoundingClientRect());
         const tipWidth = tipBounds.right - tipBounds.left;
         let width = tipWidth;
         if (tipWidth > resultWidth) {
@@ -189,7 +189,7 @@ const StatusIndicator = createReactClass({
 
         return (
             <span className="tooltip-status-trigger">
-                <i className={globals.statusClass(this.props.status, 'indicator icon icon-circle')} ref="indicator" onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave} />
+                <i className={globals.statusClass(this.props.status, 'indicator icon icon-circle')} ref={(indicator) => { this.indicator = indicator; }} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave} />
                 <div className={classes} style={this.state.tipStyles}>
                     {this.props.status}<br /><span>{this.props.terms.join(', ')}</span>
                 </div>
@@ -1240,7 +1240,7 @@ const ResultTable = search.ResultTable = createReactClass({
 });
 
 
-const BrowserTabQuickView = React.createClass({
+const BrowserTabQuickView = createReactClass({
     render: function () {
         return <div>Quick View <span className="beta-badge">BETA</span></div>;
     },
