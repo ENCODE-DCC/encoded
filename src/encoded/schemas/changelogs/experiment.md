@@ -1,15 +1,11 @@
-==============================
-Change log for experiment.json
-==============================
+## Changelog for experiment.json
 
-Schema version 10
------------------
+### Schema version 10
 
 * *assay_term_name* is now a required property
 * *assay_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the term_name
 
-Schema version 9
-----------------
+### Schema version 9
 
 * *status* enum was restricted to:
     "enum" : [
@@ -24,13 +20,11 @@ Schema version 9
         "replaced"
     ]
 
-Schema version 8
-----------------
+### Schema version 8
 
 * Array properties *possible_controls*, *dbxrefs*, *aliases*, *references*, and *documents* were updated to allow for only unique elements within them.
 
 
-Schema version 5
-----------------
+### Schema version 5
 
 * *biosample_type* enum value changed from 'primary cell line' to 'primary cell'.
