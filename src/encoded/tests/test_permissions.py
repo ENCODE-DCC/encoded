@@ -51,7 +51,7 @@ def step_run(testapp, lab, award):
     swv = testapp.post_json('/software-versions', software_version, status=201).json['@graph'][0]
 
     analysis_step = {
-        'name': 'do-thing-step',
+        'name': 'do-thing-step-v-1',
         'title': 'Do The Thing Step By Step',
         'analysis_step_types': ["QA calculation"],
         'input_file_types':  ['raw data']
@@ -59,6 +59,7 @@ def step_run(testapp, lab, award):
     astep = testapp.post_json('/analysis-steps', analysis_step, status=201).json['@graph'][0]
 
     as_version = {
+        'version': '1',
         'software_versions': [swv['@id']],
         'analysis_step':  astep['@id']
     }
