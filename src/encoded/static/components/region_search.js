@@ -12,7 +12,7 @@ var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var FacetList = search.FacetList;
 var Facet = search.Facet;
 var TextFilter = search.TextFilter;
-var Listing = search.Listing;
+var listing = search.listing;
 var BatchDownload = search.BatchDownload;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
@@ -263,7 +263,7 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
                                   <hr />
                                   <ul className="nav result-table" id="result-table">
                                       {results.map(function (result) {
-                                          return Listing({context:result, columns: columns, key: result['@id']});
+                                          return listing({context:result, columns: columns, key: result['@id']});
                                       })}
                                   </ul>
                                 </div>
