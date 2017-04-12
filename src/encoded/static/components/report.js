@@ -255,14 +255,21 @@ var ColumnSelector = createReactClass({
     },
 
     render: function() {
+        const columnPaths = Object.keys(this.props.columns);
         return (
             <div style={{display: 'inline-block', position: 'relative'}}>
                 <a className={'btn btn-info btn-sm' + (this.state.open ? ' active' : '')} href="#" onClick={this.toggle} title="Choose columns"><i className="icon icon-columns"></i> Columns</a>
                 {this.state.open && <div style={{position: 'absolute', top: '30px', width: '230px', backgroundColor: '#fff', padding: '.5em', border: 'solid 1px #ccc', borderRadius: 3, zIndex: 1}}>
                     <h4>Columns</h4>
-                    {_.mapObject(this.props.columns, (column, path) => <div onClick={this.toggleColumn.bind(this, path)} style={{cursor: 'pointer'}}>
-                        <input type="checkbox" checked={column.visible} /> {column.title}
-                    </div>)}
+                    {columnPaths.map((columnPath) => {
+                        const column = this.props.columns[columnPath];
+                        return (
+                            <div key={columnPath}>
+                                <input type="checkbox" onChange={this.toggleColumn.bind(this, columnPath)} checked={column.visible} />&nbsp;
+                                <span onClick={this.toggleColumn.bind(this, columnPath)} style={{cursor: 'pointer'}}>{column.title}</span>
+                            </div>
+                        );
+                    })}
                 </div>}
             </div>
         );
