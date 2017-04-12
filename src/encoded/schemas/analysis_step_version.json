@@ -4,7 +4,7 @@
     "id": "/profiles/analysis_step.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["software_versions", "analysis_step"],
+    "required": ["software_versions", "analysis_step", "version"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid", "aliases"],
     "mixinProperties": [
@@ -17,13 +17,14 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "version": {
             "title": "Version",
-            "description": "The version of the analysis step",
-            "type": "integer",
-            "default": 1
+            "description": "The version of the analysis step.",
+            "comment": "Please increment as whole numbers starting from 1.",
+            "type": "string",
+            "pattern": "^[1-9]\\d*$"
         },
         "analysis_step": {
             "title": "Analysis Step",
