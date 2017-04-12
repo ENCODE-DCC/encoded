@@ -62,7 +62,7 @@ const datasetTypes = {
     UcscBrowserComposite: types.ucsc_browser_composite.title,
 };
 
-const listing = function (reactProps) {
+const listing = module.exports.listing = function (reactProps) {
     // XXX not all panels have the same markup
     let context;
     let viewProps = reactProps;
