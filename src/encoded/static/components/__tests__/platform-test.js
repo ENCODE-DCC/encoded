@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 // Import test component and data.
-import { Platform } from '../platform';
+import Platform from '../platform';
 import context from '../testdata/platform';
 
 

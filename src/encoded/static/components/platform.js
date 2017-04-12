@@ -37,3 +37,6 @@ Platform.propTypes = {
 };
 
 globals.panel_views.register(Platform, 'Platform');
+
+// Need to export this for Jest tests.
+export default Platform;
