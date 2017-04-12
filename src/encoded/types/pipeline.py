@@ -10,6 +10,9 @@ from .base import (
 from .shared_calculated_properties import (
     CalculatedAssayTermID
 )
+from pyramid.traversal import (
+    find_root,
+)
 
 @collection(
     name='pipelines',
@@ -102,6 +105,7 @@ class AnalysisStep(Item):
 
 @collection(
     name='analysis-step-versions',
+    unique_key='analysis-step-version:name',
     properties={
         'title': 'Analysis step versions',
         'description': 'Listing of Analysis Step Versions',
@@ -112,10 +116,38 @@ class AnalysisStepVersion(Item):
 
     def unique_keys(self, properties):
         keys = super(AnalysisStepVersion, self).unique_keys(properties)
-        value = u'{analysis_step}/{version}'.format(**properties)
-        keys.setdefault('analysis_step_version:analysis_step_version', []).append(value)
+        keys.setdefault('analysis-step-version:name', []).append(self._name(properties))
         return keys
 
+    @calculated_property(schema={
+        "title": "Name",
+        "type": "string",
+    })
+    def name(self):
+        return self.__name__
+
+    @property
+    def __name__(self):
+        properties = self.upgrade_properties()
+        return self._name(properties)
+
+    def _name(self, properties):
+        root = find_root(self)
+        analysis_step = root.get_by_uuid(properties['analysis_step'])
+        step_props = analysis_step.upgrade_properties()
+        return u'{}-{}'.format(step_props['name'], properties['version'])
+
+    '''
+    @calculated_property(schema={
+        "title": "name",
+        "type": "string"
+    })
+    def name(self, analysis_step, version):
+        analysis_step = re.sub('^\/analysis-steps\/', '', analysis_step)
+        analysis_step = re.sub('/', '', analysis_step)
+        name = '{}-{}'.format(analysis_step, version)
+        return name
+    '''
 
 @collection(
     name='analysis-step-runs',
