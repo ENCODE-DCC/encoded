@@ -25,7 +25,7 @@
             "description": "Unique name of the analysis step",
             "comment": "Unique for each parent analysis_step, using a naming system where the pipeline, software used, the purpose and the version of the step is described: rampage-grit-peak-calling-step-v-1",
             "type": "string",
-            "pattern": "^[a-z0-9\\-\\_]+$",
+            "pattern": "^[a-z0-9\\-]+\\-step\\-v\\-\\d+$",
             "uniqueKey": true
         },
         "title": {
