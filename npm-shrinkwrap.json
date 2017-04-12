@@ -136,6 +136,18 @@
       "from": "https://registry.npmjs.org/core-util-is/-/core-util-is-1.0.2.tgz",
       "resolved": "https://registry.npmjs.org/core-util-is/-/core-util-is-1.0.2.tgz"
     },
+    "create-react-class": {
+      "version": "15.5.2",
+      "from": "create-react-class@latest",
+      "resolved": "https://registry.npmjs.org/create-react-class/-/create-react-class-15.5.2.tgz",
+      "dependencies": {
+        "fbjs": {
+          "version": "0.8.12",
+          "from": "fbjs@>=0.8.9 <0.9.0",
+          "resolved": "https://registry.npmjs.org/fbjs/-/fbjs-0.8.12.tgz"
+        }
+      }
+    },
     "crypto-js": {
       "version": "3.1.9-1",
       "from": "https://registry.npmjs.org/crypto-js/-/crypto-js-3.1.9-1.tgz",

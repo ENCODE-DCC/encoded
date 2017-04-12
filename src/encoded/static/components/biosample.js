@@ -1,6 +1,7 @@
 'use strict';
 const React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 const panel = require('../libs/bootstrap/panel');
 const _ = require('underscore');
 const url = require('url');
@@ -39,7 +40,7 @@ var PanelLookup = function (props) {
 };
 
 
-var BiosampleComponent = module.exports.Biosample = React.createClass({
+var BiosampleComponent = module.exports.Biosample = createReactClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -452,7 +453,7 @@ const Biosample = auditDecor(BiosampleComponent);
 globals.content_views.register(Biosample, 'Biosample');
 
 
-var MaybeLink = React.createClass({
+var MaybeLink = createReactClass({
     render() {
         if (!this.props.href || this.props.href === 'N/A') {
             return <span>{this.props.children}</span>;
@@ -468,7 +469,7 @@ var MaybeLink = React.createClass({
 // Display the biosample term ID given in `termId`, and link to a corresponding site if the prefix
 // of the term ID needs it. Any term IDs with prefixes not maching any in the `urlMap` property
 // simply display without a link.
-var BiosampleTermId = React.createClass({
+var BiosampleTermId = createReactClass({
     propTypes: {
         termId: PropTypes.string // Biosample whose term is being displayed.
     },
@@ -505,7 +506,7 @@ var BiosampleTermId = React.createClass({
 });
 
 
-var Treatment = module.exports.Treatment = React.createClass({
+var Treatment = module.exports.Treatment = createReactClass({
     render: function() {
         var context = this.props.context;
         var treatmentText = '';
@@ -530,7 +531,7 @@ var Treatment = module.exports.Treatment = React.createClass({
 globals.panel_views.register(Treatment, 'Treatment');
 
 
-var Construct = module.exports.Construct = React.createClass({
+var Construct = module.exports.Construct = createReactClass({
     render: function() {
         var context = this.props.context;
         var embeddedDocs = this.props.embeddedDocs;
@@ -617,7 +618,7 @@ var Construct = module.exports.Construct = React.createClass({
 globals.panel_views.register(Construct, 'Construct');
 
 
-var RNAi = module.exports.RNAi = React.createClass({
+var RNAi = module.exports.RNAi = createReactClass({
     render: function() {
         var context = this.props.context;
         return (
@@ -689,7 +690,7 @@ globals.panel_views.register(RNAi, 'RNAi');
 const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 
 // Document header component -- Characterizations
-var CharacterizationHeader = React.createClass({
+var CharacterizationHeader = createReactClass({
     propTypes: {
         doc: PropTypes.object.isRequired // Document object to render
     },
@@ -706,7 +707,7 @@ var CharacterizationHeader = React.createClass({
 });
 
 // Document caption component -- Characterizations
-var CharacterizationCaption = React.createClass({
+var CharacterizationCaption = createReactClass({
     propTypes: {
         doc: PropTypes.object.isRequired // Document object to render
     },
@@ -732,7 +733,7 @@ var CharacterizationCaption = React.createClass({
 });
 
 // Document detail component -- default
-var CharacterizationDetail = React.createClass({
+var CharacterizationDetail = createReactClass({
     propTypes: {
         doc: PropTypes.object.isRequired, // Document object to render
         detailOpen: PropTypes.bool, // True if detail panel is visible

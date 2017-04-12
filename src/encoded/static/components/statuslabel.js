@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import globals from './globals';
 
 const StatusLabel = (props) => {
-    const { status, title, buttonLabel } = this.props;
+    const { status, title, buttonLabel } = props;
 
     if (typeof status === 'string') {
         // Display simple string and optional title in badge
@@ -38,6 +38,11 @@ StatusLabel.propTypes = {
     ]).isRequired, // Array of status objects with status and badge title
     title: PropTypes.string,
     buttonLabel: PropTypes.string,
+};
+
+StatusLabel.defaultProps = {
+    title: '',
+    buttonLabel: '',
 };
 
 export default StatusLabel;

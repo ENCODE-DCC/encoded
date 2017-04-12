@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var url = require('url');
 var _ = require('underscore');
 import { auditDecor } from './audit';
@@ -25,7 +26,7 @@ var {Panel, PanelBody} = panel;
 var {DocumentsPanel, Document, DocumentPreview, DocumentFile} = doc;
 
 
-var LotComponent = React.createClass({
+var LotComponent = createReactClass({
     render: function() {
         var context = this.props.context;
 
@@ -235,7 +236,7 @@ const Lot = module.exports.Lot = auditDecor(LotComponent);
 globals.content_views.register(Lot, 'AntibodyLot');
 
 
-var Documents = React.createClass({
+var Documents = createReactClass({
     render: function() {
         return (
             <dd>
@@ -258,7 +259,7 @@ var Documents = React.createClass({
 });
 
 
-var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
+var AntibodyStatus = module.exports.AntibodyStatus = createReactClass({
     render: function() {
         var context = this.props.context;
 
@@ -335,7 +336,7 @@ globals.panel_views.register(AntibodyStatus, 'AntibodyLot');
 const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 
 // Document header component -- antibody characterization
-var CharacterizationHeader = React.createClass({
+var CharacterizationHeader = createReactClass({
     propTypes: {
         doc: PropTypes.object.isRequired // Document object to render
     },
@@ -361,7 +362,7 @@ var CharacterizationHeader = React.createClass({
 });
 
 // Document caption component -- antibody characterization
-var CharacterizationCaption = React.createClass({
+var CharacterizationCaption = createReactClass({
     propTypes: {
         doc: PropTypes.object.isRequired // Document object to render
     },
@@ -382,7 +383,7 @@ var CharacterizationCaption = React.createClass({
     }
 });
 
-var CharacterizationFile = React.createClass({
+var CharacterizationFile = createReactClass({
     propTypes: {
         doc: PropTypes.object.isRequired, // Document object to render
         detailOpen: PropTypes.bool, // True if detail panel is visible
@@ -409,7 +410,7 @@ var CharacterizationFile = React.createClass({
     }
 });
 
-var CharacterizationDetail = React.createClass({
+var CharacterizationDetail = createReactClass({
     propTypes: {
         doc: PropTypes.object.isRequired, // Document object to render
         detailOpen: PropTypes.bool, // True if detail panel is visible

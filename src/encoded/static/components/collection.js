@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var url = require('url');
 var globals = require('./globals');
 var StickyHeader = require('./StickyHeader');
@@ -15,7 +16,7 @@ var lookup_column = function (result, column) {
     return value;
 };
 
-var Collection = module.exports.Collection = React.createClass({
+var Collection = module.exports.Collection = createReactClass({
     render: function () {
         var context = this.props.context;
         return (
@@ -124,7 +125,7 @@ RowView.defaultProps = {
 };
 
 
-var Table = module.exports.Table = React.createClass({
+var Table = module.exports.Table = createReactClass({
     contextTypes: {
         fetch: PropTypes.func,
         location_href: PropTypes.string

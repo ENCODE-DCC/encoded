@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'underscore';
 import { Panel } from '../libs/bootstrap/panel';
 import { BrowserFeat } from './browserfeat';
@@ -153,7 +154,7 @@ export class JsonGraph {
 }
 
 
-export const Graph = React.createClass({
+export const Graph = createReactClass({
     propTypes: {
         graph: PropTypes.object, // JSON graph object to render
         nodeClickHandler: PropTypes.func, // Function to call to handle clicks in a node

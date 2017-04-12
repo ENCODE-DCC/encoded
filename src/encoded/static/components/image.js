@@ -1,12 +1,13 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var globals = require('./globals');
 var url = require('url');
 
 
 // Fixed-position lightbox background and image
-var Lightbox = module.exports.Lightbox = React.createClass({
+var Lightbox = module.exports.Lightbox = createReactClass({
     getInitialState: function() {
         return {imgHeight: 0};
     },
@@ -44,7 +45,7 @@ var Lightbox = module.exports.Lightbox = React.createClass({
 });
 
 
-var Attachment = module.exports.Attachment = React.createClass({
+var Attachment = module.exports.Attachment = createReactClass({
     propTypes: {
         context: PropTypes.object.isRequired, // Object within which the attachment is to be displayed
         attachment: PropTypes.object, // Attachment object to display
@@ -148,7 +149,7 @@ var Attachment = module.exports.Attachment = React.createClass({
 });
 
 
-var Image = React.createClass({
+var Image = createReactClass({
     render: function() {
         return (
             <figure>
@@ -164,7 +165,7 @@ globals.content_views.register(Image, 'Image');
 
 
 // Displays a graphic badge for the award project.
-var ProjectBadge = module.exports.ProjectBadge = React.createClass({
+var ProjectBadge = module.exports.ProjectBadge = createReactClass({
     propTypes: {
         award: PropTypes.object.isRequired, // Award whose project's badge we display
         addClasses: PropTypes.string // Classes to add to image

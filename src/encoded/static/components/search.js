@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var queryString = require('query-string');
 var button = require('../libs/bootstrap/button');
 var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
@@ -78,7 +79,7 @@ const listing = module.exports.listing = function (reactProps) {
     return <ListingView {...viewProps} />;
 };
 
-const PickerActions = module.exports.PickerActions = React.createClass ({
+const PickerActions = module.exports.PickerActions = createReactClass ({
     contextTypes: {
         actions: PropTypes.array,
     },
@@ -96,7 +97,7 @@ const PickerActions = module.exports.PickerActions = React.createClass ({
     },
 });
 
-var ItemComponent = React.createClass({
+var ItemComponent = createReactClass({
     render: function() {
         var result = this.props.context;
         var title = globals.listing_titles.lookup(result)({context: result});
@@ -130,7 +131,7 @@ globals.listing_views.register(Item, 'Item');
 
 
 // Display one antibody status indicator
-const StatusIndicator = React.createClass({
+const StatusIndicator = createReactClass({
     propTypes: {
         status: PropTypes.string,
         terms: PropTypes.array,
@@ -198,7 +199,7 @@ const StatusIndicator = React.createClass({
 });
 
 // Display the status indicators for one target
-const StatusIndicators = React.createClass({
+const StatusIndicators = createReactClass({
     propTypes: {
         targetTree: PropTypes.object,
         target: PropTypes.string,
@@ -221,7 +222,7 @@ const StatusIndicators = React.createClass({
     },
 });
 
-var AntibodyComponent = React.createClass({
+var AntibodyComponent = createReactClass({
     render: function() {
         var result = this.props.context;
 
@@ -290,7 +291,7 @@ const Antibody = module.exports.Antibody = auditDecor(AntibodyComponent);
 globals.listing_views.register(Antibody, 'AntibodyLot');
 
 
-var BiosampleComponent = React.createClass({
+var BiosampleComponent = createReactClass({
     render: function() {
         const result = this.props.context;
         const lifeStage = (result.life_stage && result.life_stage !== 'unknown') ? ` ${result.life_stage}` : '';
@@ -358,7 +359,7 @@ const Biosample = module.exports.Biosample = auditDecor(BiosampleComponent);
 globals.listing_views.register(Biosample, 'Biosample');
 
 
-var ExperimentComponent = React.createClass({
+var ExperimentComponent = createReactClass({
     render: function() {
         var result = this.props.context;
 
@@ -442,7 +443,7 @@ const Experiment = module.exports.Experiment = auditDecor(ExperimentComponent);
 globals.listing_views.register(Experiment, 'Experiment');
 
 
-var DatasetComponent =  React.createClass({
+var DatasetComponent =  createReactClass({
     render: function() {
         const result = this.props.context;
         let biosampleTerm;
@@ -541,7 +542,7 @@ const Dataset = module.exports.Dataset = auditDecor(DatasetComponent);
 globals.listing_views.register(Dataset, 'Dataset');
 
 
-var TargetComponent = React.createClass({
+var TargetComponent = createReactClass({
     render: function() {
         const result = this.props.context;
         return (
@@ -576,7 +577,7 @@ const Target = module.exports.Target = auditDecor(TargetComponent);
 globals.listing_views.register(Target, 'Target');
 
 
-const Image = module.exports.Image = React.createClass({
+const Image = module.exports.Image = createReactClass({
     render: function() {
         const result = this.props.context;
         var Attachment = image.Attachment;
@@ -638,7 +639,7 @@ function countSelectedTerms(terms, facet, filters) {
     return count;
 }
 
-const Term = search.Term = React.createClass({
+const Term = search.Term = createReactClass({
     propTypes: {
         filters: PropTypes.array,
         term: PropTypes.object,
@@ -693,7 +694,7 @@ const Term = search.Term = React.createClass({
     },
 });
 
-const TypeTerm = search.TypeTerm = React.createClass({
+const TypeTerm = search.TypeTerm = createReactClass({
     propTypes: {
         term: PropTypes.object,
         filters: PropTypes.array,
@@ -715,7 +716,7 @@ const TypeTerm = search.TypeTerm = React.createClass({
 });
 
 
-const Facet = search.Facet = React.createClass({
+const Facet = search.Facet = createReactClass({
     propTypes: {
         facet: PropTypes.object,
         filters: PropTypes.array,
@@ -806,7 +807,7 @@ const Facet = search.Facet = React.createClass({
 });
 
 
-const TextFilter = search.TextFilter = React.createClass({
+const TextFilter = search.TextFilter = createReactClass({
     propTypes: {
         filters: PropTypes.array,
         searchBase: PropTypes.string,
@@ -859,7 +860,7 @@ const TextFilter = search.TextFilter = React.createClass({
     },
 });
 
-const FacetList = search.FacetList = React.createClass({
+const FacetList = search.FacetList = createReactClass({
     propTypes: {
         context: PropTypes.object,
         facets: PropTypes.oneOfType([
@@ -941,7 +942,7 @@ const FacetList = search.FacetList = React.createClass({
     },
 });
 
-const BatchDownload = search.BatchDownload = React.createClass({
+const BatchDownload = search.BatchDownload = createReactClass({
     propTypes: {
         context: PropTypes.object,
     },
@@ -970,7 +971,7 @@ const BatchDownload = search.BatchDownload = React.createClass({
 });
 
 
-const ResultTable = search.ResultTable = React.createClass({
+const ResultTable = search.ResultTable = createReactClass({
     propTypes: {
         context: PropTypes.object,
         actions: PropTypes.array,
@@ -1233,7 +1234,7 @@ const ResultTable = search.ResultTable = React.createClass({
 });
 
 
-const ResultTableList = React.createClass({
+const ResultTableList = createReactClass({
     propTypes: {
         results: PropTypes.array.isRequired, // Array of search results to display
         columns: PropTypes.object.isRequired, // Columns from search results
@@ -1255,7 +1256,7 @@ const ResultTableList = React.createClass({
 
 // Display a local genome browser in the ResultTable where search results would normally go. This
 // only gets displayed if the query string contains only one type and it's "File."
-const ResultBrowser = React.createClass({
+const ResultBrowser = createReactClass({
     propTypes: {
         files: PropTypes.array, // Array of files whose browser we're rendering
         assembly: PropTypes.string, // Filter `files` by this assembly
@@ -1295,7 +1296,7 @@ const ResultBrowser = React.createClass({
 
 
 // Display a dropdown menu of the given assemblies.
-const AssemblyChooser = React.createClass({
+const AssemblyChooser = createReactClass({
     propTypes: {
         assemblies: PropTypes.array, // Array of assemblies to include in the dropdown
         currentAssembly: PropTypes.string, // Currently selected assembly
@@ -1316,7 +1317,7 @@ const AssemblyChooser = React.createClass({
 });
 
 
-const Search = search.Search = React.createClass({
+const Search = search.Search = createReactClass({
     propTypes: {
         context: PropTypes.object,
     },

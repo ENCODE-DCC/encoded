@@ -63,6 +63,7 @@
     "ckeditor": "file:node_shims/ckeditor",
     "color": "^0.10.1",
     "cookie-monster": "0.0.7",
+    "create-react-class": "^15.5.2",
     "d3": "^3.4.6",
     "dagre-d3": "git+https://github.com/ENCODE-DCC/dagre-d3.git#v1.2.0",
     "dalliance": "git://github.com/ENCODE-DCC/dalliance.git#commonjs-require-13.x",

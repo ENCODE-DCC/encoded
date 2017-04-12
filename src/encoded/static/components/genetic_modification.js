@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
@@ -25,7 +26,7 @@ const GM_TECHNIQUE_MAP = {
 };
 
 
-const GeneticModificationCharacterizations = React.createClass({
+const GeneticModificationCharacterizations = createReactClass({
     propTypes: {
         characterizations: PropTypes.array.isRequired, // Genetic modificiation characterizations to display
     },
@@ -64,7 +65,7 @@ function geneticModificationTechniques(techniques) {
 }
 
 
-export const GeneticModificationComponent = React.createClass({
+export const GeneticModificationComponent = createReactClass({
     propTypes: {
         context: PropTypes.object.isRequired, // GM object being displayed
         auditIndicators: PropTypes.func.isRequired, // Audit HOC function to display audit indicators
@@ -303,7 +304,7 @@ const GeneticModification = auditDecor(GeneticModificationComponent);
 globals.content_views.register(GeneticModification, 'GeneticModification');
 
 
-const GMAttachmentCaption = React.createClass({
+const GMAttachmentCaption = createReactClass({
     propTypes: {
         title: PropTypes.string.isRequired, // Title to display for attachment
     },
@@ -323,7 +324,7 @@ const GMAttachmentCaption = React.createClass({
 });
 
 
-const GMAttachmentPreview = React.createClass({
+const GMAttachmentPreview = createReactClass({
     propTypes: {
         context: PropTypes.object.isRequired, // QC metric object that owns the attachment to render
         attachment: PropTypes.object.isRequired, // Attachment to render
@@ -349,7 +350,7 @@ globals.document_views.preview.register(GMAttachmentPreview, 'GeneticModificatio
 
 
 // Display modification technique specific to the CRISPR type.
-const TechniqueCrispr = React.createClass({
+const TechniqueCrispr = createReactClass({
     propTypes: {
         context: PropTypes.object.isRequired, // CRISPR genetic modificiation technique to display
     },
@@ -412,7 +413,7 @@ globals.panel_views.register(TechniqueCrispr, 'Crispr');
 
 
 // Display modification technique specific to the TALE type.
-const TechniqueTale = React.createClass({
+const TechniqueTale = createReactClass({
     propTypes: {
         context: PropTypes.object.isRequired, // TALE genetic modificiation technique to display
     },
@@ -478,7 +479,7 @@ globals.panel_views.register(TechniqueTale, 'Tale');
 
 
 // Display a panel for attachments that aren't a part of an associated document
-export const AttachmentPanel = React.createClass({
+export const AttachmentPanel = createReactClass({
     propTypes: {
         context: PropTypes.object.isRequired, // Object that owns the attachment; needed for attachment path
         attachment: PropTypes.object.isRequired, // Attachment being rendered
@@ -533,7 +534,7 @@ export const AttachmentPanel = React.createClass({
 });
 
 
-const ListingComponent = React.createClass({
+const ListingComponent = createReactClass({
     propTypes: {
         context: PropTypes.object.isRequired, // Search results object
         auditDetail: PropTypes.func.isRequired, // Audit HOC function to show audit details
@@ -638,7 +639,7 @@ export const calcGMSummarySentence = _.memoize(rCalcGMSummarySentence, gm => gm.
 // Display a summary of genetic modifications given in the geneticModifications prop. This
 // component assumes the `geneticModifications` array has at least one entry, so make sure of that
 // before calling this component.
-export const GeneticModificationSummary = React.createClass({
+export const GeneticModificationSummary = createReactClass({
     propTypes: {
         geneticModifications: PropTypes.array.isRequired, // Array of genetic modifications
     },
@@ -688,7 +689,7 @@ export const GeneticModificationSummary = React.createClass({
 
 // Display one GM group, which consists of all GMs that share the same type, technique, target, and
 // treatments. A group is an array of GM objects.
-export const GeneticModificationGroup = React.createClass({
+export const GeneticModificationGroup = createReactClass({
     propTypes: {
         groupSentence: PropTypes.string.isRequired, // GM group detail sentence to display
         gms: PropTypes.array.isRequired, // GM objects to display within a group

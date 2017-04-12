@@ -1,8 +1,9 @@
 'use strict';
 var React = require('react');
+import createReactClass from 'create-react-class';
 
 
-var FileInput = module.exports.FileInput = React.createClass({
+var FileInput = module.exports.FileInput = createReactClass({
 
     render: function() {
         var value = this.props.value || {};

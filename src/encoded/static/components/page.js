@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var moment = require('moment');
 var {Panel} = require('../libs/bootstrap/panel');
 var { PickerActions } = require('./search');
@@ -9,7 +10,7 @@ var globals = require('./globals');
 var _ = require('underscore');
 
 
-var Page = module.exports.Page = React.createClass({
+var Page = module.exports.Page = createReactClass({
     render: function() {
         var context = this.props.context;
         if (context.news) {
@@ -44,7 +45,7 @@ var Page = module.exports.Page = React.createClass({
 globals.content_views.register(Page, 'Page');
 
 
-var Listing = React.createClass({
+var Listing = createReactClass({
     render: function() {
         var result = this.props.context;
         return (
@@ -67,7 +68,7 @@ globals.listing_views.register(Listing, 'Page');
 
 
 // Display a list of keywords for the news article in the `post` prop.
-var NewsKeywordList = React.createClass({
+var NewsKeywordList = createReactClass({
     propTypes: {
         post: PropTypes.object // News post Page object
     },
@@ -91,7 +92,7 @@ var NewsKeywordList = React.createClass({
 
 
 // Display a list of news sharing links/buttons for the news article in the `post` prop.
-var NewsShareList = React.createClass({
+var NewsShareList = createReactClass({
     propTypes: {
         post: PropTypes.object // News post Page object
     },

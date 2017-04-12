@@ -1,10 +1,11 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var globals = require('../globals');
 
 
-var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
+var RichTextBlockView = module.exports.RichTextBlockView = createReactClass({
 
     contextTypes: {
         editable: PropTypes.bool

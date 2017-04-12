@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 
 
 const maxFilesBrowsed = 5; // Maximum number of files to browse
@@ -244,7 +245,7 @@ function rAssemblyToSources(assembly, region) {
 }
 
 
-const GenomeBrowser = React.createClass({
+const GenomeBrowser = createReactClass({
     propTypes: {
         files: PropTypes.array.isRequired, // Array of files to represent
         assembly: PropTypes.string.isRequired, // Assembly to use with browser

@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var {DropdownMenu} = require('./dropdown-menu');
 
 
@@ -18,7 +19,7 @@ var {DropdownMenu} = require('./dropdown-menu');
 // Click handling method taken from:
 // https://github.com/facebook/react/issues/579#issuecomment-60841923
 
-var DropdownButton = module.exports.DropdownButton = React.createClass({
+var DropdownButton = module.exports.DropdownButton = createReactClass({
     propTypes: {
         title: PropTypes.string.isRequired, // Title of the trigger button
         label: PropTypes.string.isRequired, // id (unique in doc) for this button

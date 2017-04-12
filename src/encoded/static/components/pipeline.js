@@ -11,6 +11,7 @@ var dbxref = require('./dbxref');
 var search = require('./search');
 var software = require('./software');
 import StatusLabel from './statuslabel';
+import createReactClass from 'create-react-class';
 var Citation = require('./publication').Citation;
 import { auditDecor } from './audit';
 var doc = require('./doc');
@@ -38,7 +39,7 @@ var PanelLookup = function (props) {
 
 
 
-var PipelineComponent = React.createClass({
+var PipelineComponent = createReactClass({
     getInitialState: function() {
         return {
             infoNodeId: '', // ID of node whose info panel is open
@@ -435,7 +436,7 @@ var StepDetailView = module.exports.StepDetailView = function(node) {
 globals.graph_detail.register(StepDetailView, 'Step');
 
 
-var ListingComponent = React.createClass({
+var ListingComponent = createReactClass({
     render: function() {
         var result = this.props.context;
         var publishedBy = [];

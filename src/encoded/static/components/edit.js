@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var globals = require('./globals');
 var fetched = require('./fetched');
 var _ = require('underscore');
@@ -24,7 +25,7 @@ var sorted_json = module.exports.sorted_json = function (obj) {
 };
 
 
-var ItemEdit = module.exports.ItemEdit = React.createClass({
+var ItemEdit = module.exports.ItemEdit = createReactClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -46,7 +47,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
     }
 });
 
-var EditForm = module.exports.EditForm = React.createClass({
+var EditForm = module.exports.EditForm = createReactClass({
     contextTypes: {
         fetch: PropTypes.func,
         navigate: PropTypes.func

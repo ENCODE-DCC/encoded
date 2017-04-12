@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var panel = require('../libs/bootstrap/panel');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
@@ -58,7 +59,7 @@ var PanelLookup = function (props) {
 };
 
 
-var ExperimentComponent = React.createClass({
+var ExperimentComponent = createReactClass({
     contextTypes: {
         session: PropTypes.object,
         session_properties: PropTypes.object,
@@ -532,7 +533,7 @@ globals.content_views.register(Experiment, 'Experiment');
 
 
 // Display the table of replicates
-var ReplicateTable = React.createClass({
+var ReplicateTable = createReactClass({
     propTypes: {
         condensedReplicates: PropTypes.array.isRequired, // Condensed 'array' of replicate objects
         replicationType: PropTypes.string // Type of replicate so we can tell what's isongenic/anisogenic/whatnot
@@ -645,7 +646,7 @@ var ReplicateTable = React.createClass({
 });
 
 
-var ControllingExperiments = React.createClass({
+var ControllingExperiments = createReactClass({
     render: function () {
         var context = this.props.context;
 
@@ -786,7 +787,7 @@ var AssayDetails = function (replicates, libraryValues, librarySpecials, library
 
 
 // Display a list of datasets related to the experiment
-var RelatedSeriesList = React.createClass({
+var RelatedSeriesList = createReactClass({
     propTypes: {
         seriesList: PropTypes.array.isRequired // Array of Series dataset objects to display
     },
@@ -849,7 +850,7 @@ var RelatedSeriesList = React.createClass({
 
 
 // Display a one dataset related to the experiment
-var RelatedSeriesItem = React.createClass({
+var RelatedSeriesItem = createReactClass({
     propTypes: {
         series: PropTypes.object.isRequired, // Series object to display
         detailOpen: PropTypes.bool, // TRUE to open the series' detail tooltip

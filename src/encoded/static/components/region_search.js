@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var panel = require('../libs/bootstrap/panel');
 var globals = require('./globals');
 var fetched = require('./fetched');
@@ -29,7 +30,7 @@ var regionGenomes = [
 ];
 
 
-var AutocompleteBox = React.createClass({
+var AutocompleteBox = createReactClass({
     render: function() {
         var terms = this.props.auto['@graph']; // List of matching terms from server
         var userTerm = this.props.userTerm && this.props.userTerm.toLowerCase(); // Term user entered
@@ -61,7 +62,7 @@ var AutocompleteBox = React.createClass({
     }
 });
 
-var AdvSearch = React.createClass({
+var AdvSearch = createReactClass({
     getInitialState: function() {
         return {
             disclosed: false,
@@ -162,7 +163,7 @@ var AdvSearch = React.createClass({
     }
 });
 
-var RegionSearch = module.exports.RegionSearch = React.createClass({
+var RegionSearch = module.exports.RegionSearch = createReactClass({
     onFilter: function(e) {
         var search = e.currentTarget.getAttribute('href');
         this.props.onChange(search);

@@ -1,10 +1,11 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var globals = require('./globals');
 var home = require('./home');
 
-var Error = module.exports.Error = React.createClass({
+var Error = module.exports.Error = createReactClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'panel-gray');
@@ -20,7 +21,7 @@ var Error = module.exports.Error = React.createClass({
 globals.content_views.register(Error, 'Error');
 
 
-var HTTPNotFound = module.exports.HTTPNotFound = React.createClass({
+var HTTPNotFound = module.exports.HTTPNotFound = createReactClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'panel-gray');
@@ -40,7 +41,7 @@ var HTTPNotFound = module.exports.HTTPNotFound = React.createClass({
 globals.content_views.register(HTTPNotFound, 'HTTPNotFound');
 
 
-var HTTPForbidden = module.exports.HTTPForbidden = React.createClass({
+var HTTPForbidden = module.exports.HTTPForbidden = createReactClass({
     contextTypes: {
         session: PropTypes.object
     },
@@ -66,7 +67,7 @@ var HTTPForbidden = module.exports.HTTPForbidden = React.createClass({
 globals.content_views.register(HTTPForbidden, 'HTTPForbidden');
 
 
-var LoginDenied = module.exports.LoginDenied = React.createClass({
+var LoginDenied = module.exports.LoginDenied = createReactClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'panel-gray');
@@ -94,7 +95,7 @@ var LoginDenied = module.exports.LoginDenied = React.createClass({
 globals.content_views.register(LoginDenied, 'LoginDenied');
 
 
-var RenderingError = module.exports.RenderingError = React.createClass({
+var RenderingError = module.exports.RenderingError = createReactClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'panel-gray');

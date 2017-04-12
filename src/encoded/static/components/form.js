@@ -2,6 +2,7 @@
 
 const React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 const parseAndLogError = require('./globals').parseAndLogError;
 const offset = require('../libs/offset');
 const fetched = require('./fetched');
@@ -114,7 +115,7 @@ const updateChild = function (name, subvalue) {
     this.props.updateChild(this.props.name, newValue);
 };
 
-const RepeatingItem = React.createClass({
+const RepeatingItem = createReactClass({
     // A form field for editing one item in an array
     // (part of a RepeatingFieldset).
     // It delegates rendering the field to an actual Field component,
@@ -174,7 +175,7 @@ const RepeatingItem = React.createClass({
 
 });
 
-const RepeatingFieldset = React.createClass({
+const RepeatingFieldset = createReactClass({
     // A form field for editing an array.
     // Each item in the array is rendered via RepeatingItem.
     // Also shows a button to add a new item.
@@ -279,7 +280,7 @@ const RepeatingFieldset = React.createClass({
 
 });
 
-const FetchedFieldset = React.createClass({
+const FetchedFieldset = createReactClass({
     // A form field for editing a child object
     // (a subitem of an array property using linkFrom).
     // Initially the value is a URI and we render a preview of the object.
@@ -405,7 +406,7 @@ const FetchedFieldset = React.createClass({
 
 });
 
-const Field = module.exports.Field = React.createClass({
+const Field = module.exports.Field = createReactClass({
     // Build form input components based on a JSON schema
     // (or a portion thereof).
 
@@ -633,7 +634,7 @@ const Field = module.exports.Field = React.createClass({
 
 });
 
-const Form = module.exports.Form = React.createClass({
+const Form = module.exports.Form = createReactClass({
     // The Form component renders a form based on a JSON schema.
 
     // It renders an actual HTML `form` element which contains
@@ -933,7 +934,7 @@ const Form = module.exports.Form = React.createClass({
 
 });
 
-module.exports.JSONSchemaForm = React.createClass({
+module.exports.JSONSchemaForm = createReactClass({
     // JSONSchemaForm is a wrapper of Form
     // that is used from the ItemEdit component after
     // it fetches the `schemas` and the `context`

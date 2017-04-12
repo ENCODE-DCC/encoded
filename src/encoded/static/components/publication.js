@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import createReactClass from 'create-react-class';
 import { auditDecor } from './audit';
 var globals = require('./globals');
 var navigation = require('./navigation');
@@ -10,7 +11,7 @@ var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 
 
-var PublicationComponent = React.createClass({
+var PublicationComponent = createReactClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -63,7 +64,7 @@ module.exports.Publication = Publication; // Only need to export for Jest tests
 globals.content_views.register(Publication, 'Publication');
 
 
-var Citation = module.exports.Citation = React.createClass({
+var Citation = module.exports.Citation = createReactClass({
     render: function() {
         var context = this.props.context;
         return (
@@ -76,7 +77,7 @@ var Citation = module.exports.Citation = React.createClass({
 });
 
 
-var Abstract = React.createClass({
+var Abstract = createReactClass({
     render: function() {
         var context = this.props.context;
         return (
@@ -123,7 +124,7 @@ var Abstract = React.createClass({
 });
 
 
-var SupplementaryData = React.createClass({
+var SupplementaryData = createReactClass({
     render: function() {
         var data = this.props.data;
         return (
@@ -163,7 +164,7 @@ var SupplementaryData = React.createClass({
 });
 
 
-var SupplementaryDataListing = React.createClass({
+var SupplementaryDataListing = createReactClass({
     getInitialState: function() {
         return {excerptExpanded: false};
     },
@@ -212,7 +213,7 @@ var SupplementaryDataListing = React.createClass({
 });
 
 
-var ListingComponent = React.createClass({
+var ListingComponent = createReactClass({
     render: function() {
         var result = this.props.context;
         var authorList = result.authors && result.authors.length ? result.authors.split(', ', 4) : [];

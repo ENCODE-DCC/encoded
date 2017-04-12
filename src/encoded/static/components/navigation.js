@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var url = require('url');
 var {Navbars, Navbar, Nav, NavItem} = require('../libs/bootstrap/navbar');
 var {DropdownMenu, DropdownMenuSep} = require('../libs/bootstrap/dropdown-menu');
@@ -8,7 +9,7 @@ var productionHost = require('./globals').productionHost;
 var _ = require('underscore');
 
 
-var Navigation = module.exports = React.createClass({
+var Navigation = module.exports = createReactClass({
     mixins: [Navbars],
 
     contextTypes: {
@@ -67,7 +68,7 @@ var Navigation = module.exports = React.createClass({
 
 
 // Main navigation menus
-var GlobalSections = React.createClass({
+var GlobalSections = createReactClass({
     contextTypes: {
         listActionsFor: PropTypes.func
     },
@@ -102,7 +103,7 @@ var GlobalSections = React.createClass({
 
 
 // Context actions: mainly for editing the current object
-var ContextActions = React.createClass({
+var ContextActions = createReactClass({
     contextTypes: {
         listActionsFor: PropTypes.func
     },
@@ -139,7 +140,7 @@ var ContextActions = React.createClass({
     }
 });
 
-var Search = React.createClass({
+var Search = createReactClass({
     contextTypes: {
         location_href: PropTypes.string
     },
@@ -159,7 +160,7 @@ var Search = React.createClass({
 });
 
 
-var UserActions = React.createClass({
+var UserActions = createReactClass({
     contextTypes: {
         listActionsFor: PropTypes.func,
         session_properties: PropTypes.object
@@ -201,7 +202,7 @@ var UserActions = React.createClass({
 //     tip: Text to display as part of uri tooltip.
 //     wholeTip: Alternative to 'tip' property. The complete tooltip to display
 // }
-var Breadcrumbs = module.exports.Breadcrumbs = React.createClass({
+var Breadcrumbs = module.exports.Breadcrumbs = createReactClass({
     propTypes: {
         root: PropTypes.string, // Root URI for searches
         crumbs: PropTypes.arrayOf(PropTypes.object).isRequired // Object with breadcrumb contents

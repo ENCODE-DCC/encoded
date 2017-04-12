@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { DropdownButton } from '../libs/bootstrap/button';
@@ -50,7 +51,7 @@ function breakSetName(name) {
 
 
 // Display Annotation page, a subtype of Dataset.
-const AnnotationComponent = React.createClass({
+const AnnotationComponent = createReactClass({
     propTypes: {
         context: PropTypes.object, // Annotation being displayed
     },
@@ -265,7 +266,7 @@ globals.content_views.register(Annotation, 'Annotation');
 
 
 // Display Annotation page, a subtype of Dataset.
-const PublicationDataComponent = React.createClass({
+const PublicationDataComponent = createReactClass({
     propTypes: {
         context: PropTypes.object, // PublicationData object to display
     },
@@ -427,7 +428,7 @@ globals.content_views.register(PublicationData, 'PublicationData');
 
 
 // Display Annotation page, a subtype of Dataset.
-const ReferenceComponent = React.createClass({
+const ReferenceComponent = createReactClass({
     propTypes: {
         context: PropTypes.object, // Reference object to display
     },
@@ -589,7 +590,7 @@ globals.content_views.register(Reference, 'Reference');
 
 
 // Display Annotation page, a subtype of Dataset.
-const ProjectComponent = React.createClass({
+const ProjectComponent = createReactClass({
     propTypes: {
         context: PropTypes.object, // Project object to display
     },
@@ -775,7 +776,7 @@ globals.content_views.register(Project, 'Project');
 
 
 // Display Annotation page, a subtype of Dataset.
-const UcscBrowserCompositeComponent = React.createClass({
+const UcscBrowserCompositeComponent = createReactClass({
     propTypes: {
         context: PropTypes.object, // UCSC browser composite object to display
     },
@@ -946,7 +947,7 @@ const UcscBrowserComposite = auditDecor(UcscBrowserCompositeComponent);
 globals.content_views.register(UcscBrowserComposite, 'UcscBrowserComposite');
 
 
-export const FilePanelHeader = React.createClass({
+export const FilePanelHeader = createReactClass({
     propTypes: {
         context: PropTypes.object, // Object being displayed
     },
@@ -1223,7 +1224,7 @@ const organismDevelopmentSeriesTableColumns = {
     },
 };
 
-export const SeriesComponent = React.createClass({
+export const SeriesComponent = createReactClass({
     propTypes: {
         context: PropTypes.object, // Series object to display
     },
@@ -1458,7 +1459,7 @@ globals.content_views.register(Series, 'Series');
 
 
 // Display a count of experiments in the footer, with a link to the corresponding search if needed
-const ExperimentTableFooter = React.createClass({
+const ExperimentTableFooter = createReactClass({
     propTypes: {
         items: PropTypes.array, // Array of experiments that were displayed in the table
         total: PropTypes.number, // Total number of experiments
@@ -1478,7 +1479,7 @@ const ExperimentTableFooter = React.createClass({
 });
 
 
-export const ExperimentTable = React.createClass({
+export const ExperimentTable = createReactClass({
     propTypes: {
         items: PropTypes.array, // List of experiments to display in the table
         limit: PropTypes.number, // Maximum number of experiments to display in the table

@@ -1,5 +1,6 @@
 const React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 const FallbackBlockEdit = require('./blocks/fallback').FallbackBlockEdit;
 const globals = require('./globals');
 const closest = require('../libs/closest');
@@ -36,7 +37,7 @@ const MODAL_CONTEXT = {
     portal: PropTypes.object,
 };
 
-const BlockEditModal = React.createClass({
+const BlockEditModal = createReactClass({
     propTypes: {
         modalcontext: PropTypes.object,
         value: PropTypes.any,
@@ -91,7 +92,7 @@ const BlockEditModal = React.createClass({
     },
 });
 
-const Block = module.exports.Block = React.createClass({
+const Block = module.exports.Block = createReactClass({
     propTypes: {
         value: PropTypes.any,
         pos: PropTypes.array,
@@ -193,7 +194,7 @@ const Block = module.exports.Block = React.createClass({
     },
 });
 
-const BlockAddButton = React.createClass({
+const BlockAddButton = createReactClass({
     propTypes: {
         blocktype: PropTypes.string,
         blockprops: PropTypes.object,
@@ -234,7 +235,7 @@ const BlockAddButton = React.createClass({
 });
 
 // "sticky" toolbar for editing layout
-const LayoutToolbar = React.createClass({
+const LayoutToolbar = createReactClass({
 
     contextTypes: {
         canSave: PropTypes.func,
@@ -296,7 +297,7 @@ const LayoutToolbar = React.createClass({
 });
 
 
-const Col = React.createClass({
+const Col = createReactClass({
     propTypes: {
         pos: PropTypes.array,
         className: PropTypes.string,
@@ -336,7 +337,7 @@ const Col = React.createClass({
     },
 });
 
-const Row = React.createClass({
+const Row = createReactClass({
     propTypes: {
         pos: PropTypes.array,
         value: PropTypes.object,
@@ -380,7 +381,7 @@ const Row = React.createClass({
     },
 });
 
-module.exports.Layout = React.createClass({
+module.exports.Layout = createReactClass({
     propTypes: {
         editable: PropTypes.bool,
         onChange: PropTypes.func,

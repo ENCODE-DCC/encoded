@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var {DropdownMenu} = require('./dropdown-menu');
 
 
@@ -74,7 +75,7 @@ var Navbars = module.exports.Navbars = {
 
 // Controls an entire navigation menu with one or more navigation areas defined by <Nav>
 // components. Handles the toggling of the mobile menu expansion.
-var Navbar = module.exports.Navbar = React.createClass({
+var Navbar = module.exports.Navbar = createReactClass({
     propTypes: {
         brand: PropTypes.oneOfType([ // String or component to display for the brand with class `navbar-brand`
             PropTypes.string,
@@ -124,7 +125,7 @@ var Navbar = module.exports.Navbar = React.createClass({
 
 
 // Controls one navigation area within a <Navbar>
-var Nav = module.exports.Nav = React.createClass({
+var Nav = module.exports.Nav = createReactClass({
     propTypes: {
         right: PropTypes.bool // True if right-justified navigation area
     },
@@ -140,7 +141,7 @@ var Nav = module.exports.Nav = React.createClass({
 
 
 // Controls one top-level item within a <Nav>. It can be a stand-alone item or a dropdown menu
-var NavItem = module.exports.NavItem = React.createClass({
+var NavItem = module.exports.NavItem = createReactClass({
     propTypes: {
         dropdownId: PropTypes.string, // If this item has a dropdown, this ID helps manage it; must be unique
         dropdownTitle: PropTypes.oneOfType([ // If this item has a dropdown, this is the title

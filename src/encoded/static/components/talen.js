@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var panel = require('../libs/bootstrap/panel');
 var globals = require('./globals');
 var { PickerActions } = require('./search');
@@ -27,7 +28,7 @@ var PanelLookup = function (props) {
 
 
 // Display a stand-alone TALEN page.
-var TalenPage = React.createClass({
+var TalenPage = createReactClass({
     render: function() {
         var context = this.props.context;
         var talen = PanelLookup({context: context});
@@ -68,7 +69,7 @@ globals.content_views.register(TalenPage, 'TALEN');
 
 
 // Display a TALENs panel. We can have multiple TALENs in one panel
-var Talen = React.createClass({
+var Talen = createReactClass({
     propTypes: {
         context: PropTypes.object.isRequired // TALEN object
     },
@@ -124,7 +125,7 @@ globals.panel_views.register(Talen, 'TALEN');
 
 
 // Search result page output
-var Listing = React.createClass({
+var Listing = createReactClass({
     render: function() {
         var result = this.props.context;
         var coordinates = result.target_genomic_coordinates;

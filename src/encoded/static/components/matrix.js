@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var color = require('color');
 var svgIcon = require('../libs/svg-icons').svgIcon;
 var globals = require('./globals');
@@ -35,7 +36,7 @@ var COLORS = [
 ];
 
 
-var Matrix = module.exports.Matrix = React.createClass({
+var Matrix = module.exports.Matrix = createReactClass({
 
     contextTypes: {
         location_href: PropTypes.string,

@@ -4,6 +4,7 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var globals = require('./globals');
 var _ = require('underscore');
 var navigation = require('./navigation');
@@ -24,7 +25,7 @@ class AccessKeyStore extends ItemStore {
 }
 
 
-var AccessKeyTable = React.createClass({
+var AccessKeyTable = createReactClass({
     contextTypes: {
         fetch: PropTypes.func,
         session_properties: PropTypes.object
@@ -139,7 +140,7 @@ var AccessKeyTable = React.createClass({
 });
 
 
-var User = module.exports.User = React.createClass({
+var User = module.exports.User = createReactClass({
     render: function() {
         var context = this.props.context;
         var crumbs = [
@@ -204,7 +205,7 @@ var ImpersonateUserSchema = {
 };
 
 
-var ImpersonateUserForm = React.createClass({
+var ImpersonateUserForm = createReactClass({
     contextTypes: {
         navigate: PropTypes.func
     },

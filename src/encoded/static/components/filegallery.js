@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'underscore';
 import moment from 'moment';
 import globals from './globals';
@@ -49,7 +50,7 @@ function fileAccessionSort(a, b) {
 }
 
 
-export const FileTable = React.createClass({
+export const FileTable = createReactClass({
     propTypes: {
         items: PropTypes.array.isRequired, // Array of files to appear in the table
         graphedFiles: PropTypes.object, // Specifies which files are in the graph
@@ -386,7 +387,7 @@ function sortBioReps(a, b) {
 }
 
 
-const RawSequencingTable = React.createClass({
+const RawSequencingTable = createReactClass({
     propTypes: {
         files: PropTypes.array, // Raw files to display
         meta: PropTypes.object, // Extra metadata in the same format passed to SortTable
@@ -609,7 +610,7 @@ const RawSequencingTable = React.createClass({
 });
 
 
-const RawFileTable = React.createClass({
+const RawFileTable = createReactClass({
     propTypes: {
         files: PropTypes.array, // Raw sequencing files to display
         meta: PropTypes.object, // Extra metadata in the same format passed to SortTable
@@ -782,7 +783,7 @@ const RawFileTable = React.createClass({
 
 // Called once searches for unreleased files returns results in this.props.items. Displays both released and
 // unreleased files.
-export const DatasetFiles = React.createClass({
+export const DatasetFiles = createReactClass({
     propTypes: {
         items: PropTypes.array, // Array of files retrieved
     },
@@ -803,7 +804,7 @@ export const DatasetFiles = React.createClass({
 // This component only triggers the data retrieval, which is done with a search for files associated
 // with the given experiment (in this.props.context). An odd thing is we specify query-string parameters
 // to the experiment URL, but they apply to the file search -- not the experiment itself.
-export const FileGallery = React.createClass({
+export const FileGallery = createReactClass({
     propTypes: {
         context: PropTypes.object, // Dataset object whose files we're rendering
         encodevers: PropTypes.string, // ENCODE version number
@@ -1338,7 +1339,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
 
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
 // the displayed experiment) return.
-const FileGalleryRenderer = React.createClass({
+const FileGalleryRenderer = createReactClass({
     propTypes: {
         context: PropTypes.object, // Dataset whose files we're rendering
         data: PropTypes.object, // File data retrieved from search request
@@ -1508,7 +1509,7 @@ const FileGalleryRenderer = React.createClass({
 });
 
 
-const CollapsingTitle = React.createClass({
+const CollapsingTitle = createReactClass({
     propTypes: {
         title: PropTypes.string.isRequired, // Title to display in the title bar
         handleCollapse: PropTypes.func.isRequired, // Function to call to handle click in collapse button
@@ -1540,7 +1541,7 @@ const CollapsingTitle = React.createClass({
 // Display a filtering <select>. `filterOptions` is an array of objects with two properties:
 // `assembly` and `annotation`. Both are strings that get concatenated to form each menu item. The
 // value of each <option> is its zero-based index.
-const FilterMenu = React.createClass({
+const FilterMenu = createReactClass({
     propTypes: {
         selectedFilterValue: PropTypes.string, // Currently selected filter
         filterOptions: PropTypes.array.isRequired, // Contents of the filtering menu
@@ -1643,7 +1644,7 @@ function coalescedDetailsView(node) {
     return { header: header, body: body };
 }
 
-const FileGraphComponent = React.createClass({
+const FileGraphComponent = createReactClass({
     propTypes: {
         items: PropTypes.array, // Array of files we're graphing
         graph: PropTypes.object, // JsonGraph object generated from files
@@ -1823,7 +1824,7 @@ const FileGraph = auditDecor(FileGraphComponent);
 
 
 // Display a QC button in the file modal.
-const FileQCButton = React.createClass({
+const FileQCButton = createReactClass({
     propTypes: {
         qc: PropTypes.object.isRequired, // QC object we're directing to
         file: PropTypes.object.isRequired, // File this QC object is attached to

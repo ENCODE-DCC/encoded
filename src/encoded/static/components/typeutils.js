@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'underscore';
 import globals from './globals';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -105,7 +106,7 @@ export function CollectBiosampleDocs(biosample) {
 
 
 // Display a table of retrieved biosamples related to the displayed biosample
-export const BiosampleTable = React.createClass({
+export const BiosampleTable = createReactClass({
     propTypes: {
         items: PropTypes.array, // Array of biosamples to display
         total: PropTypes.number, // Total number of biosamples matching search criteria (can be more than biosamples in `items`)
@@ -151,7 +152,7 @@ export const BiosampleTable = React.createClass({
 
 
 // Display a count of biosamples in the footer, with a link to the corresponding search if needed
-export const BiosampleTableFooter = React.createClass({
+export const BiosampleTableFooter = createReactClass({
     propTypes: {
         items: PropTypes.array, // List of biosamples in the table
         total: PropTypes.number, // Total number of biosamples matching search criteria
@@ -172,7 +173,7 @@ export const BiosampleTableFooter = React.createClass({
 
 
 // Display a reference to an award page as a definition list item.
-export const AwardRef = React.createClass({
+export const AwardRef = createReactClass({
     propTypes: {
         context: PropTypes.object.isRequired, // Object containing the award property
         adminUser: PropTypes.bool.isRequired, // True if current user is a logged-in admin

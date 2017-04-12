@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var fetched = require('../fetched');
 var globals = require('../globals');
 var item = require('./item');
@@ -12,7 +13,7 @@ var ObjectPicker = require('../inputs').ObjectPicker;
 var RichTextBlockView = richtext.RichTextBlockView;
 
 
-var TeaserCore = React.createClass({
+var TeaserCore = createReactClass({
     renderImage: function() {
         var context = this.props.value.image;
         if (typeof context === 'object') {
@@ -42,7 +43,7 @@ var TeaserCore = React.createClass({
 });
 
 
-var TeaserBlockView = React.createClass({
+var TeaserBlockView = createReactClass({
 
     getDefaultProps: function() {
         return {value: {
@@ -74,7 +75,7 @@ var TeaserBlockView = React.createClass({
 });
 
 
-var RichEditor = React.createClass({
+var RichEditor = createReactClass({
 
     childContextTypes: {
         editable: PropTypes.bool

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
@@ -16,7 +17,7 @@ import StatusLabel from './statuslabel';
 import { BiosampleTable } from './typeutils';
 
 
-const HumanDonor = React.createClass({
+const HumanDonor = createReactClass({
     propTypes: {
         context: PropTypes.object.isRequired, // Donor being displayed
         biosample: PropTypes.object, // Biosample this donor is associated with
@@ -129,7 +130,7 @@ globals.panel_views.register(HumanDonor, 'HumanDonor');
  * Display a table of donors. Mostly useful for arrays of donors related to the one being
  * displayed.
  */
-const DonorTable = React.createClass({
+const DonorTable = createReactClass({
     propTypes: {
         title: PropTypes.string, // Title to display in the title bar of the donor table
         donors: PropTypes.array, // Array of donors to display in the table
@@ -175,7 +176,7 @@ const DonorTable = React.createClass({
 });
 
 
-const MouseDonor = React.createClass({
+const MouseDonor = createReactClass({
     propTypes: {
         context: PropTypes.object, // Mouse donor object being rendered
         biosample: PropTypes.object, // Biosample object this donor belongs to
@@ -314,7 +315,7 @@ const MouseDonor = React.createClass({
 globals.panel_views.register(MouseDonor, 'MouseDonor');
 
 
-const FlyWormDonor = React.createClass({
+const FlyWormDonor = createReactClass({
     propTypes: {
         context: PropTypes.object, // Mouse donor object being rendered
         biosample: PropTypes.object, // Biosample object this donor belongs to
@@ -432,7 +433,7 @@ globals.panel_views.register(FlyWormDonor, 'WormDonor');
 
 
 // This component activates for any donors that aren't any of the above registered types.
-const Donor = React.createClass({
+const Donor = createReactClass({
     propTypes: {
         context: PropTypes.object, // Donor being rendered
     },

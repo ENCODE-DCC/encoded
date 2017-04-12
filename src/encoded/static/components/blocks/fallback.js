@@ -1,10 +1,11 @@
 const React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 const form = require('../form');
 const globals = require('../globals');
 const item = require('../item');
 
-const FallbackBlockView = React.createClass({
+const FallbackBlockView = createReactClass({
     propTypes: {
         blocktype: PropTypes.object,
         value: PropTypes.any,
@@ -21,7 +22,7 @@ const FallbackBlockView = React.createClass({
     },
 });
 
-const JSONInput = React.createClass({
+const JSONInput = createReactClass({
 
     propTypes: {
         value: PropTypes.any,
@@ -61,7 +62,7 @@ const fallbackSchema = {
     formInput: <JSONInput />,
 };
 
-module.exports.FallbackBlockEdit = React.createClass({
+module.exports.FallbackBlockEdit = createReactClass({
     propTypes: {
         schema: PropTypes.object,
         value: PropTypes.any,

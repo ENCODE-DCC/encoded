@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var svgIcon = require('../libs/svg-icons').svgIcon;
 var fetched = require('./fetched');
 var search = require('./search');
@@ -162,7 +163,7 @@ var RowView = function (props) {
     );
 };
 
-var Table = module.exports.Table = React.createClass({
+var Table = module.exports.Table = createReactClass({
     contextTypes: {
         location_href: PropTypes.string
     },
@@ -246,7 +247,7 @@ var Table = module.exports.Table = React.createClass({
 });
 
 
-var ColumnSelector = React.createClass({
+var ColumnSelector = createReactClass({
     getInitialState: function() {
         return {
             open: false
@@ -278,7 +279,7 @@ var ColumnSelector = React.createClass({
 });
 
 
-var Report = React.createClass({
+var Report = createReactClass({
     contextTypes: {
         location_href: PropTypes.string,
         navigate: PropTypes.func,
@@ -438,7 +439,7 @@ var Report = React.createClass({
 });
 
 
-var ReportLoader = React.createClass({
+var ReportLoader = createReactClass({
     render: function() {
         return (
             <fetched.FetchedData>

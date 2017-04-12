@@ -60,6 +60,7 @@
 
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var _ = require('underscore');
 var moment = require('moment');
 var panel = require('../libs/bootstrap/panel');
@@ -69,7 +70,7 @@ var {Panel, PanelHeading} = panel;
 
 // Required sortable table wrapper component. Takes no parameters but puts the table in a Bootstrap panel
 // and makes it responsive. You can place multiple <SortTable />s as children of this component.
-var SortTablePanel = module.exports.SortTablePanel = React.createClass({
+var SortTablePanel = module.exports.SortTablePanel = createReactClass({
     propTypes: {
         // Note: `title` overrides `header`
         title: PropTypes.oneOfType([ // Title to display in table panel header
@@ -102,7 +103,7 @@ var SortTablePanel = module.exports.SortTablePanel = React.createClass({
 });
 
 
-var SortTableComponent = module.exports.SortTableComponent = React.createClass({
+var SortTableComponent = module.exports.SortTableComponent = createReactClass({
     propTypes: {
         // Note: `title` overrides `header`
         title: PropTypes.oneOfType([ // Title to display in table panel header
@@ -133,7 +134,7 @@ var SortTableComponent = module.exports.SortTableComponent = React.createClass({
 
 
 // Displays one table within a <SortTablePanel></SortTablePanel>.
-var SortTable = module.exports.SortTable = React.createClass({
+var SortTable = module.exports.SortTable = createReactClass({
     propTypes: {
         title: PropTypes.oneOfType([ // Title to display in table header
             PropTypes.string, // When title is a simple string

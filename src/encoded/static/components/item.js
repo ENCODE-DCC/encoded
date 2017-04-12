@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var collection = require('./collection');
 var fetched = require('./fetched');
 var globals = require('./globals');
@@ -12,7 +13,7 @@ var JSONSchemaForm = form.JSONSchemaForm;
 var Table = collection.Table;
 
 
-var Fallback = module.exports.Fallback = React.createClass({
+var Fallback = module.exports.Fallback = createReactClass({
     contextTypes: {
         location_href: PropTypes.string
     },
@@ -40,7 +41,7 @@ var Fallback = module.exports.Fallback = React.createClass({
 });
 
 
-var ItemComponent = module.exports.Item = React.createClass({
+var ItemComponent = module.exports.Item = createReactClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -84,7 +85,7 @@ globals.content_views.fallback = function () {
 };
 
 
-var Panel = module.exports.Panel = React.createClass({
+var Panel = module.exports.Panel = createReactClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-detail panel');
@@ -121,7 +122,7 @@ globals.listing_titles.fallback = function () {
 };
 
 
-var ItemEdit = module.exports.ItemEdit = React.createClass({
+var ItemEdit = module.exports.ItemEdit = createReactClass({
     contextTypes: {
         navigate: PropTypes.func
     },
@@ -176,7 +177,7 @@ globals.content_views.register(ItemEdit, 'Item', 'edit');
 globals.content_views.register(ItemEdit, 'Collection', 'add');
 
 
-var FetchedRelatedItems = React.createClass({
+var FetchedRelatedItems = createReactClass({
     getDefaultProps: function() {
         return {Component: Table};
     },
@@ -195,7 +196,7 @@ var FetchedRelatedItems = React.createClass({
 });
 
 
-var RelatedItems = module.exports.RelatedItems = React.createClass({
+var RelatedItems = module.exports.RelatedItems = createReactClass({
     getDefaultProps: function() {
         return {limit: 5};
     },

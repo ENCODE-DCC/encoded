@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import offset from '../libs/offset';
 
 
@@ -7,7 +8,7 @@ import offset from '../libs/offset';
 // navigation bar of that’s position fixed (as it is if the browser window is wide enough). Note
 // that this method makes the sticky header shudder up and down while scrolling. Better ways exist
 // to do this without shudderingm, but they don't work on tables.
-const StickyHeader = React.createClass({
+const StickyHeader = createReactClass({
     propTypes: {
         children: PropTypes.object.isRequired,
     },

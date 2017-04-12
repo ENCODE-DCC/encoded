@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 
 
 // Display a modal dialog box that blocks all other page input until the user dismisses it. The
@@ -86,7 +87,7 @@ import PropTypes from 'prop-types';
 // DOM comes from: http://jamesknelson.com/rendering-react-components-to-the-document-body/
 
 
-export const ModalHeader = React.createClass({
+export const ModalHeader = createReactClass({
     propTypes: {
         addCss: PropTypes.string, // CSS classes to add to modal header
         title: PropTypes.oneOfType([
@@ -136,7 +137,7 @@ export const ModalHeader = React.createClass({
 });
 
 
-export const ModalBody = React.createClass({
+export const ModalBody = createReactClass({
     propTypes: {
         children: PropTypes.node,
     },
@@ -151,7 +152,7 @@ export const ModalBody = React.createClass({
 });
 
 
-export const ModalFooter = React.createClass({
+export const ModalFooter = createReactClass({
     propTypes: {
         submitBtn: PropTypes.oneOfType([
             PropTypes.object, // Submit button is a React component; just render it
@@ -238,7 +239,7 @@ export const ModalFooter = React.createClass({
 });
 
 
-export const Modal = React.createClass({
+export const Modal = createReactClass({
     propTypes: {
         actuator: PropTypes.object, // Component (usually a button) that makes the modal appear
         closeModal: PropTypes.func, // Called to close the modal if an actuator isn't provided
