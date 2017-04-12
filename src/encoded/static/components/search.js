@@ -986,9 +986,14 @@ const ResultTable = search.ResultTable = React.createClass({
         searchBase: React.PropTypes.string,
         onChange: React.PropTypes.func,
         mode: React.PropTypes.string,
+        currentRegion: React.PropTypes.func,
     },
 
     childContextTypes: { actions: React.PropTypes.array },
+
+    contextTypes: {
+        session: React.PropTypes.object,
+    },
 
     getDefaultProps: function () {
         return {
@@ -1050,6 +1055,7 @@ const ResultTable = search.ResultTable = React.createClass({
         const filters = context.filters;
         const label = 'results';
         const trimmedSearchBase = searchBase.replace(/[\?|&]limit=all/, '');
+        const loggedIn = this.context.session && this.context.session['auth.userid'];
         let browseAllFiles = true; // True to pass all files to browser
         let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
         let browserDatasets = []; // Datasets will be used to get vis_json blobs
@@ -1106,7 +1112,7 @@ const ResultTable = search.ResultTable = React.createClass({
 
         // If we have only one "type" term in the query string and it's for File, then we can
         // display the List/Browser tabs. Otherwise we just get the list.
-        let browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File' && assemblies.length === 1;
+        let browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File' && assemblies.length === 1 && loggedIn;
         if (browserAvail) {
             // If dataset is in the query string, we can show all files.
             const datasetFilter = filters.find(filter => filter.field === 'dataset');
@@ -1216,13 +1222,13 @@ const ResultTable = search.ResultTable = React.createClass({
                                 </div>
                                 <hr />
                                 {browserAvail ?
-                                    <TabPanel tabs={{ listpane: 'List', browserpane: 'Quick View' }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} tabFlange>
+                                    <TabPanel tabs={{ listpane: 'List', browserpane: <BrowserTabQuickView /> }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} tabFlange>
                                         <TabPanelPane key="listpane">
                                             <ResultTableList results={results} columns={columns} tabbed />
                                         </TabPanelPane>
                                         <TabPanelPane key="browserpane">
                                             {assemblyChooser}
-                                            <ResultBrowser files={results} assembly={browserAssembly} datasets={browserDatasets} limitFiles={!browseAllFiles} />
+                                            <ResultBrowser files={results} assembly={browserAssembly} datasets={browserDatasets} limitFiles={!browseAllFiles} currentRegion={this.props.currentRegion} />
                                         </TabPanelPane>
                                     </TabPanel>
                                 :
@@ -1236,6 +1242,13 @@ const ResultTable = search.ResultTable = React.createClass({
                 </div>
             </div>
         );
+    },
+});
+
+
+const BrowserTabQuickView = React.createClass({
+    render: function () {
+        return <div>Quick View <span className="beta-badge">BETA</span></div>;
     },
 });
 
@@ -1268,11 +1281,18 @@ const ResultBrowser = React.createClass({
         assembly: React.PropTypes.string, // Filter `files` by this assembly
         datasets: React.PropTypes.array, // One or more '/dataset/ENCSRnnnXXX/' that files belong to
         limitFiles: React.PropTypes.bool, // True to limit browsing to 20 files
+        currentRegion: React.PropTypes.func,
     },
 
     render: function () {
         let visUrl = '';
         const datasetCount = this.props.datasets.length;
+        let region;  // optionally make a persistent region
+        const lastRegion = this.props.currentRegion();
+        if (lastRegion && lastRegion.assembly === this.props.assembly) {
+            region = lastRegion.region;
+            console.log('found region %s', region);
+        }
         if (datasetCount === 1) {
             // /datasets/{ENCSR000AEI}/@@hub/{hg19}/jsonout/trackDb.txt
             visUrl = `${this.props.datasets[0]}/@@hub/${this.props.assembly}/jsonout/trackDb.txt`;
@@ -1288,13 +1308,13 @@ const ResultBrowser = React.createClass({
             return (
                 <FetchedData ignoreErrors>
                     <Param name="visBlobs" url={visUrl} />
-                    <GenomeBrowser files={this.props.files} assembly={this.props.assembly} limitFiles={this.props.limitFiles} />
+                    <GenomeBrowser files={this.props.files} assembly={this.props.assembly} limitFiles={this.props.limitFiles} region={region} currentRegion={this.props.currentRegion} />
                 </FetchedData>
             );
         }
         return (
             <div>
-                <GenomeBrowser files={this.props.files} assembly={this.props.assembly} limitFiles={this.props.limitFiles} />
+                <GenomeBrowser files={this.props.files} assembly={this.props.assembly} limitFiles={this.props.limitFiles} region={region} currentRegion={this.props.currentRegion} />
             </div>
         );
     },
@@ -1333,6 +1353,22 @@ const Search = search.Search = React.createClass({
         navigate: React.PropTypes.func,
     },
 
+    // optionally make a persistent region
+    lastRegion: {
+        assembly: React.PropTypes.string,
+        region: React.PropTypes.string,
+    },
+
+    currentRegion: function (assembly, region) {
+        if (assembly && region) {
+            this.lastRegion = {
+                assembly: assembly,
+                region: region,
+            };
+        }
+        return this.lastRegion;
+    },
+
     render: function () {
         const context = this.props.context;
         const notification = context.notification;
@@ -1352,7 +1388,7 @@ const Search = search.Search = React.createClass({
             <div>
                 {facetdisplay ?
                     <div className="panel data-display main-panel">
-                        <ResultTable {...this.props} key={undefined} searchBase={searchBase} assemblies={assemblies} onChange={this.context.navigate} />
+                        <ResultTable {...this.props} key={undefined} searchBase={searchBase} assemblies={assemblies} onChange={this.context.navigate} currentRegion={this.currentRegion} />
                     </div>
                 : <h4>{notification}</h4>}
             </div>

@@ -190,3 +190,19 @@ def audit_antibody_characterization_status(value, system):
             value['status']
             )
         raise AuditFailure('mismatched lane status', detail, level='INTERNAL_ACTION')
+
+
+@audit_checker('antibody_characterization', condition=rfa('ENCODE3', 'modERN', 'ENCODE4'))
+def audit_antibody_pending_review(value, system):
+    ''' Pending dcc review characterizsations should be flagged for review if from ENCODE3, modERN'''
+    if (value['status'] in ['compliant',
+                            'not compliant',
+                            'exempt from standards'
+                            'not reviewed', 
+                            'not submitted for review by lab',
+                            'deleted',
+                            'in progress']):
+        return
+    if value['status'] == 'pending dcc review':
+        detail = '{} has characterization(s) needing review.'.format(value['@id'])
+        raise AuditFailure('characterization(s) pending review', detail, level='INTERNAL_ACTION')
