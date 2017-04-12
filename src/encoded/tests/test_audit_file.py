@@ -214,7 +214,7 @@ def chipseq_bam_quality_metric_2(testapp, analysis_step_run_bam, file7, lab, awa
 @pytest.fixture
 def analysis_step_bam(testapp):
     item = {
-        'name': 'bamqc',
+        'name': 'bamqc-step-v-1',
         'title': 'bamqc',
         'input_file_types': ['reads'],
         'analysis_step_types': ['QA calculation']

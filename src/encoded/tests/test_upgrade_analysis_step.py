@@ -4,7 +4,7 @@ import pytest
 @pytest.fixture
 def base_analysis_step(testapp, software_version):
     item = {
-        'name': 'base_analysis_step_v_1',
+        'name': 'base-analysis-step-v-1',
         'title': 'base_analysis_step_v_1 title',
         'analysis_step_types': ['alignments'],
         'input_file_types': ['reads'],
