@@ -503,7 +503,7 @@ const ChartRenderer = (props) => {
                         />
                     </div>
                 :
-                    <div className="browser-error">No labs reference this award for assays</div>
+                    <div className="browser-error">No assays were submitted under this award</div>
                 }
             </div>
             <div className="award-chart__group-wrapper">
@@ -532,7 +532,7 @@ const ChartRenderer = (props) => {
                         />
                     </div>
                 :
-                    <div className="browser-error">No labs reference this award for annotations</div>
+                    <div className="browser-error">No annotations were submitted under this award</div>
                 }
             </div>
         </div>
