@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var globals = require('./globals');
 var home = require('./home');
 
@@ -41,7 +42,7 @@ globals.content_views.register(HTTPNotFound, 'HTTPNotFound');
 
 var HTTPForbidden = module.exports.HTTPForbidden = React.createClass({
     contextTypes: {
-        session: React.PropTypes.object
+        session: PropTypes.object
     },
 
     render: function() {

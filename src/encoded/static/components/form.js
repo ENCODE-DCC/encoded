@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-for */
 
 const React = require('react');
+import PropTypes from 'prop-types';
 const parseAndLogError = require('./globals').parseAndLogError;
 const offset = require('../libs/offset');
 const fetched = require('./fetched');
@@ -120,16 +121,16 @@ const RepeatingItem = React.createClass({
     // but also shows a button to remove the item.
 
     propTypes: {
-        name: React.PropTypes.number,
-        path: React.PropTypes.string,
-        schema: React.PropTypes.object,
-        onRemove: React.PropTypes.func,
-        value: React.PropTypes.any,
-        updateChild: React.PropTypes.func,
+        name: PropTypes.number,
+        path: PropTypes.string,
+        schema: PropTypes.object,
+        onRemove: PropTypes.func,
+        value: PropTypes.any,
+        updateChild: PropTypes.func,
     },
 
     contextTypes: {
-        readonly: React.PropTypes.bool,
+        readonly: PropTypes.bool,
     },
 
     handleRemove(e) {
@@ -179,17 +180,17 @@ const RepeatingFieldset = React.createClass({
     // Also shows a button to add a new item.
 
     propTypes: {
-        schema: React.PropTypes.object,
-        name: React.PropTypes.string,
-        path: React.PropTypes.string,
-        value: React.PropTypes.any,
-        updateChild: React.PropTypes.func,
+        schema: PropTypes.object,
+        name: PropTypes.string,
+        path: PropTypes.string,
+        value: PropTypes.any,
+        updateChild: PropTypes.func,
     },
 
     contextTypes: {
-        schemas: React.PropTypes.object,
-        readonly: React.PropTypes.bool,
-        id: React.PropTypes.string,
+        schemas: PropTypes.object,
+        readonly: PropTypes.bool,
+        id: PropTypes.string,
     },
 
     getInitialState: function () {
@@ -287,20 +288,20 @@ const FetchedFieldset = React.createClass({
     // rather than just the URI.
 
     propTypes: {
-        schema: React.PropTypes.object,
-        name: React.PropTypes.any,
-        path: React.PropTypes.string,
-        value: React.PropTypes.any,
-        updateChild: React.PropTypes.func,
+        schema: PropTypes.object,
+        name: PropTypes.any,
+        path: PropTypes.string,
+        value: PropTypes.any,
+        updateChild: PropTypes.func,
     },
 
     contextTypes: {
-        schemas: React.PropTypes.object,
-        errors: React.PropTypes.object,
+        schemas: PropTypes.object,
+        errors: PropTypes.object,
     },
 
     childContextTypes: {
-        id: React.PropTypes.string,
+        id: PropTypes.string,
     },
 
     getInitialState() {
@@ -434,25 +435,25 @@ const Field = module.exports.Field = React.createClass({
     // the input is disabled and the field value cannot be edited.
 
     propTypes: {
-        name: React.PropTypes.any,
-        path: React.PropTypes.string,
-        schema: React.PropTypes.object,
-        value: React.PropTypes.any,
-        className: React.PropTypes.string,
-        updateChild: React.PropTypes.func,
-        hideLabel: React.PropTypes.bool,
+        name: PropTypes.any,
+        path: PropTypes.string,
+        schema: PropTypes.object,
+        value: PropTypes.any,
+        className: PropTypes.string,
+        updateChild: PropTypes.func,
+        hideLabel: PropTypes.bool,
     },
 
     contextTypes: {
-        submitted: React.PropTypes.bool,
-        errors: React.PropTypes.object,
-        showReadOnly: React.PropTypes.bool,
-        readonly: React.PropTypes.bool,
-        id: React.PropTypes.string,
+        submitted: PropTypes.bool,
+        errors: PropTypes.object,
+        showReadOnly: PropTypes.bool,
+        readonly: PropTypes.bool,
+        id: PropTypes.string,
     },
 
     childContextTypes: {
-        readonly: React.PropTypes.bool,
+        readonly: PropTypes.bool,
     },
 
     getDefaultProps() {
@@ -663,31 +664,31 @@ const Form = module.exports.Form = React.createClass({
     // Clicking the Cancel button returns to the homepage.
 
     propTypes: {
-        defaultValue: React.PropTypes.any,
-        schemas: React.PropTypes.object,
-        schema: React.PropTypes.object,
-        showReadOnly: React.PropTypes.bool,
-        id: React.PropTypes.string,
-        method: React.PropTypes.string,
-        action: React.PropTypes.string,
-        etag: React.PropTypes.string,
-        onFinish: React.PropTypes.func,
-        submitLabel: React.PropTypes.string,
+        defaultValue: PropTypes.any,
+        schemas: PropTypes.object,
+        schema: PropTypes.object,
+        showReadOnly: PropTypes.bool,
+        id: PropTypes.string,
+        method: PropTypes.string,
+        action: PropTypes.string,
+        etag: PropTypes.string,
+        onFinish: PropTypes.func,
+        submitLabel: PropTypes.string,
     },
 
     contextTypes: {
-        adviseUnsavedChanges: React.PropTypes.func,
-        fetch: React.PropTypes.func,
+        adviseUnsavedChanges: PropTypes.func,
+        fetch: PropTypes.func,
     },
 
     childContextTypes: {
-        schemas: React.PropTypes.object,
-        canSave: React.PropTypes.func,
-        onTriggerSave: React.PropTypes.func,
-        errors: React.PropTypes.object,
-        showReadOnly: React.PropTypes.bool,
-        id: React.PropTypes.string,
-        submitted: React.PropTypes.bool,
+        schemas: PropTypes.object,
+        canSave: PropTypes.func,
+        onTriggerSave: PropTypes.func,
+        errors: PropTypes.object,
+        showReadOnly: PropTypes.bool,
+        id: PropTypes.string,
+        submitted: PropTypes.bool,
     },
 
     getDefaultProps() {
@@ -946,15 +947,15 @@ module.exports.JSONSchemaForm = React.createClass({
     // Other properties are passed through to the Form.
 
     propTypes: {
-        type: React.PropTypes.string,
-        schemas: React.PropTypes.object,
-        context: React.PropTypes.any,
-        action: React.PropTypes.string,
-        method: React.PropTypes.string,
-        etag: React.PropTypes.string,
-        showReadOnly: React.PropTypes.bool,
-        id: React.PropTypes.string,
-        onFinish: React.PropTypes.func,
+        type: PropTypes.string,
+        schemas: PropTypes.object,
+        context: PropTypes.any,
+        action: PropTypes.string,
+        method: PropTypes.string,
+        etag: PropTypes.string,
+        showReadOnly: PropTypes.bool,
+        id: PropTypes.string,
+        onFinish: PropTypes.func,
     },
 
     getDefaultProps() {

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import offset from '../libs/offset';
 
 
@@ -8,7 +9,7 @@ import offset from '../libs/offset';
 // to do this without shudderingm, but they don't work on tables.
 const StickyHeader = React.createClass({
     propTypes: {
-        children: React.PropTypes.object.isRequired,
+        children: PropTypes.object.isRequired,
     },
 
     componentDidMount: function () {

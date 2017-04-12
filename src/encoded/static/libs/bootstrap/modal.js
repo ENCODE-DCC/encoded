@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 
 
 // Display a modal dialog box that blocks all other page input until the user dismisses it. The
@@ -87,17 +88,17 @@ import ReactDOM from 'react-dom';
 
 export const ModalHeader = React.createClass({
     propTypes: {
-        addCss: React.PropTypes.string, // CSS classes to add to modal header
-        title: React.PropTypes.oneOfType([
-            React.PropTypes.string, // String to display as an <h4> title
-            React.PropTypes.object, // React component to display for the title
+        addCss: PropTypes.string, // CSS classes to add to modal header
+        title: PropTypes.oneOfType([
+            PropTypes.string, // String to display as an <h4> title
+            PropTypes.object, // React component to display for the title
         ]),
-        closeModal: React.PropTypes.oneOfType([
-            React.PropTypes.bool, // True to display the close button in the header with the built-in handler
-            React.PropTypes.func, // If not using an actuator on <Modal>, provide a function to close the modal
+        closeModal: PropTypes.oneOfType([
+            PropTypes.bool, // True to display the close button in the header with the built-in handler
+            PropTypes.func, // If not using an actuator on <Modal>, provide a function to close the modal
         ]),
-        children: React.PropTypes.node,
-        c_closeModal: React.PropTypes.func, // Auto-added
+        children: PropTypes.node,
+        c_closeModal: PropTypes.func, // Auto-added
     },
 
     closeModal: function () {
@@ -137,7 +138,7 @@ export const ModalHeader = React.createClass({
 
 export const ModalBody = React.createClass({
     propTypes: {
-        children: React.PropTypes.node,
+        children: PropTypes.node,
     },
 
     render: function () {
@@ -152,18 +153,18 @@ export const ModalBody = React.createClass({
 
 export const ModalFooter = React.createClass({
     propTypes: {
-        submitBtn: React.PropTypes.oneOfType([
-            React.PropTypes.object, // Submit button is a React component; just render it
-            React.PropTypes.func, // Function to call when default-rendered Submit button clicked
+        submitBtn: PropTypes.oneOfType([
+            PropTypes.object, // Submit button is a React component; just render it
+            PropTypes.func, // Function to call when default-rendered Submit button clicked
         ]),
-        closeModal: React.PropTypes.oneOfType([
-            React.PropTypes.bool, // Use default-rendered Cancel button that closes the modal
-            React.PropTypes.object, // Cancel button is a React component; just render it
-            React.PropTypes.func, // Function to call when default-rendered Cancel button clicked
+        closeModal: PropTypes.oneOfType([
+            PropTypes.bool, // Use default-rendered Cancel button that closes the modal
+            PropTypes.object, // Cancel button is a React component; just render it
+            PropTypes.func, // Function to call when default-rendered Cancel button clicked
         ]),
-        dontClose: React.PropTypes.bool, // True to *not* close the modal when the user clicks Submit
-        c_closeModal: React.PropTypes.func, // Auto-add
-        children: React.PropTypes.node,
+        dontClose: PropTypes.bool, // True to *not* close the modal when the user clicks Submit
+        c_closeModal: PropTypes.func, // Auto-add
+        children: PropTypes.node,
     },
 
     closeModal: function () {
@@ -239,10 +240,10 @@ export const ModalFooter = React.createClass({
 
 export const Modal = React.createClass({
     propTypes: {
-        actuator: React.PropTypes.object, // Component (usually a button) that makes the modal appear
-        closeModal: React.PropTypes.func, // Called to close the modal if an actuator isn't provided
-        addClasses: React.PropTypes.string, // CSS classes to add to the default
-        children: React.PropTypes.node,
+        actuator: PropTypes.object, // Component (usually a button) that makes the modal appear
+        closeModal: PropTypes.func, // Called to close the modal if an actuator isn't provided
+        addClasses: PropTypes.string, // CSS classes to add to the default
+        children: PropTypes.node,
     },
 
     getInitialState: function () {

@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var svgIcon = require('../libs/svg-icons').svgIcon;
 var fetched = require('./fetched');
 var search = require('./search');
@@ -163,7 +164,7 @@ var RowView = function (props) {
 
 var Table = module.exports.Table = React.createClass({
     contextTypes: {
-        location_href: React.PropTypes.string
+        location_href: PropTypes.string
     },
 
     extractData: function (items) {
@@ -279,9 +280,9 @@ var ColumnSelector = React.createClass({
 
 var Report = React.createClass({
     contextTypes: {
-        location_href: React.PropTypes.string,
-        navigate: React.PropTypes.func,
-        fetch: React.PropTypes.func
+        location_href: PropTypes.string,
+        navigate: PropTypes.func,
+        fetch: PropTypes.func
     },
 
     getInitialState: function() {

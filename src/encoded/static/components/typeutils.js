@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'underscore';
 import globals from './globals';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -106,14 +107,14 @@ export function CollectBiosampleDocs(biosample) {
 // Display a table of retrieved biosamples related to the displayed biosample
 export const BiosampleTable = React.createClass({
     propTypes: {
-        items: React.PropTypes.array, // Array of biosamples to display
-        total: React.PropTypes.number, // Total number of biosamples matching search criteria (can be more than biosamples in `items`)
-        limit: React.PropTypes.number, // Maximum number of biosamples to display in the table
-        title: React.PropTypes.oneOfType([ // Title to display in table header, as string or component
-            React.PropTypes.string,
-            React.PropTypes.node,
+        items: PropTypes.array, // Array of biosamples to display
+        total: PropTypes.number, // Total number of biosamples matching search criteria (can be more than biosamples in `items`)
+        limit: PropTypes.number, // Maximum number of biosamples to display in the table
+        title: PropTypes.oneOfType([ // Title to display in table header, as string or component
+            PropTypes.string,
+            PropTypes.node,
         ]),
-        url: React.PropTypes.string, // URL to go to full search results
+        url: PropTypes.string, // URL to go to full search results
     },
 
     columns: {
@@ -152,9 +153,9 @@ export const BiosampleTable = React.createClass({
 // Display a count of biosamples in the footer, with a link to the corresponding search if needed
 export const BiosampleTableFooter = React.createClass({
     propTypes: {
-        items: React.PropTypes.array, // List of biosamples in the table
-        total: React.PropTypes.number, // Total number of biosamples matching search criteria
-        url: React.PropTypes.string, // URI to get full search results
+        items: PropTypes.array, // List of biosamples in the table
+        total: PropTypes.number, // Total number of biosamples matching search criteria
+        url: PropTypes.string, // URI to get full search results
     },
 
     render: function () {
@@ -173,8 +174,8 @@ export const BiosampleTableFooter = React.createClass({
 // Display a reference to an award page as a definition list item.
 export const AwardRef = React.createClass({
     propTypes: {
-        context: React.PropTypes.object.isRequired, // Object containing the award property
-        adminUser: React.PropTypes.bool.isRequired, // True if current user is a logged-in admin
+        context: PropTypes.object.isRequired, // Object containing the award property
+        adminUser: PropTypes.bool.isRequired, // True if current user is a logged-in admin
     },
 
     render: function () {

@@ -1,5 +1,6 @@
 'use strict';
 const React = require('react');
+import PropTypes from 'prop-types';
 const panel = require('../libs/bootstrap/panel');
 const _ = require('underscore');
 const url = require('url');
@@ -469,7 +470,7 @@ var MaybeLink = React.createClass({
 // simply display without a link.
 var BiosampleTermId = React.createClass({
     propTypes: {
-        termId: React.PropTypes.string // Biosample whose term is being displayed.
+        termId: PropTypes.string // Biosample whose term is being displayed.
     },
 
     // Map from prefixes to corresponding URL bases. Not all term ID prefixes covered here.
@@ -690,7 +691,7 @@ const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 // Document header component -- Characterizations
 var CharacterizationHeader = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired // Document object to render
+        doc: PropTypes.object.isRequired // Document object to render
     },
 
     render: function() {
@@ -707,7 +708,7 @@ var CharacterizationHeader = React.createClass({
 // Document caption component -- Characterizations
 var CharacterizationCaption = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired // Document object to render
+        doc: PropTypes.object.isRequired // Document object to render
     },
 
     render: function() {
@@ -733,9 +734,9 @@ var CharacterizationCaption = React.createClass({
 // Document detail component -- default
 var CharacterizationDetail = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired, // Document object to render
-        detailOpen: React.PropTypes.bool, // True if detail panel is visible
-        key: React.PropTypes.string // Unique key for identification
+        doc: PropTypes.object.isRequired, // Document object to render
+        detailOpen: PropTypes.bool, // True if detail panel is visible
+        key: PropTypes.string // Unique key for identification
     },
 
     render: function() {

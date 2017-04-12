@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import DataColors from './datacolors';
 import { FetchedData, Param } from './fetched';
@@ -210,14 +211,14 @@ class LabChart extends React.Component {
 }
 
 LabChart.propTypes = {
-    award: React.PropTypes.object.isRequired, // Award being displayed
-    labs: React.PropTypes.array.isRequired, // Array of labs facet data
-    linkUri: React.PropTypes.string.isRequired, // Base URI for matrix links
-    ident: React.PropTypes.string.isRequired, // Unique identifier to `id` the charts
+    award: PropTypes.object.isRequired, // Award being displayed
+    labs: PropTypes.array.isRequired, // Array of labs facet data
+    linkUri: PropTypes.string.isRequired, // Base URI for matrix links
+    ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
 };
 
 LabChart.contextTypes = {
-    navigate: React.PropTypes.func,
+    navigate: PropTypes.func,
 };
 
 
@@ -310,16 +311,16 @@ class CategoryChart extends React.Component {
 }
 
 CategoryChart.propTypes = {
-    award: React.PropTypes.object.isRequired, // Award being displayed
-    categoryData: React.PropTypes.array.isRequired, // Type-specific data to display in a chart
-    title: React.PropTypes.string.isRequired, // Title to display above the chart
-    linkUri: React.PropTypes.string.isRequired, // Element of matrix URI to select
-    categoryFacet: React.PropTypes.string.isRequired, // Add to linkUri to link to matrix facet item
-    ident: React.PropTypes.string.isRequired, // Unique identifier to `id` the charts
+    award: PropTypes.object.isRequired, // Award being displayed
+    categoryData: PropTypes.array.isRequired, // Type-specific data to display in a chart
+    title: PropTypes.string.isRequired, // Title to display above the chart
+    linkUri: PropTypes.string.isRequired, // Element of matrix URI to select
+    categoryFacet: PropTypes.string.isRequired, // Add to linkUri to link to matrix facet item
+    ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
 };
 
 CategoryChart.contextTypes = {
-    navigate: React.PropTypes.func,
+    navigate: PropTypes.func,
 };
 
 
@@ -409,10 +410,10 @@ class StatusChart extends React.Component {
 }
 
 StatusChart.propTypes = {
-    award: React.PropTypes.object.isRequired, // Award being displayed
-    statuses: React.PropTypes.array, // Array of status facet data
-    linkUri: React.PropTypes.string.isRequired, // URI to use for matrix links
-    ident: React.PropTypes.string.isRequired, // Unique identifier to `id` the charts
+    award: PropTypes.object.isRequired, // Award being displayed
+    statuses: PropTypes.array, // Array of status facet data
+    linkUri: PropTypes.string.isRequired, // URI to use for matrix links
+    ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
 };
 
 StatusChart.defaultProps = {
@@ -420,7 +421,7 @@ StatusChart.defaultProps = {
 };
 
 StatusChart.contextTypes = {
-    navigate: React.PropTypes.func,
+    navigate: PropTypes.func,
 };
 
 
@@ -539,9 +540,9 @@ const ChartRenderer = (props) => {
 };
 
 ChartRenderer.propTypes = {
-    award: React.PropTypes.object.isRequired, // Award being displayed
-    experiments: React.PropTypes.object, // Search result of matching experiments
-    annotations: React.PropTypes.object, // Search result of matching annotations
+    award: PropTypes.object.isRequired, // Award being displayed
+    experiments: PropTypes.object, // Search result of matching experiments
+    annotations: PropTypes.object, // Search result of matching annotations
 };
 
 ChartRenderer.defaultProps = {
@@ -572,7 +573,7 @@ const AwardCharts = (props) => {
 };
 
 AwardCharts.propTypes = {
-    award: React.PropTypes.object.isRequired, // Award represented by this chart
+    award: PropTypes.object.isRequired, // Award represented by this chart
 };
 
 
@@ -614,7 +615,7 @@ const Award = (props) => {
 };
 
 Award.propTypes = {
-    context: React.PropTypes.object.isRequired, // Award object being rendered
+    context: PropTypes.object.isRequired, // Award object being rendered
 };
 
 globals.content_views.register(Award, 'Award');
@@ -643,7 +644,7 @@ const Listing = (props) => {
 };
 
 Listing.propTypes = {
-    context: React.PropTypes.object.isRequired, // Object whose search result we're displaying
+    context: PropTypes.object.isRequired, // Object whose search result we're displaying
 };
 
 globals.listing_views.register(Listing, 'Award');

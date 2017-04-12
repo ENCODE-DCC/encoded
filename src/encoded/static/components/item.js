@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var collection = require('./collection');
 var fetched = require('./fetched');
 var globals = require('./globals');
@@ -13,7 +14,7 @@ var Table = collection.Table;
 
 var Fallback = module.exports.Fallback = React.createClass({
     contextTypes: {
-        location_href: React.PropTypes.string
+        location_href: PropTypes.string
     },
 
     render: function() {
@@ -122,7 +123,7 @@ globals.listing_titles.fallback = function () {
 
 var ItemEdit = module.exports.ItemEdit = React.createClass({
     contextTypes: {
-        navigate: React.PropTypes.func
+        navigate: PropTypes.func
     },
 
     render: function() {

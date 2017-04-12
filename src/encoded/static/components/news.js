@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import querystring from 'querystring';
 import _ from 'underscore';
@@ -10,7 +11,7 @@ import { Panel, PanelBody } from '../libs/bootstrap/panel';
 // Display a news preview item from a search result @graph object.
 const NewsPreviewItem = React.createClass({
     propTypes: {
-        item: React.PropTypes.object, // News search result object to display
+        item: PropTypes.object, // News search result object to display
     },
 
     render: function () {
@@ -32,7 +33,7 @@ const NewsPreviewItem = React.createClass({
 // Display a list of news preview items from search results.
 const NewsPreviews = React.createClass({
     propTypes: {
-        items: React.PropTypes.array, // Items from search result @graph
+        items: PropTypes.array, // Items from search result @graph
     },
 
     render: function () {
@@ -56,9 +57,9 @@ export default NewsPreviews;
 // in its own component, so the vast majority of news facets use this component.
 const DefaultFacet = React.createClass({
     propTypes: {
-        facet: React.PropTypes.object.isRequired, // One facet from search results
-        baseUri: React.PropTypes.string.isRequired, // Current URI and query string
-        searchFilters: React.PropTypes.object.isRequired, // Search-result filter object; see <NewsFacets />
+        facet: PropTypes.object.isRequired, // One facet from search results
+        baseUri: PropTypes.string.isRequired, // Current URI and query string
+        searchFilters: PropTypes.object.isRequired, // Search-result filter object; see <NewsFacets />
     },
 
     render: function () {
@@ -114,9 +115,9 @@ globals.facet_view.fallback = () => DefaultFacet;
 // Special news facet-rendering component to render facets with facet.field==='month_released'.
 const DateFacet = React.createClass({
     propTypes: {
-        facet: React.PropTypes.object.isRequired, // One facet from search results
-        baseUri: React.PropTypes.string.isRequired, // Current URI and query string
-        searchFilters: React.PropTypes.object.isRequired, // Search-result filter object; see <NewsFacets />
+        facet: PropTypes.object.isRequired, // One facet from search results
+        baseUri: PropTypes.string.isRequired, // Current URI and query string
+        searchFilters: PropTypes.object.isRequired, // Search-result filter object; see <NewsFacets />
     },
 
     render: function () {
@@ -303,9 +304,9 @@ globals.facet_view.register(DateFacet, 'month_released');
 // Display the news facets.
 const NewsFacets = React.createClass({
     propTypes: {
-        facets: React.PropTypes.array.isRequired, // Array of facets, each containing an array of facet items
-        filters: React.PropTypes.array.isRequired, // Array of filters from the search results
-        baseUri: React.PropTypes.string.isRequired, // Current URI and query string
+        facets: PropTypes.array.isRequired, // Array of facets, each containing an array of facet items
+        filters: PropTypes.array.isRequired, // Array of filters from the search results
+        baseUri: PropTypes.string.isRequired, // Current URI and query string
     },
 
     render: function () {
@@ -357,7 +358,7 @@ const NewsFacets = React.createClass({
 // Rendering component for the stand-alone news preview page.
 const News = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // Search results
+        context: PropTypes.object, // Search results
     },
 
     render: function () {

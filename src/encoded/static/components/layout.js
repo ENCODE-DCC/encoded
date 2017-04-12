@@ -1,4 +1,5 @@
 const React = require('react');
+import PropTypes from 'prop-types';
 const FallbackBlockEdit = require('./blocks/fallback').FallbackBlockEdit;
 const globals = require('./globals');
 const closest = require('../libs/closest');
@@ -8,40 +9,40 @@ const _ = require('underscore');
 
 
 const LAYOUT_CONTEXT = {
-    dragStart: React.PropTypes.func,
-    dragOver: React.PropTypes.func,
-    dragEnd: React.PropTypes.func,
-    change: React.PropTypes.func,
-    remove: React.PropTypes.func,
-    editable: React.PropTypes.bool,
-    src_pos: React.PropTypes.array,
-    dst_pos: React.PropTypes.array,
-    dst_quad: React.PropTypes.string,
-    blocks: React.PropTypes.object,
+    dragStart: PropTypes.func,
+    dragOver: PropTypes.func,
+    dragEnd: PropTypes.func,
+    change: PropTypes.func,
+    remove: PropTypes.func,
+    editable: PropTypes.bool,
+    src_pos: PropTypes.array,
+    dst_pos: PropTypes.array,
+    dst_quad: PropTypes.string,
+    blocks: PropTypes.object,
 };
 
 const MODAL_CONTEXT = {
     // Persona
-    fetch: React.PropTypes.func,
-    session: React.PropTypes.object,
-    session_properties: React.PropTypes.object,
+    fetch: PropTypes.func,
+    session: PropTypes.object,
+    session_properties: PropTypes.object,
     // HistoryAndTriggers
-    adviseUnsavedChanges: React.PropTypes.func,
-    navigate: React.PropTypes.func,
+    adviseUnsavedChanges: PropTypes.func,
+    navigate: PropTypes.func,
     // App
-    listActionsFor: React.PropTypes.func,
-    currentResource: React.PropTypes.func,
-    location_href: React.PropTypes.string,
-    portal: React.PropTypes.object,
+    listActionsFor: PropTypes.func,
+    currentResource: PropTypes.func,
+    location_href: PropTypes.string,
+    portal: PropTypes.object,
 };
 
 const BlockEditModal = React.createClass({
     propTypes: {
-        modalcontext: React.PropTypes.object,
-        value: React.PropTypes.any,
-        onCancel: React.PropTypes.func,
-        onChange: React.PropTypes.func,
-        actuator: React.PropTypes.element,
+        modalcontext: PropTypes.object,
+        value: PropTypes.any,
+        onCancel: PropTypes.func,
+        onChange: PropTypes.func,
+        actuator: PropTypes.element,
     },
 
     childContextTypes: MODAL_CONTEXT,
@@ -92,8 +93,8 @@ const BlockEditModal = React.createClass({
 
 const Block = module.exports.Block = React.createClass({
     propTypes: {
-        value: React.PropTypes.any,
-        pos: React.PropTypes.array,
+        value: PropTypes.any,
+        pos: PropTypes.array,
     },
 
     contextTypes: _.extend({}, MODAL_CONTEXT, LAYOUT_CONTEXT),
@@ -194,8 +195,8 @@ const Block = module.exports.Block = React.createClass({
 
 const BlockAddButton = React.createClass({
     propTypes: {
-        blocktype: React.PropTypes.string,
-        blockprops: React.PropTypes.object,
+        blocktype: PropTypes.string,
+        blockprops: PropTypes.object,
     },
 
     contextTypes: LAYOUT_CONTEXT,
@@ -236,8 +237,8 @@ const BlockAddButton = React.createClass({
 const LayoutToolbar = React.createClass({
 
     contextTypes: {
-        canSave: React.PropTypes.func,
-        onTriggerSave: React.PropTypes.func,
+        canSave: PropTypes.func,
+        onTriggerSave: PropTypes.func,
     },
 
     getInitialState() {
@@ -297,9 +298,9 @@ const LayoutToolbar = React.createClass({
 
 const Col = React.createClass({
     propTypes: {
-        pos: React.PropTypes.array,
-        className: React.PropTypes.string,
-        value: React.PropTypes.object,
+        pos: PropTypes.array,
+        className: PropTypes.string,
+        value: PropTypes.object,
     },
 
     contextTypes: LAYOUT_CONTEXT,
@@ -337,8 +338,8 @@ const Col = React.createClass({
 
 const Row = React.createClass({
     propTypes: {
-        pos: React.PropTypes.array,
-        value: React.PropTypes.object,
+        pos: PropTypes.array,
+        value: PropTypes.object,
     },
 
     contextTypes: LAYOUT_CONTEXT,
@@ -381,8 +382,8 @@ const Row = React.createClass({
 
 module.exports.Layout = React.createClass({
     propTypes: {
-        editable: React.PropTypes.bool,
-        onChange: React.PropTypes.func,
+        editable: PropTypes.bool,
+        onChange: PropTypes.func,
     },
 
     childContextTypes: LAYOUT_CONTEXT,

@@ -1,12 +1,13 @@
 const React = require('react');
+import PropTypes from 'prop-types';
 const form = require('../form');
 const globals = require('../globals');
 const item = require('../item');
 
 const FallbackBlockView = React.createClass({
     propTypes: {
-        blocktype: React.PropTypes.object,
-        value: React.PropTypes.any,
+        blocktype: PropTypes.object,
+        value: PropTypes.any,
     },
 
     render() {
@@ -23,8 +24,8 @@ const FallbackBlockView = React.createClass({
 const JSONInput = React.createClass({
 
     propTypes: {
-        value: React.PropTypes.any,
-        onChange: React.PropTypes.func,
+        value: PropTypes.any,
+        onChange: PropTypes.func,
     },
 
     getInitialState() {
@@ -62,9 +63,9 @@ const fallbackSchema = {
 
 module.exports.FallbackBlockEdit = React.createClass({
     propTypes: {
-        schema: React.PropTypes.object,
-        value: React.PropTypes.any,
-        onChange: React.PropTypes.func,
+        schema: PropTypes.object,
+        value: PropTypes.any,
+        onChange: PropTypes.func,
     },
 
     update(name, value) {

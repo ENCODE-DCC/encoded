@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 
 class Panel extends React.Component {
@@ -14,9 +15,9 @@ class Panel extends React.Component {
 }
 
 Panel.propTypes = {
-    addClasses: React.PropTypes.string, // Classes to add to outer panel div
-    noDefaultClasses: React.PropTypes.bool, // T to not include default panel classes
-    children: React.PropTypes.node,
+    addClasses: PropTypes.string, // Classes to add to outer panel div
+    noDefaultClasses: PropTypes.bool, // T to not include default panel classes
+    children: PropTypes.node,
 };
 
 Panel.defaultProps = {
@@ -37,8 +38,8 @@ class PanelBody extends React.Component {
 }
 
 PanelBody.propTypes = {
-    addClasses: React.PropTypes.string, // Classes to add to outer panel div
-    children: React.PropTypes.node,
+    addClasses: PropTypes.string, // Classes to add to outer panel div
+    children: PropTypes.node,
 };
 
 PanelBody.defaultProps = {
@@ -58,8 +59,8 @@ class PanelHeading extends React.Component {
 }
 
 PanelHeading.propTypes = {
-    addClasses: React.PropTypes.string, // Classes to add to outer panel div
-    children: React.PropTypes.node,
+    addClasses: PropTypes.string, // Classes to add to outer panel div
+    children: PropTypes.node,
 };
 
 PanelHeading.defaultProps = {
@@ -74,8 +75,8 @@ const PanelFooter = props => (
 );
 
 PanelFooter.propTypes = {
-    addClasses: React.PropTypes.string, // Classes to add to outer panel div
-    children: React.PropTypes.null,
+    addClasses: PropTypes.string, // Classes to add to outer panel div
+    children: PropTypes.null,
 };
 
 PanelFooter.defaultProps = {
@@ -116,9 +117,9 @@ const TabPanelPane = (props) => {
 };
 
 TabPanelPane.propTypes = {
-    id: React.PropTypes.string.isRequired, // ID of the pane; not passed explicitly -- comes from `key` of <TabPanelPane>
-    active: React.PropTypes.bool, // True if this panel is the active one
-    children: React.PropTypes.node,
+    id: PropTypes.string.isRequired, // ID of the pane; not passed explicitly -- comes from `key` of <TabPanelPane>
+    active: PropTypes.bool, // True if this panel is the active one
+    children: PropTypes.node,
 };
 
 TabPanelPane.defaultProps = {
@@ -199,16 +200,16 @@ class TabPanel extends React.Component {
 }
 
 TabPanel.propTypes = {
-    tabs: React.PropTypes.object.isRequired, // Object with tab=>pane specifications
-    selectedTab: React.PropTypes.string, // key of tab to select (must provide handleTabClick) too.
-    addClasses: React.PropTypes.string, // Classes to add to navigation <ul>
-    moreComponents: React.PropTypes.object, // Other components to render in the tab bar
-    moreComponentsClasses: React.PropTypes.string, // Classes to add to moreComponents wrapper <div>
-    tabFlange: React.PropTypes.bool, // True to show a small full-width strip under active tab
-    decoration: React.PropTypes.object, // Component to render in the tab bar
-    decorationClasses: React.PropTypes.string, // CSS classes to wrap decoration in
-    handleTabClick: React.PropTypes.func, // If selectedTab is provided, then parent must keep track of it
-    children: React.PropTypes.node,
+    tabs: PropTypes.object.isRequired, // Object with tab=>pane specifications
+    selectedTab: PropTypes.string, // key of tab to select (must provide handleTabClick) too.
+    addClasses: PropTypes.string, // Classes to add to navigation <ul>
+    moreComponents: PropTypes.object, // Other components to render in the tab bar
+    moreComponentsClasses: PropTypes.string, // Classes to add to moreComponents wrapper <div>
+    tabFlange: PropTypes.bool, // True to show a small full-width strip under active tab
+    decoration: PropTypes.object, // Component to render in the tab bar
+    decorationClasses: PropTypes.string, // CSS classes to wrap decoration in
+    handleTabClick: PropTypes.func, // If selectedTab is provided, then parent must keep track of it
+    children: PropTypes.node,
 };
 
 TabPanel.defaultProps = {
@@ -241,9 +242,9 @@ class TabItem extends React.Component {
 }
 
 TabItem.propTypes = {
-    tab: React.PropTypes.string.isRequired, // Text of tab
-    handleClick: React.PropTypes.func, // Handle a click on the link
-    children: React.PropTypes.node,
+    tab: PropTypes.string.isRequired, // Text of tab
+    handleClick: PropTypes.func, // Handle a click on the link
+    children: PropTypes.node,
 };
 
 TabItem.defaultProps = {

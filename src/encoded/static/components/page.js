@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var moment = require('moment');
 var {Panel} = require('../libs/bootstrap/panel');
 var { PickerActions } = require('./search');
@@ -68,7 +69,7 @@ globals.listing_views.register(Listing, 'Page');
 // Display a list of keywords for the news article in the `post` prop.
 var NewsKeywordList = React.createClass({
     propTypes: {
-        post: React.PropTypes.object // News post Page object
+        post: PropTypes.object // News post Page object
     },
 
     render: function() {
@@ -92,11 +93,11 @@ var NewsKeywordList = React.createClass({
 // Display a list of news sharing links/buttons for the news article in the `post` prop.
 var NewsShareList = React.createClass({
     propTypes: {
-        post: React.PropTypes.object // News post Page object
+        post: PropTypes.object // News post Page object
     },
 
     contextTypes: {
-        location_href: React.PropTypes.string
+        location_href: PropTypes.string
     },
 
     render: function() {

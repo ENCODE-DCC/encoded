@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var globals = require('./globals');
 var url = require('url');
 
@@ -45,10 +46,10 @@ var Lightbox = module.exports.Lightbox = React.createClass({
 
 var Attachment = module.exports.Attachment = React.createClass({
     propTypes: {
-        context: React.PropTypes.object.isRequired, // Object within which the attachment is to be displayed
-        attachment: React.PropTypes.object, // Attachment object to display
-        className: React.PropTypes.string, // CSS class name to add to image element; '-img' added to it
-        show_link: React.PropTypes.bool // False to just display image preview without link or lightbox
+        context: PropTypes.object.isRequired, // Object within which the attachment is to be displayed
+        attachment: PropTypes.object, // Attachment object to display
+        className: PropTypes.string, // CSS class name to add to image element; '-img' added to it
+        show_link: PropTypes.bool // False to just display image preview without link or lightbox
     },
 
     // Handle a click on the lightbox trigger (thumbnail)
@@ -165,8 +166,8 @@ globals.content_views.register(Image, 'Image');
 // Displays a graphic badge for the award project.
 var ProjectBadge = module.exports.ProjectBadge = React.createClass({
     propTypes: {
-        award: React.PropTypes.object.isRequired, // Award whose project's badge we display
-        addClasses: React.PropTypes.string // Classes to add to image
+        award: PropTypes.object.isRequired, // Award whose project's badge we display
+        addClasses: PropTypes.string // Classes to add to image
     },
 
     projectMap: {

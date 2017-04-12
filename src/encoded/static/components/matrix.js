@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var color = require('color');
 var svgIcon = require('../libs/svg-icons').svgIcon;
 var globals = require('./globals');
@@ -37,9 +38,9 @@ var COLORS = [
 var Matrix = module.exports.Matrix = React.createClass({
 
     contextTypes: {
-        location_href: React.PropTypes.string,
-        navigate: React.PropTypes.func,
-        biosampleTypeColors: React.PropTypes.object // DataColor instance for experiment project
+        location_href: PropTypes.string,
+        navigate: PropTypes.func,
+        biosampleTypeColors: PropTypes.object // DataColor instance for experiment project
     },
 
     // Called when the Visualize button dropdown menu gets opened or closed. `dropdownEl` is the DOM node for the dropdown menu.

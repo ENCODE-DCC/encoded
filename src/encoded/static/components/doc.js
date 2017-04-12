@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var _ = require('underscore');
 var url = require('url');
 var panel = require('../libs/bootstrap/panel');
@@ -38,8 +39,8 @@ const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 
 var DocumentsPanel = module.exports.DocumentsPanel = React.createClass({
     propTypes: {
-        documentSpecs: React.PropTypes.array.isRequired, // List of document arrays and their titles
-        title: React.PropTypes.string // Title of the document panel
+        documentSpecs: PropTypes.array.isRequired, // List of document arrays and their titles
+        title: PropTypes.string // Title of the document panel
     },
 
     render: function() {
@@ -84,7 +85,7 @@ var DocumentsPanel = module.exports.DocumentsPanel = React.createClass({
 
 var DocumentsSubpanels = module.exports.DocumentsSubpanels = React.createClass({
     propTypes: {
-        documentSpec: React.PropTypes.object.isRequired // List of document arrays and their titles
+        documentSpec: PropTypes.object.isRequired // List of document arrays and their titles
     },
 
     render: function() {
@@ -151,7 +152,7 @@ var Document = module.exports.Document = React.createClass({
 // Document header component -- default
 var DocumentHeader = module.exports.DocumentHeader = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired // Document object to render
+        doc: PropTypes.object.isRequired // Document object to render
     },
 
     render: function() {
@@ -168,7 +169,7 @@ var DocumentHeader = module.exports.DocumentHeader = React.createClass({
 // Document caption component -- default
 var DocumentCaption = module.exports.DocumentCaption = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired // Document object to render
+        doc: PropTypes.object.isRequired // Document object to render
     },
 
     render: function() {
@@ -194,7 +195,7 @@ var DocumentCaption = module.exports.DocumentCaption = React.createClass({
 // Document preview component -- default
 var DocumentPreview = module.exports.DocumentPreview = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired // Document object to render
+        doc: PropTypes.object.isRequired // Document object to render
     },
 
     render: function() {
@@ -210,9 +211,9 @@ var DocumentPreview = module.exports.DocumentPreview = React.createClass({
 // Document file component -- default
 var DocumentFile = module.exports.DocumentFile = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired, // Document object to render
-        detailOpen: React.PropTypes.bool, // True if detail panel is visible
-        detailSwitch: React.PropTypes.func // Parent component function to call when detail switch clicked
+        doc: PropTypes.object.isRequired, // Document object to render
+        detailOpen: PropTypes.bool, // True if detail panel is visible
+        detailSwitch: PropTypes.func // Parent component function to call when detail switch clicked
     },
 
     render: function() {
@@ -251,9 +252,9 @@ var DocumentFile = module.exports.DocumentFile = React.createClass({
 // Document detail component -- default
 var DocumentDetail = module.exports.DocumentDetail = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired, // Document object to render
-        detailOpen: React.PropTypes.bool, // True if detail panel is visible
-        key: React.PropTypes.string // Unique key for identification
+        doc: PropTypes.object.isRequired, // Document object to render
+        detailOpen: PropTypes.bool, // True if detail panel is visible
+        key: PropTypes.string // Unique key for identification
     },
 
     render: function() {
@@ -316,7 +317,7 @@ globals.document_views.detail.register(DocumentDetail, 'Document');
 
 const QCAttachmentCaption = React.createClass({
     propTypes: {
-        title: React.PropTypes.string.isRequired, // Title to display for attachment
+        title: PropTypes.string.isRequired, // Title to display for attachment
     },
 
     render: function () {
@@ -336,8 +337,8 @@ const QCAttachmentCaption = React.createClass({
 
 const QCAttachmentPreview = React.createClass({
     propTypes: {
-        context: React.PropTypes.object.isRequired, // QC metric object that owns the attachment to render
-        attachment: React.PropTypes.object.isRequired, // Attachment to render
+        context: PropTypes.object.isRequired, // QC metric object that owns the attachment to render
+        attachment: PropTypes.object.isRequired, // Attachment to render
     },
 
     render: function () {
@@ -354,10 +355,10 @@ const QCAttachmentPreview = React.createClass({
 // Display a panel for attachments that aren't a part of an associated document
 const AttachmentPanel = module.exports.AttachmentPanel = React.createClass({
     propTypes: {
-        context: React.PropTypes.object.isRequired, // Object that owns the attachment; needed for attachment path
-        attachment: React.PropTypes.object.isRequired, // Attachment being rendered
-        title: React.PropTypes.string, // Title to display in the caption area
-        modal: React.PropTypes.bool, // `true` if attachments are displayed in a modal
+        context: PropTypes.object.isRequired, // Object that owns the attachment; needed for attachment path
+        attachment: PropTypes.object.isRequired, // Attachment being rendered
+        title: PropTypes.string, // Title to display in the caption area
+        modal: PropTypes.bool, // `true` if attachments are displayed in a modal
     },
 
     render: function () {

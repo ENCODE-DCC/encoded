@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 
 const maxFilesBrowsed = 5; // Maximum number of files to browse
@@ -245,16 +246,16 @@ function rAssemblyToSources(assembly, region) {
 
 const GenomeBrowser = React.createClass({
     propTypes: {
-        files: React.PropTypes.array.isRequired, // Array of files to represent
-        assembly: React.PropTypes.string.isRequired, // Assembly to use with browser
-        region: React.PropTypes.string, // Region to use with browser
-        visBlobs: React.PropTypes.object, // This should contain one or more vis_blobs for dataset(s)
-        limitFiles: React.PropTypes.bool, // True to limit # files to maxFilesBrowsed
+        files: PropTypes.array.isRequired, // Array of files to represent
+        assembly: PropTypes.string.isRequired, // Assembly to use with browser
+        region: PropTypes.string, // Region to use with browser
+        visBlobs: PropTypes.object, // This should contain one or more vis_blobs for dataset(s)
+        limitFiles: PropTypes.bool, // True to limit # files to maxFilesBrowsed
     },
 
     contextTypes: {
-        location_href: React.PropTypes.string,
-        localInstance: React.PropTypes.bool,
+        location_href: PropTypes.string,
+        localInstance: PropTypes.bool,
     },
 
     componentDidMount: function () {

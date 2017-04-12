@@ -59,6 +59,7 @@
 // }
 
 var React = require('react');
+import PropTypes from 'prop-types';
 var _ = require('underscore');
 var moment = require('moment');
 var panel = require('../libs/bootstrap/panel');
@@ -71,12 +72,12 @@ var {Panel, PanelHeading} = panel;
 var SortTablePanel = module.exports.SortTablePanel = React.createClass({
     propTypes: {
         // Note: `title` overrides `header`
-        title: React.PropTypes.oneOfType([ // Title to display in table panel header
-            React.PropTypes.string, // When title is a simple string
-            React.PropTypes.object // When title is JSX
+        title: PropTypes.oneOfType([ // Title to display in table panel header
+            PropTypes.string, // When title is a simple string
+            PropTypes.object // When title is JSX
         ]),
-        header: React.PropTypes.object, // React component to render inside header
-        noDefaultClasses: React.PropTypes.bool // T to skip default <Panel> classes
+        header: PropTypes.object, // React component to render inside header
+        noDefaultClasses: PropTypes.bool // T to skip default <Panel> classes
     },
 
     render: function() {
@@ -104,11 +105,11 @@ var SortTablePanel = module.exports.SortTablePanel = React.createClass({
 var SortTableComponent = module.exports.SortTableComponent = React.createClass({
     propTypes: {
         // Note: `title` overrides `header`
-        title: React.PropTypes.oneOfType([ // Title to display in table panel header
-            React.PropTypes.string, // When title is a simple string
-            React.PropTypes.object // When title is JSX
+        title: PropTypes.oneOfType([ // Title to display in table panel header
+            PropTypes.string, // When title is a simple string
+            PropTypes.object // When title is JSX
         ]),
-        header: React.PropTypes.object // React component to render inside header
+        header: PropTypes.object // React component to render inside header
     },
 
     render: function() {
@@ -134,16 +135,16 @@ var SortTableComponent = module.exports.SortTableComponent = React.createClass({
 // Displays one table within a <SortTablePanel></SortTablePanel>.
 var SortTable = module.exports.SortTable = React.createClass({
     propTypes: {
-        title: React.PropTypes.oneOfType([ // Title to display in table header
-            React.PropTypes.string, // When title is a simple string
-            React.PropTypes.object // When title is JSX
+        title: PropTypes.oneOfType([ // Title to display in table header
+            PropTypes.string, // When title is a simple string
+            PropTypes.object // When title is JSX
         ]),
-        list: React.PropTypes.array, // Array of objects to display in the table
-        columns: React.PropTypes.object.isRequired, // Defines the columns of the table
-        rowClasses: React.PropTypes.func, // If provided, gets called for each row of table to generate per-row CSS classes
-        sortColumn: React.PropTypes.string, // ID of column to sort by default; first column if not given
-        footer: React.PropTypes.object, // Optional component to display in the footer
-        collapsed: React.PropTypes.bool // T if only title bar should be displayed
+        list: PropTypes.array, // Array of objects to display in the table
+        columns: PropTypes.object.isRequired, // Defines the columns of the table
+        rowClasses: PropTypes.func, // If provided, gets called for each row of table to generate per-row CSS classes
+        sortColumn: PropTypes.string, // ID of column to sort by default; first column if not given
+        footer: PropTypes.object, // Optional component to display in the footer
+        collapsed: PropTypes.bool // T if only title bar should be displayed
     },
 
     getInitialState: function() {

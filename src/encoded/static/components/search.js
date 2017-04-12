@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var queryString = require('query-string');
 var button = require('../libs/bootstrap/button');
 var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
@@ -79,7 +80,7 @@ const listing = function (reactProps) {
 
 const PickerActions = module.exports.PickerActions = React.createClass ({
     contextTypes: {
-        actions: React.PropTypes.array,
+        actions: PropTypes.array,
     },
 
     render: function () {
@@ -131,8 +132,8 @@ globals.listing_views.register(Item, 'Item');
 // Display one antibody status indicator
 const StatusIndicator = React.createClass({
     propTypes: {
-        status: React.PropTypes.string,
-        terms: React.PropTypes.array,
+        status: PropTypes.string,
+        terms: PropTypes.array,
     },
 
     getInitialState: function () {
@@ -199,8 +200,8 @@ const StatusIndicator = React.createClass({
 // Display the status indicators for one target
 const StatusIndicators = React.createClass({
     propTypes: {
-        targetTree: React.PropTypes.object,
-        target: React.PropTypes.string,
+        targetTree: PropTypes.object,
+        target: PropTypes.string,
     },
 
     render: function () {
@@ -639,14 +640,14 @@ function countSelectedTerms(terms, facet, filters) {
 
 const Term = search.Term = React.createClass({
     propTypes: {
-        filters: React.PropTypes.array,
-        term: React.PropTypes.object,
-        title: React.PropTypes.string,
-        facet: React.PropTypes.object,
-        total: React.PropTypes.number,
-        canDeselect: React.PropTypes.bool,
-        searchBase: React.PropTypes.string,
-        onFilter: React.PropTypes.func,
+        filters: PropTypes.array,
+        term: PropTypes.object,
+        title: PropTypes.string,
+        facet: PropTypes.object,
+        total: PropTypes.number,
+        canDeselect: PropTypes.bool,
+        searchBase: PropTypes.string,
+        onFilter: PropTypes.func,
     },
 
     render: function () {
@@ -694,9 +695,9 @@ const Term = search.Term = React.createClass({
 
 const TypeTerm = search.TypeTerm = React.createClass({
     propTypes: {
-        term: React.PropTypes.object,
-        filters: React.PropTypes.array,
-        total: React.PropTypes.number,
+        term: PropTypes.object,
+        filters: PropTypes.array,
+        total: PropTypes.number,
     },
 
     render: function () {
@@ -716,9 +717,9 @@ const TypeTerm = search.TypeTerm = React.createClass({
 
 const Facet = search.Facet = React.createClass({
     propTypes: {
-        facet: React.PropTypes.object,
-        filters: React.PropTypes.array,
-        width: React.PropTypes.string,
+        facet: PropTypes.object,
+        filters: PropTypes.array,
+        width: PropTypes.string,
     },
 
     getDefaultProps: function () {
@@ -807,9 +808,9 @@ const Facet = search.Facet = React.createClass({
 
 const TextFilter = search.TextFilter = React.createClass({
     propTypes: {
-        filters: React.PropTypes.array,
-        searchBase: React.PropTypes.string,
-        onChange: React.PropTypes.func,
+        filters: PropTypes.array,
+        searchBase: PropTypes.string,
+        onChange: PropTypes.func,
     },
 
     onChange: function (e) {
@@ -860,19 +861,19 @@ const TextFilter = search.TextFilter = React.createClass({
 
 const FacetList = search.FacetList = React.createClass({
     propTypes: {
-        context: React.PropTypes.object,
-        facets: React.PropTypes.oneOfType([
-            React.PropTypes.array,
-            React.PropTypes.object,
+        context: PropTypes.object,
+        facets: PropTypes.oneOfType([
+            PropTypes.array,
+            PropTypes.object,
         ]),
-        filters: React.PropTypes.array,
-        mode: React.PropTypes.string,
-        orientation: React.PropTypes.string,
-        hideTextFilter: React.PropTypes.bool,
+        filters: PropTypes.array,
+        mode: PropTypes.string,
+        orientation: PropTypes.string,
+        hideTextFilter: PropTypes.bool,
     },
 
     contextTypes: {
-        session: React.PropTypes.object,
+        session: PropTypes.object,
     },
 
     getDefaultProps: function () {
@@ -942,7 +943,7 @@ const FacetList = search.FacetList = React.createClass({
 
 const BatchDownload = search.BatchDownload = React.createClass({
     propTypes: {
-        context: React.PropTypes.object,
+        context: PropTypes.object,
     },
 
     render: function () {
@@ -971,16 +972,16 @@ const BatchDownload = search.BatchDownload = React.createClass({
 
 const ResultTable = search.ResultTable = React.createClass({
     propTypes: {
-        context: React.PropTypes.object,
-        actions: React.PropTypes.array,
-        restrictions: React.PropTypes.object,
-        assemblies: React.PropTypes.array, // List of assemblies of all 'File' objects in search results
-        searchBase: React.PropTypes.string,
-        onChange: React.PropTypes.func,
-        mode: React.PropTypes.string,
+        context: PropTypes.object,
+        actions: PropTypes.array,
+        restrictions: PropTypes.object,
+        assemblies: PropTypes.array, // List of assemblies of all 'File' objects in search results
+        searchBase: PropTypes.string,
+        onChange: PropTypes.func,
+        mode: PropTypes.string,
     },
 
-    childContextTypes: { actions: React.PropTypes.array },
+    childContextTypes: { actions: PropTypes.array },
 
     getDefaultProps: function () {
         return {
@@ -1234,9 +1235,9 @@ const ResultTable = search.ResultTable = React.createClass({
 
 const ResultTableList = React.createClass({
     propTypes: {
-        results: React.PropTypes.array.isRequired, // Array of search results to display
-        columns: React.PropTypes.object.isRequired, // Columns from search results
-        tabbed: React.PropTypes.bool, // True if table is in a tab
+        results: PropTypes.array.isRequired, // Array of search results to display
+        columns: PropTypes.object.isRequired, // Columns from search results
+        tabbed: PropTypes.bool, // True if table is in a tab
     },
 
     render: function () {
@@ -1256,10 +1257,10 @@ const ResultTableList = React.createClass({
 // only gets displayed if the query string contains only one type and it's "File."
 const ResultBrowser = React.createClass({
     propTypes: {
-        files: React.PropTypes.array, // Array of files whose browser we're rendering
-        assembly: React.PropTypes.string, // Filter `files` by this assembly
-        datasets: React.PropTypes.array, // One or more '/dataset/ENCSRnnnXXX/' that files belong to
-        limitFiles: React.PropTypes.bool, // True to limit browsing to 20 files
+        files: PropTypes.array, // Array of files whose browser we're rendering
+        assembly: PropTypes.string, // Filter `files` by this assembly
+        datasets: PropTypes.array, // One or more '/dataset/ENCSRnnnXXX/' that files belong to
+        limitFiles: PropTypes.bool, // True to limit browsing to 20 files
     },
 
     render: function () {
@@ -1296,9 +1297,9 @@ const ResultBrowser = React.createClass({
 // Display a dropdown menu of the given assemblies.
 const AssemblyChooser = React.createClass({
     propTypes: {
-        assemblies: React.PropTypes.array, // Array of assemblies to include in the dropdown
-        currentAssembly: React.PropTypes.string, // Currently selected assembly
-        assemblyChange: React.PropTypes.func, // Function to call when the user chooses a new assembly
+        assemblies: PropTypes.array, // Array of assemblies to include in the dropdown
+        currentAssembly: PropTypes.string, // Currently selected assembly
+        assemblyChange: PropTypes.func, // Function to call when the user chooses a new assembly
     },
 
     render: function () {
@@ -1317,12 +1318,12 @@ const AssemblyChooser = React.createClass({
 
 const Search = search.Search = React.createClass({
     propTypes: {
-        context: React.PropTypes.object,
+        context: PropTypes.object,
     },
 
     contextTypes: {
-        location_href: React.PropTypes.string,
-        navigate: React.PropTypes.func,
+        location_href: PropTypes.string,
+        navigate: PropTypes.func,
     },
 
     render: function () {

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
@@ -17,8 +18,8 @@ import { BiosampleTable } from './typeutils';
 
 const HumanDonor = React.createClass({
     propTypes: {
-        context: React.PropTypes.object.isRequired, // Donor being displayed
-        biosample: React.PropTypes.object, // Biosample this donor is associated with
+        context: PropTypes.object.isRequired, // Donor being displayed
+        biosample: PropTypes.object, // Biosample this donor is associated with
     },
 
     render: function () {
@@ -130,8 +131,8 @@ globals.panel_views.register(HumanDonor, 'HumanDonor');
  */
 const DonorTable = React.createClass({
     propTypes: {
-        title: React.PropTypes.string, // Title to display in the title bar of the donor table
-        donors: React.PropTypes.array, // Array of donors to display in the table
+        title: PropTypes.string, // Title to display in the title bar of the donor table
+        donors: PropTypes.array, // Array of donors to display in the table
     },
 
     columns: {
@@ -176,8 +177,8 @@ const DonorTable = React.createClass({
 
 const MouseDonor = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // Mouse donor object being rendered
-        biosample: React.PropTypes.object, // Biosample object this donor belongs to
+        context: PropTypes.object, // Mouse donor object being rendered
+        biosample: PropTypes.object, // Biosample object this donor belongs to
     },
 
     render: function () {
@@ -315,8 +316,8 @@ globals.panel_views.register(MouseDonor, 'MouseDonor');
 
 const FlyWormDonor = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // Mouse donor object being rendered
-        biosample: React.PropTypes.object, // Biosample object this donor belongs to
+        context: PropTypes.object, // Mouse donor object being rendered
+        biosample: PropTypes.object, // Biosample object this donor belongs to
     },
 
     render: function () {
@@ -433,11 +434,11 @@ globals.panel_views.register(FlyWormDonor, 'WormDonor');
 // This component activates for any donors that aren't any of the above registered types.
 const Donor = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // Donor being rendered
+        context: PropTypes.object, // Donor being rendered
     },
 
     contextTypes: {
-        session: React.PropTypes.object, // Login information
+        session: PropTypes.object, // Login information
     },
 
     getInitialState: function () {

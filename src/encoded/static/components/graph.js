@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { Panel } from '../libs/bootstrap/panel';
 import { BrowserFeat } from './browserfeat';
@@ -154,10 +155,10 @@ export class JsonGraph {
 
 export const Graph = React.createClass({
     propTypes: {
-        graph: React.PropTypes.object, // JSON graph object to render
-        nodeClickHandler: React.PropTypes.func, // Function to call to handle clicks in a node
-        noDefaultClasses: React.PropTypes.bool, // True to supress default CSS classes on <Panel> components
-        children: React.PropTypes.node,
+        graph: PropTypes.object, // JSON graph object to render
+        nodeClickHandler: PropTypes.func, // Function to call to handle clicks in a node
+        noDefaultClasses: PropTypes.bool, // True to supress default CSS classes on <Panel> components
+        children: PropTypes.node,
     },
 
     getInitialState: () => ({

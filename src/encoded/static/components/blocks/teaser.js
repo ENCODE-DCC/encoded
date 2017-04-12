@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var fetched = require('../fetched');
 var globals = require('../globals');
 var item = require('./item');
@@ -76,7 +77,7 @@ var TeaserBlockView = React.createClass({
 var RichEditor = React.createClass({
 
     childContextTypes: {
-        editable: React.PropTypes.bool
+        editable: PropTypes.bool
     },
 
     getChildContext: function() {

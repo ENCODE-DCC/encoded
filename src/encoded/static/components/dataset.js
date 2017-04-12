@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { DropdownButton } from '../libs/bootstrap/button';
@@ -51,12 +52,12 @@ function breakSetName(name) {
 // Display Annotation page, a subtype of Dataset.
 const AnnotationComponent = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // Annotation being displayed
+        context: PropTypes.object, // Annotation being displayed
     },
 
     contextTypes: {
-        session: React.PropTypes.object, // Login session information
-        session_properties: React.PropTypes.object,
+        session: PropTypes.object, // Login session information
+        session_properties: PropTypes.object,
     },
 
     render: function () {
@@ -266,12 +267,12 @@ globals.content_views.register(Annotation, 'Annotation');
 // Display Annotation page, a subtype of Dataset.
 const PublicationDataComponent = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // PublicationData object to display
+        context: PropTypes.object, // PublicationData object to display
     },
 
     contextTypes: {
-        session: React.PropTypes.object, // Login session information
-        session_properties: React.PropTypes.object,
+        session: PropTypes.object, // Login session information
+        session_properties: PropTypes.object,
     },
 
     render: function () {
@@ -428,12 +429,12 @@ globals.content_views.register(PublicationData, 'PublicationData');
 // Display Annotation page, a subtype of Dataset.
 const ReferenceComponent = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // Reference object to display
+        context: PropTypes.object, // Reference object to display
     },
 
     contextTypes: {
-        session: React.PropTypes.object, // Login session information
-        session_properties: React.PropTypes.object,
+        session: PropTypes.object, // Login session information
+        session_properties: PropTypes.object,
     },
 
     render: function () {
@@ -590,12 +591,12 @@ globals.content_views.register(Reference, 'Reference');
 // Display Annotation page, a subtype of Dataset.
 const ProjectComponent = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // Project object to display
+        context: PropTypes.object, // Project object to display
     },
 
     contextTypes: {
-        session: React.PropTypes.object, // Login session information
-        session_properties: React.PropTypes.object,
+        session: PropTypes.object, // Login session information
+        session_properties: PropTypes.object,
     },
 
     render: function () {
@@ -776,12 +777,12 @@ globals.content_views.register(Project, 'Project');
 // Display Annotation page, a subtype of Dataset.
 const UcscBrowserCompositeComponent = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // UCSC browser composite object to display
+        context: PropTypes.object, // UCSC browser composite object to display
     },
 
     contextTypes: {
-        session: React.PropTypes.object, // Login session information
-        session_properties: React.PropTypes.object,
+        session: PropTypes.object, // Login session information
+        session_properties: PropTypes.object,
     },
 
     render: function () {
@@ -947,7 +948,7 @@ globals.content_views.register(UcscBrowserComposite, 'UcscBrowserComposite');
 
 export const FilePanelHeader = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // Object being displayed
+        context: PropTypes.object, // Object being displayed
     },
 
     render: function () {
@@ -1224,12 +1225,12 @@ const organismDevelopmentSeriesTableColumns = {
 
 export const SeriesComponent = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // Series object to display
+        context: PropTypes.object, // Series object to display
     },
 
     contextTypes: {
-        session: React.PropTypes.object,
-        session_properties: React.PropTypes.object,
+        session: PropTypes.object,
+        session_properties: PropTypes.object,
     },
 
     // Map series @id to title and table columns
@@ -1459,9 +1460,9 @@ globals.content_views.register(Series, 'Series');
 // Display a count of experiments in the footer, with a link to the corresponding search if needed
 const ExperimentTableFooter = React.createClass({
     propTypes: {
-        items: React.PropTypes.array, // Array of experiments that were displayed in the table
-        total: React.PropTypes.number, // Total number of experiments
-        url: React.PropTypes.string, // URL to link to equivalent experiment search results
+        items: PropTypes.array, // Array of experiments that were displayed in the table
+        total: PropTypes.number, // Total number of experiments
+        url: PropTypes.string, // URL to link to equivalent experiment search results
     },
 
     render: function () {
@@ -1479,13 +1480,13 @@ const ExperimentTableFooter = React.createClass({
 
 export const ExperimentTable = React.createClass({
     propTypes: {
-        items: React.PropTypes.array, // List of experiments to display in the table
-        limit: React.PropTypes.number, // Maximum number of experiments to display in the table
-        total: React.PropTypes.number, // Total number of experiments
-        url: React.PropTypes.string, // URI to go to equivalent search results
-        title: React.PropTypes.oneOfType([ // Title for the table of experiments; can be string or component
-            React.PropTypes.string,
-            React.PropTypes.node,
+        items: PropTypes.array, // List of experiments to display in the table
+        limit: PropTypes.number, // Maximum number of experiments to display in the table
+        total: PropTypes.number, // Total number of experiments
+        url: PropTypes.string, // URI to go to equivalent search results
+        title: PropTypes.oneOfType([ // Title for the table of experiments; can be string or component
+            PropTypes.string,
+            PropTypes.node,
         ]),
     },
 

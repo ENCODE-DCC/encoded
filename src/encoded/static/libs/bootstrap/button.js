@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var {DropdownMenu} = require('./dropdown-menu');
 
 
@@ -19,10 +20,10 @@ var {DropdownMenu} = require('./dropdown-menu');
 
 var DropdownButton = module.exports.DropdownButton = React.createClass({
     propTypes: {
-        title: React.PropTypes.string.isRequired, // Title of the trigger button
-        label: React.PropTypes.string.isRequired, // id (unique in doc) for this button
-        disabled: React.PropTypes.bool, // True to disable button
-        wrapperClasses: React.PropTypes.string // Classes to add to wrapper div
+        title: PropTypes.string.isRequired, // Title of the trigger button
+        label: PropTypes.string.isRequired, // id (unique in doc) for this button
+        disabled: PropTypes.bool, // True to disable button
+        wrapperClasses: PropTypes.string // Classes to add to wrapper div
     },
 
     getInitialState: function() {

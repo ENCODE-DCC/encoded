@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var url = require('url');
 var {Navbars, Navbar, Nav, NavItem} = require('../libs/bootstrap/navbar');
 var {DropdownMenu, DropdownMenuSep} = require('../libs/bootstrap/dropdown-menu');
@@ -11,8 +12,8 @@ var Navigation = module.exports = React.createClass({
     mixins: [Navbars],
 
     contextTypes: {
-        location_href: React.PropTypes.string,
-        portal: React.PropTypes.object
+        location_href: PropTypes.string,
+        portal: PropTypes.object
     },
 
     getInitialState: function() {
@@ -68,7 +69,7 @@ var Navigation = module.exports = React.createClass({
 // Main navigation menus
 var GlobalSections = React.createClass({
     contextTypes: {
-        listActionsFor: React.PropTypes.func
+        listActionsFor: PropTypes.func
     },
 
     render: function() {
@@ -103,7 +104,7 @@ var GlobalSections = React.createClass({
 // Context actions: mainly for editing the current object
 var ContextActions = React.createClass({
     contextTypes: {
-        listActionsFor: React.PropTypes.func
+        listActionsFor: PropTypes.func
     },
 
     render: function() {
@@ -140,7 +141,7 @@ var ContextActions = React.createClass({
 
 var Search = React.createClass({
     contextTypes: {
-        location_href: React.PropTypes.string
+        location_href: PropTypes.string
     },
 
     render: function() {
@@ -160,8 +161,8 @@ var Search = React.createClass({
 
 var UserActions = React.createClass({
     contextTypes: {
-        listActionsFor: React.PropTypes.func,
-        session_properties: React.PropTypes.object
+        listActionsFor: PropTypes.func,
+        session_properties: PropTypes.object
     },
 
     render: function() {
@@ -202,8 +203,8 @@ var UserActions = React.createClass({
 // }
 var Breadcrumbs = module.exports.Breadcrumbs = React.createClass({
     propTypes: {
-        root: React.PropTypes.string, // Root URI for searches
-        crumbs: React.PropTypes.arrayOf(React.PropTypes.object).isRequired // Object with breadcrumb contents
+        root: PropTypes.string, // Root URI for searches
+        crumbs: PropTypes.arrayOf(PropTypes.object).isRequired // Object with breadcrumb contents
     },
 
     render: function() {

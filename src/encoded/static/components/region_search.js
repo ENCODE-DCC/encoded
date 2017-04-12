@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var panel = require('../libs/bootstrap/panel');
 var globals = require('./globals');
 var fetched = require('./fetched');
@@ -73,10 +74,10 @@ var AdvSearch = React.createClass({
     },
 
     contextTypes: {
-        autocompleteTermChosen: React.PropTypes.bool,
-        autocompleteHidden: React.PropTypes.bool,
-        onAutocompleteHiddenChange: React.PropTypes.func,
-        location_href: React.PropTypes.string
+        autocompleteTermChosen: PropTypes.bool,
+        autocompleteHidden: PropTypes.bool,
+        onAutocompleteHiddenChange: PropTypes.func,
+        location_href: PropTypes.string
     },
 
     handleDiscloseClick: function(e) {
@@ -169,8 +170,8 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         e.preventDefault();
     },
     contextTypes: {
-        location_href: React.PropTypes.string,
-        navigate: React.PropTypes.func
+        location_href: PropTypes.string,
+        navigate: PropTypes.func
     },
     render: function() {
         const visualizeLimit = 100;

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'underscore';
 import moment from 'moment';
 import globals from './globals';
@@ -50,20 +51,20 @@ function fileAccessionSort(a, b) {
 
 export const FileTable = React.createClass({
     propTypes: {
-        items: React.PropTypes.array.isRequired, // Array of files to appear in the table
-        graphedFiles: React.PropTypes.object, // Specifies which files are in the graph
-        filePanelHeader: React.PropTypes.object, // Table header component
-        encodevers: React.PropTypes.string, // ENCODE version of the experiment
-        selectedFilterValue: React.PropTypes.string, // Selected filter from popup menu
-        filterOptions: React.PropTypes.array, // Array of assambly/annotation from file array
-        handleFilterChange: React.PropTypes.func, // Called when user changes filter
-        anisogenic: React.PropTypes.bool, // True if experiment is anisogenic
-        showFileCount: React.PropTypes.bool, // True to show count of files in table
-        setInfoNodeId: React.PropTypes.func, // Function to call to set the currently selected node ID
-        setInfoNodeVisible: React.PropTypes.func, // Function to call to set the visibility of the node's modal
-        session: React.PropTypes.object, // Persona user session
-        adminUser: React.PropTypes.bool, // True if user is an admin user
-        noDefaultClasses: React.PropTypes.bool, // True to strip SortTable panel of default CSS classes
+        items: PropTypes.array.isRequired, // Array of files to appear in the table
+        graphedFiles: PropTypes.object, // Specifies which files are in the graph
+        filePanelHeader: PropTypes.object, // Table header component
+        encodevers: PropTypes.string, // ENCODE version of the experiment
+        selectedFilterValue: PropTypes.string, // Selected filter from popup menu
+        filterOptions: PropTypes.array, // Array of assambly/annotation from file array
+        handleFilterChange: PropTypes.func, // Called when user changes filter
+        anisogenic: PropTypes.bool, // True if experiment is anisogenic
+        showFileCount: PropTypes.bool, // True to show count of files in table
+        setInfoNodeId: PropTypes.func, // Function to call to set the currently selected node ID
+        setInfoNodeVisible: PropTypes.func, // Function to call to set the visibility of the node's modal
+        session: PropTypes.object, // Persona user session
+        adminUser: PropTypes.bool, // True if user is an admin user
+        noDefaultClasses: PropTypes.bool, // True to strip SortTable panel of default CSS classes
     },
 
     getInitialState: function () {
@@ -387,8 +388,8 @@ function sortBioReps(a, b) {
 
 const RawSequencingTable = React.createClass({
     propTypes: {
-        files: React.PropTypes.array, // Raw files to display
-        meta: React.PropTypes.object, // Extra metadata in the same format passed to SortTable
+        files: PropTypes.array, // Raw files to display
+        meta: PropTypes.object, // Extra metadata in the same format passed to SortTable
     },
 
     getInitialState: function () {
@@ -610,8 +611,8 @@ const RawSequencingTable = React.createClass({
 
 const RawFileTable = React.createClass({
     propTypes: {
-        files: React.PropTypes.array, // Raw sequencing files to display
-        meta: React.PropTypes.object, // Extra metadata in the same format passed to SortTable
+        files: PropTypes.array, // Raw sequencing files to display
+        meta: PropTypes.object, // Extra metadata in the same format passed to SortTable
     },
 
     getInitialState: function () {
@@ -783,7 +784,7 @@ const RawFileTable = React.createClass({
 // unreleased files.
 export const DatasetFiles = React.createClass({
     propTypes: {
-        items: React.PropTypes.array, // Array of files retrieved
+        items: PropTypes.array, // Array of files retrieved
     },
 
     render: function () {
@@ -804,16 +805,16 @@ export const DatasetFiles = React.createClass({
 // to the experiment URL, but they apply to the file search -- not the experiment itself.
 export const FileGallery = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // Dataset object whose files we're rendering
-        encodevers: React.PropTypes.string, // ENCODE version number
-        anisogenic: React.PropTypes.bool, // True if anisogenic experiment
-        hideGraph: React.PropTypes.bool, // T to hide graph display
-        altFilterDefault: React.PropTypes.bool, // T to default to All Assemblies and Annotations
+        context: PropTypes.object, // Dataset object whose files we're rendering
+        encodevers: PropTypes.string, // ENCODE version number
+        anisogenic: PropTypes.bool, // True if anisogenic experiment
+        hideGraph: PropTypes.bool, // T to hide graph display
+        altFilterDefault: PropTypes.bool, // T to default to All Assemblies and Annotations
     },
 
     contextTypes: {
-        session: React.PropTypes.object, // Login information
-        location_href: React.PropTypes.string, // URL of this experiment page, including query string stuff
+        session: PropTypes.object, // Login information
+        location_href: PropTypes.string, // URL of this experiment page, including query string stuff
     },
 
     render: function () {
@@ -1339,17 +1340,17 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
 // the displayed experiment) return.
 const FileGalleryRenderer = React.createClass({
     propTypes: {
-        context: React.PropTypes.object, // Dataset whose files we're rendering
-        data: React.PropTypes.object, // File data retrieved from search request
-        schemas: React.PropTypes.object, // Schemas for the entire system; used for QC property titles
-        hideGraph: React.PropTypes.bool, // T to hide graph display
-        altFilterDefault: React.PropTypes.bool, // T to default to All Assemblies and Annotations
+        context: PropTypes.object, // Dataset whose files we're rendering
+        data: PropTypes.object, // File data retrieved from search request
+        schemas: PropTypes.object, // Schemas for the entire system; used for QC property titles
+        hideGraph: PropTypes.bool, // T to hide graph display
+        altFilterDefault: PropTypes.bool, // T to default to All Assemblies and Annotations
     },
 
     contextTypes: {
-        session: React.PropTypes.object,
-        session_properties: React.PropTypes.object,
-        location_href: React.PropTypes.string,
+        session: PropTypes.object,
+        session_properties: PropTypes.object,
+        location_href: PropTypes.string,
     },
 
     getInitialState: function () {
@@ -1509,12 +1510,12 @@ const FileGalleryRenderer = React.createClass({
 
 const CollapsingTitle = React.createClass({
     propTypes: {
-        title: React.PropTypes.string.isRequired, // Title to display in the title bar
-        handleCollapse: React.PropTypes.func.isRequired, // Function to call to handle click in collapse button
-        selectedFilterValue: React.PropTypes.string, // Currently selected filter
-        filterOptions: React.PropTypes.array, // Array of filtering options
-        handleFilterChange: React.PropTypes.func, // Function to call when filter menu item is chosen
-        collapsed: React.PropTypes.bool, // T if the panel this is over has been collapsed
+        title: PropTypes.string.isRequired, // Title to display in the title bar
+        handleCollapse: PropTypes.func.isRequired, // Function to call to handle click in collapse button
+        selectedFilterValue: PropTypes.string, // Currently selected filter
+        filterOptions: PropTypes.array, // Array of filtering options
+        handleFilterChange: PropTypes.func, // Function to call when filter menu item is chosen
+        collapsed: PropTypes.bool, // T if the panel this is over has been collapsed
     },
 
     render: function () {
@@ -1541,9 +1542,9 @@ const CollapsingTitle = React.createClass({
 // value of each <option> is its zero-based index.
 const FilterMenu = React.createClass({
     propTypes: {
-        selectedFilterValue: React.PropTypes.string, // Currently selected filter
-        filterOptions: React.PropTypes.array.isRequired, // Contents of the filtering menu
-        handleFilterChange: React.PropTypes.func.isRequired, // Call when a filtering option changes
+        selectedFilterValue: PropTypes.string, // Currently selected filter
+        filterOptions: PropTypes.array.isRequired, // Contents of the filtering menu
+        handleFilterChange: PropTypes.func.isRequired, // Call when a filtering option changes
     },
 
     render: function () {
@@ -1644,19 +1645,19 @@ function coalescedDetailsView(node) {
 
 const FileGraphComponent = React.createClass({
     propTypes: {
-        items: React.PropTypes.array, // Array of files we're graphing
-        graph: React.PropTypes.object, // JsonGraph object generated from files
-        selectedAssembly: React.PropTypes.string, // Currently selected assembly
-        selectedAnnotation: React.PropTypes.string, // Currently selected annotation
-        setInfoNodeId: React.PropTypes.func, // Function to call to set the currently selected node ID
-        setInfoNodeVisible: React.PropTypes.func, // Function to call to set the visibility of the node's modal
-        infoNodeId: React.PropTypes.string, // ID of selected node in graph
-        infoNodeVisible: React.PropTypes.bool, // True if node's modal is vibible
-        schemas: React.PropTypes.object, // System-wide schemas
-        session: React.PropTypes.object, // Current user's login information
-        adminUser: React.PropTypes.bool, // True if logged in user is an admin
-        auditIndicators: React.PropTypes.func, // Inherited from auditDecor HOC
-        auditDetail: React.PropTypes.func, // Inherited from auditDecor HOC
+        items: PropTypes.array, // Array of files we're graphing
+        graph: PropTypes.object, // JsonGraph object generated from files
+        selectedAssembly: PropTypes.string, // Currently selected assembly
+        selectedAnnotation: PropTypes.string, // Currently selected annotation
+        setInfoNodeId: PropTypes.func, // Function to call to set the currently selected node ID
+        setInfoNodeVisible: PropTypes.func, // Function to call to set the visibility of the node's modal
+        infoNodeId: PropTypes.string, // ID of selected node in graph
+        infoNodeVisible: PropTypes.bool, // True if node's modal is vibible
+        schemas: PropTypes.object, // System-wide schemas
+        session: PropTypes.object, // Current user's login information
+        adminUser: PropTypes.bool, // True if logged in user is an admin
+        auditIndicators: PropTypes.func, // Inherited from auditDecor HOC
+        auditDetail: PropTypes.func, // Inherited from auditDecor HOC
     },
 
     getInitialState: function () {
@@ -1824,9 +1825,9 @@ const FileGraph = auditDecor(FileGraphComponent);
 // Display a QC button in the file modal.
 const FileQCButton = React.createClass({
     propTypes: {
-        qc: React.PropTypes.object.isRequired, // QC object we're directing to
-        file: React.PropTypes.object.isRequired, // File this QC object is attached to
-        handleClick: React.PropTypes.func.isRequired, // Function to open a modal to the given object
+        qc: PropTypes.object.isRequired, // QC object we're directing to
+        file: PropTypes.object.isRequired, // File this QC object is attached to
+        handleClick: PropTypes.func.isRequired, // Function to open a modal to the given object
     },
 
     handleClick: function () {

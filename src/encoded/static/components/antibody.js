@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var url = require('url');
 var _ = require('underscore');
 import { auditDecor } from './audit';
@@ -336,7 +337,7 @@ const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 // Document header component -- antibody characterization
 var CharacterizationHeader = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired // Document object to render
+        doc: PropTypes.object.isRequired // Document object to render
     },
 
     render: function() {
@@ -362,7 +363,7 @@ var CharacterizationHeader = React.createClass({
 // Document caption component -- antibody characterization
 var CharacterizationCaption = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired // Document object to render
+        doc: PropTypes.object.isRequired // Document object to render
     },
 
     render: function() {
@@ -383,9 +384,9 @@ var CharacterizationCaption = React.createClass({
 
 var CharacterizationFile = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired, // Document object to render
-        detailOpen: React.PropTypes.bool, // True if detail panel is visible
-        detailSwitch: React.PropTypes.func // Parent component function to call when detail switch clicked
+        doc: PropTypes.object.isRequired, // Document object to render
+        detailOpen: PropTypes.bool, // True if detail panel is visible
+        detailSwitch: PropTypes.func // Parent component function to call when detail switch clicked
     },
 
     render: function() {
@@ -410,9 +411,9 @@ var CharacterizationFile = React.createClass({
 
 var CharacterizationDetail = React.createClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired, // Document object to render
-        detailOpen: React.PropTypes.bool, // True if detail panel is visible
-        key: React.PropTypes.string // Unique key for identification
+        doc: PropTypes.object.isRequired, // Document object to render
+        detailOpen: PropTypes.bool, // True if detail panel is visible
+        key: PropTypes.string // Unique key for identification
     },
 
     render: function() {

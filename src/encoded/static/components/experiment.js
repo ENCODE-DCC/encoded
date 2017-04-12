@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var panel = require('../libs/bootstrap/panel');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
@@ -59,8 +60,8 @@ var PanelLookup = function (props) {
 
 var ExperimentComponent = React.createClass({
     contextTypes: {
-        session: React.PropTypes.object,
-        session_properties: React.PropTypes.object,
+        session: PropTypes.object,
+        session_properties: PropTypes.object,
     },
 
     render: function() {
@@ -533,8 +534,8 @@ globals.content_views.register(Experiment, 'Experiment');
 // Display the table of replicates
 var ReplicateTable = React.createClass({
     propTypes: {
-        condensedReplicates: React.PropTypes.array.isRequired, // Condensed 'array' of replicate objects
-        replicationType: React.PropTypes.string // Type of replicate so we can tell what's isongenic/anisogenic/whatnot
+        condensedReplicates: PropTypes.array.isRequired, // Condensed 'array' of replicate objects
+        replicationType: PropTypes.string // Type of replicate so we can tell what's isongenic/anisogenic/whatnot
     },
 
     replicateColumns: {
@@ -787,7 +788,7 @@ var AssayDetails = function (replicates, libraryValues, librarySpecials, library
 // Display a list of datasets related to the experiment
 var RelatedSeriesList = React.createClass({
     propTypes: {
-        seriesList: React.PropTypes.array.isRequired // Array of Series dataset objects to display
+        seriesList: PropTypes.array.isRequired // Array of Series dataset objects to display
     },
 
     getInitialState: function() {
@@ -850,10 +851,10 @@ var RelatedSeriesList = React.createClass({
 // Display a one dataset related to the experiment
 var RelatedSeriesItem = React.createClass({
     propTypes: {
-        series: React.PropTypes.object.isRequired, // Series object to display
-        detailOpen: React.PropTypes.bool, // TRUE to open the series' detail tooltip
-        handleInfoClick: React.PropTypes.func, // Function to call to handle click in info icon
-        handleInfoHover: React.PropTypes.func // Function to call when mouse enters or leaves info icon
+        series: PropTypes.object.isRequired, // Series object to display
+        detailOpen: PropTypes.bool, // TRUE to open the series' detail tooltip
+        handleInfoClick: PropTypes.func, // Function to call to handle click in info icon
+        handleInfoHover: PropTypes.func // Function to call when mouse enters or leaves info icon
     },
 
     getInitialState: function() {

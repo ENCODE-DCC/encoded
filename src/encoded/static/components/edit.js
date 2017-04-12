@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var globals = require('./globals');
 var fetched = require('./fetched');
 var _ = require('underscore');
@@ -47,8 +48,8 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
 
 var EditForm = module.exports.EditForm = React.createClass({
     contextTypes: {
-        fetch: React.PropTypes.func,
-        navigate: React.PropTypes.func
+        fetch: PropTypes.func,
+        navigate: PropTypes.func
     },
 
     render: function () {

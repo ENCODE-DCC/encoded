@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
@@ -26,7 +27,7 @@ const GM_TECHNIQUE_MAP = {
 
 const GeneticModificationCharacterizations = React.createClass({
     propTypes: {
-        characterizations: React.PropTypes.array.isRequired, // Genetic modificiation characterizations to display
+        characterizations: PropTypes.array.isRequired, // Genetic modificiation characterizations to display
     },
 
     render: function () {
@@ -65,9 +66,9 @@ function geneticModificationTechniques(techniques) {
 
 export const GeneticModificationComponent = React.createClass({
     propTypes: {
-        context: React.PropTypes.object.isRequired, // GM object being displayed
-        auditIndicators: React.PropTypes.func.isRequired, // Audit HOC function to display audit indicators
-        auditDetail: React.PropTypes.func.isRequired, // Audit HOC function to display audit details
+        context: PropTypes.object.isRequired, // GM object being displayed
+        auditIndicators: PropTypes.func.isRequired, // Audit HOC function to display audit indicators
+        auditDetail: PropTypes.func.isRequired, // Audit HOC function to display audit details
     },
 
     render: function () {
@@ -304,7 +305,7 @@ globals.content_views.register(GeneticModification, 'GeneticModification');
 
 const GMAttachmentCaption = React.createClass({
     propTypes: {
-        title: React.PropTypes.string.isRequired, // Title to display for attachment
+        title: PropTypes.string.isRequired, // Title to display for attachment
     },
 
     render: function () {
@@ -324,8 +325,8 @@ const GMAttachmentCaption = React.createClass({
 
 const GMAttachmentPreview = React.createClass({
     propTypes: {
-        context: React.PropTypes.object.isRequired, // QC metric object that owns the attachment to render
-        attachment: React.PropTypes.object.isRequired, // Attachment to render
+        context: PropTypes.object.isRequired, // QC metric object that owns the attachment to render
+        attachment: PropTypes.object.isRequired, // Attachment to render
     },
 
     render: function () {
@@ -350,7 +351,7 @@ globals.document_views.preview.register(GMAttachmentPreview, 'GeneticModificatio
 // Display modification technique specific to the CRISPR type.
 const TechniqueCrispr = React.createClass({
     propTypes: {
-        context: React.PropTypes.object.isRequired, // CRISPR genetic modificiation technique to display
+        context: PropTypes.object.isRequired, // CRISPR genetic modificiation technique to display
     },
 
     render: function () {
@@ -413,7 +414,7 @@ globals.panel_views.register(TechniqueCrispr, 'Crispr');
 // Display modification technique specific to the TALE type.
 const TechniqueTale = React.createClass({
     propTypes: {
-        context: React.PropTypes.object.isRequired, // TALE genetic modificiation technique to display
+        context: PropTypes.object.isRequired, // TALE genetic modificiation technique to display
     },
 
     render: function () {
@@ -479,9 +480,9 @@ globals.panel_views.register(TechniqueTale, 'Tale');
 // Display a panel for attachments that aren't a part of an associated document
 export const AttachmentPanel = React.createClass({
     propTypes: {
-        context: React.PropTypes.object.isRequired, // Object that owns the attachment; needed for attachment path
-        attachment: React.PropTypes.object.isRequired, // Attachment being rendered
-        title: React.PropTypes.string, // Title to display in the caption area
+        context: PropTypes.object.isRequired, // Object that owns the attachment; needed for attachment path
+        attachment: PropTypes.object.isRequired, // Attachment being rendered
+        title: PropTypes.string, // Title to display in the caption area
     },
 
     getDefaultProps: function () {
@@ -534,9 +535,9 @@ export const AttachmentPanel = React.createClass({
 
 const ListingComponent = React.createClass({
     propTypes: {
-        context: React.PropTypes.object.isRequired, // Search results object
-        auditDetail: React.PropTypes.func.isRequired, // Audit HOC function to show audit details
-        auditIndicators: React.PropTypes.func.isRequired, // Audit HOC function to display audit indicators
+        context: PropTypes.object.isRequired, // Search results object
+        auditDetail: PropTypes.func.isRequired, // Audit HOC function to show audit details
+        auditIndicators: PropTypes.func.isRequired, // Audit HOC function to display audit indicators
     },
 
     render: function () {
@@ -639,7 +640,7 @@ export const calcGMSummarySentence = _.memoize(rCalcGMSummarySentence, gm => gm.
 // before calling this component.
 export const GeneticModificationSummary = React.createClass({
     propTypes: {
-        geneticModifications: React.PropTypes.array.isRequired, // Array of genetic modifications
+        geneticModifications: PropTypes.array.isRequired, // Array of genetic modifications
     },
 
     render: function () {
@@ -689,8 +690,8 @@ export const GeneticModificationSummary = React.createClass({
 // treatments. A group is an array of GM objects.
 export const GeneticModificationGroup = React.createClass({
     propTypes: {
-        groupSentence: React.PropTypes.string.isRequired, // GM group detail sentence to display
-        gms: React.PropTypes.array.isRequired, // GM objects to display within a group
+        groupSentence: PropTypes.string.isRequired, // GM group detail sentence to display
+        gms: PropTypes.array.isRequired, // GM objects to display within a group
     },
 
     getInitialState: function () {

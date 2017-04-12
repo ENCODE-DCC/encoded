@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
@@ -136,10 +137,10 @@ export function qcIdToDisplay(qc) {
 // The modal and actuator for the quality metrics modal.
 const QualityMetricsModal = React.createClass({
     propTypes: {
-        qc: React.PropTypes.object, // QC object we're displaying
-        file: React.PropTypes.object, // File this QC object belongs to
-        qcSchema: React.PropTypes.object, // Schema specifically for the given qc object
-        genericQCSchema: React.PropTypes.object, // Generic quality metrics schema
+        qc: PropTypes.object, // QC object we're displaying
+        file: PropTypes.object, // File this QC object belongs to
+        qcSchema: PropTypes.object, // Schema specifically for the given qc object
+        genericQCSchema: PropTypes.object, // Generic quality metrics schema
     },
 
     render: function () {
@@ -166,8 +167,8 @@ const QualityMetricsModal = React.createClass({
 // from it, then renders the resulting QC panel.
 export const QualityMetricsPanel = React.createClass({
     propTypes: {
-        qcMetrics: React.PropTypes.array.isRequired, // Array of quality metrics objects to display
-        file: React.PropTypes.object.isRequired, // File whose QC objects are being displayed
+        qcMetrics: PropTypes.array.isRequired, // Array of quality metrics objects to display
+        file: PropTypes.object.isRequired, // File whose QC objects are being displayed
     },
 
     render: function () {
@@ -184,9 +185,9 @@ export const QualityMetricsPanel = React.createClass({
 // Draw the collapse trigger at the bottom of the QC panel
 const ExpandTrigger = React.createClass({
     propTypes: {
-        expanded: React.PropTypes.bool.isRequired, // True if the panel this trigger controls is expanded
-        clickHandler: React.PropTypes.func.isRequired, // Function to call to handle a click in the trigger
-        id: React.PropTypes.string.isRequired, // ID of the panel this trigger controls
+        expanded: PropTypes.bool.isRequired, // True if the panel this trigger controls is expanded
+        clickHandler: PropTypes.func.isRequired, // Function to call to handle a click in the trigger
+        id: PropTypes.string.isRequired, // ID of the panel this trigger controls
     },
 
     // Handle a click anywhere in the trigger button.
@@ -208,9 +209,9 @@ const ExpandTrigger = React.createClass({
 // Display the data for a QC object as a <dl>
 const QCDataDisplay = React.createClass({
     propTypes: {
-        qcMetric: React.PropTypes.object, // QC metric object whose data we're displaying here
-        qcSchema: React.PropTypes.object.isRequired, // Schema that applies to the given qcMetric object
-        genericQCSchema: React.PropTypes.object.isRequired, // Generic quality metric schema
+        qcMetric: PropTypes.object, // QC metric object whose data we're displaying here
+        qcSchema: PropTypes.object.isRequired, // Schema that applies to the given qcMetric object
+        genericQCSchema: PropTypes.object.isRequired, // Generic quality metric schema
     },
 
     render: function () {
@@ -246,10 +247,10 @@ const QCDataDisplay = React.createClass({
 // Render a panel for an individual quality metric object.
 const QCIndividualPanel = React.createClass({
     propTypes: {
-        qcMetric: React.PropTypes.object.isRequired, // QC metric object whose properties we're displaying
-        qcSchema: React.PropTypes.object.isRequired, // Schema that applies to the given qcMetric object
-        genericQCSchema: React.PropTypes.object.isRequired, // Generic quality metric schema
-        file: React.PropTypes.object.isRequired, // FIle whose QC object is being displayed
+        qcMetric: PropTypes.object.isRequired, // QC metric object whose properties we're displaying
+        qcSchema: PropTypes.object.isRequired, // Schema that applies to the given qcMetric object
+        genericQCSchema: PropTypes.object.isRequired, // Generic quality metric schema
+        file: PropTypes.object.isRequired, // FIle whose QC object is being displayed
     },
 
     getInitialState: function () {
@@ -306,9 +307,9 @@ const QCIndividualPanel = React.createClass({
 // Display a panel of an array of quality metrics objects.
 const QualityMetricsPanelRenderer = React.createClass({
     propTypes: {
-        qcMetrics: React.PropTypes.array.isRequired, // Array of quality metrics objects to display
-        file: React.PropTypes.object.isRequired, // File whose QC objects we're displaying
-        schemas: React.PropTypes.object, // All schemas in the system keyed by @type; used to get QC titles
+        qcMetrics: PropTypes.array.isRequired, // Array of quality metrics objects to display
+        file: PropTypes.object.isRequired, // File whose QC objects we're displaying
+        schemas: PropTypes.object, // All schemas in the system keyed by @type; used to get QC titles
     },
 
     getDefaultProps: function () {

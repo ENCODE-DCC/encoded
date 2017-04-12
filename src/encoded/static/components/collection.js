@@ -126,8 +126,8 @@ RowView.defaultProps = {
 
 var Table = module.exports.Table = React.createClass({
     contextTypes: {
-        fetch: React.PropTypes.func,
-        location_href: React.PropTypes.string
+        fetch: PropTypes.func,
+        location_href: PropTypes.string
     },
 
 

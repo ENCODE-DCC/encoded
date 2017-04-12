@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
 import shortid from 'shortid';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
@@ -63,8 +64,8 @@ class DerivedFiles extends React.Component {
 }
 
 DerivedFiles.propTypes = {
-    items: React.PropTypes.array, // Array of files from the GET request
-    context: React.PropTypes.object, // File that requested this list
+    items: PropTypes.array, // Array of files from the GET request
+    context: PropTypes.object, // File that requested this list
 };
 
 
@@ -86,8 +87,8 @@ class DerivedFromFiles extends React.Component {
 }
 
 DerivedFromFiles.propTypes = {
-    file: React.PropTypes.object.isRequired, // File being analyzed
-    derivedFromFiles: React.PropTypes.array.isRequired, // Array of derived-from files
+    file: PropTypes.object.isRequired, // File being analyzed
+    derivedFromFiles: PropTypes.array.isRequired, // Array of derived-from files
 };
 
 
@@ -124,9 +125,9 @@ class FileDownloadButton extends React.Component {
 }
 
 FileDownloadButton.propTypes = {
-    file: React.PropTypes.object, // File we're possibly downloading by clicking this button
-    hoverDL: React.PropTypes.func, // Function to call when hovering starts/stops over button
-    buttonEnabled: React.PropTypes.bool, // `true` if button is enabled
+    file: PropTypes.object, // File we're possibly downloading by clicking this button
+    hoverDL: PropTypes.func, // Function to call when hovering starts/stops over button
+    buttonEnabled: PropTypes.bool, // `true` if button is enabled
 };
 
 
@@ -419,14 +420,14 @@ class FileComponent extends React.Component {
 }
 
 FileComponent.propTypes = {
-    context: React.PropTypes.object, // File object being displayed
-    auditIndicators: React.PropTypes.func, // Audit indicator rendering function from auditDecor
-    auditDetail: React.PropTypes.func, // Audit detail rendering function from auditDecor
+    context: PropTypes.object, // File object being displayed
+    auditIndicators: PropTypes.func, // Audit indicator rendering function from auditDecor
+    auditDetail: PropTypes.func, // Audit detail rendering function from auditDecor
 };
 
 FileComponent.contextTypes = {
-    session: React.PropTypes.object, // Login information
-    session_properties: React.PropTypes.object,
+    session: PropTypes.object, // Login information
+    session_properties: PropTypes.object,
 };
 
 const File = auditDecor(FileComponent);
@@ -532,7 +533,7 @@ class SequenceFileInfo extends React.Component {
 
 
 SequenceFileInfo.propTypes = {
-    file: React.PropTypes.object.isRequired, // File being displayed
+    file: PropTypes.object.isRequired, // File being displayed
 };
 
 
@@ -560,7 +561,7 @@ class Listing extends React.Component {
 }
 
 Listing.propTypes = {
-    context: React.PropTypes.object, // File object being rendered
+    context: PropTypes.object, // File object being rendered
 };
 
 globals.listing_views.register(Listing, 'File');

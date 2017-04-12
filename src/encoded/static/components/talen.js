@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var panel = require('../libs/bootstrap/panel');
 var globals = require('./globals');
 var { PickerActions } = require('./search');
@@ -69,7 +70,7 @@ globals.content_views.register(TalenPage, 'TALEN');
 // Display a TALENs panel. We can have multiple TALENs in one panel
 var Talen = React.createClass({
     propTypes: {
-        context: React.PropTypes.object.isRequired // TALEN object
+        context: PropTypes.object.isRequired // TALEN object
     },
 
     render: function() {
