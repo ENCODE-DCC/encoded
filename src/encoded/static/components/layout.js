@@ -591,7 +591,6 @@ module.exports.Layout = createReactClass({
     },
 
     dragOver(e, target) {
-        console.log('TARGET %o', target);
         if (this.isBlockDragEvent(e)) {
             e.preventDefault();
         }
