@@ -13,7 +13,7 @@ var _ = require('underscore');
 import { auditDecor } from './audit';
 var globals = require('./globals');
 var image = require('./image');
-import { FetchedData } from './fetched';
+import { FetchedData, Param } from './fetched';
 var search = module.exports;
 import GenomeBrowser from './genome_browser';
 var { donorDiversity, BrowserSelector } = require('./objectutils');
