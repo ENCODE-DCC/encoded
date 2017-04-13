@@ -110,7 +110,7 @@ var ItemComponent = createReactClass({
                     {result.accession ?
                         <div className="pull-right type sentence-case search-meta">
                             <p>{itemType}: {` ${result.accession}`}</p>
-                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                            {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                         </div>
                     : null}
                     <div className="accession">
