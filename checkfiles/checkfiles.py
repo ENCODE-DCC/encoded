@@ -209,7 +209,7 @@ def process_illumina_read_name_pattern(read_name,
     flowcell = read_name_array[2]
     lane_number = read_name_array[3]
     if srr_flag:
-        read_number = read_numbers_set[0]
+        read_number = list(read_numbers_set)[0]
     else:
         read_number = read_name_array[-4]
         read_numbers_set.add(read_number)
@@ -229,7 +229,7 @@ def process_special_read_name_pattern(read_name,
                                       read_numbers_set,
                                       srr_flag):
     if srr_flag:
-        read_number = read_numbers_set[0]
+        read_number = list(read_numbers_set)[0]
     else:
         read_number = 'not initialized'
         if len(words_array[0]) > 3 and \
@@ -254,7 +254,7 @@ def process_new_illumina_prefix(read_name,
                                 read_numbers_set,
                                 srr_flag):
     if srr_flag:
-        read_number = read_numbers_set[0]
+        read_number = list(read_numbers_set)[0]
     else:
         read_number = '1'
         read_numbers_set.add(read_number)
@@ -281,7 +281,7 @@ def process_old_illumina_read_name_pattern(read_name,
                                            old_illumina_current_prefix,
                                            srr_flag):
     if srr_flag:
-        read_number = read_numbers_set[0]
+        read_number = list(read_numbers_set)[0]
     else:
         read_number = '1'
         if read_name[-2:] in ['/1', '/2']:
@@ -345,7 +345,7 @@ def process_read_name_line(read_name_line,
                                                                  special_read_name_pattern,
                                                                  srr_read_name_pattern,
                                                                  old_illumina_current_prefix,
-                                                                 set(),
+                                                                 read_numbers_set,
                                                                  signatures_no_barcode_set,
                                                                  signatures_set,
                                                                  read_lengths_dictionary,
