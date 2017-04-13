@@ -416,7 +416,6 @@ const GenomeBrowser = createReactClass({
     locationChange: function (chr, min, max) {
         const location = `chr${chr}:${min}-${max}`;
         if (location !== this.props.region) {
-            this.props.region = location;
             if (this.props.currentRegion) {
                 this.props.currentRegion(this.props.assembly, location);
                 // console.log('locationChange %s %s', this.props.assembly, this.props.region);
