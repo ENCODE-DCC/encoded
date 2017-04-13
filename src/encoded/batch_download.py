@@ -55,6 +55,7 @@ _tsv_mapping = OrderedDict([
     ('Library extraction method', ['replicates.library.extraction_method']),
     ('Library lysis method', ['replicates.library.lysis_method']),
     ('Library crosslinking method', ['replicates.library.crosslinking_method']),
+    ('Library strand specificity', ['replicates.library.strand_specificity']),
     ('Experiment date released', ['date_released']),
     ('Project', ['award.project']),
     ('RBNS protein concentration', ['files.replicate.rbns_protein_concentration', 'files.replicate.rbns_protein_concentration_units']),
@@ -140,6 +141,8 @@ def make_cell(header_column, row, exp_data_row):
         if column == 'replicates.library.biosample.post_synchronization_time' and len(temp):
             if len(c_value):
                 temp[0] = temp[0] + ' + ' + c_value[0]
+        elif column == 'replicates.library.strand_specificity':
+            temp = ['Strand-specific' if spec == 'True' else 'Non-strand-specific' for spec in c_value]
         elif len(temp):
             if len(c_value):
                 temp = [x + ' ' + c_value[0] for x in temp]
