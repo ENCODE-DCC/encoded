@@ -227,6 +227,12 @@ TabPanel.defaultProps = {
 
 
 class TabItem extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.clickHandler = this.clickHandler.bind(this);
+    }
+
     clickHandler() {
         this.props.handleClick(this.props.tab);
     }
