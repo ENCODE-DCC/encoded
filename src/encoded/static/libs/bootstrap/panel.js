@@ -117,12 +117,13 @@ const TabPanelPane = (props) => {
 };
 
 TabPanelPane.propTypes = {
-    id: PropTypes.string.isRequired, // ID of the pane; not passed explicitly -- comes from `key` of <TabPanelPane>
+    id: PropTypes.string, // ID of the pane; not passed explicitly -- comes from `key` of <TabPanelPane>
     active: PropTypes.bool, // True if this panel is the active one
     children: PropTypes.node,
 };
 
 TabPanelPane.defaultProps = {
+    id: '', // Actually required, but added within cloneElement, so requiring triggers warning
     active: false,
     children: null,
 };

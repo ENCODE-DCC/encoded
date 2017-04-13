@@ -107,7 +107,7 @@ export default class Home extends React.Component {
                             <div className="social">
                                 <div className="social-news">
                                     <div className="news-header">
-                                        <h2>News <a href={newsUri} title="All ENCODE news" className="twitter-ref">All news</a></h2>
+                                        <h2>News <a href="/news/" title="More ENCODE news" className="twitter-ref">More ENCODE news</a></h2>
                                     </div>
                                     <NewsLoader nodeRef={(node) => { this.nodeRef = node; }} newsLoaded={this.newsLoaded} />
                                 </div>
