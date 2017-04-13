@@ -469,7 +469,12 @@ export const BrowserSelector = React.createClass({
                                                 </div>
                                                 <div className="browser-selector__browsers">
                                                     {browserList.map(browser => (
-                                                        <div key={browser} className="browser-selector__browser"><a href={assemblyBrowsers[browser]} onClick={this.handleClick} rel="noopener noreferrer" target="_blank">{browser}</a></div>
+                                                        <div key={browser} className="browser-selector__browser">
+                                                            <a href={assemblyBrowsers[browser]} onClick={this.handleClick} rel="noopener noreferrer" target="_blank">
+                                                                {browser}
+                                                                {browser === 'Quick View' ? <span className="beta-badge">BETA</span> : null}
+                                                            </a>
+                                                        </div>
                                                     ))}
                                                 </div>
                                             </div>
