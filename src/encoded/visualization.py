@@ -2362,8 +2362,7 @@ def hub(context, request):
         text = get_genomes_txt(assemblies)
 
     elif url_end.endswith(TRACKDB_TXT):
-        trackDb = generate_trackDb(request, embedded, url_end.split('/')[0])
-        text = trackDb.encode('utf-8')
+        text = generate_trackDb(request, embedded, url_end.split('/')[0])
     else:
         data_policy = ('<br /><a href="http://encodeproject.org/ENCODE/terms.html">'
                        'ENCODE data use policy</p>')
