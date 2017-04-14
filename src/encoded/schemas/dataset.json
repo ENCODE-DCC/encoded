@@ -85,7 +85,9 @@
                     "SESCC",
                     "dbGaP",
                     "ENCYCLOPEDIAv3",
-                    "ENCYCLOPEDIAv4"
+                    "ENCYCLOPEDIAv4",
+                    "cre_inputv10",
+                    "cre_inputv11"
                 ]
             }
         },

@@ -320,7 +320,7 @@ def lookup_token(token, dataset, a_file=None):
         else:
             return ""
     else:
-        log.warn('Untranslated token: "%s"' % token)
+        log.debug('Untranslated token: "%s"' % token)
         return "unknown"
 
 
@@ -375,7 +375,7 @@ def get_vis_type(dataset):
         if len(assay) == 1:
             assay = assay[0]
         else:
-            log.warn("assay_term_name for %s is unexpectedly a list %s" %
+            log.debug("assay_term_name for %s is unexpectedly a list %s" %
                      (dataset['accession'], str(assay)))
             return "opaque"
 
@@ -392,7 +392,7 @@ def get_vis_type(dataset):
     if assay in ["RNA-seq", "single cell isolation followed by RNA-seq"]:
         reps = dataset.get("replicates", [])  # NOTE: overly cautious
         if len(reps) < 1:
-            log.warn("Could not distinguish between long and short RNA for %s because there are "
+            log.debug("Could not distinguish between long and short RNA for %s because there are "
                      "no replicates.  Defaulting to short." % (dataset.get("accession")))
             return "SRNA"  # this will be more noticed if there is a mistake
         size_range = reps[0].get("library", {}).get("size_range", "")
@@ -401,7 +401,7 @@ def get_vis_type(dataset):
                 min_size = int(size_range[1:])
                 max_size = min_size
             except:
-                log.warn("Could not distinguish between long and short RNA for %s.  "
+                log.debug("Could not distinguish between long and short RNA for %s.  "
                          "Defaulting to short." % (dataset.get("accession")))
                 return "SRNA"  # this will be more noticed if there is a mistake
         elif size_range.startswith('<'):
@@ -409,7 +409,7 @@ def get_vis_type(dataset):
                 max_size = int(size_range[1:]) - 1
                 min_size = 0
             except:
-                log.warn("Could not distinguish between long and short RNA for %s.  "
+                log.debug("Could not distinguish between long and short RNA for %s.  "
                          "Defaulting to short." % (dataset.get("accession")))
                 return "SRNA"  # this will be more noticed if there is a mistake
         else:
@@ -418,7 +418,7 @@ def get_vis_type(dataset):
                 min_size = int(sizes[0])
                 max_size = int(sizes[1])
             except:
-                log.warn("Could not distinguish between long and short RNA for %s.  "
+                log.debug("Could not distinguish between long and short RNA for %s.  "
                          "Defaulting to short." % (dataset.get("accession")))
                 return "SRNA"  # this will be more noticed if there is a mistake
         if max_size <= 200 and max_size != min_size:
@@ -431,7 +431,7 @@ def get_vis_type(dataset):
         else:
             return "SRNA"
 
-    log.warn("%s (assay:'%s') has undefined vis_type" % (dataset['accession'], assay))
+    log.debug("%s (assay:'%s') has undefined vis_type" % (dataset['accession'], assay))
     return "opaque"  # This becomes a dict key later so None is not okay
 
 # TODO:
@@ -663,7 +663,7 @@ def lookup_colors(dataset):
             if len(biosample_term) == 1:
                 biosample_term = biosample_term[0]
             else:
-                log.warn("%s has biosample_type %s that is unexpectedly a list" %
+                log.debug("%s has biosample_type %s that is unexpectedly a list" %
                          (dataset['accession'], str(biosample_term)))
                 biosample_term = "unknown"  # really only seen in test data!
         coloring = BIOSAMPLE_COLOR.get(biosample_term, {})
@@ -674,7 +674,7 @@ def lookup_colors(dataset):
                 if len(biosample_term) == 1:
                     biosample_term = biosample_term[0]
                 else:
-                    log.warn("%s has biosample_term_name %s that is unexpectedly a list" %
+                    log.debug("%s has biosample_term_name %s that is unexpectedly a list" %
                              (dataset['accession'], str(biosample_term)))
                     biosample_term = "unknown"  # really only seen in test data!
             coloring = BIOSAMPLE_COLOR.get(biosample_term, {})
@@ -965,7 +965,7 @@ def generate_live_groups(composite, title, group_defs, dataset, rep_tags=[]):
                 tag_order.append(subgroup_tag)
             # assert(len(live_group["groups"]) == len(groups))
             if len(live_group['groups']) != len(groups):
-                log.warn("len(live_group['groups']):%d != len(groups):%d" %
+                log.debug("len(live_group['groups']):%d != len(groups):%d" %
                          (len(live_group['groups']), len(groups)))
                 log.debug(json.dumps(live_group, indent=4))
             live_group["group_order"] = tag_order
@@ -1266,7 +1266,7 @@ def make_acc_composite(dataset, assembly, host=None, hide=False):
     vis_type = get_vis_type(dataset)
     vis_defs = lookup_vis_defs(vis_type)
     if vis_defs is None:
-        log.warn("%s (vis_type: %s) has undiscoverable vis_defs." %
+        log.debug("%s (vis_type: %s) has undiscoverable vis_defs." %
                  (dataset["accession"], vis_type))
         return {}
     composite = {}
@@ -1738,10 +1738,10 @@ def remodel_acc_to_ihec_json(acc_composites, request=None):
         # Find/create sample:
         biosample_name = acc_composite.get('biosample_term_name', 'none')
         if biosample_name == 'none':
-            log.warn("acc_composite %s is missing biosample_name", acc)
+            log.debug("acc_composite %s is missing biosample_name", acc)
         molecule = acc_composite.get('molecule', 'none')  # ["total RNA", "polyA RNA", ...
         if molecule == 'none':
-            log.warn("acc_composite %s is missing molecule", acc)
+            log.debug("acc_composite %s is missing molecule", acc)
         sample_id = "%s; %s" % (biosample_name, molecule)
         if sample_id not in samples:
             sample = {}
@@ -1913,7 +1913,9 @@ def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
     json_out = (request.url.find("jsonout") > -1)
     ihec_out = (request.url.find("ihecjson") > -1)
     if json_out:
-        return json.dumps(acc_composite, indent=4, sort_keys=True)
+        acc_composites = {} # Standardize output for biodalliance use
+        acc_composites[acc] = acc_composite
+        return json.dumps(acc_composites, indent=4, sort_keys=True)
     elif ihec_out:
         ihec_json = remodel_acc_to_ihec_json({acc: acc_composite}, request)
         return json.dumps(ihec_json, indent=4, sort_keys=True)
@@ -2009,9 +2011,12 @@ def generate_batch_trackDb(request, hide=False, regen=False):
     set_composites = {}
     if found > 0 or made > 0:
         ihec_out = (request.url.find("ihecjson") > -1)  # ...&ambly=hg19&ihecjson/hg19/trackDb.txt
+        acc_json = (request.url.find("accjson") > -1)  # ...&bly=hg19&accjson/hg19/trackDb.txt
         if ihec_out:
             ihec_json = remodel_acc_to_ihec_json(acc_composites, request)
             blob = json.dumps(ihec_json, indent=4, sort_keys=True)
+        if acc_json:
+            blob = json.dumps(acc_composites, indent=4, sort_keys=True)
         else:
             set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100)
 
