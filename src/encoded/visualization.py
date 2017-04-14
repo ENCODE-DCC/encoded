@@ -1,5 +1,6 @@
 from pyramid.response import Response
 from pyramid.view import view_config
+from pyramid.compat import bytes_
 from snovault import Item
 from collections import OrderedDict
 from copy import deepcopy
@@ -2346,33 +2347,34 @@ def hub(context, request):
 
         label = "%s %s" % (typeof, embedded['accession'])
         name = sanitize_name(label)
-        response.text = NEWLINE.join(get_hub(label, request.url, name))
+        text = NEWLINE.join(get_hub(label, request.url, name))
     elif url_end == GENOMES_TXT:
         assemblies = ''
         if 'assembly' in embedded:
             assemblies = embedded['assembly']
 
-        g_text = get_genomes_txt(assemblies)
-        response.text = g_text
+        text = get_genomes_txt(assemblies)
 
     elif url_end.endswith(TRACKDB_TXT):
         trackDb = generate_trackDb(request, embedded, url_end.split('/')[0])
-        response.text = trackDb
+        text = trackDb.encode('utf-8')
     else:
         data_policy = ('<br /><a href="http://encodeproject.org/ENCODE/terms.html">'
                        'ENCODE data use policy</p>')
-        response.text = generate_html(context, request) + data_policy
+        text = generate_html(context, request) + data_policy
         response.content_type = 'text/html'
 
+    response.charset = 'UTF-8'
+    response.body = bytes_(text, 'utf-8')
     response.accept_ranges = "bytes"
     response.last_modified = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.gmtime())
     if range_request:
         response.status_code = 206
         # One final present... byterange '0-' with no end in sight
         if range[1] == '':
-            range[1] = len(response.text)
-        response.content_range = 'bytes %d-%d/%d' % (int(range[0]),int(range[1]),len(response.text))
-        response.app_iter = request.response.app_iter_range(int(range[0]),int(range[1]))
+            range[1] = len(response.body) - 1
+        response.content_range = 'bytes %d-%d/%d' % (int(range[0]),int(range[1]),len(response.body))
+        response.app_iter = request.response.app_iter_range(int(range[0]),int(range[1]) + 1)
     return response
 
 
@@ -2399,17 +2401,17 @@ def batch_hub(context, request):
         range = range[2:]
         range = range.split('-')
 
-    response.text = generate_batch_hubs(context, request)
+    text = generate_batch_hubs(context, request)
 
+    response.charset = 'UTF-8'
+    response.body = bytes_(text, 'utf-8')
     response.accept_ranges = "bytes"
     response.last_modified = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.gmtime())
     if range_request:
         response.status_code = 206
         # One final present... byterange '0-' with no end in sight
         if range[1] == '':
-            range[1] = len(response.text)
-        response.content_range = 'bytes %d-%d/%d' % (int(range[0]),int(range[1]),len(response.text))
-        response.app_iter = request.response.app_iter_range(int(range[0]),int(range[1]))
+            range[1] = len(response.body) - 1
+        response.content_range = 'bytes %d-%d/%d' % (int(range[0]),int(range[1]),len(response.body))
+        response.app_iter = request.response.app_iter_range(int(range[0]),int(range[1]) + 1)
     return response
-
-    #return Response(generate_batch_hubs(context, request), content_type='text/plain', headers=heads)
