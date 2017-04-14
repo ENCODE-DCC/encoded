@@ -27,7 +27,10 @@ DEVELOPS_FROM = "http://purl.obolibrary.org/obo/RO_0002202"
 HUMAN_TAXON = "http://purl.obolibrary.org/obo/NCBITaxon_9606"
 HAS_PART = "http://purl.obolibrary.org/obo/BFO_0000051"
 ACHIEVES_PLANNED_OBJECTIVE = "http://purl.obolibrary.org/obo/OBI_0000417"
-DERIVES_FROM = "http://purl.obolibrary.org/obo/RO_0001000"
+DERIVES_FROM = [
+    "http://purl.obolibrary.org/obo/RO_0001000",
+    "http://www.obofoundry.org/ro/ro.owl#derives_from"
+]
 DEFAULT_LANGUAGE = "en"
 
 developental_slims = {
@@ -729,7 +732,7 @@ def main():
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
                                         terms[term_id]['achieves_planned_objective'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
-                            elif o.__str__() == DERIVES_FROM:
+                            elif o.__str__() in DERIVES_FROM:
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
                                         terms[term_id]['derives_from'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
