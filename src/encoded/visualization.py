@@ -2371,28 +2371,6 @@ def hub(context, request):
         content_mime = 'text/html'
 
     return respond_with_text(request, text, content_mime)
-    ## UCSC broke trackhubs and now we must handle byterange requests on these CGI files
-    #response = request.response
-    #response.content_type = content_mime
-    #response.charset = 'UTF-8'
-    #response.body = bytes_(text, 'utf-8')
-    #response.accept_ranges = "bytes"
-    #response.last_modified = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.gmtime())
-    #if 'Range' in request.headers:
-    #    range_request = True
-    #    range = request.headers['Range']
-    #    if range.startswith('bytes'):
-    #        range = range.split('=')[1]
-    #    range = range.split('-')
-    #
-    #if range_request:
-    #    response.status_code = 206
-    #    # One final present... byterange '0-' with no end in sight
-    #    if range[1] == '':
-    #        range[1] = len(response.body) - 1
-    #    response.content_range = 'bytes %d-%d/%d' % (int(range[0]),int(range[1]),len(response.body))
-    #    response.app_iter = request.response.app_iter_range(int(range[0]),int(range[1]) + 1)
-    #return response
 
 
 @view_config(route_name='batch_hub')
@@ -2402,23 +2380,3 @@ def batch_hub(context, request):
 
     text = generate_batch_hubs(context, request)
     return respond_with_text(request, text, 'text/plain')
-
-    ## UCSC broke trackhubs and now we must handle byterange requests on these CGI files
-    #response = request.response
-    #response.charset = 'UTF-8'
-    #response.body = bytes_(text, 'utf-8')
-    #response.accept_ranges = "bytes"
-    #response.last_modified = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.gmtime())
-    #response.content_type = 'text/plain'
-    #if 'Range' in request.headers:
-    #    range = request.headers['Range']
-    #    if range.startswith('bytes'):
-    #        range = range.split('=')[1]
-    #    range = range.split('-')
-    #    # One final present... byterange '0-' with no end in sight
-    #    if range[1] == '':
-    #        range[1] = len(response.body) - 1
-    #    response.content_range = 'bytes %d-%d/%d' % (int(range[0]),int(range[1]),len(response.body))
-    #    response.app_iter = request.response.app_iter_range(int(range[0]),int(range[1]) + 1)
-    #    response.status_code = 206
-    #return response
