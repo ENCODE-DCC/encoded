@@ -2321,34 +2321,95 @@ def hub(context, request):
     url_ret = (request.url).split('@@hub')
     embedded = request.embed(request.resource_path(context))
 
-    if url_ret[1][1:] == HUB_TXT:
+    # UCSC broke trackhubs and now we must handle byterange requests on these CGI files
+    response = request.response
+    response.content_type = 'text/plain'
+    range_request = False
+    url_end = url_ret[1][1:]
+    if 'Range' in request.headers:
+        range_request = True
+        range = request.headers['Range']  # .split('-')
+        if range.startswith('bytes'):
+            range=range.split('=')[1]
+        range = range.split('-')
+    elif url_end.find('byterange') > -1:
+        # UCSC further screwed us by requesting byteranges in the url!
+        range_request = True
+        url_end, byterange, range = url_end.rsplit('%',2)
+        range = range[2:]
+        range = range.split('-')
+
+    if url_end == HUB_TXT:
         typeof = embedded.get("assay_title")
         if typeof is None:
             typeof = embedded["@id"].split('/')[1]
 
         label = "%s %s" % (typeof, embedded['accession'])
         name = sanitize_name(label)
-        return Response(NEWLINE.join(get_hub(label, request.url, name)),
-                        content_type='text/plain')
-    elif url_ret[1][1:] == GENOMES_TXT:
+        response.text = NEWLINE.join(get_hub(label, request.url, name))
+    elif url_end == GENOMES_TXT:
         assemblies = ''
         if 'assembly' in embedded:
             assemblies = embedded['assembly']
 
         g_text = get_genomes_txt(assemblies)
-        return Response(g_text, content_type='text/plain')
+        response.text = g_text
 
-    elif url_ret[1][1:].endswith(TRACKDB_TXT):
-        trackDb = generate_trackDb(request, embedded, url_ret[1][1:].split('/')[0])
-        return Response(trackDb, content_type='text/plain')
+    elif url_end.endswith(TRACKDB_TXT):
+        trackDb = generate_trackDb(request, embedded, url_end.split('/')[0])
+        response.text = trackDb
     else:
         data_policy = ('<br /><a href="http://encodeproject.org/ENCODE/terms.html">'
                        'ENCODE data use policy</p>')
-        return Response(generate_html(context, request) + data_policy, content_type='text/html')
+        response.text = generate_html(context, request) + data_policy
+        response.content_type = 'text/html'
+
+    response.accept_ranges = "bytes"
+    response.last_modified = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.gmtime())
+    if range_request:
+        response.status_code = 206
+        # One final present... byterange '0-' with no end in sight
+        if range[1] == '':
+            range[1] = len(response.text)
+        response.content_range = 'bytes %d-%d/%d' % (int(range[0]),int(range[1]),len(response.text))
+        response.app_iter = request.response.app_iter_range(int(range[0]),int(range[1]))
+    return response
 
 
 @view_config(route_name='batch_hub')
 @view_config(route_name='batch_hub:trackdb')
 def batch_hub(context, request):
     ''' View for batch track hubs '''
-    return Response(generate_batch_hubs(context, request), content_type='text/plain')
+
+    # UCSC broke trackhubs and now we must handle byterange requests on these CGI files
+    response = request.response
+    response.content_type = 'text/plain'
+    range_request = False
+    url_end = request.url
+    if 'Range' in request.headers:
+        range_request = True
+        range = request.headers['Range']  # .split('-')
+        if range.startswith('bytes'):
+            range=range.split('=')[1]
+        range = range.split('-')
+    elif url_end.find('byterange') > -1:
+        # UCSC further screwed us by requesting byteranges in the url!
+        range_request = True
+        range = url_end.rsplit('%',2)[2]
+        range = range[2:]
+        range = range.split('-')
+
+    response.text = generate_batch_hubs(context, request)
+
+    response.accept_ranges = "bytes"
+    response.last_modified = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.gmtime())
+    if range_request:
+        response.status_code = 206
+        # One final present... byterange '0-' with no end in sight
+        if range[1] == '':
+            range[1] = len(response.text)
+        response.content_range = 'bytes %d-%d/%d' % (int(range[0]),int(range[1]),len(response.text))
+        response.app_iter = request.response.app_iter_range(int(range[0]),int(range[1]))
+    return response
+
+    #return Response(generate_batch_hubs(context, request), content_type='text/plain', headers=heads)
