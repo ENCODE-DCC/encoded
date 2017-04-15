@@ -472,19 +472,14 @@ export const BrowserSelector = React.createClass({
                                                     {assembly}:
                                                 </div>
                                                 <div className="browser-selector__browsers">
-                                                    {browserList.map((browser) => {
-                                                        if (!flyWormException || browser !== 'Quick View') {
-                                                            return (
-                                                                <div key={browser} className="browser-selector__browser">
-                                                                    <a href={assemblyBrowsers[browser]} onClick={this.handleClick} rel="noopener noreferrer" target="_blank">
-                                                                        {browser}
-                                                                        {browser === 'Quick View' ? <span className="beta-badge">BETA</span> : null}
-                                                                    </a>
-                                                                </div>
-                                                            );
-                                                        }
-                                                        return null;
-                                                    })}
+                                                    {browserList.map(browser =>
+                                                        <div key={browser} className="browser-selector__browser">
+                                                            <a href={assemblyBrowsers[browser]} onClick={this.handleClick} disabled={flyWormException && browser === 'Quick View'} rel="noopener noreferrer" target="_blank">
+                                                                {browser}
+                                                                {browser === 'Quick View' ? <span className="beta-badge">BETA</span> : null}
+                                                            </a>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         );
