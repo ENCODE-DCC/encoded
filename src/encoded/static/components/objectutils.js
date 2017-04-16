@@ -415,6 +415,7 @@ export const BrowserSelector = React.createClass({
         visualizeCfg: React.PropTypes.object.isRequired, // Assemblies, browsers, and browser URLs; visualize and visualize_batch contents
         disabled: React.PropTypes.bool, // `true` if button should be disabled; usually because more search results than we can handle
         title: React.PropTypes.string, // Title of Visualize button if "Visualize" isn't desired
+        annotationSource: React.PropTypes.bool, // v55rc3 only
     },
 
     getInitialState: function () {
@@ -462,20 +463,24 @@ export const BrowserSelector = React.createClass({
                                     {assemblyList.map((assembly) => {
                                         const assemblyBrowsers = visualizeCfg[assembly];
                                         const browserList = _(Object.keys(assemblyBrowsers)).sortBy(browser => _(globals.browserPriority).indexOf(browser));
+
+                                        // Only for v55; see http://redmine.encodedcc.org/issues/4533#note-48
+                                        const flyWormException = ['ce10', 'ce11', 'dm3', 'dm6'].indexOf(assembly) !== -1;
+
                                         return (
                                             <div key={assembly} className="browser-selector__assembly-option">
                                                 <div className="browser-selector__assembly">
                                                     {assembly}:
                                                 </div>
                                                 <div className="browser-selector__browsers">
-                                                    {browserList.map(browser => (
+                                                    {browserList.map(browser =>
                                                         <div key={browser} className="browser-selector__browser">
-                                                            <a href={assemblyBrowsers[browser]} onClick={this.handleClick} rel="noopener noreferrer" target="_blank">
+                                                            <a href={assemblyBrowsers[browser]} onClick={this.handleClick} disabled={(flyWormException || this.props.annotationSource) && browser === 'Quick View'} rel="noopener noreferrer" target="_blank">
                                                                 {browser}
                                                                 {browser === 'Quick View' ? <span className="beta-badge">BETA</span> : null}
                                                             </a>
                                                         </div>
-                                                    ))}
+                                                    )}
                                                 </div>
                                             </div>
                                         );
