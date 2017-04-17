@@ -967,7 +967,8 @@ def test_audit_experiment_geo_submission(testapp, base_experiment):
 
 
 def test_audit_experiment_biosample_type_missing(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': "EFO:0002067",
+    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': 'EFO:0002067',
+                                                'biosample_type': 'immortalized cell line',
                                                 'biosample_term_name': 'K562'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
