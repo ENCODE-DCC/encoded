@@ -3149,16 +3149,16 @@ def audit_experiment_biosample_term(value, system):
     term_type = value.get('biosample_type')
     term_name = value.get('biosample_term_name')
 
-    if 'biosample_type' not in value:
+    if not term_id and not term_type:
         detail = '{} is missing biosample_type'.format(value['@id'])
         yield AuditFailure('missing biosample_type', detail, level='ERROR')
 
     if 'biosample_term_name' not in value:
         detail = '{} is missing biosample_term_name'.format(value['@id'])
         yield AuditFailure('missing biosample_term_name', detail, level='ERROR')
-    # The type and term name should be put into dependancies
+    # The type and term name should be put into dependencies
 
-    if term_id is None:
+    if not term_id:
         detail = '{} is missing biosample_term_id'.format(value['@id'])
         yield AuditFailure('missing biosample_term_id', detail, level='ERROR')
         return
