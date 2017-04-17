@@ -1,5 +1,9 @@
 ## Changelog for experiment.json
 
+### Schema version 11
+
+* *chromatin_fragmentation_method* was added, it is required for experiments with *assay_term_name* that is one of ["HiC", "ChIA-PET"]
+
 ### Schema version 10
 
 * *assay_term_name* is now a required property

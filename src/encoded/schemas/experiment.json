@@ -25,6 +25,28 @@
         { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
+        "assay_term_name": {
+            "oneOf": [
+                {
+                    "required": ["chromatin_fragmentation_method"],
+                    "properties": {
+                        "assay_term_name": {
+                            "enum": ["HiC", "ChIA-PET"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "assay_term_name": {
+                                "enum": ["HiC", "ChIA-PET"]
+                          }
+                        }
+                    }
+                }
+            ]
+
+        },
         "status": {
             "oneOf": [
                 {
@@ -82,7 +104,25 @@
     },
     "properties": {
         "schema_version": {
-            "default": "10"
+            "default": "11"
+        },
+        "chromatin_fragmentation_method": {
+            "title": "Chromatin fragmentation method",
+            "description": "A short description or reference of the chromatin fragmentation protocol used in the experiment, if applicable.",
+            "type": "string",
+            "enum": [
+                "chemical (MboI restriction)",
+                "chemical (HindIII restriction)",
+                "chemical (DpnII restriction)",
+                "chemical (NcoI restriction)",
+                "sonication (Branson Sonifier 250)",
+                "sonication (Branson Sonifier 450)",
+                "shearing (Covaris LE Series)",
+                "shearing (Covaris generic)",
+                "shearing (Covaris S2)",
+                "see document",
+                "unknown"
+            ]
         },
         "target": {
             "title": "Target",
