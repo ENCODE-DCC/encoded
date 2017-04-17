@@ -26,6 +26,44 @@
         { "$ref": "mixins.json#/documents"}
     ],
     "dependencies": {
+        "rnais": {
+            "oneOf": [
+                {
+                   "required": ["transfection_type"],
+                    "properties": {
+                        "rnais": {
+                            "minItems": 1
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "rnais": {
+                            "maxItems": 0
+                        }
+                    }
+                }
+            ]
+        },
+        "constructs": {
+            "oneOf": [
+                {
+                   "required": ["transfection_type"],
+                    "properties": {
+                        "constructs": {
+                            "minItems": 1
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "constructs": {
+                            "maxItems": 0
+                        }
+                    }
+                }
+            ]
+        },
         "transfection_method": ["transfection_type"],
         "post_synchronization_time_units": ["post_synchronization_time"],
         "post_treatment_time": ["post_treatment_time_units"],

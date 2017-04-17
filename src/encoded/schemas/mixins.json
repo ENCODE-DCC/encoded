@@ -412,7 +412,8 @@
                 "Bru-seq",
                 "BruChase-seq",
                 "genetic modification followed by DNase-seq",
-                "CRISPRi followed by RNA-seq"
+                "CRISPRi followed by RNA-seq",
+                "genotyping by Hi-C"
             ]
         }
     },

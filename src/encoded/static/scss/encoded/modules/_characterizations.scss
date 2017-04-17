@@ -154,7 +154,6 @@ $attachment-button-margin: 3px;
 .label {
     display: table-cell;
     position: relative;
-    text-shadow: 0 -1px 0 rgba(0,0,0,.3);
     text-align: left;
     padding: .3em .5em .4em;
     font-size: 1rem;
@@ -302,6 +301,17 @@ $attachment-button-margin: 3px;
     // ERROR (red)
     .#{$item}.status-audit-error        { background-color: $brand-danger; }
     .#{$item}.status-audit-error[href]   { background-color: darken($brand-danger, 10%); }
+
+    // Internal status badges
+    .#{$item}.status-unreviewed            { background-color: #a0a0a0; color: #fff; }
+    .#{$item}.status-no-available-pipeline { background-color: #a0a0a0; color: #fff; }    
+    .#{$item}.status-unrunnable            { background-color: #cc0700; color: #fff; }    
+    .#{$item}.status-pipeline-ready        { background-color: #a0a0a0; color: #fff; }    
+    .#{$item}.status-processing            { background-color: #a0a0a0; color: #fff; }    
+    .#{$item}.status-pipeline-completed    { background-color: #a0a0a0; color: #fff; }    
+    .#{$item}.status-requires-lab-review   { background-color: #cc0700; color: #fff; }    
+    .#{$item}.status-release-ready         { background-color: #4C994C; color: #fff; }    
+    .#{$item}.status-pipeline-error        { background-color: #cc0700; color: #fff; }    
 
     /* (gray) is the default if no class given */
 }

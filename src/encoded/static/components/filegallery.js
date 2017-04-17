@@ -4,9 +4,7 @@ import moment from 'moment';
 import globals from './globals';
 import { Panel, PanelHeading } from '../libs/bootstrap/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
-import { DropdownButton } from '../libs/bootstrap/button';
-import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
-import { StatusLabel } from './statuslabel';
+import StatusLabel from './statuslabel';
 import { requestFiles, DownloadableAccession, BrowserSelector } from './objectutils';
 import { Graph, JsonGraph } from './graph';
 import { qcModalContent, qcIdToDisplay } from './quality_metric';
@@ -20,19 +18,6 @@ import { AuditMixin, AuditIndicators, AuditDetail, AuditIcon } from './audit';
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
 
 
-// Display a human-redable form of the file size given the size of a file in bytes. Returned as a
-// string
-function humanFileSize(size) {
-    if (size >= 0) {
-        const i = Math.floor(Math.log(size) / Math.log(1024));
-        const adjustedSize = (size / Math.pow(1024, i)).toPrecision(3) * 1;
-        const units = ['B', 'kB', 'MB', 'GB', 'TB'][i];
-        return `${adjustedSize} ${units}`;
-    }
-    return undefined;
-}
-
-
 // Get the audit icon for the highest audit level in the given file.
 function fileAuditStatus(file) {
     let highestAuditLevel;
@@ -44,6 +29,22 @@ function fileAuditStatus(file) {
         highestAuditLevel = 'OK';
     }
     return <AuditIcon level={highestAuditLevel} addClasses="file-audit-status" />;
+}
+
+
+// Sort callback to compare the accession/external_accession of two files.
+function fileAccessionSort(a, b) {
+    if (!a.accession !== !b.accession) {
+        // One or the other but not both use an external accession. Sort so regular accession
+        // comes first.
+        return a.accession ? -1 : 1;
+    }
+
+    // We either have two accessions or two external accessions. Do a case-insensitive compare on
+    // the calculated property that gets external_accession if accession isn't available.
+    const aTitle = a.title.toLowerCase();
+    const bTitle = b.title.toLowerCase();
+    return aTitle > bTitle ? 1 : (aTitle < bTitle ? -1 : 0);
 }
 
 
@@ -91,6 +92,7 @@ export const FileTable = React.createClass({
                 const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[item['@id']]);
                 return <DownloadableAccession file={item} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />;
             },
+            objSorter: (a, b) => fileAccessionSort(a, b),
         },
         file_type: { title: 'File type' },
         output_type: { title: 'Output type' },
@@ -124,7 +126,7 @@ export const FileTable = React.createClass({
         },
         file_size: {
             title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>,
+            display: item => <span>{globals.humanFileSize(item.file_size)}</span>,
         },
         audit: {
             title: 'Audit status',
@@ -145,6 +147,7 @@ export const FileTable = React.createClass({
                 const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[item['@id']]);
                 return <DownloadableAccession file={item} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />;
             },
+            objSorter: (a, b) => fileAccessionSort(a, b),
         },
         file_type: { title: 'File type' },
         output_type: { title: 'Output type' },
@@ -174,7 +177,7 @@ export const FileTable = React.createClass({
         },
         file_size: {
             title: 'File size',
-            display: item => <span>{humanFileSize(item.file_size)}</span>,
+            display: item => <span>{globals.humanFileSize(item.file_size)}</span>,
         },
         audit: {
             title: 'Audit status',
@@ -552,7 +555,7 @@ const RawSequencingTable = React.createClass({
                                             <td className={pairClass}>{file.paired_end}</td>
                                             <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                            <td className={pairClass}>{humanFileSize(file.file_size)}</td>
+                                            <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
                                             <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td>
                                         </tr>
@@ -587,7 +590,7 @@ const RawSequencingTable = React.createClass({
                                         <td>{file.paired_end}</td>
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                        <td>{humanFileSize(file.file_size)}</td>
+                                        <td>{globals.humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
                                         <td className="characterization-meta-data"><StatusLabel status={file.status} /></td>
                                     </tr>
@@ -729,7 +732,7 @@ const RawFileTable = React.createClass({
                                             <td className={pairClass}>{file.assembly}</td>
                                             <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                            <td className={pairClass}>{humanFileSize(file.file_size)}</td>
+                                            <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
                                             <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td>
                                         </tr>
@@ -758,7 +761,7 @@ const RawFileTable = React.createClass({
                                         <td>{file.assembly}</td>
                                         <td>{file.lab && file.lab.title ? file.lab.title : null}</td>
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                        <td>{humanFileSize(file.file_size)}</td>
+                                        <td>{globals.humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
                                         <td className="characterization-meta-data"><StatusLabel status={file.status} /></td>
                                     </tr>
@@ -812,6 +815,7 @@ export const FileGallery = React.createClass({
         anisogenic: React.PropTypes.bool, // True if anisogenic experiment
         hideGraph: React.PropTypes.bool, // T to hide graph display
         altFilterDefault: React.PropTypes.bool, // T to default to All Assemblies and Annotations
+        annotationSource: React.PropTypes.bool, // v55rc3 only
     },
 
     contextTypes: {
@@ -826,7 +830,7 @@ export const FileGallery = React.createClass({
             <FetchedData ignoreErrors>
                 <Param name="data" url={globals.unreleased_files_url(context)} />
                 <Param name="schemas" url="/profiles/" />
-                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
+                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} annotationSource={this.props.annotationSource} />
             </FetchedData>
         );
     },
@@ -1347,6 +1351,7 @@ const FileGalleryRenderer = React.createClass({
         schemas: React.PropTypes.object, // Schemas for the entire system; used for QC property titles
         hideGraph: React.PropTypes.bool, // T to hide graph display
         altFilterDefault: React.PropTypes.bool, // T to default to All Assemblies and Annotations
+        annotationSource: React.PropTypes.bool, // v55rc3 only
     },
 
     contextTypes: {
@@ -1454,9 +1459,9 @@ const FileGalleryRenderer = React.createClass({
                 <PanelHeading addClasses="file-gallery-heading">
                     <h4>Files</h4>
                     <div className="file-gallery-controls">
-                        {context.visualize && context.status === 'released' ?
+                        {context.visualize ?
                             <div className="file-gallery-control">
-                                <BrowserSelector visualizeCfg={context.visualize} />
+                                <BrowserSelector visualizeCfg={context.visualize} annotationSource={this.props.annotationSource} />
                             </div>
                         : null}
                         {filterOptions.length ?

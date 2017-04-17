@@ -43,7 +43,8 @@
         },
         "organism": {
             "default": "3413218c-3d86-498b-a0a2-9a406638e786",
-            "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"]
+            "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"],
+            "permission": "import_items"
         },
         "status": {
             "enum" : [
