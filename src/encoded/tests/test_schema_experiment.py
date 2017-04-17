@@ -22,7 +22,16 @@ def experiment_no_error(testapp, lab, award):
     }
     return item
 
-
+@pytest.fixture
+def experiment_hic_error(testapp, lab, award):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'assay_term_name': 'HiC',
+        'internal_status': 'release ready'
+    }
+    return item
+    
 def test_not_pipeline_error_without_message_ok(testapp, experiment_no_error):
     # internal_status != pipeline error, so an error detail message is not required.
     res = testapp.post_json('/experiment', experiment_no_error, expect_errors=False)
@@ -47,3 +56,10 @@ def test_not_pipeline_error_with_message_bad(testapp, experiment_no_error):
     experiment_no_error.update({'pipeline_error_detail': 'I am not the pipeline, I cannot use this.'})
     res = testapp.post_json('/experiment', experiment_no_error, expect_errors=True)
     assert res.status_code == 422
+
+def test_hic_error_experiment(testapp, experiment_hic_error):
+    res = testapp.post_json('/experiment', experiment_hic_error, expect_errors=True)
+    assert res.status_code == 422
+    experiment_hic_error.update({'chromatin_fragmentation_method': 'unknown'})
+    res = testapp.post_json('/experiment', experiment_hic_error, expect_errors=True)
+    assert res.status_code == 201
