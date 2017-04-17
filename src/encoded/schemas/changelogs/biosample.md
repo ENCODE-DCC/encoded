@@ -1,5 +1,10 @@
 ## Changelog for biosample.json
 
+### Schema version 15
+
+* *biosample_type* and *biosample_term_id* consistency added to the list of schema dependencies
+
+
 ### Schema version 14
 
 * *depleted_in_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the term_name

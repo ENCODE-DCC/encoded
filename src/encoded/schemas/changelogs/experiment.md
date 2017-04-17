@@ -1,5 +1,9 @@
 ## Changelog for experiment.json
 
+### Schema version 11
+    
+* *biosample_type* and *biosample_term_id* consistency added to the list of schema dependencies
+
 ### Schema version 10
 
 * *assay_term_name* is now a required property
