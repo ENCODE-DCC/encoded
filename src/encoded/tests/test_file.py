@@ -21,6 +21,7 @@ def fastq_no_replicate(award, experiment, lab, platform1):
         'platform': platform1['@id'],
         'file_size': 23242,
         'run_type': 'paired-ended',
+        'paired_end': '1',
         'md5sum': '0123456789abcdef0123456789abcdef',
         'output_type': 'raw data',
         'status': 'in progress',

@@ -11,7 +11,7 @@
         "Views":  {
             "tag": "view",
             "group_order": [ "Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks",
-                            "Replicated peaks", "Peaks",  "Fold change over control", "Signal p-value", "Signal" ],
+                            "Pseudoreplicated IDR thresholded peaks", "Peaks",  "Fold change over control", "Signal p-value", "Signal" ],
             "groups": {
                 "Optimal IDR thresholded peaks": {
                     "tag": "aOIDR",
@@ -31,14 +31,14 @@
                     "scoreFilter": "0:1000",
                     "output_type": [ "conservative idr thresholded peaks" ]
                 },
-                "Replicated peaks": {
+                "Pseudoreplicated IDR thresholded peaks": {
                     "tag": "cRPKS",
                     "visibility": "dense",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
                     "spectrum":"on",
                     "scoreFilter": "0:1000",
-                    "output_type": [ "replicated peaks" ]
+                    "output_type": [ "pseudoreplicated idr thresholded peaks" ]
                 },
                 "Peaks": {
                     "tag": "dPKS",

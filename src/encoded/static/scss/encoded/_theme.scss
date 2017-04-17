@@ -83,3 +83,15 @@ select {
         display: none;
     }
 }
+
+.beta-badge {
+    position: relative;
+    top: -2px;
+    display: inline-block;
+    margin-left: 5px;
+    padding: 2px 4px;
+    font-size: 0.6rem;
+    color: #fff;
+    background-color: #B24342;
+    border-radius: 3px;
+}

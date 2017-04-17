@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const maxFilesBrowsed = 5; // Maximum number of files to browse
+const maxFilesBrowsed = 40; // Maximum number of files to browse
 const domainName = 'https://www.encodeproject.org';
 const dummyFiles = [
     {
@@ -49,33 +49,33 @@ function rAssemblyToSources(assembly, region) {
         viewStart: 29890000,
         viewEnd: 30050000,
         sources: [],
+        positionSet: false,
     };
 
-    if (assembly === 'GRCh38' || assembly === 'hg19') {
-        // Hopefully region will work for both GRCh38 and hg19
-        if (region) {
-            const reg = region.split(':');
-            browserCfg.chr = reg[0].substring(3, reg[0].length);
-            const positions = reg[1].split('-');
-            for (let i = 0; i < positions.length; i += 1) {
-                positions[i] = parseInt(positions[i].replace(/,/g, ''), 10);
-            }
-            if (positions.length > 1) {
-                if (positions[0] > 10000) {
-                    browserCfg.viewStart = positions[0] - 10000;
-                } else {
-                    browserCfg.viewStart = 1;
-                }
-                browserCfg.viewEnd = positions[1] + 10000;
-            } else {
-                if (positions[0] > 10000) {
-                    browserCfg.viewStart = positions[0] - 10000;
-                } else {
-                    browserCfg.viewStart = 1;
-                }
-                browserCfg.viewEnd = positions[0] + 10000;
-            }
+    if (region) {
+        // console.log('region provided: %s', region);
+        const reg = region.split(':');
+        browserCfg.chr = reg[0].substring(3, reg[0].length);
+        const positions = reg[1].split('-');
+        for (let i = 0; i < positions.length; i += 1) {
+            positions[i] = parseInt(positions[i].replace(/,/g, ''), 10);
         }
+        if (positions.length > 1) {
+            if (positions[0] > 10000) {
+                browserCfg.viewStart = positions[0] - 10000;
+            } else {
+                browserCfg.viewStart = 1;
+            }
+            browserCfg.viewEnd = positions[1] + 10000;
+        } else {
+            if (positions[0] > 10000) {
+                browserCfg.viewStart = positions[0] - 10000;
+            } else {
+                browserCfg.viewStart = 1;
+            }
+            browserCfg.viewEnd = positions[0] + 10000;
+        }
+        browserCfg.positionSet = true;
     }
 
     if (assembly === 'GRCh38') {
@@ -142,10 +142,12 @@ function rAssemblyToSources(assembly, region) {
                 forceReduction: -1,
             },
         ];
-    } else if (assembly === 'mm10') {
-        browserCfg.chr = '19';
-        browserCfg.viewStart = 30000000;
-        browserCfg.viewEnd = 30100000;
+    } else if (assembly === 'mm10' || assembly === 'mm10-minimal') {
+        if (!browserCfg.positionSet) {
+            browserCfg.chr = '19';
+            browserCfg.viewStart = 30000000;
+            browserCfg.viewEnd = 30100000;
+        }
         browserCfg.cookieKey = 'GRCm38';
         browserCfg.coordSystem = { speciesName: 'Mus musculus', taxon: 10090, auth: 'GRCm', version: 38, ucscName: 'mm10' };
         // sources:
@@ -176,9 +178,11 @@ function rAssemblyToSources(assembly, region) {
             },
         ];
     } else if (assembly === 'mm9') {
-        browserCfg.chr = '19';
-        browserCfg.viewStart = 30000000;
-        browserCfg.viewEnd = 30030000;
+        if (!browserCfg.positionSet) {
+            browserCfg.chr = '19';
+            browserCfg.viewStart = 30000000;
+            browserCfg.viewEnd = 30030000;
+        }
         browserCfg.cookieKey = 'NCBIM37';
         browserCfg.coordSystem = { speciesName: 'Mus musculus', taxon: 10090, auth: 'NCBIM', version: 37 };
         browserCfg.sources = [
@@ -192,9 +196,11 @@ function rAssemblyToSources(assembly, region) {
         ];
     } else if (assembly === 'dm6') {
         // Genome: from http://hgdownload.cse.ucsc.edu/goldenPath/dm6/bigZips/dm6.2bit
-        browserCfg.chr = '3L';
-        browserCfg.viewStart = 15940000;
-        browserCfg.viewEnd = 15985000;
+        if (!browserCfg.positionSet) {
+            browserCfg.chr = '3L';
+            browserCfg.viewStart = 15940000;
+            browserCfg.viewEnd = 15985000;
+        }
         browserCfg.cookieKey = 'BDGP6';
         browserCfg.coordSystem = { speciesName: 'Drosophila melanogaster', taxon: 7227, auth: 'BDGP', version: 6 };
         browserCfg.sources = [
@@ -207,9 +213,11 @@ function rAssemblyToSources(assembly, region) {
             },
         ];
     } else if (assembly === 'dm3') {
-        browserCfg.chr = '3L';
-        browserCfg.viewStart = 15940000;
-        browserCfg.viewEnd = 15985000;
+        if (!browserCfg.positionSet) {
+            browserCfg.chr = '3L';
+            browserCfg.viewStart = 15940000;
+            browserCfg.viewEnd = 15985000;
+        }
         browserCfg.cookieKey = 'BDGP5';
         browserCfg.coordSystem = { speciesName: 'Drosophila melanogaster', taxon: 7227, auth: 'BDGP', version: 5 };
         browserCfg.sources = [
@@ -223,9 +231,11 @@ function rAssemblyToSources(assembly, region) {
         ];
     } else if (assembly === 'ce11') {
         // Genome: from ftp://hgdownload-sd.sdsc.edu/goldenPath/ce11/bigZips/ce11.2bit
-        browserCfg.chr = 'II';
-        browserCfg.viewStart = 14646376;
-        browserCfg.viewEnd = 14667875;
+        if (!browserCfg.positionSet) {
+            browserCfg.chr = 'II';
+            browserCfg.viewStart = 14646376;
+            browserCfg.viewEnd = 14667875;
+        }
         browserCfg.cookieKey = 'WBcel235';
         browserCfg.coordSystem = { speciesName: 'Caenorhabditis elegans', taxon: 6239, auth: 'WBcel', version: 235 };
         browserCfg.sources = [
@@ -250,6 +260,7 @@ const GenomeBrowser = React.createClass({
         region: React.PropTypes.string, // Region to use with browser
         visBlobs: React.PropTypes.object, // This should contain one or more vis_blobs for dataset(s)
         limitFiles: React.PropTypes.bool, // True to limit # files to maxFilesBrowsed
+        currentRegion: React.PropTypes.func,
     },
 
     contextTypes: {
@@ -259,7 +270,7 @@ const GenomeBrowser = React.createClass({
 
     componentDidMount: function () {
         const { assembly, region, limitFiles } = this.props;
-        console.log('ASSEMBLY: %s', assembly);
+        // console.log('DidMount ASSEMBLY: %s', assembly);
 
          // Probably not worth a define in globals.js for visualizable types and statuses.
         // Extract only bigWig and bigBed files from the list:
@@ -275,7 +286,7 @@ const GenomeBrowser = React.createClass({
             (limitFiles ? files.slice(0, maxFilesBrowsed - 1) : files)
         : dummyFiles;
 
-        const browserCfg = rAssemblyToSources(assembly, this.props.region);
+        const browserCfg = rAssemblyToSources(assembly, region);
 
         this.browserFiles = [];
         let domain = `${location.protocol}//${location.hostname}`;
@@ -323,12 +334,14 @@ const GenomeBrowser = React.createClass({
             const Dalliance = require('dalliance').browser;
 
             this.browser = new Dalliance({
-                maxHeight: 1000,
-                // noPersist: true,
-                // noPersistView: true,
+                maxHeight: 2000,
+                noPersist: false,
+                noPersistView: false,
                 noTrackAdder: true,
                 maxWorkers: 4,
                 noHelp: true,
+                noExport: true,
+                rulerLocation: 'right',
                 chr: browserCfg.chr,
                 viewStart: browserCfg.viewStart,
                 viewEnd: browserCfg.viewEnd,
@@ -338,10 +351,13 @@ const GenomeBrowser = React.createClass({
                 noTitle: true,
                 disablePoweredBy: true,
             });
+            this.browser.addViewListener(this.locationChange);
         });
     },
 
     componentDidUpdate: function () {
+        console.log('DidUpdate ASSEMBLY: %s', this.props.assembly);
+
         // Remove old tiers
         if (this.browser && this.browserFiles && this.browserFiles.length) {
             this.browserFiles.forEach((fileSource) => {
@@ -392,6 +408,17 @@ const GenomeBrowser = React.createClass({
                     });
                 }
             });
+        }
+    },
+
+    locationChange: function (chr, min, max) {
+        const location = `chr${chr}:${min}-${max}`;
+        if (location !== this.props.region) {
+            this.props.region = location;
+            if (this.props.currentRegion) {
+                this.props.currentRegion(this.props.assembly, location);
+                // console.log('locationChange %s %s', this.props.assembly, this.props.region);
+            }
         }
     },
 
