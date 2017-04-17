@@ -466,7 +466,7 @@ export const BrowserSelector = createReactClass({
                                         const browserList = _(Object.keys(assemblyBrowsers)).sortBy(browser => _(globals.browserPriority).indexOf(browser));
 
                                         // Only for v55; see http://redmine.encodedcc.org/issues/4533#note-48
-                                        const flyWormException = ['ce10', 'ce11', 'dm3', 'dm6'].indexOf(assembly) !== -1;
+                                        const flyWormException = ['ce10', 'ce11', 'dm3', 'dm6', 'mm9'].indexOf(assembly) !== -1;
 
                                         return (
                                             <div key={assembly} className="browser-selector__assembly-option">
