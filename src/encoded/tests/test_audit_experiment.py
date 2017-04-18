@@ -1347,48 +1347,6 @@ def test_audit_experiment_replicate_with_no_files_warning(testapp, file_bed_meth
     assert any(error['category'] == 'missing raw data in replicate' for error in errors_list)
 
 
-def test_audit_experiment_missing_biosample_term_id(testapp, base_experiment):
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] ==
-               'experiment missing biosample_term_id' for error in errors_list)
-
-
-def test_audit_experiment_bind_n_seq_missing_biosample_term_id(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA Bind-n-Seq'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] !=
-               'experiment missing biosample_term_id' for error in errors_list)
-
-
-def test_audit_experiment_missing_biosample_type(testapp, base_experiment):
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] ==
-               'experiment missing biosample_type' for error in errors_list)
-
-
-def test_audit_experiment_with_biosample_type(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'biosample_type': 'immortalized cell line'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] !=
-               'experiment missing biosample_type' for error in errors_list)
-
-
 def test_audit_experiment_not_uploaded_files(testapp, file_bam,
                                              base_experiment,
                                              base_replicate,
