@@ -428,22 +428,26 @@ def process_fastq_file(job, fastq_data_stream, session, url):
     try:
         line_index = 0
         for encoded_line in fastq_data_stream.stdout:
-            line = encoded_line.decode('utf-8')
-            line_index += 1
-            if line_index == 1:
-                old_illumina_current_prefix = \
-                    process_read_name_line(
-                        line,
-                        read_name_prefix,
-                        read_name_pattern,
-                        special_read_name_pattern,
-                        srr_read_name_pattern,
-                        old_illumina_current_prefix,
-                        read_numbers_set,
-                        signatures_no_barcode_set,
-                        signatures_set,
-                        read_lengths_dictionary,
-                        errors, False)
+            try:
+                line = encoded_line.decode('utf-8')
+            except UnicodeDecodeError:
+                errors['readname_encoding'] = 'Error occured, while decoding the readname string.'
+            else:
+                line_index += 1
+                if line_index == 1:
+                    old_illumina_current_prefix = \
+                        process_read_name_line(
+                            line,
+                            read_name_prefix,
+                            read_name_pattern,
+                            special_read_name_pattern,
+                            srr_read_name_pattern,
+                            old_illumina_current_prefix,
+                            read_numbers_set,
+                            signatures_no_barcode_set,
+                            signatures_set,
+                            read_lengths_dictionary,
+                            errors, False)
             if line_index == 2:
                 read_count += 1
                 process_sequence_line(line, read_lengths_dictionary)
