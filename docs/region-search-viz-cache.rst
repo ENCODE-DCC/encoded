@@ -62,7 +62,7 @@ Viz Caching and Priming
 
 The caching of visualization JSON is linked to the fileindexer.  Generally, when the peak_indexer is done, it raises a semaphore with the list of UUIDs which is subscribed to by visualization.prime_vis_es_cache().   This triggers when main indexer is free (because the trackHub JSON depends on having up-to-date metadata in Elasticsearch).
 
-So, when a (clustered) instance is started, all objects are new and each dataset will get passed to the viz_def.  NOte that it short-circuits waiting for the file_indexer to finish if there are more than 100 files invalidated.
+So, when a (clustered) instance is started, all objects are new and each dataset will get passed to visualize.prime_viz_es_cache().  NOte that it short-circuits waiting for the file_indexer to finish if there are more than 100 files invalidated.
 
 Due to quirks in how the peak indexer functions, this will get triggered whenever a dataset is invalidated (even if none of the files or peak files changed) and will re-cache the visualization JSON for those experiments.
 
@@ -75,14 +75,16 @@ To conserver resources on unclustered demo machines (Postgres/Pyramid/ES all on 
 
 The machine specified in region_search_instance is a stable elasticsearch-only machine that gets new data from various unclustered demos.  Port 9200 is used (default elasticsearch), and should be accessible to IP addresses in the correct range (*.instance.encodedcc.org)
 
-Demos generally do not get files posted to them (BED or otherewise), so it's rare for new peaks to get reindexed.  When a new demo is created it checks the region-search-test machine and updates it with newly invalidated BED files (DB transactions since the xmin property of snovault/meta/peak_indexing) 
+Demos generally do not get files posted to them (BED or otherewise), so it's rare for new peaks to get reindexed.  When a new demo is created it checks the region-search-test machine and updates it with newly invalidated BED files (DB transactions since the xmin property of snovault/meta/peak_indexing (because it's snp_search.server is set to the common one).
 
 This is overridden by the following line in cloud-config-cluster.yml:
 .. code::
     - sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg production-ini:region_search_instance=localhost:9200
 
 Since this is only used when a clustered instance is built, the default region-search ES instance will be the one in production.ini
-This is set in encoded.__init__() as config.registry['snp_search'], a Elasticsearch connnection object.
+This is set in encoded.__init__() as config.registry['snp_search'], a Elasticsearch connnection object (aka registry[SNP_SEARCH_ES])
+
+In the clustered case, each master has it's own peak_indexer process and it's own snovault/meta/peak_indexing so it will re-index everything from scratch.
 
 Because of the (current) interaction between the visualization caching and the file indexer, if you need to reset the vis cache on an unclustered demo machine, you will have to:
 .. code::
