@@ -1,5 +1,10 @@
 ## Changelog for dataset.json
 
+### Schema 11
+
+* *biosample_type* is a required field
+* *biosample_term_id* is required for experiments with *biosample_type* != "in vitro sample"
+
 ### Schema version 10
 
 * *description*, *notes*, and *submitter_comment* are now not allowed to have any leading or trailing whitespace
