@@ -10,8 +10,8 @@
         "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
         "Views":  {
             "tag": "view",
-            "group_order": [ "Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks",
-                            "Replicated peaks", "Peaks",  "Fold change over control", "Signal p-value", "Signal" ],
+            "group_order": [ "Replicated peaks", "Stable peaks", "Peaks",
+                            "Fold change over control", "Signal p-value", "Signal" ],
             "groups": {
                 "Optimal IDR thresholded peaks": {
                     "tag": "aOIDR",
@@ -22,23 +22,23 @@
                     "scoreFilter": "100:1000",
                     "output_type": [ "optimal idr thresholded peaks" ]
                 },
-                "Conservative IDR thresholded peaks": {
-                    "tag": "bCIDR",
-                    "visibility": "hide",
-                    "type": "bigBed",
-                    "file_format_type": [ "narrowPeak" ],
-                    "spectrum":"on",
-                    "scoreFilter": "0:1000",
-                    "output_type": [ "conservative idr thresholded peaks" ]
-                },
                 "Replicated peaks": {
-                    "tag": "cRPKS",
+                    "tag": "bRPKS",
                     "visibility": "dense",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
                     "spectrum":"on",
                     "scoreFilter": "0:1000",
                     "output_type": [ "replicated peaks" ]
+                },
+                "Stable peaks": {
+                    "tag": "cSPKS",
+                    "visibility": "dense",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "spectrum":"on",
+                    "scoreFilter": "0:1000",
+                    "output_type": [ "stable peaks" ]
                 },
                 "Peaks": {
                     "tag": "dPKS",
