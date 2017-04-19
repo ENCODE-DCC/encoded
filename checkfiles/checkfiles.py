@@ -656,31 +656,35 @@ def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url
             errors['lookup_for_content_md5sum'] = 'Network error occured, while looking for ' + \
                                                   'content md5sum conflict on the portal. ' + str(e)
         else:
-            r_graph = r.json().get('@graph')
-            if len(r_graph) > 0:
-                conflicts = []
-                for entry in r_graph:
-                    if 'accession' in entry and 'accession' in item:
-                        if entry['accession'] != item['accession']:
+            try:
+                r_graph = r.json().get('@graph')
+            except ValueError:
+                errors['content_md5sum_lookup_json_error'] = str(r)
+            else:
+                if len(r_graph) > 0:
+                    conflicts = []
+                    for entry in r_graph:
+                        if 'accession' in entry and 'accession' in item:
+                            if entry['accession'] != item['accession']:
+                                conflicts.append(
+                                    '%s in file %s ' % (
+                                        result['content_md5sum'],
+                                        entry['accession']))
+                        elif 'accession' in entry:
                             conflicts.append(
                                 '%s in file %s ' % (
                                     result['content_md5sum'],
                                     entry['accession']))
-                    elif 'accession' in entry:
-                        conflicts.append(
-                            '%s in file %s ' % (
-                                result['content_md5sum'],
-                                entry['accession']))
-                    elif 'accession' not in entry and 'accession' not in item:
-                        conflicts.append(
-                            '%s ' % (
-                                result['content_md5sum']))
-                if len(conflicts) > 0:
-                    errors['content_md5sum'] = str(conflicts)
-                    update_content_error(errors,
-                                         'File content md5sum conflicts with content ' +
-                                         'md5sum of existing file(s) {}'.format(
-                                             ', '.join(map(str, conflicts))))
+                        elif 'accession' not in entry and 'accession' not in item:
+                            conflicts.append(
+                                '%s ' % (
+                                    result['content_md5sum']))
+                    if len(conflicts) > 0:
+                        errors['content_md5sum'] = str(conflicts)
+                        update_content_error(errors,
+                                             'File content md5sum conflicts with content ' +
+                                             'md5sum of existing file(s) {}'.format(
+                                                 ', '.join(map(str, conflicts))))
 
 
 def check_file(config, session, url, job):
