@@ -133,48 +133,7 @@ def audit_experiment_pipeline_assay_details(value, system):
                 yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
 
 
-@audit_checker('Experiment', frame=['original_files',
-                                    'original_files.replicate',
-                                    'original_files.derived_from',
-                                    'original_files.analysis_step_version',
-                                    'original_files.analysis_step_version.analysis_step',
-                                    'original_files.analysis_step_version.analysis_step.pipelines',
-                                    'target',
-                                    'replicates'],
-               condition=rfa('modERN'))
-def audit_experiment_missing_processed_files(value, system):
-    alignment_files = scan_files_for_file_format_output_type(value['original_files'],
-                                                             'bam', 'alignments')
-    alignment_files.extend(scan_files_for_file_format_output_type(value['original_files'],
-                                                                  'bam',
-                                                                  'unfiltered alignments'))
-    alignment_files.extend(scan_files_for_file_format_output_type(value['original_files'],
-                                                                  'bam',
-                                                                  'transcriptome alignments'))
-
-    # if there are no bam files - we don't know what pipeline, exit
-    if len(alignment_files) == 0:
-        return
-    # find out the pipeline
-    pipelines = getPipelines(alignment_files)
-    if len(pipelines) == 0:  # no pipelines detected
-        return
-
-    if 'Transcription factor ChIP-seq pipeline (modERN)' in pipelines:
-        # check if control
-        target = value.get('target')
-        if target is None:
-            return
-        if 'control' in target.get('investigated_as'):
-            replicate_structures = create_pipeline_structures(value['original_files'],
-                                                              'modERN_control')
-            for failure in check_structures(replicate_structures, True, value):
-                yield failure
-        else:
-            replicate_structures = create_pipeline_structures(value['original_files'],
-                                                              'modERN')
-            for failure in check_structures(replicate_structures, False, value):
-                yield failure
+# def audit_experiment_missing_processed_files(value, system): removed from v54
 
 
 @audit_checker('Experiment', frame=['original_files',
@@ -784,39 +743,7 @@ def check_experiment_dnase_seq_standards(experiment,
             if 'assembly' in alignment_file:
                 alignments_assemblies[alignment_file['accession']] = alignment_file['assembly']
 
-        duplicates_quality_metrics = get_metrics(alignment_files,
-                                                 'DuplicatesQualityMetric',
-                                                 desired_assembly)
-        if duplicates_quality_metrics:
-            for metric in duplicates_quality_metrics:
-                percentage = metric.get('Percent Duplication')
-                if percentage:
-                    percentage = percentage * 100
-                    upper_threshold = 12
-                    lower_threshold = 5
-                    if metric.get('UMI Read Duplicates'):
-                        upper_threshold = 7.5
-                    if percentage > lower_threshold:
-                        file_names = []
-                        for f in metric['quality_metric_of']:
-                            file_names.append(f['@id'].split('/')[2])
-                        file_names_string = str(file_names).replace('\'', ' ')
-
-                        detail = 'Alignment file(s) {} '.format(file_names_string) + \
-                                 'produced by {} '.format(pipelines[0]['title']) + \
-                                 '( {} ) '.format(pipelines[0]['@id']) + \
-                                 assemblies_detail(extract_assemblies(alignments_assemblies, file_names)) + \
-                                 'have duplication rate of {0:.2f}%. '.format(percentage) + \
-                                 'According to ENCODE standards, ' + \
-                                 'library duplication rate < 5% is considered a product of high quality ' + \
-                                 'data. For standard libraries and for UMI libraries duplication rate < 12% and 7.5% ' + \
-                                 'respectively is considered acceptable.  ' + \
-                                 '(See {} )'.format(link_to_standards)
-                        if percentage < upper_threshold:
-                            yield AuditFailure('high duplication rate', detail, level='WARNING')
-                        else:
-                            yield AuditFailure('extremely high duplication rate',
-                                               detail, level='ERROR')
+        # duplication rate audit was removed from v54
 
         hotspot_assemblies = {}
         for hotspot_file in hotspots_files:
@@ -1598,17 +1525,18 @@ def check_file_chip_seq_library_complexity(alignment_file):
                  'and > 0.8 high complexity. NRF value > 0.8 is recommended, ' + \
                  'but > 0.5 is acceptable. '
 
-    pbc1_detail = 'PBC1 (PCR Bottlenecking Coefficient 1) is equal to the result of the division of ' + \
-                  'the number of genomic locations where exactly one read maps uniquely by ' + \
-                  'the number of distinct genomic locations to which some read maps uniquely. ' + \
+    pbc1_detail = 'PBC1 (PCR Bottlenecking Coefficient 1, M1/M_distinct) ' + \
+                  'is the ratio of the number of genomic ' + \
+                  'locations where exactly one read maps uniquely (M1) to the number of ' + \
+                  'genomic locations where some reads map (M_distinct). ' + \
                   'A PBC1 value in the range 0 - 0.5 is severe bottlenecking, 0.5 - 0.8 ' + \
                   'is moderate bottlenecking, 0.8 - 0.9 is mild bottlenecking, and > 0.9 ' + \
                   'is no bottlenecking. PBC1 value > 0.9 is recommended, but > 0.8 is ' + \
                   'acceptable. '
 
-    pbc2_detail = 'PBC2 (PCR Bottlenecking Coefficient 2) is equal to the result of the division of ' + \
-                  'the number of genomic locations where only one read maps uniquely by ' + \
-                  'the number of genomic locations where 2 reads map uniquely. ' + \
+    pbc2_detail = 'PBC2 (PCR Bottlenecking Coefficient 2, M1/M2) is the ratio of the number of ' + \
+                  'genomic locations where exactly one read maps uniquely (M1) to the number of genomic ' + \
+                  'locations where two reads map uniquely (M2). ' + \
                   'A PBC2 value in the range 0 - 1 is severe bottlenecking, 1 - 3 ' + \
                   'is moderate bottlenecking, 3 - 10 is mild bottlenecking, > 10 is ' + \
                   'no bottlenecking. PBC2 value > 10 is recommended, but > 3 is acceptable. '
@@ -2437,16 +2365,16 @@ def is_gtex_experiment(experiment_to_check):
                 return True
     return False
 
-
+'''
 @audit_checker('experiment', frame=['replicates',
                                     'replicates.library',
                                     'replicates.library.biosample',
                                     'replicates.library.biosample.donor'])
 def audit_experiment_gtex_biosample(value, system):
-    '''
-    GTEx experiments should include biosample(s) from the same tissue and same donor
-    The number of biosamples could be > 1.
-    '''
+
+    #GTEx experiments should include biosample(s) from the same tissue and same donor
+    #The number of biosamples could be > 1.
+
     if value['status'] in ['deleted', 'replaced']:
         return
 
@@ -2480,7 +2408,7 @@ def audit_experiment_gtex_biosample(value, system):
         yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='INTERNAL_ACTION')
 
     return
-
+'''
 
 @audit_checker('Experiment', frame=['object'])
 def audit_experiment_geo_submission(value, system):

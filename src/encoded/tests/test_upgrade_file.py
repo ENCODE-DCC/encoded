@@ -7,6 +7,7 @@ def file_base(experiment):
         'accession': 'ENCFF000TST',
         'dataset': experiment['uuid'],
         'file_format': 'fasta',
+        'file_size': 243434,
         'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
         'output_type': 'raw data',
     }

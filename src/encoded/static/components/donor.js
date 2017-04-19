@@ -11,7 +11,7 @@ import { Breadcrumbs } from './navigation';
 import { requestObjects } from './objectutils';
 import { pubReferenceList } from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
-import { StatusLabel } from './statuslabel';
+import StatusLabel from './statuslabel';
 import { BiosampleTable } from './typeutils';
 
 

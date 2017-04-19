@@ -12,7 +12,7 @@ var dbxref = require('./dbxref');
 var image = require('./image');
 var item = require('./item');
 var audit = require('./audit');
-var statuslabel = require('./statuslabel');
+import StatusLabel from './statuslabel';
 var doc = require('./doc');
 
 var Breadcrumbs = navigation.Breadcrumbs;
@@ -21,7 +21,6 @@ var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
 var DbxrefList = dbxref.DbxrefList;
 var ExperimentTable = dataset.ExperimentTable;
-var StatusLabel = statuslabel.StatusLabel;
 var statusOrder = globals.statusOrder;
 var RelatedItems = item.RelatedItems;
 var {Panel, PanelBody} = panel;

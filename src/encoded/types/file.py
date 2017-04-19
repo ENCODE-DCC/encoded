@@ -432,7 +432,8 @@ def download(context, request):
         if filename != _filename:
             raise HTTPNotFound(_filename)
 
-    proxy = asbool(request.params.get('proxy')) or 'Origin' in request.headers
+    proxy = asbool(request.params.get('proxy')) or 'Origin' in request.headers \
+                                                or 'Range' in request.headers
 
     use_download_proxy = request.client_addr not in request.registry['aws_ipset']
 
