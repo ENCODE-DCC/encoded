@@ -176,6 +176,7 @@ def ctrl_experiment(testapp, lab, award, control_target):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
+        'biosample_type': 'in vitro sample',
         'status': 'started',
         'assay_term_name': 'ChIP-seq'
     }
@@ -964,17 +965,6 @@ def test_audit_experiment_geo_submission(testapp, base_experiment):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'experiment not submitted to GEO' for error in errors_list)
-
-
-def test_audit_experiment_biosample_type_missing(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': "EFO:0002067",
-                                                'biosample_term_name': 'K562'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing biosample_type' for error in errors_list)
 
 
 def test_audit_experiment_biosample_match(testapp, base_experiment,

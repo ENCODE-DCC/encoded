@@ -224,7 +224,8 @@ def experiment(testapp, lab, award):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
-        'assay_term_name': 'RNA-seq'
+        'assay_term_name': 'RNA-seq',
+        'biosample_type': 'in vitro sample'
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
 
@@ -235,6 +236,8 @@ def base_experiment(testapp, lab, award):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'assay_term_name': 'RNA-seq',
+        'biosample_type': 'tissue',
+        'biosample_term_id': 'UBERON:349829',
         'status': 'started'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
