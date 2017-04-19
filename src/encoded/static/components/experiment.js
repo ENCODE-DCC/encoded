@@ -9,7 +9,7 @@ var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
 var image = require('./image');
-var statuslabel = require('./statuslabel');
+import StatusLabel from './statuslabel';
 var audit = require('./audit');
 var fetched = require('./fetched');
 var pipeline = require('./pipeline');
@@ -26,7 +26,6 @@ var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var FetchedItems = fetched.FetchedItems;
 var Param = fetched.Param;
-var StatusLabel = statuslabel.StatusLabel;
 var {AuditMixin, AuditIndicators, AuditDetail} = audit;
 var singleTreatment = objectutils.singleTreatment;
 var softwareVersionList = software.softwareVersionList;
@@ -63,12 +62,14 @@ var Experiment = module.exports.Experiment = React.createClass({
     mixins: [AuditMixin],
 
     contextTypes: {
-        session: React.PropTypes.object
+        session: React.PropTypes.object,
+        session_properties: React.PropTypes.object,
     },
 
     render: function() {
         var condensedReplicates = [];
         var context = this.props.context;
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         var itemClass = globals.itemClass(context, 'view-item');
         var replicates = context.replicates;
         if (replicates) {
@@ -246,7 +247,10 @@ var Experiment = module.exports.Experiment = React.createClass({
         var encodevers = globals.encodeVersion(context);
 
         // Make list of statuses
-        var statuses = [{status: context.status, title: "Status"}];
+        const statuses = [{ status: context.status, title: 'Status' }];
+        if (adminUser && context.internal_status) {
+            statuses.push({ status: context.internal_status, title: 'Internal' });
+        }
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
@@ -255,6 +259,12 @@ var Experiment = module.exports.Experiment = React.createClass({
         let supersededBys = [];
         if (context.superseded_by && context.superseded_by.length) {
             supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
+        }
+
+        // Make array of supersedes accessions
+        let supersedes = [];
+        if (context.supersedes && context.supersedes.length) {
+            supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
         }
 
         // Determine whether the experiment is isogenic or anisogenic. No replication_type indicates isogenic.
@@ -307,7 +317,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         if (context.internal_tags && context.internal_tags.length) {
             tagBadges = context.internal_tags.map(tag => <img key={tag} src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
-        
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -316,6 +326,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <h2>Experiment summary for {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
+                        {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -437,7 +448,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         <dd>{context.lab.title}</dd>
                                     </div>
 
-                                    <AwardRef context={context} />
+                                    <AwardRef context={context} adminUser={adminUser} />
 
                                     <div data-test="project">
                                         <dt>Project</dt>
@@ -447,7 +458,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                     {context.dbxrefs.length ?
                                         <div data-test="external-resources">
                                             <dt>External resources</dt>
-                                            <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                            <dd><DbxrefList values={context.dbxrefs} cell_line={context.biosample_term_name} /></dd>
                                         </div>
                                     : null}
 

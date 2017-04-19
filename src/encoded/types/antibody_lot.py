@@ -8,6 +8,10 @@ from .base import (
     paths_filtered_by_status,
 )
 
+from .ab_lot_status_data import (
+    ab_states,
+    ab_state_details
+)
 
 @collection(
     name='antibodies',
@@ -79,8 +83,7 @@ class AntibodyLot(SharedItem):
 
 @calculated_property(context=AntibodyLot, schema={
     "title": "Antibody lot reviews",
-    "description":
-        "Review outcome of an antibody lot in each characterized cell type submitted for review.",
+    "description": "Review outcome of an antibody lot in each characterized cell type submitted for review.",
     "type": "array",
     "items": {
         "title": "Antibody lot review",
@@ -130,8 +133,8 @@ class AntibodyLot(SharedItem):
                 "default": "awaiting characterization",
                 "enum": [
                     "awaiting characterization",
-                    "pending dcc review",
                     "characterized to standards",
+                    "partially characterized",
                     "characterized to standards with exemption",
                     "not characterized to standards",
                     "not pursued"
@@ -142,279 +145,190 @@ class AntibodyLot(SharedItem):
 })
 def lot_reviews(characterizations, targets, request):
     characterizations = paths_filtered_by_status(request, characterizations)
-    target_organisms = dict()
-    tmp = list()
+    target_organisms = {}
 
     is_control = False
+    is_histone_mod = False
     for t in targets:
         target = request.embed(t, '@@object')
         if 'control' in target['investigated_as']:
             is_control = True
+        if 'histone modification' in target['investigated_as']:
+            is_histone_mod = True
 
         organism = target['organism']
-        tmp.append(organism)
+        target_organisms = { 'all' : [] }
+        target_organisms['all'].append(organism)
         target_organisms[organism] = target['@id']
-    target_organisms['all'] = tmp
+
+    # The default base characterization if no characterizations have been submitted
+    base_review = {
+        'biosample_term_name': 'any cell type or tissue',
+        'biosample_term_id': 'NTR:99999999',
+        'organisms': sorted(target_organisms['all']),
+        'targets': sorted(targets),
+        'status': 'characterized to standards with exemption'
+        if is_control else ab_states[(None, None)],
+        'detail': 'IgG does not require further characterization.'
+        if is_control else ab_state_details[(None, None)]
+    }
 
     if not characterizations:
         # If there are no characterizations, then default to awaiting characterization.
-        return [{
-            'biosample_term_name': 'any cell type or tissues',
-            'biosample_term_id': 'NTR:99999999',
-            'organisms': sorted(target_organisms['all']),
-            'targets': sorted(targets),  # Copy to prevent modification of original data
-            'status': 'characterized to standards with exemption' if is_control else 'awaiting characterization',
-            'detail': 'IgG does not require further characterization.' if is_control else 'No characterizations submitted for this antibody lot yet.'
-        }]
+        return [base_review]
 
-    histone_mod_target = False
     review_targets = set()
-    lab_not_reviewed_chars = 0
-    total_characterizations = 0
-    not_reviewed_chars = 0
-    in_progress_chars = 0
+    char_organisms = {}
     primary_chars = []
     secondary_chars = []
+    secondary_status = None
 
-    # Since characterizations can only take one target (not an array), primary characterizations for 
-    # histone modifications may be done in multiple species, so we really need to check lane.organism
+    status_ranking = {
+        'characterized to standards': 15,
+        'characterized to standards with exemption': 14,
+        'partially characterized': 13,
+        'awaiting characterization': 12,
+        'not characterized to standards': 11,
+        'not pursued': 10,
+        'compliant': 9,
+        'exempt from standards': 8,
+        'not compliant': 7,
+        'pending dcc review': 6,
+        'in progress': 5,
+        'not reviewed': 4,
+        'not submitted for review by lab': 3,
+        'deleted': 2
+    }
+
+    # Since characterizations can only take one target (not an array) and primary characterizations
+    # for histone modifications may be done in multiple species, we really need to check lane.organism
     # against the antibody.targets.organism list to determine eligibility of use in that organism.
 
     for characterization_path in characterizations:
         characterization = request.embed(characterization_path, '@@object')
         target = request.embed(characterization['target'], '@@object')
-        organism = target['organism']
 
+        # instead of adding to the target_organism list with whatever they put in the
+        # characterization we need to instead compare the lane organism to see if it's in the
+        # target_organism list. If not, we'll need to indicate that they characterized an
+        # organism not in the antibody_lot.targets list so it'll have to be reviewed and
+        # added if legitimate.
         review_targets.add(target['@id'])
-
-        # All characterization targets should be a histone_mod_target or all not.
-        # (Checked by an audit.)
-        if 'histone modification' in target['investigated_as']:
-            histone_mod_target = True
-
-        # instead of adding to the target_organism list with whatever they put in the characterization
-        # we need to instead compare the lane organism to see if it's in the target_organism list. 
-        # If not, will need to indicate that they characterized an organism not in the antibody_lot.targets
-        # list so it'll have to be reviewed and added if legitimate.
-        # organisms.add(organism)
-
-        if characterization['status'] == 'not submitted for review by lab':
-            lab_not_reviewed_chars += 1
-            total_characterizations += 1
-        elif characterization['status'] == 'not reviewed':
-            not_reviewed_chars += 1
-            total_characterizations += 1
-        elif characterization['status'] == 'in progress':
-            in_progress_chars += 1
-            total_characterizations += 1
-        else:
-            total_characterizations += 1
-
+        char_organisms[characterization['@id']] = target['organism']
         # Split into primary and secondary to treat separately
         if 'primary_characterization_method' in characterization:
             primary_chars.append(characterization)
+
         else:
             secondary_chars.append(characterization)
 
-    base_review = {
-        'biosample_term_name': 'not specified',
-        'biosample_term_id': 'NTR:00000000',
-        'organisms': sorted(target_organisms['all']),
-        'targets': sorted(review_targets),
-        'status': 'awaiting characterization',
-        'detail': None
-    }
+    # Go through the secondary characterizations first
+    if secondary_chars:
+        # Determine the consensus secondary characterization status based on
+        # all those submitted if more than one
+        secondary_statuses = [item['status'] for item in secondary_chars]
 
-    # Deal with the easy cases where both characterizations have the same
-    # statuses not from DCC reviews
-    if lab_not_reviewed_chars == total_characterizations and total_characterizations > 0:
-        base_review['status'] = 'not pursued'
-        return [base_review]
+        # Get the highest ranking status in the set
+        secondary_statuses.sort(key=lambda x: status_ranking[x], reverse=True)
+        secondary_status = secondary_statuses[0]
 
-    if not_reviewed_chars == total_characterizations and total_characterizations > 0:
-        base_review['status'] = 'not characterized to standards'
-        base_review['detail'] = 'Characterizations not reviewed.'
-        return [base_review]
-
-    if in_progress_chars == total_characterizations and total_characterizations > 0:
-        base_review['detail'] = 'Characterizations in progress.'
-        return [base_review]
-
-    if (lab_not_reviewed_chars + not_reviewed_chars) == total_characterizations and \
-            total_characterizations > 0:
-        base_review['status'] = 'not pursued'
-        return [base_review]
-
-    if histone_mod_target:
-        if len(primary_chars) > 0 and len(secondary_chars) == 0:
-            # There are only primary characterization(s)
-            base_review['detail'] = 'Awaiting submission of secondary characterization(s).'
-            return [base_review]
-
-    if len(primary_chars) == 0 and len(secondary_chars) > 0:
-        # There are only secondary characterization(s)
-        base_review['detail'] = 'Awaiting submission of primary characterization(s).'
+    # If there are no primaries, return the lot review with the secondary status
+    if not primary_chars:
+        # The default if no primary characterizations have been submitted
+        base_review['status'] = ab_states[(None, secondary_status)]
+        base_review['detail'] = ab_state_details[(None, secondary_status)]
+        if base_review['status'] == 'not pursued':
+            base_review['biosample_term_name'] = 'at least one cell type or tissue'
+            base_review['biosample_term_id'] = 'NTR:00000000'
         return [base_review]
 
     # Done with easy cases, the remaining require reviews.
-    # Go through the secondary characterizations first
-    compliant_secondary = False
-    not_compliant_secondary = False
-    pending_secondary = False
-    exempted_secondary = False
-    in_progress_secondary = 0
-    not_reviewed_secondary = 0
+    # Check the primaries and update their status accordingly
+    lot_reviews = build_lot_reviews(primary_chars,
+                                    secondary_status,
+                                    status_ranking,
+                                    review_targets,
+                                    is_histone_mod,
+                                    char_organisms)
 
-    for secondary in secondary_chars:
-        if secondary['status'] == 'compliant':
-            compliant_secondary = True
-            break
-        elif secondary['status'] == 'exempt from standards':
-            exempted_secondary = True
-            break
-        else:
-            if not (compliant_secondary or exempted_secondary):
-                if secondary['status'] == 'pending dcc review':
-                    pending_secondary = True
-                if secondary['status'] == 'not compliant':
-                    not_compliant_secondary = True
-                if secondary['status'] == 'in progress':
-                    in_progress_secondary += 1
-                if secondary['status'] == 'not reviwed':
-                    not_reviewed_secondary += 1
+    return lot_reviews
 
-    # Now check the primaries and update their status accordingly
+
+def build_lot_reviews(primary_chars,
+                      secondary_status,
+                      status_ranking,
+                      review_targets,
+                      is_histone_mod,
+                      char_organisms):
+
+    # We have primary characterizatons
     char_reviews = {}
-
+    lane_organism = None
+    key = None
     for primary in primary_chars:
-        if primary['status'] in ['not reviewed', 'not submitted for review by lab']:
-            continue
+        # The default base review to update as needed
+        base_review = {
+            'biosample_term_name': 'at least one cell type or tissue',
+            'biosample_term_id': 'NTR:00000000',
+            'organisms': [char_organisms[primary['@id']]],
+            'targets': [primary['target']]
+        }
+        if not primary.get('characterization_reviews', []):
+            base_review['status'] = ab_states[(primary['status'], secondary_status)]
+            base_review['detail'] = ab_state_details[(primary['status'], secondary_status)]
+            if base_review['status'] == 'partially characterized':
+                base_review['biosample_term_name'] = 'any cell type or tissue'
+                base_review['biosample_term_id'] = 'NTR:99999999'
 
-        if primary['status'] == 'in progress':
-            base_review['detail'] = 'Primary characterization(s) in progress.'
+            # Don't need to rank and unique the primaries with unknown cell types, we can't
+            # know if they're distinct or not anyway without characterization reviews.
+            char_reviews[(base_review['biosample_term_name'],
+                          base_review['biosample_term_id'],
+                          char_organisms[primary['@id']],
+                          primary['target'])] = base_review
 
-        for lane_review in primary.get('characterization_reviews', []):
-            # Get the organism information from the lane, not from the target since there are lanes
-            lane_organism = lane_review['organism']
+        else:
+            # This primary characterization has characterization_reviews
+            for lane_review in primary.get('characterization_reviews', []):
+                # Get the organism information from the lane, not from the target since
+                # there are lanes. Build a new base_review using the lane information
+                base_review = {}
+                lane_organism = lane_review['organism']
 
-            new_review = {
-                'biosample_term_name': lane_review['biosample_term_name'],
-                'biosample_term_id': lane_review['biosample_term_id'],
-                'organisms': [lane_organism],
-                'targets':
-                    sorted(review_targets) if histone_mod_target
-                    else [primary['target']],
-                'status': 'awaiting characterization',
-                'detail': None
-            }
+                base_review['biosample_term_name'] = 'any cell type or tissue' \
+                    if is_histone_mod else lane_review['biosample_term_name']
+                base_review['biosample_term_id'] = 'NTR:99999999' \
+                    if is_histone_mod else lane_review['biosample_term_id']
+                base_review['organisms'] = [lane_organism]
+                base_review['targets'] = sorted(review_targets) \
+                    if is_histone_mod else [primary['target']]
+                base_review['status'] = ab_states[(lane_review['lane_status'], secondary_status)] \
+                    if primary['status'] in ['compliant',
+                                             'not compliant',
+                                             'pending dcc review',
+                                             'exempt from standards'] else \
+                    ab_states[primary['status'], secondary_status]
+                base_review['detail'] = ab_state_details[(lane_review['lane_status'], secondary_status)] \
+                    if primary['status'] in ['compliant',
+                                             'not compliant',
+                                             'pending dcc review',
+                                             'exempt from standards'] else \
+                    ab_state_details[primary['status'], secondary_status]
 
-            if lane_review['lane_status'] == 'pending dcc review':
-                new_review['status'] = 'pending dcc review'
-                if compliant_secondary:
-                    new_review['detail'] = 'Pending review of primary characterization.'
-                if pending_secondary:
-                    new_review['detail'] = 'Pending review of primary and secondary characterizations.'
-                if not secondary_chars:
-                    new_review['detail'] = 'Pending review of primary and awaiting submission of secondary characterization(s).'
-            elif lane_review['lane_status'] == 'not compliant':
-                if not_compliant_secondary or len(secondary_chars) == 0 or \
-                        (not_reviewed_secondary == len(secondary_chars)):
-                    new_review['status'] = 'not characterized to standards'
-                    new_review['detail'] = 'Awaiting compliant primary and secondary characterizations.'
-                else:
-                    if histone_mod_target:
-                        new_review['biosample_term_name'] = 'any cell type and tissues'
-                        new_review['biosample_term_id'] = 'NTR:99999999'
-                    new_review['detail'] = 'Awaiting a compliant primary characterization.'
-            elif lane_review['lane_status'] == 'exempt from standards':
-                if not histone_mod_target:
-                    if compliant_secondary or exempted_secondary:
-                        new_review['status'] = 'characterized to standards with exemption'
-                        new_review['detail'] = 'Fully characterized.'
-                    if not secondary_chars or (not_reviewed_secondary == len(secondary_chars)):
-                        new_review['detail'] = 'Awaiting submission of secondary characterization(s).'
-                    if in_progress_secondary == len(secondary_chars):
-                        new_review['detail'] = 'Secondary characterization(s) in progress.'
-                else:
-                    # exempted_organisms.add(lane_organism)
-                    new_review['biosample_term_name'] = 'any cell type and tissues'
-                    new_review['biosample_term_id'] = 'NTR:99999999'
-                    if lane_organism in target_organisms:
-                        new_review['targets'] = [target_organisms[lane_organism]]
-                        if compliant_secondary or exempted_secondary:
-                            new_review['status'] = 'characterized to standards with exemption'
-                            new_review['detail'] = 'Fully characterized.'
-                    else:
-                        new_review['detail'] = 'Characterized organism not in antibody target list.'
+                # Need to use status ranking to determine whether or not to
+                # add this review to the list or not if another already exists.
+                key = (
+                    base_review['biosample_term_name'],
+                    base_review['biosample_term_id'],
+                    lane_organism,
+                    primary['target']
+                )
+                if key not in char_reviews:
+                    char_reviews[key] = base_review
+                    continue
 
-            elif lane_review['lane_status'] == 'compliant':
-                if not histone_mod_target:
-                    if compliant_secondary:
-                        new_review['status'] = 'characterized to standards'
-                        new_review['detail'] = 'Fully characterized.'
-                    elif exempted_secondary:
-                        new_review['status'] = 'characterized to standards with exemption'
-                        new_review['detail'] = 'Fully characterized.'
-                    else:
-                        new_review['detail'] = 'Awaiting a compliant secondary characterization.'
-                        pass
-                    # Keep track of compliant organisms for histones and we
-                    # will fill them in after going through all the lanes
-                else:
-                    new_review['biosample_term_name'] = 'any cell type and tissues'
-                    new_review['biosample_term_id'] = 'NTR:99999999'
-                    if lane_organism in target_organisms:
-                        # characterized_organisms.add(lane_organism)
-                        new_review['targets'] = [target_organisms[lane_organism]]
-                        if compliant_secondary:
-                            new_review['status'] = 'characterized to standards'
-                            new_review['detail'] = 'Fully characterized.'
-                        elif exempted_secondary:
-                            new_review['status'] = 'characterized to standards with exemption'
-                            new_review['detail'] = 'Fully characterized.'
-                        else:
-                            new_review['detail'] = 'Awaiting a compliant secondary characterization.'
-                            pass
-                    else:
-                        new_review['detail'] = 'Characterized organism not in antibody target list.'
-
-                if pending_secondary:
-                    new_review['status'] = 'pending dcc review'
-                    new_review['detail'] = 'Pending review of a secondary characterization.'
-            else:
-                # For all other cases, can keep the awaiting status
-                pass
-
-            key = (
-                lane_review['biosample_term_name'],
-                lane_review['biosample_term_id'],
-                lane_review['organism'],
-                primary['target'],
-            )
-            if key not in char_reviews:
-                char_reviews[key] = new_review
-                continue
-
-            status_ranking = {
-                'characterized to standards': 6,
-                'characterized to standards with exemption': 5,
-                'compliant': 4,
-                'exempt from standards': 3,
-                'pending dcc review': 2,
-                'awaiting characterization': 1,
-                'not compliant': 0,
-                'not reviewed': 0,
-                'not submitted for review by lab': 0,
-                'deleted': 0,
-                'not characterized to standards': 0
-            }
-
-            rank = status_ranking[new_review['status']]
-            if rank > status_ranking[char_reviews[key]['status']]:
-                # Check to see if existing status should be overridden
-                char_reviews[key] = new_review
-
-    if not char_reviews:
-        return [base_review]
+                rank = status_ranking[base_review.get('status')]
+                if rank > status_ranking[char_reviews[key].get('status')]:
+                    char_reviews[key] = base_review
 
     return list(char_reviews.values())

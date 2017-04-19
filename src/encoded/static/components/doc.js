@@ -6,7 +6,7 @@ var panel = require('../libs/bootstrap/panel');
 var { collapseIcon } = require('../libs/svg-icons');
 var globals = require('./globals');
 var image = require('./image');
-var {StatusLabel} = require('./statuslabel');
+import StatusLabel from './statuslabel';
 var {Panel, PanelHeading, PanelBody} = panel;
 var Attachment = image.Attachment;
 
@@ -65,8 +65,8 @@ var DocumentsPanel = module.exports.DocumentsPanel = React.createClass({
                         <PanelHeading>
                             <h4>{this.props.title ? <span>{this.props.title}</span> : <span>Documents</span>}</h4>
                         </PanelHeading>
-                        <PanelBody addClasses="panel-body-doc doc-panel-outer">
-                            <section className="flexrow doc-panel-inner">
+                        <PanelBody addClasses="panel-body-doc doc-panel__outer">
+                            <section className="doc-panel__inner">
                                 {allDocs.map((doc, i) => {
                                     var PanelView = globals.panel_views.lookup(doc);
                                     return <PanelView key={doc['@id']} label={docLabelMap[doc.uuid]} context={doc} />;
@@ -132,17 +132,15 @@ var Document = module.exports.Document = React.createClass({
         var DocumentDetailView = globals.document_views.detail.lookup(context);
 
         return (
-            <section className="flexcol panel-doc">
-                <Panel addClasses={globals.itemClass(context, 'view-detail')}>
+            <section className="flexcol flexcol--doc">
+                <Panel addClasses={globals.itemClass(context, 'document')}>
                     <DocumentHeaderView doc={context} label={this.props.label} />
-                    <PanelBody>
-                        <div className="document-header">
-                            <DocumentPreviewView doc={context} />
-                            <DocumentCaptionView doc={context} />
-                        </div>
-                        <DocumentFileView doc={context} detailOpen={this.state.panelOpen} detailSwitch={this.handleClick} />
-                        <DocumentDetailView doc={context} detailOpen={this.state.panelOpen} id={context['@id']} />
-                    </PanelBody>
+                    <div className="document__intro">
+                        <DocumentCaptionView doc={context} />
+                        <DocumentPreviewView doc={context} />
+                    </div>
+                    <DocumentFileView doc={context} detailOpen={this.state.panelOpen} detailSwitch={this.handleClick} />
+                    <DocumentDetailView doc={context} detailOpen={this.state.panelOpen} id={context['@id']} />
                 </Panel>
             </section>
         );
@@ -160,8 +158,8 @@ var DocumentHeader = module.exports.DocumentHeader = React.createClass({
         var {doc, label} = this.props;
 
         return (
-            <div className="panel-header document-title sentence-case">
-                {doc.document_type} {label ? <span className="document-label">{label}</span> : null}
+            <div className="document__header">
+                {doc.document_type} {label ? <span>{label}</span> : null}
             </div>
         );
     }
@@ -181,7 +179,7 @@ var DocumentCaption = module.exports.DocumentCaption = React.createClass({
         }
 
         return (
-            <div className="document-intro document-meta-data">
+            <div className="document__caption">
                 {excerpt || caption ?
                     <div data-test="caption">
                         <strong>{excerpt ? 'Description excerpt: ' : 'Description: '}</strong>
@@ -201,7 +199,7 @@ var DocumentPreview = module.exports.DocumentPreview = React.createClass({
 
     render: function() {
         return (
-            <figure>
+            <figure className="document__preview">
                 <Attachment context={this.props.doc} attachment={this.props.doc.attachment} className="characterization" />
             </figure>
         );
@@ -225,17 +223,17 @@ var DocumentFile = module.exports.DocumentFile = React.createClass({
             var dlFileTitle = "Download file " + doc.attachment.download;
 
             return (
-                <div className="dl-bar">
-                    <i className="icon icon-download"></i>&nbsp;
-                    <a data-bypass="true" title={dlFileTitle} href={attachmentHref} download={doc.attachment.download}>
-                        {doc.attachment.download}
-                    </a>
+                <div className="document__file">
+                    <div className="document__file-name">
+                        <i className="icon icon-download document__file-name-icon" />
+                        <a data-bypass="true" className="document__file-name-link" title={dlFileTitle} href={attachmentHref} download={doc.attachment.download}>
+                            {doc.attachment.download}
+                        </a>
+                    </div>
                     {detailSwitch ?
-                        <div className="detail-switch">
-                            <a href="#" data-trigger onClick={detailSwitch} className="collapsing-doc">
-                                {collapseIcon(!this.props.detailOpen)}
-                            </a>
-                        </div>
+                        <a href="#" data-trigger onClick={detailSwitch} className="document__file-detail-switch">
+                            {collapseIcon(!this.props.detailOpen)}
+                        </a>
                     : null}
                 </div>
             );
@@ -260,7 +258,7 @@ var DocumentDetail = module.exports.DocumentDetail = React.createClass({
 
     render: function() {
         var doc = this.props.doc;
-        var keyClass = 'document-slider' + (this.props.detailOpen ? ' active' : '');
+        var keyClass = 'document__detail' + (this.props.detailOpen ? ' active' : '');
         var excerpt = doc.description && doc.description.length > EXCERPT_LENGTH;
 
         return (
@@ -316,50 +314,79 @@ globals.document_views.file.register(DocumentFile, 'Document');
 globals.document_views.detail.register(DocumentDetail, 'Document');
 
 
+const QCAttachmentCaption = React.createClass({
+    propTypes: {
+        title: React.PropTypes.string.isRequired, // Title to display for attachment
+    },
+
+    render: function () {
+        const { title } = this.props;
+
+        return (
+            <div className="document__caption">
+                <div data-test="caption">
+                    <strong>Attachment: </strong>
+                    {title}
+                </div>
+            </div>
+        );
+    }
+});
+
+
+const QCAttachmentPreview = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object.isRequired, // QC metric object that owns the attachment to render
+        attachment: React.PropTypes.object.isRequired, // Attachment to render
+    },
+
+    render: function () {
+        const { context, attachment } = this.props;
+
+        return (
+            <figure className="document__preview">
+                <Attachment context={context} attachment={attachment} className="characterization" />
+            </figure>
+        );
+    }
+});
+
 // Display a panel for attachments that aren't a part of an associated document
-var AttachmentPanel = module.exports.AttachmentPanel = React.createClass({
+const AttachmentPanel = module.exports.AttachmentPanel = React.createClass({
     propTypes: {
         context: React.PropTypes.object.isRequired, // Object that owns the attachment; needed for attachment path
         attachment: React.PropTypes.object.isRequired, // Attachment being rendered
-        title: React.PropTypes.string // Title to display in the caption area
+        title: React.PropTypes.string, // Title to display in the caption area
+        modal: React.PropTypes.bool, // `true` if attachments are displayed in a modal
     },
 
-    render: function() {
-        var {context, attachment, title} = this.props;
+    render: function () {
+        const { context, attachment, title, modal } = this.props;
 
-        // Make the download link
-        var download, attachmentHref;
-        if (attachment.href && attachment.download) {
-            attachmentHref = url.resolve(context['@id'], attachment.href);
-            download = (
-                <div className="dl-link">
-                    <i className="icon icon-download"></i>&nbsp;
-                    <a data-bypass="true" href={attachmentHref} download={attachment.download}>
-                        Download
-                    </a>
-                </div>
-            );
-        } else {
-            download = <em>Attachment not available to download</em>;
-        }
+        // Set up rendering components.
+        const DocumentCaptionView = globals.document_views.caption.lookup(context);
+        const DocumentPreviewView = globals.document_views.preview.lookup(context);
+
+        // Determine the attachment area CSS classes based on whether they're displayed in a modal
+        // or not.
+        const attachmentClasses = `flexcol flexcol--attachment${modal ? '-modal' : ''}`;
 
         return (
-            <section className="attachment-panel">
-                <Panel addClasses={globals.itemClass(context, 'view-detail quality-metric-header')}>
-                    <figure>
-                        <Attachment context={context} attachment={attachment} className="characterization" />
-                    </figure>
-                    <div className="document-intro document-meta-data">
-                        {title ?
-                            <div data-test="attachments">
-                                <strong>Attachment: </strong>
-                                {title}
-                            </div>
-                        : null}
-                        {download}
+            <section className={attachmentClasses}>
+                <Panel addClasses={globals.itemClass(context, 'attachment')}>
+                    <div className="document__intro document__intro--attachment-only">
+                        <DocumentCaptionView title={title} />
+                        <DocumentPreviewView context={context} attachment={attachment} />
                     </div>
                 </Panel>
             </section>
         );
     }
 });
+
+
+// Register document caption rendering components
+globals.document_views.caption.register(QCAttachmentCaption, 'QualityMetric');
+
+// Register document preview rendering components
+globals.document_views.preview.register(QCAttachmentPreview, 'QualityMetric');

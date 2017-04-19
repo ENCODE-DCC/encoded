@@ -64,7 +64,7 @@ describe('Platform', function() {
             expect(listItems[1].hasChildNodes()).toBeTruthy();
             expect(listItems[1].childNodes.length).toEqual(1);
             expect(anchors[0].getAttribute('href')).toEqual('http://genome.cse.ucsc.edu/cgi-bin/hgEncodeVocab?ra=encode%2Fcv.ra&term="Illumina_HiSeq_2000"');
-            expect(anchors[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GPL11154');
+            expect(anchors[1].getAttribute('href')).toEqual('https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GPL11154');
         });
     });
 });

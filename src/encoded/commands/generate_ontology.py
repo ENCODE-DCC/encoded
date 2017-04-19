@@ -292,6 +292,32 @@ ntr_assays = {
         "synonyms": [],
         "systems": [],
         "types": []
+    },
+    "NTR:0004619": {
+        "assay": ['Transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "CRISPRi followed by RNA-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "CRISPRi RNA-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0004875": {
+        "assay": ['Genotyping'],
+        "category": [],
+        "developmental": [],
+        "name": "genotyping by Hi-C",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "genotyping Hi-C",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
     }
 }
 

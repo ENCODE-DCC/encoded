@@ -77,9 +77,9 @@ describe('Publication', function() {
             var li = ul[0].getElementsByTagName('li');
             expect(li.length).toEqual(2);
             var anchor = li[0].getElementsByTagName('a');
-            expect(anchor[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=19352372');
+            expect(anchor[0].getAttribute('href')).toEqual('https://www.ncbi.nlm.nih.gov/pubmed/?term=19352372');
             anchor = li[1].getElementsByTagName('a');
-            expect(anchor[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3062402');
+            expect(anchor[0].getAttribute('href')).toEqual('https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3062402');
         });
     });
 

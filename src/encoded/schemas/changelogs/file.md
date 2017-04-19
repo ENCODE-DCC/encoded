@@ -1,17 +1,24 @@
-=========================
-Change log for file.json
-=========================
+## Changelog for file.json
 
-Schema version 8
-----------------
+### Schema version 9.a
+
+* *paired_end* enums list was expanded to include a"1,2" value that is acceptable only for *file_format* = sra files that have *run_type* = paired_ended
+* *paired_end* value (1, 2, or 1,2) is required for files with *run_type* = paired-ended.
+* *md5sum* value formatting is now enforced with regex, validating it as a 32-character hexadecimal number.
+* *read_length* value is now required for files with *output_type* = reads and *file_format* is one of ["fastq", "fasta", "csfasta", "csqual", "sra"]
+
+### Schema version 9
+
+* property *supercedes* was renamed to *supersedes*
+* *assembly* values are no longer accepted for *file_format* = fastq
+
+### Schema version 8
 
 * *technical_replicates* was added as a calculated field.
 
 * *mapped_read_length* was added for alignments when the length of the mapped reads differs from the accessioned fastq.
 
-
-Schema version 6
-----------------
+### Schema version 6
 
 * *output_type* was updated to have more accurate terms:
 
@@ -22,9 +29,7 @@ Schema version 6
             'normalized signal of multi-mapped reads': 'normalized signal of all reads'
         }
        
-
-Schema version 5
-----------------
+### Schema version 5
 
 * *run_type* was migrated from replicate.paired_ended. It will be required for fastq files.  If run_type is paired-ended then "paired_with" will be required as well.:
 
@@ -253,8 +258,7 @@ Schema version 5
             }
 
 
-Schema version 4
-----------------
+### Schema version 4
 
 * *lab* was added
 * *award* was added

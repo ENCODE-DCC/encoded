@@ -78,3 +78,21 @@ $tooltip-color: #000;
 
     padding-left: 5px;
 }
+
+
+// When a tooltip appears next to a real button, use this to wrap that button so that even if thead
+// button gets disabled, we can add an absolutely positioned div within this div that can respond
+// to hover events, because disabled button can't.
+.tooltip-button-wrapper {
+    position: relative;
+}
+
+// Position a div within the above div that covers a disabled button. Disabled buttons can't
+// respond to hover events, so we need this overlay button to do that.
+.tooltip-button-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}

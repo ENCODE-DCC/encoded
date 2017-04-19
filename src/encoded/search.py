@@ -11,20 +11,9 @@ from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
+from .visualization import vis_format_external_url
 
 
-
-_ASSEMBLY_MAPPER = {
-    'GRCh38-minimal': 'hg38',
-    'GRCh38': 'hg38',
-    'GRCh37': 'hg19',
-    'mm10-minimal': 'mm10',
-    'GRCm38': 'mm10',
-    'GRCm37': 'mm9',
-    'BDGP6': 'dm4',
-    'BDGP5': 'dm3',
-    'WBcel235': 'WBcel235'
-}
 
 CHAR_COUNT = 32
 
@@ -33,15 +22,11 @@ def includeme(config):
     config.add_route('search', '/search{slash:/?}')
     config.add_route('report', '/report{slash:/?}')
     config.add_route('matrix', '/matrix{slash:/?}')
+    config.add_route('news', '/news/')
     config.scan(__name__)
 
 
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
-
-hgConnect = ''.join([
-    'http://genome.ucsc.edu/cgi-bin/hgTracks',
-    '?hubClear=',
-])
 
 audit_facets = [
     ('audit.ERROR.category', {'title': 'Audit category: ERROR'}),
@@ -304,35 +289,52 @@ def build_terms_filter(field, terms):
                 },
             }
 
-
-def set_filters(request, query, result):
+def set_filters(request, query, result, static_items=None):
     """
     Sets filters in the query
     """
     query_filters = query['filter']['and']['filters']
     used_filters = {}
-    for field in request.params.keys():
+    if static_items is None:
+        static_items = []
+
+    # Get query string items plus any static items, then extract all the fields
+    qs_items = list(request.params.items())
+    total_items = qs_items + static_items
+    qs_fields = [item[0] for item in qs_items]
+    fields = [item[0] for item in total_items]
+
+    # Now make lists of terms indexed by field
+    all_terms = {}
+    for item in total_items:
+        if item[0] in all_terms:
+            all_terms[item[0]].append(item[1])
+        else:
+            all_terms[item[0]] = [item[1]]
+
+    for field in fields:
         if field in used_filters:
             continue
 
-        terms = request.params.getall(field)
+        terms = all_terms[field]
         if field in ['type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
                      'format', 'frame', 'datastore', 'field', 'region', 'genome',
                      'sort', 'from', 'referrer']:
             continue
 
         # Add filter to result
-        for term in terms:
-            qs = urlencode([
-                (k.encode('utf-8'), v.encode('utf-8'))
-                for k, v in request.params.items()
-                if '{}={}'.format(k, v) != '{}={}'.format(field, term)
-            ])
-            result['filters'].append({
-                'field': field,
-                'term': term,
-                'remove': '{}?{}'.format(request.path, qs)
-            })
+        if field in qs_fields:
+            for term in terms:
+                qs = urlencode([
+                    (k.encode('utf-8'), v.encode('utf-8'))
+                    for k, v in qs_items
+                    if '{}={}'.format(k, v) != '{}={}'.format(field, term)
+                ])
+                result['filters'].append({
+                    'field': field,
+                    'term': term,
+                    'remove': '{}?{}'.format(request.path, qs)
+                })
 
         if field == 'searchTerm':
             continue
@@ -476,8 +478,10 @@ def format_results(request, hits, result=None):
             yield item
 
     # After all are yielded, it may not be too late to change this result setting
-    if not any_released and result is not None and 'batch_hub' in result:
-        del result['batch_hub']
+    #if not any_released and result is not None and 'batch_hub' in result:
+    #    del result['batch_hub']
+    if not any_released and result is not None and 'visualize_batch' in result:
+        del result['visualize_batch']
 
 
 def search_result_actions(request, doc_types, es_results, position=None):
@@ -487,20 +491,33 @@ def search_result_actions(request, doc_types, es_results, position=None):
     # generate batch hub URL for experiments
     # TODO we could enable them for Datasets as well here, but not sure how well it will work
     if doc_types == ['Experiment'] or doc_types == ['Annotation']:
+        viz = {}
         for bucket in aggregations['assembly']['assembly']['buckets']:
             if bucket['doc_count'] > 0:
                 assembly = bucket['key']
-                ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
+                if assembly in viz:  # mm10 and mm10-minimal resolve to the same thing
+                    continue
                 search_params = request.query_string.replace('&', ',,')
-                if not request.params.getall('assembly') or assembly in request.params.getall('assembly'):
+                if not request.params.getall('assembly') \
+                or assembly in request.params.getall('assembly'):
                     # filter  assemblies that are not selected
-                    hub = request.route_url('batch_hub',
-                                            search_params=search_params,
-                                            txt='hub.txt')
+                    hub_url = request.route_url('batch_hub',search_params=search_params,
+                                                txt='hub.txt')
+                    browser_urls = {}
+                    pos = None
                     if 'region-search' in request.url and position is not None:
-                        actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly + '&position={}'.format(position)
-                    else:
-                        actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly
+                        pos = position
+                    ucsc_url = vis_format_external_url("ucsc", hub_url, assembly, pos)
+                    if ucsc_url is not None:
+                        browser_urls['UCSC'] = ucsc_url
+                    ensembl_url = vis_format_external_url("ensembl", hub_url, assembly, pos)
+                    if ensembl_url is not None:
+                        browser_urls['Ensembl'] = ensembl_url
+                    if browser_urls:
+                        viz[assembly] = browser_urls
+                        #actions.setdefault('visualize_batch', {})[assembly] = browser_urls  # formerly 'batch_hub'
+        if viz:
+            actions.setdefault('visualize_batch',viz)
 
     # generate batch download URL for experiments
     # TODO we could enable them for Datasets as well here, but not sure how well it will work
@@ -1034,5 +1051,85 @@ def matrix(context, request):
         # http://googlewebmastercentral.blogspot.com/2014/02/faceted-navigation-best-and-5-of-worst.html
         request.response.status_code = 404
         result['notification'] = 'No results found'
+
+    return result
+
+@view_config(route_name='news', request_method='GET', permission='search')
+def news(context, request):
+    """
+    Return search results for news Page items.
+    """
+    types = request.registry[TYPES]
+    es = request.registry[ELASTIC_SEARCH]
+    es_index = request.registry.settings['snovault.elasticsearch.index']
+    search_base = normalize_query(request)
+    principals = effective_principals(request)
+
+    # Set up initial results metadata; we'll add the search results to them later.
+    result = {
+        '@context': request.route_path('jsonld_context'),
+        '@id': '/news/' + search_base,
+        '@type': ['News'],
+        'filters': [],
+        'notification': '',
+    }
+
+    # We have no query string to specify a type, but we know we want 'Page' for news items.
+    doc_types = ['Page']
+
+    # Get the fields we want to receive from the search.
+    search_fields, highlights = get_search_fields(request, doc_types)
+
+    # Build filtered query for Page items for news.
+    query = get_filtered_query('*',
+                               search_fields,
+                               sorted(list_result_fields(request, doc_types)),
+                               principals,
+                               doc_types)
+
+    # Set sort order to sort by date_created.
+    sort = OrderedDict()
+    result_sort = OrderedDict()
+    sort['embedded.date_created.raw'] = result_sort['date_created'] = {
+        'order': 'desc',
+        'ignore_unmapped': True,
+    }
+    query['sort'] = sort
+    result['sort'] = result_sort
+
+    # Set filters; has side effect of setting result['filters']. We add some static terms since we
+    # have search parameters not specified in the query string.
+    used_filters = set_filters(request, query, result, [('type', 'Page'), ('news', 'true'), ('status', 'released')])
+
+    # Build up the facets to search.
+    facets = []
+    if len(doc_types) == 1 and 'facets' in types[doc_types[0]].schema:
+        facets.extend(types[doc_types[0]].schema['facets'].items())
+
+    # Perform the search of news items.
+    query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
+    es_results = es.search(body=query, index=es_index, from_=0, size=25)
+    total = es_results['hits']['total']
+
+    # Return 404 if no results found.
+    if not total:
+        # http://googlewebmastercentral.blogspot.com/2014/02/faceted-navigation-best-and-5-of-worst.html
+        request.response.status_code = 404
+        result['notification'] = 'No results found'
+        result['@graph'] = []
+        return result
+
+    # At this stage, we know we have good results.
+    result['notification'] = 'Success'
+    result['total'] = total
+
+    # Place the search results into the @graph property.
+    graph = format_results(request, es_results['hits']['hits'], result)
+    result['@graph'] = list(graph)
+
+    # Insert the facet data into the results.
+    types = request.registry[TYPES]
+    schemas = [types[doc_type].schema for doc_type in doc_types]
+    result['facets'] = format_facets(es_results, facets, used_filters, schemas, total, principals)
 
     return result

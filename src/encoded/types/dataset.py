@@ -8,6 +8,7 @@ from .base import (
     Item,
     paths_filtered_by_status,
 )
+from pyramid.security import effective_principals
 
 from urllib.parse import quote_plus
 from urllib.parse import urljoin
@@ -25,7 +26,7 @@ from .shared_calculated_properties import (
 
 from itertools import chain
 import datetime
-from ..search import _ASSEMBLY_MAPPER
+from ..visualization import vis_format_external_url
 
 
 def item_is_revoked(request, path):
@@ -79,7 +80,7 @@ class Dataset(Item):
         'revoked_files.submitted_by',
         'submitted_by',
         'lab',
-        'award',
+        'award.pi.lab',
         'documents.lab',
         'documents.award',
         'documents.submitted_by',
@@ -189,22 +190,39 @@ class Dataset(Item):
         return request.resource_path(self, '@@hub', 'hub.txt')
 
     @calculated_property(condition='hub', category='page', schema={
-        "title": "Visualize at UCSC",
+        "title": "Visualize Data",
         "type": "string",
     })
-    def visualize_ucsc(self, request, hub, assembly, status):
-        if status  != 'released':
-            return {}
+    def visualize(self, request, hub, accession, assembly, status):
+        principals = effective_principals(request)
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
-        for assembly_hub in assembly:
-            ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly_hub, assembly_hub)
-            ucsc_url = (
-                'http://genome.ucsc.edu/cgi-bin/hgTracks'
-                '?hubClear='
-            ) + quote_plus(hub_url, ':/@') + '&db=' + ucsc_assembly
-            viz[assembly_hub] = ucsc_url
-        return viz
+        for assembly_name in assembly:
+            if assembly_name in viz:  # mm10 and mm10-minimal resolve to the same thing
+                continue
+            browser_urls = {}
+            if status == 'released':  # Non-biodalliance is for released experiments/files only
+                ucsc_url = vis_format_external_url("ucsc", hub_url, assembly_name)
+                if ucsc_url is not None:
+                    browser_urls['UCSC'] = ucsc_url
+                ensembl_url = vis_format_external_url("ensembl", hub_url, assembly_name)
+                if ensembl_url is not None:
+                    browser_urls['Ensembl'] = ensembl_url
+            # Now for biodalliance.  bb and bw already known?  How about non-deleted?
+            # TODO: define (in visualization.py?) supported assemblies list
+            if 'group.submitter' in principals and assembly_name in ['hg19', 'GRCh38', 'mm10', 'mm10-minimal' ,'mm9','dm6','dm3','ce11']:
+                if status not in ["proposed", "started", "deleted", "revoked", "replaced"]:
+                    file_formats = '&file_format=bigBed&file_format=bigWig'
+                    file_inclusions = '&status=released&status=in+progress'
+                    bd_path = ('/search/?type=File&assembly=%s&dataset=/experiments/%s/%s%s#browser' %
+                               (assembly_name,accession,file_formats,file_inclusions))
+                    browser_urls['Quick View'] = bd_path  # no host to avoid 'test' problems
+            if browser_urls:
+                viz[assembly_name] = browser_urls
+        if viz:
+            return viz
+        else:
+            return None
 
     @calculated_property(condition='date_released', schema={
         "title": "Month released",
@@ -328,7 +346,6 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
         'files.quality_metrics.step_run',
         'files.quality_metrics.step_run.analysis_step_version.analysis_step',
         'files.replicate.library',
-        'supersedes',
     ]
     rev = Dataset.rev.copy()
     rev.update({
@@ -481,7 +498,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'organism',
         'target',
         'target.organism',
-        'award.pi.lab',
         'references',
         'related_datasets.files',
         'related_datasets.files.analysis_step_version',

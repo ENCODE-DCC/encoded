@@ -228,6 +228,7 @@ def experiment(testapp, lab, award):
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
 
+
 @pytest.fixture
 def base_experiment(testapp, lab, award):
     item = {
@@ -237,6 +238,7 @@ def base_experiment(testapp, lab, award):
         'status': 'started'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def replicate(testapp, experiment, library):
@@ -257,6 +259,7 @@ def file(testapp, lab, award, experiment):
         'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
         'output_type': 'raw data',
         'lab': lab['@id'],
+        'file_size': 34,
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
     }
@@ -268,9 +271,11 @@ def fastq_file(testapp, lab, award, experiment, replicate):
     item = {
         'dataset': experiment['@id'],
         'file_format': 'fastq',
-        'md5sum': 'd41d8cd9f00b204e9800998ecf8427e',
+        'md5sum': '91be74b6e11515393507f4ebfa66d78b',
         'replicate': replicate['@id'],
         'output_type': 'reads',
+        "read_length": 36,
+        'file_size': 34,
         'run_type': 'single-ended',
         'lab': lab['@id'],
         'award': award['@id'],
@@ -284,7 +289,8 @@ def bam_file(testapp, lab, award, experiment):
     item = {
         'dataset': experiment['@id'],
         'file_format': 'bam',
-        'md5sum': 'd41d8cd9f00b204e9800998ecf86674427e',
+        'file_size': 34,
+        'md5sum': '91be74b6e11515393507f4ebfa66d78c',
         'output_type': 'alignments',
         'assembly': 'hg19',
         'lab': lab['@id'],
@@ -299,9 +305,10 @@ def bigWig_file(testapp, lab, award, experiment):
     item = {
         'dataset': experiment['@id'],
         'file_format': 'bigWig',
-        'md5sum': 'd41d8cd9sf00b204e9800998ecf86674427e',
+        'md5sum': '91be74b6e11515393507f4ebfa66d78d',
         'output_type': 'signal of unique reads',
         'assembly': 'mm10',
+        'file_size': 34,
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
@@ -314,8 +321,9 @@ def file_ucsc_browser_composite(testapp, lab, award, ucsc_browser_composite):
     item = {
         'dataset': ucsc_browser_composite['@id'],
         'file_format': 'fasta',
-        'md5sum': '3f9ae164abb55a93bcd891b192d86164',
+        'md5sum': '91be74b6e11515393507f4ebfa66d77a',
         'output_type': 'raw data',
+        'file_size': 34,
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
@@ -400,9 +408,9 @@ def treatment(testapp, organism):
     item = {
         'treatment_term_name': 'ethanol',
         'treatment_type': 'chemical'
-       
     }
     return testapp.post_json('/treatment', item).json['@graph'][0]
+
 
 @pytest.fixture
 def attachment():
@@ -785,7 +793,7 @@ def pipeline_bam(testapp, lab, award, analysis_step_bam):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'title': "Histone ChIP-seq",
+        'title': "ChIP-seq read mapping",
         'assay_term_name': 'ChIP-seq',
         'analysis_steps': [analysis_step_bam['@id']]
     }

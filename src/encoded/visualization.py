@@ -1,5 +1,6 @@
 from pyramid.response import Response
 from pyramid.view import view_config
+from pyramid.compat import bytes_
 from snovault import Item
 from collections import OrderedDict
 from copy import deepcopy
@@ -18,7 +19,6 @@ from pyramid.events import subscriber
 from .peak_indexer import AfterIndexedExperimentsAndDatasets
 
 import logging
-from .search import _ASSEMBLY_MAPPER
 
 log = logging.getLogger(__name__)
 # log.setLevel(logging.DEBUG)
@@ -27,6 +27,88 @@ log.setLevel(logging.INFO)
 # NOTE: Caching is turned on and off with this global AND TRACKHUB_CACHING in peak_indexer.py
 USE_CACHE = True  # Use elasticsearch caching of individual acc_composite blobs
 
+
+_ASSEMBLY_MAPPER = {
+    'GRCh38-minimal': 'hg38',
+    'GRCh38': 'hg38',
+    'GRCh37': 'hg19',
+    'mm10-minimal': 'mm10',
+    'GRCm38': 'mm10',
+    'NCBI37': 'mm9',
+    'BDGP6': 'dm6',
+    'BDGP5': 'dm3',
+    'WBcel235': 'ce11'
+}
+
+_ASSEMBLY_MAPPER_FULL = {
+    'GRCh38':         { 'species':          'Homo sapiens',     'assembly_reference': 'GRCh38',
+                        'common_name':      'human',
+                        'ucsc_assembly':    'hg38',
+                        'ensembl_host':     'www.ensembl.org',
+                        'comment':          'Ensembl works'
+    },
+    'GRCh38-minimal': { 'species':          'Homo sapiens',     'assembly_reference': 'GRCh38',
+                        'common_name':      'human',
+                        'ucsc_assembly':    'hg38',
+                        'ensembl_host':     'www.ensembl.org',
+    },
+    'hg19': {           'species':          'Homo sapiens',     'assembly_reference': 'GRCh37',
+                        'common_name':      'human',
+                        'ucsc_assembly':    'hg19',
+                        'NA_ensembl_host':  'grch37.ensembl.org',
+                        'comment':          'Ensembl DOES NOT WORK'
+    },
+    'mm10': {           'species':          'Mus musculus',     'assembly_reference': 'GRCm38',
+                        'common_name':      'mouse',
+                        'ucsc_assembly':    'mm10',
+                        'ensembl_host':     'www.ensembl.org',
+                        'comment':          'Ensembl works'
+    },
+    'mm10-minimal': {   'species':          'Mus musculus',     'assembly_reference': 'GRCm38',
+                        'common_name':      'mouse',
+                        'ucsc_assembly':    'mm10',
+                        'ensembl_host':     'www.ensembl.org',
+                        'comment':          'Should this be removed?'
+    },
+    'mm9': {            'species':          'Mus musculus',     'assembly_reference': 'NCBI37',
+                        'common_name':      'mouse',
+                        'ucsc_assembly':    'mm9',
+                        'NA_ensembl_host':  'may2012.archive.ensembl.org',
+                        'comment':          'Ensembl DOES NOT WORK'
+    },
+    'dm6': {    'species':          'Drosophila melanogaster',  'assembly_reference': 'BDGP6',
+                'common_name':      'fruit fly',
+                'ucsc_assembly':    'dm6',
+                'NA_ensembl_host':  'www.ensembl.org',
+                'comment':          'Ensembl DOES NOT WORK'
+    },
+    'dm3': {    'species':          'Drosophila melanogaster',  'assembly_reference': 'BDGP5',
+                'common_name':      'fruit fly',
+                'ucsc_assembly':    'dm3',
+                'NA_ensembl_host':  'dec2014.archive.ensembl.org',
+                'comment':          'Ensembl DOES NOT WORK'
+    },
+    'ce11': {   'species':          'Caenorhabditis elegans',   'assembly_reference': 'WBcel235',
+                'common_name':      'worm',
+                'ucsc_assembly':    'ce11',
+                'NA_ensembl_host':  'www.ensembl.org',
+                'comment':          'Ensembl DOES NOT WORK'
+    },
+    'ce10': {   'species':          'Caenorhabditis elegans',   'assembly_reference': 'WS220',
+                'common_name':      'worm',
+                'ucsc_assembly':    'ce10',
+                'comment':          'Never Ensembl'
+    },
+    'ce6': {    'species':          'Caenorhabditis elegans',   'assembly_reference': 'WS190',
+                'common_name':      'worm',
+                'ucsc_assembly':    'ce6',
+                'comment':          'Never Ensembl, not found in encoded'
+    },
+    'J02459.1': {   'species':      'Escherichia virus Lambda', 'assembly_reference': 'J02459.1',
+                    'common_name':  'lambda phage',
+                    'comment':      'Never visualized'
+    },
+}
 
 def includeme(config):
     config.add_route('batch_hub', '/batch_hub/{search_params}/{txt}')
@@ -239,7 +321,7 @@ def lookup_token(token, dataset, a_file=None):
         else:
             return ""
     else:
-        log.warn('Untranslated token: "%s"' % token)
+        log.debug('Untranslated token: "%s"' % token)
         return "unknown"
 
 
@@ -294,7 +376,7 @@ def get_vis_type(dataset):
         if len(assay) == 1:
             assay = assay[0]
         else:
-            log.warn("assay_term_name for %s is unexpectedly a list %s" %
+            log.debug("assay_term_name for %s is unexpectedly a list %s" %
                      (dataset['accession'], str(assay)))
             return "opaque"
 
@@ -311,7 +393,7 @@ def get_vis_type(dataset):
     if assay in ["RNA-seq", "single cell isolation followed by RNA-seq"]:
         reps = dataset.get("replicates", [])  # NOTE: overly cautious
         if len(reps) < 1:
-            log.warn("Could not distinguish between long and short RNA for %s because there are "
+            log.debug("Could not distinguish between long and short RNA for %s because there are "
                      "no replicates.  Defaulting to short." % (dataset.get("accession")))
             return "SRNA"  # this will be more noticed if there is a mistake
         size_range = reps[0].get("library", {}).get("size_range", "")
@@ -320,7 +402,7 @@ def get_vis_type(dataset):
                 min_size = int(size_range[1:])
                 max_size = min_size
             except:
-                log.warn("Could not distinguish between long and short RNA for %s.  "
+                log.debug("Could not distinguish between long and short RNA for %s.  "
                          "Defaulting to short." % (dataset.get("accession")))
                 return "SRNA"  # this will be more noticed if there is a mistake
         elif size_range.startswith('<'):
@@ -328,7 +410,7 @@ def get_vis_type(dataset):
                 max_size = int(size_range[1:]) - 1
                 min_size = 0
             except:
-                log.warn("Could not distinguish between long and short RNA for %s.  "
+                log.debug("Could not distinguish between long and short RNA for %s.  "
                          "Defaulting to short." % (dataset.get("accession")))
                 return "SRNA"  # this will be more noticed if there is a mistake
         else:
@@ -337,7 +419,7 @@ def get_vis_type(dataset):
                 min_size = int(sizes[0])
                 max_size = int(sizes[1])
             except:
-                log.warn("Could not distinguish between long and short RNA for %s.  "
+                log.debug("Could not distinguish between long and short RNA for %s.  "
                          "Defaulting to short." % (dataset.get("accession")))
                 return "SRNA"  # this will be more noticed if there is a mistake
         if max_size <= 200 and max_size != min_size:
@@ -350,7 +432,7 @@ def get_vis_type(dataset):
         else:
             return "SRNA"
 
-    log.warn("%s (assay:'%s') has undefined vis_type" % (dataset['accession'], assay))
+    log.debug("%s (assay:'%s') has undefined vis_type" % (dataset['accession'], assay))
     return "opaque"  # This becomes a dict key later so None is not okay
 
 # TODO:
@@ -582,7 +664,7 @@ def lookup_colors(dataset):
             if len(biosample_term) == 1:
                 biosample_term = biosample_term[0]
             else:
-                log.warn("%s has biosample_type %s that is unexpectedly a list" %
+                log.debug("%s has biosample_type %s that is unexpectedly a list" %
                          (dataset['accession'], str(biosample_term)))
                 biosample_term = "unknown"  # really only seen in test data!
         coloring = BIOSAMPLE_COLOR.get(biosample_term, {})
@@ -593,7 +675,7 @@ def lookup_colors(dataset):
                 if len(biosample_term) == 1:
                     biosample_term = biosample_term[0]
                 else:
-                    log.warn("%s has biosample_term_name %s that is unexpectedly a list" %
+                    log.debug("%s has biosample_term_name %s that is unexpectedly a list" %
                              (dataset['accession'], str(biosample_term)))
                     biosample_term = "unknown"  # really only seen in test data!
             coloring = BIOSAMPLE_COLOR.get(biosample_term, {})
@@ -884,7 +966,7 @@ def generate_live_groups(composite, title, group_defs, dataset, rep_tags=[]):
                 tag_order.append(subgroup_tag)
             # assert(len(live_group["groups"]) == len(groups))
             if len(live_group['groups']) != len(groups):
-                log.warn("len(live_group['groups']):%d != len(groups):%d" %
+                log.debug("len(live_group['groups']):%d != len(groups):%d" %
                          (len(live_group['groups']), len(groups)))
                 log.debug(json.dumps(live_group, indent=4))
             live_group["group_order"] = tag_order
@@ -1185,7 +1267,7 @@ def make_acc_composite(dataset, assembly, host=None, hide=False):
     vis_type = get_vis_type(dataset)
     vis_defs = lookup_vis_defs(vis_type)
     if vis_defs is None:
-        log.warn("%s (vis_type: %s) has undiscoverable vis_defs." %
+        log.debug("%s (vis_type: %s) has undiscoverable vis_defs." %
                  (dataset["accession"], vis_type))
         return {}
     composite = {}
@@ -1657,10 +1739,10 @@ def remodel_acc_to_ihec_json(acc_composites, request=None):
         # Find/create sample:
         biosample_name = acc_composite.get('biosample_term_name', 'none')
         if biosample_name == 'none':
-            log.warn("acc_composite %s is missing biosample_name", acc)
+            log.debug("acc_composite %s is missing biosample_name", acc)
         molecule = acc_composite.get('molecule', 'none')  # ["total RNA", "polyA RNA", ...
         if molecule == 'none':
-            log.warn("acc_composite %s is missing molecule", acc)
+            log.debug("acc_composite %s is missing molecule", acc)
         sample_id = "%s; %s" % (biosample_name, molecule)
         if sample_id not in samples:
             sample = {}
@@ -1832,7 +1914,9 @@ def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
     json_out = (request.url.find("jsonout") > -1)
     ihec_out = (request.url.find("ihecjson") > -1)
     if json_out:
-        return json.dumps(acc_composite, indent=4, sort_keys=True)
+        acc_composites = {} # Standardize output for biodalliance use
+        acc_composites[acc] = acc_composite
+        return json.dumps(acc_composites, indent=4, sort_keys=True)
     elif ihec_out:
         ihec_json = remodel_acc_to_ihec_json({acc: acc_composite}, request)
         return json.dumps(ihec_json, indent=4, sort_keys=True)
@@ -1928,9 +2012,12 @@ def generate_batch_trackDb(request, hide=False, regen=False):
     set_composites = {}
     if found > 0 or made > 0:
         ihec_out = (request.url.find("ihecjson") > -1)  # ...&ambly=hg19&ihecjson/hg19/trackDb.txt
+        acc_json = (request.url.find("accjson") > -1)  # ...&bly=hg19&accjson/hg19/trackDb.txt
         if ihec_out:
             ihec_json = remodel_acc_to_ihec_json(acc_composites, request)
             blob = json.dumps(ihec_json, indent=4, sort_keys=True)
+        if acc_json:
+            blob = json.dumps(acc_composites, indent=4, sort_keys=True)
         else:
             set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100)
 
@@ -1995,6 +2082,9 @@ def prime_vis_es_cache(event):
         log.info("Starting prime_vis_es_cache: %d uuids" % (raw_count))
     else:
         log.debug("Starting prime_vis_es_cache: %d uuids" % (raw_count))
+
+    # NOTE: the request object coming from the peak indexer was not using elasticsearch!
+    request.datastore = 'elasticsearch'
 
     visualizabe_types = set(VISIBLE_DATASET_TYPES)
     count = 0
@@ -2076,6 +2166,46 @@ def get_hub(label, comment=None, name=None):
         ('#', comment)
     ])
     return render(hub)
+
+
+def vis_format_external_url(browser, hub_url, assembly, position=None):
+    '''Given a url to hub.txt, returns the url to an external browser or None.'''
+    mapped_assembly = _ASSEMBLY_MAPPER_FULL[assembly]
+    if not mapped_assembly:
+        return None
+    if browser == "ucsc":
+        ucsc_assembly = mapped_assembly.get('ucsc_assembly')
+        if ucsc_assembly is not None:
+            external_url = 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear='
+            external_url += hub_url + '&db=' + ucsc_assembly
+            if position is not None:
+                external_url += '&position={}'.format(position)
+            return external_url
+    elif browser == "ensembl":
+        ensembl_host = mapped_assembly.get('ensembl_host')
+        if ensembl_host is not None:
+            external_url = 'http://' + ensembl_host + '/Trackhub?url='
+            external_url += hub_url + ';species=' + mapped_assembly.get('species').replace(' ','_')
+            ### TODO: remove redirect=no when Ensembl fixes their mirrors
+            external_url += ';redirect=no'
+            ### TODO: remove redirect=no when Ensembl fixes their mirrors
+
+            if position is not None:
+                if position.startswith('chr'):
+                    position = position[3:]  # ensembl position r=19:7069444-7087968
+                external_url += '&r={}'.format(position)
+            # GRCh38:   http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR596NOF/@@hub/hub.txt
+            # GRCh38:   http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR596NOF/@@hub/hub.txt;species=Homo_sapiens
+            # hg19/GRCh37:     http://grch37.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR596NOF/@@hub/hub.txt;species=Homo_sapiens
+            # mm10/GRCm38:     http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR475TDY@@hub/hub.txt;species=Mus_musculus
+            # mm9/NCBIM37:      http://may2012.archive.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR000CNV@@hub/hub.txt;species=Mus_musculus
+            # BDGP6:    http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR040UNE@@hub/hub.txt;species=Drosophila_melanogaster
+            # BDGP5:    http://dec2014.archive.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR040UNE@@hub/hub.txt;species=Drosophila_melanogaster
+            # ce11/WBcel235: http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR475TDY@@hub/hub.txt;species=Caenorhabditis_elegans
+            return external_url
+    #else:
+        # ERROR: not supported at this time
+    return None
 
 
 def generate_html(context, request):
@@ -2182,6 +2312,28 @@ def generate_batch_hubs(context, request):
                         g_text = get_genomes_txt(assemblies)
         return g_text
 
+def respond_with_text(request, text, content_mime):
+    '''Resonse that can handle range requests.'''
+    # UCSC broke trackhubs and now we must handle byterange requests on these CGI files
+    response = request.response
+    response.content_type = content_mime
+    response.charset = 'UTF-8'
+    response.body = bytes_(text, 'utf-8')
+    response.accept_ranges = "bytes"
+    response.last_modified = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.gmtime())
+    if 'Range' in request.headers:
+        range_request = True
+        range = request.headers['Range']
+        if range.startswith('bytes'):
+            range = range.split('=')[1]
+        range = range.split('-')
+        # One final present... byterange '0-' with no end in sight
+        if range[1] == '':
+            range[1] = len(response.body) - 1
+        response.content_range = 'bytes %d-%d/%d' % (int(range[0]),int(range[1]),len(response.body))
+        response.app_iter = request.response.app_iter_range(int(range[0]),int(range[1]) + 1)
+        response.status_code = 206
+    return response
 
 @view_config(name='hub', context=Item, request_method='GET', permission='view')
 def hub(context, request):
@@ -2192,34 +2344,38 @@ def hub(context, request):
     url_ret = (request.url).split('@@hub')
     embedded = request.embed(request.resource_path(context))
 
-    if url_ret[1][1:] == HUB_TXT:
+    url_end = url_ret[1][1:]
+    content_mime = 'text/plain'
+    if url_end == HUB_TXT:
         typeof = embedded.get("assay_title")
         if typeof is None:
             typeof = embedded["@id"].split('/')[1]
 
         label = "%s %s" % (typeof, embedded['accession'])
         name = sanitize_name(label)
-        return Response(NEWLINE.join(get_hub(label, request.url, name)),
-                        content_type='text/plain')
-    elif url_ret[1][1:] == GENOMES_TXT:
+        text = NEWLINE.join(get_hub(label, request.url, name))
+    elif url_end == GENOMES_TXT:
         assemblies = ''
         if 'assembly' in embedded:
             assemblies = embedded['assembly']
 
-        g_text = get_genomes_txt(assemblies)
-        return Response(g_text, content_type='text/plain')
+        text = get_genomes_txt(assemblies)
 
-    elif url_ret[1][1:].endswith(TRACKDB_TXT):
-        trackDb = generate_trackDb(request, embedded, url_ret[1][1:].split('/')[0])
-        return Response(trackDb, content_type='text/plain')
+    elif url_end.endswith(TRACKDB_TXT):
+        text = generate_trackDb(request, embedded, url_end.split('/')[0])
     else:
         data_policy = ('<br /><a href="http://encodeproject.org/ENCODE/terms.html">'
                        'ENCODE data use policy</p>')
-        return Response(generate_html(context, request) + data_policy, content_type='text/html')
+        text = generate_html(context, request) + data_policy
+        content_mime = 'text/html'
+
+    return respond_with_text(request, text, content_mime)
 
 
 @view_config(route_name='batch_hub')
 @view_config(route_name='batch_hub:trackdb')
 def batch_hub(context, request):
     ''' View for batch track hubs '''
-    return Response(generate_batch_hubs(context, request), content_type='text/plain')
+
+    text = generate_batch_hubs(context, request)
+    return respond_with_text(request, text, 'text/plain')
