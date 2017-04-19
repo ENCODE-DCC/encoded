@@ -556,6 +556,22 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
             if item_is_revoked(request, path)
         ]
 
+    @calculated_property(define=True, schema={
+        "title": "Assembly",
+        "type": "array",
+        "items": {
+            "type": "string",
+        },
+    })
+    def assembly(self, request, original_files, related_datasets, status):
+        assembly = set()
+        assembly.add(calculate_assembly(request, original_files, status))
+        for path in related_datasets:
+            properties = request.embed(path, '@@object')
+            if properties['status'] not in ('deleted', 'replaced'):
+                assembly.add(properties['assembly'])
+        return list(assembly)
+
 
 @collection(
     name='matched-sets',
