@@ -7,6 +7,7 @@ def experiment_pipeline_error(testapp, lab, award):
         'lab': lab['@id'],
         'award': award['@id'],
         'assay_term_name': 'ChIP-seq',
+        'biosample_type': 'in vitro sample',
         'internal_status': 'pipeline error'
     }
     return item
