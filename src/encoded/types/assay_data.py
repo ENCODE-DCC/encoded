@@ -45,5 +45,6 @@ assay_terms = {
       'Bru-seq': 'OBI:0002113',
       'BruChase-seq': 'OBI:0002114',
       'genetic modification followed by DNase-seq': 'NTR:0004774',
-      'CRISPRi followed by RNA-seq': 'NTR:0004619'
+      'CRISPRi followed by RNA-seq': 'NTR:0004619',
+      'genotyping by Hi-C': 'NTR:0004875'
 }

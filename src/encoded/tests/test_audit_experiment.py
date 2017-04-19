@@ -298,6 +298,7 @@ def file_fastq_2(testapp, lab, award, base_experiment, base_replicate):
         'file_format': 'fastq',
         'md5sum': '94be74b6e14515393547f4ebfa66d77a',
         'run_type': "paired-ended",
+        'paired_end': '1',
         'output_type': 'reads',
         "read_length": 50,
         'file_size': 34,
@@ -319,6 +320,7 @@ def file_fastq_3(testapp, lab, award, base_experiment, replicate_1_1):
         "read_length": 50,
         'md5sum': '21be74b6e11515393507f4ebfa66d77a',
         'run_type': "paired-ended",
+        'paired_end': '1',
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
@@ -335,6 +337,7 @@ def file_fastq_4(testapp, lab, award, base_experiment, replicate_2_1):
         'file_size': 34,
         'md5sum': '11be74b6e11515393507f4ebfa66d77a',
         'run_type': "paired-ended",
+        'paired_end': '1',
         'output_type': 'reads',
         "read_length": 50,
         'lab': lab['@id'],
@@ -352,6 +355,7 @@ def file_fastq_5(testapp, lab, award, base_experiment, replicate_2_1):
         'file_format': 'fastq',
         'md5sum': '91be79b6e11515993509f4ebfa66d77a',
         'run_type': "paired-ended",
+        'paired_end': '1',
         "read_length": 50,
         'output_type': 'reads',
         'file_size': 34,
@@ -2419,46 +2423,7 @@ def test_audit_experiment_dnase_low_correlation(testapp,
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'insufficient replicate concordance' for error in errors_list)
 
-
-def test_audit_experiment_dnase_duplication(testapp,
-                                            base_experiment,
-                                            replicate_1_1,
-                                            replicate_2_1,
-                                            library_1,
-                                            library_2,
-                                            biosample_1,
-                                            mouse_donor_1,
-                                            file_fastq_3,
-                                            file_bam_1_1,
-                                            duplicates_quality_metric,
-                                            analysis_step_run_bam,
-                                            analysis_step_version_bam,
-                                            analysis_step_bam,
-                                            pipeline_bam):
-    testapp.patch_json(
-        duplicates_quality_metric['@id'], {'quality_metric_of': [file_bam_1_1['@id']]})
-    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
-                                             'assembly': 'mm10',
-                                             'output_type': 'alignments',
-                                             'derived_from': [file_fastq_3['@id']]})
-    testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'DNase-HS pipeline (single-end)'})
-    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
-    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
-    testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
-    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
-    testapp.patch_json(library_2['@id'], {'biosample': biosample_1['@id']})
-    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
-    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
-    testapp.patch_json(base_experiment['@id'], {'status': 'released',
-                                                'date_released': '2016-01-01',
-                                                'assay_term_name': 'DNase-seq'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'extremely high duplication rate' for error in errors_list)
+# duplication rate audit was removed from v54
 
 
 def test_audit_experiment_dnase_seq_missing_read_depth(testapp,
@@ -2712,102 +2677,8 @@ def test_audit_experiment_control_out_of_date_analysis_no_signal_files(testapp,
         errors_list.extend(errors[error_type])
     assert all(error['category'] != 'out of date analysis' for error in errors_list)
 
-
-def test_audit_experiment_modERN_control_missing_files(testapp,
-                                                       award,
-                                                       base_experiment,
-                                                       replicate_1_1,
-                                                       library_1,
-                                                       biosample_1,
-                                                       file_fastq_3,
-                                                       file_fastq_4,
-                                                       file_bam_1_1,
-                                                       file_bam_2_1,
-                                                       file_tsv_1_2,
-                                                       analysis_step_run_bam,
-                                                       analysis_step_version_bam,
-                                                       analysis_step_bam,
-                                                       pipeline_bam,
-                                                       target_control):
-    testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'Transcription factor ChIP-seq pipeline (modERN)'})
-    testapp.patch_json(base_experiment['@id'], {'target': target_control['@id'],
-                                                'status': 'released',
-                                                'date_released': '2016-01-01',
-                                                "assay_term_name": "ChIP-seq"})
-    testapp.patch_json(award['@id'], {'rfa': 'modERN'})
-    testapp.patch_json(file_fastq_4['@id'], {'replicate': replicate_1_1['@id']})
-    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
-                                             'assembly': 'mm10',
-                                             'output_type': 'alignments',
-                                             'file_format': 'bam',
-                                             'derived_from': [file_fastq_3['@id']]})
-    testapp.patch_json(file_bam_2_1['@id'], {'step_run': analysis_step_run_bam['@id'],
-                                             'assembly': 'mm10',
-                                             'output_type': 'signal of unique reads',
-                                             'file_format': 'bigWig',
-                                             'derived_from': [file_fastq_4['@id']]})
-    testapp.patch_json(file_tsv_1_2['@id'], {'step_run': analysis_step_run_bam['@id'],
-                                             'assembly': 'mm9',
-                                             'output_type': 'read-depth normalized signal',
-                                             'file_format': 'bigWig',
-                                             'status': 'released',
-                                             'derived_from': [file_fastq_4['@id']]})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing pipeline files' for error in errors_list)
-
-
-def test_audit_experiment_modERN_experiment_missing_files(testapp,
-                                                          award,
-                                                          base_experiment,
-                                                          replicate_1_1,
-                                                          library_1,
-                                                          biosample_1,
-                                                          file_fastq_3,
-                                                          file_fastq_4,
-                                                          file_bam_1_1,
-                                                          file_bam_2_1,
-                                                          file_tsv_1_2,
-                                                          analysis_step_run_bam,
-                                                          analysis_step_version_bam,
-                                                          analysis_step_bam,
-                                                          pipeline_bam,
-                                                          target_H3K9me3):
-
-    testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'Transcription factor ChIP-seq pipeline (modERN)'})
-    testapp.patch_json(award['@id'], {'rfa': 'modERN'})
-    testapp.patch_json(base_experiment['@id'], {'target': target_H3K9me3['@id'],
-                                                'status': 'released',
-                                                'date_released': '2016-01-01',
-                                                'assay_term_name': 'ChIP-seq'})
-
-    testapp.patch_json(file_fastq_4['@id'], {'replicate': replicate_1_1['@id']})
-    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
-                                             'assembly': 'mm10',
-                                             'output_type': 'alignments',
-                                             'file_format': 'bam',
-                                             'derived_from': [file_fastq_3['@id']]})
-    testapp.patch_json(file_bam_2_1['@id'], {'step_run': analysis_step_run_bam['@id'],
-                                             'assembly': 'mm10',
-                                             'output_type': 'signal of unique reads',
-                                             'file_format': 'bigWig',
-                                             'derived_from': [file_fastq_4['@id']]})
-    testapp.patch_json(file_tsv_1_2['@id'], {'step_run': analysis_step_run_bam['@id'],
-                                             'assembly': 'mm10',
-                                             'output_type': 'read-depth normalized signal',
-                                             'file_format': 'bigWig',
-                                             'derived_from': [file_fastq_4['@id']]})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing pipeline files' for error in errors_list)
+# def test_audit_experiment_modERN_control_missing_files() removed from v54
+# def test_audit_experiment_modERN_experiment_missing_files() removed from v54
 
 
 def test_audit_experiment_wgbs_standards(testapp,
