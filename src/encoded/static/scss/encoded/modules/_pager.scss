@@ -1,0 +1,44 @@
+$pager-dimension: 24px;
+
+
+// Contains the pager's direcion buttons and index.
+.pager {
+    display: inline-flex;
+    border: 1px solid #c0c0c0;
+    border-radius: 2px;
+    background-color: white;
+}
+
+
+// Pager's direction buttons.
+.pager__dir {
+    flex: 0 0 auto;
+    padding: 0;
+    height: $pager-dimension;
+    width: $pager-dimension;
+    line-height: $pager-dimension;
+    border: none;
+    background-color: transparent;
+    color: $std-href-color;
+
+    &:hover {
+        background-color: #e0e0e0;
+    }
+
+    &:disabled {
+        color: #a0a0a0;
+        background-color: #fff;
+    }
+}
+
+// Pager index (x OF y)
+.pager__index {
+    flex: 0 0 auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: $pager-dimension;
+    line-height: $pager-dimension;
+    font-weight: bold;
+    border-left: 1px solid #c0c0c0;
+    border-right: 1px solid #c0c0c0;
+}

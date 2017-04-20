@@ -1,12 +1,14 @@
 import React from 'react';
 import moment from 'moment';
+import _ from 'underscore';
+import Pager from '../libs/bootstrap/pager';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import globals from './globals';
 import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel } from './doc';
 import { FetchedItems } from './fetched';
-import { requestFiles, requestObjects, RestrictedDownloadButton } from './objectutils';
+import { requestFiles, requestObjects, requestSearch, RestrictedDownloadButton } from './objectutils';
 import { ProjectBadge } from './image';
 import { QualityMetricsPanel } from './quality_metric';
 import { PickerActionsMixin } from './search';
@@ -39,6 +41,144 @@ const derivingCols = {
         display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
     },
 };
+
+
+// Sort files processed from <PagedFileTable>. The files come in an array of objects with the
+// format:
+// [{
+//     @id: @id of the file
+//     accession: accession of the file, if any
+//     title: title of the file, if any (either this or accession must have a value)
+// }, {next file}, {...}]
+//
+// This function returns the same array, but sorted by accession, and then by title (all files with
+// accessions appear first, followed by all files with titles, each sorted independently).
+function sortProcessedPagedFiles(files) {
+    // Split the list into two groups for basic sorting first by those with accessions,
+    // then those with external_accessions.
+    const accessionList = _(files).groupBy(file => (file.accession ? 'accession' : 'external'));
+
+    // Start by sorting the accessioned files.
+    let sortedAccession = [];
+    let sortedExternal = [];
+    if (accessionList.accession && accessionList.accession.length) {
+        sortedAccession = accessionList.accession.sort((a, b) => (a.accession > b.accession ? 1 : (a.accession < b.accession ? -1 : 0)));
+    }
+
+    // Now sort the external_accession files
+    if (accessionList.external && accessionList.external.length) {
+        sortedExternal = accessionList.external.sort((a, b) => (a.title > b.title ? 1 : (a.title < b.title ? -1 : 0)));
+    }
+    return sortedAccession.concat(sortedExternal);
+}
+
+
+
+// Display a table of files that derive from this one as a paged component. It works by first
+// doing a GET request an array of minimal file objects with barely enough information to know what
+// files satisfy the search criteria for files that derive from the file passed in the `file` prop.
+// We then sort his list of files, and that becomes the master list of all files deriving from this
+// one. Finally, we do the first GET request with a search for the complete file objects, but only
+// enough to fit the current page (initially page 0, or 1 on the display) based on the
+// `PagedFileTableMax` constant below.
+//
+// When the user clicks on the Pager component, we change our current page (stored in the
+// `currentPage` state variable) and do another GET request for the complete file objects for that
+// page.
+const PagedFileTableMax = 3; // Maximnum number of files per page
+
+const PagedDerivedFiles = React.createClass({
+    propTypes: {
+        file: React.PropTypes.object.isRequired, // Query string fragment for the search that ultimately generates the table of files
+    },
+
+    getInitialState: function () {
+        return {
+            currentPage: 0, // Current page of a multi-page table
+            pageFiles: [], // Array of file objects displayed for the current page
+            totalPages: 0, // Total number of pages; never gets updated after initialized
+        };
+    },
+
+    componentDidMount: function () {
+        this.allFileIds = [];
+        const { file } = this.props;
+
+        // Search for all files that derive from the given one, but because we could get tens of
+        // thousands of results, we do a search only on the @ids of the matching results to vastly
+        // reduce the JSON size. We can then get take just a page of those to retrieve their
+        // their details for display in the table.
+        requestSearch(`type=File&limit=all&field=@id&field=accession&field=title&field=accession&derived_from=${file['@id']}`).then((result) => {
+            // The server has returned search results. See if we got matching files to display
+            // in the table.
+            if (Object.keys(result).length && result['@graph'] && result['@graph'].length) {
+                // Sort the files. We still get an array of search results from the server, just
+                // sorted by accessioned files, followed by external_accession files.
+                const sortedFiles = sortProcessedPagedFiles(result['@graph']);
+
+                // Make a list of file @ids of all files for the current page and retrieve them
+                // with a GET request. Also, now that we know how many total results we have, save
+                // the total number of pages of results we'll show.
+                this.allFileIds = sortedFiles.map(sortedFile => sortedFile['@id']);
+                this.setState({ totalPages: parseInt(this.allFileIds.length / PagedFileTableMax, 10) + (this.allFileIds.length % PagedFileTableMax ? 1 : 0) });
+                return requestFiles(this.currentPageFiles());
+            }
+
+            // No results. Just resolve with null.
+            return Promise.resolve(null);
+        }).then((files) => {
+            this.setState({ pageFiles: files || [] });
+        });
+    },
+
+    componentDidUpdate: function (prevProps, prevState) {
+        if (prevState.currentPage !== this.state.currentPage) {
+            // The currently displayed page of files has changed. Send a request for the file
+            // objects for that page, and update the state with those files once the request
+            // completes so that the table redraws with the new set of files.
+            requestFiles(this.currentPageFiles()).then((files) => {
+                this.setState({ pageFiles: files || [] });
+            });
+        }
+    },
+
+    // Get an array of file IDs for the current page. Requires this.allFileIds to hold all the file
+    // @id of files that derive from the one being displayed, and this.state.currentPage to hold
+    // the currently displayed page of files in the table.
+    currentPageFiles: function () {
+        if (this.allFileIds && this.allFileIds.length) {
+            const start = this.state.currentPage * PagedFileTableMax;
+            return this.allFileIds.slice(start, start + PagedFileTableMax);
+        }
+        return [];
+    },
+
+    updateCurrentPage: function (newCurrent) {
+        this.setState({ currentPage: newCurrent });
+    },
+
+    render: function () {
+        const { file } = this.props;
+
+        if (this.state.pageFiles.length) {
+            // If we have more than one page of files to display, render a pager component in the
+            // footer.
+            const pager = this.state.totalPages > 1 ? <Pager total={this.state.totalPages} current={this.state.currentPage} updateCurrentPage={this.updateCurrentPage} /> : null;
+
+            return (
+                <SortTablePanel header={<h4>{`Paged files deriving from ${file.title}`}</h4>}>
+                    <SortTable
+                        list={this.state.pageFiles}
+                        columns={derivingCols}
+                        sortColumn="accession"
+                        footer={pager}
+                    />
+                </SortTablePanel>
+            );
+        }
+        return null;
+    },
+});
 
 
 // Display a table of files deriving from the one being displayed. This component gets called once
@@ -415,6 +555,8 @@ const File = React.createClass({
                     session={this.context.session}
                     ignoreErrors
                 />
+
+                <PagedDerivedFiles file={context} />
 
                 {this.state.fileFormatSpecs.length ?
                     <DocumentsPanel title="File format specifications" documentSpecs={[{ documents: this.state.fileFormatSpecs }]} />
