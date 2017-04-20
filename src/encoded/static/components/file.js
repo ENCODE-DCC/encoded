@@ -85,7 +85,8 @@ function sortProcessedPagedFiles(files) {
 // When the user clicks on the Pager component, we change our current page (stored in the
 // `currentPage` state variable) and do another GET request for the complete file objects for that
 // page.
-const PagedFileTableMax = 3; // Maximnum number of files per page
+const PagedFileTableMax = 50; // Maximnum number of files per page
+const PagedFileCacheMax = 10; // Maximum number of pages to cache
 
 const PagedDerivedFiles = React.createClass({
     propTypes: {
@@ -102,6 +103,7 @@ const PagedDerivedFiles = React.createClass({
 
     componentDidMount: function () {
         this.allFileIds = [];
+        this.pageCache = {};
         const { file } = this.props;
 
         // Search for all files that derive from the given one, but because we could get tens of
@@ -133,12 +135,46 @@ const PagedDerivedFiles = React.createClass({
 
     componentDidUpdate: function (prevProps, prevState) {
         if (prevState.currentPage !== this.state.currentPage) {
-            // The currently displayed page of files has changed. Send a request for the file
-            // objects for that page, and update the state with those files once the request
-            // completes so that the table redraws with the new set of files.
-            requestFiles(this.currentPageFiles()).then((files) => {
-                this.setState({ pageFiles: files || [] });
-            });
+            // The currently displayed page of files has changed. First keep a reference to the
+            // current page of files to keep it from getting GC'd, if it's not already referenced.
+            if (!this.pageCache[prevState.currentPage]) {
+                this.pageCache[prevState.currentPage] = prevState.pageFiles;
+                console.log('SAVE TO CACHE %s:%s', prevState.currentPage, Object.keys(this.pageCache).join(','));
+
+                // To save memory, see if we can lose a reference to a page so that it gets GC'd.
+                const cachedPageNos = Object.keys(this.pageCache);
+                if (cachedPageNos.length > PagedFileCacheMax) {
+                    // Our cache with an arbitrarily determined size has filled. Find the entry
+                    // with a page farthest from the current and kick it out.
+                    let maxDiff = 0;
+                    let maxDiffKey;
+                    cachedPageNos.forEach((pageNo) => {
+                        const diff = Math.abs(this.state.currentPage);
+                        if (diff > maxDiff) {
+                            maxDiff = diff;
+                            maxDiffKey = parseInt(pageNo, 10);
+                        }
+                    });
+                    delete this.pageCache[maxDiffKey];
+                    console.log('KICKED %s:%s', maxDiffKey, Object.keys(this.pageCache).join(','));
+                }
+            }
+
+            // Get the requested page of files, either from the cache if it's there, or by
+            // requesting them from the serer.
+            if (this.pageCache[this.state.currentPage]) {
+                // Page is in the cache; just get the cached reference.
+                console.log('CACHE HIT %s', this.state.currentPage);
+                this.setState({ pageFiles: this.pageCache[this.state.currentPage] });
+            } else {
+                // Send a request for the file objects for that page, and update the state with
+                // those files once the request completes so that the table redraws with the new
+                // set of files.
+                console.log('NO CACHE HIT %s', this.state.currentPage);
+                requestFiles(this.currentPageFiles()).then((files) => {
+                    this.setState({ pageFiles: files || [] });
+                });
+            }
         }
     },
 
