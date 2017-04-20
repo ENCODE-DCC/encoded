@@ -1,5 +1,12 @@
 ## Changelog for file.json
 
+### Schema version 9.a
+
+* *paired_end* enums list was expanded to include a"1,2" value that is acceptable only for *file_format* = sra files that have *run_type* = paired_ended
+* *paired_end* value (1, 2, or 1,2) is required for files with *run_type* = paired-ended.
+* *md5sum* value formatting is now enforced with regex, validating it as a 32-character hexadecimal number.
+* *read_length* value is now required for files with *output_type* = reads and *file_format* is one of ["fastq", "fasta", "csfasta", "csqual", "sra"]
+
 ### Schema version 9
 
 * property *supercedes* was renamed to *supersedes*

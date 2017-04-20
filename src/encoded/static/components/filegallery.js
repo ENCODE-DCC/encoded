@@ -815,6 +815,7 @@ export const FileGallery = React.createClass({
         anisogenic: React.PropTypes.bool, // True if anisogenic experiment
         hideGraph: React.PropTypes.bool, // T to hide graph display
         altFilterDefault: React.PropTypes.bool, // T to default to All Assemblies and Annotations
+        annotationSource: React.PropTypes.bool, // v55rc3 only
     },
 
     contextTypes: {
@@ -829,7 +830,7 @@ export const FileGallery = React.createClass({
             <FetchedData ignoreErrors>
                 <Param name="data" url={globals.unreleased_files_url(context)} />
                 <Param name="schemas" url="/profiles/" />
-                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
+                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} annotationSource={this.props.annotationSource} />
             </FetchedData>
         );
     },
@@ -1350,6 +1351,7 @@ const FileGalleryRenderer = React.createClass({
         schemas: React.PropTypes.object, // Schemas for the entire system; used for QC property titles
         hideGraph: React.PropTypes.bool, // T to hide graph display
         altFilterDefault: React.PropTypes.bool, // T to default to All Assemblies and Annotations
+        annotationSource: React.PropTypes.bool, // v55rc3 only
     },
 
     contextTypes: {
@@ -1457,9 +1459,9 @@ const FileGalleryRenderer = React.createClass({
                 <PanelHeading addClasses="file-gallery-heading">
                     <h4>Files</h4>
                     <div className="file-gallery-controls">
-                        {context.visualize && context.status === 'released' ?
+                        {context.visualize ?
                             <div className="file-gallery-control">
-                                <BrowserSelector visualizeCfg={context.visualize} />
+                                <BrowserSelector visualizeCfg={context.visualize} annotationSource={this.props.annotationSource} />
                             </div>
                         : null}
                         {filterOptions.length ?

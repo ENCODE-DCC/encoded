@@ -31,7 +31,7 @@
         "name": "quantification-test-step-1",
         "title": "Quantification test step 1",
         "analysis_step_types": ["quantification"],
-        "input_file_types": ["alignments", "reference genes"],
+        "input_file_types": ["alignments", "genome reference"],
         "output_file_types": ["gene quantifications"],
         "status": "released",
         "parents": ["alignment-test-step-2"]

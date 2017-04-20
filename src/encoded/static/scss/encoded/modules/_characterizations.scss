@@ -304,12 +304,12 @@ $attachment-button-margin: 3px;
 
     // Internal status badges
     .#{$item}.status-unreviewed            { background-color: #a0a0a0; color: #fff; }
-    .#{$item}.status-no-available-pipeline { background-color: #ffff00; color: #888; }    
+    .#{$item}.status-no-available-pipeline { background-color: #a0a0a0; color: #fff; }    
     .#{$item}.status-unrunnable            { background-color: #cc0700; color: #fff; }    
-    .#{$item}.status-pipeline-ready        { background-color: #4C994C; color: #fff; }    
+    .#{$item}.status-pipeline-ready        { background-color: #a0a0a0; color: #fff; }    
     .#{$item}.status-processing            { background-color: #a0a0a0; color: #fff; }    
     .#{$item}.status-pipeline-completed    { background-color: #a0a0a0; color: #fff; }    
-    .#{$item}.status-requires-lab-review   { background-color: #ff8000; color: #fff; }    
+    .#{$item}.status-requires-lab-review   { background-color: #cc0700; color: #fff; }    
     .#{$item}.status-release-ready         { background-color: #4C994C; color: #fff; }    
     .#{$item}.status-pipeline-error        { background-color: #cc0700; color: #fff; }    
 
