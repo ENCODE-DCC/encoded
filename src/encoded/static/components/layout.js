@@ -165,9 +165,13 @@ const Block = module.exports.Block = createReactClass({
         const classes = {
             block: true,
             clearfix: true,
-            dragging: _.isEqual(this.props.pos, this.context.src_pos),
-            hover: this.state.hover,
         };
+        if (_.isEqual(this.props.pos, this.context.src_pos)) {
+            classes.dragging = true;
+        }
+        if (this.state.hover) {
+            classes.hover = true;
+        }
         if (block.className !== undefined) {
             classes[block.className] = true;
         }
@@ -686,10 +690,10 @@ module.exports.Layout = createReactClass({
     },
 
     render() {
-        const classes = [
-            'layout',
-            this.props.editable ? 'editable' : '',
-        ];
+        const classes = { layout: true };
+        if (this.props.editable) {
+            classes.editable = true;
+        }
         if (_.isEqual(this.state.dst_pos, [])) {
             classes[`drop-${this.state.dst_quad}`] = true;
         }
