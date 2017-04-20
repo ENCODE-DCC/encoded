@@ -159,6 +159,8 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "Title",
+        "description": "The title of the file either the accession or the external_accession.",
+        "comment": "Do not submit. This is a calculated property", 
         "type": "string",
     })
     def title(self, accession=None, external_accession=None):
@@ -176,6 +178,8 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "Download URL",
+        "description": "The download path for S3 to obtain the actual file.",
+        "comment": "Do not submit. This is issued by the server.", 
         "type": "string",
     })
     def href(self, request, file_format, accession=None, external_accession=None):
@@ -186,6 +190,8 @@ class File(Item):
 
     @calculated_property(condition=show_upload_credentials, schema={
         "title": "Upload Credentials",
+        "description": "The upload credentials for S3 to submit the file content.",
+        "comment": "Do not submit. This is issued by the server.", 
         "type": "object",
     })
     def upload_credentials(self):
@@ -195,6 +201,8 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "Read length units",
+        "description": "The units for read length.",
+        "comment": "Do not submit. This is a fixed value.", 
         "type": "string",
         "enum": [
             "nt"
@@ -206,6 +214,8 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "Biological replicates",
+        "description": "The biological replicate numbers associated with this file.",
+        "comment": "Do not submit.  This field is calculated through the derived_from relationship back to the raw data.",
         "type": "array",
         "items": {
             "title": "Biological replicate number",
@@ -236,6 +246,8 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "Technical replicates",
+        "description": "The technical replicate numbers associated with this file.",
+        "comment": "Do not submit.  This field is calculated through the derived_from relationship back to the raw data.",
         "type": "array",
         "items": {
             "title": "Technical replicate number",
@@ -269,6 +281,8 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "Analysis Step Version",
+        "description": "The step version of the pipeline from which this file is an output.",
+        "comment": "Do not submit.  This field is calculated from step_run.",
         "type": "string",
         "linkTo": "AnalysisStepVersion"
     })
@@ -282,6 +296,8 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "Output category",
+        "description": "The overall catagory of the file content.",
+        "comment": "Do not submit.  This field is calculated from output_type_output_category.",
         "type": "string",
         "enum": [
             "raw data",
@@ -297,6 +313,8 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "QC Metric",
+        "description": "The list of QC metric objects associated with this file.",
+        "comment": "Do not submit.  This field is reverse link of quality_metric_of.",
         "type": "array",
         "items": {
             "type": ['string', 'object'],
@@ -308,6 +326,8 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "File type",
+        "description": "The concatenation of file_format and file_format_type",
+        "comment": "Do not submit.  This field is calculated from file_format and file_format_type",
         "type": "string"
     })
     def file_type(self, file_format, file_format_type=None):
@@ -319,6 +339,7 @@ class File(Item):
     @calculated_property(schema={
         "title": "Superseded by",
         "description": "The file(s) that supersede this file (i.e. are more preferable to use).",
+        "comment": "Do not submit.  This is reverse linked from supersedes.",
         "type": "array",
         "items": {
             "type": ['string', 'object'],
