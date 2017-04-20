@@ -3,7 +3,8 @@
     "schema_version": {
         "schema_version": {
             "title": "Schema Version",
-            "comment":  "Do not submit, value is assigned by the server. The version of the JSON schema that the server uses to validate the object. Schema version indicates generation of schema used to save version to to enable upgrade steps to work. Individual schemas should set the default.",
+            "description": "The version of the JSON schema that the server uses to validate the object.",
+            "comment":  "Do not submit. The version used to validate the object is set by the server.  The default should be set to the current version.",
             "type": "string",
             "pattern": "^\\d+(\\.\\d+)*$",
             "requestMethod": []
@@ -12,6 +13,8 @@
     "uuid": {
         "uuid": {
             "title": "UUID",
+	    "description":"The unique identifier associated with every object.",
+	    "comment":  "Do not submit. The uuid is set by the server.",
             "type": "string",
             "format": "uuid",
             "serverDefault": "uuid4",
@@ -22,8 +25,8 @@
     "accession": {
         "accession": {
             "title": "Accession",
-            "description": "A unique identifier to be used to reference the object.",
-            "comment": "Only admins are allowed to set or update this value.",
+            "description": "A unique identifier to be used to reference the object prefixed with ENC.",
+            "comment": "Do not submit. The accession is assigned by the server.",
             "type": "string",
             "format": "accession",
             "serverDefault": "accession",
@@ -32,13 +35,14 @@
         "alternate_accessions": {
             "title": "Alternate accessions",
             "description": "Accessions previously assigned to objects that have been merged with this object.",
+	    "comment": "Do not submit. Only admins are allowed to set or update this value.",
             "type": "array",
             "default": [],
             "permission": "import_items",
             "items": {
                 "title": "Alternate Accession",
                 "description": "An accession previously assigned to an object that has been merged with this object.",
-                "comment":"Only admins are allowed to set or update this value.",
+		"comment": "Only accessions of objects that have status equal replaced will work here.",
                 "type": "string",
                 "format": "accession"
             }
@@ -48,6 +52,7 @@
         "aliases": {
             "title": "Lab aliases",
             "description": "Lab specific identifiers to reference an object.",
+	    "comment": "The purpose of this field is to provide a link into the lab LIMS and to facilitate shared objects.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
@@ -105,7 +110,8 @@
         "date_created": {
             "rdfs:subPropertyOf": "dc:created",
             "title": "Date created",
-            "comment": "Do not submit, value is assigned by the server. The date the object is created.",
+	    "decription": "The date the object was created.",
+            "comment": "Do not submit. The date the object is created is assigned by the server.",
             "type": "string",
             "anyOf": [
                 {"format": "date-time"},
@@ -117,7 +123,7 @@
         "submitted_by": {
             "rdfs:subPropertyOf": "dc:creator",
             "title": "Submitted by",
-            "comment": "Do not submit, value is assigned by the server. The user that created the object.",
+            "comment": "Do not submit. The user that created the object is assigned by the server.",
             "type": "string",
             "linkTo": "User",
             "serverDefault": "userid",
@@ -142,8 +148,8 @@
     "attribution": {
         "lab": {
             "title": "Lab",
-             "description": "Lab associated with the submission.",
-            "comment": "See lab.json for list of available identifiers.",
+            "description": "Lab associated with the submission.",
+            "comment": "Required. See lab.json for list of available identifiers.",
             "type": "string",
             "linkTo": "Lab",
             "linkSubmitsFor": true
@@ -151,7 +157,7 @@
         "award": {
             "title": "Grant",
             "description": "Grant associated with the submission.",
-            "comment": "See award.json for list of available identifiers.",
+            "comment": "Required. See award.json for list of available identifiers.",
             "type": "string",
             "linkTo": "Award"
         }
@@ -266,6 +272,7 @@
         "notes": {
             "title": "Notes",
             "description": "DCC internal notes.",
+	    "comment": "A place for the DCC to keep information that does not have a place in the schema.",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
             "permission": "import_items"
