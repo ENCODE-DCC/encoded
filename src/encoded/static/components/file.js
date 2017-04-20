@@ -149,7 +149,7 @@ const PagedDerivedFiles = React.createClass({
                     let maxDiff = 0;
                     let maxDiffKey;
                     cachedPageNos.forEach((pageNo) => {
-                        const diff = Math.abs(this.state.currentPage);
+                        const diff = Math.abs(this.state.currentPage - parseInt(pageNo, 10));
                         if (diff > maxDiff) {
                             maxDiff = diff;
                             maxDiffKey = parseInt(pageNo, 10);
@@ -208,33 +208,6 @@ const PagedDerivedFiles = React.createClass({
                         columns={derivingCols}
                         sortColumn="accession"
                         footer={pager}
-                    />
-                </SortTablePanel>
-            );
-        }
-        return null;
-    },
-});
-
-
-// Display a table of files deriving from the one being displayed. This component gets called once
-// a GET request's data returns.
-const DerivedFiles = React.createClass({
-    propTypes: {
-        items: React.PropTypes.array, // Array of files from the GET request
-        context: React.PropTypes.object, // File that requested this list
-    },
-
-    render: function () {
-        const { items, context } = this.props;
-
-        if (items.length) {
-            return (
-                <SortTablePanel header={<h4>{`Files deriving from ${context.title}`}</h4>}>
-                    <SortTable
-                        list={items}
-                        columns={derivingCols}
-                        sortColumn="accession"
                     />
                 </SortTablePanel>
             );
@@ -582,15 +555,6 @@ const File = React.createClass({
                 : null}
 
                 {this.state.derivedFromFiles && this.state.derivedFromFiles.length ? <DerivedFromFiles file={context} derivedFromFiles={this.state.derivedFromFiles} /> : null}
-
-                <FetchedItems
-                    {...this.props}
-                    url={`/search/?type=File&limit=all&derived_from=${context['@id']}`}
-                    Component={DerivedFiles}
-                    encodevers={globals.encodeVersion(context)}
-                    session={this.context.session}
-                    ignoreErrors
-                />
 
                 <PagedDerivedFiles file={context} />
 
