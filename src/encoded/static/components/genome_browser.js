@@ -178,6 +178,10 @@ function rAssemblyToSources(assembly, region) {
             },
         ];
     } else if (assembly === 'mm9') {
+        // sources:
+        // Genome: http://hgdownload.soe.ucsc.edu/goldenPath/mm10/bigZips/mm10.2bit
+        // gencode: ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_mouse/release_M1/gencode.vM1.annotation.gtf.gz
+        // repeats: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Mammal, genome: mouse, assembly: mm9, group: variation and repeats, track: repeatmaster)
         if (!browserCfg.positionSet) {
             browserCfg.chr = '19';
             browserCfg.viewStart = 30000000;
@@ -209,7 +213,10 @@ function rAssemblyToSources(assembly, region) {
             },
         ];
     } else if (assembly === 'dm6') {
+        // sources:
         // Genome: from http://hgdownload.cse.ucsc.edu/goldenPath/dm6/bigZips/dm6.2bit
+        // annotations: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Insect, genome: D. melanogaster, assembly: dm6, group: Genes and Gene Predictions, track: RefSeq Genes)
+        // repeats: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Insect, genome: D. melanogaster, assembly: dm6, group: variation and repeats, track: repeatmaster)
         if (!browserCfg.positionSet) {
             browserCfg.chr = '3L';
             browserCfg.viewStart = 15940000;
@@ -241,6 +248,10 @@ function rAssemblyToSources(assembly, region) {
             },
         ];
     } else if (assembly === 'dm3') {
+        // sources:
+        // Genome: from http://hgdownload.cse.ucsc.edu/goldenPath/dm3/bigZips/dm3.2bit
+        // annotations: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Insect, genome: D. melanogaster, assembly: dm3, group: Genes and Gene Predictions, track: RefSeq Genes)
+        // repeats: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Insect, genome: D. melanogaster, assembly: dm3, group: variation and repeats, track: repeatmaster)
         if (!browserCfg.positionSet) {
             browserCfg.chr = '3L';
             browserCfg.viewStart = 15940000;
@@ -272,7 +283,10 @@ function rAssemblyToSources(assembly, region) {
             },
         ];
     } else if (assembly === 'ce11') {
-        // Genome: from ftp://hgdownload-sd.sdsc.edu/goldenPath/ce11/bigZips/ce11.2bit
+        // sources:
+        // Genome: from http://hgdownload.soe.ucsc.edu/goldenPath/ce11/bigZips/ce11.2bit
+        // annotations: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Nematode, genome: C. elegans, assembly: ce11/WBcel235, group: Genes and Gene Predictions, track: RefSeq Genes)
+        // repeats: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Nematode, genome: C. elegans, assembly: ce11/WBcel235, group: variation and repeats, track: repeatmaster)
         if (!browserCfg.positionSet) {
             browserCfg.chr = 'II';
             browserCfg.viewStart = 14646376;
@@ -304,7 +318,10 @@ function rAssemblyToSources(assembly, region) {
             },
         ];
     } else if (assembly === 'ce10') {
-        // Genome: from ftp://hgdownload-sd.sdsc.edu/goldenPath/ce11/bigZips/ce10.2bit
+        // sources:
+        // Genome: from http://hgdownload.soe.ucsc.edu/goldenPath/ce10/bigZips/ce10.2bit
+        // annotations: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Nematode, genome: C. elegans, assembly: ce10/WS220, group: Genes and Gene Predictions, track: RefSeq Genes)
+        // repeats: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Nematode, genome: C. elegans, assembly: ce10/WS220, group: variation and repeats, track: repeatmaster)
         if (!browserCfg.positionSet) {
             browserCfg.chr = 'II';
             browserCfg.viewStart = 14646376;
