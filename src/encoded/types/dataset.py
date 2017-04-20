@@ -565,7 +565,9 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
     })
     def assembly(self, request, original_files, related_datasets, status):
         assembly = set()
-        assembly.add(calculate_assembly(request, original_files, status))
+        dataset_assemblies = calculate_assembly(request, original_files, status)
+        for dataset_assembly in dataset_assemblies:
+            assembly.add(dataset_assembly)
         for path in related_datasets:
             properties = request.embed(path, '@@object')
             if properties['status'] not in ('deleted', 'replaced'):
