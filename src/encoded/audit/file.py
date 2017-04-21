@@ -112,7 +112,7 @@ def audit_file_derived_from_revoked(value, system):
                 return
 
 
-@audit_checker('file', frame=['derived_from'])
+@audit_checker('File', frame=['derived_from'])
 def audit_file_assembly(value, system):
     if 'derived_from' not in value:
         return
@@ -130,7 +130,7 @@ def audit_file_assembly(value, system):
                 return
 
 
-@audit_checker('file', frame=['replicate', 'replicate.experiment',
+@audit_checker('File', frame=['replicate', 'replicate.experiment',
                               'derived_from', 'derived_from.replicate',
                               'derived_from.replicate.experiment'])
 def audit_file_biological_replicate_number_match(value, system):
@@ -170,7 +170,7 @@ def audit_file_biological_replicate_number_match(value, system):
                 return
 
 
-@audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
+@audit_checker('File', frame=['replicate', 'dataset', 'replicate.experiment'])
 def audit_file_replicate_match(value, system):
     '''
     A file's replicate should belong to the same experiment that the file
@@ -195,7 +195,7 @@ def audit_file_replicate_match(value, system):
         return
 
 
-@audit_checker('file', frame=['award'])
+@audit_checker('File', frame=['award'])
 def audit_file_platform(value, system):
     '''
     A raw data file should have a platform specified.
@@ -219,7 +219,7 @@ def check_presence(file_to_check, files_list):
     return False
 
 
-@audit_checker('file',
+@audit_checker('File',
                frame=['dataset',
                       'dataset.target',
                       'platform',
@@ -381,7 +381,7 @@ def audit_file_controlled_by(value, system):
                 return
 
 
-@audit_checker('file', frame='object')
+@audit_checker('File', frame='object')
 def audit_file_flowcells(value, system):
     '''
     A fastq file should have its flowcell details.
@@ -395,7 +395,7 @@ def audit_file_flowcells(value, system):
         raise AuditFailure('missing flowcell_details', detail, level='WARNING')
 
 
-@audit_checker('file', frame=['paired_with'])
+@audit_checker('File', frame=['paired_with'])
 def audit_paired_with(value, system):
     '''
     A file with a paired_end needs a paired_with.
@@ -508,7 +508,7 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
             yield AuditFailure('wrong step_run for IDR peaks', detail, level='WARNING')
 '''
 
-@audit_checker('file', frame=['file_format_specifications'],)
+@audit_checker('File', frame=['file_format_specifications'],)
 def audit_file_format_specifications(value, system):
 
     for doc in value.get('file_format_specifications', []):
@@ -632,7 +632,7 @@ def extract_award_version(bam_file):
     return 'ENC3'
 
 
-@audit_checker('file', frame=[
+@audit_checker('File', frame=[
     'award',
     'quality_metrics',
     'analysis_step_version',
