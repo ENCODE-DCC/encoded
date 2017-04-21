@@ -8,24 +8,24 @@
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/accession" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/submitted" },     
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/accessioned_status" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/uuid" }
     ],
     "facets": {
         "status": {
             "title": "File status"
         },
         "output_category": {
-            "title": "Data category"
+            "title": "Content category"
         },
         "output_type": {
-            "title": "Data type"
+            "title": "Content type"
         },
         "file_format": {
             "title": "File format"
@@ -45,6 +45,7 @@
     },
     "dependencies": {
         "run_type": {
+            "comment": "Only paired-ended files should have paired_end values.",
             "oneOf": [
                 {
                     "properties": {
@@ -67,6 +68,7 @@
             ]
         },
         "external_accession": {
+            "comment": "A file with an external accession should not get an ENCODE accession.",
             "not": {
                 "required": ["accession"]
             }
@@ -79,6 +81,7 @@
             }
         },
         "paired_end": {
+            "comment": "Files with paired-end value 2 require a paired_with value.",
             "oneOf": [
                 {
                    "required": ["paired_with"],
@@ -143,6 +146,7 @@
             ]
         },
         "file_format":{
+            "comment": "Fastq and sra files require run_type and replicate but should not have assembly.",
             "oneOf": [
                 {
                     "allOf": [
@@ -248,22 +252,6 @@
             "comment": "Do not submit. This value is calculated and posted by checkfiles script upon submission.",
             "permission": "import_items",
             "type": "integer"
-        },
-        "fastq_signature": {
-            "title": "Fastq file flowcell based signature",
-            "description": "Fastq file flowcell based unique signature to reference a file.",
-            "comment": "Do not submit.  This value is calculated and posted by checkfiles script upon submission.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "permission": "import_items",
-            "items": {
-                "title": "Flowcell based fastq siganture part",
-                "description": "Fastq file flowcell based unique signature to reference a file.",
-                "comment": "Current convention is based on the Illumina unique sequence identifier, colon separated flowcell, lane, read_end(1/2) and barcode.",
-                "type":  "string",
-                "pattern": "^[a-zA-Z0-9_-]+:[0-9]+:[12]:.*:.*$"
-            }
         },
         "file_format": {
             "title": "File format",
@@ -374,6 +362,12 @@
             "comment": "Do not submit. This value can only be set by admins.",
             "type": "boolean"
         },
+        "submitted_file_name": {
+            "title": "Original file name",
+            "description": "The local file name used at time of submission.",
+            "comment": "Although this is not required. It is highly recommended.",
+            "type": "string"
+        },
         "md5sum": {
             "title": "MD5sum",
             "description": "The md5sum of the file being transferred.",
@@ -391,6 +385,22 @@
             "format": "hex",
             "maxLength": 32,
             "pattern": "[a-f\\d]{32}|[A-F\\d]{32}"
+        },
+        "fastq_signature": {
+            "title": "Fastq file flowcell based signature",
+            "description": "Fastq file flowcell based unique signature to reference a file.",
+            "comment": "Do not submit.  This value is calculated and posted by checkfiles script upon submission.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "permission": "import_items",
+            "items": {
+                "title": "Flowcell based fastq siganture part",
+                "description": "Fastq file flowcell based unique signature to reference a file.",
+                "comment": "Current convention is based on the Illumina unique sequence identifier, colon separated flowcell, lane, read_end(1/2) and barcode.",
+                "type":  "string",
+                "pattern": "^[a-zA-Z0-9_-]+:[0-9]+:[12]:.*:.*$"
+            }
         },
         "file_size": {
             "title": "File size",
@@ -410,6 +420,35 @@
             "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
             "comment": "This field is required for fastq, fasta, csfasta, csqual and sra file formats containing sequencing reads.",
             "type": "integer"
+        },
+        "run_type": {
+            "title": "Run type for sequencing files",
+            "description": "Indicates if file is part of a single or paired end sequencing run",
+            "comment": "This field is required for sra and fastq files.",
+            "type": "string",
+            "enum": [
+                "single-ended",
+                "paired-ended",
+                "unknown"
+            ]
+        },
+        "paired_end": {
+            "title": "Paired End Identifier",
+            "description": "Which read of the pair the file represents (in cse of paired end sequencing run)",
+            "comment": "This field is required if run_type is paired-ended.",
+            "type": "string",
+            "enum": [
+                "1",
+                "2",
+                "1,2"
+            ]
+        },
+        "paired_with": {
+            "title": "File pairing",
+            "description": "The paired end fastq that corresponds with this file.",
+            "comment": "This is required for files with paired_end 2 and is calculated for files with paired_end 1.",
+            "type": "string",
+            "linkTo": "File"
         },
         "mapped_read_length": {
             "title": "Mapped read length",
@@ -633,28 +672,6 @@
                 }
             ]
         },
-        "run_type": {
-            "title": "Run type for sequencing files",
-            "description": "Indicates if file is part of a single or paired end sequencing run",
-            "comment": "This field is required for sra and fastq files.",
-            "type": "string",
-            "enum": [
-                "single-ended",
-                "paired-ended",
-                "unknown"
-            ]
-        },
-        "paired_end": {
-            "title": "Paired End Identifier",
-            "description": "Which read of the pair the file represents (in cse of paired end sequencing run)",
-            "comment": "This field is required if run_type is paired-ended.",
-            "type": "string",
-            "enum": [
-                "1",
-                "2",
-                "1,2"
-            ]
-        },
         "derived_from": {
             "title": "Derived from",
             "description": "The files participating as inputs into software to produce this output file.",
@@ -689,13 +706,6 @@
                     "type": "string",
                     "linkTo": "File"
             }
-        },
-        "paired_with": {
-            "title": "File pairing",
-            "description": "The paired end fastq that corresponds with this file.",
-            "comment": "This is required for files with paired_end 2 and is calculated for files with paired_end 1.",
-            "type": "string",
-            "linkTo": "File"
         },
         "dataset": {
             "title": "Dataset",
@@ -752,12 +762,6 @@
                 "WS235",
                 "WS245"
                 ]
-        },
-        "submitted_file_name": {
-            "title": "Original file name",
-            "description": "The local file name used at time of submission.",
-            "comment": "Although this is not required. It is highly recommended.",
-            "type": "string"
         },
         "status": {
             "title": "Status",
@@ -817,11 +821,11 @@
         "accession": {
             "title": "Accession"
         },
-        "assembly": {
-            "title": "Mapping assembly"
-        },
         "dataset": {
             "title": "Dataset"
+        },
+        "assembly": {
+            "title": "Mapping assembly"
         },
         "technical_replicates": {
             "title": "Technical replicates"
@@ -831,9 +835,6 @@
         },
         "file_format": {
             "title": "File Format"
-        },
-        "file_type": {
-            "title": "File type"
         },
         "file_format_type": {
             "title": "Specific file format type"
@@ -867,9 +868,6 @@
         },
         "mapped_read_length": {
             "title": "Mapped read length"
-        },
-        "read_length_units": {
-            "title": "Read length units"
         },
         "md5sum": {
             "title": "MD5 Sum"
