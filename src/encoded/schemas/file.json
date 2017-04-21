@@ -236,7 +236,7 @@
         },
         "external_accession": {
             "title": "External accession",
-            "description": "For files that do not live at our site but have an accession elsewhere.",
+            "description": "For files that were not accessioned at our site but have an accession elsewhere.",
             "comment": "Do not submit. Only admins are allowed to set or update this value.",
             "type": "string",
             "permission": "import_items",
@@ -245,14 +245,14 @@
         "read_count": {
             "title": "Read count",
             "description": "Number of reads in fastq file.",
-            "comment": "Do not submit. This value is calculated by checkFiles upon submission.",
+            "comment": "Do not submit. This value is calculated and posted by checkfiles script upon submission.",
             "permission": "import_items",
             "type": "integer"
         },
         "fastq_signature": {
             "title": "Fastq file flowcell based signature",
             "description": "Fastq file flowcell based unique signature to reference a file.",
-            "comment": "Do not submit.  This value is calculated by checkFiles upon submission.",
+            "comment": "Do not submit.  This value is calculated and posted by checkfiles script upon submission.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
@@ -270,6 +270,7 @@
             "type": "string",
             "oneOf": [
                 {
+                    "comment": "This field is required.",
                     "enum": [
                         "bam",
                         "bed",
@@ -385,7 +386,7 @@
         "content_md5sum": {
             "title": "Content MD5sum",
             "description": "The MD5sum of the uncompressed file.",
-            "comment": "This is only relavant for gzipped files. This field is calculated on submission.",
+            "comment": "This is only relavant for gzipped files. This value is calculated and posted by checkfiles script upon submission.",
             "type": "string",
             "format": "hex",
             "maxLength": 32,
@@ -394,20 +395,20 @@
         "file_size": {
             "title": "File size",
             "description": "File size specified in bytes.",
-            "comment": "This field is required for fastq and sra files.",
+            "comment": "Required.",
             "type": "integer"
         },
         "platform": {
             "title": "Platform",
             "description": "The measurement device used to collect data.",
-            "comment": "This field is required for fastq and sra files.  See platform.json for identifer format.",
+            "comment": "This field is required for csfasta, csqual, rcc, idat and CEL file formats. See platform.json for identifer format.",
             "type": "string",
             "linkTo": "Platform"
         },
         "read_length": {
             "title": "Read length",
             "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
-            "comment": "This field is required for fastq and sra files.",
+            "comment": "This field is required for fastq, fasta, csfasta, csqual and sra file formats containing sequencing reads.",
             "type": "integer"
         },
         "mapped_read_length": {
@@ -635,7 +636,7 @@
         "run_type": {
             "title": "Run type for sequencing files",
             "description": "Indicates if file is part of a single or paired end sequencing run",
-            "comment": "This field is required for fastq files.",
+            "comment": "This field is required for sra and fastq files.",
             "type": "string",
             "enum": [
                 "single-ended",
@@ -645,8 +646,8 @@
         },
         "paired_end": {
             "title": "Paired End Identifier",
-            "description": "Which read of the pair the file represents (if paired end library)",
-            "comment": "This field is required if run_type is paired-ended and is restricted otherwise.",
+            "description": "Which read of the pair the file represents (in cse of paired end sequencing run)",
+            "comment": "This field is required if run_type is paired-ended.",
             "type": "string",
             "enum": [
                 "1",
@@ -680,7 +681,7 @@
         "supersedes": {
             "title": "Supersedes" ,
             "description": "The files that this file supersedes.",
-            "comment": "This files in this list should be obsolete and this file object should be used instead.",
+            "comment": "The files in this list should be obsolete and the superseeding file object should be used instead.",
             "type": "array",
             "uniqueItems": true,
             "items": {
@@ -706,14 +707,14 @@
         "replicate": {
             "title": "Replicate",
             "description": "The experimental replicate designation for the file.",
-            "comment": "See replicate.json for available identifiers.",
+            "comment": "This field is required for sra and fastq files. See replicate.json for available identifiers.",
             "type": "string",
             "linkTo": "Replicate"
         },
         "assembly": {
             "title": "Mapping assembly",
             "description": "Genome assembly that files were mapped to.",
-            "comment": "Applies to mapped files (e.g. BAM, BED and BigWig). This cannot be submitted with files of file_format fastq.",
+            "comment": "Required property for bam, sam, gtf, gff, bed and bigBed file format files. This property should not be submitted with sra or fastq files.",
             "type": "string",
             "enum": [
                 "mm9",

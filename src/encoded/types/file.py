@@ -160,7 +160,7 @@ class File(Item):
     @calculated_property(schema={
         "title": "Title",
         "description": "The title of the file either the accession or the external_accession.",
-        "comment": "Do not submit. This is a calculated property", 
+        "comment": "Do not submit. This is a calculated property",
         "type": "string",
     })
     def title(self, accession=None, external_accession=None):
@@ -314,7 +314,7 @@ class File(Item):
     @calculated_property(schema={
         "title": "QC Metric",
         "description": "The list of QC metric objects associated with this file.",
-        "comment": "Do not submit.  This field is reverse link of quality_metric_of.",
+        "comment": "Do not submit. Values in the list are reverse links of a quality metric with this file in quality_metric_of field.",
         "type": "array",
         "items": {
             "type": ['string', 'object'],
@@ -327,7 +327,7 @@ class File(Item):
     @calculated_property(schema={
         "title": "File type",
         "description": "The concatenation of file_format and file_format_type",
-        "comment": "Do not submit.  This field is calculated from file_format and file_format_type",
+        "comment": "Do not submit. This field is calculated from file_format and file_format_type.",
         "type": "string"
     })
     def file_type(self, file_format, file_format_type=None):
@@ -339,7 +339,7 @@ class File(Item):
     @calculated_property(schema={
         "title": "Superseded by",
         "description": "The file(s) that supersede this file (i.e. are more preferable to use).",
-        "comment": "Do not submit.  This is reverse linked from supersedes.",
+        "comment": "Do not submit. Values in the list are reverse links of a file that supersedes.",
         "type": "array",
         "items": {
             "type": ['string', 'object'],
