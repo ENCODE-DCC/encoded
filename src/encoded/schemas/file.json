@@ -380,7 +380,7 @@
         "content_md5sum": {
             "title": "Content MD5sum",
             "description": "The MD5sum of the uncompressed file.",
-            "comment": "This is only relavant for gzipped files. This value is calculated and posted by checkfiles script upon submission.",
+            "comment": "Do not submit. This is only relavant for gzipped files. This value is calculated and posted by checkfiles script upon submission.",
             "type": "string",
             "format": "hex",
             "maxLength": 32,
@@ -389,7 +389,7 @@
         "fastq_signature": {
             "title": "Fastq file flowcell based signature",
             "description": "Fastq file flowcell based unique signature to reference a file.",
-            "comment": "Do not submit.  This value is calculated and posted by checkfiles script upon submission.",
+            "comment": "Do not submit. This value is calculated and posted by checkfiles script upon submission.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
@@ -434,7 +434,7 @@
         },
         "paired_end": {
             "title": "Paired End Identifier",
-            "description": "Which read of the pair the file represents (in cse of paired end sequencing run)",
+            "description": "Which read of the pair the file represents (in case of paired end sequencing run)",
             "comment": "This field is required if run_type is paired-ended.",
             "type": "string",
             "enum": [
