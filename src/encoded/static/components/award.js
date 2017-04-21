@@ -616,6 +616,17 @@ const Award = React.createClass({
                         :
                             <p className="browser-error">Award has no description</p>
                         }
+                        {context.url ?
+                            <div>
+                                <hr />
+                                <dl className="key-value">
+                                    <div data-test="project">
+                                        <dt>Project</dt>
+                                        <dd><a href={context.url} title={`${context.name} project page at NHGRI`}>{context.name}</a></dd>
+                                    </div>
+                                </dl>
+                            </div>
+                        : null}
                     </PanelBody>
                 </Panel>
             </div>
