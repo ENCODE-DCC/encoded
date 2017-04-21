@@ -125,13 +125,14 @@ def file_no_platform(testapp, experiment, award, lab, replicate):
 
 
 @pytest.fixture
-def file_no_paired_end(testapp, experiment, award, lab, replicate):
+def file_no_paired_end(testapp, experiment, award, lab, replicate, platform1):
     item = {
         'dataset': experiment['@id'],
         'replicate': replicate['@id'],
         'lab': lab['@id'],
         'file_size': 345,
         'award': award['@id'],
+        'platform': platform1['@id'],
         'file_format': 'fastq',
         'run_type': 'paired-ended',
         'output_type': 'reads',
