@@ -156,7 +156,7 @@
                         },
                         {
                             "not": {
-                                "required": ["assembly", "platform"],
+                                "required": ["assembly"],
                                 "properties": {
                                     "file_format": {
                                         "enum": ["fastq","sra"]
@@ -168,7 +168,9 @@
                             "required": ["platform"],
                             "properties": {
                                 "file_format": {
-                                    "enum": ["csfasta",
+                                    "enum": ["sra",
+                                             "fastq",
+                                             "csfasta",
                                              "csqual",
                                              "rcc",
                                              "idat",
