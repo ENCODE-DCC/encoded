@@ -333,6 +333,9 @@ def process_read_name_line(read_name_line,
                                               read_numbers_set,
                                               srr_flag)
         elif srr_read_name_pattern.match(read_name.split(' ')[0]) is not None:
+            # in case the readname is following SRR format, read number will be
+            # defined using SRR format specifications, and not by the illumina portion of the read name
+            # srr_flag is used to distinguish between srr and "regular" readname formats
             srr_portion = read_name.split(' ')[0]
             if srr_portion.count('.') == 2:
                 read_numbers_set.add(srr_portion[-1])
@@ -829,24 +832,21 @@ def remove_local_file(path_to_the_file, errors):
 
 def fetch_files(session, url, search_query, out, include_unexpired_upload=False, file_list=None):
     graph = []
-    if file_list:
+    if file_list:  # checkfiles using a file with a list of file accessions to be checked
         r = None
         ACCESSIONS = []
         if os.path.isfile(file_list):
             ACCESSIONS = [line.rstrip('\n') for line in open(file_list)]
-        #print (ACCESSIONS)
         for acc in ACCESSIONS:
             r = session.get(
                 urljoin(url, '/search/?field=@id&limit=all&type=File&accession=' + acc))
             r.raise_for_status()
-            #out.write("PROCESSING: %d files in accessions list file : %s\n" % (len(r.json()['@graph']), file_list))
             local = copy.deepcopy(r.json()['@graph'])
             graph.extend(local)
-    else:
+    else:  # checkfiles using a query
         r = session.get(
             urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
         r.raise_for_status()
-        #out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
         graph = r.json()['@graph']
 
     for result in graph:
