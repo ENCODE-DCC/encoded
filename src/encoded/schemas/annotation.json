@@ -307,6 +307,7 @@
         "biosample_type": 1.0,
         "organ_slims": 1.0,
         "developmental_slims": 1.0,
+        "description": 1.0,
         "biosample_synonyms": 1.0,
         "relevant_life_stage": 1.0,
         "relevant_timepoint": 1.0,
