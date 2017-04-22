@@ -22,6 +22,9 @@ var styleFilename = './css/[name].css';
 if (env === 'production') {
     // uglify code for production
     plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
+    plugins.push(new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify('production'),
+    }));
     // add chunkhash to chunk names for production only (it's slower)
     chunkFilename = '[name].[chunkhash].js';
     styleFilename = './css/[name].[chunkhash].css';
