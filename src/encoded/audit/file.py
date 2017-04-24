@@ -125,20 +125,8 @@ def audit_file_processed_empty_derived_from(value, system):
             return
 
 
-@audit_checker('File', frame=['derived_from'])
-def audit_file_derived_from_revoked(value, system):
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-            return
-    if 'derived_from' in value and len(value['derived_from']) > 0:
-        for f in value['derived_from']:
-            if f['status'] == 'revoked':
-                detail = 'The file {} '.format(value['@id']) + \
-                         'with a status {} '.format(value['status']) + \
-                         'was derived from file {} '.format(f['@id']) + \
-                         'that has a status \'revoked\'.'
-                yield AuditFailure('mismatched file status',
-                                   detail, level='INTERNAL_ACTION')
-                return
+# def audit_file_derived_from_revoked(value, system): removed from release 56
+# http://redmine.encodedcc.org/issues/5018
 
 
 @audit_checker('file', frame=['derived_from'])
