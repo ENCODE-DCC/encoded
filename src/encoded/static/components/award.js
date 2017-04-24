@@ -609,6 +609,12 @@ const Award = React.createClass({
                         <h4>Description</h4>
                     </PanelHeading>
                     <PanelBody>
+                        {context.url ?
+                            <div>
+                                <strong>NHGRI project information: </strong><a href={context.url} title={`${context.name} project page at NHGRI`}>{context.name}</a>
+                                <hr />
+                            </div>
+                        : null}
                         {context.description ?
                             <div className="two-column-long-text two-column-long-text--gap">
                                 <p>{context.description}</p>
@@ -616,17 +622,6 @@ const Award = React.createClass({
                         :
                             <p className="browser-error">Award has no description</p>
                         }
-                        {context.url ?
-                            <div>
-                                <hr />
-                                <dl className="key-value">
-                                    <div data-test="project">
-                                        <dt>Project</dt>
-                                        <dd><a href={context.url} title={`${context.name} project page at NHGRI`}>{context.name}</a></dd>
-                                    </div>
-                                </dl>
-                            </div>
-                        : null}
                     </PanelBody>
                 </Panel>
             </div>
