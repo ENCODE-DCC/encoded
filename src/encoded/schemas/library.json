@@ -177,7 +177,8 @@
             "XXXenum": [
                 "gel",
                 "see document",
-                "SPRI beads"
+                "SPRI beads",
+                "BluePippin"
             ],
             "format": "semi-controlled"
         },
@@ -202,6 +203,7 @@
             "type": "string",
             "enum": [
                 "formaldehyde",
+                "EGS and formaldehyde",
                 "ultraviolet irradiation"
             ]
         },
