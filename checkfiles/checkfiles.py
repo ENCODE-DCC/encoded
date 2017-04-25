@@ -15,6 +15,7 @@ import subprocess
 import re
 from urllib.parse import urljoin
 import requests
+import copy
 
 EPILOG = __doc__
 
@@ -202,12 +203,16 @@ def check_format(encValData, job, path):
 def process_illumina_read_name_pattern(read_name,
                                        read_numbers_set,
                                        signatures_set,
-                                       signatures_no_barcode_set):
+                                       signatures_no_barcode_set,
+                                       srr_flag):
     read_name_array = re.split(r'[:\s_]', read_name)
     flowcell = read_name_array[2]
     lane_number = read_name_array[3]
-    read_number = read_name_array[-4]
-    read_numbers_set.add(read_number)
+    if srr_flag:
+        read_number = list(read_numbers_set)[0]
+    else:
+        read_number = read_name_array[-4]
+        read_numbers_set.add(read_number)
     barcode_index = read_name_array[-1]
     signatures_set.add(
         flowcell + ':' + lane_number + ':' +
@@ -221,12 +226,16 @@ def process_special_read_name_pattern(read_name,
                                       words_array,
                                       signatures_set,
                                       signatures_no_barcode_set,
-                                      read_numbers_set):
-    read_number = 'not initialized'
-    if len(words_array[0]) > 3 and \
-       words_array[0][-2:] in ['/1', '/2']:
-        read_number = words_array[0][-1]
-        read_numbers_set.add(read_number)
+                                      read_numbers_set,
+                                      srr_flag):
+    if srr_flag:
+        read_number = list(read_numbers_set)[0]
+    else:
+        read_number = 'not initialized'
+        if len(words_array[0]) > 3 and \
+           words_array[0][-2:] in ['/1', '/2']:
+            read_number = words_array[0][-1]
+            read_numbers_set.add(read_number)
     read_name_array = re.split(r'[:\s_]', read_name)
     flowcell = read_name_array[2]
     lane_number = read_name_array[3]
@@ -242,9 +251,13 @@ def process_special_read_name_pattern(read_name,
 def process_new_illumina_prefix(read_name,
                                 signatures_set,
                                 old_illumina_current_prefix,
-                                read_numbers_set):
-    read_number = '1'
-    read_numbers_set.add(read_number)
+                                read_numbers_set,
+                                srr_flag):
+    if srr_flag:
+        read_number = list(read_numbers_set)[0]
+    else:
+        read_number = '1'
+        read_numbers_set.add(read_number)
     read_name_array = re.split(r':', read_name)
 
     if len(read_name_array) > 3:
@@ -265,11 +278,15 @@ def process_new_illumina_prefix(read_name,
 def process_old_illumina_read_name_pattern(read_name,
                                            read_numbers_set,
                                            signatures_set,
-                                           old_illumina_current_prefix):
-    read_number = '1'
-    if read_name[-2:] in ['/1', '/2']:
-        read_numbers_set.add(read_name[-1])
-        read_number = read_name[-1]
+                                           old_illumina_current_prefix,
+                                           srr_flag):
+    if srr_flag:
+        read_number = list(read_numbers_set)[0]
+    else:
+        read_number = '1'
+        if read_name[-2:] in ['/1', '/2']:
+            read_numbers_set.add(read_name[-1])
+            read_number = read_name[-1]
     arr = re.split(r':', read_name)
     if len(arr) > 1:
         prefix = arr[0] + ':' + arr[1]
@@ -304,7 +321,7 @@ def process_read_name_line(read_name_line,
                            signatures_no_barcode_set,
                            signatures_set,
                            read_lengths_dictionary,
-                           errors):
+                           errors, srr_flag):
     read_name = read_name_line.strip()
     words_array = re.split(r'\s', read_name)
     if read_name_pattern.match(read_name) is None:
@@ -313,8 +330,9 @@ def process_read_name_line(read_name_line,
                                               words_array,
                                               signatures_set,
                                               signatures_no_barcode_set,
-                                              read_numbers_set)
-        elif srr_read_name_pattern.match(read_name) is not None:
+                                              read_numbers_set,
+                                              srr_flag)
+        elif srr_read_name_pattern.match(read_name.split(' ')[0]) is not None:
             srr_portion = read_name.split(' ')[0]
             if srr_portion.count('.') == 2:
                 read_numbers_set.add(srr_portion[-1])
@@ -327,11 +345,11 @@ def process_read_name_line(read_name_line,
                                                                  special_read_name_pattern,
                                                                  srr_read_name_pattern,
                                                                  old_illumina_current_prefix,
-                                                                 set(),
+                                                                 read_numbers_set,
                                                                  signatures_no_barcode_set,
                                                                  signatures_set,
                                                                  read_lengths_dictionary,
-                                                                 errors)
+                                                                 errors, True)
         else:
             # unrecognized read_name_format
             # current convention is to include WHOLE 
@@ -343,7 +361,8 @@ def process_read_name_line(read_name_line,
                         read_name,
                         signatures_set,
                         old_illumina_current_prefix,
-                        read_numbers_set)
+                        read_numbers_set,
+                        srr_flag)
 
                 elif len(read_name) > 3 and read_name.count(':') > 2:
                     # assuming old illumina format
@@ -351,17 +370,21 @@ def process_read_name_line(read_name_line,
                         read_name,
                         read_numbers_set,
                         signatures_set,
-                        old_illumina_current_prefix)
+                        old_illumina_current_prefix,
+                        srr_flag)
                 else:
                     errors['fastq_format_readname'] = read_name
                     # the only case to skip update content error - due to the changing nature of read names 
+            else:
+                errors['fastq_format_readname'] = read_name
 
     else:  # found a match to the regex of "almost" illumina read_name
         process_illumina_read_name_pattern(
             read_name,
             read_numbers_set,
             signatures_set,
-            signatures_no_barcode_set)
+            signatures_no_barcode_set,
+            srr_flag)
 
     return old_illumina_current_prefix
 
@@ -393,8 +416,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
     )
 
     srr_read_name_pattern = re.compile(
-        '^(@SRR[\d.]+\s[a-zA-Z\d]+[a-zA-Z\d_-]*:[a-zA-Z\d-]+:[a-zA-Z\d_-]' +
-        '+:\d+:\d+:\d+:\d+\slength=[\d]+)$'
+        '^(@SRR[\d.]+)$'
     )
 
     read_numbers_set = set()
@@ -406,22 +428,26 @@ def process_fastq_file(job, fastq_data_stream, session, url):
     try:
         line_index = 0
         for encoded_line in fastq_data_stream.stdout:
-            line = encoded_line.decode('utf-8')
-            line_index += 1
-            if line_index == 1:
-                old_illumina_current_prefix = \
-                    process_read_name_line(
-                        line,
-                        read_name_prefix,
-                        read_name_pattern,
-                        special_read_name_pattern,
-                        srr_read_name_pattern,
-                        old_illumina_current_prefix,
-                        read_numbers_set,
-                        signatures_no_barcode_set,
-                        signatures_set,
-                        read_lengths_dictionary,
-                        errors)
+            try:
+                line = encoded_line.decode('utf-8')
+            except UnicodeDecodeError:
+                errors['readname_encoding'] = 'Error occured, while decoding the readname string.'
+            else:
+                line_index += 1
+                if line_index == 1:
+                    old_illumina_current_prefix = \
+                        process_read_name_line(
+                            line,
+                            read_name_prefix,
+                            read_name_pattern,
+                            special_read_name_pattern,
+                            srr_read_name_pattern,
+                            old_illumina_current_prefix,
+                            read_numbers_set,
+                            signatures_no_barcode_set,
+                            signatures_set,
+                            read_lengths_dictionary,
+                            errors, False)
             if line_index == 2:
                 read_count += 1
                 process_sequence_line(line, read_lengths_dictionary)
@@ -630,31 +656,35 @@ def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url
             errors['lookup_for_content_md5sum'] = 'Network error occured, while looking for ' + \
                                                   'content md5sum conflict on the portal. ' + str(e)
         else:
-            r_graph = r.json().get('@graph')
-            if len(r_graph) > 0:
-                conflicts = []
-                for entry in r_graph:
-                    if 'accession' in entry and 'accession' in item:
-                        if entry['accession'] != item['accession']:
+            try:
+                r_graph = r.json().get('@graph')
+            except ValueError:
+                errors['content_md5sum_lookup_json_error'] = str(r)
+            else:
+                if len(r_graph) > 0:
+                    conflicts = []
+                    for entry in r_graph:
+                        if 'accession' in entry and 'accession' in item:
+                            if entry['accession'] != item['accession']:
+                                conflicts.append(
+                                    '%s in file %s ' % (
+                                        result['content_md5sum'],
+                                        entry['accession']))
+                        elif 'accession' in entry:
                             conflicts.append(
                                 '%s in file %s ' % (
                                     result['content_md5sum'],
                                     entry['accession']))
-                    elif 'accession' in entry:
-                        conflicts.append(
-                            '%s in file %s ' % (
-                                result['content_md5sum'],
-                                entry['accession']))
-                    elif 'accession' not in entry and 'accession' not in item:
-                        conflicts.append(
-                            '%s ' % (
-                                result['content_md5sum']))
-                if len(conflicts) > 0:
-                    errors['content_md5sum'] = str(conflicts)
-                    update_content_error(errors,
-                                         'File content md5sum conflicts with content ' +
-                                         'md5sum of existing file(s) {}'.format(
-                                             ', '.join(map(str, conflicts))))
+                        elif 'accession' not in entry and 'accession' not in item:
+                            conflicts.append(
+                                '%s ' % (
+                                    result['content_md5sum']))
+                    if len(conflicts) > 0:
+                        errors['content_md5sum'] = str(conflicts)
+                        update_content_error(errors,
+                                             'File content md5sum conflicts with content ' +
+                                             'md5sum of existing file(s) {}'.format(
+                                                 ', '.join(map(str, conflicts))))
 
 
 def check_file(config, session, url, job):
@@ -797,12 +827,29 @@ def remove_local_file(path_to_the_file, errors):
         pass
 
 
-def fetch_files(session, url, search_query, out, include_unexpired_upload=False):
-    r = session.get(
-        urljoin(url, '/search/?field=@id&limit=all&type=File&datastore=database&' + search_query))
-    r.raise_for_status()
-    out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
-    for result in r.json()['@graph']:
+def fetch_files(session, url, search_query, out, include_unexpired_upload=False, file_list=None):
+    graph = []
+    if file_list:
+        r = None
+        ACCESSIONS = []
+        if os.path.isfile(file_list):
+            ACCESSIONS = [line.rstrip('\n') for line in open(file_list)]
+        #print (ACCESSIONS)
+        for acc in ACCESSIONS:
+            r = session.get(
+                urljoin(url, '/search/?field=@id&limit=all&type=File&accession=' + acc))
+            r.raise_for_status()
+            #out.write("PROCESSING: %d files in accessions list file : %s\n" % (len(r.json()['@graph']), file_list))
+            local = copy.deepcopy(r.json()['@graph'])
+            graph.extend(local)
+    else:
+        r = session.get(
+            urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
+        r.raise_for_status()
+        #out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
+        graph = r.json()['@graph']
+
+    for result in graph:
         job = {
             '@id': result['@id'],
             'errors': {},
@@ -898,7 +945,7 @@ def patch_file(session, url, job):
                     'was {} and now is {}.'.format(job['item'].get('status', 'UNKNOWN'), etag_r.json()['status'])
     return
 
-def run(out, err, url, username, password, encValData, mirror, search_query,
+def run(out, err, url, username, password, encValData, mirror, search_query, file_list=None,
         processes=None, include_unexpired_upload=False, dry_run=False, json_out=False):
     import functools
     import multiprocessing
@@ -920,7 +967,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.11'
+    version = '1.12'
 
     out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
               (version, search_query, nprocesses, dr, datetime.datetime.now()))
@@ -931,7 +978,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query,
         pool = multiprocessing.Pool(processes=processes)
         imap = pool.imap_unordered
 
-    jobs = fetch_files(session, url, search_query, out, include_unexpired_upload)
+    jobs = fetch_files(session, url, search_query, out, include_unexpired_upload, file_list)
     if not json_out:
         headers = '\t'.join(['Accession', 'Lab', 'Errors', 'Aliases', 'Upload URL',
                              'Upload Expiration'])
@@ -995,6 +1042,9 @@ def main():
     parser.add_argument(
         '--search-query', default='status=uploading',
         help="override the file search query, e.g. 'accession=ENCFF000ABC'")
+    parser.add_argument(
+        '--file-list', default='',
+        help="list of file accessions to check")
     parser.add_argument('url', help="server to post to")
     args = parser.parse_args()
     run(**vars(args))
