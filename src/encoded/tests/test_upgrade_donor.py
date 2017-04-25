@@ -74,6 +74,34 @@ def mouse_donor_3(root, mouse_donor, publication):
     return properties
 
 
+@pytest.fixture
+def fly_donor_3(award, lab, fly):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'organism': fly['uuid'],
+        'schema_version': '3',
+        'aliases': [
+            'roadmap-epigenomics:smRNA-Seq analysis of foreskin keratinocytes from skin03||Thu Jan 17 19:05:12 -0600 2013||58540||library',
+            'encode:lots:of:colons*'
+        ]
+    }
+
+
+@pytest.fixture
+def human_donor_6(root, donor_1):
+    item = root.get_by_uuid(donor_1['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '6',
+        'aliases': [
+            'encode:why||put||up||bars',
+            'encode:lots:and:lots:of:colons*'
+        ]
+    })
+    return properties
+
+
 def test_human_donor_upgrade(upgrader, human_donor_1):
     value = upgrader.upgrade('human_donor', human_donor_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -119,3 +147,12 @@ def test_mouse_donor_documents_upgrade(root, dummy_request, upgrader, mouse_dono
     value = upgrader.upgrade('mouse_donor', mouse_donor_3, target_version='6', context=context)
     assert value['schema_version'] == '6'
     assert 'donor_documents' not in value
+
+
+def test_bad_fly_donor_alias_upgrade_3_4(root, upgrader, fly_donor_3):
+    value = upgrader.upgrade('fly_donor', fly_donor_3, current_version='3', target_version='4')
+    assert value['schema_version'] == '4'
+    assert '||' not in value['aliases']
+    assert '*' not in value['aliases']
+    for alias in value['aliases']:
+        assert len(alias.split(':')) == 2
