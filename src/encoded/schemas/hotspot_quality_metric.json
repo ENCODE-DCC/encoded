@@ -19,7 +19,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "SPOT score": {
             "title": "SPOT score",

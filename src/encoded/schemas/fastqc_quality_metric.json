@@ -18,7 +18,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "attachment": {
             "title": "QC metric document metadata",
