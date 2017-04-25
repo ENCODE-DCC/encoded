@@ -83,7 +83,7 @@ def item_alias_tighten(value, system):
         aliases = value['aliases']
     else:
         return
-    
+
     for i in range(0, len(aliases)):
         new_alias = ''
         if 'roadmap-epigenomics' in aliases[i]:
@@ -95,7 +95,7 @@ def item_alias_tighten(value, system):
                 if len(scrub_parts) == 4:
                     scrubbed_list.append(scrub_parts[3].strip())
                 new_alias = '_'.join(scrubbed_list)
-        parts = aliases[i].split(':')[0] if not new_alias else new_alias.split(':')[0]
+        parts = aliases[i].split(':') if not new_alias else new_alias.split(':')
         namespace = parts[0]
         rest = '_'.join(parts[1:])
         if '"' in rest:
