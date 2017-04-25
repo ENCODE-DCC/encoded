@@ -99,13 +99,15 @@ def item_alias_tighten(value, system):
         namespace = parts[0]
         if namespace in ['ucsc_encode_db', 'UCSC_encode_db', 'versionof']:
             namespace = 'encode'
-        rest = '_'.join(parts[1:])
+        rest = '_'.join(parts[1:]).strip()
+
         import re
-        if '"' or '#' or '@' or '!' or '$' or '%' or '^' or '&' or '|' or '*' or '~'  or '`' in rest:
-            rest = re.sub("[\"#@!$%^&|*~`\/]", "", rest)
+        if '"' or '#' or '@' or '!' or '$' or '%' or '^' or '&' or '|' or '*' or '~'  or ';' or '`' in rest:
+            rest = re.sub("[\"#@!$%^&*|~`\/]", "", rest)
         if '[' or '{' in rest:
             rest = re.sub("[\[{]", "(", rest)
         if ']' or '}' in rest:
             rest = re.sub("[\]}]", ")", rest)
         new_alias = ':'.join([namespace, rest])
-        aliases[i] = new_alias
+        if new_alias not in aliases:
+            aliases[i] = new_alias
