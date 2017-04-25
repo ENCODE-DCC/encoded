@@ -97,14 +97,15 @@ def item_alias_tighten(value, system):
                 new_alias = '_'.join(scrubbed_list)
         parts = aliases[i].split(':') if not new_alias else new_alias.split(':')
         namespace = parts[0]
+        if namespace in ['ucsc_encode_db', 'UCSC_encode_db', 'versionof']:
+            namespace = 'encode'
         rest = '_'.join(parts[1:])
-        if '"' in rest:
-            rest.replace('"', '')
-        if '[' in rest:
-            rest.replace('[', '(')
-        if ']' in rest:
-            rest.replace(']', ')')
-        if '#' in rest:
-            rest.replace('#', '')
+        import re
+        if '"' or '#' or '@' or '!' or '$' or '%' or '^' or '&' or '|' or '*' or '~'  or '`' in rest:
+            rest = re.sub("[\"#@!$%^&|*~`\/]", "", rest)
+        if '[' or '{' in rest:
+            rest = re.sub("[\[{]", "(", rest)
+        if ']' or '}' in rest:
+            rest = re.sub("[\]}]", ")", rest)
         new_alias = ':'.join([namespace, rest])
         aliases[i] = new_alias

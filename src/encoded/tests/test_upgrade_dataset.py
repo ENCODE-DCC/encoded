@@ -97,7 +97,8 @@ def experiment_10(root, experiment):
         'status': 'in progress',
         'aliases': [
             'j-michael-cherry:Lib:XZ:20100107:11--ChIP:XZ:20100104:09:AdiposeNuclei:H3K4Me3',
-            'roadmap-epigenomics:Bisulfite-Seq analysis of ucsf-4* stem cell line from UCSF-4||Tue Apr 16 16:10:36 -0500 2013||85822'
+            'roadmap-epigenomics:Bisulfite-Seq analysis of ucsf-4* stem cell line from UCSF-4||Tue Apr 16 16:10:36 -0500 2013||85822',
+            'encode:[this is]_qu#ite:bad"'
         ]
     })
     return properties
@@ -232,7 +233,8 @@ def test_annotation_upgrade_1(registry, annotation_8):
 def test_bad_dataset_alias_upgrade_10_11(root, upgrader, experiment_10):
     value = upgrader.upgrade('experiment', experiment_10, current_version='10', target_version='11')
     assert value['schema_version'] == '11'
-    assert '||' not in value['aliases']
-    assert '*' not in value['aliases']
+    assert 'j-michael-cherry:Lib_XZ_20100107_11--ChIP_XZ_20100104_09_AdiposeNuclei_H3K4Me3' in value['aliases']
+    assert 'roadmap-epigenomics:Bisulfite-Seq analysis of ucsf-4 stem cell line from UCSF-4_Apr-16-2013_85822' in value['aliases']
+    assert 'encode:(this is)_quite_bad' in value['aliases']
     for alias in value['aliases']:
         assert len(alias.split(':')) == 2
