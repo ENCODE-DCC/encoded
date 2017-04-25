@@ -25,23 +25,9 @@ paired_end_assays = [
     ]
 
 
-@audit_checker('File', frame=[
-    'analysis_step_version',
-    'analysis_step_version.analysis_step',
-    'analysis_step_version.analysis_step.pipelines'])
-def audit_file_pipeline_status(value, system):
-    if value['status'] not in ['released']:
-        return
-    if 'analysis_step_version' in value and \
-       'analysis_step' in value['analysis_step_version'] and \
-       'pipelines' in value['analysis_step_version']['analysis_step']:
-        for p in value['analysis_step_version']['analysis_step']['pipelines']:
-            if p['status'] not in ['active']:
-                detail = 'File {} with a status of {} '.format(value['@id'], value['status']) + \
-                         'is associated with a pipeline {} '.format(p['@id']) + \
-                         'that has a status of {}.'.format(p['status'])
-                yield AuditFailure('inconsistent pipeline status',
-                                   detail, level='INTERNAL_ACTION')
+# def audit_file_pipeline_status(value, system): removed at release 56
+# http://redmine.encodedcc.org/issues/5017
+
 
 '''
 @audit_checker('File', frame=['derived_from'])
