@@ -601,6 +601,12 @@ const Award = (props) => {
                     <h4>Description</h4>
                 </PanelHeading>
                 <PanelBody>
+                    {context.url ?
+                        <div>
+                            <strong>NHGRI project information: </strong><a href={context.url} title={`${context.name} project page at NHGRI`}>{context.name}</a>
+                            <hr />
+                        </div>
+                    : null}
                     {context.description ?
                         <div className="two-column-long-text two-column-long-text--gap">
                             <p>{context.description}</p>
