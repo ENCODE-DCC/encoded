@@ -3,6 +3,27 @@ $rotated-th-height: 130px;
 $rotated-th-width: 20px;
 $rotated-th-angle: 30deg;
 
+.matrix-wrapper {
+    display: flex;
+    padding-left: 0;
+    overflow: scroll;
+}
+
+.matrix-group-heading {
+    flex: 0 1 auto;
+    width: 25px;
+    position: relative;
+
+    @at-root #{&}__content {
+        position: absolute;
+        transform: rotate(-90deg);
+        transform-origin: right bottom;
+        right: 2px;
+        font-weight: bold;
+    }
+}
+
+
 th.rotate30 {
     height: $rotated-th-height;
     width: $rotated-th-width;
@@ -40,7 +61,7 @@ th.rotate30 {
     }
 }
 
-th.rotate90 {
+.rotate90 {
     vertical-align: top;
     > div {
         position: relative;
@@ -57,7 +78,10 @@ th.rotate90 {
 }
 
 table.matrix {
+    flex: 0 1 auto;
     width: auto;
+    border-left: 1px solid #ddd;
+
     th {
         text-align: right;
         padding: 0 .5em;
@@ -83,4 +107,11 @@ table.matrix {
 
 .hubs-controls-button {
     display: inline-block;
+}
+
+.group-more-button {
+    border: none;
+    background-color: transparent;
+    font-weight: normal;
+    color: $std-href-color;
 }
