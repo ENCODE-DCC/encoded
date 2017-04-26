@@ -110,13 +110,10 @@
         "date_created": {
             "rdfs:subPropertyOf": "dc:created",
             "title": "Date created",
-	    "decription": "The date the object was created.",
+	        "decription": "The date the object was created.",
             "comment": "Do not submit. The date the object is created is assigned by the server.",
             "type": "string",
-            "anyOf": [
-                {"format": "date-time"},
-                {"format": "date"}
-            ],
+            "format": "date-time",
             "serverDefault": "now",
             "permission": "import_items"
         },
