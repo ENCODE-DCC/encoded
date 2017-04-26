@@ -286,7 +286,6 @@
                         "tsv",
                         "csv",
                         "sam",
-                        "sra",
                         "tar",
                         "tagAlign",
                         "vcf",
@@ -302,6 +301,7 @@
                     "enum": [
                         "2bit",
                         "csfasta",
+                        "sra",
                         "csqual"
                     ]
                 }
@@ -751,6 +751,7 @@
         "status": {
             "title": "Status",
             "type": "string",
+            "permission": "import_items",
             "default": "uploading",
             "enum" : [
                 "uploading",

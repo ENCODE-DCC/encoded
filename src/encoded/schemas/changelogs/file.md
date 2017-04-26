@@ -1,5 +1,9 @@
 ## Changelog for file.json
 
+sra file format is import_only
+file statuses import_only
+
+
 ### Schema version 9.a
 
 * *paired_end* enums list was expanded to include a"1,2" value that is acceptable only for *file_format* = sra files that have *run_type* = paired_ended
