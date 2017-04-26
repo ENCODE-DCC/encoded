@@ -471,3 +471,12 @@ def file_8_9(value, system):
     if 'supercedes' in value:
         value['supersedes'] = value['supercedes']
         value.pop('supercedes', None)
+
+@upgrade_step('file', '9', '10')
+def file_9_10(value, system):
+    # http://redmine.encodedcc.org/issues/5021
+    # http://redmine.encodedcc.org/issues/4929
+    # http://redmine.encodedcc.org/issues/4927
+    # http://redmine.encodedcc.org/issues/4903
+    # http://redmine.encodedcc.org/issues/4904
+    return
