@@ -15,6 +15,9 @@ into historical output_types go:
                         "miRNA reference",
                         "snRNA reference",
 
+intoducinh dependency on maped read length and run type as only possible in bam/sam files
+
+
 ### Schema version 9.a
 
 * *paired_end* enums list was expanded to include a"1,2" value that is acceptable only for *file_format* = sra files that have *run_type* = paired_ended

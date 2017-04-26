@@ -78,6 +78,13 @@
                 }
             }
         },
+        "mapped_read_length": {
+            "properties": {
+                "file_format": {
+                    "enum": ["bam"]
+                }
+            }
+        },
         "paired_end": {
             "oneOf": [
                 {
@@ -186,7 +193,7 @@
                     "not": {
                         "properties": {
                             "file_format": {
-                                "enum": ["fastq", "gff", "gtf", "bed", "bigBed", "bam", "sam","sra"]
+                                "enum": ["fastq", "gff", "gtf", "bed", "bigBed", "bam", "sam", "sra", "bigWig"]
                             }
                         }
                     }
