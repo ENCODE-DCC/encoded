@@ -34,12 +34,52 @@ var COLORS = [
 ];
 
 
+
+const yGroupLimit = 5; // Maximum number of items in a Y group unless the group is opened.
+
+
+const SeeMoreButton = React.createClass({
+    propTypes: {
+        displayText: React.PropTypes.string, // Text to display in the button
+        handleClick: React.PropTypes.string, // Call this parent function to handle the click in the button
+        id: React.PropTypes.string, // ID for the handleClick function to know which control was clicked
+    },
+
+    localHandleClick: function () {
+        this.props.handleClick(this.props.id);
+    },
+
+    render: function () {
+        return <button onClick={this.localHandleClick}>{this.props.displayText}</button>;
+    },
+});
+
+
 var Matrix = module.exports.Matrix = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object,
+    },
 
     contextTypes: {
         location_href: React.PropTypes.string,
         navigate: React.PropTypes.func,
         biosampleTypeColors: React.PropTypes.object // DataColor instance for experiment project
+    },
+
+    getInitialState: function () {
+        // Make a state for each of the Y groups (each Y group currently shows a biosample type).
+        // To do that, we have to get each of the bucket keys, which will be the keys into the
+        // object that keeps track of whether the group shows all or not. If a group has fewer than
+        // the maximum number of items to show a See More button, then it still get included here,
+        // but with a value of `false` that never changes.
+        const matrix = this.props.context.matrix;
+        const primaryYGrouping = matrix.y.group_by[0];
+        const yGroups = matrix.y[primaryYGrouping].buckets;
+        const yGroupOpen = {};
+        yGroups.forEach((group) => {
+            yGroupOpen[group.key] = false;
+        });
+        return { yGroupOpen: yGroupOpen };
     },
 
     // Called when the Visualize button dropdown menu gets opened or closed. `dropdownEl` is the DOM node for the dropdown menu.
@@ -54,6 +94,13 @@ var Matrix = module.exports.Matrix = React.createClass({
             // The menu has dropped down
             wrapperEl.style.height = wrapperEl.clientHeight + dropdownHeight + 'px';
         }
+    },
+
+    // Handle a click in a See More link within the matrix (not for the facets)
+    handleClick: function (groupKey) {
+        const groupOpen = _.clone(this.state.yGroupOpen);
+        groupOpen[groupKey] = !groupOpen[groupKey];
+        this.setState({ yGroupOpen: groupOpen });
     },
 
     render: function() {
@@ -178,7 +225,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                     }
                                                 })}
                                             </tr>
-                                            {y_groups.map(function(group, i) {
+                                            {y_groups.map((group, i) => {
                                                 var seriesIndex = y_group_options.indexOf(group.key);
                                                 var groupColor = biosampleTypeColors[i];
                                                 var seriesColor = color(groupColor);
@@ -194,8 +241,8 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 </tr>];
                                                 var group_buckets = group[secondary_y_grouping].buckets;
                                                 var y_limit = matrix.y.limit || group_buckets.length;
-                                                rows.push.apply(rows, group_buckets.map(function(yb, j) {
-                                                    if (j < y_limit) {
+                                                rows.push.apply(rows, group_buckets.map((yb, j) => {
+                                                    if (j < yGroupLimit || this.state.yGroupOpen[group.key]) {
                                                         var href = search_base + '&' + secondary_y_grouping + '=' + globals.encodedURIComponent(yb.key);
                                                         return <tr key={yb.key}>
                                                             <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}><a href={href}>{yb.key}</a></th>
@@ -218,14 +265,17 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                             })}
                                                             {x_buckets.length > x_limit && <td></td>}
                                                         </tr>;
-                                                    } else if (j == y_limit) {
-                                                        return <tr key={j}>
-                                                            <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}><a href={group_href}>...and {group_buckets.length - y_limit} more</a></th>
-                                                            {_.range(colCount - 1).map(n => <td key={n}></td>)}
-                                                        </tr>;
-                                                    } else {
-                                                        return null;
+                                                    } else if (j === yGroupLimit && !this.state.yGroupOpen[group.key]) {
+                                                        return (
+                                                            <tr key={j}>
+                                                                <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}>
+                                                                    <SeeMoreButton id={group.key} handleClick={this.handleClick} displayText={`...and ${group_buckets.length - y_limit} more`} />
+                                                                </th>
+                                                                {_.range(colCount - 1).map(n => <td key={n} />)}
+                                                            </tr>
+                                                        );
                                                     }
+                                                    return null;
                                                 }));
                                                 return rows;
                                             })}
