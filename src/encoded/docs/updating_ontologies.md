@@ -39,10 +39,14 @@ How to update the ontology versions
 6.  Update the following information
     
     Site release version: 56
-    ontology.json file: ontology-2017-04-11-expand-organs.json
-    [UBERON release date]: 2017-02-05
-    [OBI release date]: 2016-10-11
-    [EFO release date]: 2017-03-15
+    
+    ontology.json file: ontology-2017-04-26.json
+    
+    [UBERON release date]: 2017-04-15
+    
+    [OBI release date]: 2017-10-11
+    
+    [EFO release date]: 2017-04-18
 
 
 [Uber anatomy ontology (Uberon)]: http://uberon.org/
