@@ -210,7 +210,7 @@
                                 "required": ["content_error_detail"],
                                 "properties": {
                                     "status": {
-                                        "enum": ["uploading", "uploaded", "upload failed", "format check failed", "in progress", "deleted", "replaced", "revoked", "archived", "released"]
+                                        "enum": ["uploading", "upload failed", "in progress", "deleted", "replaced", "revoked", "archived", "released"]
                                     }
                                 }
                             },
@@ -755,9 +755,7 @@
             "default": "uploading",
             "enum" : [
                 "uploading",
-                "uploaded",
                 "upload failed",
-                "format check failed",
                 "in progress",
                 "deleted",
                 "replaced",

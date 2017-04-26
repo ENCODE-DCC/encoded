@@ -2,6 +2,7 @@
 
 sra file format is import_only
 file statuses import_only
+uploaded and format_ cheked failed statuses removed
 
 
 ### Schema version 9.a
