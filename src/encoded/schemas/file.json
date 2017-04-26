@@ -558,9 +558,7 @@
                         "genome reference",
                         "transcriptome reference",
                         "transcriptome index",
-                        "tRNA reference",
-                        "miRNA reference",
-                        "snRNA reference",
+
                         "rRNA reference",
                         "TSS reference",
                         "reference variants",
@@ -590,7 +588,9 @@
                     "enum": [
                         "rejected reads",
                         "raw data",
-
+                        "tRNA reference",
+                        "miRNA reference",
+                        "snRNA reference",
                         "spike-in alignments",
 
                         "signal",
