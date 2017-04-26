@@ -273,7 +273,6 @@
                         "bed",
                         "bigBed",
                         "bigWig",
-                        "btr",
                         "fasta",
                         "fastq",
                         "gff",
@@ -299,6 +298,7 @@
                     "comment": "Historical file formats, not valid for new submissions.",
                     "permission": "import_items",
                     "enum": [
+                        "btr",
                         "2bit",
                         "csfasta",
                         "sra",
@@ -367,6 +367,7 @@
         },
         "restricted": {
             "title": "Restricted file",
+            "permission":"import_items",
             "description": "A flag to indicate whether this file is subject to restricted access",
             "type": "boolean"
         },
