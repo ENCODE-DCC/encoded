@@ -187,6 +187,13 @@ var Matrix = module.exports.Matrix = React.createClass({
                                     </div>
                                     <table className="matrix">
                                         <tbody>
+                                            {matrix.doc_count ?
+                                                <tr>
+                                                    <th style={{width: 20}}></th>
+                                                    <th colSpan={colCount + 1}
+                                                        style={{padding: "5px", borderBottom: "solid 1px #ddd", textAlign: "center"}}>{matrix.x.label.toUpperCase()}</th>
+                                                </tr>
+                                            : null}
                                             <tr style={{borderBottom: "solid 1px #ddd"}}>
                                                 <th style={{ textAlign: 'center', width: 200 }}>
                                                     <h3>
