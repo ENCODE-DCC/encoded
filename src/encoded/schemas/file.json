@@ -409,6 +409,7 @@
         },
         "mapped_read_length": {
             "title": "Mapped read length",
+            "permission": "import_items",
             "description": "The length of the reads actually mapped, if the original read length was clipped.",
             "comment": "This is used when the original sequenced read length needed to be adjusted to match a replicate, or to match experiments and controls.",
             "type": "integer"
@@ -417,6 +418,7 @@
             "title": "Mapped run type for bam files",
             "description": "The mapped run type of the alignment file which may differ from the fastqs it is derived from.",
             "comment": "When the control and experiment run types do not match, one may be changed in order to meet pipeline requirements.",
+            "permission": "import_items",
             "type": "string",
             "enum": [
                 "single-ended",
@@ -694,7 +696,7 @@
             "description": "The experiment or dataset the file belongs to.",
             "comment": "For experiments, see experiment.json for available identifiers. For datasets, see dataset.json for available identifiers.",
             "type": "string",
-            "linkTo": ["Experiment", "Dataset", "Reference", "Annotation", "PublicationData", "UcscBrowserComposite"]
+            "linkTo": ["Dataset"]
         },
         "replicate": {
             "title": "Replicate",
