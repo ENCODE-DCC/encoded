@@ -5,6 +5,7 @@ file statuses import_only
 uploaded and format_ cheked failed statuses removed
 btr becmes historical import only
 restricted becomes import_only
+content_md5sum is import_only
 
 ### Schema version 9.a
 
