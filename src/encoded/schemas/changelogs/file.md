@@ -8,6 +8,7 @@ restricted becomes import_only
 content_md5sum is import_only
 maped_read_length import only
 mapped_run_type import_only
+bigWig will require assembly
 
 ### Schema version 9.a
 

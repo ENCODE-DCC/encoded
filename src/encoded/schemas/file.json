@@ -178,7 +178,7 @@
                     "required": ["assembly"],
                     "properties": {
                         "file_format": {
-                            "enum": ["bam", "sam", "gtf"]
+                            "enum": ["bam", "sam", "gtf", "bigWig"]
                         }
                     }
                 },
