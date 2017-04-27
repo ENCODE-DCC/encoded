@@ -4,7 +4,7 @@
         "schema_version": {
             "title": "Schema Version",
             "description": "The version of the JSON schema that the server uses to validate the object.",
-            "comment":  "Do not submit. The version used to validate the object is set by the server.  The default should be set to the current version.",
+            "comment":  "Do not submit. The version used to validate the object is set by the server. The default should be set to the current version.",
             "type": "string",
             "pattern": "^\\d+(\\.\\d+)*$",
             "requestMethod": []
@@ -35,14 +35,14 @@
         "alternate_accessions": {
             "title": "Alternate accessions",
             "description": "Accessions previously assigned to objects that have been merged with this object.",
-	    "comment": "Do not submit. Only admins are allowed to set or update this value.",
+	        "comment": "Do not submit. Only admins are allowed to set or update this value.",
             "type": "array",
             "default": [],
             "permission": "import_items",
             "items": {
                 "title": "Alternate Accession",
                 "description": "An accession previously assigned to an object that has been merged with this object.",
-		"comment": "Only accessions of objects that have status equal replaced will work here.",
+		        "comment": "Only accessions of objects that have status equal replaced will work here.",
                 "type": "string",
                 "format": "accession"
             }
@@ -52,7 +52,7 @@
         "aliases": {
             "title": "Lab aliases",
             "description": "Lab specific identifiers to reference an object.",
-	    "comment": "The purpose of this field is to provide a link into the lab LIMS and to facilitate shared objects.",
+	        "comment": "The purpose of this field is to provide a link into the lab LIMS and to facilitate shared objects.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
