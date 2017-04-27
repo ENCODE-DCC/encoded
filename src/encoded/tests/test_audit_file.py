@@ -349,16 +349,6 @@ def test_audit_file_replicate_match(testapp, file1, file_rep2):
     assert any(error['category'] == 'inconsistent replicate' for error in errors_list)
 
 
-def test_audit_file_pipeline_status(testapp, file7, pipeline_bam):
-    testapp.patch_json(file7['@id'], {'status': 'released'})
-    res = testapp.get(file7['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent pipeline status' for error in errors_list)
-
-
 def test_audit_file_insufficient_control_read_depth_chip_seq_paired_end(
     testapp,
     file_exp,
