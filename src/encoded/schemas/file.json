@@ -218,36 +218,18 @@
                 }
             ]
         },
-        "file_size": {
-            "oneOf": [
-                {
-                    "required": ["file_size"],
-                    "properties": {
-                        "status": {
-                            "enum": [
-                                "in progress",
-                                "archived",
-                                "released",
-                                "revoked"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "properties": {
-                            "status": {
-                                "enum": [
-                                    "in progress",
-                                    "archived",
-                                    "released",
-                                    "revoked"
-                                ]
-                            }
-                        }
-                    }
+        "file_size": {           
+            "required": ["file_size"],
+            "properties": {
+                "status": {
+                    "enum": [
+                        "in progress",
+                        "archived",
+                        "released",
+                        "revoked"
+                    ]
                 }
-            ]
+            }
         },
         "status": {
             "oneOf": [
