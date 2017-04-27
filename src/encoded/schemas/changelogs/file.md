@@ -10,7 +10,7 @@
 * *assembly* values is required for files with *file_format* that is one of ["bam", "sam", "gtf", "bigWig"]
 * *mapped_read_length* is available only for files with *file_format* = bam, the property could be submitted only by DCC personnel
 * *mapped_run_type* is available only for files with *file_format* = bam, the property could be submitted only by DCC personnel
-* *file_size* value is now required for files with *status* that is one of ["in progress", "released", "archived"]
+* *file_size* value is now required for files with *status* that is one of ["in progress", "released", "archived", "revoked"]
 * *paired_end* enums list was expanded to include a "1,2" value that is acceptable only for *file_format* = sra files that have *run_type* = paired_ended
 * *paired_end* value (1, 2, or 1,2) is required for files with *run_type* = paired-ended.
 * *md5sum* value formatting is now enforced with regex, validating it as a 32-character hexadecimal number.

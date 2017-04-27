@@ -209,7 +209,8 @@
                             "enum": [
                                 "in progress",
                                 "archived",
-                                "released"
+                                "released",
+                                "revoked"
                             ]
                         }
                     }
@@ -221,7 +222,8 @@
                                 "enum": [
                                     "in progress",
                                     "archived",
-                                    "released"
+                                    "released",
+                                    "revoked"
                                 ]
                             }
                         }
