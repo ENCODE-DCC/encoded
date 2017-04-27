@@ -218,19 +218,6 @@
                 }
             ]
         },
-        "file_size": {           
-            "required": ["file_size"],
-            "properties": {
-                "status": {
-                    "enum": [
-                        "in progress",
-                        "archived",
-                        "released",
-                        "revoked"
-                    ]
-                }
-            }
-        },
         "status": {
             "oneOf": [
                 {
@@ -242,25 +229,49 @@
                     }
                 },
                 {
-                    "not": {
-                        "oneOf": [
-                            {
-                                "required": ["content_error_detail"],
-                                "properties": {
-                                    "status": {
-                                        "enum": ["uploading", "upload failed", "in progress", "deleted", "replaced", "revoked", "archived", "released"]
+                    "allOf":[
+                        {
+                            "not": {
+                                "oneOf": [
+                                    {
+                                        "required": ["content_error_detail"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["uploading", "upload failed", "in progress", "deleted", "replaced", "revoked", "archived", "released"]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["content error"]
+                                            }
+                                        }
                                     }
-                                }
-                            },
-                            {
-                                "properties": {
-                                    "status": {
-                                        "enum": ["content error"]
-                                    }
-                                }
+                                ]
                             }
-                        ]
-                    }
+                        },
+                        {
+                            "oneOf": [
+                                {
+                                    "required": ["file_size"],
+                                    "properties": {
+                                        "status": {
+                                            "enum": ["in progress",  "revoked", "archived", "released"]
+                                        }
+                                    }
+                                },
+                                {
+                                    "properties": {
+                                        "status": {
+                                            "enum": ["uploading", "upload failed", "content error", "deleted", "replaced"]
+                                        }
+                                    }
+                                }
+                            ]
+
+                        }
+                    ]
                 }
             ]
         }
