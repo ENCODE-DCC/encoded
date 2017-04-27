@@ -8,24 +8,24 @@
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/accession" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/submitted" },     
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/accessioned_status" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/uuid" }
     ],
     "facets": {
         "status": {
             "title": "File status"
         },
         "output_category": {
-            "title": "Data category"
+            "title": "Content category"
         },
         "output_type": {
-            "title": "Data type"
+            "title": "Content type"
         },
         "file_format": {
             "title": "File format"
@@ -45,6 +45,7 @@
     },
     "dependencies": {
         "run_type": {
+            "comment": "Only paired-ended files should have paired_end values.",
             "oneOf": [
                 {
                     "properties": {
@@ -67,6 +68,7 @@
             ]
         },
         "external_accession": {
+            "comment": "A file with an external accession should not get an ENCODE accession.",
             "not": {
                 "required": ["accession"]
             }
@@ -79,6 +81,7 @@
             }
         },
         "paired_end": {
+            "comment": "Files with paired-end value 2 require a paired_with value.",
             "oneOf": [
                 {
                    "required": ["paired_with"],
@@ -143,6 +146,7 @@
             ]
         },
         "file_format":{
+            "comment": "Fastq and sra files require run_type and replicate but should not have assembly.",
             "oneOf": [
                 {
                     "allOf": [
@@ -250,7 +254,8 @@
         },
         "external_accession": {
             "title": "External accession",
-            "comment": "Only admins are allowed to set or update this value.",
+            "description": "For files that were not accessioned at our site but have an accession elsewhere.",
+            "comment": "Do not submit. Only admins are allowed to set or update this value.",
             "type": "string",
             "permission": "import_items",
             "uniqueKey": "accession"
@@ -258,30 +263,16 @@
         "read_count": {
             "title": "Read count",
             "description": "Number of reads in fastq file.",
-            "comment": "Only admins are allowed to set or update this value.",
+            "comment": "Do not submit. This value is calculated and posted by checkfiles script upon submission.",
             "permission": "import_items",
             "type": "integer"
-        },
-        "fastq_signature": {
-            "title": "Fastq file flowcell based signature",
-            "description": "Fastq file flowcell based unique signature to reference a file.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "permission": "import_items",
-            "items": {
-                "title": "Flowcell based fastq siganture part",
-                "description": "Fastq file flowcell based unique signature to reference a file.",
-                "comment": "Current convention is based on the Illumina unique sequence identifier, colon separated flowcell, lane, read_end(1/2) and barcode.",
-                "type":  "string",
-                "pattern": "^[a-zA-Z0-9_-]+:[0-9]+:[12]:.*:.*$"
-            }
         },
         "file_format": {
             "title": "File format",
             "type": "string",
             "oneOf": [
                 {
+                    "comment": "This field is required.",
                     "enum": [
                         "bam",
                         "bed",
@@ -381,13 +372,20 @@
         },
         "restricted": {
             "title": "Restricted file",
-            "description": "A flag to indicate whether this file is subject to restricted access",
+            "description": "A flag to indicate whether this file is subject to restricted access.",
+            "comment": "Do not submit. This value can only be set by admins.",
             "type": "boolean"
+        },
+        "submitted_file_name": {
+            "title": "Original file name",
+            "description": "The local file name used at time of submission.",
+            "comment": "Although this is not required. It is highly recommended.",
+            "type": "string"
         },
         "md5sum": {
             "title": "MD5sum",
             "description": "The md5sum of the file being transferred.",
-            "comment": "This can vary for files of same content gzipped at different times",
+            "comment": "Required. Warning: This value can vary for files of same content gzipped at different times",
             "type": "string",
             "format": "hex",
             "maxLength": 32,
@@ -396,28 +394,75 @@
         "content_md5sum": {
             "title": "Content MD5sum",
             "description": "The MD5sum of the uncompressed file.",
-            "comment": "This is only relavant for gzipped files.",
+            "comment": "Do not submit. This is only relavant for gzipped files. This value is calculated and posted by checkfiles script upon submission.",
             "type": "string",
             "format": "hex",
             "maxLength": 32,
             "pattern": "[a-f\\d]{32}|[A-F\\d]{32}"
         },
+        "fastq_signature": {
+            "title": "Fastq file flowcell based signature",
+            "description": "Fastq file flowcell based unique signature to reference a file.",
+            "comment": "Do not submit. This value is calculated and posted by checkfiles script upon submission.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "permission": "import_items",
+            "items": {
+                "title": "Flowcell based fastq siganture part",
+                "description": "Fastq file flowcell based unique signature to reference a file.",
+                "comment": "Current convention is based on the Illumina unique sequence identifier, colon separated flowcell, lane, read_end(1/2) and barcode.",
+                "type":  "string",
+                "pattern": "^[a-zA-Z0-9_-]+:[0-9]+:[12]:.*:.*$"
+            }
+        },
         "file_size": {
             "title": "File size",
-            "comment": "File size is specified in bytes",
+            "description": "File size specified in bytes.",
+            "comment": "Required.",
             "type": "integer"
         },
         "platform": {
             "title": "Platform",
             "description": "The measurement device used to collect data.",
-            "comment": "See platform.json for available identifiers.",
+            "comment": "This field is required for csfasta, csqual, rcc, idat and CEL file formats. See platform.json for identifer format.",
             "type": "string",
             "linkTo": "Platform"
         },
         "read_length": {
             "title": "Read length",
             "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
+            "comment": "This field is required for fastq, fasta, csfasta, csqual and sra file formats containing sequencing reads.",
             "type": "integer"
+        },
+        "run_type": {
+            "title": "Run type for sequencing files",
+            "description": "Indicates if file is part of a single or paired end sequencing run",
+            "comment": "This field is required for sra and fastq files.",
+            "type": "string",
+            "enum": [
+                "single-ended",
+                "paired-ended",
+                "unknown"
+            ]
+        },
+        "paired_end": {
+            "title": "Paired End Identifier",
+            "description": "Which read of the pair the file represents (in case of paired end sequencing run)",
+            "comment": "This field is required if run_type is paired-ended.",
+            "type": "string",
+            "enum": [
+                "1",
+                "2",
+                "1,2"
+            ]
+        },
+        "paired_with": {
+            "title": "File pairing",
+            "description": "The paired end fastq that corresponds with this file.",
+            "comment": "This is required for files with paired_end 2 and is calculated for files with paired_end 1.",
+            "type": "string",
+            "linkTo": "File"
         },
         "mapped_read_length": {
             "title": "Mapped read length",
@@ -641,26 +686,6 @@
                 }
             ]
         },
-        "run_type": {
-            "title": "Run type for sequencing files",
-            "description": "Indicates if file is part of a single or paired run",
-            "type": "string",
-            "enum": [
-                "single-ended",
-                "paired-ended",
-                "unknown"
-            ]
-        },
-        "paired_end": {
-            "title": "Paired End Identifier",
-            "description": "Which pair the file belongs to (if paired end library)",
-            "type": "string",
-            "enum": [
-                "1",
-                "2",
-                "1,2"
-            ]
-        },
         "derived_from": {
             "title": "Derived from",
             "description": "The files participating as inputs into software to produce this output file.",
@@ -674,7 +699,8 @@
         },
         "controlled_by": {
             "title": "Controlled by",
-            "description": "The files that control this file. ",
+            "description": "The files which should be used as a control for this file. ",
+            "comment": "This is used by the pipeline to find ChIP-seq controls.",
             "type": "array",
             "uniqueItems": true,
             "items": {
@@ -685,40 +711,34 @@
         },
         "supersedes": {
             "title": "Supersedes" ,
-            "description": "The files that this file replaces.",
+            "description": "The files that this file supersedes.",
+            "comment": "The files in this list should be obsolete and the superseeding file object should be used instead.",
             "type": "array",
             "uniqueItems": true,
             "items": {
-                    "comment": "See file.json for a list of available identifiers.",
+                    "comment": "The files in this list should be archived or revoked.",
                     "type": "string",
                     "linkTo": "File"
             }
         },
-        "paired_with": {
-            "title": "File pairing",
-            "description": "The file that corresponds with this file.",
-            "comment": "See file.json for a list of available identifiers.",
-            "type": "string",
-            "linkTo": "File"
-        },
         "dataset": {
             "title": "Dataset",
             "description": "The experiment or dataset the file belongs to.",
-            "comment": "For experiments, see experiment.json for available identifiers. For datasets, see dataset.json for available identifiers.",
+            "comment": "Required. See dataset.json for available identifiers.",
             "type": "string",
             "linkTo": ["Experiment", "Dataset", "Reference", "Annotation", "PublicationData", "UcscBrowserComposite"]
         },
         "replicate": {
             "title": "Replicate",
             "description": "The experimental replicate designation for the file.",
-            "comment": "See replicate.json for available identifiers.",
+            "comment": "This field is required for sra and fastq files. See replicate.json for available identifiers.",
             "type": "string",
             "linkTo": "Replicate"
         },
         "assembly": {
             "title": "Mapping assembly",
             "description": "Genome assembly that files were mapped to.",
-            "comment": "Applies to mapped files (e.g. BAM, BED and BigWig).",
+            "comment": "Required property for bam, sam, gtf, gff, bed and bigBed file format files. This property should not be submitted with sra or fastq files.",
             "type": "string",
             "enum": [
                 "mm9",
@@ -757,27 +777,24 @@
                 "WS245"
                 ]
         },
-        "submitted_file_name": {
-            "title": "Original file name",
-            "description": "The local file name used at time of submission.",
-            "type": "string"
-        },
         "status": {
             "title": "Status",
             "type": "string",
             "default": "uploading",
+            "description": "The status of the file object.",
+            "comment": "Do not submit.  This is set by admins along the process of file submission.",
             "enum" : [
                 "uploading",
+                "content error",
                 "uploaded",
                 "upload failed",
                 "format check failed",
                 "in progress",
                 "deleted",
+                "released",
                 "replaced",
                 "revoked",
-                "archived",
-                "released",
-                "content error"
+                "archived"        
                 ]
         },
         "dbxrefs": {
@@ -785,6 +802,7 @@
             "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "External identifiers",
             "description": "Unique identifiers from external resources.",
+            "comment": "Do not submit.  This is for admins to make virtual file objcts for files at external resources.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
@@ -797,16 +815,17 @@
         },
         "step_run": {
             "title": "Analysis step run",
-            "description": "The run instance of the step the file was generated from.",
-            "comment": "For steps, see analysis_step_run.json (and analysis_step.json) - may be virtual",
+            "description": "The run instance of the step used to generate the file.",
+            "comment": "This may be linked to an individual instance at DNANexus or it may be virtual and have many files linked to it.",
             "type": "string",
-             "linkTo": "AnalysisStepRun"
+            "linkTo": "AnalysisStepRun"
         },
         "content_error_detail": {
             "title": "Content error detail",
+            "description": "Explanation of why the file failed the automated content checks.",
+            "comment": "Do not submit.  This is posted by the checkfiles script. It is required when status is 'content error'",
             "type": "string",
-            "permission": "import_items",
-            "description": "Explanation of why the file failed the automated content checks."
+            "permission": "import_items"
         }
     },
     "columns": {
@@ -816,11 +835,11 @@
         "accession": {
             "title": "Accession"
         },
-        "assembly": {
-            "title": "Mapping assembly"
-        },
         "dataset": {
             "title": "Dataset"
+        },
+        "assembly": {
+            "title": "Mapping assembly"
         },
         "technical_replicates": {
             "title": "Technical replicates"
@@ -830,9 +849,6 @@
         },
         "file_format": {
             "title": "File Format"
-        },
-        "file_type": {
-            "title": "File type"
         },
         "file_format_type": {
             "title": "Specific file format type"
@@ -866,9 +882,6 @@
         },
         "mapped_read_length": {
             "title": "Mapped read length"
-        },
-        "read_length_units": {
-            "title": "Read length units"
         },
         "md5sum": {
             "title": "MD5 Sum"
