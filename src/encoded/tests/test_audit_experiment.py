@@ -273,13 +273,14 @@ def biosample_2(testapp, lab, award, source, organism):
 
 
 @pytest.fixture
-def file_fastq(testapp, lab, award, base_experiment, base_replicate):
+def file_fastq(testapp, lab, award, base_experiment, base_replicate, platform1):
     item = {
         'dataset': base_experiment['@id'],
         'replicate': base_replicate['@id'],
         'file_format': 'fastq',
         'md5sum': '91b474b6411514393507f4ebfa66d47a',
         'output_type': 'reads',
+        'platform': platform1['@id'],
         "read_length": 50,
         'run_type': "single-ended",
         'file_size': 34,
@@ -291,13 +292,14 @@ def file_fastq(testapp, lab, award, base_experiment, base_replicate):
 
 
 @pytest.fixture
-def file_fastq_2(testapp, lab, award, base_experiment, base_replicate):
+def file_fastq_2(testapp, lab, award, base_experiment, base_replicate, platform1):
     item = {
         'dataset': base_experiment['@id'],
         'replicate': base_replicate['@id'],
         'file_format': 'fastq',
         'md5sum': '94be74b6e14515393547f4ebfa66d77a',
         'run_type': "paired-ended",
+        'platform': platform1['@id'],
         'paired_end': '1',
         'output_type': 'reads',
         "read_length": 50,
@@ -310,12 +312,13 @@ def file_fastq_2(testapp, lab, award, base_experiment, base_replicate):
 
 
 @pytest.fixture
-def file_fastq_3(testapp, lab, award, base_experiment, replicate_1_1):
+def file_fastq_3(testapp, lab, award, base_experiment, replicate_1_1, platform1):
     item = {
         'dataset': base_experiment['@id'],
         'replicate': replicate_1_1['@id'],
         'file_format': 'fastq',
         'file_size': 34,
+        'platform': platform1['@id'],
         'output_type': 'reads',
         "read_length": 50,
         'md5sum': '21be74b6e11515393507f4ebfa66d77a',
@@ -329,10 +332,11 @@ def file_fastq_3(testapp, lab, award, base_experiment, replicate_1_1):
 
 
 @pytest.fixture
-def file_fastq_4(testapp, lab, award, base_experiment, replicate_2_1):
+def file_fastq_4(testapp, lab, award, base_experiment, replicate_2_1, platform1):
     item = {
         'dataset': base_experiment['@id'],
         'replicate': replicate_2_1['@id'],
+        'platform': platform1['@id'],
         'file_format': 'fastq',
         'file_size': 34,
         'md5sum': '11be74b6e11515393507f4ebfa66d77a',
@@ -348,9 +352,10 @@ def file_fastq_4(testapp, lab, award, base_experiment, replicate_2_1):
 
 
 @pytest.fixture
-def file_fastq_5(testapp, lab, award, base_experiment, replicate_2_1):
+def file_fastq_5(testapp, lab, award, base_experiment, replicate_2_1, platform1):
     item = {
         'dataset': base_experiment['@id'],
+        'platform': platform1['@id'],
         'replicate': replicate_2_1['@id'],
         'file_format': 'fastq',
         'md5sum': '91be79b6e11515993509f4ebfa66d77a',
