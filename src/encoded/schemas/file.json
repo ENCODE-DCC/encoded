@@ -4,7 +4,7 @@
     "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "file_size", "md5sum", "output_type", "award", "lab"],
+    "required": ["dataset", "file_format", "md5sum", "output_type", "award", "lab"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -194,6 +194,35 @@
                         "properties": {
                             "file_format": {
                                 "enum": ["fastq", "gff", "gtf", "bed", "bigBed", "bam", "sam", "sra", "bigWig"]
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "file_size": {
+            "oneOf": [
+                {
+                    "required": ["file_size"],
+                    "properties": {
+                        "status": {
+                            "enum": [
+                                "in progress",
+                                "archived",
+                                "released"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "status": {
+                                "enum": [
+                                    "in progress",
+                                    "archived",
+                                    "released"
+                                ]
                             }
                         }
                     }

@@ -1,26 +1,17 @@
 ## Changelog for file.json
 
-sra file format is import_only
-file statuses import_only
-uploaded and format_ cheked failed statuses removed
-btr becmes historical import only
-restricted becomes import_only
-content_md5sum is import_only
-maped_read_length import only
-mapped_run_type import_only
-bigWig will require assembly
+### Schema version 10
 
-into historical output_types go:
-                        "tRNA reference",
-                        "miRNA reference",
-                        "snRNA reference",
-
-intoducinh dependency on maped read length and run type as only possible in bam/sam files
-
-
-### Schema version 9.a
-
-* *paired_end* enums list was expanded to include a"1,2" value that is acceptable only for *file_format* = sra files that have *run_type* = paired_ended
+* *output_type* values ["tRNA reference", "miRNA reference", "snRNA reference"] added to the ist of values that could be submitted only by DCC personnel                      
+* *file_format* values ["sra", "btr"] could be submitted only by DCC personnel                        
+* *status* value could be submitted only by DCC personnel, statuses *uploaded* and *format check failed* were removed
+* *restricted* value could be submitted only by DCC personnel 
+* *content_md5sum* value could be submitted only by DCC personnel
+* *assembly* values is required for files with *file_format* that is one of ["bam", "sam", "gtf", "bigWig"]
+* *mapped_read_length* is available only for files with *file_format* = bam, the property could be submitted only by DCC personnel
+* *mapped_run_type* is available only for files with *file_format* = bam, the property could be submitted only by DCC personnel
+* *file_size* value is now required for files with *status* that is one of ["in progress", "released", "archived"]
+* *paired_end* enums list was expanded to include a "1,2" value that is acceptable only for *file_format* = sra files that have *run_type* = paired_ended
 * *paired_end* value (1, 2, or 1,2) is required for files with *run_type* = paired-ended.
 * *md5sum* value formatting is now enforced with regex, validating it as a 32-character hexadecimal number.
 * *read_length* value is now required for files with *output_type* = reads and *file_format* is one of ["fastq", "fasta", "csfasta", "csqual", "sra"]
