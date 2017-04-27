@@ -2,6 +2,7 @@
 
 ### Schema version 10
 
+* *platform* value is now required for files with *file_format* that is one of ["fastq", "rcc", "csfasta", "csqual", "sra", "CEL", "idat"]
 * *output_type* values ["tRNA reference", "miRNA reference", "snRNA reference"] added to the ist of values that could be submitted only by DCC personnel                      
 * *file_format* values ["sra", "btr"] could be submitted only by DCC personnel                        
 * *status* value could be submitted only by DCC personnel, statuses *uploaded* and *format check failed* were removed
