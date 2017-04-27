@@ -1157,20 +1157,6 @@ def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experi
     assert all(error['category'] != 'missing RNA fragment size' for error in errors_list)
 
 
-def test_audit_experiment_needs_pipeline(testapp,  replicate, library, experiment, fastq_file):
-    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
-    testapp.patch_json(library['@id'], {'size_range': '>200'})
-    testapp.patch_json(replicate['@id'], {'library': library['@id']})
-    testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
-    testapp.patch_json(experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    res = testapp.get(experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'needs pipeline run' for error in errors_list)
-
-
 def test_audit_experiment_biosample_term_id(testapp, base_experiment):
     testapp.patch_json(base_experiment['@id'], {'biosample_term_id': 'CL:349829',
                                                 'biosample_type': 'tissue',
@@ -1234,70 +1220,6 @@ def test_audit_experiment_pipeline_assay_term_name_consistency(
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent assay_term_name' for error in errors_list)
-
-
-def test_audit_experiment_needs_pipeline_and_has_one(testapp,  replicate, library,
-                                                     experiment, fastq_file, bam_file,
-                                                     analysis_step_run_bam,
-                                                     analysis_step_version_bam, analysis_step_bam,
-                                                     pipeline_bam):
-    testapp.patch_json(experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
-    testapp.patch_json(library['@id'], {'size_range': '>200'})
-    testapp.patch_json(replicate['@id'], {'library': library['@id']})
-    testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
-    testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id']})
-    testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'RNA-seq of long RNAs (single-end, unstranded)'})
-    testapp.patch_json(experiment['@id'], {'assay_term_name': 'RNA-seq'})
-    res = testapp.get(experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'needs pipeline run' for error in errors_list)
-
-
-def test_audit_experiment_needs_pipeline_chip_seq(testapp, replicate, library,
-                                                  experiment, fastq_file,
-                                                  target_H3K27ac):
-    testapp.patch_json(experiment['@id'], {'status': 'released',
-                                           'target': target_H3K27ac['@id'],
-                                           'date_released': '2016-01-01'})
-    testapp.patch_json(library['@id'], {'size_range': '200-600'})
-    testapp.patch_json(replicate['@id'], {'library': library['@id']})
-    testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
-    testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq'})
-    res = testapp.get(experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'needs pipeline run' for error in errors_list)
-
-
-def test_audit_experiment_needs_pipeline_chip_seq_and_has_one(testapp, replicate, library,
-                                                              experiment, fastq_file,
-                                                              target_H3K27ac,  bam_file,
-                                                              analysis_step_run_bam,
-                                                              analysis_step_version_bam,
-                                                              analysis_step_bam,
-                                                              pipeline_bam):
-    testapp.patch_json(experiment['@id'], {'status': 'released',
-                                           'target': target_H3K27ac['@id'],
-                                           'date_released': '2016-01-01'})
-    testapp.patch_json(library['@id'], {'size_range': '200-600'})
-    testapp.patch_json(replicate['@id'], {'library': library['@id']})
-    testapp.patch_json(fastq_file['@id'], {'run_type': 'single-ended'})
-    testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id']})
-    testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'ChIP-seq read mapping'})
-    testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq'})
-    res = testapp.get(experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'needs pipeline run' for error in errors_list)
 
 
 def test_audit_experiment_replicate_with_no_files(testapp,
