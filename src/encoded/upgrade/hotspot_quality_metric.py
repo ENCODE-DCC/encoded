@@ -20,3 +20,9 @@ def hotspot_quality_metric_4_5(value, system):
             value['notes'] = value['notes'].strip()
         else:
             del value['notes']
+
+@upgrade_step('hotspot_quality_metric', '5', '6')
+def hotspot_quality_metric_4_5(value, system):
+    # http://redmine.encodedcc.org/issues/4845
+    if 'generation' not in value:
+        value['generation'] = 'HotSpot2'
