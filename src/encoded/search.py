@@ -543,6 +543,7 @@ def format_facets(es_results, facets, used_filters, schemas, total, principals):
 
     aggregations = es_results['aggregations']
     used_facets = set()
+    exists_facets = set()
     for field, options in facets:
         used_facets.add(field)
         agg_name = field.replace('.', '-')
@@ -560,6 +561,7 @@ def format_facets(es_results, facets, used_filters, schemas, total, principals):
                 {'key': 'yes', 'doc_count': terms['yes']['doc_count']},
                 {'key': 'no', 'doc_count': terms['no']['doc_count']},
             ]
+            exists_facets.add(field)
         result.append({
             'type': facet_type,
             'field': field,
@@ -571,7 +573,7 @@ def format_facets(es_results, facets, used_filters, schemas, total, principals):
     # Show any filters that aren't facets as a fake facet with one entry,
     # so that the filter can be viewed and removed
     for field, values in used_filters.items():
-        if field not in used_facets and not field.endswith('!'):
+        if field not in used_facets and field.rstrip('!') not in exists_facets:
             title = field
             for schema in schemas:
                 if field in schema['properties']:

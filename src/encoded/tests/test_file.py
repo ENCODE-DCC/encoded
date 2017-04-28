@@ -12,12 +12,13 @@ def test_replaced_file_not_uniqued(testapp, file):
 
 
 @pytest.fixture
-def fastq_no_replicate(award, experiment, lab):
+def fastq_no_replicate(award, experiment, lab, platform1):
     return {
         'award': award['@id'],
         'dataset': experiment['@id'],
         'lab': lab['@id'],
         'file_format': 'fastq',
+        'platform': platform1['@id'],
         'file_size': 23242,
         'run_type': 'paired-ended',
         'paired_end': '1',
@@ -43,13 +44,14 @@ def test_file_post_fastq_with_replicate(testapp, fastq):
 
 
 @pytest.fixture
-def mapped_run_type_on_fastq(award, experiment, lab):
+def mapped_run_type_on_fastq(award, experiment, lab, platform1):
     return {
         'award': award['@id'],
         'dataset': experiment['@id'],
         'lab': lab['@id'],
         'file_format': 'fastq',
         'file_size': 2535345,
+        'platform': platform1['@id'],
         'run_type': 'paired-ended',
         'mapped_run_type': 'single-ended',
         'md5sum': '01234567890123456789abcdefabcdef',
