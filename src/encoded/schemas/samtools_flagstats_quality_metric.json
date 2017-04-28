@@ -1,4 +1,5 @@
 {
+    "title": "samtools flagstat quality metric",
     "description": "Schema for reporting 'samtools --flagstats' quality metric",
     "id": "/profiles/samtools_flagstats_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -18,9 +19,10 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "5"
         },
         "processing_stage": {
+            "title": "Processing stage",
             "type": "string",
             "description": "The degree of post-mapping processing to which the statistics apply",
             "enum": [
@@ -29,94 +31,118 @@
             ]
         },
         "diff_chroms": {
+            "title": "# reads with mate mapped to diff chr passing QC",
             "type": "number",
             "description": "flagstats: mate mapped different chr (mapQ>=5)"
         },
+
         "diff_chroms_qc_failed": {
+            "title": "# reads with mate mapped to diff chr failing QC",
             "type": "number",
             "description": "flagstats: mate mapped different chr (mapQ>=5) - qc failed"
         },
         "duplicates": {
+            "title": "# reads with duplicates passing QC",
             "type": "number",
             "description": "flagstats: duplicates"
         },
         "duplicates_qc_failed": {
+            "title": "# reads with duplicates failing QC",
             "type": "number",
             "description": "flagstats: duplicates - qc failed"
         },
         "mapped": {
+            "title": "# reads mapped passing QC",
             "type": "number",
             "description": "flagstats: mapped"
         },
         "mapped_pct": {
+            "title": "% reads mapped passing QC",
             "type": "string",
             "description": "flagstats: mapped - percent"
         },
         "mapped_qc_failed": {
+            "title": "% reads mapped failing QC",
             "type": "number",
             "description": "flagstats: mapped - qc failed"
         },
         "paired": {
+            "title": "# of paired reads passing QC",
             "type": "number",
             "description": "flagstats: paired"
         },
         "paired_properly": {
+            "title": "# reads properly paired passing QC",
             "type": "number",
             "description": "flagstats: properly paired"
         },
         "paired_properly_pct": {
+            "title": "% of properly paired reads passing QC",
             "type": "string",
             "description": "flagstats: properly paired - percent"
         },
         "paired_properly_qc_failed": {
+            "title": "% of properly paired reads failing QC",
             "type": "number",
             "description": "flagstats: properly paired - qc failed"
         },
         "paired_qc_failed": {
+            "title": "# of paired reads failing QC",
             "type": "number",
             "description": "flagstats: paired - qc failed"
         },
         "read1": {
+            "title": "# of read1 reads passing QC",
             "type": "number",
             "description": "flagstats: read1"
         },
         "read1_qc_failed": {
+            "title": "# of read1 reads failing QC",
             "type": "number",
             "description": "flagstats: read1 - qc failed"
         },
         "read2": {
+            "title": "# of read2 reads passing QC",
             "type": "number",
             "description": "flagstats: read2"
         },
         "read2_qc_failed": {
+            "title": "# of read2 reads failing QC",
             "type": "number",
             "description": "flagstats: read2 - qc failed"
         },
         "singletons": {
+            "title": "# of singletons passing QC",
             "type": "number",
             "description": "flagstats: singletons"
         },
         "singletons_pct": {
+            "title": "% of singletons passing QC",
             "type": "string",
             "description": "flagstats: singletons - percent"
         },
         "singletons_qc_failed": {
+            "title": "# of singletons failing QC",
             "type": "number",
             "description": "flagstats: singletons - qc failed"
         },
         "total": {
+            "title": "# of total reads passing QC",
             "type": "number",
             "description": "flagstats: total"
         },
         "total_qc_failed": {
+            "title": "# of total reads failing QC",
             "type": "number",
             "description": "flagstats: total - qc failed"
         },
         "with_itself": {
+            "title": "# of reads with itself & mate mapped passing QC",
             "type": "number",
             "description": "flagstats: with itself and mate mapped"
         },
         "with_itself_qc_failed": {
+            "title": "# of reads with itself & mate mapped failing QC",
             "type": "number",
             "description": "flagstats: with itself and mate mapped - qc failed"
         }

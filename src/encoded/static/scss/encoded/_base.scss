@@ -11,6 +11,8 @@ $footerBackgroundHighlight:    #294b6a !default;
 
 $tableHeadFootBackgroundColor: #f5f5f5;
 
+$std-href-color:               #428bca;
+
 $mobile-font-factor:           1.2; // Amount text increases size on mobile
 
 
@@ -93,7 +95,7 @@ blockquote {
     font-size: 1rem;
 }
 
-.repl-acc {
+.repl-acc, .superseded-acc {
     margin: -5px 0 15px;
     font-size: 1rem;
     font-weight: normal;

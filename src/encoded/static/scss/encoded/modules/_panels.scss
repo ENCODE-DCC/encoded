@@ -22,6 +22,7 @@
 }
 
 .panel-heading {
+    position: relative;
     padding: 10px;
 }
 
@@ -94,7 +95,50 @@ a[href^="http"]:empty:after {
 /* downloads */
 a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     content: none !important;
-} 
+}
+
+
+.split-panel {
+    display: block;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+
+    @at-root #{&}__part {
+        padding-left: 10px;
+        padding-right: 10px;
+
+        @media screen and (min-width: $screen-md-min) {
+            flex-grow: 0;
+            flex-shrink: 1;
+            border-left: 1px solid #c0c0c0;
+
+            &:first-child {
+                border-left: 0;
+            }
+        }
+
+        @at-root #{&}--p50 {
+            @media screen and (min-width: $screen-md-min) {
+                flex-basis: 50%;
+            }
+        }
+    }
+
+    @at-root #{&}__heading {
+        position: relative;
+        margin-right: -10px;
+        margin-left: -10px;
+        padding: 10px;
+        background-color: #d8d8d8;
+
+        h4 {
+            margin: 0;
+        }
+    }
+}
 
 
 // Antibody Status Panels
@@ -174,12 +218,20 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     padding: 10px;
 }
 
-.doc-panel-outer {
-    padding-bottom: 0;
-}
+// Panel containing columns of document sub-panels.
+.doc-panel {
+    @at-root #{&}__outer {
+        padding: 3px;
+    }
 
-.doc-panel-inner {
-    padding: 0 5px;
+    @at-root #{&}__inner {
+        padding: 0;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    }
 }
 
 .panel-attachment {
@@ -187,7 +239,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 }
 
 .attachment-panel-outer {
-    padding-bottom: 0;
+    padding: 3px 6px;
 }
 
 .attachment-panel-inner {
@@ -298,8 +350,14 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     background-size: auto 40%;
 
     &.hiding {
-        background-image: inline-image('../img/hiding-dots.svg');
+        background-image: url('data:image/svg+xml;utf8,<svg data-name="Hiding Dots" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760.67 139.33"><defs><style>.cls-1{fill:#808080;}</style></defs><title>Indicates hiddent content</title><circle class="cls-1" cx="380.33" cy="69.67" r="64.11"/><circle class="cls-1" cx="692.4" cy="69.67" r="64.11"/><circle class="cls-1" cx="68.27" cy="69.67" r="64.11"/></svg>');
     }
+}
+
+.file-download-section {
+    padding: 5px 0;
+    text-align: center;
+    border-top: 1px solid #c0c0c0;
 }
 
 // Collapsing title bar
@@ -313,8 +371,14 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
         margin: 0 0 0 40px;
     }
 
+    h5 {
+        margin: 0;
+    }
+
     &:focus, &:active {
         text-decoration: none;
+        outline: 0;
+        box-shadow: 0 0 3px #0000ff inset;
     }
 }
 
@@ -325,7 +389,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     width: 20px;
     pointer-events: all;
 
-    a {
+    a, button {
         cursor: pointer;
     }
 
@@ -350,7 +414,11 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     left: 0;
     width: 41px;
     padding: 10px;
+    border-top: none;
     border-right: 1px solid #fff;
+    border-bottom: none;
+    border-left: none;
+    background-color: transparent;
 
     &:hover {
         background-color: darken(#d8e0e8, 10%);
@@ -367,4 +435,78 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
         padding-top: 0;
         border-top: none;
     }
+}
+
+.two-column-long-text {
+    column-count: 1;
+    line-height: 1.7;
+
+    @media screen and (min-width: $screen-md-min) {
+        column-count: 2;
+        column-gap: 50px;
+    }
+
+    @at-root #{&}--gap {
+        margin-bottom: 20px;
+    }
+}
+
+// Tab Panel Styles
+$nav-tab-border-color: #a0a0a0;
+$nav-tab-border-style: 1px solid $nav-tab-border-color;
+$nav-tab-border-radius: 4px;
+
+.tab-nav {
+    position: relative;
+}
+
+.nav.nav-tabs {
+    display: flex;
+    align-items: flex-end;
+    position: relative;
+    border-bottom: 0;
+    z-index: 1;
+    top: 1px;
+
+    > li {
+        flex: 0 1 auto;
+
+        a, a:focus {
+            margin: 0;
+            padding: 5px 20px;
+            background-color: #e0e0e0;
+            border-top: $nav-tab-border-style;
+            border-right: $nav-tab-border-style;
+            border-bottom: $nav-tab-border-style;
+            border-left: $nav-tab-border-style;
+            border-radius: 0;
+
+            &:hover {
+                background-color: #c0c0c0;
+                color: #000;
+            }
+        }
+
+        &.active {
+            a {
+                padding-top: 7px;
+                border-top: 3px solid #00cc00;
+                pointer-events: none;
+                background-color: #fff;
+                border-bottom: 1px solid #fff;
+            }
+        }
+
+    }
+}
+
+.tab-flange {
+    position: relative;
+    height: 5px;
+    background-color: #fff;
+    z-index: 0;
+    border-top: $nav-tab-border-style;
+    border-right: $nav-tab-border-style;
+    border-bottom: 0;
+    border-left: $nav-tab-border-style;
 }

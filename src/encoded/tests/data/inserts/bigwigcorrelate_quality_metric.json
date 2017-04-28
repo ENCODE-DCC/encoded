@@ -4,10 +4,9 @@
         "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
         "uuid": "fe2edb36-2105-4dcb-bc28-5b763f209dd8",
         "assay_term_name": "DNase-seq",
-        "assay_term_id": "OBI:0001853",
         "quality_metric_of": [ "1050b698-f505-4ce5-96e5-6909e3a2acc7", "8c687da2-b7e1-4a06-81c4-c06a144810ac" ],
         "attachment": "generic_from_star_final_out.txt",
-        "Pearson's correlation": 0.980518,
+        "Pearson_correlation": 0.980518,
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/"
     }

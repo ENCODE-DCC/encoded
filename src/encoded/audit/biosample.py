@@ -8,32 +8,6 @@ from .gtex_data import gtexDonorsList
 from .gtex_data import gtexParentsList
 
 
-
-term_mapping = {
-    "head": "UBERON:0000033",
-    "limb": "UBERON:0002101",
-    "salivary gland": "UBERON:0001044",
-    "male accessory sex gland": "UBERON:0010147",
-    "testis": "UBERON:0000473",
-    "female gonad": "UBERON:0000992",
-    "digestive system": "UBERON:0001007",
-    "arthropod fat body": "UBERON:0003917",
-    "antenna": "UBERON:0000972",
-    "adult maxillary segment": "FBbt:00003016",
-    "female reproductive system": "UBERON:0000474",
-    "male reproductive system": "UBERON:0000079",
-    "nucleus": "GO:0005634",
-    "cytosol": "GO:0005829",
-    "chromatin": "GO:0000785",
-    "membrane": "GO:0016020",
-    "mitochondria": "GO:0005739",
-    "nuclear matrix": "GO:0016363",
-    "nucleolus": "GO:0005730",
-    "nucleoplasm": "GO:0005654",
-    "polysome": "GO:0005844",
-    "insoluble cytoplasmic fraction": "NTR:0002594"
-}
-
 model_organism_terms = ['model_organism_mating_status',
                         'model_organism_sex',
                         'mouse_life_stage',
@@ -86,15 +60,13 @@ def audit_biosample_constructs(value, system):
                                        level='INTERNAL_ACTION')
                     return
 
-
+'''
 @audit_checker('biosample', frame=['source', 'part_of', 'donor'])
 def audit_biosample_gtex_children(value, system):
-    '''
-    GTEX children biosamples have to be properly registered.
-    - aliases (column A from plate-maps)
-    - part_of pointing to the parent biosample
-    - source Kristin Ardlie
-    '''
+    #GTEX children biosamples have to be properly registered.
+    #- aliases (column A from plate-maps)
+    #- part_of pointing to the parent biosample
+    #- source Kristin Ardlie
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
     if 'donor' not in value:
@@ -152,7 +124,7 @@ def audit_biosample_gtex_children(value, system):
                 yield AuditFailure('GTEX biosample missing aliases', detail,
                                    level='INTERNAL_ACTION')
     return
-
+'''
 
 @audit_checker('biosample', frame='object')
 def audit_biosample_term(value, system):
@@ -202,10 +174,13 @@ def audit_biosample_term(value, system):
     ontology_term_name = ontology[term_id]['name']
     if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
         detail = 'Biosample {} has '.format(value['@id']) + \
-                 'a mismatch between biosample_term_id {} '.format(term_id) + \
-                 'and biosample_term_name {}'.format(term_name)
+                 'a mismatch between biosample term_id ({}) '.format(term_id) + \
+                 'and term_name ({}), ontology term_name for term_id {} '.format(
+                     term_name, term_id) + \
+                 'is {}.'.format(ontology_term_name)
         yield AuditFailure('inconsistent ontology term', detail, level='ERROR')
         return
+
 
 @audit_checker('biosample', frame='object')
 def audit_biosample_culture_date(value, system):
@@ -228,7 +203,14 @@ def audit_biosample_culture_date(value, system):
             value['culture_start_date'])
         raise AuditFailure('invalid dates', detail, level='ERROR')
 
-@audit_checker('biosample', frame=['organism', 'donor', 'donor.organism', 'donor.mutated_gene', 'donor.mutated_gene.organism'])
+
+@audit_checker('biosample', frame=[
+    'award',
+    'organism',
+    'donor',
+    'donor.organism',
+    'donor.mutated_gene',
+    'donor.mutated_gene.organism'])
 def audit_biosample_donor(value, system):
     '''
     A biosample should have a donor.
@@ -239,8 +221,13 @@ def audit_biosample_donor(value, system):
 
     if ('donor' not in value):
         detail = 'Biosample {} is not associated with any donor.'.format(value['@id'])
-        raise AuditFailure('missing donor', detail, level='ERROR')
-        return
+        if 'award' in value and 'rfa' in value['award'] and \
+           value['award']['rfa'] == 'GGR':
+            raise AuditFailure('missing donor', detail, level='INTERNAL_ACTION')
+            return
+        else:
+            raise AuditFailure('missing donor', detail, level='ERROR')
+            return
 
     donor = value['donor']
     if value['organism']['name'] != donor['organism']['name']:
@@ -268,73 +255,6 @@ def audit_biosample_donor(value, system):
                 donor['@id'],
                 donor['mutated_gene']['name'])
             raise AuditFailure('invalid donor mutated_gene', detail, level='ERROR')
-
-@audit_checker('biosample', frame='object')
-def audit_biosample_subcellular_term_match(value, system):
-    '''
-    The subcellular_fraction_term_name and subcellular_fraction_term_id
-    should be concordant. This should be a calculated field
-    If one exists the other should. This should be handled in the schema.
-    '''
-    if value['status'] in ['deleted']:
-        return
-
-    if ('subcellular_fraction_term_name' not in value) or ('subcellular_fraction_term_id' not in value):
-        return
-
-    expected_name = term_mapping[value['subcellular_fraction_term_name']]
-    if expected_name != (value['subcellular_fraction_term_id']):
-        detail = 'Biosample {} has a mismatch between subcellular_fraction_term_name "{}" and subcellular_fraction_term_id "{}"'.format(
-            value['@id'],
-            value['subcellular_fraction_term_name'],
-            value['subcellular_fraction_term_id'])
-        raise AuditFailure('inconsistent subcellular_fraction_term', detail, level='ERROR')
-
-
-@audit_checker('biosample', frame='object')
-def audit_biosample_depleted_term_match(value, system):
-    '''
-    The depleted_in_term_name and depleted_in_term_name
-    should be concordant. This should be a calcualted field.
-    If one exists, the other should.  This should be handled in the schema.
-    '''
-    if value['status'] == 'deleted':
-        return
-
-    if 'depleted_in_term_name' not in value:
-        return
-
-    if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
-        detail = 'Biosample {} has a depleted_in_term_name array and depleted_in_term_id array of differing lengths'.format(
-            value['@id'])
-        raise AuditFailure('inconsistent depleted_in_term length', detail, level='INTERNAL_ACTION')
-        return
-
-    for i, dep_term in enumerate(value['depleted_in_term_name']):
-        if (term_mapping[dep_term]) != (value['depleted_in_term_id'][i]):
-            detail = 'Biosample {} has a mismatch between {} and {}'.format(
-                value['@id'],
-                dep_term,
-                value['depleted_in_term_id'][i])
-            raise AuditFailure('inconsistent depleted_in_term', detail, level='ERROR')
-
-
-@audit_checker('biosample', frame='object')
-def audit_biosample_transfection_type(value, system):
-    '''
-    A biosample with constructs or rnais should have a
-    transfection_type
-    '''
-    if value['status'] == 'deleted':
-        return
-
-    if (value['rnais']) and ('transfection_type' not in value):
-        detail = 'Biosample {} with a value for RNAi requires transfection_type'.format(value['@id'])
-        raise AuditFailure('missing transfection_type', detail, level='ERROR')
-
-    if (value['constructs']) and ('transfection_type' not in value):
-        detail = 'Biosample {} with a value for construct requires transfection_type'.format(value['@id'])
-        raise AuditFailure('missing transfection_type', detail, level='ERROR')
 
 
 def is_part_of(term_id, part_of_term_id, ontology):

@@ -4,34 +4,58 @@
     "id": "/profiles/page.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "name", "title" ],
-    "identifyingProperties": ["uuid", "name" ],
+    "required": [
+        "name",
+        "title"
+    ],
+    "identifyingProperties": [
+        "uuid",
+        "name"
+    ],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/standard_status" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/attribution" }
+        {
+            "$ref": "mixins.json#/schema_version"
+        },
+        {
+            "$ref": "mixins.json#/uuid"
+        },
+        {
+            "$ref": "mixins.json#/standard_status"
+        },
+        {
+            "$ref": "mixins.json#/submitted"
+        },
+        {
+            "$ref": "mixins.json#/attribution"
+        }
     ],
     "dependencies": {
         "news": {
             "oneOf": [
                 {
-                    "required": ["news_excerpt"],
+                    "required": [
+                        "news_excerpt"
+                    ],
                     "properties": {
                         "news": {
-                            "enum": [true]
+                            "enum": [
+                                true
+                            ]
                         }
                     }
                 },
                 {
                     "not": {
-                        "required": ["news_excerpt"]
+                        "required": [
+                            "news_excerpt"
+                        ]
                     },
                     "properties": {
                         "news": {
-                            "enum": [false]
+                            "enum": [
+                                false
+                            ]
                         }
                     }
                 }
@@ -40,13 +64,18 @@
     },
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "parent": {
             "title": "Parent Page",
-            "type": ["string", "null"],
+            "type": [
+                "string",
+                "null"
+            ],
             "linkTo": "Page",
-            "validators": ["isNotCollectionDefaultPage"]
+            "validators": [
+                "isNotCollectionDefaultPage"
+            ]
         },
         "name": {
             "title": "URL Name",
@@ -77,7 +106,19 @@
             "items": {
                 "title": "News keyword",
                 "description": "A keyword for news post filtering.",
-                "type":  "string"
+                "type": "string",
+                "enum": [
+                    "3D chromatin structure",
+                    "DNA accessibility",
+                    "DNA binding",
+                    "DNA methylation",
+                    "Transcription",
+                    "RNA binding",
+                    "Genotyping",
+                    "Proteomics",
+                    "Conferences",
+                    "Encyclopedia"
+                ]
             }
         },
         "layout": {
@@ -88,7 +129,13 @@
             "properties": {
                 "rows": {
                     "type": "array",
-                    "items": {}
+                    "items": {
+                        "type": "object",
+                        "mapping": {
+                            "type": "object",
+                            "enabled": false
+                        }
+                    }
                 },
                 "blocks": {
                     "type": "array",
@@ -126,7 +173,9 @@
                     {
                         "cols": [
                             {
-                                "blocks": ["#block1"]
+                                "blocks": [
+                                    "#block1"
+                                ]
                             }
                         ]
                     }
@@ -144,6 +193,12 @@
     "facets": {
         "news_keywords": {
             "title": "Topics"
+        },
+        "month_released": {
+            "title": "Date"
+        },
+        "award.project": {
+            "title": "Project"
         }
     },
     "columns": {
@@ -169,6 +224,7 @@
     "boost_values": {
         "name": 2.0,
         "title": 2.0,
+        "news_keywords": 2.0,
         "layout.blocks.body": 1.0
     }
 }

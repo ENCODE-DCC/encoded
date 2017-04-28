@@ -1,7 +1,7 @@
 'use strict';
 var React = require('react');
 var color = require('color');
-var SvgIcon = require('../libs/svg-icons').SvgIcon;
+var svgIcon = require('../libs/svg-icons').svgIcon;
 var globals = require('./globals');
 var search = require('./search');
 var url = require('url');
@@ -9,6 +9,7 @@ var _ = require('underscore');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var navbar = require('../libs/bootstrap/navbar');
+var { BrowserSelector } = require('./objectutils');
 
 var BatchDownload = search.BatchDownload;
 var FacetList = search.FacetList;
@@ -62,7 +63,7 @@ var Matrix = module.exports.Matrix = React.createClass({
         var matrix_base = parsed_url.search || '';
         var matrix_search = matrix_base + (matrix_base ? '&' : '?');
         var notification = context['notification'];
-        const batchHubLimit = 500;
+        const visualizeLimit = 500;
         if (context.notification == 'Success' || context.notification == 'No results found') {
             var x_facets = matrix.x.facets.map(f => _.findWhere(context.facets, {field: f})).filter(f => f);
             var y_facets = matrix.y.facets.map(f => _.findWhere(context.facets, {field: f})).filter(f => f);
@@ -78,15 +79,16 @@ var Matrix = module.exports.Matrix = React.createClass({
             var y_group_options = y_group_facet ? y_group_facet.terms.map(term => term.key) : [];
             y_group_options.sort();
             var search_base = context.matrix.search_base;
-            var batch_hub_disabled = matrix.doc_count > batchHubLimit;
+            var visualize_disabled = matrix.doc_count > visualizeLimit;
 
             var colCount = Math.min(x_buckets.length, x_limit + 1);
             var rowCount = y_groups.length ? y_groups.map(g => Math.min(g[secondary_y_grouping].buckets.length, y_limit ? y_limit + 1 : g[secondary_y_grouping].buckets.length) + 1).reduce((a, b) => a + b) : 0;
 
             // Get a sorted list of batch hubs keys with case-insensitive sort
-            var batchHubKeys = [];
-            if (context.batch_hub && Object.keys(context.batch_hub).length) {
-                batchHubKeys = Object.keys(context.batch_hub).sort((a, b) => {
+            // NOTE: Tim thinks this is overkill as opposed to simple sort()
+            var visualizeKeys = [];
+            if (context.visualize_batch && Object.keys(context.visualize_batch).length) {
+                visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
                     var aLower = a.toLowerCase();
                     var bLower = b.toLowerCase();
                     return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
@@ -150,10 +152,10 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 : null}
                                                 <th style={{border: "solid 1px #ddd", textAlign: "center", width: 200}}>
                                                     <h3>
-                                                      {matrix.doc_count} results 
+                                                      {matrix.doc_count} results
                                                     </h3>
                                                     <div className="btn-attached">
-                                                        {matrix.doc_count && context.views ? context.views.map(view => <a href={view.href} key={view.icon} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{SvgIcon(view2svg[view.icon])}</a>) : ''}
+                                                        {matrix.doc_count && context.views ? context.views.map(view => <a href={view.href} key={view.icon} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{svgIcon(view2svg[view.icon])}</a>) : ''}
                                                     </div>
                                                     {context.filters.length ?
                                                         <div className="clear-filters-control-matrix">
@@ -235,16 +237,12 @@ var Matrix = module.exports.Matrix = React.createClass({
                                         <BatchDownload context={context} />
                                     : null}
                                     {' '}
-                                    {batchHubKeys.length ?
-                                        <DropdownButton disabled={batch_hub_disabled} title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'} label="batchhub" wrapperClasses="hubs-controls-button">
-                                            <DropdownMenu>
-                                                {batchHubKeys.map(assembly =>
-                                                    <a key={assembly} data-bypass="true" target="_blank" href={context['batch_hub'][assembly]}>
-                                                        {assembly}
-                                                    </a>
-                                                )}
-                                            </DropdownMenu>
-                                        </DropdownButton>
+                                    {visualizeKeys.length ?
+                                        <BrowserSelector
+                                            visualizeCfg={context.visualize_batch}
+                                            disabled={visualize_disabled}
+                                            title={visualize_disabled ? 'Filter to ' + visualizeLimit + ' to visualize' : 'Visualize'}
+                                        />
                                     : null}
                                 </div>
                             </div>
@@ -265,7 +263,7 @@ var Matrix = module.exports.Matrix = React.createClass({
     },
 
     onChange: function(href) {
-        this.context.navigate(href);        
+        this.context.navigate(href);
     }
 
 });

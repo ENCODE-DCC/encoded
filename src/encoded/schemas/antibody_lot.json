@@ -22,7 +22,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "accession": {
             "accessionType": "AB"
@@ -30,8 +30,8 @@
         "lot_id": {
             "title": "Lot ID",
             "description": "The lot identifier provided by the originating lab or vendor.",
-            "default": "unknown",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "lot_id_alias": {
             "title": "Lot ID aliases",
@@ -49,7 +49,7 @@
             "title": "Antigen description",
             "description": "The plain text description of the antigen used in raising the antibody (e.g. amino acid residue locations of the antigen).",
             "type": "string",
-            "default": ""
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "antigen_sequence": {
             "title": "Antigen sequence",
@@ -109,6 +109,7 @@
                 "IgG2b",
                 "IgG2bκ",
                 "IgG2bλ",
+                "IgG2c",
                 "IgG3",
                 "IgG3κ",
                 "IgG4",

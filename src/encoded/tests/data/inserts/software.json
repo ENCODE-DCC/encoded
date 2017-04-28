@@ -64,7 +64,7 @@
     {
         "name": "rsem",
         "title": "RSEM",
-        "description": "A software package for estimating gene and isoform expression levels from RNA-Seq data. ",
+        "description": "A software package for estimating gene and isoform expression levels from RNA-Seq data.",
         "used_by": ["ENCODE"],
         "status": "released",
         "award": "U41HG006992",
@@ -167,7 +167,7 @@
     {
         "name": "phantompeakqualtools",
         "title": "Phantompeakqualtools",
-        "description": "This package computes quick but highly informative enrichment and quality measures for ChIP-seq/DNase-seq/FAIRE-seq/MNase-seq data. It can also be used to obtain robust estimates of the predominant fragment length or characteristic tag shift values in these assays. ",
+        "description": "This package computes quick but highly informative enrichment and quality measures for ChIP-seq/DNase-seq/FAIRE-seq/MNase-seq data. It can also be used to obtain robust estimates of the predominant fragment length or characteristic tag shift values in these assays.",
         "software_type": ["other"],
         "award": "U41HG006992",
         "lab": "j-michael-cherry",

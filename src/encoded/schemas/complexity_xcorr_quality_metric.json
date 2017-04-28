@@ -1,4 +1,5 @@
 {
+    "title": "Library complexity and cross-correlation quality metric",
     "description": "Schema for reporting library complexity and cross-correlation ('PCR bottleneck coefficient' and 'phantumpeakqualtools run_spp.R') quality metric",
     "id": "/profiles/complexity_xcorr_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -18,49 +19,58 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "5"
         },
         "sample size": {
+            "title": "Sample size",
             "type": "number",
             "description": "Total reads sampled (pairs if applicable)"
         },
         "paired-end": {
+            "title": "Paired-end",
             "type": "boolean",
             "description": "Reads are paired-ended"
         },
         "read length": {
+            "title": "Read length",
             "type": "number",
             "description": "Read length"
         },
          "fragment length": {
+            "title": "Fragment length",
             "type": "number",
             "description": "Fragment length/strandshift. This is the estimated fragment length/strand shift for each dataset as estimated by strand cross-correlation analysis"
         },
         "NRF": {
+            "title": "Non-redundant fraction",
             "type": "number",
             "description": "Non redundant fraction (indicates library complexity).  Distinct Locations Mapped / Sampled Reads"
         },
         "PBC1": {
+            "title": "PCR bottlenecking coefficient 1",
             "type": "number",
             "description": "PCR Bottlenecking coefficient 1 = Single-read Locations / Distinct Locations"
         },
         "PBC2": {
+            "title": "PCR bottlenecking coefficient 2",
             "type": ["number", "string"],
             "minimum":0,
             "pattern": "^Infinity$",
             "description": "PCR Bottlenecking coefficient 2 (indicates library complexity) = Single-read Locations / Multi-read Locations"
         },
         "NSC": {
+            "title": "Normalized strand cross-correlation",
             "type": "number",
             "description": "Normalized strand cross-correlation = FRAGLEN_CC / MIN_CC. Ratio of strand cross-correlation at estimated fragment length to the minimum cross-correlation over all shifts."
         },
         "RSC": {
+            "title": "Relative cross correlation coefficient",
             "type": "number",
             "description": "Relative cross correlation coefficient. Ratio of strand cross-correlation at fragment length and at read length"
         },
         "cross_correlation_plot": {
-            "description": "Cross-correlation plot",
             "title": "QC metric document metadata",
+            "description": "Cross-correlation plot",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,

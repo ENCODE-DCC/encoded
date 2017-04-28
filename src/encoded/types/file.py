@@ -96,30 +96,25 @@ class File(Item):
     rev = {
         'paired_with': ('File', 'paired_with'),
         'quality_metrics': ('QualityMetric', 'quality_metric_of'),
-        'superseded_by': ('File', 'supersedes')
+        'superseded_by': ('File', 'supersedes'),
     }
 
     embedded = [
+        'award',
+        'award.pi',
+        'award.pi.lab',
         'replicate',
         'replicate.experiment',
         'replicate.experiment.lab',
         'replicate.experiment.target',
         'replicate.library',
-        'replicate.experiment.lab',
-        'replicate.experiment.target',
         'lab',
-        'derived_from',
-        'derived_from.analysis_step_version.software_versions',
-        'derived_from.analysis_step_version.software_versions.software',
         'submitted_by',
         'analysis_step_version.analysis_step',
         'analysis_step_version.analysis_step.pipelines',
-        'analysis_step_version.analysis_step.versions',
-        'analysis_step_version.analysis_step.versions.software_versions',
-        'analysis_step_version.analysis_step.versions.software_versions.software',
         'analysis_step_version.software_versions',
         'analysis_step_version.software_versions.software',
-        'quality_metrics.step_run.analysis_step_version.analysis_step',
+        'quality_metrics',
         'step_run',
     ]
     audit_inherit = [
@@ -157,10 +152,6 @@ class File(Item):
             if 'md5sum' in properties:
                 value = 'md5:{md5sum}'.format(**properties)
                 keys.setdefault('alias', []).append(value)
-            if 'fastq_signature' in properties and \
-               properties['fastq_signature'] != []:
-                for entry in properties['fastq_signature']:
-                    keys.setdefault('alias', []).append(entry)
             # Ensure no files have multiple reverse paired_with
             if 'paired_with' in properties:
                 keys.setdefault('file:paired_with', []).append(properties['paired_with'])
@@ -168,6 +159,8 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "Title",
+        "description": "The title of the file either the accession or the external_accession.",
+        "comment": "Do not submit. This is a calculated property",
         "type": "string",
     })
     def title(self, accession=None, external_accession=None):
@@ -185,6 +178,8 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "Download URL",
+        "description": "The download path for S3 to obtain the actual file.",
+        "comment": "Do not submit. This is issued by the server.", 
         "type": "string",
     })
     def href(self, request, file_format, accession=None, external_accession=None):
@@ -194,15 +189,20 @@ class File(Item):
         return request.resource_path(self, '@@download', filename)
 
     @calculated_property(condition=show_upload_credentials, schema={
+        "title": "Upload Credentials",
+        "description": "The upload credentials for S3 to submit the file content.",
+        "comment": "Do not submit. This is issued by the server.", 
         "type": "object",
     })
     def upload_credentials(self):
         external = self.propsheets.get('external', None)
         if external is not None:
-            return external['upload_credentials']
+            return external.get('upload_credentials', None)
 
     @calculated_property(schema={
         "title": "Read length units",
+        "description": "The units for read length.",
+        "comment": "Do not submit. This is a fixed value.", 
         "type": "string",
         "enum": [
             "nt"
@@ -214,6 +214,8 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "Biological replicates",
+        "description": "The biological replicate numbers associated with this file.",
+        "comment": "Do not submit.  This field is calculated through the derived_from relationship back to the raw data.",
         "type": "array",
         "items": {
             "title": "Biological replicate number",
@@ -244,6 +246,8 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "Technical replicates",
+        "description": "The technical replicate numbers associated with this file.",
+        "comment": "Do not submit.  This field is calculated through the derived_from relationship back to the raw data.",
         "type": "array",
         "items": {
             "title": "Technical replicate number",
@@ -277,6 +281,8 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "Analysis Step Version",
+        "description": "The step version of the pipeline from which this file is an output.",
+        "comment": "Do not submit.  This field is calculated from step_run.",
         "type": "string",
         "linkTo": "AnalysisStepVersion"
     })
@@ -290,6 +296,8 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "Output category",
+        "description": "The overall catagory of the file content.",
+        "comment": "Do not submit.  This field is calculated from output_type_output_category.",
         "type": "string",
         "enum": [
             "raw data",
@@ -305,6 +313,8 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "QC Metric",
+        "description": "The list of QC metric objects associated with this file.",
+        "comment": "Do not submit. Values in the list are reverse links of a quality metric with this file in quality_metric_of field.",
         "type": "array",
         "items": {
             "type": ['string', 'object'],
@@ -316,6 +326,8 @@ class File(Item):
 
     @calculated_property(schema={
         "title": "File type",
+        "description": "The concatenation of file_format and file_format_type",
+        "comment": "Do not submit. This field is calculated from file_format and file_format_type.",
         "type": "string"
     })
     def file_type(self, file_format, file_format_type=None):
@@ -327,6 +339,7 @@ class File(Item):
     @calculated_property(schema={
         "title": "Superseded by",
         "description": "The file(s) that supersede this file (i.e. are more preferable to use).",
+        "comment": "Do not submit. Values in the list are reverse links of a file that supersedes.",
         "type": "array",
         "items": {
             "type": ['string', 'object'],
@@ -440,7 +453,8 @@ def download(context, request):
         if filename != _filename:
             raise HTTPNotFound(_filename)
 
-    proxy = asbool(request.params.get('proxy')) or 'Origin' in request.headers
+    proxy = asbool(request.params.get('proxy')) or 'Origin' in request.headers \
+                                                or 'Range' in request.headers
 
     use_download_proxy = request.client_addr not in request.registry['aws_ipset']
 

@@ -1,0 +1,82 @@
+// Display of visualize button (maybe) and the visualize modal.
+.browser-selector__modal {
+    @media screen and (min-width: $screen-sm-min) {
+        width: 400px;
+    }
+    @media screen and (min-width: $screen-md-min) {
+        width: 600px;
+    }
+    @media screen and (min-width: $screen-lg-min) {
+        width: 800px;
+    }
+}
+
+.browser-selector {
+    display: flex;
+    justify-content: center;
+
+    // Button to open the browser-selection modal.
+    @at-root #{&}__actuator {
+        display: inline;
+    }
+
+    @at-root #{&}__inner {
+        flex: 0 1 auto;
+
+        hr {
+            border-color: #c0c0c0;
+            margin: 0 0 20px 0;
+
+            @media screen and (min-width: $screen-md-min) {
+                margin: 0 -50px 20px -50px;
+            }
+        }
+    }
+
+    @at-root #{&}__title {
+        display: flex;
+        margin: 5px 0 0;
+        font-size: 1.2rem;
+        color: #606060;
+    }
+
+    @at-root #{&}__assembly-option {
+        display: flex;
+        margin: 10px 0;
+    }
+
+    @at-root #{&}__assembly {
+        flex: 0 0 40%;
+        text-align: right;
+        line-height: 30px;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    @at-root #{&}__assembly-title {
+        @extend .browser-selector__assembly;
+        font-size: 1.3rem;
+    }
+
+    @at-root #{&}__browsers {
+        flex: 1 0 auto;
+        padding-left: 20px;
+        line-height: 30px;
+    }
+
+    @at-root #{&}__browsers-title {
+        @extend .browser-selector__browsers;
+        font-size: 1.3rem;
+    }
+
+    @at-root #{&}__browser {
+        display: inline-block;
+        margin: 0 2px;
+
+        a {
+            @extend .btn;
+            @extend .btn-info;
+            @extend .btn-sm;
+        }
+    }
+}

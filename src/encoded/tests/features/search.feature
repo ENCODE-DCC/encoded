@@ -14,7 +14,7 @@ Feature: Search
         And I click the link to "/search/?type=AntibodyLot"
         And I wait for the content to load
         Then I should see at least 15 elements with the css selector "ul.nav.result-table > li"
-        And I should see at least 5 elements with the css selector "div.box.facets > div.facet"
+        And I should see at least 5 elements with the css selector "div.box.facets > div.orientation > div.facet"
 
         When I click the link to "?type=AntibodyLot&targets.organism.scientific_name=Homo+sapiens"
         And I wait for the content to load
@@ -34,7 +34,7 @@ Feature: Search
         And I click the link to "/search/?type=Biosample"
         And I wait for the content to load
         Then I should see at least 22 elements with the css selector "ul.nav.result-table > li"
-        And I should see at least 7 elements with the css selector "div.box.facets > div.facet"
+        And I should see at least 7 elements with the css selector "div.box.facets > div.orientation > div.facet"
 
         When I click the link to "?type=Biosample&sex=unknown"
         And I wait for the content to load
@@ -50,7 +50,7 @@ Feature: Search
         And I click the link to "/search/?type=Experiment"
         And I wait for the content to load
         Then I should see at least 13 elements with the css selector "ul.nav.result-table > li"
-        And I should see at least 3 elements with the css selector "div.box.facets > div.facet"
+        And I should see at least 3 elements with the css selector "div.box.facets > div.orientation > div.facet"
 
         When I click the link to "?type=Experiment&assay_title=ChIP-seq"
         And I wait for the content to load

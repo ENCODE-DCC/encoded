@@ -1,42 +1,43 @@
-.box {
+.box.facets {
     padding: 10px;
     border: 1px #ccc solid;
     border-radius: 3px;
     overflow: hidden;
+
+    .horizontal {
+        display: block;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        @media screen and (min-width: $screen-md-min) {
+            flex-wrap: nowrap;
+            margin-left: -5px;
+            margin-right: -5px;
+        }
+
+        .facet {
+            display: block;
+
+            @media screen and (min-width: $screen-sm-min) {
+                min-width: 150px;
+                flex: 1 1 auto;
+                margin-left: 5px;
+                margin-right: 5px;
+            }
+
+            @media screen and (min-width: $screen-md-min) {
+                min-width: auto;
+            }
+        }
+    }
 }
 
-@media screen and (max-width: $screen-sm-min) {
-    .sm-no-padding {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-    }
-    .facets.horizontal .facet {
-        width: auto !important;
-    }
-}
-@media screen and (min-width: $screen-sm-min) {
-    .facets.horizontal {
-        .facet {
-            width: 50% !important;
-            padding: 0 10px;
-            float: left;
-        }
-    }
-}
-@media screen and (min-width: $screen-lg-min) {
-    .facets.horizontal {
-        display: table;
-        width: 100%;
-        .facet {
-            width: initial !important;
-            display: table-cell;
-            float: none;
-        }
-        .facet[hidden] {
-            display: table-cell !important;
-            visibility: hidden;
-        }
-    }
+.sm-no-padding {
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .clear-filters-control {
@@ -236,8 +237,9 @@ div.meta-status {
     z-index: 10;
     list-style-type: none;
     margin: 0;
-    padding: 0;
+    padding: 10px;
     overflow: hidden;
+    border: 1px solid #a0a0a0;
 
     li {
         margin-top: 10px;
@@ -262,6 +264,10 @@ div.meta-status {
     .pull-right {
         position: relative;
         z-index: 2;
+    }
+
+    &.result-table-tabbed {
+        border-top: 0;
     }
 }
 

@@ -202,8 +202,31 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^((PGP:hu[\\S\\s\\d]+)|(GTEx:[a-zA-Z0-9\\-_]+)|(GEO:SAMN\\d+))$"
+                "pattern": "^((PGP:hu[\\S\\s\\d]+)|(GTEx:[a-zA-Z0-9\\-_]+)|(NIH:NIHhESC-[\\d]{2}-[\\d]{4})|(GEO:SAMN\\d+))$"
             }
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+        "age": {
+            "title": "Donor age"
+        },
+        "age_units": {
+            "title": "Donor age units"
+        },
+        "health_status": {
+            "title": "Donor health status"
+        },
+        "life_stage": {
+            "title": "Life stage"
+        },
+        "sex": {
+            "title": "Sex"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "boost_values": {

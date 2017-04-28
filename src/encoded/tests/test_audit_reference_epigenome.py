@@ -16,8 +16,7 @@ def reference_experiment_RNA_seq(testapp, lab, award):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'status': 'started',
-        'assay_term_name': 'RNA-seq',
-        'assay_term_id': 'OBI:0001271'
+        'assay_term_name': 'RNA-seq'
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -29,8 +28,7 @@ def reference_experiment_RRBS(testapp, lab, award):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'status': 'started',
-        'assay_term_name': 'RRBS',
-        'assay_term_id': 'OBI:0001862'
+        'assay_term_name': 'RRBS'
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -42,8 +40,7 @@ def reference_experiment_WGBS(testapp, lab, award):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'status': 'started',
-        'assay_term_name': 'whole-genome shotgun bisulfite sequencing',
-        'assay_term_id': 'OBI:0001863'
+        'assay_term_name': 'whole-genome shotgun bisulfite sequencing'
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -56,8 +53,7 @@ def reference_experiment_chip_seq_control(testapp, lab, award, target_control):
         'lab': lab['uuid'],
         'status': 'started',
         'assay_term_name': 'ChIP-seq',
-        'target': target_control['uuid'],
-        'assay_term_id': 'OBI:0000716'
+        'target': target_control['uuid']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -70,8 +66,7 @@ def reference_experiment_chip_seq_H3K27me3(testapp, lab, award, target_H3K27me3)
         'lab': lab['uuid'],
         'status': 'started',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K27me3['uuid'],
-        'assay_term_id': 'OBI:0000716'
+        'target': target_H3K27me3['uuid']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -84,8 +79,7 @@ def reference_experiment_chip_seq_H3K36me3(testapp, lab, award, target_H3K36me3)
         'lab': lab['uuid'],
         'status': 'started',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K36me3['uuid'],
-        'assay_term_id': 'OBI:0000716'
+        'target': target_H3K36me3['uuid']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -98,8 +92,7 @@ def reference_experiment_chip_seq_H3K4me1(testapp, lab, award, target_H3K4me1):
         'lab': lab['uuid'],
         'status': 'started',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K4me1['uuid'],
-        'assay_term_id': 'OBI:0000716'
+        'target': target_H3K4me1['uuid']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -112,8 +105,7 @@ def reference_experiment_chip_seq_H3K4me3(testapp, lab, award, target_H3K4me3):
         'lab': lab['uuid'],
         'status': 'started',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K4me3['uuid'],
-        'assay_term_id': 'OBI:0000716'
+        'target': target_H3K4me3['uuid']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -126,8 +118,7 @@ def reference_experiment_chip_seq_H3K27ac(testapp, lab, award, target_H3K27ac):
         'lab': lab['uuid'],
         'status': 'started',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K27ac['uuid'],
-        'assay_term_id': 'OBI:0000716'
+        'target': target_H3K27ac['uuid']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -140,8 +131,7 @@ def reference_experiment_chip_seq_H3K9me3(testapp, lab, award, target_H3K9me3):
         'lab': lab['uuid'],
         'status': 'started',
         'assay_term_name': 'ChIP-seq',
-        'target': target_H3K9me3['uuid'],
-        'assay_term_id': 'OBI:0000716'
+        'target': target_H3K9me3['uuid']
 
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -280,33 +270,6 @@ def test_reference_epigenome_with_required_assays(testapp, reference_epigenome_1
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert all(error['category'] != 'partial reference epigenome' for error in errors_list)
-
-
-def test_reference_epigenome_multiple_donors(testapp, reference_epigenome_1,
-                                             reference_experiment_RNA_seq,
-                                             reference_experiment_RRBS,
-                                             replicate_RNA_seq,
-                                             replicate_RRBS,
-                                             library_1,
-                                             library_2,
-                                             biosample_1,
-                                             biosample_2,
-                                             donor_1,
-                                             donor_2):
-    testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id']})
-    testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id']})
-    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
-    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
-    testapp.patch_json(reference_epigenome_1['@id'], {'related_datasets':
-                                                      [reference_experiment_RNA_seq['@id'],
-                                                       reference_experiment_RRBS['@id']]})
-    res = testapp.get(reference_epigenome_1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'multiple donors in reference epigenome' for
-               error in errors_list)
 
 
 def test_reference_epigenome_multiple_biosample_term_names(testapp, reference_epigenome_1,

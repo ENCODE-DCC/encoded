@@ -503,7 +503,6 @@
         "lot_id": "58483235",
         "organism": "human",
         "source": "encode",
-        "subcellular_fraction_term_id": "GO:0005634",
         "subcellular_fraction_term_name": "nucleus",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "12d82da3-6ee1-4919-9026-4ebdd8079ba1"
@@ -611,7 +610,6 @@
         "model_organism_age_units": "day",
         "model_organism_sex": "mixed",
         "depleted_in_term_name": ["head"],
-        "depleted_in_term_id": ["UBERON:0000033"],
         "submitted_by": "ipsum.mi@torquent.eleifend",
         "uuid": "45cf28e8-c017-42a6-a0bf-726f633c13e1"
     },

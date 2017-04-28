@@ -21,6 +21,7 @@ from pyramid.traversal import (
     find_resource,
 )
 from pyramid.view import view_config
+import dateutil.parser
 
 
 @collection(
@@ -37,6 +38,7 @@ class Page(SharedItem):
 
     embedded = [
         'layout.blocks.image',
+        'award',
     ]
 
     def unique_keys(self, properties):
@@ -57,6 +59,20 @@ class Page(SharedItem):
         if name == 'homepage':
             return '/'
         return '/%s/' % name
+
+    @calculated_property(condition='date_created', schema={
+        "title": "Date",
+        "type": "string",
+    })
+    def month_released(self, date_created):
+        return dateutil.parser.parse(date_created).strftime('%Y-%m')
+
+    @calculated_property(condition='date_created', schema={
+        "title": "Year",
+        "type": "string",
+    })
+    def year_released(self, date_created):
+        return dateutil.parser.parse(date_created).strftime('%Y')
 
     @property
     def __parent__(self):

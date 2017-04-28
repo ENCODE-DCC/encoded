@@ -45,11 +45,44 @@
                     }
                 }
             ]
+        },
+        "internal_status": {
+            "oneOf": [
+                {
+                    "required": ["pipeline_error_detail"],
+                    "properties": {
+                        "internal_status": {
+                            "enum": ["pipeline error"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "oneOf": [
+                            {
+                                "required": ["pipeline_error_detail"],
+                                "properties": {
+                                    "internal_status": {
+                                        "enum": ["unreviewed", "no available pipeline", "unrunnable", "pipeline ready", "processing", "pipeline completed", "requires lab review", "release ready"]
+                                    }
+                                }
+                            },
+                            {
+                                "properties": {
+                                    "internal_status": {
+                                        "enum": ["pipeline error"]
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
         }
     },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "target": {
             "title": "Target",
@@ -57,6 +90,21 @@
             "comment": "See target.json for available identifiers.",
             "type": "string",
             "linkTo": "Target"
+        },
+        "biosample_type": {
+            "title": "Biosample type",
+            "description": "The categorization of the biosample.",
+            "type": "string",
+            "enum" : [
+                "primary cell",
+                "immortalized cell line",
+                "tissue",
+                "in vitro differentiated cells",
+                "induced pluripotent stem cell line",
+                "whole organisms",
+                "stem cell",
+                "in vitro sample"
+            ]
         },
         "dbxrefs": {
             "@type": "@id",
@@ -70,7 +118,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^(UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|GEO:(GSM|GSE)\\d+|GEO-obsolete:(GSM|GSE)\\d+)$"
+                "pattern": "^(UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|GEO:(GSM|GSE)\\d+|GEO-obsolete:(GSM|GSE)\\d+|RBPImage:[^\\s].*)$"
             }
         },
         "documents": {
@@ -118,7 +166,7 @@
         "internal_status": {
             "type": "string",
             "description": "The status of an experiment in the DCC process.",
-            "comment":"unreviewed:wrangler has not evaluated, unrunable:experiment requires more metadata to run, pipeline ready:experiment is ready for the pipeline, processing:pipeline is running, pipeline completed: pipeline has run through completion, requires lab review:there are QC concerns about this data, release ready:DCC feels that this is ready for release",
+            "comment":"unreviewed:wrangler has not evaluated, unrunnable:experiment requires more metadata to run, pipeline ready:experiment is ready for the pipeline, processing:pipeline is running, pipeline completed: pipeline has run through completion, requires lab review:there are QC concerns about this data, release ready:DCC feels that this is ready for release, pipeline error:pipeline run was started but failed for a reason that should be noted in pipeline_error_message",
             "default": "unreviewed",
             "permission": "import_items",
             "title": "Internal status",
@@ -130,8 +178,16 @@
                 "processing",
                 "pipeline completed",
                 "requires lab review",
-                "release ready"
+                "release ready",
+                "pipeline error"
             ]
+        },
+        "pipeline_error_detail": {
+            "type": "string",
+            "description": "Explanation of why the experiment failed pipeline analysis.",
+            "comment": "should be used on experiments with internal_status:pipeline error",
+            "permission": "import_items",
+            "title": "Pipeline error message"
         }
     },
     "facets": {
@@ -159,7 +215,7 @@
         "target.investigated_as": {
             "title": "Target of assay"
         },
-        "replicates.library.biosample.biosample_type": {
+        "biosample_type": {
             "title": "Biosample type"
         },
         "organ_slims": {
@@ -170,9 +226,6 @@
         },
         "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment"
-        },
-        "files.analysis_step_version.analysis_step.pipelines.title": {
-            "title": "Pipeline"
         },
         "files.file_type": {
             "title": "Available data"

@@ -1,4 +1,5 @@
 {
+    "title": "Correlation quality metric",
     "description": "Schema for reporting correlation as a quality metric",
     "id": "/profiles/correlation_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -18,29 +19,35 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "5"
         },
         "Pearson correlation": {
+            "title": "Pearson correlation",
             "type": "number",
             "description": "Pearson's R correlation"
         },
         "Spearman correlation": {
+            "title": "Spearman correlation",
             "type": "number",
             "description": "Spearman's rank correlation"
         },
         "Items": {
+            "title": "Items",
             "type": "number",
             "description": "Count of items from two different datasets that are being correlated"
         },
         "Standard deviation": {
+            "title": "Standard deviation",
             "type": "number",
             "description": "Standard deviation of difference"
         },
         "MAD of log ratios": {
+            "title": "MAD of log ratios",
             "type": "number",
             "description": "Mean-Average-Deviation (MAD) of replicate log ratios from quantification"
         },
         "Details": {
+            "title": "Details",
             "type": "string",
             "description": "Description of methods"
         }

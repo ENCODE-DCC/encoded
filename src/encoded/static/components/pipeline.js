@@ -10,7 +10,7 @@ var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
 var software = require('./software');
-var StatusLabel = require('./statuslabel').StatusLabel;
+import StatusLabel from './statuslabel';
 var Citation = require('./publication').Citation;
 var audit = require('./audit');
 var doc = require('./doc');
@@ -18,7 +18,7 @@ var doc = require('./doc');
 var Breadcrumbs = navigation.Breadcrumbs;
 var Graph = graph.Graph;
 var JsonGraph = graph.JsonGraph;
-var SoftwareVersionList = software.SoftwareVersionList;
+var softwareVersionList = software.softwareVersionList;
 var AuditIndicators = audit.AuditIndicators;
 var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
@@ -215,7 +215,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} id="biosample-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="biosample-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody>
                         <dl className="key-value">
@@ -305,7 +305,7 @@ function AnalysisStep(step, node) {
             swStepVersions = _.compact(stepVersions.map(function(version) {
                 if (version.software_versions && version.software_versions.length) {
                     return (
-                        <span className="sw-step-versions" key={version.uuid}><strong>Version {version.version}</strong>: {SoftwareVersionList(version.software_versions)}<br /></span>
+                        <span className="sw-step-versions" key={version.uuid}><strong>Version {version.version}</strong>: {softwareVersionList(version.software_versions)}<br /></span>
                     );
                 }
                 return {header: null, body: null};
@@ -392,7 +392,7 @@ function AnalysisStep(step, node) {
                     {swVersions ?
                         <div data-test="swversions">
                             <dt>Software</dt>
-                            <dd>{SoftwareVersionList(swVersions)}</dd>
+                            <dd>{softwareVersionList(swVersions)}</dd>
                         </div>
                     : stepVersions && stepVersions.length ?
                         <div data-test="swstepversions">
@@ -483,7 +483,7 @@ var Listing = React.createClass({
                         : null}
                     </div>
                 </div>
-                <AuditDetail context={result} id={this.props.context['@id']} forcedEditLink />
+                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     }

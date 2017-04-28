@@ -25,6 +25,7 @@
             "default": "1"
         },
         "guide_rna_sequences": {
+            "title": "Guide RNA sequences",
         	"description": "gRNA sequences used in CRISPR genetic modification",
         	"type": "array",
         	"default": [],
@@ -37,6 +38,7 @@
 			}
 		},
 		"insert_sequence": {
+            "title": "Insert sequence",
             "description": "Insert sequence",
         	"type": "string",
             "pattern": "^[ACTG]+$"	

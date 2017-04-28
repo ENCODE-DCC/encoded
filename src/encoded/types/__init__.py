@@ -8,6 +8,8 @@ from pyramid.traversal import find_root
 from .base import (
     Item,
     paths_filtered_by_status,
+    ALLOW_CURRENT,
+    DELETED,
 )
 
 
@@ -40,7 +42,14 @@ class Award(Item):
     item_type = 'award'
     schema = load_schema('encoded:schemas/award.json')
     name_key = 'name'
-    embedded = ['pi']
+    embedded = ['pi.lab']
+    STATUS_ACL = {
+        'current': ALLOW_CURRENT,
+        'deleted': DELETED,
+        'replaced': DELETED,
+        'disabled': ALLOW_CURRENT
+    }
+
 
 
 @collection(
@@ -191,6 +200,41 @@ class Library(Item):
         'biosample.donor',
         'biosample.donor.organism',
     ]
+
+    @calculated_property(condition='nucleic_acid_term_name', schema={
+        "title": "nucleic_acid_term_id",
+        "type": "string",
+    })
+    def nucleic_acid_term_id(self, request, nucleic_acid_term_name):
+        term_lookup = {
+            'DNA': 'SO:0000352',
+            'RNA': 'SO:0000356',
+            'polyadenylated mRNA': 'SO:0000871',
+            'miRNA': 'SO:0000276',
+            'protein': 'SO:0000104'
+        }
+        term_id = None
+        if nucleic_acid_term_name in term_lookup:
+            term_id = term_lookup.get(nucleic_acid_term_name)
+        return term_id
+
+    @calculated_property(condition='depleted_in_term_name', schema={
+        "title": "depleted_in_term_id",
+        "type": "string",
+    })
+    def depleted_in_term_id(self, request, depleted_in_term_name):
+        term_lookup = {
+            'rRNA': 'SO:0000252',
+            'polyadenylated mRNA': 'SO:0000871',
+            'capped mRNA': 'SO:0000862'
+        }
+        term_id = list()
+        for term_name in depleted_in_term_name:
+            if term_name in term_lookup:
+                term_id.append(term_lookup.get(term_name))
+            else:
+                term_id.append('Term ID unknown')
+        return term_id
 
 
 @collection(

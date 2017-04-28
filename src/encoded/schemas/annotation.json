@@ -48,7 +48,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "annotation_type": {
             "title": "Type",
@@ -57,16 +57,21 @@
             "enum": [
                 "binding sites",
                 "blacklist",
+                "candidate regulatory regions",
                 "chromatin state",
                 "enhancer-like regions",
                 "gene expression",
                 "long-range chromatin interactions",
+                "methylation summary",
                 "promoter-like regions",
                 "enhancer predictions",
+                "in vivo enhancer evaluations",
                 "DNase master peaks",
+                "representative DNase hypersensitivity sites",
                 "transcription factor motifs",
                 "transcript expression",
                 "validated enhancers",
+                "variant calls",
                 "overlap",
                 "other"
             ]
@@ -181,6 +186,18 @@
         },
         "files.replicate.experiment.assay_term_name": {
             "title": "Assay"
+        },
+        "files.file_type": {
+            "title": "Available data"
+        },
+        "files.run_type": {
+            "title": "Run type"
+        },
+        "files.read_length": {
+            "title": "Read length (nt)"
+        },
+        "files.mapped_read_length": {
+            "title": "Mapped read length (nt)"
         },
         "status": {
             "title": "File set status"

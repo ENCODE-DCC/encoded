@@ -38,6 +38,8 @@ _tsv_mapping = OrderedDict([
     ('Biosample type', ['biosample_type']),
     ('Biosample life stage', ['replicates.library.biosample.life_stage']),
     ('Biosample sex', ['replicates.library.biosample.sex']),
+    ('Biosample Age', ['replicates.library.biosample.age',
+                       'replicates.library.biosample.age_units']),
     ('Biosample organism', ['replicates.library.biosample.organism.scientific_name']),
     ('Biosample treatments', ['replicates.library.biosample.treatments.treatment_term_name']),
     ('Biosample subcellular fraction term name', ['replicates.library.biosample.subcellular_fraction_term_name']),
@@ -58,7 +60,6 @@ _tsv_mapping = OrderedDict([
     ('RBNS protein concentration', ['files.replicate.rbns_protein_concentration', 'files.replicate.rbns_protein_concentration_units']),
     ('Library fragmentation method', ['files.replicate.library.fragmentation_method']),
     ('Library size range', ['files.replicate.library.size_range']),
-    ('Biosample Age', ['files.replicate.library.biosample.age_display']),
     ('Biological replicate(s)', ['files.biological_replicates']),
     ('Technical replicate', ['files.replicate.technical_replicate_number']),
     ('Read length', ['files.read_length']),
@@ -66,10 +67,11 @@ _tsv_mapping = OrderedDict([
     ('Run type', ['files.run_type']),
     ('Paired end', ['files.paired_end']),
     ('Paired with', ['files.paired_with']),
-    ('Derived from', ['files.derived_from.accession']),
+    ('Derived from', ['files.derived_from']),
     ('Size', ['files.file_size']),
     ('Lab', ['files.lab.title']),
     ('md5sum', ['files.md5sum']),
+    ('dbxrefs', ['files.dbxrefs']),
     ('File download URL', ['files.href']),
     ('Assembly', ['files.assembly']),
     ('Platform', ['files.platform.title']),
@@ -265,7 +267,7 @@ def metadata_tsv(context, request):
                     if prop == 'files.replicate.rbns_protein_concentration':
                         if 'replicate' in f and 'rbns_protein_concentration_units' in f['replicate']:
                             temp[0] = temp[0] + ' ' + f['replicate']['rbns_protein_concentration_units']
-                    if prop == 'files.paired_with':
+                    if prop in ['files.paired_with', 'files.derived_from']:
                         # chopping of path to just accession
                         if len(temp):
                             new_values = [t[7:-1] for t in temp]

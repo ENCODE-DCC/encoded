@@ -1,4 +1,5 @@
 {
+    "title": "STAR quality metric",
     "description": "Schema for reporting the STAR 'Log.Final.out' quality metric",
     "id": "/profiles/star_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -18,101 +19,125 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "5"
         },
         "% of reads mapped to multiple loci": {
+            "title": "% reads mapped to multiple loci",
             "description": "STAR % of reads mapped to multiple loci",
             "type": "string"
         },
         "% of reads mapped to too many loci": {
+            "title": "% reads mapped to too many loci",
             "description": "STAR % of reads mapped to too many loci",
             "type": "string"
         },
         "% of reads unmapped: other": {
+            "title": "% unmapped reads: other",
             "description": "STAR % of reads unmapped: other",
             "type": "string"
         },
         "% of reads unmapped: too many mismatches": {
+            "title": "% unmapped reads with many mismatches",
             "description": "STAR % of reads unmapped: too many mismatches",
             "type": "string"
         },
         "% of reads unmapped: too short": {
+            "title": "% unmapped reads too short",
             "description": "STAR % of reads unmapped: too short",
             "type": "string"
         },
         "Average input read length": {
+            "title": "Average input read length",
             "description": "STAR Average input read length",
             "type": "number"
         },
         "Average mapped length": {
+            "title": "Average mapped length",
             "description": "STAR Average mapped length",
             "type": "number"
         },
         "Deletion average length": {
+            "title": "Average deletion length",
             "description": "STAR Deletion average length",
             "type": "number"
         },
         "Deletion rate per base": {
+            "title": "Deletion rate per base",
             "description": "STAR Deletion rate per base",
             "type": "string"
         },
         "Insertion average length": {
+            "title": "Insertion average length",
             "description": "STAR Insertion average length",
             "type": "number"
         },
         "Insertion rate per base": {
+            "title": "Insertion rate per base",
             "description": "STAR Insertion rate per base",
             "type": "string"
         },
         "Mapping speed, Million of reads per hour": {
+            "title": "Mapping speed",
             "description": "STAR Mapping speed, Million of reads per hour",
             "type": "number"
         },
         "Mismatch rate per base, %": {
+            "title": "Mismatch rate per base",
             "description": "STAR Mismatch rate per base, %",
             "type": "string"
         },
         "Number of input reads": {
+            "title": "# of input reads",
             "description": "STAR Number of input reads",
             "type": "number"
         },
         "Number of reads mapped to multiple loci": {
+            "title": "# of reads mapped to multiple loci",
             "description": "STAR Number of reads mapped to multiple loci",
             "type": "number"
         },
         "Number of reads mapped to too many loci": {
+            "title": "# of reads mapped to too many loci",
             "description": "STAR Number of reads mapped to too many loci",
             "type": "number"
         },
         "Number of splices: AT/AC": {
+            "title": "# of splices: AT/AC",
             "description": "STAR Number of splices: AT/AC",
             "type": "number"
         },
         "Number of splices: Annotated (sjdb)": {
+            "title": "# of annotated splices",
             "description": "STAR Number of splices: Annotated (sjdb)",
             "type": "number"
         },
         "Number of splices: GC/AG": {
+            "title": "# of splices: GC/AG",
             "description": "STAR Number of splices: GC/AG",
             "type": "number"
         },
         "Number of splices: GT/AG": {
+            "title": "# of splices: GT/AG",
             "description": "STAR Number of splices: GT/AG",
             "type": "number"
         },
         "Number of splices: Non-canonical": {
+            "title": "# of non-canonical splices",
             "description": "STAR Number of splices: Non-canonical",
             "type": "number"
         },
         "Number of splices: Total": {
+            "title": "# of total splices",
             "description": "STAR Number of splices: Total",
             "type": "number"
         },
         "Uniquely mapped reads %": {
+            "title": "% uniquely mapped reads",
             "description": "STAR Uniquely mapped reads %",
             "type": "string"
         },
         "Uniquely mapped reads number": {
+            "title": "# of uniquely mapped reads",
             "description": "STAR Uniquely mapped reads number",
             "type": "number"
         }

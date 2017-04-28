@@ -2,7 +2,6 @@
 var React = require('react');
 var panel = require('../libs/bootstrap/panel');
 var button = require('../libs/bootstrap/button');
-var {SvgIcon, CollapseIcon} = require('../libs/svg-icons');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
 var navigation = require('./navigation');
@@ -10,28 +9,26 @@ var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
 var image = require('./image');
-var statuslabel = require('./statuslabel');
+import StatusLabel from './statuslabel';
 var audit = require('./audit');
 var fetched = require('./fetched');
 var pipeline = require('./pipeline');
-var reference = require('./reference');
+var { pubReferenceList } = require('./reference');
 var software = require('./software');
 var sortTable = require('./sorttable');
 var objectutils = require('./objectutils');
 var doc = require('./doc');
 var {FileGallery} = require('./filegallery');
 var {GeneticModificationSummary} = require('./genetic_modification');
-var {BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs} = require('./typeutils');
+var { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef } = require('./typeutils');
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var FetchedItems = fetched.FetchedItems;
 var Param = fetched.Param;
-var StatusLabel = statuslabel.StatusLabel;
 var {AuditMixin, AuditIndicators, AuditDetail} = audit;
-var PubReferenceList = reference.PubReferenceList;
-var SingleTreatment = objectutils.SingleTreatment;
-var SoftwareVersionList = software.SoftwareVersionList;
+var singleTreatment = objectutils.singleTreatment;
+var softwareVersionList = software.softwareVersionList;
 var {SortTablePanel, SortTable} = sortTable;
 var ProjectBadge = image.ProjectBadge;
 var {DocumentsPanel} = doc;
@@ -65,12 +62,14 @@ var Experiment = module.exports.Experiment = React.createClass({
     mixins: [AuditMixin],
 
     contextTypes: {
-        session: React.PropTypes.object
+        session: React.PropTypes.object,
+        session_properties: React.PropTypes.object,
     },
 
     render: function() {
         var condensedReplicates = [];
         var context = this.props.context;
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         var itemClass = globals.itemClass(context, 'view-item');
         var replicates = context.replicates;
         if (replicates) {
@@ -142,12 +141,12 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                     // First get the treatments in the library
                     if (library.treatments && library.treatments.length) {
-                        treatments = library.treatments.map(treatment => SingleTreatment(treatment));
+                        treatments = library.treatments.map(treatment => singleTreatment(treatment));
                     }
 
                     // Now get the treatments in the biosamples
                     if (library.biosample && library.biosample.treatments && library.biosample.treatments.length) {
-                        treatments = treatments.concat(library.biosample.treatments.map(treatment => SingleTreatment(treatment)));
+                        treatments = treatments.concat(library.biosample.treatments.map(treatment => singleTreatment(treatment)));
                     }
 
                     if (treatments.length) {
@@ -174,7 +173,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                     // Just track @id for deciding if all values are the same or not. Rendering handled in libraryComponents
                     if (spikeins && spikeins.length) {
-                        return spikeins.map(spikein => spikein.accession).sort().join();
+                        return spikeins.sort().join();
                     }
                     return undefined;
                 }
@@ -188,18 +187,16 @@ var Experiment = module.exports.Experiment = React.createClass({
                 },
                 strand_specificity: library => <span>{library.strand_specificity ? 'Strand-specific' : 'Non-strand-specific'}</span>,
                 spikeins_used: library => {
-                    var spikeins = library.spikeins_used;
+                    const spikeins = library.spikeins_used;
                     if (spikeins && spikeins.length) {
                         return (
                             <span>
-                                {spikeins.map(function(dataset, i) {
-                                    return (
-                                        <span key={dataset.uuid}>
-                                            {i > 0 ? ', ' : ''}
-                                            <a href={dataset['@id']}>{dataset.accession}</a>
-                                        </span>
-                                    );
-                                })}
+                                {spikeins.map((spikeinsAtId, i) =>
+                                    <span key={i}>
+                                        {i > 0 ? ', ' : ''}
+                                        <a href={spikeinsAtId}>{globals.atIdToAccession(spikeinsAtId)}</a>
+                                    </span>
+                                )}
                             </span>
                         );
                     }
@@ -246,21 +243,29 @@ var Experiment = module.exports.Experiment = React.createClass({
         analysisStepDocs = analysisStepDocs.length ? globals.uniqueObjectsArray(analysisStepDocs) : [];
         pipelineDocs = pipelineDocs.length ? globals.uniqueObjectsArray(pipelineDocs) : [];
 
-        var antibodies = {};
-        replicates.forEach(replicate => {
-            if (replicate.antibody) {
-                antibodies[replicate.antibody['@id']] = replicate.antibody;
-            }
-        });
-
         // Determine this experiment's ENCODE version
         var encodevers = globals.encodeVersion(context);
 
         // Make list of statuses
-        var statuses = [{status: context.status, title: "Status"}];
+        const statuses = [{ status: context.status, title: 'Status' }];
+        if (adminUser && context.internal_status) {
+            statuses.push({ status: context.internal_status, title: 'Internal' });
+        }
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
+
+        // Make array of superseded_by accessions
+        let supersededBys = [];
+        if (context.superseded_by && context.superseded_by.length) {
+            supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
+        }
+
+        // Make array of supersedes accessions
+        let supersedes = [];
+        if (context.supersedes && context.supersedes.length) {
+            supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
+        }
 
         // Determine whether the experiment is isogenic or anisogenic. No replication_type indicates isogenic.
         var anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
@@ -305,14 +310,14 @@ var Experiment = module.exports.Experiment = React.createClass({
         var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
 
         // Make a list of reference links, if any
-        var references = PubReferenceList(context.references);
+        var references = pubReferenceList(context.references);
 
         // Render tags badges
         var tagBadges;
         if (context.internal_tags && context.internal_tags.length) {
             tagBadges = context.internal_tags.map(tag => <img key={tag} src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
-        
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -320,6 +325,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <Breadcrumbs root='/search/?type=experiment' crumbs={crumbs} />
                         <h2>Experiment summary for {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
+                        {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -328,7 +335,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         </div>
                    </div>
                 </header>
-                <AuditDetail context={context} id="experiment-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} id="experiment-audit" />
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -441,12 +448,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         <dd>{context.lab.title}</dd>
                                     </div>
 
-                                    {context.award.pi && context.award.pi.lab ?
-                                        <div data-test="awardpi">
-                                            <dt>Award PI</dt>
-                                            <dd>{context.award.pi.lab.title}</dd>
-                                        </div>
-                                    : null}
+                                    <AwardRef context={context} adminUser={adminUser} />
 
                                     <div data-test="project">
                                         <dt>Project</dt>
@@ -456,7 +458,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                                     {context.dbxrefs.length ?
                                         <div data-test="external-resources">
                                             <dt>External resources</dt>
-                                            <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                            <dd><DbxrefList values={context.dbxrefs} cell_line={context.biosample_term_name} /></dd>
                                         </div>
                                     : null}
 
@@ -507,6 +509,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </PanelBody>
                 </Panel>
 
+                {geneticModifications.length ?
+                    <GeneticModificationSummary geneticModifications={geneticModifications} />
+                : null}
+
                 {Object.keys(condensedReplicates).length ?
                     <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
@@ -517,10 +523,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                 <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
 
                 {combinedDocuments.length ? <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} /> : null}
-
-                {geneticModifications.length ?
-                    <GeneticModificationSummary geneticModifications={geneticModifications} />
-                : null}
             </div>
         );
     }

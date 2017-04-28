@@ -65,7 +65,7 @@ var Item = module.exports.Item = React.createClass({
                         </div>
                     </div>
                 </header>
-                <AuditDetail context={context} key="biosample-audit" />
+                <AuditDetail audits={context.audit} except={context['@id']} key="biosample-audit" />
                 <div className="row item-row">
                     <div className="col-sm-12">
                         {context.description ? <p className="description">{context.description}</p> : null}
@@ -203,7 +203,7 @@ var RelatedItems = module.exports.RelatedItems = React.createClass({
     },
 
     render: function() {
-        var url = this.props.url + '&status!=deleted&status!=revoked&status!=replaced';
+        var url = globals.encodedURI(this.props.url + '&status!=deleted&status!=revoked&status!=replaced');
         var limited_url = url + '&limit=' + this.props.limit;
         var unlimited_url = url + '&limit=all';
         return (

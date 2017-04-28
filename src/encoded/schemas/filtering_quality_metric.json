@@ -1,4 +1,5 @@
 {
+    "title": "Read filter quality metric",
     "description": "Schema for reporting post alignment read filtering as a quality metric",
     "id": "/profiles/filtering_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -18,21 +19,25 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "5"
         },
         "pre-filter all reads": {
+            "title": "Total reads after filtering",
             "type": "number",
             "description": "Count of all reads prior to filtering"
         },
         "pre-filter mapped reads": {
+            "title": "Mapped reads before filtering",
             "type": "number",
             "description": "Count of mapped reads prior to filtering"
         },
         "post-filter all reads": {
+            "title": "Mapped reads after filtering",
             "type": "number",
             "description": "Count of all reads after filtering"
         },
         "post-filter mapped reads": {
+            "title": "Total reads after filtering",
             "type": "number",
             "description": "Count of mapped reads after filtering"
         }

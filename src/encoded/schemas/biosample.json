@@ -26,15 +26,51 @@
         { "$ref": "mixins.json#/documents"}
     ],
     "dependencies": {
+        "rnais": {
+            "oneOf": [
+                {
+                   "required": ["transfection_type"],
+                    "properties": {
+                        "rnais": {
+                            "minItems": 1
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "rnais": {
+                            "maxItems": 0
+                        }
+                    }
+                }
+            ]
+        },
+        "constructs": {
+            "oneOf": [
+                {
+                   "required": ["transfection_type"],
+                    "properties": {
+                        "constructs": {
+                            "minItems": 1
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "constructs": {
+                            "maxItems": 0
+                        }
+                    }
+                }
+            ]
+        },
         "transfection_method": ["transfection_type"],
-        "depleted_in_term_name": ["depleted_in_term_id"],
         "post_synchronization_time_units": ["post_synchronization_time"],
         "post_treatment_time": ["post_treatment_time_units"],
         "post_treatment_time_units": ["post_treatment_time"],
         "starting_amount": ["starting_amount_units"],
         "starting_amount_units": ["starting_amount"],
-        "depleted_in_term_id": {
-            "required": ["depleted_in_term_name"],
+        "depleted_in_term_name": {
             "properties": {
                 "biosample_type": {"enum": ["whole organisms", "tissue"]}
             }
@@ -190,7 +226,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "13"
+            "default": "14"
         },
         "accession": {
             "accessionType": "BS"
@@ -199,7 +235,6 @@
             "title": "Description",
             "description": "A plain text description of the biosample. Do not include experiment details, constructs or treatments.",
             "type": "string",
-            "default": "",
             "elasticsearch_mapping_index_type": {
                 "title": "Field mapping index type",
                 "description": "Defines one of three types of indexing available",
@@ -210,7 +245,8 @@
                     "not_analyzed",
                     "no"
                 ]
-            }
+            },
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
        "constructs": {
             "title": "DNA constructs",
@@ -304,6 +340,7 @@
         "depleted_in_term_name": {
             "title": "Depleted in term",
             "type": "array",
+            "uniqueItems": true,
             "description": "UBERON (Uber Anatomy Ontology) term best matching the tissue(s)/body part(s) that were removed from the biosample.",
             "items": {
                 "type": "string",
@@ -320,30 +357,6 @@
                     "adult maxillary segment",
                     "female reproductive system",
                     "male reproductive system"
-                ]
-            }
-        },
-        "depleted_in_term_id": {
-            "title": "Depleted in ID",
-            "description": "UBERON (Uber Anatomy Ontology) identifier best matching the tissue(s)/body part(s) that were removed from the biosample.",
-            "comment": "Based on the choice in depleted_in_term_name use the following guide: head - UBERON:0000033, limb - UBERON:0002101, salivary gland - UBERON:0001044 , male accessory sex gland - UBERON:0010147, testis - UBERON:0000473, female gonad - UBERON:0000992, digestive system - UBERON:0001007, arthropod fat body - UBERON:0003917, antenna - UBERON:0000972, adult maxillary segmant - FBbt:00003016",
-            "@type": "@id",
-            "type": "array",
-            "items": {
-                "type": "string",
-                "enum": [
-                    "UBERON:0000033",
-                    "UBERON:0002101",
-                    "UBERON:0001044",
-                    "UBERON:0010147",
-                    "UBERON:0000473",
-                    "UBERON:0000992",
-                    "UBERON:0001007",
-                    "UBERON:0003917",
-                    "UBERON:0000972",
-                    "FBbt:00003016",
-                    "UBERON:0000474",
-                    "UBERON:0000079"
                 ]
             }
         },
@@ -424,26 +437,6 @@
                 "polysome",
                 "insoluble cytoplasmic fraction"
             ]
-        },
-        "subcellular_fraction_term_id": {
-            "@type": "@id",
-            "title": "Subcellular fraction ID",
-            "description":  "The GO (Gene Ontology) identifier for cellular component that constitutes the biosample.",
-            "comment": "Based on the choice in subcellular_fraction_term_name use the following guide: nucleus - GO:0005634, cytosol - GO:0005829, chromatin - GO:0000785, membrane - GO:0016020, mitochondria - GO:0005739, nuclear matrix - GO:0016363, nucleolus - GO:0005730, nucleoplasm - GO:0005654, polysome - GO:0005844.",
-           "type": "string",
-            "enum": [
-                "GO:0005634",
-                "GO:0005829",
-                "GO:0000785",
-                "GO:0016020",
-                "GO:0005739",
-                "GO:0016363",
-                "GO:0005730",
-                "GO:0005654",
-                "GO:0005844",
-                "NTR:0002594"
-            ]
-
         },
         "phase": {
             "title": "Cell-cycle phase",

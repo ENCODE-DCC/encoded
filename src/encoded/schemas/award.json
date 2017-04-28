@@ -13,13 +13,14 @@
     "type": "object",
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "title": {
             "rdfs:subPropertyOf": "dc:title",
             "title": "Name",
             "description": "The grant name from the NIH database, if applicable.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "name": {
             "title": "Number",
@@ -31,7 +32,8 @@
         "description": {
             "rdfs:subPropertyOf": "dc:description",
             "title": "Description",
-            "type": "string"
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "start_date": {
             "title": "Start date",
@@ -75,10 +77,12 @@
                 "ENCODE2",
                 "ENCODE2-Mouse",
                 "ENCODE3",
+                "ENCODE4",
                 "GGR",
                 "Roadmap",
                 "modENCODE",
-                "modERN"
+                "modERN",
+                "community"
             ]
         },
         "project": {
@@ -90,7 +94,8 @@
                 "GGR",
                 "Roadmap",
                 "modENCODE",
-                "modERN"
+                "modERN",
+                "community"
             ]
         },
         "viewing_group": {
@@ -98,10 +103,40 @@
             "description": "The group that determines which set of data the user has permission to view.",
             "type": "string",
             "enum": [
-                "ENCODE",
+                "ENCODE3",
+                "ENCODE4",
                 "GGR",
-                "REMC"
+                "REMC",
+                "community"
             ]
+        }
+    },
+    "facets": {
+        "pi.lab.title": {
+            "title": "Lab"
+        },
+        "rfa": {
+            "title": "RFA"
+        },
+        "project": {
+            "title": "Project"
+        }
+    },
+    "columns": {
+        "title": {
+            "title": "Name"
+        },
+        "name": {
+            "title": "Number"
+        },
+        "project": {
+            "title": "BioProject"
+        },
+        "rfa": {
+            "title": "Phase"
+        },
+        "status": {
+            "title": "status"
         }
     },
     "boost_values": {

@@ -1,4 +1,5 @@
 {
+    "title": "IDR quality metric",
     "description": "Schema for reporting the 'Irreproducible Discovery Rate' (IDR) statistics",
     "id": "/profiles/idr_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -18,37 +19,65 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "4"
+        },
+        "Fp": {
+            "title": "FRiP score from pooled pseudoreplicate peaks",
+            "type": "number",
+            "description": "Fraction reads in IDR peaks (FRiP) from pooled pseudoreplicates"
+        },
+        "Ft": {
+            "title": "FRiP score from true replicate peaks",
+            "type": "number",
+            "description": "Fraction reads in IDR peaks (FRiP) from true replicates"
+        },
+        "F1": {
+            "title": "FRiP score from rep1 self-pseudoreplicate peaks",
+            "type": "number",
+            "description": "Fraction reads in peaks (FRiP) from replicate 1 self-pseudoreplicates or the number of stable peaks that pass the internal psuedoreplication IDR threhold, when self-pseudoreplication is done on unreplicated experiments."
+        },
+        "F2": {
+            "title": "FRiP score from rep2 self-pseudoreplicate peaks",
+            "type": "number",
+            "description": "Fraction reads in peaks (FRiP) from replicate 2 self-pseudoreplicates"
         },
         "Np": {
+            "title": "# pooled pseudoreplicate peaks",
             "type": "number",
             "description": "Number of peaks from pooled pseudoreplicates"
         },
         "Nt": {
+            "title": "# true replicate peaks",
             "type": "number",
             "description": "Number of peaks from true replicates"
         },
         "N1": {
+            "title": "# rep1 self-pseudoreplicate peaks",
             "type": "number",
-            "description": "Number of peaks from replicate 1 self-pseudoreplicates"
+            "description": "Number of peaks from replicate 1 self-pseudoreplicates or the number of stable peaks that pass the internal psuedoreplication IDR threhold, when self-pseudoreplication is done on unreplicated experiments."
         },
         "N2": {
+            "title": "# rep2 self-pseudoreplicate peaks",
             "type": "number",
             "description": "Number of peaks from replicate 2 self-pseudoreplicates"
         },
         "IDR_cutoff": {
+            "title": "IDR cutoff",
             "type": "number",
             "description": "IDR cutoff threshold for this experiment"
         },
         "self_consistency_ratio": {
+            "title": "Self-consistency ratio",
             "type": "number",
             "description": "IDR self-consistency ratio for this experiment"
         },
         "rescue_ratio": {
+            "title": "Rescue ratio",
             "type": "number",
             "description": "IDR rescue ratio for this experiment"
         },
         "reproducibility_test": {
+            "title": "IDR reproducibility",
             "type": "string",
             "description": "IDR reproducibility test result for this experiment",
             "enum": [
@@ -58,16 +87,18 @@
             ]
         },
         "N_optimal": {
+            "title": "# optimal IDR peaks",
             "type": "number",
             "description": "Number of peaks in the IDR optimal set"
         },
         "N_conservative": {
+            "title": "# conservative IDR peaks",
             "type": "number",
             "description": "Number of peaks in the IDR conservative set"
         },
         "IDR_plot_true": {
+            "title": "True replicate IDR plot",            
             "description": "IDR dispersion plot for true replicates",
-            "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -108,8 +139,8 @@
             }
         },
         "IDR_plot_rep1_pr": {
+            "title": "Rep 1 pseudoreplicate IDR plot",            
             "description": "IDR dispersion plot for replicate 1 pseudo-replicates",
-            "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -150,8 +181,8 @@
             }
         },
         "IDR_plot_rep2_pr": {
+            "title": "Rep2 pseudoreplicate IDR plot",
             "description": "IDR dispersion plot for replicate 2 pseudo-replicates",
-            "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -192,8 +223,8 @@
             }
         },
         "IDR_plot_pool_pr": {
+            "title": "Pooled pseudoreplicate IDR plot",
             "description": "IDR dispersion plot for pool pseudo-replicates",
-            "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -234,8 +265,8 @@
             }
         },
         "IDR_parameters_true": {
+            "title": "True replicate IDR run parameters",
             "description": "IDR run parameters for true replicates",
-            "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -268,8 +299,8 @@
             }
         },
         "IDR_parameters_rep1_pr": {
+            "title": "Rep1 pseudoreplicate IDR run parameters",
             "description": "IDR run parameters for replicate 1 pseudo-replicates",
-            "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -302,8 +333,8 @@
             }
         },
         "IDR_parameters_rep2_pr": {
+            "title": "Rep2 pseudoreplicate IDR run parameters",
             "description": "IDR run parameters for replicate 2 pseudo-replicates",
-            "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,
@@ -336,8 +367,8 @@
             }
         },
         "IDR_parameters_pool_pr": {
+            "title": "Pooled pseudoreplicate IDR run parameters",
             "description": "IDR run parameters for pool pseudo-replicates",
-            "title": "QC metric document metadata",
             "type": "object",
             "additionalProperties": false,
             "attachment": true,

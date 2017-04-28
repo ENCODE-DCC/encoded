@@ -42,10 +42,12 @@ def audit_antibody_characterization_review(value, system):
             ontology_term_name = ontology[term_id]['name']
             if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
                 detail = 'Antibody characterization {} '.format(value['@id']) + \
-                         'has a mismatched term {} - {} expected {}'.format(term_id,
-                                                                            term_name,
-                                                                            ontology_term_name)
-
+                         'has a mismatch between biosample term_id ({}) '.format(
+                             term_id) + \
+                         'and term_name ({}), ontology term_name for term_id {} '.format(
+                             term_name,
+                             term_id) + \
+                         'is {}.'.format(ontology_term_name)
                 yield AuditFailure('inconsistent ontology term', detail, level='ERROR')
                 return
             biosample_prefix = term_id.split(':')[0]
@@ -55,9 +57,11 @@ def audit_antibody_characterization_review(value, system):
                          'and has biosample_term_id {} '.format(term_id) + \
                          'that is not one of ' + \
                          '{}'.format(biosampleType_ontologyPrefix[term_type])
-                yield AuditFailure('characterization review with biosample term-type mismatch', detail,
+                yield AuditFailure('characterization review with biosample term-type mismatch',
+                                   detail,
                                    level='INTERNAL_ACTION')
                 return
+
 
 @audit_checker('antibody_characterization', frame=[
     'characterization_reviews',
@@ -186,3 +190,19 @@ def audit_antibody_characterization_status(value, system):
             value['status']
             )
         raise AuditFailure('mismatched lane status', detail, level='INTERNAL_ACTION')
+
+
+@audit_checker('antibody_characterization', condition=rfa('ENCODE3', 'modERN', 'ENCODE4'))
+def audit_antibody_pending_review(value, system):
+    ''' Pending dcc review characterizsations should be flagged for review if from ENCODE3, modERN'''
+    if (value['status'] in ['compliant',
+                            'not compliant',
+                            'exempt from standards'
+                            'not reviewed', 
+                            'not submitted for review by lab',
+                            'deleted',
+                            'in progress']):
+        return
+    if value['status'] == 'pending dcc review':
+        detail = '{} has characterization(s) needing review.'.format(value['@id'])
+        raise AuditFailure('characterization(s) pending review', detail, level='INTERNAL_ACTION')

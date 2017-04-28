@@ -107,7 +107,7 @@ def award(testapp):
         'name': 'encode3-award',
         'rfa': 'ENCODE3',
         'project': 'ENCODE',
-        'viewing_group': 'ENCODE',
+        'viewing_group': 'ENCODE3',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
@@ -118,7 +118,7 @@ def award_modERN(testapp):
         'name': 'modERN-award',
         'rfa': 'modERN',
         'project': 'modERN',
-        'viewing_group': 'ENCODE',
+        'viewing_group': 'ENCODE3',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
@@ -142,7 +142,7 @@ def encode2_award(testapp):
         'name': 'encode2-award',
         'rfa': 'ENCODE2',
         'project': 'ENCODE',
-        'viewing_group': 'ENCODE',
+        'viewing_group': 'ENCODE3',
     }
     return testapp.post_json('/award', item).json['@graph'][0]
 
@@ -211,7 +211,6 @@ def biosample(testapp, source, lab, award, organism):
 @pytest.fixture
 def library(testapp, lab, award, biosample):
     item = {
-        'nucleic_acid_term_id': 'SO:0000352',
         'nucleic_acid_term_name': 'DNA',
         'lab': lab['@id'],
         'award': award['@id'],
@@ -229,6 +228,7 @@ def experiment(testapp, lab, award):
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
 
+
 @pytest.fixture
 def base_experiment(testapp, lab, award):
     item = {
@@ -238,6 +238,7 @@ def base_experiment(testapp, lab, award):
         'status': 'started'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def replicate(testapp, experiment, library):
@@ -258,6 +259,7 @@ def file(testapp, lab, award, experiment):
         'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
         'output_type': 'raw data',
         'lab': lab['@id'],
+        'file_size': 34,
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
     }
@@ -265,13 +267,16 @@ def file(testapp, lab, award, experiment):
 
 
 @pytest.fixture
-def fastq_file(testapp, lab, award, experiment, replicate):
+def fastq_file(testapp, lab, award, experiment, replicate, platform1):
     item = {
         'dataset': experiment['@id'],
         'file_format': 'fastq',
-        'md5sum': 'd41d8cd9f00b204e9800998ecf8427e',
+        'md5sum': '91be74b6e11515393507f4ebfa66d78b',
         'replicate': replicate['@id'],
         'output_type': 'reads',
+        "read_length": 36,
+        'file_size': 34,
+        'platform': platform1['@id'],
         'run_type': 'single-ended',
         'lab': lab['@id'],
         'award': award['@id'],
@@ -285,9 +290,26 @@ def bam_file(testapp, lab, award, experiment):
     item = {
         'dataset': experiment['@id'],
         'file_format': 'bam',
-        'md5sum': 'd41d8cd9f00b204e9800998ecf86674427e',
+        'file_size': 34,
+        'md5sum': '91be74b6e11515393507f4ebfa66d78c',
         'output_type': 'alignments',
         'assembly': 'hg19',
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
+def bigWig_file(testapp, lab, award, experiment):
+    item = {
+        'dataset': experiment['@id'],
+        'file_format': 'bigWig',
+        'md5sum': '91be74b6e11515393507f4ebfa66d78d',
+        'output_type': 'signal of unique reads',
+        'assembly': 'mm10',
+        'file_size': 34,
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
@@ -300,8 +322,9 @@ def file_ucsc_browser_composite(testapp, lab, award, ucsc_browser_composite):
     item = {
         'dataset': ucsc_browser_composite['@id'],
         'file_format': 'fasta',
-        'md5sum': '3f9ae164abb55a93bcd891b192d86164',
+        'md5sum': '91be74b6e11515393507f4ebfa66d77a',
         'output_type': 'raw data',
+        'file_size': 34,
         'lab': lab['@id'],
         'award': award['@id'],
         'status': 'in progress',  # avoid s3 upload codepath
@@ -386,9 +409,9 @@ def treatment(testapp, organism):
     item = {
         'treatment_term_name': 'ethanol',
         'treatment_type': 'chemical'
-       
     }
     return testapp.post_json('/treatment', item).json['@graph'][0]
+
 
 @pytest.fixture
 def attachment():
@@ -466,6 +489,15 @@ def publication_data(testapp, lab, award):
 
 
 @pytest.fixture
+def annotation_dataset(testapp, lab, award):
+    item = {
+        'award': award['@id'],
+        'lab': lab['@id']
+    }
+    return testapp.post_json('/annotation', item).json['@graph'][0]
+
+
+@pytest.fixture
 def publication(testapp, lab, award):
     item = {
         # upgrade/shared.py has a REFERENCES_UUID mapping.
@@ -485,6 +517,7 @@ def pipeline(testapp, lab, award):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'title': "Test pipeline",
+        'assay_term_name': 'RNA-seq'
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]
 
@@ -602,6 +635,7 @@ def mouse_donor_1(testapp, award, lab, mouse):
     }
     return testapp.post_json('/mouse_donor', item).json['@graph'][0]
 
+
 @pytest.fixture
 def mouse_donor_2(testapp, award, lab, mouse):
     item = {
@@ -609,7 +643,8 @@ def mouse_donor_2(testapp, award, lab, mouse):
         'lab': lab['@id'],
         'organism': mouse['@id'],
     }
-    return testapp.post_json('/mouse_donor', item).json['@graph'][0]    
+    return testapp.post_json('/mouse_donor', item).json['@graph'][0]
+
 
 @pytest.fixture
 def replicate_1_1(testapp, base_experiment):
@@ -620,6 +655,7 @@ def replicate_1_1(testapp, base_experiment):
     }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def replicate_1_2(testapp, base_experiment):
     item = {
@@ -629,6 +665,7 @@ def replicate_1_2(testapp, base_experiment):
     }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def replicate_2_1(testapp, base_experiment):
     item = {
@@ -637,6 +674,7 @@ def replicate_2_1(testapp, base_experiment):
         'experiment': base_experiment['@id'],
     }
     return testapp.post_json('/replicate', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def base_biosample(testapp, lab, award, source, organism):
@@ -650,6 +688,7 @@ def base_biosample(testapp, lab, award, source, organism):
     }
     return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def biosample_1(testapp, lab, award, source, organism):
     item = {
@@ -662,9 +701,10 @@ def biosample_1(testapp, lab, award, source, organism):
     }
     return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def biosample_2(testapp, lab, award, source, organism):
-    item = {        
+    item = {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
         'biosample_type': 'tissue',
@@ -674,22 +714,23 @@ def biosample_2(testapp, lab, award, source, organism):
     }
     return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def library_1(testapp, lab, award, base_biosample):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'nucleic_acid_term_id': 'SO:0000352',
         'nucleic_acid_term_name': 'DNA',
         'biosample': base_biosample['uuid']
     }
     return testapp.post_json('/library', item, status=201).json['@graph'][0]
+
+
 @pytest.fixture
 def library_2(testapp, lab, award, base_biosample):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'nucleic_acid_term_id': 'SO:0000352',
         'nucleic_acid_term_name': 'DNA',
         'biosample': base_biosample['uuid']
     }
@@ -698,16 +739,17 @@ def library_2(testapp, lab, award, base_biosample):
 
 @pytest.fixture
 def donor_1(testapp, lab, award, organism):
-    item = {        
+    item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
         'organism': organism['uuid']
     }
     return testapp.post_json('/human-donors', item, status=201).json['@graph'][0]
 
+
 @pytest.fixture
 def donor_2(testapp, lab, award, organism):
-    item = {        
+    item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
         'organism': organism['uuid']
@@ -752,7 +794,8 @@ def pipeline_bam(testapp, lab, award, analysis_step_bam):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'title': "Histone ChIP-seq",
+        'title': "ChIP-seq read mapping",
+        'assay_term_name': 'ChIP-seq',
         'analysis_steps': [analysis_step_bam['@id']]
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]
@@ -766,6 +809,7 @@ def encode_lab(testapp):
         'status': 'current'
         }
     return testapp.post_json('/lab', item, status=201).json['@graph'][0]
+
 
 @pytest.fixture
 def platform1(testapp):

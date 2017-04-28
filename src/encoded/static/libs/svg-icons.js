@@ -11,7 +11,7 @@ var icons = {
 };
 
 
-var SvgIcon = module.exports.SvgIcon = function(icon) {
+var svgIcon = module.exports.svgIcon = function(icon) {
     return icons[icon];
 };
 
@@ -19,7 +19,7 @@ var SvgIcon = module.exports.SvgIcon = function(icon) {
 // Render the icon used to collapse a panel from the title bar.
 //   collapsed: T if the icon should be rendered for the collapsed steate
 //   handlecollapse: function to call when the icon is clicked
-var CollapseIcon = module.exports.CollapseIcon = function(collapsed, addClasses) {
+var collapseIcon = module.exports.collapseIcon = function(collapsed, addClasses) {
     return (
         <svg className={'collapsing-title-control' + (addClasses ? ' ' + addClasses : '')} data-name="Collapse Icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
             {collapsed ?

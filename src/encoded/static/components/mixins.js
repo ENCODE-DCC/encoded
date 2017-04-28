@@ -108,13 +108,24 @@ module.exports.Auth0 = {
             href: window.location.href,
             session_cookie: session_cookie
         });
+
+        // Make a URL for the logo.
+        const hrefInfo = url.parse(this.props.href);
+        const logoHrefInfo = {
+            hostname: hrefInfo.hostname,
+            port: hrefInfo.port,
+            protocol: hrefInfo.protocol,
+            pathname: '/static/img/encode-logo-small-2x.png'
+        };
+        const logoUrl = url.format(logoHrefInfo);
+
         var lock_ = require('auth0-lock');
         this.lock = new lock_.default('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
             auth: {
                 redirect: false
             },
             theme: {
-                logo: 'static/img/encode-logo-small-2x.png'
+                logo: logoUrl
             },
             socialButtonStyle: 'big',
             languageDictionary: {
@@ -272,7 +283,6 @@ module.exports.Auth0 = {
     },
 
     triggerLogin: function (event) {
-        var $script = require('scriptjs');
         if (this.state.session && !this.state.session._csrft_) {
             this.fetch('/session');
         }

@@ -1,9 +1,16 @@
-Change log for library.json
-===========================
+## Changelog for library.json
 
+### Schema version 6
 
-Schema version 4
-----------------
+* nucleic_acid_term_id will no longer be allowed to be submitted, it will be automatically calculated based on the term_name
+* depleted_in_term_id will no longer be allowed to be submitted, it will be automatically calculated based on the term_name
+* depleted_in_term_name will not default to an empty array and will only be present if a value is specified. It can now only contain unique elements.
+
+### Schema version 5
+
+* Array values *spikeins_used*, *treatments*, *dbxrefs*, *aliases*, and *documents* are now only allowed to have unique elements.
+
+### Schema version 4
 
 * *paired_ended* was removed
 
@@ -29,8 +36,7 @@ Schema version 4
             "n/a"
         ]
 
-Schema version 3
-----------------
+### Schema version 3
 
 * *spikeins_used* was added with an audit for RNA libraries missing this field:
 
