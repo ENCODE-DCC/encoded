@@ -4,7 +4,7 @@
         "schema_version": {
             "title": "Schema Version",
             "description": "The version of the JSON schema that the server uses to validate the object.",
-            "comment":  "Do not submit. The version used to validate the object is set by the server.  The default should be set to the current version.",
+            "comment":  "Do not submit. The version used to validate the object is set by the server. The default should be set to the current version.",
             "type": "string",
             "pattern": "^\\d+(\\.\\d+)*$",
             "requestMethod": []
