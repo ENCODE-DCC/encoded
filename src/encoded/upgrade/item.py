@@ -100,10 +100,11 @@ def item_alias_tighten(value, system):
         if namespace in ['ucsc_encode_db', 'UCSC_encode_db', 'versionof']:
             namespace = 'encode'
         rest = '_'.join(parts[1:]).strip()
-
+        # Remove or substitute bad characters and multiple whitespaces
         import re
         if '"' or '#' or '@' or '!' or '$' or '%' or '^' or '&' or '|' or '*' or '~'  or ';' or '`' in rest:
             rest = re.sub("[\"#@!$%^&*|~`\/]", "", rest)
+            rest = ' '.join(rest.split())
         if '[' or '{' in rest:
             rest = re.sub("[\[{]", "(", rest)
         if ']' or '}' in rest:
