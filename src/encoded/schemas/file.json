@@ -219,17 +219,36 @@
             ]
         },
         "status": {
-            "oneOf": [
+            "allOf": [
                 {
-                    "required": ["content_error_detail"],
-                    "properties": {
-                        "status": {
-                            "enum": ["content error"]
+                    "oneOf": [
+                        {
+                            "required": ["file_size"],
+                            "properties": {
+                                "status": {
+                                    "enum": ["in progress",  "revoked", "archived", "released"]
+                                }
+                            }
+                        },
+                        {
+                            "properties": {
+                                "status": {
+                                    "enum": ["uploading", "upload failed", "deleted", "replaced", "content error"]
+                                }
+                            }
                         }
-                    }
+                    ]
                 },
                 {
-                    "allOf":[
+                    "oneOf": [
+                        {
+                            "required": ["content_error_detail"],
+                            "properties": {
+                                "status": {
+                                    "enum": ["content error"]
+                                }
+                            }
+                        },
                         {
                             "not": {
                                 "oneOf": [
@@ -237,7 +256,7 @@
                                         "required": ["content_error_detail"],
                                         "properties": {
                                             "status": {
-                                                "enum": ["uploading", "upload failed", "in progress", "deleted", "replaced", "revoked", "archived", "released"]
+                                                "enum": ["uploading", "uploaded", "upload failed", "format check failed", "in progress", "deleted", "replaced", "revoked", "archived", "released"]
                                             }
                                         }
                                     },
@@ -250,28 +269,9 @@
                                     }
                                 ]
                             }
-                        },
-                        {
-                            "oneOf": [
-                                {
-                                    "required": ["file_size"],
-                                    "properties": {
-                                        "status": {
-                                            "enum": ["in progress",  "revoked", "archived", "released"]
-                                        }
-                                    }
-                                },
-                                {
-                                    "properties": {
-                                        "status": {
-                                            "enum": ["uploading", "upload failed", "content error", "deleted", "replaced"]
-                                        }
-                                    }
-                                }
-                            ]
-
                         }
                     ]
+
                 }
             ]
         }
@@ -821,13 +821,14 @@
             "comment": "Do not submit.  This is set by admins along the process of file submission.",
             "enum" : [
                 "uploading",
+                "content error",
                 "upload failed",
                 "in progress",
                 "deleted",
                 "released",
                 "replaced",
                 "revoked",
-                "archived"        
+                "archived"      
                 ]
         },
         "dbxrefs": {
