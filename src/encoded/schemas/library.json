@@ -178,6 +178,7 @@
                 "gel",
                 "see document",
                 "SPRI beads",
+                "BluePippin",
                 "Agencourt AMPure XP"
             ],
             "format": "semi-controlled"
@@ -203,6 +204,7 @@
             "type": "string",
             "enum": [
                 "formaldehyde",
+                "EGS and formaldehyde",
                 "ultraviolet irradiation"
             ]
         },
