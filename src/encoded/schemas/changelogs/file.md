@@ -2,6 +2,8 @@
 
 ### Schema version 10
 
+* *date_created* format is only date-time and not two as it used to be, but it is true for all objects!!!
+
 * *platform* value is now required for files with *file_format* that is one of ["fastq", "rcc", "csfasta", "csqual", "sra", "CEL", "idat"]
 * *output_type* values ["tRNA reference", "miRNA reference", "snRNA reference"] added to the ist of values that could be submitted only by DCC personnel                      
 * *file_format* values ["sra", "btr"] could be submitted only by DCC personnel                        
