@@ -571,7 +571,8 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         for path in related_datasets:
             properties = request.embed(path, '@@object')
             if properties['status'] not in ('deleted', 'replaced'):
-                assembly.add(properties['assembly'])
+                for assem in properties['assembly']:
+                    assembly.add(assem)
         return list(assembly)
 
 
