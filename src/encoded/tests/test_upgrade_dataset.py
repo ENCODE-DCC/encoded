@@ -99,7 +99,8 @@ def experiment_10(root, experiment):
             'j-michael-cherry:Lib:XZ:20100107:11--ChIP:XZ:20100104:09:AdiposeNuclei:H3K4Me3',
             'roadmap-epigenomics:Bisulfite-Seq analysis of ucsf-4* stem cell line from UCSF-4||Tue Apr 16 16:10:36 -0500 2013||85822',
             'encode:[this is]_qu#ite:bad" ',
-            'UCSC_encode_db:Illumina_HiSeq_2000'
+            'UCSC_encode_db:Illumina_HiSeq_2000',
+            'encode:Illumina_HiSeq_2000'
         ]
     })
     return properties

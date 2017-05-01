@@ -84,6 +84,7 @@ def item_alias_tighten(value, system):
     else:
         return
 
+    aliases_to_remove = []
     for i in range(0, len(aliases)):
         new_alias = ''
         if 'roadmap-epigenomics' in aliases[i]:
@@ -98,7 +99,12 @@ def item_alias_tighten(value, system):
         parts = aliases[i].split(':') if not new_alias else new_alias.split(':')
         namespace = parts[0]
         if namespace in ['ucsc_encode_db', 'UCSC_encode_db', 'versionof']:
+            # Remove the alias with the bad namespace
+            aliases_to_remove.append(aliases[i])
             namespace = 'encode'
+        if namespace in ['CGC']:
+            namespace = namespace.lower()
+
         rest = '_'.join(parts[1:]).strip()
         # Remove or substitute bad characters and multiple whitespaces
         import re
@@ -112,3 +118,7 @@ def item_alias_tighten(value, system):
         new_alias = ':'.join([namespace, rest])
         if new_alias not in aliases:
             aliases[i] = new_alias
+
+    if aliases_to_remove and aliases:
+        for a in aliases_to_remove:
+            aliases.remove(a)
