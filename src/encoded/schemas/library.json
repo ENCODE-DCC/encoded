@@ -154,6 +154,7 @@
                 "sonication (generic microtip)",
                 "sonication (Branson Sonifier 250)",
                 "sonication (Branson Sonifier 450)",
+                "sonication (Sonics VCX130)",
                 "shearing (Covaris LE Series)",
                 "see document",
                 "none",
@@ -177,7 +178,9 @@
             "XXXenum": [
                 "gel",
                 "see document",
-                "SPRI beads"
+                "SPRI beads",
+                "BluePippin",
+                "Agencourt AMPure XP"
             ],
             "format": "semi-controlled"
         },
@@ -202,6 +205,7 @@
             "type": "string",
             "enum": [
                 "formaldehyde",
+                "EGS and formaldehyde",
                 "ultraviolet irradiation"
             ]
         },
