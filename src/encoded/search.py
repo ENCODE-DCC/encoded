@@ -975,6 +975,7 @@ def matrix(context, request):
 
     # Group results in 2 dimensions
     x_grouping = matrix['x']['group_by']
+    x_sub_grouping = matrix['x']['sub_group_by']
     y_groupings = matrix['y']['group_by']
     x_agg = {
         "terms": {
@@ -982,6 +983,15 @@ def matrix(context, request):
             "size": 0,  # no limit
         },
     }
+    if x_sub_grouping:
+        x_agg["aggs"] = {
+            x_sub_grouping: {
+                "terms": {
+                    "field": 'embedded.' + x_sub_grouping + '.raw',
+                    "size": 0
+                }
+            }
+        }
     aggs = {x_grouping: x_agg}
     for field in reversed(y_groupings):
         aggs = {
@@ -1018,6 +1028,7 @@ def matrix(context, request):
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
         group_by = grouping_fields[0]
         grouping_fields = grouping_fields[1:]
+        print('GF: {}-<{}>-{}'.format(outer_bucket, group_by, grouping_fields));
         if not grouping_fields:
             counts = {}
             for bucket in outer_bucket[group_by]['buckets']:
@@ -1037,7 +1048,7 @@ def matrix(context, request):
         result['matrix'],
         aggregations['matrix']['x']['buckets'],
         aggregations['matrix'],
-        y_groupings + [x_grouping])
+        y_groupings + [x_grouping] + [x_sub_grouping])
 
     result['matrix']['y'][y_groupings[0]] = aggregations['matrix'][y_groupings[0]]
     result['matrix']['x'].update(aggregations['matrix']['x'])

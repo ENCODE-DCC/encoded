@@ -69,6 +69,7 @@ var Matrix = module.exports.Matrix = React.createClass({
             var y_facets = matrix.y.facets.map(f => _.findWhere(context.facets, {field: f})).filter(f => f);
             y_facets = y_facets.concat(_.reject(context.facets, f => _.contains(matrix.x.facets, f.field) || _.contains(matrix.y.facets, f.field)));
             var x_grouping = matrix.x.group_by;
+            var x_sub_grouping = matrix.x.sub_group_by;
             var primary_y_grouping = matrix.y.group_by[0];
             var secondary_y_grouping = matrix.y.group_by[1];
             var x_buckets = matrix.x.buckets;
@@ -94,6 +95,38 @@ var Matrix = module.exports.Matrix = React.createClass({
                     return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
                 });
             }
+
+            // Make the matrix column headers.
+            const xComponents = [];
+            x_buckets.forEach((xb, i) => {
+                if (i < x_limit) {
+                    const cols = [];
+                    var href = search_base + '&' + x_grouping + '=' + globals.encodedURIComponent(xb.key);
+
+                    // Push the parent element into the columns
+                    xComponents.push(<th key={i} className="rotate30" style={{width: 10}}><div><a title={xb.key} href={href}>{xb.key}</a></div></th>);
+
+                    // Push the kids into the X header.
+                    const xSubBuckets = xb[x_sub_grouping] && xb[x_sub_grouping].buckets;
+                    if (xSubBuckets && xSubBuckets.length) {
+                        xSubBuckets.forEach((xSubBucket) => {
+                            xComponents.push(
+                                <th key={xSubBucket.key} className="rotate30--sub" style={{ width: 10 }}>
+                                    <div>
+                                        <a title={xSubBucket.key} href={href}>{xSubBucket.key}</a>
+                                    </div>
+                                </th>
+                            );
+                        });
+                    }
+                } else if (i == x_limit) {
+                    var parsed = url.parse(matrix_base, true);
+                    parsed.query['x.limit'] = null;
+                    delete parsed.search; // this makes format compose the search string out of the query object
+                    var unlimited_href = url.format(parsed);
+                    xComponents.push(<th key={i} className="rotate30" style={{width: 10}}><div><span><a href={unlimited_href}>...and {x_buckets.length - x_limit} more</a></span></div></th>);
+                }
+            });
 
             // Map view icons to svg icons
             var view2svg = {
@@ -163,20 +196,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                         </div>
                                                     : null}
                                                 </th>
-                                                {x_buckets.map(function(xb, i) {
-                                                    if (i < x_limit) {
-                                                        var href = search_base + '&' + x_grouping + '=' + globals.encodedURIComponent(xb.key);
-                                                        return <th key={i} className="rotate30" style={{width: 10}}><div><a title={xb.key} href={href}>{xb.key}</a></div></th>;
-                                                    } else if (i == x_limit) {
-                                                        var parsed = url.parse(matrix_base, true);
-                                                        parsed.query['x.limit'] = null;
-                                                        delete parsed.search; // this makes format compose the search string out of the query object
-                                                        var unlimited_href = url.format(parsed);
-                                                        return <th key={i} className="rotate30" style={{width: 10}}><div><span><a href={unlimited_href}>...and {x_buckets.length - x_limit} more</a></span></div></th>;
-                                                    } else {
-                                                        return null;
-                                                    }
-                                                })}
+                                                {xComponents}
                                             </tr>
                                             {y_groups.map(function(group, i) {
                                                 var seriesIndex = y_group_options.indexOf(group.key);
@@ -198,7 +218,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                     if (j < y_limit) {
                                                         var href = search_base + '&' + secondary_y_grouping + '=' + globals.encodedURIComponent(yb.key);
                                                         return <tr key={yb.key}>
-                                                            <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}><a href={href}>{yb.key}</a></th>
+                                                            <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}><a href={href} style={{color: '#000'}}>{yb.key}</a></th>
                                                             {x_buckets.map(function(xb, i) {
                                                                 if (i < x_limit) {
                                                                     var value = yb[x_grouping][i];

@@ -3,7 +3,7 @@ $rotated-th-height: 130px;
 $rotated-th-width: 20px;
 $rotated-th-angle: 30deg;
 
-th.rotate30 {
+th.rotate30, th.rotate30--sub {
     height: $rotated-th-height;
     width: $rotated-th-width;
     min-width: $rotated-th-width;
@@ -20,7 +20,7 @@ th.rotate30 {
         height: 100%;
         -webkit-transform: skew(-$rotated-th-angle, 0deg);
         transform: skew(-$rotated-th-angle, 0deg);
-        background-color: #ddd;
+        background-color: #888;
         border-left: solid 1px #fff;
         border-right: solid 1px #fff;
         > a {
@@ -36,7 +36,16 @@ th.rotate30 {
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
+            color: #fff;            
         }
+    }
+}
+
+th.rotate30--sub > div {
+    background-color: #ddd;
+
+    > a {
+        color: #000;
     }
 }
 
@@ -61,9 +70,6 @@ table.matrix {
     th {
         text-align: right;
         padding: 0 .5em;
-        a {
-        	color: black;
-        }
     }
     td {
         vertical-align: middle;
