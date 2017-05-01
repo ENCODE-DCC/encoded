@@ -121,4 +121,5 @@ def item_alias_tighten(value, system):
 
     if aliases_to_remove and aliases:
         for a in aliases_to_remove:
-            aliases.remove(a) if a in aliases
+            if a in aliases:
+                aliases.remove(a)
