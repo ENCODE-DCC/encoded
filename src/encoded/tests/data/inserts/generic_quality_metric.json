@@ -7,7 +7,6 @@
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
         "name": "Common RNA filtering counts metric (TXT)"
-
     },
     {
         "status": "released",
@@ -17,7 +16,6 @@
         "uuid": "05d719aa-42d3-4512-a837-48a15b6688aa",
         "attachment": "HAIB_TCF4_WH0006925M2_MassSpec.tsv",
         "name": "Common RNA filtering counts metric (TSV)"
-
     },
     {
         "status": "released",

@@ -95,7 +95,7 @@ organ_slims = {
     'UBERON:0001911': 'mammary gland',
     'UBERON:0001630': 'muscle organ',
     'UBERON:0000007': 'pituitary gland',
-    'UBERON:0000478': 'extraembryonic structure',
+    'UBERON:0016887': 'extraembryonic component',
     'UBERON:0001013': 'adipose tissue',
     'UBERON:0000310': 'breast',
     'UBERON:0000989': 'penis',

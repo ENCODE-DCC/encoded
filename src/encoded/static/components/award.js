@@ -507,7 +507,7 @@ const ChartRenderer = React.createClass({
                             />
                         </div>
                     :
-                        <div className="browser-error">No labs reference this award for assays</div>
+                        <div className="browser-error">No assays were submitted under this award</div>
                     }
                 </div>
                 <div className="award-chart__group-wrapper">
@@ -536,7 +536,7 @@ const ChartRenderer = React.createClass({
                             />
                         </div>
                     :
-                        <div className="browser-error">No labs reference this award for annotations</div>
+                        <div className="browser-error">No annotations were submitted under this award</div>
                     }
                 </div>
             </div>
@@ -609,6 +609,12 @@ const Award = React.createClass({
                         <h4>Description</h4>
                     </PanelHeading>
                     <PanelBody>
+                        {context.url ?
+                            <div>
+                                <strong>NHGRI project information: </strong><a href={context.url} title={`${context.name} project page at NHGRI`}>{context.name}</a>
+                                <hr />
+                            </div>
+                        : null}
                         {context.description ?
                             <div className="two-column-long-text two-column-long-text--gap">
                                 <p>{context.description}</p>
