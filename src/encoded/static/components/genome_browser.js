@@ -161,6 +161,7 @@ function rAssemblyToSources(assembly, region) {
                 desc: 'Mouse reference genome build GRCm38',
                 tier_type: 'sequence',
                 provides_entrypoints: true,
+                pinned: true,
             },
             {
                 name: 'Genes',
@@ -175,6 +176,7 @@ function rAssemblyToSources(assembly, region) {
                 desc: 'Repeat annotation from UCSC',
                 bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/repeats_mm10.bb',
                 stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/bb-repeats2_mm10.xml',
+                forceReduction: -1,
             },
         ];
     } else if (assembly === 'mm9') {
@@ -196,6 +198,7 @@ function rAssemblyToSources(assembly, region) {
                 desc: 'Mouse reference genome build NCBIm37',
                 tier_type: 'sequence',
                 provides_entrypoints: true,
+                pinned: true,
             },
             {
                 name: 'Genes',
@@ -210,6 +213,7 @@ function rAssemblyToSources(assembly, region) {
                 desc: 'Repeat annotation from UCSC',
                 bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm9/repeats_mm9.bb',
                 stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm9/bb-repeats_mm9.xml',
+                forceReduction: -1,
             },
         ];
     } else if (assembly === 'dm6') {
@@ -231,6 +235,7 @@ function rAssemblyToSources(assembly, region) {
                 desc: 'D. melanogaster reference genome build BDGP R6/dm6',
                 tier_type: 'sequence',
                 provides_entrypoints: true,
+                pinned: true,
             },
             {
                 name: 'Genes',
@@ -245,6 +250,7 @@ function rAssemblyToSources(assembly, region) {
                 desc: 'Repeat annotation from UCSC',
                 bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/repeats_dm6.bb',
                 //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/',
+                forceReduction: -1,
             },
         ];
     } else if (assembly === 'dm3') {
@@ -266,6 +272,7 @@ function rAssemblyToSources(assembly, region) {
                 desc: 'D. melanogaster reference genome build BDGP R5/dm3',
                 tier_type: 'sequence',
                 provides_entrypoints: true,
+                pinned: true,
             },
             {
                 name: 'Genes',
@@ -280,6 +287,7 @@ function rAssemblyToSources(assembly, region) {
                 desc: 'Repeat annotation from UCSC',
                 bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/repeats_dm3.bb',
                 //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/',
+                forceReduction: -1,
             },
         ];
     } else if (assembly === 'ce11') {
@@ -301,6 +309,7 @@ function rAssemblyToSources(assembly, region) {
                 desc: 'C. elegans reference genome build ce11/WBcel235',
                 tier_type: 'sequence',
                 provides_entrypoints: true,
+                pinned: true,
             },
             {
                 name: 'Genes',
@@ -315,6 +324,7 @@ function rAssemblyToSources(assembly, region) {
                 desc: 'Repeat annotation from UCSC',
                 bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/repeats_ce11.bb',
                 //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/',
+                forceReduction: -1,
             },
         ];
     } else if (assembly === 'ce10') {
@@ -336,6 +346,7 @@ function rAssemblyToSources(assembly, region) {
                 desc: 'C. elegans reference genome build ce10/WS220',
                 tier_type: 'sequence',
                 provides_entrypoints: true,
+                pinned: true,
             },
             {
                 name: 'Genes',
@@ -350,6 +361,7 @@ function rAssemblyToSources(assembly, region) {
                 desc: 'Repeat annotation from UCSC',
                 bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce10/repeats_ce10.bb',
                 //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce10/',
+                forceReduction: -1,
             },
         ];
     }
