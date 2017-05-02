@@ -161,10 +161,11 @@ function rAssemblyToSources(assembly, region) {
                 desc: 'Mouse reference genome build GRCm38',
                 tier_type: 'sequence',
                 provides_entrypoints: true,
+                pinned: true,
             },
             {
                 name: 'Genes',
-                desc: 'Gene structures from GENCODE M2',
+                desc: 'Gene structures from GENCODE M4',
                 bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencode.vM4.annotation.bb',
                 stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencode_vM4.xml',
                 collapseSuperGroups: true,
@@ -175,9 +176,14 @@ function rAssemblyToSources(assembly, region) {
                 desc: 'Repeat annotation from UCSC',
                 bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/repeats_mm10.bb',
                 stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/bb-repeats2_mm10.xml',
+                forceReduction: -1,
             },
         ];
     } else if (assembly === 'mm9') {
+        // sources:
+        // Genome: http://hgdownload.soe.ucsc.edu/goldenPath/mm10/bigZips/mm10.2bit
+        // gencode: ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_mouse/release_M1/gencode.vM1.annotation.gtf.gz
+        // repeats: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Mammal, genome: mouse, assembly: mm9, group: variation and repeats, track: repeatmaster)
         if (!browserCfg.positionSet) {
             browserCfg.chr = '19';
             browserCfg.viewStart = 30000000;
@@ -192,10 +198,29 @@ function rAssemblyToSources(assembly, region) {
                 desc: 'Mouse reference genome build NCBIm37',
                 tier_type: 'sequence',
                 provides_entrypoints: true,
+                pinned: true,
+            },
+            {
+                name: 'Genes',
+                desc: 'Gene structures from GENCODE M1',
+                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencode.vM1.annotation.bb',
+                stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencode_vM1.xml',
+                collapseSuperGroups: true,
+                trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencode.vM1.annotation.ix',
+            },
+            {
+                name: 'Repeats',
+                desc: 'Repeat annotation from UCSC',
+                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm9/repeats_mm9.bb',
+                stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm9/bb-repeats_mm9.xml',
+                forceReduction: -1,
             },
         ];
     } else if (assembly === 'dm6') {
+        // sources:
         // Genome: from http://hgdownload.cse.ucsc.edu/goldenPath/dm6/bigZips/dm6.2bit
+        // annotations: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Insect, genome: D. melanogaster, assembly: dm6, group: Genes and Gene Predictions, track: RefSeq Genes)
+        // repeats: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Insect, genome: D. melanogaster, assembly: dm6, group: variation and repeats, track: repeatmaster)
         if (!browserCfg.positionSet) {
             browserCfg.chr = '3L';
             browserCfg.viewStart = 15940000;
@@ -207,12 +232,32 @@ function rAssemblyToSources(assembly, region) {
             {
                 name: 'Genome',
                 twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/dm6.2bit',
-                desc: 'D. melanogaster reference genome build BDGP R6',
+                desc: 'D. melanogaster reference genome build BDGP R6/dm6',
                 tier_type: 'sequence',
                 provides_entrypoints: true,
+                pinned: true,
+            },
+            {
+                name: 'Genes',
+                desc: 'Gene structures from UCSC BDGP6 + ISO1 MT/dm6',
+                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/dm6_UCSC_RefSeq_track.bb',
+                //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/',
+                collapseSuperGroups: true,
+                trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/dm6_UCSC_RefSeq_track.ix',
+            },
+            {
+                name: 'Repeats',
+                desc: 'Repeat annotation from UCSC',
+                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/repeats_dm6.bb',
+                //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/',
+                forceReduction: -1,
             },
         ];
     } else if (assembly === 'dm3') {
+        // sources:
+        // Genome: from http://hgdownload.cse.ucsc.edu/goldenPath/dm3/bigZips/dm3.2bit
+        // annotations: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Insect, genome: D. melanogaster, assembly: dm3, group: Genes and Gene Predictions, track: RefSeq Genes)
+        // repeats: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Insect, genome: D. melanogaster, assembly: dm3, group: variation and repeats, track: repeatmaster)
         if (!browserCfg.positionSet) {
             browserCfg.chr = '3L';
             browserCfg.viewStart = 15940000;
@@ -224,13 +269,32 @@ function rAssemblyToSources(assembly, region) {
             {
                 name: 'Genome',
                 twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/dm3.2bit',
-                desc: 'D. melanogaster reference genome build BDGP R5',
+                desc: 'D. melanogaster reference genome build BDGP R5/dm3',
                 tier_type: 'sequence',
                 provides_entrypoints: true,
+                pinned: true,
+            },
+            {
+                name: 'Genes',
+                desc: 'Gene structures from UCSC BDGP R5/dm3',
+                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/dm3_UCSC_RefSeq_track.bb',
+                //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/',
+                collapseSuperGroups: true,
+                trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/dm3_UCSC_RefSeq_track.ix',
+            },
+            {
+                name: 'Repeats',
+                desc: 'Repeat annotation from UCSC',
+                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/repeats_dm3.bb',
+                //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/',
+                forceReduction: -1,
             },
         ];
     } else if (assembly === 'ce11') {
-        // Genome: from ftp://hgdownload-sd.sdsc.edu/goldenPath/ce11/bigZips/ce11.2bit
+        // sources:
+        // Genome: from http://hgdownload.soe.ucsc.edu/goldenPath/ce11/bigZips/ce11.2bit
+        // annotations: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Nematode, genome: C. elegans, assembly: ce11/WBcel235, group: Genes and Gene Predictions, track: RefSeq Genes)
+        // repeats: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Nematode, genome: C. elegans, assembly: ce11/WBcel235, group: variation and repeats, track: repeatmaster)
         if (!browserCfg.positionSet) {
             browserCfg.chr = 'II';
             browserCfg.viewStart = 14646376;
@@ -242,13 +306,65 @@ function rAssemblyToSources(assembly, region) {
             {
                 name: 'Genome',
                 twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/ce11.2bit',
-                desc: 'C. elegans reference genome build WBcel235',
+                desc: 'C. elegans reference genome build ce11/WBcel235',
                 tier_type: 'sequence',
                 provides_entrypoints: true,
+                pinned: true,
+            },
+            {
+                name: 'Genes',
+                desc: 'Gene structures from UCSC ce11/WBCel235',
+                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/ce11_UCSC_RefSeq_track.bb',
+                //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/',
+                collapseSuperGroups: true,
+                trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/ce11_UCSC_RefSeq_track.ix',
+            },
+            {
+                name: 'Repeats',
+                desc: 'Repeat annotation from UCSC',
+                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/repeats_ce11.bb',
+                //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/',
+                forceReduction: -1,
+            },
+        ];
+    } else if (assembly === 'ce10') {
+        // sources:
+        // Genome: from http://hgdownload.soe.ucsc.edu/goldenPath/ce10/bigZips/ce10.2bit
+        // annotations: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Nematode, genome: C. elegans, assembly: ce10/WS220, group: Genes and Gene Predictions, track: RefSeq Genes)
+        // repeats: http://genome.ucsc.edu/cgi-bin/hgTables?command=start (clade: Nematode, genome: C. elegans, assembly: ce10/WS220, group: variation and repeats, track: repeatmaster)
+        if (!browserCfg.positionSet) {
+            browserCfg.chr = 'II';
+            browserCfg.viewStart = 14646376;
+            browserCfg.viewEnd = 14667875;
+        }
+        browserCfg.cookieKey = 'WS220';
+        browserCfg.coordSystem = { speciesName: 'Caenorhabditis elegans', taxon: 6239, auth: 'WS', version: 220 };
+        browserCfg.sources = [
+            {
+                name: 'Genome',
+                twoBitURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce10/ce10.2bit',
+                desc: 'C. elegans reference genome build ce10/WS220',
+                tier_type: 'sequence',
+                provides_entrypoints: true,
+                pinned: true,
+            },
+            {
+                name: 'Genes',
+                desc: 'Gene structures from UCSC ce10/WS220',
+                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce10/ce10_UCSC_RefSeq_track.bb',
+                //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce10/',
+                collapseSuperGroups: true,
+                trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce10/ce10_UCSC_RefSeq_track.ix',
+            },
+            {
+                name: 'Repeats',
+                desc: 'Repeat annotation from UCSC',
+                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce10/repeats_ce10.bb',
+                //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce10/',
+                forceReduction: -1,
             },
         ];
     }
-
     return browserCfg;
 }
 
