@@ -203,10 +203,10 @@ function rAssemblyToSources(assembly, region) {
             {
                 name: 'Genes',
                 desc: 'Gene structures from GENCODE M1',
-                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencode.vM1.annotation.bb',
-                stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencode_vM1.xml',
+                bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm9/gencode.vM1.annotation.bb',
+                stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm9/gencode_vM1.xml',
                 collapseSuperGroups: true,
-                trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm10/gencode.vM1.annotation.ix',
+                trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/mm9/gencode.vM1.annotation.ix',
             },
             {
                 name: 'Repeats',
