@@ -68,12 +68,13 @@ def file_no_assembly(testapp, experiment, award, lab, replicate):
 
 
 @pytest.fixture
-def file_no_error(testapp, experiment, award, lab, replicate):
+def file_no_error(testapp, experiment, award, lab, replicate, platform1):
     item = {
         'dataset': experiment['@id'],
         'replicate': replicate['@id'],
         'lab': lab['@id'],
         'file_size': 345,
+        'platform': platform1['@id'],
         'award': award['@id'],
         'file_format': 'fastq',
         'run_type': 'paired-ended',
@@ -87,12 +88,13 @@ def file_no_error(testapp, experiment, award, lab, replicate):
 
 
 @pytest.fixture
-def file_content_error(testapp, experiment, award, lab, replicate):
+def file_content_error(testapp, experiment, award, lab, replicate, platform1):
     item = {
         'dataset': experiment['@id'],
         'replicate': replicate['@id'],
         'lab': lab['@id'],
         'file_size': 345,
+        'platform': platform1['@id'],
         'award': award['@id'],
         'file_format': 'fastq',
         'run_type': 'single-ended',
@@ -105,13 +107,32 @@ def file_content_error(testapp, experiment, award, lab, replicate):
 
 
 @pytest.fixture
-def file_no_paired_end(testapp, experiment, award, lab, replicate):
+def file_no_platform(testapp, experiment, award, lab, replicate):
     item = {
         'dataset': experiment['@id'],
         'replicate': replicate['@id'],
         'lab': lab['@id'],
         'file_size': 345,
         'award': award['@id'],
+        'file_format': 'fastq',
+        'run_type': 'single-ended',
+        'output_type': 'reads',
+        "read_length": 36,
+        'md5sum': '99378c852c5be68251cbb125ffcf045a',
+        'status': 'in progress'
+    }
+    return item
+
+
+@pytest.fixture
+def file_no_paired_end(testapp, experiment, award, lab, replicate, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'award': award['@id'],
+        'platform': platform1['@id'],
         'file_format': 'fastq',
         'run_type': 'paired-ended',
         'output_type': 'reads',
@@ -120,6 +141,7 @@ def file_no_paired_end(testapp, experiment, award, lab, replicate):
         'status': 'in progress'
     }
     return item
+
 
 def test_file_post(file_no_replicate):
     assert file_no_replicate['biological_replicates'] == []
@@ -180,6 +202,14 @@ def test_with_paired_end_1_2(testapp, file_no_error):
     assert res.status_code == 422
     file_no_error.update({'file_format': 'sra'})
     res = testapp.post_json('/file', file_no_error, expect_errors=True)
+    assert res.status_code == 201
+
+
+def test_fastq_no_platform(testapp, file_no_platform, platform1):
+    res = testapp.post_json('/file', file_no_platform, expect_errors=True)
+    assert res.status_code == 422
+    file_no_platform.update({'platform': platform1['uuid']})
+    res = testapp.post_json('/file', file_no_platform, expect_errors=True)
     assert res.status_code == 201
 
 
