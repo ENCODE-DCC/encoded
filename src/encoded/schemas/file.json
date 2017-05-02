@@ -44,29 +44,6 @@
         }
     },
     "dependencies": {
-        "run_type": {
-            "comment": "Only paired-ended files should have paired_end values.",
-            "oneOf": [
-                {
-                    "properties": {
-                        "run_type": {
-                            "enum": ["single-ended", "unknown"]
-                        }                        
-                    }
-                },
-                {
-                    "required": ["paired_end"],
-                    "properties": {
-                        "run_type": {
-                            "enum": ["paired-ended"]
-                        },
-                        "paired_end":{
-                            "enum": ["1", "2", "1,2"]
-                        }
-                    }
-                }
-            ]
-        },
         "external_accession": {
             "comment": "A file with an external accession should not get an ENCODE accession.",
             "not": {
@@ -91,42 +68,42 @@
             "comment": "Files with paired-end value 2 require a paired_with value.",
             "oneOf": [
                 {
-                   "required": ["paired_with"],
+                   "required": ["paired_with", "run_type"],
                     "properties": {
                         "paired_end": {
                             "enum": ["2"]
+                        },
+                        "run_type": {
+                            "enum": ["paired-ended"]
                         }
                     }
                 },
                 {
+                    "required": ["run_type"],
                     "properties": {
                         "paired_end": {
                             "enum": ["1"]
+                        },
+                        "run_type": {
+                            "enum": ["paired-ended"]
                         }
                     }
                 },
                 {
+                    "required": ["run_type"],
                     "properties": {
                         "file_format": {
                             "enum": ["sra"]
                         },
                         "paired_end": {
                             "enum": ["1,2"]
+                        },
+                        "run_type": {
+                            "enum": ["paired-ended"]
                         }
                     }
                 }
             ]
-        },
-        "paired_with": {
-            "required": ["paired_end"],
-            "properties": {
-                "file_format": {
-                    "enum": ["fastq", "csfasta", "csqual"]
-                },
-                "paired_end": {
-                    "enum": ["2"]
-                }
-            }
         },
         "output_type":{
             "oneOf":[
@@ -256,7 +233,7 @@
                                         "required": ["content_error_detail"],
                                         "properties": {
                                             "status": {
-                                                "enum": ["uploading", "uploaded", "upload failed", "format check failed", "in progress", "deleted", "replaced", "revoked", "archived", "released"]
+                                                "enum": ["uploading", "uploaded", "upload failed", "format check failed", "in progress", "replaced", "revoked", "archived", "released"]
                                             }
                                         }
                                     },
