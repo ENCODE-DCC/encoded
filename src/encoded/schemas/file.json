@@ -74,6 +74,7 @@
             }
         },
         "mapped_run_type": {
+            "comment": "Only bam files can have mapped_run_type specified.",
             "properties": {
                 "file_format": {
                     "enum": ["bam"]
@@ -81,6 +82,7 @@
             }
         },
         "mapped_read_length": {
+            "comment": "Only bam files can have mapped_read_length specified.",
             "properties": {
                 "file_format": {
                     "enum": ["bam"]
@@ -88,7 +90,7 @@
             }
         },
         "paired_end": {
-            "comment": "Files with paired-end value 2 require a paired_with value.",
+            "comment": "Files with paired-end value 2 require a paired_with value and files with paired_end specified require run_type to be specified as paired-ended",
             "oneOf": [
                 {
                    "required": ["paired_with", "run_type"],
@@ -129,6 +131,7 @@
             ]
         },
         "output_type":{
+            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified.",
             "oneOf":[
                 {
                     "required": ["read_length"],
@@ -153,7 +156,7 @@
             ]
         },
         "file_format":{
-            "comment": "Fastq and sra files require run_type and replicate but should not have assembly.",
+            "comment": "Fastq and sra files require run_type and replicate but should not have assembly. Raw data files require platform to be specified. Processed files require assembly to be specified.",
             "oneOf": [
                 {
                     "allOf": [
@@ -219,6 +222,7 @@
             ]
         },
         "status": {
+            "comment": "file_size is required in files with statuses in progress, revoked, archived and released. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
             "allOf": [
                 {
                     "oneOf": [
