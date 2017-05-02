@@ -710,13 +710,6 @@ def check_file(config, session, url, job):
             job['skip'] = True
         return job
 
-    if 'file_size' in item and file_stat.st_size != item['file_size']:
-        errors['file_size'] = 'uploaded {} does not match item {}'.format(
-            file_stat.st_size, item['file_size'])
-        update_content_error(errors, 'Metadata-specified file size {} '.format(
-            item['file_size']) +
-            'doesn’t match the calculated file size {}'.format(file_stat.st_size))
-
     result["file_size"] = file_stat.st_size
     result["last_modified"] = datetime.datetime.utcfromtimestamp(
         file_stat.st_mtime).isoformat() + 'Z'
