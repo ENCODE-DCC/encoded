@@ -198,7 +198,7 @@ const PagedDerivedFiles = React.createClass({
             const pager = this.state.totalPages > 1 ? <Pager total={this.state.totalPages} current={this.state.currentPage} updateCurrentPage={this.updateCurrentPage} /> : null;
 
             return (
-                <SortTablePanel header={<h4>{`Paged files deriving from ${file.title}`}</h4>}>
+                <SortTablePanel header={<h4>{`Files deriving from ${file.title}`}</h4>}>
                     <SortTable
                         list={this.state.pageFiles}
                         columns={derivingCols}
