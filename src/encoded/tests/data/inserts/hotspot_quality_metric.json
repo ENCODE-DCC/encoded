@@ -11,7 +11,7 @@
         "SPOT score": 0.3045,
         "hotspot count": 90889,
         "peaks count": 99429,
-        "generation": "HotSpot2"
+        "generated_by": "Hotspot2"
     },
     {
         "status": "released",
@@ -25,6 +25,6 @@
         "SPOT score": 0.5875,
         "hotspot tags": 8786208,
         "total tags": 14953912,
-        "generation": "HotSpot1"
+        "generated_by": "Hotspot1"
     }
 ]
