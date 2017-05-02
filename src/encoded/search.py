@@ -881,6 +881,7 @@ def report(context, request):
     res['@type'] = ['Report']
     return res
 
+import pdb
 
 @view_config(route_name='matrix', request_method='GET', permission='search')
 def matrix(context, request):
@@ -1026,10 +1027,25 @@ def matrix(context, request):
         es_results, facets, used_filters, (schema,), total, principals)
 
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
+        if 'key' in outer_bucket:
+            summary_bucket = []
+            for x_bucket in x_buckets:
+                if x_bucket['key'] == outer_bucket['key']:
+                    summary_bucket = x_bucket
+                elif not summary_bucket:
+                    summary_bucket = x_buckets
+            if not summary_bucket:
+                summary_bucket = x_buckets
+            # summary_bucket = next((x_bucket for x_bucket in x_buckets if x_bucket['key'] == outer_bucket['key']), x_buckets)
+        else:
+            print('DEFAULT summary_bucket 2')
+            summary_bucket = x_buckets
         group_by = grouping_fields[0]
         grouping_fields = grouping_fields[1:]
-        print('GF: {}-<{}>-{}'.format(outer_bucket, group_by, grouping_fields));
         if not grouping_fields:
+            # At bottom layer of buckets. outer_bucket[group_by]['buckets'] is a list of terms and
+            # their counts. Extract a dictionary of those counts by key -- a dictionary by key and
+            # count.
             counts = {}
             for bucket in outer_bucket[group_by]['buckets']:
                 doc_count = bucket['doc_count']
@@ -1037,13 +1053,15 @@ def matrix(context, request):
                     matrix['max_cell_doc_count'] = doc_count
                 counts[bucket['key']] = doc_count
             summary = []
-            for bucket in x_buckets:
+            for bucket in summary_bucket[group_by]['buckets']:
                 summary.append(counts.get(bucket['key'], 0))
             outer_bucket[group_by] = summary
         else:
             for bucket in outer_bucket[group_by]['buckets']:
-                summarize_buckets(matrix, x_buckets, bucket, grouping_fields)
+                summarize_buckets(matrix, summary_bucket, bucket, grouping_fields)
 
+    print('RESULT MATRIX {}'.format(result['matrix']))
+    print('AGGS MATRIX {}'.format(aggregations['matrix']))
     summarize_buckets(
         result['matrix'],
         aggregations['matrix']['x']['buckets'],
