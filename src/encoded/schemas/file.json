@@ -44,6 +44,29 @@
         }
     },
     "dependencies": {
+        "run_type": {
+            "comment": "Only paired-ended files should have paired_end values.",
+            "oneOf": [
+                {
+                    "properties": {
+                        "run_type": {
+                            "enum": ["single-ended", "unknown"]
+                        }                        
+                    }
+                },
+                {
+                    "required": ["paired_end"],
+                    "properties": {
+                        "run_type": {
+                            "enum": ["paired-ended"]
+                        },
+                        "paired_end":{
+                            "enum": ["1", "2", "1,2"]
+                        }
+                    }
+                }
+            ]
+        },
         "external_accession": {
             "comment": "A file with an external accession should not get an ENCODE accession.",
             "not": {
