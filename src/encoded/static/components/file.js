@@ -110,7 +110,7 @@ const PagedDerivedFiles = React.createClass({
         // thousands of results, we do a search only on the @ids of the matching results to vastly
         // reduce the JSON size. We can then get take just a page of those to retrieve their
         // their details for display in the table.
-        requestSearch(`type=File&limit=all&field=@id&field=accession&field=title&field=accession&derived_from=${file['@id']}`).then((result) => {
+        requestSearch(`type=File&limit=all&field=@id&status!=deleted&status!=revoked&status!=replaced&field=accession&field=title&field=accession&derived_from=${file['@id']}`).then((result) => {
             // The server has returned search results. See if we got matching files to display
             // in the table.
             if (Object.keys(result).length && result['@graph'] && result['@graph'].length) {
@@ -139,7 +139,6 @@ const PagedDerivedFiles = React.createClass({
             // current page of files to keep it from getting GC'd, if it's not already referenced.
             if (!this.pageCache[prevState.currentPage]) {
                 this.pageCache[prevState.currentPage] = prevState.pageFiles;
-                console.log('SAVE TO CACHE %s:%s', prevState.currentPage, Object.keys(this.pageCache).join(','));
 
                 // To save memory, see if we can lose a reference to a page so that it gets GC'd.
                 const cachedPageNos = Object.keys(this.pageCache);
@@ -156,7 +155,6 @@ const PagedDerivedFiles = React.createClass({
                         }
                     });
                     delete this.pageCache[maxDiffKey];
-                    console.log('KICKED %s:%s', maxDiffKey, Object.keys(this.pageCache).join(','));
                 }
             }
 
@@ -164,13 +162,11 @@ const PagedDerivedFiles = React.createClass({
             // requesting them from the serer.
             if (this.pageCache[this.state.currentPage]) {
                 // Page is in the cache; just get the cached reference.
-                console.log('CACHE HIT %s', this.state.currentPage);
                 this.setState({ pageFiles: this.pageCache[this.state.currentPage] });
             } else {
                 // Send a request for the file objects for that page, and update the state with
                 // those files once the request completes so that the table redraws with the new
                 // set of files.
-                console.log('NO CACHE HIT %s', this.state.currentPage);
                 requestFiles(this.currentPageFiles()).then((files) => {
                     this.setState({ pageFiles: files || [] });
                 });
