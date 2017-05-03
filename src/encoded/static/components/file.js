@@ -88,7 +88,7 @@ function sortProcessedPagedFiles(files) {
 const PagedFileTableMax = 50; // Maximnum number of files per page
 const PagedFileCacheMax = 10; // Maximum number of pages to cache
 
-const PagedDerivedFiles = React.createClass({
+const DerivedFiles = React.createClass({
     propTypes: {
         file: React.PropTypes.object.isRequired, // Query string fragment for the search that ultimately generates the table of files
     },
@@ -109,7 +109,7 @@ const PagedDerivedFiles = React.createClass({
         // Search for all files that derive from the given one, but because we could get tens of
         // thousands of results, we do a search only on the @ids of the matching results to vastly
         // reduce the JSON size. We can then get take just a page of those to retrieve their
-        // their details for display in the table.
+        // details for display in the table.
         requestSearch(`type=File&limit=all&field=@id&status!=deleted&status!=revoked&status!=replaced&field=accession&field=title&field=accession&derived_from=${file['@id']}`).then((result) => {
             // The server has returned search results. See if we got matching files to display
             // in the table.
@@ -552,7 +552,7 @@ const File = React.createClass({
 
                 {this.state.derivedFromFiles && this.state.derivedFromFiles.length ? <DerivedFromFiles file={context} derivedFromFiles={this.state.derivedFromFiles} /> : null}
 
-                <PagedDerivedFiles file={context} />
+                <DerivedFiles file={context} />
 
                 {this.state.fileFormatSpecs.length ?
                     <DocumentsPanel title="File format specifications" documentSpecs={[{ documents: this.state.fileFormatSpecs }]} />

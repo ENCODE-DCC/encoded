@@ -39,11 +39,9 @@ export function treatmentDisplay(treatment) {
 }
 
 
-// Do a search of the specific files whose @ids are listed in the `fileIds` parameter. Because we
-// have to specify the @id of each file in the URL of the GET request, the URL can get quite long,
-// so if the number of `fileIds` @ids goes beyond the `chunkSize` constant, we break the
-// Do any kind of search with the query string (basically everything after the '?' in a search),
-// returning a promise with the search JSON.
+// Do a search of an arbitrary query string passed in the `query` parameter, and return a promise.
+// If, for whatever reason, no results could be had, an empty object gets returned from the
+// promise.
 export function requestSearch(query) {
     return fetch(`/search/?${query}`, {
         method: 'GET',
