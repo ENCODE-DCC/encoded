@@ -210,7 +210,7 @@ class Dataset(Item):
                     browser_urls['Ensembl'] = ensembl_url
             # Now for biodalliance.  bb and bw already known?  How about non-deleted?
             # TODO: define (in visualization.py?) supported assemblies list
-            if 'group.submitter' in principals and assembly_name in ['hg19', 'GRCh38', 'mm10', 'mm10-minimal' ,'mm9','dm6','dm3','ce11']:
+            if 'group.submitter' in principals and assembly_name in ['hg19', 'GRCh38', 'mm10', 'mm10-minimal' ,'mm9','dm6','dm3','ce10','ce11']:
                 if status not in ["proposed", "started", "deleted", "revoked", "replaced"]:
                     file_formats = '&file_format=bigBed&file_format=bigWig'
                     file_inclusions = '&status=released&status=in+progress'
