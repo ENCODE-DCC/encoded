@@ -96,7 +96,7 @@ def human_donor_6(root, donor_1):
         'schema_version': '6',
         'aliases': [
             'encode:why||put||up||bars',
-            'encode:lots:and:lots:of:colons*'
+            'encode:lots:and:lots:of:colons!'
         ]
     })
     return properties
@@ -153,6 +153,6 @@ def test_bad_fly_donor_alias_upgrade_3_4(root, upgrader, fly_donor_3):
     value = upgrader.upgrade('fly_donor', fly_donor_3, current_version='3', target_version='4')
     assert value['schema_version'] == '4'
     assert '||' not in value['aliases']
-    assert '*' not in value['aliases']
+    assert '!' not in value['aliases']
     for alias in value['aliases']:
         assert len(alias.split(':')) == 2
