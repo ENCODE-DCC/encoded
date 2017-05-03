@@ -1,6 +1,11 @@
 import React from 'react';
 
 
+// Displays a pager component that lets users navigate a list of items. It displays a left and
+// right arrow, and the current displayed item number and tht total number of items. When the
+// user clicks a page, it calls the `updateCurrentPage` callback so that the component that uses
+// <Pager> can react to the click.
+
 const Pager = React.createClass({
     propTypes: {
         total: React.PropTypes.number.isRequired, // Total number of pages
