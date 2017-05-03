@@ -29,17 +29,27 @@ paired_end_assays = [
 # http://redmine.encodedcc.org/issues/5017
 
 
-
 # def audit_file_md5sum_integrity(value, system): # removed release 55
 
 
 @audit_checker('File', frame=['derived_from'])
-def audit_file_bam_derived_from(value, system):
-    if value['file_format'] != 'bam':
+def audit_file_processed_derived_from(value, system):
+    if value['output_category'] in ['raw data',
+                                    'reference']:
         return
     if 'derived_from' not in value or \
        'derived_from' in value and len(value['derived_from']) == 0:
+            detail = 'derived_from is a list of files that were used to create a given file; ' + \
+                     'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
+                     'Processed file {} '.format(value['@id']) + \
+                     'is missing the requisite file specification in its derived_from list.'
+            yield AuditFailure('missing derived_from',
+                               detail, level='INTERNAL_ACTION')
+            return
+
+    if value['file_format'] != 'bam':
         return
+
     derived_from_files = value.get('derived_from')
     fastq_bam_counter = 0
     for f in derived_from_files:
@@ -66,22 +76,6 @@ def audit_file_bam_derived_from(value, system):
                  'is missing the requisite file specification in its derived_from list.'
         yield AuditFailure('missing derived_from',
                            detail, level='INTERNAL_ACTION')
-
-
-@audit_checker('File', frame=['object'])
-def audit_file_processed_empty_derived_from(value, system):
-    if value['output_category'] in ['raw data',
-                                    'reference']:
-        return
-    if 'derived_from' not in value or \
-       'derived_from' in value and len(value['derived_from']) == 0:
-            detail = 'derived_from is a list of files that were used to create a given file; ' + \
-                     'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
-                     'Processed file {} '.format(value['@id']) + \
-                     'is missing the requisite file specification in its derived_from list.'
-            yield AuditFailure('missing derived_from',
-                               detail, level='INTERNAL_ACTION')
-            return
 
 
 @audit_checker('File', frame=['derived_from'])
