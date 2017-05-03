@@ -55,6 +55,7 @@ _tsv_mapping = OrderedDict([
     ('Library extraction method', ['replicates.library.extraction_method']),
     ('Library lysis method', ['replicates.library.lysis_method']),
     ('Library crosslinking method', ['replicates.library.crosslinking_method']),
+    ('Library strand specific', ['replicates.library.strand_specificity']),
     ('Experiment date released', ['date_released']),
     ('Project', ['award.project']),
     ('RBNS protein concentration', ['files.replicate.rbns_protein_concentration', 'files.replicate.rbns_protein_concentration_units']),

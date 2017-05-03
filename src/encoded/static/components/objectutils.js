@@ -475,7 +475,7 @@ export const BrowserSelector = React.createClass({
                                                 <div className="browser-selector__browsers">
                                                     {browserList.map(browser =>
                                                         <div key={browser} className="browser-selector__browser">
-                                                            <a href={assemblyBrowsers[browser]} onClick={this.handleClick} disabled={(flyWormException || this.props.annotationSource) && browser === 'Quick View'} rel="noopener noreferrer" target="_blank">
+                                                            <a href={assemblyBrowsers[browser]} onClick={this.handleClick} disabled={(this.props.annotationSource) && browser === 'Quick View'} rel="noopener noreferrer" target="_blank">
                                                                 {browser}
                                                                 {browser === 'Quick View' ? <span className="beta-badge">BETA</span> : null}
                                                             </a>
