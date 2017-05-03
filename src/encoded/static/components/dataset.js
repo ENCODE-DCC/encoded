@@ -252,7 +252,7 @@ const AnnotationComponent = createReactClass({
                 </Panel>
 
                 {/* Display the file widget with the facet, graph, and tables */}
-                <FileGallery context={context} encodevers={encodevers} annotationSource />
+                <FileGallery context={context} encodevers={encodevers} />
 
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
@@ -414,7 +414,7 @@ const PublicationDataComponent = createReactClass({
                 </Panel>
 
                 {/* Display the file widget with the facet, graph, and tables */}
-                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph annotationSource />
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
@@ -576,7 +576,7 @@ const ReferenceComponent = createReactClass({
                 </Panel>
 
                 {/* Display the file widget with the facet, graph, and tables */}
-                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault annotationSource />
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault />
 
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
@@ -762,7 +762,7 @@ const ProjectComponent = createReactClass({
                 </Panel>
 
                 {/* Display the file widget with the facet, graph, and tables */}
-                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph annotationSource />
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
@@ -934,7 +934,7 @@ const UcscBrowserCompositeComponent = createReactClass({
                 </Panel>
 
                 {/* Display the file widget with the facet, graph, and tables */}
-                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph annotationSource />
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
