@@ -357,16 +357,20 @@ var Experiment = module.exports.Experiment = React.createClass({
         // Get all biosample organism names
         var organismNames = biosamples.length ? BiosampleOrganismNames(biosamples) : [];
 
+        // Bek: Forrest should review the change for correctness
         // Collect synchronizations
-        var synchronizations = _.uniq(result.replicates.filter(function(replicate) {
-            return (replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization);
-        }).map(function(replicate) {
-            var biosample = replicate.library.biosample;
-            return (biosample.synchronization +
-                (biosample.post_synchronization_time ?
-                    ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
-                : ''));
-        }));
+        if (result.replicates && result.replicates.length) {
+            var synchronizations = _.uniq(result.replicates.filter(function(replicate) {
+                return (replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization);
+            }).map(function(replicate) {
+                var biosample = replicate.library.biosample;
+                return (biosample.synchronization +
+                    (biosample.post_synchronization_time ?
+                        ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
+                    : ''));
+            }));
+        
+        }
 
         return (
             <li>

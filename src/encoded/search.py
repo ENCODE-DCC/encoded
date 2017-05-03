@@ -82,12 +82,15 @@ def get_pagination(request):
 def get_filtered_query(term, search_fields, result_fields, principals, doc_types):
     return {
         'query': {
-            'query_string': {
-                'query': term,
-                'fields': search_fields,
-                'default_operator': 'AND'
-            },
             'bool': {
+                'must': {
+                    'multi_match': {
+                        'query': term,
+                        'fields': search_fields,
+                        'type': 'best_fields',
+                        'operator': 'and'
+                    }
+                },
                 'filter': [ 
                     {
                         'terms': {
@@ -96,7 +99,7 @@ def get_filtered_query(term, search_fields, result_fields, principals, doc_types
                     },
                     {
                         'terms': {
-                            'embedded.@type.raw': doc_types
+                            'embedded.@type': doc_types
                         }
                     }
                 ]
@@ -149,9 +152,10 @@ def set_sort_order(request, search_term, types, doc_types, query, result):
         else:
             name = requested_sort
             order = 'asc'
-        sort['embedded.' + name + '.raw'] = result_sort[name] = {
+        # TODO: unmapped type needs to be determined, not hard coded
+        sort['embedded.' + name] = result_sort[name] = {
             'order': order,
-            'ignore_unmapped': True,
+            'unmapped_type': 'keyword',
         }
 
     # Otherwise we use a default sort only when there's no text search to be ranked
@@ -163,18 +167,18 @@ def set_sort_order(request, search_term, types, doc_types, query, result):
             if 'sort_by' in type_schema:
                 for k, v in type_schema['sort_by'].items():
                     # Should always sort on raw field rather than analyzed field
-                    sort['embedded.' + k + '.raw'] = result_sort[k] = v
+                    sort['embedded.' + k] = result_sort[k] = v
 
         # Default is most recent first, then alphabetical by label
         if not sort:
-            sort['embedded.date_created.raw'] = result_sort['date_created'] = {
+            sort['embedded.date_created'] = result_sort['date_created'] = {
                 'order': 'desc',
-                'ignore_unmapped': True,
+                'unmapped_type': 'date',
             }
-            sort['embedded.label.raw'] = result_sort['label'] = {
+            sort['embedded.label'] = result_sort['label'] = {
                 'order': 'asc',
                 'missing': '_last',
-                'ignore_unmapped': True,
+                'unmapped_type': 'keyword',
             }
 
     if sort:
@@ -274,7 +278,7 @@ def build_terms_filter(field, terms):
     if field.endswith('!'):
         field = field[:-1]
         if not field.startswith('audit'):
-            field = 'embedded.' + field + '.raw'
+            field = 'embedded.' + field
         # Setting not filter instead of terms filter
         if terms == ['*']:
             return {
@@ -292,7 +296,7 @@ def build_terms_filter(field, terms):
             }
     else:
         if not field.startswith('audit'):
-            field = 'embedded.' + field + '.raw'
+            field = 'embedded.' + field
         if terms == ['*']:
             return {
                 'exists': {
@@ -344,10 +348,10 @@ def set_filters(request, query, result):
 
         # Add filter to query
         query_filters.append(build_terms_filter(field, terms))
-    pp('used and query filters ')
-    pp(used_filters)
-    pp('')
-    pp(query_filters)
+    # pp('used and query filters ')
+    # pp(used_filters)
+    # pp('')
+    # pp(query_filters)
 
     return used_filters
 
@@ -357,12 +361,12 @@ def build_aggregation(facet_name, facet_options, min_doc_count=0):
     """
     exclude = []
     if facet_name == 'type':
-        field = 'embedded.@type.raw'
+        field = 'embedded.@type'
         exclude = ['Item']
     elif facet_name.startswith('audit'):
         field = facet_name
     else:
-        field = 'embedded.' + facet_name + '.raw'
+        field = 'embedded.' + facet_name
     agg_name = facet_name.replace('.', '-')
 
     facet_type = facet_options.get('type', 'terms')
@@ -402,7 +406,7 @@ def set_facets(facets, used_filters, principals, doc_types):
         # objects of the specified type(s) that the user can see
         filters = [
             {'terms': {'principals_allowed.view': principals}},
-            {'terms': {'embedded.@type.raw': doc_types}},
+            {'terms': {'embedded.@type': doc_types}},
         ]
         # Also apply any filters NOT from the same field as the facet
         for field, terms in used_filters.items():
@@ -417,7 +421,7 @@ def set_facets(facets, used_filters, principals, doc_types):
                 continue
 
             if not query_field.startswith('audit'):
-                query_field = 'embedded.' + query_field + '.raw'
+                query_field = 'embedded.' + query_field
 
             if field.endswith('!'):
                 if terms == ['*']:
@@ -618,6 +622,7 @@ def search(context, request, search_type=None, return_generator=False):
     """
     Search view connects to ElasticSearch and returns the results
     """
+    # pdb.set_trace()
     types = request.registry[TYPES]
     search_base = normalize_query(request)
     result = {
@@ -714,11 +719,11 @@ def search(context, request, search_type=None, return_generator=False):
     # If no text search, use match_all query instead of query_string
     if search_term == '*':
         # query['query']['match_all'] = {}
-        del query['query']['query_string']
+        del query['query']['bool']['must']
     # If searching for more than one type, don't specify which fields to search
     elif len(doc_types) != 1:
-        del query['query']['query_string']['fields']
-        query['query']['query_string']['fields'] = ['_all', '*.uuid', '*.md5sum', '*.submitted_file_name']
+        del query['query']['bool']['must']['multi_match']['fields']
+        query['query']['bool']['must']['multi_match']['fields'] = ['_all', '*.uuid', '*.md5sum', '*.submitted_file_name']
 
 
     # Set sort order
@@ -744,10 +749,16 @@ def search(context, request, search_type=None, return_generator=False):
     # Decide whether to use scan for results.
     do_scan = size is None or size > 1000
     # Execute the query
-    pdb.set_trace()
+    # pdb.set_trace()
     if do_scan:
-        es_results = es.search(body=query, index=es_index, search_type='count')
+        # pp('###### inside search type count')
+        # pp(query)
+        # pdb.set_trace()
+
+        es_results = es.search(body=query, index=es_index, search_type='query_then_fetch')
     else:
+        pp(query)
+        # pdb.set_trace()
         es_results = es.search(body=query, index=es_index, from_=from_, size=size)
 
     result['total'] = total = es_results['hits']['total']
@@ -940,15 +951,15 @@ def matrix(context, request):
 
     if search_term == '*':
         # query['query']['match_all'] = {}
-        del query['query']['query_string']
+        del query['query']['bool']['must']
 
     # Setting filters.
     # Rather than setting them at the top level of the query
     # we collect them for use in aggregations later.
-    query_filters = query.pop('filter')
-    filter_collector = {'filter': query_filters}
+    query_filters = query['query']['bool'].pop('filter')
+    filter_collector = {'query': { 'bool': {'filter': query_filters}}}
     used_filters = set_filters(request, filter_collector, result)
-    filters = filter_collector['filter']['and']['filters']
+    filters = filter_collector['query']['bool']['filter']
 
     # Adding facets to the query
     facets = [(field, facet) for field, facet in schema['facets'].items() if
@@ -966,8 +977,8 @@ def matrix(context, request):
     y_groupings = matrix['y']['group_by']
     x_agg = {
         "terms": {
-            "field": 'embedded.' + x_grouping + '.raw',
-            "size": 0,  # no limit
+            "field": 'embedded.' + x_grouping,
+            "size": 999999,  # no limit
         },
     }
     aggs = {x_grouping: x_agg}
@@ -975,8 +986,8 @@ def matrix(context, request):
         aggs = {
             field: {
                 "terms": {
-                    "field": 'embedded.' + field + '.raw',
-                    "size": 0,  # no limit
+                    "field": 'embedded.' + field,
+                    "size": 999999,  # no limit
                 },
                 "aggs": aggs,
             },
@@ -990,9 +1001,10 @@ def matrix(context, request):
         },
         "aggs": aggs,
     }
+    # pdb.set_trace()
 
     # Execute the query
-    es_results = es.search(body=query, index=es_index, search_type='count')
+    es_results = es.search(body=query, index=es_index, search_type='query_then_fetch')
 
     # Format matrix for results
     aggregations = es_results['aggregations']
