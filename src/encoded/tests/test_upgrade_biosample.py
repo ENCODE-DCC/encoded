@@ -155,6 +155,16 @@ def biosample_13(biosample_0, document):
     return item
 
 
+@pytest.fixture
+def biosample_14(biosample_0, document):
+    item = biosample_0.copy()
+    item.update({
+        'schema_version': '14',
+        'talens': []
+    })
+    return item
+
+
 def test_biosample_upgrade(upgrader, biosample_1):
     value = upgrader.upgrade('biosample', biosample_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -444,3 +454,10 @@ def test_upgrade_biosample_13_to_14(root, upgrader, biosample, biosample_13, dum
     assert value['description'] == ' leading and trailing whitespace '.strip()
     assert value['product_id'] == ' leading and trailing whitespace '.strip()
     assert value['lot_id'] == ' leading and trailing whitespace '.strip()
+
+
+def test_upgrade_biosample_14_to_15(root, upgrader, biosample, biosample_14):
+    context = root.get_by_uuid(biosample['uuid'])
+    value = upgrader.upgrade('biosample', biosample_14, target_version='15', context=context)
+    assert value['schema_version'] == '15'
+    assert 'talens' not in value

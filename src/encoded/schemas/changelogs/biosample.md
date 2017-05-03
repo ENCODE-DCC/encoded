@@ -1,5 +1,9 @@
 ## Changelog for biosample.json
 
+### Schema version 15
+
+* *talens* were removed from the schema, genetic_modifications should be used instead
+
 ### Schema version 14
 
 * *depleted_in_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the term_name

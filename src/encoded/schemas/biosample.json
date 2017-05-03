@@ -226,7 +226,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "14"
+            "default": "15"
         },
         "accession": {
             "accessionType": "BS"
@@ -274,20 +274,6 @@
                 "comment": "See rnai.json for available identifiers.",
                 "type":  "string",
                 "linkTo": "RNAi"
-            }
-        },
-        "talens": {
-            "title": "TALEN constructs",
-            "description": "TALEN constructs used to modify the biosample",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "TALEN",
-                "description": "TALEN used to modify the biosample",
-                "comment": "See talen.json for valid identifiers.",
-                "type": "string",
-                "linkTo": "TALEN"
             }
         },
         "treatments": {

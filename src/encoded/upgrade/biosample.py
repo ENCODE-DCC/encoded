@@ -259,3 +259,10 @@ def biosample_13_14(value, system):
         del value['depleted_in_term_id']
     if 'depleted_in_term_name' in value:
         value['depleted_in_term_name'] = list(set(value['depleted_in_term_name']))
+
+
+@upgrade_step('biosample', '14', '15')
+def biosample_14_15(value, system):
+    # http://redmine.encodedcc.org/issues/4373
+    if 'talens' in value:
+        value.pop('talens')
