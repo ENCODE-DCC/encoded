@@ -774,7 +774,7 @@ def search(context, request, search_type=None, return_generator=False):
 
         es_results = es.search(body=query, index=es_index, search_type='query_then_fetch')
     else:
-        pp(query)
+        # pp(query)
         # pdb.set_trace()
         es_results = es.search(body=query, index=es_index, from_=from_, size=size)
 
