@@ -216,8 +216,8 @@
             "pattern": "(^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
         },
         "strand_specificity": {
-            "title": "Strand specificity",
-            "description": "The preparation of the library using a strand-specific protocol.",
+            "title": "Strand specific",
+            "description": "The preparation of the library uses a strand-specific protocol.",
             "type": "boolean",
             "default": false
         },
