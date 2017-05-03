@@ -44,6 +44,15 @@
         }
     },
     "dependencies": {
+        "paired_with": {
+            "comment": "Only paired-ended files should have paired_with value.",
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
         "run_type": {
             "comment": "Only paired-ended files should have paired_end values.",
             "oneOf": [
