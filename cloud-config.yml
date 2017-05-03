@@ -4,7 +4,7 @@
 
 apt_sources:
 - source: "ppa:webupd8team/java"
-- source: "deb http://packages.elasticsearch.org/elasticsearch/1.7/debian stable main"
+- source: "deb https://artifacts.elastic.co/packages/5.3/apt stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
