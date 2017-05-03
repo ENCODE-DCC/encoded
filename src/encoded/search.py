@@ -622,7 +622,9 @@ def search(context, request, search_type=None, return_generator=False):
     """
     Search view connects to ElasticSearch and returns the results
     """
-    # pdb.set_trace()
+    # sets up ES and checks permissions/principles
+
+    # gets schemas for all types
     types = request.registry[TYPES]
     search_base = normalize_query(request)
     result = {
@@ -637,10 +639,14 @@ def search(context, request, search_type=None, return_generator=False):
     es_index = request.registry.settings['snovault.elasticsearch.index']
     search_audit = request.has_permission('search_audit')
 
+
+    # extract from/size from query parameters
     from_, size = get_pagination(request)
 
+    # looks at searchTerm query parameter, sets to '*' if none, and creates antlr/lucene query for fancy stuff
     search_term = prepare_search_term(request)
 
+    ## converts type= query parameters to list of doc_types to search, "*" becomes super class Item
     if search_type is None:
         doc_types = request.params.getall('type')
         if '*' in doc_types:
@@ -659,6 +665,7 @@ def search(context, request, search_type=None, return_generator=False):
         raise HTTPBadRequest(explanation=msg)
 
     # Clear Filters path -- make a path that clears all non-datatype filters.
+    # this saves the searchTerm when you click clear filters
     # http://stackoverflow.com/questions/16491988/how-to-convert-a-list-of-strings-to-a-query-string#answer-16492046
     searchterm_specs = request.params.getall('searchTerm')
     searchterm_only = urlencode([("searchTerm", searchterm) for searchterm in searchterm_specs])
@@ -672,11 +679,16 @@ def search(context, request, search_type=None, return_generator=False):
 
     # Building query for filters
     if not doc_types:
+        # For form editing embedded searches
         if request.params.get('mode') == 'picker':
             doc_types = ['Item']
+        # For /search/ with no type= use defalts
         else:
             doc_types = DEFAULT_DOC_TYPES
     else:
+        # TYPE filters that were set by UI for labeling, only seen with >1 types
+        # Probably this is why filtering Items with subclasses doesn't work right
+        # i.e., search/?type=Dataset   Type is not a regular filter/facet.
         for item_type in doc_types:
             ti = types[item_type]
             qs = urlencode([
@@ -688,6 +700,8 @@ def search(context, request, search_type=None, return_generator=False):
                 'term': ti.name,
                 'remove': '{}?{}'.format(request.path, qs)
             })
+
+        # Add special views like Report and Matrix if search is a single type
         if len(doc_types) == 1:
             result['views'] = views = []
             views.append({
@@ -695,6 +709,7 @@ def search(context, request, search_type=None, return_generator=False):
                 'title': 'View tabular report',
                 'icon': 'table',
             })
+            # matrix is encoded in schema for type
             if hasattr(ti.factory, 'matrix'):
                 views.append({
                     'href': request.route_path('matrix', slash='/') + search_base,
@@ -711,8 +726,10 @@ def search(context, request, search_type=None, return_generator=False):
                                principals,
                                doc_types)
 
+    #  Columns is used in report view
     schemas = [types[doc_type].schema for doc_type in doc_types]
     columns = list_visible_columns_for_schemas(request, schemas)
+    # and here it is attached to the result for the UI
     if columns:
         result['columns'] = columns
 
@@ -843,6 +860,7 @@ def report(context, request):
         msg = 'Report view requires specifying a single type.'
         raise HTTPBadRequest(explanation=msg)
 
+    # schemas for all types
     types = request.registry[TYPES]
 
     # Get the subtypes of the requested type
