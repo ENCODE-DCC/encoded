@@ -81,8 +81,8 @@ export default class Home extends React.Component {
 
     // Called when the news content loads so that we can get its height. That lets us match up the
     // height of <TwitterWidget>.
-    newsLoaded() {
-        this.setState({ socialHeight: this.nodeRef.clientHeight });
+    newsLoaded(nodeRef) {
+        this.setState({ socialHeight: nodeRef.clientHeight });
     }
 
     render() {
@@ -109,7 +109,7 @@ export default class Home extends React.Component {
                                     <div className="news-header">
                                         <h2>News <a href="/news/" title="More ENCODE news" className="twitter-ref">More ENCODE news</a></h2>
                                     </div>
-                                    <NewsLoader nodeRef={(node) => { this.nodeRef = node; }} newsLoaded={this.newsLoaded} />
+                                    <NewsLoader newsLoaded={this.newsLoaded} />
                                 </div>
                                 <div className="social-twitter">
                                     <TwitterWidget height={this.state.socialHeight} />
@@ -952,14 +952,14 @@ HomepageChart3.contextTypes = {
 // Render the most recent five news posts
 class News extends React.Component {
     componentDidMount() {
-        this.props.newsLoaded();
+        this.props.newsLoaded(this.nodeRef);
     }
 
     render() {
         const { items, nodeRef } = this.props;
         if (items && items.length) {
             return (
-                <div ref={nodeRef} className="news-listing">
+                <div ref={(node) => { this.nodeRef = node; }} className="news-listing">
                     {items.map(item =>
                         <div key={item['@id']} className="news-listing-item">
                             <h3>{item.title}</h3>
