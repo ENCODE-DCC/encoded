@@ -399,21 +399,8 @@ def audit_file_controlled_by(value, system):
                 return
 
 
-@audit_checker('file', frame='object')
-def audit_file_flowcells(value, system):
-    '''
-    A fastq file could have its flowcell details.
-    '''
-
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
-
-    if value['file_format'] not in ['fastq']:
-        return
-
-    if 'flowcell_details' not in value or (value['flowcell_details'] == []):
-        detail = 'Fastq file {} is missing flowcell_details'.format(value['@id'])
-        raise AuditFailure('missing flowcell_details', detail, level='WARNING')
+# def audit_file_flowcells(value, system): # removed in version 56
+# http://redmine.encodedcc.org/issues/5060
 
 
 @audit_checker('file', frame=['paired_with'])
