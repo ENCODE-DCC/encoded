@@ -252,7 +252,7 @@ const Annotation = React.createClass({
                 </Panel>
 
                 {/* Display the file widget with the facet, graph, and tables */}
-                <FileGallery context={context} encodevers={encodevers} annotationSource />
+                <FileGallery context={context} encodevers={encodevers} />
 
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
@@ -414,7 +414,7 @@ const PublicationData = React.createClass({
                 </Panel>
 
                 {/* Display the file widget with the facet, graph, and tables */}
-                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph annotationSource />
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
@@ -576,7 +576,7 @@ const Reference = React.createClass({
                 </Panel>
 
                 {/* Display the file widget with the facet, graph, and tables */}
-                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault annotationSource />
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault />
 
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
@@ -762,7 +762,7 @@ const Project = React.createClass({
                 </Panel>
 
                 {/* Display the file widget with the facet, graph, and tables */}
-                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph annotationSource />
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
@@ -934,7 +934,7 @@ const UcscBrowserComposite = React.createClass({
                 </Panel>
 
                 {/* Display the file widget with the facet, graph, and tables */}
-                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph annotationSource />
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
