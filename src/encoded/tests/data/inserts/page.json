@@ -688,7 +688,7 @@
         "name": "2016-09-30-modern-chipseq-released",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "news": true,
-        "date_created": "2016-09-30T16:48:27.199407+00:00",
+        "date_created": "2016-09-30",
         "title": "81 new modERN ChIP-seq experiments released",
         "news_keywords": [
             "DNA binding"
@@ -724,7 +724,7 @@
         "name": "2016-06-29-182-total-datasets",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "news": true,
-        "date_created": "2016-06-29T16:48:27.199407+00:00",
+        "date_created": "2016-06-29",
         "title": "182 new datasets were released this June",
         "news_keywords": [
             "DNA binding",
@@ -765,7 +765,7 @@
         "name": "2016-05-24-celegans-chipseq",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "news": true,
-        "date_created": "2016-05-24T16:48:27.199407+00:00",
+        "date_created": "2016-05-24",
         "title": "50 more modERN experiments",
         "news_keywords": [
             "DNA binding"
@@ -802,7 +802,7 @@
         "news_keywords": [
             "3D chromatin structure"
         ],
-        "date_created": "2016-05-13T16:48:27.199407+00:00",
+        "date_created": "2016-05-13",
         "layout": {
             "rows": [
                 {
@@ -858,7 +858,7 @@
                 }
             ]
         },
-        "date_created": "2016-03-22T16:48:27.199407+00:00",
+        "date_created": "2016-03-22",
         "news_keywords": [
             "Conferences"
         ],
@@ -904,7 +904,7 @@
                 }
             ]
         },
-        "date_created": "2015-10-06T16:48:27.199407+00:00",
+        "date_created": "2015-10-06",
         "name": "2015-10-06-roadmap",
         "title": "Roadmap Epigenomics metadata integrated"
     },
@@ -913,7 +913,7 @@
         "name": "2015-06-23-data-release",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "news": true,
-        "date_created": "2015-06-23T16:48:27.199407+00:00",
+        "date_created": "2015-06-23",
         "title": "Data release: 3 human and 91 mouse datasets",
         "news_keywords": [
             "RNA binding",
@@ -953,7 +953,7 @@
         "name": "2015-05-28-changelogs",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "news": true,
-        "date_created": "2015-05-28T16:48:27.199407+00:00",
+        "date_created": "2015-05-28",
         "title": "Changelogs",
         "news_keywords": [],
         "uuid": "6038ecfd-ec47-430d-9660-d9f31a4ba3c0",
@@ -987,7 +987,7 @@
             "Transcription",
             "RNA binding"
         ],
-        "date_created": "2015-04-13T16:48:27.199407+00:00",
+        "date_created": "2015-04-13",
         "news": true,
         "layout": {
             "blocks": [
@@ -1025,7 +1025,7 @@
         "uuid": "03b9efa3-f1e9-4c7f-9b3a-cc7690122e37",
         "news_excerpt": "Four human DNase-seq assays released",
         "name": "2015-03-15-dnaseseq",
-        "date_created": "2015-03-15T16:48:27.199407+00:00",
+        "date_created": "2015-03-15",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "news_keywords": [
             "DNA accessibility"
@@ -1090,7 +1090,7 @@
         },
         "title": "Data release: 1 human and 3 mouse datasets",
         "name": "2015-02-12-encode-data-release",
-        "date_created": "2015-02-12T16:48:27.199407+00:00"
+        "date_created": "2015-02-12"
     },
     {
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
@@ -1126,14 +1126,14 @@
         },
         "title": "Data release: 5 human and 3 mouse datasets",
         "name": "2015-01-08-rnaseq",
-        "date_created": "2015-01-08T16:48:27.199407+00:00"
+        "date_created": "2015-01-08"
     },
     {
         "news_keywords": [
             "Transcription",
             "DNA binding"
         ],
-        "date_created": "2014-12-08T16:48:27.199407+00:00",
+        "date_created": "2014-12-08",
         "news": true,
         "layout": {
             "blocks": [
@@ -1171,7 +1171,7 @@
         "uuid": "4ace4f9b-9952-4d43-b34f-64851b03a2fa",
         "news_excerpt": "Recent findings from the mouse ENCODE Consortium are now published",
         "name": "2014-11-19-mouse-publications",
-        "date_created": "2014-11-19T16:48:27.199407+00:00",
+        "date_created": "2014-11-19",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "news_keywords": [],
         "news": true,
@@ -1205,7 +1205,7 @@
         "uuid": "e74a86c3-a6a8-4662-aee5-e591d989b01b",
         "news_excerpt": "These datasets are from ChIP-seq, iCLIP, RAMPAGE, RNA-seq, and WGBS assays",
         "name": "2014-09-12-data-release",
-        "date_created": "2014-09-12T16:48:27.199407+00:00",
+        "date_created": "2014-09-12",
         "submitted_by": "/users/627eedbc-7cb3-4de3-9743-a86266e435a6/",
         "news_keywords": [
             "DNA binding",
