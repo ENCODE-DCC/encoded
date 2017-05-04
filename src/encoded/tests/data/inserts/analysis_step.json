@@ -1,13 +1,5 @@
 [
     {
-        "name": "alignment-test-step-1",
-        "title": "Alignment test step 1",
-        "analysis_step_types": ["alignment"],
-        "input_file_types": ["reads"],
-        "output_file_types": ["alignments"],
-        "status": "released"
-    },
-    {
         "name": "signal-test-step-1",
         "title": "Signal calling test step 1",
         "analysis_step_types": ["signal generation"],
@@ -18,6 +10,14 @@
         ],
         "status": "released",
         "parents": ["alignment-test-step-1"]
+    },
+    {
+        "name": "alignment-test-step-1",
+        "title": "Alignment test step 1",
+        "analysis_step_types": ["alignment"],
+        "input_file_types": ["reads"],
+        "output_file_types": ["alignments"],
+        "status": "released"
     },
     {
         "name": "alignment-test-step-2",
