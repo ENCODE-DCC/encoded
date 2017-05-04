@@ -113,7 +113,10 @@
 	        "decription": "The date the object was created.",
             "comment": "Do not submit. The date the object is created is assigned by the server.",
             "type": "string",
-            "format": "date-time",
+            "anyOf": [
+                {"format": "date-time"},
+                {"format": "date"}
+            ],
             "serverDefault": "now",
             "permission": "import_items"
         },
