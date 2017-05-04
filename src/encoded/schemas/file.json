@@ -907,6 +907,9 @@
         "file_format": {
             "title": "File Format"
         },
+        "file_type": {
+            "title": "File type"
+        },
         "file_format_type": {
             "title": "Specific file format type"
         },
@@ -939,6 +942,9 @@
         },
         "mapped_read_length": {
             "title": "Mapped read length"
+        },
+        "read_length_units": {
+            "title": "Read length units"
         },
         "md5sum": {
             "title": "MD5 Sum"
