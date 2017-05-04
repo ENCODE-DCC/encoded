@@ -474,7 +474,10 @@ const RawSequencingTable = createReactClass({
             let pairedRepKeys = [];
             if (pairedFiles.length) {
                 pairedRepGroups = _(pairedFiles).groupBy(file => (
-                    (file.biological_replicates && file.biological_replicates.length === 1) ? globals.zeroFill(file.biological_replicates[0]) + file.replicate.library.accession : 'Z'
+                    (file.biological_replicates && file.biological_replicates.length === 1) ?
+                        globals.zeroFill(file.biological_replicates[0]) + ((file.replicate && file.replicate.library) ? file.replicate.library.accession : '')
+                    :
+                        'Z'
                 ));
 
                 // Make a sorted list of keys
