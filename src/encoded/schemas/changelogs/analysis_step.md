@@ -1,5 +1,10 @@
 ## Changelog for analysis_step.json
 
+### Schema version 5
+
+* *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
+* unsafe characters such as " # @ ! $ ^ & | ~ ; ` and consecutive whitespaces will no longer be allowed in the alias
+
 ### Schema version 4
 
 * *analysis_step_types*, *input_file_types*, *output_file_types*, *qa_stats_generated*, *parents*, *aliases*, *documents* arrays must contain unique elements.
