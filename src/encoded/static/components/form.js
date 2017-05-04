@@ -607,9 +607,6 @@ const Field = module.exports.Field = createReactClass({
         } else if (schema.type === 'integer' || schema.type === 'number') {
             input = <input type="number" {...inputProps} />;
         } else {
-            if (name === 'antigen_description') {
-                console.log('PROPS: %o', inputProps);
-            }
             input = <input type="text" {...inputProps} value={value || ''} />;
         }
         // Provide a CSS hook to indicate fields with errors
