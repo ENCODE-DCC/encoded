@@ -80,9 +80,10 @@ export default class Home extends React.Component {
     }
 
     // Called when the news content loads so that we can get its height. That lets us match up the
-    // height of <TwitterWidget>.
+    // height of <TwitterWidget>. If we don't have any news items, nodeRef has `undefined` and we
+    // just hard-code the height at 600 so that the Twitter widget has some space.
     newsLoaded(nodeRef) {
-        this.setState({ socialHeight: nodeRef.clientHeight });
+        this.setState({ socialHeight: nodeRef ? nodeRef.clientHeight : 600 });
     }
 
     render() {
