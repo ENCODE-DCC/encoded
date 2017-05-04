@@ -80,6 +80,7 @@ $brand-info: #4F689E;
 @import "encoded/layout";
 @import "encoded/bootstrap-lib";
 @import "encoded/modules/breadcrumbs",
+        "encoded/modules/pager",
         "encoded/modules/forms",
         "encoded/modules/key-value-display",
         "encoded/modules/lightbox",
