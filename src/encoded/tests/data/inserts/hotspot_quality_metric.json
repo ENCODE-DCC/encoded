@@ -10,6 +10,21 @@
         "award": "/awards/U41HG007355/",
         "SPOT score": 0.3045,
         "hotspot count": 90889,
-        "peaks count": 99429
+        "peaks count": 99429,
+        "generated_by": "Hotspot2"
+    },
+    {
+        "status": "released",
+        "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
+        "uuid": "37b7d7f7-7bc9-41ae-a1a9-34371cd2d030",
+        "assay_term_name": "DNase-seq",
+        "quality_metric_of": [ "1050b698-f505-4ce5-96e5-6909e3a2acc7", "46e82a90-49e5-4c33-afab-9ec90d65faf3" ],
+        "attachment": "generic_from_star_final_out.txt",
+        "lab": "/labs/robert-waterston/",
+        "award": "/awards/U41HG007355/",
+        "SPOT score": 0.5875,
+        "hotspot tags": 8786208,
+        "total tags": 14953912,
+        "generated_by": "Hotspot1"
     }
 ]

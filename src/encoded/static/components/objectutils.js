@@ -39,6 +39,25 @@ export function treatmentDisplay(treatment) {
 }
 
 
+// Do a search of an arbitrary query string passed in the `query` parameter, and return a promise.
+// If, for whatever reason, no results could be had, an empty object gets returned from the
+// promise.
+export function requestSearch(query) {
+    return fetch(`/search/?${query}`, {
+        method: 'GET',
+        headers: {
+            Accept: 'application/json',
+        },
+    }).then((response) => {
+        // Convert the response to JSON.
+        if (response.ok) {
+            return response.json();
+        }
+        return Promise.resolve(null);
+    }).then(responseJson => responseJson || {});
+}
+
+
 // Do a search of the specific objects whose @ids are listed in the `atIds` parameter. Because we
 // have to specify the @id of each object in the URL of the GET request, the URL can get quite
 // long, so if the number of `atIds` @ids goes beyond the `chunkSize` constant, we break thev
