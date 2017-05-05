@@ -41,8 +41,12 @@ $qc-actuator-size: 30px; // Height and width of QC modal actuator on file page
         padding: 5px 10px;
     }
 
-    // Panel title for individual QC panels.
     @at-root #{&}__heading {
+        padding: 0;
+    }
+
+    // Panel title for individual QC panels.
+    @at-root #{&}__heading-inner {
         display: flex;
         padding: 3px 3px 3px 10px;
     }

@@ -24,7 +24,7 @@ Step 1: Encoded requires a UNIX based system (Mac or Linux) and Python 3.4.x or 
 Step 2: (Mac) Install or update dependencies::
 
     $ brew install libevent libmagic libxml2 libxslt openssl postgresql graphviz nginx python3
-    $ brew install freetype libjpeg libtiff littlecms webp  # Required by Pillow
+    $ brew install freetype libjpeg libtiff littlecms webp chromedriver # Required by Pillow
     $ brew tap homebrew/versions
     $ brew install elasticsearch17 node4-lts
 

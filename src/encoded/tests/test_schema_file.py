@@ -143,6 +143,26 @@ def file_no_paired_end(testapp, experiment, award, lab, replicate, platform1):
     return item
 
 
+@pytest.fixture
+def file_with_bad_date_created(testapp, experiment, award, lab, replicate, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'date_created': '2017-10-23',
+        'platform': platform1['@id'],
+        'award': award['@id'],
+        'file_format': 'fastq',
+        'run_type': 'paired-ended',
+        'paired_end': '1',
+        'output_type': 'reads',
+        "read_length": 50,
+        'md5sum': '136e501c4bacf4aab87debab20d76648',
+        'status': 'in progress'
+    }
+
+
 def test_file_post(file_no_replicate):
     assert file_no_replicate['biological_replicates'] == []
 
@@ -219,3 +239,8 @@ def test_with_run_type_no_paired_end(testapp, file_no_paired_end):
     file_no_paired_end.update({'paired_end': '1'})
     res = testapp.post_json('/file', file_no_paired_end, expect_errors=True)
     assert res.status_code == 201
+
+
+def test_with_wrong_date_created(testapp, file_with_bad_date_created):
+    res = testapp.post_json('/file', file_with_bad_date_created, expect_errors=True)
+    assert res.status_code == 422

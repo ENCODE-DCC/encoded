@@ -1,15 +1,9 @@
 import React from 'react';
-import cloneWithProps from 'react/lib/cloneWithProps';
+import PropTypes from 'prop-types';
 
 
-const Panel = React.createClass({
-    propTypes: {
-        addClasses: React.PropTypes.string, // Classes to add to outer panel div
-        noDefaultClasses: React.PropTypes.bool, // T to not include default panel classes
-        children: React.PropTypes.node,
-    },
-
-    render: function () {
+class Panel extends React.Component {
+    render() {
         const { addClasses, noDefaultClasses, ...other } = this.props;
 
         return (
@@ -17,56 +11,78 @@ const Panel = React.createClass({
                 {this.props.children}
             </div>
         );
-    },
-});
+    }
+}
+
+Panel.propTypes = {
+    addClasses: PropTypes.string, // Classes to add to outer panel div
+    noDefaultClasses: PropTypes.bool, // T to not include default panel classes
+    children: PropTypes.node,
+};
+
+Panel.defaultProps = {
+    addClasses: '', // Classes to add to outer panel div
+    noDefaultClasses: false, // T to not include default panel classes
+    children: null,
+};
 
 
-const PanelBody = React.createClass({
-    propTypes: {
-        addClasses: React.PropTypes.string, // Classes to add to outer panel div
-        children: React.PropTypes.node,
-    },
-
-    render: function () {
+class PanelBody extends React.Component {
+    render() {
         return (
-            <div className={`panel-body ${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`}>
+            <div className={`panel-body${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`}>
                 {this.props.children}
             </div>
         );
-    },
-});
+    }
+}
+
+PanelBody.propTypes = {
+    addClasses: PropTypes.string, // Classes to add to outer panel div
+    children: PropTypes.node,
+};
+
+PanelBody.defaultProps = {
+    addClasses: '',
+    children: null,
+};
 
 
-const PanelHeading = React.createClass({
-    propTypes: {
-        addClasses: React.PropTypes.string, // Classes to add to outer panel div
-        children: React.PropTypes.node,
-    },
-
-    render: function () {
+class PanelHeading extends React.Component {
+    render() {
         return (
-            <div className={`panel-heading ${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`}>
+            <div className={`panel-heading${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`}>
                 {this.props.children}
             </div>
         );
-    },
-});
+    }
+}
 
+PanelHeading.propTypes = {
+    addClasses: PropTypes.string, // Classes to add to outer panel div
+    children: PropTypes.node,
+};
 
-const PanelFooter = React.createClass({
-    propTypes: {
-        addClasses: React.PropTypes.string, // Classes to add to outer panel div
-        children: React.PropTypes.node,
-    },
+PanelHeading.defaultProps = {
+    addClasses: '',
+    children: null,
+};
 
-    render: function () {
-        return (
-            <div className={`panel-footer${this.props.addClasses ? ` ${this.props.addClasses}` : ''}`}>
-                {this.props.children}
-            </div>
-        );
-    },
-});
+const PanelFooter = props => (
+    <div className={`panel-footer${props.addClasses ? ` ${props.addClasses}` : ''}`}>
+        {props.children}
+    </div>
+);
+
+PanelFooter.propTypes = {
+    addClasses: PropTypes.string, // Classes to add to outer panel div
+    children: PropTypes.null,
+};
+
+PanelFooter.defaultProps = {
+    addClasses: '',
+    children: null,
+};
 
 
 // <TabPanel> components have tabs that select between panes, and so the main child components of
@@ -91,53 +107,50 @@ const PanelFooter = React.createClass({
 // receive those. <TabPanel> copies the `key` property to an `id` property in any child <TabPanel>
 // components so that <TabPanel> can see it.
 
-const TabPanelPane = React.createClass({
-    propTypes: {
-        id: React.PropTypes.string.isRequired, // ID of the pane; not passed explicitly -- comes from `key` of <TabPanelPane>
-        active: React.PropTypes.bool, // True if this panel is the active one
-        children: React.PropTypes.node,
-    },
+const TabPanelPane = (props) => {
+    const { id, active } = props;
+    return (
+        <div role="tabpanel" className={`tab-pane${active ? ' active' : ''}`} id={id}>
+            {active ? <div>{props.children}</div> : null}
+        </div>
+    );
+};
 
-    render: function () {
-        const { id, active, tabFlange } = this.props;
-        return (
-            <div role="tabpanel" className={`tab-pane${active ? ' active' : ''}`} id={id}>
-                {active ? <div>{this.props.children}</div> : null}
-            </div>
-        );
-    },
-});
+TabPanelPane.propTypes = {
+    id: PropTypes.string, // ID of the pane; not passed explicitly -- comes from `key` of <TabPanelPane>
+    active: PropTypes.bool, // True if this panel is the active one
+    children: PropTypes.node,
+};
+
+TabPanelPane.defaultProps = {
+    id: '', // Actually required, but added within cloneElement, so requiring triggers warning
+    active: false,
+    children: null,
+};
 
 
-const TabPanel = React.createClass({
-    propTypes: {
-        tabs: React.PropTypes.object.isRequired, // Object with tab=>pane specifications
-        selectedTab: React.PropTypes.string, // key of tab to select (must provide handleTabClick) too.
-        addClasses: React.PropTypes.string, // Classes to add to navigation <ul>
-        moreComponents: React.PropTypes.object, // Other components to render in the tab bar
-        moreComponentsClasses: React.PropTypes.string, // Classes to add to moreComponents wrapper <div>
-        tabFlange: React.PropTypes.bool, // True to show a small full-width strip under active tab
-        decoration: React.PropTypes.object, // Component to render in the tab bar
-        decorationClasses: React.PropTypes.string, // CSS classes to wrap decoration in
-        handleTabClick: React.PropTypes.func, // If selectedTab is provided, then parent must keep track of it
-        children: React.PropTypes.node,
-    },
+class TabPanel extends React.Component {
+    constructor(props) {
+        super(props);
 
-    getInitialState: function () {
-        return { currentTab: this.props.selectedTab ? this.props.selectedTab : '' };
-    },
+        this.state = {
+            currentTab: props.selectedTab ? props.selectedTab : '',
+        };
+
+        this.handleClick = this.handleClick.bind(this);
+    }
 
     // Handle a click on a tab
-    handleClick: function (tab) {
+    handleClick(tab) {
         if (this.props.handleTabClick) {
             this.props.handleTabClick(tab);  // must keep parent aware of selectedTab.
         }
         if (tab !== this.state.currentTab) {
             this.setState({ currentTab: tab });
         }
-    },
+    }
 
-    render: function () {
+    render() {
         const { tabs, addClasses, moreComponents, moreComponentsClasses, tabFlange, decoration, decorationClasses } = this.props;
         let children = [];
         let firstPaneIndex = -1; // React.Children.map index of first <TabPanelPane> component
@@ -149,11 +162,11 @@ const TabPanel = React.createClass({
         // here too so that each pane knows whether it's the active one or not. ### React14
         if (this.props.children) {
             children = React.Children.map(this.props.children, (child, i) => {
-                if (child.type === TabPanelPane.type) {
+                if (child.type === TabPanelPane) {
                     firstPaneIndex = firstPaneIndex === -1 ? i : firstPaneIndex;
 
                     // Replace the existing child <TabPanelPane> component
-                    return cloneWithProps(child, { id: child.key, active: this.props.selectedTab ? this.props.selectedTab === child.key : this.state.currentTab ? this.state.currentTab === child.key : firstPaneIndex === i });
+                    return React.cloneElement(child, { id: child.key, active: this.props.selectedTab ? this.props.selectedTab === child.key : this.state.currentTab ? this.state.currentTab === child.key : firstPaneIndex === i });
                 }
                 return child;
             });
@@ -184,22 +197,47 @@ const TabPanel = React.createClass({
                 </div>
             </div>
         );
-    },
-});
+    }
+}
+
+TabPanel.propTypes = {
+    tabs: PropTypes.object.isRequired, // Object with tab=>pane specifications
+    selectedTab: PropTypes.string, // key of tab to select (must provide handleTabClick) too.
+    addClasses: PropTypes.string, // Classes to add to navigation <ul>
+    moreComponents: PropTypes.object, // Other components to render in the tab bar
+    moreComponentsClasses: PropTypes.string, // Classes to add to moreComponents wrapper <div>
+    tabFlange: PropTypes.bool, // True to show a small full-width strip under active tab
+    decoration: PropTypes.object, // Component to render in the tab bar
+    decorationClasses: PropTypes.string, // CSS classes to wrap decoration in
+    handleTabClick: PropTypes.func, // If selectedTab is provided, then parent must keep track of it
+    children: PropTypes.node,
+};
+
+TabPanel.defaultProps = {
+    selectedTab: '',
+    addClasses: '',
+    moreComponents: null,
+    moreComponentsClasses: '',
+    tabFlange: false,
+    decoration: null,
+    decorationClasses: '',
+    handleTabClick: null,
+    children: null,
+};
 
 
-const TabItem = React.createClass({
-    propTypes: {
-        tab: React.PropTypes.string, // Text of tab
-        handleClick: React.PropTypes.func, // Handle a click on the link
-        children: React.PropTypes.node,
-    },
+class TabItem extends React.Component {
+    constructor(props) {
+        super(props);
 
-    clickHandler: function () {
+        this.clickHandler = this.clickHandler.bind(this);
+    }
+
+    clickHandler() {
         this.props.handleClick(this.props.tab);
-    },
+    }
 
-    render: function () {
+    render() {
         const tab = this.props.tab;
 
         return (
@@ -207,8 +245,19 @@ const TabItem = React.createClass({
                 {this.props.children}
             </a>
         );
-    },
-});
+    }
+}
+
+TabItem.propTypes = {
+    tab: PropTypes.string.isRequired, // Text of tab
+    handleClick: PropTypes.func, // Handle a click on the link
+    children: PropTypes.node,
+};
+
+TabItem.defaultProps = {
+    handleClick: null,
+    children: null,
+};
 
 
 export {

@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 
 
 const maxFilesBrowsed = 40; // Maximum number of files to browse
@@ -369,19 +371,19 @@ function rAssemblyToSources(assembly, region) {
 }
 
 
-const GenomeBrowser = React.createClass({
+const GenomeBrowser = createReactClass({
     propTypes: {
-        files: React.PropTypes.array.isRequired, // Array of files to represent
-        assembly: React.PropTypes.string.isRequired, // Assembly to use with browser
-        region: React.PropTypes.string, // Region to use with browser
-        visBlobs: React.PropTypes.object, // This should contain one or more vis_blobs for dataset(s)
-        limitFiles: React.PropTypes.bool, // True to limit # files to maxFilesBrowsed
-        currentRegion: React.PropTypes.func,
+        files: PropTypes.array.isRequired, // Array of files to represent
+        assembly: PropTypes.string.isRequired, // Assembly to use with browser
+        region: PropTypes.string, // Region to use with browser
+        visBlobs: PropTypes.object, // This should contain one or more vis_blobs for dataset(s)
+        limitFiles: PropTypes.bool, // True to limit # files to maxFilesBrowsed
+        currentRegion: PropTypes.func,
     },
 
     contextTypes: {
-        location_href: React.PropTypes.string,
-        localInstance: React.PropTypes.bool,
+        location_href: PropTypes.string,
+        localInstance: PropTypes.bool,
     },
 
     componentDidMount: function () {
@@ -530,7 +532,6 @@ const GenomeBrowser = React.createClass({
     locationChange: function (chr, min, max) {
         const location = `chr${chr}:${min}-${max}`;
         if (location !== this.props.region) {
-            this.props.region = location;
             if (this.props.currentRegion) {
                 this.props.currentRegion(this.props.assembly, location);
                 // console.log('locationChange %s %s', this.props.assembly, this.props.region);
