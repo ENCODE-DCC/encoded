@@ -2,7 +2,8 @@
 
 ### Schema version 6
 
-* *generated_by* field has been added as a required field, to distinguish between Hotspot1 and Hotspot2 scores.
+* *SPOT2 score* field has been renamed from *SPOT score* to show it was calculated by Hotspot2.
+* *SPOT1 score* field has been added for scores as calculated by Hotspot1.
 * *total tags* and *hotspot tags* fields have been added to characterize Hotspot1 methods"
 
 ### Schema version 5

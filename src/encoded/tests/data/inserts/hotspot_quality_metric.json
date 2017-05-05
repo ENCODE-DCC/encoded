@@ -8,10 +8,9 @@
         "attachment": "generic_from_star_final_out.txt",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
-        "SPOT score": 0.3045,
+        "SPOT2 score": 0.3045,
         "hotspot count": 90889,
-        "peaks count": 99429,
-        "generated_by": "Hotspot2"
+        "peaks count": 99429
     },
     {
         "status": "released",
@@ -22,9 +21,8 @@
         "attachment": "generic_from_star_final_out.txt",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
-        "SPOT score": 0.5875,
+        "SPOT1 score": 0.5875,
         "hotspot tags": 8786208,
-        "total tags": 14953912,
-        "generated_by": "Hotspot1"
+        "total tags": 14953912
     }
 ]
