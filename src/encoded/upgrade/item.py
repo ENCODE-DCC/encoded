@@ -54,7 +54,6 @@ from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 @upgrade_step('construct', '4', '5')
 @upgrade_step('crispr', '1', '2')
 @upgrade_step('document', '6', '7')
-@upgrade_step('file', '9', '10')
 @upgrade_step('genetic_modification', '3', '4')
 @upgrade_step('lab', '3', '4')
 @upgrade_step('library', '6', '7')
