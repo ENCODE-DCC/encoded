@@ -39,6 +39,25 @@ export function treatmentDisplay(treatment) {
 }
 
 
+// Do a search of an arbitrary query string passed in the `query` parameter, and return a promise.
+// If, for whatever reason, no results could be had, an empty object gets returned from the
+// promise.
+export function requestSearch(query) {
+    return fetch(`/search/?${query}`, {
+        method: 'GET',
+        headers: {
+            Accept: 'application/json',
+        },
+    }).then((response) => {
+        // Convert the response to JSON.
+        if (response.ok) {
+            return response.json();
+        }
+        return Promise.resolve(null);
+    }).then(responseJson => responseJson || {});
+}
+
+
 // Do a search of the specific objects whose @ids are listed in the `atIds` parameter. Because we
 // have to specify the @id of each object in the URL of the GET request, the URL can get quite
 // long, so if the number of `atIds` @ids goes beyond the `chunkSize` constant, we break thev
@@ -415,7 +434,6 @@ export const BrowserSelector = React.createClass({
         visualizeCfg: React.PropTypes.object.isRequired, // Assemblies, browsers, and browser URLs; visualize and visualize_batch contents
         disabled: React.PropTypes.bool, // `true` if button should be disabled; usually because more search results than we can handle
         title: React.PropTypes.string, // Title of Visualize button if "Visualize" isn't desired
-        annotationSource: React.PropTypes.bool, // v55rc3 only
     },
 
     getInitialState: function () {
@@ -475,7 +493,7 @@ export const BrowserSelector = React.createClass({
                                                 <div className="browser-selector__browsers">
                                                     {browserList.map(browser =>
                                                         <div key={browser} className="browser-selector__browser">
-                                                            <a href={assemblyBrowsers[browser]} onClick={this.handleClick} disabled={(flyWormException || this.props.annotationSource) && browser === 'Quick View'} rel="noopener noreferrer" target="_blank">
+                                                            <a href={assemblyBrowsers[browser]} onClick={this.handleClick} rel="noopener noreferrer" target="_blank">
                                                                 {browser}
                                                                 {browser === 'Quick View' ? <span className="beta-badge">BETA</span> : null}
                                                             </a>
