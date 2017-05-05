@@ -25,23 +25,9 @@ paired_end_assays = [
     ]
 
 
-@audit_checker('File', frame=[
-    'analysis_step_version',
-    'analysis_step_version.analysis_step',
-    'analysis_step_version.analysis_step.pipelines'])
-def audit_file_pipeline_status(value, system):
-    if value['status'] not in ['released']:
-        return
-    if 'analysis_step_version' in value and \
-       'analysis_step' in value['analysis_step_version'] and \
-       'pipelines' in value['analysis_step_version']['analysis_step']:
-        for p in value['analysis_step_version']['analysis_step']['pipelines']:
-            if p['status'] not in ['active']:
-                detail = 'File {} with a status of {} '.format(value['@id'], value['status']) + \
-                         'is associated with a pipeline {} '.format(p['@id']) + \
-                         'that has a status of {}.'.format(p['status'])
-                yield AuditFailure('inconsistent pipeline status',
-                                   detail, level='INTERNAL_ACTION')
+# def audit_file_pipeline_status(value, system): removed at release 56
+# http://redmine.encodedcc.org/issues/5017
+
 
 '''
 @audit_checker('File', frame=['derived_from'])
@@ -232,25 +218,7 @@ def audit_file_replicate_match(value, system):
         return
 
 
-@audit_checker('file', frame=['award'],
-               condition=rfa("ENCODE3", "modERN", "GGR"))
-def audit_file_platform(value, system):
-    '''
-    A raw data file should have a platform specified.
-    Should be in the schema.
-    '''
-
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
-
-    if value['file_format'] not in raw_data_formats:
-        return
-
-    if 'award' in value and 'rfa' in value['award'] and \
-       'platform' not in value:
-        detail = 'File {} metadata lacks information on the instrument/platform '.format(value['@id']) + \
-                 'used to produce it.'
-        raise AuditFailure('missing platform', detail, level='ERROR')
+# def audit_file_platform(value, system): removed from release v56
 
 
 def check_presence(file_to_check, files_list):
@@ -431,21 +399,8 @@ def audit_file_controlled_by(value, system):
                 return
 
 
-@audit_checker('file', frame='object')
-def audit_file_flowcells(value, system):
-    '''
-    A fastq file could have its flowcell details.
-    '''
-
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
-
-    if value['file_format'] not in ['fastq']:
-        return
-
-    if 'flowcell_details' not in value or (value['flowcell_details'] == []):
-        detail = 'Fastq file {} is missing flowcell_details'.format(value['@id'])
-        raise AuditFailure('missing flowcell_details', detail, level='WARNING')
+# def audit_file_flowcells(value, system): # removed in version 56
+# http://redmine.encodedcc.org/issues/5060
 
 
 @audit_checker('file', frame=['paired_with'])
