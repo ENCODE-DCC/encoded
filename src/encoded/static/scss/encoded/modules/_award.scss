@@ -74,14 +74,23 @@
             top: 0;
         }
     }
+
+    @at-root #{&}__title {
+        width: 100%;
+        padding-top: 10px;
+        text-align: center;
+        color: gray;
+        font-size: 1.2rem;
+        font-weight: 400;
+    }
 }
 
 
 // Provides the flex structure for a group of charts.
 .award-chart__group-wrapper {
-    margin: 50px 0 0 0;
 
     &:first-child {
+    margin: 50px 0 0 0;
         margin-top: 0;
     }
 

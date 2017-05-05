@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
-var cloneWithProps = require('react/lib/cloneWithProps');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var {DropdownMenu} = require('./dropdown-menu');
 
 
@@ -18,12 +19,12 @@ var {DropdownMenu} = require('./dropdown-menu');
 // Click handling method taken from:
 // https://github.com/facebook/react/issues/579#issuecomment-60841923
 
-var DropdownButton = module.exports.DropdownButton = React.createClass({
+var DropdownButton = module.exports.DropdownButton = createReactClass({
     propTypes: {
-        title: React.PropTypes.string.isRequired, // Title of the trigger button
-        label: React.PropTypes.string.isRequired, // id (unique in doc) for this button
-        disabled: React.PropTypes.bool, // True to disable button
-        wrapperClasses: React.PropTypes.string // Classes to add to wrapper div
+        title: PropTypes.string.isRequired, // Title of the trigger button
+        label: PropTypes.string.isRequired, // id (unique in doc) for this button
+        disabled: PropTypes.bool, // True to disable button
+        wrapperClasses: PropTypes.string // Classes to add to wrapper div
     },
 
     getInitialState: function() {
@@ -58,10 +59,8 @@ var DropdownButton = module.exports.DropdownButton = React.createClass({
 
         // Add the `label` property to any <DropdownMenu> child components
         var children = React.Children.map(this.props.children, child => {
-            if (child.type === DropdownMenu.type) {
-                return cloneWithProps(child, {
-                    label: this.props.label
-                });
+            if (child.type === DropdownMenu) {
+                return React.cloneElement(child, { label: this.props.label });
             }
             return child;
         });

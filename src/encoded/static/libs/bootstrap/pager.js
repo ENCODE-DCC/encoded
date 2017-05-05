@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 
 // Displays a pager component that lets users navigate a list of items. It displays a left and
@@ -6,24 +7,24 @@ import React from 'react';
 // user clicks a page, it calls the `updateCurrentPage` callback so that the component that uses
 // <Pager> can react to the click.
 
-const Pager = React.createClass({
-    propTypes: {
-        total: React.PropTypes.number.isRequired, // Total number of pages
-        current: React.PropTypes.number.isRequired, // Current page number; 0 based
-        updateCurrentPage: React.PropTypes.func.isRequired, // Callback with new page number of user selects
-    },
+class Pager extends React.Component {
+    constructor() {
+        super();
+        this.handlePrev = this.handlePrev.bind(this);
+        this.handleNext = this.handleNext.bind(this);
+    }
 
-    handlePrev: function () {
+    handlePrev() {
         const { current, updateCurrentPage } = this.props;
         updateCurrentPage(current - 1);
-    },
+    }
 
-    handleNext: function () {
+    handleNext() {
         const { current, updateCurrentPage } = this.props;
         updateCurrentPage(current + 1);
-    },
+    }
 
-    render: function () {
+    render() {
         const { total, current } = this.props;
         const prevDisabled = current === 0;
         const nextDisabled = current === (total - 1);
@@ -35,7 +36,13 @@ const Pager = React.createClass({
                 <button className="pager__dir" disabled={nextDisabled} aria-label={nextDisabled ? '' : 'Next page'} onClick={this.handleNext}><i className="icon icon-chevron-right" /></button>
             </div>
         );
-    },
-});
+    }
+}
+
+Pager.propTypes = {
+    total: PropTypes.number.isRequired, // Total number of pages
+    current: PropTypes.number.isRequired, // Current page number; 0 based
+    updateCurrentPage: PropTypes.func.isRequired, // Callback with new page number of user selects
+};
 
 export default Pager;

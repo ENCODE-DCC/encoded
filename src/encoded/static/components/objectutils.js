@@ -1,5 +1,6 @@
 import React from 'react';
-import cloneWithProps from 'react/lib/cloneWithProps';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'underscore';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import globals from './globals';
@@ -214,11 +215,11 @@ export function donorDiversity(dataset) {
 
 
 // Render the Download icon while allowing the hovering tooltip.
-const DownloadIcon = React.createClass({
+const DownloadIcon = createReactClass({
     propTypes: {
-        hoverDL: React.PropTypes.func, // Function to call when hovering or stop hovering over the icon
-        file: React.PropTypes.object, // File associated with this download button
-        adminUser: React.PropTypes.bool, // True if logged-in user is an admin
+        hoverDL: PropTypes.func, // Function to call when hovering or stop hovering over the icon
+        file: PropTypes.object, // File associated with this download button
+        adminUser: PropTypes.bool, // True if logged-in user is an admin
     },
 
     onMouseEnter: function () {
@@ -242,9 +243,9 @@ const DownloadIcon = React.createClass({
 
 
 // Render an accession as a button if clicking it sets a graph node, or just as text if not.
-const FileAccessionButton = React.createClass({
+const FileAccessionButton = createReactClass({
     propTypes: {
-        file: React.PropTypes.object.isRequired, // File whose button is being rendered
+        file: PropTypes.object.isRequired, // File whose button is being rendered
     },
 
     render: function () {
@@ -255,10 +256,10 @@ const FileAccessionButton = React.createClass({
 
 
 // Display a button to open the file information modal.
-const FileInfoButton = React.createClass({
+const FileInfoButton = createReactClass({
     propTypes: {
-        file: React.PropTypes.object.isRequired, // File whose information is to be displayed
-        clickHandler: React.PropTypes.func, // Function to call when the info button is clicked
+        file: PropTypes.object.isRequired, // File whose information is to be displayed
+        clickHandler: PropTypes.func, // Function to call when the info button is clicked
     },
 
     onClick: function () {
@@ -279,11 +280,11 @@ const FileInfoButton = React.createClass({
 
 // Render a download button for a file that reacts to login state and admin status to render a
 // tooltip about the restriction based on those things.
-export const RestrictedDownloadButton = React.createClass({
+export const RestrictedDownloadButton = createReactClass({
     propTypes: {
-        file: React.PropTypes.object, // File containing `href` to use as download link
-        adminUser: React.PropTypes.bool, // True if logged in user is admin
-        downloadComponent: React.PropTypes.object, // Optional component to render the download button, insetad of default
+        file: PropTypes.object, // File containing `href` to use as download link
+        adminUser: PropTypes.bool, // True if logged in user is admin
+        downloadComponent: PropTypes.object, // Optional component to render the download button, insetad of default
     },
 
     getInitialState: function () {
@@ -348,7 +349,7 @@ export const RestrictedDownloadButton = React.createClass({
 
         // If the user provided us with a component for downloading files, add the download
         // properties to the component before rendering.
-        const downloadComponent = this.props.downloadComponent ? cloneWithProps(this.props.downloadComponent, {
+        const downloadComponent = this.props.downloadComponent ? React.cloneElement(this.props.downloadComponent, {
             file: file,
             href: file.href,
             download: file.href.substr(file.href.lastIndexOf('/') + 1),
@@ -398,13 +399,13 @@ export const RestrictedDownloadButton = React.createClass({
 });
 
 
-export const DownloadableAccession = React.createClass({
+export const DownloadableAccession = createReactClass({
     propTypes: {
-        file: React.PropTypes.object.isRequired, // File whose accession to render
-        buttonEnabled: React.PropTypes.bool, // True if accession should be a button
-        clickHandler: React.PropTypes.func, // Function to call when button is clicked
-        loggedIn: React.PropTypes.bool, // True if current user is logged in
-        adminUser: React.PropTypes.bool, // True if current user is logged in and admin
+        file: PropTypes.object.isRequired, // File whose accession to render
+        buttonEnabled: PropTypes.bool, // True if accession should be a button
+        clickHandler: PropTypes.func, // Function to call when button is clicked
+        loggedIn: PropTypes.bool, // True if current user is logged in
+        adminUser: PropTypes.bool, // True if current user is logged in and admin
     },
 
     render: function () {
@@ -429,11 +430,11 @@ export function publicDataset(dataset) {
 
 // Display a Visualize button that brings up a modal that lets you choose an assembly and a browser
 // in which to display the visualization.
-export const BrowserSelector = React.createClass({
+export const BrowserSelector = createReactClass({
     propTypes: {
-        visualizeCfg: React.PropTypes.object.isRequired, // Assemblies, browsers, and browser URLs; visualize and visualize_batch contents
-        disabled: React.PropTypes.bool, // `true` if button should be disabled; usually because more search results than we can handle
-        title: React.PropTypes.string, // Title of Visualize button if "Visualize" isn't desired
+        visualizeCfg: PropTypes.object.isRequired, // Assemblies, browsers, and browser URLs; visualize and visualize_batch contents
+        disabled: PropTypes.bool, // `true` if button should be disabled; usually because more search results than we can handle
+        title: PropTypes.string, // Title of Visualize button if "Visualize" isn't desired
     },
 
     getInitialState: function () {

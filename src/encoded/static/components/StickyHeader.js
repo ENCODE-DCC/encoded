@@ -1,14 +1,19 @@
-'use strict';
-const React = require('react');
-const offset = require('../libs/offset');
-const cloneWithProps = require('react/lib/cloneWithProps');
+import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
+import offset from '../libs/offset';
 
-module.exports = React.createClass({
-    render() {
-        return React.Children.only(this.props.children);
+
+// Render the collection table header that sticks to the top of the browser window, or below the
+// navigation bar of that’s position fixed (as it is if the browser window is wide enough). Note
+// that this method makes the sticky header shudder up and down while scrolling. Better ways exist
+// to do this without shudderingm, but they don't work on tables.
+const StickyHeader = createReactClass({
+    propTypes: {
+        children: PropTypes.object.isRequired,
     },
 
-    componentDidMount() {
+    componentDidMount: function () {
         // Avoid shimming as ie8 does not support css transform
         if (window.getComputedStyle === undefined) return;
         this.stickyHeader();
@@ -16,31 +21,40 @@ module.exports = React.createClass({
         window.addEventListener('resize', this.stickyHeader);
     },
 
-    componentWillUnmount() {
+    componentWillUnmount: function () {
         if (window.getComputedStyle === undefined) return;
         window.removeEventListener('scroll', this.stickyHeader);
         window.removeEventListener('resize', this.stickyHeader);
     },
 
-    stickyHeader() {
+    stickyHeader: function () {
         // http://stackoverflow.com/a/6625189/199100
         // http://css-tricks.com/persistent-headers/
-        const header = this.getDOMNode();
-        const table = header.parentElement;
-        const offsetTop = offset(table).top;
-        const nb = document.querySelector('.navbar-fixed-top');
-        let nb_height = 0;
+        const header = this.stickyHeaderComp;
+        if (header) {
+            const table = header.parentElement;
+            const offsetTop = offset(table).top;
+            const nb = document.querySelector('.navbar-fixed-top');
+            let nbHeight = 0;
 
-        if (window.getComputedStyle(nb).getPropertyValue('position') === 'fixed') {
-            nb_height = nb.clientHeight;
-        }
-        const scrollTop = document.body.scrollTop + nb_height;
-        let y = 0;
+            if (window.getComputedStyle(nb).getPropertyValue('position') === 'fixed') {
+                nbHeight = nb.clientHeight;
+            }
+            const scrollTop = document.body.scrollTop + nbHeight;
+            let y = 0;
 
-        if((scrollTop > offsetTop) && (scrollTop < (offsetTop + table.clientHeight))) {
-            y = scrollTop - offsetTop - 3; // correction for borders
+            if ((scrollTop > offsetTop) && (scrollTop < (offsetTop + table.clientHeight))) {
+                y = scrollTop - offsetTop - 3; // correction for borders
+            }
+            const transform = `translate(0px,${y}px)`;
+            header.style.transform = transform;
         }
-        const transform = 'translate(0px,' + y + 'px)';
-        header.style.transform = transform;
+    },
+
+    render: function () {
+        const child = React.cloneElement(this.props.children, { ref: (comp) => { this.stickyHeaderComp = comp; } });
+        return React.Children.only(child);
     },
 });
+
+module.exports = StickyHeader;

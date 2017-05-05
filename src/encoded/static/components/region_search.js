@@ -1,5 +1,7 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var panel = require('../libs/bootstrap/panel');
 var globals = require('./globals');
 var fetched = require('./fetched');
@@ -28,7 +30,7 @@ var regionGenomes = [
 ];
 
 
-var AutocompleteBox = React.createClass({
+var AutocompleteBox = createReactClass({
     render: function() {
         var terms = this.props.auto['@graph']; // List of matching terms from server
         var userTerm = this.props.userTerm && this.props.userTerm.toLowerCase(); // Term user entered
@@ -60,7 +62,7 @@ var AutocompleteBox = React.createClass({
     }
 });
 
-var AdvSearch = React.createClass({
+var AdvSearch = createReactClass({
     getInitialState: function() {
         return {
             disclosed: false,
@@ -73,10 +75,10 @@ var AdvSearch = React.createClass({
     },
 
     contextTypes: {
-        autocompleteTermChosen: React.PropTypes.bool,
-        autocompleteHidden: React.PropTypes.bool,
-        onAutocompleteHiddenChange: React.PropTypes.func,
-        location_href: React.PropTypes.string
+        autocompleteTermChosen: PropTypes.bool,
+        autocompleteHidden: PropTypes.bool,
+        onAutocompleteHiddenChange: PropTypes.func,
+        location_href: PropTypes.string
     },
 
     handleDiscloseClick: function(e) {
@@ -90,7 +92,7 @@ var AdvSearch = React.createClass({
 
     handleAutocompleteClick: function(term, id, name) {
         var newTerms = {};
-        var inputNode = this.refs.annotation.getDOMNode();
+        var inputNode = this.refs.annotation;
         inputNode.value = term;
         newTerms[name] = id;
         this.setState({terms: newTerms});
@@ -126,7 +128,7 @@ var AdvSearch = React.createClass({
         return (
             <Panel>
                 <PanelBody>
-                    <form id="panel1" className="adv-search-form" ref="adv-search" role="form" autoComplete="off" aria-labeledby="tab1">
+                    <form id="panel1" className="adv-search-form" ref="adv-search" role="form" autoComplete="off" aria-labelledby="tab1">
                         <input type="hidden" name="annotation" value={this.state.terms['annotation']} />
                         <div className="form-group">
                             <label>Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
@@ -161,7 +163,7 @@ var AdvSearch = React.createClass({
     }
 });
 
-var RegionSearch = module.exports.RegionSearch = React.createClass({
+var RegionSearch = module.exports.RegionSearch = createReactClass({
     onFilter: function(e) {
         var search = e.currentTarget.getAttribute('href');
         this.props.onChange(search);
@@ -169,8 +171,8 @@ var RegionSearch = module.exports.RegionSearch = React.createClass({
         e.preventDefault();
     },
     contextTypes: {
-        location_href: React.PropTypes.string,
-        navigate: React.PropTypes.func
+        location_href: PropTypes.string,
+        navigate: PropTypes.func
     },
     render: function() {
         const visualizeLimit = 100;

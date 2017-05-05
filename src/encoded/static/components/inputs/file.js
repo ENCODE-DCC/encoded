@@ -1,8 +1,9 @@
 'use strict';
 var React = require('react');
+import createReactClass from 'create-react-class';
 
 
-var FileInput = module.exports.FileInput = React.createClass({
+var FileInput = module.exports.FileInput = createReactClass({
 
     render: function() {
         var value = this.props.value || {};
@@ -37,18 +38,18 @@ var FileInput = module.exports.FileInput = React.createClass({
 
     onChange: function(e, file) {
         if (file === undefined) {
-            var input = this.refs.input.getDOMNode();
+            var input = this.refs.input;
             file = input.files[0];
         }
         var reader = new FileReader();
-        reader.onloadend = function() {
+        reader.onloadend = () => {
             var value = {
                 download: file.name,
                 type: file.type || undefined,
                 href: reader.result
             };
             this.props.onChange(value);
-        }.bind(this);
+        };
         if (file) {
             reader.readAsDataURL(file);
         }
