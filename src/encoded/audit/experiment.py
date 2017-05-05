@@ -761,7 +761,7 @@ def check_experiment_dnase_seq_standards(experiment,
         if hotspot_quality_metrics is not None and \
            len(hotspot_quality_metrics) > 0:
             for metric in hotspot_quality_metrics:
-                if "SPOT score" in metric:
+                if "SPOT2 score" in metric:
                     file_names = []
                     for f in metric['quality_metric_of']:
                         file_names.append(f['@id'].split('/')[2])
@@ -772,21 +772,21 @@ def check_experiment_dnase_seq_standards(experiment,
                              "produced by {} ".format(pipelines[0]['title']) + \
                              "( {} ) ".format(pipelines[0]['@id']) + \
                              assemblies_detail(extract_assemblies(hotspot_assemblies, file_names)) + \
-                             "have a SPOT score of {0:.2f}. ".format(metric["SPOT score"]) + \
+                             "have a SPOT2 score of {0:.2f}. ".format(metric["SPOT2 score"]) + \
                              "According to ENCODE standards, " + \
-                             "SPOT score of 0.4 or higher is considered a product of high quality " + \
+                             "SPOT2 score of 0.4 or higher is considered a product of high quality " + \
                              "data. " + \
-                             "Any sample with a SPOT score <0.3 should be targeted for replacement " + \
+                             "Any sample with a SPOT2 score <0.3 should be targeted for replacement " + \
                              "with a higher quality sample, and a " + \
-                             "SPOT score of 0.25 is considered minimally acceptable " + \
+                             "SPOT2 score of 0.25 is considered minimally acceptable " + \
                              "for rare and hard to find primary tissues. (See {} )".format(
                                  link_to_standards)
 
-                    if 0.3 <= metric["SPOT score"] < 0.4:
+                    if 0.3 <= metric["SPOT2 score"] < 0.4:
                         yield AuditFailure('low spot score', detail, level='WARNING')
-                    elif 0.25 <= metric["SPOT score"] < 0.3:
+                    elif 0.25 <= metric["SPOT2 score"] < 0.3:
                         yield AuditFailure('insufficient spot score', detail, level='NOT_COMPLIANT')
-                    elif metric["SPOT score"] < 0.25:
+                    elif metric["SPOT2 score"] < 0.25:
                         yield AuditFailure('extremely low spot score', detail, level='ERROR')
 
         if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
@@ -1262,7 +1262,7 @@ def check_experiment_cage_rampage_standards(experiment,
                 for failure in check_file_read_depth(f, read_depth,
                                                      upper_limit_read_depth,
                                                      middle_limit_read_depth,
-                                                     lower_limit_read_depth,                            
+                                                     lower_limit_read_depth,
                                                      experiment['assay_term_name'],
                                                      pipeline_title,
                                                      pipelines[0],
@@ -1857,7 +1857,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                     'experiment targeting {} and investigated as '.format(target_name) + \
                     'a narrow histone mark is 10 million usable fragments. ' + \
                     'The recommended value is > 20 million, but > 10 million is ' + \
-                    'acceptable. (See /data-standards/chip-seq/ )'               
+                    'acceptable. (See /data-standards/chip-seq/ )'
             else:
                 detail = 'Alignment file {} '.format(file_to_check['@id']) + \
                     'produced by {} '.format(pipeline_object['title']) + \
