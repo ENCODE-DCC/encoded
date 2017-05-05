@@ -29,38 +29,27 @@ paired_end_assays = [
 # http://redmine.encodedcc.org/issues/5017
 
 
-'''
-@audit_checker('File', frame=['derived_from'])
-def audit_file_md5sum_integrity(value, system):
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
-    md5sum = value['md5sum']
-    try:
-        hexval = int(md5sum, 16)
-        if len(md5sum) != 32:
-            detail = 'File {} '.format(value['@id']) + \
-                     'has an md5sum value of {}, '.format(md5sum) + \
-                     'which is not 32 characters long.'
-            yield AuditFailure('inconsistent md5sum',
-                               detail, level='INTERNAL_ACTION')
-    except ValueError:
-        detail = 'File {} '.format(value['@id']) + \
-                 'has an md5sum value of {}, '.format(md5sum) + \
-                 'which is not a valid hexadecimal number.'
-        yield AuditFailure('inconsistent md5sum',
-                           detail, level='INTERNAL_ACTION')
-'''
+# def audit_file_md5sum_integrity(value, system): # removed release 55
 
 
 @audit_checker('File', frame=['derived_from'])
-def audit_file_bam_derived_from(value, system):
-    if value['file_format'] != 'bam':
-        return
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
+def audit_file_processed_derived_from(value, system):
+    if value['output_category'] in ['raw data',
+                                    'reference']:
         return
     if 'derived_from' not in value or \
        'derived_from' in value and len(value['derived_from']) == 0:
+            detail = 'derived_from is a list of files that were used to create a given file; ' + \
+                     'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
+                     'Processed file {} '.format(value['@id']) + \
+                     'is missing the requisite file specification in its derived_from list.'
+            yield AuditFailure('missing derived_from',
+                               detail, level='INTERNAL_ACTION')
+            return
+
+    if value['file_format'] != 'bam':
         return
+
     derived_from_files = value.get('derived_from')
     fastq_bam_counter = 0
     for f in derived_from_files:
@@ -89,32 +78,8 @@ def audit_file_bam_derived_from(value, system):
                            detail, level='INTERNAL_ACTION')
 
 
-@audit_checker('File', frame=['object'],
-               condition=rfa('ENCODE3',
-                             'modENCODE',
-                             'modERN',
-                             'GGR'))
-def audit_file_processed_empty_derived_from(value, system):
-    if value['output_category'] in ['raw data',
-                                    'reference']:
-        return
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-            return
-    if 'derived_from' not in value or \
-       'derived_from' in value and len(value['derived_from']) == 0:
-            detail = 'derived_from is a list of files that were used to create a given file; ' + \
-                     'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
-                     'Processed file {} '.format(value['@id']) + \
-                     'is missing the requisite file specification in its derived_from list.'
-            yield AuditFailure('missing derived_from',
-                               detail, level='INTERNAL_ACTION')
-            return
-
-
 @audit_checker('File', frame=['derived_from'])
 def audit_file_derived_from_revoked(value, system):
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-            return
     if 'derived_from' in value and len(value['derived_from']) > 0:
         for f in value['derived_from']:
             if f['status'] == 'revoked':
@@ -127,10 +92,8 @@ def audit_file_derived_from_revoked(value, system):
                 return
 
 
-@audit_checker('file', frame=['derived_from'])
+@audit_checker('File', frame=['derived_from'])
 def audit_file_assembly(value, system):
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
     if 'derived_from' not in value:
         return
     for f in value['derived_from']:
@@ -147,13 +110,10 @@ def audit_file_assembly(value, system):
                 return
 
 
-@audit_checker('file', frame=['replicate', 'replicate.experiment',
+@audit_checker('File', frame=['replicate', 'replicate.experiment',
                               'derived_from', 'derived_from.replicate',
                               'derived_from.replicate.experiment'])
 def audit_file_biological_replicate_number_match(value, system):
-
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
 
     if 'replicate' not in value:
         return
@@ -190,15 +150,12 @@ def audit_file_biological_replicate_number_match(value, system):
                 return
 
 
-@audit_checker('file', frame=['replicate', 'dataset', 'replicate.experiment'])
+@audit_checker('File', frame=['replicate', 'dataset', 'replicate.experiment'])
 def audit_file_replicate_match(value, system):
     '''
     A file's replicate should belong to the same experiment that the file
     does.  These tend to get confused when replacing objects.
     '''
-
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
 
     if 'replicate' not in value:
         return
@@ -217,7 +174,6 @@ def audit_file_replicate_match(value, system):
         yield AuditFailure('inconsistent replicate', detail, level='ERROR')
         return
 
-
 # def audit_file_platform(value, system): removed from release v56
 
 
@@ -228,7 +184,7 @@ def check_presence(file_to_check, files_list):
     return False
 
 
-@audit_checker('file',
+@audit_checker('File',
                frame=['dataset',
                       'dataset.target',
                       'platform',
@@ -236,20 +192,11 @@ def check_presence(file_to_check, files_list):
                       'controlled_by.replicate',
                       'controlled_by.dataset',
                       'controlled_by.paired_with',
-                      'controlled_by.platform'],
-               condition=rfa('Roadmap',
-                             'ENCODE2',
-                             'ENCODE2-Mouse',
-                             'ENCODE',
-                             'ENCODE3',
-                             'modERN'))
+                      'controlled_by.platform'])
 def audit_file_controlled_by(value, system):
     '''
     A fastq in a ChIP-seq experiment should have a controlled_by
     '''
-
-    if value['status'] in ['deleted', 'replaced', 'revoked', 'archived']:
-        return
 
     if value['dataset'].get('assay_term_name') not in ['ChIP-seq',
                                                        'RAMPAGE',
@@ -398,21 +345,17 @@ def audit_file_controlled_by(value, system):
                                    detail, level='WARNING')
                 return
 
-
 # def audit_file_flowcells(value, system): # removed in version 56
 # http://redmine.encodedcc.org/issues/5060
 
 
-@audit_checker('file', frame=['paired_with'])
+@audit_checker('File', frame=['paired_with'])
 def audit_paired_with(value, system):
     '''
     A file with a paired_end needs a paired_with.
     Should be handled in the schema.
     A paired_with should be the same replicate
     '''
-
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
 
     if 'paired_end' not in value:
         return
@@ -519,7 +462,7 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
             yield AuditFailure('wrong step_run for IDR peaks', detail, level='WARNING')
 '''
 
-@audit_checker('file', frame=['file_format_specifications'],)
+@audit_checker('File', frame=['file_format_specifications'],)
 def audit_file_format_specifications(value, system):
 
     for doc in value.get('file_format_specifications', []):
@@ -643,7 +586,7 @@ def extract_award_version(bam_file):
     return 'ENC3'
 
 
-@audit_checker('file', frame=[
+@audit_checker('File', frame=[
     'award',
     'quality_metrics',
     'analysis_step_version',
