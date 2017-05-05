@@ -31,7 +31,6 @@ from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 @upgrade_step('fastqc_quality_metric', '5', '6')
 @upgrade_step('filtering_quality_metric', '5', '6')
 @upgrade_step('generic_quality_metric', '5', '6')
-@upgrade_step('hotspot_quality_metric', '5', '6')
 @upgrade_step('idr_quality_metric', '4', '5')
 @upgrade_step('idr_summary_quality_metric', '5', '6')
 @upgrade_step('mad_quality_metric', '4', '5')
