@@ -24,7 +24,7 @@ def hotspot_quality_metric_4_5(value, system):
 @upgrade_step('hotspot_quality_metric', '5', '6')
 def hotspot_quality_metric_5_6(value, system):
     # http://redmine.encodedcc.org/issues/4845
-    if 'SPOT score' not in value:
+    if 'SPOT score' in value:
         value['SPOT2 score'] = value['SPOT score']
         del value['SPOT score']
 
