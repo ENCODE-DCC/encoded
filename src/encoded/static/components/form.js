@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/label-has-for */
 
 const React = require('react');
-const cloneWithProps = require('react/lib/cloneWithProps');
-const parseAndLogError = require('./mixins').parseAndLogError;
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
+const parseAndLogError = require('./globals').parseAndLogError;
 const offset = require('../libs/offset');
 const fetched = require('./fetched');
 const inputs = require('./inputs');
@@ -114,23 +115,23 @@ const updateChild = function (name, subvalue) {
     this.props.updateChild(this.props.name, newValue);
 };
 
-const RepeatingItem = React.createClass({
+const RepeatingItem = createReactClass({
     // A form field for editing one item in an array
     // (part of a RepeatingFieldset).
     // It delegates rendering the field to an actual Field component,
     // but also shows a button to remove the item.
 
     propTypes: {
-        name: React.PropTypes.number,
-        path: React.PropTypes.string,
-        schema: React.PropTypes.object,
-        onRemove: React.PropTypes.func,
-        value: React.PropTypes.any,
-        updateChild: React.PropTypes.func,
+        name: PropTypes.number,
+        path: PropTypes.string,
+        schema: PropTypes.object,
+        onRemove: PropTypes.func,
+        value: PropTypes.any,
+        updateChild: PropTypes.func,
     },
 
     contextTypes: {
-        readonly: React.PropTypes.bool,
+        readonly: PropTypes.bool,
     },
 
     handleRemove(e) {
@@ -174,23 +175,23 @@ const RepeatingItem = React.createClass({
 
 });
 
-const RepeatingFieldset = React.createClass({
+const RepeatingFieldset = createReactClass({
     // A form field for editing an array.
     // Each item in the array is rendered via RepeatingItem.
     // Also shows a button to add a new item.
 
     propTypes: {
-        schema: React.PropTypes.object,
-        name: React.PropTypes.string,
-        path: React.PropTypes.string,
-        value: React.PropTypes.any,
-        updateChild: React.PropTypes.func,
+        schema: PropTypes.object,
+        name: PropTypes.string,
+        path: PropTypes.string,
+        value: PropTypes.any,
+        updateChild: PropTypes.func,
     },
 
     contextTypes: {
-        schemas: React.PropTypes.object,
-        readonly: React.PropTypes.bool,
-        id: React.PropTypes.string,
+        schemas: PropTypes.object,
+        readonly: PropTypes.bool,
+        id: PropTypes.string,
     },
 
     getInitialState: function () {
@@ -279,7 +280,7 @@ const RepeatingFieldset = React.createClass({
 
 });
 
-const FetchedFieldset = React.createClass({
+const FetchedFieldset = createReactClass({
     // A form field for editing a child object
     // (a subitem of an array property using linkFrom).
     // Initially the value is a URI and we render a preview of the object.
@@ -288,20 +289,20 @@ const FetchedFieldset = React.createClass({
     // rather than just the URI.
 
     propTypes: {
-        schema: React.PropTypes.object,
-        name: React.PropTypes.any,
-        path: React.PropTypes.string,
-        value: React.PropTypes.any,
-        updateChild: React.PropTypes.func,
+        schema: PropTypes.object,
+        name: PropTypes.any,
+        path: PropTypes.string,
+        value: PropTypes.any,
+        updateChild: PropTypes.func,
     },
 
     contextTypes: {
-        schemas: React.PropTypes.object,
-        errors: React.PropTypes.object,
+        schemas: PropTypes.object,
+        errors: PropTypes.object,
     },
 
     childContextTypes: {
-        id: React.PropTypes.string,
+        id: PropTypes.string,
     },
 
     getInitialState() {
@@ -405,7 +406,7 @@ const FetchedFieldset = React.createClass({
 
 });
 
-const Field = module.exports.Field = React.createClass({
+const Field = module.exports.Field = createReactClass({
     // Build form input components based on a JSON schema
     // (or a portion thereof).
 
@@ -435,25 +436,25 @@ const Field = module.exports.Field = React.createClass({
     // the input is disabled and the field value cannot be edited.
 
     propTypes: {
-        name: React.PropTypes.any,
-        path: React.PropTypes.string,
-        schema: React.PropTypes.object.isRequired,
-        value: React.PropTypes.any,
-        className: React.PropTypes.string,
-        updateChild: React.PropTypes.func,
-        hideLabel: React.PropTypes.bool,
+        name: PropTypes.any,
+        path: PropTypes.string,
+        schema: PropTypes.object,
+        value: PropTypes.any,
+        className: PropTypes.string,
+        updateChild: PropTypes.func,
+        hideLabel: PropTypes.bool,
     },
 
     contextTypes: {
-        submitted: React.PropTypes.bool,
-        errors: React.PropTypes.object,
-        showReadOnly: React.PropTypes.bool,
-        readonly: React.PropTypes.bool,
-        id: React.PropTypes.string,
+        submitted: PropTypes.bool,
+        errors: PropTypes.object,
+        showReadOnly: PropTypes.bool,
+        readonly: PropTypes.bool,
+        id: PropTypes.string,
     },
 
     childContextTypes: {
-        readonly: React.PropTypes.bool,
+        readonly: PropTypes.bool,
     },
 
     getDefaultProps() {
@@ -470,7 +471,7 @@ const Field = module.exports.Field = React.createClass({
 
     getChildContext() {
         // Allow contained fields to tell whether they are inside a readonly field.
-        return { readonly: this.context.readonly || this.props.schema.readonly };
+        return { readonly: !!(this.context.readonly || this.props.schema.readonly) };
     },
 
     // Don't update when state is changed.
@@ -520,6 +521,10 @@ const Field = module.exports.Field = React.createClass({
 
     render() {
         const { name, path, schema, value } = this.props;
+        // FIXME Redmine #3413
+        if (schema === undefined) {
+            return null;
+        }
         const errors = this.context.errors;
         const isValid = !errors[path];
         const type = schema.type || 'string';
@@ -548,7 +553,7 @@ const Field = module.exports.Field = React.createClass({
             } else {
                 // We were passed an arbitrary custom input,
                 // which we need to clone to specify the correct props.
-                input = cloneWithProps(input, inputProps);
+                input = React.cloneElement(input, inputProps);
             }
         } else if (schema.linkFrom) {
             input = (<FetchedFieldset
@@ -602,7 +607,7 @@ const Field = module.exports.Field = React.createClass({
         } else if (schema.type === 'integer' || schema.type === 'number') {
             input = <input type="number" {...inputProps} />;
         } else {
-            input = <input type="text" {...inputProps} />;
+            input = <input type="text" {...inputProps} value={value || ''} />;
         }
         // Provide a CSS hook to indicate fields with errors
         if (!isValid) {
@@ -626,7 +631,7 @@ const Field = module.exports.Field = React.createClass({
 
 });
 
-const Form = module.exports.Form = React.createClass({
+const Form = module.exports.Form = createReactClass({
     // The Form component renders a form based on a JSON schema.
 
     // It renders an actual HTML `form` element which contains
@@ -657,31 +662,31 @@ const Form = module.exports.Form = React.createClass({
     // Clicking the Cancel button returns to the homepage.
 
     propTypes: {
-        defaultValue: React.PropTypes.any,
-        schemas: React.PropTypes.object,
-        schema: React.PropTypes.object,
-        showReadOnly: React.PropTypes.bool,
-        id: React.PropTypes.string,
-        method: React.PropTypes.string,
-        action: React.PropTypes.string,
-        etag: React.PropTypes.string,
-        onFinish: React.PropTypes.func,
-        submitLabel: React.PropTypes.string,
+        defaultValue: PropTypes.any,
+        schemas: PropTypes.object,
+        schema: PropTypes.object,
+        showReadOnly: PropTypes.bool,
+        id: PropTypes.string,
+        method: PropTypes.string,
+        action: PropTypes.string,
+        etag: PropTypes.string,
+        onFinish: PropTypes.func,
+        submitLabel: PropTypes.string,
     },
 
     contextTypes: {
-        adviseUnsavedChanges: React.PropTypes.func,
-        fetch: React.PropTypes.func,
+        adviseUnsavedChanges: PropTypes.func,
+        fetch: PropTypes.func,
     },
 
     childContextTypes: {
-        schemas: React.PropTypes.object,
-        canSave: React.PropTypes.func,
-        onTriggerSave: React.PropTypes.func,
-        errors: React.PropTypes.object,
-        showReadOnly: React.PropTypes.bool,
-        id: React.PropTypes.string,
-        submitted: React.PropTypes.bool,
+        schemas: PropTypes.object,
+        canSave: PropTypes.func,
+        onTriggerSave: PropTypes.func,
+        errors: PropTypes.object,
+        showReadOnly: PropTypes.bool,
+        id: PropTypes.string,
+        submitted: PropTypes.bool,
     },
 
     getDefaultProps() {
@@ -736,9 +741,6 @@ const Form = module.exports.Form = React.createClass({
             // These should still be reported by server-side validation on form submit.
             skipAttributes: ['dependencies'],
         });
-
-        // for debugging:
-        console.log(validation);
 
         // `jsonschema` uses field paths like
         //   `instance.aliases[0]`
@@ -929,7 +931,7 @@ const Form = module.exports.Form = React.createClass({
 
 });
 
-module.exports.JSONSchemaForm = React.createClass({
+module.exports.JSONSchemaForm = createReactClass({
     // JSONSchemaForm is a wrapper of Form
     // that is used from the ItemEdit component after
     // it fetches the `schemas` and the `context`
@@ -943,15 +945,15 @@ module.exports.JSONSchemaForm = React.createClass({
     // Other properties are passed through to the Form.
 
     propTypes: {
-        type: React.PropTypes.string,
-        schemas: React.PropTypes.object,
-        context: React.PropTypes.any,
-        action: React.PropTypes.string,
-        method: React.PropTypes.string,
-        etag: React.PropTypes.string,
-        showReadOnly: React.PropTypes.bool,
-        id: React.PropTypes.string,
-        onFinish: React.PropTypes.func,
+        type: PropTypes.string,
+        schemas: PropTypes.object,
+        context: PropTypes.any,
+        action: PropTypes.string,
+        method: PropTypes.string,
+        etag: PropTypes.string,
+        showReadOnly: PropTypes.bool,
+        id: PropTypes.string,
+        onFinish: PropTypes.func,
     },
 
     getDefaultProps() {

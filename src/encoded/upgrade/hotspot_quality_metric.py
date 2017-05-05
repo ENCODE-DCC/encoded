@@ -27,6 +27,10 @@ def hotspot_quality_metric_5_6(value, system):
     if 'generated_by' not in value:
         value['generated_by'] = 'Hotspot2'
 
+    if 'SPOT score' in value:
+        value['SPOT2 score'] = value['SPOT score']
+        del value['SPOT score']
+
     # http://redmine.encodedcc.org/issues/4748
     aliases = []
     if 'aliases' in value and value['aliases']:

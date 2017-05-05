@@ -1,17 +1,17 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import moment from 'moment';
+import shortid from 'shortid';
 import _ from 'underscore';
 import Pager from '../libs/bootstrap/pager';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
-import globals from './globals';
-import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
+import { auditDecor } from './audit';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel } from './doc';
-import { FetchedItems } from './fetched';
+import globals from './globals';
 import { requestFiles, requestObjects, requestSearch, RestrictedDownloadButton } from './objectutils';
 import { ProjectBadge } from './image';
 import { QualityMetricsPanel } from './quality_metric';
-import { PickerActionsMixin } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import StatusLabel from './statuslabel';
 
@@ -73,7 +73,6 @@ function sortProcessedPagedFiles(files) {
 }
 
 
-
 // Display a table of files that derive from this one as a paged component. It works by first
 // doing a GET request an array of minimal file objects with barely enough information to know what
 // files satisfy the search criteria for files that derive from the file passed in the `file` prop.
@@ -88,20 +87,19 @@ function sortProcessedPagedFiles(files) {
 const PagedFileTableMax = 50; // Maximnum number of files per page
 const PagedFileCacheMax = 10; // Maximum number of pages to cache
 
-const DerivedFiles = React.createClass({
-    propTypes: {
-        file: React.PropTypes.object.isRequired, // Query string fragment for the search that ultimately generates the table of files
-    },
-
-    getInitialState: function () {
-        return {
+class DerivedFiles extends React.Component {
+    constructor() {
+        super();
+        this.state = {
             currentPage: 0, // Current page of a multi-page table
             pageFiles: [], // Array of file objects displayed for the current page
             totalPages: 0, // Total number of pages; never gets updated after initialized
         };
-    },
+        this.currentPageFiles = this.currentPageFiles.bind(this);
+        this.updateCurrentPage = this.updateCurrentPage.bind(this);
+    }
 
-    componentDidMount: function () {
+    componentDidMount() {
         this.allFileIds = [];
         this.pageCache = {};
         const { file } = this.props;
@@ -131,9 +129,9 @@ const DerivedFiles = React.createClass({
         }).then((files) => {
             this.setState({ pageFiles: files || [] });
         });
-    },
+    }
 
-    componentDidUpdate: function (prevProps, prevState) {
+    componentDidUpdate(prevProps, prevState) {
         if (prevState.currentPage !== this.state.currentPage) {
             // The currently displayed page of files has changed. First keep a reference to the
             // current page of files to keep it from getting GC'd, if it's not already referenced.
@@ -172,24 +170,24 @@ const DerivedFiles = React.createClass({
                 });
             }
         }
-    },
+    }
 
     // Get an array of file IDs for the current page. Requires this.allFileIds to hold all the file
     // @id of files that derive from the one being displayed, and this.state.currentPage to hold
     // the currently displayed page of files in the table.
-    currentPageFiles: function () {
+    currentPageFiles() {
         if (this.allFileIds && this.allFileIds.length) {
             const start = this.state.currentPage * PagedFileTableMax;
             return this.allFileIds.slice(start, start + PagedFileTableMax);
         }
         return [];
-    },
+    }
 
-    updateCurrentPage: function (newCurrent) {
+    updateCurrentPage(newCurrent) {
         this.setState({ currentPage: newCurrent });
-    },
+    }
 
-    render: function () {
+    render() {
         const { file } = this.props;
 
         if (this.state.pageFiles.length) {
@@ -209,18 +207,17 @@ const DerivedFiles = React.createClass({
             );
         }
         return null;
-    },
-});
+    }
+}
+
+DerivedFiles.propTypes = {
+    file: React.PropTypes.object.isRequired, // Query string fragment for the search that ultimately generates the table of files
+};
 
 
 // Display a table of files the current file derives from.
-const DerivedFromFiles = React.createClass({
-    propTypes: {
-        file: React.PropTypes.object.isRequired, // File being analyzed
-        derivedFromFiles: React.PropTypes.array.isRequired, // Array of derived-from files
-    },
-
-    render: function () {
+class DerivedFromFiles extends React.Component {
+    render() {
         const { file, derivedFromFiles } = this.props;
 
         return (
@@ -232,27 +229,26 @@ const DerivedFromFiles = React.createClass({
                 />
             </SortTablePanel>
         );
-    },
-});
+    }
+}
+
+DerivedFromFiles.propTypes = {
+    file: PropTypes.object.isRequired, // File being analyzed
+    derivedFromFiles: PropTypes.array.isRequired, // Array of derived-from files
+};
 
 
 // Display a file download button.
-const FileDownloadButton = React.createClass({
-    propTypes: {
-        file: React.PropTypes.object, // File we're possibly downloading by clicking this button
-        hoverDL: React.PropTypes.func, // Function to call when hovering starts/stops over button
-        buttonEnabled: React.PropTypes.bool, // `true` if button is enabled
-    },
-
-    onMouseEnter: function () {
+class FileDownloadButton extends React.Component {
+    onMouseEnter() {
         this.props.hoverDL(true);
-    },
+    }
 
-    onMouseLeave: function () {
+    onMouseLeave() {
         this.props.hoverDL(false);
-    },
+    }
 
-    render: function () {
+    render() {
         const { file, buttonEnabled } = this.props;
 
         return (
@@ -271,39 +267,35 @@ const FileDownloadButton = React.createClass({
                 : null}
             </div>
         );
-    },
-});
+    }
+}
+
+FileDownloadButton.propTypes = {
+    file: PropTypes.object, // File we're possibly downloading by clicking this button
+    hoverDL: PropTypes.func, // Function to call when hovering starts/stops over button
+    buttonEnabled: PropTypes.bool, // `true` if button is enabled
+};
 
 
-const File = React.createClass({
-    propTypes: {
-        context: React.PropTypes.object, // File object being displayed
-    },
-
-    contextTypes: {
-        session: React.PropTypes.object, // Login information
-        session_properties: React.PropTypes.object,
-    },
-
-    mixins: [AuditMixin],
-
-    getInitialState: function () {
-        return {
+class FileComponent extends React.Component {
+    constructor() {
+        super();
+        this.state = {
             derivedFromFiles: [], // List of derived-from files
             fileFormatSpecs: [], // List of file_format_specifications
         };
-    },
+    }
 
-    componentDidMount: function () {
+    componentDidMount() {
         // Now that this page is mounted, request the list of derived_from files and file
         // documents.
         this.requestFileDependencies();
 
         // In case the logged-in state changes, we have to keep track of the old logged-in state.
         this.loggedIn = !!(this.context.session && this.context.session['auth.userid']);
-    },
+    }
 
-    componentWillReceiveProps: function () {
+    componentWillReceiveProps() {
         // If the logged-in state has changed since the last time we rendered, request files again
         // in case logging in changes the list of dependent files.
         const currLoggedIn = !!(this.context.session && this.context.session['auth.userid']);
@@ -311,9 +303,9 @@ const File = React.createClass({
             this.requestFileDependencies();
             this.loggedIn = currLoggedIn;
         }
-    },
+    }
 
-    requestFileDependencies: function () {
+    requestFileDependencies() {
         // Perform GET requests of files that derive from this one, as well as file format
         // specification documents. This avoids embedding these arrays of objects in the file
         // object.
@@ -336,9 +328,9 @@ const File = React.createClass({
                 this.setState({ fileFormatSpecs: docs });
             });
         }
-    },
+    }
 
-    render: function () {
+    render() {
         const { context } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
         const altacc = (context.alternate_accessions && context.alternate_accessions.length) ? context.alternate_accessions.join(', ') : null;
@@ -378,11 +370,11 @@ const File = React.createClass({
                                     <StatusLabel title="Status" status={context.status} />
                                 </div>
                             : null}
-                            {context.audit ? <AuditIndicators audits={context.audit} id="file-audit" /> : null}
+                            {this.props.auditIndicators(context.audit, 'file-audit', { session: this.context.session })}
                         </div>
+                        {this.props.auditDetail(context.audit, 'file-audit', { session: this.context.session, except: context['@id'] })}
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="file-audit" />
                 <Panel addClasses="data-display">
                     <div className="split-panel">
                         <div className="split-panel__part split-panel__part--p50">
@@ -419,10 +411,10 @@ const File = React.createClass({
                                             <dt>Pipelines</dt>
                                             <dd>
                                                 {pipelines.map((pipeline, i) =>
-                                                    <span key={i}>
+                                                    <span key={pipeline['@id']}>
                                                         {i > 0 ? <span>{','}<br /></span> : null}
                                                         <a href={pipeline['@id']} title="View page for this pipeline">{pipeline.title}</a>
-                                                    </span>
+                                                    </span>,
                                                 )}
                                             </dd>
                                         </div>
@@ -563,22 +555,38 @@ const File = React.createClass({
                 : null}
             </div>
         );
-    },
-});
+    }
+}
+
+FileComponent.propTypes = {
+    context: PropTypes.object, // File object being displayed
+    auditIndicators: PropTypes.func, // Audit indicator rendering function from auditDecor
+    auditDetail: PropTypes.func, // Audit detail rendering function from auditDecor
+};
+
+FileComponent.contextTypes = {
+    session: PropTypes.object, // Login information
+    session_properties: PropTypes.object,
+};
+
+const File = auditDecor(FileComponent);
 
 globals.content_views.register(File, 'File');
 
 
 // Display the sequence file summary panel for fastq files.
-const SequenceFileInfo = React.createClass({
-    propTypes: {
-        file: React.PropTypes.object.isRequired, // File being displayed
-    },
-
-    render: function () {
+class SequenceFileInfo extends React.Component {
+    render() {
         const { file } = this.props;
         const pairedWithAccession = file.paired_with ? globals.atIdToAccession(file.paired_with) : '';
         const platformAccession = file.platform ? decodeURIComponent(globals.atIdToAccession(file.platform)) : '';
+
+        // Generate keys for the flowcell details.
+        if (file.flowcell_details && file.flowcell_details.map) {
+            file.flowcell_details.forEach((detail) => {
+                detail.id = shortid.generate();
+            });
+        }
 
         return (
             <Panel>
@@ -606,7 +614,7 @@ const SequenceFileInfo = React.createClass({
                                             detail.lane ? detail.lane : '',
                                             detail.barcode ? detail.barcode : '',
                                         ];
-                                        return <span className="line-item">{items.join(':')}</span>;
+                                        return <span className="line-item" key={detail.id}>{items.join(':')}</span>;
                                     })}
                                 </dd>
                             </div>
@@ -646,7 +654,7 @@ const SequenceFileInfo = React.createClass({
                                     {file.controlled_by.map((controlFile, i) => {
                                         const controlFileAccession = globals.atIdToAccession(controlFile);
                                         return (
-                                            <span>
+                                            <span key={controlFile}>
                                                 {i > 0 ? <span>, </span> : null}
                                                 <a href={controlFile} title={`View page for file ${controlFileAccession}`}>{controlFileAccession}</a>
                                             </span>
@@ -659,29 +667,26 @@ const SequenceFileInfo = React.createClass({
                 </PanelBody>
             </Panel>
         );
-    },
-});
+    }
+}
 
 
-const Listing = React.createClass({
-    propTypes: {
-        context: React.PropTypes.object, // File object being rendered
-    },
+SequenceFileInfo.propTypes = {
+    file: PropTypes.object.isRequired, // File being displayed
+};
 
-    mixins: [PickerActionsMixin, AuditMixin],
 
-    render: function () {
+class Listing extends React.Component {
+    render() {
         const result = this.props.context;
 
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
                     <div className="pull-right search-meta">
                         <p className="type meta-title">File</p>
                         <p className="type">{` ${result.title}`}</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
-                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                     </div>
                     <div className="accession"><a href={result['@id']}>{`${result.file_format}${result.file_format_type ? ` (${result.file_format_type})` : ''}`}</a></div>
                     <div className="data-row">
@@ -689,10 +694,13 @@ const Listing = React.createClass({
                         {result.award.project ? <div><strong>Project: </strong>{result.award.project}</div> : null}
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
-    },
-});
+    }
+}
+
+Listing.propTypes = {
+    context: PropTypes.object, // File object being rendered
+};
 
 globals.listing_views.register(Listing, 'File');

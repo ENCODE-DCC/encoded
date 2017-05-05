@@ -481,8 +481,7 @@ def chip_seq_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, award,
 @pytest.fixture
 def hotspot_quality_metric(testapp, analysis_step_run_bam, file_tsv_1_1, award, encode_lab):
     item = {
-        'SPOT score': 0.3345,
-        'generated_by': 'Hotspot2',
+        'SPOT2 score': 0.3345,
         'step_run': analysis_step_run_bam['@id'],
         'quality_metric_of': [file_tsv_1_1['@id']],
         'award': award['@id'],

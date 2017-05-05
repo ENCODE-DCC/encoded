@@ -333,6 +333,9 @@ def process_read_name_line(read_name_line,
                                               read_numbers_set,
                                               srr_flag)
         elif srr_read_name_pattern.match(read_name.split(' ')[0]) is not None:
+            # in case the readname is following SRR format, read number will be
+            # defined using SRR format specifications, and not by the illumina portion of the read name
+            # srr_flag is used to distinguish between srr and "regular" readname formats
             srr_portion = read_name.split(' ')[0]
             if srr_portion.count('.') == 2:
                 read_numbers_set.add(srr_portion[-1])
@@ -352,7 +355,7 @@ def process_read_name_line(read_name_line,
                                                                  errors, True)
         else:
             # unrecognized read_name_format
-            # current convention is to include WHOLE 
+            # current convention is to include WHOLE
             # readname at the end of the signature
             if len(words_array) == 1:
                 if read_name_prefix.match(read_name) is not None:
@@ -763,7 +766,8 @@ def check_file(config, session, url, job):
                     'set -o pipefail; gunzip --stdout {} | grep -c \'^#\''.format(local_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
             except subprocess.CalledProcessError as e:
-                if e.returncode > 1:  # empty file, or other type of error
+                # empty file, or other type of error
+                if e.returncode > 1:
                     errors['grep_bed_problem'] = e.output.decode(errors='replace').rstrip('\n')
             # comments lines found, need to calculate content md5sum as usual
             # remove the comments and create modified.bed to give validateFiles scritp
@@ -827,6 +831,7 @@ def remove_local_file(path_to_the_file, errors):
 
 def fetch_files(session, url, search_query, out, include_unexpired_upload=False, file_list=None):
     graph = []
+    # checkfiles using a file with a list of file accessions to be checked
     if file_list:
         r = None
         ACCESSIONS = []
@@ -838,6 +843,7 @@ def fetch_files(session, url, search_query, out, include_unexpired_upload=False,
             r.raise_for_status()
             local = copy.deepcopy(r.json()['@graph'])
             graph.extend(local)
+    # checkfiles using a query
     else:
         r = session.get(
             urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))

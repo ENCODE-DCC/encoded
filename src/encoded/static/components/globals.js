@@ -1,6 +1,7 @@
 'use strict';
 var Registry = require('../libs/registry');
 var _ = require('underscore');
+const ga = require('google-analytics');
 
 // Item pages
 module.exports.content_views = new Registry();
@@ -116,8 +117,9 @@ module.exports.unreleased_files_url = function (context) {
         "archived",
         "content error",
     ].map(encodeURIComponent).join('&status=');
-    return '/search/?limit=all&type=file&dataset=' + context['@id'] + file_states;
+    return '/search/?limit=all&type=File&dataset=' + context['@id'] + file_states;
 };
+
 
 // Encode a URI with much less intensity than encodeURIComponent but a bit more than encodeURI.
 // In addition to encodeURI, this function escapes exclamations and at signs.
@@ -125,7 +127,7 @@ module.exports.encodedURI = function (uri) {
     return encodeURI(uri).replace(/!/g, '%21').replace(/@/g, '%40');
 };
 
-
+ 
 // Just like encodeURIComponent, but also encodes parentheses (Redmine #4242). Replace spaces with
 // `space` parameter, or '+' if not provided.
 // http://stackoverflow.com/questions/8143085/passing-and-through-a-uri-causes-a-403-error-how-can-i-encode-them#answer-8143232
@@ -230,9 +232,41 @@ module.exports.humanFileSize = function (size) {
         const units = ['B', 'kB', 'MB', 'GB', 'TB'][i];
         return `${adjustedSize} ${units}`;
     }
-    return undefined;
 }
 
+
+const parseError = function (response) {
+    if (response instanceof Error) {
+        return Promise.resolve({
+            status: 'error',
+            title: response.message,
+            '@type': ['AjaxError', 'Error'],
+        });
+    }
+    let contentType = response.headers.get('Content-Type') || '';
+    contentType = contentType.split(';')[0];
+    if (contentType === 'application/json') {
+        return response.json();
+    }
+    return Promise.resolve({
+        status: 'error',
+        title: response.statusText,
+        code: response.status,
+        '@type': ['AjaxError', 'Error'],
+    });
+}
+module.exports.parseError = parseError;
+
+module.exports.parseAndLogError = function (cause, response) {
+    const promise = parseError(response);
+    promise.then((data) => {
+        ga('send', 'exception', {
+            exDescription: `${cause}:${data.code}:${data.title}`,
+            location: window.location.href,
+        });
+    });
+    return promise;
+}
 
 module.exports.dbxref_prefix_map = {
     "UniProtKB": "http://www.uniprot.org/uniprot/",
