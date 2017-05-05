@@ -24,7 +24,7 @@
         "SPOT1 score": {
             "title": "SPOT1 score",
             "type": "number",
-            "description": "SPOT1 score as calculated by Hotspot1"
+            "description": "SPOT score as calculated by Hotspot1"
         },
         "SPOT2 score": {
             "title": "SPOT2 score",
