@@ -34,12 +34,52 @@ var COLORS = [
 ];
 
 
+
+const yGroupLimit = 5; // Maximum number of items in a Y group unless the group is opened.
+
+
+const GroupMoreButton = React.createClass({
+    propTypes: {
+        id: React.PropTypes.string, // ID for the handleClick function to know which control was clicked
+        handleClick: React.PropTypes.func, // Call this parent function to handle the click in the button
+        displayText: React.PropTypes.string, // Text to display in the button while closed
+    },
+
+    localHandleClick: function () {
+        this.props.handleClick(this.props.id);
+    },
+
+    render: function () {
+        return <button className="group-more-button" onClick={this.localHandleClick}>{this.props.displayText}</button>;
+    },
+});
+
+
 var Matrix = module.exports.Matrix = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object,
+    },
 
     contextTypes: {
         location_href: React.PropTypes.string,
         navigate: React.PropTypes.func,
         biosampleTypeColors: React.PropTypes.object // DataColor instance for experiment project
+    },
+
+    getInitialState: function () {
+        // Make a state for each of the Y groups (each Y group currently shows a biosample type).
+        // To do that, we have to get each of the bucket keys, which will be the keys into the
+        // object that keeps track of whether the group shows all or not. If a group has fewer than
+        // the maximum number of items to show a See More button, then it still get included here,
+        // but with a value of `false` that never changes.
+        const matrix = this.props.context.matrix;
+        const primaryYGrouping = matrix.y.group_by[0];
+        const yGroups = matrix.y[primaryYGrouping].buckets;
+        const yGroupOpen = {};
+        yGroups.forEach((group) => {
+            yGroupOpen[group.key] = false;
+        });
+        return { yGroupOpen: yGroupOpen };
     },
 
     // Called when the Visualize button dropdown menu gets opened or closed. `dropdownEl` is the DOM node for the dropdown menu.
@@ -54,6 +94,13 @@ var Matrix = module.exports.Matrix = React.createClass({
             // The menu has dropped down
             wrapperEl.style.height = wrapperEl.clientHeight + dropdownHeight + 'px';
         }
+    },
+
+    // Handle a click in a See More link within the matrix (not for the facets)
+    handleClick: function (groupKey) {
+        const groupOpen = _.clone(this.state.yGroupOpen);
+        groupOpen[groupKey] = !groupOpen[groupKey];
+        this.setState({ yGroupOpen: groupOpen });
     },
 
     render: function() {
@@ -132,7 +179,12 @@ var Matrix = module.exports.Matrix = React.createClass({
                                            searchBase={matrix_search} onFilter={this.onFilter} />
                             </div>
                             <div className="col-sm-7 col-md-8 col-lg-9 sm-no-padding">
-                                <div style={{paddingLeft: 0, overflow: 'scroll'}}>
+                                <div className="matrix-wrapper">
+                                    <div className="matrix-group-heading">
+                                        <div className="matrix-group-heading__content">
+                                            {matrix.y.label.toUpperCase()}
+                                        </div>
+                                    </div>
                                     <table className="matrix">
                                         <tbody>
                                             {matrix.doc_count ?
@@ -143,14 +195,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 </tr>
                                             : null}
                                             <tr style={{borderBottom: "solid 1px #ddd"}}>
-                                                {matrix.doc_count ?
-                                                    <th rowSpan={rowCount + 1}
-                                                        className="rotate90"
-                                                        style={{width: 25, borderRight: "solid 1px #ddd", borderBottom: "solid 2px transparent", padding: "5px"}}>
-                                                        <div style={{width: 15}}><span>{matrix.y.label.toUpperCase()}</span></div>
-                                                    </th>
-                                                : null}
-                                                <th style={{border: "solid 1px #ddd", textAlign: "center", width: 200}}>
+                                                <th style={{ textAlign: 'center', width: 200 }}>
                                                     <h3>
                                                       {matrix.doc_count} results
                                                     </h3>
@@ -178,7 +223,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                     }
                                                 })}
                                             </tr>
-                                            {y_groups.map(function(group, i) {
+                                            {y_groups.map((group, i) => {
                                                 var seriesIndex = y_group_options.indexOf(group.key);
                                                 var groupColor = biosampleTypeColors[i];
                                                 var seriesColor = color(groupColor);
@@ -194,10 +239,15 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 </tr>];
                                                 var group_buckets = group[secondary_y_grouping].buckets;
                                                 var y_limit = matrix.y.limit || group_buckets.length;
-                                                rows.push.apply(rows, group_buckets.map(function(yb, j) {
-                                                    if (j < y_limit) {
-                                                        var href = search_base + '&' + secondary_y_grouping + '=' + globals.encodedURIComponent(yb.key);
-                                                        return <tr key={yb.key}>
+
+                                                // If this group isn't open (noted by
+                                                // this.state.yGroupOpen[key]), extract just the
+                                                // group rows that are under the display limit.
+                                                const groupRows = this.state.yGroupOpen[group.key] ? group_buckets : group_buckets.slice(0, y_limit);
+                                                rows.push.apply(rows, groupRows.map((yb, j) => {
+                                                    var href = search_base + '&' + secondary_y_grouping + '=' + globals.encodedURIComponent(yb.key);
+                                                    return (
+                                                        <tr key={yb.key}>
                                                             <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}><a href={href}>{yb.key}</a></th>
                                                             {x_buckets.map(function(xb, i) {
                                                                 if (i < x_limit) {
@@ -207,7 +257,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                                     color.lightness(color.lightness() + (1 - value / matrix.max_cell_doc_count) * (100 - color.lightness()));
                                                                     let textColor = color.luminosity() > .5 ? '#000' : '#fff';
                                                                     var href = search_base + '&' + secondary_y_grouping + '=' + globals.encodedURIComponent(yb.key)
-                                                                                           + '&' + x_grouping + '=' + globals.encodedURIComponent(xb.key);
+                                                                                        + '&' + x_grouping + '=' + globals.encodedURIComponent(xb.key);
                                                                     var title = yb.key + ' / ' + xb.key + ': ' + value;
                                                                     return <td key={xb.key} style={{backgroundColor: color.hexString()}}>
                                                                         {value ? <a href={href} style={{color: textColor}} title={title}>{value}</a> : ''}
@@ -217,16 +267,23 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                                 }
                                                             })}
                                                             {x_buckets.length > x_limit && <td></td>}
-                                                        </tr>;
-                                                    } else if (j == y_limit) {
-                                                        return <tr key={j}>
-                                                            <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}><a href={group_href}>...and {group_buckets.length - y_limit} more</a></th>
-                                                            {_.range(colCount - 1).map(n => <td key={n}></td>)}
-                                                        </tr>;
-                                                    } else {
-                                                        return null;
-                                                    }
+                                                        </tr>
+                                                    );
                                                 }));
+                                                if (group_buckets.length > y_limit) {
+                                                    rows.push(
+                                                        <tr>
+                                                            <th>
+                                                                <GroupMoreButton
+                                                                    id={group.key}
+                                                                    handleClick={this.handleClick}
+                                                                    displayText={this.state.yGroupOpen[group.key] ? '- See fewer' : `+ See ${group_buckets.length - y_limit} more…`}
+                                                                />
+                                                            </th>
+                                                            {_.range(colCount - 1).map(n => <td key={n} />)}
+                                                        </tr>
+                                                    );
+                                                }
                                                 return rows;
                                             })}
                                         </tbody>
