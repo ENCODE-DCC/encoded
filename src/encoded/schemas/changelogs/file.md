@@ -7,10 +7,34 @@
 
 ### Schema version 9.a
 
-* *paired_end* enums list was expanded to include a"1,2" value that is acceptable only for *file_format* = sra files that have *run_type* = paired_ended
-* *paired_end* value (1, 2, or 1,2) is required for files with *run_type* = paired-ended.
-* *md5sum* value formatting is now enforced with regex, validating it as a 32-character hexadecimal number.
-* *read_length* value is now required for files with *output_type* = reads and *file_format* is one of ["fastq", "fasta", "csfasta", "csqual", "sra"]
+#### Fields restricted to DCC access only:
+* *status*
+* *restricted*
+* *content_md5sum*
+* *mapped_read_length*
+* *mapped_run_type*
+
+#### Fields that are now required for certain cases:
+
+* *platform* value is now required for files with *file_format* that is one of ["fastq", "rcc", "csfasta", "csqual", "sra", "CEL", "idat"]
+* *assembly* value is required for files with *file_format* that is one of ["bam", "sam", "gtf", "bigWig"]
+* *file_size* value is now required for files with *status* that is one of ["in progress", "released", "archived", "revoked"]
+* *paired_end* value (1, 2, or 1,2) is required for files with *run_type* = paired-ended and forbidden for run_type that is one of ["single-ended", "unknown"]
+* *read_length* value is now required for files with *output_type* = reads and *file_format* that is one of ["fastq", "fasta", "csfasta", "csqual", "sra"]
+
+#### Formats and enums are more restrictive for several fields:
+
+* *date_created* format is limited now to only *date-time* and not one of ["date", "date-time"] as it used to be
+* *md5sum* value formatting is now enforced with regex, validating it as a 32-character hexadecimal number
+* *output_type* values ["tRNA reference", "miRNA reference", "snRNA reference"] added to the ist of values that could be submitted only by DCC personnel
+* *file_format* values ["sra", "btr"] could be submitted only by DCC personnel
+
+#### Restrictions for use were also put in place:
+
+* *mapped_read_length* is available only for files with file_format = bam
+* *mapped_run_type* is available only for files with file_format = bam
+* *statuses* "uploaded" and "format check failed" were removed
+* *paired_end* enums list was expanded to include a "1,2" value that is acceptable only for *file_format* = sra files that have *run_type* = paired_ended
 
 ### Schema version 9
 
@@ -22,6 +46,16 @@
 * *technical_replicates* was added as a calculated field.
 
 * *mapped_read_length* was added for alignments when the length of the mapped reads differs from the accessioned fastq.
+
+### Schema version 7
+
+#### The following arrays were restricted to contain unique values
+
+* *derived_from*
+* *controlled_by*
+* *supersedes*
+* *aliases*
+* *file_format_specifications*
 
 ### Schema version 6
 

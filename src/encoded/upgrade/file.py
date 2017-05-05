@@ -1,5 +1,6 @@
 from snovault import upgrade_step
 from pyramid.traversal import find_root
+from datetime import date, datetime, time
 
 
 @upgrade_step('file', '', '2')
@@ -471,3 +472,22 @@ def file_8_9(value, system):
     if 'supercedes' in value:
         value['supersedes'] = value['supercedes']
         value.pop('supercedes', None)
+
+
+def set_to_midnight(date_string):
+    release_date = datetime.strptime(date_string, '%Y-%m-%d')
+    min_pub_date_time = datetime.combine(release_date, time.min)
+    return '{:%Y-%m-%dT%H:%M:%S.%f+00:00}'.format(min_pub_date_time)
+
+
+@upgrade_step('file', '9', '10')
+def file_9_10(value, system):
+    # http://redmine.encodedcc.org/issues/5021
+    # http://redmine.encodedcc.org/issues/4929
+    # http://redmine.encodedcc.org/issues/4927
+    # http://redmine.encodedcc.org/issues/4903
+    # http://redmine.encodedcc.org/issues/4904
+
+    date_created = value.get('date_created')
+    if date_created.find('T') == -1:
+        value['date_created'] = set_to_midnight(date_created)

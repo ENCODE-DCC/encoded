@@ -138,6 +138,7 @@ def external_accession(fastq_pair_1):
 
 
 def test_file_post_fastq_pair_1_paired_with(testapp, fastq_pair_1_paired_with):
+    fastq_pair_1_paired_with['run_type'] = 'paired_ended'
     testapp.post_json('/file', fastq_pair_1_paired_with, status=422)
 
 

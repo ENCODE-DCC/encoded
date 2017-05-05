@@ -4,7 +4,7 @@
     "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "file_size", "md5sum", "output_type", "award", "lab"],
+    "required": ["dataset", "file_format", "md5sum", "output_type", "award", "lab"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -44,6 +44,15 @@
         }
     },
     "dependencies": {
+        "paired_with": {
+            "comment": "Only paired-ended files should have paired_with value.",
+            "required": ["run_type"],
+            "properties": {
+                "run_type": {
+                    "enum": ["paired-ended"]
+                }
+            }
+        },
         "run_type": {
             "comment": "Only paired-ended files should have paired_end values.",
             "oneOf": [
@@ -74,6 +83,15 @@
             }
         },
         "mapped_run_type": {
+            "comment": "Only bam files can have mapped_run_type specified.",
+            "properties": {
+                "file_format": {
+                    "enum": ["bam"]
+                }
+            }
+        },
+        "mapped_read_length": {
+            "comment": "Only bam files can have mapped_read_length specified.",
             "properties": {
                 "file_format": {
                     "enum": ["bam"]
@@ -81,47 +99,48 @@
             }
         },
         "paired_end": {
-            "comment": "Files with paired-end value 2 require a paired_with value.",
+            "comment": "Files with paired-end value 2 require a paired_with value and files with paired_end specified require run_type to be specified as paired-ended",
             "oneOf": [
                 {
-                   "required": ["paired_with"],
+                   "required": ["paired_with", "run_type"],
                     "properties": {
                         "paired_end": {
                             "enum": ["2"]
+                        },
+                        "run_type": {
+                            "enum": ["paired-ended"]
                         }
                     }
                 },
                 {
+                    "required": ["run_type"],
                     "properties": {
                         "paired_end": {
                             "enum": ["1"]
+                        },
+                        "run_type": {
+                            "enum": ["paired-ended"]
                         }
                     }
                 },
                 {
+                    "required": ["run_type"],
                     "properties": {
                         "file_format": {
                             "enum": ["sra"]
                         },
                         "paired_end": {
                             "enum": ["1,2"]
+                        },
+                        "run_type": {
+                            "enum": ["paired-ended"]
                         }
                     }
                 }
             ]
         },
-        "paired_with": {
-            "required": ["paired_end"],
-            "properties": {
-                "file_format": {
-                    "enum": ["fastq", "csfasta", "csqual"]
-                },
-                "paired_end": {
-                    "enum": ["2"]
-                }
-            }
-        },
         "output_type":{
+            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified.",
             "oneOf":[
                 {
                     "required": ["read_length"],
@@ -146,7 +165,7 @@
             ]
         },
         "file_format":{
-            "comment": "Fastq and sra files require run_type and replicate but should not have assembly.",
+            "comment": "Fastq and sra files require run_type and replicate but should not have assembly. Raw data files require platform to be specified. Processed files require assembly to be specified.",
             "oneOf": [
                 {
                     "allOf": [
@@ -196,7 +215,7 @@
                     "required": ["assembly"],
                     "properties": {
                         "file_format": {
-                            "enum": ["bam", "sam", "gtf"]
+                            "enum": ["bam", "sam", "gtf", "bigWig"]
                         }
                     }
                 },
@@ -204,7 +223,7 @@
                     "not": {
                         "properties": {
                             "file_format": {
-                                "enum": ["fastq", "gff", "gtf", "bed", "bigBed", "bam", "sam","sra"]
+                                "enum": ["fastq", "gff", "gtf", "bed", "bigBed", "bam", "sam", "sra", "bigWig"]
                             }
                         }
                     }
@@ -212,40 +231,75 @@
             ]
         },
         "status": {
-            "oneOf": [
+            "comment": "file_size is required in files with statuses in progress, revoked, archived and released. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
+            "allOf": [
                 {
-                    "required": ["content_error_detail"],
-                    "properties": {
-                        "status": {
-                            "enum": ["content error"]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "oneOf": [
-                            {
-                                "required": ["content_error_detail"],
-                                "properties": {
-                                    "status": {
-                                        "enum": ["uploading", "uploaded", "upload failed", "format check failed", "in progress", "deleted", "replaced", "revoked", "archived", "released"]
-                                    }
-                                }
-                            },
-                            {
-                                "properties": {
-                                    "status": {
-                                        "enum": ["content error"]
-                                    }
+                    "oneOf": [
+                        {
+                            "required": ["file_size"],
+                            "properties": {
+                                "status": {
+                                    "enum": ["in progress",  "revoked", "archived", "released"]
                                 }
                             }
-                        ]
-                    }
+                        },
+                        {
+                            "properties": {
+                                "status": {
+                                    "enum": ["uploading", "upload failed", "deleted", "replaced", "content error"]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "oneOf": [
+                        {
+                            "required": ["content_error_detail"],
+                            "properties": {
+                                "status": {
+                                    "enum": ["content error"]
+                                }
+                            }
+                        },
+                        {
+                            "not": {
+                                "oneOf": [
+                                    {
+                                        "required": ["content_error_detail"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["uploading", "uploaded", "upload failed", "format check failed", "in progress", "replaced", "revoked", "archived", "released"]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["content error"]
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+
                 }
             ]
         }
     },
     "properties": {
+         "date_created": {
+            "rdfs:subPropertyOf": "dc:created",
+            "title": "Date created",
+            "decription": "The date the object was created.",
+            "comment": "Do not submit. The date the object is created is assigned by the server.",
+            "type": "string",
+            "format": "date-time",
+            "serverDefault": "now",
+            "permission": "import_items"
+        },
         "schema_version": {
             "default": "10"
         },
@@ -278,7 +332,6 @@
                         "bed",
                         "bigBed",
                         "bigWig",
-                        "btr",
                         "fasta",
                         "fastq",
                         "gff",
@@ -291,7 +344,6 @@
                         "tsv",
                         "csv",
                         "sam",
-                        "sra",
                         "tar",
                         "tagAlign",
                         "vcf",
@@ -305,8 +357,10 @@
                     "comment": "Historical file formats, not valid for new submissions.",
                     "permission": "import_items",
                     "enum": [
+                        "btr",
                         "2bit",
                         "csfasta",
+                        "sra",
                         "csqual"
                     ]
                 }
@@ -372,7 +426,8 @@
         },
         "restricted": {
             "title": "Restricted file",
-            "description": "A flag to indicate whether this file is subject to restricted access.",
+            "permission":"import_items",
+            "description": "A flag to indicate whether this file is subject to restricted access",
             "comment": "Do not submit. This value can only be set by admins.",
             "type": "boolean"
         },
@@ -396,6 +451,7 @@
             "description": "The MD5sum of the uncompressed file.",
             "comment": "Do not submit. This is only relavant for gzipped files. This value is calculated and posted by checkfiles script upon submission.",
             "type": "string",
+            "permission": "import_items",
             "format": "hex",
             "maxLength": 32,
             "pattern": "[a-f\\d]{32}|[A-F\\d]{32}"
@@ -466,6 +522,7 @@
         },
         "mapped_read_length": {
             "title": "Mapped read length",
+            "permission": "import_items",
             "description": "The length of the reads actually mapped, if the original read length was clipped.",
             "comment": "This is used when the original sequenced read length needed to be adjusted to match a replicate, or to match experiments and controls.",
             "type": "integer"
@@ -474,6 +531,7 @@
             "title": "Mapped run type for bam files",
             "description": "The mapped run type of the alignment file which may differ from the fastqs it is derived from.",
             "comment": "When the control and experiment run types do not match, one may be changed in order to meet pipeline requirements.",
+            "permission": "import_items",
             "type": "string",
             "enum": [
                 "single-ended",
@@ -613,9 +671,7 @@
                         "genome reference",
                         "transcriptome reference",
                         "transcriptome index",
-                        "tRNA reference",
-                        "miRNA reference",
-                        "snRNA reference",
+
                         "rRNA reference",
                         "TSS reference",
                         "reference variants",
@@ -645,7 +701,9 @@
                     "enum": [
                         "rejected reads",
                         "raw data",
-
+                        "tRNA reference",
+                        "miRNA reference",
+                        "snRNA reference",
                         "spike-in alignments",
 
                         "signal",
@@ -726,7 +784,7 @@
             "description": "The experiment or dataset the file belongs to.",
             "comment": "Required. See dataset.json for available identifiers.",
             "type": "string",
-            "linkTo": ["Experiment", "Dataset", "Reference", "Annotation", "PublicationData", "UcscBrowserComposite"]
+            "linkTo": ["Dataset"]
         },
         "replicate": {
             "title": "Replicate",
@@ -780,21 +838,20 @@
         "status": {
             "title": "Status",
             "type": "string",
+            "permission": "import_items",
             "default": "uploading",
             "description": "The status of the file object.",
             "comment": "Do not submit.  This is set by admins along the process of file submission.",
             "enum" : [
                 "uploading",
                 "content error",
-                "uploaded",
                 "upload failed",
-                "format check failed",
                 "in progress",
                 "deleted",
                 "released",
                 "replaced",
                 "revoked",
-                "archived"        
+                "archived"      
                 ]
         },
         "dbxrefs": {

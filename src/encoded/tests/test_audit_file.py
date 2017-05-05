@@ -237,7 +237,7 @@ def pipeline_short_rna(testapp, lab, award, analysis_step_bam):
 
 
 def test_audit_file_mismatched_paired_with(testapp, file1, file4):
-    testapp.patch_json(file1['@id'], {'paired_end': '2', 'paired_with': file4['uuid']})
+    testapp.patch_json(file1['@id'], {'run_type': 'paired-ended', 'paired_end': '2', 'paired_with': file4['uuid']})
     res = testapp.get(file1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []

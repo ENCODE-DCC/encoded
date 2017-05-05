@@ -372,6 +372,25 @@ def file_fastq_5(testapp, lab, award, base_experiment, replicate_2_1, platform1)
 
 
 @pytest.fixture
+def file_fastq_6(testapp, lab, award, base_experiment, replicate_1_1, platform1):
+    item = {
+        'dataset': base_experiment['@id'],
+        'replicate': replicate_1_1['@id'],
+        'file_format': 'fastq',
+        'file_size': 34,
+        'platform': platform1['@id'],
+        'output_type': 'reads',
+        "read_length": 50,
+        'md5sum': '21be74b6e11515393507f4ebfa66d77a',
+        'run_type': "single-ended",
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'status': 'in progress',  # avoid s3 upload codepath
+    }
+    return testapp.post_json('/file', item).json['@graph'][0]
+
+
+@pytest.fixture
 def file_bam(testapp, lab, award, base_experiment, base_replicate):
     item = {
         'dataset': base_experiment['@id'],
@@ -1435,7 +1454,6 @@ def test_audit_experiment_internal_tags2(testapp, base_experiment,
     testapp.patch_json(biosample_1['@id'], {'internal_tags': ['ENTEx']})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
-    #testapp.patch_json(biosample_2['@id'], {'internal_tags': ['ENTEx', 'SESCC']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_2['@id'], {'library': library_2['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -1444,6 +1462,7 @@ def test_audit_experiment_internal_tags2(testapp, base_experiment,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent internal tags' for error in errors_list)
+
 
 def test_audit_experiment_mismatched_inter_paired_sequencing_files(testapp,
                                                                    base_experiment,
@@ -1455,10 +1474,9 @@ def test_audit_experiment_mismatched_inter_paired_sequencing_files(testapp,
                                                                    biosample_2,
                                                                    mouse_donor_1,
                                                                    mouse_donor_2,
-                                                                   file_fastq_3,
+                                                                   file_fastq_6,
                                                                    file_fastq_4):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
-    testapp.patch_json(file_fastq_3['@id'], {'run_type': "single-ended"})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
