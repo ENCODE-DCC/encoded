@@ -593,6 +593,12 @@ PHASE1_PIPELINES = {
     ],
     'matched_set': [
         remove_keys('related_datasets'),
+    ],
+    'file': [
+        remove_keys('derived_from', 'controlled_by')
+    ],
+    'analysis_step': [
+        remove_keys('parents')
     ]
 }
 
@@ -656,6 +662,12 @@ PHASE2_PIPELINES = {
     'publication': [
         skip_rows_missing_all_keys('datasets'),
     ],
+    'file': [
+        skip_rows_missing_all_keys('derived_from', 'controlled_by')
+    ],
+    'analysis_step': [
+        skip_rows_missing_all_keys('parents')
+    ]
 }
 
 
