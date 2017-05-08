@@ -1,5 +1,10 @@
 ## Changelog for library.json
 
+### Schema version 7
+
+* *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
+* unsafe characters such as " # @ % $ ^ & | ~ ; ` [ ] { } and consecutive whitespaces will no longer be allowed in the alias
+
 ### Schema version 6
 
 * nucleic_acid_term_id will no longer be allowed to be submitted, it will be automatically calculated based on the term_name
