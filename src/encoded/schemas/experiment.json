@@ -82,7 +82,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "11"
+            "default": "10"
         },
         "target": {
             "title": "Target",

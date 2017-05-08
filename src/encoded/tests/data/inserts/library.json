@@ -7,7 +7,7 @@
         "award": "ENCODE2",
         "biosample": "ENCBS057AAA",
         "documents": [
-            "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
+            "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
         "extraction_method": "see document",
         "fragmentation_method": "sonication (Bioruptor Twin)",
@@ -32,7 +32,7 @@
         "award": "ENCODE2",
         "biosample": "ENCBS001AAA",
         "documents": [
-            "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
+            "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
         "extraction_method": "see document",
         "fragmentation_method": "sonication (Bioruptor Twin)",
@@ -197,7 +197,7 @@
         "award": "ENCODE2-Mouse",
         "biosample": "ENCBS044ENC",
         "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "ENCODE:Snyder_Histone_Mouse_protocol"
         ],
         "fragmentation_method": "sonication (generic)",
         "lab": "sherman-weissman",
@@ -212,7 +212,7 @@
         "award": "ENCODE2-Mouse",
         "biosample": "ENCBS044ENC",
         "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "ENCODE:Snyder_Histone_Mouse_protocol"
         ],
         "fragmentation_method": "sonication (generic)",
         "lab": "sherman-weissman",
@@ -227,7 +227,7 @@
         "award": "ENCODE2-Mouse",
         "biosample": "ENCBS044ENC",
         "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "ENCODE:Snyder_Histone_Mouse_protocol"
         ],
         "fragmentation_method": "sonication (generic)",
         "lab": "sherman-weissman",
@@ -242,7 +242,7 @@
         "award": "ENCODE2-Mouse",
         "biosample": "ENCBS044ANI",
         "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "ENCODE:Snyder_Histone_Mouse_protocol"
         ],
         "fragmentation_method": "sonication (generic)",
         "lab": "sherman-weissman",
@@ -257,7 +257,7 @@
         "award": "ENCODE2-Mouse",
         "biosample": "ENCBS045ANI",
         "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "ENCODE:Snyder_Histone_Mouse_protocol"
         ],
         "fragmentation_method": "sonication (generic)",
         "lab": "sherman-weissman",
@@ -291,7 +291,7 @@
         "award": "ENCODE2",
         "biosample": "ENCBS417ENC",
         "documents": [
-            "encode:Myers_Methyl450_protocol"
+            "ENCODE:Myers_Methyl450_protocol"
         ],
         "extraction_method": "QIAGEN DNeasy Blood & Tissue Kit",
         "lab": "richard-myers",
@@ -306,7 +306,7 @@
         "award": "ENCODE2",
         "biosample": "ENCBS417ENC",
         "documents": [
-            "encode:Myers_Methyl450_protocol"
+            "ENCODE:Myers_Methyl450_protocol"
         ],
         "extraction_method": "QIAGEN DNeasy Blood & Tissue Kit",
         "lab": "richard-myers",
@@ -413,7 +413,7 @@
         "strand_specificity": false,
         "size_range": "350-600",
         "fragmentation_method": "shearing (Covaris generic)",
-        "aliases": ["robert-waterston:library_RB884_80_1_1"],
+        "aliases": ["robert-waterston:library:RB884_80_1_1"],
         "depleted_in_term_name": ["rRNA"],
         "extraction_method": "Trizol"
     },
@@ -430,7 +430,7 @@
         "strand_specificity": false,
         "size_range": "350-600",
         "fragmentation_method": "shearing (Covaris generic)",
-        "aliases": ["robert-waterston:library_RB884_680_1_1"],
+        "aliases": ["robert-waterston:library:RB884_680_1_1"],
         "depleted_in_term_name": ["rRNA"],
         "extraction_method": "Trizol"
     },
@@ -443,7 +443,7 @@
         "status": "revoked",
         "nucleic_acid_term_name": "RNA",
         "uuid": "2f98377b-0305-4af2-aa6c-b39d04478817",
-        "aliases": ["robert-waterston:library_RB884_880_1_1"],
+        "aliases": ["robert-waterston:library:RB884_880_1_1"],
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U41HG007355",
         "size_range": "350-600",

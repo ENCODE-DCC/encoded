@@ -79,7 +79,7 @@
                 "lane_status": "not compliant"
             }
         ],
-        "documents": ["encode:Antibody_characterization_standards_February_2014"]
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "H3K4me3_Millipore_07-473_lot_DAM1731494.png",
@@ -94,7 +94,7 @@
         "submitted_by": "sit.nascetur@accumsan.quis",
         "target": "H3K4me3-human",
         "uuid": "adbb7ba3-0bca-4bca-b892-15f997781515",
-        "documents": ["encode:Antibody_characterization_standards_February_2014"]
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "hnRNPA1_aviva-1_WB_HeLa_Fu.TIF",
@@ -120,7 +120,7 @@
             }
         ],
         "notes": "Tell the lab to redo this characterization.",
-        "documents": ["encode:Antibody_characterization_standards_February_2014"]
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "hnRNPA1_aviva-2_WB_HeLa_Fu.TIF",
@@ -159,7 +159,7 @@
                 "lane_status": "compliant"
             }
         ],
-        "documents": ["encode:Antibody_characterization_standards_February_2014"]
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_CTCF_sc-5916_validation_Myers-1.png",
@@ -228,7 +228,7 @@
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "target": "HA-influenza",
         "uuid": "7ad24205-c246-4c67-929f-12974de1fee7",
-        "documents": ["encode:Antibody_characterization_standards_February_2014"]
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham-1_1.jpg",
@@ -256,7 +256,7 @@
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "target": "HA-influenza",
         "uuid": "e430c823-f95e-4b34-beca-41c07cf10376",
-        "documents": ["encode:Antibody_characterization_standards_February_2014"]
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham.pdf",
@@ -298,7 +298,7 @@
             }
         ],
         "notes": "HeLa-S3 lane needs to be done again.",
-        "documents": ["encode:Antibody_characterization_standards_February_2014"]
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_H3K4me3_validation_Bernstein.pdf",
@@ -313,7 +313,7 @@
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "target": "H3K4me3-human",
         "uuid": "2db3adb8-5d5c-4bb0-8580-9633ec610de6",
-        "documents": ["encode:Antibody_characterization_standards_February_2014"]
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_H3K9ac_ab4441_validation_Bernstein.pdf",
@@ -328,7 +328,7 @@
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "target": "H3K9ac-human",
         "uuid": "15bd73e2-fa04-4268-95ce-fee4a0cdf7f3",
-        "documents": ["encode:Antibody_characterization_standards_February_2014"]
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_H3K9ac_ab4441_validation_Bernstein.pdf",
@@ -361,7 +361,7 @@
                 "lane_status": "not compliant"
             }
         ],
-        "documents": ["encode:Antibody_characterization_standards_February_2014"]
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_TAF1_validation_Myers.pdf",
@@ -411,7 +411,7 @@
             }
         ],
         "notes": "The HepG2 and HeLa-S3 lanes look terrible.",
-        "documents": ["encode:Antibody_characterization_standards_February_2014"]
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "_test": "Exempt from standards IP-mass spec characterization",
@@ -427,7 +427,7 @@
         "submitted_by": "maecenas.curabitur@nibh.phasellus",
         "target": "TAF1-human",
         "uuid": "c105221e-2c2f-449d-9942-4f4b5f2f36fe",
-        "documents": ["encode:Antibody_characterization_standards_February_2014"],
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"],
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham-1_1.jpg",
         "comment": "The TF was ranked #21, can you just let this one slide?",
         "notes": "The lab baked me a delicious pie, so I turned a blind eye."
@@ -444,7 +444,7 @@
         "submitted_by": "tempor.convallis@libero.nibh",
         "target": "H3K4me3-mouse",
         "uuid": "77b39794-eca3-4799-bac7-27a71a74313f",
-        "documents": ["encode:Antibody_characterization_standards_February_2014"]
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "aliases": [
@@ -471,7 +471,7 @@
                 "lane_status": "pending dcc review"
             }
         ],
-        "documents": ["encode:Antibody_characterization_standards_February_2014"]
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "aliases": [
@@ -529,7 +529,7 @@
         "status": "compliant",
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "CTCF-human",
-        "documents": ["encode:Antibody_characterization_standards_February_2014"],
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"],
         "uuid": "984cfea4-1cf3-43ea-a49b-d499932619aa"
     },
     {

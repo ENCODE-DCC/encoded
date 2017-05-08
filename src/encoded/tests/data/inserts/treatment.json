@@ -19,7 +19,7 @@
         ],
         "lab": "john-stamatoyannopoulos",
         "documents": [
-            "encode:diffProtB_6hr_protocol"
+            "ENCODE:diffProtB_6hr_protocol"
         ],
         "submitted_by": "blandit.orci@conubia.magna",
         "treatment_term_id": "CHEBI:34730",
@@ -47,7 +47,7 @@
         ],
         "lab": "gregory-crawford",
         "documents": [
-            "encode:MCF-7_Farnham_treatment_protocol"
+            "ENCODE:MCF-7_Farnham_treatment_protocol"
         ],
         "submitted_by": "metus.donec@nisl.montes",
         "treatment_term_id": "CHEBI:44616",

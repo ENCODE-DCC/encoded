@@ -8,7 +8,7 @@
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
         "documents": [
-            "encode:Antibody_characterization_standards_February_2014"
+            "ENCODE:Antibody_characterization_standards_February_2014"
         ],
         "source":"gregory-crawford",
         "modification_type": "replacement",

@@ -4,7 +4,7 @@
         "age": "21",
         "age_units": "year",
         "aliases": [
-            "encode:8121902"
+            "promocell:8121902"
         ],
         "alternate_accessions": [
             "ENCDO117AAA"
@@ -43,7 +43,7 @@
             "ENCDO275AAA"
         ],
         "documents": [
-            "encode:PanIsletD_Crawford_protocol"
+            "ENCODE:PanIsletD_Crawford_protocol"
         ],
         "ethnicity": "unknown",
         "health_status": "unknown",
