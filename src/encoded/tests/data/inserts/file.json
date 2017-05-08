@@ -186,7 +186,7 @@
     {
         "_test": "bad md5 sum",
         "accession": "ENCFF001MXB",
-        "aliases":["encode:badmd5"],
+        "aliases":["ENCODE:badmd5"],
         "assembly": "mm9",
         "award":"U41HG006992",
         "dataset": "ENCSR000ADI",
@@ -1645,7 +1645,7 @@
         "content_md5sum": "d217768b6f6b7734d0304e5b221fc6bd",
         "accession": "ENCFF790SUA",
         "aliases": [
-            "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1"
+            "robert-waterston:fastq1:MiSeq_RB884_80_1_1_1"
         ],
         "replicate": "/replicates/c97bc58c-0a16-4b5f-b4b3-d84813cfea0b/",
         "award": "/awards/U41HG007355/",
@@ -1667,7 +1667,7 @@
         "file_format": "fastq",
         "dataset": "/experiments/ENCSR862BAF/",
         "aliases": [
-            "robert-waterston:fastq1_MiSeq_RB884_680_1_1_1"
+            "robert-waterston:fastq1:MiSeq_RB884_680_1_1_1"
         ],
         "accession": "ENCFF558BPA",
         "output_type": "reads",
@@ -1695,7 +1695,7 @@
         "output_type": "reads",
         "lab": "/labs/robert-waterston/",
         "run_type": "single-ended",
-        "aliases": ["robert-waterston:fastq1_MiSeq_RB884_880_1_1_1"],
+        "aliases": ["robert-waterston:fastq1:MiSeq_RB884_880_1_1_1"],
         "file_size": 27265559,
         "platform": "/platforms/OBI%3A0002003/",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
@@ -1730,7 +1730,7 @@
         "content_md5sum": "d217768b6f6b7734d0304e5b221fc6bd",
         "accession": "ENCFF001EPI",
         "aliases": [
-            "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0"
+            "robert-waterston:fastq1:MiSeq_RB884_80_1_1_1_p0"
         ],
         "replicate": "/replicates/2cc2e28e-8821-4236-b9df-ef69cd9a9ea4/",
         "award": "/awards/U41HG007355/",
@@ -1769,7 +1769,7 @@
         "content_md5sum": "d217768b6f6b7734d0304e5b221fc6bd",
         "accession": "ENCFF003EPI",
         "aliases": [
-            "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_WGBS"
+            "robert-waterston:fastq1:MiSeq_RB884_80_1_1_1_p0_WGBS"
         ],
         "replicate": "/replicates/9883e919-1651-40ea-a505-068733d63aa4/",
         "award": "/awards/U41HG007355/",
@@ -1808,7 +1808,7 @@
         "content_md5sum": "91ce74b6e11c15393507f4ebfa66d78c",
         "accession": "ENCFF005EPI",
         "aliases": [
-            "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K4me1"
+            "robert-waterston:fastq1:MiSeq_RB884_80_1_1_1_p0_H3K4me1"
         ],
         "replicate": "/replicates/e0558c7e-add5-46ae-acef-b96a0e2e9535/",
         "award": "/awards/U41HG007355/",
@@ -1831,7 +1831,7 @@
         "content_md5sum": "91be74b651151a393507f5ebfa66d78c",
         "accession": "ENCFF006EPI",
         "aliases": [
-            "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K4me3"
+            "robert-waterston:fastq1:MiSeq_RB884_80_1_1_1_p0_H3K4me3"
         ],
         "replicate": "/replicates/1be45e03-da0e-4a69-934e-1eb2dd39b214/",
         "award": "/awards/U41HG007355/",
@@ -1854,7 +1854,7 @@
         "content_md5sum": "91be74b6e115a5393507f4ebfa66da7a",
         "accession": "ENCFF007EPI",
         "aliases": [
-            "robert-waterston:fastq1_MiSeq_RB884_80_1_1_1_p0_H3K27ac"
+            "robert-waterston:fastq1:MiSeq_RB884_80_1_1_1_p0_H3K27ac"
         ],
         "replicate": "/replicates/a02299d7-d2a2-4a79-9f7f-9e9e2becadc8/",
         "award": "/awards/U41HG007355/",
@@ -2037,7 +2037,7 @@
         "content_md5sum": "92be74b6e11215393507f4ebfa22d77a",
         "accession": "ENCFF004CON",
         "aliases": [
-            "robert-waterston:fastsq1_MiSeq_RB88ff4_80_1_1_1_p0_H3K4me1"
+            "robert-waterston:fastsq1:MiSeq_RB88ff4_80_1_1_1_p0_H3K4me1"
         ],
         "award": "/awards/U41HG007355/",
         "replicate": "/replicates/5cc02cd5-1e4f-499f-a448-7ef6b7bda29e/",

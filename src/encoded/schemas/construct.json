@@ -43,7 +43,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "4"
         },
         "construct_type": {
             "title": "Type",

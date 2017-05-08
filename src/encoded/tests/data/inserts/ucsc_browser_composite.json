@@ -14,7 +14,7 @@
         "_test": "ec2 dataset",
         "accession": "ENCSR847FDT",
         "aliases": [
-            "encode:FakeyName"
+            "random-key:FakeyName"
         ],
         "award": "ENCODE2",
         "dbxrefs": [

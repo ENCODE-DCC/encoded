@@ -122,7 +122,6 @@ def antibody_characterization_5_6(value, system):
 @upgrade_step('biosample_characterization', '4', '5')
 @upgrade_step('rnai_characterization', '4', '5')
 @upgrade_step('construct_characterization', '4', '5')
-@upgrade_step('donor_characterization', '4', '5')
 def characterization_4_5(value, system):
     # http://redmine.encodedcc.org/issues/2591
     context = system['context']

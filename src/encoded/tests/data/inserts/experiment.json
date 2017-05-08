@@ -60,7 +60,7 @@
         ],
         "description": "CH12 Control Histone Mods by ChIP-seq performed by Yale",
         "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "ENCODE:Snyder_Histone_Mouse_protocol"
         ],
         "lab": "sherman-weissman",
         "status": "released",
@@ -84,7 +84,7 @@
         ],
         "description": "CH12 H3K4me3 Histone Mods by ChIP-seq performed by Yale",
         "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "ENCODE:Snyder_Histone_Mouse_protocol"
         ],
        "lab": "sherman-weissman",
         "possible_controls": [
@@ -111,7 +111,7 @@
         ],
         "description": "CH12 H3K4me3 Histone Mods by ChIP-seq performed by Yale",
         "documents": [
-            "encode:Snyder_Histone_Mouse_protocol"
+            "ENCODE:Snyder_Histone_Mouse_protocol"
         ],
         "lab": "sherman-weissman",
         "possible_controls": [
@@ -137,7 +137,7 @@
         ],
         "description": "HAIB ChIP TAF1 in MCF-7",
         "documents": [
-            "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
+            "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
         "lab": "richard-myers",
         "status": "released",
@@ -162,7 +162,7 @@
         ],
         "description": "UW  SAEC",
         "documents": [
-            "encode:Myers_Methyl450_protocol"
+            "ENCODE:Myers_Methyl450_protocol"
         ],
         "lab": "richard-myers",
         "status": "released",
@@ -483,7 +483,7 @@
         "lab": "robert-waterston",
         "status": "released",
         "date_released": "2016-01-01",
-        "aliases": ["robert-waterston:experiment_RB884_80_1"],
+        "aliases": ["robert-waterston:experiment:RB884_80_1"],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "25ee48a4-d372-42a8-9366-33a8ca387daf"
     },
@@ -500,7 +500,7 @@
         "lab": "robert-waterston",
         "status": "released",
         "date_released": "2016-01-01",
-        "aliases": ["robert-waterston:experiment_RB884_680_1"],
+        "aliases": ["robert-waterston:experiment:RB884_680_1"],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "8669b9e5-5b8e-4814-8625-6fbb29372b84"
     },
@@ -517,7 +517,7 @@
         "lab": "robert-waterston",
         "status": "revoked",
         "date_released": "2016-01-01",
-        "aliases": ["robert-waterston:experiment_RB884_880_1"],
+        "aliases": ["robert-waterston:experiment:RB884_880_1"],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "785f86d8-9d3e-4c29-b007-b1b615ba6076"
     },

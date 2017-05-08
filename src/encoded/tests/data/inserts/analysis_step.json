@@ -210,7 +210,7 @@
     {
         "name": "wgbs_lambda_qc",
         "title": "Bismark Lambda QC",
-        "aliases": ["encode:ONE", "encode:TWO"],
+        "aliases": ["ALIAS:ONE", "ALIAS:TWO"],
         "input_file_types": ["alignments"],
         "output_file_types": ["methylation state at CpG"],
         "parents": ["mott-trim-align-bismark"],

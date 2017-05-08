@@ -32,16 +32,6 @@ def treatment_2(treatment):
 
 
 @pytest.fixture
-def treatment_3(treatment):
-    item = treatment.copy()
-    item.update({
-        'schema_version': '3',
-        'aliases': ['encode:treatment1', 'encode:treatment1']
-    })
-    return item
-
-
-@pytest.fixture
 def treatment_4(treatment, document, antibody_lot):
     item = treatment.copy()
     item.update({
@@ -64,7 +54,7 @@ def test_treatment_upgrade(upgrader, treatment_1):
 
 def test_treatment_upgrade_encode_dbxref(upgrader, treatment_1):
     treatment_1['encode2_dbxrefs'] = ["encode:hESC to endoderm differentiation treatment"]
-    value = upgrader.upgrade('treatment', treatment_1, current_version = '1', target_version='2')
+    value = upgrader.upgrade('treatment', treatment_1, target_version='2')
     assert value['schema_version'] == '2'
     assert 'encode2_dbxrefs' not in value
     assert value['dbxrefs'] == ['UCSC-ENCODE-cv:hESC to endoderm differentiation treatment']
@@ -72,19 +62,13 @@ def test_treatment_upgrade_encode_dbxref(upgrader, treatment_1):
 
 
 def test_treatment_upgrade_status(upgrader, treatment_2):
-    value = upgrader.upgrade('treatment', treatment_2, current_version = '2', target_version='3')
+    value = upgrader.upgrade('treatment', treatment_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'current'
 
 
-def test_treatment_upgrade_3_4(upgrader, treatment_3):
-    value = upgrader.upgrade('treatment', treatment_3, current_version = '3', target_version='4')
-    assert value['schema_version'] == '4'
-    assert len(value['aliases']) == 1
-
-
 def test_treatment_upgrade_4_to_5(upgrader, treatment_4):
-    value = upgrader.upgrade('treatment', treatment_4, current_version = '4', target_version='5')
+    value = upgrader.upgrade('treatment', treatment_4, target_version='5')
     assert value['schema_version'] == '5'
     assert 'protocols' not in value
     assert 'documents' in value
@@ -94,4 +78,3 @@ def test_treatment_upgrade_4_to_5(upgrader, treatment_4):
     assert 'amount' in value
     assert 'concentation_units' not in value
     assert 'amount_units' in value
-

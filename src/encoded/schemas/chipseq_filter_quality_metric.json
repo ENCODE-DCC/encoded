@@ -19,7 +19,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "5"
         },
         "NSC": {
             "title": "Normalized strand cross-correlation",

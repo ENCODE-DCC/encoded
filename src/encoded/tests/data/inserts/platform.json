@@ -111,7 +111,7 @@
     },
     {
         "aliases": [
-            "encode:HiSeq2500"
+            "ENCODE:HiSeq2500"
         ],
         "dbxrefs": [
             "GEO:GPL16791",
@@ -127,7 +127,7 @@
         "url": "http://www.illumina.com/documents/products/datasheets/datasheet_miseq.pdf",
         "term_name": "MiSeq",
         "status": "current",
-        "aliases": ["encode:MiSeq"],
+        "aliases": ["ENCODE:MiSeq"],
         "uuid": "bab144b6-97b5-4dfb-b307-ff2997b73550",
         "dbxrefs": [
             "GEO:GPL15520",

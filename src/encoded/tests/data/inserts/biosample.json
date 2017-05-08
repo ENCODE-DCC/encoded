@@ -18,7 +18,7 @@
             "ENCBS493ENC"
         ],
         "documents": [
-            "encode:PanIsletD_Crawford_protocol"
+            "ENCODE:PanIsletD_Crawford_protocol"
         ],
         "source": "ndri",
         "submitted_by": "metus.donec@nisl.montes",
@@ -53,7 +53,7 @@
         "passage_number": 5,
         "product_id": "HTB-22",
         "documents": [
-            "encode:MCF-7_Farnham_growth_protocol"
+            "ENCODE:MCF-7_Farnham_growth_protocol"
         ],
         "source": "atcc",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -82,7 +82,7 @@
         "passage_number": 5,
         "product_id": "HTB-22",
         "documents": [
-            "encode:MCF-7_Farnham_growth_protocol"
+            "ENCODE:MCF-7_Farnham_growth_protocol"
         ],
         "source": "atcc",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -135,7 +135,7 @@
         "model_organism_sex": "male",
         "organism": "mouse",
         "documents": [
-            "encode:EPC_Stam_protocol"
+            "ENCODE:EPC_Stam_protocol"
         ],
         "source": "michael-bender",
         "submitted_by": "blandit.orci@conubia.magna",
@@ -156,7 +156,7 @@
         "organism": "human",
         "product_id": "CCL-243",
         "documents": [
-            "encode:K562_protocol"
+            "ENCODE:K562_protocol"
         ],
         "source": "atcc",
         "submitted_by": "elementum.mus@dictumst.nostra",
@@ -332,7 +332,7 @@
         "organism": "human",
         "product_id": "86012803",
         "documents": [
-            "encode:MCF-7_Crawford_growth_protocol"
+            "ENCODE:MCF-7_Crawford_growth_protocol"
         ],
         "rnais": [
             "d2dc22ba-5e7c-4626-87ac-257c6fff090c"
@@ -361,7 +361,7 @@
         "organism": "human",
         "product_id": "HTB-22",
         "documents": [
-            "encode:MCF-7_Farnham_growth_protocol"
+            "ENCODE:MCF-7_Farnham_growth_protocol"
         ],
         "source": "atcc",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
@@ -388,7 +388,7 @@
         "model_organism_sex": "unknown",
         "organism": "mouse",
         "documents": [
-            "encode:C2C12_Wold_growth_protocol"
+            "ENCODE:C2C12_Wold_growth_protocol"
         ],
         "source": "barbara-wold",
         "submitted_by": "vitae.quis@mauris.aptent",
@@ -410,7 +410,7 @@
         "model_organism_sex": "unknown",
         "organism": "mouse",
         "documents": [
-            "encode:C2C12_Wold_differentiation_protocol"
+            "ENCODE:C2C12_Wold_differentiation_protocol"
         ],
         "source": "barbara-wold",
         "submitted_by": "vitae.quis@mauris.aptent",
@@ -429,7 +429,7 @@
         "mouse_life_stage": "embryonic",
         "organism": "mouse",
         "documents": [
-            "encode:ZhBTc4_Stam_protocol"
+            "ENCODE:ZhBTc4_Stam_protocol"
         ],
         "source": "dana-levasseur",
         "submitted_by": "blandit.orci@conubia.magna",
@@ -455,7 +455,7 @@
         "phase": "S4",
         "product_id": "GM06990",
         "documents": [
-            "encode:Stam_15_protocols"
+            "ENCODE:Stam_15_protocols"
         ],
         "source": "coriell",
         "submitted_by": "blandit.orci@conubia.magna",
@@ -477,7 +477,7 @@
         "organism": "human",
         "product_id": "CC-2547",
         "documents": [
-            "encode:SAEC_Stam_protocol"
+            "ENCODE:SAEC_Stam_protocol"
         ],
         "source": "lonza",
         "submitted_by": "facilisis.venenatis@mauris.mauris",
@@ -556,8 +556,8 @@
         "passage_number": 2,
         "product_id": "C-14053",
         "documents": [
-            "encode:HAoSMC_PC_8121902.2P_certificate_of_analysis",
-            "encode:HAoSMC_PC_8121902.2P_general_protocol"
+            "ENCODE:HAoSMC_PC_8121902.2P_certificate_of_analysis",
+            "ENCODE:HAoSMC_PC_8121902.2P_general_protocol"
         ],
         "source": "promocell",
         "starting_amount": 600000.0,
@@ -586,8 +586,8 @@
         "lab": "thomas-gingeras",
         "organism": "human",
         "documents": [
-            "encode:Heart_STL003_excision_protocol",
-            "encode:Heart_STL003_general_protocol"
+            "ENCODE:Heart_STL003_excision_protocol",
+            "ENCODE:Heart_STL003_general_protocol"
         ],
         "source": "michael-snyder",
         "submitted_by": "dignissim.euismod@amet.habitant",
@@ -687,7 +687,7 @@
         "_test": "embryonic stem cell",
         "accession": "ENCBS987RNP",
         "aliases": [
-            "encode:H9-cells"
+            "ENCODE:H9-cells"
         ],
         "award": "ENCODE2",
         "biosample_term_id": "NTR:0000838",
@@ -774,7 +774,7 @@
         "worm_synchronization_stage": "egg bleaching",
         "post_synchronization_time": "80",
         "post_synchronization_time_units": "minute",
-        "aliases": ["robert-waterston:biosample_RB884_80_1"],
+        "aliases": ["robert-waterston:biosample:RB884_80_1"],
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "uuid": "96233c08-6eb1-4cd6-a0f3-2dc43dd2d1b1",
         "status": "released"
@@ -794,7 +794,7 @@
         "worm_synchronization_stage": "egg bleaching",
         "post_synchronization_time": "480",
         "post_synchronization_time_units": "minute",
-        "aliases": ["robert-waterston:biosample_RB884_680_1"],
+        "aliases": ["robert-waterston:biosample:RB884_680_1"],
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "uuid": "ac5a990a-aaf7-4270-8080-cc15bf1676da",
         "status": "released"
@@ -814,7 +814,7 @@
         "worm_synchronization_stage": "egg bleaching",
         "post_synchronization_time": "880",
         "post_synchronization_time_units": "minute",
-        "aliases": ["robert-waterston:biosample_RB884_880_1"],
+        "aliases": ["robert-waterston:biosample:RB884_880_1"],
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "uuid": "3510713d-3a33-4db9-8582-9173b8dcdb06",
         "status": "revoked"
@@ -1003,7 +1003,7 @@
         "donor": "/mouse-donors/ENCDO242AAA/",
         "lab": "/labs/michael-snyder",
         "documents": [
-            "encode:EPC_Stam_protocol"
+            "ENCODE:EPC_Stam_protocol"
         ],
         "organism": "/organisms/mouse/",
         "source": "/sources/atcc",

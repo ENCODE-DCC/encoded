@@ -22,12 +22,12 @@
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "organism": "dmelanogaster",
-        "aliases": ["bloomington:38626"],
+        "aliases": ["Bloomington:38626"],
         "strain_background": "VK00033",
         "genotype": "w[1118]; PBac{y[+mDint2] w[+mC]=ab-GFP.FLAG}VK00033",
         "url": "http://flystocks.bio.indiana.edu/Reports/38626.html",
         "documents": [
-            "encode:sample_strain_generation_protocol"
+            "ENCODE:sample_strain_generation_protocol"
         ],
         "uuid": "094a484e-817c-4cb3-a8dd-9ea2c3c1067b",
         "dbxrefs": ["FlyBase:FBst0038626", "BDSC:38626"]

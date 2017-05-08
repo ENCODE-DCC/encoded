@@ -19,7 +19,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "5"
         },
         "pre-filter all reads": {
             "title": "Total reads after filtering",

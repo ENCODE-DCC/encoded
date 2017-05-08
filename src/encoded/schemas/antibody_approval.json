@@ -16,7 +16,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "3"
         },
         "antibody": {
             "title": "Antibody",

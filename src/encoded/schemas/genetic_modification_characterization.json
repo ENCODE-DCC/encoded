@@ -21,7 +21,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "1"
         },
         "characterizes": {
             "title": "Genetic modification characterized",

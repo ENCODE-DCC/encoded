@@ -3,9 +3,6 @@ from snovault import (
     upgrade_step,
 )
 
-'''
-This upgrade is no longer needed but just kept for posterity. It no longer works after versionof: was removed as
-a valid namespace in aliases. See http://redmine.encodedcc.org/issues/4748
 
 @upgrade_step('analysis_step_run', '1', '2')
 def analysis_step_run_1_2(value, system):
@@ -19,4 +16,3 @@ def analysis_step_run_1_2(value, system):
     # http://redmine.encodedcc.org/issues/3075
     if 'workflow_run' in value:
         del value['workflow_run']
-'''

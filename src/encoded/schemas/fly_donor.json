@@ -25,7 +25,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "3"
         },
         "genotype": {
             "description": "The genotype of the strain according to accepted nomenclature conventions: http://flybase.org/wiki/FlyBase:Nomenclature"
