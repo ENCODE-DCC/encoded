@@ -1,23 +1,21 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var collection = require('./collection');
 var fetched = require('./fetched');
 var globals = require('./globals');
-var audit = require('./audit');
+import { auditDecor } from './audit';
 var form = require('./form');
 var _ = require('underscore');
 
-var cx = require('react/lib/cx');
-var AuditIndicators = audit.AuditIndicators;
-var AuditDetail = audit.AuditDetail;
-var AuditMixin = audit.AuditMixin;
 var JSONSchemaForm = form.JSONSchemaForm;
 var Table = collection.Table;
 
 
-var Fallback = module.exports.Fallback = React.createClass({
+var Fallback = module.exports.Fallback = createReactClass({
     contextTypes: {
-        location_href: React.PropTypes.string
+        location_href: PropTypes.string
     },
 
     render: function() {
@@ -43,8 +41,7 @@ var Fallback = module.exports.Fallback = React.createClass({
 });
 
 
-var Item = module.exports.Item = React.createClass({
-    mixins: [AuditMixin],
+var ItemComponent = module.exports.Item = createReactClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -61,11 +58,11 @@ var Item = module.exports.Item = React.createClass({
                         <h2>{title}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="status-line">
-                            <AuditIndicators context={context} key="biosample-audit" />
+                            {this.props.auditIndicators(context.audit, 'item-audit')}
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} key="biosample-audit" />
+                {this.props.auditDetail(context.audit, 'item-audit', { except: context['@id'] })}
                 <div className="row item-row">
                     <div className="col-sm-12">
                         {context.description ? <p className="description">{context.description}</p> : null}
@@ -77,6 +74,8 @@ var Item = module.exports.Item = React.createClass({
     }
 });
 
+const Item = auditDecor(ItemComponent);
+
 globals.content_views.register(Item, 'Item');
 
 
@@ -86,7 +85,7 @@ globals.content_views.fallback = function () {
 };
 
 
-var Panel = module.exports.Panel = React.createClass({
+var Panel = module.exports.Panel = createReactClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-detail panel');
@@ -123,9 +122,9 @@ globals.listing_titles.fallback = function () {
 };
 
 
-var ItemEdit = module.exports.ItemEdit = React.createClass({
+var ItemEdit = module.exports.ItemEdit = createReactClass({
     contextTypes: {
-        navigate: React.PropTypes.func
+        navigate: PropTypes.func
     },
 
     render: function() {
@@ -178,7 +177,7 @@ globals.content_views.register(ItemEdit, 'Item', 'edit');
 globals.content_views.register(ItemEdit, 'Collection', 'add');
 
 
-var FetchedRelatedItems = React.createClass({
+var FetchedRelatedItems = createReactClass({
     getDefaultProps: function() {
         return {Component: Table};
     },
@@ -197,7 +196,7 @@ var FetchedRelatedItems = React.createClass({
 });
 
 
-var RelatedItems = module.exports.RelatedItems = React.createClass({
+var RelatedItems = module.exports.RelatedItems = createReactClass({
     getDefaultProps: function() {
         return {limit: 5};
     },

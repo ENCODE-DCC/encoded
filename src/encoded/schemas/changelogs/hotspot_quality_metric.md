@@ -1,5 +1,11 @@
 ## Changelog for hotspot_quality_metric.json
 
+### Schema version 6
+
+* *SPOT2 score* field has been renamed from *SPOT score* to show it was calculated by Hotspot2.
+* *SPOT1 score* field has been added for scores as calculated by Hotspot1.
+* *total tags* and *hotspot tags* fields have been added to characterize Hotspot1 methods"
+
 ### Schema version 5
 
 * *assay_term_id* is no longer allowed to be submitted, it will be automatically calculated based on the term_name

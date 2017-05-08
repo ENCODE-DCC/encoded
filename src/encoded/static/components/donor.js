@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
@@ -15,10 +17,10 @@ import StatusLabel from './statuslabel';
 import { BiosampleTable } from './typeutils';
 
 
-const HumanDonor = React.createClass({
+const HumanDonor = createReactClass({
     propTypes: {
-        context: React.PropTypes.object.isRequired, // Donor being displayed
-        biosample: React.PropTypes.object, // Biosample this donor is associated with
+        context: PropTypes.object.isRequired, // Donor being displayed
+        biosample: PropTypes.object, // Biosample this donor is associated with
     },
 
     render: function () {
@@ -128,10 +130,10 @@ globals.panel_views.register(HumanDonor, 'HumanDonor');
  * Display a table of donors. Mostly useful for arrays of donors related to the one being
  * displayed.
  */
-const DonorTable = React.createClass({
+const DonorTable = createReactClass({
     propTypes: {
-        title: React.PropTypes.string, // Title to display in the title bar of the donor table
-        donors: React.PropTypes.array, // Array of donors to display in the table
+        title: PropTypes.string, // Title to display in the title bar of the donor table
+        donors: PropTypes.array, // Array of donors to display in the table
     },
 
     columns: {
@@ -174,10 +176,10 @@ const DonorTable = React.createClass({
 });
 
 
-const MouseDonor = React.createClass({
+const MouseDonor = createReactClass({
     propTypes: {
-        context: React.PropTypes.object, // Mouse donor object being rendered
-        biosample: React.PropTypes.object, // Biosample object this donor belongs to
+        context: PropTypes.object, // Mouse donor object being rendered
+        biosample: PropTypes.object, // Biosample object this donor belongs to
     },
 
     render: function () {
@@ -313,10 +315,10 @@ const MouseDonor = React.createClass({
 globals.panel_views.register(MouseDonor, 'MouseDonor');
 
 
-const FlyWormDonor = React.createClass({
+const FlyWormDonor = createReactClass({
     propTypes: {
-        context: React.PropTypes.object, // Mouse donor object being rendered
-        biosample: React.PropTypes.object, // Biosample object this donor belongs to
+        context: PropTypes.object, // Mouse donor object being rendered
+        biosample: PropTypes.object, // Biosample object this donor belongs to
     },
 
     render: function () {
@@ -431,13 +433,13 @@ globals.panel_views.register(FlyWormDonor, 'WormDonor');
 
 
 // This component activates for any donors that aren't any of the above registered types.
-const Donor = React.createClass({
+const Donor = createReactClass({
     propTypes: {
-        context: React.PropTypes.object, // Donor being rendered
+        context: PropTypes.object, // Donor being rendered
     },
 
     contextTypes: {
-        session: React.PropTypes.object, // Login information
+        session: PropTypes.object, // Login information
     },
 
     getInitialState: function () {

@@ -333,7 +333,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
 .file-gallery-graph-header {
     padding: 10px;
-    background-color: #d8e0e8;
+    background-color: #d8e0e8 !important;
 
     h4 {
         margin: 0;
@@ -366,6 +366,8 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     display: block;
     padding: 10px;
     height: 100%;
+    border: none;
+    background-color: transparent;
 
     h4 {
         margin: 0 0 0 40px;
