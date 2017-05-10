@@ -48,7 +48,7 @@ describe('Experiment Page', function() {
             var dbxrefs = desc.getElementsByTagName('a');
             expect(dbxrefs.length).toEqual(2);
             expect(dbxrefs[0].getAttribute('href')).toEqual('http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1=wgEncodeEH003317');
-            expect(dbxrefs[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1010811');
+            expect(dbxrefs[1].getAttribute('href')).toEqual('https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1010811');
         });
 
         it('has proper release date', function() {
@@ -89,7 +89,7 @@ describe('Experiment Page', function() {
         it('has a single proper download link', function() {
             var url = require('url');
 
-            var dlBar = doc.getElementsByClassName('dl-bar');
+            var dlBar = doc.getElementsByClassName('document__file');
             expect(dlBar.length).toEqual(1);
             var anchors = dlBar[0].getElementsByTagName('a');
             expect(anchors.length).toEqual(2);
@@ -97,7 +97,7 @@ describe('Experiment Page', function() {
         });
 
         it('has two key-value pairs, and proper DL link', function() {
-            var trigger = doc.getElementsByClassName('detail-switch');
+            var trigger = doc.getElementsByClassName('document__file-detail-switch');
             TestUtils.Simulate.click(trigger[0]);
 
             var docKeyValue = doc.getElementsByClassName('key-value-doc');

@@ -11,23 +11,12 @@ from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
+from .visualization import vis_format_external_url
 
 import pdb;
 from pprint import pprint as pp
 
 
-
-_ASSEMBLY_MAPPER = {
-    'GRCh38-minimal': 'hg38',
-    'GRCh38': 'hg38',
-    'GRCh37': 'hg19',
-    'mm10-minimal': 'mm10',
-    'GRCm38': 'mm10',
-    'GRCm37': 'mm9',
-    'BDGP6': 'dm4',
-    'BDGP5': 'dm3',
-    'WBcel235': 'WBcel235'
-}
 
 CHAR_COUNT = 32
 
@@ -40,11 +29,6 @@ def includeme(config):
 
 
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
-
-hgConnect = ''.join([
-    'http://genome.ucsc.edu/cgi-bin/hgTracks',
-    '?hubClear=',
-])
 
 audit_facets = [
     ('audit.ERROR.category', {'title': 'Audit category: ERROR'}),
@@ -486,8 +470,10 @@ def format_results(request, hits, result=None):
             yield item
 
     # After all are yielded, it may not be too late to change this result setting
-    if not any_released and result is not None and 'batch_hub' in result:
-        del result['batch_hub']
+    #if not any_released and result is not None and 'batch_hub' in result:
+    #    del result['batch_hub']
+    if not any_released and result is not None and 'visualize_batch' in result:
+        del result['visualize_batch']
 
 
 def search_result_actions(request, doc_types, es_results, position=None):
@@ -497,20 +483,33 @@ def search_result_actions(request, doc_types, es_results, position=None):
     # generate batch hub URL for experiments
     # TODO we could enable them for Datasets as well here, but not sure how well it will work
     if doc_types == ['Experiment'] or doc_types == ['Annotation']:
+        viz = {}
         for bucket in aggregations['assembly']['assembly']['buckets']:
             if bucket['doc_count'] > 0:
                 assembly = bucket['key']
-                ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
+                if assembly in viz:  # mm10 and mm10-minimal resolve to the same thing
+                    continue
                 search_params = request.query_string.replace('&', ',,')
-                if not request.params.getall('assembly') or assembly in request.params.getall('assembly'):
+                if not request.params.getall('assembly') \
+                or assembly in request.params.getall('assembly'):
                     # filter  assemblies that are not selected
-                    hub = request.route_url('batch_hub',
-                                            search_params=search_params,
-                                            txt='hub.txt')
+                    hub_url = request.route_url('batch_hub',search_params=search_params,
+                                                txt='hub.txt')
+                    browser_urls = {}
+                    pos = None
                     if 'region-search' in request.url and position is not None:
-                        actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly + '&position={}'.format(position)
-                    else:
-                        actions.setdefault('batch_hub', {})[assembly] = hgConnect + hub + '&db=' + ucsc_assembly
+                        pos = position
+                    ucsc_url = vis_format_external_url("ucsc", hub_url, assembly, pos)
+                    if ucsc_url is not None:
+                        browser_urls['UCSC'] = ucsc_url
+                    ensembl_url = vis_format_external_url("ensembl", hub_url, assembly, pos)
+                    if ensembl_url is not None:
+                        browser_urls['Ensembl'] = ensembl_url
+                    if browser_urls:
+                        viz[assembly] = browser_urls
+                        #actions.setdefault('visualize_batch', {})[assembly] = browser_urls  # formerly 'batch_hub'
+        if viz:
+            actions.setdefault('visualize_batch',viz)
 
     # generate batch download URL for experiments
     # TODO we could enable them for Datasets as well here, but not sure how well it will work

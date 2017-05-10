@@ -8,6 +8,8 @@ from pyramid.traversal import find_root
 from .base import (
     Item,
     paths_filtered_by_status,
+    ALLOW_CURRENT,
+    DELETED,
 )
 
 
@@ -45,6 +47,13 @@ class Award(Item):
     schema = load_schema('encoded:schemas/award.json')
     name_key = 'name'
     embedded = ['pi.lab']
+    STATUS_ACL = {
+        'current': ALLOW_CURRENT,
+        'deleted': DELETED,
+        'replaced': DELETED,
+        'disabled': ALLOW_CURRENT
+    }
+
 
 
 @collection(

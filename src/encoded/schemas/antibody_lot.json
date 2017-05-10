@@ -30,7 +30,6 @@
         "lot_id": {
             "title": "Lot ID",
             "description": "The lot identifier provided by the originating lab or vendor.",
-            "default": "unknown",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
@@ -50,7 +49,6 @@
             "title": "Antigen description",
             "description": "The plain text description of the antigen used in raising the antibody (e.g. amino acid residue locations of the antigen).",
             "type": "string",
-            "default": "",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
         "antigen_sequence": {
@@ -96,6 +94,7 @@
             "enum": [
                 "IgA1",
                 "IgA2",
+                "IgG2c",
                 "IgD",
                 "IgG",
                 "IgGκ",

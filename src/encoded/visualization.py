@@ -18,7 +18,6 @@ from pyramid.events import subscriber
 from .peak_indexer import AfterIndexedExperimentsAndDatasets
 
 import logging
-from .search import _ASSEMBLY_MAPPER
 
 log = logging.getLogger(__name__)
 # log.setLevel(logging.DEBUG)
@@ -27,6 +26,88 @@ log.setLevel(logging.INFO)
 # NOTE: Caching is turned on and off with this global AND TRACKHUB_CACHING in peak_indexer.py
 USE_CACHE = True  # Use elasticsearch caching of individual acc_composite blobs
 
+
+_ASSEMBLY_MAPPER = {
+    'GRCh38-minimal': 'hg38',
+    'GRCh38': 'hg38',
+    'GRCh37': 'hg19',
+    'mm10-minimal': 'mm10',
+    'GRCm38': 'mm10',
+    'NCBI37': 'mm9',
+    'BDGP6': 'dm6',
+    'BDGP5': 'dm3',
+    'WBcel235': 'ce11'
+}
+
+_ASSEMBLY_MAPPER_FULL = {
+    'GRCh38':         { 'species':          'Homo sapiens',     'assembly_reference': 'GRCh38',
+                        'common_name':      'human',
+                        'ucsc_assembly':    'hg38',
+                        'ensembl_host':     'www.ensembl.org',
+                        'comment':          'Ensembl works'
+    },
+    'GRCh38-minimal': { 'species':          'Homo sapiens',     'assembly_reference': 'GRCh38',
+                        'common_name':      'human',
+                        'ucsc_assembly':    'hg38',
+                        'ensembl_host':     'www.ensembl.org',
+    },
+    'hg19': {           'species':          'Homo sapiens',     'assembly_reference': 'GRCh37',
+                        'common_name':      'human',
+                        'ucsc_assembly':    'hg19',
+                        'NA_ensembl_host':  'grch37.ensembl.org',
+                        'comment':          'Ensembl DOES NOT WORK'
+    },
+    'mm10': {           'species':          'Mus musculus',     'assembly_reference': 'GRCm38',
+                        'common_name':      'mouse',
+                        'ucsc_assembly':    'mm10',
+                        'ensembl_host':     'www.ensembl.org',
+                        'comment':          'Ensembl works'
+    },
+    'mm10-minimal': {   'species':          'Mus musculus',     'assembly_reference': 'GRCm38',
+                        'common_name':      'mouse',
+                        'ucsc_assembly':    'mm10',
+                        'ensembl_host':     'www.ensembl.org',
+                        'comment':          'Should this be removed?'
+    },
+    'mm9': {            'species':          'Mus musculus',     'assembly_reference': 'NCBI37',
+                        'common_name':      'mouse',
+                        'ucsc_assembly':    'mm9',
+                        'NA_ensembl_host':  'may2012.archive.ensembl.org',
+                        'comment':          'Ensembl DOES NOT WORK'
+    },
+    'dm6': {    'species':          'Drosophila melanogaster',  'assembly_reference': 'BDGP6',
+                'common_name':      'fruit fly',
+                'ucsc_assembly':    'dm6',
+                'NA_ensembl_host':  'www.ensembl.org',
+                'comment':          'Ensembl DOES NOT WORK'
+    },
+    'dm3': {    'species':          'Drosophila melanogaster',  'assembly_reference': 'BDGP5',
+                'common_name':      'fruit fly',
+                'ucsc_assembly':    'dm3',
+                'NA_ensembl_host':  'dec2014.archive.ensembl.org',
+                'comment':          'Ensembl DOES NOT WORK'
+    },
+    'ce11': {   'species':          'Caenorhabditis elegans',   'assembly_reference': 'WBcel235',
+                'common_name':      'worm',
+                'ucsc_assembly':    'ce11',
+                'NA_ensembl_host':  'www.ensembl.org',
+                'comment':          'Ensembl DOES NOT WORK'
+    },
+    'ce10': {   'species':          'Caenorhabditis elegans',   'assembly_reference': 'WS220',
+                'common_name':      'worm',
+                'ucsc_assembly':    'ce10',
+                'comment':          'Never Ensembl'
+    },
+    'ce6': {    'species':          'Caenorhabditis elegans',   'assembly_reference': 'WS190',
+                'common_name':      'worm',
+                'ucsc_assembly':    'ce6',
+                'comment':          'Never Ensembl, not found in encoded'
+    },
+    'J02459.1': {   'species':      'Escherichia virus Lambda', 'assembly_reference': 'J02459.1',
+                    'common_name':  'lambda phage',
+                    'comment':      'Never visualized'
+    },
+}
 
 def includeme(config):
     config.add_route('batch_hub', '/batch_hub/{search_params}/{txt}')
@@ -279,6 +360,7 @@ def load_vis_defs():
                 vis_def = json.load(fh)
                 if vis_def:
                     VIS_DEFS_BY_TYPE.update(vis_def)
+    COMPOSITE_VIS_DEFS_DEFAULT = vis_def.get("opaque",{})
 
 
 def get_vis_type(dataset):
@@ -1783,8 +1865,11 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
             dataset = request.embed("/datasets/" + acc + '/', as_user=True)
             # log.debug("find_or_make_acc_composite len(results) = %d   %.3f secs" %
             #           (len(results),(time.time() - PROFILE_START_TIME)))
+        host=request.host_url
+        if host is None or host.find("localhost") > -1:
+            host = "https://www.encodeproject.org"
 
-        acc_composite = make_acc_composite(dataset, assembly, host=request.host_url, hide=hide)
+        acc_composite = make_acc_composite(dataset, assembly, host=host, hide=hide)
         if USE_CACHE:
             add_to_es(request, es_key, acc_composite)
         found_or_made = "made"
@@ -1992,6 +2077,9 @@ def prime_vis_es_cache(event):
     else:
         log.debug("Starting prime_vis_es_cache: %d uuids" % (raw_count))
 
+    # NOTE: the request object coming from the peak indexer was not using elasticsearch!
+    request.datastore = 'elasticsearch'
+
     visualizabe_types = set(VISIBLE_DATASET_TYPES)
     count = 0
     for uuid in uuids:
@@ -2072,6 +2160,46 @@ def get_hub(label, comment=None, name=None):
         ('#', comment)
     ])
     return render(hub)
+
+
+def vis_format_external_url(browser, hub_url, assembly, position=None):
+    '''Given a url to hub.txt, returns the url to an external browser or None.'''
+    mapped_assembly = _ASSEMBLY_MAPPER_FULL[assembly]
+    if not mapped_assembly:
+        return None
+    if browser == "ucsc":
+        ucsc_assembly = mapped_assembly.get('ucsc_assembly')
+        if ucsc_assembly is not None:
+            external_url = 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear='
+            external_url += hub_url + '&db=' + ucsc_assembly
+            if position is not None:
+                external_url += '&position={}'.format(position)
+            return external_url
+    elif browser == "ensembl":
+        ensembl_host = mapped_assembly.get('ensembl_host')
+        if ensembl_host is not None:
+            external_url = 'http://' + ensembl_host + '/Trackhub?url='
+            external_url += hub_url + ';species=' + mapped_assembly.get('species').replace(' ','_')
+            ### TODO: remove redirect=no when Ensembl fixes their mirrors
+            external_url += ';redirect=no'
+            ### TODO: remove redirect=no when Ensembl fixes their mirrors
+
+            if position is not None:
+                if position.startswith('chr'):
+                    position = position[3:]  # ensembl position r=19:7069444-7087968
+                external_url += '&r={}'.format(position)
+            # GRCh38:   http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR596NOF/@@hub/hub.txt
+            # GRCh38:   http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR596NOF/@@hub/hub.txt;species=Homo_sapiens
+            # hg19/GRCh37:     http://grch37.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR596NOF/@@hub/hub.txt;species=Homo_sapiens
+            # mm10/GRCm38:     http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR475TDY@@hub/hub.txt;species=Mus_musculus
+            # mm9/NCBIM37:      http://may2012.archive.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR000CNV@@hub/hub.txt;species=Mus_musculus
+            # BDGP6:    http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR040UNE@@hub/hub.txt;species=Drosophila_melanogaster
+            # BDGP5:    http://dec2014.archive.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR040UNE@@hub/hub.txt;species=Drosophila_melanogaster
+            # ce11/WBcel235: http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR475TDY@@hub/hub.txt;species=Caenorhabditis_elegans
+            return external_url
+    #else:
+        # ERROR: not supported at this time
+    return None
 
 
 def generate_html(context, request):

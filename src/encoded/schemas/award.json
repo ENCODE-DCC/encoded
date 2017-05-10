@@ -77,10 +77,12 @@
                 "ENCODE2",
                 "ENCODE2-Mouse",
                 "ENCODE3",
+                "ENCODE4",
                 "GGR",
                 "Roadmap",
                 "modENCODE",
-                "modERN"
+                "modERN",
+                "community"
             ]
         },
         "project": {
@@ -92,7 +94,8 @@
                 "GGR",
                 "Roadmap",
                 "modENCODE",
-                "modERN"
+                "modERN",
+                "community"
             ]
         },
         "viewing_group": {
@@ -103,7 +106,8 @@
                 "ENCODE3",
                 "ENCODE4",
                 "GGR",
-                "REMC"
+                "REMC",
+                "community"
             ]
         }
     },

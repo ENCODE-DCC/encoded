@@ -12,7 +12,7 @@ var _ = require('underscore');
 var globals = require('./globals');
 var image = require('./image');
 var search = module.exports;
-var { donorDiversity } = require('./objectutils');
+var { donorDiversity, BrowserSelector } = require('./objectutils');
 var dbxref = require('./dbxref');
 var audit = require('./audit');
 var objectutils = require('./objectutils');
@@ -396,7 +396,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <div className="highlight-row">
                             {organismNames.length ?
                                 <span>
-                                    {organismNames.map((organism, i) => 
+                                    {organismNames.map((organism, i) =>
                                         <span>
                                             {i > 0 ? <span>and </span> : null}
                                             <i>{organism} </i>
@@ -600,7 +600,7 @@ function termSelected(term, facet, filters) {
             if ((filter.field === facet.field + '!' && term === 'no') ||
                 (filter.field === facet.field && term === 'yes')) {
                 selected = true; break;
-            } 
+            }
         } else if (filter.field == facet.field && filter.term == term) {
             selected = true; break;
         }
@@ -847,7 +847,7 @@ var FacetList = search.FacetList = React.createClass({
             hideTypes = filters.filter(filter => filter.field === 'type').length === 1 && normalFacets.length > 1;
         }
 
-        // See if we need the Clear Filters link or not. context.clear_filters 
+        // See if we need the Clear Filters link or not. context.clear_filters
         var clearButton; // JSX for the clear button
         var searchQuery = context && context['@id'] && url.parse(context['@id']).search;
         if (searchQuery) {
@@ -928,11 +928,11 @@ var ResultTable = search.ResultTable = React.createClass({
     },
 
     render: function() {
-        const batchHubLimit = 100;
+        const visualizeLimit = 100;
         var context = this.props.context;
         var results = context['@graph'];
         var total = context['total'];
-        var batch_hub_disabled = total > batchHubLimit;
+        var visualizeDisabled = total > visualizeLimit;
         var columns = context['columns'];
         var filters = context['filters'];
         var label = 'results';
@@ -960,9 +960,10 @@ var ResultTable = search.ResultTable = React.createClass({
         }
 
         // Get a sorted list of batch hubs keys with case-insensitive sort
-        var batchHubKeys = [];
-        if (context.batch_hub && Object.keys(context.batch_hub).length) {
-            batchHubKeys = Object.keys(context.batch_hub).sort((a, b) => {
+        // NOTE: Tim thinks this is overkill as opposed to simple sort()
+        var visualizeKeys = [];
+        if (context.visualize_batch && Object.keys(context.visualize_batch).length) {
+            visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
                 var aLower = a.toLowerCase();
                 var bLower = b.toLowerCase();
                 return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
@@ -1014,16 +1015,12 @@ var ResultTable = search.ResultTable = React.createClass({
                                         <BatchDownload context={context} />
                                     : null}
 
-                                    {batchHubKeys && context.batch_hub ?
-                                        <DropdownButton disabled={batch_hub_disabled} label="batchhub" title={batch_hub_disabled ? 'Filter to ' + batchHubLimit + ' to visualize' : 'Visualize'} wrapperClasses="results-table-button">
-                                            <DropdownMenu>
-                                                {batchHubKeys.map(assembly =>
-                                                    <a key={assembly} data-bypass="true" target="_blank" href={context['batch_hub'][assembly]}>
-                                                        {assembly}
-                                                    </a>
-                                                )}
-                                            </DropdownMenu>
-                                        </DropdownButton>
+                                    {visualizeKeys && context.visualize_batch ?
+                                        <BrowserSelector
+                                            visualizeCfg={context.visualize_batch}
+                                            disabled={visualizeDisabled}
+                                            title={visualizeDisabled ? 'Filter to ' + visualizeLimit + ' to visualize' : 'Visualize'}
+                                        />
                                     : null}
                                 </div>
                             </div>

@@ -65,7 +65,6 @@
             "title": "Description",
             "description": "A plain text description of the document.",
             "type": "string",
-            "default": "",
             "elasticsearch_mapping_index_type": {
                 "title": "Field mapping index type",
                 "description": "Defines one of three types of indexing available",
@@ -92,6 +91,41 @@
                 "type": "string",
                 "format": "uri"
             }
+        }
+    },
+    "columns": {
+        "document_type": {
+            "title": "Type"
+        },
+        "description": {
+            "title": "Description"
+        },
+        "attachment.href": {
+            "comment": "Internal webapp URL for document file"
+        },
+        "attachment.type": {
+            "title": "MIME type"
+        },
+        "attachment.width": {
+            "title": "Image width"
+        },
+        "attachment.height": {
+            "title": "Image height"
+        },
+        "attachment.download": {
+            "title": "File Name"
+        },
+        "award.@id": {
+            "title": "Grant href"
+        },
+        "award.name": {
+            "title": "Grant"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "submitted_by.title": {
+            "title": "Submitted by"
         }
     },
     "boost_values": {

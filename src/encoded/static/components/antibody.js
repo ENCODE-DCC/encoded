@@ -12,7 +12,7 @@ var dbxref = require('./dbxref');
 var image = require('./image');
 var item = require('./item');
 var audit = require('./audit');
-var statuslabel = require('./statuslabel');
+import StatusLabel from './statuslabel';
 var doc = require('./doc');
 
 var Breadcrumbs = navigation.Breadcrumbs;
@@ -21,7 +21,6 @@ var AuditDetail = audit.AuditDetail;
 var AuditMixin = audit.AuditMixin;
 var DbxrefList = dbxref.DbxrefList;
 var ExperimentTable = dataset.ExperimentTable;
-var StatusLabel = statuslabel.StatusLabel;
 var statusOrder = globals.statusOrder;
 var RelatedItems = item.RelatedItems;
 var {Panel, PanelBody} = panel;
@@ -347,17 +346,14 @@ var CharacterizationHeader = React.createClass({
         var doc = this.props.doc;
 
         return (
-            <div className="panel-header">
-                <div className="document-title">
+            <div>
+                <div className="document__header">
                     {doc.target.label} {doc.target.organism.scientific_name ? <span>{' ('}<i>{doc.target.organism.scientific_name}</i>{')'}</span> : ''}
                 </div>
                 {doc.characterization_reviews && doc.characterization_reviews.length ?
-                    <div className="characterization-biosample-terms">
-                        {doc.characterization_reviews.map((review, i) => {
-                            var flexItem = {
-                                flex: review.biosample_term_name.length + ' 1 auto'
-                            };
-                            return <span key={i} className="characterization-biosample-term" style={flexItem}>{review.biosample_term_name}</span>;
+                    <div className="document__characterization-reviews">
+                        {doc.characterization_reviews.map((review) => {
+                            return <span key={review.biosample_term_name} className="document__characterization-biosample-term">{review.biosample_term_name}</span>;
                         })}
                     </div>
                 : null}
@@ -376,9 +372,9 @@ var CharacterizationCaption = React.createClass({
         var doc = this.props.doc;
 
         return (
-            <div className="document-intro document-meta-data">
+            <div className="document__caption">
                 {doc.characterization_method ?
-                    <div data-test="method">
+                    <div data-test="caption">
                         <strong>Method: </strong>
                         {doc.characterization_method}
                     </div>
@@ -403,14 +399,12 @@ var CharacterizationFile = React.createClass({
         }
 
         return (
-            <div className="dl-bar">
-                <div className="characterization-badge"><StatusLabel status={doc.status} /></div>
+            <div className="document__file">
+                <div className="document__characterization-badge"><StatusLabel status={doc.status} /></div>
                 {detailSwitch ?
-                    <div className="detail-switch">
-                        <a href="#" data-trigger onClick={detailSwitch} className="collapsing-doc">
-                            {collapseIcon(!this.props.detailOpen)}
-                        </a>
-                    </div>
+                    <a href="#" data-trigger onClick={detailSwitch} className="document__file-detail-switch">
+                        {collapseIcon(!this.props.detailOpen)}
+                    </a>
                 : null}
             </div>
         );
@@ -426,7 +420,7 @@ var CharacterizationDetail = React.createClass({
 
     render: function() {
         var doc = this.props.doc;
-        var keyClass = 'document-slider' + (this.props.detailOpen ? ' active' : '');
+        var keyClass = 'document__detail' + (this.props.detailOpen ? ' active' : '');
         var excerpt = doc.caption && doc.caption.length > EXCERPT_LENGTH;
 
         var download, attachmentHref;

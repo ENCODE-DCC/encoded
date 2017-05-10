@@ -1,11 +1,10 @@
 import React from 'react';
 import _ from 'underscore';
-import url from 'url';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import { SortTable } from './sorttable';
 import globals from './globals';
-import { StatusLabel } from './statuslabel';
+import StatusLabel from './statuslabel';
 import { ProjectBadge, Attachment } from './image';
 import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
 import { RelatedItems } from './item';
@@ -13,7 +12,7 @@ import { DbxrefList } from './dbxref';
 import { Breadcrumbs } from './navigation';
 import { treatmentDisplay, singleTreatment } from './objectutils';
 import { BiosampleTable } from './typeutils';
-import { DocumentsPanel } from './doc';
+import { DocumentsPanel, AttachmentPanel } from './doc';
 import { PickerActionsMixin } from './search';
 
 
@@ -24,7 +23,7 @@ const GM_TECHNIQUE_MAP = {
 };
 
 
-const geneticModificationCharacterizations = React.createClass({
+const GeneticModificationCharacterizations = React.createClass({
     propTypes: {
         characterizations: React.PropTypes.array, // Genetic modificiation characterizations to display
     },
@@ -40,7 +39,7 @@ const geneticModificationCharacterizations = React.createClass({
                 <PanelBody addClasses="attachment-panel-outer">
                     <section className="flexrow attachment-panel-inner">
                         {characterizations.map(characterization =>
-                            <AttachmentPanel key={characterization.uuid} context={characterization} attachment={characterization.attachment} title={characterization.characterization_method} />
+                            <AttachmentPanel key={characterization.uuid} context={characterization} attachment={characterization.attachment} title={characterization.characterization_method} />,
                         )}
                     </section>
                 </PanelBody>
@@ -275,7 +274,7 @@ export const GeneticModification = React.createClass({
                 </Panel>
 
                 {context.characterizations && context.characterizations.length ?
-                    <geneticModificationCharacterizations characterizations={context.characterizations} />
+                    <GeneticModificationCharacterizations characterizations={context.characterizations} />
                 : null}
 
                 <DocumentsPanel
@@ -298,6 +297,51 @@ export const GeneticModification = React.createClass({
 });
 
 globals.content_views.register(GeneticModification, 'GeneticModification');
+
+
+const GMAttachmentCaption = React.createClass({
+    propTypes: {
+        title: React.PropTypes.string.isRequired, // Title to display for attachment
+    },
+
+    render: function () {
+        const { title } = this.props;
+
+        return (
+            <div className="document__caption">
+                <div data-test="caption">
+                    <strong>Attachment: </strong>
+                    {title}
+                </div>
+            </div>
+        );
+    },
+});
+
+
+const GMAttachmentPreview = React.createClass({
+    propTypes: {
+        context: React.PropTypes.object.isRequired, // QC metric object that owns the attachment to render
+        attachment: React.PropTypes.object.isRequired, // Attachment to render
+    },
+
+    render: function () {
+        const { context, attachment } = this.props;
+
+        return (
+            <figure className="document__preview">
+                <Attachment context={context} attachment={attachment} className="characterization" />
+            </figure>
+        );
+    },
+});
+
+
+// Register document caption rendering components
+globals.document_views.caption.register(GMAttachmentCaption, 'GeneticModificationCharacterization');
+
+// Register document preview rendering components
+globals.document_views.preview.register(GMAttachmentPreview, 'GeneticModificationCharacterization');
 
 
 // Display modification technique specific to the CRISPR type.
@@ -427,56 +471,6 @@ const TechniqueTale = React.createClass({
 });
 
 globals.panel_views.register(TechniqueTale, 'Tale');
-
-
-// Display a panel for attachments that aren't a part of an associated document
-export const AttachmentPanel = React.createClass({
-    propTypes: {
-        context: React.PropTypes.object.isRequired, // Object that owns the attachment; needed for attachment path
-        attachment: React.PropTypes.object.isRequired, // Attachment being rendered
-        title: React.PropTypes.string, // Title to display in the caption area
-    },
-
-    render: function () {
-        const { context, attachment, title } = this.props;
-
-        // Make the download link
-        let download;
-        let attachmentHref;
-        if (attachment.href && attachment.download) {
-            attachmentHref = url.resolve(context['@id'], attachment.href);
-            download = (
-                <div className="dl-link">
-                    <i className="icon icon-download" />&nbsp;
-                    <a data-bypass="true" href={attachmentHref} download={attachment.download}>
-                        Download
-                    </a>
-                </div>
-            );
-        } else {
-            download = <em>Attachment not available to download</em>;
-        }
-
-        return (
-            <div className="flexcol panel-attachment">
-                <Panel addClasses={globals.itemClass(context, 'view-detail')}>
-                    <figure>
-                        <Attachment context={context} attachment={attachment} className="characterization" />
-                    </figure>
-                    <div className="document-intro document-meta-data">
-                        {title ?
-                            <div data-test="attachments">
-                                <strong>Method: </strong>
-                                {title}
-                            </div>
-                        : null}
-                        {download}
-                    </div>
-                </Panel>
-            </div>
-        );
-    },
-});
 
 
 const Listing = React.createClass({

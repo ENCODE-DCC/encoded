@@ -43,7 +43,7 @@ def audit_file_pipeline_status(value, system):
                 yield AuditFailure('inconsistent pipeline status',
                                    detail, level='INTERNAL_ACTION')
 
-
+'''
 @audit_checker('File', frame=['derived_from'])
 def audit_file_md5sum_integrity(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
@@ -63,6 +63,7 @@ def audit_file_md5sum_integrity(value, system):
                  'which is not a valid hexadecimal number.'
         yield AuditFailure('inconsistent md5sum',
                            detail, level='INTERNAL_ACTION')
+'''
 
 
 @audit_checker('File', frame=['derived_from'])
@@ -140,51 +141,24 @@ def audit_file_derived_from_revoked(value, system):
                 return
 
 
-@audit_checker('file', frame=['dataset', 'derived_from'])
+@audit_checker('file', frame=['derived_from'])
 def audit_file_assembly(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
-
-    if value['output_category'] in ['raw data']:
-        if value['file_format'] in ['fastq', 'csfasta', 'csqual', 'fasta'] and \
-           'assembly' in value:
-            detail = 'Raw data file {} '.format(value['@id']) + \
-                     'has improperly specified assembly value.'
-            yield AuditFailure('unexpected property',
-                               detail, level='INTERNAL_ACTION')
+    if 'derived_from' not in value:
         return
-    else:  # not row data file
-        # special treatment of RNA-Bind-n-Seq
-        if 'assay_term_name' in value['dataset'] and \
-           value['dataset']['assay_term_name'] == 'RNA Bind-n-Seq':
-            if 'assembly' in value:
-                detail = 'RNA Bind-n-Seq file {} '.format(value['@id']) + \
-                         'has improperly specified assembly value.'
-                yield AuditFailure('unexpected property',
-                                   detail, level='INTERNAL_ACTION')
-                return
-        #  any other asssay processed file
-        else:
-            if 'assembly' not in value:
+    for f in value['derived_from']:
+        if 'assembly' in f:
+            if f['assembly'] != value['assembly']:
                 detail = 'Processed file {} '.format(value['@id']) + \
-                         'does not have assembly specified.'
-                yield AuditFailure('missing assembly',
+                         'assembly {} '.format(value['assembly']) + \
+                         'does not match assembly {} of the file {} '.format(
+                         f['assembly'],
+                         f['@id']) + \
+                    'it was derived from.'
+                yield AuditFailure('inconsistent assembly',
                                    detail, level='INTERNAL_ACTION')
                 return
-            if 'derived_from' not in value:
-                return
-            for f in value['derived_from']:
-                if 'assembly' in f:
-                    if f['assembly'] != value['assembly']:
-                        detail = 'Processed file {} '.format(value['@id']) + \
-                                 'assembly {} '.format(value['assembly']) + \
-                                 'does not match assembly {} of the file {} '.format(
-                                 f['assembly'],
-                                 f['@id']) + \
-                            'it was derived from.'
-                        yield AuditFailure('inconsistent assembly',
-                                           detail, level='INTERNAL_ACTION')
-                        return
 
 
 @audit_checker('file', frame=['replicate', 'replicate.experiment',
@@ -277,34 +251,6 @@ def audit_file_platform(value, system):
         detail = 'File {} metadata lacks information on the instrument/platform '.format(value['@id']) + \
                  'used to produce it.'
         raise AuditFailure('missing platform', detail, level='ERROR')
-
-
-@audit_checker('file', frame=['dataset'],
-               condition=rfa('ENCODE3', 'modERN', 'ENCODE',
-                             'ENCODE2', 'ENCODE2-Mouse'))
-def audit_file_read_length(value, system):
-    '''
-    Reads files should have a read_length
-    '''
-
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
-
-    if value['output_type'] != 'reads':
-        return
-
-    if value['file_format'] == 'csqual':
-        return
-
-    if 'read_length' not in value:
-        detail = 'Reads file {} missing read_length'.format(value['@id'])
-        yield AuditFailure('missing read_length', detail, level='INTERNAL_ACTION')
-        return
-
-    if value['read_length'] == 0:
-        detail = 'Reads file {} has read_length of 0'.format(value['@id'])
-        yield AuditFailure('missing read_length', detail, level='INTERNAL_ACTION')
-        return
 
 
 def check_presence(file_to_check, files_list):
@@ -502,7 +448,7 @@ def audit_file_flowcells(value, system):
         raise AuditFailure('missing flowcell_details', detail, level='WARNING')
 
 
-@audit_checker('file', frame=['paired_with'],)
+@audit_checker('file', frame=['paired_with'])
 def audit_paired_with(value, system):
     '''
     A file with a paired_end needs a paired_with.
@@ -517,16 +463,7 @@ def audit_paired_with(value, system):
         return
 
     if 'paired_with' not in value:
-        paired_number = "2"
-        if value['paired_end'] == "2":
-            paired_number = "1"
-        detail = 'Sequencing read{} file {} is the result of a '.format(
-            value['paired_end'],
-            value['@id']) + \
-            'paired-end sequencing run according to the submitted metadata. ' + \
-            'An association with a read{} file needs to be specified.'.format(
-                paired_number)
-        raise AuditFailure('missing paired_with', detail, level='ERROR')
+        return
 
     if 'replicate' not in value['paired_with']:
         return
@@ -535,7 +472,8 @@ def audit_paired_with(value, system):
         detail = 'File {} has paired_end = {}. It requires a replicate'.format(
             value['@id'],
             value['paired_end'])
-        raise AuditFailure('missing replicate', detail, level='INTERNAL_ACTION')
+        yield AuditFailure('missing replicate', detail, level='INTERNAL_ACTION')
+        return
 
     if value['replicate'] != value['paired_with']['replicate']:
         detail = 'File {} has replicate {}. It is paired_with file {} with replicate {}'.format(
@@ -543,7 +481,8 @@ def audit_paired_with(value, system):
             value.get('replicate'),
             value['paired_with']['@id'],
             value['paired_with'].get('replicate'))
-        raise AuditFailure('inconsistent paired_with', detail, level='ERROR')
+        yield AuditFailure('inconsistent paired_with', detail, level='ERROR')
+        return
 
     if value['paired_end'] == '1':
         context = system['context']
@@ -553,7 +492,8 @@ def audit_paired_with(value, system):
                 value['@id'],
                 paired_with,
             )
-            raise AuditFailure('multiple paired_with', detail, level='ERROR')
+            yield AuditFailure('multiple paired_with', detail, level='ERROR')
+            return
 
 
 @audit_checker('file', frame=['step_run',
@@ -621,17 +561,6 @@ def audit_modERN_ChIP_pipeline_steps(value, system):
             yield AuditFailure('wrong step_run for IDR peaks', detail, level='WARNING')
 
 
-@audit_checker('file', frame='object')
-def audit_file_size(value, system):
-
-    if value['status'] in ['deleted', 'replaced', 'uploading', 'revoked']:
-        return
-
-    if 'file_size' not in value:
-        detail = 'File {} requires a value for file_size'.format(value['@id'])
-        raise AuditFailure('missing file_size', detail, level='INTERNAL_ACTION')
-
-
 @audit_checker('file', frame=['file_format_specifications'],)
 def audit_file_format_specifications(value, system):
 
@@ -642,30 +571,6 @@ def audit_file_format_specifications(value, system):
                 doc['@id']
                 )
             raise AuditFailure('inconsistent document_type', detail, level='ERROR')
-
-
-@audit_checker('file', frame='object')
-def audit_file_paired_ended_run_type(value, system):
-    '''
-    Audit to catch those files that were upgraded to have run_type = paired ended
-    resulting from its migration out of replicate but lack the paired_end property
-    to specify which read it is. This audit will also catch the case where run_type
-    = paired-ended but there is no paired_end = 2 due to registeration error.
-    '''
-
-    if value['status'] in ['deleted', 'replaced', 'revoked', 'upload failed']:
-        return
-
-    if value['file_format'] not in ['fastq', 'fasta', 'csfasta']:
-        return
-
-    if (value['output_type'] == 'reads') and (value.get('run_type') == 'paired-ended'):
-        if 'paired_end' not in value:
-            detail = 'Sequencing file {} '.format(value['@id']) + \
-                     'is the result of a paired-end sequencing run ' + \
-                     'according to the submitted metadata, but is missing the requisite ' + \
-                     'information to classify it as read1 or read2 in the pair.'
-            raise AuditFailure('missing paired_end', detail, level='ERROR')
 
 
 def get_chip_seq_bam_read_depth(bam_file):
@@ -854,7 +759,7 @@ def audit_file_chip_seq_control_read_depth(value, system):
 
     chip_flag = False
     for p in value['analysis_step_version']['analysis_step']['pipelines']:
-        if p['title'] == 'Histone ChIP-seq':
+        if p['title'] == 'ChIP-seq read mapping':
             chip_flag = True
         if p['title'] == 'Raw mapping with no filtration':
             return
@@ -880,7 +785,7 @@ def audit_file_chip_seq_control_read_depth(value, system):
             target_investigated_as = value['dataset']['target']['investigated_as']
 
     if target_name not in ['Control-human', 'Control-mouse']:
-        control_bam = get_control_bam(value, 'Histone ChIP-seq')
+        control_bam = get_control_bam(value, 'ChIP-seq read mapping')
         if control_bam is not False:
             control_depth = get_chip_seq_bam_read_depth(control_bam)
             control_target = get_target_name(control_bam)
@@ -904,7 +809,7 @@ def check_control_read_depth_standards(value,
                                        target_investigated_as,
                                        standards_version):
 
-    marks = pipelines_with_read_depth['Histone ChIP-seq']
+    marks = pipelines_with_read_depth['ChIP-seq read mapping']
     modERN_cutoff = pipelines_with_read_depth['Transcription factor ChIP-seq pipeline (modERN)']
 
     if is_control_file is True:  # treat this file as control_bam -

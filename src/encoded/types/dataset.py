@@ -25,7 +25,7 @@ from .shared_calculated_properties import (
 
 from itertools import chain
 import datetime
-from ..search import _ASSEMBLY_MAPPER
+from ..visualization import vis_format_external_url
 
 
 def item_is_revoked(request, path):
@@ -79,7 +79,7 @@ class Dataset(Item):
         'revoked_files.submitted_by',
         'submitted_by',
         'lab',
-        'award',
+        'award.pi.lab',
         'documents.lab',
         'documents.award',
         'documents.submitted_by',
@@ -189,22 +189,31 @@ class Dataset(Item):
         return request.resource_path(self, '@@hub', 'hub.txt')
 
     @calculated_property(condition='hub', category='page', schema={
-        "title": "Visualize at UCSC",
+        "title": "Visualize Data",
         "type": "string",
     })
-    def visualize_ucsc(self, request, hub, assembly, status):
+
+    def visualize(self, request, hub, assembly, status):
         if status  != 'released':
             return {}
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
-        for assembly_hub in assembly:
-            ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly_hub, assembly_hub)
-            ucsc_url = (
-                'http://genome.ucsc.edu/cgi-bin/hgTracks'
-                '?hubClear='
-            ) + quote_plus(hub_url, ':/@') + '&db=' + ucsc_assembly
-            viz[assembly_hub] = ucsc_url
-        return viz
+        for assembly_name in assembly:
+            if assembly_name in viz:  # mm10 and mm10-minimal resolve to the same thing
+                continue
+            browser_urls = {}
+            ucsc_url = vis_format_external_url("ucsc", hub_url, assembly_name)
+            if ucsc_url is not None:
+                browser_urls['UCSC'] = ucsc_url
+            ensembl_url = vis_format_external_url("ensembl", hub_url, assembly_name)
+            if ensembl_url is not None:
+                browser_urls['Ensembl'] = ensembl_url
+            if browser_urls:
+                viz[assembly_name] = browser_urls
+        if viz:
+            return viz
+        else:
+            return None
 
     @calculated_property(condition='date_released', schema={
         "title": "Month released",
@@ -590,7 +599,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'organism',
         'target',
         'target.organism',
-        'award.pi.lab',
         'references',
         'related_datasets.files',
         'related_datasets.files.analysis_step_version',

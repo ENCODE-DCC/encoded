@@ -1,4 +1,5 @@
 {
+    "title": "Bismark quality metric",
     "description": "Schema for reporting the specific calculation of an quality metrics",
     "id": "/profiles/bismark_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",

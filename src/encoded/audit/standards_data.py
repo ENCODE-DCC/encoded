@@ -36,7 +36,7 @@ pipelines_with_read_depth = {
     'RNA-seq of long RNAs (paired-end, stranded)': 30000000,
     'RNA-seq of long RNAs (single-end, unstranded)': 30000000,
     'RAMPAGE (paired-end, stranded)': 20000000,
-    'Histone ChIP-seq': {
+    'ChIP-seq read mapping': {
         'narrow': 20000000,
         'broad': 45000000
     },
@@ -46,6 +46,7 @@ pipelines_with_read_depth = {
 special_assays_with_read_depth = {
     'shRNA knockdown followed by RNA-seq': 10000000,
     'siRNA knockdown followed by RNA-seq': 10000000,
+    'CRISPRi followed by RNA-seq': 10000000,
     'CRISPR genome editing followed by RNA-seq': 10000000,
     'single cell isolation followed by RNA-seq': 5000000
     }
