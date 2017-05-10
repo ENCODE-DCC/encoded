@@ -149,6 +149,7 @@ class Experiment(Dataset,
         'possible_controls',
         'target.organism',
         'references',
+        'supersedes',
     ]
     audit_inherit = [
         'original_files',
