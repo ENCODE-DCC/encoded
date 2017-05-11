@@ -104,8 +104,8 @@ def item_alias_tighten(value, system):
         # Remove or substitute bad characters and multiple whitespaces
         
         import re
-        if '"' or '#' or '@' or '!' or '$' or '^' or '&' or '|' or '~'  or ';' or '`' in rest:
-            rest = re.sub(r'[\"#@!$^&|~;`\/\\]', '', rest)
+        if '"' or '#' or '@' or '^' or '&' or '|' or '~' or '<' or '>' or '?' or '=' or ';' or '`' in rest:
+            rest = re.sub(r'[\"#@^&|~<>?=;`\/\\]', '', rest)
             rest = ' '.join(rest.split())
         if '%' in rest:
             rest = re.sub(r'%', 'pct', rest)
