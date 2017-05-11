@@ -932,7 +932,7 @@ const FacetList = search.FacetList = createReactClass({
                     : null}
                     {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map((facet) => {
-                        if ((hideTypes && facet.field === 'type') || (!loggedIn && facet.field.substring(0, 6) === 'audit.')) {
+                        if (hideTypes && facet.field === 'type') {
                             return <span key={facet.field} />;
                         }
                         return <Facet {...this.props} key={facet.field} facet={facet} filters={filters} width={width} />;
