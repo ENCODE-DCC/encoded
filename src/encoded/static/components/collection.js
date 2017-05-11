@@ -1,8 +1,9 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var url = require('url');
 var globals = require('./globals');
-var parseAndLogError = require('./mixins').parseAndLogError;
 var StickyHeader = require('./StickyHeader');
 
 
@@ -15,7 +16,7 @@ var lookup_column = function (result, column) {
     return value;
 };
 
-var Collection = module.exports.Collection = React.createClass({
+var Collection = module.exports.Collection = createReactClass({
     render: function () {
         var context = this.props.context;
         return (
@@ -36,8 +37,9 @@ globals.content_views.register(Collection, 'Collection');
 
 
 class Cell {
-    constructor(value, sortable) {
+    constructor(value, name, sortable) {
         this.value = value;
+        this.name = name;
         this.sortable = sortable;
     }
 }
@@ -76,28 +78,57 @@ class Data {
     }
 }
 
-var RowView = function (props) {
-    var row = props.row;
-    var id = row.item['@id'];
-    var tds = row.cells.map( function (cell, index) {
-        if (index === 0) {
-            return (
-                <td key={index}><a href={row.item['@id']}>{cell.value}</a></td>
-            );
+const RowView = (props) => {
+    const { row, hidden } = props;
+    const id = row.item['@id'];
+    const tds = row.cells.map((cell, index) => {
+        let cellValue;
+        if (typeof cell.value === 'object') {
+            // Cell contains an array or object, so render specially.
+            if (Array.isArray(cell.value)) {
+                // The cell contains an array. Determine if it's empty or not.
+                if (cell.value.length) {
+                    // Non-empty array. Arrays of simple values get comma separated. Arrays of
+                    // objects get displayed as "[Objects]".
+                    cellValue = (typeof cell.value[0] === 'object') ? '[Objects]' : cell.value.join();
+                }
+            } else {
+                // The cell contains an object. Display "[Object]"
+                cellValue = '[Object]';
+            }
+        } else {
+            // Cell contains a simple value; just display it.
+            cellValue = cell.value;
         }
+
+        // Render a cell, but Make the first column in the row a link to the object.
         return (
-            <td key={index}>{cell.value}</td>
+            <td key={cell.name}>
+                {index === 0 ?
+                    <a href={row.item['@id']}>{cellValue}</a>
+                :
+                    <span>{cellValue}</span>
+                }
+            </td>
         );
     });
-    return (
-        <tr key={id} hidden={props.hidden} data-href={id}>{tds}</tr>
-    );
+    return <tr key={id} hidden={hidden} data-href={id}>{tds}</tr>;
 };
 
-var Table = module.exports.Table = React.createClass({
+RowView.propTypes = {
+    row: PropTypes.object.isRequired, // Properties to render in the row
+    hidden: PropTypes.bool, // True if row is hidden; usually because of entered search terms
+};
+
+RowView.defaultProps = {
+    hidden: false,
+};
+
+
+var Table = module.exports.Table = createReactClass({
     contextTypes: {
-        fetch: React.PropTypes.func,
-        location_href: React.PropTypes.string
+        fetch: PropTypes.func,
+        location_href: PropTypes.string
     },
 
 
@@ -130,9 +161,11 @@ var Table = module.exports.Table = React.createClass({
         if (updateData) {
             var columns = this.guessColumns(nextProps);
             this.extractData(nextProps, columns);
+            this.setState({ columns: columns });
         }
         if (nextContext.location_href !== this.context.location_href) {
-            this.extractParams(nextProps, nextContext);
+            const newState = this.extractParams(nextProps, nextContext);
+            this.setState(newState);
         }
 
     },
@@ -148,7 +181,6 @@ var Table = module.exports.Table = React.createClass({
             reversed: params.reversed || false,
             searchTerm: params.q || ''
         };
-        this.setState(state);
         return state;
     },
 
@@ -168,7 +200,6 @@ var Table = module.exports.Table = React.createClass({
                 columns.push(column);
             }
         }
-        this.setState({columns: columns});
         return columns;
     },
 
@@ -195,7 +226,7 @@ var Table = module.exports.Table = React.createClass({
                     value = factory({context: value});
                 }
                 var sortable = ('' + value).toLowerCase();
-                return new Cell(value, sortable);
+                return new Cell(value, column, sortable);
             });
             var text = cells.map(function (cell) {
                 return cell.value;
@@ -211,7 +242,10 @@ var Table = module.exports.Table = React.createClass({
         var context = props.context;
         var communicating;
         var request = this.state.allRequest;
-        if (request) request.abort();
+        if (request) {
+            console.log('FETCHALL ABORT');
+            request.abort();
+        }
         var self = this;
         if (context.all) {
             communicating = true;
@@ -225,7 +259,7 @@ var Table = module.exports.Table = React.createClass({
             .then(data => {
                 self.extractData({context: data});
                 self.setState({communicating: false});
-            }, parseAndLogError.bind(undefined, 'allRequest'));
+            }, globals.parseAndLogError.bind(undefined, 'allRequest'));
             this.setState({
                 allRequest: request,
                 communicating: true
@@ -254,14 +288,14 @@ var Table = module.exports.Table = React.createClass({
                 className += reversed ? " icon-chevron-down" : " icon-chevron-up";
             }
             return (
-                <th onClick={self.handleClickHeader} key={index}>
+                <th onClick={self.handleClickHeader} key={column}>
                     {titles[column] && titles[column]['title'] || column}
                     <i className={className}></i>
                 </th>
             );
         });
         var actions = (context.actions || []).map(action =>
-            <span className="table-actions">
+            <span className="table-actions" key={action.name}>
                 <a href={action.href}>
                     <button className={'btn ' + action.className || ''}>{action.title}</button>
                 </a>
@@ -352,7 +386,7 @@ var Table = module.exports.Table = React.createClass({
         }
         var cellIndex = target.cellIndex;
         var reversed = '';
-        var sorton = this.refs.sorton.getDOMNode();
+        var sorton = this.refs.sorton;
         if (this.props.defaultSortOn !== cellIndex) {
             sorton.value = cellIndex;
         } else {
@@ -361,7 +395,7 @@ var Table = module.exports.Table = React.createClass({
         if (this.state.sortOn == cellIndex) {
             reversed = !this.state.reversed || '';
         }
-        this.refs.reversed.getDOMNode().value = reversed;
+        this.refs.reversed.value = reversed;
         event.preventDefault();
         event.stopPropagation();
         this.submit();
@@ -382,7 +416,7 @@ var Table = module.exports.Table = React.createClass({
 
     submit: function () {
         // form.submit() does not fire onsubmit handlers...
-        var target = this.refs.form.getDOMNode();
+        var target = this.refs.form;
 
         // IE8 does not support the Event constructor
         if (!this.hasEvent) {
@@ -395,7 +429,7 @@ var Table = module.exports.Table = React.createClass({
     },
     
     clearFilter: function (event) {
-        this.refs.q.getDOMNode().value = '';
+        this.refs.q.value = '';
         this.submitTimer = setTimeout(this.submit);
     }, 
 
@@ -404,7 +438,10 @@ var Table = module.exports.Table = React.createClass({
             clearTimeout(this.submitTimer);
         }
         var request = this.state.allRequest;
-        if (request) request.abort();
+        if (request) {
+            console.log('UNMOUNT ABORT');
+            request.abort();
+        }
     }
 
 });

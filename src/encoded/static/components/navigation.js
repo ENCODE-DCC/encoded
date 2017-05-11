@@ -1,5 +1,7 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var url = require('url');
 var {Navbars, Navbar, Nav, NavItem} = require('../libs/bootstrap/navbar');
 var {DropdownMenu, DropdownMenuSep} = require('../libs/bootstrap/dropdown-menu');
@@ -7,12 +9,12 @@ var productionHost = require('./globals').productionHost;
 var _ = require('underscore');
 
 
-var Navigation = module.exports = React.createClass({
+var Navigation = module.exports = createReactClass({
     mixins: [Navbars],
 
     contextTypes: {
-        location_href: React.PropTypes.string,
-        portal: React.PropTypes.object
+        location_href: PropTypes.string,
+        portal: PropTypes.object
     },
 
     getInitialState: function() {
@@ -66,9 +68,9 @@ var Navigation = module.exports = React.createClass({
 
 
 // Main navigation menus
-var GlobalSections = React.createClass({
+var GlobalSections = createReactClass({
     contextTypes: {
-        listActionsFor: React.PropTypes.func
+        listActionsFor: PropTypes.func
     },
 
     render: function() {
@@ -101,9 +103,9 @@ var GlobalSections = React.createClass({
 
 
 // Context actions: mainly for editing the current object
-var ContextActions = React.createClass({
+var ContextActions = createReactClass({
     contextTypes: {
-        listActionsFor: React.PropTypes.func
+        listActionsFor: PropTypes.func
     },
 
     render: function() {
@@ -138,9 +140,9 @@ var ContextActions = React.createClass({
     }
 });
 
-var Search = React.createClass({
+var Search = createReactClass({
     contextTypes: {
-        location_href: React.PropTypes.string
+        location_href: PropTypes.string
     },
 
     render: function() {
@@ -158,10 +160,10 @@ var Search = React.createClass({
 });
 
 
-var UserActions = React.createClass({
+var UserActions = createReactClass({
     contextTypes: {
-        listActionsFor: React.PropTypes.func,
-        session_properties: React.PropTypes.object
+        listActionsFor: PropTypes.func,
+        session_properties: PropTypes.object
     },
 
     render: function() {
@@ -200,10 +202,10 @@ var UserActions = React.createClass({
 //     tip: Text to display as part of uri tooltip.
 //     wholeTip: Alternative to 'tip' property. The complete tooltip to display
 // }
-var Breadcrumbs = module.exports.Breadcrumbs = React.createClass({
+var Breadcrumbs = module.exports.Breadcrumbs = createReactClass({
     propTypes: {
-        root: React.PropTypes.string, // Root URI for searches
-        crumbs: React.PropTypes.arrayOf(React.PropTypes.object).isRequired // Object with breadcrumb contents
+        root: PropTypes.string, // Root URI for searches
+        crumbs: PropTypes.arrayOf(PropTypes.object).isRequired // Object with breadcrumb contents
     },
 
     render: function() {

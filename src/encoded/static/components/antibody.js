@@ -1,8 +1,10 @@
 'use strict';
 var React = require('react');
-var cx = require('react/lib/cx');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var url = require('url');
 var _ = require('underscore');
+import { auditDecor } from './audit';
 var panel = require('../libs/bootstrap/panel');
 var { collapseIcon } = require('../libs/svg-icons');
 var globals = require('./globals');
@@ -16,9 +18,6 @@ import StatusLabel from './statuslabel';
 var doc = require('./doc');
 
 var Breadcrumbs = navigation.Breadcrumbs;
-var AuditIndicators = audit.AuditIndicators;
-var AuditDetail = audit.AuditDetail;
-var AuditMixin = audit.AuditMixin;
 var DbxrefList = dbxref.DbxrefList;
 var ExperimentTable = dataset.ExperimentTable;
 var statusOrder = globals.statusOrder;
@@ -27,8 +26,7 @@ var {Panel, PanelBody} = panel;
 var {DocumentsPanel, Document, DocumentPreview, DocumentFile} = doc;
 
 
-var Lot = module.exports.Lot = React.createClass({
-    mixins: [AuditMixin],
+var LotComponent = createReactClass({
     render: function() {
         var context = this.props.context;
 
@@ -113,11 +111,11 @@ var Lot = module.exports.Lot = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />
                             </div>
-                            <AuditIndicators audits={context.audit} id="antibody-audit" />
+                            {this.props.auditIndicators(context.audit, 'antibody-audit', { session: this.context.session })}
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="antibody-audit" />
+                {this.props.auditDetail(context.audit, 'antibody-audit', { except: context['@id'], session: this.context.session })}
 
                 {context.lot_reviews && context.lot_reviews.length ?
                     <div className="antibody-statuses">
@@ -219,13 +217,12 @@ var Lot = module.exports.Lot = React.createClass({
                                     <dd><DbxrefList values={context.dbxrefs} /></dd>
                                 </div>
                             : null}
-
                         </dl>
                     </PanelBody>
                 </Panel>
 
                 <RelatedItems title={'Experiments using this antibody'}
-                              url={'/search/?type=experiment&replicates.antibody.accession=' + context.accession}
+                              url={'/search/?type=Experiment&replicates.antibody.accession=' + context.accession}
                               Component={ExperimentTable} />
 
                 <DocumentsPanel title="Characterizations" documentSpecs={documentSpecs} />
@@ -234,10 +231,12 @@ var Lot = module.exports.Lot = React.createClass({
     }
 });
 
+const Lot = module.exports.Lot = auditDecor(LotComponent);
+
 globals.content_views.register(Lot, 'AntibodyLot');
 
 
-var Documents = React.createClass({
+var Documents = createReactClass({
     render: function() {
         return (
             <dd>
@@ -260,7 +259,7 @@ var Documents = React.createClass({
 });
 
 
-var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
+var AntibodyStatus = module.exports.AntibodyStatus = createReactClass({
     render: function() {
         var context = this.props.context;
 
@@ -337,9 +336,9 @@ globals.panel_views.register(AntibodyStatus, 'AntibodyLot');
 const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 
 // Document header component -- antibody characterization
-var CharacterizationHeader = React.createClass({
+var CharacterizationHeader = createReactClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired // Document object to render
+        doc: PropTypes.object.isRequired // Document object to render
     },
 
     render: function() {
@@ -363,9 +362,9 @@ var CharacterizationHeader = React.createClass({
 });
 
 // Document caption component -- antibody characterization
-var CharacterizationCaption = React.createClass({
+var CharacterizationCaption = createReactClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired // Document object to render
+        doc: PropTypes.object.isRequired // Document object to render
     },
 
     render: function() {
@@ -384,11 +383,11 @@ var CharacterizationCaption = React.createClass({
     }
 });
 
-var CharacterizationFile = React.createClass({
+var CharacterizationFile = createReactClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired, // Document object to render
-        detailOpen: React.PropTypes.bool, // True if detail panel is visible
-        detailSwitch: React.PropTypes.func // Parent component function to call when detail switch clicked
+        doc: PropTypes.object.isRequired, // Document object to render
+        detailOpen: PropTypes.bool, // True if detail panel is visible
+        detailSwitch: PropTypes.func // Parent component function to call when detail switch clicked
     },
 
     render: function() {
@@ -411,11 +410,11 @@ var CharacterizationFile = React.createClass({
     }
 });
 
-var CharacterizationDetail = React.createClass({
+var CharacterizationDetail = createReactClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired, // Document object to render
-        detailOpen: React.PropTypes.bool, // True if detail panel is visible
-        key: React.PropTypes.string // Unique key for identification
+        doc: PropTypes.object.isRequired, // Document object to render
+        detailOpen: PropTypes.bool, // True if detail panel is visible
+        key: PropTypes.string // Unique key for identification
     },
 
     render: function() {
@@ -442,7 +441,7 @@ var CharacterizationDetail = React.createClass({
 
         return (
             <div className={keyClass}>
-                <dl className='key-value-doc' id={'panel' + this.props.id} aria-labeledby={'tab' + this.props.id} role="tabpanel">
+                <dl className='key-value-doc' id={'panel' + this.props.id} aria-labelledby={'tab' + this.props.id} role="tabpanel">
                     {excerpt ?
                         <div data-test="caption">
                             <dt>Caption</dt>

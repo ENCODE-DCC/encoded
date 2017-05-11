@@ -239,7 +239,6 @@ def main(global_config, **local_config):
         config.include('.peak_indexer')
     config.include(static_resources)
     config.include(changelogs)
-
     config.registry['ontology'] = json_from_path(settings.get('ontology_path'), {})
     aws_ip_ranges = json_from_path(settings.get('aws_ip_ranges_path'), {'prefixes': []})
     config.registry['aws_ipset'] = netaddr.IPSet(

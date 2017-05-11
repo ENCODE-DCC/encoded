@@ -183,17 +183,17 @@
 .organism-selector {
     display: flex;
     flex-wrap: nonwrap;
-    padding: 5px 0;
+    padding: 5px 2px;
     justify-content: flex-start;
     align-items: flex-start;
     border-top: 1px solid #a0a0a0;
     background-color: #f0f0f0;
 
-    a.single-tab {
+    @at-root #{&}__tab {
         display: block;
-        margin-left: 5px;
-        padding: 5px 20px !important;
-        flex: 0 1 auto;
+        margin: 0 2px;
+        padding: 5px !important;
+        flex: 1 1 auto;
         font-size: 0.9rem;
         font-weight: normal;
         text-decoration: none;
@@ -202,16 +202,24 @@
         border: 1px solid #0001ee;
         text-transform: uppercase;
 
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 1 auto;
+            padding: 5px 20px !important;
+        }
+
         &:hover {
             background-color: #adabf8;
         }
+    }
 
-        &.selected {
-            color: #000;
+    #{&}--selected {
+        color: #000;
+        background-color: #7575f7;
+
+        &:hover {
             background-color: #7575f7;
         }
     }
-    
 }
 
 // Gives graphs white background color

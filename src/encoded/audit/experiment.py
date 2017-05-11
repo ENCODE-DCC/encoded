@@ -133,48 +133,7 @@ def audit_experiment_pipeline_assay_details(value, system):
                 yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
 
 
-@audit_checker('Experiment', frame=['original_files',
-                                    'original_files.replicate',
-                                    'original_files.derived_from',
-                                    'original_files.analysis_step_version',
-                                    'original_files.analysis_step_version.analysis_step',
-                                    'original_files.analysis_step_version.analysis_step.pipelines',
-                                    'target',
-                                    'replicates'],
-               condition=rfa('modERN'))
-def audit_experiment_missing_processed_files(value, system):
-    alignment_files = scan_files_for_file_format_output_type(value['original_files'],
-                                                             'bam', 'alignments')
-    alignment_files.extend(scan_files_for_file_format_output_type(value['original_files'],
-                                                                  'bam',
-                                                                  'unfiltered alignments'))
-    alignment_files.extend(scan_files_for_file_format_output_type(value['original_files'],
-                                                                  'bam',
-                                                                  'transcriptome alignments'))
-
-    # if there are no bam files - we don't know what pipeline, exit
-    if len(alignment_files) == 0:
-        return
-    # find out the pipeline
-    pipelines = getPipelines(alignment_files)
-    if len(pipelines) == 0:  # no pipelines detected
-        return
-
-    if 'Transcription factor ChIP-seq pipeline (modERN)' in pipelines:
-        # check if control
-        target = value.get('target')
-        if target is None:
-            return
-        if 'control' in target.get('investigated_as'):
-            replicate_structures = create_pipeline_structures(value['original_files'],
-                                                              'modERN_control')
-            for failure in check_structures(replicate_structures, True, value):
-                yield failure
-        else:
-            replicate_structures = create_pipeline_structures(value['original_files'],
-                                                              'modERN')
-            for failure in check_structures(replicate_structures, False, value):
-                yield failure
+# def audit_experiment_missing_processed_files(value, system): removed from v54
 
 
 @audit_checker('Experiment', frame=['original_files',
@@ -784,39 +743,7 @@ def check_experiment_dnase_seq_standards(experiment,
             if 'assembly' in alignment_file:
                 alignments_assemblies[alignment_file['accession']] = alignment_file['assembly']
 
-        duplicates_quality_metrics = get_metrics(alignment_files,
-                                                 'DuplicatesQualityMetric',
-                                                 desired_assembly)
-        if duplicates_quality_metrics:
-            for metric in duplicates_quality_metrics:
-                percentage = metric.get('Percent Duplication')
-                if percentage:
-                    percentage = percentage * 100
-                    upper_threshold = 12
-                    lower_threshold = 5
-                    if metric.get('UMI Read Duplicates'):
-                        upper_threshold = 7.5
-                    if percentage > lower_threshold:
-                        file_names = []
-                        for f in metric['quality_metric_of']:
-                            file_names.append(f['@id'].split('/')[2])
-                        file_names_string = str(file_names).replace('\'', ' ')
-
-                        detail = 'Alignment file(s) {} '.format(file_names_string) + \
-                                 'produced by {} '.format(pipelines[0]['title']) + \
-                                 '( {} ) '.format(pipelines[0]['@id']) + \
-                                 assemblies_detail(extract_assemblies(alignments_assemblies, file_names)) + \
-                                 'have duplication rate of {0:.2f}%. '.format(percentage) + \
-                                 'According to ENCODE standards, ' + \
-                                 'library duplication rate < 5% is considered a product of high quality ' + \
-                                 'data. For standard libraries and for UMI libraries duplication rate < 12% and 7.5% ' + \
-                                 'respectively is considered acceptable.  ' + \
-                                 '(See {} )'.format(link_to_standards)
-                        if percentage < upper_threshold:
-                            yield AuditFailure('high duplication rate', detail, level='WARNING')
-                        else:
-                            yield AuditFailure('extremely high duplication rate',
-                                               detail, level='ERROR')
+        # duplication rate audit was removed from v54
 
         hotspot_assemblies = {}
         for hotspot_file in hotspots_files:
@@ -834,7 +761,7 @@ def check_experiment_dnase_seq_standards(experiment,
         if hotspot_quality_metrics is not None and \
            len(hotspot_quality_metrics) > 0:
             for metric in hotspot_quality_metrics:
-                if "SPOT score" in metric:
+                if "SPOT2 score" in metric:
                     file_names = []
                     for f in metric['quality_metric_of']:
                         file_names.append(f['@id'].split('/')[2])
@@ -845,21 +772,21 @@ def check_experiment_dnase_seq_standards(experiment,
                              "produced by {} ".format(pipelines[0]['title']) + \
                              "( {} ) ".format(pipelines[0]['@id']) + \
                              assemblies_detail(extract_assemblies(hotspot_assemblies, file_names)) + \
-                             "have a SPOT score of {0:.2f}. ".format(metric["SPOT score"]) + \
+                             "have a SPOT2 score of {0:.2f}. ".format(metric["SPOT2 score"]) + \
                              "According to ENCODE standards, " + \
-                             "SPOT score of 0.4 or higher is considered a product of high quality " + \
+                             "SPOT2 score of 0.4 or higher is considered a product of high quality " + \
                              "data. " + \
-                             "Any sample with a SPOT score <0.3 should be targeted for replacement " + \
+                             "Any sample with a SPOT2 score <0.3 should be targeted for replacement " + \
                              "with a higher quality sample, and a " + \
-                             "SPOT score of 0.25 is considered minimally acceptable " + \
+                             "SPOT2 score of 0.25 is considered minimally acceptable " + \
                              "for rare and hard to find primary tissues. (See {} )".format(
                                  link_to_standards)
 
-                    if 0.3 <= metric["SPOT score"] < 0.4:
+                    if 0.3 <= metric["SPOT2 score"] < 0.4:
                         yield AuditFailure('low spot score', detail, level='WARNING')
-                    elif 0.25 <= metric["SPOT score"] < 0.3:
+                    elif 0.25 <= metric["SPOT2 score"] < 0.3:
                         yield AuditFailure('insufficient spot score', detail, level='NOT_COMPLIANT')
-                    elif metric["SPOT score"] < 0.25:
+                    elif metric["SPOT2 score"] < 0.25:
                         yield AuditFailure('extremely low spot score', detail, level='ERROR')
 
         if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
@@ -1335,7 +1262,7 @@ def check_experiment_cage_rampage_standards(experiment,
                 for failure in check_file_read_depth(f, read_depth,
                                                      upper_limit_read_depth,
                                                      middle_limit_read_depth,
-                                                     lower_limit_read_depth,                            
+                                                     lower_limit_read_depth,
                                                      experiment['assay_term_name'],
                                                      pipeline_title,
                                                      pipelines[0],
@@ -1930,7 +1857,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                     'experiment targeting {} and investigated as '.format(target_name) + \
                     'a narrow histone mark is 10 million usable fragments. ' + \
                     'The recommended value is > 20 million, but > 10 million is ' + \
-                    'acceptable. (See /data-standards/chip-seq/ )'               
+                    'acceptable. (See /data-standards/chip-seq/ )'
             else:
                 detail = 'Alignment file {} '.format(file_to_check['@id']) + \
                     'produced by {} '.format(pipeline_object['title']) + \
@@ -2049,8 +1976,7 @@ def check_file_read_depth(file_to_check,
 
 def check_file_platform(file_to_check, excluded_platforms):
     if 'platform' not in file_to_check:
-        detail = 'Reads file {} missing platform'.format(file_to_check['@id'])
-        yield AuditFailure('missing platform', detail, level='WARNING')
+        return
     elif file_to_check['platform'] in excluded_platforms:
         detail = 'Reads file {} has not compliant '.format(file_to_check['@id']) + \
                  'platform (SOLiD) {}.'.format(file_to_check['platform'])
@@ -2191,140 +2117,8 @@ def getPipelines(alignment_files):
                 pipelines.add(p['title'])
     return pipelines
 
-
-@audit_checker('Experiment', frame=['original_files', 'target',
-                                    'original_files.analysis_step_version',
-                                    'original_files.analysis_step_version.analysis_step',
-                                    'original_files.analysis_step_version.analysis_step.pipelines',
-                                    'replicates', 'replicates.library'],
-               condition=rfa('ENCODE3'))
-def audit_experiment_needs_pipeline(value, system):
-
-    if value['status'] not in ['released', 'ready for review']:
-        return
-
-    if 'assay_term_name' not in value:
-        return
-
-    if value['assay_term_name'] not in ['whole-genome shotgun bisulfite sequencing',
-                                        'ChIP-seq',
-                                        'RNA-seq',
-                                        'shRNA knockdown followed by RNA-seq',
-                                        'siRNA knockdown followed by RNA-seq',
-                                        'CRISPRi followed by RNA-seq',
-                                        'RAMPAGE']:
-        return
-
-    if 'original_files' not in value or len(value['original_files']) == 0:
-        #  possible ERROR to throw
-        return
-
-    pipelines_dict = {'WGBS': ['WGBS single-end pipeline', 'WGBS single-end pipeline - version 2',
-                               'WGBS paired-end pipeline'],
-                      'RNA-seq-long-paired': ['RNA-seq of long RNAs (paired-end, stranded)'],
-                      'RNA-seq-long-single': ['RNA-seq of long RNAs (single-end, unstranded)'],
-                      'RNA-seq-short': ['Small RNA-seq single-end pipeline'],
-                      'RAMPAGE': ['RAMPAGE (paired-end, stranded)'],
-                      'ChIP': ['ChIP-seq read mapping']}
-
-    if value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
-        if scanFilesForPipeline(value['original_files'], pipelines_dict['WGBS']) is False:
-            detail = 'Experiment {} '.format(value['@id']) + \
-                     ' needs to be processed by WGBS pipeline.'
-            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
-        else:
-            return
-
-    if 'replicates' not in value:
-        return
-
-    file_size_range = 0
-
-    size_flag = False
-
-    for rep in value['replicates']:
-        if 'library' in rep:
-            if 'size_range' in rep['library']:
-                file_size_range = rep['library']['size_range']
-                size_flag = True
-                break
-
-    if size_flag is False:
-        return
-
-    run_type = 'unknown'
-
-    for f in value['original_files']:
-        if f['status'] not in ['deleted', 'replaced', 'revoked'] and 'run_type' in f:
-            run_type = f['run_type']
-            break
-
-    if run_type == 'unknown':
-        return
-
-    if value['assay_term_name'] == 'RAMPAGE' and \
-       run_type == 'paired-ended' and \
-       file_size_range == '>200':
-        if scanFilesForPipeline(value['original_files'], pipelines_dict['RAMPAGE']) is False:
-            detail = 'Experiment {} '.format(value['@id']) + \
-                     'needs to be processed by pipeline {}.'.format(pipelines_dict['RAMPAGE'][0])
-            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
-        else:
-            return
-
-    if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq',
-                                    'siRNA knockdown followed by RNA-seq', 'CRISPRi followed by RNA-seq'] and \
-       run_type == 'single-ended' and \
-       file_size_range == '>200':
-        if scanFilesForPipeline(value['original_files'],
-                                pipelines_dict['RNA-seq-long-single']) is False:
-            detail = 'Experiment {} '.format(value['@id']) + \
-                     'needs to be processed by ' + \
-                     'pipeline {}.'.format(pipelines_dict['RNA-seq-long-single'][0])
-            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
-        else:
-            return
-
-    if value['assay_term_name'] in ['RNA-seq', 'shRNA knockdown followed by RNA-seq'
-                                    'siRNA knockdown followed by RNA-seq', 'CRISPRi followed by RNA-seq'] and \
-       run_type == 'paired-ended' and \
-       file_size_range == '>200':
-        if scanFilesForPipeline(value['original_files'],
-                                pipelines_dict['RNA-seq-long-paired']) is False:
-            detail = 'Experiment {} '.format(value['@id']) + \
-                     'needs to be processed by ' + \
-                     'pipeline {}.'.format(pipelines_dict['RNA-seq-long-paired'][0])
-            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
-        else:
-            return
-
-    if value['assay_term_name'] == 'RNA-seq' and \
-       run_type == 'single-ended' and \
-       file_size_range == '<200':
-        if scanFilesForPipeline(value['original_files'],
-                                pipelines_dict['RNA-seq-short']) is False:
-            detail = 'Experiment {} '.format(value['@id']) + \
-                     'needs to be processed by ' + \
-                     'pipeline {}.'.format(pipelines_dict['RNA-seq-short'][0])
-            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
-        else:
-            return
-
-    investigated_as_histones = False
-
-    if 'target' in value and 'histone modification' in value['target']['investigated_as']:
-        investigated_as_histones = True
-
-    if value['assay_term_name'] == 'ChIP-seq' and investigated_as_histones is True:
-        if scanFilesForPipeline(value['original_files'],
-                                pipelines_dict['ChIP']) is False:
-            detail = 'Experiment {} '.format(value['@id']) + \
-                     'needs to be processed by ' + \
-                     'pipeline {}.'.format(pipelines_dict['ChIP'])
-            raise AuditFailure('needs pipeline run', detail, level='INTERNAL_ACTION')
-        else:
-            return
-    return
+# def audit_experiment_needs_pipeline(value, system): removed in release 56
+# http://redmine.encodedcc.org/issues/4990
 
 
 def scanFilesForPipeline(files_to_scan, pipeline_title_list):

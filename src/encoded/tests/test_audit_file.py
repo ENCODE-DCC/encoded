@@ -61,11 +61,12 @@ def file_rep1_2(replicate, file_exp, testapp):
 
 
 @pytest.fixture
-def file1_2(file_exp, award, lab, file_rep1_2, testapp):
+def file1_2(file_exp, award, lab, file_rep1_2, platform1, testapp):
     item = {
         'dataset': file_exp['uuid'],
         'replicate': file_rep1_2['uuid'],
         'file_format': 'fastq',
+        'platform': platform1['@id'],
         'md5sum': '91be74b6e11515393507f4ebfa66d58a',
         'output_type': 'raw data',
         'file_size': 34,
@@ -116,7 +117,7 @@ def file1(file_exp, award, lab, file_rep, file2, platform1, testapp):
 
 
 @pytest.fixture
-def file3(file_exp, award, lab, file_rep, testapp):
+def file3(file_exp, award, lab, file_rep, platform1, testapp):
     item = {
         'dataset': file_exp['uuid'],
         'replicate': file_rep['uuid'],
@@ -125,6 +126,7 @@ def file3(file_exp, award, lab, file_rep, testapp):
         'md5sum': '91be74b6e11515393507f4ebfa56d78d',
         'output_type': 'reads',
         "read_length": 50,
+        'platform': platform1['uuid'],
         'run_type': 'single-ended',
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -134,13 +136,14 @@ def file3(file_exp, award, lab, file_rep, testapp):
 
 
 @pytest.fixture
-def file4(file_exp2, award, lab, file_rep2, testapp):
+def file4(file_exp2, award, lab, file_rep2, platform1, testapp):
     item = {
         'dataset': file_exp2['uuid'],
         'replicate': file_rep2['uuid'],
         'file_format': 'fastq',
         'md5sum': '91ae74b6e11515393507f4ebfa66d78a',
         'output_type': 'reads',
+        'platform': platform1['uuid'],
         "read_length": 50,
         'file_size': 34,
         'run_type': 'single-ended',
@@ -234,7 +237,7 @@ def pipeline_short_rna(testapp, lab, award, analysis_step_bam):
 
 
 def test_audit_file_mismatched_paired_with(testapp, file1, file4):
-    testapp.patch_json(file1['@id'], {'paired_end': '2', 'paired_with': file4['uuid']})
+    testapp.patch_json(file1['@id'], {'run_type': 'paired-ended', 'paired_end': '2', 'paired_with': file4['uuid']})
     res = testapp.get(file1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -349,16 +352,6 @@ def test_audit_file_replicate_match(testapp, file1, file_rep2):
     assert any(error['category'] == 'inconsistent replicate' for error in errors_list)
 
 
-def test_audit_file_pipeline_status(testapp, file7, pipeline_bam):
-    testapp.patch_json(file7['@id'], {'status': 'released'})
-    res = testapp.get(file7['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent pipeline status' for error in errors_list)
-
-
 def test_audit_file_insufficient_control_read_depth_chip_seq_paired_end(
     testapp,
     file_exp,
@@ -391,8 +384,10 @@ def test_audit_file_insufficient_control_read_depth_chip_seq_paired_end(
     testapp.patch_json(file6['@id'], {'dataset': file_exp['@id'],
                                       'assembly': 'hg19',
                                       'derived_from': [file4['@id']]})
-    testapp.patch_json(file4['@id'], {'run_type': 'paired-ended'})
-    testapp.patch_json(file2['@id'], {'run_type': 'paired-ended'})
+    testapp.patch_json(file4['@id'], {'run_type': 'paired-ended',
+                                      'paired_end': '1'})
+    testapp.patch_json(file2['@id'], {'run_type': 'paired-ended',
+                                      'paired_end': '1'})
     testapp.patch_json(file7['@id'], {})
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -401,7 +396,7 @@ def test_audit_file_insufficient_control_read_depth_chip_seq_paired_end(
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'control extremely low read depth' for error in errors_list)
 
-
+'''
 def test_audit_modERN_missing_step_run(testapp, file_exp, file3, award):
     testapp.patch_json(award['@id'], {'rfa': 'modERN'})
     testapp.patch_json(file_exp['@id'], {'assay_term_name': 'ChIP-seq'})
@@ -453,7 +448,7 @@ def test_audit_modERN_unexpected_step_run(testapp, file_exp, file2, award, analy
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'unexpected step_run' for error in errors_list)
-
+'''
 
 def test_audit_file_biological_replicate_number_match(testapp,
                                                       file_exp,
@@ -497,19 +492,6 @@ def test_audit_file_assembly(testapp, file6, file7):
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent assembly'
-               for error in errors_list)
-
-
-def test_audit_file_derived_from_revoked(testapp, file6, file7):
-    testapp.patch_json(file6['@id'], {'assembly': 'hg19', 'status': 'revoked'})
-    testapp.patch_json(file7['@id'], {'derived_from': [file6['@id']],
-                                      'status': 'released'})
-    res = testapp.get(file7['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched file status'
                for error in errors_list)
 
 

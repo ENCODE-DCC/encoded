@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react');
-var cloneWithProps = require('react/lib/cloneWithProps');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var {DropdownMenu} = require('./dropdown-menu');
 
 
@@ -33,8 +34,8 @@ var {DropdownMenu} = require('./dropdown-menu');
 
 var Navbars = module.exports.Navbars = {
     childContextTypes: {
-        openDropdown: React.PropTypes.string, // Identifies dropdown currently dropped down; '' if none
-        dropdownClick: React.PropTypes.func // Called when a dropdown title gets clicked
+        openDropdown: PropTypes.string, // Identifies dropdown currently dropped down; '' if none
+        dropdownClick: PropTypes.func // Called when a dropdown title gets clicked
     },
 
     // Retrieve current React context
@@ -74,15 +75,15 @@ var Navbars = module.exports.Navbars = {
 
 // Controls an entire navigation menu with one or more navigation areas defined by <Nav>
 // components. Handles the toggling of the mobile menu expansion.
-var Navbar = module.exports.Navbar = React.createClass({
+var Navbar = module.exports.Navbar = createReactClass({
     propTypes: {
-        brand: React.PropTypes.oneOfType([ // String or component to display for the brand with class `navbar-brand`
-            React.PropTypes.string,
-            React.PropTypes.object
+        brand: PropTypes.oneOfType([ // String or component to display for the brand with class `navbar-brand`
+            PropTypes.string,
+            PropTypes.object
         ]),
-        brandlink: React.PropTypes.string, // href for clicking brand
-        label: React.PropTypes.string.isRequired, // id for nav; unique on page
-        navClasses: React.PropTypes.string // CSS classes for <nav> in addition to "navbar"; default to "navbar-default"
+        brandlink: PropTypes.string, // href for clicking brand
+        label: PropTypes.string.isRequired, // id for nav; unique on page
+        navClasses: PropTypes.string // CSS classes for <nav> in addition to "navbar"; default to "navbar-default"
     },
 
     getInitialState: function() {
@@ -124,9 +125,9 @@ var Navbar = module.exports.Navbar = React.createClass({
 
 
 // Controls one navigation area within a <Navbar>
-var Nav = module.exports.Nav = React.createClass({
+var Nav = module.exports.Nav = createReactClass({
     propTypes: {
-        right: React.PropTypes.bool // True if right-justified navigation area
+        right: PropTypes.bool // True if right-justified navigation area
     },
 
     render: function() {
@@ -140,18 +141,18 @@ var Nav = module.exports.Nav = React.createClass({
 
 
 // Controls one top-level item within a <Nav>. It can be a stand-alone item or a dropdown menu
-var NavItem = module.exports.NavItem = React.createClass({
+var NavItem = module.exports.NavItem = createReactClass({
     propTypes: {
-        dropdownId: React.PropTypes.string, // If this item has a dropdown, this ID helps manage it; must be unique
-        dropdownTitle: React.PropTypes.oneOfType([ // If this item has a dropdown, this is the title
-            React.PropTypes.string,
-            React.PropTypes.object
+        dropdownId: PropTypes.string, // If this item has a dropdown, this ID helps manage it; must be unique
+        dropdownTitle: PropTypes.oneOfType([ // If this item has a dropdown, this is the title
+            PropTypes.string,
+            PropTypes.object
         ])
     },
 
     contextTypes: {
-        openDropdown: React.PropTypes.string,
-        dropdownClick: React.PropTypes.func
+        openDropdown: PropTypes.string,
+        dropdownClick: PropTypes.func
     },
 
     render: function() {

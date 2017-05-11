@@ -1,16 +1,18 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var panel = require('../libs/bootstrap/panel');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var _ = require('underscore');
+import { auditDecor } from './audit';
 var navigation = require('./navigation');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
 var image = require('./image');
 import StatusLabel from './statuslabel';
-var audit = require('./audit');
 var fetched = require('./fetched');
 var pipeline = require('./pipeline');
 var { pubReferenceList } = require('./reference');
@@ -26,7 +28,6 @@ var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 var FetchedItems = fetched.FetchedItems;
 var Param = fetched.Param;
-var {AuditMixin, AuditIndicators, AuditDetail} = audit;
 var singleTreatment = objectutils.singleTreatment;
 var softwareVersionList = software.softwareVersionList;
 var {SortTablePanel, SortTable} = sortTable;
@@ -58,12 +59,10 @@ var PanelLookup = function (props) {
 };
 
 
-var Experiment = module.exports.Experiment = React.createClass({
-    mixins: [AuditMixin],
-
+var ExperimentComponent = createReactClass({
     contextTypes: {
-        session: React.PropTypes.object,
-        session_properties: React.PropTypes.object,
+        session: PropTypes.object,
+        session_properties: PropTypes.object,
     },
 
     render: function() {
@@ -272,7 +271,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Get a list of related datasets, possibly filtering on their status
         var seriesList = [];
-        var loggedIn = this.context.session && this.context.session['auth.userid'];
+        var loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         if (context.related_series && context.related_series.length) {
             seriesList = _(context.related_series).filter(dataset => loggedIn || dataset.status === 'released');
         }
@@ -307,7 +306,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             analysisStepDocs
         )).chain().uniq(doc => doc ? doc.uuid : null).compact().value();
 
-        var experiments_url = '/search/?type=experiment&possible_controls.accession=' + context.accession;
+        var experiments_url = '/search/?type=Experiment&possible_controls.accession=' + context.accession;
 
         // Make a list of reference links, if any
         var references = pubReferenceList(context.references);
@@ -317,12 +316,12 @@ var Experiment = module.exports.Experiment = React.createClass({
         if (context.internal_tags && context.internal_tags.length) {
             tagBadges = context.internal_tags.map(tag => <img key={tag} src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
         }
-        
+
         return (
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root='/search/?type=experiment' crumbs={crumbs} />
+                        <Breadcrumbs root='/search/?type=Experiment' crumbs={crumbs} />
                         <h2>Experiment summary for {context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
@@ -331,11 +330,11 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
                             </div>
-                            <AuditIndicators audits={context.audit} id="experiment-audit" />
+                            {this.props.auditIndicators(context.audit, 'experiment-audit')}
                         </div>
                    </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="experiment-audit" />
+                {this.props.auditDetail(context.audit, 'experiment-audit', { except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -528,14 +527,16 @@ var Experiment = module.exports.Experiment = React.createClass({
     }
 });
 
+const Experiment = module.exports.Experiment = auditDecor(ExperimentComponent);
+
 globals.content_views.register(Experiment, 'Experiment');
 
 
 // Display the table of replicates
-var ReplicateTable = React.createClass({
+var ReplicateTable = createReactClass({
     propTypes: {
-        condensedReplicates: React.PropTypes.array.isRequired, // Condensed 'array' of replicate objects
-        replicationType: React.PropTypes.string // Type of replicate so we can tell what's isongenic/anisogenic/whatnot
+        condensedReplicates: PropTypes.array.isRequired, // Condensed 'array' of replicate objects
+        replicationType: PropTypes.string // Type of replicate so we can tell what's isongenic/anisogenic/whatnot
     },
 
     replicateColumns: {
@@ -645,7 +646,7 @@ var ReplicateTable = React.createClass({
 });
 
 
-var ControllingExperiments = React.createClass({
+var ControllingExperiments = createReactClass({
     render: function () {
         var context = this.props.context;
 
@@ -744,23 +745,30 @@ var AssayDetails = function (replicates, libraryValues, librarySpecials, library
                     <dt>{libraryEntry.title}</dt>
                     <dd>
                         {libraryEntry.value !== undefined ?
-                            /* Single value for this property; render it or its React component */
-                            <span>{(libraryEntry.component && Object.keys(libraryEntry.component).length) ? <span>{libraryEntry.component}</span> : <span>{libraryEntry.value}</span>}</span>
+                            <span>
+                                {(libraryEntry.component && Object.keys(libraryEntry.component).length) ?
+                                    <span>
+                                        {Object.keys(libraryEntry.component).map(componentKey => <span key={componentKey}>{libraryEntry.component[componentKey]}</span>)}
+                                    </span>
+                                :
+                                    <span>{libraryEntry.value}</span>
+                                }
+                            </span>
                         :
-                            /* Multiple values for this property */
                             <span>
                                 {Object.keys(libraryEntry.values).map((replicateId) => {
                                     var value = libraryEntry.values[replicateId];
                                     if (libraryEntry.component && libraryEntry.component[replicateId]) {
-                                        /* Display the pre-rendered component */
+                                        // Display the pre-rendered component
                                         return <span key={replicateId} className="line-item">{libraryEntry.component[replicateId]} [{replicateId}]</span>;
-                                    } else if (value) {
-                                        /* Display the simple value */
-                                        return <span key={replicateId} className="line-item">{value} [{replicateId}]</span>;
-                                    } else {
-                                        /* No value to display; happens when at least one replicate had a value for this property, but this one doesn't */
-                                        return null;
                                     }
+                                    if (value) {
+                                        // Display the simple value
+                                        return <span key={replicateId} className="line-item">{value} [{replicateId}]</span>;
+                                    }
+
+                                    // No value to display; happens when at least one replicate had a value for this property, but this one doesn't
+                                    return null;
                                 })}
                             </span>
                         }
@@ -779,9 +787,9 @@ var AssayDetails = function (replicates, libraryValues, librarySpecials, library
 
 
 // Display a list of datasets related to the experiment
-var RelatedSeriesList = React.createClass({
+var RelatedSeriesList = createReactClass({
     propTypes: {
-        seriesList: React.PropTypes.array.isRequired // Array of Series dataset objects to display
+        seriesList: PropTypes.array.isRequired // Array of Series dataset objects to display
     },
 
     getInitialState: function() {
@@ -842,12 +850,12 @@ var RelatedSeriesList = React.createClass({
 
 
 // Display a one dataset related to the experiment
-var RelatedSeriesItem = React.createClass({
+var RelatedSeriesItem = createReactClass({
     propTypes: {
-        series: React.PropTypes.object.isRequired, // Series object to display
-        detailOpen: React.PropTypes.bool, // TRUE to open the series' detail tooltip
-        handleInfoClick: React.PropTypes.func, // Function to call to handle click in info icon
-        handleInfoHover: React.PropTypes.func // Function to call when mouse enters or leaves info icon
+        series: PropTypes.object.isRequired, // Series object to display
+        detailOpen: PropTypes.bool, // TRUE to open the series' detail tooltip
+        handleInfoClick: PropTypes.func, // Function to call to handle click in info icon
+        handleInfoHover: PropTypes.func // Function to call when mouse enters or leaves info icon
     },
 
     getInitialState: function() {

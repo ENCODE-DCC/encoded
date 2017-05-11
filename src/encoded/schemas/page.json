@@ -129,7 +129,13 @@
             "properties": {
                 "rows": {
                     "type": "array",
-                    "items": {}
+                    "items": {
+                        "type": "object",
+                        "mapping": {
+                            "type": "object",
+                            "enabled": false
+                        }
+                    }
                 },
                 "blocks": {
                     "type": "array",

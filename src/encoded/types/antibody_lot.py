@@ -153,8 +153,7 @@ class AntibodyLot(SharedItem):
 })
 def lot_reviews(characterizations, targets, request):
     characterizations = paths_filtered_by_status(request, characterizations)
-    target_organisms = dict()
-    tmp = list()
+    target_organisms = {}
 
     is_control = False
     is_histone_mod = False
@@ -166,11 +165,11 @@ def lot_reviews(characterizations, targets, request):
             is_histone_mod = True
 
         organism = target['organism']
-        tmp.append(organism)
+        target_organisms = { 'all' : [] }
+        target_organisms['all'].append(organism)
         target_organisms[organism] = target['@id']
-    target_organisms['all'] = tmp
 
-    # The default if no characterizations have been submitted
+    # The default base characterization if no characterizations have been submitted
     base_review = {
         'biosample_term_name': 'any cell type or tissue',
         'biosample_term_id': 'NTR:99999999',
@@ -187,9 +186,9 @@ def lot_reviews(characterizations, targets, request):
         return [base_review]
 
     review_targets = set()
-    char_organisms = dict()
-    primary_chars = list()
-    secondary_chars = list()
+    char_organisms = {}
+    primary_chars = []
+    secondary_chars = []
     secondary_status = None
 
     status_ranking = {
@@ -275,7 +274,7 @@ def build_lot_reviews(primary_chars,
     lane_organism = None
     key = None
     for primary in primary_chars:
-        # The default base review
+        # The default base review to update as needed
         base_review = {
             'biosample_term_name': 'at least one cell type or tissue',
             'biosample_term_id': 'NTR:00000000',
@@ -301,7 +300,7 @@ def build_lot_reviews(primary_chars,
             for lane_review in primary.get('characterization_reviews', []):
                 # Get the organism information from the lane, not from the target since
                 # there are lanes. Build a new base_review using the lane information
-                base_review = dict()
+                base_review = {}
                 lane_organism = lane_review['organism']
 
                 base_review['biosample_term_name'] = 'any cell type or tissue' \
