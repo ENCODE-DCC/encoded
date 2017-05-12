@@ -10,19 +10,19 @@ After the page with the server-rendered HTML loads in the web browser, React Jav
 
 ## Web Browser Startup Procedure
 
-After the page loads in the web browser, [browser.js](src/encoded/static/browser.js) comes into play` . This code does _not_ run during server rendering — it runs in the web browser only. It begins by detecting the web browser's abilities using our [BrowserFeat](src/encoded/static/components/browserfeat.js) module and injecting some CSS classes into the `<html>` tag of the page. React in the browser hasn’t started quite yet at this stage.
+After the page loads in the web browser, [browser.js](../src/encoded/static/browser.js) comes into play` . This code does _not_ run during server rendering — it runs in the web browser only. It begins by detecting the web browser's abilities using our [BrowserFeat](../src/encoded/static/components/browserfeat.js) module and injecting some CSS classes into the `<html>` tag of the page. React in the browser hasn’t started quite yet at this stage.
 
 Then one of the most important operations for rendering an _encoded_ happens: retrieving the properties of the object being displayed (e.g. Experiment, Biosample, etc.).
 
-The server “renders” the displayed object properties as a JSON string into a `<script>` tag right at the beginning of the `<body>` section of the HTML that gets sent to the web browser. You can see this for any _encoded_ page by looking at the source of the page, or the “Elements” tab of the Chrome debugger, or in the server response of the http request. The `<script>` tag has a `data-prop-name` attribute with the value `context` that lets the `getRenderedProps` function find the JSON within the HTML to convert to a Javascript object that gets passed to the main `encoded` React component, called `<App>`, in [app.js](src/encoded/static/components/app.js).
+The server “renders” the displayed object properties as a JSON string into a `<script>` tag right at the beginning of the `<body>` section of the HTML that gets sent to the web browser. You can see this for any _encoded_ page by looking at the source of the page, or the “Elements” tab of the Chrome debugger, or in the server response of the http request. The `<script>` tag has a `data-prop-name` attribute with the value `context` that lets the `getRenderedProps` function find the JSON within the HTML to convert to a Javascript object that gets passed to the main `encoded` React component, called `<App>`, in [app.js](../src/encoded/static/components/app.js).
 
 The launching of `<App>` looks familiar if you’ve looked at [very beginning of the React documentation](https://facebook.github.io/react/docs/hello-world.html), though instead of rendering an HTML tag, it renders our `<App>` component, and instead of rendering `<App>` into a `<div>`, it renders `<App>` into the DOM represented by `document`. At that moment, all the React code you see in `<App>` and all the code `<App>` calls follows the React concepts you find in their documentation.
 
-Of course, the [browser.js](src/encoded/static/browser.js) function only runs in the web browser, yet rendering the web page has to happen on the server too. And it does in the `render` function of[react-middleware.js](src/encoded/static/libs/react-middleware.js) that _only_ runs on the server using the [documented server-rendering mechanism](https://facebook.github.io/react/docs/react-dom-server.html).
+Of course, the [browser.js](../src/encoded/static/browser.js) function only runs in the web browser, yet rendering the web page has to happen on the server too. And it does in the `render` function of[react-middleware.js](../src/encoded/static/libs/react-middleware.js) that _only_ runs on the server using the [documented server-rendering mechanism](https://facebook.github.io/react/docs/react-dom-server.html).
 
 ## React _props_
 
-React at its fundamentals passes one immutable object (and yes, React enforces its immutability, so never mutate it) to each component you make: _props_. But though React owns this object, you as a React programmer populate it — React supplies the train; you supply the passengers. When you place attributes where a component gets rendered, those attributes go into the props object with property names matching the name of the attribute and values matching those you assign to each attribute. Let’s look at an example of rendering the `<LabCharts>` component you’ll find in [award.js](src/encoded/static/components/award.js):
+React at its fundamentals passes one immutable object (and yes, React enforces its immutability, so never mutate it) to each component you make: _props_. But though React owns this object, you as a React programmer populate it — React supplies the train; you supply the passengers. When you place attributes where a component gets rendered, those attributes go into the props object with property names matching the name of the attribute and values matching those you assign to each attribute. Let’s look at an example of rendering the `<LabCharts>` component you’ll find in [award.js](../src/encoded/static/components/award.js):
 
     <LabChart
         award={award}
@@ -44,11 +44,11 @@ The implementation of `<LabCharts>` expects `this.props` to contain:
 
 ## The _encoded_ “context” prop
 
-All _encoded_ components that render a page (`<Biosample>` in [biosample.js](src/encoded/static/components/biosample.js) as an example) receive an object prop called `context`. It contains the _encoded_ object being rendered — the same object you would see if you viewed an individual _encoded_ object in the browser with `format=json` appended to its query string. You can witness this common sight at the beginning of this kind of component’s `render` method:
+All _encoded_ components that render a page (`<Biosample>` in [biosample.js](../src/encoded/static/components/biosample.js) as an example) receive an object prop called `context`. It contains the _encoded_ object being rendered — the same object you would see if you viewed an individual _encoded_ object in the browser with `format=json` appended to its query string. You can witness this common sight at the beginning of this kind of component’s `render` method:
 
     const { context } = this.props
 
-Then you see the `context` local variable used throughout the `render` method and other methods in the object, with properties referenced right from that object’s schema. For example, every biosample object must have a `biosample_type` property, so you’ll find in [biosample.js](src/encoded/static/components/biosample.js) occurrences of `context.biosample_type`.
+Then you see the `context` local variable used throughout the `render` method and other methods in the object, with properties referenced right from that object’s schema. For example, every biosample object must have a `biosample_type` property, so you’ll find in [biosample.js](../src/encoded/static/components/biosample.js) occurrences of `context.biosample_type`.
 
 ## Search
 
