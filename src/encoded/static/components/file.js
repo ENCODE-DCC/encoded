@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import shortid from 'shortid';
 import _ from 'underscore';
 import Pager from '../libs/bootstrap/pager';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
@@ -581,13 +580,6 @@ class SequenceFileInfo extends React.Component {
         const pairedWithAccession = file.paired_with ? globals.atIdToAccession(file.paired_with) : '';
         const platformAccession = file.platform ? decodeURIComponent(globals.atIdToAccession(file.platform)) : '';
 
-        // Generate keys for the flowcell details.
-        if (file.flowcell_details && file.flowcell_details.map) {
-            file.flowcell_details.forEach((detail) => {
-                detail.id = shortid.generate();
-            });
-        }
-
         return (
             <Panel>
                 <PanelHeading>
@@ -607,14 +599,14 @@ class SequenceFileInfo extends React.Component {
                             <div data-test="flowcelldetails">
                                 <dt>Flowcell</dt>
                                 <dd>
-                                    {file.flowcell_details.map((detail) => {
+                                    {file.flowcell_details.map((detail, i) => {
                                         const items = [
                                             detail.machine ? detail.machine : '',
                                             detail.flowcell ? detail.flowcell : '',
                                             detail.lane ? detail.lane : '',
                                             detail.barcode ? detail.barcode : '',
                                         ];
-                                        return <span className="line-item" key={detail.id}>{items.join(':')}</span>;
+                                        return <span className="line-item" key={i}>{items.join(':')}</span>;
                                     })}
                                 </dd>
                             </div>

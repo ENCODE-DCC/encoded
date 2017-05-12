@@ -5,7 +5,6 @@ import createReactClass from 'create-react-class';
 var collection = require('./collection');
 var fetched = require('./fetched');
 var globals = require('./globals');
-import { auditDecor } from './audit';
 var form = require('./form');
 var _ = require('underscore');
 
@@ -41,7 +40,7 @@ var Fallback = module.exports.Fallback = createReactClass({
 });
 
 
-var ItemComponent = module.exports.Item = createReactClass({
+var Item = module.exports.Item = createReactClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -57,12 +56,8 @@ var ItemComponent = module.exports.Item = createReactClass({
                     <div className="col-sm-12">
                         <h2>{title}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
-                        <div className="status-line">
-                            {this.props.auditIndicators(context.audit, 'item-audit')}
-                        </div>
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'item-audit', { except: context['@id'] })}
                 <div className="row item-row">
                     <div className="col-sm-12">
                         {context.description ? <p className="description">{context.description}</p> : null}
@@ -73,8 +68,6 @@ var ItemComponent = module.exports.Item = createReactClass({
         );
     }
 });
-
-const Item = auditDecor(ItemComponent);
 
 globals.content_views.register(Item, 'Item');
 
