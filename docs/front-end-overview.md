@@ -14,7 +14,7 @@ After the page loads in the web browser, [browser.js](../src/encoded/static/brow
 
 Then one of the most important operations for rendering an _encoded_ page happens: retrieving the properties of the object being displayed (e.g. Experiment, Biosample, etc.).
 
-The server “renders” the displayed object properties as a JSON string into a `<script>` tag right at the beginning of the `<body>` section of the HTML that gets sent to the web browser. You can see this for any _encoded_ page by looking at the source of the page, or the “Elements” tab of the Chrome debugger, or in the server response of the http request. The `<script>` tag has a `data-prop-name` attribute with the value `context` that lets the `getRenderedProps` function find the JSON within the HTML to convert to a Javascript object that gets passed to the main `encoded` React component, called `<App>`, in [app.js](../src/encoded/static/components/app.js).
+The server “renders” the displayed object properties as a JSON string into a `<script>` tag right at the beginning of the `<body>` section of the HTML that gets sent to the web browser. You can see this for any _encoded_ page by looking at the source of the page, or the “Elements” tab of the Chrome debugger, or in the server response of the http request. The `<script>` tag has a `data-prop-name` attribute with the value “context” that lets the `getRenderedProps` function find the JSON within the HTML to convert to a Javascript object that gets passed to the main `encoded` React component, called `<App>`, in [app.js](../src/encoded/static/components/app.js).
 
 The launching of `<App>` looks familiar if you’ve looked at the [beginning of the React documentation](https://facebook.github.io/react/docs/hello-world.html), though instead of rendering an HTML tag, it renders our `<App>` component, and instead of rendering `<App>` into a `<div>`, it renders `<App>` into the DOM represented by `document`. At that moment, all the React code you see in `<App>` and all the code `<App>` calls follows the React concepts you find in their documentation.
 
@@ -133,7 +133,7 @@ Several pages of the site display more than their objects contain, and they have
 
 ### FetchedData
 
-The simplest mechanism involves the `<FetchedData>` React component in [fetched.js](../src/encoded/static/components/fetched.js). You can see an example of its normal pattern of usage in [award.js](../src/encoded/static/components/award.js)
+The simplest mechanism involves the `<FetchedData>` React component in [fetched.js](../src/encoded/static/components/fetched.js). You can see an example of its normal pattern of usage in [award.js](../src/encoded/static/components/award.js):
 
     <FetchedData ignoreErrors>
         <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}`} />
@@ -145,9 +145,9 @@ The odd thing about the `<FetchedData>` and `<Param>` components — they never 
 
 `<FetchedData>` has a complex implementation beyond the scope of this document, but in the end it renders its children into a `<div>`. But it also reacts to the results of GET requests, yet it makes no GET request itself.
 
-That role goes to `<Param>` a component required as a direct child of `<FetchedData>`. `<Param>` calls an npm library to perform the GET request. Once it receives the requested data from the server, it calls methods in `<FetchedData>` with this data to render it.
+That role goes to `<Param>` — a component required as a direct child of `<FetchedData>`. `<Param>` calls an npm library to perform the GET request. Once it receives the requested data from the server, it calls methods in `<FetchedData>` with this data to render it.
 
-The required attributes to `<Param>` include `url` that holds the URL for the GET request, and `name` that names the property that receives the the results of the GET requests (you usually find only one `<Param>` inside a `<FetchedData>`, but this example happens to do two GET requests). More on that next.
+The required attributes to `<Param>` include `url` that holds the URL for the GET request, and `name` that names the property that receives the results of the GET requests (you usually find only one `<Param>` inside a `<FetchedData>`, but this example happens to do two GET requests). More on that next.
 
 The other child component within `<FetchedData>` renders the data returned from the GET requests. Look at the implementation of `<ChartRenderer>` and notice it takes three items from `this.props`: `award` which we passed directly as the `award` attribute, but also `experiments` and `annotations`. Notice these match the names of the `name` properties in the `<Param>` components — not a coincidence. Pass the name of the React prop to receive the GET request results as the `name` attribute in `<Param>`.
 
@@ -170,7 +170,7 @@ The [objectutils.js](../src/encoded/static/components/objectutils.js) file provi
 
 * **requestSearch**: Passed a search query string, returns search results
 * **requestFiles**: Passed an array of file `@ids`, returns file objects
-* **requestObjects**: Passed an array of object `@ids` and a search URI, return objects
+* **requestObjects**: Passed an array of object `@ids` and a search URI, returns objects
 
 Each of these returns a Javascript promise, so the GET request happens asynchronously. The typical way to call `requestObject` would appear like (`requestFiles` and `requestObjects` are just wrapper functions for `requestObject`):
 
@@ -182,4 +182,4 @@ The part within the callback would execute once the GET request had returned, wi
 
 #### Historical “Other” reason
 
-You’ll see some uses of these request functions that _do_ fit into a “get data, render data” model. Earlier versions of _encoded_ had a strict limit on the length of a URL. In cases where our search URI could have a long length, you had to use these request functions because if a URI’s length reached a certain maximum, these functions would break the request into _multiple_ GET requests so that each URI used fit into the maximum. Once all the GET requests returned, these functions put the results together and returned them to the caller. Now that _encoded_ accepts arbitrarily long URIs, these cases could be replaced with `<FetchedData>`.
+You’ll see some uses of these request functions that _do_ fit into a “get data, render data” model. Earlier versions of _encoded_ had a strict limit on the length of a URL. In cases where our search URI could have a long length, you had to use these request functions because if a URI’s length reached a certain maximum, these functions would break the request into _multiple_ GET requests so that each URI fit into the maximum. Once all the GET requests returned, these functions put the results together and returned them to the caller. Now that _encoded_ accepts arbitrarily long URIs, these cases could be replaced with `<FetchedData>`.
