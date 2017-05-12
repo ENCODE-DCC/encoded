@@ -46,7 +46,7 @@ The implementation of `<LabCharts>` expects `this.props` to contain:
 
 All _encoded_ components that render a page (`<Biosample>` in [biosample.js](../src/encoded/static/components/biosample.js) as an example) receive an object prop called `context`. It contains the _encoded_ object the component renders — the same object you see if you view it with `format=json` appended to its query string, or retrieve it with a GET request. This kind of component’s `render` method frequently starts with:
 
-    const { context } = this.props
+    const { context } = this.props;
 
 Then you see the `context` local variable used throughout the `render` method, with properties referenced right from that object’s schema. For example, every biosample object must have a `biosample_type` property, so you’ll find in [biosample.js](../src/encoded/static/components/biosample.js) occurrences of `context.biosample_type`.
 
@@ -54,7 +54,7 @@ Then you see the `context` local variable used throughout the `render` method, w
 
 An unfortunate name collision — React itself has a [context object](https://facebook.github.io/react/docs/context.html). You can think of React contexts as props sharable by a component and any of its children without passing them explicitly.
 
-The overall paradigm of React: components send props to their child components, which send props to _their_ child components and so on. Data explicitly follows the hierarchy of components. Each component can pass through any or all props it receives to its children, and can generate new props for its children.
+The overall React way has components sending props to their child components, which send props to _their_ child components and so on. Data explicitly follows the hierarchy of components. Each component can pass through any or all props it receives to its children, and can generate new props for its children.
 
 Now imagine you had a component that relies on data kept in its grandparent, but the parent has no use for this data. Without React context, the grandparent would pass this data as props to the parent, which would then pass these props it didn’t use to this component — not so bad perhaps at this scale. But imagine a taller hierarchy, where a distant leaf component needs data from its great-great-great-great-grandparent. Now every generation of components between them has to pass those props through even though they had no interest in these props themselves.
 
@@ -115,7 +115,7 @@ If you look in [browser.js](../src/encoded/static/browser.js) you find near the 
 
     var app = require('./libs/react-middleware').build(require('./components'));
 
-These import from './components' — a directory; not a file. When the Javascript module system imports or requires (same thing; different version of Javascript) a directory, the file called “index.js” in that directory gets loaded. Our [index.js](../src/encoded/static/components/index.js) imports many files in the “components” directory then exports the `<App>` component so that [browser.js](../src/encoded/static/browser.js) and [server.js](../src/encoded/static/server.js) can call it. This causes that list of files to all get executed, which causes their View Registry `register` functions to get called at that stage. That means if you make a new object-rendering module that registers itself with the View Registry, that file has to be added to this list. Files that don’t register their components in the View Registry don’t need inclusion in this list.
+These import from './components' — a directory; not a file. When the Javascript module system imports or requires (same thing; different version of Javascript) a directory, the file called “index.js” in that directory gets loaded. Our [index.js](../src/encoded/static/components/index.js) imports many files in the “components” directory, then exports the `<App>` component so that [browser.js](../src/encoded/static/browser.js) and [server.js](../src/encoded/static/server.js) can call it. This causes that list of files to all get executed, which causes their View Registry `register` functions to get called at that stage. That means if you make a new object-rendering module that registers itself with the View Registry, that file has to be added to this list. Files that don’t register their components in the View Registry don’t need inclusion in this list.
 
 ### Back to the View Registry
 
@@ -126,3 +126,60 @@ Take another look at the registration for the `<GeneticModification>` component:
 The first parameter passes the component that gets called when an object needs rendering. The second passes an `@type` string. Objects that have a matching string in their `@type` array get passed to the component in the first parameter, with the object in `this.props`. You can think of the second parameter as the key of the giant `switch` statement.
 
 _encoded_ has several independent view registries. `content_view` handles rendering entire objects as pages of their own. [globals.js](../src/encoded/static/components/globals.js) shows where these different registries get created near the top. As an example, `graph_detail` handles the types of modal dialogs that appear when different kinds of file graph elements get clicked.
+
+## GET Requests
+
+Several pages of the site display more than their objects contain, and they have to get the information through GET requests performed after the page has rendered in the browser. _encoded_ has two mechanisms to do these GET requests, each one appropriate depending on how much logic happens around these GET requests.
+
+### FetchedData
+
+The simplest mechanism involves the `<FetchedData>` React component in [fetched.js](../src/encoded/static/components/fetched.js). You can see an example of its normal pattern of usage in [award.js](../src/encoded/static/components/award.js)
+
+    <FetchedData ignoreErrors>
+        <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}`} />
+        <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}`} />
+        <ChartRenderer award={award} />
+    </FetchedData>
+
+The odd thing about the `<FetchedData>` and `<Param>` components — they never render anything of their own, and in fact `<Param>` never renders anything at all — they _do_ stuff.
+
+`<FetchedData>` has a complex implementation beyond the scope of this document, but in the end it renders its children into a `<div>`. But it also reacts to the results of GET requests, yet it makes no GET request itself.
+
+That role goes to `<Param>` a component required as a direct child of `<FetchedData>`. `<Param>` calls an npm library to perform the GET request. Once it receives the requested data from the server, it calls methods in `<FetchedData>` with this data to render it.
+
+The required attributes to `<Param>` include `url` that holds the URL for the GET request, and `name` that names the property that receives the the results of the GET requests (you usually find only one `<Param>` inside a `<FetchedData>`, but this example happens to do two GET requests). More on that next.
+
+The other child component within `<FetchedData>` renders the data returned from the GET requests. Look at the implementation of `<ChartRenderer>` and notice it takes three items from `this.props`: `award` which we passed directly as the `award` attribute, but also `experiments` and `annotations`. Notice these match the names of the `name` properties in the `<Param>` components — not a coincidence. Pass the name of the React prop to receive the GET request results as the `name` attribute in `<Param>`.
+
+Also be aware that just because the GET request hasn’t gone out to the server yet doesn’t mean any of these components block. The first time through with no GET request data, `<ChartRenderer>` gets called, but with nothing in `experiments` and `annotations`. Once the data gets received, `<ChartRenderer>` gets called _again_ — this time _with_ the data in `experiments` and `annotations`. The data-rendering component within `<FetchedData>` has to handle the case where no data has arrived yet.
+
+### Request Data
+
+The other method has best use when the logic of GET requests gets more involved than “get data, render data.”  The `<DerivedFiles>` component provides a good example, because it follows this algorithm:
+
+    Get minimal data on every file matching search criteria
+    If that search returned more files than we allow on a table:
+        Retrieve entire file objects only for the files that fit on the first page
+        Once that data returns, render it
+    Else
+        Render all the files
+
+In addition, when the user clicks a paging tool, it performs another GET request for the next page of files, but only if this page of files isn’t already cached. Clearly the `FetchedData` “get data, render data” method doesn’t work for this kind of situation.
+
+The [objectutils.js](../src/encoded/static/components/objectutils.js) file provides three functions to implement this.
+
+* **requestSearch**: Passed a search query string, returns search results
+* **requestFiles**: Passed an array of file `@ids`, returns file objects
+* **requestObjects**: Passed an array of object `@ids` and a search URI, return objects
+
+Each of these returns a Javascript promise, so the GET request happens asynchronously. The typical way to call `requestObject` would appear like (`requestFiles` and `requestObjects` are just wrapper functions for `requestObject`):
+
+    requestObjects(objectIdArray, searchUri).then((results) => {
+        // Do something with the results
+    })
+
+The part within the callback would execute once the GET request had returned, with the results in the `results` parameter. Setting a React state variable for the component would typically go here, or something more complicated that could lead to another promise.
+
+#### Historical “Other” reason
+
+You’ll see some uses of these request functions that _do_ fit into a “get data, render data” model. Earlier versions of _encoded_ had a strict limit on the length of a URL. In cases where our search URI could have a long length, you had to use these request functions because if a URI’s length reached a certain maximum, these functions would break the request into _multiple_ GET requests so that each URI used fit into the maximum. Once all the GET requests returned, these functions put the results together and returned them to the caller. Now that _encoded_ accepts arbitrarily long URIs, these cases could be replaced with `<FetchedData>`.
