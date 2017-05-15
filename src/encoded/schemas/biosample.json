@@ -27,6 +27,7 @@
     ],
     "dependencies": {
         "rnais": {
+            "comment": "RNAi transfected biosamples require specification of the transfection_type.",
             "oneOf": [
                 {
                    "required": ["transfection_type"],
@@ -46,6 +47,7 @@
             ]
         },
         "constructs": {
+            "comment": "Transfected biosamples require specification of the transfection_type.",
             "oneOf": [
                 {
                    "required": ["transfection_type"],
@@ -64,18 +66,42 @@
                 }
             ]
         },
-        "transfection_method": ["transfection_type"],
-        "post_synchronization_time_units": ["post_synchronization_time"],
-        "post_treatment_time": ["post_treatment_time_units"],
-        "post_treatment_time_units": ["post_treatment_time"],
-        "starting_amount": ["starting_amount_units"],
-        "starting_amount_units": ["starting_amount"],
+        "transfection_method": {
+            "required": ["transfection_type"],
+            "comment": "Transfected biosamples require specification of the transfection_type.",
+        },
+        "post_synchronization_time_units": {
+            "required": ["post_synchronization_time"],
+            "comment": "Biosample with a specified post_synchronization_units requires post_synchronization_time specification."
+        },
+        "post_treatment_time": {
+            "required":["post_treatment_time_units"],
+            "comment": "Biosample with a specified post_treatment_time requires post_treatment_time_units specification."
+        },
+        "post_treatment_time_units": {
+            "required":["post_treatment_time"],
+            "comment": "Biosample with a specified post_treatment_time_units requires post_treatment_time specification."
+        },
+        "starting_amount":{
+            "required": ["starting_amount_units"],
+            "comment": "Biosample with a specified starting_amount requires starting_amount_units specification."
+        },
+        "starting_amount_units": {
+            "required":["starting_amount"],
+            "comment": "Biosample with a specified starting_amount_units requires starting_amount specification."
+        },
+        "model_organism_age_units": {
+            "required":["model_organism_age"],
+            "comment": "Biosample with a specified model_organism_age_units requires model_organism_age specification."
+        },
         "depleted_in_term_name": {
+            "comment": "Only biosamples with biosample_type whole organisms or tissue are allowed to have depleted_in_term_name property.",
             "properties": {
                 "biosample_type": {"enum": ["whole organisms", "tissue"]}
             }
         },
         "biosample_type": {
+            "comment": "Human biosamples are not allowed to have biosample_type property of whole organisms",
             "not": {
                 "properties": {
                     "biosample_type": {
@@ -91,6 +117,7 @@
             }
         },
         "model_organism_age": {
+            "comment": "Human biosamples are not allowed to have model_organism_age property. Biosample with a specified model_organism_age requires model_organism_age_units specification.",
             "required": ["model_organism_age_units"],
             "not": {
                 "properties": {
@@ -104,6 +131,7 @@
             }
         },
         "model_organism_health_status": {
+            "comment": "Human biosamples are not allowed to have model_organism_health_status property.",
             "not": {
                 "properties": {
                     "organism": {
@@ -116,6 +144,7 @@
             }
         },
         "model_organism_sex": {
+            "comment": "Human biosamples are not allowed to have model_organism_sex property.",
             "not": {
                 "properties": {
                     "organism": {
@@ -128,6 +157,7 @@
             }
         },
         "model_organism_mating_status": {
+            "comment": "Human biosamples are not allowed to have model_organism_mating_status property.",
             "required": ["model_organism_sex"],
             "not": {
                 "properties": {
@@ -141,6 +171,7 @@
             }
         },
         "post_synchronization_time": {
+            "comment": "Human and mouse biosamples are not allowed to have post_synchronization_time property. Biosample with a specified post_synchronization_time requires post_synchronization_time_units specification.",
             "required": ["post_synchronization_time_units"],
             "not": {
                 "properties": {
@@ -154,8 +185,8 @@
                 }
             }
         },
-        "model_organism_age_units": ["model_organism_age"],
         "fly_life_stage": {
+            "comment": "Only fly biosamples are allowed to have fly_life_stage property.",
             "properties": {
                 "organism": {
                     "linkTo": "Organism",
@@ -172,6 +203,7 @@
             }
         },
         "fly_synchronization_stage": {
+            "comment": "Only fly biosamples are allowed to have fly_synchronization_stage property.",
             "properties": {
                 "organism": {
                     "linkTo": "Organism",
@@ -188,6 +220,7 @@
             }
         },
         "worm_synchronization_stage": {
+            "comment": "Only roundworm biosamples are allowed to have worm_synchronization_stage property.",
             "properties": {
                 "organism": {
                     "linkTo": "Organism",
@@ -202,6 +235,7 @@
             }
         },
         "worm_life_stage": {
+            "comment": "Only roundworm biosamples are allowed to have worm_life_stage property.",
             "properties": {
                 "organism": {
                     "linkTo": "Organism",
@@ -216,6 +250,7 @@
             }
         },
         "mouse_life_stage": {
+            "comment": "Only mouse biosamples are allowed to have worm_life_stage property.",
             "properties": {
                 "organism": {
                     "linkTo": "Organism",
@@ -226,7 +261,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "14"
+            "default": "15"
         },
         "accession": {
             "accessionType": "BS"
@@ -234,6 +269,7 @@
         "description": {
             "title": "Description",
             "description": "A plain text description of the biosample. Do not include experiment details, constructs or treatments.",
+            "comment": "Free text description of the biosample, do not mix with biosample summary that is calculated and controlled.",
             "type": "string",
             "elasticsearch_mapping_index_type": {
                 "title": "Field mapping index type",
@@ -250,7 +286,8 @@
         },
        "constructs": {
             "title": "DNA constructs",
-            "description": "Expression or targeting vectors stably or transiently transfected (not RNAi or TALEN).",
+            "description": "Expression or targeting vectors stably or transiently transfected (not RNAi).",
+            "comment": "A list of constructs used to transfect the biosample, it will require transfection_type specification.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
@@ -265,6 +302,7 @@
         "rnais": {
             "title": "RNAi vectors",
             "description": "RNAi vectors stably or transiently transfected.",
+            "comment": "A list of RNAi's used to transfect the biosample, it will require transfection_type specification.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
@@ -274,20 +312,6 @@
                 "comment": "See rnai.json for available identifiers.",
                 "type":  "string",
                 "linkTo": "RNAi"
-            }
-        },
-        "talens": {
-            "title": "TALEN constructs",
-            "description": "TALEN constructs used to modify the biosample",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "TALEN",
-                "description": "TALEN used to modify the biosample",
-                "comment": "See talen.json for valid identifiers.",
-                "type": "string",
-                "linkTo": "TALEN"
             }
         },
         "treatments": {
