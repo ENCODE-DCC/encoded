@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import shortid from 'shortid';
 import _ from 'underscore';
 import { collapseIcon } from '../libs/svg-icons';
 import { Panel } from '../libs/bootstrap/panel';
@@ -203,8 +202,8 @@ class AuditGroup extends React.Component {
                 </div>
                 <div className="audit-details-section">
                     <div className="audit-details-decoration" />
-                    {group.map(audit =>
-                        <div className={alertItemClass} key={audit.id} role="alert">
+                    {group.map((audit, i) =>
+                        <div className={alertItemClass} key={i} role="alert">
                             <DetailEmbeddedLink detail={audit.detail} except={except} forcedEditLink={forcedEditLink} />
                         </div>,
                     )}
@@ -225,20 +224,6 @@ AuditGroup.defaultProps = {
     except: '',
     forcedEditLink: false,
 };
-
-
-// No necessarily distinguishing information for each audit, making it impossible to reliably key
-// them as React components. This takes an audit object as it arrives in a parent data object and
-// adds a unique id to each one that we can use as a key when rendering each one. Uses an npm
-// module that generates guaranteed unique values.
-function idAudits(audits) {
-    Object.keys(audits).forEach((auditType) => {
-        const typeAudits = audits[auditType];
-        typeAudits.forEach((audit) => {
-            audit.id = shortid.generate();
-        });
-    });
-}
 
 
 // Determine whether audits should be displayed or not, given the audits object from a data object,
@@ -280,9 +265,6 @@ export const auditDecor = AuditComponent => class extends React.Component {
         const loggedIn = !!(session && session['auth.userid']);
 
         if (auditsDisplayed(audits, session)) {
-            // Attach unique IDs to each audit to use as React keys.
-            idAudits(audits);
-
             // Sort the audit levels by their level number, using the first element of each warning
             // category.
             const sortedAuditLevels = _(Object.keys(audits)).sortBy(level => -audits[level][0].level);

@@ -775,35 +775,32 @@ const Facet = search.Facet = createReactClass({
             }
         }
 
-        if (terms.length && terms.some(term => term.doc_count)) {
-            return (
-                <div className="facet">
-                    <h5>{title}</h5>
-                    <ul className="facet-list nav">
-                        <div>
-                            {terms.slice(0, 5).map(term =>
+        return (
+            <div className="facet">
+                <h5>{title}</h5>
+                <ul className="facet-list nav">
+                    <div>
+                        {terms.slice(0, 5).map(term =>
+                            <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />
+                        )}
+                    </div>
+                    {terms.length > 5 ?
+                        <div id={termID} className={moreSecClass}>
+                            {moreTerms.map(term =>
                                 <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />
                             )}
                         </div>
-                        {terms.length > 5 ?
-                            <div id={termID} className={moreSecClass}>
-                                {moreTerms.map(term =>
-                                    <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />
-                                )}
-                            </div>
-                        : null}
-                        {(terms.length > 5 && !moreTermSelected) ?
-                            <label className="pull-right">
-                                <small>
-                                    <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
-                                </small>
-                            </label>
-                        : null}
-                    </ul>
-                </div>
-            );
-        }
-        return null;
+                    : null}
+                    {(terms.length > 5 && !moreTermSelected) ?
+                        <label className="pull-right">
+                            <small>
+                                <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
+                            </small>
+                        </label>
+                    : null}
+                </ul>
+            </div>
+        );
     }
 });
 
@@ -932,7 +929,7 @@ const FacetList = search.FacetList = createReactClass({
                     : null}
                     {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map((facet) => {
-                        if ((hideTypes && facet.field === 'type') || (!loggedIn && facet.field.substring(0, 6) === 'audit.')) {
+                        if (hideTypes && facet.field === 'type') {
                             return <span key={facet.field} />;
                         }
                         return <Facet {...this.props} key={facet.field} facet={facet} filters={filters} width={width} />;

@@ -479,11 +479,6 @@
       "from": "https://registry.npmjs.org/setimmediate/-/setimmediate-1.0.5.tgz",
       "resolved": "https://registry.npmjs.org/setimmediate/-/setimmediate-1.0.5.tgz"
     },
-    "shortid": {
-      "version": "2.2.6",
-      "from": "https://registry.npmjs.org/shortid/-/shortid-2.2.6.tgz",
-      "resolved": "https://registry.npmjs.org/shortid/-/shortid-2.2.6.tgz"
-    },
     "source-map": {
       "version": "0.5.6",
       "from": "https://registry.npmjs.org/source-map/-/source-map-0.5.6.tgz",

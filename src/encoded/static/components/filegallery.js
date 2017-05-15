@@ -694,18 +694,6 @@ const RawFileTable = createReactClass({
                                 const groupFiles = pairedGroups[pairedKey];
                                 const bottomClass = j < (pairedKeys.length - 1) ? 'merge-bottom' : '';
 
-                                // Render an array of biological replicate and library to display on
-                                // the first row of files, spanned to all rows for that replicate and
-                                // library
-                                const spanned = [
-                                    <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
-                                        {groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
-                                    </td>,
-                                    <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged`}>
-                                        {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
-                                    </td>,
-                                ];
-
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
                                 return groupFiles.sort((a, b) => (a.title < b.title ? -1 : 1)).map((file, i) => {
@@ -721,8 +709,17 @@ const RawFileTable = createReactClass({
 
                                     // Prepare for run_type display
                                     return (
-                                        <tr key={pairedKey} className={file.restricted ? 'file-restricted' : ''}>
-                                            {i === 0 ? { spanned } : null}
+                                        <tr key={file['@id']} className={file.restricted ? 'file-restricted' : ''}>
+                                            {i === 0 ?
+                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
+                                                    {groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
+                                                </td>
+                                            : null}
+                                            {i === 0 ?
+                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged`}>
+                                                    {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
+                                                </td>
+                                            : null}
                                             <td className={pairClass}>
                                                 <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                             </td>
