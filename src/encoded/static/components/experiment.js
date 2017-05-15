@@ -519,7 +519,7 @@ var ExperimentComponent = createReactClass({
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={encodevers} anisogenic={anisogenic} />
 
-                <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} ignoreErrors />
+                <FetchedItems {...this.props} url={experiments_url} Component={ControllingExperiments} />
 
                 {combinedDocuments.length ? <DocumentsPanel documentSpecs={[{documents: combinedDocuments}]} /> : null}
             </div>

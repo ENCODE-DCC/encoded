@@ -199,7 +199,7 @@ var RelatedItems = module.exports.RelatedItems = createReactClass({
         var limited_url = url + '&limit=' + this.props.limit;
         var unlimited_url = url + '&limit=all';
         return (
-            <fetched.FetchedData ignoreErrors={this.props.ignoreErrors}>
+            <fetched.FetchedData>
                 <fetched.Param name="context" url={limited_url} />
                 <FetchedRelatedItems {...this.props} url={unlimited_url} />
             </fetched.FetchedData>

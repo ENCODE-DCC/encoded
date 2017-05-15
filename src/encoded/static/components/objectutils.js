@@ -514,3 +514,34 @@ export const BrowserSelector = createReactClass({
         );
     },
 });
+
+
+// You can use this function to render a panel view for a context object with a couple options:
+//   1. Pass an ENCODE context object (e.g. Biosample or Experiment) directly in props. PanelLookup
+//      returns a React component that you can render directly.
+//
+//   2. Pass an object of the form:
+//      {
+//          context: context object to render
+//          ...any other props you want to pass to the panel-rendering component
+//      }
+//
+// Note: this function really doesn't do much of value, but it does do something and it's been
+// around since the beginning of encoded, so it stays for now.
+
+function PanelLookup(properties) {
+    let localProps;
+    if (properties['@id']) {
+        // `properties` is an ENCODE context object, so normalize it by making `props` an object
+        // with the given context as an object property.
+        localProps = { context: properties };
+    } else {
+        localProps = properties;
+    }
+
+    // `props` is an object with at least { context: ENCODE context object }.
+    const PanelView = globals.panel_views.lookup(localProps.context);
+    return <PanelView key={localProps.context.uuid} {...localProps} />;
+}
+
+export { PanelLookup };

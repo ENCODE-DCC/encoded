@@ -1298,7 +1298,7 @@ const ResultBrowser = createReactClass({
         }
         if (datasetCount > 0) {
             return (
-                <FetchedData ignoreErrors>
+                <FetchedData>
                     <Param name="visBlobs" url={visUrl} />
                     <GenomeBrowser files={this.props.files} assembly={this.props.assembly} limitFiles={this.props.limitFiles} region={region} currentRegion={this.props.currentRegion} />
                 </FetchedData>

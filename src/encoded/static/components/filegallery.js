@@ -822,7 +822,7 @@ export const FileGallery = createReactClass({
         const { context, encodevers, anisogenic, hideGraph, altFilterDefault } = this.props;
 
         return (
-            <FetchedData ignoreErrors>
+            <FetchedData>
                 <Param name="data" url={globals.unreleased_files_url(context)} />
                 <Param name="schemas" url="/profiles/" />
                 <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />

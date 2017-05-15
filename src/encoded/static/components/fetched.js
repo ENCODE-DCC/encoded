@@ -242,7 +242,7 @@ Items.defaultProps = {
 
 
 export const FetchedItems = props => (
-    <FetchedData ignoreErrors={props.ignoreErrors}>
+    <FetchedData>
         <Param name="data" url={props.url} />
         <Items {...props} />
     </FetchedData>
@@ -250,9 +250,4 @@ export const FetchedItems = props => (
 
 FetchedItems.propTypes = {
     url: PropTypes.string.isRequired,
-    ignoreErrors: PropTypes.bool,
-};
-
-FetchedItems.defaultProps = {
-    ignoreErrors: false,
 };

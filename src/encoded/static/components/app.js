@@ -720,6 +720,7 @@ class App extends React.Component {
         if (this.state.unsavedChanges.length) {
             return 'You have unsaved changes.';
         }
+        return undefined;
     }
 
     navigate(href, options) {

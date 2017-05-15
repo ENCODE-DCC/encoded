@@ -1444,7 +1444,6 @@ export const SeriesComponent = createReactClass({
                     filePanelHeader={<FilePanelHeader context={context} />}
                     encodevers={globals.encodeVersion(context)}
                     session={this.context.session}
-                    ignoreErrors
                 />
 
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />

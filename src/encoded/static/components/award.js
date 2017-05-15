@@ -562,7 +562,7 @@ const AwardCharts = (props) => {
                 <ProjectBadge award={award} addClasses="badge-heading" />
             </PanelHeading>
             <PanelBody>
-                <FetchedData ignoreErrors>
+                <FetchedData>
                     <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}`} />
                     <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}`} />
                     <ChartRenderer award={award} />

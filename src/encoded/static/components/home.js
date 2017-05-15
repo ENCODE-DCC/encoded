@@ -304,7 +304,7 @@ const HomepageChartLoader = (props) => {
     const { query, organisms, assayCategory } = props;
 
     return (
-        <FetchedData ignoreErrors>
+        <FetchedData>
             <Param name="data" url={`/search/${query}`} />
             <ChartGallery organisms={organisms} assayCategory={assayCategory} query={query} />
         </FetchedData>
@@ -989,7 +989,7 @@ News.propTypes = {
 // because we attach `ref` to this, and stateless components don't support that.
 class NewsLoader extends React.Component {
     render() {
-        return <FetchedItems {...this.props} url={`${newsUri}&limit=5`} Component={News} ignoreErrors newsLoaded={this.props.newsLoaded} />;
+        return <FetchedItems {...this.props} url={`${newsUri}&limit=5`} Component={News} newsLoaded={this.props.newsLoaded} />;
     }
 }
 
