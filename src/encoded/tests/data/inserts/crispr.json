@@ -11,7 +11,7 @@
         "source":"gregory-crawford",
         "insert_sequence": "CTCGGTG",
         "documents": [
-            "ENCODE:Snyder_Histone_Mouse_protocol"
+            "encode:Snyder_Histone_Mouse_protocol"
         ]
     },
     {
@@ -26,7 +26,7 @@
         "source":"gregory-crawford",
         "insert_sequence": "ACTCGT",
         "documents": [
-            "ENCODE:Snyder_Histone_Mouse_protocol"
+            "encode:Snyder_Histone_Mouse_protocol"
         ]
     }
 ]
