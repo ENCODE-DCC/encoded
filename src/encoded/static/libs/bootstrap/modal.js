@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import createReactClass from 'create-react-class';
 
+const renderSubtreeIntoContainer = ReactDOM.unstable_renderSubtreeIntoContainer;
+
 
 // Display a modal dialog box that blocks all other page input until the user dismisses it. The
 // typical format looks like:
@@ -305,7 +307,8 @@ export const Modal = createReactClass({
     // lets us properly render the fixed-position backdrop so that it overlays the fixed-position
     // navigation bar.
     renderModal: function () {
-        ReactDOM.render(
+        renderSubtreeIntoContainer(
+            this,
             <div>
                 {!this.props.actuator || this.state.modalOpen ?
                     <div>
