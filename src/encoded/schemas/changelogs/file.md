@@ -2,6 +2,11 @@
 
 ### Schema version 10
 
+* *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
+* unsafe characters such as " # @ % ^ & | ~ ; ` [ ] { } and consecutive whitespaces will no longer be allowed in the alias
+
+### Schema version 9.a
+
 #### Fields restricted to DCC access only:
 * *status*
 * *restricted*
