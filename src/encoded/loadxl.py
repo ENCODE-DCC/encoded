@@ -27,7 +27,6 @@ ORDER = [
     'construct_characterization',
     'rnai',
     'rnai_characterization',
-    'talen',
     'tale',
     'crispr',
     'genetic_modification',
