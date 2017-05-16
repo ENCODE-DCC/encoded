@@ -2,14 +2,13 @@
 var React = require('react');
 import PropTypes from 'prop-types';
 import createReactClass from 'create-react-class';
-var collection = require('./collection');
+import Table from './collection';
 var fetched = require('./fetched');
 var globals = require('./globals');
 var form = require('./form');
 var _ = require('underscore');
 
 var JSONSchemaForm = form.JSONSchemaForm;
-var Table = collection.Table;
 
 
 var Fallback = module.exports.Fallback = createReactClass({

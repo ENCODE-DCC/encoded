@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
 import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { DropdownButton } from '../libs/bootstrap/button';
@@ -51,17 +50,8 @@ function breakSetName(name) {
 
 
 // Display Annotation page, a subtype of Dataset.
-const AnnotationComponent = createReactClass({
-    propTypes: {
-        context: PropTypes.object, // Annotation being displayed
-    },
-
-    contextTypes: {
-        session: PropTypes.object, // Login session information
-        session_properties: PropTypes.object,
-    },
-
-    render: function () {
+class AnnotationComponent extends React.Component {
+    render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
@@ -257,8 +247,19 @@ const AnnotationComponent = createReactClass({
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
         );
-    },
-});
+    }
+}
+
+AnnotationComponent.propTypes = {
+    context: PropTypes.object, // Annotation being displayed
+    auditIndicators: PropTypes.func.isRequired, // From audit decorator
+    auditDetail: PropTypes.func.isRequired, // From audit decorator
+};
+
+AnnotationComponent.contextTypes = {
+    session: PropTypes.object, // Login session information
+    session_properties: PropTypes.object,
+};
 
 const Annotation = auditDecor(AnnotationComponent);
 
@@ -266,17 +267,8 @@ globals.content_views.register(Annotation, 'Annotation');
 
 
 // Display Annotation page, a subtype of Dataset.
-const PublicationDataComponent = createReactClass({
-    propTypes: {
-        context: PropTypes.object, // PublicationData object to display
-    },
-
-    contextTypes: {
-        session: PropTypes.object, // Login session information
-        session_properties: PropTypes.object,
-    },
-
-    render: function () {
+class PublicationDataComponent extends React.Component {
+    render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
@@ -419,8 +411,19 @@ const PublicationDataComponent = createReactClass({
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
         );
-    },
-});
+    }
+}
+
+PublicationDataComponent.propTypes = {
+    context: PropTypes.object, // PublicationData object to display
+    auditIndicators: PropTypes.func.isRequired, // From audit decorator
+    auditDetail: PropTypes.func.isRequired, // From audit decorator
+};
+
+PublicationDataComponent.contextTypes = {
+    session: PropTypes.object, // Login session information
+    session_properties: PropTypes.object,
+};
 
 const PublicationData = auditDecor(PublicationDataComponent);
 
@@ -428,17 +431,8 @@ globals.content_views.register(PublicationData, 'PublicationData');
 
 
 // Display Annotation page, a subtype of Dataset.
-const ReferenceComponent = createReactClass({
-    propTypes: {
-        context: PropTypes.object, // Reference object to display
-    },
-
-    contextTypes: {
-        session: PropTypes.object, // Login session information
-        session_properties: PropTypes.object,
-    },
-
-    render: function () {
+class ReferenceComponent extends React.Component {
+    render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
@@ -581,8 +575,19 @@ const ReferenceComponent = createReactClass({
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
         );
-    },
-});
+    }
+}
+
+ReferenceComponent.propTypes = {
+    context: PropTypes.object, // Reference object to display
+    auditIndicators: PropTypes.func.isRequired, // From audit decorator
+    auditDetail: PropTypes.func.isRequired, // From audit decorator
+};
+
+ReferenceComponent.contextTypes = {
+    session: PropTypes.object, // Login session information
+    session_properties: PropTypes.object,
+};
 
 const Reference = auditDecor(ReferenceComponent);
 
@@ -590,17 +595,8 @@ globals.content_views.register(Reference, 'Reference');
 
 
 // Display Annotation page, a subtype of Dataset.
-const ProjectComponent = createReactClass({
-    propTypes: {
-        context: PropTypes.object, // Project object to display
-    },
-
-    contextTypes: {
-        session: PropTypes.object, // Login session information
-        session_properties: PropTypes.object,
-    },
-
-    render: function () {
+class ProjectComponent extends React.Component {
+    render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
@@ -767,8 +763,19 @@ const ProjectComponent = createReactClass({
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
         );
-    },
-});
+    }
+}
+
+ProjectComponent.propTypes = {
+    context: PropTypes.object, // Project object to display
+    auditIndicators: PropTypes.func.isRequired, // From audit decorator
+    auditDetail: PropTypes.func.isRequired, // From audit decorator
+};
+
+ProjectComponent.contextTypes = {
+    session: PropTypes.object, // Login session information
+    session_properties: PropTypes.object,
+};
 
 const Project = auditDecor(ProjectComponent);
 
@@ -776,17 +783,8 @@ globals.content_views.register(Project, 'Project');
 
 
 // Display Annotation page, a subtype of Dataset.
-const UcscBrowserCompositeComponent = createReactClass({
-    propTypes: {
-        context: PropTypes.object, // UCSC browser composite object to display
-    },
-
-    contextTypes: {
-        session: PropTypes.object, // Login session information
-        session_properties: PropTypes.object,
-    },
-
-    render: function () {
+class UcscBrowserCompositeComponent extends React.Component {
+    render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
@@ -939,44 +937,53 @@ const UcscBrowserCompositeComponent = createReactClass({
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
         );
-    },
-});
+    }
+}
+
+UcscBrowserCompositeComponent.propTypes = {
+    context: PropTypes.object, // UCSC browser composite object to display
+    auditIndicators: PropTypes.func.isRequired, // From audit decorator
+    auditDetail: PropTypes.func.isRequired, // From audit decorator
+};
+
+UcscBrowserCompositeComponent.contextTypes = {
+    session: PropTypes.object, // Login session information
+    session_properties: PropTypes.object,
+};
 
 const UcscBrowserComposite = auditDecor(UcscBrowserCompositeComponent);
 
 globals.content_views.register(UcscBrowserComposite, 'UcscBrowserComposite');
 
 
-export const FilePanelHeader = createReactClass({
-    propTypes: {
-        context: PropTypes.object, // Object being displayed
-    },
+export const FilePanelHeader = (props) => {
+    const context = props.context;
 
-    render: function () {
-        const context = this.props.context;
+    return (
+        <div>
+            {context.visualize && context.status === 'released' ?
+                <span className="pull-right">
+                    <DropdownButton title="Visualize Data" label="filepaneheader">
+                        <DropdownMenu>
+                            {Object.keys(context.visualize).sort().map(assembly =>
+                                Object.keys(context.visualize[assembly]).sort().map(browser =>
+                                    <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize[assembly][browser]}>
+                                    {assembly} {browser}
+                                    </a>,
+                                )
+                            )}
+                        </DropdownMenu>
+                    </DropdownButton>
+                </span>
+            : null}
+            <h4>File summary</h4>
+        </div>
+    );
+};
 
-        return (
-            <div>
-                {context.visualize && context.status === 'released' ?
-                    <span className="pull-right">
-                        <DropdownButton title="Visualize Data" label="filepaneheader">
-                            <DropdownMenu>
-                                {Object.keys(context.visualize).sort().map(assembly =>
-                                    Object.keys(context.visualize[assembly]).sort().map(browser =>
-                                        <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize[assembly][browser]}>
-                                        {assembly} {browser}
-                                        </a>,
-                                    )
-                                )}
-                            </DropdownMenu>
-                        </DropdownButton>
-                    </span>
-                : null}
-                <h4>File summary</h4>
-            </div>
-        );
-    },
-});
+FilePanelHeader.propTypes = {
+    context: PropTypes.object, // Object being displayed
+};
 
 
 function displayPossibleControls(item, adminUser) {
@@ -1224,233 +1231,232 @@ const organismDevelopmentSeriesTableColumns = {
     },
 };
 
-export const SeriesComponent = createReactClass({
-    propTypes: {
-        context: PropTypes.object, // Series object to display
-    },
 
-    contextTypes: {
-        session: PropTypes.object,
-        session_properties: PropTypes.object,
-    },
+// Map series @id to title and table columns
+const seriesComponents = {
+    MatchedSet: { title: 'matched set series', table: basicTableColumns },
+    OrganismDevelopmentSeries: { title: 'organism development series', table: organismDevelopmentSeriesTableColumns },
+    ReferenceEpigenome: { title: 'reference epigenome series', table: basicTableColumns },
+    ReplicationTimingSeries: { title: 'replication timing series', table: replicationTimingSeriesTableColumns },
+    TreatmentConcentrationSeries: { title: 'treatment concentration series', table: treatmentSeriesTableColumns },
+    TreatmentTimeSeries: { title: 'treatment time series', table: treatmentSeriesTableColumns },
+};
 
-    // Map series @id to title and table columns
-    seriesComponents: {
-        MatchedSet: { title: 'matched set series', table: basicTableColumns },
-        OrganismDevelopmentSeries: { title: 'organism development series', table: organismDevelopmentSeriesTableColumns },
-        ReferenceEpigenome: { title: 'reference epigenome series', table: basicTableColumns },
-        ReplicationTimingSeries: { title: 'replication timing series', table: replicationTimingSeriesTableColumns },
-        TreatmentConcentrationSeries: { title: 'treatment concentration series', table: treatmentSeriesTableColumns },
-        TreatmentTimeSeries: { title: 'treatment time series', table: treatmentSeriesTableColumns },
-    },
-
-    render: function () {
-        const context = this.props.context;
-        const itemClass = globals.itemClass(context, 'view-item');
-        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
-        let experiments = {};
-        const statuses = [{ status: context.status, title: 'Status' }];
-        context.files.forEach((file) => {
-            const experiment = file.replicate && file.replicate.experiment;
-            if (experiment) {
-                experiments[experiment['@id']] = experiment;
-            }
-        });
-        experiments = _.values(experiments);
-
-        // Build up array of documents attached to this dataset
-        const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
-
-        // Set up the breadcrumbs
-        const datasetType = context['@type'][1];
-        const seriesType = context['@type'][0];
-        const crumbs = [
-            { id: 'Datasets' },
-            { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
-            { id: breakSetName(seriesType), uri: `/search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
-        ];
-
-        // Make string of alternate accessions
-        const altacc = context.alternate_accessions.join(', ');
-
-        // Get a list of reference links, if any
-        const references = pubReferenceList(context.references);
-
-        // Make the series title
-        const seriesComponent = this.seriesComponents[seriesType];
-        const seriesTitle = seriesComponent ? seriesComponent.title : 'series';
-
-        // Calculate the biosample summary
-        let speciesRender = null;
-        if (context.organism && context.organism.length) {
-            const speciesList = _.uniq(context.organism.map(organism => organism.scientific_name));
-            speciesRender = (
-                <span>
-                    {speciesList.map((species, i) =>
-                        <span key={i}>
-                            {i > 0 ? <span> and </span> : null}
-                            <i>{species}</i>
-                        </span>,
-                    )}
-                </span>
-            );
+export const SeriesComponent = (props) => {
+    const context = props.context;
+    const itemClass = globals.itemClass(context, 'view-item');
+    const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+    let experiments = {};
+    const statuses = [{ status: context.status, title: 'Status' }];
+    context.files.forEach((file) => {
+        const experiment = file.replicate && file.replicate.experiment;
+        if (experiment) {
+            experiments[experiment['@id']] = experiment;
         }
-        const terms = (context.biosample_term_name && context.biosample_term_name.length) ? _.uniq(context.biosample_term_name) : [];
+    });
+    experiments = _.values(experiments);
 
-        // Render tags badges
-        let tagBadges;
-        if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-        }
+    // Build up array of documents attached to this dataset
+    const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
-        // Calculate the donor diversity.
-        const diversity = donorDiversity(context);
+    // Set up the breadcrumbs
+    const datasetType = context['@type'][1];
+    const seriesType = context['@type'][0];
+    const crumbs = [
+        { id: 'Datasets' },
+        { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
+        { id: breakSetName(seriesType), uri: `/search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
+    ];
 
-        // Filter out any files we shouldn't see.
-        const experimentList = context.related_datasets.filter(dataset => dataset.status !== 'revoked' && dataset.status !== 'replaced' && dataset.status !== 'deleted');
+    // Make string of alternate accessions
+    const altacc = context.alternate_accessions.join(', ');
 
-        return (
-            <div className={itemClass}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <Breadcrumbs crumbs={crumbs} />
-                        <h2>Summary for {seriesTitle} {context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
-                        <div className="status-line">
-                            <div className="characterization-status-labels">
-                                <StatusLabel status={statuses} />
-                            </div>
-                            {this.props.auditIndicators(context.audit, 'series-audit', { session: this.context.session })}
+    // Get a list of reference links, if any
+    const references = pubReferenceList(context.references);
+
+    // Make the series title
+    const seriesComponent = seriesComponents[seriesType];
+    const seriesTitle = seriesComponent ? seriesComponent.title : 'series';
+
+    // Calculate the biosample summary
+    let speciesRender = null;
+    if (context.organism && context.organism.length) {
+        const speciesList = _.uniq(context.organism.map(organism => organism.scientific_name));
+        speciesRender = (
+            <span>
+                {speciesList.map((species, i) =>
+                    <span key={i}>
+                        {i > 0 ? <span> and </span> : null}
+                        <i>{species}</i>
+                    </span>,
+                )}
+            </span>
+        );
+    }
+    const terms = (context.biosample_term_name && context.biosample_term_name.length) ? _.uniq(context.biosample_term_name) : [];
+
+    // Render tags badges
+    let tagBadges;
+    if (context.internal_tags && context.internal_tags.length) {
+        tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
+    }
+
+    // Calculate the donor diversity.
+    const diversity = donorDiversity(context);
+
+    // Filter out any files we shouldn't see.
+    const experimentList = context.related_datasets.filter(dataset => dataset.status !== 'revoked' && dataset.status !== 'replaced' && dataset.status !== 'deleted');
+
+    return (
+        <div className={itemClass}>
+            <header className="row">
+                <div className="col-sm-12">
+                    <Breadcrumbs crumbs={crumbs} />
+                    <h2>Summary for {seriesTitle} {context.accession}</h2>
+                    {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                    <div className="status-line">
+                        <div className="characterization-status-labels">
+                            <StatusLabel status={statuses} />
                         </div>
+                        {this.props.auditIndicators(context.audit, 'series-audit', { session: this.context.session })}
                     </div>
-                </header>
-                {this.props.auditDetail(context.audit, 'series-audit', { session: this.context.session, except: context['@id'] })}
-                <Panel addClasses="data-display">
-                    <PanelBody addClasses="panel-body-with-header">
-                        <div className="flexrow">
-                            <div className="flexcol-sm-6">
-                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
-                                <dl className="key-value">
-                                    {context.description ?
-                                        <div data-test="description">
-                                            <dt>Description</dt>
-                                            <dd>{context.description}</dd>
-                                        </div>
-                                    : null}
-
-                                    <div data-test="donordiversity">
-                                        <dt>Donor diversity</dt>
-                                        <dd>{diversity}</dd>
+                </div>
+            </header>
+            {this.props.auditDetail(context.audit, 'series-audit', { session: this.context.session, except: context['@id'] })}
+            <Panel addClasses="data-display">
+                <PanelBody addClasses="panel-body-with-header">
+                    <div className="flexrow">
+                        <div className="flexcol-sm-6">
+                            <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                            <dl className="key-value">
+                                {context.description ?
+                                    <div data-test="description">
+                                        <dt>Description</dt>
+                                        <dd>{context.description}</dd>
                                     </div>
+                                : null}
 
-                                    {context.assay_term_name && context.assay_term_name.length ?
-                                        <div data-test="description">
-                                            <dt>Assay</dt>
-                                            <dd>{context.assay_term_name.join(', ')}</dd>
-                                        </div>
-                                    : null}
-
-                                    {terms.length || speciesRender ?
-                                        <div data-test="biosamplesummary">
-                                            <dt>Biosample summary</dt>
-                                            <dd>
-                                                {terms.length ? <span>{terms.join(' and ')} </span> : null}
-                                                {speciesRender ? <span>({speciesRender})</span> : null}
-                                            </dd>
-                                        </div>
-                                    : null}
-                                </dl>
-                            </div>
-
-                            <div className="flexcol-sm-6">
-                                <div className="flexcol-heading experiment-heading">
-                                    <h4>Attribution</h4>
-                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
+                                <div data-test="donordiversity">
+                                    <dt>Donor diversity</dt>
+                                    <dd>{diversity}</dd>
                                 </div>
-                                <dl className="key-value">
-                                    <div data-test="lab">
-                                        <dt>Lab</dt>
-                                        <dd>{context.lab.title}</dd>
+
+                                {context.assay_term_name && context.assay_term_name.length ?
+                                    <div data-test="description">
+                                        <dt>Assay</dt>
+                                        <dd>{context.assay_term_name.join(', ')}</dd>
                                     </div>
+                                : null}
 
-                                    <AwardRef context={context} adminUser={adminUser} />
-
-                                    <div data-test="project">
-                                        <dt>Project</dt>
-                                        <dd>{context.award.project}</dd>
-                                    </div>
-
-                                    {context.aliases.length ?
-                                        <div data-test="aliases">
-                                            <dt>Aliases</dt>
-                                            <dd>{context.aliases.join(', ')}</dd>
-                                        </div>
-                                    : null}
-
-                                    <div data-test="externalresources">
-                                        <dt>External resources</dt>
+                                {terms.length || speciesRender ?
+                                    <div data-test="biosamplesummary">
+                                        <dt>Biosample summary</dt>
                                         <dd>
-                                            {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
-                                            : <em>None submitted</em> }
+                                            {terms.length ? <span>{terms.join(' and ')} </span> : null}
+                                            {speciesRender ? <span>({speciesRender})</span> : null}
                                         </dd>
                                     </div>
-
-                                    {references ?
-                                        <div data-test="references">
-                                            <dt>References</dt>
-                                            <dd>{references}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.submitter_comment ?
-                                        <div data-test="submittercomment">
-                                            <dt>Submitter comment</dt>
-                                            <dd>{context.submitter_comment}</dd>
-                                        </div>
-                                    : null}
-
-                                    {tagBadges ?
-                                        <div className="tag-badges" data-test="tags">
-                                            <dt>Tags</dt>
-                                            <dd>{tagBadges}</dd>
-                                        </div>
-                                    : null}
-                                </dl>
-                            </div>
+                                : null}
+                            </dl>
                         </div>
-                    </PanelBody>
-                </Panel>
 
-                {context.related_datasets.length ?
-                    <div>
-                        <SortTablePanel title={`Experiments in ${seriesTitle} ${context.accession}`}>
-                            <SortTable
-                                list={experimentList}
-                                columns={seriesComponent.table}
-                                meta={{
-                                    adminUser: adminUser,
-                                }}
-                            />
-                        </SortTablePanel>
+                        <div className="flexcol-sm-6">
+                            <div className="flexcol-heading experiment-heading">
+                                <h4>Attribution</h4>
+                                <ProjectBadge award={context.award} addClasses="badge-heading" />
+                            </div>
+                            <dl className="key-value">
+                                <div data-test="lab">
+                                    <dt>Lab</dt>
+                                    <dd>{context.lab.title}</dd>
+                                </div>
+
+                                <AwardRef context={context} adminUser={adminUser} />
+
+                                <div data-test="project">
+                                    <dt>Project</dt>
+                                    <dd>{context.award.project}</dd>
+                                </div>
+
+                                {context.aliases.length ?
+                                    <div data-test="aliases">
+                                        <dt>Aliases</dt>
+                                        <dd>{context.aliases.join(', ')}</dd>
+                                    </div>
+                                : null}
+
+                                <div data-test="externalresources">
+                                    <dt>External resources</dt>
+                                    <dd>
+                                        {context.dbxrefs && context.dbxrefs.length ?
+                                            <DbxrefList values={context.dbxrefs} />
+                                        : <em>None submitted</em> }
+                                    </dd>
+                                </div>
+
+                                {references ?
+                                    <div data-test="references">
+                                        <dt>References</dt>
+                                        <dd>{references}</dd>
+                                    </div>
+                                : null}
+
+                                {context.submitter_comment ?
+                                    <div data-test="submittercomment">
+                                        <dt>Submitter comment</dt>
+                                        <dd>{context.submitter_comment}</dd>
+                                    </div>
+                                : null}
+
+                                {tagBadges ?
+                                    <div className="tag-badges" data-test="tags">
+                                        <dt>Tags</dt>
+                                        <dd>{tagBadges}</dd>
+                                    </div>
+                                : null}
+                            </dl>
+                        </div>
                     </div>
-                : null }
+                </PanelBody>
+            </Panel>
 
-                {/* Display list of released and unreleased files */}
-                <FetchedItems
-                    {...this.props}
-                    url={globals.unreleased_files_url(context)}
-                    Component={DatasetFiles}
-                    filePanelHeader={<FilePanelHeader context={context} />}
-                    encodevers={globals.encodeVersion(context)}
-                    session={this.context.session}
-                />
+            {context.related_datasets.length ?
+                <div>
+                    <SortTablePanel title={`Experiments in ${seriesTitle} ${context.accession}`}>
+                        <SortTable
+                            list={experimentList}
+                            columns={seriesComponent.table}
+                            meta={{
+                                adminUser: adminUser,
+                            }}
+                        />
+                    </SortTablePanel>
+                </div>
+            : null }
 
-                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
-            </div>
-        );
-    },
-});
+            {/* Display list of released and unreleased files */}
+            <FetchedItems
+                {...this.props}
+                url={globals.unreleased_files_url(context)}
+                Component={DatasetFiles}
+                filePanelHeader={<FilePanelHeader context={context} />}
+                encodevers={globals.encodeVersion(context)}
+                session={this.context.session}
+            />
+
+            <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
+        </div>
+    );
+};
+
+SeriesComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Series object to display
+};
+
+SeriesComponent.contextTypes = {
+    session: PropTypes.object,
+    session_properties: PropTypes.object,
+};
 
 const Series = auditDecor(SeriesComponent);
 
@@ -1458,86 +1464,82 @@ globals.content_views.register(Series, 'Series');
 
 
 // Display a count of experiments in the footer, with a link to the corresponding search if needed
-const ExperimentTableFooter = createReactClass({
-    propTypes: {
-        items: PropTypes.array, // Array of experiments that were displayed in the table
-        total: PropTypes.number, // Total number of experiments
-        url: PropTypes.string, // URL to link to equivalent experiment search results
+const ExperimentTableFooter = (props) => {
+    const { items, total, url } = props;
+
+    return (
+        <div>
+            <span>Displaying {items.length} of {total} </span>
+            {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
+        </div>
+    );
+};
+
+ExperimentTableFooter.propTypes = {
+    items: PropTypes.array, // Array of experiments that were displayed in the table
+    total: PropTypes.number, // Total number of experiments
+    url: PropTypes.string, // URL to link to equivalent experiment search results
+};
+
+
+const experimentTableColumns = {
+    accession: {
+        title: 'Accession',
+        display: item => <a href={item['@id']} title={`View page for experiment ${item.accession}`}>{item.accession}</a>,
     },
 
-    render: function () {
-        const { items, total, url } = this.props;
-
-        return (
-            <div>
-                <span>Displaying {items.length} of {total} </span>
-                {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
-            </div>
-        );
-    },
-});
-
-
-export const ExperimentTable = createReactClass({
-    propTypes: {
-        items: PropTypes.array, // List of experiments to display in the table
-        limit: PropTypes.number, // Maximum number of experiments to display in the table
-        total: PropTypes.number, // Total number of experiments
-        url: PropTypes.string, // URI to go to equivalent search results
-        title: PropTypes.oneOfType([ // Title for the table of experiments; can be string or component
-            PropTypes.string,
-            PropTypes.node,
-        ]),
+    assay_term_name: {
+        title: 'Assay',
     },
 
-    tableColumns: {
-        accession: {
-            title: 'Accession',
-            display: item => <a href={item['@id']} title={`View page for experiment ${item.accession}`}>{item.accession}</a>,
-        },
-
-        assay_term_name: {
-            title: 'Assay',
-        },
-
-        biosample_term_name: {
-            title: 'Biosample term name',
-        },
-
-        target: {
-            title: 'Target',
-            getValue: item => item.target && item.target.label,
-        },
-
-        description: {
-            title: 'Description',
-        },
-
-        title: {
-            title: 'Lab',
-            getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
-        },
+    biosample_term_name: {
+        title: 'Biosample term name',
     },
 
-    render: function () {
-        let experiments;
-
-        // If there's a limit on entries to display and the array is greater than that
-        // limit, then clone the array with just that specified number of elements
-        if (this.props.limit && (this.props.limit < this.props.items.length)) {
-            // Limit the experiment list by cloning first {limit} elements
-            experiments = this.props.items.slice(0, this.props.limit);
-        } else {
-            // No limiting; just reference the original array
-            experiments = this.props.items;
-        }
-
-        return (
-            <div>
-                <SortTablePanel title={this.props.title}>
-                    <SortTable list={experiments} columns={this.tableColumns} footer={<ExperimentTableFooter items={experiments} total={this.props.total} url={this.props.url} />} />
-                </SortTablePanel>
-            </div>
-        );
+    target: {
+        title: 'Target',
+        getValue: item => item.target && item.target.label,
     },
-});
+
+    description: {
+        title: 'Description',
+    },
+
+    title: {
+        title: 'Lab',
+        getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+    },
+};
+
+export const ExperimentTable = (props) => {
+    let experiments;
+
+    // If there's a limit on entries to display and the array is greater than that
+    // limit, then clone the array with just that specified number of elements
+    if (this.props.limit && (this.props.limit < this.props.items.length)) {
+        // Limit the experiment list by cloning first {limit} elements
+        experiments = props.items.slice(0, props.limit);
+    } else {
+        // No limiting; just reference the original array
+        experiments = props.items;
+    }
+
+    return (
+        <div>
+            <SortTablePanel title={props.title}>
+                <SortTable list={experiments} columns={experimentTableColumns} footer={<ExperimentTableFooter items={experiments} total={props.total} url={props.url} />} />
+            </SortTablePanel>
+        </div>
+    );
+};
+
+ExperimentTable.propTypes = {
+    items: PropTypes.array, // List of experiments to display in the table
+    limit: PropTypes.number, // Maximum number of experiments to display in the table
+    total: PropTypes.number, // Total number of experiments
+    url: PropTypes.string, // URI to go to equivalent search results
+    title: PropTypes.oneOfType([ // Title for the table of experiments; can be string or component
+        PropTypes.string,
+        PropTypes.node,
+    ]),
+};

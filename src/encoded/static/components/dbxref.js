@@ -1,5 +1,5 @@
 import React from 'react';
-import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 import globals from './globals';
 
 export function dbxref(attributes) {
@@ -63,15 +63,20 @@ export function dbxref(attributes) {
     return <a href={base + local}>{value}</a>;
 }
 
-export const DbxrefList = createReactClass({
-    render: function () {
-        const props = this.props;
-        return (
-            <ul className={props.className}>
-                {props.values.map((value, index) =>
-                    <li key={index}>{dbxref({ value: value, prefix: props.prefix, target_gene: props.target_gene, target_ref: props.target_ref, cell_line: props.cell_line })}</li>,
-                )}
-            </ul>
-        );
-    },
-});
+export const DbxrefList = props => (
+    <ul className={props.className}>
+        {props.values.map((value, index) =>
+            <li key={index}>{dbxref({ value: value, prefix: props.prefix, target_gene: props.target_gene, target_ref: props.target_ref, cell_line: props.cell_line })}</li>
+        )}
+    </ul>
+);
+
+DbxrefList.propTypes = {
+    values: PropTypes.array.isRequired, // Array of dbxref values to display
+    className: PropTypes.string, // CSS class to apply to dbxref list
+    cell_line: PropTypes.string,
+};
+
+DbxrefList.defaultProps = {
+    className: '',
+};
