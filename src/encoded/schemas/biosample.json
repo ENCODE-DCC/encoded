@@ -68,7 +68,7 @@
         },
         "transfection_method": {
             "required": ["transfection_type"],
-            "comment": "Transfected biosamples require specification of the transfection_type.",
+            "comment": "Transfected biosamples require specification of the transfection_type."
         },
         "post_synchronization_time_units": {
             "required": ["post_synchronization_time"],
@@ -284,7 +284,7 @@
             },
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
-       "constructs": {
+        "constructs": {
             "title": "DNA constructs",
             "description": "Expression or targeting vectors stably or transiently transfected (not RNAi).",
             "comment": "A list of constructs used to transfect the biosample, it will require transfection_type specification.",
