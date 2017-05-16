@@ -261,8 +261,8 @@ def biosample_13_14(value, system):
         value['depleted_in_term_name'] = list(set(value['depleted_in_term_name']))
 
 
-@upgrade_step('biosample', '14', '15')
-def biosample_14_15(value, system):
+@upgrade_step('biosample', '15', '16')
+def biosample_15_16(value, system):
     # http://redmine.encodedcc.org/issues/5096
-    if value.get('talens'):
+    if 'talens' in value:
         del value['talens']

@@ -261,7 +261,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "15"
+            "default": "16"
         },
         "accession": {
             "accessionType": "BS"
