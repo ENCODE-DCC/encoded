@@ -231,7 +231,7 @@ runcmd:
 # - sleep 60
 # - sudo -i -u encoded PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd" > tests.out
 # - sudo echo "00 7 * * * sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main" > /home/ubuntu/wal-e-backup
-# - sudo crontab /home/ubuntu/wal-e-backup 
+# - sudo crontab /home/ubuntu/wal-e-backup
 
 users:
 - default
@@ -264,6 +264,12 @@ write_files:
 - path: /etc/cron.d/cloudwatchmon
   content: |
     */5 * * * * nobody /opt/cloudwatchmon/bin/mon-put-instance-stats.py --mem-util --swap-util --disk-space-util --disk-path=/ --from-cron
+
+- path: /etc/elasticsearch/elasticsearch.yml
+  content: |
+    index.search.slowlog.threshold.query.warn: 8s
+    index.search.slowlog.threshold.fetch.warn: 1s
+    index.indexing.slowlog.threshold.index.warn: 25s
 
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
