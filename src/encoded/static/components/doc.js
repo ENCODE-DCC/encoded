@@ -35,7 +35,7 @@ const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 
 export const DocumentsPanel = (props) => {
     // Filter documentSpecs to just those that have actual documents in them.
-    const documentSpecsMapped = props.documentSpecs.length && _.compact(this.props.documentSpecs.map(documentSpecs => (
+    const documentSpecsMapped = props.documentSpecs.length && _.compact(props.documentSpecs.map(documentSpecs => (
         documentSpecs.documents.length ? documentSpecs : null
     )));
 
@@ -104,8 +104,8 @@ DocumentsSubpanels.propTypes = {
 // Display a single document within a <DocumentPanel>. This routine requires that you register display components for each
 // of the five major parts of a single document panel. See globals.js for a guide to the parts.
 export class Document extends React.Component {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
         this.state = {
             panelOpen: false,
         };
@@ -269,7 +269,7 @@ const DocumentDetail = (props) => {
 
     return (
         <div className={keyClass}>
-            <dl className="key-value-doc" id={`panel-${this.props.id}`} aria-labelledby={`tab-${props.id}`} role="tabpanel">
+            <dl className="key-value-doc" id={`panel-${props.id}`} aria-labelledby={`tab-${props.id}`} role="tabpanel">
                 {excerpt ?
                     <div data-test="caption">
                         <dt>Description</dt>

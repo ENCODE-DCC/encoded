@@ -179,8 +179,8 @@ export default class Table extends React.Component {
 
     constructor(props, context) {
         super(props);
-        this.state = Table.extractParams(props, context);
-        this.state.columns = Table.guessColumns(props);
+        this.state = Table.extractParams(this.props, context);
+        this.state.columns = Table.guessColumns(this.props);
         this.state.data = new Data([]);  // Tables may be long so render empty first
         this.state.communicating = true;
 

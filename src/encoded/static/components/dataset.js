@@ -1242,215 +1242,219 @@ const seriesComponents = {
     TreatmentTimeSeries: { title: 'treatment time series', table: treatmentSeriesTableColumns },
 };
 
-export const SeriesComponent = (props) => {
-    const context = props.context;
-    const itemClass = globals.itemClass(context, 'view-item');
-    const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
-    let experiments = {};
-    const statuses = [{ status: context.status, title: 'Status' }];
-    context.files.forEach((file) => {
-        const experiment = file.replicate && file.replicate.experiment;
-        if (experiment) {
-            experiments[experiment['@id']] = experiment;
+export class SeriesComponent extends React.Component {
+    render() {
+        const context = this.props.context;
+        const itemClass = globals.itemClass(context, 'view-item');
+        const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
+        let experiments = {};
+        const statuses = [{ status: context.status, title: 'Status' }];
+        context.files.forEach((file) => {
+            const experiment = file.replicate && file.replicate.experiment;
+            if (experiment) {
+                experiments[experiment['@id']] = experiment;
+            }
+        });
+        experiments = _.values(experiments);
+
+        // Build up array of documents attached to this dataset
+        const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
+
+        // Set up the breadcrumbs
+        const datasetType = context['@type'][1];
+        const seriesType = context['@type'][0];
+        const crumbs = [
+            { id: 'Datasets' },
+            { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
+            { id: breakSetName(seriesType), uri: `/search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
+        ];
+
+        // Make string of alternate accessions
+        const altacc = context.alternate_accessions.join(', ');
+
+        // Get a list of reference links, if any
+        const references = pubReferenceList(context.references);
+
+        // Make the series title
+        const seriesComponent = seriesComponents[seriesType];
+        const seriesTitle = seriesComponent ? seriesComponent.title : 'series';
+
+        // Calculate the biosample summary
+        let speciesRender = null;
+        if (context.organism && context.organism.length) {
+            const speciesList = _.uniq(context.organism.map(organism => organism.scientific_name));
+            speciesRender = (
+                <span>
+                    {speciesList.map((species, i) =>
+                        <span key={i}>
+                            {i > 0 ? <span> and </span> : null}
+                            <i>{species}</i>
+                        </span>,
+                    )}
+                </span>
+            );
         }
-    });
-    experiments = _.values(experiments);
+        const terms = (context.biosample_term_name && context.biosample_term_name.length) ? _.uniq(context.biosample_term_name) : [];
 
-    // Build up array of documents attached to this dataset
-    const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
+        // Render tags badges
+        let tagBadges;
+        if (context.internal_tags && context.internal_tags.length) {
+            tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
+        }
 
-    // Set up the breadcrumbs
-    const datasetType = context['@type'][1];
-    const seriesType = context['@type'][0];
-    const crumbs = [
-        { id: 'Datasets' },
-        { id: datasetType, uri: `/search/?type=${datasetType}`, wholeTip: `Search for ${datasetType}` },
-        { id: breakSetName(seriesType), uri: `/search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
-    ];
+        // Calculate the donor diversity.
+        const diversity = donorDiversity(context);
 
-    // Make string of alternate accessions
-    const altacc = context.alternate_accessions.join(', ');
+        // Filter out any files we shouldn't see.
+        const experimentList = context.related_datasets.filter(dataset => dataset.status !== 'revoked' && dataset.status !== 'replaced' && dataset.status !== 'deleted');
 
-    // Get a list of reference links, if any
-    const references = pubReferenceList(context.references);
-
-    // Make the series title
-    const seriesComponent = seriesComponents[seriesType];
-    const seriesTitle = seriesComponent ? seriesComponent.title : 'series';
-
-    // Calculate the biosample summary
-    let speciesRender = null;
-    if (context.organism && context.organism.length) {
-        const speciesList = _.uniq(context.organism.map(organism => organism.scientific_name));
-        speciesRender = (
-            <span>
-                {speciesList.map((species, i) =>
-                    <span key={i}>
-                        {i > 0 ? <span> and </span> : null}
-                        <i>{species}</i>
-                    </span>,
-                )}
-            </span>
-        );
-    }
-    const terms = (context.biosample_term_name && context.biosample_term_name.length) ? _.uniq(context.biosample_term_name) : [];
-
-    // Render tags badges
-    let tagBadges;
-    if (context.internal_tags && context.internal_tags.length) {
-        tagBadges = context.internal_tags.map(tag => <img src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
-    }
-
-    // Calculate the donor diversity.
-    const diversity = donorDiversity(context);
-
-    // Filter out any files we shouldn't see.
-    const experimentList = context.related_datasets.filter(dataset => dataset.status !== 'revoked' && dataset.status !== 'replaced' && dataset.status !== 'deleted');
-
-    return (
-        <div className={itemClass}>
-            <header className="row">
-                <div className="col-sm-12">
-                    <Breadcrumbs crumbs={crumbs} />
-                    <h2>Summary for {seriesTitle} {context.accession}</h2>
-                    {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
-                    <div className="status-line">
-                        <div className="characterization-status-labels">
-                            <StatusLabel status={statuses} />
+        return (
+            <div className={itemClass}>
+                <header className="row">
+                    <div className="col-sm-12">
+                        <Breadcrumbs crumbs={crumbs} />
+                        <h2>Summary for {seriesTitle} {context.accession}</h2>
+                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <div className="status-line">
+                            <div className="characterization-status-labels">
+                                <StatusLabel status={statuses} />
+                            </div>
+                            {this.props.auditIndicators(context.audit, 'series-audit', { session: this.context.session })}
                         </div>
-                        {this.props.auditIndicators(context.audit, 'series-audit', { session: this.context.session })}
                     </div>
-                </div>
-            </header>
-            {this.props.auditDetail(context.audit, 'series-audit', { session: this.context.session, except: context['@id'] })}
-            <Panel addClasses="data-display">
-                <PanelBody addClasses="panel-body-with-header">
-                    <div className="flexrow">
-                        <div className="flexcol-sm-6">
-                            <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
-                            <dl className="key-value">
-                                {context.description ?
-                                    <div data-test="description">
-                                        <dt>Description</dt>
-                                        <dd>{context.description}</dd>
-                                    </div>
-                                : null}
+                </header>
+                {this.props.auditDetail(context.audit, 'series-audit', { session: this.context.session, except: context['@id'] })}
+                <Panel addClasses="data-display">
+                    <PanelBody addClasses="panel-body-with-header">
+                        <div className="flexrow">
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                                <dl className="key-value">
+                                    {context.description ?
+                                        <div data-test="description">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    : null}
 
-                                <div data-test="donordiversity">
-                                    <dt>Donor diversity</dt>
-                                    <dd>{diversity}</dd>
+                                    <div data-test="donordiversity">
+                                        <dt>Donor diversity</dt>
+                                        <dd>{diversity}</dd>
+                                    </div>
+
+                                    {context.assay_term_name && context.assay_term_name.length ?
+                                        <div data-test="description">
+                                            <dt>Assay</dt>
+                                            <dd>{context.assay_term_name.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    {terms.length || speciesRender ?
+                                        <div data-test="biosamplesummary">
+                                            <dt>Biosample summary</dt>
+                                            <dd>
+                                                {terms.length ? <span>{terms.join(' and ')} </span> : null}
+                                                {speciesRender ? <span>({speciesRender})</span> : null}
+                                            </dd>
+                                        </div>
+                                    : null}
+                                </dl>
+                            </div>
+
+                            <div className="flexcol-sm-6">
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Attribution</h4>
+                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
                                 </div>
-
-                                {context.assay_term_name && context.assay_term_name.length ?
-                                    <div data-test="description">
-                                        <dt>Assay</dt>
-                                        <dd>{context.assay_term_name.join(', ')}</dd>
+                                <dl className="key-value">
+                                    <div data-test="lab">
+                                        <dt>Lab</dt>
+                                        <dd>{context.lab.title}</dd>
                                     </div>
-                                : null}
 
-                                {terms.length || speciesRender ?
-                                    <div data-test="biosamplesummary">
-                                        <dt>Biosample summary</dt>
+                                    <AwardRef context={context} adminUser={adminUser} />
+
+                                    <div data-test="project">
+                                        <dt>Project</dt>
+                                        <dd>{context.award.project}</dd>
+                                    </div>
+
+                                    {context.aliases.length ?
+                                        <div data-test="aliases">
+                                            <dt>Aliases</dt>
+                                            <dd>{context.aliases.join(', ')}</dd>
+                                        </div>
+                                    : null}
+
+                                    <div data-test="externalresources">
+                                        <dt>External resources</dt>
                                         <dd>
-                                            {terms.length ? <span>{terms.join(' and ')} </span> : null}
-                                            {speciesRender ? <span>({speciesRender})</span> : null}
+                                            {context.dbxrefs && context.dbxrefs.length ?
+                                                <DbxrefList values={context.dbxrefs} />
+                                            : <em>None submitted</em> }
                                         </dd>
                                     </div>
-                                : null}
-                            </dl>
-                        </div>
 
-                        <div className="flexcol-sm-6">
-                            <div className="flexcol-heading experiment-heading">
-                                <h4>Attribution</h4>
-                                <ProjectBadge award={context.award} addClasses="badge-heading" />
+                                    {references ?
+                                        <div data-test="references">
+                                            <dt>References</dt>
+                                            <dd>{references}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.submitter_comment ?
+                                        <div data-test="submittercomment">
+                                            <dt>Submitter comment</dt>
+                                            <dd>{context.submitter_comment}</dd>
+                                        </div>
+                                    : null}
+
+                                    {tagBadges ?
+                                        <div className="tag-badges" data-test="tags">
+                                            <dt>Tags</dt>
+                                            <dd>{tagBadges}</dd>
+                                        </div>
+                                    : null}
+                                </dl>
                             </div>
-                            <dl className="key-value">
-                                <div data-test="lab">
-                                    <dt>Lab</dt>
-                                    <dd>{context.lab.title}</dd>
-                                </div>
-
-                                <AwardRef context={context} adminUser={adminUser} />
-
-                                <div data-test="project">
-                                    <dt>Project</dt>
-                                    <dd>{context.award.project}</dd>
-                                </div>
-
-                                {context.aliases.length ?
-                                    <div data-test="aliases">
-                                        <dt>Aliases</dt>
-                                        <dd>{context.aliases.join(', ')}</dd>
-                                    </div>
-                                : null}
-
-                                <div data-test="externalresources">
-                                    <dt>External resources</dt>
-                                    <dd>
-                                        {context.dbxrefs && context.dbxrefs.length ?
-                                            <DbxrefList values={context.dbxrefs} />
-                                        : <em>None submitted</em> }
-                                    </dd>
-                                </div>
-
-                                {references ?
-                                    <div data-test="references">
-                                        <dt>References</dt>
-                                        <dd>{references}</dd>
-                                    </div>
-                                : null}
-
-                                {context.submitter_comment ?
-                                    <div data-test="submittercomment">
-                                        <dt>Submitter comment</dt>
-                                        <dd>{context.submitter_comment}</dd>
-                                    </div>
-                                : null}
-
-                                {tagBadges ?
-                                    <div className="tag-badges" data-test="tags">
-                                        <dt>Tags</dt>
-                                        <dd>{tagBadges}</dd>
-                                    </div>
-                                : null}
-                            </dl>
                         </div>
+                    </PanelBody>
+                </Panel>
+
+                {context.related_datasets.length ?
+                    <div>
+                        <SortTablePanel title={`Experiments in ${seriesTitle} ${context.accession}`}>
+                            <SortTable
+                                list={experimentList}
+                                columns={seriesComponent.table}
+                                meta={{
+                                    adminUser: adminUser,
+                                }}
+                            />
+                        </SortTablePanel>
                     </div>
-                </PanelBody>
-            </Panel>
+                : null }
 
-            {context.related_datasets.length ?
-                <div>
-                    <SortTablePanel title={`Experiments in ${seriesTitle} ${context.accession}`}>
-                        <SortTable
-                            list={experimentList}
-                            columns={seriesComponent.table}
-                            meta={{
-                                adminUser: adminUser,
-                            }}
-                        />
-                    </SortTablePanel>
-                </div>
-            : null }
+                {/* Display list of released and unreleased files */}
+                <FetchedItems
+                    {...this.props}
+                    url={globals.unreleased_files_url(context)}
+                    Component={DatasetFiles}
+                    filePanelHeader={<FilePanelHeader context={context} />}
+                    encodevers={globals.encodeVersion(context)}
+                    session={this.context.session}
+                />
 
-            {/* Display list of released and unreleased files */}
-            <FetchedItems
-                {...this.props}
-                url={globals.unreleased_files_url(context)}
-                Component={DatasetFiles}
-                filePanelHeader={<FilePanelHeader context={context} />}
-                encodevers={globals.encodeVersion(context)}
-                session={this.context.session}
-            />
-
-            <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
-        </div>
-    );
+                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
+            </div>
+        );
+    }
 };
 
 SeriesComponent.propTypes = {
     context: PropTypes.object.isRequired, // Series object to display
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
 };
 
 SeriesComponent.contextTypes = {
