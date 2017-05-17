@@ -316,6 +316,8 @@
         },
         "treatments": {
             "title": "Treatments",
+            "description": "",
+            "comment": "",
             "type": "array",
             "default": [],
             "uniqueItems": true,
@@ -685,6 +687,7 @@
         "model_organism_age_units": {
             "title": "Model organism donor age units",
             "type": "string",
+            "description": "Age units of the model organism.",
             "comment": "model_organism_age_units are not valid for a human biosample.",
             "enum": [
                 "minute",
@@ -699,9 +702,15 @@
         "model_organism_health_status": {
             "title": "Model organism donor health status",
             "type": "string",
+            "description": "Health status of the model organism.",
             "comment": "model_organism_health_status is not valid for a human biosample."
         },
         "status": {
+            "title": "Status",
+            "type": "string",
+            "permission": "import_items",
+            "description": "The status of the biosample object.",
+            "comment": "Do not submit.  This is set by admins along the process of file submission.",
             "enum" : [
                 "in progress",
                 "deleted",

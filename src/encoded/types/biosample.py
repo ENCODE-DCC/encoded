@@ -330,6 +330,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         return paths_filtered_by_status(request, characterizations)
 
     @calculated_property(schema={
+        "description": "The biosample(s) that have this biosample in their part_of property.",
+        "comment": "Do not submit. Values in the list are reverse links of a biosamples that are part_of this biosample.",
         "title": "Child biosamples",
         "type": "array",
         "items": {
