@@ -265,12 +265,6 @@ write_files:
   content: |
     */5 * * * * nobody /opt/cloudwatchmon/bin/mon-put-instance-stats.py --mem-util --swap-util --disk-space-util --disk-path=/ --from-cron
 
-# - path: /etc/elasticsearch/elasticsearch.yml
-#   content: |
-#     index.search.slowlog.threshold.query.warn: 8s
-#     index.search.slowlog.threshold.fetch.warn: 1s
-#     index.indexing.slowlog.threshold.index.warn: 25s
-
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
     hot_standby = on
