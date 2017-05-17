@@ -1449,7 +1449,7 @@ export class SeriesComponent extends React.Component {
             </div>
         );
     }
-};
+}
 
 SeriesComponent.propTypes = {
     context: PropTypes.object.isRequired, // Series object to display

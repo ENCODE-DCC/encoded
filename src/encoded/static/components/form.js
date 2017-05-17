@@ -1,15 +1,14 @@
 /* eslint-disable jsx-a11y/label-has-for */
 
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
-const parseAndLogError = require('./globals').parseAndLogError;
-const offset = require('../libs/offset');
-const fetched = require('./fetched');
-const inputs = require('./inputs');
-const layout = require('./layout');
-const jsonschema = require('jsonschema');
-const _ = require('underscore');
+import jsonschema from 'jsonschema';
+import _ from 'underscore';
+import offset from '../libs/offset';
+import fetched from './fetched';
+import { parseAndLogError } from './globals';
+import inputs from './inputs';
+import layout from './layout';
 
 const validator = new jsonschema.Validator();
 
@@ -115,24 +114,19 @@ const updateChild = function (name, subvalue) {
     this.props.updateChild(this.props.name, newValue);
 };
 
-const RepeatingItem = createReactClass({
+
+class RepeatingItem extends React.Component {
     // A form field for editing one item in an array
     // (part of a RepeatingFieldset).
     // It delegates rendering the field to an actual Field component,
     // but also shows a button to remove the item.
+    constructor() {
+        super();
 
-    propTypes: {
-        name: PropTypes.number,
-        path: PropTypes.string,
-        schema: PropTypes.object,
-        onRemove: PropTypes.func,
-        value: PropTypes.any,
-        updateChild: PropTypes.func,
-    },
-
-    contextTypes: {
-        readonly: PropTypes.bool,
-    },
+        // Bind `this` to non-React methods.
+        this.handleRemove = this.handleRemove.bind(this);
+        this.updateChild = this.updateChild.bind(this);
+    }
 
     handleRemove(e) {
         // Called when the remove button is clicked.
@@ -145,13 +139,13 @@ const RepeatingItem = createReactClass({
         if (this.props.onRemove) {
             this.props.onRemove(this.props.name);
         }
-    },
+    }
 
     updateChild(name, value) {
         // When the contained field value is updated,
         // tell our parent RepeatingFieldset to update the correct index.
         this.props.updateChild(this.props.name, value);
-    },
+    }
 
     render() {
         const { path, schema, value } = this.props;
@@ -171,37 +165,42 @@ const RepeatingItem = createReactClass({
             : ''}
           </div>
         );
-    },
+    }
 
-});
+}
 
-const RepeatingFieldset = createReactClass({
+RepeatingItem.propTypes = {
+    name: PropTypes.number,
+    path: PropTypes.string,
+    schema: PropTypes.object,
+    onRemove: PropTypes.func,
+    value: PropTypes.any,
+    updateChild: PropTypes.func,
+};
+
+RepeatingItem.contextTypes = {
+    readonly: PropTypes.bool,
+};
+
+
+class RepeatingFieldset extends React.Component {
     // A form field for editing an array.
     // Each item in the array is rendered via RepeatingItem.
     // Also shows a button to add a new item.
+    constructor() {
+        super();
 
-    propTypes: {
-        schema: PropTypes.object,
-        name: PropTypes.string,
-        path: PropTypes.string,
-        value: PropTypes.any,
-        updateChild: PropTypes.func,
-    },
-
-    contextTypes: {
-        schemas: PropTypes.object,
-        readonly: PropTypes.bool,
-        id: PropTypes.string,
-    },
-
-    getInitialState: function () {
         // Counter which is incremented every time an item is removed.
         // This is used as part of the React key for contained RepeatingItems
         // to make sure that we re-render all items after one is removed.
         // After a removal the same array index may point to a different
         // item, so it's not safe to use the array index alone as the key.
-        return { generation: 0 };
-    },
+        this.state = { generation: 0 };
+
+        // Bind `this` to non-React methods.
+        this.onRemove = this.onRemove.bind(this);
+        this.handleAdd = this.handleAdd.bind(this);
+    }
 
     onRemove(index) {
         // Called when a contained RepeatingItem is removed.
@@ -218,7 +217,7 @@ const RepeatingFieldset = createReactClass({
 
         // Pass the new value for the entire array to parent
         this.props.updateChild(this.props.name, value);
-    },
+    }
 
     handleAdd() {
         // Called when the add button is clicked.
@@ -244,10 +243,10 @@ const RepeatingFieldset = createReactClass({
 
         // Pass the new value for the entire array to parent
         this.props.updateChild(this.props.name, value);
-    },
+    }
 
     // Propagate edits to subitems upward
-    updateChild,
+    updateChild
 
     render() {
         const { path, value, schema } = this.props;
@@ -276,9 +275,24 @@ const RepeatingFieldset = createReactClass({
                 }
             </div>
         );
-    },
+    }
 
-});
+}
+
+RepeatingFieldset.propTypes = {
+    schema: PropTypes.object,
+    name: PropTypes.string,
+    path: PropTypes.string,
+    value: PropTypes.any,
+    updateChild: PropTypes.func,
+};
+
+RepeatingFieldset.contextTypes = {
+    schemas: PropTypes.object,
+    readonly: PropTypes.bool,
+    id: PropTypes.string,
+};
+
 
 const FetchedFieldset = createReactClass({
     // A form field for editing a child object
