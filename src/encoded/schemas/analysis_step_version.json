@@ -4,7 +4,7 @@
     "id": "/profiles/analysis_step.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["software_versions", "analysis_step"],
+    "required": ["software_versions", "analysis_step", "minor_version"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid", "aliases"],
     "mixinProperties": [
@@ -17,13 +17,13 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
-        "version": {
-            "title": "Version",
-            "description": "The version of the analysis step",
+        "minor_version": {
+            "title": "Minor version",
+            "description": "The minor version of the analysis step",
             "type": "integer",
-            "default": 1
+            "pattern": "\\d+"
         },
         "analysis_step": {
             "title": "Analysis Step",

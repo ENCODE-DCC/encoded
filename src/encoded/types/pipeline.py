@@ -11,6 +11,8 @@ from .shared_calculated_properties import (
     CalculatedAssayTermID
 )
 
+import re
+
 @collection(
     name='pipelines',
     unique_key='accession',
@@ -63,6 +65,17 @@ class AnalysisStep(Item):
         'parents'
     ]
 
+    '''
+    @calculated_property(schema={
+        "title": "Full name",
+        "type": "string",
+        "description": "Full name of the analysis step with major version number.",
+        "comment": "Do not submit. Value is automatically assigned by the server."
+    })
+    def full_name(self, name, major_version):
+        return u'{}-{}'.format(name, major_version)
+    '''
+
     @calculated_property(schema={
         "title": "Pipelines",
         "type": "array",
@@ -85,7 +98,7 @@ class AnalysisStep(Item):
             for path in paths_filtered_by_status(request, versions)
         ]
         if version_objects:
-            current = max(version_objects, key=lambda obj: obj['version'])
+            current = max(version_objects, key=lambda obj: obj['minor_version'])
             return current['@id']
 
     @calculated_property(schema={
@@ -112,9 +125,18 @@ class AnalysisStepVersion(Item):
 
     def unique_keys(self, properties):
         keys = super(AnalysisStepVersion, self).unique_keys(properties)
-        value = u'{analysis_step}/{version}'.format(**properties)
-        keys.setdefault('analysis_step_version:analysis_step_version', []).append(value)
+        value = u'{analysis_step}/{minor_version}'.format(**properties)
+        keys.setdefault('analysis_step_version:analysis_step_minor_version', []).append(value)
         return keys
+
+    @calculated_property(schema={
+        "title": "Name",
+        "type": "string",
+    })
+    def name(self, analysis_step, minor_version):
+        analysis_step = re.sub('^\/analysis-steps\/', '', analysis_step)
+        analysis_step = re.sub('/', '', analysis_step)
+        return u'{}-{}'.format(analysis_step, minor_version)
 
 
 @collection(
