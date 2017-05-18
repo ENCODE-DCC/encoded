@@ -82,6 +82,14 @@
                 "required": ["accession"]
             }
         },
+        "revoke_detail": {
+            "comment": "Only revoked files can have revoke_detail specified.",
+            "properties": {
+                "status": {
+                    "enum": ["revoked"]
+                }
+            }
+        },
         "mapped_run_type": {
             "comment": "Only bam files can have mapped_run_type specified.",
             "properties": {
