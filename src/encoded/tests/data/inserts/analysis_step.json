@@ -1,6 +1,7 @@
 [
     {
-        "name": "alignment-test-step-1",
+        "name": "alignment-test-step-v-1",
+        "major_version": 1,
         "title": "Alignment test step 1",
         "analysis_step_types": ["alignment"],
         "input_file_types": ["reads"],
@@ -8,7 +9,8 @@
         "status": "released"
     },
     {
-        "name": "signal-test-step-1",
+        "name": "signal-test-step-v-1",
+        "major_version": 1,
         "title": "Signal calling test step 1",
         "analysis_step_types": ["signal generation"],
         "input_file_types": ["alignments"],
@@ -17,10 +19,11 @@
             "plus strand signal of unique reads"
         ],
         "status": "released",
-        "parents": ["alignment-test-step-1"]
+        "parents": ["alignment-test-step-v-1"]
     },
     {
-        "name": "alignment-test-step-2",
+        "name": "alignment-test-step-v-2",
+        "major_version": 2,
         "title": "Alignment test step 2",
         "analysis_step_types": ["alignment"],
         "input_file_types": ["reads"],
@@ -28,25 +31,28 @@
         "status": "released"
     },
     {
-        "name": "quantification-test-step-1",
+        "name": "quantification-test-step-v-1",
+        "major_version": 1,
         "title": "Quantification test step 1",
         "analysis_step_types": ["quantification"],
         "input_file_types": ["alignments", "genome reference"],
         "output_file_types": ["gene quantifications"],
         "status": "released",
-        "parents": ["alignment-test-step-2"]
+        "parents": ["alignment-test-step-v-2"]
     },
     {
-        "name": "idr-test-step-1",
+        "name": "idr-test-step-v-1",
+        "major_version": 1,
         "title": "IDR test step 1",
         "analysis_step_types": ["IDR"],
         "input_file_types": ["gene quantifications"],
         "output_file_types": ["gene quantifications"],
         "status": "released",
-        "parents": ["quantification-test-step-1"]
+        "parents": ["quantification-test-step-v-1"]
     },
     {
-        "name": "encode-2-step",
+        "name": "encode-2-step-v-1",
+        "major_version": 1,
         "title": "ENCODE 2 step",
         "analysis_step_types": [
             "filtering",
@@ -61,16 +67,18 @@
         "status": "released"
     },
     {
-        "name": "idr-test-step-2",
+        "name": "idr-test-step-v-2",
+        "major_version": 2,
         "title": "IDR test step 2",
         "analysis_step_types": [ "IDR"],
         "input_file_types": ["peaks"],
         "qa_stats_generated": ["self-consistency ratio", "rescue ratio", "IDR plot"],
         "status": "released",
-        "parents": ["encode-2-step"]
+        "parents": ["encode-2-step-v-1"]
     },
     {
-        "name": "alignment-test-step-3",
+        "name": "alignment-test-step-v-3",
+        "major_version": 3,
         "title": "Alignment test step 3",
         "analysis_step_types": ["alignment"],
         "input_file_types": ["reads"],
@@ -78,34 +86,38 @@
         "status": "released"
     },
     {
-        "name": "peak-calling-test-step-1",
+        "name": "peak-calling-test-step-v-1",
+        "major_version": 1,
         "title": "Peak calling test step 1",
         "analysis_step_types": ["peak calling"],
         "input_file_types": ["alignments"],
         "output_file_types": ["peaks"],
         "status": "released",
-        "parents": ["alignment-test-step-3"]
+        "parents": ["alignment-test-step-v-3"]
     },
     {
-        "name": "prep-bismark",
+        "name": "prep-bismark-step-v-1",
+        "major_version": 1,
         "title": "prep-bismark",
         "input_file_types": ["genome reference"],
         "parents": [],
         "analysis_step_types": ["genome indexing"]
     },
     {
-        "name": "mott-trim-align-bismark",
+        "name": "mott-trim-align-bismark-step-v-1",
+        "major_version": 1,
         "title": "mott-trim-align-bismark",
         "input_file_types": ["reads"],
         "output_file_types": ["alignments"],
         "analysis_step_types": ["filtering", "alignment"]
     },
     {
-        "name": "extract-bismark",
+        "name": "extract-bismark-step-v-1",
+        "major_version": 1,
         "title": "extract-bismark",
         "input_file_types": ["alignments"],
         "output_file_types": ["methylation state at CpG"],
-        "parents": ["mott-trim-align-bismark"],
+        "parents": ["mott-trim-align-bismark-step-v-1"],
         "analysis_step_types": ["signal generation"],
         "qa_stats_generated":  [
             "Sequences analysed in total",
@@ -116,54 +128,61 @@
         ]
     },
     {
-        "name": "prep-star",
+        "name": "prep-star-step-v-1",
+        "major_version": 1,
         "title": "prep-star",
         "input_file_types": ["genome reference"],
         "parents": [],
         "analysis_step_types": ["genome indexing"]
     },
     {
-        "name": "prep-tophat",
+        "name": "prep-tophat-step-v-1",
+        "major_version": 1,
         "title": "prep-tophat",
         "input_file_types": ["genome reference"],
         "analysis_step_types": ["genome indexing"]
     },
     {
-        "name": "prep-rsem",
+        "name": "prep-rsem-step-v-1",
+        "major_version": 1,
         "title": "prep-rsem",
         "input_file_types": ["genome reference"],
         "analysis_step_types": ["genome indexing"]
     },
     {
-        "name": "align-star",
+        "name": "align-star-step-v-1",
+        "major_version": 1,
         "title": "align-star",
         "input_file_types": ["reads"],
         "output_file_types": ["alignments"],
         "parents": [
-            "prep-star"
+            "prep-star-step-v-1"
         ],
         "analysis_step_types": ["alignment"]
     },
     {
-        "name": "quant-rsem",
+        "name": "quant-rsem-step-v-1",
+        "major_version": 1,
         "title": "quant-rsem",
         "input_file_types": ["alignments"],
         "parents": [
-            "prep-rsem",
-            "align-star"
+            "prep-rsem-step-v-1",
+            "align-star-step-v-1"
         ],
         "analysis_step_types": ["signal generation"]
     },
     {
-        "name": "align-tophat",
+        "name": "align-tophat-step-v-1",
+        "major_version": 1,
         "title": "align-tophat",
         "input_file_types": ["reads"],
         "output_file_types": ["alignments"],
-        "parents": ["prep-tophat"],
+        "parents": ["prep-tophat-step-v-1"],
         "analysis_step_types": ["alignment"]
     },
     {
-        "name": "bam-to-bigwig-tophat",
+        "name": "bam-to-bigwig-tophat-step-v-1",
+        "major_version": 1,
         "title": "bam-to-bigwig-tophat",
         "input_file_types": ["alignments"],
         "output_file_types": [
@@ -172,11 +191,12 @@
             "minus strand signal of unique reads",
             "plus strand signal of unique reads"
         ],
-        "parents": ["align-tophat"],
+        "parents": ["align-tophat-step-v-1"],
         "analysis_step_types": ["file format conversion"]
     },
     {
-        "name": "bam-to-bigwig-star",
+        "name": "bam-to-bigwig-star-step-v-1",
+        "major_version": 1,
         "title": "bam-to-bigwig-star",
         "input_file_types": ["alignments"],
         "output_file_types": [
@@ -185,18 +205,20 @@
             "minus strand signal of unique reads",
             "plus strand signal of unique reads"
         ],
-        "parents": ["align-star"],
+        "parents": ["align-star-step-v-1"],
         "analysis_step_types": ["file format conversion"]
     },
     {
-        "name": "fastqc",
+        "name": "fastqc-step-v-1",
+        "major_version": 1,
         "title": "fastqc",
         "input_file_types": ["reads"],
         "qa_stats_generated":  ["number of reads", "read length", "number of low-quality reads"],
         "analysis_step_types": ["QA calculation"]
     },
     {
-        "name": "mad_cc_lrna",
+        "name": "mad-cc-lrna-step-v-1",
+        "major_version": 1,
         "title": "MAD and correlations for long-RNA-Seq",
         "input_file_types": ["gene quantifications"],
         "qa_stats_generated":  [
@@ -208,12 +230,13 @@
         "analysis_step_types": ["QA calculation"]
     },
     {
-        "name": "wgbs_lambda_qc",
+        "name": "wgbs-lambda-qc-step-v-1",
+        "major_version": 1,
         "title": "Bismark Lambda QC",
         "aliases": ["encode:ONE", "encode:TWO"],
         "input_file_types": ["alignments"],
         "output_file_types": ["methylation state at CpG"],
-        "parents": ["mott-trim-align-bismark"],
+        "parents": ["mott-trim-align-bismark-step-v-1"],
         "documents": [
             "/documents/048d1185-2502-4f0e-a043-bbc75b9dd915/",
             "/documents/8f1a6855-0312-4027-8869-330e42a0b04a/"
@@ -228,7 +251,8 @@
         "analysis_step_types": ["signal generation", "QA calculation"]
     },
     {
-        "name": "variant_calling",
+        "name": "variant-calling-step-v-1",
+        "major_version": 1,
         "title": "Variant calling",
         "input_file_types": [
             "alignments", 
