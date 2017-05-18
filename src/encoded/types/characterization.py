@@ -39,9 +39,6 @@ class ConstructCharacterization(Characterization):
         'characterizes',
         'lab',
         'documents',
-        'documents.lab',
-        'documents.award',
-        'documents.submitted_by',
         'submitted_by',
         ]
 
@@ -61,9 +58,6 @@ class RNAiCharacterization(Characterization):
         'award.pi.lab',
         'characterizes',
         'documents',
-        'documents.lab',
-        'documents.award',
-        'documents.submitted_by',
         'lab',
         'submitted_by',
         ]
@@ -86,9 +80,6 @@ class DonorCharacterization(Characterization):
         'lab',
         'references',
         'documents',
-        'documents.lab',
-        'documents.award',
-        'documents.submitted_by',
         'submitted_by',
         ]
 
@@ -107,9 +98,6 @@ class BiosampleCharacterization(Characterization):
         'award.pi.lab',
         'characterizes',
         'documents',
-        'documents.lab',
-        'documents.award',
-        'documents.submitted_by',
         'lab',
         'references',
         'submitted_by',
@@ -134,9 +122,6 @@ class AntibodyCharacterization(Characterization, SharedItem):
         'target',
         'target.organism',
         'documents',
-        'documents.lab',
-        'documents.award',
-        'documents.submitted_by',
         'characterizes.targets',
         'references',
     ]
@@ -166,8 +151,5 @@ class GeneticModificationCharacterization(Characterization):
         'lab',
         'characterizes',
         'documents',
-        'documents.award',
-        'documents.lab',
-        'documents.submitted_by',
         'submitted_by',
         ]

@@ -24,9 +24,6 @@ class Pipeline(Item, CalculatedAssayTermID):
     name_key = 'accession'
     embedded = [
         'documents',
-        'documents.award',
-        'documents.lab',
-        'documents.submitted_by',
         'analysis_steps',
         'analysis_steps.documents',
         'analysis_steps.pipelines',
@@ -63,9 +60,6 @@ class AnalysisStep(Item):
         'current_version.software_versions',
         'current_version.software_versions.software',
         'documents',
-        'documents.award',
-        'documents.lab',
-        'documents.submitted_by',
         'parents',
         'submitted_by',
         'versions',
