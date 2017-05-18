@@ -1,4 +1,10 @@
 from snovault import upgrade_step
+from ..upgrade.upgrade_data.analysis_step_5_to_6 import(
+    name_mapping,
+    major_version_mapping,
+    status_mapping,
+    aliases_mapping
+)
 
 
 @upgrade_step('analysis_step', '1', '2')
@@ -123,3 +129,19 @@ def analysis_step_3_4(value, system):
 
     if 'documents' in value:
         value['documents'] = list(set(value['documents']))
+
+
+@upgrade_step('analysis_step', '5', '6')
+def analysis_step_5_6(value, system):
+    # http://redmine.encodedcc.org/issues/4987
+    if value['uuid'] in name_mapping:
+        value['name'] = name_mapping.get(value['uuid'])
+
+    if value['uuid'] in major_version_mapping:
+        value['major_version'] = major_version_mapping.get(value['uuid'])
+
+    if value['uuid'] in status_mapping:
+        value['status'] = status_mapping.get(value['uuid'])
+
+    if value['uuid'] in aliases_mapping:
+        value['aliases'].append(aliases_mapping.get(value['uuid']))
