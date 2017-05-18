@@ -1,11 +1,12 @@
 'use strict';
 var React = require('react');
+import createReactClass from 'create-react-class';
 var fetched = require('../fetched');
 var inputs = require('../inputs');
 var globals = require('../globals');
 
 
-var ItemBlockView = module.exports.ItemBlockView = React.createClass({
+var ItemBlockView = module.exports.ItemBlockView = createReactClass({
     render: function() {
         var ViewComponent = globals.content_views.lookup(this.props.context);
         return <ViewComponent {...this.props} />;
@@ -13,7 +14,7 @@ var ItemBlockView = module.exports.ItemBlockView = React.createClass({
 });
 
 
-var FetchedItemBlockView = React.createClass({
+var FetchedItemBlockView = createReactClass({
 
     shouldComponentUpdate: function(nextProps) {
         return (nextProps.value.item != this.props.value.item);

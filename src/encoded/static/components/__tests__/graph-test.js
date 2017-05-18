@@ -1,16 +1,9 @@
-/*global jest, describe, beforeEach, it, expect */
-/*eslint global-require: 0 */
-/*eslint import/newline-after-import: 0 */
-jest.autoMockOff();
-
-// Fixes https://github.com/facebook/jest/issues/78
-jest.dontMock('react');
-jest.dontMock('underscore');
+import _ from 'underscore';
 
 
-const _ = require('underscore');
-const assembleGraph = require('../filegallery').assembleGraph;
-const context = require('../testdata/experiment');
+// Import test component and data.
+import { assembleGraph } from '../filegallery';
+import context from '../testdata/experiment';
 
 
 describe('Experiment Graph', () => {
@@ -54,26 +47,27 @@ describe('Experiment Graph', () => {
         let graph;
         let files;
 
-        beforeEach(() => {
+        beforeAll(() => {
             const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000BGR';
-            contextGraph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-2cos')];
+            files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-2cos')];
+            contextGraph.files = files;
             const graphRes = assembleGraph(contextGraph, null, '', files);
             graph = graphRes.graph;
         });
 
         it('Has the correct number of nodes and edges', () => {
-            expect(graph.nodes.length).toEqual(4);
-            expect(graph.edges.length).toEqual(3);
+            expect(graph.nodes).toHaveLength(4);
+            expect(graph.edges).toHaveLength(3);
         });
 
         it('has the right nodes', () => {
-            expect(containsNodes(graph, ['file:/files/ENCFF000VUQ/', 'file:/files/ENCFF000VUS/', 'file:/files/ENCFF002COS/', "step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(containsNodes(graph, ['file:/files/ENCFF000VUQ/', 'file:/files/ENCFF000VUS/', 'file:/files/ENCFF002COS/', 'step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/'])).toBeTruthy();
         });
 
         it('has the right relationships between edges and nodes', () => {
-            expect(hasParents(graph, "step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/", ["file:/files/ENCFF000VUS/", "file:/files/ENCFF000VUQ/"])).toBeTruthy();
-            expect(hasParents(graph, "file:/files/ENCFF002COS/", ["step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/"])).toBeTruthy();
+            expect(hasParents(graph, 'step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/', ['file:/files/ENCFF000VUS/', 'file:/files/ENCFF000VUQ/'])).toBeTruthy();
+            expect(hasParents(graph, 'file:/files/ENCFF002COS/', ['step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/'])).toBeTruthy();
         });
     });
 
@@ -84,10 +78,10 @@ describe('Experiment Graph', () => {
         let graph;
         let files;
 
-        beforeEach(() => {
+        beforeAll(() => {
             const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000BDD';
-            contextGraph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-3cos'), require('../testdata/file/bed-4cos')];
+            files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-3cos'), require('../testdata/file/bed-4cos')];
             const graphRes = assembleGraph(contextGraph, null, '', files);
             graph = graphRes.graph;
         });
@@ -115,10 +109,10 @@ describe('Experiment Graph', () => {
         let graph;
         let files;
 
-        beforeEach(() => {
+        beforeAll(() => {
             const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000NDD';
-            contextGraph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bed-5cos'), require('../testdata/file/bed-6cos')];
+            files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bed-5cos'), require('../testdata/file/bed-6cos')];
             const graphRes = assembleGraph(contextGraph, null, '', files);
             graph = graphRes.graph;
         });
@@ -145,10 +139,10 @@ describe('Experiment Graph', () => {
         let graph;
         let files;
 
-        beforeEach(() => {
-            var contextGraph = _.clone(context);
+        beforeAll(() => {
+            const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000TFS';
-            contextGraph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-7cos'), require('../testdata/file/bed-8cos')];
+            files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-7cos'), require('../testdata/file/bed-8cos')];
             const graphRes = assembleGraph(contextGraph, null, '', files);
             graph = graphRes.graph;
         });
@@ -175,10 +169,10 @@ describe('Experiment Graph', () => {
         let graph;
         let files;
 
-        beforeEach(() => {
+        beforeAll(() => {
             const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000TOV';
-            contextGraph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bam-vuz'), require('../testdata/file/bed-10cos'), require('../testdata/file/bed-11cos')];
+            files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bam-vuz'), require('../testdata/file/bed-10cos'), require('../testdata/file/bed-11cos')];
             const graphRes = assembleGraph(contextGraph, null, '', files);
             graph = graphRes.graph;
         });
@@ -192,7 +186,7 @@ describe('Experiment Graph', () => {
             expect(containsNodes(graph, ['file:/files/ENCFF000VUQ/', 'file:/files/ENCFF000VUS/', 'file:/files/ENCFF000VUZ/', 'file:/files/ENCFF010COS/', 'file:/files/ENCFF011COS/', 'step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/', 'step:/files/ENCFF000VUS/,/files/ENCFF000VUZ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/'])).toBeTruthy();
         });
 
-        it('has the right relationships between edges and nodes', function() {
+        it('has the right relationships between edges and nodes', () => {
             expect(hasParents(graph, 'step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/', ['file:/files/ENCFF000VUQ/', 'file:/files/ENCFF000VUS/'])).toBeTruthy();
             expect(hasParents(graph, 'step:/files/ENCFF000VUS/,/files/ENCFF000VUZ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/', ['file:/files/ENCFF000VUS/', 'file:/files/ENCFF000VUZ/'])).toBeTruthy();
             expect(hasParents(graph, 'file:/files/ENCFF010COS/', ['step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/'])).toBeTruthy();
@@ -203,13 +197,14 @@ describe('Experiment Graph', () => {
     // One file derived from two files, through one step.
     // Another file not derived from, and doesn't derive from others; it should vanish.
     describe('Basic graph with detached node', () => {
-        var graph, files;
+        let graph;
+        let files;
 
-        beforeEach(function() {
-            var context_graph = _.clone(context);
-            context_graph.accession = 'ENCTS000DET';
-            context_graph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bam-vuz'), require('../testdata/file/bed-2cos')];
-            const graphRes = assembleGraph(context_graph, null, '', files);
+        beforeAll(() => {
+            const contextGraph = _.clone(context);
+            contextGraph.accession = 'ENCTS000DET';
+            files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bam-vuz'), require('../testdata/file/bed-2cos')];
+            const graphRes = assembleGraph(contextGraph, null, '', files);
             graph = graphRes.graph;
         });
 
@@ -218,7 +213,7 @@ describe('Experiment Graph', () => {
             expect(graph.edges.length).toEqual(3);
         });
 
-        /// VUZ should be missing.
+        // VUZ should be missing.
         it('has the right nodes', () => {
             expect(containsNodes(graph, ['file:/files/ENCFF000VUQ/', 'file:/files/ENCFF000VUS/', 'file:/files/ENCFF002COS/', 'step:/files/ENCFF000VUQ/,/files/ENCFF000VUS//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/'])).toBeTruthy();
             expect(containsNodes(graph, ['file:/files/ENCFF000VUZ/'])).toBeFalsy();
@@ -236,12 +231,14 @@ describe('Experiment Graph', () => {
         let graph;
         let files;
 
-        beforeEach(() => {
+        beforeAll(() => {
             const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000REP';
-            contextGraph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-3cos'), require('../testdata/file/bed-4cos')];
-            files[0].biological_replicates = files[2].biological_replicates = [ 1 ];
-            files[1].biological_replicates = files[3].biological_replicates = [ 2 ];
+            files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-3cos'), require('../testdata/file/bed-4cos')];
+            files[0].biological_replicates = [1];
+            files[1].biological_replicates = [2];
+            files[2].biological_replicates = [1];
+            files[3].biological_replicates = [2];
 
             const graphRes = assembleGraph(contextGraph, null, '', files);
             graph = graphRes.graph;
@@ -276,12 +273,13 @@ describe('Experiment Graph', () => {
     describe('Two graphs in two replicates; one derived-from missing', () => {
         let graph;
         let files;
-    
+
         beforeEach(() => {
             const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000RPM';
-            contextGraph.files = files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bed-3cos'), require('../testdata/file/bed-4cos')];
-            files[0].biological_replicates = files[1].biological_replicates = [1];
+            files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bed-3cos'), require('../testdata/file/bed-4cos')];
+            files[0].biological_replicates = [1];
+            files[1].biological_replicates = [1];
             files[2].derived_from = [require('../testdata/file/bam-vus')['@id']];
             files[2].biological_replicates = [2];
             const graphRes = assembleGraph(contextGraph, null, '', files);

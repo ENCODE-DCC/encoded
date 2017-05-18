@@ -1,59 +1,59 @@
-'use strict';
-var React = require('react');
-var _ = require('underscore');
-var globals = require('./globals');
-var navigation = require('./navigation');
-var dataset = require('./dataset');
-var { DbxrefList } = require('./dbxref');
-var item = require('./item');
+import React from 'react';
+import PropTypes from 'prop-types';
+import _ from 'underscore';
+import globals from './globals';
+import { Breadcrumbs } from './navigation';
+import { ExperimentTable } from './dataset';
+import { DbxrefList } from './dbxref';
+import { RelatedItems } from './item';
 
-var Breadcrumbs = navigation.Breadcrumbs;
-var ExperimentTable = dataset.ExperimentTable;
-var RelatedItems = item.RelatedItems;
 
-var Target = module.exports.Target = React.createClass({
-    render: function() {
-        var context = this.props.context;
-        var itemClass = globals.itemClass(context, 'view-detail key-value');
-        var geneLink, geneRef, baseName, sep;
+class Target extends React.Component {
+    render() {
+        const context = this.props.context;
+        const itemClass = globals.itemClass(context, 'view-detail key-value');
+        let geneLink;
+        let geneRef;
+        let baseName;
+        let sep;
+        let base;
 
-        if (context.organism.name == "human") {
+        if (context.organism.name === 'human') {
             geneLink = globals.dbxref_prefix_map.HGNC + context.gene_name;
-        } else if (context.organism.name == "mouse") {
-            var mgiRef = _(context.dbxref).find(ref => ref.substr(0,4) === 'MGI:');
+        } else if (context.organism.name === 'mouse') {
+            const mgiRef = _(context.dbxref).find(ref => ref.substr(0, 4) === 'MGI:');
             if (mgiRef) {
-                var base = globals.dbxref_prefix_map['MGI'];
+                base = globals.dbxref_prefix_map.MGI;
                 geneLink = base + mgiRef;
             }
-        } else if (context.organism.name == 'dmelanogaster' || context.organism.name == 'celegans') {
-            var organismPrefix = context.organism.name == 'dmelanogaster' ? 'FBgn': 'WBGene';
-            var baseUrl = context.organism.name == 'dmelanogaster' ? globals.dbxref_prefix_map.FlyBase : globals.dbxref_prefix_map.WormBase;
-            geneRef = _.find(context.dbxref, function(ref) {
-                return ref.indexOf(organismPrefix) != -1;
-            });
+        } else if (context.organism.name === 'dmelanogaster' || context.organism.name === 'celegans') {
+            const organismPrefix = context.organism.name === 'dmelanogaster' ? 'FBgn' : 'WBGene';
+            const baseUrl = context.organism.name === 'dmelanogaster' ? globals.dbxref_prefix_map.FlyBase : globals.dbxref_prefix_map.WormBase;
+            geneRef = _.find(context.dbxref, ref => ref.indexOf(organismPrefix) !== -1);
             if (geneRef) {
-                sep = geneRef.indexOf(":") + 1;
+                sep = geneRef.indexOf(':') + 1;
                 baseName = geneRef.substring(sep, geneRef.length);
                 geneLink = baseUrl + baseName;
             }
         }
 
         // Set up breadcrumbs
-        var assayTargets = context.investigated_as.map(function(assayTarget) {
-            return 'investigated_as=' + assayTarget;
-        });
-        var crumbs = [
-            {id: 'Targets'},
-            {id: context.investigated_as.join(' + '), query: assayTargets.join('&'), tip: context.investigated_as.join(' + ')},
-            {id: <i>{context.organism.scientific_name}</i>, query: 'organism.scientific_name=' + context.organism.scientific_name,
-                tip: context.investigated_as.join(' + ') + ' and ' + context.organism.scientific_name}
+        const assayTargets = context.investigated_as.map(assayTarget => `investigated_as=${assayTarget}`);
+        const crumbs = [
+            { id: 'Targets' },
+            { id: context.investigated_as.join(' + '), query: assayTargets.join('&'), tip: context.investigated_as.join(' + ') },
+            {
+                id: <i>{context.organism.scientific_name}</i>,
+                query: `organism.scientific_name=${context.organism.scientific_name}`,
+                tip: `${context.investigated_as.join(' + ')} and ${context.organism.scientific_name}`,
+            },
         ];
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root='/search/?type=target' crumbs={crumbs} />
+                        <Breadcrumbs root="/search/?type=target" crumbs={crumbs} />
                         <h2>{context.label} (<em>{context.organism.scientific_name}</em>)</h2>
                     </div>
                 </header>
@@ -83,12 +83,23 @@ var Target = module.exports.Target = React.createClass({
                     </dl>
                 </div>
 
-                <RelatedItems title={'Experiments using target ' + context.label}
-                              url={'/search/?type=experiment&target.uuid=' + context.uuid}
-                              Component={ExperimentTable} />
+                <RelatedItems
+                    title={`Experiments using target ${context.label}`}
+                    url={`/search/?type=Experiment&target.uuid=${context.uuid}`}
+                    Component={ExperimentTable}
+                />
             </div>
         );
     }
-});
+}
+
+Target.propTypes = {
+    context: PropTypes.object, // Target object to display
+};
+
+Target.defaultProps = {
+    context: null,
+};
+
 
 globals.content_views.register(Target, 'Target');

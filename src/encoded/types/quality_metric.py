@@ -67,17 +67,6 @@ class CpgCorrelationQualityMetric(QualityMetric, CalculatedAssayTermID):
 
 
 @collection(
-    name='encode2-chipseq-quality-metrics',
-    properties={
-        'title': "Quality metrics for ChIP-seq (ENCODE2)",
-        'description': 'A set of QC metrics used for ENCODE2 ChIP-seq experiments',
-    })
-class Encode2ChipSeqQualityMetric(QualityMetric, CalculatedAssayTermID):
-    item_type = 'encode2_chipseq_quality_metric'
-    schema = load_schema('encoded:schemas/encode2_chipseq_quality_metric.json')
-
-
-@collection(
     name='chipseq-filter-quality-metrics',
     properties={
         'title': "Quality metrics for ChIP-seq (filtering step)",
@@ -86,17 +75,6 @@ class Encode2ChipSeqQualityMetric(QualityMetric, CalculatedAssayTermID):
 class ChipSeqFilterQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'chipseq_filter_quality_metric'
     schema = load_schema('encoded:schemas/chipseq_filter_quality_metric.json')
-
-
-@collection(
-    name='bigwigcorrelate-quality-metrics',
-    properties={
-        'title': "Pearson's Correlation of two bigWig Signal Files.",
-        'description': "A set of signal replicate QC metrics from 'bigWigCorrelate'",
-    })
-class BigwigcorrelateQualityMetric(QualityMetric, CalculatedAssayTermID):
-    item_type = 'bigwigcorrelate_quality_metric'
-    schema = load_schema('encoded:schemas/bigwigcorrelate_quality_metric.json')
 
 
 @collection(
@@ -119,17 +97,6 @@ class CorrelationQualityMetric(QualityMetric, CalculatedAssayTermID):
 class EdwbamstatsQualityMetric(QualityMetric, CalculatedAssayTermID):
     item_type = 'edwbamstats_quality_metric'
     schema = load_schema('encoded:schemas/edwbamstats_quality_metric.json')
-
-
-@collection(
-    name='edwcomparepeaks-quality-metrics',
-    properties={
-        'title': "Comparison of two sets of Called Peaks from 'edwComparePeaks'",
-        'description': "A set of peak replicate QC metrics from 'edwComparePeaks'",
-    })
-class EdwcomparepeaksQualityMetric(QualityMetric, CalculatedAssayTermID):
-    item_type = 'edwcomparepeaks_quality_metric'
-    schema = load_schema('encoded:schemas/edwcomparepeaks_quality_metric.json')
 
 
 @collection(

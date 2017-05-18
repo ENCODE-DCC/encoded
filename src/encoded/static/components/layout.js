@@ -1,4 +1,6 @@
 const React = require('react');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 const FallbackBlockEdit = require('./blocks/fallback').FallbackBlockEdit;
 const globals = require('./globals');
 const closest = require('../libs/closest');
@@ -6,45 +8,42 @@ const offset = require('../libs/offset');
 const { Modal, ModalHeader, ModalBody, ModalFooter } = require('../libs/bootstrap/modal');
 const _ = require('underscore');
 
-const cx = require('react/lib/cx');
 
 const LAYOUT_CONTEXT = {
-    dragStart: React.PropTypes.func,
-    dragOver: React.PropTypes.func,
-    dragEnd: React.PropTypes.func,
-    change: React.PropTypes.func,
-    remove: React.PropTypes.func,
-    editable: React.PropTypes.bool,
-    src_pos: React.PropTypes.array,
-    dst_pos: React.PropTypes.array,
-    dst_quad: React.PropTypes.string,
-    blocks: React.PropTypes.object,
+    dragStart: PropTypes.func,
+    dragOver: PropTypes.func,
+    dragEnd: PropTypes.func,
+    change: PropTypes.func,
+    remove: PropTypes.func,
+    editable: PropTypes.bool,
+    src_pos: PropTypes.array,
+    dst_pos: PropTypes.array,
+    dst_quad: PropTypes.string,
+    blocks: PropTypes.object,
 };
 
 const MODAL_CONTEXT = {
     // Persona
-    fetch: React.PropTypes.func,
-    session: React.PropTypes.object,
-    session_properties: React.PropTypes.object,
+    fetch: PropTypes.func,
+    session: PropTypes.object,
+    session_properties: PropTypes.object,
     // HistoryAndTriggers
-    adviseUnsavedChanges: React.PropTypes.func,
-    navigate: React.PropTypes.func,
+    adviseUnsavedChanges: PropTypes.func,
+    navigate: PropTypes.func,
     // App
-    dropdownComponent: React.PropTypes.string,
-    listActionsFor: React.PropTypes.func,
-    currentResource: React.PropTypes.func,
-    location_href: React.PropTypes.string,
-    onDropdownChange: React.PropTypes.func,
-    portal: React.PropTypes.object,
+    listActionsFor: PropTypes.func,
+    currentResource: PropTypes.func,
+    location_href: PropTypes.string,
+    portal: PropTypes.object,
 };
 
-const BlockEditModal = React.createClass({
+const BlockEditModal = createReactClass({
     propTypes: {
-        modalcontext: React.PropTypes.object,
-        value: React.PropTypes.any,
-        onCancel: React.PropTypes.func,
-        onChange: React.PropTypes.func,
-        actuator: React.PropTypes.element,
+        modalcontext: PropTypes.object,
+        value: PropTypes.any,
+        onCancel: PropTypes.func,
+        onChange: PropTypes.func,
+        actuator: PropTypes.element,
     },
 
     childContextTypes: MODAL_CONTEXT,
@@ -93,10 +92,10 @@ const BlockEditModal = React.createClass({
     },
 });
 
-const Block = module.exports.Block = React.createClass({
+const Block = module.exports.Block = createReactClass({
     propTypes: {
-        value: React.PropTypes.any,
-        pos: React.PropTypes.array,
+        value: PropTypes.any,
+        pos: PropTypes.array,
     },
 
     contextTypes: _.extend({}, MODAL_CONTEXT, LAYOUT_CONTEXT),
@@ -166,17 +165,22 @@ const Block = module.exports.Block = React.createClass({
         const classes = {
             block: true,
             clearfix: true,
-            dragging: _.isEqual(this.props.pos, this.context.src_pos),
-            hover: this.state.hover,
         };
+        if (_.isEqual(this.props.pos, this.context.src_pos)) {
+            classes.dragging = true;
+        }
+        if (this.state.hover) {
+            classes.hover = true;
+        }
         if (block.className !== undefined) {
             classes[block.className] = true;
         }
         if (_.isEqual(this.props.pos, this.context.dst_pos)) {
             classes[`drop-${this.context.dst_quad}`] = true;
         }
+        const classStr = Object.keys(classes).join(' ');
         return (<div
-            className={`${block['@type'][0]} ${cx(classes)}`}
+            className={`${block['@type'][0]} ${classStr}`}
             data-pos={this.props.pos}
             draggable={this.context.editable && !this.state.focused}
             onDragStart={this.dragStart}
@@ -186,6 +190,7 @@ const Block = module.exports.Block = React.createClass({
             onMouseLeave={this.mouseLeave}
             onFocus={this.focus}
             onBlur={this.blur}
+            ref={(comp) => { this.domNode = comp; }}
         >
             {this.context.editable ? this.renderToolbar() : ''}
             <BlockView value={block} onChange={this.onChange} />
@@ -193,10 +198,10 @@ const Block = module.exports.Block = React.createClass({
     },
 });
 
-const BlockAddButton = React.createClass({
+const BlockAddButton = createReactClass({
     propTypes: {
-        blocktype: React.PropTypes.string,
-        blockprops: React.PropTypes.object,
+        blocktype: PropTypes.string,
+        blockprops: PropTypes.object,
     },
 
     contextTypes: LAYOUT_CONTEXT,
@@ -234,11 +239,11 @@ const BlockAddButton = React.createClass({
 });
 
 // "sticky" toolbar for editing layout
-const LayoutToolbar = React.createClass({
+const LayoutToolbar = createReactClass({
 
     contextTypes: {
-        canSave: React.PropTypes.func,
-        onTriggerSave: React.PropTypes.func,
+        canSave: PropTypes.func,
+        onTriggerSave: PropTypes.func,
     },
 
     getInitialState() {
@@ -246,7 +251,7 @@ const LayoutToolbar = React.createClass({
     },
 
     componentDidMount() {
-        this.origTop = offset(this.getDOMNode()).top;
+        this.origTop = offset(this.domNode).top;
         globals.bindEvent(window, 'scroll', this.scrollspy);
     },
 
@@ -261,7 +266,7 @@ const LayoutToolbar = React.createClass({
     render() {
         const blocks = globals.blocks.getAll();
         const toolbar = (
-            <div className={'layout-toolbar navbar navbar-default'}>
+            <div className={'layout-toolbar navbar navbar-default'} ref={(comp) => { this.domNode = comp; }}>
               <div className="container-fluid">
                 <div className="navbar-left">
                     {Object.keys(blocks).map((b) => {
@@ -296,11 +301,11 @@ const LayoutToolbar = React.createClass({
 });
 
 
-const Col = React.createClass({
+const Col = createReactClass({
     propTypes: {
-        pos: React.PropTypes.array,
-        className: React.PropTypes.string,
-        value: React.PropTypes.object,
+        pos: PropTypes.array,
+        className: PropTypes.string,
+        value: PropTypes.object,
     },
 
     contextTypes: LAYOUT_CONTEXT,
@@ -324,18 +329,22 @@ const Col = React.createClass({
             classes[`drop-${this.context.dst_quad}`] = true;
         }
         const blocks = this.props.value.blocks;
+        const classStr = Object.keys(classes).join(' ');
         return (
-            <div className={cx(classes)} onDragOver={this.dragOver}>
+            <div
+                className={classStr} onDragOver={this.dragOver}
+                ref={(comp) => { this.domNode = comp; }}
+            >
                 {blocks.map((blockId, k) => this.renderBlock(blockId, k))}
             </div>
         );
     },
 });
 
-const Row = React.createClass({
+const Row = createReactClass({
     propTypes: {
-        pos: React.PropTypes.array,
-        value: React.PropTypes.object,
+        pos: PropTypes.array,
+        value: PropTypes.object,
     },
 
     contextTypes: LAYOUT_CONTEXT,
@@ -349,6 +358,7 @@ const Row = React.createClass({
         if (_.isEqual(this.props.pos, this.context.dst_pos)) {
             classes[`drop-${this.context.dst_quad}`] = true;
         }
+        const classStr = Object.keys(classes).join(' ');
         const cols = this.props.value.cols;
         let colClass;
         switch (cols.length) {
@@ -362,7 +372,10 @@ const Row = React.createClass({
             colClass = 'col-md-12'; break;
         }
         return (
-            <div className={cx(classes)} onDragOver={this.dragOver}>
+            <div
+                className={classStr} onDragOver={this.dragOver}
+                ref={(comp) => { this.domNode = comp; }}
+            >
                 {cols.map((col, j) => <Col
                     value={col} className={col.className || colClass}
                     key={j} pos={this.props.pos.concat([j])}
@@ -372,10 +385,10 @@ const Row = React.createClass({
     },
 });
 
-module.exports.Layout = React.createClass({
+module.exports.Layout = createReactClass({
     propTypes: {
-        editable: React.PropTypes.bool,
-        onChange: React.PropTypes.func,
+        editable: PropTypes.bool,
+        onChange: PropTypes.func,
     },
 
     childContextTypes: LAYOUT_CONTEXT,
@@ -587,8 +600,12 @@ module.exports.Layout = React.createClass({
         }
         e.stopPropagation();
 
-        if (typeof target === 'string') return;
-        const targetNode = (target || this).getDOMNode();
+        if (target && target.render === undefined) {
+            // somehow we got something other than a React element
+            return;
+        }
+        // eslint-disable-next-line react/no-find-dom-node
+        const targetNode = (target || this).domNode;
         if (!targetNode.childNodes.length) return;
         const targetOffset = offset(targetNode);
         const x = e.pageX - targetOffset.left;
@@ -673,15 +690,16 @@ module.exports.Layout = React.createClass({
     },
 
     render() {
-        const classes = {
-            layout: true,
-            editable: this.props.editable,
-        };
+        const classes = { layout: true };
+        if (this.props.editable) {
+            classes.editable = true;
+        }
         if (_.isEqual(this.state.dst_pos, [])) {
             classes[`drop-${this.state.dst_quad}`] = true;
         }
+        const classStr = Object.keys(classes).join(' ');
         return (
-            <div className={cx(classes)} onDragOver={this.dragOver} onDrop={this.drop}>
+            <div className={classStr} onDragOver={this.dragOver} onDrop={this.drop} ref={(comp) => { this.domNode = comp; }}>
                 {this.props.editable ? <LayoutToolbar /> : ''}
                 {this.state.value.rows.map((row, i) => <Row value={row} key={i} pos={[i]} />)}
                 <canvas id="drag-marker" height="1" width="1" />

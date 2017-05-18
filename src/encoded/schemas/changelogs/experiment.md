@@ -3,6 +3,9 @@
 ### Schema version 11
     
 * *biosample_type* and *biosample_term_id* consistency added to the list of schema dependencies
+* *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
+* unsafe characters such as " # @ % ^ & | ~ ; ` [ ] { } and consecutive whitespaces will no longer be allowed in the alias
+
 
 ### Schema version 10
 

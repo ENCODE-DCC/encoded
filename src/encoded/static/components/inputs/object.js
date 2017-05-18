@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import createReactClass from 'create-react-class';
 var globals = require('../globals');
 var fetched = require('../fetched');
 var ResultTable = require('../search').ResultTable;
@@ -20,11 +21,14 @@ var openLinksInNewWindow = function(e) {
 };
 
 
-var SearchBlockEdit = React.createClass({
+var SearchBlockEdit = createReactClass({
     render: function() {
         var styles = {maxHeight: 300, overflow: 'scroll', clear: 'both' };
         return (
-            <div className="well" style={styles} onClick={openLinksInNewWindow}>
+            <div
+                className="well" style={styles} onClick={openLinksInNewWindow}
+                ref={(comp) => { this.domNode = comp; }}
+            >
                 <ResultTable {...this.props} mode="picker" />
             </div>
         );
@@ -32,7 +36,7 @@ var SearchBlockEdit = React.createClass({
 
     componentDidMount: function() {
         // focus the first "Select" button in the search results
-        var button = this.getDOMNode().querySelector('button.btn-primary');
+        var button = this.domNode.querySelector('button.btn-primary');
         if (button) {
             button.focus();
         }
@@ -40,7 +44,7 @@ var SearchBlockEdit = React.createClass({
 });
 
 
-var ItemPreview = module.exports.ItemPreview = React.createClass({
+var ItemPreview = module.exports.ItemPreview = createReactClass({
     render: function() {
         var context = this.props.data;
         if (context === undefined) return null;
@@ -54,7 +58,7 @@ var ItemPreview = module.exports.ItemPreview = React.createClass({
 });
 
 
-var ObjectPicker = module.exports.ObjectPicker = React.createClass({
+var ObjectPicker = module.exports.ObjectPicker = createReactClass({
 
     getDefaultProps: function() {
         return {
@@ -72,9 +76,9 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
 
     componentDidUpdate: function(prevProps, prevState) {
         if (!this.props.value && !this.state.searchInput && this.state.searchInput != prevState.searchInput) {
-            this.refs.input.getDOMNode().focus();
+            this.refs.input.focus();
         } else if (this.props.value != prevProps.value) {
-            this.refs.clear.getDOMNode().focus();
+            this.refs.clear.focus();
         }
     },
 
@@ -83,7 +87,7 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
         var previewUrl = url;
         var searchUrl = '/search/' + this.state.search;
         var actions = [
-            <button className="btn btn-primary" onClick={this.handleSelect}>Select</button>
+            <button key={1} className="btn btn-primary" onClick={this.handleSelect}>Select</button>
         ];
         var searchParams = this.state.searchParams || this.props.searchBase;
         if (this.state.search) {
