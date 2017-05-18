@@ -447,7 +447,7 @@ const MaybeLink = (props) => {
     if (!href || href === 'N/A') {
         return <span>{children}</span>;
     }
-    return <a {...this.props}>{children}</a>;
+    return <a {...props}>{children}</a>;
 };
 
 MaybeLink.propTypes = {

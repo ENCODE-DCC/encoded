@@ -546,5 +546,9 @@ Graph.propTypes = {
     graph: PropTypes.object.isRequired, // JSON graph object to render
     nodeClickHandler: PropTypes.func.isRequired, // Function to call to handle clicks in a node
     noDefaultClasses: PropTypes.bool.isRequired, // True to supress default CSS classes on <Panel> components
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node,
+};
+
+Graph.defaultProps = {
+    children: null,
 };

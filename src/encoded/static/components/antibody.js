@@ -14,7 +14,7 @@ import { RelatedItems } from './item';
 import StatusLabel from './statuslabel';
 
 
-const LotComponent = (props) => {
+const LotComponent = (props, reactContext) => {
     const context = props.context;
 
     // Sort characterization arrays
@@ -98,11 +98,11 @@ const LotComponent = (props) => {
                         <div className="characterization-status-labels">
                             <StatusLabel title="Status" status={context.status} />
                         </div>
-                        {this.props.auditIndicators(context.audit, 'antibody-audit', { session: this.context.session })}
+                        {props.auditIndicators(context.audit, 'antibody-audit', { session: reactContext.session })}
                     </div>
                 </div>
             </header>
-            {this.props.auditDetail(context.audit, 'antibody-audit', { except: context['@id'], session: this.context.session })}
+            {props.auditDetail(context.audit, 'antibody-audit', { except: context['@id'], session: reactContext.session })}
 
             {context.lot_reviews && context.lot_reviews.length ?
                 <div className="antibody-statuses">
@@ -221,6 +221,12 @@ const LotComponent = (props) => {
 
 LotComponent.propTypes = {
     context: PropTypes.object.isRequired,
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+LotComponent.contextTypes = {
+    session: PropTypes.object, // Login session information
 };
 
 const Lot = auditDecor(LotComponent);
