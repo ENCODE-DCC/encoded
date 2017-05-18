@@ -233,6 +233,9 @@ const Lot = auditDecor(LotComponent);
 
 globals.content_views.register(Lot, 'AntibodyLot');
 
+// Must export for Jest testing.
+export default Lot;
+
 
 const Documents = (props) => {
     const docs = props.docs;

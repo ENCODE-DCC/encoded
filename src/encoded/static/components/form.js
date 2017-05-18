@@ -766,7 +766,7 @@ export class Form extends React.Component {
         //   `instance.aliases.0`
         // so we have to convert them here.
         validation.errorsByPath = {};
-        const errorsByPath = validation;
+        const errorsByPath = validation.errorsByPath;
         validation.errors.forEach((error) => {
             let path = error.property.replace(/\[/g, '.').replace(/]/g, '');
             // Missing values for required properties are reported
@@ -963,6 +963,11 @@ Form.propTypes = {
     submitLabel: PropTypes.string,
 };
 
+Form.defaultProps = {
+    showReadOnly: true,
+    submitLabel: 'Save',
+};
+
 Form.contextTypes = {
     adviseUnsavedChanges: PropTypes.func,
     fetch: PropTypes.func,
@@ -976,11 +981,6 @@ Form.childContextTypes = {
     showReadOnly: PropTypes.bool,
     id: PropTypes.string,
     submitted: PropTypes.bool,
-};
-
-Form.defaultProps = {
-    showReadOnly: true,
-    submitLabel: 'Save',
 };
 
 

@@ -4,7 +4,7 @@ import _ from 'underscore';
 import url from 'url';
 
 // Import test component and data.
-import { Experiment } from '../experiment';
+import Experiment from '../experiment';
 import context from '../testdata/experiment';
 
 
