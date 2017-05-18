@@ -1,5 +1,9 @@
 import pytest
 
+'''
+This upgrade test is no longer need as the upgrade was also removed. The test and upgrade will remain
+in the code for posterity but they both are no longer valid after versionof: was removed as a valid 
+namespace according to http://redmine.encodedcc.org/issues/4748
 
 @pytest.fixture
 def analysis_step_version_with_alias(testapp, analysis_step, software_version):
@@ -28,3 +32,4 @@ def test_analysis_step_run_1_2(registry, upgrader, analysis_step_run_1, analysis
     assert value['analysis_step_version'] == analysis_step_version_with_alias['uuid']
     assert 'analysis_step' not in value
     assert 'workflows_run' not in value
+'''

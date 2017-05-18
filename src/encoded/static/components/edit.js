@@ -1,7 +1,8 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var globals = require('./globals');
-var parseAndLogError = require('./mixins').parseAndLogError;
 var fetched = require('./fetched');
 var _ = require('underscore');
 var ga = require('google-analytics');
@@ -24,7 +25,7 @@ var sorted_json = module.exports.sorted_json = function (obj) {
 };
 
 
-var ItemEdit = module.exports.ItemEdit = React.createClass({
+var ItemEdit = module.exports.ItemEdit = createReactClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -46,10 +47,10 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
     }
 });
 
-var EditForm = module.exports.EditForm = React.createClass({
+var EditForm = module.exports.EditForm = createReactClass({
     contextTypes: {
-        fetch: React.PropTypes.func,
-        navigate: React.PropTypes.func
+        fetch: PropTypes.func,
+        navigate: PropTypes.func
     },
 
     render: function () {
@@ -90,7 +91,7 @@ var EditForm = module.exports.EditForm = React.createClass({
             require('brace/mode/json');
             require('brace/theme/solarized_light');
             var value = JSON.stringify(sorted_json(this.props.data), null, 4);
-            var editor = ace.edit(this.refs.editor.getDOMNode());
+            var editor = ace.edit(this.refs.editor);
             var session = editor.getSession();
             session.setMode('ace/mode/json');
             editor.setValue(value);
@@ -138,7 +139,7 @@ var EditForm = module.exports.EditForm = React.createClass({
             if (!response.ok) throw response;
             return response.json();
         })
-        .catch(parseAndLogError.bind(undefined, 'putRequest'))
+        .catch(globals.parseAndLogError.bind(undefined, 'putRequest'))
         .then(this.receive);
         this.setState({
             communicating: true,

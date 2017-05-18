@@ -1,26 +1,32 @@
-import React from 'react';
-import cloneWithProps from 'react/lib/cloneWithProps';
-import cx from 'react/lib/cx';
-import url from 'url';
-import _ from 'underscore';
-import queryString from 'query-string';
-import { DropdownButton } from '../libs/bootstrap/button';
+'use strict';
+var React = require('react');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
+var queryString = require('query-string');
+var button = require('../libs/bootstrap/button');
+var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
+var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 import { TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
-import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
-import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
-import { svgIcon } from '../libs/svg-icons';
-import * as globals from './globals';
-import { Attachment } from './image';
-import { DbxrefList } from './dbxref';
-import { AuditIndicators, AuditDetail, AuditMixin } from './audit';
-import { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
-import GenomeBrowser from './genome_browser';
-import { donorDiversity, BrowserSelector } from './objectutils';
+var svgIcon = require('../libs/svg-icons').svgIcon;
+var url = require('url');
+var _ = require('underscore');
+import { auditDecor } from './audit';
+var globals = require('./globals');
+var image = require('./image');
 import { FetchedData, Param } from './fetched';
+var search = module.exports;
+import GenomeBrowser from './genome_browser';
+var { donorDiversity, BrowserSelector } = require('./objectutils');
+var dbxref = require('./dbxref');
+var objectutils = require('./objectutils');
+var {BiosampleSummaryString, BiosampleOrganismNames} = require('./typeutils');
 
+var DbxrefList = dbxref.DbxrefList;
+var statusOrder = globals.statusOrder;
+var SingleTreatment = objectutils.SingleTreatment;
+var DropdownButton = button.DropdownButton;
+var DropdownMenu = dropdownMenu.DropdownMenu;
 
-
-const search = module.exports;
 
 // Should really be singular...
 const types = {
@@ -74,39 +80,37 @@ const listing = module.exports.listing = function (reactProps) {
     return <ListingView {...viewProps} />;
 };
 
-const PickerActionsMixin = module.exports.PickerActionsMixin = {
-    contextTypes: { actions: React.PropTypes.array },
-    renderActions: function () {
+const PickerActions = module.exports.PickerActions = createReactClass ({
+    contextTypes: {
+        actions: PropTypes.array,
+    },
+
+    render: function () {
         if (this.context.actions && this.context.actions.length) {
             return (
                 <div className="pull-right">
-                    {this.context.actions.map(action => cloneWithProps(action, { id: this.props.context['@id'] }))}
+                    {this.context.actions.map(action => React.cloneElement(action, { key: this.props.context.name, id: this.props.context['@id'] }))}
                 </div>
             );
+        } else {
+            return <span />;
         }
-        return <span />;
     },
-};
+});
 
-const Item = module.exports.Item = React.createClass({
-    propTypes: {
-        context: React.PropTypes.object, // Generic object being rendered into the ResultsTable
-    },
-
-    mixins: [PickerActionsMixin, AuditMixin],
-
-    render: function () {
-        const result = this.props.context;
-        const title = globals.listing_titles.lookup(result)({ context: result });
-        const itemType = result['@type'][0];
+var ItemComponent = createReactClass({
+    render: function() {
+        var result = this.props.context;
+        var title = globals.listing_titles.lookup(result)({context: result});
+        var itemType = result['@type'][0];
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     {result.accession ?
                         <div className="pull-right type sentence-case search-meta">
                             <p>{itemType}: {` ${result.accession}`}</p>
-                            <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                            {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                         </div>
                     : null}
                     <div className="accession">
@@ -116,18 +120,22 @@ const Item = module.exports.Item = React.createClass({
                         {result.description}
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     },
 });
+
+const Item = module.exports.Item = auditDecor(ItemComponent);
+
 globals.listing_views.register(Item, 'Item');
 
+
 // Display one antibody status indicator
-const StatusIndicator = React.createClass({
+const StatusIndicator = createReactClass({
     propTypes: {
-        status: React.PropTypes.string,
-        terms: React.PropTypes.array,
+        status: PropTypes.string,
+        terms: PropTypes.array,
     },
 
     getInitialState: function () {
@@ -148,7 +156,7 @@ const StatusIndicator = React.createClass({
         let whiteSpace = 'nowrap';
         const resultBounds = document.getElementById('result-table').getBoundingClientRect();
         const resultWidth = resultBounds.right - resultBounds.left;
-        const tipBounds = _.clone(getNextElementSibling(this.refs.indicator.getDOMNode()).getBoundingClientRect());
+        const tipBounds = _.clone(getNextElementSibling(this.indicator).getBoundingClientRect());
         const tipWidth = tipBounds.right - tipBounds.left;
         let width = tipWidth;
         if (tipWidth > resultWidth) {
@@ -177,13 +185,13 @@ const StatusIndicator = React.createClass({
         this.setState({ tipOpen: false });
     },
 
-    render: function () {
-        const classes = { tooltipopen: this.state.tipOpen };
+    render: function() {
+        const classes = `tooltip-status sentence-case${this.state.tipOpen ? ' tooltipopen' : ''}`;
 
         return (
             <span className="tooltip-status-trigger">
-                <i className={globals.statusClass(this.props.status, 'indicator icon icon-circle')} ref="indicator" onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave} />
-                <div className={`tooltip-status sentence-case ${cx(classes)}`} style={this.state.tipStyles}>
+                <i className={globals.statusClass(this.props.status, 'indicator icon icon-circle')} ref={(indicator) => { this.indicator = indicator; }} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave} />
+                <div className={classes} style={this.state.tipStyles}>
                     {this.props.status}<br /><span>{this.props.terms.join(', ')}</span>
                 </div>
             </span>
@@ -192,10 +200,10 @@ const StatusIndicator = React.createClass({
 });
 
 // Display the status indicators for one target
-const StatusIndicators = React.createClass({
+const StatusIndicators = createReactClass({
     propTypes: {
-        targetTree: React.PropTypes.array,
-        target: React.PropTypes.string,
+        targetTree: PropTypes.object,
+        target: PropTypes.string,
     },
 
     render: function () {
@@ -215,15 +223,9 @@ const StatusIndicators = React.createClass({
     },
 });
 
-const Antibody = module.exports.Antibody = React.createClass({
-    propTypes: {
-        context: React.PropTypes.object,
-    },
-
-    mixins: [PickerActionsMixin, AuditMixin],
-
-    render: function () {
-        const result = this.props.context;
+var AntibodyComponent = createReactClass({
+    render: function() {
+        var result = this.props.context;
 
         // Sort the lot reviews by their status according to our predefined order
         // given in the statusOrder array.
@@ -256,12 +258,12 @@ const Antibody = module.exports.Antibody = React.createClass({
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Antibody</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
-                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         {Object.keys(targetTree).map(target =>
@@ -279,21 +281,19 @@ const Antibody = module.exports.Antibody = React.createClass({
                         <div><strong>Product ID / Lot ID: </strong>{result.product_id} / {result.lot_id}</div>
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     },
 });
+
+const Antibody = module.exports.Antibody = auditDecor(AntibodyComponent);
+
 globals.listing_views.register(Antibody, 'AntibodyLot');
 
-const Biosample = module.exports.Biosample = React.createClass({
-    propTypes: {
-        context: React.PropTypes.object,
-    },
 
-    mixins: [PickerActionsMixin, AuditMixin],
-
-    render: function () {
+var BiosampleComponent = createReactClass({
+    render: function() {
         const result = this.props.context;
         const lifeStage = (result.life_stage && result.life_stage !== 'unknown') ? ` ${result.life_stage}` : '';
         const age = (result.age && result.age !== 'unknown') ? ` ${result.age}` : '';
@@ -301,6 +301,7 @@ const Biosample = module.exports.Biosample = React.createClass({
         const separator = (lifeStage || age) ? ',' : '';
         const rnais = (result.rnais[0] && result.rnais[0].target && result.rnais[0].target.label) ? result.rnais[0].target.label : '';
         let constructs;
+
         if (result.model_organism_donor_constructs && result.model_organism_donor_constructs.length) {
             constructs = result.model_organism_donor_constructs[0].target.label;
         } else {
@@ -321,12 +322,12 @@ const Biosample = module.exports.Biosample = React.createClass({
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Biosample</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
-                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -348,23 +349,20 @@ const Biosample = module.exports.Biosample = React.createClass({
                         <div><strong>Source: </strong>{result.source.title}</div>
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     },
 });
+
+const Biosample = module.exports.Biosample = auditDecor(BiosampleComponent);
+
 globals.listing_views.register(Biosample, 'Biosample');
 
 
-const Experiment = module.exports.Experiment = React.createClass({
-    propTypes: {
-        context: React.PropTypes.object,
-    },
-
-    mixins: [PickerActionsMixin, AuditMixin],
-
-    render: function () {
-        const result = this.props.context;
+var ExperimentComponent = createReactClass({
+    render: function() {
+        var result = this.props.context;
 
         // Collect all biosamples associated with the experiment. This array can contain duplicate
         // biosamples, but no null entries.
@@ -390,12 +388,12 @@ const Experiment = module.exports.Experiment = React.createClass({
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Experiment</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
-                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -411,8 +409,8 @@ const Experiment = module.exports.Experiment = React.createClass({
                         <div className="highlight-row">
                             {organismNames.length ?
                                 <span>
-                                    {organismNames.map((organism, i) =>
-                                        <span>
+                                    {organismNames.map((organism, i) => 
+                                        <span key={organism}>
                                             {i > 0 ? <span>and </span> : null}
                                             <i>{organism} </i>
                                         </span>
@@ -435,21 +433,19 @@ const Experiment = module.exports.Experiment = React.createClass({
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     },
 });
+
+const Experiment = module.exports.Experiment = auditDecor(ExperimentComponent);
+
 globals.listing_views.register(Experiment, 'Experiment');
 
-const Dataset = module.exports.Dataset = React.createClass({
-    propTypes: {
-        context: React.PropTypes.object,
-    },
 
-    mixins: [PickerActionsMixin, AuditMixin],
-
-    render: function () {
+var DatasetComponent =  createReactClass({
+    render: function() {
         const result = this.props.context;
         let biosampleTerm;
         let organism;
@@ -502,12 +498,12 @@ const Dataset = module.exports.Dataset = React.createClass({
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
-                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -536,29 +532,27 @@ const Dataset = module.exports.Dataset = React.createClass({
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     },
 });
+
+const Dataset = module.exports.Dataset = auditDecor(DatasetComponent);
+
 globals.listing_views.register(Dataset, 'Dataset');
 
-const Target = module.exports.Target = React.createClass({
-    propTypes: {
-        context: React.PropTypes.object,
-    },
 
-    mixins: [PickerActionsMixin, AuditMixin],
-
-    render: function () {
+var TargetComponent = createReactClass({
+    render: function() {
         const result = this.props.context;
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Target</p>
-                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
+                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -573,30 +567,28 @@ const Target = module.exports.Target = React.createClass({
                         : <em>None submitted</em> }
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
+                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
             </li>
         );
     },
 });
+
+const Target = module.exports.Target = auditDecor(TargetComponent);
+
 globals.listing_views.register(Target, 'Target');
 
 
-const Image = module.exports.Image = React.createClass({
-    propTypes: {
-        context: React.PropTypes.object,
-    },
-
-    mixins: [PickerActionsMixin],
-
-    render: function () {
+const Image = module.exports.Image = createReactClass({
+    render: function() {
         const result = this.props.context;
+        var Attachment = image.Attachment;
+
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Image</p>
-                        <AuditIndicators audits={result.audit} id={this.props.context['@id']} search />
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>{result.caption}</a>
@@ -605,11 +597,11 @@ const Image = module.exports.Image = React.createClass({
                         <Attachment context={result} attachment={result.attachment} />
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={this.props.context['@id']} forcedEditLink />
             </li>
         );
     },
 });
+
 globals.listing_views.register(Image, 'Image');
 
 
@@ -648,16 +640,16 @@ function countSelectedTerms(terms, facet, filters) {
     return count;
 }
 
-const Term = search.Term = React.createClass({
+const Term = search.Term = createReactClass({
     propTypes: {
-        filters: React.PropTypes.array,
-        term: React.PropTypes.object,
-        title: React.PropTypes.string,
-        facet: React.PropTypes.object,
-        total: React.PropTypes.number,
-        canDeselect: React.PropTypes.bool,
-        searchBase: React.PropTypes.string,
-        onFilter: React.PropTypes.func,
+        filters: PropTypes.array,
+        term: PropTypes.object,
+        title: PropTypes.string,
+        facet: PropTypes.object,
+        total: PropTypes.number,
+        canDeselect: PropTypes.bool,
+        searchBase: PropTypes.string,
+        onFilter: PropTypes.func,
     },
 
     render: function () {
@@ -703,11 +695,11 @@ const Term = search.Term = React.createClass({
     },
 });
 
-const TypeTerm = search.TypeTerm = React.createClass({
+const TypeTerm = search.TypeTerm = createReactClass({
     propTypes: {
-        term: React.PropTypes.object,
-        filters: React.PropTypes.array,
-        total: React.PropTypes.number,
+        term: PropTypes.object,
+        filters: PropTypes.array,
+        total: PropTypes.number,
     },
 
     render: function () {
@@ -725,11 +717,11 @@ const TypeTerm = search.TypeTerm = React.createClass({
 });
 
 
-const Facet = search.Facet = React.createClass({
+const Facet = search.Facet = createReactClass({
     propTypes: {
-        facet: React.PropTypes.object,
-        filters: React.PropTypes.array,
-        width: React.PropTypes.string,
+        facet: PropTypes.object,
+        filters: PropTypes.array,
+        width: PropTypes.string,
     },
 
     getDefaultProps: function () {
@@ -783,40 +775,46 @@ const Facet = search.Facet = React.createClass({
             }
         }
 
-        return (
-            <div className="facet" hidden={terms.length === 0} style={{ width: this.props.width }}>
-                <h5>{title}</h5>
-                <ul className="facet-list nav">
-                    <div>
-                        {terms.slice(0, 5).map(term =>
-                            <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />
-                        )}
-                    </div>
-                    {terms.length > 5 ?
-                        <div id={termID} className={moreSecClass}>
-                            {moreTerms.map(term =>
+        if ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
+            return (
+                <div className="facet">
+                    <h5>{title}</h5>
+                    <ul className="facet-list nav">
+                        <div>
+                            {terms.slice(0, 5).map(term =>
                                 <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />
                             )}
                         </div>
-                    : null}
-                    {(terms.length > 5 && !moreTermSelected) ?
-                        <div className="pull-right">
-                            <small>
-                                <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={`#${termID}`} onClick={this.handleClick} />
-                            </small>
-                        </div>
-                    : null}
-                </ul>
-            </div>
-        );
-    },
+                        {terms.length > 5 ?
+                            <div id={termID} className={moreSecClass}>
+                                {moreTerms.map(term =>
+                                    <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />
+                                )}
+                            </div>
+                        : null}
+                        {(terms.length > 5 && !moreTermSelected) ?
+                            <label className="pull-right">
+                                <small>
+                                    <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
+                                </small>
+                            </label>
+                        : null}
+                    </ul>
+                </div>
+            );
+        }
+
+        // Facet had all zero terms and was not a "not" facet.
+        return null;
+    }
 });
 
-const TextFilter = search.TextFilter = React.createClass({
+
+const TextFilter = search.TextFilter = createReactClass({
     propTypes: {
-        filters: React.PropTypes.array,
-        searchBase: React.PropTypes.string,
-        onChange: React.PropTypes.func,
+        filters: PropTypes.array,
+        searchBase: PropTypes.string,
+        onChange: PropTypes.func,
     },
 
     onChange: function (e) {
@@ -865,22 +863,21 @@ const TextFilter = search.TextFilter = React.createClass({
     },
 });
 
-const FacetList = search.FacetList = React.createClass({
+const FacetList = search.FacetList = createReactClass({
     propTypes: {
-        context: React.PropTypes.object,
-        facets: React.PropTypes.oneOfType([
-            React.PropTypes.array,
-            React.PropTypes.object,
+        context: PropTypes.object,
+        facets: PropTypes.oneOfType([
+            PropTypes.array,
+            PropTypes.object,
         ]),
-        filters: React.PropTypes.array,
-        mode: React.PropTypes.string,
-        orientation: React.PropTypes.string,
-        hideTextFilter: React.PropTypes.bool,
+        filters: PropTypes.array,
+        mode: PropTypes.string,
+        orientation: PropTypes.string,
+        hideTextFilter: PropTypes.bool,
     },
 
     contextTypes: {
-        session: React.PropTypes.object,
-        hidePublicAudits: React.PropTypes.bool,
+        session: PropTypes.object,
     },
 
     getDefaultProps: function () {
@@ -937,7 +934,7 @@ const FacetList = search.FacetList = React.createClass({
                     : null}
                     {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map((facet) => {
-                        if ((hideTypes && facet.field === 'type') || (!loggedIn && this.context.hidePublicAudits && facet.field.substring(0, 6) === 'audit.')) {
+                        if (hideTypes && facet.field === 'type') {
                             return <span key={facet.field} />;
                         }
                         return <Facet {...this.props} key={facet.field} facet={facet} filters={filters} width={width} />;
@@ -948,9 +945,9 @@ const FacetList = search.FacetList = React.createClass({
     },
 });
 
-const BatchDownload = search.BatchDownload = React.createClass({
+const BatchDownload = search.BatchDownload = createReactClass({
     propTypes: {
-        context: React.PropTypes.object,
+        context: PropTypes.object,
     },
 
     render: function () {
@@ -977,19 +974,19 @@ const BatchDownload = search.BatchDownload = React.createClass({
 });
 
 
-const ResultTable = search.ResultTable = React.createClass({
+const ResultTable = search.ResultTable = createReactClass({
     propTypes: {
-        context: React.PropTypes.object,
-        actions: React.PropTypes.array,
-        restrictions: React.PropTypes.object,
-        assemblies: React.PropTypes.array, // List of assemblies of all 'File' objects in search results
-        searchBase: React.PropTypes.string,
-        onChange: React.PropTypes.func,
-        mode: React.PropTypes.string,
-        currentRegion: React.PropTypes.func,
+        context: PropTypes.object,
+        actions: PropTypes.array,
+        restrictions: PropTypes.object,
+        assemblies: PropTypes.array, // List of assemblies of all 'File' objects in search results
+        searchBase: PropTypes.string,
+        onChange: PropTypes.func,
+        mode: PropTypes.string,
+        currentRegion: PropTypes.func,
     },
 
-    childContextTypes: { actions: React.PropTypes.array },
+    childContextTypes: { actions: PropTypes.array },
 
     contextTypes: {
         session: React.PropTypes.object,
@@ -1178,7 +1175,7 @@ const ResultTable = search.ResultTable = React.createClass({
                             <div>
                                 <h4>Showing {results.length} of {total} {label}</h4>
                                 <div className="results-table-control">
-                                    {(context.views && this.props.mode !== 'picker') ?
+                                    {context.views ?
                                         <div className="btn-attached">
                                             {context.views.map((view, i) =>
                                                 <a key={i} className="btn btn-info btn-sm btn-svgicon" href={view.href} title={view.title}>{svgIcon(view2svg[view.icon])}</a>
@@ -1246,18 +1243,18 @@ const ResultTable = search.ResultTable = React.createClass({
 });
 
 
-const BrowserTabQuickView = React.createClass({
+const BrowserTabQuickView = createReactClass({
     render: function () {
         return <div>Quick View <span className="beta-badge">BETA</span></div>;
     },
 });
 
 
-const ResultTableList = React.createClass({
+const ResultTableList = createReactClass({
     propTypes: {
-        results: React.PropTypes.array.isRequired, // Array of search results to display
-        columns: React.PropTypes.object.isRequired, // Columns from search results
-        tabbed: React.PropTypes.bool, // True if table is in a tab
+        results: PropTypes.array.isRequired, // Array of search results to display
+        columns: PropTypes.object.isRequired, // Columns from search results
+        tabbed: PropTypes.bool, // True if table is in a tab
     },
 
     render: function () {
@@ -1275,13 +1272,13 @@ const ResultTableList = React.createClass({
 
 // Display a local genome browser in the ResultTable where search results would normally go. This
 // only gets displayed if the query string contains only one type and it's "File."
-const ResultBrowser = React.createClass({
+const ResultBrowser = createReactClass({
     propTypes: {
-        files: React.PropTypes.array, // Array of files whose browser we're rendering
-        assembly: React.PropTypes.string, // Filter `files` by this assembly
-        datasets: React.PropTypes.array, // One or more '/dataset/ENCSRnnnXXX/' that files belong to
-        limitFiles: React.PropTypes.bool, // True to limit browsing to 20 files
-        currentRegion: React.PropTypes.func,
+        files: PropTypes.array, // Array of files whose browser we're rendering
+        assembly: PropTypes.string, // Filter `files` by this assembly
+        datasets: PropTypes.array, // One or more '/dataset/ENCSRnnnXXX/' that files belong to
+        limitFiles: PropTypes.bool, // True to limit browsing to 20 files
+        currentRegion: PropTypes.func,
     },
 
     render: function () {
@@ -1322,11 +1319,11 @@ const ResultBrowser = React.createClass({
 
 
 // Display a dropdown menu of the given assemblies.
-const AssemblyChooser = React.createClass({
+const AssemblyChooser = createReactClass({
     propTypes: {
-        assemblies: React.PropTypes.array, // Array of assemblies to include in the dropdown
-        currentAssembly: React.PropTypes.string, // Currently selected assembly
-        assemblyChange: React.PropTypes.func, // Function to call when the user chooses a new assembly
+        assemblies: PropTypes.array, // Array of assemblies to include in the dropdown
+        currentAssembly: PropTypes.string, // Currently selected assembly
+        assemblyChange: PropTypes.func, // Function to call when the user chooses a new assembly
     },
 
     render: function () {
@@ -1343,14 +1340,14 @@ const AssemblyChooser = React.createClass({
 });
 
 
-const Search = search.Search = React.createClass({
+const Search = search.Search = createReactClass({
     propTypes: {
-        context: React.PropTypes.object,
+        context: PropTypes.object,
     },
 
     contextTypes: {
-        location_href: React.PropTypes.string,
-        navigate: React.PropTypes.func,
+        location_href: PropTypes.string,
+        navigate: PropTypes.func,
     },
 
     // optionally make a persistent region

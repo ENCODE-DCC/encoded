@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import createReactClass from 'create-react-class';
 var fetched = require('../fetched');
 var collection = require('../collection');
 var globals = require('../globals');
@@ -10,7 +11,7 @@ var ResultTable = search.ResultTable;
 var Table = collection.Table;
 
 
-var SearchResultsLayout = React.createClass({
+var SearchResultsLayout = createReactClass({
     render: function() {
         var context = this.props.context;
         var results = context['@graph'];
@@ -30,7 +31,7 @@ var SearchResultsLayout = React.createClass({
 });
 
 
-var SearchBlockEdit = module.exports.SearchBlockEdit = React.createClass({
+var SearchBlockEdit = module.exports.SearchBlockEdit = createReactClass({
     render: function() {
         var styles = {maxHeight: 300, overflow: 'scroll' };
         return (
@@ -42,7 +43,7 @@ var SearchBlockEdit = module.exports.SearchBlockEdit = React.createClass({
 });
 
 
-var SearchBlock = React.createClass({
+var SearchBlock = createReactClass({
 
     shouldComponentUpdate: function(nextProps) {
         return (nextProps.value != this.props.value);

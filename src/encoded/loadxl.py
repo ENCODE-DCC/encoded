@@ -66,14 +66,11 @@ ORDER = [
     'bismark_quality_metric',
     'cpg_correlation_quality_metric',
     'chipseq_filter_quality_metric',
-    'encode2_chipseq_quality_metric',
     'fastqc_quality_metric',
     'samtools_flagstats_quality_metric',
     'mad_quality_metric',
-    'bigwigcorrelate_quality_metric',
     'correlation_quality_metric',
     'edwbamstats_quality_metric',
-    'edwcomparepeaks_quality_metric',
     'hotspot_quality_metric',
     'idr_summary_quality_metric',
     'complexity_xcorr_quality_metric',
@@ -597,6 +594,12 @@ PHASE1_PIPELINES = {
     ],
     'matched_set': [
         remove_keys('related_datasets'),
+    ],
+    'file': [
+        remove_keys('derived_from', 'controlled_by')
+    ],
+    'analysis_step': [
+        remove_keys('parents')
     ]
 }
 
@@ -660,6 +663,12 @@ PHASE2_PIPELINES = {
     'publication': [
         skip_rows_missing_all_keys('datasets'),
     ],
+    'file': [
+        skip_rows_missing_all_keys('derived_from', 'controlled_by')
+    ],
+    'analysis_step': [
+        skip_rows_missing_all_keys('parents')
+    ]
 }
 
 

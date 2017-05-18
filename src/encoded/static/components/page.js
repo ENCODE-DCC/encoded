@@ -1,14 +1,16 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var moment = require('moment');
 var {Panel} = require('../libs/bootstrap/panel');
-var {PickerActionsMixin} = require('./search');
+var { PickerActions } = require('./search');
 var Layout = require('./layout').Layout;
 var globals = require('./globals');
 var _ = require('underscore');
 
 
-var Page = module.exports.Page = React.createClass({
+var Page = module.exports.Page = createReactClass({
     render: function() {
         var context = this.props.context;
         if (context.news) {
@@ -43,14 +45,13 @@ var Page = module.exports.Page = React.createClass({
 globals.content_views.register(Page, 'Page');
 
 
-var Listing = React.createClass({
-    mixins: [PickerActionsMixin],
+var Listing = createReactClass({
     render: function() {
         var result = this.props.context;
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <PickerActions {...this.props} />
                     <div className="accession">
                         <a href={result['@id']}>{result.title}</a> <span className="page-listing-date">{moment.utc(result.date_created).format('MMMM D, YYYY')}</span>
                     </div>
@@ -67,9 +68,9 @@ globals.listing_views.register(Listing, 'Page');
 
 
 // Display a list of keywords for the news article in the `post` prop.
-var NewsKeywordList = React.createClass({
+var NewsKeywordList = createReactClass({
     propTypes: {
-        post: React.PropTypes.object // News post Page object
+        post: PropTypes.object // News post Page object
     },
 
     render: function() {
@@ -91,13 +92,13 @@ var NewsKeywordList = React.createClass({
 
 
 // Display a list of news sharing links/buttons for the news article in the `post` prop.
-var NewsShareList = React.createClass({
+var NewsShareList = createReactClass({
     propTypes: {
-        post: React.PropTypes.object // News post Page object
+        post: PropTypes.object // News post Page object
     },
 
     contextTypes: {
-        location_href: React.PropTypes.string
+        location_href: PropTypes.string
     },
 
     render: function() {
@@ -120,7 +121,7 @@ var NewsShareList = React.createClass({
 
 
 // Write Facebook meta tags to the site header.
-var NewsHead = module.exports.NewsHead = function(props, siteUrl) {
+var newsHead = module.exports.newsHead = function(props, siteUrl) {
     var context = props.context;
 
     if (context.news) {

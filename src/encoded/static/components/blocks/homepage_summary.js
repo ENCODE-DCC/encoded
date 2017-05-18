@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import createReactClass from 'create-react-class';
 var fetched = require('../fetched');
 var globals = require('../globals');
 var search = require('../search');
@@ -9,7 +10,7 @@ var svgIcon = require('../../libs/svg-icons').svgIcon;
 var Facet = search.Facet;
 
 
-var HomepageSummary = React.createClass({
+var HomepageSummary = createReactClass({
     render: function() {
         var {data, searchBase, onFilter} = this.props;
 
@@ -54,7 +55,7 @@ var HomepageSummary = React.createClass({
 });
 
 
-var HomepageSummaryLoader = React.createClass({
+var HomepageSummaryLoader = createReactClass({
 
     getDefaultProps: function () {
         return {searchBase: '?type=Experiment'};

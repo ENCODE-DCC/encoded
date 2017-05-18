@@ -1,9 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 import _ from 'underscore';
 import moment from 'moment';
 import globals from './globals';
 import { Panel, PanelHeading } from '../libs/bootstrap/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
+import { auditDecor, auditsDisplayed, AuditIcon } from './audit';
 import StatusLabel from './statuslabel';
 import { requestFiles, DownloadableAccession, BrowserSelector } from './objectutils';
 import { Graph, JsonGraph } from './graph';
@@ -12,7 +15,6 @@ import { softwareVersionList } from './software';
 import { FetchedData, Param } from './fetched';
 import { collapseIcon } from '../libs/svg-icons';
 import { SortTablePanel, SortTable } from './sorttable';
-import { AuditMixin, AuditIndicators, AuditDetail, AuditIcon } from './audit';
 
 
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
@@ -48,22 +50,22 @@ function fileAccessionSort(a, b) {
 }
 
 
-export const FileTable = React.createClass({
+export const FileTable = createReactClass({
     propTypes: {
-        items: React.PropTypes.array.isRequired, // Array of files to appear in the table
-        graphedFiles: React.PropTypes.object, // Specifies which files are in the graph
-        filePanelHeader: React.PropTypes.object, // Table header component
-        encodevers: React.PropTypes.string, // ENCODE version of the experiment
-        selectedFilterValue: React.PropTypes.string, // Selected filter from popup menu
-        filterOptions: React.PropTypes.array, // Array of assambly/annotation from file array
-        handleFilterChange: React.PropTypes.func, // Called when user changes filter
-        anisogenic: React.PropTypes.bool, // True if experiment is anisogenic
-        showFileCount: React.PropTypes.bool, // True to show count of files in table
-        setInfoNodeId: React.PropTypes.func, // Function to call to set the currently selected node ID
-        setInfoNodeVisible: React.PropTypes.func, // Function to call to set the visibility of the node's modal
-        session: React.PropTypes.object, // Persona user session
-        adminUser: React.PropTypes.bool, // True if user is an admin user
-        noDefaultClasses: React.PropTypes.bool, // True to strip SortTable panel of default CSS classes
+        items: PropTypes.array.isRequired, // Array of files to appear in the table
+        graphedFiles: PropTypes.object, // Specifies which files are in the graph
+        filePanelHeader: PropTypes.object, // Table header component
+        encodevers: PropTypes.string, // ENCODE version of the experiment
+        selectedFilterValue: PropTypes.string, // Selected filter from popup menu
+        filterOptions: PropTypes.array, // Array of assambly/annotation from file array
+        handleFilterChange: PropTypes.func, // Called when user changes filter
+        anisogenic: PropTypes.bool, // True if experiment is anisogenic
+        showFileCount: PropTypes.bool, // True to show count of files in table
+        setInfoNodeId: PropTypes.func, // Function to call to set the currently selected node ID
+        setInfoNodeVisible: PropTypes.func, // Function to call to set the visibility of the node's modal
+        session: PropTypes.object, // Persona user session
+        adminUser: PropTypes.bool, // True if user is an admin user
+        noDefaultClasses: PropTypes.bool, // True to strip SortTable panel of default CSS classes
     },
 
     getInitialState: function () {
@@ -385,10 +387,10 @@ function sortBioReps(a, b) {
 }
 
 
-const RawSequencingTable = React.createClass({
+const RawSequencingTable = createReactClass({
     propTypes: {
-        files: React.PropTypes.array, // Raw files to display
-        meta: React.PropTypes.object, // Extra metadata in the same format passed to SortTable
+        files: PropTypes.array, // Raw files to display
+        meta: PropTypes.object, // Extra metadata in the same format passed to SortTable
     },
 
     getInitialState: function () {
@@ -449,7 +451,8 @@ const RawSequencingTable = React.createClass({
                             // them pass the filter, and record set their sort keys to the lower of
                             // the two accessions -- that's how pairs will sort within a biological
                             // replicate.
-                            file.pairSortKey = partner.pairSortKey = file.title < partner.title ? file.title : partner.title;
+                            partner.pairSortKey = file.title < partner.title ? file.title : partner.title;
+                            file.pairSortKey = partner.pairSortKey;
                             file.pairSortKey += file.paired_end;
                             partner.pairSortKey += partner.paired_end;
                             return true;
@@ -471,7 +474,10 @@ const RawSequencingTable = React.createClass({
             let pairedRepKeys = [];
             if (pairedFiles.length) {
                 pairedRepGroups = _(pairedFiles).groupBy(file => (
-                    (file.biological_replicates && file.biological_replicates.length === 1) ? globals.zeroFill(file.biological_replicates[0]) + file.replicate.library.accession : 'Z'
+                    (file.biological_replicates && file.biological_replicates.length === 1) ?
+                        globals.zeroFill(file.biological_replicates[0]) + ((file.replicate && file.replicate.library) ? file.replicate.library.accession : '')
+                    :
+                        'Z'
                 ));
 
                 // Make a sorted list of keys
@@ -488,7 +494,7 @@ const RawSequencingTable = React.createClass({
                         </tr>
 
                         {!this.state.collapsed ?
-                            <tr key="header">
+                            <tr>
                                 <th>Biological replicate</th>
                                 <th>Library</th>
                                 <th>Accession</th>
@@ -510,18 +516,6 @@ const RawSequencingTable = React.createClass({
                                 // groupFiles is an array of files under a bioreplicate/library
                                 const groupFiles = pairedRepGroups[pairedRepKey];
                                 const bottomClass = j < (pairedRepKeys.length - 1) ? 'merge-bottom' : '';
-
-                                // Render an array of biological replicate and library to display on
-                                // the first row of files, spanned to all rows for that replicate and
-                                // library
-                                const spanned = [
-                                    <td key="br" rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
-                                        {groupFiles[0].biological_replicates && groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
-                                    </td>,
-                                    <td key="lib" rowSpan={groupFiles.length} className={`${bottomClass} merge-right + table-raw-merged`}>
-                                        {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
-                                    </td>,
-                                ];
 
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
@@ -545,8 +539,13 @@ const RawSequencingTable = React.createClass({
                                     const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
 
                                     return (
-                                        <tr key={i} className={file.restricted ? 'file-restricted' : ''}>
-                                            {i === 0 ? { spanned } : null}
+                                        <tr key={file['@id']} className={file.restricted ? 'file-restricted' : ''}>
+                                            {i === 0 ?
+                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>{groupFiles[0].biological_replicates[0]}</td>
+                                            : null}
+                                            {i === 0 ?
+                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right + table-raw-merged`}>{(groupFiles[0].replicate && groupFiles[0].replicate.library) ? groupFiles[0].replicate.library.accession : null}</td>
+                                            : null}
                                             <td className={pairClass}>
                                                 <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                             </td>
@@ -579,7 +578,7 @@ const RawSequencingTable = React.createClass({
                                 const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
 
                                 return (
-                                    <tr key={i} className={rowClasses.join(' ')}>
+                                    <tr key={file['@id']} className={rowClasses.join(' ')}>
                                         <td className="table-raw-biorep">{file.biological_replicates && file.biological_replicates.length ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
@@ -614,10 +613,10 @@ const RawSequencingTable = React.createClass({
 });
 
 
-const RawFileTable = React.createClass({
+const RawFileTable = createReactClass({
     propTypes: {
-        files: React.PropTypes.array, // Raw sequencing files to display
-        meta: React.PropTypes.object, // Extra metadata in the same format passed to SortTable
+        files: PropTypes.array, // Raw sequencing files to display
+        meta: PropTypes.object, // Extra metadata in the same format passed to SortTable
     },
 
     getInitialState: function () {
@@ -672,7 +671,7 @@ const RawFileTable = React.createClass({
                         </tr>
 
                         {!this.state.collapsed ?
-                            <tr key="header">
+                            <tr>
                                 <th>Biological replicate</th>
                                 <th>Library</th>
                                 <th>Accession</th>
@@ -695,18 +694,6 @@ const RawFileTable = React.createClass({
                                 const groupFiles = pairedGroups[pairedKey];
                                 const bottomClass = j < (pairedKeys.length - 1) ? 'merge-bottom' : '';
 
-                                // Render an array of biological replicate and library to display on
-                                // the first row of files, spanned to all rows for that replicate and
-                                // library
-                                const spanned = [
-                                    <td key="br" rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
-                                        {groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
-                                    </td>,
-                                    <td key="lib" rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged`}>
-                                        {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
-                                    </td>,
-                                ];
-
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
                                 return groupFiles.sort((a, b) => (a.title < b.title ? -1 : 1)).map((file, i) => {
@@ -722,8 +709,17 @@ const RawFileTable = React.createClass({
 
                                     // Prepare for run_type display
                                     return (
-                                        <tr key={i} className={file.restricted ? 'file-restricted' : ''}>
-                                            {i === 0 ? { spanned } : null}
+                                        <tr key={file['@id']} className={file.restricted ? 'file-restricted' : ''}>
+                                            {i === 0 ?
+                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
+                                                    {groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
+                                                </td>
+                                            : null}
+                                            {i === 0 ?
+                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged`}>
+                                                    {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
+                                                </td>
+                                            : null}
                                             <td className={pairClass}>
                                                 <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                             </td>
@@ -750,7 +746,7 @@ const RawFileTable = React.createClass({
                                 const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
 
                                 return (
-                                    <tr key={i} className={rowClasses.join(' ')}>
+                                    <tr key={file['@id']} className={rowClasses.join(' ')}>
                                         <td className="table-raw-biorep">{(file.biological_replicates && file.biological_replicates.length) ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
@@ -787,9 +783,9 @@ const RawFileTable = React.createClass({
 
 // Called once searches for unreleased files returns results in this.props.items. Displays both released and
 // unreleased files.
-export const DatasetFiles = React.createClass({
+export const DatasetFiles = createReactClass({
     propTypes: {
-        items: React.PropTypes.array, // Array of files retrieved
+        items: PropTypes.array, // Array of files retrieved
     },
 
     render: function () {
@@ -808,19 +804,18 @@ export const DatasetFiles = React.createClass({
 // This component only triggers the data retrieval, which is done with a search for files associated
 // with the given experiment (in this.props.context). An odd thing is we specify query-string parameters
 // to the experiment URL, but they apply to the file search -- not the experiment itself.
-export const FileGallery = React.createClass({
+export const FileGallery = createReactClass({
     propTypes: {
-        context: React.PropTypes.object, // Dataset object whose files we're rendering
-        encodevers: React.PropTypes.string, // ENCODE version number
-        anisogenic: React.PropTypes.bool, // True if anisogenic experiment
-        hideGraph: React.PropTypes.bool, // T to hide graph display
-        altFilterDefault: React.PropTypes.bool, // T to default to All Assemblies and Annotations
-        annotationSource: React.PropTypes.bool, // v55rc3 only
+        context: PropTypes.object, // Dataset object whose files we're rendering
+        encodevers: PropTypes.string, // ENCODE version number
+        anisogenic: PropTypes.bool, // True if anisogenic experiment
+        hideGraph: PropTypes.bool, // T to hide graph display
+        altFilterDefault: PropTypes.bool, // T to default to All Assemblies and Annotations
     },
 
     contextTypes: {
-        session: React.PropTypes.object, // Login information
-        location_href: React.PropTypes.string, // URL of this experiment page, including query string stuff
+        session: PropTypes.object, // Login information
+        location_href: PropTypes.string, // URL of this experiment page, including query string stuff
     },
 
     render: function () {
@@ -830,7 +825,7 @@ export const FileGallery = React.createClass({
             <FetchedData ignoreErrors>
                 <Param name="data" url={globals.unreleased_files_url(context)} />
                 <Param name="schemas" url="/profiles/" />
-                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} annotationSource={this.props.annotationSource} />
+                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
             </FetchedData>
         );
     },
@@ -1344,20 +1339,19 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
 
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
 // the displayed experiment) return.
-const FileGalleryRenderer = React.createClass({
+const FileGalleryRenderer = createReactClass({
     propTypes: {
-        context: React.PropTypes.object, // Dataset whose files we're rendering
-        data: React.PropTypes.object, // File data retrieved from search request
-        schemas: React.PropTypes.object, // Schemas for the entire system; used for QC property titles
-        hideGraph: React.PropTypes.bool, // T to hide graph display
-        altFilterDefault: React.PropTypes.bool, // T to default to All Assemblies and Annotations
-        annotationSource: React.PropTypes.bool, // v55rc3 only
+        context: PropTypes.object, // Dataset whose files we're rendering
+        data: PropTypes.object, // File data retrieved from search request
+        schemas: PropTypes.object, // Schemas for the entire system; used for QC property titles
+        hideGraph: PropTypes.bool, // T to hide graph display
+        altFilterDefault: PropTypes.bool, // T to default to All Assemblies and Annotations
     },
 
     contextTypes: {
-        session: React.PropTypes.object,
-        session_properties: React.PropTypes.object,
-        location_href: React.PropTypes.string,
+        session: PropTypes.object,
+        session_properties: PropTypes.object,
+        location_href: PropTypes.string,
     },
 
     getInitialState: function () {
@@ -1411,8 +1405,7 @@ const FileGalleryRenderer = React.createClass({
 
     // Set the graph filter based on the given <option> value
     setFilter: function (value) {
-        const stateValue = value === 'default' ? '' : value;
-        this.setState({ selectedFilterValue: stateValue });
+        this.setState({ selectedFilterValue: value });
     },
 
     // React to a filter menu selection. The synthetic event given in `e`
@@ -1461,7 +1454,7 @@ const FileGalleryRenderer = React.createClass({
                     <div className="file-gallery-controls">
                         {context.visualize ?
                             <div className="file-gallery-control">
-                                <BrowserSelector visualizeCfg={context.visualize} annotationSource={this.props.annotationSource} />
+                                <BrowserSelector visualizeCfg={context.visualize} />
                             </div>
                         : null}
                         {filterOptions.length ?
@@ -1516,14 +1509,14 @@ const FileGalleryRenderer = React.createClass({
 });
 
 
-const CollapsingTitle = React.createClass({
+const CollapsingTitle = createReactClass({
     propTypes: {
-        title: React.PropTypes.string.isRequired, // Title to display in the title bar
-        handleCollapse: React.PropTypes.func.isRequired, // Function to call to handle click in collapse button
-        selectedFilterValue: React.PropTypes.string, // Currently selected filter
-        filterOptions: React.PropTypes.array, // Array of filtering options
-        handleFilterChange: React.PropTypes.func, // Function to call when filter menu item is chosen
-        collapsed: React.PropTypes.bool, // T if the panel this is over has been collapsed
+        title: PropTypes.string.isRequired, // Title to display in the title bar
+        handleCollapse: PropTypes.func.isRequired, // Function to call to handle click in collapse button
+        selectedFilterValue: PropTypes.string, // Currently selected filter
+        filterOptions: PropTypes.array, // Array of filtering options
+        handleFilterChange: PropTypes.func, // Function to call when filter menu item is chosen
+        collapsed: PropTypes.bool, // T if the panel this is over has been collapsed
     },
 
     render: function () {
@@ -1548,23 +1541,22 @@ const CollapsingTitle = React.createClass({
 // Display a filtering <select>. `filterOptions` is an array of objects with two properties:
 // `assembly` and `annotation`. Both are strings that get concatenated to form each menu item. The
 // value of each <option> is its zero-based index.
-const FilterMenu = React.createClass({
+const FilterMenu = createReactClass({
     propTypes: {
-        selectedFilterValue: React.PropTypes.string, // Currently selected filter
-        filterOptions: React.PropTypes.array.isRequired, // Contents of the filtering menu
-        handleFilterChange: React.PropTypes.func.isRequired, // Call when a filtering option changes
+        selectedFilterValue: PropTypes.string, // Currently selected filter
+        filterOptions: PropTypes.array.isRequired, // Contents of the filtering menu
+        handleFilterChange: PropTypes.func.isRequired, // Call when a filtering option changes
     },
 
     render: function () {
-        const { filterOptions, handleFilterChange } = this.props;
-        const selectedFilterValue = this.props.selectedFilterValue ? this.props.selectedFilterValue : 'default';
+        const { filterOptions, handleFilterChange, selectedFilterValue } = this.props;
 
         return (
-            <select className="form-control" defaultValue="0" value={selectedFilterValue} onChange={handleFilterChange}>
-                <option value="default" key="title">All Assemblies and Annotations</option>
+            <select className="form-control" value={selectedFilterValue} onChange={handleFilterChange}>
+                <option value="default">All Assemblies and Annotations</option>
                 <option disabled="disabled" />
                 {filterOptions.map((option, i) =>
-                    <option key={i} value={i}>{`${option.assembly + (option.annotation ? ` ${option.annotation}` : '')}`}</option>,
+                    <option key={`${option.assembly}${option.annotation}`} value={i}>{`${option.assembly + (option.annotation ? ` ${option.annotation}` : '')}`}</option>,
                 )}
             </select>
         );
@@ -1652,22 +1644,22 @@ function coalescedDetailsView(node) {
     return { header: header, body: body };
 }
 
-const FileGraph = React.createClass({
+const FileGraphComponent = createReactClass({
     propTypes: {
-        items: React.PropTypes.array, // Array of files we're graphing
-        graph: React.PropTypes.object, // JsonGraph object generated from files
-        selectedAssembly: React.PropTypes.string, // Currently selected assembly
-        selectedAnnotation: React.PropTypes.string, // Currently selected annotation
-        setInfoNodeId: React.PropTypes.func, // Function to call to set the currently selected node ID
-        setInfoNodeVisible: React.PropTypes.func, // Function to call to set the visibility of the node's modal
-        infoNodeId: React.PropTypes.string, // ID of selected node in graph
-        infoNodeVisible: React.PropTypes.bool, // True if node's modal is vibible
-        schemas: React.PropTypes.object, // System-wide schemas
-        session: React.PropTypes.object, // Current user's login information
-        adminUser: React.PropTypes.bool, // True if logged in user is an admin
+        items: PropTypes.array, // Array of files we're graphing
+        graph: PropTypes.object, // JsonGraph object generated from files
+        selectedAssembly: PropTypes.string, // Currently selected assembly
+        selectedAnnotation: PropTypes.string, // Currently selected annotation
+        setInfoNodeId: PropTypes.func, // Function to call to set the currently selected node ID
+        setInfoNodeVisible: PropTypes.func, // Function to call to set the visibility of the node's modal
+        infoNodeId: PropTypes.string, // ID of selected node in graph
+        infoNodeVisible: PropTypes.bool, // True if node's modal is vibible
+        schemas: PropTypes.object, // System-wide schemas
+        session: PropTypes.object, // Current user's login information
+        adminUser: PropTypes.bool, // True if logged in user is an admin
+        auditIndicators: PropTypes.func, // Inherited from auditDecor HOC
+        auditDetail: PropTypes.func, // Inherited from auditDecor HOC
     },
-
-    mixins: [AuditMixin],
 
     getInitialState: function () {
         return {
@@ -1730,7 +1722,7 @@ const FileGraph = React.createClass({
                         if (currContributing[node.metadata.contributing]) {
                             // We have this file's object in the cache, so just display it.
                             node.metadata.ref = currContributing[node.metadata.contributing];
-                            meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, loggedIn, adminUser);
+                            meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, this.loggedIn, adminUser);
                             meta.type = node['@type'][0];
                         } else if (!this.contributingRequestOutstanding) {
                             // We don't have this file's object in the cache, so request it from
@@ -1749,7 +1741,7 @@ const FileGraph = React.createClass({
                     } else {
                         // Regular File data in the node from when we generated the graph. Just
                         // display the file data from there.
-                        meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, loggedIn, adminUser);
+                        meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, loggedIn, adminUser);
                         meta.type = node['@type'][0];
                     }
                 }
@@ -1773,7 +1765,6 @@ const FileGraph = React.createClass({
     closeModal: function () {
         // Called when user wants to close modal somehow
         this.props.setInfoNodeVisible(false);
-        this.auditStateClosed();
     },
 
     render: function () {
@@ -1829,13 +1820,15 @@ const FileGraph = React.createClass({
     },
 });
 
+const FileGraph = auditDecor(FileGraphComponent);
+
 
 // Display a QC button in the file modal.
-const FileQCButton = React.createClass({
+const FileQCButton = createReactClass({
     propTypes: {
-        qc: React.PropTypes.object.isRequired, // QC object we're directing to
-        file: React.PropTypes.object.isRequired, // File this QC object is attached to
-        handleClick: React.PropTypes.func.isRequired, // Function to open a modal to the given object
+        qc: PropTypes.object.isRequired, // QC object we're directing to
+        file: PropTypes.object.isRequired, // File this QC object is attached to
+        handleClick: PropTypes.func.isRequired, // Function to open a modal to the given object
     },
 
     handleClick: function () {
@@ -1854,7 +1847,7 @@ const FileQCButton = React.createClass({
 
 
 // Display the metadata of the selected file in the graph
-const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
+const FileDetailView = function (node, qcClick, auditIndicators, auditDetail, loggedIn, adminUser) {
     // The node is for a file
     const selectedFile = node.metadata.ref;
     let body = null;
@@ -1874,13 +1867,6 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
                 <h4>{selectedFile.file_type} <a href={selectedFile['@id']}>{selectedFile.title}</a></h4>
             </div>
         );
-
-        // Determine if the file has audits or not.
-        let fileAudits = false;
-        if (selectedFile.audit) {
-            const fileAuditKeys = Object.keys(selectedFile.audit);
-            fileAudits = !!(fileAuditKeys && fileAuditKeys.length);
-        }
 
         body = (
             <div>
@@ -1974,19 +1960,19 @@ const FileDetailView = function (node, qcClick, loggedIn, adminUser) {
                             <dt>File quality metrics</dt>
                             <dd className="file-qc-buttons">
                                 {selectedFile.quality_metrics.map(qc =>
-                                    <FileQCButton qc={qc} file={selectedFile} handleClick={qcClick} />,
+                                    <FileQCButton key={qc['@id']} qc={qc} file={selectedFile} handleClick={qcClick} />,
                                 )}
                             </dd>
                         </div>
                     : null}
                 </dl>
 
-                {fileAudits ?
+                {auditsDisplayed(selectedFile.audit) ?
                     <div className="row graph-modal-audits">
                         <div className="col-xs-12">
                             <h5>File audits:</h5>
-                            <AuditIndicators audits={selectedFile.audit} id="qc-audit" />
-                            <AuditDetail audits={selectedFile.audit} except={selectedFile['@id']} id="qc-audit" />
+                            {auditIndicators(selectedFile.audit, 'file-audit')}
+                            {auditDetail(selectedFile.audit, 'file-audit', { except: selectedFile['@id'] })}
                         </div>
                     </div>
                 : null}
