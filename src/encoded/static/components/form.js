@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import jsonschema from 'jsonschema';
 import _ from 'underscore';
 import offset from '../libs/offset';
-import fetched from './fetched';
+import { FetchedData, Param } from './fetched';
 import { parseAndLogError } from './globals';
 import inputs from './inputs';
 import layout from './layout';
@@ -85,33 +85,36 @@ const defaultValue = function (schema) {
     return schema.default || undefined;
 };
 
-const updateChild = function (name, subvalue) {
-    // This is the workhorse for passing for field updates
-    // up the hierarchy of form fields.
-    // It constructs a new value for the current element
-    // by replacing the value of one of its children,
-    // then propagates the new value to its parent.
 
-    const schema = this.props.schema;
-    let oldValue = this.props.value;
-    let newValue;
-    if (schema.type === 'object') {
-        // Clone the old value so we don't mutate it
-        newValue = Object.assign({}, oldValue);
-        // Set the new value unless it is undefined
-        if (subvalue !== undefined) {
-            newValue[name] = subvalue;
-        } else if (newValue[name] !== undefined) {
-            delete newValue[name];
+const UpdateChildMixin = superclass => class extends superclass {
+    updateChild(name, subvalue) {
+        // This is the workhorse for passing for field updates
+        // up the hierarchy of form fields.
+        // It constructs a new value for the current element
+        // by replacing the value of one of its children,
+        // then propagates the new value to its parent.
+
+        const schema = this.props.schema;
+        let oldValue = this.props.value;
+        let newValue;
+        if (schema.type === 'object') {
+            // Clone the old value so we don't mutate it
+            newValue = Object.assign({}, oldValue);
+            // Set the new value unless it is undefined
+            if (subvalue !== undefined) {
+                newValue[name] = subvalue;
+            } else if (newValue[name] !== undefined) {
+                delete newValue[name];
+            }
+        } else if (schema.type === 'array') {
+            // Construct the old value using slices of the old
+            // so we don't mutate it
+            oldValue = oldValue || [];
+            newValue = oldValue.slice(0, name).concat(subvalue).concat(oldValue.slice(name + 1));
         }
-    } else if (schema.type === 'array') {
-        // Construct the old value using slices of the old
-        // so we don't mutate it
-        oldValue = oldValue || [];
-        newValue = oldValue.slice(0, name).concat(subvalue).concat(oldValue.slice(name + 1));
+        // Pass the new value to the parent
+        this.props.updateChild(this.props.name, newValue);
     }
-    // Pass the new value to the parent
-    this.props.updateChild(this.props.name, newValue);
 };
 
 
@@ -175,7 +178,15 @@ RepeatingItem.propTypes = {
     schema: PropTypes.object,
     onRemove: PropTypes.func,
     value: PropTypes.any,
-    updateChild: PropTypes.func,
+    updateChild: PropTypes.func.isRequired,
+};
+
+RepeatingItem.defaultProps = {
+    name: '',
+    path: '',
+    schema: {},
+    onRemove: null,
+    value: null,
 };
 
 RepeatingItem.contextTypes = {
@@ -183,7 +194,7 @@ RepeatingItem.contextTypes = {
 };
 
 
-class RepeatingFieldset extends React.Component {
+class RepeatingFieldset extends UpdateChildMixin(React.Component) {
     // A form field for editing an array.
     // Each item in the array is rendered via RepeatingItem.
     // Also shows a button to add a new item.
@@ -200,6 +211,7 @@ class RepeatingFieldset extends React.Component {
         // Bind `this` to non-React methods.
         this.onRemove = this.onRemove.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
+        this.updateChild = this.updateChild.bind(this);
     }
 
     onRemove(index) {
@@ -244,9 +256,6 @@ class RepeatingFieldset extends React.Component {
         // Pass the new value for the entire array to parent
         this.props.updateChild(this.props.name, value);
     }
-
-    // Propagate edits to subitems upward
-    updateChild
 
     render() {
         const { path, value, schema } = this.props;
@@ -294,39 +303,23 @@ RepeatingFieldset.contextTypes = {
 };
 
 
-const FetchedFieldset = createReactClass({
+class FetchedFieldset extends React.Component {
     // A form field for editing a child object
     // (a subitem of an array property using linkFrom).
     // Initially the value is a URI and we render a preview of the object.
     // If the user expands the item we fetch its edit frame and render form fields.
     // If the user updates any fields the new value is the updated object
     // rather than just the URI.
+    constructor(props, context) {
+        super(props);
 
-    propTypes: {
-        schema: PropTypes.object,
-        name: PropTypes.any,
-        path: PropTypes.string,
-        value: PropTypes.any,
-        updateChild: PropTypes.func,
-    },
-
-    contextTypes: {
-        schemas: PropTypes.object,
-        errors: PropTypes.object,
-    },
-
-    childContextTypes: {
-        id: PropTypes.string,
-    },
-
-    getInitialState() {
         const schema = this.props.schema;
 
         // We need to construct a modified schema for the child type,
         // to avoid showing the field that links back to the main object being edited.
 
         const linkFrom = parseLinkFrom(schema.linkFrom);
-        let subschema = this.context.schemas[linkFrom.type];
+        let subschema = context.schemas[linkFrom.type];
         // FIXME Handle linkFrom abstract type.
         if (subschema !== undefined) {
             // The linkProp is the one that refers to the parent object.
@@ -339,21 +332,25 @@ const FetchedFieldset = createReactClass({
         }
 
         const value = this.props.value;
-        const error = this.context.errors[this.props.path];
+        const error = context.errors[this.props.path];
         const url = typeof value === 'string' ? value : null;
-        return {
+        this.state = {
             schema: subschema,
             url: url,
             // Start collapsed for existing children,
             // expanded when adding a new one or if there are errors
             collapsed: url && !error,
         };
-    },
+
+        // Bind `this` to non-React methods.
+        this.toggleCollapsed = this.toggleCollapsed.bind(this);
+        this.updateChild = this.updateChild.bind(this);
+    }
 
     toggleCollapsed() {
         // Toggle collapsed state when collapsible trigger is clicked.
         this.setState({ collapsed: !this.state.collapsed });
-    },
+    }
 
     updateChild(name, value) {
         // Pass new value up to our parent.
@@ -361,7 +358,7 @@ const FetchedFieldset = createReactClass({
             value['@id'] = this.state.url;
         }
         this.props.updateChild(this.props.name, value);
-    },
+    }
 
     render() {
         const schema = this.state.schema;
@@ -374,18 +371,18 @@ const FetchedFieldset = createReactClass({
             const previewUrl = this.state.url;
             // When collapsed, fetch the object and render it using ItemPreview.
             preview = (
-                <fetched.FetchedData>
-                    <fetched.Param name="data" url={previewUrl} />
+                <FetchedData>
+                    <Param name="data" url={previewUrl} />
                     <inputs.ItemPreview />
-                </fetched.FetchedData>
+                </FetchedData>
             );
             // When expanded, fetch the edit frame and render form fields.
             if (typeof value === 'string') {
                 fieldset = (
-                    <fetched.FetchedData>
-                        <fetched.Param name="value" url={`${this.state.url}?frame=edit`} />
+                    <FetchedData>
+                        <Param name="value" url={`${this.state.url}?frame=edit`} />
                         <Field path={path} schema={schema} updateChild={this.updateChild} />
-                    </fetched.FetchedData>
+                    </FetchedData>
                 );
             } else {
                 fieldset = <Field path={path} schema={schema} value={value} updateChild={this.updateChild} />;
@@ -416,11 +413,36 @@ const FetchedFieldset = createReactClass({
                 {this.state.collapsed ? preview : fieldset}
             </div>
         );
-    },
+    }
 
-});
+}
 
-const Field = module.exports.Field = createReactClass({
+FetchedFieldset.propTypes = {
+    schema: PropTypes.object,
+    name: PropTypes.any,
+    path: PropTypes.string,
+    value: PropTypes.any,
+    updateChild: PropTypes.func.isRequired,
+};
+
+FetchedFieldset.defaultProps = {
+    schema: {},
+    name: null,
+    path: '',
+    value: null,
+};
+
+FetchedFieldset.contextTypes = {
+    schemas: PropTypes.object,
+    errors: PropTypes.object,
+};
+
+FetchedFieldset.childContextTypes = {
+    id: PropTypes.string,
+};
+
+
+class Field extends UpdateChildMixin(React.Component) {
     // Build form input components based on a JSON schema
     // (or a portion thereof).
 
@@ -449,44 +471,21 @@ const Field = module.exports.Field = createReactClass({
     // If the schema (or the schema for any parent field) has `readonly: true`,
     // the input is disabled and the field value cannot be edited.
 
-    propTypes: {
-        name: PropTypes.any,
-        path: PropTypes.string,
-        schema: PropTypes.object,
-        value: PropTypes.any,
-        className: PropTypes.string,
-        updateChild: PropTypes.func,
-        hideLabel: PropTypes.bool,
-    },
+    constructor() {
+        super();
 
-    contextTypes: {
-        submitted: PropTypes.bool,
-        errors: PropTypes.object,
-        showReadOnly: PropTypes.bool,
-        readonly: PropTypes.bool,
-        id: PropTypes.string,
-    },
+        // Set intial React state.
+        this.state = { isDirty: false };
 
-    childContextTypes: {
-        readonly: PropTypes.bool,
-    },
-
-    getDefaultProps() {
-        return {
-            path: 'instance',
-            hideLabel: false,
-            className: '',
-        };
-    },
-
-    getInitialState() {
-        return { isDirty: false };
-    },
+        // Bind `this` to non-React methods.
+        this.handleChange = this.handleChange.bind(this);
+        this.updateChild = this.updateChild.bind(this);
+    }
 
     getChildContext() {
         // Allow contained fields to tell whether they are inside a readonly field.
         return { readonly: !!(this.context.readonly || this.props.schema.readonly) };
-    },
+    }
 
     // Don't update when state is changed.
     // (Without this, the update to isDirty from handleChange causes
@@ -496,10 +495,7 @@ const Field = module.exports.Field = createReactClass({
     // This should be safe as long as Field's state only contains isDirty.
     shouldComponentUpdate(nextProps) {
         return nextProps !== this.props;
-    },
-
-    // Propagate updates from children to parent
-    updateChild,
+    }
 
     handleChange(e) {
         // Handles change events on (leaf) input elements.
@@ -531,7 +527,7 @@ const Field = module.exports.Field = createReactClass({
         this.setState({ isDirty: true });
         // Pass the new value to the parent.
         this.props.updateChild(this.props.name, value);
-    },
+    }
 
     render() {
         const { name, path, schema, value } = this.props;
@@ -641,11 +637,43 @@ const Field = module.exports.Field = createReactClass({
                 {input}
             </div>
         );
-    },
+    }
 
-});
+}
 
-const Form = module.exports.Form = createReactClass({
+Field.propTypes = {
+    name: PropTypes.any,
+    path: PropTypes.string,
+    schema: PropTypes.object,
+    value: PropTypes.any,
+    className: PropTypes.string,
+    updateChild: PropTypes.func.isRequired,
+    hideLabel: PropTypes.bool,
+};
+
+Field.defaultProps = {
+    name: '',
+    path: 'instance',
+    schema: null,
+    value: '',
+    hideLabel: false,
+    className: '',
+};
+
+Field.contextTypes = {
+    submitted: PropTypes.bool,
+    errors: PropTypes.object,
+    showReadOnly: PropTypes.bool,
+    readonly: PropTypes.bool,
+    id: PropTypes.string,
+};
+
+Field.childContextTypes = {
+    readonly: PropTypes.bool,
+};
+
+
+export class Form extends React.Component {
     // The Form component renders a form based on a JSON schema.
 
     // It renders an actual HTML `form` element which contains
@@ -674,51 +702,27 @@ const Form = module.exports.Form = createReactClass({
     // and scrolls to the first one.
 
     // Clicking the Cancel button returns to the homepage.
+    constructor(props) {
+        super(props);
 
-    propTypes: {
-        defaultValue: PropTypes.any,
-        schemas: PropTypes.object,
-        schema: PropTypes.object,
-        showReadOnly: PropTypes.bool,
-        id: PropTypes.string,
-        method: PropTypes.string,
-        action: PropTypes.string,
-        etag: PropTypes.string,
-        onFinish: PropTypes.func,
-        submitLabel: PropTypes.string,
-    },
-
-    contextTypes: {
-        adviseUnsavedChanges: PropTypes.func,
-        fetch: PropTypes.func,
-    },
-
-    childContextTypes: {
-        schemas: PropTypes.object,
-        canSave: PropTypes.func,
-        onTriggerSave: PropTypes.func,
-        errors: PropTypes.object,
-        showReadOnly: PropTypes.bool,
-        id: PropTypes.string,
-        submitted: PropTypes.bool,
-    },
-
-    getDefaultProps() {
-        return {
-            showReadOnly: true,
-            submitLabel: 'Save',
-        };
-    },
-
-    getInitialState() {
-        return {
+        // Set initial React state.
+        this.state = {
             isDirty: false,
             isValid: true,
             value: this.props.defaultValue,
             errors: {},
             submitted: false,
         };
-    },
+
+        // Bind `this` to non-React methods.
+        this.validate = this.validate.bind(this);
+        this.update = this.update.bind(this);
+        this.canSave = this.canSave.bind(this);
+        this.save = this.save.bind(this);
+        this.receive = this.receive.bind(this);
+        this.showErrors = this.showErrors.bind(this);
+        this.finish = this.finish.bind(this);
+    }
 
     getChildContext() {
         // Provide various props to contained fields via React's
@@ -733,7 +737,7 @@ const Form = module.exports.Form = createReactClass({
             id: this.props.id,
             submitted: this.state.submitted,
         };
-    },
+    }
 
     componentDidUpdate(prevProps, prevState) {
         // If form error state changed, scroll to first error message
@@ -744,7 +748,7 @@ const Form = module.exports.Form = createReactClass({
                 window.scrollTo(0, offset(error).top - document.getElementById('navbar').clientHeight);
             }
         }
-    },
+    }
 
     validate(value) {
         // Get validation errors from jsonschema validator.
@@ -761,7 +765,8 @@ const Form = module.exports.Form = createReactClass({
         // but we use paths like
         //   `instance.aliases.0`
         // so we have to convert them here.
-        const errorsByPath = validation.errorsByPath = {};
+        validation.errorsByPath = {};
+        const errorsByPath = validation;
         validation.errors.forEach((error) => {
             let path = error.property.replace(/\[/g, '.').replace(/]/g, '');
             // Missing values for required properties are reported
@@ -775,7 +780,7 @@ const Form = module.exports.Form = createReactClass({
             errorsByPath[path] = error.message;
         });
         return validation;
-    },
+    }
 
     update(name, value) {
         // Called whenever the form value was changed.
@@ -801,14 +806,14 @@ const Form = module.exports.Form = createReactClass({
             nextState.unsavedToken = this.context.adviseUnsavedChanges();
         }
         this.setState(nextState);
-    },
+    }
 
     canSave() {
         // Called to determine whether to enable the Save button or not.
         // It is enabled if the form has been edited, the value is valid
         // according to the schema, and the form submission is not in progress.
         return this.state.isDirty && this.state.isValid && !this.state.editor_error && !this.communicating;
-    },
+    }
 
     save(e) {
         // Send the form value to the server.
@@ -845,7 +850,7 @@ const Form = module.exports.Form = createReactClass({
             communicating: true,
             putRequest: request,
         });
-    },
+    }
 
     receive(data) {
         // Handle a response that is not an HTTP error status.
@@ -857,7 +862,7 @@ const Form = module.exports.Form = createReactClass({
         }
         // Handle a successful form submission using `this.finish`.
         return this.finish(data);
-    },
+    }
 
     showErrors(data) {
         // Translate server-side validation errors.
@@ -899,7 +904,7 @@ const Form = module.exports.Form = createReactClass({
             submitted: true,
             communicating: false,
         });
-    },
+    }
 
     finish(data) {
         // Handle a successful form submission.
@@ -916,7 +921,7 @@ const Form = module.exports.Form = createReactClass({
         if (this.props.onFinish) {
             this.props.onFinish(data);
         }
-    },
+    }
 
     render() {
         return (
@@ -941,11 +946,45 @@ const Form = module.exports.Form = createReactClass({
                 {this.state.error ? <div className="rf-Message">{this.state.error}</div> : ''}
             </form>
         );
-    },
+    }
 
-});
+}
 
-module.exports.JSONSchemaForm = createReactClass({
+Form.propTypes = {
+    defaultValue: PropTypes.any.isRequired,
+    schemas: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
+    showReadOnly: PropTypes.bool,
+    id: PropTypes.string.isRequired,
+    method: PropTypes.string.isRequired,
+    action: PropTypes.string.isRequired,
+    etag: PropTypes.string.isRequired,
+    onFinish: PropTypes.func.isRequired,
+    submitLabel: PropTypes.string,
+};
+
+Form.contextTypes = {
+    adviseUnsavedChanges: PropTypes.func,
+    fetch: PropTypes.func,
+};
+
+Form.childContextTypes = {
+    schemas: PropTypes.object,
+    canSave: PropTypes.func,
+    onTriggerSave: PropTypes.func,
+    errors: PropTypes.object,
+    showReadOnly: PropTypes.bool,
+    id: PropTypes.string,
+    submitted: PropTypes.bool,
+};
+
+Form.defaultProps = {
+    showReadOnly: true,
+    submitLabel: 'Save',
+};
+
+
+export class JSONSchemaForm extends React.Component {
     // JSONSchemaForm is a wrapper of Form
     // that is used from the ItemEdit component after
     // it fetches the `schemas` and the `context`
@@ -958,29 +997,15 @@ module.exports.JSONSchemaForm = createReactClass({
 
     // Other properties are passed through to the Form.
 
-    propTypes: {
-        type: PropTypes.string,
-        schemas: PropTypes.object,
-        context: PropTypes.any,
-        action: PropTypes.string,
-        method: PropTypes.string,
-        etag: PropTypes.string,
-        showReadOnly: PropTypes.bool,
-        id: PropTypes.string,
-        onFinish: PropTypes.func,
-    },
+    constructor(props) {
+        super(props);
 
-    getDefaultProps() {
-        return { showReadOnly: true };
-    },
-
-    getInitialState() {
         const { type, schemas } = this.props;
-        return {
+        this.state = {
             schema: schemas[type],
             value: this.props.context || defaultValue(schemas[type]),
         };
-    },
+    }
 
     render() {
         return (<Form
@@ -989,6 +1014,25 @@ module.exports.JSONSchemaForm = createReactClass({
             defaultValue={this.state.value} showReadOnly={this.props.showReadOnly}
             id={this.props.id} onFinish={this.props.onFinish}
         />);
-    },
+    }
 
-});
+}
+
+JSONSchemaForm.propTypes = {
+    type: PropTypes.string.isRequired,
+    schemas: PropTypes.object,
+    context: PropTypes.any,
+    action: PropTypes.string.isRequired,
+    method: PropTypes.string.isRequired,
+    etag: PropTypes.string,
+    showReadOnly: PropTypes.bool,
+    id: PropTypes.string.isRequired,
+    onFinish: PropTypes.func.isRequired,
+};
+
+JSONSchemaForm.defaultProps = {
+    schemas: null,
+    context: null,
+    etag: '',
+    showReadOnly: true,
+};

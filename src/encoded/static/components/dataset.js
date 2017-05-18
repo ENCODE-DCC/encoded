@@ -1520,7 +1520,7 @@ export const ExperimentTable = (props) => {
 
     // If there's a limit on entries to display and the array is greater than that
     // limit, then clone the array with just that specified number of elements
-    if (this.props.limit && (this.props.limit < this.props.items.length)) {
+    if (props.limit && (props.limit < props.items.length)) {
         // Limit the experiment list by cloning first {limit} elements
         experiments = props.items.slice(0, props.limit);
     } else {

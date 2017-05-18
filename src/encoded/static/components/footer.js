@@ -54,5 +54,9 @@ Footer.contextTypes = {
 };
 
 Footer.propTypes = {
-    version: PropTypes.string.isRequired, // App version number
+    version: PropTypes.string, // App version number
+};
+
+Footer.defaultProps = {
+    version: '',
 };
