@@ -1,5 +1,9 @@
 ## Changelog for file.json
 
+### Schema version 11
+
+* *alternate_accessions* now must match accession format, "ENCFF..." or "TSTFF..."
+
 ### Schema version 10
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces

@@ -44,7 +44,8 @@
                 "description": "An accession previously assigned to an object that has been merged with this object.",
                 "comment": "Only accessions of objects that have status equal replaced will work here.",
                 "type": "string",
-                "format": "accession"
+                "format": "accession",
+                "pattern": "[ENC(SR|LB|BS|FF|PL|DO)[\\d]{3}[A-Z]{3}|TST(SR|LB|BS|FF|PL|DO)[\\d]{6}"
             }
         }
     },
