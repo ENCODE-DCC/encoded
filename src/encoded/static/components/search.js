@@ -775,32 +775,37 @@ const Facet = search.Facet = createReactClass({
             }
         }
 
-        return (
-            <div className="facet">
-                <h5>{title}</h5>
-                <ul className="facet-list nav">
-                    <div>
-                        {terms.slice(0, 5).map(term =>
-                            <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />
-                        )}
-                    </div>
-                    {terms.length > 5 ?
-                        <div id={termID} className={moreSecClass}>
-                            {moreTerms.map(term =>
+        if ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
+            return (
+                <div className="facet">
+                    <h5>{title}</h5>
+                    <ul className="facet-list nav">
+                        <div>
+                            {terms.slice(0, 5).map(term =>
                                 <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />
                             )}
                         </div>
-                    : null}
-                    {(terms.length > 5 && !moreTermSelected) ?
-                        <label className="pull-right">
-                            <small>
-                                <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
-                            </small>
-                        </label>
-                    : null}
-                </ul>
-            </div>
-        );
+                        {terms.length > 5 ?
+                            <div id={termID} className={moreSecClass}>
+                                {moreTerms.map(term =>
+                                    <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />
+                                )}
+                            </div>
+                        : null}
+                        {(terms.length > 5 && !moreTermSelected) ?
+                            <label className="pull-right">
+                                <small>
+                                    <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
+                                </small>
+                            </label>
+                        : null}
+                    </ul>
+                </div>
+            );
+        }
+
+        // Facet had all zero terms and was not a "not" facet.
+        return null;
     }
 });
 
