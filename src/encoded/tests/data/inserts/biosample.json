@@ -1,31 +1,5 @@
 [
     {
-        "_test": "pooled biosample",
-        "accession": "ENCBS356AAA",
-        "award": "ENCODE2",
-        "biosample_term_id": "UBERON:0000006",
-        "biosample_term_name": "islet of Langerhans",
-        "biosample_type": "tissue",
-        "description": "dedifferentiated human pancreatic islets from the National Disease Research Interchange (NDRI), same source as PanIslets",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:PanIsletD"
-        ],
-        "lab": "gregory-crawford",
-        "organism": "human",
-        "phase": "S",
-        "pooled_from": [
-            "ENCBS492ENC",
-            "ENCBS493ENC"
-        ],
-        "documents": [
-            "encode:PanIsletD_Crawford_protocol"
-        ],
-        "source": "ndri",
-        "submitted_by": "metus.donec@nisl.montes",
-        "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
-        "uuid": "467c7505-5039-4935-8da1-6ad22d813310"
-    },
-    {
         "_test": "has references",
         "accession": "ENCBS000AAA",
         "aliases": [
@@ -59,6 +33,32 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
         "uuid": "56e94f2b-25ac-4c58-9828-f63b66220999"
+    },
+    {
+        "_test": "pooled biosample",
+        "accession": "ENCBS356AAA",
+        "award": "ENCODE2",
+        "biosample_term_id": "UBERON:0000006",
+        "biosample_term_name": "islet of Langerhans",
+        "biosample_type": "tissue",
+        "description": "dedifferentiated human pancreatic islets from the National Disease Research Interchange (NDRI), same source as PanIslets",
+        "dbxrefs": [
+            "UCSC-ENCODE-cv:PanIsletD"
+        ],
+        "lab": "gregory-crawford",
+        "organism": "human",
+        "phase": "S",
+        "pooled_from": [
+            "ENCBS492ENC",
+            "ENCBS493ENC"
+        ],
+        "documents": [
+            "encode:PanIsletD_Crawford_protocol"
+        ],
+        "source": "ndri",
+        "submitted_by": "metus.donec@nisl.montes",
+        "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
+        "uuid": "467c7505-5039-4935-8da1-6ad22d813310"
     },
     {
         "accession": "ENCBS001AAA",
