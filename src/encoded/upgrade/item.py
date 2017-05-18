@@ -72,6 +72,7 @@ from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 @upgrade_step('treatment', '6', '7')
 @upgrade_step('user', '4', '5')
 def item_alias_tighten(value, system):
+    # http://redmine.encodedcc.org/issues/4925
     # http://redmine.encodedcc.org/issues/4748
     aliases = []
     if 'aliases' in value and value['aliases']:
