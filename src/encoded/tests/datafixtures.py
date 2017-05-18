@@ -270,7 +270,7 @@ def file(testapp, lab, award, experiment):
 
 
 @pytest.fixture
-def fastq_file(testapp, lab, award, experiment, replicate):
+def fastq_file(testapp, lab, award, experiment, replicate, platform1):
     item = {
         'dataset': experiment['@id'],
         'file_format': 'fastq',
@@ -279,6 +279,7 @@ def fastq_file(testapp, lab, award, experiment, replicate):
         'output_type': 'reads',
         "read_length": 36,
         'file_size': 34,
+        'platform': platform1['@id'],
         'run_type': 'single-ended',
         'lab': lab['@id'],
         'award': award['@id'],

@@ -1,24 +1,25 @@
 'use strict';
 var React = require('react');
-var cx = require('react/lib/cx');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var globals = require('./globals');
 var url = require('url');
 
 
 // Fixed-position lightbox background and image
-var Lightbox = module.exports.Lightbox = React.createClass({
+var Lightbox = module.exports.Lightbox = createReactClass({
     getInitialState: function() {
         return {imgHeight: 0};
     },
 
     // Window resized; set max-height of image
     handleResize: function() {
-        this.setState({imgHeight: this.refs.lightbox.getDOMNode().offsetHeight - 40});
+        this.setState({imgHeight: this.refs.lightbox.offsetHeight - 40});
     },
 
     componentDidMount: function() {
         globals.bindEvent(window, 'resize', this.handleResize);
-        this.setState({imgHeight: this.refs.lightbox.getDOMNode().offsetHeight - 40});
+        this.setState({imgHeight: this.refs.lightbox.offsetHeight - 40});
     },
 
     componentWillUnmount: function() {
@@ -27,10 +28,7 @@ var Lightbox = module.exports.Lightbox = React.createClass({
 
     render: function() {
         var lightboxVisible = this.props.lightboxVisible;
-        var lightboxClass = cx({
-            "lightbox": true,
-            "active": lightboxVisible
-        });
+        var lightboxClass = `lightbox${lightboxVisible ? ' active' : ''}`;
         var imgStyle = {maxHeight: this.state.imgHeight};
 
         return (
@@ -47,12 +45,12 @@ var Lightbox = module.exports.Lightbox = React.createClass({
 });
 
 
-var Attachment = module.exports.Attachment = React.createClass({
+var Attachment = module.exports.Attachment = createReactClass({
     propTypes: {
-        context: React.PropTypes.object.isRequired, // Object within which the attachment is to be displayed
-        attachment: React.PropTypes.object, // Attachment object to display
-        className: React.PropTypes.string, // CSS class name to add to image element; '-img' added to it
-        show_link: React.PropTypes.bool // False to just display image preview without link or lightbox
+        context: PropTypes.object.isRequired, // Object within which the attachment is to be displayed
+        attachment: PropTypes.object, // Attachment object to display
+        className: PropTypes.string, // CSS class name to add to image element; '-img' added to it
+        show_link: PropTypes.bool // False to just display image preview without link or lightbox
     },
 
     // Handle a click on the lightbox trigger (thumbnail)
@@ -151,7 +149,7 @@ var Attachment = module.exports.Attachment = React.createClass({
 });
 
 
-var Image = React.createClass({
+var Image = createReactClass({
     render: function() {
         return (
             <figure>
@@ -167,10 +165,10 @@ globals.content_views.register(Image, 'Image');
 
 
 // Displays a graphic badge for the award project.
-var ProjectBadge = module.exports.ProjectBadge = React.createClass({
+var ProjectBadge = module.exports.ProjectBadge = createReactClass({
     propTypes: {
-        award: React.PropTypes.object.isRequired, // Award whose project's badge we display
-        addClasses: React.PropTypes.string // Classes to add to image
+        award: PropTypes.object.isRequired, // Award whose project's badge we display
+        addClasses: PropTypes.string // Classes to add to image
     },
 
     projectMap: {

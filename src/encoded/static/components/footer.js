@@ -1,13 +1,15 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 
-var Footer = React.createClass({
+var Footer = createReactClass({
     contextTypes: {
-        session: React.PropTypes.object
+        session: PropTypes.object
     },
 
     propTypes: {
-        version: React.PropTypes.string // App version number
+        version: PropTypes.string // App version number
     },
 
     render: function() {

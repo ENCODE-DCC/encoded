@@ -1,4 +1,5 @@
 import React from 'react';
+import createReactClass from 'create-react-class';
 import globals from './globals';
 
 export function dbxref(attributes) {
@@ -62,7 +63,7 @@ export function dbxref(attributes) {
     return <a href={base + local}>{value}</a>;
 }
 
-export const DbxrefList = React.createClass({
+export const DbxrefList = createReactClass({
     render: function () {
         const props = this.props;
         return (

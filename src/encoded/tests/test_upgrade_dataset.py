@@ -88,6 +88,25 @@ def annotation_8(award, lab):
     }
 
 
+@pytest.fixture
+def experiment_10(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '10',
+        'status': 'in progress',
+        'aliases': [
+            'j-michael-cherry:Lib:XZ:20100107:11--ChIP:XZ:20100104:09:AdiposeNuclei:H3K4Me3',
+            'roadmap-epigenomics:Bisulfite-Seq analysis of ucsf-4* stem cell line from UCSF-4||Tue Apr 16 16:10:36 -0500 2013||85822',
+            'encode:[this is]_qu#ite:bad" ',
+            'manuel-garber:10% DMSO for 2 hours',
+            'UCSC_encode_db:Illumina_HiSeq_2000',
+            'encode:Illumina_HiSeq_2000'
+        ]
+    })
+    return properties
+
+
 def test_experiment_upgrade(root, upgrader, experiment, experiment_1, file_ucsc_browser_composite, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
@@ -212,3 +231,16 @@ def test_annotation_upgrade_1(registry, annotation_8):
                              annotation_8, registry=registry,
                              current_version='8', target_version='9')
     assert value['annotation_type'] == 'other'
+
+
+def test_bad_dataset_alias_upgrade_10_11(root, upgrader, experiment_10):
+    value = upgrader.upgrade('experiment', experiment_10, current_version='10', target_version='11')
+    assert value['schema_version'] == '11'
+    assert 'j-michael-cherry:Lib_XZ_20100107_11--ChIP_XZ_20100104_09_AdiposeNuclei_H3K4Me3' in value['aliases']
+    assert 'roadmap-epigenomics:Bisulfite-Seq analysis of ucsf-4* stem cell line from UCSF-4_Apr-16-2013_85822' in value['aliases']
+    assert 'encode:(this is)_quite_bad' in value['aliases']
+    assert 'manuel-garber:10pct DMSO for 2 hours' in value ['aliases']
+    assert 'encode:Illumina_HiSeq_2000' in value['aliases']
+    assert 'UCSC_encode_db:Illumina_HiSeq_2000' not in value['aliases']
+    for alias in value['aliases']:
+        assert len(alias.split(':')) == 2

@@ -1,11 +1,12 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var svgIcon = require('../libs/svg-icons').svgIcon;
 var fetched = require('./fetched');
 var search = require('./search');
 var url = require('url');
 var globals = require('./globals');
-var parseAndLogError = require('./mixins').parseAndLogError;
 var StickyHeader = require('./StickyHeader');
 var _ = require('underscore');
 
@@ -162,9 +163,9 @@ var RowView = function (props) {
     );
 };
 
-var Table = module.exports.Table = React.createClass({
+var Table = module.exports.Table = createReactClass({
     contextTypes: {
-        location_href: React.PropTypes.string
+        location_href: PropTypes.string
     },
 
     extractData: function (items) {
@@ -246,7 +247,7 @@ var Table = module.exports.Table = React.createClass({
 });
 
 
-var ColumnSelector = React.createClass({
+var ColumnSelector = createReactClass({
     getInitialState: function() {
         return {
             open: false
@@ -254,14 +255,21 @@ var ColumnSelector = React.createClass({
     },
 
     render: function() {
+        const columnPaths = Object.keys(this.props.columns);
         return (
             <div style={{display: 'inline-block', position: 'relative'}}>
                 <a className={'btn btn-info btn-sm' + (this.state.open ? ' active' : '')} href="#" onClick={this.toggle} title="Choose columns"><i className="icon icon-columns"></i> Columns</a>
                 {this.state.open && <div style={{position: 'absolute', top: '30px', width: '230px', backgroundColor: '#fff', padding: '.5em', border: 'solid 1px #ccc', borderRadius: 3, zIndex: 1}}>
                     <h4>Columns</h4>
-                    {_.mapObject(this.props.columns, (column, path) => <div onClick={this.toggleColumn.bind(this, path)} style={{cursor: 'pointer'}}>
-                        <input type="checkbox" checked={column.visible} /> {column.title}
-                    </div>)}
+                    {columnPaths.map((columnPath) => {
+                        const column = this.props.columns[columnPath];
+                        return (
+                            <div key={columnPath}>
+                                <input type="checkbox" onChange={this.toggleColumn.bind(this, columnPath)} checked={column.visible} />&nbsp;
+                                <span onClick={this.toggleColumn.bind(this, columnPath)} style={{cursor: 'pointer'}}>{column.title}</span>
+                            </div>
+                        );
+                    })}
                 </div>}
             </div>
         );
@@ -278,11 +286,11 @@ var ColumnSelector = React.createClass({
 });
 
 
-var Report = React.createClass({
+var Report = createReactClass({
     contextTypes: {
-        location_href: React.PropTypes.string,
-        navigate: React.PropTypes.func,
-        fetch: React.PropTypes.func
+        location_href: PropTypes.string,
+        navigate: PropTypes.func,
+        fetch: PropTypes.func
     },
 
     getInitialState: function() {
@@ -416,7 +424,7 @@ var Report = React.createClass({
             if (!response.ok) throw response;
             return response.json();
         })
-        .catch(parseAndLogError.bind(undefined, 'loadMore'))
+        .catch(globals.parseAndLogError.bind(undefined, 'loadMore'))
         .then(data => {
             this.setState({
                 more: this.state.more.concat(data['@graph']),
@@ -438,7 +446,7 @@ var Report = React.createClass({
 });
 
 
-var ReportLoader = React.createClass({
+var ReportLoader = createReactClass({
     render: function() {
         return (
             <fetched.FetchedData>

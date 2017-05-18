@@ -1,46 +1,41 @@
-'use strict';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import ReactDOMServer from 'react-dom/server';
+import { getRenderedProps } from '../app';
+import App from '..';
 
-jest.autoMockOff();
 
-// Fixes https://github.com/facebook/jest/issues/78
-jest.dontMock('react');
-jest.dontMock('underscore');
-
-describe("Server rendering", function () {
-    var React;
-    var App;
-    var document;
-    var home_url = "http://localhost/";
-    var home = {
-        "@id": "/",
-        "@type": ["Portal"],
-        "portal_title": "ENCODE",
-        "title": "Home"
+describe('Server rendering', () => {
+    let document;
+    const homeUrl = 'http://localhost/';
+    const home = {
+        '@id': '/',
+        '@type': ['Portal'],
+        portal_title: 'ENCODE',
+        title: 'Home',
     };
 
-    beforeEach(function () {
-        require('../../libs/react-patches');
-        React = require('react');
-        App = require('..');
-        var server_app = <App context={home} href={home_url} />;
-        var markup = '<!DOCTYPE html>\n' + React.renderToString(server_app);
-        var parser = new DOMParser();
+    beforeEach(() => {
+        const serverApp = <App context={home} href={homeUrl} styles="/static/build/style.css" />;
+        const markup = `<!DOCTYPE html>\n${ReactDOMServer.renderToString(serverApp)}`;
+        const parser = new DOMParser();
         document = parser.parseFromString(markup, 'text/html');
-        window.location.href = home_url;
+        window.location.href = homeUrl;
     });
 
-    it("renders the application to html", function () {
-        expect(document.title).toBe(home.portal_title);
+    test('renders the application to html', () => {
+        expect(document.title).toEqual(home.portal_title);
     });
 
-    it("react render http-equiv correctly", function () {
-        var meta_http_equiv = document.querySelectorAll('meta[http-equiv]');
-        expect(meta_http_equiv.length).not.toBe(0);
+    test('react render http-equiv correctly', () => {
+        const metaHttpEquiv = document.querySelectorAll('meta[http-equiv]');
+        expect(metaHttpEquiv).not.toHaveLength(0);
     });
 
-    it("mounts the application over the rendered html", function () {
-        var props = App.getRenderedProps(document);
-        var app = React.render(<App {...props} />, document);
-        expect(app.getDOMNode()).toBe(document.documentElement);
+    test('mounts the application over the rendered html', () => {
+        let domNode;
+        const props = getRenderedProps(document);
+        ReactDOM.render(<App {...props} domReader={(node) => { domNode = node; }} />, document);
+        expect(domNode).toBe(document.documentElement);
     });
 });

@@ -1,9 +1,12 @@
 ## Changelog for dataset.json
 
-### Schema 11
+### Schema version 11
 
 * *biosample_type* is a required field
 * *biosample_term_id* is required for experiments with *biosample_type* != "in vitro sample"
+* *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
+* unsafe characters such as " # @ % ^ & | ~ ; ` [ ] { } and consecutive whitespaces will no longer be allowed in the alias
+>>>>>>> master
 
 ### Schema version 10
 
