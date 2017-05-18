@@ -65,14 +65,14 @@ class AnalysisStep(Item):
         'parents'
     ]
 
-    '''
+    ''' Add this back to use as @id if that change can be made. Current names will also need to be updated.
     @calculated_property(schema={
         "title": "Full name",
         "type": "string",
         "description": "Full name of the analysis step with major version number.",
         "comment": "Do not submit. Value is automatically assigned by the server."
     })
-    def full_name(self, name, major_version):
+    def fullname(self, name, major_version):
         return u'{}-{}'.format(name, major_version)
     '''
 
