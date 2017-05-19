@@ -72,6 +72,10 @@ export const GeneticModificationComponent = createReactClass({
         auditDetail: PropTypes.func.isRequired, // Audit HOC function to display audit details
     },
 
+    contextTypes: {
+        session: PropTypes.object, // Login information from <App>
+    },
+
     render: function () {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-detail key-value');
@@ -136,11 +140,11 @@ export const GeneticModificationComponent = createReactClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />
                             </div>
-                            {this.props.auditIndicators(context.audit, 'genetic-modification-audit')}
+                            {this.props.auditIndicators(context.audit, 'genetic-modification-audit', { session: this.context.session })}
                         </div>
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'genetic-modification-audit', { except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'genetic-modification-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -541,6 +545,10 @@ const ListingComponent = createReactClass({
         auditIndicators: PropTypes.func.isRequired, // Audit HOC function to display audit indicators
     },
 
+    contextTypes: {
+        session: PropTypes.object, // Login information from <App>
+    },
+
     render: function () {
         const result = this.props.context;
 
@@ -564,14 +572,14 @@ const ListingComponent = createReactClass({
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Genetic modifications</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
-                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession"><a href={result['@id']}>{result.modification_type}</a></div>
                     <div className="data-row">
                         {techniques.length ? <div><strong>Modification techniques: </strong>{techniques.join(', ')}</div> : null}
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
         );
     },
