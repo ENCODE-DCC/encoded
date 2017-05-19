@@ -26,6 +26,14 @@
         { "$ref": "mixins.json#/documents"}
     ],
     "dependencies": {
+        "phase": {
+            "comment": "The phase property is restricted to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "properties": {
+                "biosample_type": {
+                    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                }
+            }
+        },
         "rnais": {
             "comment": "RNAi transfected biosamples require specification of the transfection_type.",
             "oneOf": [
@@ -70,17 +78,80 @@
             "required": ["transfection_type"],
             "comment": "Transfected biosamples require specification of the transfection_type."
         },
+        "transfection_type":{
+            "required": ["transfection_method"],
+            "comment": "Transfected biosamples require specification of the transfection_method."
+        },
         "post_synchronization_time_units": {
-            "required": ["post_synchronization_time"],
-            "comment": "Biosample with a specified post_synchronization_units requires post_synchronization_time specification."
+            "comment": "Biosample with a specified post_synchronization_units requires post_synchronization_time specification and specification of the model organism synchronization stage.",
+             "allOf":[
+                {
+                    "not": {
+                        "properties": {
+                            "organism": {
+                                "linkTo": "Organism",
+                                "linkEnum": [
+                                    "7745b647-ff15-4ff3-9ced-b897d4e2983c",
+                                    "3413218c-3d86-498b-a0a2-9a406638e786"
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    "oneOf": [
+                        {
+                            "required": ["fly_sychronization_stage", "post_synchronization_time"],
+                        },
+                        {
+                            "required": ["worm_synchronization_stage", "post_synchronization_time"],
+                        }
+                    ]
+                }
+            ]
+
         },
         "post_treatment_time": {
-            "required":["post_treatment_time_units"],
-            "comment": "Biosample with a specified post_treatment_time requires post_treatment_time_units specification."
+            "required":["post_treatment_time_units", "treatments"],
+            "comment": "Biosample with a specified post_treatment_time requires post_treatment_time_units specification.",
+            "properties":{
+                "treatments": {
+                    "minItems": 1
+                }
+            }
         },
         "post_treatment_time_units": {
-            "required":["post_treatment_time"],
-            "comment": "Biosample with a specified post_treatment_time_units requires post_treatment_time specification."
+            "required":["post_treatment_time", "treatments"],
+            "comment": "Biosample with a specified post_treatment_time_units requires post_treatment_time specification.",
+            "properties":{
+                "treatments": {
+                    "minItems": 1
+                }
+            }
+        },
+        "pooled_from": {
+            "comment": "Biosample with a specified pooled_from list requires at least two entries in the list.",
+            "properties":{
+                "pooled_from": {
+                    "minItems": 2
+                }
+            }
+        },
+        "culture_harvest_date":{
+            "comment": "The culture_harvest_date property is restricted to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "properties": {
+                "biosample_type": {
+                    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                }
+            }
+        },
+        "culture_start_date": {
+            "comment": "The culture_start_date property is restricted to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "properties": {
+                "biosample_type": {
+                    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                }
+            }
         },
         "starting_amount":{
             "required": ["starting_amount_units"],
@@ -171,19 +242,32 @@
             }
         },
         "post_synchronization_time": {
-            "comment": "Human and mouse biosamples are not allowed to have post_synchronization_time property. Biosample with a specified post_synchronization_time requires post_synchronization_time_units specification.",
-            "required": ["post_synchronization_time_units"],
-            "not": {
-                "properties": {
-                    "organism": {
-                        "linkTo": "Organism",
-                        "linkEnum": [
-                            "7745b647-ff15-4ff3-9ced-b897d4e2983c",
-                            "3413218c-3d86-498b-a0a2-9a406638e786"
-                        ]
+            "comment": "Human and mouse biosamples are not allowed to have post_synchronization_time property. Biosample with a specified post_synchronization_time requires post_synchronization_time_units specification and model organism synchronization stage.",
+            "allOf":[
+                {
+                    "not": {
+                        "properties": {
+                            "organism": {
+                                "linkTo": "Organism",
+                                "linkEnum": [
+                                    "7745b647-ff15-4ff3-9ced-b897d4e2983c",
+                                    "3413218c-3d86-498b-a0a2-9a406638e786"
+                                ]
+                            }
+                        }
                     }
+                },
+                {
+                    "oneOf": [
+                        {
+                            "required": ["fly_sychronization_stage", "post_synchronization_time_units"],
+                        },
+                        {
+                            "required": ["worm_synchronization_stage", "post_synchronization_time_units"],
+                        }
+                    ]
                 }
-            }
+            ]
         },
         "fly_life_stage": {
             "comment": "Only fly biosamples are allowed to have fly_life_stage property.",
@@ -316,8 +400,8 @@
         },
         "treatments": {
             "title": "Treatments",
-            "description": "",
-            "comment": "",
+            "description": "A list of treatments applied to the biosmple.",
+            "comment": "A list of treatments applied to the biosample, it is required to be non-empty if post_treatment_time or post_treatment_time_units are specified.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
@@ -332,7 +416,9 @@
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "External identifiers",
-            "description": "Unique identifiers from external resources.",
+            "description": "Unique biosample identifiers from external resources, such as Biosample database or Cellosaurus.",
+            "comment": "Do not submit. DCC personell is responsible for submission of biosample external resource identifiers.",
+            "permission": "import_items",
             "type": "array",
             "default": [],
             "uniqueItems": true,
@@ -348,19 +434,22 @@
         },
         "donor": {
             "title": "Donor",
-            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
+            "description": "The donor the biosample was derived from.",
+            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers. For worm biosamples, see worm_donor.json for available identifiers. For fly biosamples, see fly_donor.json for available identifiers.",
             "type": "string",
             "linkTo": "Donor"
         },
         "organism": {
             "title": "Organism",
+            "description": "The organism the biosample was derived from.",
             "comment": "See organism.json for available identifiers.",
             "type": "string",
             "linkTo": "Organism"
         },
         "passage_number": {
             "title": "Passage number",
-            "description": "In calculating passage number, include passages from the source.",
+            "description": "Number of passages including the passages from the source.",
+            "comment": "In calculating passage number, include passages from the source.",
             "type": "integer"
         },
         "depleted_in_term_name": {
@@ -389,6 +478,7 @@
         "model_organism_mating_status": {
             "title": "Mating status",
             "description": "The mating status of the animal.",
+            "comment": "The value is not available for human biosamples.",
             "type": "string",
             "enum": [
                 "mated",
@@ -399,7 +489,8 @@
         },
         "internal_tags": {
             "title": "Internal tags",
-            "description": "Some biosamples are part of particular data collections",
+            "description": "Some biosamples are part of particular data collections.",
+            "comment" : "Do not submit. internal_tag values could be submitted only by DCC personnel.",
             "type": "array",
             "default": [],
             "permission": "import_items",
@@ -423,8 +514,8 @@
         "pooled_from": {
             "title": "Pooled from",
             "description": "The biosamples from which aliquots were pooled to form the biosample.",
+            "comment": "A list of biosamples used to create the biosample, if specified, it requires minimum of two entries.",
             "type":  "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                 "description": "A biosample from which an aliquot was taken to form the biosample.",
@@ -443,7 +534,7 @@
         "host": {
             "title": "Host biosample",
             "description": "A biosample that was hosting this biosample.",
-            "comment": "See biosamples.json for available identifiers.",
+            "comment": "For example a mouse could be a host of bone marrow biosample in case of transplantation. See biosamples.json for available identifiers.",
             "type": "string",
             "linkTo": "Biosample"
         },
@@ -466,6 +557,8 @@
         },
         "phase": {
             "title": "Cell-cycle phase",
+            "description": "Specification of cell cycle phase of the biosample.",
+            "comment": "The phase property is restricted to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "type": "string",
             "enum": [
                 "G1",
@@ -481,6 +574,7 @@
         "transfection_type": {
             "title": "Transfection type",
             "description": "The persistence of the transfection construct.",
+            "comment": "transfection_type requires specification of transfection_method.",
             "type": "string",
             "enum": [
                 "stable", "transient"
@@ -489,6 +583,7 @@
         "transfection_method": {
             "title": "Transfection method",
             "description": "How the transfection was performed on the biosample to introduce the contruct or RNAi.",
+            "comment": "transfection_method requires specification of transfection_type.",
             "type": "string",
             "enum": [
                 "electroporation", "transduction", "chemical"
@@ -497,7 +592,7 @@
         "culture_harvest_date": {
             "title": "Culture harvest date",
             "description": "For cultured samples, the date the biosample was taken.",
-            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM.",
+            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM. The property is limited to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "type": "string",
             "anyOf": [
                 {"format": "date-time"},
@@ -507,7 +602,7 @@
         "culture_start_date": {
             "title": "Culture start date",
             "description": "For cultured samples, the date the culture was started. For cell lines, the date this particular growth was started, not the date the line was established.",
-            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD ((TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
+            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD ((TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM). The property is limited to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "type": "string",            
             "anyOf": [
                 {"format": "date-time"},
@@ -526,12 +621,13 @@
         },
         "starting_amount": {
             "title": "Starting amount",
-            "description": "The initial quantity of cells or tissue obtained.",
+            "description": "The initial quantity of cells, tissue or animals obtained.",
             "type": "number",
             "minimum":0
         },
         "starting_amount_units": {
             "title": "Starting amount units",
+            "description": "The units used to quantify the amount of cells or tissue obtained.",
             "type": "string",
             "enum": [
                 "g",
@@ -553,6 +649,7 @@
         "model_organism_sex": {
             "title": "Model organism sex",
             "type": "string",
+            "description": "The sex of the organism the biosample comes from.",
             "comment": "model_organism_sex is not valid for a human biosample.",
             "enum": [
                 "male",
@@ -565,6 +662,7 @@
         "mouse_life_stage": {
             "title": "Mouse life stage",
             "type": "string",
+            "description": "The life stage of the mouse biosample.",
             "comment": "mouse_life_stage is not valid for a human biosample.",
             "enum": [
                 "adult",
@@ -576,7 +674,8 @@
         "fly_life_stage": {
             "title": "Fly life stage",
             "type": "string",
-            "comment": "fly_life_stage is not valid for a human biosample.",
+            "description": "Fly development stage of the animals used to prepare the biosample.",
+            "comment": "fly_life_stage is valid only for fly biosamples.",
             "enum": [
                 "embryonic",
                 "larva",
@@ -591,7 +690,8 @@
         },
         "fly_synchronization_stage": {
             "title": "Fly synchronization stage",
-            "comment": "Stage at which flies were synchronized. Use in conjunction with time and time units post-synchronization.",
+            "description": "Fly development stage at which flies were synchronized.",
+            "comment": "Stage at which flies were synchronized. If available use in conjunction with time and time units post-synchronization.",
             "type": "string",
             "enum": [
                 "fertilization",
@@ -607,13 +707,15 @@
         },
         "post_synchronization_time": {
             "title": "Post-synchronization time",
-            "comment": "Use in conjunction with fly_sychronization_stage or worm_synchronization_stage to specify time elapsed post-synchronization.",
+            "description": "The time that elapsed past the point when animals were synchronized.",
+            "comment": "Use in conjunction with fly_sychronization_stage or worm_synchronization_stage to specify time elapsed post-synchronization. It requires specification of post_synchronization_time_units as well.",
             "type": "string",
             "pattern": "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)$"
         },
         "post_synchronization_time_units": {
             "title": "Post-synchronization time units",
-            "comment": "Use in conjunction with post_synchronization_time to specify time elapsed post-synchronization.",
+            "description": "The units of time that elapsed past the point when animals were synchronized.",
+            "comment": "Use in conjunction with fly_sychronization_stage or worm_synchronization_stage and post_synchronization_time to specify time elapsed post-synchronization.",
             "type": "string",
             "enum": [
                 "minute",
@@ -626,13 +728,15 @@
         },
         "post_treatment_time": {
             "title": "Post-treatment time",
+            "description": "The time that elapsed past the point when biosamples were treated.",
             "comment": "Use in conjunction with treatment to specify time elapsed post-treatment.",
             "type": "string",
             "pattern": "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)$"
         },
         "post_treatment_time_units": {
             "title": "Post-treatment time units",
-            "comment": "Use in conjunction with treatment to specify time elapsed post-treatment.",
+            "description": "The units of time that elapsed past the point when biosamples were treated.",
+            "comment": "Use in conjunction with post_treatment_time and treatment to specify time elapsed post-treatment.",
             "type": "string",
             "enum": [
                 "minute",
@@ -646,7 +750,8 @@
         "worm_life_stage":{
             "title": "Worm life stage",
             "type": "string",
-            "comment": "worm_life_stage is not valid for a human biosample.",
+            "description": "Worm development stage of the animals used to prepare the biosample.",
+            "comment": "worm_life_stage is valid only for worm biosamples.",
             "enum": [
                 "early embryonic",
                 "midembryonic",
@@ -666,7 +771,8 @@
         },
         "worm_synchronization_stage": {
             "title": "Worm synchronization stage",
-            "comment": "Stage at which worms were synchronized. Use in conjunction with time and time units post-synchronization.",
+            "description": "Worm development stage at which the animals were synchronized.",
+            "comment": "Stage at which worms were synchronized. Use in conjunction with time and time units post-synchronization.  worm_life_stage is valid only for worm biosamples.",
             "type": "string",
             "enum": [
                 "fertilization",

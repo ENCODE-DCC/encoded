@@ -859,7 +859,7 @@
             "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "External identifiers",
             "description": "Unique identifiers from external resources.",
-            "comment": "Do not submit.  This is for admins to make virtual file objcts for files at external resources.",
+            "comment": "Do not submit. This is for admins to make virtual file objcts for files at external resources.",
             "type": "array",
             "default": [],
             "uniqueItems": true,

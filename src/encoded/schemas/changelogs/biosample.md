@@ -1,5 +1,18 @@
 ## Changelog for biosample.json
 
+### Schema version 16
+
+* *talens* array was removed, as we are migrating towards genetic_modifications
+* *treatments* array is required to be non-empty if post_treatment_time_units or post_treatment_time are specified
+* may be dbxrefs
+pooled_from no empty defaultm, if present there should be 2 entries
+ "phase" restricted to cells only    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+culture_harvest_date restricted to cells only    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+"culture_start_date" restricted to cells only    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+transfection_method requires transfection _type and vice versa
+
+worm\fly_synchronization_stage is tied with post_synchronization_time and post_synchronization_time_units
+
 ### Schema version 15
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
