@@ -76,9 +76,9 @@ class Data {
     }
 
     sort(sortColumn, reverse) {
-        if (this.sortedOn === sortColumn && this.reversed === !!reverse) return;
+        if (this.sortedOn === sortColumn && this.reversed === reverse) return;
         this.sortedOn = sortColumn;
-        this.reversed = !!reverse;
+        this.reversed = reverse;
         this.rows.sort((rowA, rowB) => {
             const a = String(rowA.cells[sortColumn].sortable);
             const b = String(rowB.cells[sortColumn].sortable);
@@ -139,7 +139,7 @@ RowView.defaultProps = {
 };
 
 
-export default class Table extends React.Component {
+class Table extends React.Component {
     static extractParams(props, context) {
         const params = url.parse(context.location_href, true).query;
         let sorton = parseInt(params.sorton, 10);
@@ -173,10 +173,6 @@ export default class Table extends React.Component {
         return columns;
     }
 
-    // Return `true` if this Javascript supports the Event constructor. True for all modern
-    // browsers, but false for node on the server.
-    static hasEvent() { return typeof Event !== 'undefined'; }
-
     constructor(props, context) {
         super(props);
         this.state = Table.extractParams(this.props, context);
@@ -184,7 +180,7 @@ export default class Table extends React.Component {
         this.state.data = new Data([]);  // Tables may be long so render empty first
         this.state.communicating = true;
 
-        // Bind `this` to class non-React functions.
+        // Bind `this` to non-React methods.
         this.extractData = this.extractData.bind(this);
         this.fetchAll = this.fetchAll.bind(this);
         this.handleClickHeader = this.handleClickHeader.bind(this);
@@ -233,12 +229,16 @@ export default class Table extends React.Component {
         }
     }
 
-    extractData(props, columnsOverride) {
+    extractData(props, columnsParm) {
         const context = props.context;
-        const columns = columnsOverride || this.state.columns;
+        const columns = columnsParm || this.state.columns;
         const rows = context['@graph'].map((item) => {
             const cells = columns.map((column) => {
                 let factory;
+                // cell factories
+                // if (factory) {
+                //    return factory({context: item, column: column});
+                // }
                 let value = lookupColumn(item, column);
                 if (column === '@id') {
                     factory = globals.listing_titles.lookup(item);
@@ -262,8 +262,8 @@ export default class Table extends React.Component {
 
     fetchAll(props) {
         const context = props.context;
-        let communicating;
         let request = this.state.allRequest;
+        let communicating;
         if (request) {
             request.abort();
         }
@@ -294,8 +294,8 @@ export default class Table extends React.Component {
             target = target.parentElement;
         }
         const cellIndex = target.cellIndex;
-        let reversed = '';
         const sorton = this.sorton;
+        let reversed = '';
         if (this.props.defaultSortOn !== cellIndex) {
             sorton.value = cellIndex;
         } else {
@@ -317,6 +317,7 @@ export default class Table extends React.Component {
         // Skip when enter key is pressed
         if (event.nativeEvent.keyCode === 13) return;
         // IE8 should only submit on enter as page reload is triggered
+        if (typeof Event === 'undefined') return;
         this.submitTimer = setTimeout(this.submit, 200);
     }
 
@@ -324,8 +325,8 @@ export default class Table extends React.Component {
         // form.submit() does not fire onsubmit handlers...
         const target = this.form;
 
-        // Node does not support the Event constructor -- no server rendering.
-        if (!Table.hasEvent()) {
+        // IE8 does not support the Event constructor
+        if (typeof Event === 'undefined') {
             target.submit();
             return;
         }
@@ -346,10 +347,11 @@ export default class Table extends React.Component {
         const sortOn = this.state.sortOn;
         const reversed = this.state.reversed;
         const searchTerm = this.state.searchTerm;
+        this.state.searchTerm = searchTerm;
         const titles = context.columns || {};
         const data = this.state.data;
         const total = context.count || data.rows.length;
-        data.sort(sortOn, reversed);
+        data.sort(sortOn, !!reversed);
         const headers = columns.map((column, index) => {
             let className = 'icon';
             if (index === sortOn) {
@@ -385,8 +387,7 @@ export default class Table extends React.Component {
             matching = data.rows;
         }
         const rows = matching.map(row => RowView({ row: row }));
-        const mappedNotMatching = notMatching.map(row => RowView({ row: row, hidden: true }));
-        rows.push(...mappedNotMatching);
+        rows.push(...notMatching.map(row => RowView({ row: row, hidden: true })));
         let tableClass = 'sticky-area collection-table';
         let loadingOrTotal;
         if (this.state.communicating) {
@@ -446,19 +447,18 @@ export default class Table extends React.Component {
             </div>
         );
     }
-
 }
 
 Table.propTypes = {
     context: PropTypes.object.isRequired,
-    columns: PropTypes.string,
+    columns: PropTypes.object,
     defaultSortOn: PropTypes.number,
     showControls: PropTypes.bool,
 };
 
 Table.defaultProps = {
-    columns: '',
-    defaultSortOn: 0,
+    columns: null,
+    defaultSortOn: true,
     showControls: true,
 };
 
@@ -466,3 +466,10 @@ Table.contextTypes = {
     fetch: PropTypes.func,
     location_href: PropTypes.string,
 };
+
+Table.defaultProps = {
+    defaultSortOn: 0,
+    showControls: true,
+};
+
+export default Table;

@@ -27,21 +27,6 @@ const anisogenicValues = [
 ];
 
 
-const libraryValues = {
-    treatments: { values: {}, value: undefined, component: {}, title: 'Treatments', test: 'treatments' },
-    nucleic_acid_term_name: { values: {}, value: undefined, component: {}, title: 'Nucleic acid type', test: 'nucleicacid' },
-    depleted_in_term_name: { values: {}, value: undefined, component: {}, title: 'Depleted in', test: 'depletedin' },
-    nucleic_acid_starting_quantity: { values: {}, value: undefined, component: {}, title: 'Library starting quantity', test: 'startingquantity' },
-    size_range: { values: {}, value: undefined, component: {}, title: 'Size range', test: 'sizerange' },
-    lysis_method: { values: {}, value: undefined, component: {}, title: 'Lysis method', test: 'lysismethod' },
-    extraction_method: { values: {}, value: undefined, component: {}, title: 'Extraction method', test: 'extractionmethod' },
-    fragmentation_method: { values: {}, value: undefined, component: {}, title: 'Fragmentation method', test: 'fragmentationmethod' },
-    library_size_selection_method: { values: {}, value: undefined, component: {}, title: 'Size selection method', test: 'sizeselectionmethod' },
-    strand_specificity: { values: {}, value: undefined, component: {}, title: 'Strand specificity', test: 'strandspecificity' },
-    spikeins_used: { values: {}, value: undefined, component: {}, title: 'Spike-ins datasets', test: 'spikeins' },
-};
-
-
 // Return an array of React components to render into the enclosing panel, given the experiment
 // object in the context parameter
 function AssayDetails(replicates, libVals, libSpecials, libComps) {
@@ -197,6 +182,24 @@ ControllingExperiments.defaultProps = {
 
 
 class ExperimentComponent extends React.Component {
+    constructor() {
+        super();
+
+        this.libraryValues = {
+            treatments: { values: {}, value: undefined, component: {}, title: 'Treatments', test: 'treatments' },
+            nucleic_acid_term_name: { values: {}, value: undefined, component: {}, title: 'Nucleic acid type', test: 'nucleicacid' },
+            depleted_in_term_name: { values: {}, value: undefined, component: {}, title: 'Depleted in', test: 'depletedin' },
+            nucleic_acid_starting_quantity: { values: {}, value: undefined, component: {}, title: 'Library starting quantity', test: 'startingquantity' },
+            size_range: { values: {}, value: undefined, component: {}, title: 'Size range', test: 'sizerange' },
+            lysis_method: { values: {}, value: undefined, component: {}, title: 'Lysis method', test: 'lysismethod' },
+            extraction_method: { values: {}, value: undefined, component: {}, title: 'Extraction method', test: 'extractionmethod' },
+            fragmentation_method: { values: {}, value: undefined, component: {}, title: 'Fragmentation method', test: 'fragmentationmethod' },
+            library_size_selection_method: { values: {}, value: undefined, component: {}, title: 'Size selection method', test: 'sizeselectionmethod' },
+            strand_specificity: { values: {}, value: undefined, component: {}, title: 'Strand specificity', test: 'strandspecificity' },
+            spikeins_used: { values: {}, value: undefined, component: {}, title: 'Spike-ins datasets', test: 'spikeins' },
+        };
+    }
+
     render() {
         let librarySpecials = {};
         let libraryComponents = {};
@@ -523,7 +526,7 @@ class ExperimentComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {AssayDetails(replicates, libraryValues, librarySpecials, libraryComponents)}
+                                    {AssayDetails(replicates, this.libraryValues, librarySpecials, libraryComponents)}
 
                                     {Object.keys(platforms).length ?
                                         <div data-test="platform">
