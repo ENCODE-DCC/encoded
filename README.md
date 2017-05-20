@@ -14,7 +14,7 @@ These are the primary software versions used in production:
 
 ### **1. Homebrew for Mac package management**  
 (Mac OS) Verify that [Homebrew](https://brew.sh/) is installed and working properly:  
-- `sudo brew doctor`
+- `brew doctor`
 
 
 ### **2. Python**  
