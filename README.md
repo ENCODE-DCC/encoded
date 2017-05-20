@@ -12,9 +12,9 @@ These are the primary software versions used in production:
 - Elasticsearch 1.7
 - Ubuntu 14.04
 
-### **1. Homebrew for Mac package management**  
-(Mac OS) Verify that [Homebrew](https://brew.sh/) is installed and working properly:  
-- `brew doctor`
+### **1. Homebrew for Mac OS package management**  
+- Verify that [Homebrew](https://brew.sh/) is installed and working properly:  
+  `brew doctor`
 
 
 ### **2. Python**  
