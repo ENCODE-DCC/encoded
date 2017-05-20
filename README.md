@@ -259,10 +259,17 @@ Go to the Visual Studio Code marketplace and install these extensions:
 
 ## Check versions and linting
 
+**Versions**
+
 - `python3 --version` _returns `Python 3.4.3` (or variant like  3.4.x)_
 - `node --version`  _returns `v6.10.3`  (or variant like  v6.x.y)_
 - `elasticsearch -v` _returns `Version: 1.7.6` (or variant like  Version: 1.7.x)_
 - `postgres --version` _returns `postgres (PostgreSQL) 9.3` (or variant like 9.3.x)`_ 
 
-1. Python: Open Sublime, make a change to a Python file, make an intentional syntax error (no `:` at the end an `if` evaluation). Warnings and errors should show on the left side of the line.  
-2. JavaScript: Make a syntax error, or style error, in a JS file. Warnings and errors should show on the left side of the line.  
+
+**Linting check**
+
+- **Python**: Open Sublime, make a change to a Python file, make an intentional syntax error (no `:` at the end an `if` evaluation). Warnings and errors should show on the left side of the line.    
+  
+  
+- **JavaScript**: Make a syntax error, or style error, in a JS file. Warnings and errors should show on the left side of the line.  
