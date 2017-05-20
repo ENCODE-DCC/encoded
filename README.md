@@ -62,7 +62,7 @@ source ~/.bash_profile
 ```bash
 brew install libevent libmagic libxml2 libxslt openssl graphviz nginx
 brew install freetype libjpeg libtiff littlecms webp chromedriver
-bew install postgres@9.3
+brew install postgres@9.3
 brew install node@6
 brew tap garrow/homebrew-elasticsearch17
 brew install elasticsearch@1.7
