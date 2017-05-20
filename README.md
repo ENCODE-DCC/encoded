@@ -57,7 +57,7 @@ source ~/.bash_profile
 
 
     
-#### 3. (Mac) Install or update other dependencies:
+### **3. (Mac) Install or update other dependencies:** 
 
 ```bash
 brew install libevent libmagic libxml2 libxslt openssl graphviz nginx
@@ -82,7 +82,7 @@ xcode-select --install
  
 
 
-#### 4. Run buildout:
+### **4. Run buildout:**
 
 ```bash
 python3 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5
@@ -99,7 +99,7 @@ bin/buildout
 `make clean`
 
 
-#### Step 3: Start the application locally
+### **5. Start the application locally**
 
 
 - **Terminal window 1**:  
@@ -119,7 +119,7 @@ bin/buildout
 
 Indexing will then proceed in a background thread similar to the production setup.
 
-#### Step 4: Check out the app!
+### **6. Check out the app!**
 - Browse to the interface at http://localhost:8000/.
 
 
