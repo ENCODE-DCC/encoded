@@ -13,10 +13,8 @@ These are the primary software versions used in production:
 - Ubuntu 14.04
 
 ### **1. Homebrew for Mac package management**  
-(Mac OS) Verify that [Homebrew](https://brew.sh/) is installed and working properly:
-```bash
-sudo brew doctor
-```
+(Mac OS) Verify that [Homebrew](https://brew.sh/) is installed and working properly:  
+- `sudo brew doctor`
 
 
 ### **2. Python**  
@@ -30,10 +28,10 @@ Encoded requires a UNIX based system (Mac or Linux) and **Python 3.4.3** (but wo
     
 **Mac OSX Python install instructions**  
 
-The Python version management `pyenv` is a good tool. 
+The Python version management tool `pyenv` is very useful. 
 
 >:warning: _Note: If you have previously installed python3 from homebrew, you may possibly wish to uninstall it (not required):_  
-`brew uninstall --force python3`
+> - `brew uninstall --force python3`
 
 
     
@@ -49,12 +47,14 @@ echo 'eval "pyenv shell 2.7.13 3.4.3"' >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
->:star: _Note: If you have previously installed a Python version from `pyenv`, and want to quickly migrate all your pypi packages to a new version (Python 2 to 2, and Python 3 to 3 only):_  
-`brew install pyenv-pip-migrate`  
+>:star: _Note: Migrating `pyenv` Python packages_  
+>
+>_If you have previously installed a Python version from `pyenv`, and want to quickly migrate all your pypi packages to a new version (Python 2 to 2, and Python 3 to 3 only):_
+>  - `brew install pyenv-pip-migrate`  
+>    
 >Example if you previously installed `2.7` which really is _`2.7.0`_:  
-`pyenv install 2.7.13`  
-`pyenv migrate 2.7 2.7.13`
-
+>  - `pyenv install 2.7.13`  
+>  - `pyenv migrate 2.7 2.7.13`
 
     
 ### **3. (Mac) Install or update other dependencies:** 
