@@ -1,9 +1,10 @@
-## ENCODE Metadata Database
+# ENCODE Metadata Database
+-------------------------------------------------------
 
 
 ![Build status](https://travis-ci.org/ENCODE-DCC/encoded.svg?branch=master)
 
-### Setting Up Your Environment
+## Setting Up Your Environment
 
 These are the primary software versions used in production:
 - Python 3.4.3
@@ -23,7 +24,7 @@ Encoded requires a UNIX based system (Mac or Linux) and **Python 3.4.3** (but wo
 
  - For local development on a Mac, follow the steps below.  For Linux use apt-get or yum as your Linux flavor demands.  You can consult cloud-config.yml for other steps.
 
-- _Note:_ Production is currently usingthe versions above thus your primary development should always work on that version, and you should test that your code works on versions that willbe used in production.
+- _Note:_ Production is currently using the versions above thus your primary development should always work on that version, and you should test that your code works on versions that willbe used in production.
 
 - Linux: apt-get install python3.4-dev or equivalent
     
@@ -31,13 +32,12 @@ Encoded requires a UNIX based system (Mac or Linux) and **Python 3.4.3** (but wo
 
 The Python version management `pyenv` is a good tool. 
 
->_Note: If you have previously installed python3 from homebrew, you may wish to uninstall it first:_
-```bash
-brew uninstall --force python3
-```
+>:warning: _Note: If you have previously installed python3 from homebrew, you may possibly wish to uninstall it (not required):_  
+`brew uninstall --force python3`
+
 
     
-**Install `pyenv` with and set the default versions:**
+**Install `pyenv` and set the default versions:**
 ```bash 
 brew install pyenv
 pyenv install 3.4.3
@@ -49,6 +49,11 @@ echo 'eval "pyenv shell 2.7.13 3.4.3"' >> ~/.bash_profile
 source ~/.bash_profile
 ```
 
+>:star: _Note: If you have previously installed a Python version from `pyenv`, and want to quickly migrate all your pypi packages to a new version (Python 2 to 2, and Python 3 to 3 only):_  
+`brew install pyenv-pip-migrate`  
+>Example if you previously installed `2.7` which really is _`2.7.0`_:  
+`pyenv install 2.7.13`  
+`pyenv migrate 2.7 2.7.13`
 
 
     
@@ -63,20 +68,18 @@ brew tap garrow/homebrew-elasticsearch17
 brew install elasticsearch@1.7
 ```
     
-:star: Note: This step is required for Mac OSX Sierra  
+:star: Note: This step is required for new macOS Sierra installations
 ```bash
 brew cask install Caskroom/cask/xquartz
 xcode-select --install
 ```
 
 
-:warning: _Note_: If you need to update dependencies (do not do this spuriously as you may lose important versions):
-
-```bash
-brew update
-brew upgrade
-rm -rf encoded/eggs
-```
+>:warning: _Note_: If you need to update Python dependencies (do not do this randomly as you may lose important brew versions of packages you need):  
+`brew update`  
+`brew upgrade`  
+`rm -rf encoded/eggs`  
+ 
 
 
 #### 4. Run buildout:
@@ -85,10 +88,10 @@ rm -rf encoded/eggs
 python3 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5
 bin/buildout
 ```
-> :star: Note: If you have issues with postgres or the python interface to it (psycogpg2) you probably need to install postgresql 
-via homebrew (as above)  
-:star: Note: If you have issues with Pillow you may need to install new xcode command line tools:
-> Update or Install [Xcode](https://developer.apple.com/xcode/) from AppStore (reboot may be required)  
+> :star: Note: If you have issues with postgres or the python interface to it (psycogpg2) you probably need to install postgresql via homebrew (as above)  
+
+>:star: Note: If you have issues with Pillow you may need to install new xcode command line tools:
+> Update or Install [Xcode](https://developer.apple.com/xcode/) from the Mac AppStore (reboot may be required)  
 > - `xcode-select --install`  
 
 
@@ -247,3 +250,12 @@ Go to the Visual Studio Code marketplace and install these extensions:
 
 
 
+## Check versions and linting
+
+- `python3 --version` _returns `Python 3.4.3` (or variant like  3.4.x)_
+- `node --version`  _returns `v6.10.3`  (or variant like  v6.x.y)_
+- `elasticsearch -v` _returns `Version: 1.7.6` (or variant like  Version: 1.7.x)_
+- `postgres --version` _returns `postgres (PostgreSQL) 9.3` (or variant like 9.3.x)`_ 
+
+1. Python: Open Sublime, make a change to a Python file, make an intentional syntax error (no `:` at the end an `if` evaluation). Warnings and errors should show on the left side of the line.  
+2. JavaScript: Make a syntax error, or style error, in a JS file. Warnings and errors should show on the left side of the line.  
