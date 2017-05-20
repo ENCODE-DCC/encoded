@@ -119,7 +119,7 @@ bin/buildout
 
 Indexing will then proceed in a background thread similar to the production setup.
 
-### **6. Check out the app!**
+### **6. :tada: Check out the app! :tada:**
 - Browse to the interface at http://localhost:8000/.
 
 
