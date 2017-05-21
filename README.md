@@ -31,7 +31,7 @@ Encoded requires a UNIX based system (Mac or Linux) and **Python 3.4.3** (but wo
 
  - For local development on a Mac, follow the steps below.  For Linux use apt-get or yum as your Linux flavor demands.  You can consult cloud-config.yml for other steps.
 
-- _Note:_ Production is currently using the versions above thus your primary development should always work on that version, and you should test that your code works on versions that willbe used in production.
+- _Note:_ Production is currently using the versions above thus your primary development should always work on that version, and you should test that your code works on versions that will be used in production.
 
 - Linux: apt-get install python3.4-dev or equivalent
     
@@ -108,7 +108,7 @@ brew install elasticsearch@1.7
 
 
 - **Terminal window 1**:  
-  In one terminal window startup the database servers and nginx proxy with::
+  In one terminal window startup the database servers and nginx proxy with:
 
   - `bin/dev-servers development.ini --app-name app --clear --init --load`
 
@@ -143,19 +143,19 @@ Indexing will then proceed in a background thread similar to the production setu
   `bin/test -k test_load_workbook`  
   `bin/test -k test_load_schema`
 
-- Run the Pyramid tests with::
+- Run the Pyramid tests with:
 
   `bin/test -m "not bdd"`
 
-- Run the Browser tests with::
+- Run the Browser tests with:
 
   `bin/test -m bdd -v --splinter-webdriver chrome`
 
-- Run the Javascript tests with::
+- Run the Javascript tests with:
 
   `npm test`
 
-- Or if you need to supply command line arguments::
+- Or if you need to supply command line arguments:
 
   `./node_modules/.bin/jest`
 
@@ -182,13 +182,13 @@ The development bundles are not minified, to speed up building. The above comman
 
 - After buildout you (if you have the correct permissions) can run for a single-node "cluster":
 
-  `bin/deploy --instance-type c4.8xlarge`  
+  `bin/deploy`
   
   
-- To initiate a server in the AWS cloud with the current branch, and with a computed nameserver alias based on the branch and AWS username.  Note that this retrieves a Postgres database from the current backup, so "as is" only applies specifically to the ENCODE Project (forkers beware!).   There are options to use a different branch and/or different name and also AWS spot instances.   
+- To initiate a server in the AWS cloud with the current branch, and with a computed nameserver alias based on the branch and AWS username.  Note that this retrieves a Postgres database from the current backup, so "as is" only applies specifically to the ENCODE Project (_if you have forked the repo you will not have permission to retrieve the db_).   There are options to use a different branch and/or different name and also AWS spot instances.   
 
   
-- Deploy script help:
+- Deploy script help (how to specify name, instance size, etc):
 
   `bin/deploy --help`
       
@@ -268,7 +268,7 @@ Go to the Visual Studio Code marketplace and install these extensions:
 - `python3 --version` _returns `Python 3.4.3` (or variant like  3.4.x)_
 - `node --version`  _returns `v6.10.3`  (or variant like  v6.x.y)_
 - `elasticsearch -v` _returns `Version: 1.7.6` (or variant like  Version: 1.7.x)_
-- `postgres --version` _returns `postgres (PostgreSQL) 9.3` (or variant like 9.3.x)`_ 
+- `postgres --version` _returns `postgres (PostgreSQL) 9.3` (or variant like 9.3.x)_ 
 
 
 **Linting check**
