@@ -192,7 +192,7 @@ For all options, including setting up ES clusters (needed for full production). 
 
 ## Linting your code within your code editor
 
-To set up linting with [Sublime Text 3](https://www.sublimetext.com/3) or Visual Studio Code, first install the linters:
+To set up linting with [Sublime Text 3](https://www.sublimetext.com/3) or [Visual Studio Code](https://code.visualstudio.com/), first install the linters:
 
 ```bash
 pip3 flake8
