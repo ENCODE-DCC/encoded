@@ -204,7 +204,7 @@ pip3 flake8
 npm install -g eslint
 npm install -g eslint-plugin-react
 ```
-:warning: _Note:_ You don't have to use Sublime Text 3 but you *must* insure that linting in your editor behaves as it does in Sublime Text 3.
+>:warning: _Note:_ You don't have to use Sublime Text 3 but you *must* insure that linting in your editor behaves as it does in Sublime Text 3.
 
 
 
