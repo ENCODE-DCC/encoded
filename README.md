@@ -100,9 +100,9 @@ brew install elasticsearch@1.7
 > - `xcode-select --install`  
 
 
-**If you wish to completely rebuild the application, or have updated dependencies:**  
-- `make clean`
-
+>:star: Note: If you wish to **completely rebuild** the application or **cleanly reload** dependencies (:warning: long re-build time!):  
+  `make clean && python3 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5 && bin/buildout`
+  
 
 ### **5. Start the application locally**
 
