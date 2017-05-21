@@ -90,10 +90,9 @@ brew install elasticsearch@1.7
 
 ### **4. Run buildout:**
 
-```bash
-python3 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5
-bin/buildout
-```
+- `python3 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5`
+- `bin/buildout`
+
 > :star: Note: If you have issues with postgres or the python interface to it (psycogpg2) you probably need to install postgresql via homebrew (as above)  
 
 >:star: Note: If you have issues with Pillow you may need to install new xcode command line tools:
@@ -102,7 +101,7 @@ bin/buildout
 
 
 **If you wish to completely rebuild the application, or have updated dependencies:**  
-`make clean`
+- `make clean`
 
 
 ### **5. Start the application locally**
