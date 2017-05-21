@@ -77,8 +77,8 @@ brew tap garrow/homebrew-elasticsearch17
 brew install elasticsearch@1.7
 ```
     
-:star: Note: This step is required for new macOS Sierra installations
-`brew cask install Caskroom/cask/xquartz`
+>:star: Note: This step is required for new macOS Sierra installations
+>- `brew cask install Caskroom/cask/xquartz`
 
 
 >:warning: _Note_: If you need to update Python dependencies (do not do this randomly as you may lose important brew versions of packages you need):  
