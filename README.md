@@ -218,7 +218,7 @@ After first setting up [Package Control](https://packagecontrol.io/) (follow ins
  - `babel` ([Babel instructions](https://github.com/babel/babel-sublime#setting-as-the-default-syntax))
 
 **Sublime Linting with `pyenv`**  
-To get Sublime to lint Python code using `pyenv` you must add the python version and paths and python_paths to your Sublime Linter Preferences:**  
+To get Sublime to lint Python code using `pyenv` you must add the python version and paths and python_paths to your Sublime Linter Preferences.  
 
 In **Sublime Text**, navigate to the user linter preferences:  
 
