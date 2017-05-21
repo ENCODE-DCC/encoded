@@ -97,7 +97,7 @@ bin/buildout
 > :star: Note: If you have issues with postgres or the python interface to it (psycogpg2) you probably need to install postgresql via homebrew (as above)  
 
 >:star: Note: If you have issues with Pillow you may need to install new xcode command line tools:
-> Update or Install [Xcode](https://developer.apple.com/xcode/) from the Mac AppStore (reboot may be required)  
+> Update or Install [Xcode](https://developer.apple.com/xcode/) from the Mac AppStore (reboot may be required) and re-run:  
 > - `xcode-select --install`  
 
 
