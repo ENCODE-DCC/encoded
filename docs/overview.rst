@@ -2,7 +2,7 @@
 Overview of encoded Application
 ===============================
 
-This document does not contain installation or operating instructures.  See README.rst for that.
+This document does not contain installation or operating instructures.  See [README.md](https://github.com/ENCODE-DCC/encoded) for that.
 
 Encoded is a python/javascript application for storing, modifying, retrieving and displaying the metadata (as JSON objects) for the ENCODE_ project.
 The application was designed specifically to store metadata for high-throughput genomics experiments, but the overall architecture is suitable for any set of highly linked objects.
