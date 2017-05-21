@@ -13,9 +13,13 @@ These are the primary software versions used in production:
 - Ubuntu 14.04
 
 ### **0. Xcode for Mac OS build tools**  
-- Install [Xcode](https://developer.apple.com/xcode/) from the website or Mac App store
+- Install [Xcode](https://developer.apple.com/xcode/) from the website or Mac App store because the local build will use some its compilation tools
 - Install the Xcode commandline tools (the commandline tools may need to be reinstalled after OS and Xcode updates)
   - `xcode-select --install` 
+
+>:star: _Note: You will need to open Xcode to accept the end-user agreement from the application, or from the commandline run:_  
+> `sudo xcodebuild -license accept`
+
 
 ### **1. Homebrew for Mac OS package management**  
 - Verify that [Homebrew](https://brew.sh/) is installed and working properly:  
