@@ -18,7 +18,7 @@ These are the primary software versions used in production:
   - `xcode-select --install` 
 
 >:star: _Note: You will need to open Xcode to accept the end-user agreement from the application, or from the commandline run:_  
-> `sudo xcodebuild -license accept`
+>- `sudo xcodebuild -license accept`
 
 
 ### **1. Homebrew for Mac OS package management**  
