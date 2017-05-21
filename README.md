@@ -23,7 +23,7 @@ These are the primary software versions used in production:
 
 ### **1. Homebrew for Mac OS package management**  
 - Verify that [Homebrew](https://brew.sh/) is installed and working properly:  
-  `brew doctor`
+  - `brew doctor`
 
 
 ### **2. Python**  
@@ -110,7 +110,7 @@ brew install elasticsearch@1.7
 - **Terminal window 1**:  
   In one terminal window startup the database servers and nginx proxy with::
 
-  `bin/dev-servers development.ini --app-name app --clear --init --load`
+  - `bin/dev-servers development.ini --app-name app --clear --init --load`
 
   This will first clear any existing data in `/tmp/encoded`.
   Then postgres and elasticsearch servers will be initiated within `/tmp/encoded`.
@@ -120,7 +120,7 @@ brew install elasticsearch@1.7
 - **Terminal window 2**:  
   In a second terminal, run the app with:
 
-  `bin/pserve development.ini`
+  - `bin/pserve development.ini`
 
 Indexing will then proceed in a background thread similar to the production setup.
 
