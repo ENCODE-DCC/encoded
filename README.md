@@ -158,7 +158,7 @@ Indexing will then proceed in a background thread similar to the production setu
 ## Building Javascript and CSS
 
 
-Our Javascript is written using ES6 and JSX, so needs to be compiled using babel and webpack. Our CSS is written in the SCSS variant of [Sass](http://sass-lang.com/} and also needs compilation using webpack.
+Our Javascript is written using ES6 and JSX, so needs to be compiled using babel and webpack. Our CSS is written in the SCSS variant of [Sass](http://sass-lang.com/) and also needs compilation using webpack.
 
 - To re-build **production-ready** bundles, do:
 
