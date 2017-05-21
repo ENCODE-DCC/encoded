@@ -159,6 +159,10 @@ Indexing will then proceed in a background thread similar to the production setu
 
   `./node_modules/.bin/jest`
 
+- **Test ALL the things!**
+  
+  `bin/test -v -v --splinter-webdriver chrome && npm test`
+
 
 ## Building Javascript and CSS
 
