@@ -12,6 +12,11 @@ These are the primary software versions used in production:
 - Elasticsearch 1.7
 - Ubuntu 14.04
 
+### **0. Xcode for Mac OS build tools**  
+- Install [Xcode](https://developer.apple.com/xcode/) from the website or Mac App store
+- Install the Xcode commandline tools (the commandline tools may need to be reinstalled after OS and Xcode updates)
+  - `xcode-select --install` 
+
 ### **1. Homebrew for Mac OS package management**  
 - Verify that [Homebrew](https://brew.sh/) is installed and working properly:  
   `brew doctor`
@@ -69,10 +74,7 @@ brew install elasticsearch@1.7
 ```
     
 :star: Note: This step is required for new macOS Sierra installations
-```bash
-brew cask install Caskroom/cask/xquartz
-xcode-select --install
-```
+`brew cask install Caskroom/cask/xquartz`
 
 
 >:warning: _Note_: If you need to update Python dependencies (do not do this randomly as you may lose important brew versions of packages you need):  
