@@ -12,7 +12,6 @@ from pyramid.traversal import (
     traverse,
 )
 import snovault
-from ..schema_formats import is_accession
 
 
 @lru_cache()
