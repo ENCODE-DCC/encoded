@@ -81,9 +81,6 @@ class Dataset(Item):
         'submitted_by',
         'lab',
         'award.pi.lab',
-        'documents.lab',
-        'documents.award',
-        'documents.submitted_by',
         'references'
     ]
     audit_inherit = [
@@ -431,7 +428,7 @@ class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssa
         'files.analysis_step_version.analysis_step.documents.lab',
         'files.analysis_step_version.analysis_step.pipelines',
         'files.analysis_step_version.analysis_step.pipelines.documents',
-        'files.analysis_step_version.analysis_step.pipelines.documents.submitted_by',
+        'files.analysis_step_version.analysis_step.pipelines.submitted_by',
         'files.analysis_step_version.analysis_step.pipelines.documents.award',
         'files.analysis_step_version.analysis_step.pipelines.documents.lab',
         'organism'

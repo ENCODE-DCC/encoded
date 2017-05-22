@@ -23,10 +23,6 @@ class Pipeline(Item, CalculatedAssayTermID):
     schema = load_schema('encoded:schemas/pipeline.json')
     name_key = 'accession'
     embedded = [
-        'documents',
-        'documents.award',
-        'documents.lab',
-        'documents.submitted_by',
         'analysis_steps',
         'analysis_steps.documents',
         'analysis_steps.pipelines',
@@ -62,10 +58,6 @@ class AnalysisStep(Item):
         'current_version',
         'current_version.software_versions',
         'current_version.software_versions.software',
-        'documents',
-        'documents.award',
-        'documents.lab',
-        'documents.submitted_by',
         'parents',
         'submitted_by',
         'versions',
