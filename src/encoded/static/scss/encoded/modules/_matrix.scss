@@ -121,9 +121,11 @@ table.matrix {
 }
 
 table.matrix th.group-all-groups-cell {
-    padding-bottom: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
     text-align: center;
     border-left: 1px solid #fff;
+    background-color: #f0f0f0;
 }
 
 .group-all-groups-cell__button {
