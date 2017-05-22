@@ -101,7 +101,7 @@
                 {
                     "oneOf": [
                         {
-                            "required": ["fly_sychronization_stage", "post_synchronization_time"]
+                            "required": ["fly_synchronization_stage", "post_synchronization_time"]
                         },
                         {
                             "required": ["worm_synchronization_stage", "post_synchronization_time"]
@@ -260,7 +260,7 @@
                 {
                     "oneOf": [
                         {
-                            "required": ["fly_sychronization_stage", "post_synchronization_time_units"]
+                            "required": ["fly_synchronization_stage", "post_synchronization_time_units"]
                         },
                         {
                             "required": ["worm_synchronization_stage", "post_synchronization_time_units"]
@@ -708,14 +708,14 @@
         "post_synchronization_time": {
             "title": "Post-synchronization time",
             "description": "The time that elapsed past the point when animals were synchronized.",
-            "comment": "Use in conjunction with fly_sychronization_stage or worm_synchronization_stage to specify time elapsed post-synchronization. It requires specification of post_synchronization_time_units as well.",
+            "comment": "Use in conjunction with fly_synchronization_stage or worm_synchronization_stage to specify time elapsed post-synchronization. It requires specification of post_synchronization_time_units as well.",
             "type": "string",
             "pattern": "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)$"
         },
         "post_synchronization_time_units": {
             "title": "Post-synchronization time units",
             "description": "The units of time that elapsed past the point when animals were synchronized.",
-            "comment": "Use in conjunction with fly_sychronization_stage or worm_synchronization_stage and post_synchronization_time to specify time elapsed post-synchronization.",
+            "comment": "Use in conjunction with fly_synchronization_stage or worm_synchronization_stage and post_synchronization_time to specify time elapsed post-synchronization.",
             "type": "string",
             "enum": [
                 "minute",
