@@ -36,11 +36,9 @@ def test_admin_put_accession(human_donor, testapp):
     # but coudl be any accessoned object
     donor1 = testapp.post_json(url, human_donor, status=201).json['@graph'][0]
 
-    donor1.update({'accession': 'ENCDO111BBB'})
     # initial test
-    testapp.put_json(donor1['@id'], donor1, status=200)
-    res = testapp.get(url)
-    assert(res.json['accession'] == "ENCDO111BBB")
+    testapp.patch_json(donor1['@id'], {'accession': 'ENCDO111BBB'}, status=200)
+    res = testapp.get('/human-donors/ENCDO111BBB').maybe_follow()
+    assert res.json['uuid'] == donor1['uuid']
 
-    donor1.update({'accession': 'somerstring'})
-    testapp.put_json(donor1['@id'], donor1, status=200)
+    testapp.patch_json(res.json['@id'], {'accession': 'somestring'}, status=422)
