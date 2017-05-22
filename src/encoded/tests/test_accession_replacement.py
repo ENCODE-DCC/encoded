@@ -29,3 +29,18 @@ def test_accession_replacement(testapp, human_donor):
 
     res = testapp.get('/' + donor1['accession']).maybe_follow()
     assert res.json['@id'] == donor2['@id']
+
+
+def test_admin_put_accession(human_donor, testapp):
+    url = '/human_donor'
+    # but coudl be any accessoned object
+    donor1 = testapp.post_json(url, human_donor, status=201).json['@graph'][0]
+
+    donor1.update({'accession': 'ENCDO111BBB'})
+    # initial test
+    testapp.put_json(donor1['@id'], donor1, status=200)
+    res = testapp.get(url)
+    assert(res.json['accession'] == "ENCDO111BBB")
+
+    donor1.update({'accession': 'somerstring'})
+    testapp.put_json(donor1['@id'], donor1, status=200)
