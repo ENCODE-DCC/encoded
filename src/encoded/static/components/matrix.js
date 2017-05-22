@@ -51,7 +51,7 @@ const GroupMoreButton = createReactClass({
     },
 
     render: function () {
-        return <button className="group-more-button" onClick={this.localHandleClick}>{this.props.displayText}</button>;
+        return <button className="group-more-cell__button" onClick={this.localHandleClick}>{this.props.displayText}</button>;
     },
 });
 
@@ -67,23 +67,43 @@ var Matrix = module.exports.Matrix = createReactClass({
         biosampleTypeColors: PropTypes.object // DataColor instance for experiment project
     },
 
-    getInitialState: function () {
+    generateYGroupOpen: function(matrix) {
         // Make a state for each of the Y groups (each Y group currently shows a biosample type).
         // To do that, we have to get each of the bucket keys, which will be the keys into the
         // object that keeps track of whether the group shows all or not. If a group has fewer than
-        // the maximum number of items to show a See More button, then it still get included here,
-        // but with a value of `false` that never changes.
-        const matrix = this.props.context.matrix;
+        // the maximum number of items to show a See More button, it doesn't get included in the
+        // state.
         const primaryYGrouping = matrix.y.group_by[0];
+        const secondaryYGrouping = matrix.y.group_by[1];
+        const yLimit = matrix.y.limit;
         const yGroups = matrix.y[primaryYGrouping].buckets;
         const yGroupOpen = {};
         yGroups.forEach((group) => {
-            yGroupOpen[group.key] = false;
+            if (group[secondaryYGrouping].buckets.length > yLimit) {
+                yGroupOpen[group.key] = false;
+            }
         });
+        return yGroupOpen;
+    },
+
+    getInitialState: function () {
+        const yGroupOpen = this.generateYGroupOpen(this.props.context.matrix);
         return {
             yGroupOpen: yGroupOpen,
             allYGroupsOpen: false,
         };
+    },
+
+    componentWillReceiveProps: function (nextProps) {
+        // This callback makes possible updating the See More buttons when the user clicks a facet,
+        // which could cause these buttons to not be needed. This resets all the buttons to the See
+        // More state.
+        const yGroupOpen = this.generateYGroupOpen(nextProps.context.matrix);
+        this.setState({
+            yGroupOpen: yGroupOpen,
+            allYGroupsOpen: false,
+        });
+
     },
 
     // Called when the Visualize button dropdown menu gets opened or closed. `dropdownEl` is the DOM node for the dropdown menu.
@@ -298,7 +318,7 @@ var Matrix = module.exports.Matrix = createReactClass({
                                                 if (group_buckets.length > y_limit && !this.state.allYGroupsOpen) {
                                                     rows.push(
                                                         <tr>
-                                                            <th>
+                                                            <th className="group-more-cell">
                                                                 <GroupMoreButton
                                                                     id={group.key}
                                                                     handleClick={this.handleClick}
@@ -311,13 +331,20 @@ var Matrix = module.exports.Matrix = createReactClass({
                                                 }
                                                 return rows;
                                             })}
-                                            <tr>
-                                                <th>
-                                                    <button className="group-more-button" onClick={this.handleSeeAllClick}>
-                                                        {this.state.allYGroupsOpen ? 'See fewer biosamples' : 'See all biosamples…'}
-                                                    </button>
-                                                </th>
-                                            </tr>
+
+                                            {/* Display the See Fewer/See All button controlling
+                                                the whole table if at least one biosample_type has
+                                                more than the limit. We know this is the case if at
+                                                least one yGroupOpen state member exists. */}
+                                            {Object.keys(this.state.yGroupOpen).length ?
+                                                <tr>
+                                                    <th className="group-all-groups-cell">
+                                                        <button className="group-all-groups-cell__button" onClick={this.handleSeeAllClick}>
+                                                            {this.state.allYGroupsOpen ? 'See fewer biosamples' : 'See all biosamples'}
+                                                        </button>
+                                                    </th>
+                                                </tr>
+                                            : null}
                                         </tbody>
                                     </table>
                                 </div>

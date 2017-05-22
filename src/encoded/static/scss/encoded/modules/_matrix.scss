@@ -109,9 +109,23 @@ table.matrix {
     display: inline-block;
 }
 
-.group-more-button {
+.group-more-cell {
+    border: 1px solid #fff;
+}
+
+.group-more-cell__button {
     border: none;
     background-color: transparent;
     font-weight: normal;
     color: $std-href-color;
+}
+
+table.matrix th.group-all-groups-cell {
+    padding-bottom: 5px;
+    text-align: center;
+    border-left: 1px solid #fff;
+}
+
+.group-all-groups-cell__button {
+    @extend .group-more-cell__button;
 }
