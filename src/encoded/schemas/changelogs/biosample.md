@@ -2,16 +2,14 @@
 
 ### Schema version 16
 
-* *talens* array was removed, as we are migrating towards genetic_modifications
+* *talens* array was removed, as we are migrating towards the use of genetic_modification with modification_technique specifications
 * *treatments* array is required to be non-empty if post_treatment_time_units or post_treatment_time are specified
 * *dbxrefs*
-pooled_from no empty defaultm, if present there should be 2 entries
- "phase" restricted to cells only    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
-culture_harvest_date restricted to cells only    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
-"culture_start_date" restricted to cells only    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
-transfection_method requires transfection _type and vice versa
-
-worm\fly_synchronization_stage is tied with post_synchronization_time and post_synchronization_time_units
+* *pooled_from* array is reuired to include at least 2 items ot be initiated
+* *phase*, *culture_harvest_date*, *culture_start_date* propeties are restricted to biosamples with biosample_type one of ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+* *transfection_method* specification requires specirfication of *transfection_type*
+* *transfection_type* specification requires specirfication of *transfection_method*
+* *post_synchronization_time* specification requires specification of *post_synchronization_time_units* and *fly_synchronization_stage* or *worm_synchronization_stage*
 
 ### Schema version 15
 
