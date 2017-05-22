@@ -369,7 +369,7 @@ var BiosampleComponent = module.exports.Biosample = createReactClass({
                             </div>
                         </div>
 
-                        {context.pooled_from.length ?
+                        {context.pooled_from && context.pooled_from.length ?
                             <section data-test="pooledfrom">
                                 <hr />
                                 <h4>Pooled from biosamples</h4>
