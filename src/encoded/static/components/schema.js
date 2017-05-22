@@ -1,10 +1,11 @@
 'use strict';
 var React = require('react');
+import createReactClass from 'create-react-class';
 var globals = require('./globals');
 var fetched = require('./fetched');
 
 
-var Markdown = module.exports.Markdown = React.createClass({
+var Markdown = module.exports.Markdown = createReactClass({
     render: function() {
         var marked = require('marked');
         var html = marked(this.props.source, {sanitize: true});
@@ -13,7 +14,7 @@ var Markdown = module.exports.Markdown = React.createClass({
 });
 
 
-var ChangeLog = module.exports.ChangeLog = React.createClass({
+var ChangeLog = module.exports.ChangeLog = createReactClass({
     render: function() {
         return (
             <section className="view-detail panel">
@@ -25,7 +26,7 @@ var ChangeLog = module.exports.ChangeLog = React.createClass({
     }
 });
 
-var SchemaPage = module.exports.SchemaPage = React.createClass({
+var SchemaPage = module.exports.SchemaPage = createReactClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context);

@@ -90,6 +90,15 @@ def file_8a(file_base):
 
 
 @pytest.fixture
+def file_9(file_base):
+    item = file_base.copy()
+    item.update({
+        'date_created': '2017-04-28'
+    })
+    return item
+
+
+@pytest.fixture
 def old_file(experiment):
     return {
         'accession': 'ENCFF000OLD',
@@ -174,3 +183,8 @@ def test_file_upgrade8(upgrader, file_8a, file_8b):
     assert value_b['schema_version'] == '9'
     assert 'supersedes' in value_b
     assert 'supercedes' not in value_b
+
+
+def test_file_upgrade_9_to_10(upgrader, file_9):
+    value = upgrader.upgrade('file', file_9, current_version='9', target_version='10')
+    assert value['date_created'] == '2017-04-28T00:00:00.000000+00:00'

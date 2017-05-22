@@ -21,7 +21,6 @@ require('./donor');
 require('./file');
 require('./item');
 require('./page');
-require('./mixins');
 require('./platform');
 require('./search');
 require('./report');

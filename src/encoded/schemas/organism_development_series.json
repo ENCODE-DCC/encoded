@@ -46,7 +46,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "10"
+            "default": "11"
         }
     },
     "facets": {

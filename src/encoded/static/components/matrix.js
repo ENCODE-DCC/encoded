@@ -1,5 +1,7 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var color = require('color');
 var svgIcon = require('../libs/svg-icons').svgIcon;
 var globals = require('./globals');
@@ -34,11 +36,10 @@ var COLORS = [
 ];
 
 
-
 const yGroupLimit = 5; // Maximum number of items in a Y group unless the group is opened.
 
 
-const GroupMoreButton = React.createClass({
+const GroupMoreButton = createReactClass({
     propTypes: {
         id: React.PropTypes.string, // ID for the handleClick function to know which control was clicked
         handleClick: React.PropTypes.func, // Call this parent function to handle the click in the button
@@ -55,15 +56,15 @@ const GroupMoreButton = React.createClass({
 });
 
 
-var Matrix = module.exports.Matrix = React.createClass({
+var Matrix = module.exports.Matrix = createReactClass({
     propTypes: {
         context: React.PropTypes.object,
     },
 
     contextTypes: {
-        location_href: React.PropTypes.string,
-        navigate: React.PropTypes.func,
-        biosampleTypeColors: React.PropTypes.object // DataColor instance for experiment project
+        location_href: PropTypes.string,
+        navigate: PropTypes.func,
+        biosampleTypeColors: PropTypes.object // DataColor instance for experiment project
     },
 
     getInitialState: function () {
@@ -79,13 +80,16 @@ var Matrix = module.exports.Matrix = React.createClass({
         yGroups.forEach((group) => {
             yGroupOpen[group.key] = false;
         });
-        return { yGroupOpen: yGroupOpen };
+        return {
+            yGroupOpen: yGroupOpen,
+            allYGroupsOpen: false,
+        };
     },
 
     // Called when the Visualize button dropdown menu gets opened or closed. `dropdownEl` is the DOM node for the dropdown menu.
     // This sets inline CSS to set the height of the wrapper <div> to make room for the dropdown.
     updateElement: function(dropdownEl) {
-        var wrapperEl = this.refs.hubscontrols.getDOMNode();
+        var wrapperEl = this.refs.hubscontrols;
         var dropdownHeight = dropdownEl.clientHeight;
         if (dropdownHeight === 0) {
             // The dropdown menu has closed
@@ -101,6 +105,27 @@ var Matrix = module.exports.Matrix = React.createClass({
         const groupOpen = _.clone(this.state.yGroupOpen);
         groupOpen[groupKey] = !groupOpen[groupKey];
         this.setState({ yGroupOpen: groupOpen });
+    },
+
+    handleSeeAllClick: function () {
+        this.setState((prevState) => {
+            const newState = {};
+
+            // If the See All button wasn't open (meaning this function was called because the user
+            // wanted to see all), forget all the individual ones the user had opened so that
+            // they're all closed when the user clicks See Fewer.
+            if (!prevState.allYGroupsOpen) {
+                const groupOpen = {};
+                Object.keys(prevState.yGroupOpen).forEach((key) => {
+                    groupOpen[key] = false;
+                });
+                newState.yGroupOpen = groupOpen;
+            }
+
+            // Toggle the state of allYGroupsOpen.
+            newState.allYGroupsOpen = !prevState.allYGroupsOpen;
+            return newState;
+        });
     },
 
     render: function() {
@@ -243,7 +268,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 // If this group isn't open (noted by
                                                 // this.state.yGroupOpen[key]), extract just the
                                                 // group rows that are under the display limit.
-                                                const groupRows = this.state.yGroupOpen[group.key] ? group_buckets : group_buckets.slice(0, y_limit);
+                                                const groupRows = (this.state.yGroupOpen[group.key] || this.state.allYGroupsOpen) ? group_buckets : group_buckets.slice(0, y_limit);
                                                 rows.push.apply(rows, groupRows.map((yb, j) => {
                                                     var href = search_base + '&' + secondary_y_grouping + '=' + globals.encodedURIComponent(yb.key);
                                                     return (
@@ -270,7 +295,7 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                         </tr>
                                                     );
                                                 }));
-                                                if (group_buckets.length > y_limit) {
+                                                if (group_buckets.length > y_limit && !this.state.allYGroupsOpen) {
                                                     rows.push(
                                                         <tr>
                                                             <th>
@@ -286,6 +311,13 @@ var Matrix = module.exports.Matrix = React.createClass({
                                                 }
                                                 return rows;
                                             })}
+                                            <tr>
+                                                <th>
+                                                    <button className="group-more-button" onClick={this.handleSeeAllClick}>
+                                                        {this.state.allYGroupsOpen ? 'See fewer biosamples' : 'See all biosamples…'}
+                                                    </button>
+                                                </th>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>

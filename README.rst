@@ -16,17 +16,31 @@ Step 1: Encoded requires a UNIX based system (Mac or Linux) and Python 3.4.x or 
 
     For a mac, follow steps 0/1/2/3.  For Linux use apt-get or yum as your Linux flavor demands.  You can consult
     cloud-config.yml for other steps.
-    Note:  Python 3.6 is NOT compatible with this version of encoded
+    Note:  Python 3.6 is NOT compatible with this version of encoded but 3.5.x works on OS X.
+    Production is currently 3.4 so these notes suggest that installation
+    Linux: apt-get install python3.4-dev or equivalent
     
-    $ brew install python3
-    (use brew switch or pyenv to downgrade to 3.5x if necessary)
-
+    Mac OSX install instructions
+    If you already have a python3 from homebrew:
+    $ brew uninstall --force python3
+    
+ 
+    $ brew install pyenv
+    $ pyenv install 3.4.3
+    $ pyenv global 3.4.3
+    $ ln -sf /Users/${USER}/.pyenv/shims/python3 /usr/local/bin/python3
+    
 Step 2: (Mac) Install or update dependencies::
 
     $ brew install libevent libmagic libxml2 libxslt openssl postgresql graphviz nginx python3
-    $ brew install freetype libjpeg libtiff littlecms webp  # Required by Pillow
-    $ brew tap homebrew/versions
-    $ brew install elasticsearch17 node4-lts
+    $ brew install freetype libjpeg libtiff littlecms webp chromedriver # Required by Pillow
+    $ brew install node@6
+    $ brew tap garrow/homebrew-elasticsearch17
+    $ brew install elasticsearch@1.7
+    
+    # for Mac OSX Sierra
+    $ brew cask install Caskroom/cask/xquartz
+    $ xcode-select --install
 
 If you need to update dependencies::
 

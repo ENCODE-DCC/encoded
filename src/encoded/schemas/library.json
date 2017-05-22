@@ -34,7 +34,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "accession": {
             "accessionType": "LB"
@@ -138,6 +138,10 @@
                 "chemical (generic)",
                 "chemical (DNaseI)",
                 "chemical (RNase III)",
+                "chemical (HindIII restriction)",
+                "chemical (MboI restriction)",
+                "chemical (NcoI restriction)",
+                "chemical (DpnII restriction)",
                 "chemical (HindIII/DpnII restriction)",
                 "chemical (Tn5 transposase)",
                 "chemical (micrococcal nuclease)",
@@ -154,6 +158,7 @@
                 "sonication (generic microtip)",
                 "sonication (Branson Sonifier 250)",
                 "sonication (Branson Sonifier 450)",
+                "sonication (Sonics VCX130)",
                 "shearing (Covaris LE Series)",
                 "see document",
                 "none",
@@ -178,6 +183,7 @@
                 "gel",
                 "see document",
                 "SPRI beads",
+                "BluePippin",
                 "Agencourt AMPure XP"
             ],
             "format": "semi-controlled"
@@ -203,6 +209,7 @@
             "type": "string",
             "enum": [
                 "formaldehyde",
+                "EGS and formaldehyde",
                 "ultraviolet irradiation"
             ]
         },
@@ -213,8 +220,8 @@
             "pattern": "(^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
         },
         "strand_specificity": {
-            "title": "Strand specificity",
-            "description": "The preparation of the library using a strand-specific protocol.",
+            "title": "Strand specific",
+            "description": "The preparation of the library uses a strand-specific protocol.",
             "type": "boolean",
             "default": false
         },
