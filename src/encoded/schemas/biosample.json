@@ -101,10 +101,10 @@
                 {
                     "oneOf": [
                         {
-                            "required": ["fly_sychronization_stage", "post_synchronization_time"],
+                            "required": ["fly_sychronization_stage", "post_synchronization_time"]
                         },
                         {
-                            "required": ["worm_synchronization_stage", "post_synchronization_time"],
+                            "required": ["worm_synchronization_stage", "post_synchronization_time"]
                         }
                     ]
                 }

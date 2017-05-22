@@ -4,7 +4,7 @@
 
 * *talens* array was removed, as we are migrating towards genetic_modifications
 * *treatments* array is required to be non-empty if post_treatment_time_units or post_treatment_time are specified
-* may be dbxrefs
+* *dbxrefs*
 pooled_from no empty defaultm, if present there should be 2 entries
  "phase" restricted to cells only    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
 culture_harvest_date restricted to cells only    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
