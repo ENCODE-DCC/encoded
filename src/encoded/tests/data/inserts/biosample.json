@@ -254,6 +254,7 @@
             "d2dc22ba-5e7c-4626-87ac-257c6fff090c"
         ],
         "transfection_type": "stable",
+        "transfection_method": "chemical",
         "uuid": "bfb3dbb0-57e0-4190-90a6-b9150204f893"
     },
     {
@@ -336,6 +337,7 @@
         "source": "ecacc",
         "submitted_by": "metus.donec@nisl.montes",
         "transfection_type": "stable",
+        "transfection_method": "chemical",
         "url": "http://www.hpacultures.org.uk/products/celllines/generalcell/detail.jsp?refId=86012803&collection=ecacc_gc",
         "uuid": "ddefc862-0107-4478-9398-acbe76b90f36"
     },
@@ -361,6 +363,7 @@
         ],
         "source": "atcc",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
+        "transfection_method": "chemical",
         "transfection_type": "stable",
         "treatments": [
             "2e33a097-412c-4646-87f9-858dfaaa7c06"
