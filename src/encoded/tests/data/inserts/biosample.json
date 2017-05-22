@@ -32,7 +32,6 @@
             "richard-myers:MCF-7 rep 3"
         ],
         "award": "ENCODE2",
-         "phase": "S",
         "biosample_term_id": "EFO:0001203",
         "biosample_term_name": "MCF-7 cell",
         "biosample_type": "immortalized cell line",
