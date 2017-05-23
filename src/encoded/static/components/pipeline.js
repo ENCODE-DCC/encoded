@@ -169,6 +169,18 @@ class PipelineComponent extends React.Component {
         return meta;
     }
 
+    // For the given step, calculate its unique ID for the graph nodes. You can pass an
+    // analysis_step object in `step`, or just its @id string to get the same result.
+    static calcStepId(step) {
+        if (typeof step === 'string') {
+            // `step` is an @id.
+            return `step:${step}`;
+        }
+
+        // `step` is an analysis_step object.
+        return `step:${step['@id']}`;
+    }
+
     constructor() {
         super();
 
@@ -195,7 +207,8 @@ class PipelineComponent extends React.Component {
             // Make an object with all step UUIDs in the pipeline.
             const allSteps = {};
             analysisSteps.forEach((step) => {
-                allSteps[step['@id']] = step;
+                const stepId = PipelineComponent.calcStepId(step);
+                allSteps[stepId] = step;
             });
 
             // Create an empty graph architecture.
@@ -203,7 +216,7 @@ class PipelineComponent extends React.Component {
 
             // Add steps to the graph.
             analysisSteps.forEach((step) => {
-                const stepId = step['@id'];
+                const stepId = PipelineComponent.calcStepId(step);
                 let swVersionList = [];
                 let label;
 
@@ -232,8 +245,9 @@ class PipelineComponent extends React.Component {
                 // If the node has parents, render the edges to those parents
                 if (step.parents && step.parents.length) {
                     step.parents.forEach((parent) => {
-                        if (allSteps[parent]) {
-                            jsonGraph.addEdge(parent, stepId);
+                        const parentId = PipelineComponent.calcStepId(parent);
+                        if (allSteps[parentId]) {
+                            jsonGraph.addEdge(parentId, stepId);
                         }
                     });
                 }
