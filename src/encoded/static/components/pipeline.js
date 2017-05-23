@@ -238,43 +238,6 @@ class PipelineComponent extends React.Component {
                     });
                 }
             });
-
-            // If any analysis step parents haven't been seen yet,
-            // add them to the graph too
-            analysisSteps.forEach((step) => {
-                if (step.parents && step.parents.length) {
-                    step.parents.forEach((parent) => {
-                        if (parent.uuid in allSteps) {
-                            const stepId = parent['@id'];
-                            let swVersionList = [];
-                            let label;
-
-                            if (!jsonGraph.getNode(stepId)) {
-                                // Collect software version titles
-                                if (parent.software_versions && parent.software_versions.length) {
-                                    swVersionList = parent.software_versions.map(version => version.software.title);
-                                }
-
-                                // Build the node label; both step types and sw version titles if available
-                                if (swVersionList.length) {
-                                    label = [parent.analysis_step_types.join(', '), swVersionList.join(', ')];
-                                } else {
-                                    label = parent.analysis_step_types.join(', ');
-                                }
-
-                                // Assemble a single analysis step node.
-                                jsonGraph.addNode(stepId, label, {
-                                    cssClass: `pipeline-node-analysis-step${this.state.infoNodeId === stepId ? ' active' : ''}`,
-                                    type: 'Step',
-                                    shape: 'rect',
-                                    cornerRadius: 4,
-                                    ref: parent,
-                                });
-                            }
-                        }
-                    });
-                }
-            });
         }
         return jsonGraph;
     }
