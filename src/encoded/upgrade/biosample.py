@@ -266,3 +266,5 @@ def biosample_15_16(value, system):
     # http://redmine.encodedcc.org/issues/5096
     if 'talens' in value:
         del value['talens']
+    if 'pooled_from' in value and value['pooled_from'] == []:
+        del value['pooled_from']
