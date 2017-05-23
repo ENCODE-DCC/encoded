@@ -13,6 +13,10 @@ import { softwareVersionList } from './software';
 import StatusLabel from './statuslabel';
 
 
+const stepNodePrefix = 'step'; // Prefix for step node IDs
+const fileNodePrefix = 'file'; // Prefix for file node IDs
+
+
 const PanelLookup = function (properties) {
     // XXX not all panels have the same markup
     let context;
@@ -171,14 +175,27 @@ class PipelineComponent extends React.Component {
 
     // For the given step, calculate its unique ID for the graph nodes. You can pass an
     // analysis_step object in `step`, or just its @id string to get the same result.
-    static calcStepId(step) {
+    static genStepId(step) {
         if (typeof step === 'string') {
             // `step` is an @id.
-            return `step:${step}`;
+            return `${stepNodePrefix}:${step}`;
         }
 
         // `step` is an analysis_step object.
         return `step:${step['@id']}`;
+    }
+
+    // For the given step and input_file_type/output_file_type, calculate its unique ID for the
+    // graph nodes. Pass the analysis_step object this file type is associated with, and the single
+    // input our output file type in `file`.
+    static genFileId(step, file) {
+        // `step` is an analysis_step object.
+        return `${fileNodePrefix}:${step['@id']}${file}`;
+    }
+
+    // Given a graph node ID, return the prefix portion that identifies what kind of node this is.
+    static getNodeIdPrefix(nodeId) {
+        return nodeId.split(':')[0];
     }
 
     constructor() {
@@ -207,7 +224,7 @@ class PipelineComponent extends React.Component {
             // Make an object with all step UUIDs in the pipeline.
             const allSteps = {};
             analysisSteps.forEach((step) => {
-                const stepId = PipelineComponent.calcStepId(step);
+                const stepId = PipelineComponent.genStepId(step);
                 allSteps[stepId] = step;
             });
 
@@ -216,7 +233,7 @@ class PipelineComponent extends React.Component {
 
             // Add steps to the graph.
             analysisSteps.forEach((step) => {
-                const stepId = PipelineComponent.calcStepId(step);
+                const stepId = PipelineComponent.genStepId(step);
                 let swVersionList = [];
                 let label;
 
@@ -242,13 +259,78 @@ class PipelineComponent extends React.Component {
                     ref: step,
                 });
 
-                // If the node has parents, render the edges to those parents
+                // Add this step's `output_file_types` nodes to the graph, and connect edges from
+                // them to the current step.
+                if (step.output_file_types && step.output_file_types.length) {
+                    step.output_file_types.forEach((outputFile) => {
+                        // Get the unique ID for the file type node. We can have repeats of the
+                        // same output_file_type all over the graph, so we have to include the step
+                        // identifier along with it, and each step's identifier is unique in the
+                        // graph.
+                        const fileId = PipelineComponent.genFileId(step, outputFile);
+                        jsonGraph.addNode(fileId, outputFile, {
+                            cssClass: 'pipeline-node-file-type',
+                            type: 'File',
+                            shape: 'rect',
+                            cornerRadius: 16,
+                            ref: outputFile,
+                        });
+
+                        // Connect this file node to the current step with an edge.
+                        jsonGraph.addEdge(stepId, fileId);
+                    });
+                }
+
+                // If the node has parents, render the edges to those parents or to those parents'
+                // output_file_types nodes.
                 if (step.parents && step.parents.length) {
                     step.parents.forEach((parent) => {
-                        const parentId = PipelineComponent.calcStepId(parent);
-                        if (allSteps[parentId]) {
-                            jsonGraph.addEdge(parentId, stepId);
+                        // Get this step's parent object so we can look at its output_file_types array.
+                        const parentId = PipelineComponent.genStepId(parent);
+                        const parentStep = allSteps[parentId];
+                        if (parentStep) {
+                            if (parentStep.output_file_types && parentStep.output_file_types.length) {
+                                // We have the parent analysis_step object and it has output_file_types.
+                                // Compare that array with this step's input_file_types elements.
+                                // Draw an edge to any that overlap.
+                                const overlaps = _.intersection(parentStep.output_file_types, step.input_file_types);
+                                if (overlaps.length) {
+                                    overlaps.forEach((overlappingFile) => {
+                                        const overlappingFileId = PipelineComponent.genFileId(parentStep, overlappingFile);
+                                        jsonGraph.addEdge(overlappingFileId, stepId);
+                                    });
+                                } else {
+                                    // The input and output file types of the step and its parent
+                                    // don't overlap. Just connect it directly to the parent.
+                                    jsonGraph.addEdge(parentId, stepId);
+                                }
+                            } else {
+                                // The parent step doesn't
+                                jsonGraph.addEdge(parentId, stepId);
+                            }
                         }
+                        // No parent step object when this step has parents means a data error.
+                        // At least don't crash.
+                    });
+                } else if (step.input_file_types && step.input_file_types.length) {
+                    // The step doesn't have parents but it has input_file_types. Draw nodes for
+                    // all its input_file_types.
+                    step.input_file_types.forEach((fileType) => {
+                        // Most file-type nodes have IDs containing their parent step @id. These
+                        // file-type nodes don't have a parent, so we take the child's and add "IO"
+                        // to it to distinguish it from the odd case of a step having the same
+                        // input and output file types. "IO" stands for "Input Only."
+                        const fileId = PipelineComponent.genFileId(step, `IO${fileType}`);
+                        jsonGraph.addNode(fileId, fileType, {
+                            cssClass: 'pipeline-node-file-type',
+                            type: 'File',
+                            shape: 'rect',
+                            cornerRadius: 16,
+                            ref: fileType,
+                        });
+
+                        // Connect this file node to the current step with an edge.
+                        jsonGraph.addEdge(fileId, stepId);
                     });
                 }
             });
@@ -256,11 +338,19 @@ class PipelineComponent extends React.Component {
         return jsonGraph;
     }
 
+    // Called when a node in the graph is clicked.
     handleNodeClick(nodeId) {
-        this.setState({
-            infoNodeId: nodeId,
-            infoModalOpen: true,
-        });
+        // We do different things depending on whether this is a step node or file node, which we
+        // can tell from the given node ID's prefix. For step nodes, set the state so that we
+        // rerender this component with a modal.
+        const nodePrefix = PipelineComponent.getNodeIdPrefix(nodeId);
+        if (nodePrefix === stepNodePrefix) {
+            // Click was in a step node. Set a new state so that a modal for the step node appears.
+            this.setState({
+                infoNodeId: nodeId,
+                infoModalOpen: true,
+            });
+        }
     }
 
     closeModal() {
