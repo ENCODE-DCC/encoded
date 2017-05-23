@@ -43,8 +43,7 @@ def is_accession_for_server(instance):
 @FormatChecker.cls_checks("gene_name")
 def is_gene_name(instance):
     ''' should check a webservice at HGNC/MGI for validation '''
-    # FORCE FAILURE TO PROVE THIS DOESN'T LOAD
-    return False
+    return True
 
 
 @FormatChecker.cls_checks("target_label")
