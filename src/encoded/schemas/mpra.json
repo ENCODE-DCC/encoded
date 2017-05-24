@@ -1,0 +1,39 @@
+ {
+    "title": "MPRA",
+    "description": "Schema for submitting information about massively-parallel reporter assays.",
+    "id": "/profiles/mpra.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["lab", "award", "sequences_tested", "integration_type", "assay_term_name"],
+    "identifyingProperties": ["uuid","aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/assay" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "validation_technique.json#/properties" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "integration_type": {
+            "title": "Integration type",
+            "description": "Type of integration of reporter assay.",
+            "type": "string",
+            "permission": "import_items",
+            "enum": [
+                "episomal",
+                "chromosomal"
+            ]
+        }
+    }
+}
+        
