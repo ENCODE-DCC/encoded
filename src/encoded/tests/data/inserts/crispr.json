@@ -9,7 +9,7 @@
         "award": "/awards/U41HG007355/",
         "dbxrefs": ["addgene:234235", "addgene:12345"],
         "source":"gregory-crawford",
-        "insert_sequence": "CTCGGTG",
+        "insert": "encode:crispr-insert-1",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ]
@@ -24,7 +24,7 @@
         "award": "/awards/U41HG007355/",
         "dbxrefs": ["addgene:234235"],
         "source":"gregory-crawford",
-        "insert_sequence": "ACTCGT",
+        "insert": "encode:crispr-insert-2",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ]

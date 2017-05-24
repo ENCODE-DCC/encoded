@@ -118,11 +118,12 @@
         "uuid": "963cfae8-a584-4a34-a329-ebea0c6aeb3b",
         "submitted_by": "amet.fusce@est.fermentum",
         "modification_type": "insertion",
-        "modification_techniques": [
-            "kevin-white:eGFP-E2F1-plasmid"
-        ]
+        "modification_techniques": ["kevin-white:eGFP-E2F1-transfection"],
+        "aliases": ["kevin-white:eGFP-E2F1-tag"]
+
     },
     {
+        "aliases": ["kevin-white:3XFLAG-pab-1-mod"],
         "status": "in progress",
         "purpose": "tagging",
         "target": "3XFLAG-pab-1-celegans",
@@ -137,8 +138,37 @@
             "end": 337847
         },
         "modification_type": "insertion",
-        "modification_techniques": [
-            "kevin-white:3XFLAG-pab-1-plasmid"
-        ]
+        "modification_techniques": ["kevin-white:3XFLAG-pab-1-transfection"]
+    },
+    {
+        "uuid": "097dd3aa-9397-40c5-a498-b0798ae76ac1",
+        "award": "U24HG009397",
+        "lab": "/labs/len-pennacchio/",
+        "modification_type": "insertion",
+        "purpose": "activation",
+        "modification_techniques": ["len-pennacchio:element-121-injection"],
+        "status": "in progress",
+        "aliases": ["len-pennacchio:element-121-LacZ"]
+    },
+    {
+        "uuid": "9bae3689-649f-4f51-9b86-fa7362a42af5",
+        "award": "U24HG009397",
+        "lab": "/labs/len-pennacchio/",
+        "modification_type": "insertion",
+        "purpose": "activation",
+        "modification_techniques": ["len-pennacchio:element-428-injection"],
+        "status": "in progress",
+        "aliases": ["len-pennacchio:element-428-LacZ"]
+    },
+    {
+        "uuid": "2d617f7f-4062-4950-bf62-a95ecfb933ed",
+        "award": "U24HG009397",
+        "lab": "/labs/robert-waterston/",
+        "modification_type": "deletion",
+        "purpose": "repression",
+        "target": "mes-4-celegans",
+        "treatments": ["robert-waterston:mutagen_bombardment"],
+        "status": "in progress",
+        "aliases": ["robert-waterston:mes-4-del-mod"]
     }
 ]

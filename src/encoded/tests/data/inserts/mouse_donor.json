@@ -69,7 +69,25 @@
             "2f33a486-e3d9-4633-8682-a363b48ba67d",
             "b9264c83-2222-4678-a82f-4915af941fa4"
         ]
+    },
+    {
+        "accession": "ENCDO001LAC",
+        "award": "U24HG009397",
+        "lab": "len-pennacchio",
+        "organism": "mouse",
+        "uuid": "53ef7a32-80a9-4f4d-a138-9cb14a5f5845",
+        "genetic_modifications": [
+            "len-pennacchio:element-121-LacZ"
+        ]
+    },
+    {
+        "accession": "ENCDO002LAC",
+        "award": "U24HG009397",
+        "lab": "len-pennacchio",
+        "organism": "mouse",
+        "uuid": "87e1acb0-e15d-4dde-81e2-c7c463f6fd37",
+        "genetic_modifications": [
+            "len-pennacchio:element-428-LacZ"
+        ]
     }
-
-    
 ]

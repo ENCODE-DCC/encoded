@@ -619,5 +619,15 @@
         "status": "current",
         "title": "ENCODE Processing Pipeline",
         "uuid": "44324de6-c057-451f-a8f1-1d9a6cb9875d"
+    },
+    {
+        "name": "jay-shendure",
+        "title": "Jay Shendure, UW",
+        "uuid": "1cc8e1cd-d2c9-42e8-8d9b-2c13ed566bc7"
+    },
+    {
+        "name": "nadav-ahituv",
+        "title": "Nadav Ahituv, UCSF",
+        "uuid": "9fe01bf8-f0eb-476f-8e59-b9fe500b7ad7"
     }
 ]

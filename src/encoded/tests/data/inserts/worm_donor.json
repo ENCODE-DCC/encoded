@@ -13,10 +13,13 @@
         "lab": "j-michael-cherry",
         "organism": "celegans",
         "num_times_outcrossed": "x10",
-        "constructs": ["893d806f-3a88-43eb-afdf-dcc16c79ee45"],
+        "genetic_modifications": [
+            "kevin-white:3XFLAG-pab-1-mod"
+        ],
         "uuid": "a09ce89d-e73a-4bbb-a3c9-9b46cc3a8e5f"
     },
     {
+        "aliases": ["encode:worm_del_mes-4-strain"],
         "accession": "ENCDO976AYR",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
@@ -26,6 +29,7 @@
         "genotype": "unc-119(tm4063) III; wgIs493.",
         "mutagen": "bombardment",
         "mutated_gene": "mes-4-celegans",
+        "genetic_modifications": ["robert-waterston:mes-4-del-mod"],
         "url": "http://www.cgc.cbs.umn.edu/search.php?st=OP493",
         "documents": [
             "encode:sample_strain_generation_protocol"
