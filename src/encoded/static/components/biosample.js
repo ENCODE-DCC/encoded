@@ -41,6 +41,10 @@ var PanelLookup = function (props) {
 
 
 var BiosampleComponent = module.exports.Biosample = createReactClass({
+    contextTypes: {
+        session: PropTypes.object, // Login information from <App>
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
