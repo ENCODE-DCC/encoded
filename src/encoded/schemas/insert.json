@@ -36,7 +36,13 @@
                     "required": ["insert_sequence", "source_data"],
                     "properties": {
                         "insertion_type": {
-                            "enum": ["candidate regulatory sequence"]
+                            "enum": [
+                                "candidate regulatory sequence (promoter)",
+                                "candidate regulatory sequence (enhancer)",
+                                "candidate regulatory sequence (insulator)",
+                                "candidate regulatory sequence (splice site)",
+                                "candidate regulatory sequence (TFBS)"
+                            ]
                         }
                     }
                 }
@@ -46,7 +52,13 @@
                     "required": ["insert_genome_coordinates", "source_data"],
                     "properties": {
                         "insertion_type": {
-                            "enum": ["candidate regulatory sequence"]
+                            "enum": [
+                                "candidate regulatory sequence (promoter)",
+                                "candidate regulatory sequence (enhancer)",
+                                "candidate regulatory sequence (insulator)",
+                                "candidate regulatory sequence (splice site)",
+                                "candidate regulatory sequence (TFBS)"
+                            ]
                         }
                     }
                 }
@@ -55,7 +67,14 @@
                 "not": {
                     "properties": {
                         "insertion_type": {
-                            "enum": ["candidate regulatory sequence"]
+                            "enum": [
+                                "fusion protein",
+                                "candidate regulatory sequence (promoter)",
+                                "candidate regulatory sequence (enhancer)",
+                                "candidate regulatory sequence (insulator)",
+                                "candidate regulatory sequence (splice site)",
+                                "candidate regulatory sequence (TFBS)"
+                            ]
                         }
                     }
                 }
