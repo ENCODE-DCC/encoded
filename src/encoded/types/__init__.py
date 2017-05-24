@@ -121,10 +121,6 @@ class Construct(Item):
         'submitted_by',
         'source',
         'characterizations.award',
-        'characterizations.documents',
-        'characterizations.documents.lab',
-        'characterizations.documents.award',
-        'characterizations.documents.submitted_by',
         'characterizations.lab',
         'characterizations.submitted_by',
         ]
@@ -163,10 +159,6 @@ class TALEN(Item):
         'lab',
         'submitted_by',
         'characterizations.award',
-        'characterizations.documents',
-        'characterizations.documents.lab',
-        'characterizations.documents.award',
-        'characterizations.documents.submitted_by',
         'characterizations.lab',
         'characterizations.submitted_by',
     ]
@@ -247,10 +239,6 @@ class Library(Item):
         'submitted_by',
         'source',
         'treatments',
-        'treatments.documents',
-        'treatments.documents.award',
-        'treatments.documents.submitted_by',
-        'treatments.documents.lab',
     ]
 
     @calculated_property(condition='nucleic_acid_term_name', schema={
@@ -308,10 +296,6 @@ class RNAi(Item):
         'target.organism',
         'submitted_by',
         'characterizations.award',
-        'characterizations.documents',
-        'characterizations.documents.lab',
-        'characterizations.documents.award',
-        'characterizations.documents.submitted_by',
         'characterizations.lab',
         'characterizations.submitted_by',
         ]

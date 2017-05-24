@@ -329,15 +329,7 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
         'targets.organism',
         'files.dataset',
         'files.analysis_step_version.analysis_step',
-        'files.analysis_step_version.analysis_step.documents',
-        'files.analysis_step_version.analysis_step.documents.award',
-        'files.analysis_step_version.analysis_step.documents.lab',
-        'files.analysis_step_version.analysis_step.documents.submitted_by',
         'files.analysis_step_version.analysis_step.pipelines',
-        'files.analysis_step_version.analysis_step.pipelines.documents',
-        'files.analysis_step_version.analysis_step.pipelines.documents.award',
-        'files.analysis_step_version.analysis_step.pipelines.documents.lab',
-        'files.analysis_step_version.analysis_step.pipelines.documents.submitted_by',
         'files.analysis_step_version.analysis_step.versions',
         'files.analysis_step_version.analysis_step.versions.software_versions',
         'files.analysis_step_version.analysis_step.versions.software_versions.software',
@@ -422,15 +414,7 @@ class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssa
         'files.analysis_step_version.analysis_step.versions.software_versions.software',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.versions',
-        'files.analysis_step_version.analysis_step.documents',
-        'files.analysis_step_version.analysis_step.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.documents.award',
-        'files.analysis_step_version.analysis_step.documents.lab',
         'files.analysis_step_version.analysis_step.pipelines',
-        'files.analysis_step_version.analysis_step.pipelines.documents',
-        'files.analysis_step_version.analysis_step.pipelines.submitted_by',
-        'files.analysis_step_version.analysis_step.pipelines.documents.award',
-        'files.analysis_step_version.analysis_step.pipelines.documents.lab',
         'organism'
     ]
 
@@ -466,15 +450,7 @@ class Reference(FileSet):
         'files.analysis_step_version.analysis_step.versions.software_versions.software',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.versions',
-        'files.analysis_step_version.analysis_step.documents',
-        'files.analysis_step_version.analysis_step.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.documents.award',
-        'files.analysis_step_version.analysis_step.documents.lab',
         'files.analysis_step_version.analysis_step.pipelines',
-        'files.analysis_step_version.analysis_step.pipelines.documents',
-        'files.analysis_step_version.analysis_step.pipelines.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.pipelines.documents.award',
-        'files.analysis_step_version.analysis_step.pipelines.documents.lab',
         ]
 
 
@@ -508,15 +484,7 @@ class UcscBrowserComposite(FileSet, CalculatedFileSetAssay, CalculatedAssaySynon
         'files.analysis_step_version.analysis_step.versions.software_versions.software',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.versions',
-        'files.analysis_step_version.analysis_step.documents',
-        'files.analysis_step_version.analysis_step.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.documents.award',
-        'files.analysis_step_version.analysis_step.documents.lab',
         'files.analysis_step_version.analysis_step.pipelines',
-        'files.analysis_step_version.analysis_step.pipelines.documents',
-        'files.analysis_step_version.analysis_step.pipelines.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.pipelines.documents.award',
-        'files.analysis_step_version.analysis_step.pipelines.documents.lab',
     ]
 
     @calculated_property(condition='files', schema={
@@ -576,15 +544,7 @@ class Project(FileSet, CalculatedFileSetAssay, CalculatedFileSetBiosample, Calcu
         'files.analysis_step_version.analysis_step.versions.software_versions.software',
         'files.analysis_step_version.analysis_step',
         'files.analysis_step_version.analysis_step.versions',
-        'files.analysis_step_version.analysis_step.documents',
-        'files.analysis_step_version.analysis_step.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.documents.award',
-        'files.analysis_step_version.analysis_step.documents.lab',
         'files.analysis_step_version.analysis_step.pipelines',
-        'files.analysis_step_version.analysis_step.pipelines.documents',
-        'files.analysis_step_version.analysis_step.pipelines.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.pipelines.documents.award',
-        'files.analysis_step_version.analysis_step.pipelines.documents.lab',
         'files.replicate.library.biosample',
         'organism',
     ]
@@ -616,9 +576,6 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
         'related_datasets.replicates.antibody',
         'related_datasets.replicates.antibody.targets',
         'related_datasets.replicates.library',
-        'related_datasets.replicates.library.documents.lab',
-        'related_datasets.replicates.library.documents.submitted_by',
-        'related_datasets.replicates.library.documents.award',
         'related_datasets.replicates.library.biosample.submitted_by',
         'related_datasets.replicates.library.biosample.source',
         'related_datasets.replicates.library.biosample.organism',
@@ -675,14 +632,8 @@ class MatchedSet(Series):
     item_type = 'matched_set'
     schema = load_schema('encoded:schemas/matched_set.json')
     embedded = Series.embedded + [
-        'files.analysis_step_version.analysis_step.pipelines.documents',
-        'files.analysis_step_version.analysis_step.pipelines.documents.lab',
-        'files.analysis_step_version.analysis_step.pipelines.documents.award',
-        'files.analysis_step_version.analysis_step.documents',
-        'files.analysis_step_version.analysis_step.documents.award',
-        'files.analysis_step_version.analysis_step.pipelines.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.documents.lab',
+        'files.analysis_step_version.analysis_step.pipelines',
+        'files.analysis_step_version.analysis_step',
         'files.dataset',
         ]
 
@@ -699,14 +650,8 @@ class TreatmentTimeSeries(Series):
     schema = load_schema('encoded:schemas/treatment_time_series.json')
     embedded = Series.embedded + [
         'files.dataset',
-        'files.analysis_step_version.analysis_step.pipelines.documents',
-        'files.analysis_step_version.analysis_step.documents',
-        'files.analysis_step_version.analysis_step.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.documents.award',
-        'files.analysis_step_version.analysis_step.documents.lab',
-        'files.analysis_step_version.analysis_step.pipelines.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.pipelines.documents.award',
-        'files.analysis_step_version.analysis_step.pipelines.documents.lab',
+        'files.analysis_step_version.analysis_step.pipelines',
+        'files.analysis_step_version.analysis_step',
         ]
 
 
@@ -722,14 +667,8 @@ class TreatmentConcentrationSeries(Series):
     schema = load_schema('encoded:schemas/treatment_concentration_series.json')
     embedded = Series.embedded + [
         'files.dataset',
-        'files.analysis_step_version.analysis_step.pipelines.documents',
-        'files.analysis_step_version.analysis_step.documents',
-        'files.analysis_step_version.analysis_step.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.documents.award',
-        'files.analysis_step_version.analysis_step.documents.lab',
-        'files.analysis_step_version.analysis_step.pipelines.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.pipelines.documents.award',
-        'files.analysis_step_version.analysis_step.pipelines.documents.lab',
+        'files.analysis_step_version.analysis_step.pipelines',
+        'files.analysis_step_version.analysis_step',
         ]
 
 
@@ -745,14 +684,8 @@ class OrganismDevelopmentSeries(Series):
     schema = load_schema('encoded:schemas/organism_development_series.json')
     embedded = Series.embedded + [
         'files.dataset',
-        'files.analysis_step_version.analysis_step.pipelines.documents',
-        'files.analysis_step_version.analysis_step.documents',
-        'files.analysis_step_version.analysis_step.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.documents.award',
-        'files.analysis_step_version.analysis_step.documents.lab',
-        'files.analysis_step_version.analysis_step.pipelines.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.pipelines.documents.award',
-        'files.analysis_step_version.analysis_step.pipelines.documents.lab',
+        'files.analysis_step_version.analysis_step.pipelines',
+        'files.analysis_step_version.analysis_step',
         ]
 
 
@@ -768,14 +701,8 @@ class ReplicationTimingSeries(Series):
     schema = load_schema('encoded:schemas/replication_timing_series.json')
     embedded = Series.embedded + [
         'files.dataset',
-        'files.analysis_step_version.analysis_step.pipelines.documents',
-        'files.analysis_step_version.analysis_step.documents',
-        'files.analysis_step_version.analysis_step.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.documents.award',
-        'files.analysis_step_version.analysis_step.documents.lab',
-        'files.analysis_step_version.analysis_step.pipelines.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.pipelines.documents.award',
-        'files.analysis_step_version.analysis_step.pipelines.documents.lab',
+        'files.analysis_step_version.analysis_step.pipelines',
+        'files.analysis_step_version.analysis_step',
         ]
 
 
@@ -791,12 +718,6 @@ class ReferenceEpigenome(Series):
     schema = load_schema('encoded:schemas/reference_epigenome.json')
     embedded = Series.embedded + [
         'files.dataset',
-        'files.analysis_step_version.analysis_step.pipelines.documents',
-        'files.analysis_step_version.analysis_step.documents',
-        'files.analysis_step_version.analysis_step.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.documents.award',
-        'files.analysis_step_version.analysis_step.documents.lab',
-        'files.analysis_step_version.analysis_step.pipelines.documents.submitted_by',
-        'files.analysis_step_version.analysis_step.pipelines.documents.award',
-        'files.analysis_step_version.analysis_step.pipelines.documents.lab',
+        'files.analysis_step_version.analysis_step.pipelines',
+        'files.analysis_step_version.analysis_step',
         ]
