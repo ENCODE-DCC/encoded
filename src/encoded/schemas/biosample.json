@@ -78,11 +78,7 @@
             "required": ["transfection_type"],
             "comment": "Transfected biosamples require specification of the transfection_type."
         },
-        "transfection_type":{
-            "required": ["transfection_method"],
-            "comment": "Transfected biosamples require specification of the transfection_method."
-        },
-        "post_synchronization_time_units": {
+       "post_synchronization_time_units": {
             "comment": "Biosample with a specified post_synchronization_units requires post_synchronization_time specification and specification of the model organism synchronization stage.",
              "allOf":[
                 {

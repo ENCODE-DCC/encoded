@@ -8,7 +8,6 @@
 * *pooled_from* array is reuired to include at least 2 items ot be initiated
 * *phase*, *culture_harvest_date*, *culture_start_date* propeties are restricted to biosamples with biosample_type one of ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
 * *transfection_method* specification requires specirfication of *transfection_type*
-* *transfection_type* specification requires specirfication of *transfection_method*
 * *post_synchronization_time* specification requires specification of *post_synchronization_time_units* and *fly_synchronization_stage* or *worm_synchronization_stage*
 
 ### Schema version 15
