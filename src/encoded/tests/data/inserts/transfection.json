@@ -1,0 +1,43 @@
+[
+    {
+        "uuid": "870e7d56-17ba-40f3-a69d-ad1842ee95b1",
+        "aliases": ["kevin-white:eGFP-E2F1-transfection"],
+        "transfection_type": "stable",
+        "transfection_method": "chemical",
+        "insert": "kevin-white:eGFP-tag-insert",
+        "lab": "kevin-white",
+        "award": "U41HG007355",
+        "submitted_by": "eni.lectus@nullam.sed"
+    },
+    {
+        "uuid": "6bbad418-4dcf-4d51-8500-178f557e192a",
+        "aliases": ["kevin-white:3XFLAG-pab-1-transfection"],
+        "transfection_type": "stable",
+        "transfection_method": "chemical",
+        "insert": "kevin-white:3XFLAG-tag-insert",
+        "lab": "kevin-white",
+        "award": "U41HG007355",
+        "submitted_by": "eni.lectus@nullam.sed"
+    },
+    {
+        "uuid": "8ea7d864-a6fe-440c-8b22-118590fd3a89",
+        "aliases": ["len-pennacchio:element-121-injection"],
+        "transfection_type": "stable",
+        "transfection_method": "microinjection",
+        "insert": "len-pennacchio:element-121",
+        "lab": "len-pennacchio",
+        "award": "U41HG007355",
+        "submitted_by": "eni.lectus@nullam.sed"
+
+    },
+    {
+        "uuid": "3cfaa4f7-88bb-40a6-950a-96720d500f28",
+        "aliases": ["len-pennacchio:element-428-injection"],
+        "transfection_type": "stable",
+        "transfection_method": "microinjection",
+        "insert": "len-pennacchio:element-428",
+        "lab": "len-pennacchio",
+        "award": "U41HG007355",
+        "submitted_by": "eni.lectus@nullam.sed"
+    }
+]

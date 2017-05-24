@@ -1,0 +1,111 @@
+ {
+    "title": "Transfection",
+    "description": "Schema for submitting an information using transfection as a genetic modification technique.",
+    "id": "/profiles/crispr.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["lab", "award"],
+    "identifyingProperties": ["uuid","aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/product_id" },
+        { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "modification_technique.json#/properties" },
+        { "$ref": "mixins.json#/documents" }
+    ],
+    "dependencies": {
+        "rnais": {
+            "oneOf": [
+                {
+                   "required": ["transfection_type"],
+                    "properties": {
+                        "rnais": {
+                            "minItems": 1
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "rnais": {
+                            "maxItems": 0
+                        }
+                    }
+                }
+            ]
+        },
+        "inserts": {
+            "oneOf": [
+                {
+                   "required": ["transfection_type"],
+                    "properties": {
+                        "inserts": {
+                            "minItems": 1
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "inserts": {
+                            "maxItems": 0
+                        }
+                    }
+                }
+            ]
+        },
+        "transfection_method": ["transfection_type"]
+    },
+    "properties": {
+        "schema_version": {
+            "default": "2"
+        },
+        "transfection_type": {
+            "title": "Transfection type",
+            "description": "The persistence of the transfection construct.",
+            "type": "string",
+            "enum": [
+                "stable",
+                "transient"
+            ]
+        },
+        "transfection_method": {
+            "title": "Transfection method",
+            "description": "How the transfection was performed on the biosample to introduce the contruct or RNAi.",
+            "type": "string",
+            "enum": [
+                "electroporation",
+                "transduction",
+                "chemical",
+                "microinjection"
+            ]
+        },
+        "insert": {
+            "title": "Insert",
+            "description": "Insert introduced if applied to non-deletion purposes purposes.",
+            "type": "string",
+            "comment": "see insert.json for available identifiers",
+            "linkTo": "Insert"
+        },
+        "rnais": {
+            "title": "RNAi vectors",
+            "description": "RNAi vectors stably or transiently transfected.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "RNAi Vector",
+                "description": "RNAi vector stably or transiently transfected.",
+                "comment": "See rnai.json for available identifiers.",
+                "type":  "string",
+                "linkTo": "RNAi"
+            }
+        }
+    }
+}
+        

@@ -1,0 +1,219 @@
+ {
+    "title": "Insert",
+    "description": "Schema for submitting information genetic modifications that are insertions.",
+    "id": "/profiles/insert.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["lab", "award", "source", "insertion_type"],
+    "identifyingProperties": ["uuid","aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/product_id" },
+        { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents" }
+    ],
+    "dependencies": {
+        "oneOf": [
+            {
+                "insertion_type": {
+                    "required": ["epitope_tags"],
+                    "properties": {
+                        "insertion_type": {
+                            "enum": ["fusion protein"]
+                        }
+                    }
+                }
+            },
+            {
+                "insertion_type": {
+                    "required": ["insert_sequence", "source_data"],
+                    "properties": {
+                        "insertion_type": {
+                            "enum": ["candidate regulatory sequence"]
+                        }
+                    }
+                }
+            },
+            {
+                "insertion_type": {
+                    "required": ["insert_genome_coordinates", "source_data"],
+                    "properties": {
+                        "insertion_type": {
+                            "enum": ["candidate regulatory sequence"]
+                        }
+                    }
+                }
+            },
+            {
+                "not": {
+                    "properties": {
+                        "insertion_type": {
+                            "enum": ["candidate regulatory sequence"]
+                        }
+                    }
+                }
+            }
+
+        ]
+    },
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "description": {
+            "title": "Description",
+            "description": "A plain text description of the insert. May include description of the insert and purpose.",
+            "type": "string",
+            "elasticsearch_mapping_index_type": {
+                "title": "Field mapping index type",
+                "description": "Defines one of three types of indexing available",
+                "type": "string",
+                "default": "analyzed",
+                "enum": [
+                    "analyzed",
+                    "not_analyzed",
+                    "no"
+                ]
+            },
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
+        },
+        "insertion_type": {
+            "title": "Insertion type",
+            "description": "The type of insertion being introduced.",
+            "type": "string",
+            "enum": [
+                "candidate regulatory sequence (promoter)",
+                "candidate regulatory sequence (enhancer)",
+                "candidate regulatory sequence (insulator)",
+                "candidate regulatory sequence (splice site)",
+                "candidate regulatory sequence (TFBS)",
+                "fusion protein"
+            ]
+        },
+        "epitope_tags": {
+            "title": "Epitope tags",
+            "description": "Relevant epitope tags introduced.",
+            "type": "array",
+            "items": {
+                "title": "Epitope tags",
+                "description": "Relevant epitope tag(s) introduced in the modification.",
+                "comment": "Submit tag name and tag location.",
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["name", "location"],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "enum": [
+                            "eGFP",
+                            "V5",
+                            "HA",
+                            "ER",
+                            "3xFLAG",
+                            "DsRed",
+                            "TRE",
+                            "T2A",
+                            "YFP",
+                            "FLAG",
+                            "mCherry"
+                        ]
+                    },
+                    "location": {
+                        "type": "string",
+                        "enum": [
+                            "N-terminal",
+                            "C-terminal",
+                            "internal",
+                            "other",
+                            "unknown"
+                        ]
+                    },
+                    "promoter_used": {
+                       "title": "Promoter used in construct",
+                       "description": "The name of the gene that the promoter regulates natively.",
+                       "comment": "See target.json for available identifiers.",
+                       "type": "string",
+                       "linkTo": "Target"
+                    }
+                }
+            }
+        },
+        "source_data": {
+            "title": "Source data",
+            "description": "Source of the candidate regulatory element in the insert (if applicable).",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Source data",
+                "description": "Source data file from which the candidate regulatory element was identified.",
+                "type": "string",
+                "comment": "See file.json for available identifiers.",
+                "linkTo": "File"
+            }
+        },
+        "insert_sequence": {
+            "title": "Insert sequence",
+            "description": "Insert sequence",
+            "type": "string",
+            "pattern": "^[ACTG]+$"  
+        },
+        "insert_genome_coordinates": {
+            "title": "Insert genome coordinates",
+            "description": "Genomic coordinates of the insert. e.g. GRCh38 or dm6.",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "assembly": {
+                    "title": "Genome assembly",
+                    "description": "The genome assembly to which the target coordinates relate. e.g. GRCh38",
+                    "type": "string",
+                    "pattern": "^((GRCh\\d{2})|(GRCm\\d{2})|(WBcel\\d{3})|(ce\\d{2})|(dm\\d{1}))$"
+                },
+                "chromosome": {
+                    "title": "Chromosome",
+                    "description": "The number (or letter) designation for the target chromosome. e.g. 1, 2L, or X",
+                    "type": "string",
+                    "pattern": "^(\\d{1,2}[RL]?|[XYMU]|I|II|III|IV|V|)$"
+                },
+                "start": {
+                    "title": "Start",
+                    "description": "The starting coordinate.",
+                    "type": "integer"
+                },
+                "end": {
+                    "title": "End",
+                    "description": "The ending coordinate (possibly equal to the starting coordinate for one base.)",
+                    "type": "integer"
+                }
+            }
+        },
+        "vector_backbone_name": {
+            "title": "Backbone name",
+            "description": "The name of the vector backbone used for the construct.",
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string"
+            }
+        }
+    }
+}
+        

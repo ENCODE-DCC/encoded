@@ -1,0 +1,141 @@
+[
+    {
+        "insertion_type": "candidate regulatory sequence (TFBS)",
+        "insert_sequence": "CTCGGTG",
+        "lab": "/labs/robert-waterston/",
+        "aliases": ["encode:crispr-insert-1"],
+        "award": "/awards/U41HG007355/",
+        "source": "sigma",
+        "uuid": "9b615d51-8eb9-46ac-a024-d07bd03f7289"
+    },
+    {
+        "insertion_type": "candidate regulatory sequence (TFBS)",
+        "insert_sequence": "ACTCGT",
+        "lab": "/labs/robert-waterston/",
+        "aliases": ["encode:crispr-insert-2"],
+        "award": "/awards/U41HG007355/",
+        "source": "sigma",
+        "uuid": "c5ef65cf-fb38-4359-8c6e-c87f33e328ca"
+    },
+    {
+        "insertion_type": "candidate regulatory sequence (enhancer)",
+        "insert_sequence": "ACTCGGACCTACGGGTACCACTGAGCTAT",
+        "lab": "/labs/gregory-crawford/",
+        "aliases": ["encode:tale-insert-1"],
+        "award": "/awards/U41HG007355/",
+        "source": "sigma",
+        "uuid": "6b66f204-340a-456e-8281-3040024fec6a"
+    },
+    {
+        "aliases": ["kevin-white:eGFP-tag-insert"],
+        "award": "U54HG006996",
+        "description": "This plasmid was made using the CHORI-17: Hydatidiform Mole (Homo sapiens) BAC Library and contains a Localization and Affinity Purification (LAP) tag at the C-terminal of the protein of interest. The last 50 bases before the stop codon of the tagged-protein are as follows: AGCCCATGCATGGCAGCTTAGCCGGAGTTAAACTGAGCAGCCAACAGGCC",
+        "documents": [
+            "kevin-white:K562_BAC_transfection_White_protocol",
+            "kevin-white:pBACGK1.1_BAC_vector"
+        ],
+        "lab": "kevin-white",
+        "source": "kevin-white",
+        "vector_backbone_name": "pBACGK1.1",
+        "insertion_type": "fusion protein",
+        "epitope_tags": [
+            {
+                "location": "C-terminal",
+                "name": "eGFP"
+            }
+        ],
+        "submitted_by": "eni.lectus@nullam.sed",
+        "uuid": "7d0e5e7e-be2f-47ed-b765-c582eed60c6e"
+    },
+    {
+        "aliases": ["kevin-white:3XFLAG-tag-insert"],
+        "award": "U41HG007355",
+        "description": "The fusion protein carried on the integrated transgenic array is driven by the ttr-39 (TransThyretin Related, C04G2.1)gene.  The fusion protein is expression embryonically in GABAergic neurons.",
+        "lab": "kevin-white",
+        "source": "kevin-white",
+        "insertion_type": "fusion protein",
+        "epitope_tags": [
+            {
+                "location": "N-terminal",
+                "name": "3xFLAG",
+                "promoter_used": "mes-4-celegans"
+            }
+        ],
+        "insert_genome_coordinates": {
+            "assembly": "ce10",
+            "chromosome": "III",
+            "start": 289812,
+            "end": 392337
+        },
+        "insert_sequence": "ACGTAGGGATAGCCCATCGATCGATCGTACGTACGTACGATCTTTGCATCGATCGATGCTAGCAC",
+        "vector_backbone_name": "pSA2",
+        "submitted_by": "eni.lectus@nullam.sed",
+        "uuid": "5d23862b-7cca-4065-94cd-5a6accffb87e"
+    },
+    {
+        "aliases": ["nadav-ahituv:element-164-3UTR"],
+        "award": "UM1HG009408",
+        "description": "Enhancer-like element 164 from Encyclopedia V2.0",
+        "lab": "jay-shendure",
+        "source": "sigma",
+        "insertion_type": "candidate regulatory sequence (enhancer)",
+        "insert_genome_coordinates": {
+            "assembly": "GRCh38",
+            "chromosome": "6",
+            "start": 482735,
+            "end": 487102
+        },
+        "submitted_by": "duis.pede@nonummy.scelerisque",
+        "uuid": "154168ba-4603-4eb8-91df-48a980bcac6c"
+
+    },
+    {
+        "aliases": ["nadav-ahituv:element-537-3UTR"],
+        "award": "UM1HG009408",
+        "description": "Enhancer-like element 537 from Encyclopedia V2.0",
+        "lab": "jay-shendure",
+        "source": "sigma",
+        "insertion_type": "candidate regulatory sequence (enhancer)",
+        "insert_genome_coordinates": {
+            "assembly": "GRCh38",
+            "chromosome": "12",
+            "start": 6373005,
+            "end": 6374142
+        },
+        "submitted_by": "duis.pede@nonummy.scelerisque",
+        "uuid": "e83ac11f-b76e-4f12-98a0-9bd97829d5c4"
+    },
+    {
+        "aliases": ["nadav-ahituv:element-376-3UTR"],
+        "award": "UM1HG009408",
+        "description": "Enhancer-like element 376 from Encyclopedia V2.0",
+        "lab": "jay-shendure",
+        "source": "sigma",
+        "insertion_type": "candidate regulatory sequence (enhancer)",
+        "insert_sequence": "ACGGATCGGTTAGCTAGCTTGGAGATCAAATACTAGATCGATCGTTTAGACCCAGTGCTAGCTTTAGCTAGGGATGCGATCGACGTAGCGTATGCGAC",
+        "submitted_by": "duis.pede@nonummy.scelerisque",
+        "uuid": "2c0d1d8a-6f4e-4280-bba6-c42274cb5889"
+    },
+    {
+        "aliases": ["len-pennacchio:element-428"],
+        "award": "UM1HG009421",
+        "description": "Enhancer-like element 428 from Encyclopedia V3.0",
+        "lab": "len-pennacchio",
+        "source": "len-pennacchio",
+        "insertion_type": "candidate regulatory sequence (enhancer)",
+        "insert_sequence": "ACGGATCGGTTAGCTACCCAGTGCTAGCTTTAGCTAGGGATGCGATCGACGTAGCGTATGCGAC",
+        "submitted_by": "duis.pede@nonummy.scelerisque",
+        "uuid": "f03931cb-a8dd-4749-b96d-fe2330aa813d"
+    },
+    {
+        "aliases": ["len-pennacchio:element-121"],
+        "award": "UM1HG009421",
+        "description": "Enhancer-like element 121 from Encyclopedia V3.0",
+        "lab": "len-pennacchio",
+        "source": "sigma",
+        "insertion_type": "candidate regulatory sequence (promoter)",
+        "insert_sequence": "ACGGATCGGTTAGCTAGCTTGGAGATCAAATACTAGATCGATCGTTTAGACCCAGTGCTAGGATCGACGTAGCGTATGCGAC",
+        "submitted_by": "duis.pede@nonummy.scelerisque",
+        "uuid": "c610f7bc-c5e7-45ea-a7c5-280a574f114f"
+    }
+]
