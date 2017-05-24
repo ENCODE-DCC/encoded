@@ -1,0 +1,46 @@
+[
+    {
+        "aliases": ["nadav-ahituv:K562-STARR-seq"],
+        "award": "UM1HG009408",
+        "assay_term_name": "STARR-seq",
+        "lab": "nadav-ahituv",
+        "description": "Integrated STARR-seq testing Encyclopedia V2.0 enhancer-like elements for activity transcriptionally inactive genes in K562.",
+        "reporter_type": "endogenous genes (see list)",
+        "integration_type": "chromosomal",
+        "sequences_tested": [
+            "nadav-ahituv:element-376-3UTR",
+            "nadav-ahituv:element-164-3UTR",
+            "nadav-ahituv:element-537-3UTR"
+        ],
+        "targets_tested": [
+            "CXXC1-human",
+            "E2F1-human",
+            "CTCF-human",
+            "TAF1-human"
+        ],
+        "submitted_by": "duis.pede@nonummy.scelerisque",
+        "uuid": "ab99718e-1e84-46df-9271-664823b85e9e"
+    },
+    {
+        "aliases": ["nadav-ahituv:HepG2-STARR-seq"],
+        "award": "UM1HG009408",
+        "assay_term_name": "STARR-seq",
+        "lab": "nadav-ahituv",
+        "description": "Integrated STARR-seq testing Encyclopedia V2.0 enhancer-like elements for activity transcriptionally inactive genes in HepG2.",
+        "reporter_type": "endogenous genes (see list)",
+        "integration_type": "chromosomal",
+        "sequences_tested": [
+            "nadav-ahituv:element-376-3UTR",
+            "nadav-ahituv:element-164-3UTR",
+            "nadav-ahituv:element-537-3UTR"
+        ],
+        "targets_tested": [
+            "CXXC1-human",
+            "E2F1-human",
+            "CTCF-human",
+            "TAF1-human"
+        ],
+        "submitted_by": "duis.pede@nonummy.scelerisque",
+        "uuid": "fe69b93f-eb4e-4512-a5cf-d2e2d8d9edd1"
+    }
+]

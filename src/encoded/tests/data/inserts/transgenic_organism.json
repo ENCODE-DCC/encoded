@@ -1,0 +1,38 @@
+[
+    {
+        "award": "U24HG009397",
+        "sequences_tested": [
+            "len-pennacchio:element-428"
+        ],
+        "reporter_type": "LacZ",
+        "biosample": "ENCBS001LAC",
+        "activity_detected": [
+            {
+                "body_location": "eye",
+                "positive_activity_count": 5,
+                "activity_level": "high"
+            }
+        ],
+        "lab": "len-pennacchio",
+        "submitted_by": "duis.pede@nonummy.scelerisque",
+        "uuid": "2db57cdd-a3ce-4bd7-a33b-0f6602066813"
+    },
+    {
+        "award": "U24HG009397",
+        "sequences_tested": [
+            "len-pennacchio:element-121"
+        ],
+        "reporter_type": "LacZ",
+        "biosample": "ENCBS002LAC",
+        "activity_detected": [
+            {
+                "body_location": "forebrain",
+                "positive_activity_count": 7,
+                "activity_level": "moderate"
+            }
+        ],
+        "lab": "len-pennacchio",
+        "submitted_by": "duis.pede@nonummy.scelerisque",
+        "uuid": "3bf2ae2c-1b60-4bea-97ac-b77dab81a8b8"
+    }
+]

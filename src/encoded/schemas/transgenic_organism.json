@@ -1,0 +1,111 @@
+ {
+    "title": "Transgenic organism",
+    "description": "Schema for submitting information about a transgenic organism used for validation purposes.",
+    "id": "/profiles/transgenic_organism.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["lab", "award", "sequences_tested", "activity_detected", "biosample"],
+    "identifyingProperties": ["uuid","aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/assay"},
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "validation_technique.json#/properties" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "biosample": {
+            "title": "Biosample",
+            "comment": "See biosample.json for available identifiers.",
+            "type": "string",
+            "linkTo": "Biosample"
+        },
+        "activity_detected": {
+            "title": "Activity detected",
+            "description": "List of tissue and/or cell types reporter activity was detected in and numbers of organisms detected in.",
+            "type": "array",
+            "uniqueItems": true,
+            "permission": "import_items",
+            "items": {
+                "title": "Activity detected",
+                "description": "Tissue and/or cell types reporter activity was detected in.",
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["body_location", "positive_activity_count", "activity_level"],
+                "properties": {
+                    "body_location": {
+                        "description": "The body location where reporter activity was reproducibly detected.",
+                        "type": "string",
+                        "enum": [
+                            "blood vessels",
+                            "branchial arch",
+                            "cranial nerve",
+                            "dorsal root ganglion",
+                            "ear",
+                            "eye",
+                            "facial mesenchyme",
+                            "forebrain",
+                            "genital tubercle",
+                            "heart",
+                            "hindbrain (rhombencephalon)",
+                            "limb",
+                            "liver",
+                            "melanocytes",
+                            "mesenchyme derived from neural crest",
+                            "midbrain (mesencephalon)",
+                            "neural tube",
+                            "nose",
+                            "other",
+                            "pancreas",
+                            "somite",
+                            "tail",
+                            "trigeminal V (ganglion, cranial)",
+                            "no pattern"
+                        ]
+                    },
+                    "positive_activity_count": {
+                        "description": "The number of embryos/animals showing positive reporter activity.",
+                        "type": "integer"
+                    },
+                    "activity_level": {
+                        "description": "The relative reporter activity level.",
+                        "type": "string",
+                        "enum": [
+                            "very high",
+                            "high",
+                            "moderate",
+                            "low",
+                            "very low"
+                        ]
+                    }
+                }
+            }
+        },
+        "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^VISTA-enhancer-browser:[mm|hs]\\d+$"
+            }
+        }
+    }
+}
+        

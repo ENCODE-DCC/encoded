@@ -1,0 +1,132 @@
+{
+    "title": "Validation Technique",
+    "description": "Schema for submitting information on a candidate regulatory sequence validation technique.",
+    "id": "/profiles/validation_technique.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["lab", "award"],
+    "identifyingProperties": ["uuid","aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents" }
+    ],
+    "dependencies": {
+        "oneOf": [
+            {
+                "reporter_type": {
+                    "required": ["targets_tested", "sequences_tested"],
+                    "properties": {
+                        "reporter_type": {
+                            "enum": ["endogenous genes (see list)"]
+                        }
+                    }
+                }
+            },
+            {
+                "reporter_type": {
+                    "required": ["sequences_tested"],
+                    "properties": {
+                        "reporter_type": {
+                            "enum": ["GFP", "luciferase", "LacZ"]
+                        }
+                    }
+                }
+            },
+            {
+                "not": {
+                    "properties": {
+                        "reporter_type": {
+                            "enum": ["endogenous genes (see list)", "GFP", "luciferase", "LacZ"]
+                        }
+                    }
+                }
+            }
+
+        ]
+    },
+    "properties": {
+        "schema_version": {
+            "hidden comment": "Bump the default in the subclasses."
+        },
+        "description": {
+            "title": "Description",
+            "description": "A plain text description of the reporter assay.",
+            "type": "string",
+            "elasticsearch_mapping_index_type": {
+                "title": "Field mapping index type",
+                "description": "Defines one of three types of indexing available",
+                "type": "string",
+                "default": "analyzed",
+                "enum": [
+                    "analyzed",
+                    "not_analyzed",
+                    "no"
+                ]
+            },
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
+        },
+        "reporter_type": {
+            "title": "Reporter type",
+            "description": "Type of reporter used.",
+            "type": "string",
+            "permission": "import_items",
+            "enum": [
+                "GFP",
+                "LacZ",
+                "luciferase",
+                "endogenous genes (see list)"
+            ]
+        },
+        "targets_tested": {
+            "title": "Targets tested",
+            "description": "List of targets tested for activity with candidate sequence elements in reporter assay.",
+            "type": "array",
+            "uniqueItems": true,
+            "permission": "import_items",
+            "items": {
+                "title": "Targets tested",
+                "description": "Target tested in the reporter assay.",
+                "type": "string",
+                "comment": "see target.json for available identifiers",
+                "linkTo": "Target"
+            }
+        },   
+        "targets_tested_summary": {
+            "title": "Targets tested sumamry",
+            "description": "Summary document containing a list of targets tested for activity with candidate sequence elements in reporter assay.",
+            "type": "string",
+            "comment": "See document.json for available identifiers.",
+            "linkTo": "Document"
+        },
+        "sequences_tested": {
+            "title": "Sequences tested",
+            "description": "List of candidate regulatory sequences tested in reporter assay.",
+            "type": "array",
+            "uniqueItems": true,
+            "permission": "import_items", 
+            "items": {
+                "title": "Sequence tested",
+                "description": "Sequence tested in the reporter assay.",
+                "type":  "string",
+                "comment": "see insert.json for available identifiers",
+                "linkTo": "Insert"
+            }
+        },
+        "sequences_tested_summary": {
+            "title": "Sequences tested sumamry",
+            "description": "Summary document containing a list of candidate regulatory sequences tested in reporter assay.",
+            "type": "string",
+            "comment": "See document.json for available identifiers.",
+            "linkTo": "Document"
+        }
+    }
+}
+    
+ 

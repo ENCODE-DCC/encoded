@@ -12,7 +12,7 @@ from .base import (
     name='modification-techniques',
     properties={
         'title': "Genetic modification techniques",
-        'description': 'Listing of all types of genetic modifications.'
+        'description': 'Listing of all types of genetic modification techniques.'
     })
 class ModificationTechnique(Item):
     base_types = ['ModificationTechnique'] + Item.base_types
@@ -34,7 +34,7 @@ class Crispr(ModificationTechnique):
 @collection(
     name='tales',
     properties={
-        'title': "Transcription activator-like effector genetic modifications",
+        'title': "Transcription activator-like effector genetic modifications.",
         'description': 'Listing of all TALE genetic modifications.'
     })
 class Tale(ModificationTechnique):
@@ -44,12 +44,12 @@ class Tale(ModificationTechnique):
 
 
 @collection(
-    name='plasmids',
+    name='transfections',
     properties={
-        'title': "General plasmid-based genetic modifications",
-        'description': 'Listing of all general plasmid-based genetic modifications.'
+        'title': "General genetic modifications made via transfection.",
+        'description': 'Listing of all general transfection-based genetic modifications.'
     })
-class Plasmid(ModificationTechnique):
-    item_type = 'plasmid'
-    schema = load_schema('encoded:schemas/plasmid.json')
+class Transfection(ModificationTechnique):
+    item_type = 'transfection'
+    schema = load_schema('encoded:schemas/transfection.json')
     embedded = ModificationTechnique.embedded
