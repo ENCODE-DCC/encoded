@@ -21,6 +21,7 @@
     ],    
     "dependencies": {
         "modification_type":{
+            "comment": "Each genetic_modification should be accompanied by a reference to either the treatment and/or modification_technique used to make the modification.",
             "anyOf":[
                 {
                     "properties": {
@@ -55,11 +56,41 @@
                               
                 }
             ]
+        },
+        "purpose": {
+            "comment": "Modifications for tagging purposes need to include the epitope_tag property in combination with a target or site. Modifications of deletion purposes also need the site or target specified.",
+            "oneOf": [
+                {
+                    "required": ["target"],
+                    "properties": {
+                       "purpose": {
+                            "enum": ["tagging", "deletion"]
+                        }
+                    }
+                },
+                {
+                    "required": ["modified_site"],
+                    "properties": {
+                       "purpose": {
+                            "enum": ["deletion"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "purpose": {
+                                "enum": ["tagging", "deletion"]
+                            }
+                        }
+                    }
+                }
+            ]
         }       
     },
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "url": {
             "title": "URL",

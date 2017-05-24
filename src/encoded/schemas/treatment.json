@@ -3,7 +3,7 @@
     "id": "/profiles/treatment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["treatment_term_name", "treatment_type"],
+    "required": ["treatment_type"],
     "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -24,9 +24,57 @@
         "duration": ["duration_units"],
         "duration_units": ["duration"]
     },
+    "dependencies": {
+        "treatment_type": {
+            "comment": "Each treatment needs a term_name or a mutagen specified.",
+            "oneOf":[
+                {
+                    "required": ["treatment_term_name"],
+                    "properties": {
+                        "treatment_type": {
+                            "enum": ["chemical", "protein", "exposure", "infection", "antibody", "injection", "transplantation"]
+                        }
+                    }
+                },
+                {
+                    "required": ["mutagen"],
+                    "properties": {
+                        "treatment_type": {
+                            "enum": ["irradiation"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "treatment_type": {
+                                "enum": ["chemical", "protein", "exposure", "infection", "antibody", "injection", "transplantation", "irradiation"]
+                            }  
+                        }
+                    }
+                }
+            ]
+        }
+    },
     "properties": {
         "schema_version": {
-            "default": "7"
+            "default": "8"
+        },
+        "mutagen": {
+            "title": "Mutagen",
+            "description": "The mutagen used in the treatment, if applicable",
+            "type": "string",
+            "enum": [
+                "bombardment",
+                "gamma radiation",
+                "X-ray radiation",
+                "UV radiation",
+                "PTT",
+                "transposon",
+                "TMP/UV",
+                "unknown",
+                "none"
+            ]
         },
         "lab": {
             "title": "Lab",

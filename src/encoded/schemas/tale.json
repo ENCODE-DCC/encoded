@@ -45,6 +45,13 @@
             "descrition": "The target genome sequence recognized by the TALE domain.",
             "type": "string",
             "pattern": "^[ACTG]+$"
+        },
+        "insert": {
+            "title": "Insert",
+            "description": "Insert introduced if applied to non-deletion purposes purposes.",
+            "type": "string",
+            "comment": "see insert.json for available identifiers",
+            "linkTo": "Insert"
         }
     },
     "facets": {
