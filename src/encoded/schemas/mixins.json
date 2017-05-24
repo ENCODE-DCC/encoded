@@ -420,7 +420,10 @@
                 "BruChase-seq",
                 "genetic modification followed by DNase-seq",
                 "CRISPRi followed by RNA-seq",
-                "genotyping by Hi-C"
+                "genotyping by Hi-C",
+                "enhancer activity detection by reporter gene assay",
+                "promoter activity detection by reporter gene assay",
+                "STARR-seq"
             ]
         }
     },

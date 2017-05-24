@@ -46,5 +46,8 @@ assay_terms = {
       'BruChase-seq': 'OBI:0002114',
       'genetic modification followed by DNase-seq': 'NTR:0004774',
       'CRISPRi followed by RNA-seq': 'NTR:0004619',
-      'genotyping by Hi-C': 'NTR:0004875'
+      'genotyping by Hi-C': 'NTR:0004875',
+      'enhancer activity detection by reporter gene assay': 'OBI:0002083',
+      'promoter activity detection by reporter gene assay': 'OBI:0000913',
+      'STARR-seq': 'OBI:0002041'
 }
