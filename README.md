@@ -219,7 +219,7 @@ For all options, including setting up ES clusters (needed for full production). 
 To set up linting with [Sublime Text 3](https://www.sublimetext.com/3) or [Visual Studio Code](https://code.visualstudio.com/), first install the linters:
 
 ```bash
-pip3 flake8
+pip3 install flake8
 npm install -g eslint
 npm install -g eslint-plugin-react
 ```
