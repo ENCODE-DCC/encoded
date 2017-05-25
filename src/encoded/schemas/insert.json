@@ -20,67 +20,64 @@
         { "$ref": "mixins.json#/documents" }
     ],
     "dependencies": {
-        "oneOf": [
-            {
-                "insertion_type": {
+        "insertion_type": {
+            "comment": "Fusion proteins must be accompanied by epitope tags property. Candidate regulatory sequence insertion types must be accompanied by insert sequence or insert genome coordinates.",
+            "oneOf": [
+                {
                     "required": ["epitope_tags"],
                     "properties": {
                         "insertion_type": {
                             "enum": ["fusion protein"]
+                        },
+                        "epitope_tags": {
+                            "minItems": 1
                         }
                     }
-                }
-            },
-            {
-                "insertion_type": {
-                    "required": ["insert_sequence", "source_data"],
+                },
+                {
+                    "required": ["insert_sequence"],
                     "properties": {
                         "insertion_type": {
                             "enum": [
-                                "candidate regulatory sequence (promoter)",
-                                "candidate regulatory sequence (enhancer)",
-                                "candidate regulatory sequence (insulator)",
-                                "candidate regulatory sequence (splice site)",
-                                "candidate regulatory sequence (TFBS)"
+                                "candidate regulatory sequence"
                             ]
                         }
                     }
-                }
-            },
-            {
-                "insertion_type": {
-                    "required": ["insert_genome_coordinates", "source_data"],
+                },
+                {
+                    "required": ["insert_genome_coordinates"],
                     "properties": {
                         "insertion_type": {
                             "enum": [
-                                "candidate regulatory sequence (promoter)",
-                                "candidate regulatory sequence (enhancer)",
-                                "candidate regulatory sequence (insulator)",
-                                "candidate regulatory sequence (splice site)",
-                                "candidate regulatory sequence (TFBS)"
+                                "candidate regulatory sequence"
                             ]
                         }
                     }
-                }
-            },
-            {
-                "not": {
+                },
+                {
+                    "required": ["insert_genome_coordinates", "insert_sequence"],
                     "properties": {
                         "insertion_type": {
                             "enum": [
-                                "fusion protein",
-                                "candidate regulatory sequence (promoter)",
-                                "candidate regulatory sequence (enhancer)",
-                                "candidate regulatory sequence (insulator)",
-                                "candidate regulatory sequence (splice site)",
-                                "candidate regulatory sequence (TFBS)"
+                                "candidate regulatory sequence"
                             ]
                         }
                     }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "insertion_type": {
+                                "enum": [
+                                    "fusion protein",
+                                    "candidate regulatory sequence"
+                                ]
+                            }
+                        }
+                    }
                 }
-            }
-
-        ]
+            ]
+        }
     },
     "properties": {
         "schema_version": {
@@ -108,11 +105,7 @@
             "description": "The type of insertion being introduced.",
             "type": "string",
             "enum": [
-                "candidate regulatory sequence (promoter)",
-                "candidate regulatory sequence (enhancer)",
-                "candidate regulatory sequence (insulator)",
-                "candidate regulatory sequence (splice site)",
-                "candidate regulatory sequence (TFBS)",
+                "candidate regulatory sequence",
                 "fusion protein"
             ]
         },
@@ -188,6 +181,7 @@
             "description": "Genomic coordinates of the insert. e.g. GRCh38 or dm6.",
             "type": "object",
             "additionalProperties": false,
+            "required": ["assembly", "chromosome", "start", "end"],
             "properties": {
                 "assembly": {
                     "title": "Genome assembly",

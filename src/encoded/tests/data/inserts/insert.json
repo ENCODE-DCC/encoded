@@ -1,29 +1,32 @@
 [
     {
-        "insertion_type": "candidate regulatory sequence (TFBS)",
+        "insertion_type": "candidate regulatory sequence",
         "insert_sequence": "CTCGGTG",
         "lab": "/labs/robert-waterston/",
         "aliases": ["encode:crispr-insert-1"],
         "award": "/awards/U41HG007355/",
         "source": "sigma",
+        "source_data": ["/files/ENCFF015OKV/"],
         "uuid": "9b615d51-8eb9-46ac-a024-d07bd03f7289"
     },
     {
-        "insertion_type": "candidate regulatory sequence (TFBS)",
+        "insertion_type": "candidate regulatory sequence",
         "insert_sequence": "ACTCGT",
         "lab": "/labs/robert-waterston/",
         "aliases": ["encode:crispr-insert-2"],
         "award": "/awards/U41HG007355/",
         "source": "sigma",
+        "source_data": ["/files/ENCFF015OKV/"],
         "uuid": "c5ef65cf-fb38-4359-8c6e-c87f33e328ca"
     },
     {
-        "insertion_type": "candidate regulatory sequence (enhancer)",
+        "insertion_type": "candidate regulatory sequence",
         "insert_sequence": "ACTCGGACCTACGGGTACCACTGAGCTAT",
         "lab": "/labs/gregory-crawford/",
         "aliases": ["encode:tale-insert-1"],
         "award": "/awards/U41HG007355/",
         "source": "sigma",
+        "source_data": ["/files/ENCFF015OKV/"],
         "uuid": "6b66f204-340a-456e-8281-3040024fec6a"
     },
     {
@@ -69,6 +72,7 @@
         },
         "insert_sequence": "ACGTAGGGATAGCCCATCGATCGATCGTACGTACGTACGATCTTTGCATCGATCGATGCTAGCAC",
         "vector_backbone_name": "pSA2",
+        "source_data": ["/files/ENCFF015OKV/"],
         "submitted_by": "eni.lectus@nullam.sed",
         "uuid": "5d23862b-7cca-4065-94cd-5a6accffb87e"
     },
@@ -78,13 +82,14 @@
         "description": "Enhancer-like element 164 from Encyclopedia V2.0",
         "lab": "jay-shendure",
         "source": "sigma",
-        "insertion_type": "candidate regulatory sequence (enhancer)",
+        "insertion_type": "candidate regulatory sequence",
         "insert_genome_coordinates": {
             "assembly": "GRCh38",
             "chromosome": "6",
             "start": 482735,
             "end": 487102
         },
+        "source_data": ["/files/ENCFF015OKV/"],
         "submitted_by": "duis.pede@nonummy.scelerisque",
         "uuid": "154168ba-4603-4eb8-91df-48a980bcac6c"
 
@@ -95,13 +100,14 @@
         "description": "Enhancer-like element 537 from Encyclopedia V2.0",
         "lab": "jay-shendure",
         "source": "sigma",
-        "insertion_type": "candidate regulatory sequence (enhancer)",
+        "insertion_type": "candidate regulatory sequence",
         "insert_genome_coordinates": {
             "assembly": "GRCh38",
             "chromosome": "12",
             "start": 6373005,
             "end": 6374142
         },
+        "source_data": ["/files/ENCFF015OKV/"],
         "submitted_by": "duis.pede@nonummy.scelerisque",
         "uuid": "e83ac11f-b76e-4f12-98a0-9bd97829d5c4"
     },
@@ -111,7 +117,8 @@
         "description": "Enhancer-like element 376 from Encyclopedia V2.0",
         "lab": "jay-shendure",
         "source": "sigma",
-        "insertion_type": "candidate regulatory sequence (enhancer)",
+        "source_data": ["/files/ENCFF015OKV/"],
+        "insertion_type": "candidate regulatory sequence",
         "insert_sequence": "ACGGATCGGTTAGCTAGCTTGGAGATCAAATACTAGATCGATCGTTTAGACCCAGTGCTAGCTTTAGCTAGGGATGCGATCGACGTAGCGTATGCGAC",
         "submitted_by": "duis.pede@nonummy.scelerisque",
         "uuid": "2c0d1d8a-6f4e-4280-bba6-c42274cb5889"
@@ -122,7 +129,8 @@
         "description": "Enhancer-like element 428 from Encyclopedia V3.0",
         "lab": "len-pennacchio",
         "source": "len-pennacchio",
-        "insertion_type": "candidate regulatory sequence (enhancer)",
+        "source_data": ["/files/ENCFF015OKV/"],
+        "insertion_type": "candidate regulatory sequence",
         "insert_sequence": "ACGGATCGGTTAGCTACCCAGTGCTAGCTTTAGCTAGGGATGCGATCGACGTAGCGTATGCGAC",
         "submitted_by": "duis.pede@nonummy.scelerisque",
         "uuid": "f03931cb-a8dd-4749-b96d-fe2330aa813d"
@@ -133,7 +141,8 @@
         "description": "Enhancer-like element 121 from Encyclopedia V3.0",
         "lab": "len-pennacchio",
         "source": "sigma",
-        "insertion_type": "candidate regulatory sequence (promoter)",
+        "source_data": ["/files/ENCFF015OKV/"],
+        "insertion_type": "candidate regulatory sequence",
         "insert_sequence": "ACGGATCGGTTAGCTAGCTTGGAGATCAAATACTAGATCGATCGTTTAGACCCAGTGCTAGGATCGACGTAGCGTATGCGAC",
         "submitted_by": "duis.pede@nonummy.scelerisque",
         "uuid": "c610f7bc-c5e7-45ea-a7c5-280a574f114f"
