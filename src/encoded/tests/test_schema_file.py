@@ -46,7 +46,7 @@ def file_with_derived(testapp, experiment, award, lab, file_with_replicate):
         'md5sum': 'e004cd204df36d93dd070ef0712b8eed',
         'output_type': 'alignments',
         'status': 'in progress',  # avoid s3 upload codepath
-        'derived_from': [file_with_replicate['@id']],
+        'derived_from': [file_with_replicate['@id']]
     }
     return testapp.post_json('/file', item).json['@graph'][0]
 
@@ -244,3 +244,33 @@ def test_with_run_type_no_paired_end(testapp, file_no_paired_end):
 def test_with_wrong_date_created(testapp, file_with_bad_date_created):
     res = testapp.post_json('/file', file_with_bad_date_created, expect_errors=True)
     assert res.status_code == 422
+
+
+def test_no_file_available(testapp, file_no_error):
+    import json
+    item = file_no_error.copy()
+    item.update({'no_file_available': False})
+    payload = json.dumps(item)
+    print(payload)
+    res = testapp.post_json('/file', payload, expect_errors=True)
+    assert res.status_code == 201
+
+    del(payload['md5sum'])
+    res = testapp.post_json('/file', payload, expect_errors=True)
+    #payload = json.dumps(item)
+    #del(file_no_error['file_size'])
+    print(payload)
+    #testapp.patch_json(file['@id'], payload, expect_errors=True)
+    res = testapp.get(file['@id'], )
+    assert res.status_code == 422
+    '''
+    item.update({'no_file_available': True})
+    payload = json.dumps(item)
+    print(payload)
+    res = testapp.patch_json(file_no_error['@id'], payload)
+    assert res.status_code == 201
+    #file_no_error.update({'no_file_available': False})
+    #payload = json.dumps(file_no_error)
+    #res = testapp.patch_json(file_no_error['@id'], payload, expect_errors=True)
+    #assert res.status_code == 422
+    '''
