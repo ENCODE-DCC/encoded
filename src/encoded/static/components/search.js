@@ -744,7 +744,7 @@ const Term = (props) => {
             href = `${searchBase}${field}!=*`;
         }
     } else {
-        href = `${this.props.searchBase}${field}=${globals.encodedURIComponent(term)}`;
+        href = `${searchBase}${field}=${globals.encodedURIComponent(term)}`;
     }
 
     return (
@@ -782,7 +782,7 @@ const TypeTerm = (props) => {
     } catch (e) {
         title = term;
     }
-    return <Term {...this.props} title={title} filters={filters} total={total} />;
+    return <Term {...props} title={title} filters={filters} total={total} />;
 };
 
 TypeTerm.propTypes = {
@@ -889,6 +889,7 @@ Facet.defaultProps = {
 };
 
 
+// Entry field for filtering the results list when search results appear in edit forms.
 class TextFilter extends React.Component {
     static onChange(e) {
         e.stopPropagation();
@@ -951,6 +952,7 @@ TextFilter.propTypes = {
 };
 
 
+// Displays the entire list of facets. It containts
 class FacetList extends React.Component {
     render() {
         const { context, mode, orientation, hideTextFilter } = this.props;
@@ -1321,7 +1323,7 @@ ResultTable.propTypes = {
     currentRegion: PropTypes.func,
 };
 
-ResultTable.getDefaultProps = {
+ResultTable.defaultProps = {
     restrictions: {},
     searchBase: '',
 };
