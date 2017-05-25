@@ -1,31 +1,19 @@
-'use strict';
-var React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
-var queryString = require('query-string');
-var button = require('../libs/bootstrap/button');
-var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
-var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
+import queryString from 'query-string';
+import _ from 'underscore';
+import url from 'url';
+import { svgIcon } from '../libs/svg-icons';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
-var svgIcon = require('../libs/svg-icons').svgIcon;
-var url = require('url');
-var _ = require('underscore');
 import { auditDecor } from './audit';
-var globals = require('./globals');
-var image = require('./image');
 import { FetchedData, Param } from './fetched';
-var search = module.exports;
 import GenomeBrowser from './genome_browser';
-var { donorDiversity, BrowserSelector } = require('./objectutils');
-var dbxref = require('./dbxref');
-var objectutils = require('./objectutils');
-var {BiosampleSummaryString, BiosampleOrganismNames} = require('./typeutils');
-
-var DbxrefList = dbxref.DbxrefList;
-var statusOrder = globals.statusOrder;
-var SingleTreatment = objectutils.SingleTreatment;
-var DropdownButton = button.DropdownButton;
-var DropdownMenu = dropdownMenu.DropdownMenu;
+import globals from './globals';
+import { Attachment } from './image';
+import { BrowserSelector } from './objectutils';
+import { DbxrefList } from './dbxref';
+import { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
 
 
 // Should really be singular...
@@ -68,7 +56,22 @@ const datasetTypes = {
     UcscBrowserComposite: types.ucsc_browser_composite.title,
 };
 
-const listing = module.exports.listing = function (reactProps) {
+
+// You can use this function to render a listing view for the search results object with a couple
+// options:
+//   1. Pass a search results object directly in props. listing returns a React component that you
+//      can render directly.
+//
+//   2. Pass an object of the form:
+//      {
+//          context: context object to render
+//          ...any other props you want to pass to the panel-rendering component
+//      }
+//
+// Note: this function really doesn't do much of value, but it does do something and it's been
+// around since the beginning of encoded, so it stays for now.
+
+function listing(reactProps) {
     // XXX not all panels have the same markup
     let context;
     let viewProps = reactProps;
@@ -78,35 +81,40 @@ const listing = module.exports.listing = function (reactProps) {
     }
     const ListingView = globals.listing_views.lookup(viewProps.context);
     return <ListingView {...viewProps} />;
-};
+}
 
-const PickerActions = module.exports.PickerActions = createReactClass ({
-    contextTypes: {
-        actions: PropTypes.array,
-    },
+export { listing };
 
-    render: function () {
+
+export class PickerActions extends React.Component {
+    render() {
         if (this.context.actions && this.context.actions.length) {
             return (
                 <div className="pull-right">
                     {this.context.actions.map(action => React.cloneElement(action, { key: this.props.context.name, id: this.props.context['@id'] }))}
                 </div>
             );
-        } else {
-            return <span />;
         }
-    },
-});
 
-var ItemComponent = createReactClass({
-    contextTypes: {
-        session: PropTypes.object, // Login information from <App>
-    },
+        // No actions; don't render anything.
+        return <span />;
+    }
+}
 
-    render: function() {
-        var result = this.props.context;
-        var title = globals.listing_titles.lookup(result)({context: result});
-        var itemType = result['@type'][0];
+PickerActions.propTypes = {
+    context: PropTypes.object,
+};
+
+PickerActions.contextTypes = {
+    actions: PropTypes.array,
+};
+
+
+class ItemComponent extends React.Component {
+    render() {
+        const result = this.props.context;
+        const title = globals.listing_titles.lookup(result)({ context: result });
+        const itemType = result['@type'][0];
         return (
             <li>
                 <div className="clearfix">
@@ -127,30 +135,42 @@ var ItemComponent = createReactClass({
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
         );
-    },
-});
+    }
+}
 
-const Item = module.exports.Item = auditDecor(ItemComponent);
+ItemComponent.propTypes = {
+    context: PropTypes.object, // Component to render in a listing view
+    auditIndicators: PropTypes.func, // Audit decorator function
+    auditDetail: PropTypes.func, // Audit decorator function
+};
+
+ItemComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Item = auditDecor(ItemComponent);
 
 globals.listing_views.register(Item, 'Item');
 
 
 // Display one antibody status indicator
-const StatusIndicator = createReactClass({
-    propTypes: {
-        status: PropTypes.string,
-        terms: PropTypes.array,
-    },
+class StatusIndicator extends React.Component {
+    constructor() {
+        super();
 
-    getInitialState: function () {
-        return {
+        // Set initial React component state.
+        this.state = {
             tipOpen: false,
             tipStyles: {},
         };
-    },
+
+        // Bind `this` to non-React methods.
+        this.onMouseEnter = this.onMouseEnter.bind(this);
+        this.onMouseLeave = this.onMouseLeave.bind(this);
+    }
 
     // Display tooltip on hover
-    onMouseEnter: function () {
+    onMouseEnter() {
         function getNextElementSibling(el) {
             // IE8 doesn't support nextElementSibling
             return el.nextElementSibling ? el.nextElementSibling : el.nextSibling;
@@ -181,15 +201,15 @@ const StatusIndicator = createReactClass({
         }
 
         this.setState({ tipOpen: true });
-    },
+    }
 
     // Close tooltip when not hovering
-    onMouseLeave: function () {
+    onMouseLeave() {
         this.setState({ tipStyles: { maxWidth: 'none', whiteSpace: 'nowrap', width: 'auto', left: '15px' } }); // Reset position and width
         this.setState({ tipOpen: false });
-    },
+    }
 
-    render: function() {
+    render() {
         const classes = `tooltip-status sentence-case${this.state.tipOpen ? ' tooltipopen' : ''}`;
 
         return (
@@ -200,40 +220,40 @@ const StatusIndicator = createReactClass({
                 </div>
             </span>
         );
-    },
-});
+    }
+}
+
+StatusIndicator.propTypes = {
+    status: PropTypes.string,
+    terms: PropTypes.array,
+};
+
 
 // Display the status indicators for one target
-const StatusIndicators = createReactClass({
-    propTypes: {
-        targetTree: PropTypes.object,
-        target: PropTypes.string,
-    },
+const StatusIndicators = (props) => {
+    const { targetTree, target } = props;
 
-    render: function () {
-        const targetTree = this.props.targetTree;
-        const target = this.props.target;
+    return (
+        <span className="status-indicators">
+            {Object.keys(targetTree[target]).map((status, i) => {
+                if (status !== 'target') {
+                    return <StatusIndicator key={i} status={status} terms={targetTree[target][status]} />;
+                }
+                return null;
+            })}
+        </span>
+    );
+};
 
-        return (
-            <span className="status-indicators">
-                {Object.keys(targetTree[target]).map((status, i) => {
-                    if (status !== 'target') {
-                        return <StatusIndicator key={i} status={status} terms={targetTree[target][status]} />;
-                    }
-                    return null;
-                })}
-            </span>
-        );
-    },
-});
+StatusIndicators.propTypes = {
+    targetTree: PropTypes.object,
+    target: PropTypes.string,
+};
 
-var AntibodyComponent = createReactClass({
-    contextTypes: {
-        session: PropTypes.object, // Login information from <App>
-    },
 
-    render: function() {
-        var result = this.props.context;
+class AntibodyComponent extends React.Component {
+    render() {
+        const result = this.props.context;
 
         // Sort the lot reviews by their status according to our predefined order
         // given in the statusOrder array.
@@ -292,20 +312,26 @@ var AntibodyComponent = createReactClass({
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
         );
-    },
-});
+    }
+}
 
-const Antibody = module.exports.Antibody = auditDecor(AntibodyComponent);
+AntibodyComponent.propTypes = {
+    context: PropTypes.object, // Antibody search results
+    auditIndicators: PropTypes.func, // Audit decorator function
+    auditDetail: PropTypes.func, // Audit decorator function
+};
+
+AntibodyComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Antibody = auditDecor(AntibodyComponent);
 
 globals.listing_views.register(Antibody, 'AntibodyLot');
 
 
-var BiosampleComponent = createReactClass({
-    contextTypes: {
-        session: PropTypes.object, // Login information from <App>
-    },
-
-    render: function() {
+class BiosampleComponent extends React.Component {
+    render() {
         const result = this.props.context;
         const lifeStage = (result.life_stage && result.life_stage !== 'unknown') ? ` ${result.life_stage}` : '';
         const age = (result.age && result.age !== 'unknown') ? ` ${result.age}` : '';
@@ -364,21 +390,27 @@ var BiosampleComponent = createReactClass({
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
         );
-    },
-});
+    }
+}
 
-const Biosample = module.exports.Biosample = auditDecor(BiosampleComponent);
+BiosampleComponent.propTypes = {
+    context: PropTypes.object, // Biosample search results
+    auditIndicators: PropTypes.func, // Audit decorator function
+    auditDetail: PropTypes.func, // Audit decorator function
+};
+
+BiosampleComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Biosample = auditDecor(BiosampleComponent);
 
 globals.listing_views.register(Biosample, 'Biosample');
 
 
-var ExperimentComponent = createReactClass({
-    contextTypes: {
-        session: PropTypes.object, // Login information from <App>
-    },
-
-    render: function() {
-        var result = this.props.context;
+class ExperimentComponent extends React.Component {
+    render() {
+        const result = this.props.context;
 
         // Collect all biosamples associated with the experiment. This array can contain duplicate
         // biosamples, but no null entries.
@@ -425,7 +457,7 @@ var ExperimentComponent = createReactClass({
                         <div className="highlight-row">
                             {organismNames.length ?
                                 <span>
-                                    {organismNames.map((organism, i) => 
+                                    {organismNames.map((organism, i) =>
                                         <span key={organism}>
                                             {i > 0 ? <span>and </span> : null}
                                             <i>{organism} </i>
@@ -452,20 +484,26 @@ var ExperimentComponent = createReactClass({
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
         );
-    },
-});
+    }
+}
 
-const Experiment = module.exports.Experiment = auditDecor(ExperimentComponent);
+ExperimentComponent.propTypes = {
+    context: PropTypes.object, // Experiment search results
+    auditIndicators: PropTypes.func, // Audit decorator function
+    auditDetail: PropTypes.func,
+};
+
+ExperimentComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Experiment = auditDecor(ExperimentComponent);
 
 globals.listing_views.register(Experiment, 'Experiment');
 
 
-var DatasetComponent =  createReactClass({
-    contextTypes: {
-        session: PropTypes.object, // Login information from <App>
-    },
-
-    render: function() {
+class DatasetComponent extends React.Component {
+    render() {
         const result = this.props.context;
         let biosampleTerm;
         let organism;
@@ -555,20 +593,26 @@ var DatasetComponent =  createReactClass({
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
         );
-    },
-});
+    }
+}
 
-const Dataset = module.exports.Dataset = auditDecor(DatasetComponent);
+DatasetComponent.propTypes = {
+    context: PropTypes.object, // Dataset search results
+    auditIndicators: PropTypes.func, // Audit decorator function
+    auditDetail: PropTypes.func, // Audit decorator function
+};
+
+DatasetComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Dataset = auditDecor(DatasetComponent);
 
 globals.listing_views.register(Dataset, 'Dataset');
 
 
-var TargetComponent = createReactClass({
-    contextTypes: {
-        session: PropTypes.object, // Login information from <App>
-    },
-
-    render: function() {
+class TargetComponent extends React.Component {
+    render() {
         const result = this.props.context;
         return (
             <li>
@@ -594,37 +638,48 @@ var TargetComponent = createReactClass({
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
         );
-    },
-});
+    }
+}
 
-const Target = module.exports.Target = auditDecor(TargetComponent);
+TargetComponent.propTypes = {
+    context: PropTypes.object, // Target search results
+    auditIndicators: PropTypes.func, // Audit decorator function
+    auditDetail: PropTypes.func, // Audit decorator function
+};
+
+TargetComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Target = auditDecor(TargetComponent);
 
 globals.listing_views.register(Target, 'Target');
 
 
-const Image = module.exports.Image = createReactClass({
-    render: function() {
-        const result = this.props.context;
-        var Attachment = image.Attachment;
+const Image = (props) => {
+    const result = props.context;
 
-        return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Image</p>
-                    </div>
-                    <div className="accession">
-                        <a href={result['@id']}>{result.caption}</a>
-                    </div>
-                    <div className="data-row">
-                        <Attachment context={result} attachment={result.attachment} />
-                    </div>
+    return (
+        <li>
+            <div className="clearfix">
+                <PickerActions {...this.props} />
+                <div className="pull-right search-meta">
+                    <p className="type meta-title">Image</p>
                 </div>
-            </li>
-        );
-    },
-});
+                <div className="accession">
+                    <a href={result['@id']}>{result.caption}</a>
+                </div>
+                <div className="data-row">
+                    <Attachment context={result} attachment={result.attachment} />
+                </div>
+            </div>
+        </li>
+    );
+};
+
+Image.propTypes = {
+    context: PropTypes.object, // Image search results
+};
 
 globals.listing_views.register(Image, 'Image');
 
@@ -664,107 +719,98 @@ function countSelectedTerms(terms, facet, filters) {
     return count;
 }
 
-const Term = search.Term = createReactClass({
-    propTypes: {
-        filters: PropTypes.array,
-        term: PropTypes.object,
-        title: PropTypes.string,
-        facet: PropTypes.object,
-        total: PropTypes.number,
-        canDeselect: PropTypes.bool,
-        searchBase: PropTypes.string,
-        onFilter: PropTypes.func,
-    },
-
-    render: function () {
-        const filters = this.props.filters;
-        const term = this.props.term.key;
-        const count = this.props.term.doc_count;
-        const title = this.props.title || term;
-        const facet = this.props.facet;
-        const field = facet.field;
-        const em = field === 'target.organism.scientific_name' ||
-                    field === 'organism.scientific_name' ||
-                    field === 'replicates.library.biosample.donor.organism.scientific_name';
-        const barStyle = {
-            width: `${Math.ceil((count / this.props.total) * 100)}%`,
-        };
-        const selected = termSelected(term, facet, filters);
-        let href;
-        if (selected && !this.props.canDeselect) {
-            href = null;
-        } else if (selected) {
-            href = selected;
-        } else if (facet.type === 'exists') {
-            if (term === 'yes') {
-                href = `${this.props.searchBase}${field}=*`;
-            } else {
-                href = `${this.props.searchBase}${field}!=*`;
-            }
+const Term = (props) => {
+    const { filters, facet, total, canDeselect, searchBase, onFilter } = props;
+    const term = props.term.key;
+    const count = props.term.doc_count;
+    const title = props.title || term;
+    const field = facet.field;
+    const em = field === 'target.organism.scientific_name' ||
+                field === 'organism.scientific_name' ||
+                field === 'replicates.library.biosample.donor.organism.scientific_name';
+    const barStyle = {
+        width: `${Math.ceil((count / total) * 100)}%`,
+    };
+    const selected = termSelected(term, facet, filters);
+    let href;
+    if (selected && !canDeselect) {
+        href = null;
+    } else if (selected) {
+        href = selected;
+    } else if (facet.type === 'exists') {
+        if (term === 'yes') {
+            href = `${searchBase}${field}=*`;
         } else {
-            href = `${this.props.searchBase}${field}=${globals.encodedURIComponent(term)}`;
+            href = `${searchBase}${field}!=*`;
         }
-        return (
-            <li id={selected ? 'selected' : null} key={term}>
-                {selected ? '' : <span className="bar" style={barStyle} />}
-                {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')} /> : null}
-                <a id={selected ? 'selected' : null} href={href} onClick={href ? this.props.onFilter : null}>
-                    <span className="pull-right">{count} {selected && this.props.canDeselect ? <i className="icon icon-times-circle-o" /> : ''}</span>
-                    <span className="facet-item">
-                        {em ? <em>{title}</em> : <span>{title}</span>}
-                    </span>
-                </a>
-            </li>
-        );
-    },
-});
+    } else {
+        href = `${this.props.searchBase}${field}=${globals.encodedURIComponent(term)}`;
+    }
 
-const TypeTerm = search.TypeTerm = createReactClass({
-    propTypes: {
-        term: PropTypes.object,
-        filters: PropTypes.array,
-        total: PropTypes.number,
-    },
+    return (
+        <li id={selected ? 'selected' : null} key={term}>
+            {selected ? '' : <span className="bar" style={barStyle} />}
+            {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')} /> : null}
+            <a id={selected ? 'selected' : null} href={href} onClick={href ? onFilter : null}>
+                <span className="pull-right">{count} {selected && canDeselect ? <i className="icon icon-times-circle-o" /> : ''}</span>
+                <span className="facet-item">
+                    {em ? <em>{title}</em> : <span>{title}</span>}
+                </span>
+            </a>
+        </li>
+    );
+};
 
-    render: function () {
-        const term = this.props.term.key;
-        const filters = this.props.filters;
-        let title;
-        try {
-            title = types[term];
-        } catch (e) {
-            title = term;
-        }
-        const total = this.props.total;
-        return <Term {...this.props} title={title} filters={filters} total={total} />;
-    },
-});
+Term.propTypes = {
+    filters: PropTypes.array,
+    term: PropTypes.object,
+    title: PropTypes.string,
+    facet: PropTypes.object,
+    total: PropTypes.number,
+    canDeselect: PropTypes.bool,
+    searchBase: PropTypes.string,
+    onFilter: PropTypes.func,
+};
 
 
-const Facet = search.Facet = createReactClass({
-    propTypes: {
-        facet: PropTypes.object,
-        filters: PropTypes.array,
-        width: PropTypes.string,
-    },
+const TypeTerm = (props) => {
+    const { filters, total } = props;
+    const term = props.term.key;
+    let title;
+    try {
+        title = types[term];
+    } catch (e) {
+        title = term;
+    }
+    return <Term {...this.props} title={title} filters={filters} total={total} />;
+};
 
-    getDefaultProps: function () {
-        return { width: 'inherit' };
-    },
+TypeTerm.propTypes = {
+    term: PropTypes.object,
+    filters: PropTypes.array,
+    total: PropTypes.number,
+};
 
-    getInitialState: function () {
-        return {
+
+class Facet extends React.Component {
+    constructor() {
+        super();
+
+        // Set initial React commponent state.
+        this.state = {
             facetOpen: false,
         };
-    },
 
-    handleClick: function () {
-        this.setState({ facetOpen: !this.state.facetOpen });
-    },
+        // Bind `this` to non-React methods.
+        this.handleClick = this.handleClick.bind(this);
+    }
 
-    render: function () {
-        const facet = this.props.facet;
-        const filters = this.props.filters;
+    handleClick() {
+        this.setState(prevState => ({ facetOpen: !prevState.facetOpen }));
+    }
+
+    render() {
+        const { facet, filters } = this.props;
         let title = facet.title;
         const field = facet.field;
         const total = facet.total;
@@ -817,11 +863,11 @@ const Facet = search.Facet = createReactClass({
                             </div>
                         : null}
                         {(terms.length > 5 && !moreTermSelected) ?
-                            <label className="pull-right">
+                            <div className="pull-right">
                                 <small>
-                                    <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
+                                    <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={`#${termID}`} onClick={this.handleClick} />
                                 </small>
-                            </label>
+                            </div>
                         : null}
                     </ul>
                 </div>
@@ -831,22 +877,33 @@ const Facet = search.Facet = createReactClass({
         // Facet had all zero terms and was not a "not" facet.
         return null;
     }
-});
+}
+
+Facet.propTypes = {
+    facet: PropTypes.object,
+    filters: PropTypes.array,
+};
+
+Facet.defaultProps = {
+    width: 'inherit',
+};
 
 
-const TextFilter = search.TextFilter = createReactClass({
-    propTypes: {
-        filters: PropTypes.array,
-        searchBase: PropTypes.string,
-        onChange: PropTypes.func,
-    },
-
-    onChange: function (e) {
+class TextFilter extends React.Component {
+    static onChange(e) {
         e.stopPropagation();
         e.preventDefault();
-    },
+    }
 
-    onBlur: function (e) {
+    constructor() {
+        super();
+
+        // Bind `this` to non-React component methods.
+        this.onBlur = this.onBlur.bind(this);
+        this.onKeyDown = this.onKeyDown.bind(this);
+    }
+
+    onBlur(e) {
         let searchStr = this.props.searchBase.replace(/&?searchTerm=[^&]*/, '');
         const value = e.target.value;
         if (value) {
@@ -855,62 +912,48 @@ const TextFilter = search.TextFilter = createReactClass({
             searchStr = searchStr.substring(0, searchStr.length - 1);
         }
         this.props.onChange(searchStr);
-    },
+    }
 
-    onKeyDown: function (e) {
+    onKeyDown(e) {
         if (e.keyCode === 13) {
             this.onBlur(e);
             e.preventDefault();
         }
-    },
+    }
 
-    getValue: function () {
+    getValue() {
         const filter = this.props.filters.filter(f => f.field === 'searchTerm');
         return filter.length ? filter[0].term : '';
-    },
+    }
 
-    shouldUpdateComponent: function (nextProps) {
+    shouldUpdateComponent(nextProps) {
         return (this.getValue(this.props) !== this.getValue(nextProps));
-    },
+    }
 
-    render: function () {
+    render() {
         return (
             <div className="facet">
                 <input
                     ref="input" type="search" className="form-control search-query"
                     placeholder="Enter search term(s)"
                     defaultValue={this.getValue(this.props)}
-                    onChange={this.onChange} onBlur={this.onBlur} onKeyDown={this.onKeyDown}
+                    onChange={TextFilter.onChange} onBlur={this.onBlur} onKeyDown={this.onKeyDown}
                 />
             </div>
         );
-    },
-});
+    }
+}
 
-const FacetList = search.FacetList = createReactClass({
-    propTypes: {
-        context: PropTypes.object,
-        facets: PropTypes.oneOfType([
-            PropTypes.array,
-            PropTypes.object,
-        ]),
-        filters: PropTypes.array,
-        mode: PropTypes.string,
-        orientation: PropTypes.string,
-        hideTextFilter: PropTypes.bool,
-    },
+TextFilter.propTypes = {
+    filters: PropTypes.array,
+    searchBase: PropTypes.string,
+    onChange: PropTypes.func,
+};
 
-    contextTypes: {
-        session: PropTypes.object,
-    },
 
-    getDefaultProps: function () {
-        return { orientation: 'vertical' };
-    },
-
-    render: function () {
-        const { context } = this.props;
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
+class FacetList extends React.Component {
+    render() {
+        const { context, mode, orientation, hideTextFilter } = this.props;
 
         // Get all facets, and "normal" facets, meaning non-audit facets
         const facets = this.props.facets;
@@ -918,14 +961,14 @@ const FacetList = search.FacetList = createReactClass({
 
         const filters = this.props.filters;
         let width = 'inherit';
-        if (!facets.length && this.props.mode !== 'picker') return <div />;
+        if (!facets.length && mode !== 'picker') return <div />;
         let hideTypes;
-        if (this.props.mode === 'picker') {
+        if (mode === 'picker') {
             hideTypes = false;
         } else {
             hideTypes = filters.filter(filter => filter.field === 'type').length === 1 && normalFacets.length > 1;
         }
-        if (this.props.orientation === 'horizontal') {
+        if (orientation === 'horizontal') {
             width = `${100 / facets.length}%`;
         }
 
@@ -956,7 +999,7 @@ const FacetList = search.FacetList = createReactClass({
                             <a href={context.clear_filters}>Clear Filters <i className="icon icon-times-circle" /></a>
                         </div>
                     : null}
-                    {this.props.mode === 'picker' && !this.props.hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
+                    {mode === 'picker' && !hideTextFilter ? <TextFilter {...this.props} filters={filters} /> : ''}
                     {facets.map((facet) => {
                         if (hideTypes && facet.field === 'type') {
                             return <span key={facet.field} />;
@@ -966,116 +1009,118 @@ const FacetList = search.FacetList = createReactClass({
                 </div>
             </div>
         );
-    },
-});
+    }
+}
 
-const BatchDownload = search.BatchDownload = createReactClass({
-    propTypes: {
-        context: PropTypes.object,
-    },
+FacetList.propTypes = {
+    context: PropTypes.object,
+    facets: PropTypes.oneOfType([
+        PropTypes.array,
+        PropTypes.object,
+    ]),
+    filters: PropTypes.array,
+    mode: PropTypes.string,
+    orientation: PropTypes.string,
+    hideTextFilter: PropTypes.bool,
+};
 
-    render: function () {
-        const link = this.props.context.batch_download;
-        return (
-            <Modal actuator={<button className="btn btn-info btn-sm">Download</button>}>
-                <ModalHeader title="Using batch download" closeModal />
-                <ModalBody>
-                    <p>Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
-                    The first line of the file will always be the URL to download the metadata file. <br />
-                    Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.</p><br />
-                    <p>The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
-                    The following command using cURL can be used to download all the files in the list:</p><br />
-                    <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
-                </ModalBody>
-                <ModalFooter
-                    closeModal={<a className="btn btn-info btn-sm">Close</a>}
-                    submitBtn={<a data-bypass="true" target="_self" className="btn btn-info btn-sm" href={link}>{'Download'}</a>}
-                    dontClose
-                />
-            </Modal>
-        );
-    },
-});
+FacetList.defaultProps = {
+    orientation: 'vertical',
+};
+
+FacetList.contextTypes = {
+    session: PropTypes.object,
+};
 
 
-const ResultTable = search.ResultTable = createReactClass({
-    propTypes: {
-        context: PropTypes.object,
-        actions: PropTypes.array,
-        restrictions: PropTypes.object,
-        assemblies: PropTypes.array, // List of assemblies of all 'File' objects in search results
-        searchBase: PropTypes.string,
-        onChange: PropTypes.func,
-        mode: PropTypes.string,
-        currentRegion: PropTypes.func,
-    },
+const BatchDownload = (props) => {
+    const link = props.context.batch_download;
+    return (
+        <Modal actuator={<button className="btn btn-info btn-sm">Download</button>}>
+            <ModalHeader title="Using batch download" closeModal />
+            <ModalBody>
+                <p>Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
+                The first line of the file will always be the URL to download the metadata file. <br />
+                Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.</p><br />
+                <p>The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
+                The following command using cURL can be used to download all the files in the list:</p><br />
+                <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
+            </ModalBody>
+            <ModalFooter
+                closeModal={<a className="btn btn-info btn-sm">Close</a>}
+                submitBtn={<a data-bypass="true" target="_self" className="btn btn-info btn-sm" href={link}>{'Download'}</a>}
+                dontClose
+            />
+        </Modal>
+    );
+};
 
-    childContextTypes: { actions: PropTypes.array },
+BatchDownload.propTypes = {
+    context: PropTypes.object,
+};
 
-    contextTypes: {
-        session: React.PropTypes.object,
-    },
 
-    getDefaultProps: function () {
-        return {
-            restrictions: {},
-            searchBase: '',
-        };
-    },
+class ResultTable extends React.Component {
+    constructor(props) {
+        super(props);
 
-    getInitialState: function () {
-        return {
+        // Set React component state.
+        this.state = {
             browserAssembly: this.props.assemblies && this.props.assemblies[0], // Currently selected assembly for the browser
             selectedTab: '',
         };
-    },
 
-    getChildContext: function () {
+        // Bind `this` to non-React moethods.
+        this.onFilter = this.onFilter.bind(this);
+        this.assemblyChange = this.assemblyChange.bind(this);
+        this.handleTabClick = this.handleTabClick.bind(this);
+    }
+
+    getChildContext() {
         return {
             actions: this.props.actions,
         };
-    },
+    }
 
-    componentDidMount: function () {
+    componentDidMount() {
         if (window !== undefined) {
             // Determining this in componentDidMount to avoid server/client reactJS conflict.
             if (window.location.hash === '#browser') {
                 this.setState({ selectedTab: 'browserpane' });
             }
         }
-    },
+    }
 
-    onFilter: function (e) {
+    onFilter(e) {
         const searchStr = e.currentTarget.getAttribute('href');
         this.props.onChange(searchStr);
         e.stopPropagation();
         e.preventDefault();
         this.setState({ selectedTab: 'listpane' });  // Always return to listpane so that browser can rerender
-    },
+    }
 
     // Called when new value chosen from assembly dropdown.
-    assemblyChange: function (e) {
+    assemblyChange(e) {
         this.setState({ browserAssembly: e.target.value });
-    },
+    }
 
-    handleTabClick: function (tab) {
+    handleTabClick(tab) {
         // Since we force TabPanel tab selection, we need to keep track of selectedTab.
         if (this.state.selectedTab !== tab) {
             this.setState({ selectedTab: tab });
         }
-        console.log(`selectedTab: ${tab}`);
-    },
+    }
 
-    render: function () {
+    render() {
         const visualizeLimit = 100;
-        const { context, searchBase, assemblies } = this.props;
+        const { context, searchBase, assemblies, restrictions } = this.props;
         const results = context['@graph'];
         const total = context.total;
         const visualizeDisabled = total > visualizeLimit;
         const columns = context.columns;
         const filters = context.filters;
         const label = 'results';
-        const trimmedSearchBase = searchBase.replace(/[\?|&]limit=all/, '');
+        const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
         const loggedIn = this.context.session && this.context.session['auth.userid'];
         let browseAllFiles = true; // True to pass all files to browser
         let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
@@ -1084,9 +1129,9 @@ const ResultTable = search.ResultTable = createReactClass({
         let assemblyChooser;
 
         const facets = context.facets.map((facet) => {
-            if (this.props.restrictions[facet.field] !== undefined) {
+            if (restrictions[facet.field] !== undefined) {
                 const workFacet = _.clone(facet);
-                workFacet.restrictions = this.props.restrictions[workFacet.field];
+                workFacet.restrictions = restrictions[workFacet.field];
                 workFacet.terms = workFacet.terms.filter(term => _.contains(workFacet.restrictions, term.key));
             }
             return facet;
@@ -1263,134 +1308,141 @@ const ResultTable = search.ResultTable = createReactClass({
                 </div>
             </div>
         );
-    },
-});
+    }
+}
+
+ResultTable.propTypes = {
+    context: PropTypes.object,
+    actions: PropTypes.array,
+    restrictions: PropTypes.object,
+    assemblies: PropTypes.array, // List of assemblies of all 'File' objects in search results
+    searchBase: PropTypes.string,
+    onChange: PropTypes.func,
+    currentRegion: PropTypes.func,
+};
+
+ResultTable.getDefaultProps = {
+    restrictions: {},
+    searchBase: '',
+};
+
+ResultTable.childContextTypes = {
+    actions: PropTypes.array,
+};
+
+ResultTable.contextTypes = {
+    session: React.PropTypes.object,
+};
 
 
-const BrowserTabQuickView = createReactClass({
-    render: function () {
-        return <div>Quick View <span className="beta-badge">BETA</span></div>;
-    },
-});
+const BrowserTabQuickView = function () {
+    return <div>Quick View <span className="beta-badge">BETA</span></div>;
+};
 
 
-const ResultTableList = createReactClass({
-    propTypes: {
-        results: PropTypes.array.isRequired, // Array of search results to display
-        columns: PropTypes.object.isRequired, // Columns from search results
-        tabbed: PropTypes.bool, // True if table is in a tab
-    },
+const ResultTableList = (props) => {
+    const { results, columns, tabbed } = props;
+    return (
+        <ul className={`nav result-table${tabbed ? ' result-table-tabbed' : ''}`} id="result-table">
+            {results.length ?
+                results.map(result => listing({ context: result, columns: columns, key: result['@id'] }))
+            : null}
+        </ul>
+    );
+};
 
-    render: function () {
-        const { results, columns, tabbed } = this.props;
-        return (
-            <ul className={`nav result-table${tabbed ? ' result-table-tabbed' : ''}`} id="result-table">
-                {results.length ?
-                    results.map(result => listing({ context: result, columns: columns, key: result['@id'] }))
-                : null}
-            </ul>
-        );
-    },
-});
+ResultTableList.propTypes = {
+    results: PropTypes.array.isRequired, // Array of search results to display
+    columns: PropTypes.object.isRequired, // Columns from search results
+    tabbed: PropTypes.bool, // True if table is in a tab
+};
 
 
 // Display a local genome browser in the ResultTable where search results would normally go. This
 // only gets displayed if the query string contains only one type and it's "File."
-const ResultBrowser = createReactClass({
-    propTypes: {
-        files: PropTypes.array, // Array of files whose browser we're rendering
-        assembly: PropTypes.string, // Filter `files` by this assembly
-        datasets: PropTypes.array, // One or more '/dataset/ENCSRnnnXXX/' that files belong to
-        limitFiles: PropTypes.bool, // True to limit browsing to 20 files
-        currentRegion: PropTypes.func,
-    },
-
-    render: function () {
-        let visUrl = '';
-        const datasetCount = this.props.datasets.length;
-        let region;  // optionally make a persistent region
-        const lastRegion = this.props.currentRegion();
-        if (lastRegion && lastRegion.assembly === this.props.assembly) {
-            region = lastRegion.region;
-            console.log('found region %s', region);
+const ResultBrowser = (props) => {
+    let visUrl = '';
+    const datasetCount = props.datasets.length;
+    let region;  // optionally make a persistent region
+    const lastRegion = props.currentRegion();
+    if (lastRegion && lastRegion.assembly === props.assembly) {
+        region = lastRegion.region;
+        console.log('found region %s', region);
+    }
+    if (datasetCount === 1) {
+        // /datasets/{ENCSR000AEI}/@@hub/{hg19}/jsonout/trackDb.txt
+        visUrl = `${props.datasets[0]}/@@hub/${props.assembly}/jsonout/trackDb.txt`;
+    } else if (datasetCount > 1) {
+        // /batch_hub/type%3DExperiment%2C%2Caccession%3D{ENCSR000AAA}%2C%2Caccession%3D{ENCSR000AEI}%2C%2Caccjson/{hg19}/trackDb.txt
+        for (let ix = 0; ix < datasetCount; ix += 1) {
+            const accession = props.datasets[ix].split('/')[2];
+            visUrl += `accession=${accession}%2C%2C`;
         }
-        if (datasetCount === 1) {
-            // /datasets/{ENCSR000AEI}/@@hub/{hg19}/jsonout/trackDb.txt
-            visUrl = `${this.props.datasets[0]}/@@hub/${this.props.assembly}/jsonout/trackDb.txt`;
-        } else if (datasetCount > 1) {
-            // /batch_hub/type%3DExperiment%2C%2Caccession%3D{ENCSR000AAA}%2C%2Caccession%3D{ENCSR000AEI}%2C%2Caccjson/{hg19}/trackDb.txt
-            for (let ix = 0; ix < datasetCount; ix += 1) {
-                const accession = this.props.datasets[ix].split('/')[2];
-                visUrl += `accession=${accession}%2C%2C`;
-            }
-            visUrl = `batch_hub/type=Experiment/${visUrl}&accjson/${this.props.assembly}/trackDb.txt`;
-        }
-        if (datasetCount > 0) {
-            return (
-                <FetchedData ignoreErrors>
-                    <Param name="visBlobs" url={visUrl} />
-                    <GenomeBrowser files={this.props.files} assembly={this.props.assembly} limitFiles={this.props.limitFiles} region={region} currentRegion={this.props.currentRegion} />
-                </FetchedData>
-            );
-        }
+        visUrl = `batch_hub/type=Experiment/${visUrl}&accjson/${props.assembly}/trackDb.txt`;
+    }
+    if (datasetCount > 0) {
         return (
-            <div>
-                <GenomeBrowser files={this.props.files} assembly={this.props.assembly} limitFiles={this.props.limitFiles} region={region} currentRegion={this.props.currentRegion} />
-            </div>
+            <FetchedData ignoreErrors>
+                <Param name="visBlobs" url={visUrl} />
+                <GenomeBrowser files={props.files} assembly={props.assembly} limitFiles={props.limitFiles} region={region} currentRegion={props.currentRegion} />
+            </FetchedData>
         );
-    },
-});
+    }
+    return (
+        <div>
+            <GenomeBrowser files={props.files} assembly={props.assembly} limitFiles={props.limitFiles} region={region} currentRegion={props.currentRegion} />
+        </div>
+    );
+};
+
+ResultBrowser.propTypes = {
+    files: PropTypes.array, // Array of files whose browser we're rendering
+    assembly: PropTypes.string, // Filter `files` by this assembly
+    datasets: PropTypes.array, // One or more '/dataset/ENCSRnnnXXX/' that files belong to
+    limitFiles: PropTypes.bool, // True to limit browsing to 20 files
+    currentRegion: PropTypes.func,
+};
 
 
 // Display a dropdown menu of the given assemblies.
-const AssemblyChooser = createReactClass({
-    propTypes: {
-        assemblies: PropTypes.array, // Array of assemblies to include in the dropdown
-        currentAssembly: PropTypes.string, // Currently selected assembly
-        assemblyChange: PropTypes.func, // Function to call when the user chooses a new assembly
-    },
+const AssemblyChooser = (props) => {
+    const { assemblies, currentAssembly, assemblyChange } = props;
 
-    render: function () {
-        const { assemblies, currentAssembly, assemblyChange } = this.props;
+    return (
+        <select className="form-control" value={currentAssembly} onChange={assemblyChange}>
+            {assemblies.map((assembly, i) =>
+                <option key={i} value={assembly}>{assembly}</option>
+            )}
+        </select>
+    );
+};
 
-        return (
-            <select className="form-control" value={currentAssembly} onChange={assemblyChange}>
-                {assemblies.map((assembly, i) =>
-                    <option key={i} value={assembly}>{assembly}</option>
-                )}
-            </select>
-        );
-    },
-});
+AssemblyChooser.propTypes = {
+    assemblies: PropTypes.array, // Array of assemblies to include in the dropdown
+    currentAssembly: PropTypes.string, // Currently selected assembly
+    assemblyChange: PropTypes.func, // Function to call when the user chooses a new assembly
+};
 
 
-const Search = search.Search = createReactClass({
-    propTypes: {
-        context: PropTypes.object,
-    },
+class Search extends React.Component {
+    constructor() {
+        super();
 
-    contextTypes: {
-        location_href: PropTypes.string,
-        navigate: PropTypes.func,
-    },
+        // Bind `this` to non-React methods.
+        this.currentRegion = this.currentRegion.bind(this);
+    }
 
-    // optionally make a persistent region
-    lastRegion: {
-        assembly: React.PropTypes.string,
-        region: React.PropTypes.string,
-    },
-
-    currentRegion: function (assembly, region) {
+    currentRegion(assembly, region) {
         if (assembly && region) {
             this.lastRegion = {
                 assembly: assembly,
                 region: region,
             };
         }
-        return this.lastRegion;
-    },
+        return Search.lastRegion;
+    }
 
-    render: function () {
+    render() {
         const context = this.props.context;
         const notification = context.notification;
         const searchBase = url.parse(this.context.location_href).search || '';
@@ -1414,7 +1466,22 @@ const Search = search.Search = createReactClass({
                 : <h4>{notification}</h4>}
             </div>
         );
-    },
-});
+    }
+}
+
+Search.propTypes = {
+    context: PropTypes.object,
+};
+
+Search.contextTypes = {
+    location_href: PropTypes.string,
+    navigate: PropTypes.func,
+};
+
+// optionally make a persistent region
+Search.lastRegion = {
+    assembly: React.PropTypes.string,
+    region: React.PropTypes.string,
+};
 
 globals.content_views.register(Search, 'Search');
