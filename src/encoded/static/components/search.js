@@ -684,22 +684,30 @@ Image.propTypes = {
 globals.listing_views.register(Image, 'Image');
 
 
-// If the given term is selected, return the href for the term
+// If the given term is selected, return the href for the term. It can return:
+// * null = Term isn't selected
+// * URI string = Term is selected, and the string deselects the given term.
 function termSelected(term, facet, filters) {
     let matchingFilter;
 
-    const selected = Object.keys(filters).some((filterKey) => {
-        const filter = filters[filterKey];
+    // Run through the search result filtets to decide whether the given term is selected.
+    const selected = filters.some((filter) => {
         if (facet.type === 'exists') {
+            // Facets with an "exists" property defined in the schema need special handling to
+            // allow for yes/no display.
             if ((filter.field === `${facet.field}!` && term === 'no') ||
                 (filter.field === facet.field && term === 'yes')) {
                 matchingFilter = filter;
                 return true;
             }
         } else if (filter.field === facet.field && filter.term === term) {
+            // The facet field and the given term match a filter, so save that filter so we can
+            // extract its `remove` link.
             matchingFilter = filter;
             return true;
         }
+
+        // Not an "exists" term, and not a selected term.
         return false;
     });
     if (selected) {
@@ -719,8 +727,9 @@ function countSelectedTerms(terms, facet, filters) {
     return count;
 }
 
+// Display one term within a facet.
 const Term = (props) => {
-    const { filters, facet, total, canDeselect, searchBase, onFilter } = props;
+    const { filters, facet, total, canDeselect, searchBase, onFilter, negationFilters } = props;
     const term = props.term.key;
     const count = props.term.doc_count;
     const title = props.title || term;
@@ -762,17 +771,19 @@ const Term = (props) => {
 };
 
 Term.propTypes = {
-    filters: PropTypes.array,
-    term: PropTypes.object,
-    title: PropTypes.string,
-    facet: PropTypes.object,
-    total: PropTypes.number,
+    filters: PropTypes.array, // Search result filters
+    term: PropTypes.object, // One element of the terms array from a single facet
+    title: PropTypes.string, // Optional override for facet title
+    facet: PropTypes.object, // Search result facet object containing the given term
+    total: PropTypes.number, // Total number of items this term includes
     canDeselect: PropTypes.bool,
-    searchBase: PropTypes.string,
+    searchBase: PropTypes.string, // Base URI for the search
     onFilter: PropTypes.func,
+    negationFilters: PropTypes.array, // Array of search result filters for negating terms
 };
 
 
+// Wrapper for <Term> to display the "Data Type" facet terms.
 const TypeTerm = (props) => {
     const { filters, total } = props;
     const term = props.term.key;
@@ -811,18 +822,27 @@ class Facet extends React.Component {
 
     render() {
         const { facet, filters } = this.props;
-        let title = facet.title;
+        const title = facet.title;
         const field = facet.field;
         const total = facet.total;
         const termID = title.replace(/\s+/g, '');
+
+        // Make a list of terms for this facet that should appear, by filtering out terms that
+        // shouldn't. Any terms with a zero doc_count get filtered out, unless the term appears in
+        // the search result filter list.
         const terms = facet.terms.filter((term) => {
             if (term.key) {
-                const found = Object.keys(filters).some(filterKey => filters[filterKey].term === term.key);
-                if (!found) {
-                    return term.doc_count > 0;
-                }
-                return found;
+                // See if the facet term also exists in the search result filters (i.e. the term
+                // exists in the URL query string).
+                const found = filters.some(filter => filter.term === term.key);
+
+                // If the term wasn't in the filters list, allow its display only if it has a non-
+                // zero doc_count. If the term *does* exist in the filters list, display it
+                // regardless of its doc_count.
+                return found || term.doc_count > 0;
             }
+
+            // The term exists, but without a key, so don't allow its display.'
             return false;
         });
         const moreTerms = terms.slice(5);
@@ -833,30 +853,41 @@ class Facet extends React.Component {
         const moreSecClass = `collapse${(moreTermSelected || this.state.facetOpen) ? ' in' : ''}`;
         const seeMoreClass = `btn btn-link${(moreTermSelected || this.state.facetOpen) ? '' : ' collapsed'}`;
 
-        // Handle audit facet titles
+        // Audit facet titles get mapped to a corresponding icon.
+        let titleComponent = title;
         if (field.substr(0, 6) === 'audit.') {
+            // Get the human-readable part of the audit facet title.
             const titleParts = title.split(': ');
+
+            // Get the non-human-readable part so we can generate a corresponding CSS class name.
             const fieldParts = field.match(/^audit.(.+).category$/i);
             if (fieldParts && fieldParts.length === 2 && titleParts) {
+                // We got something that looks like an audit title. Generate a CSS class name for
+                // the corresponding audit icon, and generate the title.
                 const iconClass = `icon audit-activeicon-${fieldParts[1].toLowerCase()}`;
-                title = <span>{titleParts[0]}: <i className={iconClass} /></span>;
+                titleComponent = <span>{titleParts[0]}: <i className={iconClass} /></span>;
             } else {
-                title = <span>{title}</span>;
+                // Something about the audit facet title doesn't match expectations, so just
+                // display the given non-human-readable audit title.
+                titleComponent = <span>{title}</span>;
             }
         }
 
         if ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
             return (
                 <div className="facet">
-                    <h5>{title}</h5>
+                    <h5>{titleComponent}</h5>
                     <ul className="facet-list nav">
                         <div>
+                            {/* Display the first five terms of the facet */}
                             {terms.slice(0, 5).map(term =>
                                 <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />
                             )}
                         </div>
                         {terms.length > 5 ?
                             <div id={termID} className={moreSecClass}>
+                                {/* If the user has expanded the "+ See more" button, then display
+                                     the rest of the terms beyond 5 */}
                                 {moreTerms.map(term =>
                                     <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />
                                 )}
@@ -864,6 +895,7 @@ class Facet extends React.Component {
                         : null}
                         {(terms.length > 5 && !moreTermSelected) ?
                             <div className="pull-right">
+                                {/* Display the "+ See more" button if more than five terms exist for this facet */}
                                 <small>
                                     <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={`#${termID}`} onClick={this.handleClick} />
                                 </small>
@@ -886,6 +918,7 @@ Facet.propTypes = {
 
 Facet.defaultProps = {
     width: 'inherit',
+    negationFilters: [],
 };
 
 
@@ -952,46 +985,50 @@ TextFilter.propTypes = {
 };
 
 
-// Displays the entire list of facets. It containts
+// Displays the entire list of facets. It contains a number of <Facet> cmoponents.
 class FacetList extends React.Component {
     render() {
-        const { context, mode, orientation, hideTextFilter } = this.props;
+        const { context, facets, filters, mode, orientation, hideTextFilter } = this.props;
 
-        // Get all facets, and "normal" facets, meaning non-audit facets
-        const facets = this.props.facets;
+        // Get "normal" facets, meaning non-audit facets.
         const normalFacets = facets.filter(facet => facet.field.substring(0, 6) !== 'audit.');
 
-        const filters = this.props.filters;
         let width = 'inherit';
         if (!facets.length && mode !== 'picker') return <div />;
         let hideTypes;
         if (mode === 'picker') {
+            // The edit forms item picker (search results in an edit item) shows the Types facet.
             hideTypes = false;
         } else {
+            // Hide the types facet if one "type=" term exists in the URL. and it's not the only
+            // facet.
             hideTypes = filters.filter(filter => filter.field === 'type').length === 1 && normalFacets.length > 1;
         }
         if (orientation === 'horizontal') {
             width = `${100 / facets.length}%`;
         }
 
-        // See if we need the Clear Filters link or not. context.clear_filters
-        let clearButton; // JSX for the clear button
+        // See if we need the Clear Filters link or not. context.clear_filters.
+        let clearButton;
         const searchQuery = context && context['@id'] && url.parse(context['@id']).search;
         if (searchQuery) {
-            // Convert search query string to a query object for easy parsing
+            // Convert search query string to a query object for easy parsing.
             const terms = queryString.parse(searchQuery);
 
             // See if there are terms in the query string aside from `searchTerm`. We have a Clear
-            // Filters button if we do
+            // Filters button if we do.
             let nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'searchTerm');
             clearButton = nonPersistentTerms && terms.searchTerm;
 
-            // If no Clear Filters button yet, do the same check with `type` in the query string
+            // If no Clear Filters button yet, do the same check with `type` in the query string.
             if (!clearButton) {
                 nonPersistentTerms = _(Object.keys(terms)).any(term => term !== 'type');
                 clearButton = nonPersistentTerms && terms.type;
             }
         }
+
+        // Collect negation filters ie filters with fields ending in an exclamation point.
+        const negationFilters = filters.filter(filter => filter.field.charAt(filter.field.length - 1) === '!');
 
         return (
             <div className="box facets">
@@ -1006,7 +1043,16 @@ class FacetList extends React.Component {
                         if (hideTypes && facet.field === 'type') {
                             return <span key={facet.field} />;
                         }
-                        return <Facet {...this.props} key={facet.field} facet={facet} filters={filters} width={width} />;
+                        return (
+                            <Facet
+                                {...this.props}
+                                key={facet.field}
+                                facet={facet}
+                                filters={filters}
+                                width={width}
+                                negationFilters={negationFilters}
+                            />
+                        );
                     })}
                 </div>
             </div>
