@@ -249,6 +249,7 @@ class RNAi(Item):
     embedded = ['source', 'documents', 'target']
     rev = {
         'characterizations': ('RNAiCharacterization', 'characterizes'),
+        'associated_techniques': ('ModificationTechnique', 'rnais')
     }
 
     @calculated_property(schema={
@@ -261,6 +262,19 @@ class RNAi(Item):
     })
     def characterizations(self, request, characterizations):
         return paths_filtered_by_status(request, characterizations)
+
+
+    @calculated_property(schema={
+        "title": "Associated techniques",
+        "description": "Genetic modifications associated with this insert by these techniques.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "ModificationTechnique.rnais",
+        },
+    })
+    def associated_techniques(self, request, associated_techniques):
+        return paths_filtered_by_status(request, associated_techniques)
 
 
 @collection(
@@ -348,3 +362,35 @@ class SoftwareVersion(Item):
 class Insert(Item):
     item_type = 'insert'
     schema = load_schema('encoded:schemas/insert.json')
+
+    rev = {
+        'associated_techniques': ('ModificationTechnique', 'inserts')
+    }
+
+    @calculated_property(schema={
+        "title": "Associated techniques",
+        "description": "Genetic modifications associated with this insert by these techniques.",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "ModificationTechnique.inserts",
+        },
+    })
+    def associated_modifications(self, request, associated_techniques):
+        return paths_filtered_by_status(request, associated_techniques)
+
+
+    @calculated_property(schema={
+        "title": "targeted_genes",
+        "description": "Targets associated with the application of this technique",
+        "type": "string",
+        "linkTo": "Target",
+    }, define=True)
+    def targeted_genes(self, request, associated_techniques):
+        genes = set()
+        for t in associated_techniques:
+            tech = request.embed(t, '@@object')
+            if 'targeted_genes' in tech:
+                for g in tech.get('targeted_genes'):
+                    genes.add(g)
+        return list(genes)

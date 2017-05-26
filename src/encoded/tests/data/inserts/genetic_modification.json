@@ -13,7 +13,8 @@
         "source":"gregory-crawford",
         "modification_type": "replacement",
         "modification_techniques": [
-        	"encode:crispr-test-1"
+        	"encode:crispr-test-1",
+            "encode:crispr-test-2"
         ],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "target": "/targets/H3K4me3-human",
@@ -170,5 +171,27 @@
         "treatments": ["robert-waterston:mutagen_bombardment"],
         "status": "in progress",
         "aliases": ["robert-waterston:mes-4-del-mod"]
+    },
+    {
+        "uuid": "121b36d2-09c8-4aa6-8137-8497216a3c23",
+        "award": "/awards/U54HG006996/",
+        "lab": "sherman-weissman",
+        "modification_type": "interference",
+        "purpose": "repression",
+        "target": "CTCF-human",
+        "modification_techniques": ["sherman-weissman:CTCF-RNAi-transfection"],
+        "status": "in progress",
+        "aliases": ["sherman-weissman:CTCF-RNAi-interference"]
+    },
+    {
+        "uuid": "e5af5c72-7c7d-41fd-9b9b-d442e18c56db",
+        "award": "/awards/U54HG006996/",
+        "lab": "gregory-crawford",
+        "modification_type": "interference",
+        "purpose": "repression",
+        "target": "CTCF-human",
+        "modification_techniques": ["gregory-crawford:CTCF-shRNA-transfection"],
+        "status": "in progress",
+        "aliases": ["gregory-crawford:CTCF-shRNA-interference"]
     }
 ]

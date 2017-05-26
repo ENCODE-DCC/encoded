@@ -1,6 +1,6 @@
 [
     {
-        "insertion_type": "candidate regulatory sequence",
+        "insertion_type": "candidate regulatory sequence (proximal)",
         "insert_sequence": "CTCGGTG",
         "lab": "/labs/robert-waterston/",
         "aliases": ["encode:crispr-insert-1"],
@@ -10,7 +10,7 @@
         "uuid": "9b615d51-8eb9-46ac-a024-d07bd03f7289"
     },
     {
-        "insertion_type": "candidate regulatory sequence",
+        "insertion_type": "candidate regulatory sequence (distal)",
         "insert_sequence": "ACTCGT",
         "lab": "/labs/robert-waterston/",
         "aliases": ["encode:crispr-insert-2"],
@@ -20,7 +20,7 @@
         "uuid": "c5ef65cf-fb38-4359-8c6e-c87f33e328ca"
     },
     {
-        "insertion_type": "candidate regulatory sequence",
+        "insertion_type": "candidate regulatory sequence (distal)",
         "insert_sequence": "ACTCGGACCTACGGGTACCACTGAGCTAT",
         "lab": "/labs/gregory-crawford/",
         "aliases": ["encode:tale-insert-1"],
@@ -82,7 +82,7 @@
         "description": "Enhancer-like element 164 from Encyclopedia V2.0",
         "lab": "jay-shendure",
         "source": "sigma",
-        "insertion_type": "candidate regulatory sequence",
+        "insertion_type": "candidate regulatory sequence (proximal)",
         "insert_genome_coordinates": {
             "assembly": "GRCh38",
             "chromosome": "6",
@@ -100,7 +100,7 @@
         "description": "Enhancer-like element 537 from Encyclopedia V2.0",
         "lab": "jay-shendure",
         "source": "sigma",
-        "insertion_type": "candidate regulatory sequence",
+        "insertion_type": "candidate regulatory sequence (distal)",
         "insert_genome_coordinates": {
             "assembly": "GRCh38",
             "chromosome": "12",
@@ -118,7 +118,7 @@
         "lab": "jay-shendure",
         "source": "sigma",
         "source_data": ["/files/ENCFF015OKV/"],
-        "insertion_type": "candidate regulatory sequence",
+        "insertion_type": "candidate regulatory sequence (distal)",
         "insert_sequence": "ACGGATCGGTTAGCTAGCTTGGAGATCAAATACTAGATCGATCGTTTAGACCCAGTGCTAGCTTTAGCTAGGGATGCGATCGACGTAGCGTATGCGAC",
         "submitted_by": "duis.pede@nonummy.scelerisque",
         "uuid": "2c0d1d8a-6f4e-4280-bba6-c42274cb5889"
@@ -130,7 +130,7 @@
         "lab": "len-pennacchio",
         "source": "len-pennacchio",
         "source_data": ["/files/ENCFF015OKV/"],
-        "insertion_type": "candidate regulatory sequence",
+        "insertion_type": "candidate regulatory sequence (distal)",
         "insert_sequence": "ACGGATCGGTTAGCTACCCAGTGCTAGCTTTAGCTAGGGATGCGATCGACGTAGCGTATGCGAC",
         "submitted_by": "duis.pede@nonummy.scelerisque",
         "uuid": "f03931cb-a8dd-4749-b96d-fe2330aa813d"
@@ -142,7 +142,7 @@
         "lab": "len-pennacchio",
         "source": "sigma",
         "source_data": ["/files/ENCFF015OKV/"],
-        "insertion_type": "candidate regulatory sequence",
+        "insertion_type": "candidate regulatory sequence (proximal)",
         "insert_sequence": "ACGGATCGGTTAGCTAGCTTGGAGATCAAATACTAGATCGATCGTTTAGACCCAGTGCTAGGATCGACGTAGCGTATGCGAC",
         "submitted_by": "duis.pede@nonummy.scelerisque",
         "uuid": "c610f7bc-c5e7-45ea-a7c5-280a574f114f"

@@ -1,10 +1,12 @@
 from snovault import (
     abstract_collection,
     collection,
+    calculated_property,
     load_schema,
 )
 from .base import (
     Item,
+    paths_filtered_by_status,
 )
 
 
@@ -17,6 +19,37 @@ from .base import (
 class ModificationTechnique(Item):
     base_types = ['ModificationTechnique'] + Item.base_types
     # embedded = ['lab', 'award', 'source']
+
+    rev = {
+        'associated_modifications': ('GeneticModification', 'modification_techniques')
+    }
+
+    @calculated_property(schema={
+        "title": "Associated modifications",
+        "description": "Genetic modifications associated with the application of this technique",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "GeneticModification.modification_techniques",
+        },
+    })
+    def associated_modifications(self, request, associated_modifications):
+        return paths_filtered_by_status(request, associated_modifications)
+
+
+    @calculated_property(schema={
+        "title": "targeted_genes",
+        "description": "Targets associated with the application of this technique",
+        "type": "string",
+        "linkTo": "Target",
+    }, define=True)
+    def targeted_genes(self, request, associated_modifications):
+        genes = set()
+        for m in associated_modifications:
+            mod = request.embed(m, '@@object')
+            if 'target' in mod:
+                genes.add(mod.get('target'))
+        return list(genes)
 
 
 @collection(

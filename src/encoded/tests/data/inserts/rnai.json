@@ -19,5 +19,31 @@
         "url": "http://www.broadinstitute.org/rnai/public/clone/details?cloneId=TRCN0000001062",
         "uuid": "d2dc22ba-5e7c-4626-87ac-257c6fff090c",
         "vector_backbone_name": "pLKO.1"
+    },
+    {
+        "aliases": [
+            "sherman-weissman:CTCF-RNAi-1"
+        ],
+        "award": "U54HG006996",
+        "lab": "sherman-weissman",
+        "rnai_sequence": "GATGAAGACTGAAGTAATG",
+        "rnai_type": "siRNA",
+        "source": "sigma",
+        "submitted_by": "metus.donec@nisl.montes",
+        "target": "CTCF-human",
+        "uuid": "c2fcce1e-7865-4a1b-9ce8-870129b9ab50"
+    },
+    {
+        "aliases": [
+            "sherman-weissman:CTCF-RNAi-2"
+        ],
+        "award": "U54HG006996",
+        "lab": "sherman-weissman",
+        "rnai_sequence": "GGAGAAACGAAGAAGAGTA",
+        "rnai_type": "siRNA",
+        "source": "sigma",
+        "submitted_by": "metus.donec@nisl.montes",
+        "target": "CTCF-human",
+        "uuid": "b203017d-0059-48f4-a0dd-b05425be9b94"
     }
 ]

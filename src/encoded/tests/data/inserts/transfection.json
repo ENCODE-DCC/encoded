@@ -4,7 +4,7 @@
         "aliases": ["kevin-white:eGFP-E2F1-transfection"],
         "transfection_type": "stable",
         "transfection_method": "chemical",
-        "insert": "kevin-white:eGFP-tag-insert",
+        "inserts": ["kevin-white:eGFP-tag-insert"],
         "lab": "kevin-white",
         "award": "U41HG007355",
         "submitted_by": "eni.lectus@nullam.sed"
@@ -14,7 +14,7 @@
         "aliases": ["kevin-white:3XFLAG-pab-1-transfection"],
         "transfection_type": "stable",
         "transfection_method": "chemical",
-        "insert": "kevin-white:3XFLAG-tag-insert",
+        "inserts": ["kevin-white:3XFLAG-tag-insert"],
         "lab": "kevin-white",
         "award": "U41HG007355",
         "submitted_by": "eni.lectus@nullam.sed"
@@ -24,7 +24,7 @@
         "aliases": ["len-pennacchio:element-121-injection"],
         "transfection_type": "stable",
         "transfection_method": "microinjection",
-        "insert": "len-pennacchio:element-121",
+        "inserts": ["len-pennacchio:element-121"],
         "lab": "len-pennacchio",
         "award": "U41HG007355",
         "submitted_by": "eni.lectus@nullam.sed"
@@ -35,9 +35,32 @@
         "aliases": ["len-pennacchio:element-428-injection"],
         "transfection_type": "stable",
         "transfection_method": "microinjection",
-        "insert": "len-pennacchio:element-428",
+        "inserts": ["len-pennacchio:element-428"],
         "lab": "len-pennacchio",
         "award": "U41HG007355",
         "submitted_by": "eni.lectus@nullam.sed"
+    },
+    {
+        "uuid": "87cb1d03-3a0f-4a73-b8eb-c51d7b4a70ba",
+        "aliases": ["sherman-weissman:CTCF-RNAi-transfection"],
+        "transfection_type": "transient",
+        "transfection_method": "chemical",
+        "lab": "sherman-weissman",
+        "award": "U54HG006996",
+        "rnais": [
+            "sherman-weissman:CTCF-RNAi-1",
+            "sherman-weissman:CTCF-RNAi-2"
+        ]
+    },
+    {
+        "uuid": "2b73a970-1382-40d7-b1d0-a7c1f86ebf39",
+        "aliases": ["gregory-crawford:CTCF-shRNA-transfection"],
+        "transfection_type": "stable",
+        "transfection_method": "transduction",
+        "award": "ENCODE2",
+        "lab": "gregory-crawford",
+        "rnais": [
+            "gregory-crawford:rnai-test"
+        ]
     }
 ]

@@ -85,12 +85,19 @@
                 "microinjection"
             ]
         },
-        "insert": {
+        "inserts": {
             "title": "Insert",
-            "description": "Insert introduced if applied to non-deletion purposes purposes.",
-            "type": "string",
-            "comment": "see insert.json for available identifiers",
-            "linkTo": "Insert"
+            "description": "DNA insert introduced if applied for non-deletion purposes.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "title": "Insert",
+                "description": "DNA insert introduced if applied for non-deletion purposes.",
+                "type": "string",
+                "comment": "see insert.json for available identifiers",
+                "linkTo": "Insert"
+            }
         },
         "rnais": {
             "title": "RNAi vectors",

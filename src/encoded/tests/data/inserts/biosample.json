@@ -1056,7 +1056,7 @@
         "uuid": "eb4c9403-e9e7-486f-ade9-d5d9362975ed"
     },
     {
-        "_test": "tagged_protein_transfection",
+        "_test": "tagged_protein_transfection_worm",
         "accession": "ENCBS001TAG",
         "aliases": ["encode:worm_GFP_1"],
         "award": "U41HG007355",
@@ -1070,6 +1070,22 @@
         "status": "in progress",
         "submitted_by": "duis.pede@nonummy.scelerisque",
         "uuid": "93083cc2-18fe-4c9b-b923-769f5cd58c03"
+    },
+    {
+        "_test": "tagged_protein_transfection",
+        "accession": "ENCBS002TAG",
+        "aliases": ["kevin-white:K562-eGFP-E2F1"],
+        "award": "/awards/U54HG006996/",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_term_name": "K562",
+        "biosample_type": "immortalized cell line",
+        "genetic_modifications": ["kevin-white:eGFP-E2F1-tag"],
+        "donor": "/human-donors/ENCDO000HUM/",
+        "lab": "kevin-white",
+        "source": "kevin-white",
+        "status": "released",
+        "submitted_by": "duis.pede@nonummy.scelerisque",
+        "uuid": "bffcb87a-4051-4f42-a0c0-da1741445a20"
     },
     {
         "_test": "deletion_strain_worm",
@@ -1086,5 +1102,39 @@
         "status": "in progress",
         "submitted_by": "duis.pede@nonummy.scelerisque",
         "uuid": "e07941e7-c86d-4b10-bc48-a7183e344faf"
+    },
+    {
+        "_test": "siRNA_transfection",
+        "accession": "ENCBS001SIR",
+        "aliases": ["encode:K562_CTCF_RNAi"],
+        "award": "/awards/U54HG006996/",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_term_name": "K562",
+        "biosample_type": "immortalized cell line",
+        "donor": "/human-donors/ENCDO000HUM/",
+        "genetic_modifications": ["sherman-weissman:CTCF-RNAi-interference"],
+        "lab": "/labs/sherman-weissman/",
+        "organism": "human",
+        "source": "kevin-white",
+        "status": "in progress",
+        "submitted_by": "duis.pede@nonummy.scelerisque",
+        "uuid": "e92a433e-f445-4d7b-85d6-26a666badd3d"
+    },
+    {
+        "_test": "shRNA_transfection",
+        "accession": "ENCBS001SHR",
+        "aliases": ["encode:HepG2_CTCF_shRNA"],
+        "award": "ENCODE2",
+        "biosample_term_id": "EFO:0001187",
+        "biosample_term_name": "HepG2",
+        "biosample_type": "immortalized cell line",
+        "donor": "/human-donors/ENCDO000HUM/",
+        "genetic_modifications": ["gregory-crawford:CTCF-shRNA-interference"],
+        "lab": "/labs/sherman-weissman/",
+        "organism": "human",
+        "source": "gregory-crawford",
+        "status": "in progress",
+        "submitted_by": "duis.pede@nonummy.scelerisque",
+        "uuid": "fd6ccc65-6ba8-475f-a9fa-bc2493d1e736"
     }
 ]
