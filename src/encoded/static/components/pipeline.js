@@ -1,5 +1,6 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 var panel = require('../libs/bootstrap/panel');
 var {Modal, ModalHeader, ModalBody, ModalFooter} = require('../libs/bootstrap/modal');
 var url = require('url');
@@ -40,6 +41,10 @@ var PanelLookup = function (props) {
 
 
 var PipelineComponent = createReactClass({
+    contextTypes: {
+        session: PropTypes.object, // Login information from <App>
+    },
+
     getInitialState: function() {
         return {
             infoNodeId: '', // ID of node whose info panel is open
@@ -207,11 +212,11 @@ var PipelineComponent = createReactClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />
                             </div>
-                            {this.props.auditIndicators(context.audit, 'pipeline-audit')}
+                            {this.props.auditIndicators(context.audit, 'pipeline-audit', { session: this.context.session })}
                         </div>
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'pipeline-audit', { except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'pipeline-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody>
                         <dl className="key-value">
@@ -437,6 +442,10 @@ globals.graph_detail.register(StepDetailView, 'Step');
 
 
 var ListingComponent = createReactClass({
+    contextTypes: {
+        session: PropTypes.object, // Login information from <App>
+    },
+
     render: function() {
         var result = this.props.context;
         var publishedBy = [];
@@ -466,7 +475,7 @@ var ListingComponent = createReactClass({
                         <p className="type meta-title">Pipeline</p>
                         <p className="type">{' ' + result['accession']}</p>
                         {result.status ? <p className="type meta-status">{' ' + result.status}</p> : ''}
-                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>{result['title']}</a>
@@ -481,7 +490,7 @@ var ListingComponent = createReactClass({
                         : null}
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, forcedEditLink: true })}
             </li>
         );
     }

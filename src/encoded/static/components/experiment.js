@@ -330,11 +330,11 @@ var ExperimentComponent = createReactClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
                             </div>
-                            {this.props.auditIndicators(context.audit, 'experiment-audit')}
+                            {this.props.auditIndicators(context.audit, 'experiment-audit', { session: this.context.session })}
                         </div>
                    </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'experiment-audit', { except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'experiment-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
