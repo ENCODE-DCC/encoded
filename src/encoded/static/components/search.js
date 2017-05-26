@@ -99,6 +99,10 @@ const PickerActions = module.exports.PickerActions = createReactClass ({
 });
 
 var ItemComponent = createReactClass({
+    contextTypes: {
+        session: PropTypes.object, // Login information from <App>
+    },
+
     render: function() {
         var result = this.props.context;
         var title = globals.listing_titles.lookup(result)({context: result});
@@ -120,7 +124,7 @@ var ItemComponent = createReactClass({
                         {result.description}
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
         );
     },
@@ -224,6 +228,10 @@ const StatusIndicators = createReactClass({
 });
 
 var AntibodyComponent = createReactClass({
+    contextTypes: {
+        session: PropTypes.object, // Login information from <App>
+    },
+
     render: function() {
         var result = this.props.context;
 
@@ -263,7 +271,7 @@ var AntibodyComponent = createReactClass({
                         <p className="type meta-title">Antibody</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
-                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession">
                         {Object.keys(targetTree).map(target =>
@@ -281,7 +289,7 @@ var AntibodyComponent = createReactClass({
                         <div><strong>Product ID / Lot ID: </strong>{result.product_id} / {result.lot_id}</div>
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
         );
     },
@@ -293,6 +301,10 @@ globals.listing_views.register(Antibody, 'AntibodyLot');
 
 
 var BiosampleComponent = createReactClass({
+    contextTypes: {
+        session: PropTypes.object, // Login information from <App>
+    },
+
     render: function() {
         const result = this.props.context;
         const lifeStage = (result.life_stage && result.life_stage !== 'unknown') ? ` ${result.life_stage}` : '';
@@ -327,7 +339,7 @@ var BiosampleComponent = createReactClass({
                         <p className="type meta-title">Biosample</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
-                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -349,7 +361,7 @@ var BiosampleComponent = createReactClass({
                         <div><strong>Source: </strong>{result.source.title}</div>
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
         );
     },
@@ -361,6 +373,10 @@ globals.listing_views.register(Biosample, 'Biosample');
 
 
 var ExperimentComponent = createReactClass({
+    contextTypes: {
+        session: PropTypes.object, // Login information from <App>
+    },
+
     render: function() {
         var result = this.props.context;
 
@@ -393,7 +409,7 @@ var ExperimentComponent = createReactClass({
                         <p className="type meta-title">Experiment</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
-                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -433,7 +449,7 @@ var ExperimentComponent = createReactClass({
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
         );
     },
@@ -445,6 +461,10 @@ globals.listing_views.register(Experiment, 'Experiment');
 
 
 var DatasetComponent =  createReactClass({
+    contextTypes: {
+        session: PropTypes.object, // Login information from <App>
+    },
+
     render: function() {
         const result = this.props.context;
         let biosampleTerm;
@@ -503,7 +523,7 @@ var DatasetComponent =  createReactClass({
                         <p className="type meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
-                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -532,7 +552,7 @@ var DatasetComponent =  createReactClass({
                         <div><strong>Project: </strong>{result.award.project}</div>
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
         );
     },
@@ -544,6 +564,10 @@ globals.listing_views.register(Dataset, 'Dataset');
 
 
 var TargetComponent = createReactClass({
+    contextTypes: {
+        session: PropTypes.object, // Login information from <App>
+    },
+
     render: function() {
         const result = this.props.context;
         return (
@@ -552,7 +576,7 @@ var TargetComponent = createReactClass({
                     <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Target</p>
-                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>
@@ -567,7 +591,7 @@ var TargetComponent = createReactClass({
                         : <em>None submitted</em> }
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
         );
     },
@@ -775,32 +799,37 @@ const Facet = search.Facet = createReactClass({
             }
         }
 
-        return (
-            <div className="facet">
-                <h5>{title}</h5>
-                <ul className="facet-list nav">
-                    <div>
-                        {terms.slice(0, 5).map(term =>
-                            <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />
-                        )}
-                    </div>
-                    {terms.length > 5 ?
-                        <div id={termID} className={moreSecClass}>
-                            {moreTerms.map(term =>
+        if ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
+            return (
+                <div className="facet">
+                    <h5>{title}</h5>
+                    <ul className="facet-list nav">
+                        <div>
+                            {terms.slice(0, 5).map(term =>
                                 <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />
                             )}
                         </div>
-                    : null}
-                    {(terms.length > 5 && !moreTermSelected) ?
-                        <label className="pull-right">
-                            <small>
-                                <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
-                            </small>
-                        </label>
-                    : null}
-                </ul>
-            </div>
-        );
+                        {terms.length > 5 ?
+                            <div id={termID} className={moreSecClass}>
+                                {moreTerms.map(term =>
+                                    <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />
+                                )}
+                            </div>
+                        : null}
+                        {(terms.length > 5 && !moreTermSelected) ?
+                            <label className="pull-right">
+                                <small>
+                                    <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
+                                </small>
+                            </label>
+                        : null}
+                    </ul>
+                </div>
+            );
+        }
+
+        // Facet had all zero terms and was not a "not" facet.
+        return null;
     }
 });
 
