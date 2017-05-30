@@ -73,6 +73,7 @@ brew install libevent libmagic libxml2 libxslt openssl graphviz nginx
 brew install freetype libjpeg libtiff littlecms webp chromedriver
 brew tap petere/postgresql
 brew install postgresql@9.3
+brew link --force postgresql@9.3
 brew install --force node@6
 brew link node@6 --force
 brew cask install java
