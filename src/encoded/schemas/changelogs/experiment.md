@@ -1,8 +1,11 @@
 ## Changelog for experiment.json
 
-### Schema version 11
+### Schema version 12
     
 * *biosample_type* and *biosample_term_id* consistency added to the list of schema dependencies
+
+### Schema version 11
+    
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
 * unsafe characters such as " # @ % ^ & | ~ ; ` [ ] { } and consecutive whitespaces will no longer be allowed in the alias
 
