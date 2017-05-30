@@ -1,5 +1,7 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var color = require('color');
 var svgIcon = require('../libs/svg-icons').svgIcon;
 var globals = require('./globals');
@@ -34,18 +36,18 @@ var COLORS = [
 ];
 
 
-var Matrix = module.exports.Matrix = React.createClass({
+var Matrix = module.exports.Matrix = createReactClass({
 
     contextTypes: {
-        location_href: React.PropTypes.string,
-        navigate: React.PropTypes.func,
-        biosampleTypeColors: React.PropTypes.object // DataColor instance for experiment project
+        location_href: PropTypes.string,
+        navigate: PropTypes.func,
+        biosampleTypeColors: PropTypes.object // DataColor instance for experiment project
     },
 
     // Called when the Visualize button dropdown menu gets opened or closed. `dropdownEl` is the DOM node for the dropdown menu.
     // This sets inline CSS to set the height of the wrapper <div> to make room for the dropdown.
     updateElement: function(dropdownEl) {
-        var wrapperEl = this.refs.hubscontrols.getDOMNode();
+        var wrapperEl = this.refs.hubscontrols;
         var dropdownHeight = dropdownEl.clientHeight;
         if (dropdownHeight === 0) {
             // The dropdown menu has closed

@@ -3,11 +3,12 @@
 
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var globals = require('./globals');
 var _ = require('underscore');
-var parseAndLogError = require('./mixins').parseAndLogError;
 var navigation = require('./navigation');
-var {Modal, ModalHeader, ModalBody, ModalFooter, ModalMixin} = require('../libs/bootstrap/modal');
+var { Modal, ModalHeader, ModalBody, ModalFooter } = require('../libs/bootstrap/modal');
 var ItemStore = require('./lib/store').ItemStore;
 var Form = require('./form').Form;
 var ObjectPicker = require('./inputs').ObjectPicker;
@@ -24,12 +25,10 @@ class AccessKeyStore extends ItemStore {
 }
 
 
-var AccessKeyTable = React.createClass({
-    mixins: [ModalMixin],
-
+var AccessKeyTable = createReactClass({
     contextTypes: {
-        fetch: React.PropTypes.func,
-        session_properties: React.PropTypes.object
+        fetch: PropTypes.func,
+        session_properties: PropTypes.object
     },
 
     getInitialState: function() {
@@ -141,7 +140,7 @@ var AccessKeyTable = React.createClass({
 });
 
 
-var User = module.exports.User = React.createClass({
+var User = module.exports.User = createReactClass({
     render: function() {
         var context = this.props.context;
         var crumbs = [
@@ -206,9 +205,9 @@ var ImpersonateUserSchema = {
 };
 
 
-var ImpersonateUserForm = React.createClass({
+var ImpersonateUserForm = createReactClass({
     contextTypes: {
-        navigate: React.PropTypes.func
+        navigate: PropTypes.func
     },
 
     render: function() {

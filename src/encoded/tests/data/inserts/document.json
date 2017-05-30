@@ -10,7 +10,7 @@
     },
     {
         "aliases": [
-            "ENCODE:HAoSMC_PC_8121902.2P_certificate_of_analysis"
+            "encode:HAoSMC_PC_8121902.2P_certificate_of_analysis"
         ],
         "attachment": "8121902.2P.pdf",
         "award": "ENCODE2",
@@ -45,7 +45,7 @@
     },
     {
         "aliases": [
-            "ENCODE:C2C12_Wold_differentiation_protocol"
+            "encode:C2C12_Wold_differentiation_protocol"
         ],
         "attachment": "C2C12_Wold_protocol.pdf",
         "award": "ENCODE2-Mouse",
@@ -56,7 +56,7 @@
     },
     {
         "aliases": [
-            "ENCODE:C2C12_Wold_growth_protocol"
+            "encode:C2C12_Wold_growth_protocol"
         ],
         "attachment": "C2C12_Wold_protocol.pdf",
         "award": "ENCODE2-Mouse",
@@ -84,7 +84,7 @@
     },
     {
         "aliases": [
-            "ENCODE:diffProtB_6hr_protocol"
+            "encode:diffProtB_6hr_protocol"
         ],
         "attachment": "diffProtB_6hr_protocol.txt",
         "award": "ENCODE2",
@@ -95,7 +95,7 @@
     },
     {
         "aliases": [
-            "ENCODE:EPC_Stam_protocol"
+            "encode:EPC_Stam_protocol"
         ],
         "attachment": "EPC_Stam_protocol.pdf",
         "award": "ENCODE2-Mouse",
@@ -107,7 +107,7 @@
     },
     {
         "aliases": [
-            "ENCODE:Heart_STL003_excision_protocol"
+            "encode:Heart_STL003_excision_protocol"
         ],
         "attachment": "Heart_STL003_excision_protocol.txt",
         "award": "ENCODE2",
@@ -119,7 +119,7 @@
     },
     {
         "aliases": [
-            "ENCODE:Myers_Methyl450_protocol"
+            "encode:Myers_Methyl450_protocol"
         ],
         "attachment": "human.wgEncodeHaibMethyl450.txt",
         "award": "ENCODE2",
@@ -131,7 +131,7 @@
     },
     {
         "aliases": [
-            "ENCODE:K562_protocol"
+            "encode:K562_protocol"
         ],
         "attachment": "K562_protocol.pdf",
         "award": "ENCODE2",
@@ -142,7 +142,7 @@
     },
     {
         "aliases": [
-            "ENCODE:Heart_STL003_general_protocol"
+            "encode:Heart_STL003_general_protocol"
         ],
         "attachment": "LID48879.pdf",
         "award": "ENCODE2",
@@ -154,7 +154,7 @@
     },
     {
         "aliases": [
-            "ENCODE:MCF-7_Crawford_growth_protocol"
+            "encode:MCF-7_Crawford_growth_protocol"
         ],
         "attachment": "MCF-7_Crawford_protocol.pdf",
         "award": "ENCODE2",
@@ -166,7 +166,7 @@
     },
     {
         "aliases": [
-            "ENCODE:MCF-7_Farnham_growth_protocol"
+            "encode:MCF-7_Farnham_growth_protocol"
         ],
         "attachment": "MCF-7_Farnham_protocol.pdf",
         "award": "ENCODE2",
@@ -178,7 +178,7 @@
     },
     {
         "aliases": [
-            "ENCODE:MCF-7_Farnham_treatment_protocol"
+            "encode:MCF-7_Farnham_treatment_protocol"
         ],
         "attachment": "MCF-7_Farnham_protocol.pdf",
         "award": "ENCODE2",
@@ -190,7 +190,7 @@
     },
     {
         "aliases": [
-            "ENCODE:Snyder_Histone_Mouse_protocol"
+            "encode:Snyder_Histone_Mouse_protocol"
         ],
         "attachment": "mouse.wgEncodeSydhHist.txt",
         "award": "ENCODE2-Mouse",
@@ -209,7 +209,7 @@
     },
     {
         "aliases": [
-            "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
+            "encode:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
         "attachment": "Myers_Lab_ChIP-seq_Protocol_v042211.pdf",
         "award": "ENCODE2",
@@ -220,7 +220,7 @@
     },
     {
         "aliases": [
-            "ENCODE:PanIsletD_Crawford_protocol"
+            "encode:PanIsletD_Crawford_protocol"
         ],
         "attachment": "PanIsletD_Crawford_protocol.pdf",
         "award": "ENCODE2",
@@ -231,7 +231,7 @@
     },
     {
         "aliases": [
-            "ENCODE:SAEC_Stam_protocol"
+            "encode:SAEC_Stam_protocol"
         ],
         "attachment": "SAEC_Stam_protocol.pdf",
         "award": "ENCODE2",
@@ -242,7 +242,7 @@
     },
     {
         "aliases": [
-            "ENCODE:HAoSMC_PC_8121902.2P_general_protocol"
+            "encode:HAoSMC_PC_8121902.2P_general_protocol"
         ],
         "attachment": "SID38242.pdf",
         "award": "ENCODE2",
@@ -311,7 +311,7 @@
     },
     {
         "aliases": [
-            "ENCODE:Stam_15_protocols"
+            "encode:Stam_15_protocols"
         ],
         "attachment": "Stam_15_protocols.pdf",
         "award": "ENCODE2",
@@ -333,7 +333,7 @@
     },
     {
         "aliases": [
-            "ENCODE:ZhBTc4_Stam_protocol"
+            "encode:ZhBTc4_Stam_protocol"
         ],
         "attachment": "ZhBTc4_Stam_protocol.pdf",
         "award": "ENCODE2-Mouse",
@@ -355,7 +355,7 @@
     },
     {
         "aliases": [
-            "ENCODE:Antibody_characterization_standards_February_2014"
+            "encode:Antibody_characterization_standards_February_2014"
         ],
         "attachment": "Antibody_Characterization_ENCODE3_February2014.pdf",
         "award": "U41HG006992",
@@ -366,7 +366,7 @@
     },
     {
         "aliases": [
-            "ENCODE:sample_strain_generation_protocol"
+            "encode:sample_strain_generation_protocol"
         ],
         "attachment": "sample_strain_generation_protocol.pdf",
         "award": "U41HG007355",
@@ -401,7 +401,7 @@
     },
     {
         "aliases": [
-            "ENCODE:ENCODE2_ChIP_seq_pipeline_diagram"
+            "encode:ENCODE2_ChIP_seq_pipeline_diagram"
         ],
         "attachment": "ENCODE2_ChIP_seq_pipeline_diagram.pdf",
         "award": "ENCODE2",
@@ -413,7 +413,7 @@
     },
     {
         "aliases": [
-            "ENCODE:ENCODE2ChIP-seqpipelinespecifications"
+            "encode:ENCODE2ChIP-seqpipelinespecifications"
         ],
         "attachment": "ENCODE2ChIP-seqpipelinespecifications.pdf",
         "award": "ENCODE2",

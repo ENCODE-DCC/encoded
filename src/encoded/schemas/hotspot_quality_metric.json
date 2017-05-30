@@ -19,22 +19,37 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
-        "SPOT score": {
-            "title": "SPOT score",
+        "SPOT1 score": {
+            "title": "SPOT1 score",
             "type": "number",
-            "description": "SPOT score as calculated by hotspot2"
+            "description": "SPOT score as calculated by Hotspot1"
+        },
+        "SPOT2 score": {
+            "title": "SPOT2 score",
+            "type": "number",
+            "description": "SPOT score as calculated by Hotspot2"
         },
         "hotspot count": {
             "title": "# of hotspots",
             "type": "number",
-            "description": "Count of hotspots discovered by hotspot2"
+            "description": "Count of hotspots discovered by Hotspot2"
         },
         "peaks count": {
             "title": "# of peaks",
             "type": "number",
-            "description": "Count of peaks discovered by hotspot2"
+            "description": "Count of peaks discovered by Hotspot2"
+        },
+        "total tags": {
+            "title": "# of read tags provided",
+            "type": "number",
+            "description": "Count of read tags provided to Hotspot"
+        },
+        "hotspot tags": {
+            "title": "# of read tags that were in hotspots",
+            "type": "number",
+            "description": "Count of read tags discovered to be in hotspots"
         }
     }
 }

@@ -1,12 +1,14 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 var globals = require('../globals');
 
 
-var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
+var RichTextBlockView = module.exports.RichTextBlockView = createReactClass({
 
     contextTypes: {
-        editable: React.PropTypes.bool
+        editable: PropTypes.bool
     },
 
     getInitialState: function() {
@@ -29,7 +31,7 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
     setupEditor: function() {
         var ck = require('ckeditor');
         ck.disableAutoInline = true;
-        this.editor = ck.inline(this.getDOMNode(), {
+        this.editor = ck.inline(this.domNode, {
             language: 'en',
             toolbar: [
                 { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat' ] },
@@ -44,11 +46,11 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
             format_cite: { name: 'Citation', element: 'cite'},
             allowedContent: true
         });
-        this.editor.on('change', function() {
+        this.editor.on('change', () => {
             this.state.value.body = this.editor.getData();
             this.setState(this.state);
             this.props.onChange(this.state.value);
-        }.bind(this));
+        });
     },
 
     shouldComponentUpdate: function(nextProps, nextState) {
@@ -57,7 +59,7 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
 
     render: function() {
         return (
-            <div contentEditable={this.context.editable} dangerouslySetInnerHTML={{__html: this.state.value.body}} />
+            <div contentEditable={this.context.editable} dangerouslySetInnerHTML={{__html: this.state.value.body}} ref={(comp) => { this.domNode = comp; }} />
         );
     }
 });
