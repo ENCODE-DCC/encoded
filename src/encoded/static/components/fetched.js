@@ -188,9 +188,9 @@ export class FetchedData extends React.Component {
             // Render whatever error we got back from the server on the page.
             return (
                 <div className="error done">
-                    {errors.map((error) => {
+                    {errors.map((error, i) => {
                         const ErrorView = globals.content_views.lookup(error);
-                        return <ErrorView {...this.props} context={error} />;
+                        return <ErrorView key={i} {...this.props} context={error} />;
                     })}
                 </div>
             );
