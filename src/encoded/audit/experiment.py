@@ -3,22 +3,8 @@ from snovault import (
     audit_checker,
 )
 from .conditions import rfa
-from .ontology_data import (biosampleType_ontologyPrefix, NTR_assay_lookup)
 from .gtex_data import gtexDonorsList
 from .standards_data import pipelines_with_read_depth
-
-from .pipeline_structures import (
-    modERN_TF_control,
-    modERN_TF_replicate,
-    modERN_TF_pooled,
-    encode_chip_control,
-    encode_chip_histone_experiment_pooled,
-    encode_chip_tf_experiment_pooled,
-    encode_chip_experiment_replicate,
-    encode_rampage_experiment_replicate,
-    encode_rampage_experiment_pooled
-    )
-
 
 targetBasedAssayList = [
     'ChIP-seq',
