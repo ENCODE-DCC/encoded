@@ -26,6 +26,12 @@
         "accession": {
             "accessionType": "DO"
         },
+        "external_id": {
+            "title": "External id",
+            "description": "External identifier that uniquely identifiers the donor.",
+            "type": "string",
+            "pattern": "^(BDSC:\\d+)|(NICHD:\\d+)|(CGC:\\d+)|(PGP:[a-z0-0]+)$"
+        },
         "organism": {
             "title": "Organism",
             "description": "Organism of the donor.",
