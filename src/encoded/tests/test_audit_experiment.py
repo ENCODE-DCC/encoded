@@ -2868,3 +2868,10 @@ def test_audit_experiment_chip_seq_mapped_read_length(testapp,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent mapped reads lengths' for error in errors_list)
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 124})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'inconsistent mapped reads lengths' for error in errors_list)
