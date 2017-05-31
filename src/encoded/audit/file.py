@@ -587,6 +587,7 @@ def audit_file_redundant_qc_metrics(value, system):
             metric.pop('@id', None)
             metric.pop('date_created', None)
             metric.pop('audit', None)
+            metric.pop('aliases', None)
             metric.pop('attachment', None)
             metric.pop('IDR_plot_true', None)
             metric.pop('IDR_plot_rep1_pr', None)
