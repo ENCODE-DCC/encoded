@@ -1496,7 +1496,7 @@ class FileGalleryRenderer extends React.Component {
                         infoNodeVisible={this.state.infoNodeVisible}
                         setInfoNodeVisible={this.setInfoNodeVisible}
                         schemas={schemas}
-                        adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
+                        sessionProperties={this.context.session_properties}
                         forceRedraw
                     />
                 : null}
@@ -1693,7 +1693,7 @@ class FileGraphComponent extends React.Component {
     // Render metadata if a graph node is selected.
     // jsonGraph: JSON graph data.
     // infoNodeId: ID of the selected node
-    detailNodes(jsonGraph, infoNodeId, loggedIn, adminUser) {
+    detailNodes(jsonGraph, infoNodeId, session, sessionProperties) {
         let meta;
 
         // Find data matching selected node, if any
@@ -1742,7 +1742,7 @@ class FileGraphComponent extends React.Component {
                         if (currContributing[node.metadata.contributing]) {
                             // We have this file's object in the cache, so just display it.
                             node.metadata.ref = currContributing[node.metadata.contributing];
-                            meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, this.loggedIn, adminUser);
+                            meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, session, sessionProperties);
                             meta.type = node['@type'][0];
                         } else if (!this.contributingRequestOutstanding) {
                             // We don't have this file's object in the cache, so request it from
@@ -1761,7 +1761,7 @@ class FileGraphComponent extends React.Component {
                     } else {
                         // Regular File data in the node from when we generated the graph. Just
                         // display the file data from there.
-                        meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, loggedIn, adminUser);
+                        meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, session, sessionProperties);
                         meta.type = node['@type'][0];
                     }
                 }
@@ -1788,8 +1788,7 @@ class FileGraphComponent extends React.Component {
     }
 
     render() {
-        const { session, adminUser, items, graph, selectedAssembly, selectedAnnotation, infoNodeId, infoNodeVisible } = this.props;
-        const loggedIn = !!(session && session['auth.userid']);
+        const { session, sessionProperties, items, graph, selectedAssembly, selectedAnnotation, infoNodeId, infoNodeVisible } = this.props;
         const files = items;
         const modalTypeMap = {
             File: 'file',
@@ -1803,7 +1802,7 @@ class FileGraphComponent extends React.Component {
             const goodGraph = graph && Object.keys(graph).length;
             if (goodGraph) {
                 if (selectedAssembly || selectedAnnotation) {
-                    const meta = this.detailNodes(graph, infoNodeId, loggedIn, adminUser);
+                    const meta = this.detailNodes(graph, infoNodeId, session, sessionProperties);
                     const modalClass = meta ? `graph-modal-${modalTypeMap[meta.type]}` : '';
 
                     return (
@@ -1851,7 +1850,7 @@ FileGraphComponent.propTypes = {
     infoNodeVisible: PropTypes.bool, // True if node's modal is vibible
     schemas: PropTypes.object, // System-wide schemas
     session: PropTypes.object, // Current user's login information
-    adminUser: PropTypes.bool, // True if logged in user is an admin
+    sessionProperties: PropTypes.object, // True if logged in user is an admin
     auditIndicators: PropTypes.func, // Inherited from auditDecor HOC
     auditDetail: PropTypes.func, // Inherited from auditDecor HOC
 };
@@ -1890,11 +1889,13 @@ FileQCButton.propTypes = {
 
 
 // Display the metadata of the selected file in the graph
-const FileDetailView = function (node, qcClick, auditIndicators, auditDetail, loggedIn, adminUser) {
+const FileDetailView = function (node, qcClick, auditIndicators, auditDetail, session, sessionProperties) {
     // The node is for a file
     const selectedFile = node.metadata.ref;
     let body = null;
     let header = null;
+    const loggedIn = !!(session && session['auth.userid']);
+    const adminUser = !!(sessionProperties && sessionProperties.admin);
 
     if (selectedFile && Object.keys(selectedFile).length) {
         let contributingAccession;
@@ -2010,12 +2011,12 @@ const FileDetailView = function (node, qcClick, auditIndicators, auditDetail, lo
                     : null}
                 </dl>
 
-                {auditsDisplayed(selectedFile.audit) ?
+                {auditsDisplayed(selectedFile.audit, session) ?
                     <div className="row graph-modal-audits">
                         <div className="col-xs-12">
                             <h5>File audits:</h5>
-                            {auditIndicators(selectedFile.audit, 'file-audit')}
-                            {auditDetail(selectedFile.audit, 'file-audit', { except: selectedFile['@id'] })}
+                            {auditIndicators(selectedFile.audit, 'file-audit', { session: session })}
+                            {auditDetail(selectedFile.audit, 'file-audit', { session: session, except: selectedFile['@id'] })}
                         </div>
                     </div>
                 : null}
