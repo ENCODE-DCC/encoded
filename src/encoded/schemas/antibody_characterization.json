@@ -95,7 +95,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "reviewed_by": {
             "title": "Reviewed by",
@@ -152,6 +152,63 @@
                 "type": "object",
                 "additionalProperties": false,
                 "required": [ "organism", "lane", "biosample_term_id", "biosample_term_name", "biosample_type"],
+                "dependencies": {
+                     "biosample_term_id":{
+                        "oneOf": [
+                            { 
+                                "properties": {
+                                    "biosample_type": {
+                                        "enum" : [
+                                            "tissue",
+                                            "whole organisms"
+                                        ]
+                                    },
+                                    "biosample_term_id":{
+                                        "pattern": "^(UBERON|NTR):[0-9]{2,8}$"
+                                    }
+                                }
+                            },
+                            { 
+                                "properties": {
+                                    "biosample_type": {
+                                        "enum" : [
+                                            "primary cell"                               
+                                        ]
+                                    },
+                                    "biosample_term_id":{
+                                        "pattern": "^(CL|NTR):[0-9]{2,8}$"
+                                    }
+                                }
+                            },
+                            { 
+                                "properties": {
+                                    "biosample_type": {
+                                        "enum" : [
+                                            "immortalized cell line",
+                                            "induced pluripotent stem cell line"                               
+                                        ]
+                                    },
+                                    "biosample_term_id":{
+                                        "pattern": "^(EFO|NTR):[0-9]{2,8}$"
+                                    }
+                                }
+                            },
+                            { 
+                                "properties": {
+                                    "biosample_type": {
+                                        "enum" : [
+                                            "stem cell",
+                                            "in vitro differentiated cells"                               
+                                        ]
+                                    },
+                                    "biosample_term_id":{
+                                        "pattern": "^(CL|EFO|NTR):[0-9]{2,8}$"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
                 "properties": {
                     "organism": {
                         "title": "Organism",
