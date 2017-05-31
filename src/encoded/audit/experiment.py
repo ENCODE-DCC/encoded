@@ -2999,13 +2999,6 @@ def audit_experiment_biosample_term(value, system):
     term_type = value.get('biosample_type')
     term_name = value.get('biosample_term_name')
 
-<<<<<<< HEAD
-=======
-    if not term_id and not term_type:
-        detail = '{} is missing biosample_type'.format(value['@id'])
-        yield AuditFailure('missing biosample_type', detail, level='ERROR')
-
->>>>>>> 4925-biosample-term
     if 'biosample_term_name' not in value:
         detail = '{} is missing biosample_term_name'.format(value['@id'])
         yield AuditFailure('missing biosample_term_name', detail, level='ERROR')
