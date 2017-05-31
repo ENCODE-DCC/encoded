@@ -261,12 +261,6 @@ def dataset_9_10(value, system):
 
 
 @upgrade_step('experiment', '11', '12')
-@upgrade_step('matched_set', '11', '12')
-@upgrade_step('organism_development_series', '11', '12')
-@upgrade_step('reference_epigenome', '11', '12')
-@upgrade_step('replication_timing_series', '11', '12')
-@upgrade_step('treatment_time_series', '11', '12')
-@upgrade_step('treatment_concentration_series', '11', '12')
 def dataset_11_12(value, system):
     # http://redmine.encodedcc.org/issues/4900
     # http://redmine.encodedcc.org/issues/4925
