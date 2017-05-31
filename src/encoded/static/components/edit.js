@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import fetched from './fetched';
+import { FetchedData, Param } from './fetched';
 import globals from './globals';
 
 
@@ -51,7 +51,7 @@ class EditForm extends React.Component {
             require('brace/mode/json');
             require('brace/theme/solarized_light');
             const value = JSON.stringify(sortedJson(this.props.data), null, 4);
-            const editor = ace.edit(this.refs.editor);
+            const editor = ace.edit(this.editor);
             const session = editor.getSession();
             session.setMode('ace/mode/json');
             editor.setValue(value);
@@ -137,8 +137,13 @@ class EditForm extends React.Component {
 
 EditForm.propTypes = {
     context: PropTypes.object.isRequired,
-    data: PropTypes.object.isRequired,
-    etag: PropTypes.string.isRequired,
+    data: PropTypes.object,
+    etag: PropTypes.string,
+};
+
+EditForm.defaultProps = {
+    data: {},
+    etag: '',
 };
 
 EditForm.contextTypes = {
@@ -159,10 +164,10 @@ const ItemEdit = (props) => {
                     <h2>Edit {title}</h2>
                 </div>
             </header>
-            <fetched.FetchedData>
-                <fetched.Param name="data" url={url} etagName="etag" />
-                <EditForm {...this.props} />
-            </fetched.FetchedData>
+            <FetchedData>
+                <Param name="data" url={url} etagName="etag" />
+                <EditForm {...props} />
+            </FetchedData>
         </div>
     );
 };
