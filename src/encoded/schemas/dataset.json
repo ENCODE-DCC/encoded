@@ -20,6 +20,63 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
+    "dependencies":{
+        "biosample_term_id":{
+            "oneOf": [
+                { 
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "tissue",
+                                "whole organisms"
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(UBERON|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                },
+                { 
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "primary cell"                               
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(CL|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                },
+                { 
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "immortalized cell line",
+                                "induced pluripotent stem cell line"                               
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(EFO|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                },
+                { 
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "stem cell",
+                                "in vitro differentiated cells"                               
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(CL|EFO|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                }
+            ]
+        }
+    },
     "properties": {
         "schema_version": {
             "hidden comment": "Bump the default in the subclasses."
