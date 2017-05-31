@@ -1,0 +1,124 @@
+{
+    "ATAC": {
+        "rule": "'{assay_term_name}' == 'ATAC-seq'",
+        "assay_composite": {
+            "longLabel":  "Collection of ENCODE ATAC-seq experiments",
+            "shortLabel": "ENCODE ATAC-seq"
+        },
+        "longLabel":  "{assay_title} of {replicates.library.biosample.summary} - {accession}",
+        "shortLabel": "{assay_title} of {biosample_term_name} {accession}",
+        "sortOrder": [ "Biosample", "Replicates", "Views" ],
+        "Views":  {
+            "tag": "view",
+            "group_order": [ "Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks",
+                            "Pseudoreplicated IDR thresholded peaks", "Peaks", "Replicated Peaks", "Stable Peaks",
+                            "Fold change over control", "Signal p-value", "Signal" ],
+            "groups": {
+                "Optimal IDR thresholded peaks": {
+                    "tag": "aOIDR",
+                    "visibility": "dense",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "spectrum":"on",
+                    "scoreFilter": "100:1000",
+                    "output_type": [ "optimal idr thresholded peaks" ]
+                },
+                "Conservative IDR thresholded peaks": {
+                    "tag": "bCIDR",
+                    "visibility": "hide",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "spectrum":"on",
+                    "scoreFilter": "0:1000",
+                    "output_type": [ "conservative idr thresholded peaks" ]
+                },
+                "Pseudoreplicated IDR thresholded peaks": {
+                    "tag": "cRPKS",
+                    "visibility": "dense",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "spectrum":"on",
+                    "scoreFilter": "0:1000",
+                    "output_type": [ "pseudoreplicated idr thresholded peaks" ]
+                },
+                "Peaks": {
+                    "tag": "dPKS",
+                    "visibility": "hide",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "scoreFilter": "0",
+                    "output_type": [ "peaks" ]
+                },
+                "Replicated Peaks": {
+                    "tag": "eRPKS",
+                    "visibility": "hide",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "scoreFilter": "0",
+                    "output_type": [ "replicated peaks" ]
+                },
+                "Stable Peaks": {
+                    "tag": "fSPKS",
+                    "visibility": "hide",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "scoreFilter": "0",
+                    "output_type": [ "stable peaks" ]
+                },
+                "Fold change over control": {
+                    "tag": "gFCOC",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:10",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "fold change over control" ]
+                },
+                "Signal p-value": {
+                    "tag": "hSPV",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:10",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal p-value" ]
+                },
+                "Signal": {
+                    "tag": "gSIG",
+                    "visibility": "hide",
+                    "type": "bigWig",
+                    "viewLimits": "0:10",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "signal","signal of unique reads" ]
+                }
+            }
+        },
+        "other_groups":  {
+            "dimensions": { "Biosample": "dimY","Replicates": "dimX" },
+            "dimensionAchecked": "first",
+            "groups": {
+                "Replicates": {
+                    "tag": "REP",
+                    "groups": {
+                        "replicate": {
+                            "title_mask": "Replicate_{replicate_number}",
+                            "combined_title": "Pooled"
+                        }
+                    }
+                },
+                "Biosample": {
+                    "tag": "BS",
+                    "groups": { "one": { "title_mask": "{biosample_term_name}"} }
+                }
+            }
+        },
+        "file_defs": {
+            "longLabel": "{target} {assay_title} of {biosample_term_name} {output_type} {replicate}",
+            "shortLabel": "{replicate} {output_type_short_label}"
+        }
+    }
+}
