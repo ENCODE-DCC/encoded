@@ -1081,6 +1081,7 @@
         "biosample_type": "immortalized cell line",
         "genetic_modifications": ["kevin-white:eGFP-E2F1-tag"],
         "donor": "/human-donors/ENCDO000HUM/",
+        "organism": "human",
         "lab": "kevin-white",
         "source": "kevin-white",
         "status": "released",
