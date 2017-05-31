@@ -2999,12 +2999,19 @@ def audit_experiment_biosample_term(value, system):
     term_type = value.get('biosample_type')
     term_name = value.get('biosample_term_name')
 
+<<<<<<< HEAD
+=======
+    if not term_id and not term_type:
+        detail = '{} is missing biosample_type'.format(value['@id'])
+        yield AuditFailure('missing biosample_type', detail, level='ERROR')
+
+>>>>>>> 4925-biosample-term
     if 'biosample_term_name' not in value:
         detail = '{} is missing biosample_term_name'.format(value['@id'])
         yield AuditFailure('missing biosample_term_name', detail, level='ERROR')
     # The type and term name should be put into dependencies
 
-    if term_id is None:
+    if not term_id:
         detail = '{} is missing biosample_term_id'.format(value['@id'])
         yield AuditFailure('missing biosample_term_id', detail, level='ERROR')
         return
@@ -3014,17 +3021,7 @@ def audit_experiment_biosample_term(value, system):
         yield AuditFailure('NTR biosample', detail, level='INTERNAL_ACTION')
     else:
         biosample_prefix = term_id.split(':')[0]
-        if 'biosample_type' in value and term_type != 'in vitro sample' and \
-           biosample_prefix not in biosampleType_ontologyPrefix[term_type]:
-            detail = 'Experiment {} has '.format(value['@id']) + \
-                     'a biosample of type {} '.format(term_type) + \
-                     'with biosample_term_id {} '.format(value['biosample_term_id']) + \
-                     'that is not one of ' + \
-                     '{}'.format(biosampleType_ontologyPrefix[term_type])
-            yield AuditFailure('experiment with biosample term-type mismatch', detail,
-                               level='INTERNAL_ACTION')
-
-        elif term_id not in ontology:
+        if term_id not in ontology:
             detail = 'Experiment {} has term_id {} which is not in ontology'.format(
                 value['@id'], term_id)
             yield AuditFailure('term_id not in ontology', term_id, level='INTERNAL_ACTION')

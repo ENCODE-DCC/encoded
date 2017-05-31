@@ -1171,34 +1171,6 @@ def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experi
     assert all(error['category'] != 'missing RNA fragment size' for error in errors_list)
 
 
-def test_audit_experiment_biosample_term_id(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': 'CL:349829',
-                                                'biosample_type': 'tissue',
-                                                'status': 'released',
-                                                'date_released': '2016-01-01'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] ==
-               'experiment with biosample term-type mismatch' for error in errors_list)
-
-
-def test_audit_experiment_biosample_ntr_term_id(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': 'NTR:349829',
-                                                'biosample_type': 'tissue',
-                                                'status': 'released',
-                                                'date_released': '2016-01-01'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] !=
-               'experiment with biosample term-type mismatch' for error in errors_list)
-
-
 def test_audit_experiment_replicate_with_file(testapp, file_fastq,
                                               base_experiment,
                                               base_replicate,

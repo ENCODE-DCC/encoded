@@ -10,6 +10,7 @@ def file_exp(lab, award, testapp, experiment):
         'biosample_type': 'tissue',
         'biosample_term_id': 'NTR:000012',
         'biosample_term_name': 'Some body part',
+        'biosample_type': 'tissue',
         'possible_controls': [experiment['uuid']],
         'status': 'released',
         'date_released': '2016-01-01'
