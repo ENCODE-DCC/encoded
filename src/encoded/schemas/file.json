@@ -232,7 +232,7 @@
         },
         "no_file_available": {
             "comment": "md5sum is required for all files unless the file is not available from the portal.",
-            "oneOf": [
+            "allOf": [
                 {
                     "oneOf": [
                         {
