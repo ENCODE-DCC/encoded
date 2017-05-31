@@ -230,44 +230,21 @@
                 }
             ]
         },
-        "no_file_available": {
+        "no_file_available":{
             "comment": "md5sum is required for all files unless the file is not available from the portal.",
             "allOf": [
                 {
-                    "oneOf": [
-                        {
-                            "required": ["md5sum"],
-                            "properties": {
-                                "no_file_available": false,
-                                "status": ["in progress", "released", "archived", "revoked", "uploading", "upload failed", "deleted", "replaced", "content error"]
-                                
-                            }
-                        },
-                        {              
-                            "properties": {
-                                "no_file_available": true,
-                                "status": ["in progress", "released", "archived", "revoked", "uploading", "upload failed", "deleted", "replaced", "content error"]
-                            }
-                        }
-                    ]
+                    "required": ["md5sum"],
+                    "properties": {
+                        "no_file_available": false
+                    }
                 },
                 {
                     "not": {
-                        "oneOf": [
-                            {
-                                "required": ["md5sum"],
-                                "properties": {
-                                    "no_file_available": true,
-                                    "status": ["in progress", "released", "archived", "revoked", "uploading", "upload failed", "deleted", "replaced", "content error"]
-                                }
-                            },
-                            {
-                                "properties": {
-                                    "no_file_available": false,
-                                    "status": ["in progress", "released", "archived", "revoked", "uploading", "upload failed", "deleted", "replaced", "content error"]
-                                }
-                            }
-                        ]
+                        "required": ["md5sum"],
+                        "properties": {
+                            "no_file_available": true
+                        }
                     }
                 }
             ]
