@@ -183,6 +183,7 @@ SUPPORTED_MASK_TOKENS = [
                                                 # variable and seems to not be being applied
                                                 # # correctly in the html generation
     "{lab.title}",                              # In metadata
+    "{award.rfa}",                              # To distinguish vis_defs based upon award
     # TODO "{software? or pipeline?}",  # Cricket: "I am stumbling over the fact that we
     #                                   #    can't distinguish tophat and star produced files"
     # TODO "{phase}",                   # Cricket: "If we get to the point of being fancy
@@ -269,6 +270,8 @@ def lookup_token(token, dataset, a_file=None):
         return term
     elif token == "{lab.title}":
         return dataset['lab'].get('title', 'unknown')
+    elif token == "{award.rna}":
+        return dataset['award'].get('rfa', 'unknown')
     elif token == "{biosample_term_name|multiple}":
         return dataset.get("biosample_term_name", "multiple biosamples")
     # TODO: rna_species
