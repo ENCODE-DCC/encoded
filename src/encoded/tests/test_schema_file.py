@@ -247,30 +247,12 @@ def test_with_wrong_date_created(testapp, file_with_bad_date_created):
 
 
 def test_no_file_available(testapp, file_no_error):
+    # Removing the md5sum from a file should not be allowed if the file exists
     import json
     item = file_no_error.copy()
     item.update({'no_file_available': False})
+    del item['md5sum']
     payload = json.dumps(item)
     print(payload)
     res = testapp.post_json('/file', payload, expect_errors=True)
-    assert res.status_code == 201
-
-    del(payload['md5sum'])
-    res = testapp.post_json('/file', payload, expect_errors=True)
-    #payload = json.dumps(item)
-    #del(file_no_error['file_size'])
-    print(payload)
-    #testapp.patch_json(file['@id'], payload, expect_errors=True)
-    res = testapp.get(file['@id'], )
     assert res.status_code == 422
-    '''
-    item.update({'no_file_available': True})
-    payload = json.dumps(item)
-    print(payload)
-    res = testapp.patch_json(file_no_error['@id'], payload)
-    assert res.status_code == 201
-    #file_no_error.update({'no_file_available': False})
-    #payload = json.dumps(file_no_error)
-    #res = testapp.patch_json(file_no_error['@id'], payload, expect_errors=True)
-    #assert res.status_code == 422
-    '''

@@ -234,27 +234,26 @@
             "comment": "md5sum is required for all files unless the file is not available from the portal.",
             "oneOf": [
                 {
-                    "required": ["md5sum"],
-                    "properties": {
-                        "status": ["in progress", "released", "archived", "revoked", "uploading", "upload failed", "deleted", "replaced", "content error"]
-                    }
-                },
-                {
-                    "required": ["md5sum"],
-                    "properties": {
-                        "status": ["in progress", "released", "archived", "revoked", "uploading", "upload failed", "deleted", "replaced", "content error"],
-                        "no_file_available": false
-                    }
-                },
-                {
-                    "properties": {
-                        "no_file_available": true,
-                        "status": ["in progress", "released", "archived", "revoked", "uploading", "upload failed", "deleted", "replaced", "content error"]
-                    }
+                    "oneOf": [
+                        {
+                            "required": ["md5sum"],
+                            "properties": {
+                                "no_file_available": false,
+                                "status": ["in progress", "released", "archived", "revoked", "uploading", "upload failed", "deleted", "replaced", "content error"]
+                                
+                            }
+                        },
+                        {              
+                            "properties": {
+                                "no_file_available": true,
+                                "status": ["in progress", "released", "archived", "revoked", "uploading", "upload failed", "deleted", "replaced", "content error"]
+                            }
+                        }
+                    ]
                 },
                 {
                     "not": {
-                        "allOf": [
+                        "oneOf": [
                             {
                                 "required": ["md5sum"],
                                 "properties": {
@@ -479,6 +478,7 @@
             "permission":"import_items",
             "description": "A flag to indicate whether this file is available to download. It may also not exist if it is the result of an unproductive analysis.",
             "comment": "Do not submit. This value can only be set by admins.",
+            "default": false,
             "type": "boolean"
         },
         "submitted_file_name": {
