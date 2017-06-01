@@ -105,8 +105,8 @@
             "idr-test-step-2"
         ],
         "documents": [
-            "ENCODE:ENCODE2_ChIP_seq_pipeline_diagram",
-            "ENCODE:ENCODE2ChIP-seqpipelinespecifications"
+            "encode:ENCODE2_ChIP_seq_pipeline_diagram",
+            "encode:ENCODE2ChIP-seqpipelinespecifications"
         ],
         "status": "active",
         "title": "ENCODE2 ChIP-seq pipeline",
