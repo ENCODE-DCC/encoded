@@ -565,14 +565,13 @@ class Series(Dataset, CalculatedSeriesAssay, CalculatedSeriesBiosample, Calculat
     })
     def assembly(self, request, original_files, related_datasets, status):
         combined_assembly = set()
-        assemblies_of_series = calculate_assembly(request, original_files, status)
-        for series_assembly in assemblies_of_series:
-            combined_assembly.add(series_assembly)
+        for assembly_from_original_files in calculate_assembly(request, original_files, status):
+            combined_assembly.add(assembly_from_original_files)
         for dataset in related_datasets:
             properties = request.embed(dataset, '@@object')
             if properties['status'] not in ('deleted', 'replaced'):
-                for assembly in properties['assembly']:
-                    combined_assembly.add(assembly)
+                for assembly_from_related_dataset in properties['assembly']:
+                    combined_assembly.add(assembly_from_related_dataset)
         return list(combined_assembly)
 
 
