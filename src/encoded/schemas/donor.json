@@ -30,7 +30,7 @@
             "title": "External id",
             "description": "External identifier that uniquely identifiers the donor.",
             "type": "string",
-            "pattern": "^(BDSC:\\d+)$|^(NICHD:\\d+)$|^(CGC:\\d+)$|^(PGP:[a-z0-9]+)$|^(Promocell:\\d+)$|^(Biochain:\\d+)$|^(DSSC:\\d+)$|^(DGGR:\\d+)$"
+            "pattern": "^(BDSC:\\d+)$|^(NICHD:\\d+)$|^(CGC:\\d+)$|^(PGP:hu[A-Z0-9]+)$|^(Promocell:\\d+)$|^(Biochain:\\d+)$|^(DSSC:\\d+)$|^(DGGR:\\d+)$"
         },
         "organism": {
             "title": "Organism",
