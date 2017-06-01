@@ -84,14 +84,23 @@
     }
 }
 
-.facet-list li#selected {
-    background: #4183c4;
+.facet-list {
+    // Selected facet term.
+    li.selected {
+        background: #4183c4;
+    }
+
+    li.negated-selected {
+        background: #e50400;
+    }
 }
 
-.facet-list a#selected {
-    color: #fff;
-    text-decoration: none;
-    font-weight: normal;
+.facet-list {
+    a.selected, a.negated-selected {
+        color: #fff;
+        text-decoration: none;
+        font-weight: normal;
+    }
 }
 
 .facet-list li a {

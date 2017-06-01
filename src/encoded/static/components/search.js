@@ -740,6 +740,9 @@ const Term = (props) => {
     const barStyle = {
         width: `${Math.ceil((count / total) * 100)}%`,
     };
+
+    // Determine if the given term should display selected, as well as what the href for the term
+    // should be.
     const selected = termSelected(term, facet, filters);
     let href;
     if (selected && !canDeselect) {
@@ -756,12 +759,23 @@ const Term = (props) => {
         href = `${searchBase}${field}=${globals.encodedURIComponent(term)}`;
     }
 
+    // Determine if he given term should display negated. Search for the field with an exclamation
+    // point added to the end in the `negationFilters` array. If we find a matching field and the
+    // term in the filter also matches the term we're rendering, then set `negatedSelected` to
+    // true so that we draw it with a negated selection visual.
+    const negationField = `${field}!`;
+    const negatedSelected = negationFilters.some(filter => filter.field === negationField && filter.term === term);
+
+    // Based on `selected` and `negatedSelected` come up with a CSS class for the <li> and <a> for
+    // the term to show it's either selected, or selected as a NOT term.
+    const selectedCss = selected ? 'selected' : (negatedSelected ? 'negated-selected' : '');
+
     return (
-        <li id={selected ? 'selected' : null} key={term}>
-            {selected ? '' : <span className="bar" style={barStyle} />}
+        <li className={selectedCss} key={term}>
+            {(selected || negatedSelected) ? '' : <span className="bar" style={barStyle} />}
             {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')} /> : null}
-            <a id={selected ? 'selected' : null} href={href} onClick={href ? onFilter : null}>
-                <span className="pull-right">{count} {selected && canDeselect ? <i className="icon icon-times-circle-o" /> : ''}</span>
+            <a className={selectedCss} href={href} onClick={href ? onFilter : null}>
+                <span className="pull-right">{count} {(selected || negatedSelected) && canDeselect ? <i className="icon icon-times-circle-o" /> : ''}</span>
                 <span className="facet-item">
                     {em ? <em>{title}</em> : <span>{title}</span>}
                 </span>
@@ -914,6 +928,7 @@ class Facet extends React.Component {
 Facet.propTypes = {
     facet: PropTypes.object,
     filters: PropTypes.array,
+    negationFilters: PropTypes.array, // Array of filter terms used for negating a search term
 };
 
 Facet.defaultProps = {
@@ -1027,7 +1042,9 @@ class FacetList extends React.Component {
             }
         }
 
-        // Collect negation filters ie filters with fields ending in an exclamation point.
+        // Collect negation filters ie filters with fields ending in an exclamation point. These
+        // are the negation facet terms that need to get merged into the regular facets that their
+        // non-negated versions inhabit.
         const negationFilters = filters.filter(filter => filter.field.charAt(filter.field.length - 1) === '!');
 
         return (
