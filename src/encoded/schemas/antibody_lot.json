@@ -11,6 +11,7 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/alternate_accessions" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/accessioned_status" },

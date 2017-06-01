@@ -31,7 +31,9 @@
             "format": "accession",
             "serverDefault": "accession",
             "permission": "import_items"
-        },
+        }
+    },
+    "alternate_accessions": {
         "alternate_accessions": {
             "title": "Alternate accessions",
             "description": "Accessions previously assigned to objects that have been merged with this object.",
