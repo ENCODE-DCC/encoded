@@ -248,18 +248,16 @@ def test_with_wrong_date_created(testapp, file_with_bad_date_created):
 
 def test_no_file_available(testapp, file_no_error):
     # Removing the md5sum from a file should not be allowed if the file exists
-    item = file_no_error.copy()
-    item.update({'no_file_available': True})
-    res = testapp.post_json('/file', item, expect_errors=True)
-    print (res)
-    assert res.status_code == 422
-
-    item.pop('md5sum', None)
-
-    res = testapp.post_json('/file', item, expect_errors=True)
+    res = testapp.post_json('/file', file_no_error, expect_errors=True)
     assert res.status_code == 201
 
-    item.update({'no_file_available': False})
+    item = file_no_error.copy()
+    item.pop('md5sum', None)
     res = testapp.post_json('/file', item, expect_errors=True)
-    print (res)
     assert res.status_code == 422
+
+    item = file_no_error.copy()
+    item.pop('md5sum', None)
+    item.update({'no_file_available': True})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 201

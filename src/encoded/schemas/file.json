@@ -4,7 +4,14 @@
     "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "output_type", "award", "lab"],
+    "anyOf":[
+        {
+            "required": ["dataset", "file_format", "output_type", "award", "lab", "md5sum"]
+        },
+        {
+            "required": ["dataset", "file_format", "output_type", "award", "lab", "no_file_available"]   
+        }  
+    ],    
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -46,26 +53,13 @@
     "dependencies": {
         "no_file_available":{
             "comment": "md5sum is required for all files unless the file is not available from the portal.",
-            "oneOf": [
-                {
-                    "required": ["md5sum"],
-                    "properties":{
-                        "no_file_available":{ 
-                            "boolean" : [false]
-                        }
-                    }
-                },
-                {   
-                    "not":{
-                        "required": ["md5sum"],
-                        "properties":{
-                            "no_file_available":{ 
-                                "boolean" : [true] 
-                            }
-                        }
-                    }                   
+            "md5sum": {"required": false},
+            "properties": {
+                "no_file_available": {
+                    "boolean": true
                 }
-            ]
+            }
+
         },
         "paired_with": {
             "comment": "Only paired-ended files should have paired_with value.",
