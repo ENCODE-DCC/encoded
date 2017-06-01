@@ -52,7 +52,7 @@
                 "comment": "Only accessions of objects that have status equal replaced will work here.",
                 "type": "string",
                 "format": "accession",
-                "pattern": "[ENCLB[\\d]{3}[A-Z]{3}|TSTLB[\\d]{6}"
+                "pattern": "^(ENCLB\\d{3}[A-Z]{3})$|^(TSTLB\\d{6})$"
             }
         },
         "spikeins_used": {
