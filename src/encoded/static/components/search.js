@@ -699,6 +699,7 @@ globals.listing_views.register(Image, 'Image');
 function termSelected(term, facet, filters) {
     let matchingFilter;
     let negated = false;
+    const exists = facet.type === 'exists';
 
     // Run through the search result filters to decide whether the given term is selected.
     const selected = filters.some((filter) => {
@@ -707,7 +708,7 @@ function termSelected(term, facet, filters) {
         negated = filter.field.charAt(filter.field.length - 1) === '!';
         const filterFieldName = negated ? filter.field.slice(0, -1) : filter.field;
 
-        if (facet.type === 'exists') {
+        if (exists) {
             // Facets with an "exists" property defined in the schema need special handling to
             // allow for yes/no display.
             if ((filter.field === `${facet.field}!` && term === 'no') ||
@@ -732,6 +733,7 @@ function termSelected(term, facet, filters) {
         return {
             selected: url.parse(matchingFilter.remove).search,
             negated: negated,
+            exists: exists,
         };
     }
 
@@ -740,6 +742,7 @@ function termSelected(term, facet, filters) {
     return {
         selected: null,
         negated: false,
+        exists: exists,
     };
 }
 
@@ -770,7 +773,7 @@ const Term = (props) => {
 
     // Determine if the given term should display selected, as well as what the href for the term
     // should be. If it *is* selected, also indicate whether it was selected for negation or not.
-    const { selected, negated } = termSelected(term, facet, filters);
+    const { selected, negated, exists } = termSelected(term, facet, filters);
     let href;
     let negationHref = '';
     if (selected && !canDeselect) {
@@ -795,7 +798,7 @@ const Term = (props) => {
 
     return (
         <div className="facet-term">
-            {(selected || negated) ? null : <a href={negationHref} className="negated-trigger" title={'Do not include items with this term'}><i className="icon icon-minus-circle" /></a>}
+            {(selected || negated || exists) ? null : <a href={negationHref} className="negated-trigger" title={'Do not include items with this term'}><i className="icon icon-minus-circle" /></a>}
             <li className={selectedCss} key={term}>
                 {(selected || negated) ? null : <span className="bar" style={barStyle} />}
                 {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')} /> : null}
