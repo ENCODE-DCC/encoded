@@ -53,13 +53,23 @@
     "dependencies": {
         "no_file_available":{
             "comment": "md5sum is required for all files unless the file is not available from the portal.",
-            "md5sum": {"required": false},
-            "properties": {
-                "no_file_available": {
-                    "boolean": true
+            "oneOf": [
+                {
+                    "properties": {
+                        "no_file_available": {
+                            "enum": [true]
+                        }
+                    }
+                },
+                {
+                    "required": ["md5sum"],       
+                    "properties": {
+                        "no_file_available": {
+                            "enum": [false]
+                        }
+                    }
                 }
-            }
-
+            ]
         },
         "paired_with": {
             "comment": "Only paired-ended files should have paired_with value.",

@@ -261,3 +261,7 @@ def test_no_file_available(testapp, file_no_error):
     item.update({'no_file_available': True})
     res = testapp.post_json('/file', item, expect_errors=True)
     assert res.status_code == 201
+
+    item.update({'no_file_available': False})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 422
