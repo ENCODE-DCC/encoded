@@ -260,6 +260,7 @@ def dataset_9_10(value, system):
         del value['assay_term_id']
 
 
+@upgrade_step('annotation', '11', '12')
 @upgrade_step('experiment', '11', '12')
 def dataset_11_12(value, system):
     # http://redmine.encodedcc.org/issues/4900

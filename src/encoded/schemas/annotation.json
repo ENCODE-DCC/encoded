@@ -22,6 +22,76 @@
         { "$ref": "file_set.json#/properties" }
     ],
     "dependencies": {
+        "biosample_term_id":{
+            "oneOf": [
+                { 
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "tissue",
+                                "whole organisms"
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(UBERON|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                },
+                { 
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "primary cell"                               
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(CL|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                },
+                { 
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "immortalized cell line",
+                                "induced pluripotent stem cell line"                               
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(EFO|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                },
+                { 
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "stem cell",
+                                "in vitro differentiated cells"                               
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(CL|EFO|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                }
+            ]
+        },
+        "biosample_type": {
+            "not": {
+                "properties": {
+                    "biosample_type": {
+                        "enum": ["whole organisms"]
+                    },
+                    "organism": {
+                        "linkTo": "Organism",
+                        "linkEnum": [
+                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+                        ]
+                    }
+                }
+            }
+        },
         "relevant_timepoint": ["relevant_timepoint_units"],
         "relevant_timepoint_units": ["relevant_timepoint"],
         "status": {
@@ -48,7 +118,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "11"
+            "default": "12"
         },
         "annotation_type": {
             "title": "Type",
