@@ -40,7 +40,7 @@
                 "comment": "Only accessions of objects that have status equal replaced will work here.",
                 "type": "string",
                 "format": "accession",
-                "pattern": "[ENCSR[\\d]{3}[A-Z]{3}|TSTSR[\\d]{6}"
+                "pattern": "^(ENCSR\\d{3}[A-Z]{3})$|^(TSTSR\\d{6})$"
             }
         },
         "description": {
