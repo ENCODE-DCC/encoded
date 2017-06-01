@@ -319,7 +319,7 @@
                 "comment": "Only accessions of objects that have status equal replaced will work here.",
                 "type": "string",
                 "format": "accession",
-                "pattern": "[ENCFF[\\d]{3}[A-Z]{3}|TSTFF[\\d]{6}"
+                "pattern": "^(ENCFF\\d{3}[A-Z]{3})$|^(TSTFF\\d{6})$"
             }
         },
         "external_accession": {
