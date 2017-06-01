@@ -44,6 +44,29 @@
         }
     },
     "dependencies": {
+        "no_file_available":{
+            "comment": "md5sum is required for all files unless the file is not available from the portal.",
+            "oneOf": [
+                {
+                    "required": ["md5sum"],
+                    "properties":{
+                        "no_file_available":{ 
+                            "boolean" : [false]
+                        }
+                    }
+                },
+                {   
+                    "not":{
+                        "required": ["md5sum"],
+                        "properties":{
+                            "no_file_available":{ 
+                                "boolean" : [true] 
+                            }
+                        }
+                    }                   
+                }
+            ]
+        },
         "paired_with": {
             "comment": "Only paired-ended files should have paired_with value.",
             "required": ["run_type"],
@@ -230,25 +253,7 @@
                 }
             ]
         },
-        "no_file_available":{
-            "comment": "md5sum is required for all files unless the file is not available from the portal.",
-            "allOf": [
-                {
-                    "required": ["md5sum"],
-                    "properties": {
-                        "no_file_available": false
-                    }
-                },
-                {
-                    "not": {
-                        "required": ["md5sum"],
-                        "properties": {
-                            "no_file_available": true
-                        }
-                    }
-                }
-            ]
-        },
+       
         "status": {
             "comment": "file_size is required in files with statuses in progress, revoked, archived and released. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
             "allOf": [
@@ -467,7 +472,7 @@
         "md5sum": {
             "title": "MD5sum",
             "description": "The md5sum of the file being transferred.",
-            "comment": "Required. Warning: This value can vary for files of same content gzipped at different times",
+            "comment": "Required for files with no_file_available = false . Warning: This value can vary for files of same content gzipped at different times",
             "type": "string",
             "format": "hex",
             "maxLength": 32,
@@ -972,9 +977,6 @@
         },
         "read_length_units": {
             "title": "Read length units"
-        },
-        "md5sum": {
-            "title": "MD5 Sum"
         },
         "output_category": {
             "title": "Data category"
