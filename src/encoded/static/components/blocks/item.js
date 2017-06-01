@@ -1,7 +1,8 @@
 'use strict';
-var React = require('react');
+import React from 'react';
 import createReactClass from 'create-react-class';
-var fetched = require('../fetched');
+import { FetchedData, Param } from '../fetched';
+
 var inputs = require('../inputs');
 var globals = require('../globals');
 
@@ -27,10 +28,10 @@ var FetchedItemBlockView = createReactClass({
         }
         if (typeof context === 'string') {
             return (
-                <fetched.FetchedData>
-                    <fetched.Param name="context" url={context} />
+                <FetchedData>
+                    <Param name="context" url={context} />
                     <ItemBlockView />
-                </fetched.FetchedData>
+                </FetchedData>
             );
         }
         return null;

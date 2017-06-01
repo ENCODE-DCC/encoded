@@ -1,7 +1,8 @@
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
 import createReactClass from 'create-react-class';
-const form = require('../form');
+import { Field } from '../form';
+
 const globals = require('../globals');
 const item = require('../item');
 
@@ -75,7 +76,7 @@ module.exports.FallbackBlockEdit = createReactClass({
 
     render() {
         const { schema, value } = this.props;
-        return (<form.Field
+        return (<Field
             schema={schema || fallbackSchema} value={value} updateChild={this.update}
         />);
     },

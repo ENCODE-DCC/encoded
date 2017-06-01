@@ -1,8 +1,9 @@
 'use strict';
-var React = require('react');
+import React from 'react';
 import createReactClass from 'create-react-class';
-var fetched = require('../fetched');
+import { FetchedData, Param } from '../fetched';
 import Table from '../collection';
+
 var globals = require('../globals');
 var search = require('../search');
 
@@ -53,19 +54,19 @@ var SearchBlock = createReactClass({
             var searchBase = this.props.value;
             if (!searchBase) searchBase = '?mode=picker';
             return (
-                <fetched.FetchedData>
-                    <fetched.Param name="data" url={'/search/' + searchBase} />
+                <FetchedData>
+                    <Param name="data" url={'/search/' + searchBase} />
                     <SearchBlockEdit searchBase={searchBase} onChange={this.props.onChange} />
-                </fetched.FetchedData>
+                </FetchedData>
             );
         } else {
             var url = '/search/' + (this.props.value.search || '');
             var Component = this.props.value.display === 'table' ? Table : SearchResultsLayout;
             return (
-                <fetched.FetchedData> 
-                    <fetched.Param name="context" url={url} />
+                <FetchedData>
+                    <Param name="context" url={url} />
                     <Component href={url} />
-                </fetched.FetchedData>
+                </FetchedData>
             );
         }
     }

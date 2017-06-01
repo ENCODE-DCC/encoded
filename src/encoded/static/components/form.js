@@ -442,7 +442,7 @@ FetchedFieldset.childContextTypes = {
 };
 
 
-class Field extends UpdateChildMixin(React.Component) {
+export class Field extends UpdateChildMixin(React.Component) {
     // Build form input components based on a JSON schema
     // (or a portion thereof).
 

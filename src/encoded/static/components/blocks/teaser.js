@@ -1,8 +1,9 @@
 'use strict';
-var React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
 import createReactClass from 'create-react-class';
-var fetched = require('../fetched');
+import { FetchedData, Param } from '../fetched';
+
 var globals = require('../globals');
 var item = require('./item');
 var richtext = require('./richtext');
@@ -21,10 +22,10 @@ var TeaserCore = createReactClass({
         }
         if (typeof context === 'string') {
             return (
-                <fetched.FetchedData>
-                    <fetched.Param name="context" url={context} />
+                <FetchedData>
+                    <Param name="context" url={context} />
                     <ItemBlockView />
-                </fetched.FetchedData>
+                </FetchedData>
             );
         }
         return null;
