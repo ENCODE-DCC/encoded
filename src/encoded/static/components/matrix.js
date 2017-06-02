@@ -1,11 +1,10 @@
-'use strict';
-var React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
 import createReactClass from 'create-react-class';
+import { BatchDownload, FacetList, TextFilter } from './search';
 var color = require('color');
 var svgIcon = require('../libs/svg-icons').svgIcon;
 var globals = require('./globals');
-var search = require('./search');
 var url = require('url');
 var _ = require('underscore');
 var button = require('../libs/bootstrap/button');
@@ -13,9 +12,6 @@ var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 var navbar = require('../libs/bootstrap/navbar');
 var { BrowserSelector } = require('./objectutils');
 
-var BatchDownload = search.BatchDownload;
-var FacetList = search.FacetList;
-var TextFilter = search.TextFilter;
 var DropdownButton = button.DropdownButton;
 var DropdownMenu = dropdownMenu.DropdownMenu;
 var NavItem = navbar.NavItem;

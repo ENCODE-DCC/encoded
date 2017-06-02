@@ -823,7 +823,6 @@ Term.propTypes = {
     canDeselect: PropTypes.bool,
     searchBase: PropTypes.string, // Base URI for the search
     onFilter: PropTypes.func,
-    negationFilters: PropTypes.array, // Array of search result filters for negating terms
 };
 
 
@@ -967,7 +966,7 @@ Facet.defaultProps = {
 
 
 // Entry field for filtering the results list when search results appear in edit forms.
-class TextFilter extends React.Component {
+export class TextFilter extends React.Component {
     static onChange(e) {
         e.stopPropagation();
         e.preventDefault();
@@ -1030,7 +1029,7 @@ TextFilter.propTypes = {
 
 
 // Displays the entire list of facets. It contains a number of <Facet> cmoponents.
-class FacetList extends React.Component {
+export class FacetList extends React.Component {
     render() {
         const { context, facets, filters, mode, orientation, hideTextFilter } = this.props;
 
@@ -1127,7 +1126,7 @@ FacetList.contextTypes = {
 };
 
 
-const BatchDownload = (props) => {
+export const BatchDownload = (props) => {
     const link = props.context.batch_download;
     return (
         <Modal actuator={<button className="btn btn-info btn-sm">Download</button>}>
