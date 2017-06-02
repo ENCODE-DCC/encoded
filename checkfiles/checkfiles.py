@@ -899,8 +899,7 @@ def patch_file(session, url, job):
 
     if not errors:
         data = {
-            'status': 'in progress',
-
+            'status': 'in progress'
         }
     else:
         if 'fastq_format_readname' in errors:
