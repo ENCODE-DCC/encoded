@@ -735,7 +735,7 @@ def sanitize_label(s):
     '''Encodes the string to swap special characters and leaves spaces alone.'''
     new_s = ""      # longLabel and shorLabel can have spaces and some special characters
     for c in s:
-        new_s += sanitize_char(c, [' ', '_', '.', '-', '(', ')', '+'], htmlize=True)
+        new_s += sanitize_char(c, [' ', '_', '.', '-', '(', ')', '+'], htmlize=False)
     return new_s
 
 
