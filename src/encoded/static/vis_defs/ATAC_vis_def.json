@@ -11,8 +11,8 @@
         "Views":  {
             "tag": "view",
             "group_order": [ "Optimal IDR thresholded peaks", "Conservative IDR thresholded peaks",
-                            "Pseudoreplicated IDR thresholded peaks", "Peaks", "Replicated Peaks", "Stable Peaks",
-                            "Fold change over control", "Signal p-value", "Signal" ],
+                            "Pseudoreplicated IDR thresholded peaks", "Peaks", "Replicated Peaks", "Filtered Peaks",
+                            "Stable Peaks", "Fold change over control", "Signal p-value", "Signal" ],
             "groups": {
                 "Optimal IDR thresholded peaks": {
                     "tag": "aOIDR",
@@ -57,8 +57,16 @@
                     "scoreFilter": "0",
                     "output_type": [ "replicated peaks" ]
                 },
+                "Filtered Peaks": {
+                    "tag": "fFPKS",
+                    "visibility": "hide",
+                    "type": "bigBed",
+                    "file_format_type": [ "narrowPeak" ],
+                    "scoreFilter": "0",
+                    "output_type": [ "filtered peaks" ]
+                },
                 "Stable Peaks": {
-                    "tag": "fSPKS",
+                    "tag": "gSPKS",
                     "visibility": "hide",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
@@ -66,7 +74,7 @@
                     "output_type": [ "stable peaks" ]
                 },
                 "Fold change over control": {
-                    "tag": "gFCOC",
+                    "tag": "hFCOC",
                     "visibility": "full",
                     "type": "bigWig",
                     "viewLimits": "0:10",
@@ -76,7 +84,7 @@
                     "output_type": [ "fold change over control" ]
                 },
                 "Signal p-value": {
-                    "tag": "hSPV",
+                    "tag": "iSPV",
                     "visibility": "hide",
                     "type": "bigWig",
                     "viewLimits": "0:10",
@@ -86,7 +94,7 @@
                     "output_type": [ "signal p-value" ]
                 },
                 "Signal": {
-                    "tag": "gSIG",
+                    "tag": "jSIG",
                     "visibility": "hide",
                     "type": "bigWig",
                     "viewLimits": "0:10",
@@ -117,7 +125,7 @@
             }
         },
         "file_defs": {
-            "longLabel": "{target} {assay_title} of {biosample_term_name} {output_type} {replicate}",
+            "longLabel": "{assay_title} of {biosample_term_name} {output_type} {replicate}",
             "shortLabel": "{replicate} {output_type_short_label}"
         }
     }

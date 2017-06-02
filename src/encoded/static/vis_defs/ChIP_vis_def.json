@@ -1,6 +1,6 @@
 {
     "ChIP": {
-        "rule": "'{assay_term_name}' == 'ChIP-seq' and 'histone' not in '{target.investigated_as}' and {award.rfa} != 'GGR'",
+        "rule": "'{assay_term_name}' == 'ChIP-seq' and 'histone' not in '{target.investigated_as}' and '{award.rfa}' != 'GGR'",
         "assay_composite": {
             "longLabel":  "Collection of ENCODE ChIP-seq experiments",
             "shortLabel": "ENCODE ChIP-seq"

@@ -270,7 +270,7 @@ def lookup_token(token, dataset, a_file=None):
         return term
     elif token == "{lab.title}":
         return dataset['lab'].get('title', 'unknown')
-    elif token == "{award.rna}":
+    elif token == "{award.rfa}":
         return dataset['award'].get('rfa', 'unknown')
     elif token == "{biosample_term_name|multiple}":
         return dataset.get("biosample_term_name", "multiple biosamples")
