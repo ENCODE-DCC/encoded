@@ -1,87 +1,78 @@
-'use strict';
+import React from 'react';
+import { mount } from 'enzyme';
+import _ from 'underscore';
 
-jest.autoMockOff();
+// Import test component and data.
+import { Software } from '../software';
+import context from '../testdata/software';
 
-// Fixes https://github.com/facebook/jest/issues/78
-jest.dontMock('react');
-jest.dontMock('underscore');
 
-describe('Software', function() {
-    var React, TestUtils, Software, publication, context, _;
+describe('Software', () => {
+    describe('Software object with no references', () => {
+        let software;
+        let summary;
 
-    beforeEach(function() {
-        React = require('react');
-        TestUtils = require('react/lib/ReactTestUtils');
-        _ = require('underscore');
-
-        // Set up context object to be rendered
-        Software = require('../software').Software;
-        context = require('../testdata/software');
-    });
-
-    describe('Software object with no references', function() {
-        var software, summary;
-
-        beforeEach(function() {
-            software = TestUtils.renderIntoDocument(
+        beforeAll(() => {
+            software = mount(
                 <Software context={context} />
             );
 
-            summary = TestUtils.scryRenderedDOMComponentsWithClass(software, 'key-value');
+            summary = software.find('.key-value');
         });
 
-        it('has a title with link to software source', function() {
-            var item = summary[0].getDOMNode().querySelector('[data-test="title"]');
-            var itemDescription = item.getElementsByTagName('dd')[0];
-            var anchor = itemDescription.getElementsByTagName('a')[0];
-            expect(itemDescription.textContent).toEqual('HaploReg');
-            expect(anchor.getAttribute('href')).toEqual('http://www.broadinstitute.org/mammals/haploreg/haploreg.php');
+        it('has a title with link to software source', () => {
+            const item = summary.find('[data-test="title"]');
+            const itemDescription = item.find('dd');
+            const anchor = itemDescription.find('a');
+            expect(itemDescription.text()).toEqual('HaploReg');
+            expect(anchor.prop('href')).toEqual('http://www.broadinstitute.org/mammals/haploreg/haploreg.php');
         });
 
-        it('has a good description, software type, and used for', function() {
-            var item = summary[0].getDOMNode().querySelector('[data-test="description"]');
-            var itemDescription = item.getElementsByTagName('dd')[0];
-            expect(itemDescription.textContent).toContain('Explores annotations of the noncoding genome');
+        it('has a good description, software type, and used for', () => {
+            let item = summary.find('[data-test="description"]');
+            let itemDescription = item.find('dd');
+            expect(itemDescription.text()).toContain('Explores annotations of the noncoding genome');
 
-            item = summary[0].getDOMNode().querySelector('[data-test="type"]');
-            itemDescription = item.getElementsByTagName('dd')[0];
-            expect(itemDescription.textContent).toEqual('database, variant annotation');
+            item = summary.find('[data-test="type"]');
+            itemDescription = item.find('dd');
+            expect(itemDescription.text()).toEqual('database, variant annotation');
 
-            item = summary[0].getDOMNode().querySelector('[data-test="purpose"]');
-            itemDescription = item.getElementsByTagName('dd')[0];
-            expect(itemDescription.textContent).toEqual('community resource');
+            item = summary.find('[data-test="purpose"]');
+            itemDescription = item.find('dd');
+            expect(itemDescription.text()).toEqual('community resource');
         });
     });
 
-    describe('Software object with a single reference', function() {
-        var software, summary;
+    describe('Software object with a single reference', () => {
+        let software;
+        let summary;
 
-        beforeEach(function() {
-            var context_ref = _.clone(context);
-            context_ref.references = [require('../testdata/publication')];
-            context_ref.references[0].identifiers = ['PMID:19352372', 'PMCID:PMC3062402'];
+        beforeAll(() => {
+            const contextRef = _.clone(context);
+            contextRef.references = [require('../testdata/publication/publication')];
+            contextRef.references[0].identifiers = ['PMID:19352372', 'PMCID:PMC3062402'];
 
-            software = TestUtils.renderIntoDocument(
-                <Software context={context_ref} />
+            software = mount(
+                <Software context={contextRef} />
             );
 
-            summary = TestUtils.scryRenderedDOMComponentsWithClass(software, 'key-value');
+            summary = software.find('.key-value');
         });
 
-        it('has two references with proper links', function() {
-            var item = summary[0].getDOMNode().querySelector('[data-test="references"]');
-            var itemDescription = item.getElementsByTagName('dd')[0];
-            var ul = itemDescription.getElementsByTagName('ul')[0];
-            var lis = ul.getElementsByTagName('li');
-            expect(lis.length).toEqual(2);
+        it('has two references with proper links', () => {
+            const item = summary.find('[data-test="references"]');
+            const itemDescription = item.find('dd');
+            const ul = itemDescription.find('ul');
+            const lis = ul.find('li');
+            expect(lis).toHaveLength(2);
 
-            var anchor = lis[0].getElementsByTagName('a')[0];
-            expect(anchor.textContent).toEqual('PMID:19352372');
-            expect(anchor.getAttribute('href')).toEqual('/publication/52e85c70-fe2d-11e3-9191-0800200c9a66/');
+            let anchor = lis.at(0).find('a');
+            expect(anchor.at(0).text()).toEqual('PMID:19352372');
+            expect(anchor.at(0).prop('href')).toEqual('/publications/52e85c70-fe2d-11e3-9191-0800200c9a66/');
 
-            anchor = lis[1].getElementsByTagName('a')[0];
-            expect(anchor.textContent).toEqual('PMCID:PMC3062402');
-            expect(anchor.getAttribute('href')).toEqual('/publication/52e85c70-fe2d-11e3-9191-0800200c9a66/');
+            anchor = lis.at(1).find('a');
+            expect(anchor.at(0).text()).toEqual('PMCID:PMC3062402');
+            expect(anchor.at(0).prop('href')).toEqual('/publications/52e85c70-fe2d-11e3-9191-0800200c9a66/');
         });
     });
 });

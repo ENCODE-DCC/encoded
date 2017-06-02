@@ -333,6 +333,9 @@ def process_read_name_line(read_name_line,
                                               read_numbers_set,
                                               srr_flag)
         elif srr_read_name_pattern.match(read_name.split(' ')[0]) is not None:
+            # in case the readname is following SRR format, read number will be
+            # defined using SRR format specifications, and not by the illumina portion of the read name
+            # srr_flag is used to distinguish between srr and "regular" readname formats
             srr_portion = read_name.split(' ')[0]
             if srr_portion.count('.') == 2:
                 read_numbers_set.add(srr_portion[-1])
@@ -352,7 +355,7 @@ def process_read_name_line(read_name_line,
                                                                  errors, True)
         else:
             # unrecognized read_name_format
-            # current convention is to include WHOLE 
+            # current convention is to include WHOLE
             # readname at the end of the signature
             if len(words_array) == 1:
                 if read_name_prefix.match(read_name) is not None:
@@ -374,11 +377,12 @@ def process_read_name_line(read_name_line,
                         srr_flag)
                 else:
                     errors['fastq_format_readname'] = read_name
-                    # the only case to skip update content error - due to the changing nature of read names 
+                    # the only case to skip update content error - due to the changing
+                    # nature of read names
             else:
                 errors['fastq_format_readname'] = read_name
-
-    else:  # found a match to the regex of "almost" illumina read_name
+    # found a match to the regex of "almost" illumina read_name
+    else:
         process_illumina_read_name_pattern(
             read_name,
             read_numbers_set,
@@ -578,8 +582,10 @@ def compare_flowcell_details(flowcell_details_1, flowcell_details_2):
     barcodes_1 = create_a_list_of_barcodes(flowcell_details_1)
     barcodes_2 = create_a_list_of_barcodes(flowcell_details_1)
     if barcodes_1 & barcodes_2:
-        return True  # intersection found
-    return False  # no intersection
+        # intersection found
+        return True
+    # no intersection
+    return False
 
 
 def check_for_fastq_signature_conflicts(session,
@@ -594,13 +600,14 @@ def check_for_fastq_signature_conflicts(session,
                     'datastore=database&fastq_signature=' + signature
             try:
                 r = session.get(urljoin(url, query))
-            except requests.exceptions.RequestException as e:  # This is the correct syntax
+            except requests.exceptions.RequestException as e:
                 errors['lookup_for_fastq_signature'] = 'Network error occured, while looking for ' + \
                                                        'fastq signature conflict on the portal. ' + \
                                                        str(e)
             else:
                 r_graph = r.json().get('@graph')
-                if len(r_graph) > 0:  # found a conflict
+                # found a conflict
+                if len(r_graph) > 0:
                     #  the conflict in case of missing barcode in read names could be resolved with metadata flowcell details
                     for entry in r_graph:
                         if (not signature.endswith('::') or
@@ -624,9 +631,8 @@ def check_for_fastq_signature_conflicts(session,
                                         '%s ' % (
                                             signature) +
                                         'file on the portal.')
-                    
-    # "Fastq file contains read name signatures that conflict with signatures from file X”]
 
+    # "Fastq file contains read name signatures that conflict with signatures from file X”]
     if len(conflicts) > 0:
         errors['not_unique_flowcell_details'] = 'Fastq file contains read name signature ' + \
                                                 'that conflict with signature of existing ' + \
@@ -652,7 +658,7 @@ def check_for_contentmd5sum_conflicts(item, result, output, errors, session, url
             'content_md5sum']
         try:
             r = session.get(urljoin(url, query))
-        except requests.exceptions.RequestException as e:  # This is the correct syntax
+        except requests.exceptions.RequestException as e:
             errors['lookup_for_content_md5sum'] = 'Network error occured, while looking for ' + \
                                                   'content md5sum conflict on the portal. ' + str(e)
         else:
@@ -697,11 +703,11 @@ def check_file(config, session, url, job):
 
     upload_url = job['upload_url']
     local_path = os.path.join(config['mirror'], upload_url[len('s3://'):])
-    is_local_bed_present = False  # boolean standing for local .bed file creation
+    # boolean standing for local .bed file creation
+    is_local_bed_present = False
     if item['file_format'] == 'bed':
-        #  local_path[-18:-7] retreives the file accession from the path
+        # local_path[-18:-7] retreives the file accession from the path
         unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
-
     try:
         file_stat = os.stat(local_path)
     except FileNotFoundError:
@@ -709,13 +715,6 @@ def check_file(config, session, url, job):
         if job['run'] < job['upload_expiration']:
             job['skip'] = True
         return job
-
-    if 'file_size' in item and file_stat.st_size != item['file_size']:
-        errors['file_size'] = 'uploaded {} does not match item {}'.format(
-            file_stat.st_size, item['file_size'])
-        update_content_error(errors, 'Metadata-specified file size {} '.format(
-            item['file_size']) +
-            'doesn’t match the calculated file size {}'.format(file_stat.st_size))
 
     result["file_size"] = file_stat.st_size
     result["last_modified"] = datetime.datetime.utcfromtimestamp(
@@ -767,11 +766,13 @@ def check_file(config, session, url, job):
                     'set -o pipefail; gunzip --stdout {} | grep -c \'^#\''.format(local_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
             except subprocess.CalledProcessError as e:
-                if e.returncode > 1:  # empty file, or other type of error
+                # empty file, or other type of error
+                if e.returncode > 1:
                     errors['grep_bed_problem'] = e.output.decode(errors='replace').rstrip('\n')
-            else:  # comments lines found, need to calculate content md5sum as usual
-                #  remove the comments and create modified.bed to give validateFiles scritp
-                # not forget to remove the modified.bed after finishing
+            # comments lines found, need to calculate content md5sum as usual
+            # remove the comments and create modified.bed to give validateFiles scritp
+            # not forget to remove the modified.bed after finishing
+            else:
                 try:
                     is_local_bed_present = True
                     subprocess.check_output(
@@ -780,7 +781,8 @@ def check_file(config, session, url, job):
                             unzipped_modified_bed_path),
                         shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 except subprocess.CalledProcessError as e:
-                    if e.returncode > 1:  # empty file
+                    # empty file
+                    if e.returncode > 1:
                         errors['grep_bed_problem'] = e.output.decode(errors='replace').rstrip('\n')
                     else:
                         errors['bed_comments_remove_failure'] = e.output.decode(
@@ -829,24 +831,23 @@ def remove_local_file(path_to_the_file, errors):
 
 def fetch_files(session, url, search_query, out, include_unexpired_upload=False, file_list=None):
     graph = []
+    # checkfiles using a file with a list of file accessions to be checked
     if file_list:
         r = None
         ACCESSIONS = []
         if os.path.isfile(file_list):
             ACCESSIONS = [line.rstrip('\n') for line in open(file_list)]
-        #print (ACCESSIONS)
         for acc in ACCESSIONS:
             r = session.get(
                 urljoin(url, '/search/?field=@id&limit=all&type=File&accession=' + acc))
             r.raise_for_status()
-            #out.write("PROCESSING: %d files in accessions list file : %s\n" % (len(r.json()['@graph']), file_list))
             local = copy.deepcopy(r.json()['@graph'])
             graph.extend(local)
+    # checkfiles using a query
     else:
         r = session.get(
             urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
         r.raise_for_status()
-        #out.write("PROCESSING: %d files in query: %s\n" % (len(r.json()['@graph']), search_query))
         graph = r.json()['@graph']
 
     for result in graph:
@@ -881,7 +882,8 @@ def fetch_files(session, url, search_query, out, include_unexpired_upload=False,
                 '{} {}\n{}'.format(r.status_code, r.reason, r.text)
 
         if errors:
-            job['skip'] = True  # Probably a transient error
+            # Probably a transient error
+            job['skip'] = True
 
         yield job
 
@@ -967,7 +969,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.12'
+    version = '1.13'
 
     out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
               (version, search_query, nprocesses, dr, datetime.datetime.now()))

@@ -1,14 +1,16 @@
 'use strict';
 const React = require('react');
+import PropTypes from 'prop-types';
+import createReactClass from 'create-react-class';
 const panel = require('../libs/bootstrap/panel');
 const _ = require('underscore');
 const url = require('url');
+import { auditDecor } from './audit';
 const globals = require('./globals');
 const navigation = require('./navigation');
 const dataset = require('./dataset');
 const dbxref = require('./dbxref');
 import StatusLabel from './statuslabel';
-const audit = require('./audit');
 const image = require('./image');
 const item = require('./item');
 const { pubReferenceList } = require('./reference');
@@ -19,9 +21,6 @@ const {GeneticModificationSummary} = require('./genetic_modification');
 
 const Breadcrumbs = navigation.Breadcrumbs;
 const DbxrefList = dbxref.DbxrefList;
-const AuditIndicators = audit.AuditIndicators;
-const AuditDetail = audit.AuditDetail;
-const AuditMixin = audit.AuditMixin;
 const {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = doc;
 const ExperimentTable = dataset.ExperimentTable;
 const RelatedItems = item.RelatedItems;
@@ -41,8 +40,11 @@ var PanelLookup = function (props) {
 };
 
 
-var Biosample = module.exports.Biosample = React.createClass({
-    mixins: [AuditMixin],
+var BiosampleComponent = module.exports.Biosample = createReactClass({
+    contextTypes: {
+        session: PropTypes.object, // Login information from <App>
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -102,7 +104,7 @@ var Biosample = module.exports.Biosample = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root='/search/?type=biosample' crumbs={crumbs} />
+                        <Breadcrumbs root='/search/?type=Biosample' crumbs={crumbs} />
                         <h2>
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
                         </h2>
@@ -111,11 +113,11 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />
                             </div>
-                            <AuditIndicators audits={context.audit} id="biosample-audit" />
+                            {this.props.auditIndicators(context.audit, 'biosample-audit', { session: this.context.session })}
                         </div>
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="biosample-audit" />
+                {this.props.auditDetail(context.audit, 'biosample-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -427,19 +429,19 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                 <RelatedItems
                     title="Experiments using this biosample"
-                    url={'/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid}
+                    url={'/search/?type=Experiment&replicates.library.biosample.uuid=' + context.uuid}
                     Component={ExperimentTable} ignoreErrors />
 
                 <RelatedItems title="Biosamples that are part of this biosample"
-                              url={'/search/?type=biosample&part_of.uuid=' + context.uuid}
+                              url={'/search/?type=Biosample&part_of.uuid=' + context.uuid}
                               Component={BiosampleTable} ignoreErrors />
 
                 <RelatedItems title="Biosamples that are derived from this biosample"
-                              url={'/search/?type=biosample&derived_from.uuid=' + context.uuid}
+                              url={'/search/?type=Biosample&derived_from.uuid=' + context.uuid}
                               Component={BiosampleTable} ignoreErrors />
 
                 <RelatedItems title="Biosamples that are pooled from this biosample"
-                              url={'/search/?type=biosample&pooled_from.uuid=' + context.uuid}
+                              url={'/search/?type=Biosample&pooled_from.uuid=' + context.uuid}
                               Component={BiosampleTable} ignoreErrors />
 
                 {combinedDocs.length ?
@@ -450,10 +452,12 @@ var Biosample = module.exports.Biosample = React.createClass({
     }
 });
 
+const Biosample = auditDecor(BiosampleComponent);
+
 globals.content_views.register(Biosample, 'Biosample');
 
 
-var MaybeLink = React.createClass({
+var MaybeLink = createReactClass({
     render() {
         if (!this.props.href || this.props.href === 'N/A') {
             return <span>{this.props.children}</span>;
@@ -469,9 +473,9 @@ var MaybeLink = React.createClass({
 // Display the biosample term ID given in `termId`, and link to a corresponding site if the prefix
 // of the term ID needs it. Any term IDs with prefixes not maching any in the `urlMap` property
 // simply display without a link.
-var BiosampleTermId = React.createClass({
+var BiosampleTermId = createReactClass({
     propTypes: {
-        termId: React.PropTypes.string // Biosample whose term is being displayed.
+        termId: PropTypes.string // Biosample whose term is being displayed.
     },
 
     // Map from prefixes to corresponding URL bases. Not all term ID prefixes covered here.
@@ -506,7 +510,7 @@ var BiosampleTermId = React.createClass({
 });
 
 
-var Treatment = module.exports.Treatment = React.createClass({
+var Treatment = module.exports.Treatment = createReactClass({
     render: function() {
         var context = this.props.context;
         var treatmentText = '';
@@ -531,7 +535,7 @@ var Treatment = module.exports.Treatment = React.createClass({
 globals.panel_views.register(Treatment, 'Treatment');
 
 
-var Construct = module.exports.Construct = React.createClass({
+var Construct = module.exports.Construct = createReactClass({
     render: function() {
         var context = this.props.context;
         var embeddedDocs = this.props.embeddedDocs;
@@ -618,7 +622,7 @@ var Construct = module.exports.Construct = React.createClass({
 globals.panel_views.register(Construct, 'Construct');
 
 
-var RNAi = module.exports.RNAi = React.createClass({
+var RNAi = module.exports.RNAi = createReactClass({
     render: function() {
         var context = this.props.context;
         return (
@@ -690,9 +694,9 @@ globals.panel_views.register(RNAi, 'RNAi');
 const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 
 // Document header component -- Characterizations
-var CharacterizationHeader = React.createClass({
+var CharacterizationHeader = createReactClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired // Document object to render
+        doc: PropTypes.object.isRequired // Document object to render
     },
 
     render: function() {
@@ -707,9 +711,9 @@ var CharacterizationHeader = React.createClass({
 });
 
 // Document caption component -- Characterizations
-var CharacterizationCaption = React.createClass({
+var CharacterizationCaption = createReactClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired // Document object to render
+        doc: PropTypes.object.isRequired // Document object to render
     },
 
     render: function() {
@@ -733,11 +737,11 @@ var CharacterizationCaption = React.createClass({
 });
 
 // Document detail component -- default
-var CharacterizationDetail = React.createClass({
+var CharacterizationDetail = createReactClass({
     propTypes: {
-        doc: React.PropTypes.object.isRequired, // Document object to render
-        detailOpen: React.PropTypes.bool, // True if detail panel is visible
-        key: React.PropTypes.string // Unique key for identification
+        doc: PropTypes.object.isRequired, // Document object to render
+        detailOpen: PropTypes.bool, // True if detail panel is visible
+        key: PropTypes.string // Unique key for identification
     },
 
     render: function() {
@@ -747,7 +751,7 @@ var CharacterizationDetail = React.createClass({
 
         return (
             <div className={keyClass}>
-                <dl className='key-value-doc' id={'panel' + this.props.id} aria-labeledby={'tab' + this.props.id} role="tabpanel">
+                <dl className='key-value-doc' id={'panel' + this.props.id} aria-labelledby={'tab' + this.props.id} role="tabpanel">
                     {excerpt ?
                         <div data-test="caption">
                             <dt>Caption</dt>

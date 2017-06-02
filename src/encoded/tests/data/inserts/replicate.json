@@ -306,7 +306,7 @@
     {
         "_test": "organism development series 1 rep 1",
         "aliases": [
-            "robert-waterston:replicate:RB884_80_1_1"
+            "robert-waterston:replicate_RB884_80_1_1"
         ],
         "library": "ENCLB857STI",
         "experiment": "/experiments/ENCSR374GSQ/",
@@ -319,7 +319,7 @@
     {
         "_test": "organism development series 2 rep 1",
         "aliases": [
-            "robert-waterston:replicate:RB884_680_1_1"
+            "robert-waterston:replicate_RB884_680_1_1"
         ],
         "library": "ENCLB332ELH",
         "experiment": "/experiments/ENCSR862BAF/",
@@ -339,7 +339,7 @@
         "technical_replicate_number": 1,
         "biological_replicate_number": 1,
         "status": "released",
-        "aliases": ["robert-waterston:replicate:RB884_880_1_1"],
+        "aliases": ["robert-waterston:replicate_RB884_880_1_1"],
         "uuid": "925d5bac-e428-4603-a09e-0987bb884be5",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/"
     },

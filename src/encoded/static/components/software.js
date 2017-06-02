@@ -1,53 +1,37 @@
-'use strict';
-var React = require('react');
-var globals = require('./globals');
-var navigation = require('./navigation');
-var search = require('./search');
-var fetched = require('./fetched');
-var { pubReferenceList } = require('./reference');
+import React from 'react';
+import PropTypes from 'prop-types';
+import _ from 'underscore';
+import url from 'url';
+import globals from './globals';
+import { Breadcrumbs } from './navigation';
+import search from './search';
+import { pubReferenceList } from './reference';
 import StatusLabel from './statuslabel';
-var audit = require('./audit');
-var _ = require('underscore');
-var url = require('url');
-
-var Breadcrumbs = navigation.Breadcrumbs;
-var FetchedItems = fetched.FetchedItems;
-var AuditIndicators = audit.AuditIndicators;
-var AuditDetail = audit.AuditDetail;
-var AuditMixin = audit.AuditMixin;
+import { auditDecor } from './audit';
 
 
-var Software = module.exports.Software = React.createClass({
-    mixins: [AuditMixin],
+class SoftwareComponent extends React.Component {
+    render() {
+        const { context } = this.props;
+        const itemClass = globals.itemClass(context, 'view-item');
 
-    contextTypes: {
-        location_href: React.PropTypes.string
-    },
-
-    render: function() {
-        var context = this.props.context;
-        var itemClass = globals.itemClass(context, 'view-item');
-
-        // Set up breadcrumbs
-        var typeTerms = context.software_type && context.software_type.map(function(type) {
-            return 'software_type=' + type;
-        });
-        var crumbs = [
-            {id: 'Software'},
-            {id: context.software_type ? context.software_type.join(' + ') : null, query: typeTerms && typeTerms.join('&'),
-                tip: context.software_type && context.software_type.join(' + ')}
+        // Set up breadcrumbs.
+        const typeTerms = context.software_type && context.software_type.map(type => `software_type=${type}`);
+        const crumbs = [
+            { id: 'Software' },
+            {
+                id: context.software_type ? context.software_type.join(' + ') : null,
+                query: typeTerms && typeTerms.join('&'),
+                tip: context.software_type && context.software_type.join(' + '),
+            },
         ];
 
-        var pipeline_url = '/search/?type=pipeline&analysis_steps.software_versions.software.uuid=' + context.uuid;
-
         // See if there’s a version number to highlight
-        var highlightVersion;
-        var queryParsed = this.context.location_href && url.parse(this.context.location_href, true).query;
+        let highlightVersion;
+        const queryParsed = this.context.location_href && url.parse(this.context.location_href, true).query;
         if (queryParsed && Object.keys(queryParsed).length) {
             // Find the first 'version' query string item, if any
-            var versionKey = _(Object.keys(queryParsed)).find(function(key) {
-                return key === 'version';
-            });
+            const versionKey = _(Object.keys(queryParsed)).find(key => key === 'version');
             if (versionKey) {
                 highlightVersion = queryParsed[versionKey];
                 if (typeof highlightVersion === 'object') {
@@ -57,21 +41,21 @@ var Software = module.exports.Software = React.createClass({
         }
 
         // Get a list of reference links, if any
-        var references = pubReferenceList(context.references);
+        const references = pubReferenceList(context.references);
 
         return (
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root='/search/?type=software' crumbs={crumbs} />
+                        <Breadcrumbs root="/search/?type=software" crumbs={crumbs} />
                         <h2>{context.title}</h2>
                         <div className="characterization-status-labels">
                             <StatusLabel title="Status" status={context.status} />
                         </div>
-                        <AuditIndicators audits={context.audit} id="publication-audit" />
+                        {this.props.auditIndicators(context.audit, 'software-audit', { session: this.context.session })}
                     </div>
                 </header>
-                <AuditDetail audits={context.audit} except={context['@id']} id="publication-audit" />
+                {this.props.auditDetail(context.audit, 'software-audit', { session: this.context.session, except: context['@id'] })}
 
                 <div className="panel">
                     <dl className="key-value">
@@ -91,14 +75,14 @@ var Software = module.exports.Software = React.createClass({
                         {context.software_type && context.software_type.length ?
                             <div data-test="type">
                                 <dt>Software type</dt>
-                                <dd>{context.software_type.join(", ")}</dd>
+                                <dd>{context.software_type.join(', ')}</dd>
                             </div>
                         : null}
 
                         {context.purpose && context.purpose.length ?
                             <div data-test="purpose">
                                 <dt>Used for</dt>
-                                <dd>{context.purpose.join(", ")}</dd>
+                                <dd>{context.purpose.join(', ')}</dd>
                             </div>
                         : null}
 
@@ -116,65 +100,84 @@ var Software = module.exports.Software = React.createClass({
                         <h3>Software Versions</h3>
                         <SoftwareVersionTable items={context.versions} highlightVersion={highlightVersion} />
                     </div>
-                : null }
+                : null}
             </div>
         );
     }
-});
+}
+
+SoftwareComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Software object being rendered
+    auditIndicators: PropTypes.func.isRequired,
+    auditDetail: PropTypes.func.isRequired,
+};
+
+SoftwareComponent.contextTypes = {
+    location_href: PropTypes.string,
+    session: PropTypes.object,
+};
+
+
+// Note: need to export for Jest tests even though no other module imports it.
+export const Software = auditDecor(SoftwareComponent);
+
 globals.content_views.register(Software, 'Software');
 
 
-var SoftwareVersionTable = module.exports.SoftwareVersionTable = React.createClass({
-    render: function() {
-        var props = this.props;
-        var rows = {};
-        props.items.forEach(function (version) {
-            rows[version['@id']] = (
-                <tr className={props.highlightVersion === version.version ? 'highlight-row' : null}>
-                    <td>
-                        {version.downloaded_url ?
-                            <a href={version.downloaded_url}>{version.version}</a>
-                        :
-                            <span>{version.version}</span>
-                        }
-                    </td>
-                    <td>{version.download_checksum}</td>
-                </tr>
-            );
-        });
-        return (
-            <div className="table-responsive">
-                <table className="table table-panel table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Version</th>
-                            <th>Download checksum</th>
+const SoftwareVersionTable = (props) => {
+    // Dedupe items list.
+    const items = _(props.items).uniq(version => version['@id']);
+
+    return (
+        <div className="table-responsive">
+            <table className="table table-panel table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Version</th>
+                        <th>Download checksum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {items.map(version =>
+                        <tr key={version.uuid} className={props.highlightVersion === version.version ? 'highlight-row' : null}>
+                            <td>
+                                {version.downloaded_url ?
+                                    <a href={version.downloaded_url}>{version.version}</a>
+                                :
+                                    <span>{version.version}</span>
+                                }
+                            </td>
+                            <td>{version.download_checksum}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {rows}
-                    </tbody>
-                    <tfoot>
-                    </tfoot>
-                </table>
-            </div>
-        );
-    }
-});
+                    )}
+                </tbody>
+                <tfoot />
+            </table>
+        </div>
+    );
+};
+
+SoftwareVersionTable.propTypes = {
+    items: PropTypes.array.isRequired, // Software versions to render in the table
+    highlightVersion: PropTypes.string, // Version number of row to highlight
+};
+
+SoftwareVersionTable.defaultProps = {
+    highlightVersion: '',
+};
 
 
-var Listing = React.createClass({
-    mixins: [search.PickerActionsMixin, AuditMixin],
-    render: function() {
-        var result = this.props.context;
+class ListingComponent extends React.Component {
+    render() {
+        const result = this.props.context;
         return (
             <li>
                 <div className="clearfix">
-                    {this.renderActions()}
+                    <search.PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Software</p>
-                        {result.status ? <p className="type meta-status">{' ' + result.status}</p> : ''}
-                        <AuditIndicators audits={result.audit} id={result['@id']} search />
+                        {result.status ? <p className="type meta-status">{` ${result.status}`}</p> : ''}
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession">
                         <a href={result['@id']}>{result.title}</a>
@@ -185,29 +188,41 @@ var Listing = React.createClass({
                         {result.software_type && result.software_type.length ?
                             <div>
                                 <strong>Software type: </strong>
-                                {result.software_type.join(", ")}
+                                {result.software_type.join(', ')}
                             </div>
                         : null}
-
                     </div>
                 </div>
-                <AuditDetail audits={result.audit} except={result['@id']} id={result['@id']} forcedEditLink />
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
         );
     }
-});
+}
+
+ListingComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Software object being rendered as a search result.
+    auditIndicators: PropTypes.func.isRequired, // From auditDecor
+    auditDetail: PropTypes.func.isRequired, // From auditDecor
+};
+
+ListingComponent.contextTypes = {
+    session: PropTypes.object,
+};
+
+const Listing = auditDecor(ListingComponent);
+
 globals.listing_views.register(Listing, 'Software');
 
 
 // Display a list of software versions from the given software_version list. This is meant to be displayed
 // in a panel.
-var softwareVersionList = module.exports.softwareVersionList = function(softwareVersions) {
+export function softwareVersionList(softwareVersions) {
     return (
         <span className="software-version-list">
-            {softwareVersions.map(function(version, i) {
-                var versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
+            {softwareVersions.map((version) => {
+                const versionNum = version.version === 'unknown' ? 'version unknown' : version.version;
                 return (
-                    <a href={version.software['@id'] + '?version=' + version.version} key={i} className="software-version">
+                    <a href={`${version.software['@id']}?version=${version.version}`} key={version.uuid} className="software-version">
                         <span className="software">{version.software.name}</span>
                         {version.version ?
                             <span className="version">{versionNum}</span>
@@ -217,4 +232,4 @@ var softwareVersionList = module.exports.softwareVersionList = function(software
             })}
         </span>
     );
-};
+}
