@@ -750,7 +750,8 @@ function termSelected(term, facet, filters) {
 function countSelectedTerms(terms, facet, filters) {
     let count = 0;
     Object.keys(terms).forEach((termKey) => {
-        if (termSelected(terms[termKey].key, facet, filters)) {
+        const { selected } = termSelected(terms[termKey].key, facet, filters);
+        if (selected) {
             count += 1;
         }
     });
