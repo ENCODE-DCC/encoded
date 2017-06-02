@@ -47,5 +47,6 @@ assay_terms = {
       'genetic modification followed by DNase-seq': 'NTR:0004774',
       'CRISPRi followed by RNA-seq': 'NTR:0004619',
       'genotyping by Hi-C': 'NTR:0004875',
-      'Circ-seq': 'NTR:0005023'
+      'Circ-seq': 'NTR:0005023',
+      'whole genome sequencing assay': 'OBI:0002117'
 }

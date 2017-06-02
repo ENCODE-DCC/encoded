@@ -421,7 +421,8 @@
                 "genetic modification followed by DNase-seq",
                 "CRISPRi followed by RNA-seq",
                 "genotyping by Hi-C",
-                "Circ-seq"
+                "Circ-seq",
+                "whole genome sequencing assay"
             ]
         }
     },
