@@ -39,7 +39,7 @@
                 "comment": "Only accessions of objects that have status equal replaced will work here.",
                 "type": "string",
                 "format": "accession",
-                "pattern": "[ENCPL[\\d]{3}[A-Z]{3}|TSTPL[\\d]{6}"
+                "pattern": "^(ENCPL\\d{3}[A-Z]{3})$|^(TSTPL\\d{6})$"
             }
         },
         "status": {
