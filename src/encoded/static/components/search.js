@@ -749,8 +749,8 @@ function termSelected(term, facet, filters) {
 // Determine whether any of the given terms are selected
 function countSelectedTerms(terms, facet, filters) {
     let count = 0;
-    Object.keys(terms).forEach((termKey) => {
-        const { selected } = termSelected(terms[termKey].key, facet, filters);
+    terms.forEach((term) => {
+        const { selected } = termSelected(term.key, facet, filters);
         if (selected) {
             count += 1;
         }
@@ -891,7 +891,7 @@ class Facet extends React.Component {
         });
         const moreTerms = terms.slice(5);
         const TermComponent = field === 'type' ? TypeTerm : Term;
-        const selectedTermCount = countSelectedTerms(moreTerms, field, filters);
+        const selectedTermCount = countSelectedTerms(moreTerms, facet, filters);
         const moreTermSelected = selectedTermCount > 0;
         const canDeselect = (!facet.restrictions || selectedTermCount >= 2);
         const moreSecClass = `collapse${(moreTermSelected || this.state.facetOpen) ? ' in' : ''}`;
