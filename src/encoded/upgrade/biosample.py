@@ -259,3 +259,15 @@ def biosample_13_14(value, system):
         del value['depleted_in_term_id']
     if 'depleted_in_term_name' in value:
         value['depleted_in_term_name'] = list(set(value['depleted_in_term_name']))
+
+
+@upgrade_step('biosample', '15', '16')
+def biosample_15_16(value, system):
+    # http://redmine.encodedcc.org/issues/5041
+    if value.get('part_of'):
+        value['originated_from'] = value.get('part_of')
+        value.pop('part_of', None)
+        return
+    if value.get('derived_from'):
+        value['originated_from'] = value.get('derived_from')
+        value.pop('derived_from', None)
