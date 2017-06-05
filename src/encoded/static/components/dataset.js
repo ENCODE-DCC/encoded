@@ -1439,7 +1439,7 @@ export const SeriesComponent = createReactClass({
                 {/* Display list of released and unreleased files */}
                 <FetchedItems
                     {...this.props}
-                    url={globals.unreleased_files_url(context)}
+                    url={globals.unreleasedFilesUrl(context)}
                     Component={DatasetFiles}
                     filePanelHeader={<FilePanelHeader context={context} />}
                     encodevers={globals.encodeVersion(context)}

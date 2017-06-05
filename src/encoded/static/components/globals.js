@@ -105,19 +105,20 @@ module.exports.unbindEvent = function (el, eventName, eventHandler) {
     }
 };
 
-module.exports.unreleased_files_url = function (context) {
-    var file_states = [
+module.exports.unreleasedFilesUrl = function (context) {
+    const fileStates = [
         '',
-        "uploading",
-        "uploaded",
-        "upload failed",
-        "format check failed",
-        "in progress",
-        "released",
-        "archived",
-        "content error",
+        'uploading',
+        'uploaded',
+        'upload failed',
+        'format check failed',
+        'in progress',
+        'released',
+        'revoked',
+        'archived',
+        'content error',
     ].map(encodeURIComponent).join('&status=');
-    return '/search/?limit=all&type=File&dataset=' + context['@id'] + file_states;
+    return `/search/?limit=all&type=File&dataset=${context['@id']}${fileStates}`;
 };
 
 
