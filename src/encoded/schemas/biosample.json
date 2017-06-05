@@ -78,7 +78,7 @@
             "required": ["transfection_type"],
             "comment": "Transfected biosamples require specification of the transfection_type."
         },
-       "post_synchronization_time_units": {
+        "post_synchronization_time_units": {
             "comment": "Biosample with a specified post_synchronization_units requires post_synchronization_time specification and specification of the model organism synchronization stage.",
              "allOf":[
                 {
@@ -137,7 +137,7 @@
             "comment": "The culture_harvest_date property is restricted to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "properties": {
                 "biosample_type": {
-                    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                    "enum": ["tissue", "primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
                 }
             }
         },
@@ -145,7 +145,7 @@
             "comment": "The culture_start_date property is restricted to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "properties": {
                 "biosample_type": {
-                    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                    "enum": ["tissue", "primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
                 }
             }
         },
