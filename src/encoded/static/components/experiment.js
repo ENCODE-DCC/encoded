@@ -208,8 +208,8 @@ var ExperimentComponent = createReactClass({
         var biosampleDocs = [];
         biosamples.forEach(biosample => {
             biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample));
-            if (biosample.part_of) {
-                biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample.part_of));
+            if (biosample.originated_from) {
+                biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample.originated_from));
             }
         });
 
