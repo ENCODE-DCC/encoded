@@ -27,8 +27,8 @@
             "accessionType": "DO"
         },
         "external_id": {
-            "title": "External id",
-            "description": "External identifier that uniquely identifiers the donor.",
+            "title": "External strain/donor IDs",
+            "description": "External identifier that uniquely identifiers the donor of the sample, e.g. for strains it might be a strain identifier at a repository or a de-identified donor ID for a person.",
             "type": "string",
             "pattern": "^(BDSC:\\d+)$|^(NICHD:\\d+)$|^(CGC:\\d+)$|^(PGP:hu[A-Z0-9]+)$|^(Promocell:\\d+)$|^(Biochain:\\d+)$|^(DSSC:\\d+)$|^(DGGR:\\d+)$"
         },
