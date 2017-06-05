@@ -2725,7 +2725,7 @@ def test_audit_experiment_chip_seq_consistent_mapped_read_length(
 
 def collect_audit_errors(result):
     errors = result.json['audit']
-    collect_audit_errors(res) = []
+    errors_list = []
     for error_type in errors:
-        collect_audit_errors(res).extend(errors[error_type])
-    return collect_audit_errors(res)
+        errors_list.extend(errors[error_type])
+    return errors_list
