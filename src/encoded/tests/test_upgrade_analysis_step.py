@@ -4,7 +4,7 @@ import pytest
 @pytest.fixture
 def base_analysis_step(testapp, software_version):
     item = {
-        'name': 'base_analysis_step_v_1',
+        'step_label': 'base_analysis_step',
         'title': 'base_analysis_step_v_1 title',
         'analysis_step_types': ['alignments'],
         'input_file_types': ['reads'],
@@ -68,4 +68,5 @@ def test_analysis_step_5_6(upgrader, analysis_step_5):
     value = upgrader.upgrade('analysis_step', analysis_step_5, current_version='5', target_version='6')
     assert value['schema_version'] == '6'
     assert value['major_version'] == 1
+    assert 'step_label' in value
     assert value['status'] == 'released'

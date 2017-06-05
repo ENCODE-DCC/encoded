@@ -1,6 +1,6 @@
 from snovault import upgrade_step
 from ..upgrade.upgrade_data.analysis_step_5_to_6 import(
-    name_mapping,
+    label_mapping,
     major_version_mapping,
     status_mapping,
     aliases_mapping
@@ -134,8 +134,8 @@ def analysis_step_3_4(value, system):
 @upgrade_step('analysis_step', '5', '6')
 def analysis_step_5_6(value, system):
     # http://redmine.encodedcc.org/issues/4987
-    if value['uuid'] in name_mapping:
-        value['name'] = name_mapping.get(value['uuid'])
+    if value['uuid'] in label_mapping:
+        value['step_label'] = label_mapping.get(value['uuid'])
 
     if value['uuid'] in major_version_mapping:
         value['major_version'] = major_version_mapping.get(value['uuid'])

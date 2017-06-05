@@ -762,10 +762,11 @@ def donor_2(testapp, lab, award, organism):
 @pytest.fixture
 def analysis_step_bam(testapp):
     item = {
-        'name': 'bamqc',
+        'step_label': 'bamqc',
         'title': 'bamqc',
         'input_file_types': ['reads'],
-        'analysis_step_types': ['QA calculation']
+        'analysis_step_types': ['QA calculation'],
+        'major_version': 2
     }
     return testapp.post_json('/analysis_step', item).json['@graph'][0]
 
@@ -774,6 +775,7 @@ def analysis_step_bam(testapp):
 def analysis_step_version_bam(testapp, analysis_step_bam, software_version):
     item = {
         'analysis_step': analysis_step_bam['@id'],
+        'minor_version': 0,
         'software_versions': [
             software_version['@id'],
         ],
