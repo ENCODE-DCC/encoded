@@ -762,7 +762,7 @@ def donor_2(testapp, lab, award, organism):
 @pytest.fixture
 def analysis_step_bam(testapp):
     item = {
-        'step_label': 'bamqc',
+        'step_label': 'bamqc-step',
         'title': 'bamqc',
         'input_file_types': ['reads'],
         'analysis_step_types': ['QA calculation'],
