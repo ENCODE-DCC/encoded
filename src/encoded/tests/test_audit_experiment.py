@@ -2868,7 +2868,27 @@ def test_audit_experiment_chip_seq_mapped_read_length(testapp,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent mapped reads lengths' for error in errors_list)
+
+
+def test_audit_experiment_chip_seq_consistent_mapped_read_length(
+        testapp,
+        base_experiment,
+        file_fastq_3,
+        file_fastq_4,
+        file_bam_1_1,
+        file_bam_2_1,
+        file_tsv_1_2):
     testapp.patch_json(file_fastq_3['@id'], {'read_length': 124})
+    testapp.patch_json(file_fastq_4['@id'], {'read_length': 130})
+    testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']]})
+    testapp.patch_json(file_tsv_1_2['@id'], {'derived_from': [file_bam_2_1['@id'],
+                                                              file_bam_1_1['@id']],
+                                             'file_format_type': 'narrowPeak',
+                                             'file_format': 'bed',
+                                             'output_type': 'peaks'})
+
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
