@@ -271,6 +271,13 @@ def test_no_file_available_file_size(testapp, file_no_error):
     # Removing the file_size from a file should not be allowed if the file exists
     # and in one of the following states "in progress",  "revoked", "archived", "released"
     item = file_no_error.copy()
+    item.update({'status': 'upload failed'})
+    item.update({'no_file_available': False})
+    item.update({'md5sum': '136e501c4bacf3aab87debab20d76648'})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 201
+
+    item = file_no_error.copy()
     item.pop('file_size', None)
     res = testapp.post_json('/file', item, expect_errors=True)
     assert res.status_code == 422

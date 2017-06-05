@@ -72,15 +72,30 @@
                             }
                         },
                         {
-                            "required": ["file_size"],
-                            "properties": {
-                                "status": {
-                                    "enum": ["in progress",  "revoked", "archived", "released"]
+                            "oneOf": [
+                                {
+                                    "required": ["file_size"],
+                                    "properties": {
+                                        "status": {
+                                            "enum": ["in progress",  "revoked", "archived", "released"]
+                                        },
+                                        "no_file_available": {
+                                            "enum": [false]
+                                        }
+                                    }
                                 },
-                                "no_file_available": {
-                                    "enum": [false]
+                                {
+                                    "properties": {
+                                        "status": {
+                                            "enum": ["uploading", "upload failed", "deleted", "replaced", "content error"]
+                                        },
+                                        "no_file_available": {
+                                            "enum": [false]
+                                        }
+                                    }
                                 }
-                            }
+                            ]
+                            
                         }
                     ]
                    
