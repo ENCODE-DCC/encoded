@@ -260,7 +260,6 @@ def test_no_file_available_md5sum(testapp, file_no_error):
     item.pop('md5sum', None)
     item.update({'no_file_available': True})
     res = testapp.post_json('/file', item, expect_errors=True)
-    print (res)
     assert res.status_code == 201
 
     item.update({'no_file_available': False})
