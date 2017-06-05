@@ -6,7 +6,7 @@
     "type": "object",
     "required": ["software_versions", "analysis_step", "minor_version"],
     "additionalProperties": false,
-    "identifyingProperties": ["uuid", "aliases"],
+    "identifyingProperties": ["uuid", "aliases", "analysis_step.name-minor_version"],
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/aliases" },
