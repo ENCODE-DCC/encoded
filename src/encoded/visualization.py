@@ -221,7 +221,9 @@ def lookup_token(token, dataset, a_file=None):
     if token in SIMPLE_DATASET_TOKENS:
         term = dataset.get(token[1:-1])
         if term is None:
-            term = "Unknown " + token[1:-1].split('_')[0].capitalize()
+            return "Unknown " + token[1:-1].split('_')[0].capitalize()
+        elif isinstance(term,list) and len(term) > 3:
+            return "Collection of %d %ss" % (len(term),token[1:-1].split('_')[0].capitalize())
         return term
     elif token == "{experiment.accession}":
         return dataset['accession']
@@ -1010,8 +1012,8 @@ def biosamples_for_file(a_file, dataset):
     '''Returns a dict of biosamples for file.'''
     biosamples = {}
     replicates = dataset.get("replicates")
-    if replicates is None:
-        return[]
+    if replicates is None or not isinstance(replicates[0],dict):
+        return []
 
     for bio_rep in a_file.get("biological_replicates", []):
         for replicate in replicates:
@@ -1155,6 +1157,9 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
             if "tracks" not in view:
                 view["tracks"] = []
             track = {}
+            files_dataset = dataset
+            if 'dataset' in a_file and isinstance(a_file['dataset'],dict):
+                files_dataset = a_file['dataset']
             track["name"] = a_file['accession']
             track["type"] = view["type"]
             track["bigDataUrl"] = "%s?proxy=true" % a_file["href"]
@@ -1163,7 +1168,7 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
                 longLabel = ("{assay_title} of {biosample_term_name} {output_type} "
                              "{biological_replicate_number}")
             longLabel += " {experiment.accession} - {file.accession}"  # Always add the accessions
-            track["longLabel"] = sanitize_label(convert_mask(longLabel, dataset, a_file))
+            track["longLabel"] = sanitize_label(convert_mask(longLabel, files_dataset, a_file))
             # Specialized addendum comments because subtle details alway get in the way of elegance.
             addendum = ""
             submitted_name = a_file.get('submitted_file_name', "none")
@@ -1188,7 +1193,7 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
             # Expecting short label to change when making assay based composites
             shortLabel = vis_defs.get('file_defs', {}).get('shortLabel',
                                                            "{replicate} {output_type_short_label}")
-            track["shortLabel"] = sanitize_label(convert_mask(shortLabel, dataset, a_file))
+            track["shortLabel"] = sanitize_label(convert_mask(shortLabel, files_dataset, a_file))
 
             # How about subgroups!
             membership = {}
@@ -1220,10 +1225,10 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
                                 '"<a href=\'%s/%s/\' TARGET=\'_blank\' title=\'%s details at the ENCODE portal\'>%s</a>"' %
                                 (host, subgroup["url"], group_title, subgroup["title"]))
                         elif group_title == "Biosample":
-                            bs_value = sanitize_label(dataset.get("biosample_summary", ""))
+                            bs_value = sanitize_label(files_dataset.get("biosample_summary", ""))
                             if len(bs_value) == 0:
                                 bs_value = subgroup["title"]
-                            biosamples = biosamples_for_file(a_file, dataset)
+                            biosamples = biosamples_for_file(a_file, files_dataset)
                             if len(biosamples) > 0:
                                 for bs_acc in sorted(biosamples.keys()):
                                     bs_value += ( \
@@ -1883,6 +1888,50 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
 
     return (found_or_made, acc_composite)
 
+def generate_series_trackDb(request, acc, dataset, ucsc_assembly, hide=False, regen=False):
+    files = dataset.get('files',[])
+    sub_accessions = [ file['dataset']['accession'] for file in files ]
+
+    sub_accessions = set(sub_accessions) # Only unique accessions need apply
+    log.warn("trackDb series: found %d sub_accessions  %.3f secs" % (len(sub_accessions), (time.time() - PROFILE_START_TIME)))
+
+    acc_composites = {}
+    made = 0
+    found = 0
+    for sub_acc in sub_accessions:
+        (found_or_made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly, sub_acc,
+                                                                    None, hide=hide, regen=regen)
+        if found_or_made == "made":
+            made += 1
+        else:
+            found += 1
+        acc_composites[sub_acc] = acc_composite
+
+    blob = ""
+    #log.warn("trackDb series: %d generated, %d found,  %d acc_composites  %.3f secs" % (made, found, len(acc_composites.keys()), (time.time() - PROFILE_START_TIME)))
+    set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100)
+    #log.warn("trackDb series: generated %d set_composites %.3f secs" % (len(set_composites.keys()), (time.time() - PROFILE_START_TIME)))
+    for set_key in set_composites.keys():
+        set_composite = set_composites[set_key]
+        if set_composite:
+            set_composite['longLabel']  = "%s %s" % (acc, set_composite['longLabel'])
+            set_composite['shortLabel'] = "ENCODE %s %s" % (acc,set_composite['shortLabel'].split(None,1)[1])
+            #if len(set_composites.keys() == 1:
+            #    set_composite['shortLabel'] = "%s Set" % acc
+
+    if request.url.endswith(".json"):
+        blob = json.dumps(set_composites, indent=4, sort_keys=True)
+    else:
+        for composite_tag in sorted(set_composites.keys()):
+            blob += ucsc_trackDb_composite_blob(set_composites[composite_tag],composite_tag)
+    if regen:  # Want to see message if regen was requested
+        log.info("acc_composites: %s generated, %d found, %d set(s). len(txt):%s  %.3f secs" %
+                (made, found, len(set_composites), len(blob), (time.time() - PROFILE_START_TIME)))
+    else:
+        log.debug("acc_composites: %s generated, %d found, %d set(s). len(txt):%s  %.3f secs" %
+                (made, found, len(set_composites), len(blob), (time.time() - PROFILE_START_TIME)))
+    return blob
+
 
 def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
     '''Returns string content for a requested  single experiment trackDb.txt.'''
@@ -1900,6 +1949,11 @@ def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
 
     acc = dataset['accession']
     ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
+
+    # If we could detect this as a series dataset, then we could treat this as a batch_trackDb
+    if not set(['Series', 'FileSet']).isdisjoint(dataset['@type']):
+        return generate_series_trackDb(request, acc, dataset, ucsc_assembly, hide=hide, regen=regen)
+
     (found_or_made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly,
                                                                 dataset["accession"], dataset,
                                                                 hide=hide, regen=regen)
