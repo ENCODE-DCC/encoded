@@ -461,8 +461,7 @@ def test_upgrade_biosample_13_to_14(root, upgrader, biosample, biosample_13, dum
 
 
 def test_upgrade_biosample_15_to_16(root, upgrader, biosample, biosample_15, dummy_request):
-    context = root.get_by_uuid(biosample['uuid'])
-    dummy_request.context = context
-    value = upgrader.upgrade('biosample', biosample_15, target_version='16', context=context)
+    value = upgrader.upgrade('biosample', biosample_15, current_version='15', target_version='16')
+    assert value['schema_version'] == '16'
     assert value['originated_from'] == biosample['@id']
     assert 'part_of' not in value
