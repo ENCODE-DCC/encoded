@@ -546,7 +546,7 @@ def software_version(testapp, software):
 @pytest.fixture
 def analysis_step(testapp):
     item = {
-        'name': 'fastqc-step-v-1',
+        'step_label': 'fastqc-step',
         'title': 'fastqc',
         'major_version': 1,
         'input_file_types': ['reads'],
