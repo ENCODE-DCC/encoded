@@ -52,7 +52,7 @@
     },
     "dependencies": {
         "no_file_available":{
-            "comment": "md5sum is required for all files unless the file is not available from the portal.",
+            "comment": "md5sum is required for all files unless the file is not available from the portal. file_size is required for files present on portal and have one of the statuses: in progress, revoked, archived or released.",
             "oneOf": [
                 {
                     "properties": {
@@ -62,12 +62,28 @@
                     }
                 },
                 {
-                    "required": ["md5sum"],       
-                    "properties": {
-                        "no_file_available": {
-                            "enum": [false]
+                    "allOf": [
+                        {
+                            "required": ["md5sum"],       
+                            "properties": {
+                                "no_file_available": {
+                                    "enum": [false]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["file_size"],
+                            "properties": {
+                                "status": {
+                                    "enum": ["in progress",  "revoked", "archived", "released"]
+                                },
+                                "no_file_available": {
+                                    "enum": [false]
+                                }
+                            }
                         }
-                    }
+                    ]
+                   
                 }
             ]
         },
@@ -259,18 +275,34 @@
         },
        
         "status": {
-            "comment": "file_size is required in files with statuses in progress, revoked, archived and released. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
+            "comment": "file_size is required in files with statuses in progress, revoked, archived and released unless the file is not available from the portal. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
             "allOf": [
                 {
                     "oneOf": [
                         {
-                            "required": ["file_size"],
-                            "properties": {
-                                "status": {
-                                    "enum": ["in progress",  "revoked", "archived", "released"]
-                                }
-                            }
+                            "anyOf": [
+                                    {
+                                        "required": ["no_file_available"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["in progress",  "revoked", "archived", "released"]
+                                            },
+                                             "no_file_available": {
+                                                "enum": [true]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "required": ["file_size"],   
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["in progress",  "revoked", "archived", "released"]
+                                            }
+                                        }
+                                    }                                   
+                            ]
                         },
+
                         {
                             "properties": {
                                 "status": {
