@@ -157,11 +157,11 @@ def test_audit_biosample_ntr_term_id(testapp, base_biosample):
     assert all(error['category'] != 'invalid biosample term id' for error in errors_list)
 
 
-def test_audit_biosample_part_of_consistency(testapp, biosample, base_biosample):
+def test_audit_biosample_originated_from_consistency(testapp, biosample, base_biosample):
     testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'UBERON:0002369',
                                                'biosample_term_name': 'adrenal gland',
                                                'biosample_type': 'tissue',
-                                               'part_of': biosample['@id']})
+                                               'originated_from': biosample['@id']})
 
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -171,12 +171,12 @@ def test_audit_biosample_part_of_consistency(testapp, biosample, base_biosample)
     assert any(error['category'] == 'inconsistent biosample_term_id' for error in errors_list)
 
 
-def test_audit_biosample_part_of_consistency_ontology(testapp, biosample, base_biosample):
+def test_audit_biosample_originated_from_consistency_ontology(testapp, biosample, base_biosample):
     testapp.patch_json(biosample['@id'], {'biosample_term_id': 'UBERON:0004264'})
     testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'UBERON:0002369',
                                                'biosample_term_name': 'adrenal gland',
                                                'biosample_type': 'tissue',
-                                               'part_of': biosample['@id']})
+                                               'originated_from': biosample['@id']})
 
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -186,14 +186,13 @@ def test_audit_biosample_part_of_consistency_ontology(testapp, biosample, base_b
     assert any(error['category'] == 'inconsistent biosample_term_id' for error in errors_list)
 
 
-def test_audit_biosample_part_of_consistency_ontology_part_of_multicellular_organism(testapp,
-                                                                                     biosample,
-                                                                                     base_biosample):
+def test_audit_biosample_originated_from_consistency_ontology_part_of_multicellular_organism(
+        testapp, biosample, base_biosample):
     testapp.patch_json(biosample['@id'], {'biosample_term_id': 'UBERON:0000468'})
     testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'CL:0000121',
                                                'biosample_term_name': 'adrenal gland',
                                                'biosample_type': 'tissue',
-                                               'part_of': biosample['@id']})
+                                               'originated_from': biosample['@id']})
 
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -203,17 +202,17 @@ def test_audit_biosample_part_of_consistency_ontology_part_of_multicellular_orga
     assert all(error['category'] != 'inconsistent biosample_term_id' for error in errors_list)
 
 
-def test_audit_biosample_part_of_consistency_ontology_part_of(testapp,
-                                                              base_biosample,
-                                                              biosample_1,
-                                                              biosample_2):
+def test_audit_biosample_originated_from_consistency_ontology_part_of(testapp,
+                                                                      base_biosample,
+                                                                      biosample_1,
+                                                                      biosample_2):
     testapp.patch_json(biosample_1['@id'], {'biosample_term_id': 'UBERON:0000468'})
     testapp.patch_json(biosample_2['@id'], {'biosample_term_id': 'UBERON:0002037',
-                                            'part_of': biosample_1['@id']})
+                                            'originated_from': biosample_1['@id']})
     testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'CL:0000121',
                                                'biosample_term_name': 'adrenal gland',
                                                'biosample_type': 'tissue',
-                                               'part_of': biosample_2['@id']})
+                                               'originated_from': biosample_2['@id']})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
