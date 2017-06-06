@@ -596,6 +596,9 @@ PHASE1_PIPELINES = {
     ],
     'file': [
         remove_keys('derived_from', 'controlled_by')
+    ],
+    'analysis_step': [
+        remove_keys('parents')
     ]
 }
 
@@ -661,6 +664,9 @@ PHASE2_PIPELINES = {
     ],
     'file': [
         skip_rows_missing_all_keys('derived_from', 'controlled_by')
+    ],
+    'analysis_step': [
+        skip_rows_missing_all_keys('parents')
     ]
 }
 
