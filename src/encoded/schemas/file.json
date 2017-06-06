@@ -82,6 +82,14 @@
                 "required": ["accession"]
             }
         },
+        "revoke_detail": {
+            "comment": "Only revoked files can have revoke_detail specified.",
+            "properties": {
+                "status": {
+                    "enum": ["revoked"]
+                }
+            }
+        },
         "mapped_run_type": {
             "comment": "Only bam files can have mapped_run_type specified.",
             "properties": {
@@ -301,7 +309,7 @@
             "permission": "import_items"
         },
         "schema_version": {
-            "default": "10"
+            "default": "11"
         },
         "accession": {
             "accessionType": "FF"
@@ -661,12 +669,10 @@
                         "predicted enhancers",
                         "candidate enhancers",
                         "candidate promoters",
-                        "predicted forebrain enhancers",
-                        "predicted heart enhancers",
-                        "predicted whole brain enhancers",
+                        
                         "candidate regulatory elements",
                         "representative dnase hypersensitivity sites",
-                        "sequence alignability",
+                        
                         
                         "genome reference",
                         "transcriptome reference",
@@ -738,7 +744,12 @@
 
                         "validation",
 
-                        "HMM predicted chromatin state"
+                        "HMM predicted chromatin state",
+
+                        "predicted forebrain enhancers",
+                        "predicted heart enhancers",
+                        "predicted whole brain enhancers",
+                        "sequence alignability"
 
                     ]
                 }
@@ -881,6 +892,13 @@
             "title": "Content error detail",
             "description": "Explanation of why the file failed the automated content checks.",
             "comment": "Do not submit.  This is posted by the checkfiles script. It is required when status is 'content error'",
+            "type": "string",
+            "permission": "import_items"
+        },
+         "revoke_detail": {
+            "title": "Revoke error detail",
+            "description": "Explanation of why the file was revoked.",
+            "comment": "Do not submit. The field would be posted by DCC.",
             "type": "string",
             "permission": "import_items"
         }
