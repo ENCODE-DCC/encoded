@@ -53,12 +53,15 @@ def audit_file_processed_derived_from(value, system):
     derived_from_files = value.get('derived_from')
     fastq_bam_counter = 0
     for f in derived_from_files:
-        if f['status'] not in ['deleted', 'replaced', 'revoked'] and \
-           (f['file_format'] == 'bam' or
+        if (f['file_format'] == 'bam' or
             f['file_format'] == 'fastq' or (f['file_format'] == 'fasta' and
                                             f['output_type'] == 'reads' and
                                             f['output_category'] == 'raw data')):
-            fastq_bam_counter += 1
+
+            if f['status'] not in ['deleted', 'replaced', 'revoked'] or \
+               f['status'] == value['status']:
+                fastq_bam_counter += 1
+
             if f['dataset'] != value['dataset']:
                 detail = 'derived_from is a list of files that were used to create a given file; ' + \
                          'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
