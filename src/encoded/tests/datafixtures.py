@@ -572,7 +572,7 @@ def analysis_step_version(testapp, analysis_step, software_version):
 def analysis_step_run(testapp, analysis_step_version):
     item = {
         'analysis_step_version': analysis_step_version['@id'],
-        'status': 'finished',
+        'status': 'released',
     }
     return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
 
@@ -787,7 +787,7 @@ def analysis_step_version_bam(testapp, analysis_step_bam, software_version):
 def analysis_step_run_bam(testapp, analysis_step_version_bam):
     item = {
         'analysis_step_version': analysis_step_version_bam['@id'],
-        'status': 'finished',
+        'status': 'released',
         'aliases': ['modern:chip-seq-bwa-alignment-step-run-v-1-virtual']
     }
     return testapp.post_json('/analysis_step_run', item).json['@graph'][0]

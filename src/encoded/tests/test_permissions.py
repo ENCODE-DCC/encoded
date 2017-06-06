@@ -68,7 +68,7 @@ def step_run(testapp, lab, award):
 
     step_run = {
         'analysis_step_version': asv['@id'],
-        'status': "finished"
+        'status': "released"
     }
     return testapp.post_json('/analysis-step-runs', step_run, status=201).json['@graph'][0]
 
