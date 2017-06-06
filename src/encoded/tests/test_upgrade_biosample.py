@@ -159,6 +159,7 @@ def biosample_13(biosample_0, document):
 def biosample_15(biosample_0, document):
     item = biosample_0.copy()
     item.update({
+        'date_obtained': '2017-06-06T20:29:37.059673+00:00',
         'schema_version': '15',
         'talens': []
     })
@@ -461,4 +462,5 @@ def test_upgrade_biosample_15_to_16(root, upgrader, biosample, biosample_15, dum
     dummy_request.context = context
     value = upgrader.upgrade('biosample', biosample_15, target_version='16', context=context)
     assert value['schema_version'] == '16'
+    assert value['date_obtained'] == '2017-06-06'
     assert 'talens' not in value

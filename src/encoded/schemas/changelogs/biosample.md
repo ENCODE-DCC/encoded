@@ -7,10 +7,12 @@
 * *dbxrefs*
 * *pooled_from* array is reuired to include at least 2 items ot be initiated
 * *phase* property is restricted to biosamples with biosample_type one of ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
-* *culture_harvest_date*, *culture_start_date* propeties are restricted to biosamples with biosample_type one of ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line", "tissue"]
+* *culture_harvest_date*, *culture_start_date* propeties are restricted to biosamples with biosample_type one of ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line", "tissue"] and their format is limited now to only *date* and not one of ["date", "date-time"] as it used to be
 * *transfection_method* specification requires specirfication of *transfection_type*
 * *post_synchronization_time* specification requires specification of *post_synchronization_time_units* and *fly_synchronization_stage* or *worm_synchronization_stage*
 * *status* value "preliminary" was removed
+* *date_obtained* format is limited now to only *date* and not one of ["date", "date-time"] as it used to be
+    
 
 ### Schema version 15
 

@@ -24,7 +24,7 @@
         {"$ref": "mixins.json#/schema_version"},
         {"$ref": "mixins.json#/aliases"},
         {"$ref": "mixins.json#/accession"},
-        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/uuid"}
     ],
     "dependencies": {
         "phase": {
@@ -110,7 +110,7 @@
         },
         "post_treatment_time": {
             "required":["post_treatment_time_units", "treatments"],
-            "comment": "Biosample with a specified post_treatment_time requires post_treatment_time_units specification.",
+            "comment": "Biosample with a specified post_treatment_time requires non-empty treatments list and post_treatment_time_units specification.",
             "properties":{
                 "treatments": {
                     "minItems": 1
@@ -119,7 +119,7 @@
         },
         "post_treatment_time_units": {
             "required":["post_treatment_time", "treatments"],
-            "comment": "Biosample with a specified post_treatment_time_units requires post_treatment_time specification.",
+            "comment": "Biosample with a specified post_treatment_time_units requires requires non-empty treatments list post_treatment_time specification.",
             "properties":{
                 "treatments": {
                     "minItems": 1
@@ -580,32 +580,23 @@
         "culture_harvest_date": {
             "title": "Culture harvest date",
             "description": "For cultured samples, the date the biosample was taken.",
-            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM. The property is limited to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "comment": "Date should be submitted in as YYYY-MM-DD. The property is limited to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "type": "string",
-            "anyOf": [
-                {"format": "date-time"},
-                {"format": "date"}
-            ]
+            "format": "date"
         },
         "culture_start_date": {
             "title": "Culture start date",
             "description": "For cultured samples, the date the culture was started. For cell lines, the date this particular growth was started, not the date the line was established.",
-            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD ((TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM). The property is limited to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "comment": "Date should be submitted in as YYYY-MM-DD. The property is limited to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "type": "string",            
-            "anyOf": [
-                {"format": "date-time"},
-                {"format": "date"}
-            ]
+            "format": "date"
         },
         "date_obtained": {
             "title": "Date obtained",
             "description": "For tissue samples, the date the biosample was taken.",
-            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
+            "comment": "Date should be submitted in as YYYY-MM-DD.",
             "type": "string",
-            "anyOf": [
-                {"format": "date-time"},
-                {"format": "date"}
-            ]
+            "format": "date"
         },
         "starting_amount": {
             "title": "Starting amount",
@@ -717,14 +708,14 @@
         "post_treatment_time": {
             "title": "Post-treatment time",
             "description": "The time that elapsed past the point when biosamples were treated.",
-            "comment": "Use in conjunction with treatment to specify time elapsed post-treatment.",
+            "comment": "Use in conjunction with treatment and post_treatment_time_units to specify time elapsed post-treatment. post_treatment_time specification requires non-empty treatments list and post_treatment_time_units specification.",
             "type": "string",
             "pattern": "^(\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)$"
         },
         "post_treatment_time_units": {
             "title": "Post-treatment time units",
             "description": "The units of time that elapsed past the point when biosamples were treated.",
-            "comment": "Use in conjunction with post_treatment_time and treatment to specify time elapsed post-treatment.",
+            "comment": "Use in conjunction with post_treatment_time and treatment to specify time elapsed post-treatment. post_treatment_time_units specification requires non-empty treatments list and post_treatment_time specification.",
             "type": "string",
             "enum": [
                 "minute",
