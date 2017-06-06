@@ -10,6 +10,7 @@
 * *culture_harvest_date*, *culture_start_date* propeties are restricted to biosamples with biosample_type one of ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line", "tissue"]
 * *transfection_method* specification requires specirfication of *transfection_type*
 * *post_synchronization_time* specification requires specification of *post_synchronization_time_units* and *fly_synchronization_stage* or *worm_synchronization_stage*
+* *status* value "preliminary" was removed
 
 ### Schema version 15
 

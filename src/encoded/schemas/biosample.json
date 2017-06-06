@@ -804,14 +804,13 @@
             "type": "string",
             "permission": "import_items",
             "description": "The status of the biosample object.",
-            "comment": "Do not submit.  This is set by admins along the process of file submission.",
+            "comment": "Do not submit.  This is set by admins along the process of metadata submission.",
             "enum" : [
                 "in progress",
                 "deleted",
                 "replaced",
                 "released",
                 "revoked",
-                "preliminary",
                 "proposed"
             ]
         }

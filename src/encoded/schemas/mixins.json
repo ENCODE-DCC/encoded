@@ -219,7 +219,7 @@
             "@type": "@id",
             "title": "Ontology ID",
             "description": "Ontology identifier describing biosample.",
-            "comment": "NTR is a new term request identifier provided by the DCC.",
+            "comment": "For detailed description of ontologies used by DCC visit https://www.encodeproject.org/help/getting-started/. In cases where a new ontology term is needed, NTR (new term request) identifier would be provided by the DCC.",
             "type": "string",
             "pattern": "^(UBERON|EFO|CL|NTR|FBbt|WBbt):[0-9]{2,8}$"
         },
