@@ -45,8 +45,9 @@ class Donor(Item):
     def unique_keys(self, properties):
         keys = super(Donor, self).unique_keys(properties)
         if properties.get('status') != 'replaced':
-            if 'external_id' in properties:
-                keys.setdefault('alias', []).append('{external_id}'.format(**properties))
+            if 'external_ids' in properties:
+                for ext_id in properties:
+                    keys.setdefault('alias', []).append('{ext_id}'.format(**properties))
         return keys
 
     @calculated_property(schema={
