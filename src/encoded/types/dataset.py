@@ -8,7 +8,6 @@ from .base import (
     Item,
     paths_filtered_by_status,
 )
-from pyramid.security import effective_principals
 
 from urllib.parse import quote_plus
 from urllib.parse import urljoin
@@ -194,7 +193,6 @@ class Dataset(Item):
         "type": "string",
     })
     def visualize(self, request, hub, assembly, status):
-        principals = effective_principals(request)
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
         for assembly_name in assembly:
@@ -210,7 +208,7 @@ class Dataset(Item):
                     browser_urls['Ensembl'] = ensembl_url
             # Now for biodalliance.  bb and bw already known?  How about non-deleted?
             # TODO: define (in visualization.py?) supported assemblies list
-            if 'group.submitter' in principals and assembly_name in ['hg19', 'GRCh38', 'mm10', 'mm10-minimal' ,'mm9','dm6','dm3','ce10','ce11']:
+            if assembly_name in ['hg19', 'GRCh38', 'mm10', 'mm10-minimal' ,'mm9','dm6','dm3','ce10','ce11']:
                 if status not in ["proposed", "started", "deleted", "revoked", "replaced"]:
                     file_formats = '&file_format=bigBed&file_format=bigWig'
                     file_inclusions = '&status=released&status=in+progress'
