@@ -161,6 +161,28 @@ def file_with_bad_date_created(testapp, experiment, award, lab, replicate, platf
         'md5sum': '136e501c4bacf4aab87debab20d76648',
         'status': 'in progress'
     }
+    return item
+
+
+@pytest.fixture
+def file_with_bad_revoke_detail(testapp, experiment, award, lab, replicate, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'platform': platform1['@id'],
+        'award': award['@id'],
+        'file_format': 'fastq',
+        'run_type': 'paired-ended',
+        'paired_end': '1',
+        'output_type': 'reads',
+        "read_length": 50,
+        'md5sum': '136e501c4bacf4aab87debab20d76648',
+        'status': 'in progress',
+        'revoke_detail': 'some reason to be revoked'
+    }
+    return item
 
 
 def test_file_post(file_no_replicate):
@@ -299,4 +321,12 @@ def test_no_file_available_file_size(testapp, file_no_error):
     item.pop('md5sum', None)
     item.update({'no_file_available': True})
     res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 201
+
+
+def test_revoke_detail(testapp, file_with_bad_revoke_detail):
+    res = testapp.post_json('/file', file_with_bad_revoke_detail, expect_errors=True)
+    assert res.status_code == 422
+    file_with_bad_revoke_detail.update({'status': 'revoked'})
+    res = testapp.post_json('/file', file_with_bad_revoke_detail, expect_errors=True)
     assert res.status_code == 201
