@@ -972,7 +972,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.13'
+    version = '1.14'
 
     out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
               (version, search_query, nprocesses, dr, datetime.datetime.now()))
