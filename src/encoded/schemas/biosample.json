@@ -167,76 +167,67 @@
                 "biosample_type": {"enum": ["whole organisms", "tissue"]}
             }
         },
-        "biosample_type": {
-            "comment": "Human biosamples are not allowed to have biosample_type property of whole organisms",
-            "not": {
-                "properties": {
-                    "biosample_type": {
-                        "enum": ["whole organisms"]
-                    },
-                    "organism": {
-                        "linkTo": "Organism",
-                        "linkEnum": [
-                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                        ]
-                    }
-                }
-            }
-        },
         "model_organism_age": {
-            "comment": "Human biosamples are not allowed to have model_organism_age property. Biosample with a specified model_organism_age requires model_organism_age_units specification.",
-            "required": ["model_organism_age_units"],
-            "not": {
-                "properties": {
-                    "organism": {
-                        "linkTo": "Organism",
-                        "linkEnum": [
-                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                        ]
-                    }
-                }
-            }
-        },
-        "model_organism_health_status": {
-            "comment": "Human biosamples are not allowed to have model_organism_health_status property.",
-            "not": {
-                "properties": {
-                    "organism": {
-                        "linkTo": "Organism",
-                        "linkEnum": [
-                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                        ]
-                    }
-                }
-            }
-        },
-        "model_organism_sex": {
-            "comment": "Human biosamples are not allowed to have model_organism_sex property.",
-            "not": {
-                "properties": {
-                    "organism": {
-                        "linkTo": "Organism",
-                        "linkEnum": [
-                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                        ]
-                    }
-                }
-            }
+            "comment": "Biosample with a specified model_organism_age requires model_organism_age_units specification.",
+            "required": ["model_organism_age_units"]
         },
         "model_organism_mating_status": {
-            "comment": "Human biosamples are not allowed to have model_organism_mating_status property.",
-            "required": ["model_organism_sex"],
-            "not": {
-                "properties": {
-                    "organism": {
-                        "linkTo": "Organism",
-                        "linkEnum": [
-                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                        ]
-                    }
-                }
-            }
+            "comment": "Biosample with a specified model_organism_mating_status requires model_organism_sex specification.",
+            "required": ["model_organism_sex"]
         },
+        "organism":{
+            "comment": "Human biosamples are not allowed to have model organism properties, and biosample_type should be different from whole organisms.",
+            "oneOf": [
+                {
+                    "not": {
+                        "properties": {
+                            "organism": {
+                                "linkTo": "Organism",
+                                "linkEnum": [
+                                    "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+                                ]
+                            }
+                        }
+                    }
+                },
+                {
+                    "allOf": [
+                        {
+                            "properties": {
+                                "biosample_type": {
+                                    "enum": [
+                                        "primary cell",
+                                        "immortalized cell line",
+                                        "tissue",
+                                        "in vitro differentiated cells",
+                                        "induced pluripotent stem cell line",
+                                        "stem cell"
+                                    ]
+                                },
+                                "organism": {
+                                    "linkTo": "Organism",
+                                    "linkEnum": [
+                                        "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+                                    ]
+                                }   
+                            }
+                        },
+                        {
+                            "not": { "required": ["model_organism_mating_status"] }
+                        },
+                        {
+                            "not": { "required": ["model_organism_sex"] }
+                        },
+                        {
+                            "not": { "required": ["model_organism_health_status"] }
+                        },
+                        {
+                            "not": { "required": ["model_organism_age"] }
+                        }                        
+                    ]
+                }
+            ]              
+         },
         "post_synchronization_time": {
             "comment": "Human and mouse biosamples are not allowed to have post_synchronization_time property. Biosample with a specified post_synchronization_time requires post_synchronization_time_units specification and model organism synchronization stage.",
             "allOf":[
@@ -330,7 +321,7 @@
             }
         },
         "mouse_life_stage": {
-            "comment": "Only mouse biosamples are allowed to have worm_life_stage property.",
+            "comment": "Only mouse biosamples are allowed to have mouse_life_stage property.",
             "properties": {
                 "organism": {
                     "linkTo": "Organism",

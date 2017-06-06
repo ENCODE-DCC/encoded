@@ -119,3 +119,8 @@ def test_biosmple_post_synchronization_no_unit_fail(testapp, mouse_biosample, fl
     mouse_biosample['organism'] = fly['uuid']
     mouse_biosample['post_synchronization_time'] = '30'
     testapp.post_json('/biosample', mouse_biosample, status=422)
+
+
+def test_biosample_human_whole_organism_fail(testapp, biosample):
+    biosample['biosample_type'] = 'whole organisms'
+    testapp.post_json('/biosample', biosample, status=422)
