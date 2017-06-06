@@ -110,7 +110,7 @@
         "date_created": {
             "rdfs:subPropertyOf": "dc:created",
             "title": "Date created",
-            "decription": "The date the object was created.",
+            "description": "The date the object was created.",
             "comment": "Do not submit. The date the object is created is assigned by the server.",
             "type": "string",
             "anyOf": [

@@ -366,7 +366,7 @@
             "items": {
                 "title": "DNA Constructs",
                 "description": "An expression or targeting vector stably or transiently transfected (not RNAi).",
-                "comment": "See contstruct.json for available identifiers.",
+                "comment": "See construct.json for available identifiers.",
                 "type":  "string",
                 "linkTo": "Construct"
             }
@@ -374,7 +374,7 @@
         "rnais": {
             "title": "RNAi vectors",
             "description": "RNAi vectors stably or transiently transfected.",
-            "comment": "A list of RNAi's used to transfect the biosample, it will require transfection_type specification.",
+            "comment": "A list of RNAi object identifiers used to transfect the biosample, it will require transfection_type specification.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
@@ -388,7 +388,7 @@
         },
         "treatments": {
             "title": "Treatments",
-            "description": "A list of treatments applied to the biosmple.",
+            "description": "A list of treatments applied to the biosample.",
             "comment": "A list of treatments applied to the biosample, it is required to be non-empty if post_treatment_time or post_treatment_time_units are specified.",
             "type": "array",
             "default": [],
