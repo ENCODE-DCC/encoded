@@ -858,14 +858,14 @@
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "External identifiers",
-            "description": "Unique identifiers from external resources.",
+            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
             "comment": "Do not submit.  This is for admins to make virtual file objcts for files at external resources.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "External identifier",
-                "description": "A unique identifier from external resource.",
+                "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
                 "pattern": "^(SRA:(SRR|SRX)\\d+)$"
             }
