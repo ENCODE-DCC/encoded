@@ -232,7 +232,7 @@
         "biosample_type": {
             "title": "Biosample type",
             "description": "The general category of the biosample.",
-            "comment": "Required property.",
+            "comment": "Required property. The specified category should match the type of ontology used to describe the biosample.",
             "type": "string",
             "enum" : [
                 "primary cell",

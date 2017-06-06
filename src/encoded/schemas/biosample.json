@@ -404,15 +404,15 @@
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "External identifiers",
-            "description": "Unique biosample identifiers from external resources, such as Biosample database or Cellosaurus.",
-            "comment": "Do not submit. DCC personell is responsible for submission of biosample external resource identifiers.",
+            "description": "Biosample identifiers from external resources, such as Biosample database or Cellosaurus.",
+            "comment": "Do not submit. DCC personnel is responsible for submission of biosample external resource identifiers.",
             "permission": "import_items",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "External identifier",
-                "description": "A unique identifier from external resource.",
+                "description": "An identifier from external resource.",
                 "type":  "string",
                 "pattern": "^((UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)|(GTEx:[a-zA-Z0-9\\-_]+)|(GEO:SAMN\\d+)|(Cellosaurus:CVCL_\\w{4}))$"
             }
@@ -422,14 +422,14 @@
         },
         "donor": {
             "title": "Donor",
-            "description": "The donor the biosample was derived from.",
+            "description": "The donor or strain the biosample was originated from.",
             "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers. For worm biosamples, see worm_donor.json for available identifiers. For fly biosamples, see fly_donor.json for available identifiers.",
             "type": "string",
             "linkTo": "Donor"
         },
         "organism": {
             "title": "Organism",
-            "description": "The organism the biosample was derived from.",
+            "description": "The organism the biosample was originated from.",
             "comment": "See organism.json for available identifiers.",
             "type": "string",
             "linkTo": "Organism"
@@ -478,7 +478,7 @@
         "internal_tags": {
             "title": "Internal tags",
             "description": "Some biosamples are part of particular data collections.",
-            "comment" : "Do not submit. internal_tag values could be submitted only by DCC personnel.",
+            "comment" : "Do not submit. Internal tags are for DCC use only.",
             "type": "array",
             "default": [],
             "permission": "import_items",
@@ -531,16 +531,16 @@
             "description": "The GO (Gene Ontology) term name for cellular component that constitutes the biosample.",
             "type": "string",
             "enum": [
-                "nucleus", 
-                "cytosol", 
                 "chromatin",
+                "cytosol",
+                "insoluble cytoplasmic fraction",
                 "membrane",
                 "mitochondria",
                 "nuclear matrix",
                 "nucleolus",
                 "nucleoplasm",
-                "polysome",
-                "insoluble cytoplasmic fraction"
+                "nucleus",
+                "polysome" 
             ]
         },
         "phase": {
