@@ -226,11 +226,13 @@
         "biosample_term_name": {
             "title": "Ontology term",
             "description": "Ontology term describing biosample.",
+            "comment": "The term should match the ontology identifier specified in biosample_term_id. For detailed description of ontologies used by DCC visit https://www.encodeproject.org/help/getting-started/.",
             "type":  "string"
         },
         "biosample_type": {
             "title": "Biosample type",
-            "description": "The categorization of the biosample.",
+            "description": "The general category of the biosample.",
+            "comment": "Required property.",
             "type": "string",
             "enum" : [
                 "primary cell",
