@@ -20,3 +20,14 @@ def analysis_step_run_1_2(value, system):
     if 'workflow_run' in value:
         del value['workflow_run']
 '''
+
+
+@upgrade_step('analysis_step_run', '3', '4')
+def analysis_step_run_3_4(value, system):
+    status = value.get('status')
+    if status == 'error':
+        value['status'] = 'deleted'
+    elif status in ['waiting', 'running']:
+        value['status'] = 'in progress'
+    elif status == 'finished':
+        value['status'] = 'released'
