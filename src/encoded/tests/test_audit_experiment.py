@@ -2531,11 +2531,6 @@ def test_audit_experiment_modern_chip_seq_standards(testapp,
                                                 'assay_term_name': 'ChIP-seq',
                                                 'award': award_modERN['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    collect_audit_errors(res) = []
-
-    for error_type in errors:
-        collect_audit_errors(res).extend(errors[error_type])
     assert any(error['category'] ==
                'insufficient read depth' for error in collect_audit_errors(res))
 
