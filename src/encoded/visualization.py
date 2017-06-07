@@ -1080,8 +1080,12 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
         output_types = view.get("output_type", [])
         file_format_types = view.get("file_format_type", [])
         file_format = view["type"].split()[0]
-        if file_format == "bigBed" and "scoreFilter" in view:
-            view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
+        if file_format == "bigBed":
+            format_type = view.get('file_format_type','')
+            if format_type == 'bedMethyl' or "itemRgb" in view:
+                view["type"] = "bigBed 9 +"  # itemRgb implies at least 9 +
+            elif format_type in ['broadPeak','narrowPeak'] or "scoreFilter" in view:
+                view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
         # log.debug("%d files looking for type %s" % (len(dataset["files"]),view["type"]))
         for a_file in dataset["files"]:
             if a_file['status'] not in VISIBLE_FILE_STATUSES:
