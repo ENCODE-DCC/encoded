@@ -14,8 +14,6 @@
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/product_id" },
-        { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "modification_technique.json#/properties" },
         { "$ref": "mixins.json#/documents" }
