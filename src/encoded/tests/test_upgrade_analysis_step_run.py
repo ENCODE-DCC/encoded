@@ -33,3 +33,19 @@ def test_analysis_step_run_1_2(registry, upgrader, analysis_step_run_1, analysis
     assert 'analysis_step' not in value
     assert 'workflows_run' not in value
 '''
+
+
+@pytest.fixture
+def analysis_step_run_3(analysis_step, analysis_step_version):
+    item = {
+        'analysis_step_version': analysis_step_version['uuid'],
+        'status': 'finished'
+    }
+    return item
+
+
+def test_analysis_step_run_3_4(registry, upgrader, analysis_step_run_3):
+    value = upgrader.upgrade('analysis_step_run', analysis_step_run_3,
+                             current_version='3', target_version='4', registry=registry)
+    assert value['schema_version'] == '4'
+    assert value['status'] == 'released'

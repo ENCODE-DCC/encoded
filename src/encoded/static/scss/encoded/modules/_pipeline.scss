@@ -1,7 +1,8 @@
 $pipeline-node-types:
     (file, #FFF5BA),
     (analysis-step, #D3E9FF),
-    (quality-metric, #80ffc0);
+    (quality-metric, #80ffc0),
+    (file-type, #e0e0e0);
 
 @each $node-type, $color in $pipeline-node-types {
     // Audit icons
@@ -38,6 +39,10 @@ $pipeline-node-types:
     .graph-modal-#{$node-type} {
         background-color: $color;
     }
+}
+
+g.pipeline-node-file-type {
+    pointer-events: none;
 }
 
 g.label {
