@@ -1958,7 +1958,8 @@ def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
     ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
 
     # If we could detect this as a series dataset, then we could treat this as a batch_trackDb
-    if not set(['Series', 'FileSet']).isdisjoint(dataset['@type']) and 'Experiment' not in dataset['@type']:
+    if set(['Experiment', 'Annotation']).isdisjoint(dataset['@type']) and \
+          not set(['Series', 'FileSet']).isdisjoint(dataset['@type']):
         return generate_set_trackDb(request, acc, dataset, ucsc_assembly, hide=hide, regen=regen)
 
     (found_or_made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly,
