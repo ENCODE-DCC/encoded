@@ -12,8 +12,8 @@
 * *post_synchronization_time* specification requires specification of *post_synchronization_time_units* and *fly_synchronization_stage* or *worm_synchronization_stage*
 * *status* value "preliminary" was removed
 * *date_obtained* format is limited now to only *date* and not one of ["date", "date-time"] as it used to be
-* *part_of* and *derived_from* fields are replaced by *originated_from* field
 * *alternate_accessions* now must match accession format, "ENCBS..." or "TSTBS..."
+
 
 ### Schema version 15
 

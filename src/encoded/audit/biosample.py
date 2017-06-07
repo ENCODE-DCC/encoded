@@ -269,38 +269,38 @@ def is_part_of(term_id, part_of_term_id, ontology):
         return any(parents)
 
 
-@audit_checker('biosample', frame=['originated_from'])
-def audit_biosample_originated_from_consistency(value, system):
-    if 'originated_from' not in value:
+@audit_checker('biosample', frame=['part_of'])
+def audit_biosample_part_of_consistency(value, system):
+    if 'part_of' not in value:
         return
     else:
-        originated_from_biosample = value['originated_from']
+        part_of_biosample = value['part_of']
         term_id = value['biosample_term_id']
-        originated_from_term_id = originated_from_biosample['biosample_term_id']
+        part_of_term_id = part_of_biosample['biosample_term_id']
 
         if 'biosample_term_name' in value:
             term_name = value['biosample_term_name']
         else:
             term_name = term_id
-        if 'biosample_term_name' in originated_from_biosample:
-            originated_from_term_name = originated_from_biosample['biosample_term_name']
+        if 'biosample_term_name' in part_of_biosample:
+            part_of_term_name = part_of_biosample['biosample_term_name']
         else:
-            originated_from_term_name = originated_from_term_id
+            part_of_term_name = part_of_term_id
 
-        if term_id == originated_from_term_id or originated_from_term_id == 'UBERON:0000468':
+        if term_id == part_of_term_id or part_of_term_id == 'UBERON:0000468':
             return
 
         ontology = system['registry']['ontology']
-        if (term_id in ontology) and (originated_from_term_id in ontology):
-            if is_part_of(term_id, originated_from_term_id, ontology) is True:
+        if (term_id in ontology) and (part_of_term_id in ontology):
+            if is_part_of(term_id, part_of_term_id, ontology) is True:
                 return
 
         detail = 'Biosample {} '.format(value['@id']) + \
                  'with biosample term {} '.format(term_name) + \
-                 'was separated from biosample {} '.format(originated_from_biosample['@id']) + \
-                 'with biosample term {}. '.format(originated_from_term_name) + \
+                 'was separated from biosample {} '.format(part_of_biosample['@id']) + \
+                 'with biosample term {}. '.format(part_of_term_name) + \
                  'The {} '.format(term_id) + \
-                 'ontology does not note that originated_from relationship.'
+                 'ontology does not note that part_of relationship.'
         yield AuditFailure('inconsistent biosample_term_id', detail,
                            level='INTERNAL_ACTION')
         return

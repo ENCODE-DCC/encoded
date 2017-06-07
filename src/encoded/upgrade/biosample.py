@@ -272,7 +272,6 @@ def truncate_the_time(date_string):
 @upgrade_step('biosample', '15', '16')
 def biosample_15_16(value, system):
     # http://redmine.encodedcc.org/issues/5096
-    # http://redmine.encodedcc.org/issues/5041
     # http://redmine.encodedcc.org/issues/5049
 
     if 'talens' in value:
@@ -290,11 +289,3 @@ def biosample_15_16(value, system):
         value['culture_start_date'] = truncate_the_time(culture_start_date)
     if date_obtained:
         value['date_obtained'] = truncate_the_time(date_obtained)
-
-    if value.get('part_of'):
-        value['originated_from'] = value.get('part_of')
-        value.pop('part_of', None)
-        return
-    if value.get('derived_from'):
-        value['originated_from'] = value.get('derived_from')
-        value.pop('derived_from', None)

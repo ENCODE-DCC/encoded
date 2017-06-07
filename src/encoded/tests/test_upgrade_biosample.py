@@ -156,18 +156,13 @@ def biosample_13(biosample_0, document):
 
 
 @pytest.fixture
-def biosample_15(testapp, source, lab, award, organism, biosample):
-    item = {
+def biosample_15(biosample_0, document):
+    item = biosample_0.copy()
+    item.update({
         'date_obtained': '2017-06-06T20:29:37.059673+00:00',
-        'biosample_term_id': 'UBERON:349829',
-        'biosample_type': 'tissue',
-        'part_of': biosample['@id'],
-        'talens': [],
-        'source': source['@id'],
-        'lab': lab['@id'],
-        'award': award['@id'],
-        'organism': organism['@id'],
-    }
+        'schema_version': '15',
+        'talens': []
+    })
     return item
 
 
@@ -462,10 +457,10 @@ def test_upgrade_biosample_13_to_14(root, upgrader, biosample, biosample_13, dum
     assert value['lot_id'] == ' leading and trailing whitespace '.strip()
 
 
-def test_upgrade_biosample_15_to_16(upgrader, biosample, biosample_15):
-    value = upgrader.upgrade('biosample', biosample_15, current_version='15', target_version='16')
+def test_upgrade_biosample_15_to_16(root, upgrader, biosample, biosample_15, dummy_request):
+    context = root.get_by_uuid(biosample['uuid'])
+    dummy_request.context = context
+    value = upgrader.upgrade('biosample', biosample_15, target_version='16', context=context)
     assert value['schema_version'] == '16'
-    assert value['originated_from'] == biosample['@id']
-    assert 'part_of' not in value
     assert value['date_obtained'] == '2017-06-06'
     assert 'talens' not in value

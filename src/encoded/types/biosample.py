@@ -13,7 +13,6 @@ from .shared_calculated_properties import (
 )
 import re
 
-
 @collection(
     name='biosamples',
     unique_key='accession',
@@ -27,7 +26,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
     name_key = 'accession'
     rev = {
         'characterizations': ('BiosampleCharacterization', 'characterizes'),
-        'parent_of': ('Biosample', 'originated_from'),
+        'parent_of': ('Biosample', 'part_of'),
     }
     embedded = [
         'donor',
@@ -67,24 +66,24 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'documents.lab',
         'documents.award',
         'documents.submitted_by',
-        'originated_from',
-        'originated_from.documents',
-        'originated_from.documents.award',
-        'originated_from.documents.lab',
-        'originated_from.documents.submitted_by',
-        'originated_from.characterizations.documents',
-        'originated_from.characterizations.documents.award',
-        'originated_from.characterizations.documents.lab',
-        'originated_from.characterizations.documents.submitted_by',
-        'originated_from.constructs.documents',
-        'originated_from.constructs.documents.award',
-        'originated_from.constructs.documents.lab',
-        'originated_from.constructs.documents.submitted_by',
-        'originated_from.rnais.documents.award',
-        'originated_from.rnais.documents.lab',
-        'originated_from.rnais.documents.submitted_by',
-        'originated_from.treatments.documents',
-        'originated_from.talens.documents',
+        'derived_from',
+        'part_of',
+        'part_of.documents',
+        'part_of.documents.award',
+        'part_of.documents.lab',
+        'part_of.documents.submitted_by',
+        'part_of.characterizations.documents',
+        'part_of.characterizations.documents.award',
+        'part_of.characterizations.documents.lab',
+        'part_of.characterizations.documents.submitted_by',
+        'part_of.constructs.documents',
+        'part_of.constructs.documents.award',
+        'part_of.constructs.documents.lab',
+        'part_of.constructs.documents.submitted_by',
+        'part_of.rnais.documents.award',
+        'part_of.rnais.documents.lab',
+        'part_of.rnais.documents.submitted_by',
+        'part_of.treatments.documents',
         'parent_of',
         'pooled_from',
         'characterizations.submitted_by',
@@ -123,7 +122,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'treatments',
         'constructs',
         'constructs.target',
-        'originated_from',
+        'derived_from',
         'pooled_from',
         'rnais',
         'rnais.target',
@@ -309,7 +308,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "Biosample.originated_from",
+            "linkFrom": "Biosample.part_of",
         },
     })
     def parent_of(self, request, parent_of):
@@ -416,7 +415,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 post_treatment_time=None,
                 post_treatment_time_units=None,
                 treatments=None,
-                originated_from=None,
+                part_of=None,
+                derived_from=None,
                 transfection_method=None,
                 transfection_type=None,
                 genetic_modifications=None,
@@ -433,7 +433,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             'sex_stage_age',
             'synchronization',
             'modifications_list',
-            'originated_from',
+            'derived_from',
             'transfection_type',
             'rnais',
             'treatments_phrase',
@@ -454,9 +454,13 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             for t in treatments:
                 treatment_objects_list.append(request.embed(t, '@@object'))
 
-        originated_from_object = None
-        if originated_from is not None:
-            originated_from_object = request.embed(originated_from, '@@object')
+        part_of_object = None
+        if part_of is not None:
+            part_of_object = request.embed(part_of, '@@object')
+
+        derived_from_object = None
+        if derived_from is not None:
+            derived_from_object = request.embed(derived_from, '@@object')
 
         modifications_list = None
         if genetic_modifications is not None and len(genetic_modifications) > 0:
@@ -536,7 +540,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             post_treatment_time_units,
             transfection_type,
             treatment_objects_list,
-            originated_from_object,
+            part_of_object,
+            derived_from_object,
             modifications_list,
             construct_objects_list,
             model_construct_objects_list,
@@ -567,7 +572,8 @@ def generate_summary_dictionary(
     post_treatment_time_units=None,
     transfection_type=None,
     treatment_objects_list=None,
-    originated_from_object=None,
+    part_of_object=None,
+    derived_from_object=None,
     modifications_list=None,
     construct_objects_list=None,
     model_construct_objects_list=None,
@@ -582,7 +588,7 @@ def generate_summary_dictionary(
             'fractionated': '',
             'sex_stage_age': '',
             'synchronization': '',
-            'originated_from': '',
+            'derived_from': '',
             'transfection_type': '',
             'rnais': '',
             'treatments_phrase': '',
@@ -789,10 +795,13 @@ def generate_summary_dictionary(
                         'treatments_phrase'] += 'treated with ' + \
                                                 ', '.join(map(str, dict_of_phrases['treatments']))
 
-        if originated_from_object is not None:
-            if 'biosample_term_name' in originated_from_object:
-                dict_of_phrases['originated_from'] = (
-                    'originated from ' + originated_from_object['biosample_term_name'])
+        if part_of_object is not None:
+            dict_of_phrases['part_of'] = 'separated from biosample '+part_of_object['accession']
+
+        if derived_from_object is not None:
+            if 'biosample_term_name' in derived_from_object:
+                dict_of_phrases['derived_from'] = ('derived from ' +
+                                                   derived_from_object['biosample_term_name'])
 
         if transfection_type is not None:  # stable/transient
             if transfection_type == 'stable':
