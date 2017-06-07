@@ -506,7 +506,9 @@ def file_9_10(value, system):
             if '||' in aliases[i]:
                 scrub_parts = aliases[i].split('||')
                 date_split = scrub_parts[1].split(' ')
-                date = "-".join([date_split[1].strip(), date_split[2].strip(), date_split[5].strip()])
+                date = "-".join([date_split[1].strip(),
+                                date_split[2].strip(),
+                                date_split[5].strip()])
                 scrubbed_list = [scrub_parts[0].strip(), date.strip(), scrub_parts[2].strip()]
                 if len(scrub_parts) == 4:
                     scrubbed_list.append(scrub_parts[3].strip())
@@ -547,4 +549,5 @@ def file_9_10(value, system):
 @upgrade_step('file', '10', '11')
 def file_10_11(value, system):
     # http://redmine.encodedcc.org/issues/5049
+    # http://redmine.encodedcc.org/issues/5081
     return
