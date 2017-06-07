@@ -1,5 +1,9 @@
 ## Changelog for worm_donor.json
 
+### Schema version 5
+
+* *alternate_accessions* now must match accession format, "ENCDO..." or "TSTDO..."
+
 ### Schema version 4
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
