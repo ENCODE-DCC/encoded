@@ -1,5 +1,9 @@
 ## Changelog for antibody_lot.json
 
+### Schema version 8
+
+* *alternate_accessions* now must match accession format, "ENCLB..." or "TSTLB..."
+
 ### Schema version 7
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
