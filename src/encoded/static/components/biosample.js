@@ -70,11 +70,10 @@ var BiosampleComponent = module.exports.Biosample = createReactClass({
         // Collect all documents in this biosample
         var combinedDocs = CollectBiosampleDocs(context);
 
-        // If this biosample is part of another, collect those documents too, then remove
-        // any duplicate documents in the combinedDocs array.
-        if (context.part_of) {
-            var parentCombinedDocs = CollectBiosampleDocs(context.part_of);
-            combinedDocs = combinedDocs.concat(parentCombinedDocs);
+        // If this biosample originates from another biosample, collect the documents from the
+        // originating biosample too.
+        if (context.originated_from) {
+            combinedDocs = combinedDocs.concat(CollectBiosampleDocs(context.originated_from));
         }
         combinedDocs = globals.uniqueObjectsArray(combinedDocs);
 
@@ -253,17 +252,10 @@ var BiosampleComponent = module.exports.Biosample = createReactClass({
                                         </div>
                                     : null}
 
-                                    {context.derived_from ?
-                                        <div data-test="derivedfrom">
-                                            <dt>Derived from biosample</dt>
-                                            <dd><a href={context.derived_from['@id']}>{context.derived_from.accession}</a></dd>
-                                        </div>
-                                    : null}
-
-                                    {context.part_of ?
-                                        <div data-test="separatedfrom">
-                                            <dt>Separated from biosample</dt>
-                                            <dd><a href={context.part_of['@id']}>{context.part_of.accession}</a></dd>
+                                    {context.originated_from ?
+                                        <div data-test="originatedfrom">
+                                            <dt>Originated from biosample</dt>
+                                            <dd><a href={context.originated_from['@id']}>{context.originated_from.accession}</a></dd>
                                         </div>
                                     : null}
 
@@ -429,20 +421,21 @@ var BiosampleComponent = module.exports.Biosample = createReactClass({
 
                 <RelatedItems
                     title="Experiments using this biosample"
-                    url={'/search/?type=Experiment&replicates.library.biosample.uuid=' + context.uuid}
-                    Component={ExperimentTable} ignoreErrors />
+                    url={`/search/?type=Experiment&replicates.library.biosample.uuid=${context.uuid}`}
+                    Component={ExperimentTable}
+                />
 
-                <RelatedItems title="Biosamples that are part of this biosample"
-                              url={'/search/?type=Biosample&part_of.uuid=' + context.uuid}
-                              Component={BiosampleTable} ignoreErrors />
+                <RelatedItems
+                    title="Biosamples originating from this biosample"
+                    url={`/search/?type=Biosample&originated_from.uuid=${context.uuid}`}
+                    Component={BiosampleTable}
+                />
 
-                <RelatedItems title="Biosamples that are derived from this biosample"
-                              url={'/search/?type=Biosample&derived_from.uuid=' + context.uuid}
-                              Component={BiosampleTable} ignoreErrors />
-
-                <RelatedItems title="Biosamples that are pooled from this biosample"
-                              url={'/search/?type=Biosample&pooled_from.uuid=' + context.uuid}
-                              Component={BiosampleTable} ignoreErrors />
+                <RelatedItems
+                    title="Biosamples that are pooled from this biosample"
+                    url={`/search/?type=Biosample&pooled_from.uuid=${context.uuid}`}
+                    Component={BiosampleTable}
+                />
 
                 {combinedDocs.length ?
                     <DocumentsPanel documentSpecs={[{documents: combinedDocs}]} />
