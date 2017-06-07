@@ -11,7 +11,7 @@
     },
     {
         "uuid": "4bb6cea7-7a6a-470b-8c19-8582300c54fd",
-        "status": "finished",
+        "status": "released",
         "analysis_step_version": "a25381ab-1740-42f7-8d5a-20bb2a2b9549",
         "dx_applet_details": [
             {
@@ -101,7 +101,7 @@
     },
     {
         "uuid": "7c81414f-a9c0-44ed-87fb-2e2207733d3b",
-        "status": "finished",
+        "status": "released",
         "analysis_step_version": "36a667fe-e98c-402d-babf-88a9d39df5ff",
         "dx_applet_details": [
             {
@@ -332,7 +332,7 @@
     },
     {
         "uuid": "eeb7cd3f-a10f-4405-99b6-58a00e3a3bf0",
-        "status": "finished",
+        "status": "released",
         "analysis_step_version": "4c4042c6-27b0-42c5-b608-9061005e32ab",
         "aliases": [
             "dnanexus:job-BZ4G0v00z53VFzF33kQJ3bG1"
@@ -340,7 +340,7 @@
     },
     {
         "uuid": "2d664a68-ea7e-4e9a-b718-95e52e4c62df",
-        "status": "finished",
+        "status": "released",
         "analysis_step_version": "aa598eaa-eda4-4fb3-b313-072f95de58a4",
         "dx_applet_details": [
             {
