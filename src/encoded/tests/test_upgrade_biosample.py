@@ -155,6 +155,20 @@ def biosample_13(biosample_0, document):
     return item
 
 
+@pytest.fixture
+def biosample_15(testapp, source, lab, award, organism, biosample):
+    item = {
+        'biosample_term_id': 'UBERON:349829',
+        'biosample_type': 'tissue',
+        'part_of': biosample['@id'],
+        'source': source['@id'],
+        'lab': lab['@id'],
+        'award': award['@id'],
+        'organism': organism['@id'],
+    }
+    return item
+
+
 def test_biosample_upgrade(upgrader, biosample_1):
     value = upgrader.upgrade('biosample', biosample_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -444,3 +458,10 @@ def test_upgrade_biosample_13_to_14(root, upgrader, biosample, biosample_13, dum
     assert value['description'] == ' leading and trailing whitespace '.strip()
     assert value['product_id'] == ' leading and trailing whitespace '.strip()
     assert value['lot_id'] == ' leading and trailing whitespace '.strip()
+
+
+def test_upgrade_biosample_15_to_16(root, upgrader, biosample, biosample_15, dummy_request):
+    value = upgrader.upgrade('biosample', biosample_15, current_version='15', target_version='16')
+    assert value['schema_version'] == '16'
+    assert value['originated_from'] == biosample['@id']
+    assert 'part_of' not in value

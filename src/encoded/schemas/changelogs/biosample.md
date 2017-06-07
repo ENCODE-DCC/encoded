@@ -1,5 +1,9 @@
 ## Changelog for biosample.json
 
+### Schema version 16
+
+* *part_of* and *derived_from* fields are replaced by *originated_from* field
+
 ### Schema version 15
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
