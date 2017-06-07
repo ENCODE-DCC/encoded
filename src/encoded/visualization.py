@@ -1888,12 +1888,20 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
 
     return (found_or_made, acc_composite)
 
-def generate_series_trackDb(request, acc, dataset, ucsc_assembly, hide=False, regen=False):
-    files = dataset.get('files',[])
-    sub_accessions = [ file['dataset']['accession'] for file in files ]
+def generate_set_trackDb(request, acc, dataset, ucsc_assembly, hide=False, regen=False):
+    '''Handles 'Series' and 'FileSet' dataset types similar to search results.'''
+
+    sub_accessions = []
+    if 'FileSet' in dataset['@type'] and 'files' in dataset:
+        files = dataset['files']
+        sub_accessions = [ file['dataset']['accession'] for file in files ]
+    elif 'Series' in dataset['@type'] and 'related_datasets' in dataset:
+        # Note that 'Series' don't actually reach here yet because they are rejected higher up for having no files.
+        related_datasets = dataset['related_datasets']
+        sub_accessions = [ related['accession'] for related in related_datasets ]
 
     sub_accessions = set(sub_accessions) # Only unique accessions need apply
-    log.warn("trackDb series: found %d sub_accessions  %.3f secs" % (len(sub_accessions), (time.time() - PROFILE_START_TIME)))
+    #log.warn("trackDb series: found %d sub_accessions  %.3f secs" % (len(sub_accessions), (time.time() - PROFILE_START_TIME)))
 
     acc_composites = {}
     made = 0
@@ -1908,16 +1916,15 @@ def generate_series_trackDb(request, acc, dataset, ucsc_assembly, hide=False, re
         acc_composites[sub_acc] = acc_composite
 
     blob = ""
-    #log.warn("trackDb series: %d generated, %d found,  %d acc_composites  %.3f secs" % (made, found, len(acc_composites.keys()), (time.time() - PROFILE_START_TIME)))
     set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100)
-    #log.warn("trackDb series: generated %d set_composites %.3f secs" % (len(set_composites.keys()), (time.time() - PROFILE_START_TIME)))
     for set_key in set_composites.keys():
         set_composite = set_composites[set_key]
         if set_composite:
             set_composite['longLabel']  = "%s %s" % (acc, set_composite['longLabel'])
-            set_composite['shortLabel'] = "ENCODE %s %s" % (acc,set_composite['shortLabel'].split(None,1)[1])
-            #if len(set_composites.keys() == 1:
-            #    set_composite['shortLabel'] = "%s Set" % acc
+            if set_composite['shortLabel'].startswith('ENCODE '):
+                set_composite['shortLabel'] = "ENCODE %s %s" % (acc,set_composite['shortLabel'].split(None,1)[1])
+            else:
+                set_composite['shortLabel'] = "%s %s" % (acc,set_composite['shortLabel'])
 
     if request.url.endswith(".json"):
         blob = json.dumps(set_composites, indent=4, sort_keys=True)
@@ -1951,8 +1958,8 @@ def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
     ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
 
     # If we could detect this as a series dataset, then we could treat this as a batch_trackDb
-    if not set(['Series', 'FileSet']).isdisjoint(dataset['@type']):
-        return generate_series_trackDb(request, acc, dataset, ucsc_assembly, hide=hide, regen=regen)
+    if not set(['Series', 'FileSet']).isdisjoint(dataset['@type']) and 'Experiment' not in dataset['@type']:
+        return generate_set_trackDb(request, acc, dataset, ucsc_assembly, hide=hide, regen=regen)
 
     (found_or_made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly,
                                                                 dataset["accession"], dataset,
