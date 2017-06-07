@@ -273,6 +273,7 @@ def truncate_the_time(date_string):
 def biosample_15_16(value, system):
     # http://redmine.encodedcc.org/issues/5096
     # http://redmine.encodedcc.org/issues/5041
+    # http://redmine.encodedcc.org/issues/5049
 
     if 'talens' in value:
         del value['talens']
