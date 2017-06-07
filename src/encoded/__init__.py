@@ -1,5 +1,6 @@
 from future.standard_library import install_aliases
 install_aliases()  # NOQA
+import encoded.schema_formats # needed to import before snovault to add FormatCheckers
 import base64
 import codecs
 import json
