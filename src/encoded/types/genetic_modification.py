@@ -44,7 +44,13 @@ class GeneticModification(Item):
         'modification_techniques.documents.lab',
         'modification_techniques.documents.submitted_by',
         'biosamples_modified.documents',
+        'biosamples_modified.documents.award',
+        'biosamples_modified.documents.lab',
+        'biosamples_modified.documents.submitted_by',
         'donors_modified.documents',
+        'donors_modified.documents.award',
+        'donors_modified.documents.lab',
+        'donors_modified.documents.submitted_by',
         'treatments'
     ]
 

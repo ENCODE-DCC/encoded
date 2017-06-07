@@ -15,7 +15,7 @@ import { DbxrefList } from './dbxref';
 import { Breadcrumbs } from './navigation';
 import { treatmentDisplay, singleTreatment } from './objectutils';
 import { BiosampleTable } from './typeutils';
-import { DocumentsPanel } from './doc';
+import { AttachmentPanel, DocumentsPanel } from './doc';
 import { PickerActions } from './search';
 
 
@@ -480,62 +480,6 @@ const TechniqueTale = createReactClass({
 });
 
 globals.panel_views.register(TechniqueTale, 'Tale');
-
-
-// Display a panel for attachments that aren't a part of an associated document
-export const AttachmentPanel = createReactClass({
-    propTypes: {
-        context: PropTypes.object.isRequired, // Object that owns the attachment; needed for attachment path
-        attachment: PropTypes.object.isRequired, // Attachment being rendered
-        title: PropTypes.string, // Title to display in the caption area
-    },
-
-    getDefaultProps: function () {
-        return {
-            title: '',
-        };
-    },
-
-    render: function () {
-        const { context, attachment, title } = this.props;
-
-        // Make the download link
-        let download;
-        let attachmentHref;
-        if (attachment.href && attachment.download) {
-            attachmentHref = url.resolve(context['@id'], attachment.href);
-            download = (
-                <div className="dl-link">
-                    <i className="icon icon-download" />&nbsp;
-                    <a data-bypass="true" href={attachmentHref} download={attachment.download}>
-                        Download
-                    </a>
-                </div>
-            );
-        } else {
-            download = <em>Attachment not available to download</em>;
-        }
-
-        return (
-            <div className="flexcol panel-attachment">
-                <Panel addClasses={globals.itemClass(context, 'view-detail')}>
-                    <figure>
-                        <Attachment context={context} attachment={attachment} className="characterization" />
-                    </figure>
-                    <div className="document-intro document-meta-data">
-                        {title ?
-                            <div data-test="attachments">
-                                <strong>Method: </strong>
-                                {title}
-                            </div>
-                        : null}
-                        {download}
-                    </div>
-                </Panel>
-            </div>
-        );
-    },
-});
 
 
 const ListingComponent = createReactClass({
