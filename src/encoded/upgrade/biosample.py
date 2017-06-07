@@ -264,5 +264,7 @@ def biosample_13_14(value, system):
 @upgrade_step('biosample', '15', '16')
 def biosample_15_16(value, system):
     # http://redmine.encodedcc.org/issues/5049
-    return
-
+    # http://redmine.encodedcc.org/issues/5049
+    if value.get('derived_from'):
+        value['originated_from'] = value['derived_from']
+        del value['derived_from']

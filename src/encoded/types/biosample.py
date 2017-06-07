@@ -13,6 +13,7 @@ from .shared_calculated_properties import (
 )
 import re
 
+
 @collection(
     name='biosamples',
     unique_key='accession',
@@ -66,7 +67,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'documents.lab',
         'documents.award',
         'documents.submitted_by',
-        'derived_from',
+        'originated_from',
         'part_of',
         'part_of.documents',
         'part_of.documents.award',
@@ -123,7 +124,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'treatments',
         'constructs',
         'constructs.target',
-        'derived_from',
+        'originated_from',
         'pooled_from',
         'rnais',
         'rnais.target',
@@ -415,7 +416,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 post_treatment_time_units=None,
                 treatments=None,
                 part_of=None,
-                derived_from=None,
+                originated_from=None,
                 transfection_method=None,
                 transfection_type=None,
                 genetic_modifications=None,
@@ -432,7 +433,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             'sex_stage_age',
             'synchronization',
             'modifications_list',
-            'derived_from',
+            'originated_from',
             'transfection_type',
             'rnais',
             'treatments_phrase',
@@ -457,9 +458,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         if part_of is not None:
             part_of_object = request.embed(part_of, '@@object')
 
-        derived_from_object = None
-        if derived_from is not None:
-            derived_from_object = request.embed(derived_from, '@@object')
+        originated_from_object = None
+        if originated_from is not None:
+            originated_from_object = request.embed(originated_from, '@@object')
 
         modifications_list = None
         if genetic_modifications is not None and len(genetic_modifications) > 0:
@@ -540,7 +541,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             transfection_type,
             treatment_objects_list,
             part_of_object,
-            derived_from_object,
+            originated_from_object,
             modifications_list,
             construct_objects_list,
             model_construct_objects_list,
@@ -572,7 +573,7 @@ def generate_summary_dictionary(
     transfection_type=None,
     treatment_objects_list=None,
     part_of_object=None,
-    derived_from_object=None,
+    originated_from_object=None,
     modifications_list=None,
     construct_objects_list=None,
     model_construct_objects_list=None,
@@ -587,7 +588,7 @@ def generate_summary_dictionary(
             'fractionated': '',
             'sex_stage_age': '',
             'synchronization': '',
-            'derived_from': '',
+            'originated_from': '',
             'transfection_type': '',
             'rnais': '',
             'treatments_phrase': '',
@@ -797,10 +798,10 @@ def generate_summary_dictionary(
         if part_of_object is not None:
             dict_of_phrases['part_of'] = 'separated from biosample '+part_of_object['accession']
 
-        if derived_from_object is not None:
-            if 'biosample_term_name' in derived_from_object:
-                dict_of_phrases['derived_from'] = ('derived from ' +
-                                                   derived_from_object['biosample_term_name'])
+        if originated_from_object is not None:
+            if 'biosample_term_name' in originated_from_object:
+                dict_of_phrases['originated_from'] = ('originated from ' +
+                                                      originated_from_object['biosample_term_name'])
 
         if transfection_type is not None:  # stable/transient
             if transfection_type == 'stable':

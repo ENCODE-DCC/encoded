@@ -403,9 +403,9 @@
                     "SESCC"]
             }
         },
-        "derived_from": {
-            "title": "Derived from",
-            "description": "A biosample that the sample derives from via a construct or treatment.",
+        "originated_from": {
+            "title": "Originated from",
+            "description": "A biosample that the sample was orginated from.",
             "comment": "See biosample.json for available identifiers.",
             "type": "string",
             "linkTo": "Biosample"
@@ -869,10 +869,10 @@
         "constructs.target.label": 1.0,
         "constructs.target.dbxref": 1.0,
         "constructs.target.aliases": 1.0,
-        "derived_from.accession": 1.0,
-        "derived_from.alternate_accessions": 1.0,
-        "derived_from.biosample_term_id": 1.0,
-        "derived_from.biosample_term_name": 1.0,
+        "originated_from.accession": 1.0,
+        "originated_from.alternate_accessions": 1.0,
+        "originated_from.biosample_term_id": 1.0,
+        "originated_from.biosample_term_name": 1.0,
         "pooled_from.accession": 1.0,
         "pooled_from.alternate_accessions": 1.0,
         "pooled_from.biosample_term_id": 1.0,

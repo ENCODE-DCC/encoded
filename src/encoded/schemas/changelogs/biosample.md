@@ -2,6 +2,7 @@
 
 ### Schema version 16
 
+* *derived_from* property was renamed to *originated_from*
 * *alternate_accessions* now must match accession format, "ENCBS..." or "TSTBS..."
 
 ### Schema version 15

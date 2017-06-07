@@ -159,7 +159,7 @@ class Experiment(Dataset,
         'replicates.library.biosample.donor.organism',
         'replicates.library.biosample.donor',
         'replicates.library.biosample.treatments',
-        'replicates.library.biosample.derived_from',
+        'replicates.library.biosample.originated_from',
         'replicates.library.biosample.part_of',
         'replicates.library.biosample.pooled_from',
         'replicates.library.spikeins_used',
@@ -234,9 +234,9 @@ class Experiment(Dataset,
                             if 'part_of' in biosampleObject:
                                 part_of_object = request.embed(biosampleObject['part_of'],
                                                                '@@object')
-                            derived_from_object = None
-                            if 'derived_from' in biosampleObject:
-                                derived_from_object = request.embed(biosampleObject['derived_from'],
+                            originated_from_object = None
+                            if 'originated_from' in biosampleObject:
+                                originated_from_object = request.embed(biosampleObject['originated_from'],
                                                                     '@@object')
 
                             modifications_list = None
@@ -325,7 +325,7 @@ class Experiment(Dataset,
                                 biosampleObject.get('transfection_type'),
                                 treatment_objects_list,
                                 part_of_object,
-                                derived_from_object,
+                                originated_from_object,
                                 modifications_list,
                                 construct_objects_list,
                                 model_construct_objects_list,
@@ -342,7 +342,7 @@ class Experiment(Dataset,
                 'fractionated',
                 'synchronization',
                 'modifications_list',
-                'derived_from',
+                'originated_from',
                 'transfection_type',
                 'rnais',
                 'treatments_phrase',
@@ -359,7 +359,7 @@ class Experiment(Dataset,
                 'sex_stage_age',
                 'synchronization',
                 'modifications_list',
-                'derived_from',
+                'originated_from',
                 'transfection_type',
                 'rnais',
                 'treatments_phrase',

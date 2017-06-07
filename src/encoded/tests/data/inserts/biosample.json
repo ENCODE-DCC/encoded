@@ -240,7 +240,7 @@
             "893d806f-3a88-43eb-afdf-dcc16c79ee45"
         ],
         "culture_harvest_date": "2012-12-19",
-        "derived_from": "ENCBS039ENC",
+        "originated_from": "ENCBS039ENC",
         "description": "leukemia, The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. - ATCC.",
         "donor": "ENCDO000HUM",
         "dbxrefs": [
@@ -401,7 +401,7 @@
         "biosample_term_id": "NTR:0000022",
         "biosample_term_name": "myocyte",
         "biosample_type": "in vitro differentiated cells",
-        "derived_from": "ENCBS124ENC",
+        "originated_from": "ENCBS124ENC",
         "description": "Myoblast cell line derived from thigh muscle of C3H mice after crush injury; differentiated from C2C12 cells for 7 days",
         "donor": "ENCDO000MUS",
         "lab": "barbara-wold",
