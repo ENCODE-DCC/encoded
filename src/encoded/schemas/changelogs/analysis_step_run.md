@@ -1,5 +1,14 @@
 ## Change log for analysis_step_run.json
 
+### Schema version 4
+
+#### Fields restricted to DCC access only:
+* *status*
+
+#### Fields with changed list of enum values:
+* *status* enum list was changed to ["virtual", in progress", "released", "deleted"]
+
+
 ### Schema version 3
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
