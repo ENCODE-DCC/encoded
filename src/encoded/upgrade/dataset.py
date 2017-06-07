@@ -258,3 +258,20 @@ def dataset_9_10(value, system):
     # http://redmine.encodedcc.org/issues/2491
     if 'assay_term_id' in value:
         del value['assay_term_id']
+
+
+@upgrade_step('experiment', '11', '12')
+@upgrade_step('annotation', '11', '12')
+@upgrade_step('matched_set', '11', '12')
+@upgrade_step('project', '11', '12')
+@upgrade_step('publication_data', '11', '12')
+@upgrade_step('reference', '11', '12')
+@upgrade_step('reference_epigenome', '11', '12')
+@upgrade_step('organism_development_series', '11', '12')
+@upgrade_step('replication_timing_series', '11', '12')
+@upgrade_step('treatment_time_series', '11', '12')
+@upgrade_step('treatment_concentration_series', '11', '12')
+@upgrade_step('ucsc_browser_composite', '11', '12')
+def dataset_11_12(value, system):
+    # http://redmine.encodedcc.org/issues/5049
+    return

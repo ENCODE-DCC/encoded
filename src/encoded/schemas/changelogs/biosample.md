@@ -1,5 +1,9 @@
 ## Changelog for biosample.json
 
+### Schema version 16
+
+* *alternate_accessions* now must match accession format, "ENCBS..." or "TSTBS..."
+
 ### Schema version 15
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
