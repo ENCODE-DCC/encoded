@@ -2,6 +2,7 @@
 
 ### Schema version 11
 
+* *no_file_available* field was added. The DCC will post this boolean field. Files with no_files_available = true will not be required to specify md5sum and file_size values.
 * *revoke_detail* was added.  The DCC will post this field. The goal is to mkae the reason for file revoke clear.:
 
         "revoke_detail": {

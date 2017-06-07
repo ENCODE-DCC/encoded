@@ -4,7 +4,14 @@
     "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "md5sum", "output_type", "award", "lab"],
+    "anyOf":[
+        {
+            "required": ["dataset", "file_format", "output_type", "award", "lab", "md5sum"]
+        },
+        {
+            "required": ["dataset", "file_format", "output_type", "award", "lab", "no_file_available"]   
+        }  
+    ],    
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -44,6 +51,57 @@
         }
     },
     "dependencies": {
+        "no_file_available":{
+            "comment": "md5sum is required for all files unless the file is not available from the portal. file_size is required for files present on portal and have one of the statuses: in progress, revoked, archived or released.",
+            "oneOf": [
+                {
+                    "properties": {
+                        "no_file_available": {
+                            "enum": [true]
+                        }
+                    }
+                },
+                {
+                    "allOf": [
+                        {
+                            "required": ["md5sum"],       
+                            "properties": {
+                                "no_file_available": {
+                                    "enum": [false]
+                                }
+                            }
+                        },
+                        {
+                            "oneOf": [
+                                {
+                                    "required": ["file_size"],
+                                    "properties": {
+                                        "status": {
+                                            "enum": ["in progress",  "revoked", "archived", "released"]
+                                        },
+                                        "no_file_available": {
+                                            "enum": [false]
+                                        }
+                                    }
+                                },
+                                {
+                                    "properties": {
+                                        "status": {
+                                            "enum": ["uploading", "upload failed", "deleted", "replaced", "content error"]
+                                        },
+                                        "no_file_available": {
+                                            "enum": [false]
+                                        }
+                                    }
+                                }
+                            ]
+                            
+                        }
+                    ]
+                   
+                }
+            ]
+        },
         "paired_with": {
             "comment": "Only paired-ended files should have paired_with value.",
             "required": ["run_type"],
@@ -238,19 +296,36 @@
                 }
             ]
         },
+       
         "status": {
-            "comment": "file_size is required in files with statuses in progress, revoked, archived and released. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
+            "comment": "file_size is required in files with statuses in progress, revoked, archived and released unless the file is not available from the portal. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
             "allOf": [
                 {
                     "oneOf": [
                         {
-                            "required": ["file_size"],
-                            "properties": {
-                                "status": {
-                                    "enum": ["in progress",  "revoked", "archived", "released"]
-                                }
-                            }
+                            "anyOf": [
+                                    {
+                                        "required": ["no_file_available"],
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["in progress",  "revoked", "archived", "released"]
+                                            },
+                                             "no_file_available": {
+                                                "enum": [true]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "required": ["file_size"],   
+                                        "properties": {
+                                            "status": {
+                                                "enum": ["in progress",  "revoked", "archived", "released"]
+                                            }
+                                        }
+                                    }                                   
+                            ]
                         },
+
                         {
                             "properties": {
                                 "status": {
@@ -439,6 +514,14 @@
             "comment": "Do not submit. This value can only be set by admins.",
             "type": "boolean"
         },
+        "no_file_available": {
+            "title": "No file available",
+            "permission":"import_items",
+            "description": "A flag to indicate whether this file is available to download. It may also not exist if it is the result of an unproductive analysis.",
+            "comment": "Do not submit. This value can only be set by admins.",
+            "default": false,
+            "type": "boolean"
+        },
         "submitted_file_name": {
             "title": "Original file name",
             "description": "The local file name used at time of submission.",
@@ -448,7 +531,7 @@
         "md5sum": {
             "title": "MD5sum",
             "description": "The md5sum of the file being transferred.",
-            "comment": "Required. Warning: This value can vary for files of same content gzipped at different times",
+            "comment": "Required for files with no_file_available = false . Warning: This value can vary for files of same content gzipped at different times",
             "type": "string",
             "format": "hex",
             "maxLength": 32,
@@ -963,9 +1046,6 @@
         },
         "read_length_units": {
             "title": "Read length units"
-        },
-        "md5sum": {
-            "title": "MD5 Sum"
         },
         "output_category": {
             "title": "Data category"
