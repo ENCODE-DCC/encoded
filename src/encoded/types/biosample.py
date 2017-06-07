@@ -84,7 +84,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'originated_from.rnais.documents.lab',
         'originated_from.rnais.documents.submitted_by',
         'originated_from.treatments.documents',
-        'originated_from.talens.documents',
         'parent_of',
         'pooled_from',
         'characterizations.submitted_by',
