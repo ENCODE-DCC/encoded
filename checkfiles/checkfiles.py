@@ -701,6 +701,10 @@ def check_file(config, session, url, job):
     if job.get('skip'):
         return job
 
+    no_file_flag = item.get('no_file_available')
+    if no_file_flag:
+        return job
+
     upload_url = job['upload_url']
     local_path = os.path.join(config['mirror'], upload_url[len('s3://'):])
     # boolean standing for local .bed file creation
@@ -895,8 +899,7 @@ def patch_file(session, url, job):
 
     if not errors:
         data = {
-            'status': 'in progress',
-
+            'status': 'in progress'
         }
     else:
         if 'fastq_format_readname' in errors:
@@ -969,7 +972,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.13'
+    version = '1.14'
 
     out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
               (version, search_query, nprocesses, dr, datetime.datetime.now()))
