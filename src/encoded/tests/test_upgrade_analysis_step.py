@@ -4,7 +4,7 @@ import pytest
 @pytest.fixture
 def base_analysis_step(testapp, software_version):
     item = {
-        'step_label': 'base_analysis_step',
+        'name': 'base-analysis-step',
         'title': 'base_analysis_step_v_1 title',
         'analysis_step_types': ['alignments'],
         'input_file_types': ['reads'],
@@ -24,6 +24,7 @@ def analysis_step_1(base_analysis_step):
         'output_file_types': ['signal of multi-mapped reads']
     })
     return item
+
 
 @pytest.fixture
 def analysis_step_3(base_analysis_step):

@@ -140,7 +140,8 @@ def analysis_step_5_6(value, system):
         value['step_label'] = value['name']
         value.pop('name', None)
 
-    if not duplicates[value['step_label']]:
+    ver = duplicates.get(value['step_label'], None)
+    if ver is None:
         # Major_version is required so lets just put something in there for now and patch the actual value later.
         duplicates[value['step_label']] = 1
         value['major_version'] = 1
