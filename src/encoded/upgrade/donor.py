@@ -125,3 +125,12 @@ def fly_worm_donor_2_3_and_human_mouse_5_6(value, system):
     # http://redmine.encodedcc.org/issues/3743
     if 'donor_documents' in value:
         del value['donor_documents']
+
+
+@upgrade_step('fly_donor', '4', '5')
+@upgrade_step('worm_donor', '4', '5')
+@upgrade_step('human_donor', '7', '8')
+@upgrade_step('mouse_donor', '7', '8')
+def fly_worm_donor_4_5_and_human_mouse_7_8(value, system):
+    # http://redmine.encodedcc.org/issues/5049
+    return

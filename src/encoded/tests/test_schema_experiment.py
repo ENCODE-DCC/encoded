@@ -54,3 +54,10 @@ def test_bad_alias_namespace(testapp, experiment):
     res = testapp.post_json('/experiment', experiment, expect_errors=True)
     print(experiment)
     assert res.status_code == 422
+
+def test_alt_accession_ENCSR_regex(testapp, experiment_no_error):
+    expt = testapp.post_json('/experiment', experiment_no_error).json['@graph'][0]
+    res = testapp.patch_json(expt['@id'], {'status': 'replaced', 'alternate_accessions': ['ENCAB123ABC']}, expect_errors=True)
+    assert res.status_code == 422
+    res = testapp.patch_json(expt['@id'], {'status': 'replaced', 'alternate_accessions': ['ENCSR123ABC']})
+    assert res.status_code == 200
