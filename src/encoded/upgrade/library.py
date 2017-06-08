@@ -113,6 +113,12 @@ def library_5_6(value, system):
         value['depleted_in_term_name'] = list(set(value['depleted_in_term_name']))
 
 
+@upgrade_step('library', '6', '7')
+def library_6_7(value, system):
+    # http://redmine.encodedcc.org/issues/5049
+    return
+
+
 @upgrade_step('library', '7', '8')
 def library_7_8(value, system):
     # http://redmine.encodedcc.org/issues/5049

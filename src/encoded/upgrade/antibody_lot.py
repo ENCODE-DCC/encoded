@@ -97,6 +97,12 @@ def antibody_lot_5_6(value, system):
             del value['antigen_description']
 
 
+@upgrade_step('antibody_lot', '6', '7')
+def antibody_lot_7_8(value, system):
+    # http://redmine.encodedcc.org/issues/5049
+    return
+
+
 @upgrade_step('antibody_lot', '7', '8')
 def antibody_lot_7_8(value, system):
     # http://redmine.encodedcc.org/issues/5049

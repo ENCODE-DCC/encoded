@@ -127,6 +127,15 @@ def fly_worm_donor_2_3_and_human_mouse_5_6(value, system):
         del value['donor_documents']
 
 
+@upgrade_step('fly_donor', '3', '4')
+@upgrade_step('worm_donor', '3', '4')
+@upgrade_step('human_donor', '6', '7')
+@upgrade_step('mouse_donor', '6', '7')
+def fly_worm_donor_3_4_and_human_mouse_6_7(value, system):
+    # http://redmine.encodedcc.org/issues/5049
+    return
+
+
 @upgrade_step('fly_donor', '4', '5')
 @upgrade_step('worm_donor', '4', '5')
 @upgrade_step('human_donor', '7', '8')
