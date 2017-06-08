@@ -3,6 +3,7 @@ from ..upgrade.upgrade_data.analysis_step_5_to_6 import(
     label_mapping,
     major_version_mapping,
     status_mapping,
+    title_mapping,
     aliases_mapping
 )
 
@@ -83,7 +84,7 @@ def analysis_step_2_3(value, system):
 
     # http://redmine.encodedcc.org/issues/3074
     del value['software_versions']
-    
+
     # http://redmine.encodedcc.org/issues/3074 note 16 and 3073
     if value.get('name') in ['lrna-se-star-alignment-step-v-2-0',
                             'lrna-pe-star-alignment-step-v-2-0',
@@ -134,29 +135,19 @@ def analysis_step_3_4(value, system):
 @upgrade_step('analysis_step', '5', '6')
 def analysis_step_5_6(value, system):
     # http://redmine.encodedcc.org/issues/4987
-    duplicates = {}
 
-    if 'name' in value:
-        value['step_label'] = value['name']
+    if label_mapping.get(value.get('uuid'), None):
+        value['step_label'] = label_mapping.get(value.get('uuid'))
         value.pop('name', None)
 
-    ver = duplicates.get(value['step_label'], None)
-    if ver is None:
-        # Major_version is required so lets just put something in there for now and patch the actual value later.
-        duplicates[value['step_label']] = 1
-        value['major_version'] = 1
-    else:
-        duplicates[value['step_label']] += 1
-        value['major_version'] = duplicates[value['step_label']]
+    if major_version_mapping.get(value.get('uuid')):
+        value['major_version'] = major_version_mapping.get(value.get('uuid'))
 
-    if value['uuid'] in label_mapping:
-        value['step_label'] = label_mapping.get(value['uuid'])
+    if title_mapping.get(value.get('uuid'), None):
+        value['status'] = status_mapping.get(value.get('uuid'))
 
-    if value['uuid'] in major_version_mapping:
-        value['major_version'] = major_version_mapping.get(value['uuid'])
+    if status_mapping.get(value.get('uuid')):
+        value['status'] = status_mapping.get(value.get('uuid'))
 
-    if value['uuid'] in status_mapping:
-        value['status'] = status_mapping.get(value['uuid'])
-
-    if value['uuid'] in aliases_mapping:
-        value['aliases'].append(aliases_mapping.get(value['uuid']))
+    if aliases_mapping.get(value.get('uuid')):
+        value['aliases'].append(aliases_mapping.get(value.get('uuid')))
