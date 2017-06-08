@@ -3,6 +3,8 @@
 ### Schema version 16
 
 * *part_of* and *derived_from* fields are replaced by *originated_from* field
+* *alternate_accessions* now must match accession format, "ENCBS..." or "TSTBS..."
+
 
 ### Schema version 15
 

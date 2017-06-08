@@ -304,44 +304,6 @@ def test_audit_file_read_length_controlled_by_exclusion(testapp, file1_2,
     assert any(error['category'] != 'inconsistent control read length' for error in errors_list)
 
 
-def test_audit_file_inconsistent_controlled_by(testapp, file1,
-                                               file2, file3,
-                                               file_rep1_2,
-                                               file_rep2):
-    testapp.patch_json(file1['@id'], {'replicate': file_rep2['@id']})
-    testapp.patch_json(file3['@id'], {'replicate': file_rep1_2['@id']})
-    testapp.patch_json(file1['@id'], {'controlled_by': [file2['@id'], file3['@id']]})
-
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent controlled_by replicates' for
-                                    error in errors_list)
-
-
-def test_audit_file_missing_paired_controlled_by(testapp, file1,
-                                                 file2, file3,
-                                                 file_rep2):
-    testapp.patch_json(file3['@id'], {'replicate': file_rep2['@id'],
-                                      'paired_with': file2['@id'],
-                                      'run_type': 'paired-ended',
-                                      'paired_end': '2'})
-    testapp.patch_json(file2['@id'], {'replicate': file_rep2['@id'],
-                                      'run_type': 'paired-ended',
-                                      'paired_end': '1'})
-    testapp.patch_json(file1['@id'], {'controlled_by': [file2['@id']]})
-
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing paired_with in controlled_by' for
-                                    error in errors_list)
-
-
 def test_audit_file_replicate_match(testapp, file1, file_rep2):
     testapp.patch_json(file1['@id'], {'replicate': file_rep2['uuid']})
     res = testapp.get(file1['@id'] + '@@index-data')
