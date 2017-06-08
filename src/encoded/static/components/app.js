@@ -1033,7 +1033,7 @@ module.exports = App;
 
 
 // Only used for Jest tests.
-module.exports.getRenderedProps = function (document) {
+module.exports.getRenderedProps = function getRenderedProps(document) {
     const props = {};
 
     // Ensure the initial render is exactly the same

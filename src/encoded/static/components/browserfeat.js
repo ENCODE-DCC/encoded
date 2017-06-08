@@ -5,7 +5,7 @@ module.exports.BrowserFeat = {
     feat: {},
 
     // Return object with browser capabilities; return from cache if available
-    getBrowserCaps: function(feat) {
+    getBrowserCaps: function getBrowserCaps(feat) {
         if (Object.keys(this.feat).length === 0) {
             // Detect SVG
             this.feat.svg = document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1');
@@ -43,7 +43,7 @@ module.exports.BrowserFeat = {
         return feat ? this.feat[feat] : this.feat;
     },
 
-    setHtmlFeatClass: function() {
+    setHtmlFeatClass: function setHtmlFeatClass() {
         const htmlclass = [];
 
         this.getBrowserCaps();

@@ -17,7 +17,7 @@ const stepNodePrefix = 'step'; // Prefix for step node IDs
 const fileNodePrefix = 'file'; // Prefix for file node IDs
 
 
-const PanelLookup = function (properties) {
+const PanelLookup = function PanelLookup(properties) {
     // XXX not all panels have the same markup
     let context;
     let localProperties = properties;
@@ -490,7 +490,7 @@ globals.content_views.register(Pipeline, 'Pipeline');
 
 
 // Display the metadata of the selected analysis step in the graph
-const StepDetailView = function (node) {
+const StepDetailView = function StepDetailView(node) {
     // The node is for a step. It can be called with analysis_step_run (for file graphs) or
     // analysis_step (for pipeline graphs) nodes. This code detects which is the case, and adjusts
     // accordingly.

@@ -832,8 +832,8 @@ class HomepageChart3 extends React.Component {
                         },
                         animation: {
                             duration: 0,
-                            onProgress: function () { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); },
-                            onComplete: function () { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); },
+                            onProgress: function onProgress() { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); },
+                            onComplete: function onComplete() { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); },
                         },
                         scales: {
                             xAxes: [{
@@ -889,8 +889,8 @@ class HomepageChart3 extends React.Component {
         Chart.data.labels = labels;
         Chart.data.datasets[0].backgroundColor = colors;
         Chart.options.hover.mode = false;
-        Chart.options.animation.onProgress = function () { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); };
-        Chart.options.animation.onComplete = function () { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); };
+        Chart.options.animation.onProgress = function onProgress() { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); };
+        Chart.options.animation.onComplete = function onComplete() { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); };
         Chart.update();
     }
 
@@ -957,7 +957,7 @@ class News extends React.Component {
     }
 
     render() {
-        const { items, nodeRef } = this.props;
+        const { items } = this.props;
         if (items && items.length) {
             return (
                 <div ref={(node) => { this.nodeRef = node; }} className="news-listing">
@@ -981,7 +981,6 @@ class News extends React.Component {
 News.propTypes = {
     items: PropTypes.array,
     newsLoaded: PropTypes.func.isRequired, // Called parent once the news is loaded
-    nodeRef: PropTypes.func, // React ref callback so we can get the news-listing DOM element in a higher component
 };
 
 

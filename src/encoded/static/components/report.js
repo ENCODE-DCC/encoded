@@ -13,7 +13,7 @@ var _ = require('underscore');
 var FacetList = search.FacetList;
 
 
-var columnChoices = function(schema, selected) {
+var columnChoices = function columnChoices(schema, selected) {
     // start with id
     var columns = {};
     columns['@id'] = {

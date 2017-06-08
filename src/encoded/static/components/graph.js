@@ -459,7 +459,7 @@ export class Graph extends React.Component {
         img.src = `data:image/svg+xml;base64,${window.btoa(svgXml)}`;
 
         // Once the svg is loaded into the image (purely in memory, not in DOM), draw it into a <canvas>
-        img.onload = function () {
+        img.onload = function onload() {
             // Make a new memory-based canvas and draw the image into it.
             const canvas = document.createElement('canvas');
             canvas.width = img.width;

@@ -1040,7 +1040,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
 
     // Filter any "island" files out of matchingFiles -- that is, files that derive from no other
     // files, and no other files derive from it.
-    matchingFiles = (function () {
+    matchingFiles = (function matchingFilesFunc() {
         const noIslandFiles = {};
         Object.keys(matchingFiles).forEach((matchingFileId) => {
             const matchingFile = matchingFiles[matchingFileId];
@@ -1889,7 +1889,7 @@ FileQCButton.propTypes = {
 
 
 // Display the metadata of the selected file in the graph
-const FileDetailView = function (node, qcClick, auditIndicators, auditDetail, session, sessionProperties) {
+const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, auditDetail, session, sessionProperties) {
     // The node is for a file
     const selectedFile = node.metadata.ref;
     let body = null;

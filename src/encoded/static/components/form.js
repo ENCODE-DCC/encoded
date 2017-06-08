@@ -27,7 +27,7 @@ validator.attributes.pattern = function validatePattern(instance, schema) {
 // Parse object and property from `linkFrom`.
 // Backrefs have a linkFrom property in the form
 // (object type).(property name)
-const parseLinkFrom = function (linkFrom) {
+const parseLinkFrom = function parseLinkFrom(linkFrom) {
     const parts = linkFrom.split('.');
     return {
         type: parts[0],
@@ -48,7 +48,7 @@ validator.attributes.linkFrom = function validateLinkFrom(instance, schema, opti
 
 // Recursively filter an object to remove `schema_version`.
 // This is used before sending the value to the server.
-const filterValue = function (value) {
+const filterValue = function filterValue(value) {
     if (Array.isArray(value)) {
         value.map(filterValue);
     } else if (typeof value === 'object') {
@@ -66,7 +66,7 @@ const filterValue = function (value) {
 // The default object includes the `default` value
 // for any property that defines one,
 // with the exception of read-only and calculated properties.
-const defaultValue = function (schema) {
+const defaultValue = function defaultValue(schema) {
     if (schema.default !== undefined) {
         return schema.default || undefined;
     } else if (schema.properties !== undefined) {

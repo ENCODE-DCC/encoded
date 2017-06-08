@@ -106,7 +106,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                         text.push('</ul>');
                         return text.join('');
                     },
-                    onClick: function (e) {
+                    onClick: function onClick(e) {
                         // React to clicks on pie sections
                         const activePoints = chart.getElementAtEvent(e);
 

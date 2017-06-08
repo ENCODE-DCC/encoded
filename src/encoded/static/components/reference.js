@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'underscore';
 
 
-module.exports.pubReferenceList = function (values) {
+module.exports.pubReferenceList = function pubReferenceList(values) {
     // Render each of the links, with null for each value without an identifier property
     if (values && values.length) {
         const links = _.compact(values.map((value) => {
