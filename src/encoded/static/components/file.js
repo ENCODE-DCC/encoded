@@ -315,7 +315,7 @@ class FileComponent extends React.Component {
         const derivedFromFileIds = file.derived_from && file.derived_from.length ? file.derived_from : [];
         if (derivedFromFileIds.length) {
             requestFiles(derivedFromFileIds).then((derivedFromFiles) => {
-                this.setState({ derivedFromFiles: derivedFromFiles });
+                this.setState({ derivedFromFiles });
             });
         }
 

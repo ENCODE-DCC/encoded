@@ -380,7 +380,7 @@ export class Graph extends React.Component {
         }
 
         // Return the SVG so callers can do more with this after drawing the unscaled graph
-        return { viewBoxWidth: viewBoxWidth, viewBoxHeight: viewBoxHeight };
+        return { viewBoxWidth, viewBoxHeight };
     }
 
     bindClickHandlers(d3, el) {
@@ -510,7 +510,7 @@ export class Graph extends React.Component {
         // Handle a double click in the zoom slider
         const el = this.refs.graphdisplay;
         const zoomLevel = this.setInitialZoomLevel(el, this.cv.savedSvg);
-        this.setState({ zoomLevel: zoomLevel });
+        this.setState({ zoomLevel });
     }
 
     render() {

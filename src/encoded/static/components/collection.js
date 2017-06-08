@@ -198,7 +198,7 @@ class Table extends React.Component {
         if (updateData) {
             const columns = Table.guessColumns(nextProps);
             this.extractData(nextProps, columns);
-            this.setState({ columns: columns });
+            this.setState({ columns });
         }
         if (nextContext.location_href !== this.context.location_href) {
             const newState = Table.extractParams(nextProps, nextContext);
@@ -233,7 +233,7 @@ class Table extends React.Component {
             return new Row(item, cells, text);
         });
         const data = new Data(rows);
-        this.setState({ data: data });
+        this.setState({ data });
         return data;
     }
 
@@ -357,8 +357,8 @@ class Table extends React.Component {
         } else {
             matching = data.rows;
         }
-        const rows = matching.map(row => RowView({ row: row }));
-        rows.push(...notMatching.map(row => RowView({ row: row, hidden: true })));
+        const rows = matching.map(row => RowView({ row }));
+        rows.push(...notMatching.map(row => RowView({ row, hidden: true })));
         let tableClass = 'sticky-area collection-table';
         let loadingOrTotal;
         if (this.state.communicating) {

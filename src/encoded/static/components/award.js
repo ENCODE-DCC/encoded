@@ -74,7 +74,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
             const chart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: labels,
+                    labels,
                     datasets: [{
                         data: values,
                         backgroundColor: colors,

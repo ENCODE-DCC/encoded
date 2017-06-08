@@ -1427,9 +1427,7 @@ export class SeriesComponent extends React.Component {
                             <SortTable
                                 list={experimentList}
                                 columns={seriesComponent.table}
-                                meta={{
-                                    adminUser: adminUser,
-                                }}
+                                meta={{ adminUser }}
                             />
                         </SortTablePanel>
                     </div>

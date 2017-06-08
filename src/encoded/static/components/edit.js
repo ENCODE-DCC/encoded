@@ -60,7 +60,7 @@ class EditForm extends React.Component {
                 minLines: 24,
             });
             editor.clearSelection();
-            this.setState({ editor: editor });
+            this.setState({ editor });
             session.on('changeAnnotation', this.hasErrors);
         }, 'brace');
     }
@@ -99,9 +99,9 @@ class EditForm extends React.Component {
     receive(data) {
         const erred = (data['@type'] || []).indexOf('Error') > -1;
         this.setState({
-            data: data,
+            data,
             communicating: false,
-            erred: erred,
+            erred,
             error: erred ? data : undefined,
         });
         if (!erred) this.context.navigate('');
@@ -155,7 +155,7 @@ EditForm.contextTypes = {
 const ItemEdit = (props) => {
     const context = props.context;
     const itemClass = globals.itemClass(context, 'view-item');
-    const title = globals.listing_titles.lookup(context)({ context: context });
+    const title = globals.listing_titles.lookup(context)({ context });
     const url = `${context['@id']}?frame=edit`;
     return (
         <div className={itemClass}>

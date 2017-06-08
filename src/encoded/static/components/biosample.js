@@ -535,7 +535,7 @@ const Construct = (props) => {
     const { context, embeddedDocs } = props;
     const constructDocuments = {};
     context.documents.forEach((doc) => {
-        constructDocuments[doc['@id']] = PanelLookup({ context: doc, embeddedDocs: embeddedDocs });
+        constructDocuments[doc['@id']] = PanelLookup({ context: doc, embeddedDocs });
     });
 
     return (

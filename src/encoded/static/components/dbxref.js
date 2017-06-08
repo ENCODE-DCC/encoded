@@ -66,7 +66,7 @@ export function dbxref(attributes) {
 export const DbxrefList = props => (
     <ul className={props.className}>
         {props.values.map((value, index) =>
-            <li key={index}>{dbxref({ value: value, prefix: props.prefix, target_gene: props.target_gene, target_ref: props.target_ref, cell_line: props.cell_line })}</li>
+            <li key={index}>{dbxref({ value, prefix: props.prefix, target_gene: props.target_gene, target_ref: props.target_ref, cell_line: props.cell_line })}</li>
         )}
     </ul>
 );

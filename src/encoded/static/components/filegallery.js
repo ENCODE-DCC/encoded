@@ -91,7 +91,7 @@ export class FileTable extends React.Component {
         // Handle a click on a collapse button by toggling the corresponding tableCollapse state var
         const collapsed = _.clone(this.state.collapsed);
         collapsed[table] = !collapsed[table];
-        this.setState({ collapsed: collapsed });
+        this.setState({ collapsed });
     }
 
     handleCollapseProc() {
@@ -165,25 +165,25 @@ export class FileTable extends React.Component {
                         <RawSequencingTable
                             files={files.raw}
                             meta={{
-                                encodevers: encodevers,
-                                anisogenic: anisogenic,
+                                encodevers,
+                                anisogenic,
                                 fileClick: this.fileClick,
-                                graphedFiles: graphedFiles,
-                                session: session,
-                                loggedIn: loggedIn,
-                                adminUser: adminUser,
+                                graphedFiles,
+                                session,
+                                loggedIn,
+                                adminUser,
                             }}
                         />
                         <RawFileTable
                             files={files.rawArray}
                             meta={{
-                                encodevers: encodevers,
-                                anisogenic: anisogenic,
+                                encodevers,
+                                anisogenic,
                                 fileClick: this.fileClick,
-                                graphedFiles: graphedFiles,
-                                session: session,
-                                loggedIn: loggedIn,
-                                adminUser: adminUser,
+                                graphedFiles,
+                                session,
+                                loggedIn,
+                                adminUser,
                             }}
                         />
                         <SortTable
@@ -202,14 +202,14 @@ export class FileTable extends React.Component {
                             columns={FileTable.procTableColumns}
                             sortColumn="biological_replicates"
                             meta={{
-                                encodevers: encodevers,
-                                anisogenic: anisogenic,
+                                encodevers,
+                                anisogenic,
                                 hoverDL: this.hoverDL,
                                 restrictedTip: this.state.restrictedTip,
                                 fileClick: this.fileClick,
-                                graphedFiles: graphedFiles,
-                                loggedIn: loggedIn,
-                                adminUser: adminUser,
+                                graphedFiles,
+                                loggedIn,
+                                adminUser,
                             }}
                         />
                         <SortTable
@@ -225,14 +225,14 @@ export class FileTable extends React.Component {
                             list={files.ref}
                             columns={FileTable.refTableColumns}
                             meta={{
-                                encodevers: encodevers,
-                                anisogenic: anisogenic,
+                                encodevers,
+                                anisogenic,
                                 hoverDL: this.hoverDL,
                                 restrictedTip: this.state.restrictedTip,
                                 fileClick: this.fileClick,
-                                graphedFiles: graphedFiles,
-                                loggedIn: loggedIn,
-                                adminUser: adminUser,
+                                graphedFiles,
+                                loggedIn,
+                                adminUser,
                             }}
                         />
                     </SortTablePanel>
@@ -1356,7 +1356,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         });
     });
 
-    return { graph: jsonGraph, graphedFiles: graphedFiles };
+    return { graph: jsonGraph, graphedFiles };
 }
 
 
@@ -1387,7 +1387,7 @@ class FileGalleryRenderer extends React.Component {
         if (relatedFileIds.length) {
             const searchedFiles = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
             requestFiles(relatedFileIds, searchedFiles).then((relatedFiles) => {
-                this.setState({ relatedFiles: relatedFiles });
+                this.setState({ relatedFiles });
             });
         }
     }
@@ -1406,7 +1406,7 @@ class FileGalleryRenderer extends React.Component {
             const searchedFiles = data ? data['@graph'] : []; // Array of searched files arrives in data.@graph result
             requestFiles(relatedFileIds, searchedFiles).then((relatedFiles) => {
                 if (relatedFiles.length !== this.state.relatedFiles.length) {
-                    this.setState({ relatedFiles: relatedFiles });
+                    this.setState({ relatedFiles });
                 }
             });
         }
@@ -1669,7 +1669,7 @@ function coalescedDetailsView(node) {
         );
         body = <p className="browser-error">No information available</p>;
     }
-    return { header: header, body: body };
+    return { header, body };
 }
 
 class FileGraphComponent extends React.Component {
@@ -2015,8 +2015,8 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                     <div className="row graph-modal-audits">
                         <div className="col-xs-12">
                             <h5>File audits:</h5>
-                            {auditIndicators(selectedFile.audit, 'file-audit', { session: session })}
-                            {auditDetail(selectedFile.audit, 'file-audit', { session: session, except: selectedFile['@id'] })}
+                            {auditIndicators(selectedFile.audit, 'file-audit', { session })}
+                            {auditDetail(selectedFile.audit, 'file-audit', { session, except: selectedFile['@id'] })}
                         </div>
                     </div>
                 : null}
@@ -2030,7 +2030,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
         );
         body = <p className="browser-error">No information available</p>;
     }
-    return { header: header, body: body };
+    return { header, body };
 };
 
 globals.graph_detail.register(FileDetailView, 'File');

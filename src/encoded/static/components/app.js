@@ -136,7 +136,7 @@ function recordServerStats(serverStats, timingVar) {
         if (name.indexOf('_time') !== -1) {
             ga('send', 'timing', {
                 timingCategory: name,
-                timingVar: timingVar,
+                timingVar,
                 timingValue: Math.round(serverStats[name] / 1000),
             });
         }
@@ -149,7 +149,7 @@ function recordBrowserStats(browserStats, timingVar) {
         if (name.indexOf('_time') !== -1) {
             ga('send', 'timing', {
                 timingCategory: name,
-                timingVar: timingVar,
+                timingVar,
                 timingValue: browserStats[name],
             });
         }
@@ -247,9 +247,9 @@ class App extends React.Component {
             listActionsFor: this.listActionsFor,
             currentResource: this.currentResource,
             location_href: this.state.href,
-            portal: portal,
-            projectColors: projectColors,
-            biosampleTypeColors: biosampleTypeColors,
+            portal,
+            projectColors,
+            biosampleTypeColors,
             fetch: this.fetch,
             navigate: this.navigate,
             adviseUnsavedChanges: this.adviseUnsavedChanges,
@@ -270,7 +270,7 @@ class App extends React.Component {
         this.setState({
             href: window.location.href,
             session_cookie: sessionCookie,
-            session: session,
+            session,
         });
 
         // Make a URL for the logo.
@@ -460,7 +460,7 @@ class App extends React.Component {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ accessToken: accessToken }),
+            body: JSON.stringify({ accessToken }),
         }).then((response) => {
             this.lock.hide();
             if (!response.ok) {
@@ -694,7 +694,7 @@ class App extends React.Component {
                 this.requestCurrent = false;
             }
             this.setState({
-                href: href,  // href should be consistent with context
+                href,  // href should be consistent with context
                 context: event.state,
             });
         }

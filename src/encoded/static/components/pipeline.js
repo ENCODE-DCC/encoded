@@ -23,7 +23,7 @@ const PanelLookup = function PanelLookup(properties) {
     let localProperties = properties;
     if (localProperties['@id']) {
         context = properties;
-        localProperties = { context: context };
+        localProperties = { context };
     }
     const PanelView = globals.panel_views.lookup(localProperties.context);
     return <PanelView {...localProperties} />;
@@ -154,7 +154,7 @@ function AnalysisStep(step, node) {
             </div>
         );
     }
-    return { header: header, body: body };
+    return { header, body };
 }
 
 

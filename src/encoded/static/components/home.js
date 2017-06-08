@@ -59,7 +59,7 @@ export default class Home extends React.Component {
         if (this.state.assayCategory === assayCategory) {
             this.setState({ assayCategory: '' });
         } else {
-            this.setState({ assayCategory: assayCategory });
+            this.setState({ assayCategory });
         }
     }
 
@@ -402,9 +402,9 @@ class HomepageChart extends React.Component {
                 this.myPieChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: labels,
+                        labels,
                         datasets: [{
-                            data: data,
+                            data,
                             backgroundColor: colors,
                         }],
                     },
@@ -593,9 +593,9 @@ class HomepageChart2 extends React.Component {
                 this.myPieChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: labels,
+                        labels,
                         datasets: [{
-                            data: data,
+                            data,
                             backgroundColor: colors,
                         }],
                     },
@@ -817,7 +817,7 @@ class HomepageChart3 extends React.Component {
                     data: {
                         labels: labels, // full labels
                         datasets: [{
-                            data: data,
+                            data,
                             backgroundColor: colors,
                         }],
                     },

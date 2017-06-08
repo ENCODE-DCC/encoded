@@ -336,7 +336,7 @@ class FetchedFieldset extends React.Component {
         const url = typeof value === 'string' ? value : null;
         this.state = {
             schema: subschema,
-            url: url,
+            url,
             // Start collapsed for existing children,
             // expanded when adding a new one or if there are errors
             collapsed: url && !error,
@@ -829,7 +829,7 @@ export class Form extends React.Component {
         // Make the request
         const { method, action, etag } = this.props;
         const request = this.context.fetch(action, {
-            method: method,
+            method,
             headers: {
                 'If-Match': etag || '*',
                 Accept: 'application/json',
