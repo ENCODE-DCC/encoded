@@ -10,13 +10,19 @@
         "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
         "Views": {
             "tag": "view",
-            "group_order": [ "Long range interactions", "Signal of unique reads", "Signal of all reads" ],
+            "group_order": [ "Long range interactions", "Peaks", "Signal of unique reads", "Signal of all reads" ],
             "groups": {
                 "Long range interactions": {
                     "tag": "LRCI",
                     "type": "bigBed",
                     "visibility": "dense",
                     "output_type": [ "long range chromatin interactions" ]
+                },
+                "Peaks": {
+                    "tag": "PEAKS",
+                    "type": "bigBed",
+                    "visibility": "dense",
+                    "output_type": [ "peaks" ]
                 },
                 "Signal of unique reads": {
                     "tag": "SIGBL",
