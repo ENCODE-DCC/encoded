@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
 import _ from 'underscore';
-import url from 'url';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import { auditDecor } from './audit';
@@ -26,30 +24,28 @@ const GM_TECHNIQUE_MAP = {
 };
 
 
-const GeneticModificationCharacterizations = createReactClass({
-    propTypes: {
-        characterizations: PropTypes.array.isRequired, // Genetic modificiation characterizations to display
-    },
+const GeneticModificationCharacterizations = (props) => {
+    const { characterizations } = props;
 
-    render: function () {
-        const { characterizations } = this.props;
+    return (
+        <Panel>
+            <PanelHeading>
+                <h4>Characterization attachments</h4>
+            </PanelHeading>
+            <PanelBody addClasses="attachment-panel-outer">
+                <section className="flexrow attachment-panel-inner">
+                    {characterizations.map(characterization =>
+                        <AttachmentPanel key={characterization.uuid} context={characterization} attachment={characterization.attachment} title={characterization.characterization_method} />,
+                    )}
+                </section>
+            </PanelBody>
+        </Panel>
+    );
+};
 
-        return (
-            <Panel>
-                <PanelHeading>
-                    <h4>Characterization attachments</h4>
-                </PanelHeading>
-                <PanelBody addClasses="attachment-panel-outer">
-                    <section className="flexrow attachment-panel-inner">
-                        {characterizations.map(characterization =>
-                            <AttachmentPanel key={characterization.uuid} context={characterization} attachment={characterization.attachment} title={characterization.characterization_method} />,
-                        )}
-                    </section>
-                </PanelBody>
-            </Panel>
-        );
-    },
-});
+GeneticModificationCharacterizations.propTypes = {
+    characterizations: PropTypes.array.isRequired, // Genetic modificiation characterizations to display
+};
 
 
 // Returns array of genetic modification technique components. The type of each technique can vary,
@@ -65,18 +61,8 @@ function geneticModificationTechniques(techniques) {
 }
 
 
-export const GeneticModificationComponent = createReactClass({
-    propTypes: {
-        context: PropTypes.object.isRequired, // GM object being displayed
-        auditIndicators: PropTypes.func.isRequired, // Audit HOC function to display audit indicators
-        auditDetail: PropTypes.func.isRequired, // Audit HOC function to display audit details
-    },
-
-    contextTypes: {
-        session: PropTypes.object, // Login information from <App>
-    },
-
-    render: function () {
+export class GeneticModificationComponent extends React.Component {
+    render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-detail key-value');
         const coords = context.modified_site;
@@ -300,51 +286,57 @@ export const GeneticModificationComponent = createReactClass({
                 />
             </div>
         );
-    },
-});
+    }
+}
+
+GeneticModificationComponent.propTypes = {
+    context: PropTypes.object.isRequired, // GM object being displayed
+    auditIndicators: PropTypes.func.isRequired, // Audit HOC function to display audit indicators
+    auditDetail: PropTypes.func.isRequired, // Audit HOC function to display audit details
+};
+
+GeneticModificationComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
 
 const GeneticModification = auditDecor(GeneticModificationComponent);
 
 globals.content_views.register(GeneticModification, 'GeneticModification');
 
 
-const GMAttachmentCaption = createReactClass({
-    propTypes: {
-        title: PropTypes.string.isRequired, // Title to display for attachment
-    },
+const GMAttachmentCaption = (props) => {
+    const { title } = props;
 
-    render: function () {
-        const { title } = this.props;
-
-        return (
-            <div className="document__caption">
-                <div data-test="caption">
-                    <strong>Attachment: </strong>
-                    {title}
-                </div>
+    return (
+        <div className="document__caption">
+            <div data-test="caption">
+                <strong>Attachment: </strong>
+                {title}
             </div>
-        );
-    },
-});
+        </div>
+    );
+};
+
+GMAttachmentCaption.propTypes = {
+    title: PropTypes.string.isRequired, // Title to display for attachment
+};
 
 
-const GMAttachmentPreview = createReactClass({
-    propTypes: {
-        context: PropTypes.object.isRequired, // QC metric object that owns the attachment to render
-        attachment: PropTypes.object.isRequired, // Attachment to render
-    },
+const GMAttachmentPreview = (props) => {
+    const { context, attachment } = props;
 
-    render: function () {
-        const { context, attachment } = this.props;
+    return (
+        <figure className="document__preview">
+            <Attachment context={context} attachment={attachment} className="characterization" />
+        </figure>
+    );
+};
 
-        return (
-            <figure className="document__preview">
-                <Attachment context={context} attachment={attachment} className="characterization" />
-            </figure>
-        );
-    },
-});
-
+GMAttachmentPreview.propTypes = {
+    context: PropTypes.object.isRequired, // QC metric object that owns the attachment to render
+    attachment: PropTypes.object.isRequired, // Attachment to render
+};
 
 // Register document caption rendering components
 globals.document_views.caption.register(GMAttachmentCaption, 'GeneticModificationCharacterization');
@@ -354,146 +346,132 @@ globals.document_views.preview.register(GMAttachmentPreview, 'GeneticModificatio
 
 
 // Display modification technique specific to the CRISPR type.
-const TechniqueCrispr = createReactClass({
-    propTypes: {
-        context: PropTypes.object.isRequired, // CRISPR genetic modificiation technique to display
-    },
+const TechniqueCrispr = (props) => {
+    const { context } = props;
+    const itemClass = globals.itemClass(context, 'view-detail key-value');
 
-    render: function () {
-        const { context } = this.props;
-        const itemClass = globals.itemClass(context, 'view-detail key-value');
+    return (
+        <dl className={itemClass}>
+            <div data-test="techniquetype">
+                <dt>Technique type</dt>
+                <dd>CRISPR</dd>
+            </div>
 
-        return (
-            <dl className={itemClass}>
-                <div data-test="techniquetype">
-                    <dt>Technique type</dt>
-                    <dd>CRISPR</dd>
+            {context.insert_sequence ?
+                <div data-test="insertsequence">
+                    <dt>Insert sequence</dt>
+                    <dd>{context.insert_sequence}</dd>
                 </div>
+            : null}
 
-                {context.insert_sequence ?
-                    <div data-test="insertsequence">
-                        <dt>Insert sequence</dt>
-                        <dd>{context.insert_sequence}</dd>
-                    </div>
-                : null}
+            <div data-test="lab">
+                <dt>Lab</dt>
+                <dd>{context.lab.title}</dd>
+            </div>
 
-                <div data-test="lab">
-                    <dt>Lab</dt>
-                    <dd>{context.lab.title}</dd>
+            {context.award.pi && context.award.pi.lab ?
+                <div data-test="awardpi">
+                    <dt>Award PI</dt>
+                    <dd>{context.award.pi.lab.title}</dd>
                 </div>
+            : null}
 
-                {context.award.pi && context.award.pi.lab ?
-                    <div data-test="awardpi">
-                        <dt>Award PI</dt>
-                        <dd>{context.award.pi.lab.title}</dd>
-                    </div>
-                : null}
+            {context.source.title ?
+                <div data-test="sourcetitle">
+                    <dt>Source</dt>
+                    <dd>
+                        {context.source.url ?
+                            <a href={context.source.url}>{context.source.title}</a>
+                        :
+                            <span>{context.source.title}</span>
+                        }
+                    </dd>
+                </div>
+            : null}
 
-                {context.source.title ?
-                    <div data-test="sourcetitle">
-                        <dt>Source</dt>
-                        <dd>
-                            {context.source.url ?
-                                <a href={context.source.url}>{context.source.title}</a>
-                            :
-                                <span>{context.source.title}</span>
-                            }
-                        </dd>
-                    </div>
-                : null}
+            {context.dbxrefs && context.dbxrefs.length ?
+                <div data-test="externalresources">
+                    <dt>External resources</dt>
+                    <dd><DbxrefList values={context.dbxrefs} /></dd>
+                </div>
+            : null}
+        </dl>
+    );
+};
 
-                {context.dbxrefs && context.dbxrefs.length ?
-                    <div data-test="externalresources">
-                        <dt>External resources</dt>
-                        <dd><DbxrefList values={context.dbxrefs} /></dd>
-                    </div>
-                : null}
-            </dl>
-        );
-    },
-});
+TechniqueCrispr.propTypes = {
+    context: PropTypes.object.isRequired, // CRISPR genetic modificiation technique to display
+};
 
 globals.panel_views.register(TechniqueCrispr, 'Crispr');
 
 
 // Display modification technique specific to the TALE type.
-const TechniqueTale = createReactClass({
-    propTypes: {
-        context: PropTypes.object.isRequired, // TALE genetic modificiation technique to display
-    },
+const TechniqueTale = (props) => {
+    const { context } = props;
+    const itemClass = globals.itemClass(context, 'view-detail key-value');
 
-    render: function () {
-        const { context } = this.props;
-        const itemClass = globals.itemClass(context, 'view-detail key-value');
+    return (
+        <dl className={itemClass}>
+            <div data-test="techniquetype">
+                <dt>Technique type</dt>
+                <dd>TALE</dd>
+            </div>
 
-        return (
-            <dl className={itemClass}>
-                <div data-test="techniquetype">
-                    <dt>Technique type</dt>
-                    <dd>TALE</dd>
+            <div data-test="rvdsequence">
+                <dt>RVD sequence</dt>
+                <dd>{context.RVD_sequence}</dd>
+            </div>
+
+            <div data-test="talenplatform">
+                <dt>TALEN platform</dt>
+                <dd>{context.talen_platform}</dd>
+            </div>
+
+            <div data-test="lab">
+                <dt>Lab</dt>
+                <dd>{context.lab.title}</dd>
+            </div>
+
+            {context.award.pi && context.award.pi.lab ?
+                <div data-test="awardpi">
+                    <dt>Award PI</dt>
+                    <dd>{context.award.pi.lab.title}</dd>
                 </div>
+            : null}
 
-                <div data-test="rvdsequence">
-                    <dt>RVD sequence</dt>
-                    <dd>{context.RVD_sequence}</dd>
+            {context.source.title ?
+                <div data-test="sourcetitle">
+                    <dt>Source</dt>
+                    <dd>
+                        {context.source.url ?
+                            <a href={context.source.url}>{context.source.title}</a>
+                        :
+                            <span>{context.source.title}</span>
+                        }
+                    </dd>
                 </div>
+            : null}
 
-                <div data-test="talenplatform">
-                    <dt>TALEN platform</dt>
-                    <dd>{context.talen_platform}</dd>
+            {context.dbxrefs && context.dbxrefs.length ?
+                <div data-test="externalresources">
+                    <dt>External resources</dt>
+                    <dd><DbxrefList values={context.dbxrefs} /></dd>
                 </div>
+            : null}
+        </dl>
+    );
+};
 
-                <div data-test="lab">
-                    <dt>Lab</dt>
-                    <dd>{context.lab.title}</dd>
-                </div>
-
-                {context.award.pi && context.award.pi.lab ?
-                    <div data-test="awardpi">
-                        <dt>Award PI</dt>
-                        <dd>{context.award.pi.lab.title}</dd>
-                    </div>
-                : null}
-
-                {context.source.title ?
-                    <div data-test="sourcetitle">
-                        <dt>Source</dt>
-                        <dd>
-                            {context.source.url ?
-                                <a href={context.source.url}>{context.source.title}</a>
-                            :
-                                <span>{context.source.title}</span>
-                            }
-                        </dd>
-                    </div>
-                : null}
-
-                {context.dbxrefs && context.dbxrefs.length ?
-                    <div data-test="externalresources">
-                        <dt>External resources</dt>
-                        <dd><DbxrefList values={context.dbxrefs} /></dd>
-                    </div>
-                : null}
-            </dl>
-        );
-    },
-});
+TechniqueTale.propTypes = {
+    context: PropTypes.object.isRequired, // TALE genetic modificiation technique to display
+};
 
 globals.panel_views.register(TechniqueTale, 'Tale');
 
 
-const ListingComponent = createReactClass({
-    propTypes: {
-        context: PropTypes.object.isRequired, // Search results object
-        auditDetail: PropTypes.func.isRequired, // Audit HOC function to show audit details
-        auditIndicators: PropTypes.func.isRequired, // Audit HOC function to display audit indicators
-    },
-
-    contextTypes: {
-        session: PropTypes.object, // Login information from <App>
-    },
-
-    render: function () {
+class ListingComponent extends React.Component {
+    render() {
         const result = this.props.context;
 
         let techniques = [];
@@ -526,8 +504,18 @@ const ListingComponent = createReactClass({
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
         );
-    },
-});
+    }
+}
+
+ListingComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Search results object
+    auditDetail: PropTypes.func.isRequired, // Audit HOC function to show audit details
+    auditIndicators: PropTypes.func.isRequired, // Audit HOC function to display audit indicators
+};
+
+ListingComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
 
 const Listing = auditDecor(ListingComponent);
 
@@ -591,125 +579,73 @@ export const calcGMSummarySentence = _.memoize(rCalcGMSummarySentence, gm => gm.
 // Display a summary of genetic modifications given in the geneticModifications prop. This
 // component assumes the `geneticModifications` array has at least one entry, so make sure of that
 // before calling this component.
-export const GeneticModificationSummary = createReactClass({
-    propTypes: {
-        geneticModifications: PropTypes.array.isRequired, // Array of genetic modifications
-    },
+export const GeneticModificationSummary = (props) => {
+    const geneticModifications = props.geneticModifications;
 
-    render: function () {
-        const geneticModifications = this.props.geneticModifications;
+    // Group genetic modifications by a combination like this:
+    // modification_type;modification_technique,modification_technique,...;target.label
+    const gmGroups = _(geneticModifications).groupBy((gm) => {
+        let groupKey = gm.modification_type;
 
-        // Group genetic modifications by a combination like this:
-        // modification_type;modification_technique,modification_technique,...;target.label
-        const gmGroups = _(geneticModifications).groupBy((gm) => {
-            let groupKey = gm.modification_type;
+        // Add any modification techniques to the group key.
+        const techniques = getGMTechniques(gm);
+        if (techniques.length) {
+            groupKey += `; ${techniques.join()}`;
+        }
 
-            // Add any modification techniques to the group key.
-            const techniques = getGMTechniques(gm);
-            if (techniques.length) {
-                groupKey += `; ${techniques.join()}`;
-            }
+        // Add the target (if any) to the group key.
+        if (gm.target) {
+            groupKey += `; ${gm.target.label}`;
+        }
 
-            // Add the target (if any) to the group key.
-            if (gm.target) {
-                groupKey += `; ${gm.target.label}`;
-            }
+        // Add the treatment UUIDs (if any) to the group key.
+        if (gm.modification_treatments && gm.modification_treatments.length) {
+            groupKey += `; ${gm.modification_treatments.map(treatment => treatment.uuid).sort().join()}`;
+        }
 
-            // Add the treatment UUIDs (if any) to the group key.
-            if (gm.modification_treatments && gm.modification_treatments.length) {
-                groupKey += `; ${gm.modification_treatments.map(treatment => treatment.uuid).sort().join()}`;
-            }
+        return groupKey;
+    });
 
-            return groupKey;
-        });
+    return (
+        <Panel>
+            <PanelHeading>
+                <h4>Genetic modifications</h4>
+            </PanelHeading>
+            {Object.keys(gmGroups).map((groupKey) => {
+                const group = gmGroups[groupKey];
+                const sentence = calcGMSummarySentence(group[0]);
+                return <GeneticModificationGroup key={groupKey} groupSentence={sentence} gms={group} />;
+            })}
+        </Panel>
+    );
+};
 
-        return (
-            <Panel>
-                <PanelHeading>
-                    <h4>Genetic modifications</h4>
-                </PanelHeading>
-                {Object.keys(gmGroups).map((groupKey) => {
-                    const group = gmGroups[groupKey];
-                    const sentence = calcGMSummarySentence(group[0]);
-                    return <GeneticModificationGroup key={groupKey} groupSentence={sentence} gms={group} />;
-                })}
-            </Panel>
-        );
-    },
-});
+GeneticModificationSummary.propTypes = {
+    geneticModifications: PropTypes.array.isRequired, // Array of genetic modifications
+};
 
 
 // Display one GM group, which consists of all GMs that share the same type, technique, target, and
 // treatments. A group is an array of GM objects.
-export const GeneticModificationGroup = createReactClass({
-    propTypes: {
-        groupSentence: PropTypes.string.isRequired, // GM group detail sentence to display
-        gms: PropTypes.array.isRequired, // GM objects to display within a group
-    },
+export class GeneticModificationGroup extends React.Component {
+    constructor() {
+        super();
 
-    getInitialState: function () {
-        return {
+        // Set the initial React component state.
+        this.state = {
             detailOpen: false, // True if group is expanded
         };
-    },
 
-    columns: {
-        aliases: {
-            title: 'Aliases',
-            display: (modification) => {
-                const aliases = modification.aliases && modification.aliases.length ? modification.aliases.join(', ') : 'None';
-                return <a href={modification['@id']} title="View details about this genetic modification">{aliases}</a>;
-            },
-            sorter: false,
-        },
-        purpose: {
-            title: 'Purpose',
-        },
-        zygosity: {
-            title: 'Zygosity',
-        },
-        assembly: {
-            title: 'Mapping assembly',
-            getValue: modification => (modification.modified_site && modification.modified_site.assembly ? modification.modified_site.assembly : ''),
-        },
-        coordinates: {
-            title: 'Coordinates',
-            display: (modification) => {
-                const coords = modification.modified_site;
-                if (coords && coords.chromosome) {
-                    return <span>chr{coords.chromosome}:{coords.start}-{coords.end}</span>;
-                }
-                return null;
-            },
-            objSorter: (a, b) => {
-                let sortRes; // Sorting result
-                const aCoord = a.modified_site;
-                const bCoord = b.modified_site;
-                if (aCoord && bCoord) {
-                    sortRes = (aCoord.chromosome < bCoord.chromosome) ? -1 : ((bCoord.chromosome > aCoord.chromosome) ? 1 : 0);
-                    if (!sortRes) {
-                        // Identical chromosomes; sort by start coordinates
-                        sortRes = aCoord.start - bCoord.start;
-                        if (!sortRes) {
-                            // Identical start coordinates; sort by end coordinates
-                            sortRes = aCoord.end - bCoord.end;
-                        }
-                    }
-                } else {
-                    // One or the other or both are missing; sort the non-missing one first
-                    sortRes = aCoord ? -1 : (bCoord ? 1 : 0);
-                }
-                return sortRes;
-            },
-        },
-    },
+        // Bind this to non-React methods.
+        this.detailSwitch = this.detailSwitch.bind(this);
+    }
 
-    detailSwitch: function () {
+    detailSwitch() {
         // Click on the detail disclosure triangle
         this.setState({ detailOpen: !this.state.detailOpen });
-    },
+    }
 
-    render: function () {
+    render() {
         const { groupSentence, gms } = this.props;
         return (
             <div className="gm-group">
@@ -731,5 +667,61 @@ export const GeneticModificationGroup = createReactClass({
                 : null}
             </div>
         );
+    }
+}
+
+GeneticModificationGroup.propTypes = {
+    groupSentence: PropTypes.string.isRequired, // GM group detail sentence to display
+    gms: PropTypes.array.isRequired, // GM objects to display within a group
+};
+
+GeneticModificationGroup.columns = {
+    aliases: {
+        title: 'Aliases',
+        display: (modification) => {
+            const aliases = modification.aliases && modification.aliases.length ? modification.aliases.join(', ') : 'None';
+            return <a href={modification['@id']} title="View details about this genetic modification">{aliases}</a>;
+        },
+        sorter: false,
     },
-});
+    purpose: {
+        title: 'Purpose',
+    },
+    zygosity: {
+        title: 'Zygosity',
+    },
+    assembly: {
+        title: 'Mapping assembly',
+        getValue: modification => (modification.modified_site && modification.modified_site.assembly ? modification.modified_site.assembly : ''),
+    },
+    coordinates: {
+        title: 'Coordinates',
+        display: (modification) => {
+            const coords = modification.modified_site;
+            if (coords && coords.chromosome) {
+                return <span>chr{coords.chromosome}:{coords.start}-{coords.end}</span>;
+            }
+            return null;
+        },
+        objSorter: (a, b) => {
+            let sortRes; // Sorting result
+            const aCoord = a.modified_site;
+            const bCoord = b.modified_site;
+            if (aCoord && bCoord) {
+                sortRes = (aCoord.chromosome < bCoord.chromosome) ? -1 : ((bCoord.chromosome > aCoord.chromosome) ? 1 : 0);
+                if (!sortRes) {
+                    // Identical chromosomes; sort by start coordinates
+                    sortRes = aCoord.start - bCoord.start;
+                    if (!sortRes) {
+                        // Identical start coordinates; sort by end coordinates
+                        sortRes = aCoord.end - bCoord.end;
+                    }
+                }
+            } else {
+                // One or the other or both are missing; sort the non-missing one first
+                sortRes = aCoord ? -1 : (bCoord ? 1 : 0);
+            }
+            return sortRes;
+        },
+    },
+};
