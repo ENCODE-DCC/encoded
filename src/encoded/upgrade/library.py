@@ -111,3 +111,9 @@ def library_5_6(value, system):
         del value['depleted_in_term_id']
     if 'depleted_in_term_name' in value:
         value['depleted_in_term_name'] = list(set(value['depleted_in_term_name']))
+
+
+@upgrade_step('library', '7', '8')
+def library_7_8(value, system):
+    # http://redmine.encodedcc.org/issues/5049
+    return
