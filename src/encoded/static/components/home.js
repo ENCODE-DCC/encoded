@@ -815,7 +815,7 @@ class HomepageChart3 extends React.Component {
                 this.myPieChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: labels, // full labels
+                        labels, // full labels
                         datasets: [{
                             data,
                             backgroundColor: colors,
