@@ -253,10 +253,10 @@ var BiosampleComponent = module.exports.Biosample = createReactClass({
                                         </div>
                                     : null}
 
-                                    {context.derived_from ?
-                                        <div data-test="derivedfrom">
-                                            <dt>Derived from biosample</dt>
-                                            <dd><a href={context.derived_from['@id']}>{context.derived_from.accession}</a></dd>
+                                    {context.originated_from ?
+                                        <div data-test="originatedfrom">
+                                            <dt>Originated from biosample</dt>
+                                            <dd><a href={context.originated_from['@id']}>{context.originated_from.accession}</a></dd>
                                         </div>
                                     : null}
 
@@ -436,8 +436,8 @@ var BiosampleComponent = module.exports.Biosample = createReactClass({
                               url={'/search/?type=Biosample&part_of.uuid=' + context.uuid}
                               Component={BiosampleTable} ignoreErrors />
 
-                <RelatedItems title="Biosamples that are derived from this biosample"
-                              url={'/search/?type=Biosample&derived_from.uuid=' + context.uuid}
+                <RelatedItems title="Biosamples originating from this biosample"
+                              url={'/search/?type=Biosample&originated_from.uuid=' + context.uuid}
                               Component={BiosampleTable} ignoreErrors />
 
                 <RelatedItems title="Biosamples that are pooled from this biosample"

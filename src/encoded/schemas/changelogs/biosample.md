@@ -12,6 +12,7 @@
 * *post_synchronization_time* specification requires specification of *post_synchronization_time_units* and *fly_synchronization_stage* or *worm_synchronization_stage*
 * *status* value "preliminary" was removed
 * *date_obtained* format is limited now to only *date* and not one of ["date", "date-time"] as it used to be
+* *derived_from* property was renamed to *originated_from*
 * *alternate_accessions* now must match accession format, "ENCBS..." or "TSTBS..."
 
 

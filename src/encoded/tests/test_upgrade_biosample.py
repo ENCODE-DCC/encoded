@@ -156,11 +156,12 @@ def biosample_13(biosample_0, document):
 
 
 @pytest.fixture
-def biosample_15(biosample_0, document):
+def biosample_15(biosample_0, biosample):
     item = biosample_0.copy()
     item.update({
         'date_obtained': '2017-06-06T20:29:37.059673+00:00',
         'schema_version': '15',
+        'derived_from': biosample['uuid'],
         'talens': []
     })
     return item
@@ -457,10 +458,10 @@ def test_upgrade_biosample_13_to_14(root, upgrader, biosample, biosample_13, dum
     assert value['lot_id'] == ' leading and trailing whitespace '.strip()
 
 
-def test_upgrade_biosample_15_to_16(root, upgrader, biosample, biosample_15, dummy_request):
-    context = root.get_by_uuid(biosample['uuid'])
-    dummy_request.context = context
-    value = upgrader.upgrade('biosample', biosample_15, target_version='16', context=context)
+def test_file_upgrade_15_to_16(upgrader, biosample_15, biosample):
+    value = upgrader.upgrade('biosample', biosample_15, current_version='15', target_version='16')
+    assert value['originated_from'] == biosample['uuid']
+    assert 'derived_from' not in value
     assert value['schema_version'] == '16'
     assert value['date_obtained'] == '2017-06-06'
     assert 'talens' not in value
