@@ -25,10 +25,20 @@ def pipeline_2_3(value, system):
 
 @upgrade_step('pipeline', '3', '4')
 def pipeline_3_4(value, system):
+    duplicates = {}
+
     # http://redmine.encodedcc.org/issues/3063
     if 'name' in value:
         value['step_label'] = value['name']
         value.pop('name', None)
+
+    if 'major_version' not in value:
+        # Set to 1 by default since property is required. Patch right version number afterwards.
+        value['major_version'] = 1
+        duplicates[value['step_label']] = 1
+    else:
+        value['major_version'] = duplicates[value['major_version']] + 1
+        duplicates[value['major_version']] = duplicates[value['major_version']] + 1
 
     if 'analysis_steps' in value:
         value['analysis_steps'] = list(set(value['analysis_steps']))
