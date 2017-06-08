@@ -26,6 +26,10 @@ def pipeline_2_3(value, system):
 @upgrade_step('pipeline', '3', '4')
 def pipeline_3_4(value, system):
     # http://redmine.encodedcc.org/issues/3063
+    if 'name' in value:
+        value['step_label'] = value['name']
+        value.pop('name', None)
+
     if 'analysis_steps' in value:
         value['analysis_steps'] = list(set(value['analysis_steps']))
 
