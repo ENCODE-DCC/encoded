@@ -10,8 +10,18 @@
         "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
         "Views":  {
             "tag": "view",
-            "group_order": [ "Signal", "Peaks", "Hotspots", "AutoScale Signal" ],
+            "group_order": [ "Normalized Signal", "Signal", "Peaks", "Hotspots", "AutoScale Signal" ],
             "groups": {
+                "Normalized Signal": {
+                    "tag": "aNSIG",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "autoScale": "off",
+                    "maxHeightPixels": "32:16:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "read-depth normalized signal" ]
+                },
                 "Signal": {
                     "tag": "aSIG",
                     "visibility": "full",

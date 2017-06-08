@@ -18,7 +18,7 @@
                     "visibility": "dense",
                     "type": "bigBed",
                     "file_format_type": [ "bedMethyl" ],
-                    "spectrum":"on",
+                    "itemRgb":"on",
                     "scoreFilter":"0:1000",
                     "output_type": [ "methylation state at CpG" ]
                 },
@@ -27,7 +27,7 @@
                     "visibility": "hide",
                     "type": "bigBed",
                     "file_format_type": [ "bedMethyl" ],
-                    "spectrum":"on",
+                    "itemRgb":"on",
                     "scoreFilter":"0:1000",
                     "output_type": [ "methylation state at CHG" ]
                 },
@@ -36,7 +36,7 @@
                     "visibility": "hide",
                     "type": "bigBed",
                     "file_format_type": [ "bedMethyl" ],
-                    "spectrum":"on",
+                    "itemRgb":"on",
                     "scoreFilter":"0:1000",
                     "output_type": [ "methylation state at CHH" ]
                 },
