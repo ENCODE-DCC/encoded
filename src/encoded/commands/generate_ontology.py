@@ -122,6 +122,7 @@ assay_slims = {
     'OBI:0001916': 'Replication timing',
     'OBI:0000435': 'Genotyping',
     'OBI:0000615': 'Proteomics',
+    'OBI:0000626': 'DNA sequencing'
 }
 
 slim_shims = {
@@ -315,10 +316,49 @@ ntr_assays = {
         "assay": ['Genotyping'],
         "category": [],
         "developmental": [],
-        "name": "genotyping by Hi-C",
+        "name": "genotype phasing by HiC",
         "objectives": [],
         "organs": [],
-        "preferred_name": "genotyping Hi-C",
+        "preferred_name": "genotyping HiC",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0004739": {
+        "assay": ['Transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "BruUV-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "BruUV-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0005023": {
+        "assay": ['DNA sequencing'],
+        "category": [],
+        "developmental": [],
+        "name": "Circulome-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "Circulome-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0005141": {
+        "assay": ['DNA binding'],
+        "category": [],
+        "developmental": [],
+        "name": "Mint-ChIP-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "Mint-ChIP",
         "slims": [],
         "synonyms": [],
         "systems": [],
