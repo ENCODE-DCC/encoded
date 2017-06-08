@@ -137,17 +137,17 @@ def analysis_step_5_6(value, system):
     # http://redmine.encodedcc.org/issues/4987
 
     if label_mapping.get(value.get('uuid'), None):
-        value['step_label'] = label_mapping.get(value.get('uuid'))
+        value.update({'step_label': label_mapping.get(value.get('uuid'))})
         value.pop('name', None)
 
-    if major_version_mapping.get(value.get('uuid')):
-        value['major_version'] = major_version_mapping.get(value.get('uuid'))
+    if major_version_mapping.get(value.get('uuid'), None):
+        value.update({'major_version': major_version_mapping.get(value.get('uuid'))})
 
     if title_mapping.get(value.get('uuid'), None):
         value['status'] = status_mapping.get(value.get('uuid'))
 
-    if status_mapping.get(value.get('uuid')):
+    if status_mapping.get(value.get('uuid'), None):
         value['status'] = status_mapping.get(value.get('uuid'))
 
-    if aliases_mapping.get(value.get('uuid')):
+    if aliases_mapping.get(value.get('uuid'), None):
         value['aliases'].append(aliases_mapping.get(value.get('uuid')))
