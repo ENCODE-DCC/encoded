@@ -13,11 +13,11 @@ const FallbackBlockView = createReactClass({
     },
 
     render() {
-        const Panel = item.Panel;
+        const JsonPanel = item.JsonPanel;
         return (
             <div>
             <h2>{this.props.blocktype.label}</h2>
-                <Panel context={this.props.value} />
+                <JsonPanel context={this.props.value} />
             </div>
         );
     },
