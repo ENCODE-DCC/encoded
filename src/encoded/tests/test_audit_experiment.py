@@ -2617,8 +2617,10 @@ def test_audit_experiment_wrong_construct(testapp,
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     testapp.patch_json(biosample_1['@id'], {'constructs': [construct['@id']],
+                                            'transfection_method': 'chemical',
                                             'transfection_type': 'stable'})
     testapp.patch_json(biosample_2['@id'], {'constructs': [construct['@id']],
+                                            'transfection_method': 'chemical',
                                             'transfection_type': 'stable'})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
                                                 'target': recombinant_target['@id']})

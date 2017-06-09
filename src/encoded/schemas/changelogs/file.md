@@ -15,7 +15,7 @@
         }
 #### Formats and enums are more restrictive for several fields:
 
-* *output_type* values ["predicted forebrain enhancers", "predicted heart enhancers", "predicted whole brain enhancers", "sequence alignability",] added to the ist of values that could be submitted only by DCC personnel
+* *output_type* values ["predicted forebrain enhancers", "predicted heart enhancers", "predicted whole brain enhancers", "sequence alignability",] added to the list of values that could be submitted only by DCC personnel
 * *revoke_detail* is available only for files with status = revoked
 
 ### Schema version 10

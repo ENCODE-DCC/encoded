@@ -121,9 +121,19 @@ def test_biosmple_post_synchronization_no_unit_fail(testapp, mouse_biosample, fl
     testapp.post_json('/biosample', mouse_biosample, status=422)
 
 
+def test_biosample_human_whole_organism_fail(testapp, biosample):
+    biosample['biosample_type'] = 'whole organisms'
+    testapp.post_json('/biosample', biosample, status=422)
+
+
 def test_alt_accession_ENCBS_regex(testapp, biosample):
     bio = testapp.post_json('/biosample', biosample).json['@graph'][0]
-    res = testapp.patch_json(bio['@id'], {'status': 'replaced', 'alternate_accessions': ['ENCFF123ABC']}, expect_errors=True)
+    res = testapp.patch_json(
+        bio['@id'],
+        {'status': 'replaced', 'alternate_accessions': ['ENCFF123ABC']}, expect_errors=True)
     assert res.status_code == 422
-    res = testapp.patch_json(bio['@id'], {'status': 'replaced', 'alternate_accessions': ['ENCBS123ABC']})
+    res = testapp.patch_json(
+        bio['@id'],
+        {'status': 'replaced', 'alternate_accessions': ['ENCBS123ABC']})
     assert res.status_code == 200
+
