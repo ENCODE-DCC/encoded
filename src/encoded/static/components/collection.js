@@ -139,15 +139,19 @@ class Table extends React.Component {
         return state;
     }
 
+    /* eslint no-restricted-syntax: 0 */
+    // For reasons fytanaka can't yet fathom, replacing the for...in with Object.keys causes a
+    // Pyramid test failure in test_views. fytanaka can only assume the keys in the loop need to go
+    // up the prototype chain for some reason.
     static guessColumns(props) {
         const columnList = props.columns || props.context.columns;
         const columns = [];
         if (!columnList || Object.keys(columnList).length === 0) {
-            Object.keys(props.context['@graph'][0]).forEach((key) => {
+            for (const key in props.context['@graph'][0]) {
                 if (key.slice(0, 1) !== '@' && key.search(/(uuid|_no|accession)/) === -1) {
                     columns.push(key);
                 }
-            });
+            }
             columns.sort();
             columns.unshift('@id');
         } else {
@@ -158,10 +162,10 @@ class Table extends React.Component {
         return columns;
     }
 
-    constructor(props, context) {
-        super(props, context);
+    constructor(props, reactContext) {
+        super(props, reactContext);
 
-        // Set initial React component state.
+        // Set the initial React state.
         this.state = Table.extractParams(this.props, this.context);
         this.state.columns = Table.guessColumns(this.props);
         this.state.data = new Data([]);  // Tables may be long so render empty first
@@ -169,8 +173,8 @@ class Table extends React.Component {
 
         // Bind this to non-React methods.
         this.extractData = this.extractData.bind(this);
-        this.handleClickHeader = this.handleClickHeader.bind(this);
         this.fetchAll = this.fetchAll.bind(this);
+        this.handleClickHeader = this.handleClickHeader.bind(this);
         this.handleKeyUp = this.handleKeyUp.bind(this);
         this.submit = this.submit.bind(this);
         this.clearFilter = this.clearFilter.bind(this);
@@ -206,27 +210,33 @@ class Table extends React.Component {
         }
     }
 
-    extractData(props, columns) {
+    componentWillUnmount() {
+        if (typeof this.submitTimer !== 'undefined') {
+            clearTimeout(this.submitTimer);
+        }
+        const request = this.state.allRequest;
+        if (request) {
+            request.abort();
+        }
+    }
+
+    extractData(props, inColumns) {
         const context = props.context;
-        const localColumns = columns || this.state.columns;
+        const columns = inColumns || this.state.columns;
         const rows = context['@graph'].map((item) => {
-            const cells = localColumns.map((column) => {
+            const cells = columns.map((column) => {
                 let factory;
-                // cell factories
-                // if (factory) {
-                //    return factory({context: item, column: column});
-                // }
                 let value = lookupColumn(item, column);
                 if (column === '@id') {
                     factory = globals.listing_titles.lookup(item);
                     value = factory({ context: item });
-                } else if (value == null) {
+                } else if (value === null) {
                     value = '';
                 } else if (!(value instanceof Array) && value['@type']) {
                     factory = globals.listing_titles.lookup(value);
                     value = factory({ context: value });
                 }
-                const sortable = (String(value)).toLowerCase();
+                const sortable = String(value).toLowerCase();
                 return new Cell(value, column, sortable);
             });
             const text = cells.map(cell => cell.value).join(' ').toLowerCase();
@@ -237,32 +247,10 @@ class Table extends React.Component {
         return data;
     }
 
-    handleClickHeader(event) {
-        let target = event.target;
-        while (target.tagName !== 'TH') {
-            target = target.parentElement;
-        }
-        const cellIndex = target.cellIndex;
-        let reversed = '';
-        const sorton = this.sorton;
-        if (this.props.defaultSortOn !== cellIndex) {
-            sorton.value = cellIndex;
-        } else {
-            sorton.value = '';
-        }
-        if (this.state.sortOn === cellIndex) {
-            reversed = !this.state.reversed || '';
-        }
-        this.reversed.value = reversed;
-        event.preventDefault();
-        event.stopPropagation();
-        this.submit();
-    }
-
     fetchAll(props) {
         const context = props.context;
-        let request = this.state.allRequest;
         let communicating;
+        let request = this.state.allRequest;
         if (request) {
             request.abort();
         }
@@ -285,6 +273,28 @@ class Table extends React.Component {
             });
         }
         return communicating;
+    }
+
+    handleClickHeader(event) {
+        let target = event.target;
+        while (target.tagName !== 'TH') {
+            target = target.parentElement;
+        }
+        const cellIndex = target.cellIndex;
+        let reversed = '';
+        const sorton = this.sorton;
+        if (this.props.defaultSortOn !== cellIndex) {
+            sorton.value = cellIndex;
+        } else {
+            sorton.value = '';
+        }
+        if (this.state.sortOn === cellIndex) {
+            reversed = !this.state.reversed || '';
+        }
+        this.reversed.value = reversed;
+        event.preventDefault();
+        event.stopPropagation();
+        this.submit();
     }
 
     handleKeyUp(event) {
@@ -319,8 +329,9 @@ class Table extends React.Component {
 
     render() {
         const { context, defaultSortOn } = this.props;
-        const { columns, sortOn, reversed, searchTerm, data } = this.state;
+        const { columns, sortOn, reversed, searchTerm } = this.state;
         const titles = context.columns || {};
+        const data = this.state.data;
         const total = context.count || data.rows.length;
         data.sort(sortOn, reversed);
         const headers = columns.map((column, index) => {
@@ -345,6 +356,7 @@ class Table extends React.Component {
         const searchTermLower = this.state.searchTerm.trim().toLowerCase();
         let matching = [];
         const notMatching = [];
+
         // Reorder rows so that the nth-child works
         if (searchTerm) {
             data.rows.forEach((row) => {
@@ -422,7 +434,7 @@ class Table extends React.Component {
 
 Table.propTypes = {
     context: PropTypes.object.isRequired,
-    columns: PropTypes.object,
+    columns: PropTypes.object.isRequired,
     defaultSortOn: PropTypes.number,
     showControls: PropTypes.bool,
 };
@@ -430,10 +442,9 @@ Table.propTypes = {
 Table.defaultProps = {
     defaultSortOn: 0,
     showControls: true,
-    columns: null,
 };
 
 Table.contextTypes = {
-    location_href: PropTypes.string,
     fetch: PropTypes.func,
+    location_href: PropTypes.string,
 };
