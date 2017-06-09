@@ -71,7 +71,7 @@ const datasetTypes = {
 // Note: this function really doesn't do much of value, but it does do something and it's been
 // around since the beginning of encoded, so it stays for now.
 
-function listing(reactProps) {
+export function Listing(reactProps) {
     // XXX not all panels have the same markup
     let context;
     let viewProps = reactProps;
@@ -82,8 +82,6 @@ function listing(reactProps) {
     const ListingView = globals.listing_views.lookup(viewProps.context);
     return <ListingView {...viewProps} />;
 }
-
-export { listing };
 
 
 export class PickerActions extends React.Component {
@@ -662,7 +660,7 @@ const Image = (props) => {
     return (
         <li>
             <div className="clearfix">
-                <PickerActions {...this.props} />
+                <PickerActions {...props} />
                 <div className="pull-right search-meta">
                     <p className="type meta-title">Image</p>
                 </div>
@@ -1437,7 +1435,7 @@ const ResultTableList = (props) => {
     return (
         <ul className={`nav result-table${tabbed ? ' result-table-tabbed' : ''}`} id="result-table">
             {results.length ?
-                results.map(result => listing({ context: result, columns, key: result['@id'] }))
+                results.map(result => Listing({ context: result, columns, key: result['@id'] }))
             : null}
         </ul>
     );

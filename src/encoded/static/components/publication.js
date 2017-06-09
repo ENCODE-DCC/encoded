@@ -184,10 +184,10 @@ var SupplementaryDataListing = createReactClass({
         var excerpt = (summary && (summary.length > 100) ? globals.truncateString(summary, 100) : undefined);
 
         // Make unique ID for ARIA identification
-        var nodeId = this.props.id.replace(/\//g, '') + this.props.key;
+        var nodeId = this.props.id.replace(/\//g, '') + this.props.index;
 
         return (
-            <div className="list-supplementary" key={this.props.key}>
+            <div className="list-supplementary">
                 {data.supplementary_data_type ?
                     <div><strong>Available supplemental data: </strong>{data.supplementary_data_type}</div>
                 : null}
@@ -245,7 +245,7 @@ var ListingComponent = createReactClass({
                         {result.supplementary_data && result.supplementary_data.length ?
                             <div>
                                 {result.supplementary_data.map(function(data, i) {
-                                    return <SupplementaryDataListing data={data} id={result['@id']} key={i} />;
+                                    return <SupplementaryDataListing data={data} id={result['@id']} index={i} key={i} />;
                                 })}
                             </div>
                         : null}

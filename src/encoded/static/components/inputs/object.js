@@ -70,7 +70,8 @@ var ObjectPicker = module.exports.ObjectPicker = createReactClass({
     getInitialState: function() {
         return {
             browsing: false,
-            search: ''
+            search: '',
+            searchInput: '',
         };
     },
 
@@ -148,7 +149,7 @@ var ObjectPicker = module.exports.ObjectPicker = createReactClass({
 
     handleSelect: function(e) {
         var value = e.currentTarget.id;
-        this.setState({browsing: false, searchInput: null, search: ''});
+        this.setState({browsing: false, searchInput: '', search: ''});
         this.props.onChange(value);
     },
 

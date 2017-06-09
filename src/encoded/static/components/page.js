@@ -5,7 +5,7 @@ import createReactClass from 'create-react-class';
 var moment = require('moment');
 var {Panel} = require('../libs/bootstrap/panel');
 var { PickerActions } = require('./search');
-var Layout = require('./layout').Layout;
+import Layout from './layout';
 var globals = require('./globals');
 var _ = require('underscore');
 

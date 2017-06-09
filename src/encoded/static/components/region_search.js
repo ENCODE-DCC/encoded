@@ -2,19 +2,14 @@
 var React = require('react');
 import PropTypes from 'prop-types';
 import createReactClass from 'create-react-class';
+import { FacetList, Listing } from './search';
 var panel = require('../libs/bootstrap/panel');
 var globals = require('./globals');
 var fetched = require('./fetched');
 var url = require('url');
-var search = require('./search');
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 
-var FacetList = search.FacetList;
-var Facet = search.Facet;
-var TextFilter = search.TextFilter;
-var listing = search.listing;
-var BatchDownload = search.BatchDownload;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
 var DropdownButton = button.DropdownButton;
@@ -264,7 +259,7 @@ var RegionSearch = module.exports.RegionSearch = createReactClass({
                                   <hr />
                                   <ul className="nav result-table" id="result-table">
                                       {results.map(function (result) {
-                                          return listing({context:result, columns: columns, key: result['@id']});
+                                          return Listing({context:result, columns: columns, key: result['@id']});
                                       })}
                                   </ul>
                                 </div>

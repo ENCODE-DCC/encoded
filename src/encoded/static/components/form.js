@@ -8,7 +8,7 @@ import offset from '../libs/offset';
 import { FetchedData, Param } from './fetched';
 import { parseAndLogError } from './globals';
 import inputs from './inputs';
-import layout from './layout';
+import Layout from './layout';
 
 const validator = new jsonschema.Validator();
 
@@ -559,7 +559,7 @@ export class Field extends UpdateChildMixin(React.Component) {
             } else if (input === 'textarea') {
                 input = <textarea rows="4" {...inputProps} />;
             } else if (input === 'layout') {
-                input = <layout.Layout {...inputProps} editable={!readonly} />;
+                input = <Layout {...inputProps} editable={!readonly} />;
             } else {
                 // We were passed an arbitrary custom input,
                 // which we need to clone to specify the correct props.
