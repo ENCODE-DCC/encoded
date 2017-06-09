@@ -6,7 +6,7 @@ var panel = require('../libs/bootstrap/panel');
 var globals = require('./globals');
 var fetched = require('./fetched');
 var url = require('url');
-import { FacetList } from './search';
+import { FacetList, Listing } from './search';
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 
@@ -259,7 +259,7 @@ var RegionSearch = module.exports.RegionSearch = createReactClass({
                                   <hr />
                                   <ul className="nav result-table" id="result-table">
                                       {results.map(function (result) {
-                                          return listing({context:result, columns: columns, key: result['@id']});
+                                          return Listing({context:result, columns: columns, key: result['@id']});
                                       })}
                                   </ul>
                                 </div>
