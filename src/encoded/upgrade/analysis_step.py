@@ -136,9 +136,20 @@ def analysis_step_3_4(value, system):
 def analysis_step_5_6(value, system):
     # http://redmine.encodedcc.org/issues/4987
 
+    duplicates = {}
+
+    if 'name' in value:
+        value.update({'step_label': value.get('name')})
+        value.pop('name', None)
+
     if label_mapping.get(value.get('uuid'), None):
         value.update({'step_label': label_mapping.get(value.get('uuid'))})
-        value.pop('name', None)
+        
+    ver = duplicates.get(value['step_label'], None)
+    if ver is None:
+        # Major_version is required so lets just put something in there for now and patch the actual value later.
+        duplicates[value['step_label']] = 1
+        value.update({'major_version': 1})
 
     if major_version_mapping.get(value.get('uuid'), None):
         value.update({'major_version': major_version_mapping.get(value.get('uuid'))})
