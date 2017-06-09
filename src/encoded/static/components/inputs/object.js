@@ -3,7 +3,7 @@ var React = require('react');
 import createReactClass from 'create-react-class';
 var globals = require('../globals');
 var fetched = require('../fetched');
-var ResultTable = require('../search').ResultTable;
+import { ResultTable } from '../search';
 
 
 var openLinksInNewWindow = function(e) {

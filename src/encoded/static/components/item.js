@@ -2,12 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
 import Table from './collection';
-import fetched from './fetched';
+import { FetchedData, Param } from './fetched';
 import globals from './globals';
-import form from './form';
-
-
-const JSONSchemaForm = form.JSONSchemaForm;
+import { JSONSchemaForm } from './form';
 
 
 const Fallback = (props, reactContext) => {
@@ -78,7 +75,7 @@ globals.content_views.fallback = function fallback() {
 };
 
 
-export const JsonPanel = (props) => {
+const JsonPanel = (props) => {
     const context = props.context;
     const itemClass = globals.itemClass(context, 'view-detail panel');
     return (
@@ -93,6 +90,8 @@ export const JsonPanel = (props) => {
 JsonPanel.propTypes = {
     context: PropTypes.object.isRequired,
 };
+
+export default JsonPanel;
 
 globals.panel_views.register(JsonPanel, 'Item');
 
@@ -140,10 +139,10 @@ class ItemEdit extends React.Component {
             title = `${title}: Add`;
             action = context['@id'];
             fetchedForm = (
-                <fetched.FetchedData>
-                    <fetched.Param name="schemas" url="/profiles/" />
+                <FetchedData>
+                    <Param name="schemas" url="/profiles/" />
                     <JSONSchemaForm type={type} action={action} method="POST" onFinish={this.finished} showReadOnly={false} />
-                </fetched.FetchedData>
+                </FetchedData>
             );
         } else {  // edit form
             type = context['@type'][0];
@@ -151,11 +150,11 @@ class ItemEdit extends React.Component {
             const id = this.props.context['@id'];
             const editUrl = `${id}?frame=edit`;
             fetchedForm = (
-                <fetched.FetchedData>
-                    <fetched.Param name="context" url={editUrl} etagName="etag" />
-                    <fetched.Param name="schemas" url="/profiles/" />
+                <FetchedData>
+                    <Param name="context" url={editUrl} etagName="etag" />
+                    <Param name="schemas" url="/profiles/" />
                     <JSONSchemaForm id={id} type={type} action={id} method="PUT" onFinish={this.finished} />
-                </fetched.FetchedData>
+                </FetchedData>
             );
         }
         return (
@@ -213,10 +212,10 @@ const RelatedItems = (props) => {
     const limitedUrl = `${itemUrl}&limit=${props.limit}`;
     const unlimitedUrl = `${itemUrl}&limit=all`;
     return (
-        <fetched.FetchedData>
-            <fetched.Param name="context" url={limitedUrl} />
+        <FetchedData>
+            <Param name="context" url={limitedUrl} />
             <FetchedRelatedItems {...this.props} url={unlimitedUrl} />
-        </fetched.FetchedData>
+        </FetchedData>
     );
 };
 

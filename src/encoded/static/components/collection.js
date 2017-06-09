@@ -230,7 +230,7 @@ class Table extends React.Component {
                 if (column === '@id') {
                     factory = globals.listing_titles.lookup(item);
                     value = factory({ context: item });
-                } else if (value === null) {
+                } else if (value === null || value === undefined) {
                     value = '';
                 } else if (!(value instanceof Array) && value['@type']) {
                     factory = globals.listing_titles.lookup(value);
@@ -434,12 +434,13 @@ class Table extends React.Component {
 
 Table.propTypes = {
     context: PropTypes.object.isRequired,
-    columns: PropTypes.object.isRequired,
+    columns: PropTypes.object,
     defaultSortOn: PropTypes.number,
     showControls: PropTypes.bool,
 };
 
 Table.defaultProps = {
+    columns: null,
     defaultSortOn: 0,
     showControls: true,
 };

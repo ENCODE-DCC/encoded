@@ -4,7 +4,7 @@ import createReactClass from 'create-react-class';
 import { Field } from '../form';
 
 const globals = require('../globals');
-const item = require('../item');
+const JsonPanel = require('../item');
 
 const FallbackBlockView = createReactClass({
     propTypes: {
@@ -13,7 +13,6 @@ const FallbackBlockView = createReactClass({
     },
 
     render() {
-        const JsonPanel = item.JsonPanel;
         return (
             <div>
             <h2>{this.props.blocktype.label}</h2>

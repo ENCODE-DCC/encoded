@@ -1153,7 +1153,7 @@ BatchDownload.propTypes = {
 };
 
 
-class ResultTable extends React.Component {
+export class ResultTable extends React.Component {
     constructor(props) {
         super(props);
 

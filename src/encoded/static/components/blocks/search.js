@@ -5,10 +5,7 @@ import { FetchedData, Param } from '../fetched';
 import Table from '../collection';
 
 var globals = require('../globals');
-var search = require('../search');
-
-var Listing = search.Listing;
-var ResultTable = search.ResultTable;
+import { ResultTable, Listing } from '../search';
 
 
 var SearchResultsLayout = createReactClass({
