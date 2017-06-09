@@ -217,10 +217,10 @@ class BiosampleComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {context.derived_from ?
-                                        <div data-test="derivedfrom">
-                                            <dt>Derived from biosample</dt>
-                                            <dd><a href={context.derived_from['@id']}>{context.derived_from.accession}</a></dd>
+                                    {context.originated_from ?
+                                        <div data-test="originatedfrom">
+                                            <dt>Originated from biosample</dt>
+                                            <dd><a href={context.originated_from['@id']}>{context.originated_from.accession}</a></dd>
                                         </div>
                                     : null}
 
@@ -333,7 +333,7 @@ class BiosampleComponent extends React.Component {
                             </div>
                         </div>
 
-                        {context.pooled_from.length ?
+                        {context.pooled_from && context.pooled_from.length ?
                             <section data-test="pooledfrom">
                                 <hr />
                                 <h4>Pooled from biosamples</h4>
@@ -402,8 +402,8 @@ class BiosampleComponent extends React.Component {
                 />
 
                 <RelatedItems
-                    title="Biosamples that are derived from this biosample"
-                    url={`/search/?type=Biosample&derived_from.uuid=${context.uuid}`}
+                    title="Biosamples originating from this biosample"
+                    url={`/search/?type=Biosample&originated_from.uuid=${context.uuid}`}
                     Component={BiosampleTable}
                 />
 

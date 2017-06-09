@@ -1,6 +1,6 @@
 from snovault import upgrade_step
 from pyramid.traversal import find_root
-from datetime import date, datetime, time
+from datetime import datetime, time
 
 
 @upgrade_step('file', '', '2')
