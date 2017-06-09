@@ -6,15 +6,10 @@ var panel = require('../libs/bootstrap/panel');
 var globals = require('./globals');
 var fetched = require('./fetched');
 var url = require('url');
-var search = require('./search');
+import { FacetList } from './search';
 var button = require('../libs/bootstrap/button');
 var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
 
-var FacetList = search.FacetList;
-var Facet = search.Facet;
-var TextFilter = search.TextFilter;
-var listing = search.listing;
-var BatchDownload = search.BatchDownload;
 var FetchedData = fetched.FetchedData;
 var Param = fetched.Param;
 var DropdownButton = button.DropdownButton;
