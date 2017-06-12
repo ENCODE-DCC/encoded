@@ -102,7 +102,7 @@ def item_alias_tighten(value, system):
 
         rest = '_'.join(parts[1:]).strip()
         # Remove or substitute bad characters and multiple whitespaces
-        
+
         import re
         if '"' or '#' or '@' or '^' or '&' or '|' or '~' or '<' or '>' or '?' or '=' or ';' or '`' in rest:
             rest = re.sub(r'[\"#@^&|~<>?=;`\/\\]', '', rest)
@@ -113,12 +113,26 @@ def item_alias_tighten(value, system):
             rest = re.sub('[\[{]', '(', rest)
         if ']' or '}' in rest:
             rest = re.sub('[\]}]', ')', rest)
-        
+
         new_alias = ':'.join([namespace, rest])
         if new_alias not in aliases:
             aliases[i] = new_alias
-    
+
     if aliases_to_remove and aliases:
         for a in aliases_to_remove:
             if a in aliases:
                 aliases.remove(a)
+
+
+@upgrade_step('treatment', '7', '8')
+@upgrade_step('user', '5', '6')
+@upgrade_step('platform', '5', '6')
+@upgrade_step('organism', '3', '4')
+@upgrade_step('lab', '4', '5')
+@upgrade_step('award', '4', '5')
+@upgrade_step('source', '4', '5')
+def item_shared_statuses(value, system):
+    # http://redmine.encodedcc.org/issues/5050
+
+    if value['status'] == 'replaced':
+        value['status'] == 'deleted'

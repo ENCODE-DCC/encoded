@@ -103,7 +103,6 @@
             "enum" : [
                 "current",
                 "deleted",
-                "replaced",
                 "disabled"
             ]
         }
