@@ -141,7 +141,7 @@ def analysis_step_5_6(value, system):
     value.update({'step_label': label_mapping[uuid]})
     value.update({'major_version': major_version_mapping[uuid]})
     if uuid in title_mapping:
-        value.update('title': title_mapping.get(uuid)})
+        value.update({'title': title_mapping.get(uuid)})
     if uuid in status_mapping:
         value.update({'status': status_mapping.get(uuid)})
     if uuid in aliases_mapping:
