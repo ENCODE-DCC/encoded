@@ -136,7 +136,7 @@ def analysis_step_3_4(value, system):
 def analysis_step_5_6(value, system):
     # http://redmine.encodedcc.org/issues/4987
 
-    uuid = value.get('uuid')
+    uuid = value['uuid']
 
     value.update({'step_label': label_mapping[uuid]})
     value.update({'major_version': major_version_mapping[uuid]})
