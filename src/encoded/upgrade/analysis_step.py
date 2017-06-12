@@ -1,9 +1,9 @@
 from snovault import upgrade_step
-from ..upgrade.upgrade_data.analysis_step_5_to_6 import(
+from .upgrade_data.analysis_step_5_to_6 import (
     label_mapping,
-    major_version_mapping,
     status_mapping,
     title_mapping,
+    major_version_mapping,
     aliases_mapping
 )
 
@@ -136,29 +136,15 @@ def analysis_step_3_4(value, system):
 def analysis_step_5_6(value, system):
     # http://redmine.encodedcc.org/issues/4987
 
-    duplicates = {}
+    uuid = value.get('uuid')
 
-    if 'name' in value:
-        value.update({'step_label': value.get('name')})
-        value.pop('name', None)
-
-    if label_mapping.get(value.get('uuid'), None):
-        value.update({'step_label': label_mapping.get(value.get('uuid'))})
-        
-    ver = duplicates.get(value['step_label'], None)
-    if ver is None:
-        # Major_version is required so lets just put something in there for now and patch the actual value later.
-        duplicates[value['step_label']] = 1
-        value.update({'major_version': 1})
-
-    if major_version_mapping.get(value.get('uuid'), None):
-        value.update({'major_version': major_version_mapping.get(value.get('uuid'))})
-
-    if title_mapping.get(value.get('uuid'), None):
-        value['status'] = status_mapping.get(value.get('uuid'))
-
-    if status_mapping.get(value.get('uuid'), None):
-        value['status'] = status_mapping.get(value.get('uuid'))
-
-    if aliases_mapping.get(value.get('uuid'), None):
-        value['aliases'].append(aliases_mapping.get(value.get('uuid')))
+    value['step_label'] = label_mapping.get(uuid, None)
+    value['major_version'] = major_version_mapping.get(uuid, None)
+    if uuid in title_mapping:
+        value['title'] = title_mapping.get(uuid)
+    if uuid in status_mapping:
+        value['status'] = status_mapping.get(uuid)
+    if uuid in aliases_mapping:
+        if 'aliases' not in value:
+            value['aliases'] = []
+        value['aliases'].append(aliases_mapping.get(uuid))
