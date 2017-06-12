@@ -90,7 +90,6 @@
             "enum" : [
                 "in progress",
                 "deleted",
-                "replaced",
                 "released"
             ]
         }
