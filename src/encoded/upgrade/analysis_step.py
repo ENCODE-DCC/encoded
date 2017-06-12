@@ -138,8 +138,8 @@ def analysis_step_5_6(value, system):
 
     uuid = value.get('uuid')
 
-    value['step_label'] = label_mapping.get(uuid, None)
-    value['major_version'] = major_version_mapping.get(uuid, None)
+    value['step_label'] = label_mapping[uuid]
+    value['major_version'] = major_version_mapping[uuid]
     if uuid in title_mapping:
         value['title'] = title_mapping.get(uuid)
     if uuid in status_mapping:
