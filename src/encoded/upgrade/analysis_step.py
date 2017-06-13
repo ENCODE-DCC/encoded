@@ -137,10 +137,7 @@ def analysis_step_5_6(value, system):
     # http://redmine.encodedcc.org/issues/4987
 
     obj_id = value.get('@id')
-    if obj_id:
-        if not label_mapping.get(obj_id):
-            print (obj_id)
-            
+    if obj_id and label_mapping.get(obj_id) and major_version_mapping.get(obj_id):
         value.update({'step_label': label_mapping[obj_id]})
         value.update({'major_version': major_version_mapping.get(obj_id)})
         if obj_id in title_mapping:
