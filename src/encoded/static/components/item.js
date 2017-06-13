@@ -194,7 +194,7 @@ const FetchedRelatedItems = (props) => {
 };
 
 FetchedRelatedItems.propTypes = {
-    Component: PropTypes.node,
+    Component: PropTypes.object,
     context: PropTypes.object.isRequired,
     title: PropTypes.string,
     itemUrl: PropTypes.string,
@@ -207,14 +207,14 @@ FetchedRelatedItems.defaultProps = {
 };
 
 
-const RelatedItems = (props) => {
+export const RelatedItems = (props) => {
     const itemUrl = globals.encodedURI(`${props.url}&status!=deleted&status!=revoked&status!=replaced`);
     const limitedUrl = `${itemUrl}&limit=${props.limit}`;
     const unlimitedUrl = `${itemUrl}&limit=all`;
     return (
         <FetchedData>
             <Param name="context" url={limitedUrl} />
-            <FetchedRelatedItems {...this.props} url={unlimitedUrl} />
+            <FetchedRelatedItems {...props} url={unlimitedUrl} />
         </FetchedData>
     );
 };

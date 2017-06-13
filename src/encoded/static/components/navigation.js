@@ -248,7 +248,7 @@ UserActions.contextTypes = {
 //     tip: Text to display as part of uri tooltip.
 //     wholeTip: Alternative to 'tip' property. The complete tooltip to display
 // }
-const Breadcrumbs = (props) => {
+export const Breadcrumbs = (props) => {
     let accretingQuery = '';
     let accretingTip = '';
 

@@ -184,11 +184,14 @@ NavItemButton.propTypes = {
     clickHandler: PropTypes.func.isRequired, // Parent function to react to clicks in this dropdown menu title
     dropdownOpen: PropTypes.bool, // True if the dropdown menu for this item is visible
     dropdownId: PropTypes.string, // ID of the dropdown that was clicked
-    dropdownTitle: PropTypes.string, // Title to display within the actutor part of the dropdown
+    dropdownTitle: PropTypes.oneOfType([ // Title to display within the actutor part of the dropdown
+        PropTypes.string,
+        PropTypes.object,
+    ]),
 };
 
 NavItemButton.defaultProps = {
     dropdownOpen: false,
     dropdownId: '',
-    dropdownTitle: '',
+    dropdownTitle: null,
 };

@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
 import _ from 'underscore';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import globals from './globals';
@@ -215,22 +214,24 @@ export function donorDiversity(dataset) {
 
 
 // Render the Download icon while allowing the hovering tooltip.
-const DownloadIcon = createReactClass({
-    propTypes: {
-        hoverDL: PropTypes.func, // Function to call when hovering or stop hovering over the icon
-        file: PropTypes.object, // File associated with this download button
-        adminUser: PropTypes.bool, // True if logged-in user is an admin
-    },
+class DownloadIcon extends React.Component {
+    constructor() {
+        super();
 
-    onMouseEnter: function () {
+        // Bind this to non-React methods.
+        this.onMouseEnter = this.onMouseEnter.bind(this);
+        this.onMouseLeave = this.onMouseLeave.bind(this);
+    }
+
+    onMouseEnter() {
         this.props.hoverDL(true);
-    },
+    }
 
-    onMouseLeave: function () {
+    onMouseLeave() {
         this.props.hoverDL(false);
-    },
+    }
 
-    render: function () {
+    render() {
         const { file, adminUser } = this.props;
 
         return (
@@ -238,35 +239,41 @@ const DownloadIcon = createReactClass({
                 <span className="sr-only">Download</span>
             </i>
         );
-    },
-});
+    }
+}
+
+DownloadIcon.propTypes = {
+    hoverDL: PropTypes.func, // Function to call when hovering or stop hovering over the icon
+    file: PropTypes.object, // File associated with this download button
+    adminUser: PropTypes.bool, // True if logged-in user is an admin
+};
 
 
 // Render an accession as a button if clicking it sets a graph node, or just as text if not.
-const FileAccessionButton = createReactClass({
-    propTypes: {
-        file: PropTypes.object.isRequired, // File whose button is being rendered
-    },
+const FileAccessionButton = (props) => {
+    const { file } = props;
+    return <a href={file['@id']} title={`Go to page for ${file.title}`}>{file.title}</a>;
+};
 
-    render: function () {
-        const { file } = this.props;
-        return <a href={file['@id']} title={`Go to page for ${file.title}`}>{file.title}</a>;
-    },
-});
+FileAccessionButton.propTypes = {
+    file: PropTypes.object.isRequired, // File whose button is being rendered
+};
 
 
 // Display a button to open the file information modal.
-const FileInfoButton = createReactClass({
-    propTypes: {
-        file: PropTypes.object.isRequired, // File whose information is to be displayed
-        clickHandler: PropTypes.func, // Function to call when the info button is clicked
-    },
+class FileInfoButton extends React.Component {
+    constructor() {
+        super();
 
-    onClick: function () {
+        // Bind this to non-React methods.
+        this.onClick = this.onClick.bind(this);
+    }
+
+    onClick() {
         this.props.clickHandler(`file:${this.props.file['@id']}`);
-    },
+    }
 
-    render: function () {
+    render() {
         return (
             <button className="file-table-btn" onClick={this.onClick}>
                 <i className="icon icon-info-circle">
@@ -274,29 +281,38 @@ const FileInfoButton = createReactClass({
                 </i>
             </button>
         );
-    },
-});
+    }
+}
+
+FileInfoButton.propTypes = {
+    file: PropTypes.object.isRequired, // File whose information is to be displayed
+    clickHandler: PropTypes.func, // Function to call when the info button is clicked
+};
 
 
 // Render a download button for a file that reacts to login state and admin status to render a
 // tooltip about the restriction based on those things.
-export const RestrictedDownloadButton = createReactClass({
-    propTypes: {
-        file: PropTypes.object, // File containing `href` to use as download link
-        adminUser: PropTypes.bool, // True if logged in user is admin
-        downloadComponent: PropTypes.object, // Optional component to render the download button, insetad of default
-    },
+export class RestrictedDownloadButton extends React.Component {
+    constructor() {
+        super();
 
-    getInitialState: function () {
-        return {
+        // Set initial object variable values.
+        this.timer = null;
+        this.tipHovering = false;
+
+        // Set initial React state.
+        this.state = {
             tip: false, // True if tip is visible
         };
-    },
 
-    timer: null, // Holds timer for the tooltip
-    tipHovering: false, // True if currently hovering over the tooltip
+        // Bind this to non-React methods.
+        this.hoverDL = this.hoverDL.bind(this);
+        this.hoverTip = this.hoverTip.bind(this);
+        this.hoverTipIn = this.hoverTipIn.bind(this);
+        this.hoverTipOut = this.hoverTipOut.bind(this);
+    }
 
-    hoverDL: function (hovering) {
+    hoverDL(hovering) {
         if (hovering) {
             // Started hovering over the DL button; show the tooltip.
             this.setState({ tip: true });
@@ -318,9 +334,9 @@ export const RestrictedDownloadButton = createReactClass({
                 }
             }, 1000);
         }
-    },
+    }
 
-    hoverTip: function (hovering) {
+    hoverTip(hovering) {
         if (hovering) {
             // Started hovering over the tooltip. This prevents the timer from hiding the tooltip.
             this.tipHovering = true;
@@ -332,17 +348,17 @@ export const RestrictedDownloadButton = createReactClass({
                 this.setState({ tip: false });
             }
         }
-    },
+    }
 
-    hoverTipIn: function () {
+    hoverTipIn() {
         this.hoverTip(true);
-    },
+    }
 
-    hoverTipOut: function () {
+    hoverTipOut() {
         this.hoverTip(false);
-    },
+    }
 
-    render: function () {
+    render() {
         const { file, adminUser } = this.props;
         const tooltipOpenClass = this.state.tip ? ' tooltip-open' : '';
         const buttonEnabled = !file.restricted || adminUser;
@@ -350,12 +366,12 @@ export const RestrictedDownloadButton = createReactClass({
         // If the user provided us with a component for downloading files, add the download
         // properties to the component before rendering.
         const downloadComponent = this.props.downloadComponent ? React.cloneElement(this.props.downloadComponent, {
-            file: file,
+            file,
             href: file.href,
             download: file.href.substr(file.href.lastIndexOf('/') + 1),
             hoverDL: this.hoverDL,
-            adminUser: adminUser,
-            buttonEnabled: buttonEnabled,
+            adminUser,
+            buttonEnabled,
         }) : null;
 
         // Supply a default icon for the user to click to download, if the caller didn't supply one
@@ -395,30 +411,34 @@ export const RestrictedDownloadButton = createReactClass({
                 : null}
             </div>
         );
-    },
-});
+    }
+}
+
+RestrictedDownloadButton.propTypes = {
+    file: PropTypes.object, // File containing `href` to use as download link
+    adminUser: PropTypes.bool, // True if logged in user is admin
+    downloadComponent: PropTypes.object, // Optional component to render the download button, insetad of default
+};
 
 
-export const DownloadableAccession = createReactClass({
-    propTypes: {
-        file: PropTypes.object.isRequired, // File whose accession to render
-        buttonEnabled: PropTypes.bool, // True if accession should be a button
-        clickHandler: PropTypes.func, // Function to call when button is clicked
-        loggedIn: PropTypes.bool, // True if current user is logged in
-        adminUser: PropTypes.bool, // True if current user is logged in and admin
-    },
+export const DownloadableAccession = (props) => {
+    const { file, buttonEnabled, clickHandler, loggedIn, adminUser } = props;
+    return (
+        <span className="file-table-accession">
+            <FileAccessionButton file={file} clickHandler={clickHandler} />
+            {buttonEnabled ? <FileInfoButton file={file} clickHandler={clickHandler} /> : null}
+            <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
+        </span>
+    );
+};
 
-    render: function () {
-        const { file, buttonEnabled, clickHandler, loggedIn, adminUser } = this.props;
-        return (
-            <span className="file-table-accession">
-                <FileAccessionButton file={file} clickHandler={clickHandler} />
-                {buttonEnabled ? <FileInfoButton file={file} clickHandler={clickHandler} /> : null}
-                <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
-            </span>
-        );
-    },
-});
+DownloadableAccession.propTypes = {
+    file: PropTypes.object.isRequired, // File whose accession to render
+    buttonEnabled: PropTypes.bool, // True if accession should be a button
+    clickHandler: PropTypes.func, // Function to call when button is clicked
+    loggedIn: PropTypes.bool, // True if current user is logged in
+    adminUser: PropTypes.bool, // True if current user is logged in and admin
+};
 
 
 // Return `true` if the given dataset is viewable by people not logged in, or people logged in
@@ -430,34 +450,34 @@ export function publicDataset(dataset) {
 
 // Display a Visualize button that brings up a modal that lets you choose an assembly and a browser
 // in which to display the visualization.
-export const BrowserSelector = createReactClass({
-    propTypes: {
-        visualizeCfg: PropTypes.object.isRequired, // Assemblies, browsers, and browser URLs; visualize and visualize_batch contents
-        disabled: PropTypes.bool, // `true` if button should be disabled; usually because more search results than we can handle
-        title: PropTypes.string, // Title of Visualize button if "Visualize" isn't desired
-    },
+export class BrowserSelector extends React.Component {
+    constructor() {
+        super();
 
-    getInitialState: function () {
-        return { selectorOpen: false };
-    },
+        // Set initial React state.
+        this.state = { selectorOpen: false };
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+    }
 
     // Called to open the browser-selection modal.
-    openModal: function () {
+    openModal() {
         this.setState({ selectorOpen: true });
-    },
+    }
 
     // Called to close the browser-seletino modal.
-    closeModal: function () {
+    closeModal() {
         this.setState({ selectorOpen: false });
-    },
+    }
 
     // When the link to open a browser gets clicked, this gets called to close the modal in
     // addition to going to the link.
-    handleClick: function () {
+    handleClick() {
         this.closeModal();
-    },
+    }
 
-    render: function () {
+    render() {
         const { visualizeCfg, disabled, title } = this.props;
         const assemblyList = _(Object.keys(visualizeCfg)).sortBy(assembly => _(globals.assemblyPriority).indexOf(assembly));
 
@@ -482,9 +502,6 @@ export const BrowserSelector = createReactClass({
                                     {assemblyList.map((assembly) => {
                                         const assemblyBrowsers = visualizeCfg[assembly];
                                         const browserList = _(Object.keys(assemblyBrowsers)).sortBy(browser => _(globals.browserPriority).indexOf(browser));
-
-                                        // Only for v55; see http://redmine.encodedcc.org/issues/4533#note-48
-                                        const flyWormException = ['ce10', 'ce11', 'dm3', 'dm6', 'mm9'].indexOf(assembly) !== -1;
 
                                         return (
                                             <div key={assembly} className="browser-selector__assembly-option">
@@ -512,8 +529,14 @@ export const BrowserSelector = createReactClass({
                 : null}
             </div>
         );
-    },
-});
+    }
+}
+
+BrowserSelector.propTypes = {
+    visualizeCfg: PropTypes.object.isRequired, // Assemblies, browsers, and browser URLs; visualize and visualize_batch contents
+    disabled: PropTypes.bool, // `true` if button should be disabled; usually because more search results than we can handle
+    title: PropTypes.string, // Title of Visualize button if "Visualize" isn't desired
+};
 
 
 // You can use this function to render a panel view for a context object with a couple options:
@@ -529,7 +552,7 @@ export const BrowserSelector = createReactClass({
 // Note: this function really doesn't do much of value, but it does do something and it's been
 // around since the beginning of encoded, so it stays for now.
 
-function PanelLookup(properties) {
+export function PanelLookup(properties) {
     let localProps;
     if (properties['@id']) {
         // `properties` is an ENCODE context object, so normalize it by making `props` an object
@@ -543,5 +566,3 @@ function PanelLookup(properties) {
     const PanelView = globals.panel_views.lookup(localProps.context);
     return <PanelView key={localProps.context.uuid} {...localProps} />;
 }
-
-export { PanelLookup };
