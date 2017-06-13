@@ -137,14 +137,20 @@ def analysis_step_5_6(value, system):
     # http://redmine.encodedcc.org/issues/4987
 
     obj_id = value.get('@id')
-
-    value.update({'step_label': label_mapping[obj_id]})
-    value.update({'major_version': major_version_mapping.get(obj_id)})
-    if obj_id in title_mapping:
-        value.update({'title': title_mapping.get(obj_id)})
-    if obj_id in status_mapping:
-        value.update({'status': status_mapping.get(obj_id)})
-    if obj_id in aliases_mapping:
-        if 'aliases' not in value:
-            value['aliases'] = []
-        value['aliases'].append(aliases_mapping.get(obj_id))
+    if obj_id:
+        if not label_mapping.get(obj_id):
+            print (obj_id)
+            
+        value.update({'step_label': label_mapping[obj_id]})
+        value.update({'major_version': major_version_mapping.get(obj_id)})
+        if obj_id in title_mapping:
+            value.update({'title': title_mapping.get(obj_id)})
+        if obj_id in status_mapping:
+            value.update({'status': status_mapping.get(obj_id)})
+        if obj_id in aliases_mapping:
+            if 'aliases' not in value:
+                value['aliases'] = []
+            value['aliases'].append(aliases_mapping.get(obj_id))
+    else:
+        print (value)
+        value['aliases'].append('encode:step12345')
