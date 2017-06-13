@@ -43,8 +43,8 @@ def analysis_step_5(base_analysis_step):
     item = base_analysis_step.copy()
     item.update({
         'schema_version': '5',
-        '@id': '/analysis-steps/lrna-pe-star-alignment-step-v-2-0/',
-        'uuid': '3fa67405-fa88-4627-b3eb-04f789eb5d29',
+        'aliases': ["dnanexus:align-star-se-v-2"],
+        'uuid': '8eda9dfa-b9f1-4d58-9e80-535a5e4aaab1',
         'status': 'in progress',
         'analysis_step_types': ['pooling', 'signal generation', 'file format conversion', 'quantification'],
         'input_file_types': ['alignments'],
@@ -68,10 +68,9 @@ def test_analysis_step_unique_array(upgrader, analysis_step_3):
 
 
 def test_analysis_step_5_6(upgrader, analysis_step_5):
-    print("ID: %s" % (analysis_step_5['@id']))
     value = upgrader.upgrade('analysis_step', analysis_step_5, current_version='5', target_version='6')
     assert value['schema_version'] == '6'
-    assert value['title'] == 'Long RNA-seq STAR paired-ended alignment step v2.0'
-    assert value['step_label'] == 'deleted-lrna-pe-star-alignment-step'
-    assert 'encode:deleted-lrna-pe-star-alignment-step-v-2' in value['aliases']
+    assert value['title'] == 'Long RNA-seq STAR single-ended alignment step v2.0'
+    assert value['step_label'] == 'deleted-lrna-se-star-alignment-step'
+    assert 'encode:deleted-lrna-se-star-alignment-step-v-2' in value['aliases']
     assert value['major_version'] == 2
