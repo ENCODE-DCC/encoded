@@ -4,7 +4,7 @@
 
 * *talens* array was removed, as we are migrating towards the use of genetic_modification with modification_technique specifications
 * *treatments* array is required to be non-empty if post_treatment_time_units or post_treatment_time are specified
-* *dbxrefs* property was restricted to DCC access only
+* *dbxrefs*
 * *pooled_from* array requires at least two entries to be specified
 * *phase* property is restricted to biosamples with biosample_type one of ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
 * *culture_harvest_date*, *culture_start_date* propeties are restricted to biosamples with biosample_type one of ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line", "tissue"] and their format is limited now to only *date* and not one of ["date", "date-time"] as it used to be
