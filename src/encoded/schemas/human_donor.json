@@ -231,5 +231,7 @@
     },
     "boost_values": {
         "internal_tags": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/human_donor.md"
+
 }
