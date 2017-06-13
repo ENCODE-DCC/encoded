@@ -1,6 +1,6 @@
 from snovault import upgrade_step
 from pyramid.traversal import find_root
-from datetime import date, datetime, time
+from datetime import datetime, time
 
 
 @upgrade_step('file', '', '2')
@@ -548,5 +548,6 @@ def file_9_10(value, system):
 
 @upgrade_step('file', '10', '11')
 def file_10_11(value, system):
+    # http://redmine.encodedcc.org/issues/5049
     # http://redmine.encodedcc.org/issues/5081
     return

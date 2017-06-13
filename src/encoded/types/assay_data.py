@@ -49,5 +49,10 @@ assay_terms = {
       'genotyping by Hi-C': 'NTR:0004875',
       'enhancer activity detection by reporter gene assay': 'OBI:0002083',
       'promoter activity detection by reporter gene assay': 'OBI:0000913',
-      'STARR-seq': 'OBI:0002041'
+      'STARR-seq': 'OBI:0002041',
+      'genotype phasing by HiC': 'NTR:0004875',
+      'Circulome-seq': 'NTR:0005023',
+      'whole genome sequencing assay': 'OBI:0002117',
+      'BruUV-seq': 'NTR:0004739',
+      'Mint-ChIP-seq': 'NTR:0005141'
 }

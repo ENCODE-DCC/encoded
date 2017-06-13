@@ -46,7 +46,7 @@ def file_with_derived(testapp, experiment, award, lab, file_with_replicate):
         'md5sum': 'e004cd204df36d93dd070ef0712b8eed',
         'output_type': 'alignments',
         'status': 'in progress',  # avoid s3 upload codepath
-        'derived_from': [file_with_replicate['@id']],
+        'derived_from': [file_with_replicate['@id']]
     }
     return testapp.post_json('/file', item).json['@graph'][0]
 
@@ -266,6 +266,62 @@ def test_with_run_type_no_paired_end(testapp, file_no_paired_end):
 def test_with_wrong_date_created(testapp, file_with_bad_date_created):
     res = testapp.post_json('/file', file_with_bad_date_created, expect_errors=True)
     assert res.status_code == 422
+
+
+def test_no_file_available_md5sum(testapp, file_no_error):
+    # Removing the md5sum from a file should not be allowed if the file exists
+    res = testapp.post_json('/file', file_no_error, expect_errors=True)
+    assert res.status_code == 201
+
+    item = file_no_error.copy()
+    item.pop('md5sum', None)
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 422
+
+    item = file_no_error.copy()
+    item.pop('md5sum', None)
+    item.update({'no_file_available': True})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 201
+
+    item.update({'no_file_available': False})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 422
+
+
+def test_no_file_available_file_size(testapp, file_no_error):
+    # Removing the file_size from a file should not be allowed if the file exists
+    # and in one of the following states "in progress",  "revoked", "archived", "released"
+    item = file_no_error.copy()
+    item.update({'status': 'upload failed'})
+    item.update({'no_file_available': False})
+    item.update({'md5sum': '136e501c4bacf3aab87debab20d76648'})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 201
+
+    item = file_no_error.copy()
+    item.pop('file_size', None)
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 422
+
+    item = file_no_error.copy()
+    item.pop('file_size', None)
+    item.update({'no_file_available': False})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 422
+
+    item = file_no_error.copy()
+    item.pop('file_size', None)
+    item.update({'status': 'upload failed'})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 201
+
+    item = file_no_error.copy()
+    item.pop('file_size', None)
+    item.pop('md5sum', None)
+    item.update({'no_file_available': True})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 201
 
 
 def test_revoke_detail(testapp, file_with_bad_revoke_detail):

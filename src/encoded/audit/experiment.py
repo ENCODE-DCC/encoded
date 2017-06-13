@@ -3421,7 +3421,7 @@ def audit_experiment_mapped_read_length(value, system):
                         yield AuditFailure('missing mapped reads lengths', detail,
                                            level='INTERNAL_ACTION')
             if len(read_lengths_set) > 1:
-                if max(read_lengths_set) - min(read_lengths_set) >= 4:
+                if max(read_lengths_set) - min(read_lengths_set) >= 7:
                     detail = 'Experiment {} '.format(value['@id']) + \
                              'contains a processed .bed file {} '.format(peaks_file['@id']) + \
                              'that was derived from alignments files with inconsistent mapped ' + \

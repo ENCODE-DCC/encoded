@@ -90,13 +90,13 @@
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "External identifiers",
-            "description": "Unique identifiers from external resources.",
+            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
             "type": "array",
             "uniqueItems": true,
             "default": [],
             "items": {
                 "title": "External identifier",
-                "description": "A unique identifier from external resource.",
+                "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
                 "pattern": "^(UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)$"
             }
