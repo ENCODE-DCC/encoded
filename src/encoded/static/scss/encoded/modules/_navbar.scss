@@ -16,8 +16,14 @@
         }
     }
 
-    .nav > li > a {
-        color: #fff;   
+    .nav > li > button {
+        position: relative;
+        display: block;
+        padding: 10px 15px;
+        color: #fff;
+        background-color: transparent;
+        border: none;
+
         &:focus,
         &:hover {
             background-color: #2f4961;
