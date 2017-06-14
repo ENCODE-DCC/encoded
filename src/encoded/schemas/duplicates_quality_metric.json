@@ -76,5 +76,6 @@
             "type": "number",
             "description": "Library size in reads as estimated by picard"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/duplicates_quality_metric.md"
 }

@@ -41,5 +41,7 @@
             "type": "number",
             "description": "Total number (single-end) reads trimmed"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/trimming_quality_metric.md"
+
 }

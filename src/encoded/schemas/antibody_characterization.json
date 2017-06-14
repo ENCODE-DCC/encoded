@@ -253,5 +253,7 @@
         "lab.title": {
             "title": "Lab"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/antibody_characterization.md"
+
 }

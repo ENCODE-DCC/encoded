@@ -51,5 +51,7 @@
             "type": "number",
             "description": "Count of read tags discovered to be in hotspots"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/hotspot_quality_metric.md"
+
 }
