@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import _ from 'underscore';
 import { Panel } from '../libs/bootstrap/panel';
 import globals from './globals';
 import Layout from './layout';
@@ -78,7 +77,7 @@ const NewsKeywordList = (props) => {
                 <p>View news matching these terms, or all recent news</p>
                 <a className="news-keyword" href={'/news/'} title="Show all recent news posts">All recent news</a>
                 {post.news_keywords.map(keyword =>
-                    <a key={keyword} className="news-keyword" href={'/news/?news_keywords=' + keyword} title={`Show all news posts tagged with ${keyword}`}>{keyword}</a>
+                    <a key={keyword} className="news-keyword" href={`/news/?news_keywords=${keyword}`} title={`Show all news posts tagged with ${keyword}`}>{keyword}</a>
                 )}
             </div>
         );
@@ -92,17 +91,17 @@ NewsKeywordList.propTypes = {
 
 
 // Display a list of news sharing links/buttons for the news article in the `post` prop.
-const NewsShareList = (props, context) => {
+const NewsShareList = (props, reactContext) => {
     const post = props.post;
     return (
         <div className="news-share-list">
-            <a className="share-twitter" href={'http://twitter.com/intent/tweet?url=' + context.location_href + '&text=' + post.title + '&via=EncodeDCC'} target="_blank" rel="noopener noreferrer" title="Share this page on Twitter in a new window" aria-label="Share on Twitter">
+            <a className="share-twitter" href={`http://twitter.com/intent/tweet?url=${reactContext.location_href}&text=${post.title}&via=EncodeDCC`} target="_blank" rel="noopener noreferrer" title="Share this page on Twitter in a new window" aria-label="Share on Twitter">
                 <span className="sr-only">Twitter</span>
             </a>
-            <a className="share-facebook" href={'https://www.facebook.com/sharer/sharer.php?u=' + context.location_href + '&t=' + post.title} target="_blank" rel="noopener noreferrer" title="Share this page on Facebook in a new window" aria-label="Share on Facebook">
+            <a className="share-facebook" href={`https://www.facebook.com/sharer/sharer.php?u={reactContext.location_href}&t=${post.title}`} target="_blank" rel="noopener noreferrer" title="Share this page on Facebook in a new window" aria-label="Share on Facebook">
                 <span className="sr-only">Facebook</span>
             </a>
-            <a className="share-googleplus" href={'https://plus.google.com/share?url=' + context.location_href} target="_blank" rel="noopener noreferrer" title="Share this page on Google Plus in a new window" aria-label="Share on Google+">
+            <a className="share-googleplus" href={`https://plus.google.com/share?url=${reactContext.location_href}`} target="_blank" rel="noopener noreferrer" title="Share this page on Google Plus in a new window" aria-label="Share on Google+">
                 <span className="sr-only">Google+</span>
             </a>
         </div>
@@ -128,7 +127,7 @@ export default function newsHead(props, siteUrl) {
             <meta property="og:type" content="article" />,
             <meta property="og:title" content={context.title} />,
             <meta property="og:description" content={context.news_excerpt} />,
-            <meta property="og:image" content={`${siteUrl}/static/img/encode-logo-small-2x.png`} />
+            <meta property="og:image" content={`${siteUrl}/static/img/encode-logo-small-2x.png`} />,
         ];
     }
     return null;

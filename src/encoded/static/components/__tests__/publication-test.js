@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import _ from 'underscore';
 
 // Import test component and data.
-import { Publication } from '../publication';
+import Publication from '../publication';
 import context from '../testdata/publication/publication';
 
 

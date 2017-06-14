@@ -8,6 +8,7 @@ import { DocumentsPanel } from './doc';
 import globals from './globals';
 import { Graph, JsonGraph } from './graph';
 import { Breadcrumbs } from './navigation';
+import { PanelLookup } from './objectutils';
 import { PickerActions } from './search';
 import { softwareVersionList } from './software';
 import StatusLabel from './statuslabel';
@@ -15,19 +16,6 @@ import StatusLabel from './statuslabel';
 
 const stepNodePrefix = 'step'; // Prefix for step node IDs
 const fileNodePrefix = 'file'; // Prefix for file node IDs
-
-
-const PanelLookup = function PanelLookup(properties) {
-    // XXX not all panels have the same markup
-    let context;
-    let localProperties = properties;
-    if (localProperties['@id']) {
-        context = properties;
-        localProperties = { context };
-    }
-    const PanelView = globals.panel_views.lookup(localProperties.context);
-    return <PanelView {...localProperties} />;
-};
 
 
 function AnalysisStep(step, node) {
@@ -475,9 +463,9 @@ class PipelineComponent extends React.Component {
 }
 
 PipelineComponent.propTypes = {
-    context: PropTypes.object, // Pipeline object being rendered
-    auditDetail: PropTypes.func, // Audit decorator function
-    auditIndicators: PropTypes.func, // Audit decorator function
+    context: PropTypes.object.isRequired, // Pipeline object being rendered
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
 };
 
 PipelineComponent.contextTypes = {
@@ -561,9 +549,9 @@ class ListingComponent extends React.Component {
 }
 
 ListingComponent.propTypes = {
-    context: PropTypes.object, // Search result object
-    auditIndicators: PropTypes.func, // Audit decorator function
-    auditDetail: PropTypes.func, // Audit decorator function
+    context: PropTypes.object.isRequired, // Search result object
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
 };
 
 ListingComponent.contextTypes = {
