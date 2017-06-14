@@ -11,7 +11,7 @@ import DataColors from './datacolors';
 import Navigation from './navigation';
 import Footer from './footer';
 import Home from './home';
-import { newsHead } from './page';
+import newsHead from './page';
 
 const portal = {
     portal_title: 'ENCODE',
