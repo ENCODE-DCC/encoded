@@ -10,7 +10,7 @@
         "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
         "Views":  {
             "tag": "view",
-            "group_order": [ "Signal", "Peaks" ],
+            "group_order": [ "Plus signal of unique reads", "Minus signal of unique reads", "Signal", "Peaks" ],
             "groups": {
                 "Signal": {
                     "tag": "aSIG",
@@ -30,7 +30,30 @@
                     "minGrayLevel": 4,
                     "scoreFilter": "100",
                     "output_type": [ "peaks" ]
-                }
+                },
+                "Minus signal of unique reads": {
+                    "tag": "SIGLR",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "negateValues": "on",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "minus strand signal of unique reads" ]
+                },
+                "Plus signal of unique reads": {
+                    "tag": "SIGLF",
+                    "visibility": "full",
+                    "type": "bigWig",
+                    "viewLimits": "0:1",
+                    "transformFunc": "LOG",
+                    "autoScale": "off",
+                    "maxHeightPixels": "64:18:8",
+                    "windowingFunction": "mean+whiskers",
+                    "output_type": [ "plus strand signal of unique reads" ]
+                },
             }
         },
         "other_groups":  {
