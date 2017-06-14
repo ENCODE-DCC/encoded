@@ -161,6 +161,28 @@ def file_with_bad_date_created(testapp, experiment, award, lab, replicate, platf
         'md5sum': '136e501c4bacf4aab87debab20d76648',
         'status': 'in progress'
     }
+    return item
+
+
+@pytest.fixture
+def file_with_bad_revoke_detail(testapp, experiment, award, lab, replicate, platform1):
+    item = {
+        'dataset': experiment['@id'],
+        'replicate': replicate['@id'],
+        'lab': lab['@id'],
+        'file_size': 345,
+        'platform': platform1['@id'],
+        'award': award['@id'],
+        'file_format': 'fastq',
+        'run_type': 'paired-ended',
+        'paired_end': '1',
+        'output_type': 'reads',
+        "read_length": 50,
+        'md5sum': '136e501c4bacf4aab87debab20d76648',
+        'status': 'in progress',
+        'revoke_detail': 'some reason to be revoked'
+    }
+    return item
 
 
 def test_file_post(file_no_replicate):
@@ -246,13 +268,65 @@ def test_with_wrong_date_created(testapp, file_with_bad_date_created):
     assert res.status_code == 422
 
 
-def test_no_file_available(testapp, file_no_error):
+def test_no_file_available_md5sum(testapp, file_no_error):
     # Removing the md5sum from a file should not be allowed if the file exists
-    import json
+    res = testapp.post_json('/file', file_no_error, expect_errors=True)
+    assert res.status_code == 201
+
     item = file_no_error.copy()
-    item.update({'no_file_available': False})
-    del item['md5sum']
-    payload = json.dumps(item)
-    print(payload)
-    res = testapp.post_json('/file', payload, expect_errors=True)
+    item.pop('md5sum', None)
+    res = testapp.post_json('/file', item, expect_errors=True)
     assert res.status_code == 422
+
+    item = file_no_error.copy()
+    item.pop('md5sum', None)
+    item.update({'no_file_available': True})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 201
+
+    item.update({'no_file_available': False})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 422
+
+
+def test_no_file_available_file_size(testapp, file_no_error):
+    # Removing the file_size from a file should not be allowed if the file exists
+    # and in one of the following states "in progress",  "revoked", "archived", "released"
+    item = file_no_error.copy()
+    item.update({'status': 'upload failed'})
+    item.update({'no_file_available': False})
+    item.update({'md5sum': '136e501c4bacf3aab87debab20d76648'})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 201
+
+    item = file_no_error.copy()
+    item.pop('file_size', None)
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 422
+
+    item = file_no_error.copy()
+    item.pop('file_size', None)
+    item.update({'no_file_available': False})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 422
+
+    item = file_no_error.copy()
+    item.pop('file_size', None)
+    item.update({'status': 'upload failed'})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 201
+
+    item = file_no_error.copy()
+    item.pop('file_size', None)
+    item.pop('md5sum', None)
+    item.update({'no_file_available': True})
+    res = testapp.post_json('/file', item, expect_errors=True)
+    assert res.status_code == 201
+
+
+def test_revoke_detail(testapp, file_with_bad_revoke_detail):
+    res = testapp.post_json('/file', file_with_bad_revoke_detail, expect_errors=True)
+    assert res.status_code == 422
+    file_with_bad_revoke_detail.update({'status': 'revoked'})
+    res = testapp.post_json('/file', file_with_bad_revoke_detail, expect_errors=True)
+    assert res.status_code == 201

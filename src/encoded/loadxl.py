@@ -547,7 +547,7 @@ PHASE1_PIPELINES = {
         remove_keys('lab', 'submits_for'),
     ],
     'biosample': [
-        remove_keys('derived_from', 'pooled_from', 'part_of'),
+        remove_keys('originated_from', 'pooled_from', 'part_of'),
     ],
     'library': [
         remove_keys('spikeins_used'),
@@ -615,7 +615,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('lab', 'submits_for'),
     ],
     'biosample': [
-        skip_rows_missing_all_keys('derived_from', 'pooled_from', 'part_of'),
+        skip_rows_missing_all_keys('originated_from', 'pooled_from', 'part_of'),
     ],
     'library': [
         skip_rows_missing_all_keys('spikeins_used'),

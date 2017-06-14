@@ -1,6 +1,6 @@
 from snovault import upgrade_step
 from pyramid.traversal import find_root
-from datetime import date, datetime, time
+from datetime import datetime, time
 
 
 @upgrade_step('file', '', '2')
@@ -506,7 +506,9 @@ def file_9_10(value, system):
             if '||' in aliases[i]:
                 scrub_parts = aliases[i].split('||')
                 date_split = scrub_parts[1].split(' ')
-                date = "-".join([date_split[1].strip(), date_split[2].strip(), date_split[5].strip()])
+                date = "-".join([date_split[1].strip(),
+                                date_split[2].strip(),
+                                date_split[5].strip()])
                 scrubbed_list = [scrub_parts[0].strip(), date.strip(), scrub_parts[2].strip()]
                 if len(scrub_parts) == 4:
                     scrubbed_list.append(scrub_parts[3].strip())
@@ -522,7 +524,7 @@ def file_9_10(value, system):
 
         rest = '_'.join(parts[1:]).strip()
         # Remove or substitute bad characters and multiple whitespaces
-        
+
         import re
         if '"' or '#' or '@' or '!' or '$' or '^' or '&' or '|' or '~'  or ';' or '`' in rest:
             rest = re.sub(r'[\"#@!$^&|~;`\/\\]', '', rest)
@@ -533,12 +535,19 @@ def file_9_10(value, system):
             rest = re.sub('[\[{]', '(', rest)
         if ']' or '}' in rest:
             rest = re.sub('[\]}]', ')', rest)
-        
+
         new_alias = ':'.join([namespace, rest])
         if new_alias not in aliases:
             aliases[i] = new_alias
-    
+
     if aliases_to_remove and aliases:
         for a in aliases_to_remove:
             if a in aliases:
                 aliases.remove(a)
+
+
+@upgrade_step('file', '10', '11')
+def file_10_11(value, system):
+    # http://redmine.encodedcc.org/issues/5049
+    # http://redmine.encodedcc.org/issues/5081
+    return

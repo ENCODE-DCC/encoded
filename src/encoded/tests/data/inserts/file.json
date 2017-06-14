@@ -753,7 +753,7 @@
    },
    {
         "_project": "encode3",
-        "accession": "ENCFFM",
+        "accession": "ENCFF666MOO",
         "award":"U41HG006992",
         "file_size": 20,
         "dataset": "ENCSR000AER",
@@ -2240,16 +2240,22 @@
     },
     {
         "_test": "phantom file",
-        "output_type": "optimal idr thresholded peaks",
-        "submitted_file_name": "project-BpBZvb003694v3fj3QJGK3Zb:/peaks_TF_GRCh38/ENCSR725ELR/peaks/encode_spp/R2.fixcoord.regionPeak.gz",
-        "uuid": "d9277859-a3b7-44d2-bbd7-070071a753d5",
+        "output_type": "reads",
+        "read_length": 25,
+        "content_md5sum": "69de5eb9cb7d09c799fa958f0dc3edfa",
+        "file_size": 2314662239,
+        "submitted_file_name": "hg19/wgEncodeGisDnaPet/wgEncodeGisDnaPetK56210kFasta3p.csfasta.gz",
         "status": "released",
-        "no_file_available": true,
-        "accession": "ENCFF186HQG",
+        "accession": "ENCFF010LAO",
+        "platform": "/platforms/OBI%3A0000696/",
         "award": "/awards/U54HG006996/",
         "dataset": "ENCSR751YPU",
-        "file_format": "bed",
-        "file_format_type": "narrowPeak",
-        "submitted_by": "/users/f5b7857d-208e-4acc-ac4d-4c2520814fe1/"
+        "file_format": "csfasta",
+        "lab": "/labs/michael-snyder/",
+        "replicate": "952fc6c6-f155-47e8-ab0f-d44d48880d11",
+        "submitted_by": "/users/f5b7857d-208e-4acc-ac4d-4c2520814fe1/",
+        "run_type": "single-ended",
+        "uuid": "d9277859-a3b7-44d2-bbd7-070071a753d5",
+        "no_file_available": true        
     }
 ]

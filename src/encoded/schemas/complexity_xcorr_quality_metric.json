@@ -102,5 +102,7 @@
                 }
             }
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/complexity_xcorr_quality_metric.md"
+
 }

@@ -46,7 +46,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "11"
+            "default": "12"
         },
         "reference_type": {
             "title": "Type",
@@ -163,5 +163,7 @@
         "software_used.software.name": 1.0,
         "reference_type": 1.0,
         "internal_tags": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/reference.md"
+
 }

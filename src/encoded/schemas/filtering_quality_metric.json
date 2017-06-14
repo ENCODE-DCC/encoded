@@ -41,5 +41,7 @@
             "type": "number",
             "description": "Count of mapped reads after filtering"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/filtering_quality_metric.md"
+
 }

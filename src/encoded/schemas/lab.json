@@ -133,5 +133,7 @@
         "awards.title":1.0,
         "institute_name": 1.0,
         "institute_label": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/lab.md"
+
 }
