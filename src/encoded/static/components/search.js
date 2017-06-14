@@ -71,7 +71,7 @@ const datasetTypes = {
 // Note: this function really doesn't do much of value, but it does do something and it's been
 // around since the beginning of encoded, so it stays for now.
 
-function listing(reactProps) {
+function Listing(reactProps) {
     // XXX not all panels have the same markup
     let context;
     let viewProps = reactProps;
@@ -83,7 +83,7 @@ function listing(reactProps) {
     return <ListingView {...viewProps} />;
 }
 
-export { listing };
+export { Listing };
 
 
 export class PickerActions extends React.Component {
@@ -1437,7 +1437,7 @@ const ResultTableList = (props) => {
     return (
         <ul className={`nav result-table${tabbed ? ' result-table-tabbed' : ''}`} id="result-table">
             {results.length ?
-                results.map(result => listing({ context: result, columns: columns, key: result['@id'] }))
+                results.map(result => Listing({ context: result, columns: columns, key: result['@id'] }))
             : null}
         </ul>
     );
