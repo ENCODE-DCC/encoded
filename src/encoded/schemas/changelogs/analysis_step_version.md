@@ -1,5 +1,14 @@
 ## Changelog for analysis_step_version.json
 
+### Schema version 4
+
+* *status* property was restricted to one of  
+    "enum" : [
+        "in progress",
+        "deleted",
+        "released"
+    ]
+
 ### Schema version 3
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces

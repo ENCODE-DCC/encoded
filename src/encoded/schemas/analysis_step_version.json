@@ -1,7 +1,7 @@
 {
     "title": "Analysis step version",
     "description": "A compatible version of an analysis step.",
-    "id": "/profiles/analysis_step.json",
+    "id": "/profiles/analysis_step_version.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["software_versions", "analysis_step"],
@@ -17,7 +17,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "version": {
             "title": "Version",
@@ -42,5 +42,6 @@
                 "linkTo": "SoftwareVersion"
             }
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/analysis_step_version.md"
 }

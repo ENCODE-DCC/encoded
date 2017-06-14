@@ -18,7 +18,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "name": {
             "title": "Name",
@@ -311,5 +311,6 @@
                 "linkTo": "AnalysisStep"
             }
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/analysis_step.md"
 }
