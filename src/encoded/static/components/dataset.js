@@ -10,7 +10,7 @@ import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
 import { auditDecor } from './audit';
 import StatusLabel from './statuslabel';
-import { pubReferenceList } from './reference';
+import pubReferenceList from './reference';
 import { donorDiversity, publicDataset } from './objectutils';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';

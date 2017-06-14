@@ -13,7 +13,7 @@ import { GeneticModificationSummary } from './genetic_modification';
 import { ProjectBadge } from './image';
 import { Breadcrumbs } from './navigation';
 import { singleTreatment } from './objectutils';
-import { pubReferenceList } from './reference';
+import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import StatusLabel from './statuslabel';
 import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef } from './typeutils';

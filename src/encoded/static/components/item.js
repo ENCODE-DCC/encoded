@@ -194,14 +194,15 @@ const FetchedRelatedItems = (props) => {
 };
 
 FetchedRelatedItems.propTypes = {
-    Component: PropTypes.object,
-    context: PropTypes.object.isRequired,
+    Component: PropTypes.any,
+    context: PropTypes.object,
     title: PropTypes.string,
     itemUrl: PropTypes.string,
 };
 
 FetchedRelatedItems.defaultProps = {
     Component: Table,
+    context: null,
     title: '',
     itemUrl: '',
 };

@@ -10,7 +10,7 @@ import globals from './globals';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
 import { requestObjects } from './objectutils';
-import { pubReferenceList } from './reference';
+import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import StatusLabel from './statuslabel';
 import { BiosampleTable } from './typeutils';

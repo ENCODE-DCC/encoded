@@ -4,8 +4,8 @@ import _ from 'underscore';
 import url from 'url';
 import globals from './globals';
 import { Breadcrumbs } from './navigation';
+import pubReferenceList from './reference';
 import { PickerActions } from './search';
-import { pubReferenceList } from './reference';
 import StatusLabel from './statuslabel';
 import { auditDecor } from './audit';
 
