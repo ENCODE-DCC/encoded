@@ -157,5 +157,7 @@
         "organism.scientific_name": 1.0,
         "organism.taxon_id": 1.0,
         "internal_tags": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/publication_data.md"
+
 }

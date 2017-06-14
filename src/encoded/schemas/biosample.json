@@ -1014,5 +1014,7 @@
         "award.pi.title": 1.0,
         "notes": 1.0,
         "internal_tags": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/biosample.md"
+
 }
