@@ -4,7 +4,7 @@ import _ from 'underscore';
 import url from 'url';
 import globals from './globals';
 import { Breadcrumbs } from './navigation';
-import search from './search';
+import { PickerActions } from './search';
 import { pubReferenceList } from './reference';
 import StatusLabel from './statuslabel';
 import { auditDecor } from './audit';
@@ -173,7 +173,7 @@ class ListingComponent extends React.Component {
         return (
             <li>
                 <div className="clearfix">
-                    <search.PickerActions {...this.props} />
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Software</p>
                         {result.status ? <p className="type meta-status">{` ${result.status}`}</p> : ''}

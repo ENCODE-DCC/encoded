@@ -3,6 +3,7 @@ from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 from past.builtins import long
 import re
 from pyramid.traversal import find_root
+from datetime import datetime, time
 
 
 def number(value):
@@ -261,7 +262,33 @@ def biosample_13_14(value, system):
         value['depleted_in_term_name'] = list(set(value['depleted_in_term_name']))
 
 
+def truncate_the_time(date_string):
+    truncation_index = date_string.find('T')
+    if truncation_index != -1:
+        return date_string[:truncation_index]
+    return date_string
+
+
 @upgrade_step('biosample', '15', '16')
 def biosample_15_16(value, system):
+    # http://redmine.encodedcc.org/issues/5096
     # http://redmine.encodedcc.org/issues/5049
-    return
+    if 'talens' in value:
+        del value['talens']
+    if 'pooled_from' in value and value['pooled_from'] == []:
+        del value['pooled_from']
+
+    harvest_date = value.get('culture_harvest_date')
+    culture_start_date = value.get('culture_start_date')
+    date_obtained = value.get('date_obtained')
+
+    if harvest_date:
+        value['culture_harvest_date'] = truncate_the_time(harvest_date)
+    if culture_start_date:
+        value['culture_start_date'] = truncate_the_time(culture_start_date)
+    if date_obtained:
+        value['date_obtained'] = truncate_the_time(date_obtained)
+
+    if value.get('derived_from'):
+        value['originated_from'] = value['derived_from']
+        del value['derived_from']

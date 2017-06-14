@@ -71,7 +71,7 @@ const datasetTypes = {
 // Note: this function really doesn't do much of value, but it does do something and it's been
 // around since the beginning of encoded, so it stays for now.
 
-function listing(reactProps) {
+function Listing(reactProps) {
     // XXX not all panels have the same markup
     let context;
     let viewProps = reactProps;
@@ -83,7 +83,7 @@ function listing(reactProps) {
     return <ListingView {...viewProps} />;
 }
 
-export { listing };
+export { Listing };
 
 
 export class PickerActions extends React.Component {
@@ -1153,7 +1153,7 @@ BatchDownload.propTypes = {
 };
 
 
-class ResultTable extends React.Component {
+export class ResultTable extends React.Component {
     constructor(props) {
         super(props);
 
@@ -1214,7 +1214,6 @@ class ResultTable extends React.Component {
         const filters = context.filters;
         const label = 'results';
         const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
-        const loggedIn = this.context.session && this.context.session['auth.userid'];
         let browseAllFiles = true; // True to pass all files to browser
         let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
         let browserDatasets = []; // Datasets will be used to get vis_json blobs
@@ -1271,7 +1270,7 @@ class ResultTable extends React.Component {
 
         // If we have only one "type" term in the query string and it's for File, then we can
         // display the List/Browser tabs. Otherwise we just get the list.
-        let browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File' && assemblies.length === 1 && loggedIn;
+        let browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File' && assemblies.length === 1;
         if (browserAvail) {
             // If dataset is in the query string, we can show all files.
             const datasetFilter = filters.find(filter => filter.field === 'dataset');
@@ -1438,7 +1437,7 @@ const ResultTableList = (props) => {
     return (
         <ul className={`nav result-table${tabbed ? ' result-table-tabbed' : ''}`} id="result-table">
             {results.length ?
-                results.map(result => listing({ context: result, columns: columns, key: result['@id'] }))
+                results.map(result => Listing({ context: result, columns: columns, key: result['@id'] }))
             : null}
         </ul>
     );
