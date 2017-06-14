@@ -418,5 +418,6 @@
         "replicates.library.biosample.rnais.product_id": 1.0,
         "notes": 1.0,
         "internal_tags": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/experiment.md"
 }

@@ -133,5 +133,7 @@
                  "linkTo": "AntibodyLot"
              }
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/treatment.md"
+
 }
