@@ -1,8 +1,5 @@
-from pyramid.traversal import find_root
-from uuid import UUID
 from snovault import upgrade_step
 import re
-from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 
 
 @upgrade_step('experiment', '10', '11')
@@ -86,7 +83,8 @@ def item_alias_tighten(value, system):
             if '||' in aliases[i]:
                 scrub_parts = aliases[i].split('||')
                 date_split = scrub_parts[1].split(' ')
-                date = "-".join([date_split[1].strip(), date_split[2].strip(), date_split[5].strip()])
+                date = "-".join(
+                    [date_split[1].strip(), date_split[2].strip(), date_split[5].strip()])
                 scrubbed_list = [scrub_parts[0].strip(), date.strip(), scrub_parts[2].strip()]
                 if len(scrub_parts) == 4:
                     scrubbed_list.append(scrub_parts[3].strip())
@@ -103,8 +101,8 @@ def item_alias_tighten(value, system):
         rest = '_'.join(parts[1:]).strip()
         # Remove or substitute bad characters and multiple whitespaces
 
-        import re
-        if '"' or '#' or '@' or '^' or '&' or '|' or '~' or '<' or '>' or '?' or '=' or ';' or '`' in rest:
+        if '"' or '#' or '@' or '^' or '&' or '|' or \
+           '~' or '<' or '>' or '?' or '=' or ';' or '`' in rest:
             rest = re.sub(r'[\"#@^&|~<>?=;`\/\\]', '', rest)
             rest = ' '.join(rest.split())
         if '%' in rest:
@@ -122,6 +120,7 @@ def item_alias_tighten(value, system):
         for a in aliases_to_remove:
             if a in aliases:
                 aliases.remove(a)
+
 
 @upgrade_step('analysis_step', '5', '6')
 @upgrade_step('analysis_step_version', '3', '4')
@@ -170,4 +169,5 @@ def item_shared_statuses(value, system):
     # http://redmine.encodedcc.org/issues/5050
 
     if value['status'] == 'replaced':
-        value['status'] == 'deleted'
+        value['status'] = 'deleted'
+    return
