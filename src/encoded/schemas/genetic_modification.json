@@ -147,6 +147,54 @@
                 }
             }
         },
+        "epitope_tags": {
+            "title": "Epitope tags",
+            "description": "Relevant epitope tags introduced.",
+            "type": "array",
+            "items": {
+                "title": "Epitope tags",
+                "description": "Relevant epitope tag(s) introduced in the modification.",
+                "comment": "Submit tag name and tag location.",
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["name", "location"],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "enum": [
+                            "eGFP",
+                            "V5",
+                            "HA",
+                            "ER",
+                            "3xFLAG",
+                            "DsRed",
+                            "TRE",
+                            "T2A",
+                            "YFP",
+                            "FLAG",
+                            "mCherry"
+                        ]
+                    },
+                    "location": {
+                        "type": "string",
+                        "enum": [
+                            "N-terminal",
+                            "C-terminal",
+                            "internal",
+                            "other",
+                            "unknown"
+                        ]
+                    },
+                    "promoter_used": {
+                       "title": "Promoter used in construct",
+                       "description": "The name of the gene that the promoter regulates natively.",
+                       "comment": "See target.json for available identifiers.",
+                       "type": "string",
+                       "linkTo": "Target"
+                    }
+                }
+            }
+        },
         "description": {
             "title": "Description",
             "description": "A plain text description of the genetic modification.",

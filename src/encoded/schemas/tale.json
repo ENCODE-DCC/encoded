@@ -46,12 +46,34 @@
             "type": "string",
             "pattern": "^[ACTG]+$"
         },
-        "insert": {
-            "title": "Insert",
-            "description": "Insert introduced if applied to non-deletion purposes purposes.",
+        "insertion_type": {
+            "title": "Insertion type",
+            "description": "The type of insertion being introduced.",
             "type": "string",
-            "comment": "see insert.json for available identifiers",
-            "linkTo": "Insert"
+            "enum": [
+                "candidate regulatory sequence (proximal)",
+                "candidate regulatory sequence (distal)",
+                "fusion protein"
+            ]
+        },
+        "insert_sequence": {
+            "title": "Insert sequence",
+            "description": "Insert sequence",
+            "type": "string",
+            "pattern": "^[ACTG]+$"  
+        },
+        "source_data": {
+            "title": "Source data",
+            "description": "Source of the candidate regulatory element in the insert (if applicable).",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Source data",
+                "description": "Source data file from which the candidate regulatory element was identified.",
+                "type": "string",
+                "comment": "See file.json for available identifiers.",
+                "linkTo": "File"
+            }
         }
     },
     "facets": {
