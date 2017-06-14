@@ -195,7 +195,7 @@ var RelatedItems = module.exports.RelatedItems = createReactClass({
     },
 
     render: function() {
-        var url = globals.encodedURI(this.props.url + '&status=released&status=in+progress&status=proposed&status=submitted');
+        var url = globals.encodedURI(this.props.url + '&status=released&status=started&status=proposed&status=submitted&status=ready+for+review&status=in+progress');
         var limited_url = url + '&limit=' + this.props.limit;
         var unlimited_url = url + '&limit=all';
         return (
