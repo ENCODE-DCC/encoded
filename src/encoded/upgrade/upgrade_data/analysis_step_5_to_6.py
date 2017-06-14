@@ -437,7 +437,7 @@ status_mapping = {
 aliases_mapping = {
     'dnanexus:align-star-se-v-2': 'encode:deleted-lrna-se-star-alignment-step-v-2',
     'encode:alignment-pooling-step': 'encode:alignment-pooling-step-v-1',
-    'encode:frip_seq_pipeline_v1_alignmnet_step': 'encode:frip-seq-pipeline-alignment-step-v-1'
+    'encode:frip_seq_pipeline_v1_alignmnet_step': 'encode:frip-seq-pipeline-alignment-step-v-1',
     'j-michael-cherry:08fd0a3a-9d4f-483c-9316-e382da277344': 'encode:control-alignment-subsampling-step-v-1',
     'j-michael-cherry:1ede083b-9220-4ee3-aca4-bf691f70e23e': 'encode:shrna-rna-seq-signal-step-v-1',
     'j-michael-cherry:208715a1-1998-4191-9f00-16378333ccb1': 'john-stamatoyannopoulos:dnase-bed-to-bigbed-v-1',
