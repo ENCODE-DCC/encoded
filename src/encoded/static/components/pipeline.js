@@ -8,7 +8,7 @@ import { DocumentsPanel } from './doc';
 import globals from './globals';
 import { Graph, JsonGraph } from './graph';
 import { Breadcrumbs } from './navigation';
-import search from './search';
+import { PickerActions } from './search';
 import { softwareVersionList } from './software';
 import StatusLabel from './statuslabel';
 
@@ -534,7 +534,7 @@ class ListingComponent extends React.Component {
         return (
             <li>
                 <div className="clearfix">
-                    <search.PickerActions {...this.props} />
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Pipeline</p>
                         <p className="type">{` ${result.accession}`}</p>

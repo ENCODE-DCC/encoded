@@ -6,7 +6,7 @@ import { auditDecor } from './audit';
 var globals = require('./globals');
 var navigation = require('./navigation');
 var dbxref = require('./dbxref');
-var search = require('./search');
+import { PickerActions } from './search';
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
@@ -231,7 +231,7 @@ var ListingComponent = createReactClass({
         return (
             <li>
                 <div className="clearfix">
-                    <search.PickerActions {...this.props} />
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Publication</p>
                         <p className="type meta-status">{' ' + result.status}</p>

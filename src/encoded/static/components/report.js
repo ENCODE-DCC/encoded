@@ -4,13 +4,11 @@ import PropTypes from 'prop-types';
 import createReactClass from 'create-react-class';
 var svgIcon = require('../libs/svg-icons').svgIcon;
 var fetched = require('./fetched');
-var search = require('./search');
+import { FacetList } from './search';
 var url = require('url');
 var globals = require('./globals');
 var StickyHeader = require('./StickyHeader');
 var _ = require('underscore');
-
-var FacetList = search.FacetList;
 
 
 var columnChoices = function columnChoices(schema, selected) {
