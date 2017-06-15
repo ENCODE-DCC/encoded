@@ -53,7 +53,7 @@
                     "maxHeightPixels": "64:18:8",
                     "windowingFunction": "mean+whiskers",
                     "output_type": [ "plus strand signal of unique reads" ]
-                },
+                }
             }
         },
         "other_groups":  {
