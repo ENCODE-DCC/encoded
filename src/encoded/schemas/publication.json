@@ -290,5 +290,7 @@
             "order": "desc",
             "missing": "_last" 
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/publication.md"
+
 }

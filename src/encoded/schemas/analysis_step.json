@@ -318,5 +318,6 @@
                 "linkTo": "AnalysisStep"
             }
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/analysis_step.md"
 }
