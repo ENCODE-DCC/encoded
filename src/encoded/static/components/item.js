@@ -209,7 +209,7 @@ FetchedRelatedItems.defaultProps = {
 
 
 export const RelatedItems = (props) => {
-    const itemUrl = globals.encodedURI(`${props.url}&status!=deleted&status!=revoked&status!=replaced`);
+    const itemUrl = globals.encodedURI(`${props.url}&status=released&status=started&status=proposed&status=submitted&status=ready+for+review&status=in+progress`);
     const limitedUrl = `${itemUrl}&limit=${props.limit}`;
     const unlimitedUrl = `${itemUrl}&limit=all`;
     return (
