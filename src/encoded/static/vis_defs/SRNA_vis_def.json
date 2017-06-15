@@ -58,25 +58,23 @@
                     "output_type": [ "minus strand signal of all reads" ]
                 },
                 "Signal of unique reads": {
-                    "tag": "SIGL",
-                    "visibility": "hide",
+                    "tag": "SIGBL",
+                    "visibility": "full",
                     "type": "bigWig",
                     "viewLimits": "0:1",
                     "transformFunc": "LOG",
                     "autoScale": "off",
-                    "negateValues": "on",
                     "maxHeightPixels": "64:18:8",
                     "windowingFunction": "mean+whiskers",
                     "output_type": [ "signal of unique reads" ]
                 },
                 "Signal of all reads": {
-                    "tag": "SIGM",
+                    "tag": "SIGBM",
                     "visibility": "hide",
                     "type": "bigWig",
                     "viewLimits": "0:1",
                     "transformFunc": "LOG",
                     "autoScale": "off",
-                    "negateValues": "on",
                     "maxHeightPixels": "64:18:8",
                     "windowingFunction": "mean+whiskers",
                     "output_type": [ "signal of all reads" ]
