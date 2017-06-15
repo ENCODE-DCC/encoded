@@ -443,7 +443,7 @@ aliases_mapping = {
     'j-michael-cherry:208715a1-1998-4191-9f00-16378333ccb1': 'john-stamatoyannopoulos:dnase-bed-to-bigbed-v-1',
     'j-michael-cherry:22dee925-30d9-4b01-ba3c-ea5cbfb15c98': 'encode:deleted-lrna-pe-star-stranded-signals-for-tophat-step-v-2',
     'j-michael-cherry:33c5bca6-5338-45b9-b837-04441d4b582c': 'encode:alignment-subsampling-step-v-1',
-    'j-michael-cherry:359d63f3-8e92-4731-a719-58fb7053bdb9': 'encoded:deleted-lrna-index-star-v-2',
+    'j-michael-cherry:359d63f3-8e92-4731-a719-58fb7053bdb9': 'encode:deleted-lrna-index-star-v-2',
     'j-michael-cherry:3fa67405-fa88-4627-b3eb-04f789eb5d29': 'encode:deleted-lrna-pe-star-alignment-step-v-2',
     'j-michael-cherry:579e77ce-2594-42c1-82da-5f03ea2bb91b': 'encode:deleted-lrna-se-star-unstranded-signals-for-tophat-step-v-2',
     'j-michael-cherry:5dfa4f70-7c1c-4684-846d-4e823e584349': 'john-stamatoyannopoulos:dnase-seq-mapping-step-v-2',
