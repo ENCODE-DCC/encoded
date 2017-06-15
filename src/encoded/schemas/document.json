@@ -140,5 +140,6 @@
         "lab.institute_name": 1.0,
         "lab.institute_label": 1.0,
         "lab.title": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/document.md"
 }

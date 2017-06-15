@@ -101,5 +101,6 @@
             "type": "number",
             "description": "Count of reads uniquely mapped"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/edwbamstats_quality_metric.md"
 }

@@ -31,7 +31,9 @@
             "format": "accession",
             "serverDefault": "accession",
             "permission": "import_items"
-        },
+        }
+    },
+    "alternate_accessions": {
         "alternate_accessions": {
             "title": "Alternate accessions",
             "description": "Accessions previously assigned to objects that have been merged with this object.",
@@ -110,7 +112,7 @@
         "date_created": {
             "rdfs:subPropertyOf": "dc:created",
             "title": "Date created",
-            "decription": "The date the object was created.",
+            "description": "The date the object was created.",
             "comment": "Do not submit. The date the object is created is assigned by the server.",
             "type": "string",
             "anyOf": [
@@ -219,18 +221,20 @@
             "@type": "@id",
             "title": "Ontology ID",
             "description": "Ontology identifier describing biosample.",
-            "comment": "NTR is a new term request identifier provided by the DCC.",
+            "comment": "For detailed description of ontologies used by DCC visit https://www.encodeproject.org/help/getting-started/. In cases where a new ontology term is needed, NTR (new term request) identifier would be provided by the DCC.",
             "type": "string",
             "pattern": "^(UBERON|EFO|CL|NTR|FBbt|WBbt):[0-9]{2,8}$"
         },
         "biosample_term_name": {
             "title": "Ontology term",
             "description": "Ontology term describing biosample.",
+            "comment": "The term should match the ontology identifier specified in biosample_term_id. For detailed description of ontologies used by DCC visit https://www.encodeproject.org/help/getting-started/.",
             "type":  "string"
         },
         "biosample_type": {
             "title": "Biosample type",
-            "description": "The categorization of the biosample.",
+            "description": "The general category of the biosample.",
+            "comment": "Required property. The specified category should match the type of ontology used to describe the biosample.",
             "type": "string",
             "enum" : [
                 "primary cell",
@@ -272,7 +276,7 @@
         "notes": {
             "title": "Notes",
             "description": "DCC internal notes.",
-            "comment": "A place for the DCC to keep information that does not have a place in the schema.",
+            "comment": "Do not submit. A place for the DCC to keep information that does not have a place in the schema.",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$",
             "permission": "import_items"
@@ -310,7 +314,8 @@
     "genetic_modifications": {
         "genetic_modifications": {
             "title": "Genetic modifications",
-            "description": "Genetic modification(s). Any genomic alteration or addition of vectors stably or transiently transfected.",
+            "description": "Genetic modification(s). Any genetic alteration of a biosample or donor.",
+            "comment": "Work in progress. Constructs, TALENs and RNAi objects are being migrated to objects that would be linked via genetic_modifications objects to the biosamples/donors.",
             "type": "array",
             "default": [],
             "permission": "import_items",
@@ -421,6 +426,11 @@
                 "genetic modification followed by DNase-seq",
                 "CRISPRi followed by RNA-seq",
                 "genotyping by Hi-C",
+                "genotype phasing by HiC",
+                "Circulome-seq",
+                "whole genome sequencing assay",
+                "BruUV-seq",
+                "Mint-ChIP-seq",
                 "enhancer activity detection by reporter gene assay",
                 "promoter activity detection by reporter gene assay",
                 "STARR-seq"

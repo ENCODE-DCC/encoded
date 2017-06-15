@@ -4,10 +4,8 @@ import createReactClass from 'create-react-class';
 var fetched = require('../fetched');
 var collection = require('../collection');
 var globals = require('../globals');
-var search = require('../search');
+import { Listing, ResultTable } from '../search';
 
-var Listing = search.Listing;
-var ResultTable = search.ResultTable;
 var Table = collection.Table;
 
 

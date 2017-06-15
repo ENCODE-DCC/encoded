@@ -42,5 +42,6 @@
                 "linkTo": "SoftwareVersion"
             }
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/analysis_step_version.md"
 }

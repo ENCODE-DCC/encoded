@@ -25,7 +25,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "7"
+            "default": "8"
         },
         "littermates": {
             "title": "Littermates",
@@ -75,19 +75,22 @@
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "External identifiers",
-            "description": "Unique identifiers from external resources.",
+            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "External identifier",
-                "description": "A unique identifier from external resource.",
+                "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
                 "pattern": "^((GEO:SAMN\\d+)|(MGI.D:[A-Z0-9]+))$"
             }
         }
     },
     "boost_values": {
-        "internal_tags": 1.0
-    }
+        "internal_tags": 1.0,
+        "external_ids": 1.0,
+        "aliases": 1.0
+    },
+    "changelog": "/profiles/changelogs/mouse_donor.md"
 }

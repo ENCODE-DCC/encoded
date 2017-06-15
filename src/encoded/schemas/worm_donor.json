@@ -25,7 +25,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "5"
         },
         "genotype": {
             "description": "The genotype of the strain according to accepted nomenclature conventions: http://www.wormbase.org/about/userguide/nomenclature#k89607hgcf24ea13jbid5--10."
@@ -68,19 +68,22 @@
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "External identifiers",
-            "description": "Unique identifiers from external resources.",
+            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "External identifier",
-                "description": "A unique identifier from external resource.",
+                "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
                 "pattern": "^(((CGC|WormBase|NBP):.+)|(GEO:SAMN\\d+))$"
             }
         }
     },
     "boost_values": {
-        "internal_tags": 1.0
-    }
+        "internal_tags": 1.0,
+        "external_ids": 1.0,
+        "aliases": 1.0
+    },
+    "changelog": "/profiles/changelogs/worm_donor.md"
 }

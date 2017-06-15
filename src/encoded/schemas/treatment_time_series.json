@@ -46,7 +46,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "11"
+            "default": "12"
         }
     },
     "facets": {
@@ -272,6 +272,6 @@
         "references.title": 1.0,
         "related_datasets.replicates.library.biosample.rnais.product_id": 1.0,
         "internal_tags": 1.0
-
-    }
+    },
+    "changelog": "/profiles/changelogs/treatment_time_series.md"
 }
