@@ -285,5 +285,7 @@
         "status": {
             "title": "Genetic modification status"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/genetic_modification.md"
+
 }

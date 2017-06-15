@@ -163,5 +163,7 @@
         "software_used.software.name": 1.0,
         "reference_type": 1.0,
         "internal_tags": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/reference.md"
+
 }

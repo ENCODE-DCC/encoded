@@ -217,5 +217,7 @@
             "title": "Genome assembly",
             "description": "The GRC genome assembly to which the target coordinates relate.  E.g. GRCh38"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/talen.md"
+
 }
