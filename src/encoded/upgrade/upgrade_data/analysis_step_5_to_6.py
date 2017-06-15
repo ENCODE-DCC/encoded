@@ -118,7 +118,7 @@ label_mapping = {
     'j-michael-cherry:208715a1-1998-4191-9f00-16378333ccb1': 'dnase-bed-to-bigbed-step',
     'j-michael-cherry:22dee925-30d9-4b01-ba3c-ea5cbfb15c98': 'deleted-lrna-pe-star-stranded-signals-for-tophat-step',
     'j-michael-cherry:33c5bca6-5338-45b9-b837-04441d4b582c': 'alignment-subsampling-step',
-    'j-michael-cherry:359d63f3-8e92-4731-a719-58fb7053bdb9': 'deleted-lrna-index-star-step',
+    # 'j-michael-cherry:359d63f3-8e92-4731-a719-58fb7053bdb9': 'deleted-lrna-index-star-step',
     'j-michael-cherry:3fa67405-fa88-4627-b3eb-04f789eb5d29': 'deleted-lrna-pe-star-alignment-step',
     'j-michael-cherry:579e77ce-2594-42c1-82da-5f03ea2bb91b': 'deleted-lrna-se-star-unstranded-signals-for-tophat-step',
     'j-michael-cherry:5dfa4f70-7c1c-4684-846d-4e823e584349': 'dnase-seq-mapping-step',
