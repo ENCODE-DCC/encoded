@@ -138,10 +138,11 @@ def analysis_step_5_6(value, system):
 
     obj_aliases = value.get('aliases', None)
     if obj_aliases:
-        if label_mapping[obj_aliases[0]]:
+        if obj_aliases[0] in label_mapping:
             value['step_label'] = label_mapping[obj_aliases[0]]
-            value['major_version'] = major_version_mapping[obj_aliases[0]]
             value.pop('name', None)
+        if obj_aliases[0] in major_version_mapping:
+            value['major_version'] = major_version_mapping[obj_aliases[0]]
         if obj_aliases[0] in title_mapping:
             value['title'] = title_mapping[obj_aliases[0]]
         if obj_aliases[0] in status_mapping:
