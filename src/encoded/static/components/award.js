@@ -18,6 +18,8 @@ const typeSpecificColorList = labColors.colorList();
 const statusColorList = labColors.colorList();
 
 
+
+
 // Draw the total chart count in the middle of the donut.
 function drawDonutCenter(chart) {
     const width = chart.chart.width;
@@ -538,6 +540,77 @@ const ChartRenderer = (props) => {
         </div>
     );
 };
+// Version 1 of creating a new panel
+class NewPanel extends React.Component{
+    constructor(){
+        super()
+    }
+    render(){
+        const{ handleClick, selectedOrganisms} = this.props;
+        return(
+            <div>
+                <div className="organism-selector" ref="tabdisplay">
+                    <OrganismSelector organism="Human" selected={selectedOrganisms.indexOf('HUMAN') !== -1} organismButtonClick={handleClick} />
+                    <OrganismSelector organism="Mouse" selected={selectedOrganisms.indexOf('MOUSE') !== -1} organismButtonClick={handleClick} />
+                    <OrganismSelector organism="Worm" selected={selectedOrganisms.indexOf('WORM') !== -1} organismButtonClick={handleClick} />
+                    <OrganismSelector organism="Fly" selected={selectedOrganisms.indexOf('FLY') !== -1} organismButtonClick={handleClick} />
+                </div>
+            </div>
+        );
+    };
+}
+
+
+NewPanel.propTypes = {
+    organisms: PropTypes.array, // Array of currently selected tabs
+    handleTabClick: PropTypes.func, // Function to call when a tab is clicked
+};
+
+
+
+class OrganismSelector extends React.Component{
+    constructor(){
+        super();
+        this.buttonClick = this.buttonClick.bind(this);
+    }
+
+    buttonClick(){
+        // const { organism, organismButtonClick } = this.props;
+        this.props.organismButtonClick(this.props.organism)
+    }
+    render(){
+        const { organism, selected, handleClick } = this.props;
+        return(
+            <button onClick={this.buttonClick} className={selected===true ? 'organism-selector--selected' : 'organism-selector__tab'}>
+           {organism} </button>
+        );
+    };
+};
+
+OrganismSelector.propTypes = {
+    organism: PropTypes.string, // Organism this selector represents
+    selected: PropTypes.bool, // `true` if selector is selected
+    handleClick: PropTypes.func, // Function to call to handle a selector click
+};
+
+
+
+
+
+// Version 2 of creating a new panel
+// const MiddlePanel = (props) => {
+//     const {award} = props;
+//     return(
+//         <Panel>
+//             <PanelHeading>
+//                 <h4>Middle Panel</h4>
+//             </PanelHeading>
+//             <PanelBody>
+//                 <h5> Text text text </h5>
+//             </PanelBody>
+//         </Panel>
+//     );
+// };
 
 ChartRenderer.propTypes = {
     award: PropTypes.object.isRequired, // Award being displayed
@@ -577,48 +650,72 @@ AwardCharts.propTypes = {
 };
 
 
-const Award = (props) => {
-    const { context } = props;
-    const statuses = [{ status: context.status, title: 'Status' }];
 
-    return (
-        <div className={globals.itemClass(context, 'view-item')}>
-            <header className="row">
-                <div className="col-sm-12">
-                    <h2>{context.title || context.name}</h2>
-                    <div className="status-line">
-                        <div className="characterization-status-labels">
-                            <StatusLabel status={statuses} />
+class Award extends React.Component{
+
+    constructor(){
+        super();
+        this.state={
+            selectedOrganisms:[], //create empty array of selected organism tabs
+        };
+    }
+    handleClick(organism){
+        console.log(organism)
+    }
+    render(){
+        const {context} =this.props;
+        const statuses = [{status:context.status, title:'Status'}];
+        const organismSpec = 'COMPPRED' ? 'organism.scientific_name=' : 'replicates.library.biosample.donor.organism.scientific_name=';
+        const queryStrings = {
+            HUMAN: `${organismSpec}Homo+sapiens`, // human
+            MOUSE: `${organismSpec}Mus+musculus`, // mouse
+            WORM: `${organismSpec}Caenorhabditis+elegans`, // worm
+            FLY: `${organismSpec}Drosophila+melanogaster&${organismSpec}Drosophila+pseudoobscura&${organismSpec}Drosophila+simulans&${organismSpec}Drosophila+mojavensis&${organismSpec}Drosophila+ananassae&${organismSpec}Drosophila+virilis&${organismSpec}Drosophila+yakuba`,
+        };
+        const organismButtonClick = {this:organismButtonClick};
+        return(
+            <div className={globals.itemClass(context, 'view-item')}>
+                <header className="row">
+                    <div className="col-sm-12">
+                        <h2>{context.title || context.name}</h2>
+                        <div className="status-line">
+                            <div className="characterization-status-labels">
+                                <StatusLabel status={statuses} />
+                            </div>
                         </div>
                     </div>
-                </div>
-            </header>
+                </header>
 
-            <AwardCharts award={context} />
+                {/*Call creation of panels*/}
+                <AwardCharts award={context} />
+                <NewPanel handleClick={this.handleClick} selectedOrganisms={this.state.selectedOrganisms}/>
 
-            <Panel>
-                <PanelHeading>
-                    <h4>Description</h4>
-                </PanelHeading>
-                <PanelBody>
-                    {context.url ?
-                        <div>
-                            <strong>NHGRI project information: </strong><a href={context.url} title={`${context.name} project page at NHGRI`}>{context.name}</a>
-                            <hr />
-                        </div>
-                    : null}
-                    {context.description ?
-                        <div className="two-column-long-text two-column-long-text--gap">
-                            <p>{context.description}</p>
-                        </div>
-                    :
-                        <p className="browser-error">Award has no description</p>
-                    }
-                </PanelBody>
-            </Panel>
-        </div>
-    );
+                {/*^alternatively NewPanel or MiddlePanel, depending on whichever version is used*/}
+                <Panel>
+                    <PanelHeading>
+                        <h4>Description</h4>
+                    </PanelHeading>
+                    <PanelBody>
+                        {context.url ?
+                            <div>
+                                <strong>NHGRI project information: </strong><a href={context.url} title={`${context.name} project page at NHGRI`}>{context.name}</a>
+                                <hr />
+                            </div>
+                        : null}
+                        {context.description ?
+                            <div className="two-column-long-text two-column-long-text--gap">
+                                <p>{context.description}</p>
+                            </div>
+                        :
+                            <p className="browser-error">Award has no description</p>
+                        }
+                    </PanelBody>
+                </Panel>
+            </div>
+        );
+    }
 };
+
 
 Award.propTypes = {
     context: PropTypes.object.isRequired, // Award object being rendered
