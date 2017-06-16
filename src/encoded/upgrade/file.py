@@ -550,4 +550,6 @@ def file_9_10(value, system):
 def file_10_11(value, system):
     # http://redmine.encodedcc.org/issues/5049
     # http://redmine.encodedcc.org/issues/5081
-    return
+    # http://redmine.encodedcc.org/issues/4924
+    if not value.get('no_file_available'):
+        value['no_file_available'] = False
