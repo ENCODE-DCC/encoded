@@ -581,7 +581,7 @@ class OrganismSelector extends React.Component{
     render(){
         const { organism, selected, handleClick } = this.props;
         return(
-            <button onClick={this.buttonClick} className={selected===true ? 'organism-selector--selected' : 'organism-selector__tab'}>
+            <button onClick={this.buttonClick} className={`organism-selector__tab${selected ? ' organism-selector--selected' : ''}`} >
            {organism} </button>
         );
     };
