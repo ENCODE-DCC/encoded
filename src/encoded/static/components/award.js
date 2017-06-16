@@ -7,6 +7,7 @@ import globals from './globals';
 import { ProjectBadge } from './image';
 import { PickerActions } from './search';
 import StatusLabel from './statuslabel';
+import _ from 'underscore';
 
 
 const labChartId = 'lab-chart'; // Lab chart <div> id attribute
@@ -546,14 +547,14 @@ class NewPanel extends React.Component{
         super()
     }
     render(){
-        const{ handleClick, selectedOrganisms} = this.props;
+        const{ selectedOrganisms, handleClick} = this.props;
         return(
             <div>
                 <div className="organism-selector" ref="tabdisplay">
-                    <OrganismSelector organism="Human" selected={selectedOrganisms.indexOf('HUMAN') !== -1} organismButtonClick={handleClick} />
-                    <OrganismSelector organism="Mouse" selected={selectedOrganisms.indexOf('MOUSE') !== -1} organismButtonClick={handleClick} />
-                    <OrganismSelector organism="Worm" selected={selectedOrganisms.indexOf('WORM') !== -1} organismButtonClick={handleClick} />
-                    <OrganismSelector organism="Fly" selected={selectedOrganisms.indexOf('FLY') !== -1} organismButtonClick={handleClick} />
+                    <OrganismSelector organism="HUMAN" selected={selectedOrganisms.indexOf('HUMAN') !== -1} organismButtonClick={handleClick} />
+                    <OrganismSelector organism="MOUSE" selected={selectedOrganisms.indexOf('MOUSE') !== -1} organismButtonClick={handleClick} />
+                    <OrganismSelector organism="WORM" selected={selectedOrganisms.indexOf('WORM') !== -1} organismButtonClick={handleClick} />
+                    <OrganismSelector organism="FLY" selected={selectedOrganisms.indexOf('FLY') !== -1} organismButtonClick={handleClick} />
                 </div>
             </div>
         );
@@ -562,7 +563,7 @@ class NewPanel extends React.Component{
 
 
 NewPanel.propTypes = {
-    organisms: PropTypes.array, // Array of currently selected tabs
+    selectedOrganisms: PropTypes.array, // Array of currently selected tabs
     handleTabClick: PropTypes.func, // Function to call when a tab is clicked
 };
 
@@ -576,13 +577,14 @@ class OrganismSelector extends React.Component{
 
     buttonClick(){
         // const { organism, organismButtonClick } = this.props;
-        this.props.organismButtonClick(this.props.organism)
+        this.props.organismButtonClick(this.props.organism);
+
     }
     render(){
         const { organism, selected, handleClick } = this.props;
         return(
             <button onClick={this.buttonClick} className={`organism-selector__tab${selected ? ' organism-selector--selected' : ''}`} >
-           {organism} </button>
+            {organism} </button>
         );
     };
 };
@@ -658,9 +660,23 @@ class Award extends React.Component{
         this.state={
             selectedOrganisms:[], //create empty array of selected organism tabs
         };
+        this.handleClick=this.handleClick.bind(this);
     }
     handleClick(organism){
         console.log(organism)
+            // Create a copy of this.state.newtabs so we can manipulate it in peace.
+        const tempArray = _.clone(this.state.selectedOrganisms);
+        if (tempArray.indexOf(organism) === -1) {
+            // if tab isn't already in array, then add it
+            tempArray.push(organism);
+        } else {
+            // otherwise if it is in array, remove it from array and from link
+            const indexToRemoveArray = tempArray.indexOf(organism);
+            tempArray.splice(indexToRemoveArray, 1);
+        }
+
+        // Update the list of user-selected organisms.
+        this.setState({ selectedOrganisms: tempArray });
     }
     render(){
         const {context} =this.props;
