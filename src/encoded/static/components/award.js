@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'underscore';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import DataColors from './datacolors';
 import { FetchedData, Param } from './fetched';
@@ -7,8 +8,6 @@ import globals from './globals';
 import { ProjectBadge } from './image';
 import { PickerActions } from './search';
 import StatusLabel from './statuslabel';
-import _ from 'underscore';
-
 
 const labChartId = 'lab-chart'; // Lab chart <div> id attribute
 const categoryChartId = 'category-chart'; // Assay chart <div> id attribute
@@ -17,8 +16,6 @@ const labColors = new DataColors(); // Get a list of colors to use for the lab c
 const labColorList = labColors.colorList();
 const typeSpecificColorList = labColors.colorList();
 const statusColorList = labColors.colorList();
-
-
 
 
 // Draw the total chart count in the middle of the donut.
@@ -542,13 +539,10 @@ const ChartRenderer = (props) => {
     );
 };
 // Version 1 of creating a new panel
-class NewPanel extends React.Component{
-    constructor(){
-        super()
-    }
-    render(){
-        const{ selectedOrganisms, handleClick} = this.props;
-        return(
+class NewPanel extends React.Component {
+    render() {
+        const { selectedOrganisms, handleClick } = this.props;
+        return (
             <div>
                 <div className="organism-selector" ref="tabdisplay">
                     <OrganismSelector organism="HUMAN" selected={selectedOrganisms.indexOf('HUMAN') !== -1} organismButtonClick={handleClick} />
@@ -558,45 +552,54 @@ class NewPanel extends React.Component{
                 </div>
             </div>
         );
-    };
+    }
 }
 
 
 NewPanel.propTypes = {
     selectedOrganisms: PropTypes.array, // Array of currently selected tabs
-    handleTabClick: PropTypes.func, // Function to call when a tab is clicked
+    handleClick: PropTypes.func.isRequired, // Function to call when a button is clicked
+};
+
+NewPanel.defaultProps = {
+    selectedOrganisms: [],
 };
 
 
-
-class OrganismSelector extends React.Component{
-    constructor(){
+class OrganismSelector extends React.Component {
+    constructor() {
         super();
         this.buttonClick = this.buttonClick.bind(this);
     }
 
-    buttonClick(){
+    buttonClick() {
         // const { organism, organismButtonClick } = this.props;
         this.props.organismButtonClick(this.props.organism);
-
     }
-    render(){
-        const { organism, selected, handleClick } = this.props;
-        return(
+    render() {
+        const { organism, selected } = this.props;
+        return (
             <button onClick={this.buttonClick} className={`organism-selector__tab${selected ? ' organism-selector--selected' : ''}`} >
             {organism} </button>
         );
-    };
-};
+    }
+}
 
 OrganismSelector.propTypes = {
     organism: PropTypes.string, // Organism this selector represents
     selected: PropTypes.bool, // `true` if selector is selected
-    handleClick: PropTypes.func, // Function to call to handle a selector click
+    organismButtonClick: PropTypes.func,
 };
 
+OrganismSelector.defaultProps = {
+    organism: {},
+    selected: {},
+    organismButtonClick: {},
+};
 
-
+OrganismSelector.contextTypes = {
+    organismButtonClick: PropTypes.func,
+};
 
 
 // Version 2 of creating a new panel
@@ -652,18 +655,16 @@ AwardCharts.propTypes = {
 };
 
 
+class Award extends React.Component {
 
-class Award extends React.Component{
-
-    constructor(){
+    constructor() {
         super();
-        this.state={
-            selectedOrganisms:[], //create empty array of selected organism tabs
+        this.state = {
+            selectedOrganisms: [], //create empty array of selected organism tabs
         };
-        this.handleClick=this.handleClick.bind(this);
+        this.handleClick = this.handleClick.bind(this);
     }
-    handleClick(organism){
-        console.log(organism)
+    handleClick(organism) {
             // Create a copy of this.state.newtabs so we can manipulate it in peace.
         const tempArray = _.clone(this.state.selectedOrganisms);
         if (tempArray.indexOf(organism) === -1) {
@@ -678,18 +679,17 @@ class Award extends React.Component{
         // Update the list of user-selected organisms.
         this.setState({ selectedOrganisms: tempArray });
     }
-    render(){
-        const {context} =this.props;
-        const statuses = [{status:context.status, title:'Status'}];
-        const organismSpec = 'COMPPRED' ? 'organism.scientific_name=' : 'replicates.library.biosample.donor.organism.scientific_name=';
-        const queryStrings = {
+    render() {
+        const { context } = this.props;
+        const statuses = [{ status: context.status, title: 'Status' }];
+        // const organismSpec = 'COMPPRED' ? 'organism.scientific_name=' : 'replicates.library.biosample.donor.organism.scientific_name=';
+        /* const queryStrings = {
             HUMAN: `${organismSpec}Homo+sapiens`, // human
             MOUSE: `${organismSpec}Mus+musculus`, // mouse
             WORM: `${organismSpec}Caenorhabditis+elegans`, // worm
             FLY: `${organismSpec}Drosophila+melanogaster&${organismSpec}Drosophila+pseudoobscura&${organismSpec}Drosophila+simulans&${organismSpec}Drosophila+mojavensis&${organismSpec}Drosophila+ananassae&${organismSpec}Drosophila+virilis&${organismSpec}Drosophila+yakuba`,
-        };
-        const organismButtonClick = {this:organismButtonClick};
-        return(
+         }; */
+        return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
@@ -702,11 +702,10 @@ class Award extends React.Component{
                     </div>
                 </header>
 
-                {/*Call creation of panels*/}
+                {/* Call creation of panels*/}
                 <AwardCharts award={context} />
-                <NewPanel handleClick={this.handleClick} selectedOrganisms={this.state.selectedOrganisms}/>
+                <NewPanel handleClick={this.handleClick} selectedOrganisms={this.state.selectedOrganisms} />
 
-                {/*^alternatively NewPanel or MiddlePanel, depending on whichever version is used*/}
                 <Panel>
                     <PanelHeading>
                         <h4>Description</h4>
@@ -730,7 +729,7 @@ class Award extends React.Component{
             </div>
         );
     }
-};
+}
 
 
 Award.propTypes = {
