@@ -91,5 +91,6 @@
         "internal_tags": 1.0,
         "external_ids": 1.0,
         "aliases": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/mouse_donor.md"
 }

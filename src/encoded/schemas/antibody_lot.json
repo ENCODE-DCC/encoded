@@ -295,5 +295,7 @@
         "characterizations.target.organism.name": 1.0,
         "characterizations.target.organism.scientific_name": 1.0,
         "characterizations.target.organism.taxon_id": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/antibody_lot.md"
+
 }

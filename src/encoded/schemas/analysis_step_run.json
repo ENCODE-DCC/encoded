@@ -88,5 +88,7 @@
                 "virtual"
             ]
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/analysis_step_run.md"
+
 }
