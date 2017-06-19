@@ -85,9 +85,9 @@ export class ObjectPicker extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (!this.props.value && !this.state.searchInput && this.state.searchInput !== prevState.searchInput) {
-            this.refs.input.focus();
+            this.input.focus();
         } else if (this.props.value !== prevProps.value) {
-            this.refs.clear.focus();
+            this.clear.focus();
         }
     }
 
@@ -146,7 +146,7 @@ export class ObjectPicker extends React.Component {
                     {!url ?
                         <input
                             value={this.state.searchInput}
-                            ref="input"
+                            ref={(input) => { this.input = input; }}
                             type="text"
                             placeholder="Enter a search term (accession, uuid, alias, ...)"
                             onChange={this.handleInput}
@@ -159,7 +159,7 @@ export class ObjectPicker extends React.Component {
                 </div>
                 {!this.props.disabled &&
                     <div className="pull-right">
-                        <button className="clear" ref="clear" onClick={this.handleClear}><i className="icon icon-times" /></button>
+                        <button className="clear-button" ref={(button) => { this.clear = button; }} onClick={this.handleClear}><i className="icon icon-times" /></button>
                         {' '}<button className={`btn btn-primary${this.state.browsing ? ' active' : ''}`} onClick={this.handleBrowse}>Browse&hellip;</button>
                     </div>
                 }

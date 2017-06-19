@@ -64,21 +64,21 @@ import { Panel, PanelHeading } from '../libs/bootstrap/panel';
 
 // Required sortable table wrapper component. Takes no parameters but puts the table in a Bootstrap panel
 // and makes it responsive. You can place multiple <SortTable />s as children of this component.
-const SortTablePanel = (props) => {
+export const SortTablePanel = (props) => {
     const { title, header, noDefaultClasses } = props;
 
     return (
         <Panel addClasses={`table-file + ${noDefaultClasses ? '' : ' table-panel'}`} noDefaultClasses={noDefaultClasses}>
             {title ?
                 <PanelHeading key="heading">
-                    <h4>{title ? <span>{this.props.title}</span> : null}</h4>
+                    <h4>{title ? <span>{props.title}</span> : null}</h4>
                 </PanelHeading>
             : (header ?
-                <PanelHeading key="heading" addClasses="clearfix">{this.props.header}</PanelHeading>
+                <PanelHeading key="heading" addClasses="clearfix">{props.header}</PanelHeading>
             : null)}
 
             <div className="table-responsive" key="table">
-                {this.props.children}
+                {props.children}
             </div>
         </Panel>
     );
@@ -108,7 +108,7 @@ const SortTableComponent = props => (
                 <h4>{props.title ? <span>{props.title}</span> : null}</h4>
             </PanelHeading>
         : (props.header ?
-            <PanelHeading key="heading" addClasses="clearfix">{this.props.header}</PanelHeading>
+            <PanelHeading key="heading" addClasses="clearfix">{props.header}</PanelHeading>
         : null)}
 
         <div className="table-responsive" key="table">
@@ -180,7 +180,7 @@ ColumnSortDir.defaultProps = {
 
 
 // Displays one table within a <SortTablePanel></SortTablePanel>.
-class SortTable extends React.Component {
+export class SortTable extends React.Component {
     constructor(props) {
         super(props);
 
@@ -289,7 +289,7 @@ class SortTable extends React.Component {
                                         const title = (typeof columns[columnId].title === 'function') ? columns[columnId].title(list, columns, meta) : columns[columnId].title;
                                         const thClass = (columns[columnId].sorter !== false) ? 'tcell-sortable' : null;
 
-                                        return <ColumnSortDir sortDir={this.sortDir} columnId={columnId} thClass={thClass} title={title} columnClass={columnClass} />;
+                                        return <ColumnSortDir key={columnId} sortDir={this.sortDir} columnId={columnId} thClass={thClass} title={title} columnClass={columnClass} />;
                                     }
 
                                     // Column hidden
