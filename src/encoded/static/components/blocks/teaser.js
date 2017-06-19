@@ -4,7 +4,7 @@ import _ from 'underscore';
 import { FetchedData, Param } from '../fetched';
 import globals from '../globals';
 import { ObjectPicker } from '../inputs';
-import { ItemBlockView } from './item';
+import ItemBlockView from './item';
 import { RichTextBlockView } from './richtext';
 
 
