@@ -1,41 +1,44 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
 import { Field } from '../form';
+import globals from '../globals';
+import JsonPanel from '../item';
 
-const globals = require('../globals');
-const JsonPanel = require('../item');
 
-const FallbackBlockView = createReactClass({
-    propTypes: {
-        blocktype: PropTypes.object,
-        value: PropTypes.any,
-    },
+const FallbackBlockView = props => (
+    <div>
+        <h2>{props.blocktype.label}</h2>
+        <JsonPanel context={props.value} />
+    </div>
+);
 
-    render() {
-        return (
-            <div>
-            <h2>{this.props.blocktype.label}</h2>
-                <JsonPanel context={this.props.value} />
-            </div>
-        );
-    },
-});
+FallbackBlockView.propTypes = {
+    blocktype: PropTypes.object.isRequired,
+    value: PropTypes.any,
+};
 
-const JSONInput = createReactClass({
+FallbackBlockView.defaultProps = {
+    value: null,
+};
 
-    propTypes: {
-        value: PropTypes.any,
-        onChange: PropTypes.func,
-    },
 
-    getInitialState() {
-        return { value: JSON.stringify(this.props.value, null, 4), error: false };
-    },
+class JSONInput extends React.Component {
+    constructor(props) {
+        super(props);
+
+        // Set initial React component state.
+        this.state = {
+            value: JSON.stringify(this.props.value, null, 4),
+            error: false,
+        };
+
+        // Bind this to non-React components.
+        this.handleChange = this.handleChange.bind(this);
+    }
 
     handleChange(event) {
         let value = event.target.value;
-        this.setState({ value: value });
+        this.setState({ value });
         let error = false;
         try {
             value = JSON.parse(value);
@@ -46,7 +49,7 @@ const JSONInput = createReactClass({
         if (!error) {
             this.props.onChange(value);
         }
-    },
+    }
 
     render() {
         return (
@@ -54,35 +57,58 @@ const JSONInput = createReactClass({
                 <textarea rows="10" value={this.state.value} onChange={this.handleChange} />
             </div>
         );
-    },
-});
+    }
+}
+
+JSONInput.propTypes = {
+    value: PropTypes.any,
+    onChange: PropTypes.func.isRequired,
+};
+
+JSONInput.defaultProps = {
+    value: null,
+};
+
 
 const fallbackSchema = {
     type: 'object',
     formInput: <JSONInput />,
 };
 
-module.exports.FallbackBlockEdit = createReactClass({
-    propTypes: {
-        schema: PropTypes.object,
-        value: PropTypes.any,
-        onChange: PropTypes.func,
-    },
+
+export default class FallbackBlockEdit extends React.Component {
+    constructor() {
+        super();
+
+        // Bind this to non-React methods.
+        this.update = this.update.bind(this);
+    }
 
     update(name, value) {
         this.props.onChange(value);
-    },
+    }
 
     render() {
         const { schema, value } = this.props;
         return (<Field
             schema={schema || fallbackSchema} value={value} updateChild={this.update}
         />);
-    },
-});
+    }
+}
+
+FallbackBlockEdit.propTypes = {
+    schema: PropTypes.object,
+    value: PropTypes.any,
+    onChange: PropTypes.func.isRequired,
+};
+
+FallbackBlockEdit.defaultProps = {
+    schema: null,
+    value: null,
+};
 
 // Use this as a fallback for any block we haven't registered
-globals.blocks.fallback = function (obj) {
+globals.blocks.fallback = function fallback(obj) {
     return {
         label: obj['@type'].join(','),
         schema: fallbackSchema,

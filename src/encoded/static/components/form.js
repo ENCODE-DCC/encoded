@@ -7,7 +7,7 @@ import _ from 'underscore';
 import offset from '../libs/offset';
 import { FetchedData, Param } from './fetched';
 import { parseAndLogError } from './globals';
-import inputs from './inputs';
+import { FileInput, ItemPreview, ObjectPicker } from './inputs';
 import Layout from './layout';
 
 const validator = new jsonschema.Validator();
@@ -373,7 +373,7 @@ class FetchedFieldset extends React.Component {
             preview = (
                 <FetchedData>
                     <Param name="data" url={previewUrl} />
-                    <inputs.ItemPreview />
+                    <ItemPreview />
                 </FetchedData>
             );
             // When expanded, fetch the edit frame and render form fields.
@@ -555,7 +555,7 @@ export class Field extends UpdateChildMixin(React.Component) {
         let input = schema.formInput;
         if (input) {
             if (input === 'file') {
-                input = <inputs.FileInput {...inputProps} />;
+                input = <FileInput {...inputProps} />;
             } else if (input === 'textarea') {
                 input = <textarea rows="4" {...inputProps} />;
             } else if (input === 'layout') {
@@ -607,7 +607,7 @@ export class Field extends UpdateChildMixin(React.Component) {
             // Restrict ObjectPicker to finding the specified type
             // FIXME this should handle an array of types too
             const restrictions = { type: [schema.linkTo] };
-            input = (<inputs.ObjectPicker
+            input = (<ObjectPicker
                 {...inputProps}
                 searchBase={`?mode=picker&type=${schema.linkTo}`}
                 restrictions={restrictions}

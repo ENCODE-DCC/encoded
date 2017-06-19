@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import { FallbackBlockEdit } from './blocks/fallback';
+import FallbackBlockEdit from './blocks/fallback';
 import closest from '../libs/closest';
 import offset from '../libs/offset';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';

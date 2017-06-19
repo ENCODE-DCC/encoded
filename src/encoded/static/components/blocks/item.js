@@ -1,28 +1,25 @@
-'use strict';
 import React from 'react';
-import createReactClass from 'create-react-class';
+import PropTypes from 'prop-types';
 import { FetchedData, Param } from '../fetched';
+import globals from '../globals';
+import { ObjectPicker } from '../inputs';
 
-var inputs = require('../inputs');
-var globals = require('../globals');
+
+const ItemBlockView = (props) => {
+    const ViewComponent = globals.content_views.lookup(props.context);
+    return <ViewComponent {...props} />;
+};
+
+export default ItemBlockView;
 
 
-var ItemBlockView = module.exports.ItemBlockView = createReactClass({
-    render: function() {
-        var ViewComponent = globals.content_views.lookup(this.props.context);
-        return <ViewComponent {...this.props} />;
+class FetchedItemBlockView extends React.Component {
+    shouldComponentUpdate(nextProps) {
+        return (nextProps.value.item !== this.props.value.item);
     }
-});
 
-
-var FetchedItemBlockView = createReactClass({
-
-    shouldComponentUpdate: function(nextProps) {
-        return (nextProps.value.item != this.props.value.item);
-    },
-
-    render: function() {
-        var context = this.props.value.item;
+    render() {
+        const context = this.props.value.item;
         if (typeof context === 'object') {
             return <ItemBlockView context={context} />;
         }
@@ -36,7 +33,11 @@ var FetchedItemBlockView = createReactClass({
         }
         return null;
     }
-});
+}
+
+FetchedItemBlockView.propTypes = {
+    value: PropTypes.object.isRequired,
+};
 
 
 globals.blocks.register({
@@ -48,7 +49,7 @@ globals.blocks.register({
             item: {
                 title: 'Item',
                 type: 'string',
-                formInput: <inputs.ObjectPicker />
+                formInput: <ObjectPicker />
             },
             className: {
                 title: 'CSS Class',
@@ -56,5 +57,5 @@ globals.blocks.register({
             }
         }
     },
-    view: FetchedItemBlockView
+    view: FetchedItemBlockView,
 }, 'itemblock');
