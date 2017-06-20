@@ -17,6 +17,32 @@ const labColorList = labColors.colorList();
 const typeSpecificColorList = labColors.colorList();
 const statusColorList = labColors.colorList();
 
+function generateQuery(chosenOrganisms) {
+    // Make the base query.
+    let query = '';
+    // === 'COMPPRED' ? '/annotation/' : '/awards/';
+
+    // Add the selected assay category, if any (doesn't apply to Computational Predictions).
+    // if (selectedAssayCategory && selectedAssayCategory !== 'COMPPRED') {
+    //     query += `&assay_slims=${selectedAssayCategory}`;
+    // }
+
+    // Add all the selected organisms, if any
+    // = 'COMPPRED' ? 'organism.scientific_name=' :
+    if (chosenOrganisms.length) {
+        const organismSpec = 'replicates.library.biosample.donor.organism.scientific_name=';
+        const queryStrings = {
+            HUMAN: `${organismSpec}Homo+sapiens`, // human
+            MOUSE: `${organismSpec}Mus+musculus`, // mouse
+            WORM: `${organismSpec}Caenorhabditis+elegans`, // worm
+            FLY: `${organismSpec}Drosophila+melanogaster&${organismSpec}Drosophila+pseudoobscura&${organismSpec}Drosophila+simulans&${organismSpec}Drosophila+mojavensis&${organismSpec}Drosophila+ananassae&${organismSpec}Drosophila+virilis&${organismSpec}Drosophila+yakuba`,
+        };
+        const organismQueries = chosenOrganisms.map(organism => queryStrings[organism]);
+        query += `&${organismQueries.join('&')}`;
+    }
+
+    return query;
+}
 
 // Draw the total chart count in the middle of the donut.
 function drawDonutCenter(chart) {
@@ -600,22 +626,6 @@ OrganismSelector.contextTypes = {
     organismButtonClick: PropTypes.func,
 };
 
-
-// Version 2 of creating a new panel
-// const MiddlePanel = (props) => {
-//     const {award} = props;
-//     return(
-//         <Panel>
-//             <PanelHeading>
-//                 <h4>Middle Panel</h4>
-//             </PanelHeading>
-//             <PanelBody>
-//                 <h5> Text text text </h5>
-//             </PanelBody>
-//         </Panel>
-//     );
-// };
-
 ChartRenderer.propTypes = {
     award: PropTypes.object.isRequired, // Award being displayed
     experiments: PropTypes.object, // Search result of matching experiments
@@ -656,6 +666,7 @@ class AwardCharts extends React.Component {
 
     render() {
         const { award } = this.props;
+        const currentOrganismQuery = generateQuery(this.state.selectedOrganisms);
         return (
             <Panel>
                 <PanelHeading>
@@ -665,8 +676,8 @@ class AwardCharts extends React.Component {
                 <PanelBody>
                     <FetchedData ignoreErrors>
                         <TabClicking handleClick={this.handleClick} selectedOrganisms={this.state.selectedOrganisms} />
-                        <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}`} />
-                        <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}`} />
+                        <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}${currentOrganismQuery}`} query={currentOrganismQuery} />
+                        <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}${currentOrganismQuery}`} query={currentOrganismQuery} />
                         <ChartRenderer award={award} />
                     </FetchedData>
                 </PanelBody>
@@ -685,13 +696,6 @@ class Award extends React.Component {
     render() {
         const { context } = this.props;
         const statuses = [{ status: context.status, title: 'Status' }];
-        // const organismSpec = 'COMPPRED' ? 'organism.scientific_name=' : 'replicates.library.biosample.donor.organism.scientific_name=';
-        /* const queryStrings = {
-            HUMAN: `${organismSpec}Homo+sapiens`, // human
-            MOUSE: `${organismSpec}Mus+musculus`, // mouse
-            WORM: `${organismSpec}Caenorhabditis+elegans`, // worm
-            FLY: `${organismSpec}Drosophila+melanogaster&${organismSpec}Drosophila+pseudoobscura&${organismSpec}Drosophila+simulans&${organismSpec}Drosophila+mojavensis&${organismSpec}Drosophila+ananassae&${organismSpec}Drosophila+virilis&${organismSpec}Drosophila+yakuba`,
-         }; */
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
