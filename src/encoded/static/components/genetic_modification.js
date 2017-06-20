@@ -661,7 +661,7 @@ export class GeneticModificationGroup extends React.Component {
                 </div>
                 {this.state.detailOpen ?
                     <div className="gm-detail-table">
-                        <SortTable list={gms} columns={this.columns} />
+                        <SortTable list={gms} columns={GeneticModificationGroup.columns} />
                         <div className="gm-detail-table-shadow" />
                     </div>
                 : null}

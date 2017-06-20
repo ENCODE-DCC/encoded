@@ -92,12 +92,14 @@ SortTablePanel.propTypes = {
     ]),
     header: PropTypes.object, // React component to render inside header
     noDefaultClasses: PropTypes.bool, // T to skip default <Panel> classes
+    children: PropTypes.node, // Table components within a SortTablePanel
 };
 
 SortTablePanel.defaultProps = {
     title: '',
     header: null,
     noDefaultClasses: false,
+    children: null,
 };
 
 
