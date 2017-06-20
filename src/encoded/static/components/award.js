@@ -17,25 +17,17 @@ const labColorList = labColors.colorList();
 const typeSpecificColorList = labColors.colorList();
 const statusColorList = labColors.colorList();
 
-function generateQuery(chosenOrganisms) {
+function generateQuery(chosenOrganisms, searchTerm) {
     // Make the base query.
     let query = '';
-    // === 'COMPPRED' ? '/annotation/' : '/awards/';
-
-    // Add the selected assay category, if any (doesn't apply to Computational Predictions).
-    // if (selectedAssayCategory && selectedAssayCategory !== 'COMPPRED') {
-    //     query += `&assay_slims=${selectedAssayCategory}`;
-    // }
 
     // Add all the selected organisms, if any
-    // = 'COMPPRED' ? 'organism.scientific_name=' :
     if (chosenOrganisms.length) {
-        const organismSpec = 'replicates.library.biosample.donor.organism.scientific_name=';
         const queryStrings = {
-            HUMAN: `${organismSpec}Homo+sapiens`, // human
-            MOUSE: `${organismSpec}Mus+musculus`, // mouse
-            WORM: `${organismSpec}Caenorhabditis+elegans`, // worm
-            FLY: `${organismSpec}Drosophila+melanogaster&${organismSpec}Drosophila+pseudoobscura&${organismSpec}Drosophila+simulans&${organismSpec}Drosophila+mojavensis&${organismSpec}Drosophila+ananassae&${organismSpec}Drosophila+virilis&${organismSpec}Drosophila+yakuba`,
+            HUMAN: `${searchTerm}Homo+sapiens`, // human
+            MOUSE: `${searchTerm}Mus+musculus`, // mouse
+            WORM: `${searchTerm}Caenorhabditis+elegans`, // worm
+            FLY: `${searchTerm}Drosophila+melanogaster&${searchTerm}Drosophila+pseudoobscura&${searchTerm}Drosophila+simulans&${searchTerm}Drosophila+mojavensis&${searchTerm}Drosophila+ananassae&${searchTerm}Drosophila+virilis&${searchTerm}Drosophila+yakuba`,
         };
         const organismQueries = chosenOrganisms.map(organism => queryStrings[organism]);
         query += `&${organismQueries.join('&')}`;
@@ -666,7 +658,10 @@ class AwardCharts extends React.Component {
 
     render() {
         const { award } = this.props;
-        const currentOrganismQuery = generateQuery(this.state.selectedOrganisms);
+        const AnnotationQuery = generateQuery(this.state.selectedOrganisms, 'organism.scientific_name=');
+        const ExperimentQuery = generateQuery(this.state.selectedOrganisms, 'replicates.library.biosample.donor.organism.scientific_name=');
+        console.log(AnnotationQuery);
+        console.log(ExperimentQuery);
         return (
             <Panel>
                 <PanelHeading>
@@ -676,8 +671,8 @@ class AwardCharts extends React.Component {
                 <PanelBody>
                     <FetchedData ignoreErrors>
                         <TabClicking handleClick={this.handleClick} selectedOrganisms={this.state.selectedOrganisms} />
-                        <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}${currentOrganismQuery}`} query={currentOrganismQuery} />
-                        <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}${currentOrganismQuery}`} query={currentOrganismQuery} />
+                        <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}${ExperimentQuery}`} />
+                        <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}${AnnotationQuery}`} />
                         <ChartRenderer award={award} />
                     </FetchedData>
                 </PanelBody>
