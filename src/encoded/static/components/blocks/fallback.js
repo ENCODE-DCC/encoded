@@ -62,11 +62,12 @@ class JSONInput extends React.Component {
 
 JSONInput.propTypes = {
     value: PropTypes.any,
-    onChange: PropTypes.func.isRequired,
+    onChange: PropTypes.func,
 };
 
 JSONInput.defaultProps = {
     value: null,
+    onChange: null,
 };
 
 

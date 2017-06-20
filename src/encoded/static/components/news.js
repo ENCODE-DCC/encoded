@@ -338,7 +338,7 @@ const NewsFacets = (props) => {
             {nonEmptyFacets.map((facet) => {
                 const FacetView = globals.facet_view.lookup(facet);
 
-                return <FacetView facet={facet} baseUri={baseUri} searchFilters={searchFilters} />;
+                return <FacetView key={facet.field} facet={facet} baseUri={baseUri} searchFilters={searchFilters} />;
             })}
         </div>
     );
