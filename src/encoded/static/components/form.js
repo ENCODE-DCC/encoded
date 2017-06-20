@@ -951,19 +951,23 @@ export class Form extends React.Component {
 }
 
 Form.propTypes = {
-    defaultValue: PropTypes.any.isRequired,
-    schemas: PropTypes.object.isRequired,
+    defaultValue: PropTypes.any,
+    schemas: PropTypes.object,
     schema: PropTypes.object.isRequired,
     showReadOnly: PropTypes.bool,
-    id: PropTypes.string.isRequired,
+    id: PropTypes.string,
     method: PropTypes.string.isRequired,
     action: PropTypes.string.isRequired,
-    etag: PropTypes.string.isRequired,
+    etag: PropTypes.string,
     onFinish: PropTypes.func.isRequired,
     submitLabel: PropTypes.string,
 };
 
 Form.defaultProps = {
+    defaultValue: null,
+    schemas: null,
+    id: '',
+    etag: '',
     showReadOnly: true,
     submitLabel: 'Save',
 };
