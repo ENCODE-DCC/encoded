@@ -178,9 +178,13 @@ class Table extends React.Component {
         this.handleKeyUp = this.handleKeyUp.bind(this);
         this.submit = this.submit.bind(this);
         this.clearFilter = this.clearFilter.bind(this);
+
+        // Initialize object data members.
+        this.componentMounted = false; // True if this component is currently mounted.
     }
 
     componentDidMount() {
+        this.componentMounted = true;
         this.setState({
             data: this.extractData(this.props),
             communicating: this.fetchAll(this.props),
@@ -211,6 +215,7 @@ class Table extends React.Component {
     }
 
     componentWillUnmount() {
+        this.componentMounted = false;
         if (typeof this.submitTimer !== 'undefined') {
             clearTimeout(this.submitTimer);
         }
@@ -221,30 +226,35 @@ class Table extends React.Component {
     }
 
     extractData(props, inColumns) {
-        const context = props.context;
-        const columns = inColumns || this.state.columns;
-        const rows = context['@graph'].map((item) => {
-            const cells = columns.map((column) => {
-                let factory;
-                let value = lookupColumn(item, column);
-                if (column === '@id') {
-                    factory = globals.listing_titles.lookup(item);
-                    value = factory({ context: item });
-                } else if (value === null || value === undefined) {
-                    value = '';
-                } else if (!(value instanceof Array) && value['@type']) {
-                    factory = globals.listing_titles.lookup(value);
-                    value = factory({ context: value });
-                }
-                const sortable = String(value).toLowerCase();
-                return new Cell(value, column, sortable);
+        if (this.componentMounted) {
+            const context = props.context;
+            const columns = inColumns || this.state.columns;
+            const rows = context['@graph'].map((item) => {
+                const cells = columns.map((column) => {
+                    let factory;
+                    let value = lookupColumn(item, column);
+                    if (column === '@id') {
+                        factory = globals.listing_titles.lookup(item);
+                        value = factory({ context: item });
+                    } else if (value === null || value === undefined) {
+                        value = '';
+                    } else if (!(value instanceof Array) && value['@type']) {
+                        factory = globals.listing_titles.lookup(value);
+                        value = factory({ context: value });
+                    }
+                    const sortable = String(value).toLowerCase();
+                    return new Cell(value, column, sortable);
+                });
+                const text = cells.map(cell => cell.value).join(' ').toLowerCase();
+                return new Row(item, cells, text);
             });
-            const text = cells.map(cell => cell.value).join(' ').toLowerCase();
-            return new Row(item, cells, text);
-        });
-        const data = new Data(rows);
-        this.setState({ data });
-        return data;
+            const data = new Data(rows);
+            this.setState({ data });
+            return data;
+        }
+
+        // This Table component isn't mounted.
+        return null;
     }
 
     fetchAll(props) {
