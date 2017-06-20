@@ -538,7 +538,7 @@ const ChartRenderer = (props) => {
         </div>
     );
 };
-// Version 1 of creating a new panel
+// Create new panel with genus buttons
 class NewPanel extends React.Component {
     render() {
         const { selectedOrganisms, handleClick } = this.props;
@@ -557,7 +557,7 @@ class NewPanel extends React.Component {
 
 
 NewPanel.propTypes = {
-    selectedOrganisms: PropTypes.array, // Array of currently selected tabs
+    selectedOrganisms: PropTypes.array, // Array of currently selected buttons
     handleClick: PropTypes.func.isRequired, // Function to call when a button is clicked
 };
 
@@ -565,7 +565,7 @@ NewPanel.defaultProps = {
     selectedOrganisms: [],
 };
 
-
+// Add the new style class to the selected button when it is clicked
 class OrganismSelector extends React.Component {
     constructor() {
         super();
@@ -573,7 +573,6 @@ class OrganismSelector extends React.Component {
     }
 
     buttonClick() {
-        // const { organism, organismButtonClick } = this.props;
         this.props.organismButtonClick(this.props.organism);
     }
     render() {
@@ -588,7 +587,7 @@ class OrganismSelector extends React.Component {
 OrganismSelector.propTypes = {
     organism: PropTypes.string, // Organism this selector represents
     selected: PropTypes.bool, // `true` if selector is selected
-    organismButtonClick: PropTypes.func,
+    organismButtonClick: PropTypes.func, // Function that takes in the prop organism when button is clicked
 };
 
 OrganismSelector.defaultProps = {
