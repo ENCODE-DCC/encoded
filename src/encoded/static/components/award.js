@@ -539,7 +539,7 @@ const ChartRenderer = (props) => {
     );
 };
 // Create new panel with genus buttons
-class NewPanel extends React.Component {
+class TabClicking extends React.Component {
     render() {
         const { selectedOrganisms, handleClick } = this.props;
         return (
@@ -556,12 +556,12 @@ class NewPanel extends React.Component {
 }
 
 
-NewPanel.propTypes = {
+TabClicking.propTypes = {
     selectedOrganisms: PropTypes.array, // Array of currently selected buttons
     handleClick: PropTypes.func.isRequired, // Function to call when a button is clicked
 };
 
-NewPanel.defaultProps = {
+TabClicking.defaultProps = {
     selectedOrganisms: [],
 };
 
@@ -629,33 +629,7 @@ ChartRenderer.defaultProps = {
 
 
 // Overall component to render the award charts
-const AwardCharts = (props) => {
-    const { award } = props;
-
-    return (
-        <Panel>
-            <PanelHeading>
-                <h4>{award.pi && award.pi.lab ? <span>{award.pi.lab.title}</span> : <span>No PI indicated</span>}</h4>
-                <ProjectBadge award={award} addClasses="badge-heading" />
-            </PanelHeading>
-            <PanelBody>
-                <FetchedData ignoreErrors>
-                    <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}`} />
-                    <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}`} />
-                    <ChartRenderer award={award} />
-                </FetchedData>
-            </PanelBody>
-        </Panel>
-    );
-};
-
-AwardCharts.propTypes = {
-    award: PropTypes.object.isRequired, // Award represented by this chart
-};
-
-
-class Award extends React.Component {
-
+class AwardCharts extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -663,6 +637,7 @@ class Award extends React.Component {
         };
         this.handleClick = this.handleClick.bind(this);
     }
+
     handleClick(organism) {
         // Create a copy of this.state.selectedOrganisms so we can manipulate it in peace.
         const tempArray = _.clone(this.state.selectedOrganisms);
@@ -678,6 +653,35 @@ class Award extends React.Component {
         // Update the list of user-selected organisms.
         this.setState({ selectedOrganisms: tempArray });
     }
+
+    render() {
+        const { award } = this.props;
+        return (
+            <Panel>
+                <PanelHeading>
+                    <h4>{award.pi && award.pi.lab ? <span>{award.pi.lab.title}</span> : <span>No PI indicated</span>}</h4>
+                    <ProjectBadge award={award} addClasses="badge-heading" />
+                </PanelHeading>
+                <PanelBody>
+                    <FetchedData ignoreErrors>
+                        <TabClicking handleClick={this.handleClick} selectedOrganisms={this.state.selectedOrganisms} />
+                        <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}`} />
+                        <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}`} />
+                        <ChartRenderer award={award} />
+                    </FetchedData>
+                </PanelBody>
+            </Panel>
+        );
+    }
+}
+
+AwardCharts.propTypes = {
+    award: PropTypes.object.isRequired, // Award represented by this chart
+};
+
+
+class Award extends React.Component {
+
     render() {
         const { context } = this.props;
         const statuses = [{ status: context.status, title: 'Status' }];
@@ -701,7 +705,6 @@ class Award extends React.Component {
                     </div>
                 </header>
                 <AwardCharts award={context} />
-                <NewPanel handleClick={this.handleClick} selectedOrganisms={this.state.selectedOrganisms} />
                 <Panel>
                     <PanelHeading>
                         <h4>Description</h4>
