@@ -664,13 +664,13 @@ class Award extends React.Component {
         this.handleClick = this.handleClick.bind(this);
     }
     handleClick(organism) {
-            // Create a copy of this.state.newtabs so we can manipulate it in peace.
+        // Create a copy of this.state.selectedOrganisms so we can manipulate it in peace.
         const tempArray = _.clone(this.state.selectedOrganisms);
         if (tempArray.indexOf(organism) === -1) {
-            // if tab isn't already in array, then add it
+            // if organism isn't already in array, then add it
             tempArray.push(organism);
         } else {
-            // otherwise if it is in array, remove it from array and from link
+            // otherwise if it is in array, remove it from array
             const indexToRemoveArray = tempArray.indexOf(organism);
             tempArray.splice(indexToRemoveArray, 1);
         }
@@ -700,11 +700,8 @@ class Award extends React.Component {
                         </div>
                     </div>
                 </header>
-
-                {/* Call creation of panels*/}
                 <AwardCharts award={context} />
                 <NewPanel handleClick={this.handleClick} selectedOrganisms={this.state.selectedOrganisms} />
-
                 <Panel>
                     <PanelHeading>
                         <h4>Description</h4>
