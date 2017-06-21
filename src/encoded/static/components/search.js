@@ -376,15 +376,17 @@ var ExperimentComponent = createReactClass({
 
         // Bek: Forrest should review the change for correctness
         // Collect synchronizations
-        const synchronizations = _.uniq(result.replicates.filter(replicate =>
-            replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization
-        ).map((replicate) => {
-            const biosample = replicate.library.biosample;
-            return (biosample.synchronization +
-                (biosample.post_synchronization_time ?
-                    ` + ${biosample.post_synchronization_time}${biosample.post_synchronization_time_units ? ` ${biosample.post_synchronization_time_units}` : ''}`
-                : ''));
-        }));
+        if (result.replicates && result.replicates.length) {
+            var synchronizations = _.uniq(result.replicates.filter(replicate =>
+                replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization
+            ).map((replicate) => {
+                const biosample = replicate.library.biosample;
+                return (biosample.synchronization +
+                    (biosample.post_synchronization_time ?
+                        ` + ${biosample.post_synchronization_time}${biosample.post_synchronization_time_units ? ` ${biosample.post_synchronization_time_units}` : ''}`
+                    : ''));
+            }));
+        }
 
         return (
             <li>
