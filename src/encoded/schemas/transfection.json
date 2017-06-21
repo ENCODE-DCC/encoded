@@ -1,10 +1,10 @@
  {
     "title": "Transfection",
     "description": "Schema for submitting an information using transfection as a genetic modification technique.",
-    "id": "/profiles/crispr.json",
+    "id": "/profiles/transfection.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["lab", "award"],
+    "required": ["lab", "award", "transfection_type"],
     "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -19,49 +19,14 @@
         { "$ref": "mixins.json#/documents" }
     ],
     "dependencies": {
-        "rnais": {
-            "oneOf": [
-                {
-                   "required": ["transfection_type"],
-                    "properties": {
-                        "rnais": {
-                            "minItems": 1
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "rnais": {
-                            "maxItems": 0
-                        }
-                    }
-                }
-            ]
-        },
-        "inserts": {
-            "oneOf": [
-                {
-                   "required": ["transfection_type"],
-                    "properties": {
-                        "inserts": {
-                            "minItems": 1
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "inserts": {
-                            "maxItems": 0
-                        }
-                    }
-                }
-            ]
-        },
-        "transfection_method": ["transfection_type"]
+        "transfection_method": {
+            "required": ["transfection_type"],
+            "comment": "Transfected biosamples require specification of the transfection_type."
+        }
     },
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "1"
         },
         "transfection_type": {
             "title": "Transfection type",
@@ -83,34 +48,11 @@
                 "microinjection"
             ]
         },
-        "inserts": {
-            "title": "Insert",
-            "description": "DNA insert introduced if applied for non-deletion purposes.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Insert",
-                "description": "DNA insert introduced if applied for non-deletion purposes.",
-                "type": "string",
-                "comment": "see insert.json for available identifiers",
-                "linkTo": "Insert"
-            }
-        },
-        "rnais": {
-            "title": "RNAi vectors",
-            "description": "RNAi vectors stably or transiently transfected.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "RNAi Vector",
-                "description": "RNAi vector stably or transiently transfected.",
-                "comment": "See rnai.json for available identifiers.",
-                "type":  "string",
-                "linkTo": "RNAi"
-            }
+        "vector_backbone_name": {
+            "title": "Backbone name",
+            "description": "The name of the vector backbone used for the construct.",
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         }
     }
 }
-        

@@ -4,7 +4,7 @@
     "id": "/profiles/mpra.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["lab", "award", "sequences_tested", "integration_type", "assay_term_name"],
+    "required": ["lab", "award", "modifications_tested", "integration_type", "assay_term_name"],
     "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [

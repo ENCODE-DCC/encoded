@@ -4,7 +4,7 @@
     "id": "/profiles/transgenic_organism.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["lab", "award", "sequences_tested", "activity_detected", "biosample"],
+    "required": ["lab", "award", "modifications_tested", "activity_detected", "biosample"],
     "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [

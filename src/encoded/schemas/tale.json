@@ -45,35 +45,6 @@
             "descrition": "The target genome sequence recognized by the TALE domain.",
             "type": "string",
             "pattern": "^[ACTG]+$"
-        },
-        "insertion_type": {
-            "title": "Insertion type",
-            "description": "The type of insertion being introduced.",
-            "type": "string",
-            "enum": [
-                "candidate regulatory sequence (proximal)",
-                "candidate regulatory sequence (distal)",
-                "fusion protein"
-            ]
-        },
-        "insert_sequence": {
-            "title": "Insert sequence",
-            "description": "Insert sequence",
-            "type": "string",
-            "pattern": "^[ACTG]+$"  
-        },
-        "source_data": {
-            "title": "Source data",
-            "description": "Source of the candidate regulatory element in the insert (if applicable).",
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "title": "Source data",
-                "description": "Source data file from which the candidate regulatory element was identified.",
-                "type": "string",
-                "comment": "See file.json for available identifiers.",
-                "linkTo": "File"
-            }
         }
     },
     "facets": {
