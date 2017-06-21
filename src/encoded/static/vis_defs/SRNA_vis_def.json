@@ -70,7 +70,7 @@
                 },
                 "Signal of all reads": {
                     "tag": "SIGBM",
-                    "visibility": "hide",
+                    "visibility": "full",
                     "type": "bigWig",
                     "viewLimits": "0:1",
                     "transformFunc": "LOG",
