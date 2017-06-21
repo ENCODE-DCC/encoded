@@ -22,7 +22,11 @@ const SearchResultsLayout = (props) => {
 };
 
 SearchResultsLayout.propTypes = {
-    context: PropTypes.object.isRequired,
+    context: PropTypes.object,
+};
+
+SearchResultsLayout.defaultProps = {
+    context: null,
 };
 
 
@@ -75,13 +79,13 @@ class SearchBlock extends React.Component {
 }
 
 SearchBlock.propTypes = {
-    value: PropTypes.object,
+    value: PropTypes.string,
     mode: PropTypes.string,
     onChange: PropTypes.func,
 };
 
 SearchBlock.defaultProps = {
-    value: null,
+    value: '',
     mode: '',
     onChange: null,
 };

@@ -925,7 +925,7 @@ class App extends React.Component {
                 containerClass = 'container';
             }
         }
-        const errors = this.state.errors.map(() => <div className="alert alert-error" />);
+        const errors = this.state.errors.map(i => <div key={i} className="alert alert-error" />);
 
         let appClass = 'done';
         if (this.state.slow) {

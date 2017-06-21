@@ -5,7 +5,7 @@ import { FetchedData, Param } from '../fetched';
 import globals from '../globals';
 import { ObjectPicker } from '../inputs';
 import ItemBlockView from './item';
-import { RichTextBlockView } from './richtext';
+import RichTextBlockView from './richtext';
 
 
 class TeaserCore extends React.Component {
@@ -112,7 +112,7 @@ class RichEditor extends React.Component {
 }
 
 RichEditor.propTypes = {
-    value: PropTypes.object,
+    value: PropTypes.string,
     onChange: PropTypes.func,
 };
 
