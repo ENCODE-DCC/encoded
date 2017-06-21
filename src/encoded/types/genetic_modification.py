@@ -12,6 +12,7 @@ from .base import (
 
 @collection(
     name='genetic-modifications',
+    unique_key='accession',
     properties={
         'title': 'Genetic modifications',
         'description': 'Listing of genetic modifications',
@@ -19,6 +20,7 @@ from .base import (
 class GeneticModification(Item):
     item_type = 'genetic_modification'
     schema = load_schema('encoded:schemas/genetic_modification.json')
+    name_key = 'accession'
     embedded = [
         'award',
         'award.pi',

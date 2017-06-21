@@ -10,6 +10,7 @@
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status" },
@@ -43,8 +44,7 @@
                         }
                     }                   
                 },
-                {                 
-
+                {
                     "properties": {
                         "treatments": {
                             "minItems": 1
@@ -58,21 +58,29 @@
             ]
         },
         "purpose": {
-            "comment": "Modifications for tagging purposes need to include the epitope_tag property in combination with a target or site. Modifications of deletion purposes also need the site or target specified.",
+            "comment": "Modifications for tagging purposes need to include the epitope_tag property in combination with a target. Modifications for other purposes also need either the site and/or target specified.",
             "oneOf": [
+                {
+                    "required": ["target", "epitope_tags"],
+                    "properties": {
+                    "purpose": {
+                            "enum": ["tagging"]
+                        }
+                    }
+                },
                 {
                     "required": ["target"],
                     "properties": {
-                       "purpose": {
-                            "enum": ["tagging", "deletion"]
+                    "purpose": {
+                            "enum": ["repression", "activation", "overexpression", "validation"]
                         }
                     }
                 },
                 {
                     "required": ["modified_site"],
                     "properties": {
-                       "purpose": {
-                            "enum": ["deletion"]
+                    "purpose": {
+                            "enum": ["repression", "activation", "overexpression", "validation"]
                         }
                     }
                 },
@@ -80,7 +88,7 @@
                     "not": {
                         "properties": {
                             "purpose": {
-                                "enum": ["tagging", "deletion"]
+                                "enum": ["tagging", "overexpression", "repression", "activation", "validation"]
                             }
                         }
                     }
@@ -92,11 +100,38 @@
         "schema_version": {
             "default": "5"
         },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the modification.",
+        "accession": {
+            "accessionType": "GM"
+        },
+        "description": {
+            "title": "Description",
+            "description": "A plain text description of the genetic modification.",
             "type": "string",
-            "format": "uri"
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
+        },
+        "modification_type": {
+            "title": "Modification type",
+            "description": "The type of the genetic modification.",
+            "type": "string",
+            "enum": [
+                "deletion",
+                "insertion",
+                "replacement",
+                "mutagenesis",
+                "interference"
+            ]
+        },
+        "purpose":{
+            "title": "Purpose",
+            "description": "The purpose of the genetic modification.",
+            "type": "string",
+            "enum": [
+                "repression",
+                "activation",
+                "overexpression",
+                "tagging",
+                "validation"          
+            ]
         },
         "target": {
             "title": "Target",
@@ -104,48 +139,6 @@
             "comment": "See target.json for available identifiers.",
             "type": "string",
             "linkTo": "Target"
-        },
-        "modified_site": {
-            "title": "Modified site",
-            "description": "Genomic coordinates of the modification.",
-            "type": "object",
-            "additionalProperties": false,
-            "required":["assembly", "chromosome", "start", "end"],
-            "properties": {
-                "assembly": {
-                    "title": "Mapping assembly",
-                    "description": "The genome assembly to which modification coordinates relate. e.g. GRCh38.",
-                    "type": "string",
-                    "enum": [
-                        "mm9",
-                        "mm10",
-                        "mm10-minimal",
-                        "hg19",
-                        "GRCh38",
-                        "GRCh38-minimal",
-                        "ce10",
-                        "ce11",
-                        "dm3",
-                        "dm6",
-                        "J02459.1"
-                        ]
-                },
-                "chromosome": {
-                    "title": "Chromosome",
-                    "description": "The number (or letter) designation for the target chromosome. e.g. 1, 2L, or X",
-                    "type": "string"
-                },
-                "start": {
-                    "title": "Start",
-                    "description": "The starting coordinate.",
-                    "type": "integer"
-                },
-                "end": {
-                    "title": "End",
-                    "description": "The ending coordinate (possibly equal to the starting coordinate for one base.)",
-                    "type": "integer"
-                }
-            }
         },
         "epitope_tags": {
             "title": "Epitope tags",
@@ -195,34 +188,107 @@
                 }
             }
         },
-        "description": {
-            "title": "Description",
-            "description": "A plain text description of the genetic modification.",
-            "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
+        "modified_site": {
+            "title": "Modified site",
+            "description": "Genomic coordinates of the modification.",
+            "type": "object",
+            "additionalProperties": false,
+            "required":["assembly", "chromosome", "start", "end"],
+            "properties": {
+                "assembly": {
+                    "title": "Mapping assembly",
+                    "description": "The genome assembly to which modification coordinates relate. e.g. GRCh38.",
+                    "type": "string",
+                    "enum": [
+                        "mm9",
+                        "mm10",
+                        "mm10-minimal",
+                        "hg19",
+                        "GRCh38",
+                        "GRCh38-minimal",
+                        "ce10",
+                        "ce11",
+                        "dm3",
+                        "dm6",
+                        "J02459.1"
+                        ]
+                },
+                "chromosome": {
+                    "title": "Chromosome",
+                    "description": "The number (or letter) designation for the target chromosome. e.g. 1, 2L, or X",
+                    "type": "string"
+                },
+                "start": {
+                    "title": "Start",
+                    "description": "The starting coordinate.",
+                    "type": "integer"
+                },
+                "end": {
+                    "title": "End",
+                    "description": "The ending coordinate (possibly equal to the starting coordinate for one base.)",
+                    "type": "integer"
+                }
+            }
         },
-        "modification_type": {
-            "title": "Modification type",
-            "description": "The type of the genetic modification.",
+        "insert_type": {
+            "title": "Insert type",
+            "description": "The type of insertion being introduced.",
             "type": "string",
             "enum": [
-                "deletion",
-                "insertion",
-                "replacement",
-                "mutagenesis",
-                "interference"
+                "candidate regulatory sequence (proximal)",
+                "candidate regulatory sequence (distal)",
+                "fusion protein"
             ]
         },
-        "purpose":{
-            "title": "Purpose",
-            "description": "The purpose of the genetic modification.",
+        "insert_sequence": {
+            "title": "Insert sequence",
+            "description": "Insert sequence",
             "type": "string",
-            "enum": [
-                "repression",
-                "activation",
-                "overexpression",
-                "tagging"                
-            ]
+            "pattern": "^[ACTG]+$"  
+        },
+        "insert_genome_coordinates": {
+            "title": "Insert genome coordinates",
+            "description": "Genomic coordinates of the insert. e.g. GRCh38 or dm6.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["assembly", "chromosome", "start", "end"],
+            "properties": {
+                "assembly": {
+                    "title": "Genome assembly",
+                    "description": "The genome assembly to which the target coordinates relate. e.g. GRCh38",
+                    "type": "string",
+                    "pattern": "^((GRCh\\d{2})|(GRCm\\d{2})|(WBcel\\d{3})|(ce\\d{2})|(dm\\d{1}))$"
+                },
+                "chromosome": {
+                    "title": "Chromosome",
+                    "description": "The number (or letter) designation for the target chromosome. e.g. 1, 2L, or X",
+                    "type": "string",
+                    "pattern": "^(\\d{1,2}[RL]?|[XYMU]|I|II|III|IV|V|)$"
+                },
+                "start": {
+                    "title": "Start",
+                    "description": "The starting coordinate.",
+                    "type": "integer"
+                },
+                "end": {
+                    "title": "End",
+                    "description": "The ending coordinate (possibly equal to the starting coordinate for one base.)",
+                    "type": "integer"
+                }
+            }
+        },
+         "source_data": {
+            "title": "Source data",
+            "description": "Source of the candidate regulatory element in the insert (if applicable).",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Source data",
+                "description": "Source data file from which the candidate regulatory element was identified.",
+                "type": "string",
+                "comment": "See file.json for available identifiers.",
+                "linkTo": "File"
+            }
         },
         "zygosity":{
             "title": "Modification zygosity",
@@ -232,6 +298,12 @@
                 "homozygous",
                 "heterozygous"
             ]
+        },
+        "url": {
+            "title": "URL",
+            "description": "An external resource with additional information about the modification.",
+            "type": "string",
+            "format": "uri"
         },
         "modification_techniques": {
             "title": "Modification techniques",
@@ -265,11 +337,17 @@
         }
     },
     "columns": {
+        "accession": {
+            "title": "Accession"
+        },
         "aliases": {
             "title": "Lab aliases"
         },
         "modification_type": {
             "title": "Modification type"
+        },
+        "purpose": {
+            "title": "Purpose"
         },
         "status": {
             "title": "Genetic modification status"
@@ -287,5 +365,4 @@
         }
     },
     "changelog": "/profiles/changelogs/genetic_modification.md"
-
 }
