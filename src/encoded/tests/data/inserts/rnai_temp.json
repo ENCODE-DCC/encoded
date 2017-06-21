@@ -1,0 +1,52 @@
+[
+    {
+        "aliases": [
+            "gregory-crawford:rnai-temp-test"
+        ],
+        "award": "ENCODE2",
+        "documents": [
+            "gregory-crawford:pLKO1"
+        ],
+        "lab": "gregory-crawford",
+        "notes": "This is an shRNA",
+        "transfection_type": "transient",
+        "transfection_method": "transduction",
+        "product_id": "TRCN0000001062",
+        "rnai_sequence": "CCGG-CTCAACGTCAAGTACAACAAT-CTCGAG-ATTGTTGTACTTGACGTT",
+        "rnai_target_sequence": "CTCAACGTCAAGTACAACAATAAA",
+        "rnai_type": "shRNA",
+        "source": "gregory-crawford",
+        "submitted_by": "metus.donec@nisl.montes",
+        "url": "http://www.broadinstitute.org/rnai/public/clone/details?cloneId=TRCN0000001062",
+        "uuid": "3b5e5291-8f90-408d-ae64-56b76f98e297",
+        "vector_backbone_name": "pLKO.1"
+    },
+    {
+        "aliases": [
+            "sherman-weissman:CTCF-RNAi-temp-1"
+        ],
+        "award": "U54HG006996",
+        "lab": "sherman-weissman",
+        "transfection_type": "transient",
+        "transfection_method": "chemical",
+        "rnai_sequence": "GATGAAGACTGAAGTAATG",
+        "rnai_type": "siRNA",
+        "source": "sigma",
+        "submitted_by": "metus.donec@nisl.montes",
+        "uuid": "a802601e-18de-42d7-b171-977e02541a2d"
+    },
+    {
+        "aliases": [
+            "sherman-weissman:CTCF-RNAi-temp-2"
+        ],
+        "award": "U54HG006996",
+        "lab": "sherman-weissman",
+        "transfection_type": "transient",
+        "transfection_method": "chemical",
+        "rnai_sequence": "GGAGAAACGAAGAAGAGTA",
+        "rnai_type": "siRNA",
+        "source": "sigma",
+        "submitted_by": "metus.donec@nisl.montes",
+        "uuid": "365c5f50-f05b-40a6-9c18-ce38d3ce139b"
+    }
+]

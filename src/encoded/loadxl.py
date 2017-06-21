@@ -24,10 +24,7 @@ ORDER = [
     'antibody_approval',
     'treatment',
     'construct',
-    'construct_characterization',
-    'rnai',
-    'rnai_characterization',
-    'insert',
+    'rnai_temp',
     'talen',
     'tale',
     'crispr',
@@ -604,20 +601,9 @@ PHASE1_PIPELINES = {
     'analysis_step': [
         remove_keys('parents')
     ],
-    'insert': [
-        remove_keys('source_data')
-    ],
-    'transfection': [
-        remove_keys('insert')
-    ],
-    'crispr': [
-        remove_keys('insert')
-    ],
-    'tale' : [
-        remove_keys('insert')
-    ],
     'genetic_modification': [
-        remove_keys('modification_techniques')
+        remove_keys('modification_techniques'),
+        remove_keys('source_data')
     ]
 }
 
@@ -687,20 +673,9 @@ PHASE2_PIPELINES = {
     'analysis_step': [
         skip_rows_missing_all_keys('parents')
     ],
-    'insert': [
-        skip_rows_missing_all_keys('source_data')
-    ],
-    'transfection': [
-        skip_rows_missing_all_keys('insert')
-    ],
-    'crispr': [
-        skip_rows_missing_all_keys('insert')
-    ],
-    'tale' : [
-        skip_rows_missing_all_keys('insert')
-    ],
     'genetic_modification': [
-        skip_rows_missing_all_keys('modification_techniques')
+        skip_rows_missing_all_keys('modification_techniques'),
+        skip_rows_missing_all_keys('source_data')
     ]
 }
 

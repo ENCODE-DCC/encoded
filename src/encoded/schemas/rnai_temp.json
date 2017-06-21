@@ -1,0 +1,88 @@
+{
+    "title": "RNAi-temp vector",
+    "description": "Schema for submitting an RNAi stably or transiently transfected.",
+    "id": "/profiles/rnai_temp.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [ "rnai_type", "lab", "award"],
+    "identifyingProperties": ["uuid", "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/product_id" },
+        { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "modification_technique.json#/properties" }
+    ],
+    "dependencies": {
+        "transfection_method": {
+            "required": ["transfection_type"],
+            "comment": "Transfected biosamples require specification of the transfection_type."
+        }
+    },
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "rnai_type": {
+            "title": "Class",
+            "description": "The classification of the interfering RNA (e.g. shRNA or siRNA).",
+            "type": "string",
+            "enum": [
+                "shRNA",
+                "siRNA"
+            ]
+        },
+        "url": {
+            "title": "URL",
+            "description": "An external resource with additional information about the RNAi construct.",
+            "type": "string",
+            "format": "uri"
+        },
+        "vector_backbone_name": {
+            "title": "Backbone name",
+            "description": "The name of the vector backbone used for the construct.",
+            "type": "string",
+            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
+        },
+        "rnai_sequence": {
+            "title": "RNAi sequence",
+            "description": "Sequence of the inhibitory RNA.",
+            "type": "string",
+            "pattern": "^[ACUNTG-]+$"
+        },
+        "rnai_target_sequence": {
+            "title": "Target sequence",
+            "description": "Genomic sequence targeted by the RNA.",
+            "type": "string",
+            "pattern": "^[ACTG]+|non-mammalian target$"
+        },
+        "transfection_type": {
+            "title": "Transfection type",
+            "description": "The persistence of the transfection construct.",
+            "type": "string",
+            "enum": [
+                "stable",
+                "transient"
+            ]
+        },
+        "transfection_method": {
+            "title": "Transfection method",
+            "description": "How the transfection was performed on the biosample to introduce the contruct or RNAi.",
+            "type": "string",
+            "enum": [
+                "electroporation",
+                "transduction",
+                "chemical",
+                "microinjection"
+            ]
+        }
+    },
+    "changelog": "/profiles/changelogs/rnai_temp.md"
+}
