@@ -24,6 +24,7 @@ ORDER = [
     'antibody_approval',
     'treatment',
     'construct',
+    'rnai',
     'rnai_temp',
     'talen',
     'tale',
