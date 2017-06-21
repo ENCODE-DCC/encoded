@@ -86,3 +86,15 @@ class Transfection(ModificationTechnique):
     item_type = 'transfection'
     schema = load_schema('encoded:schemas/transfection.json')
     embedded = ModificationTechnique.embedded
+
+
+@collection(
+    name='rnai-temps',
+    properties={
+        'title': "General genetic modifications made via RNAi",
+        'description': 'Listing of all general RNAi-based genetic modifications.'
+    })
+class RnaiTemp(ModificationTechnique):
+    item_type = 'rnai_temp'
+    schema = load_schema('encoded:schemas/rnai_temp.json')
+    embedded = ModificationTechnique.embedded
