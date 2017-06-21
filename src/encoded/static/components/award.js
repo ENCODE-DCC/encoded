@@ -38,24 +38,26 @@ function generateQuery(chosenOrganisms, searchTerm) {
 
 // Draw the total chart count in the middle of the donut.
 function drawDonutCenter(chart) {
-    const width = chart.chart.width;
-    const height = chart.chart.height;
-    const ctx = chart.chart.ctx;
-
-    ctx.fillStyle = '#000000';
-    ctx.restore();
-    const fontSize = (height / 114).toFixed(2);
-    ctx.font = `${fontSize}em sans-serif`;
-    ctx.textBaseline = 'middle';
-
     const data = chart.data.datasets[0].data;
-    const total = data.reduce((prev, curr) => prev + curr);
-    const textX = Math.round((width - ctx.measureText(total).width) / 2);
-    const textY = height / 2;
+    if (data.length) {
+        const width = chart.chart.width;
+        const height = chart.chart.height;
+        const ctx = chart.chart.ctx;
 
-    ctx.clearRect(0, 0, width, height);
-    ctx.fillText(total, textX, textY);
-    ctx.save();
+        ctx.fillStyle = '#000000';
+        ctx.restore();
+        const fontSize = (height / 114).toFixed(2);
+        ctx.font = `${fontSize}em sans-serif`;
+        ctx.textBaseline = 'middle';
+
+        const total = data.reduce((prev, curr) => prev + curr);
+        const textX = Math.round((width - ctx.measureText(total).width) / 2);
+        const textY = height / 2;
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillText(total, textX, textY);
+        ctx.save();
+    }
 }
 
 
@@ -147,8 +149,33 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
 
 // Display and handle clicks in the chart of labs.
 class LabChart extends React.Component {
+    constructor() {
+        super();
+
+        // Bind this to non-React components.
+        this.createChart = this.createChart.bind(this);
+        this.updateChart = this.updateChart.bind(this);
+    }
+
+    componentDidMount() {
+        this.createChart(`${labChartId}-${this.props.ident}`, this.props.labs);
+    }
+
+    componentDidUpdate() {
+        if (this.props.labs.length) {
+            if (this.chart) {
+                this.updateChart(this.chart, this.props.labs);
+            } else {
+                this.createChart(`${statusChartId}-${this.props.ident}`, this.props.labs);
+            }
+        } else if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    }
+
     // Update existing chart with new data.
-    static updateChart(chart, facetData) {
+    updateChart(chart, facetData) {
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
         const labels = [];
@@ -165,21 +192,9 @@ class LabChart extends React.Component {
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
         chart.update();
-    }
 
-    constructor() {
-        super();
-        this.createChart = this.createChart.bind(this);
-    }
-
-    componentDidMount() {
-        this.createChart(`${labChartId}-${this.props.ident}`, this.props.labs);
-    }
-
-    componentDidUpdate() {
-        if (this.chart) {
-            this.constructor.updateChart(this.chart, this.props.labs);
-        }
+        // Redraw the updated legend
+        document.getElementById(`${labChartId}-${this.props.ident}-legend`).innerHTML = chart.generateLegend();
     }
 
     createChart(chartId, facetData) {
@@ -242,8 +257,34 @@ LabChart.contextTypes = {
 
 // Display and handle clicks in the chart of assays.
 class CategoryChart extends React.Component {
+    constructor() {
+        super();
+
+        this.createChart = this.createChart.bind(this);
+        this.updateChart = this.updateChart.bind(this);
+    }
+
+    componentDidMount() {
+        if (this.props.categoryData.length) {
+            this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.props.categoryData.length) {
+            if (this.chart) {
+                this.updateChart(this.chart, this.props.categoryData);
+            } else {
+                this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
+            }
+        } else if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    }
+
     // Update existing chart with new data.
-    static updateChart(chart, facetData) {
+    updateChart(chart, facetData) {
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
         const labels = [];
@@ -260,24 +301,9 @@ class CategoryChart extends React.Component {
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
         chart.update();
-    }
 
-    constructor() {
-        super();
-
-        this.createChart = this.createChart.bind(this);
-    }
-
-    componentDidMount() {
-        if (this.props.categoryData.length) {
-            this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
-        }
-    }
-
-    componentDidUpdate() {
-        if (this.chart) {
-            this.constructor.updateChart(this.chart, this.props.categoryData);
-        }
+        // Redraw the updated legend
+        document.getElementById(`${categoryChartId}-${this.props.ident}-legend`).innerHTML = chart.generateLegend();
     }
 
     createChart(chartId, facetData) {
@@ -345,7 +371,32 @@ CategoryChart.contextTypes = {
 // Display and handle clicks in the chart of labs.
 class StatusChart extends React.Component {
     // Update existing chart with new data.
-    static updateChart(chart, facetData) {
+    constructor() {
+        super();
+        this.createChart = this.createChart.bind(this);
+        this.updateChart = this.updateChart.bind(this);
+    }
+
+    componentDidMount() {
+        if (this.props.statuses.length) {
+            this.createChart(`${statusChartId}-${this.props.ident}`, this.props.statuses);
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.props.statuses.length) {
+            if (this.chart) {
+                this.updateChart(this.chart, this.props.statuses);
+            } else {
+                this.createChart(`${statusChartId}-${this.props.ident}`, this.props.statuses);
+            }
+        } else if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    }
+
+    updateChart(chart, facetData) {
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
         const labels = [];
@@ -362,23 +413,9 @@ class StatusChart extends React.Component {
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
         chart.update();
-    }
 
-    constructor() {
-        super();
-        this.createChart = this.createChart.bind(this);
-    }
-
-    componentDidMount() {
-        if (this.props.statuses.length) {
-            this.createChart(`${statusChartId}-${this.props.ident}`, this.props.statuses);
-        }
-    }
-
-    componentDidUpdate() {
-        if (this.chart) {
-            this.constructor.updateChart(this.chart, this.props.statuses);
-        }
+        // Redraw the updated legend
+        document.getElementById(`${statusChartId}-${this.props.ident}-legend`).innerHTML = chart.generateLegend();
     }
 
     createChart(chartId, facetData) {
