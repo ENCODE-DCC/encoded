@@ -13,7 +13,7 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/source" },
@@ -102,6 +102,22 @@
         },
         "accession": {
             "accessionType": "GM"
+        },
+        "alternate_accessions": {
+            "title": "Alternate accessions",
+            "description": "Accessions previously assigned to objects that have been merged with this object.",
+            "comment": "Do not submit. Only admins are allowed to set or update this value.",
+            "type": "array",
+            "default": [],
+            "permission": "import_items",
+            "items": {
+                "title": "Alternate Accession",
+                "description": "An accession previously assigned to an object that has been merged with this object.",
+                "comment": "Only accessions of objects that have status equal replaced will work here.",
+                "type": "string",
+                "format": "accession",
+                "pattern": "^(ENCGM\\d{3}[A-Z]{3})$|^(TSTGM\\d{6})$"
+            }
         },
         "description": {
             "title": "Description",
