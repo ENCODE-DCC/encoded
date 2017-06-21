@@ -35,9 +35,8 @@
                     "tag": "SIGLR",
                     "visibility": "full",
                     "type": "bigWig",
-                    "viewLimits": "0:1",
+                    "viewLimits": "-1:0",
                     "autoScale": "off",
-                    "negateValues": "on",
                     "maxHeightPixels": "64:18:8",
                     "windowingFunction": "mean+whiskers",
                     "output_type": [ "minus strand signal of unique reads" ]
