@@ -17,6 +17,7 @@ const labColorList = labColors.colorList();
 const typeSpecificColorList = labColors.colorList();
 const statusColorList = labColors.colorList();
 
+// Create a string based on the genus buttons selected.
 function generateQuery(chosenOrganisms, searchTerm) {
     // Make the base query.
     let query = '';
@@ -556,30 +557,28 @@ const ChartRenderer = (props) => {
         </div>
     );
 };
-// Create new panel with genus buttons
-class TabClicking extends React.Component {
+// Create new tabdisplay of genus buttons
+class GenusButtons extends React.Component {
     render() {
         const { selectedOrganisms, handleClick } = this.props;
         return (
-            <div>
-                <div className="organism-selector" ref="tabdisplay">
-                    <OrganismSelector organism="HUMAN" selected={selectedOrganisms.indexOf('HUMAN') !== -1} organismButtonClick={handleClick} />
-                    <OrganismSelector organism="MOUSE" selected={selectedOrganisms.indexOf('MOUSE') !== -1} organismButtonClick={handleClick} />
-                    <OrganismSelector organism="WORM" selected={selectedOrganisms.indexOf('WORM') !== -1} organismButtonClick={handleClick} />
-                    <OrganismSelector organism="FLY" selected={selectedOrganisms.indexOf('FLY') !== -1} organismButtonClick={handleClick} />
-                </div>
+            <div className="organism-selector" ref="tabdisplay">
+                <OrganismSelector organism="HUMAN" selected={selectedOrganisms.indexOf('HUMAN') !== -1} organismButtonClick={handleClick} />
+                <OrganismSelector organism="MOUSE" selected={selectedOrganisms.indexOf('MOUSE') !== -1} organismButtonClick={handleClick} />
+                <OrganismSelector organism="WORM" selected={selectedOrganisms.indexOf('WORM') !== -1} organismButtonClick={handleClick} />
+                <OrganismSelector organism="FLY" selected={selectedOrganisms.indexOf('FLY') !== -1} organismButtonClick={handleClick} />
             </div>
         );
     }
 }
 
 
-TabClicking.propTypes = {
+GenusButtons.propTypes = {
     selectedOrganisms: PropTypes.array, // Array of currently selected buttons
     handleClick: PropTypes.func.isRequired, // Function to call when a button is clicked
 };
 
-TabClicking.defaultProps = {
+GenusButtons.defaultProps = {
     selectedOrganisms: [],
 };
 
@@ -658,19 +657,18 @@ class AwardCharts extends React.Component {
 
     render() {
         const { award } = this.props;
+        // Create searchTerm-specific query strings
         const AnnotationQuery = generateQuery(this.state.selectedOrganisms, 'organism.scientific_name=');
         const ExperimentQuery = generateQuery(this.state.selectedOrganisms, 'replicates.library.biosample.donor.organism.scientific_name=');
-        console.log(AnnotationQuery);
-        console.log(ExperimentQuery);
         return (
             <Panel>
                 <PanelHeading>
                     <h4>{award.pi && award.pi.lab ? <span>{award.pi.lab.title}</span> : <span>No PI indicated</span>}</h4>
                     <ProjectBadge award={award} addClasses="badge-heading" />
                 </PanelHeading>
+                <GenusButtons handleClick={this.handleClick} selectedOrganisms={this.state.selectedOrganisms} />
                 <PanelBody>
                     <FetchedData ignoreErrors>
-                        <TabClicking handleClick={this.handleClick} selectedOrganisms={this.state.selectedOrganisms} />
                         <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}${ExperimentQuery}`} />
                         <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}${AnnotationQuery}`} />
                         <ChartRenderer award={award} />
