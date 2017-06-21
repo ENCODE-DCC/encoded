@@ -10,17 +10,21 @@
         "documents": [
             "encode:Antibody_characterization_standards_February_2014"
         ],
-        "source":"gregory-crawford",
         "modification_type": "replacement",
         "modification_techniques": [
-        	"encode:crispr-test-1",
+            "encode:crispr-test-1",
             "encode:crispr-test-2"
         ],
+        "insert_type": "candidate regulatory sequence (proximal)",
+        "insert_sequence": "CTCGGTG",
+        "source": "sigma",
+        "source_data": ["/files/ENCFF015OKV/"],
         "submitted_by": "dignissim.euismod@amet.habitant",
         "target": "/targets/H3K4me3-human",
-        "treatments": []
+        "accession": "ENCGM001CRP"
     },
     {
+        "accession": "ENCGM001DEL",
         "aliases": [
             "encode:modification-test-2"
         ],
@@ -49,10 +53,10 @@
         "zygosity": "homozygous",
         "product_id": "CRL-2522",
         "submitted_by": "amet.fusce@est.fermentum",
-        "target": "/targets/H3K4me3-human",
         "url": "http://www.atcc.org/ATCCAdvancedCatalogSearch/ProductDetails/tabid/452/Default.aspx?ATCCNum=CRL-2522&Template=cellBiology"
     },
     {
+        "accession": "ENCGM002DEL",
         "modified_site": {
             "chromosome": "X",
             "end": 48658983,
@@ -73,6 +77,7 @@
         "notes": "TL1595   /tales/2f1feb18-c724-4cdf-8434-c5126ca78a9e/"
     },
     {
+        "accession": "ENCGM003DEL",
         "submitted_by": "amet.fusce@est.fermentum",
         "status": "released",
         "source":"gregory-crawford",
@@ -92,9 +97,9 @@
         "uuid": "2f33a486-e3d9-4633-8682-a363b48ba67d"
     },
     {
+        "accession": "ENCGM001INS",
         "status": "released",
         "treatments": [],
-        "notes": "TL1597   /tales/69790723-e4de-41d3-ab89-6e06a67d84d6/",
         "modified_site": {
             "chromosome": "X",
             "assembly": "hg19",
@@ -105,15 +110,26 @@
         "lab": "/labs/robert-waterston/",
         "uuid": "b9264c83-2222-4678-a82f-4915af941fa4",
         "submitted_by": "amet.fusce@est.fermentum",
-        "modification_type": "deletion",
+        "modification_type": "insertion",
+        "insert_type": "candidate regulatory sequence (distal)",
+        "insert_sequence": "ACTCGGACCTACGGGTACCACTGAGCTAT",
+        "source_data": ["/files/ENCFF015OKV/"],
         "modification_techniques": [
-            "69790723-e4de-41d3-ab89-6e06a67d84d6"
+            "69790723-e4de-41d3-ab89-6e06a67d84d6",
+            "0e23048f-4cbc-416f-9238-e63ef4fd7d17"
         ]
     },
     {
+        "accession": "ENCGM001TAG",
         "status": "in progress",
         "purpose": "tagging",
-        "target": "eGFP-E2F1-human",
+        "target": "E2F1-human",
+        "epitope_tags": [
+            {
+                "name": "eGFP",
+                "location": "C-terminal"
+            }
+        ],
         "award": "/awards/U54HG006996/",
         "lab": "/labs/michael-snyder/",
         "uuid": "963cfae8-a584-4a34-a329-ebea0c6aeb3b",
@@ -124,44 +140,70 @@
 
     },
     {
-        "aliases": ["kevin-white:3XFLAG-pab-1-mod"],
+        "accession": "ENCGM002TAG",
+        "aliases": ["kevin-white:3xFLAG-pab-1-mod"],
         "status": "in progress",
         "purpose": "tagging",
-        "target": "3XFLAG-pab-1-celegans",
+        "epitope_tags": [
+            {
+                "name": "3xFLAG",
+                "location": "C-terminal"
+            }
+        ],
+        "target": "pab-1-celegans",
         "award": "/awards/U54HG006996/",
         "lab": "/labs/michael-snyder/",
         "uuid": "bbaf6cc2-d19c-412a-a3d0-0911fd0615bc",
         "submitted_by": "amet.fusce@est.fermentum",
-        "modified_site": {
-            "assembly": "ce10",
-            "chromosome": "IV",
-            "start": 337847,
-            "end": 337847
-        },
         "modification_type": "insertion",
         "modification_techniques": ["kevin-white:3XFLAG-pab-1-transfection"]
     },
     {
+        "accession": "ENCGM001LAC",
         "uuid": "097dd3aa-9397-40c5-a498-b0798ae76ac1",
         "award": "U24HG009397",
         "lab": "/labs/len-pennacchio/",
+        "modified_site": {
+            "assembly": "mm10",
+            "chromosome": "5",
+            "start": 8392838,
+            "end": 8392839
+        },
         "modification_type": "insertion",
+        "description": "Enhancer-like element 121 from Encyclopedia V3.0",
         "purpose": "activation",
+        "source": "sigma",
         "modification_techniques": ["len-pennacchio:element-121-injection"],
+        "source_data": ["/files/ENCFF015OKV/"],
+        "insert_type": "candidate regulatory sequence (proximal)",
+        "insert_sequence": "ACGGATCGGTTAGCTAGCTTGGAGATCAAATACTAGATCGATCGTTTAGACCCAGTGCTAGGATCGACGTAGCGTATGCGAC",
         "status": "in progress",
         "aliases": ["len-pennacchio:element-121-LacZ"]
     },
     {
+        "accession": "ENCGM002LAC",
         "uuid": "9bae3689-649f-4f51-9b86-fa7362a42af5",
         "award": "U24HG009397",
         "lab": "/labs/len-pennacchio/",
+        "modified_site": {
+            "assembly": "mm10",
+            "chromosome": "X",
+            "start": 2739173,
+            "end": 2739174
+        },
         "modification_type": "insertion",
+        "description": "Enhancer-like element 428 from Encyclopedia V3.0",
+        "source": "sigma",
+        "source_data": ["/files/ENCFF015OKV/"],
+        "insert_type": "candidate regulatory sequence (proximal)",
+        "insert_sequence": "ACGGATCGGTTAGCTAGCTTGGAGATCAAATACTAGATCGATCGTTTAGACCCAGTGCTAGGATCGACGTAGCGTATGCGAC",
         "purpose": "activation",
         "modification_techniques": ["len-pennacchio:element-428-injection"],
         "status": "in progress",
         "aliases": ["len-pennacchio:element-428-LacZ"]
     },
     {
+        "accession": "ENCGM004DEL",
         "uuid": "2d617f7f-4062-4950-bf62-a95ecfb933ed",
         "award": "U24HG009397",
         "lab": "/labs/robert-waterston/",
@@ -173,25 +215,91 @@
         "aliases": ["robert-waterston:mes-4-del-mod"]
     },
     {
+        "accession": "ENCGM001RNA",
         "uuid": "121b36d2-09c8-4aa6-8137-8497216a3c23",
         "award": "/awards/U54HG006996/",
         "lab": "sherman-weissman",
         "modification_type": "interference",
         "purpose": "repression",
         "target": "CTCF-human",
-        "modification_techniques": ["sherman-weissman:CTCF-RNAi-transfection"],
+        "modification_techniques": [
+            "sherman-weissman:CTCF-RNAi-temp-1",
+            "sherman-weissman:CTCF-RNAi-temp-2"
+        ],
         "status": "in progress",
         "aliases": ["sherman-weissman:CTCF-RNAi-interference"]
     },
     {
+        "accession": "ENCGM002RNA",
         "uuid": "e5af5c72-7c7d-41fd-9b9b-d442e18c56db",
         "award": "/awards/U54HG006996/",
         "lab": "gregory-crawford",
         "modification_type": "interference",
         "purpose": "repression",
         "target": "CTCF-human",
-        "modification_techniques": ["gregory-crawford:CTCF-shRNA-transfection"],
+        "modification_techniques": ["gregory-crawford:rnai-temp-test"],
         "status": "in progress",
         "aliases": ["gregory-crawford:CTCF-shRNA-interference"]
+    },
+    {
+        "accession": "ENCGM002INS",
+        "aliases": ["nadav-ahituv:element-164-3UTR-mod"],
+        "award": "UM1HG009408",
+        "description": "Enhancer-like element 164 from Encyclopedia V2.0",
+        "lab": "jay-shendure",
+        "source": "sigma",
+        "modification_techniques": ["nadav-ahituv:element-164-3UTR"],
+        "modification_type": "insertion",
+        "purpose": "activation",
+        "target": "eGFP-avictoria",
+        "insert_type": "candidate regulatory sequence (proximal)",
+        "insert_genome_coordinates": {
+            "assembly": "GRCh38",
+            "chromosome": "6",
+            "start": 482735,
+            "end": 487102
+        },
+        "source_data": ["/files/ENCFF015OKV/"],
+        "submitted_by": "duis.pede@nonummy.scelerisque",
+        "uuid": "61f1ae48-bb64-41d7-9040-6225fb643dd9"
+    },
+    {
+        "accession": "ENCGM003INS",
+        "aliases": ["nadav-ahituv:element-376-3UTR-mod"],
+        "award": "UM1HG009408",
+        "description": "Enhancer-like element 376 from Encyclopedia V2.0",
+        "lab": "jay-shendure",
+        "source": "sigma",
+        "modification_techniques": ["nadav-ahituv:element-376-3UTR"],
+        "modification_type": "insertion",
+        "purpose": "activation",
+        "target": "eGFP-avictoria",
+        "source_data": ["/files/ENCFF015OKV/"],
+        "insert_type": "candidate regulatory sequence (distal)",
+        "insert_sequence": "ACGGATCGGTTAGCTAGCTTGGAGATCAAATACTAGATCGATCGTTTAGACCCAGTGCTAGCTTTAGCTAGGGATGCGATCGACGTAGCGTATGCGAC",
+        "submitted_by": "duis.pede@nonummy.scelerisque",
+        "uuid": "a0f53b66-e39d-4f6d-995a-be32c346cf40"
+    },
+    {
+        "accession": "ENCGM004INS",
+        "aliases": ["nadav-ahituv:element-537-3UTR-mod"],
+        "award": "UM1HG009408",
+        "description": "Enhancer-like element 537 from Encyclopedia V2.0",
+        "lab": "jay-shendure",
+        "source": "sigma",
+        "modification_techniques": ["nadav-ahituv:element-537-3UTR"],
+        "modification_type": "insertion",
+        "purpose": "activation",
+        "target": "eGFP-avictoria",
+        "insert_type": "candidate regulatory sequence (distal)",
+        "insert_genome_coordinates": {
+            "assembly": "GRCh38",
+            "chromosome": "12",
+            "start": 6373005,
+            "end": 6374142
+        },
+        "source_data": ["/files/ENCFF015OKV/"],
+        "submitted_by": "duis.pede@nonummy.scelerisque",
+        "uuid": "9a96bae2-b197-46ff-944c-c89b00ff8116"
     }
 ]

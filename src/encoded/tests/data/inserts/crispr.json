@@ -5,11 +5,11 @@
         ],
         "uuid": "0aec2477-9507-4f9c-bf7a-b09b6b8dfd2a",
         "status": "released",
+        "cas_used": "S. pyogenes Cas9",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
         "dbxrefs": ["addgene:234235", "addgene:12345"],
         "source":"gregory-crawford",
-        "insert": "encode:crispr-insert-1",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ]
@@ -18,13 +18,13 @@
         "aliases": [
             "encode:crispr-test-2"
         ],
+        "cas_used": "S. pyogenes Cas9",
         "uuid": "4c9733cd-7d0f-42b0-a27d-411c2b212329",
         "status": "in progress",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
         "dbxrefs": ["addgene:234235"],
         "source":"gregory-crawford",
-        "insert": "encode:crispr-insert-2",
         "documents": [
             "encode:Snyder_Histone_Mouse_protocol"
         ]

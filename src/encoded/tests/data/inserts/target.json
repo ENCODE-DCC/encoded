@@ -265,6 +265,21 @@
         "status": "current"
     },
     {
+        "uuid": "4ac96356-3e6d-43af-805c-9140602ae434",
+        "label": "pab-1",
+        "dbxref": [
+            "WormBase:WBGene00003902",
+            "WormBase:Y106G6H.2",
+            "UniProtKB:Q7K797",
+            "UniProtKB:Q9U302",
+            "UniProtKB:Q7K798"
+        ],
+        "organism": "celegans",
+        "gene_name": "pab-1",
+        "investigated_as": ["transcription factor"],
+        "status": "current"
+    },
+    {
         "uuid": "d7e8b30a-5fde-4201-a287-be53814abca7",
         "label": "eGFP",
         "organism": "avictoria",

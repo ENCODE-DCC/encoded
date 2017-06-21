@@ -4,7 +4,6 @@
         "aliases": ["kevin-white:eGFP-E2F1-transfection"],
         "transfection_type": "stable",
         "transfection_method": "chemical",
-        "inserts": ["kevin-white:eGFP-tag-insert"],
         "lab": "kevin-white",
         "award": "U41HG007355",
         "submitted_by": "eni.lectus@nullam.sed"
@@ -14,7 +13,6 @@
         "aliases": ["kevin-white:3XFLAG-pab-1-transfection"],
         "transfection_type": "stable",
         "transfection_method": "chemical",
-        "inserts": ["kevin-white:3XFLAG-tag-insert"],
         "lab": "kevin-white",
         "award": "U41HG007355",
         "submitted_by": "eni.lectus@nullam.sed"
@@ -24,7 +22,6 @@
         "aliases": ["len-pennacchio:element-121-injection"],
         "transfection_type": "stable",
         "transfection_method": "microinjection",
-        "inserts": ["len-pennacchio:element-121"],
         "lab": "len-pennacchio",
         "award": "U41HG007355",
         "submitted_by": "eni.lectus@nullam.sed"
@@ -35,32 +32,35 @@
         "aliases": ["len-pennacchio:element-428-injection"],
         "transfection_type": "stable",
         "transfection_method": "microinjection",
-        "inserts": ["len-pennacchio:element-428"],
         "lab": "len-pennacchio",
         "award": "U41HG007355",
         "submitted_by": "eni.lectus@nullam.sed"
     },
     {
-        "uuid": "87cb1d03-3a0f-4a73-b8eb-c51d7b4a70ba",
-        "aliases": ["sherman-weissman:CTCF-RNAi-transfection"],
-        "transfection_type": "transient",
-        "transfection_method": "chemical",
-        "lab": "sherman-weissman",
-        "award": "U54HG006996",
-        "rnais": [
-            "sherman-weissman:CTCF-RNAi-1",
-            "sherman-weissman:CTCF-RNAi-2"
-        ]
-    },
-    {
-        "uuid": "2b73a970-1382-40d7-b1d0-a7c1f86ebf39",
-        "aliases": ["gregory-crawford:CTCF-shRNA-transfection"],
+        "uuid": "5046bab0-3a03-4efd-b856-c44bc54b0c82",
+        "aliases": ["nadav-ahituv:element-164-3UTR"],
         "transfection_type": "stable",
         "transfection_method": "transduction",
-        "award": "ENCODE2",
-        "lab": "gregory-crawford",
-        "rnais": [
-            "gregory-crawford:rnai-test"
-        ]
+        "lab": "jay-shendure",
+        "award": "UM1HG009408",
+        "submitted_by": "eni.lectus@nullam.sed"
+    },
+    {
+        "uuid": "164ff3f1-74e3-43ef-b106-59d6d9f60a4b",
+        "aliases": ["nadav-ahituv:element-376-3UTR"],
+        "transfection_type": "stable",
+        "transfection_method": "transduction",
+        "lab": "jay-shendure",
+        "award": "UM1HG009408",
+        "submitted_by": "eni.lectus@nullam.sed"
+    },
+    {
+        "uuid": "fcd6ee41-636d-4f8b-9874-2bb07361ee51",
+        "aliases": ["nadav-ahituv:element-537-3UTR"],
+        "transfection_type": "stable",
+        "transfection_method": "transduction",
+        "lab": "jay-shendure",
+        "award": "UM1HG009408",
+        "submitted_by": "eni.lectus@nullam.sed"
     }
 ]

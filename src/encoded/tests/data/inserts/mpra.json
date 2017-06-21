@@ -7,10 +7,10 @@
         "description": "Integrated STARR-seq testing Encyclopedia V2.0 enhancer-like elements for activity transcriptionally inactive genes in K562.",
         "reporter_type": "endogenous genes (see list)",
         "integration_type": "chromosomal",
-        "sequences_tested": [
-            "nadav-ahituv:element-376-3UTR",
-            "nadav-ahituv:element-164-3UTR",
-            "nadav-ahituv:element-537-3UTR"
+        "modifications_tested": [
+            "nadav-ahituv:element-376-3UTR-mod",
+            "nadav-ahituv:element-164-3UTR-mod",
+            "nadav-ahituv:element-537-3UTR-mod"
         ],
         "targets_tested": [
             "CXXC1-human",
@@ -29,10 +29,10 @@
         "description": "Integrated STARR-seq testing Encyclopedia V2.0 enhancer-like elements for activity transcriptionally inactive genes in HepG2.",
         "reporter_type": "endogenous genes (see list)",
         "integration_type": "chromosomal",
-        "sequences_tested": [
-            "nadav-ahituv:element-376-3UTR",
-            "nadav-ahituv:element-164-3UTR",
-            "nadav-ahituv:element-537-3UTR"
+        "modifications_tested": [
+            "nadav-ahituv:element-376-3UTR-mod",
+            "nadav-ahituv:element-164-3UTR-mod",
+            "nadav-ahituv:element-537-3UTR-mod"
         ],
         "targets_tested": [
             "CXXC1-human",

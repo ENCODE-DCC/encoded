@@ -1,8 +1,8 @@
 [
     {
         "award": "U24HG009397",
-        "sequences_tested": [
-            "len-pennacchio:element-428"
+        "modifications_tested": [
+            "len-pennacchio:element-428-LacZ"
         ],
         "reporter_type": "LacZ",
         "biosample": "ENCBS001LAC",
@@ -19,8 +19,8 @@
     },
     {
         "award": "U24HG009397",
-        "sequences_tested": [
-            "len-pennacchio:element-121"
+        "modifications_tested": [
+            "len-pennacchio:element-121-LacZ"
         ],
         "reporter_type": "LacZ",
         "biosample": "ENCBS002LAC",
