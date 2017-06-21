@@ -18,38 +18,36 @@
         { "$ref": "mixins.json#/documents" }
     ],
     "dependencies": {
-        "oneOf": [
-            {
-                "reporter_type": {
-                    "required": ["targets_tested", "sequences_tested"],
+        "reporter_type": {
+            "comment": "Each validation technique should specify what was tested (e.g. targets, genetic modifications) along with the type of reporter readout.",
+            "oneOf": [
+                {
+                    "required": ["targets_tested", "modifications_tested"],
                     "properties": {
                         "reporter_type": {
                             "enum": ["endogenous genes (see list)"]
                         }
                     }
-                }
-            },
-            {
-                "reporter_type": {
-                    "required": ["sequences_tested"],
+                },
+                {
+                    "required": ["modifications_tested"],
                     "properties": {
                         "reporter_type": {
                             "enum": ["GFP", "luciferase", "LacZ"]
                         }
                     }
-                }
-            },
-            {
-                "not": {
-                    "properties": {
-                        "reporter_type": {
-                            "enum": ["endogenous genes (see list)", "GFP", "luciferase", "LacZ"]
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "reporter_type": {
+                                "enum": ["endogenous genes (see list)", "GFP", "luciferase", "LacZ"]
+                            }
                         }
                     }
                 }
-            }
-
-        ]
+            ]
+        }
     },
     "properties": {
         "schema_version": {
@@ -105,23 +103,23 @@
             "comment": "See document.json for available identifiers.",
             "linkTo": "Document"
         },
-        "sequences_tested": {
-            "title": "Sequences tested",
-            "description": "List of candidate regulatory sequences tested in reporter assay.",
+        "modifications_tested": {
+            "title": "Modifications tested",
+            "description": "List of genetic_modifications tested in reporter assay.",
             "type": "array",
             "uniqueItems": true,
             "permission": "import_items", 
             "items": {
-                "title": "Sequence tested",
-                "description": "Sequence tested in the reporter assay.",
+                "title": "Modification tested",
+                "description": "Modification tested in the reporter assay.",
                 "type":  "string",
-                "comment": "see insert.json for available identifiers",
-                "linkTo": "Insert"
+                "comment": "see genetic_modification.json for available identifiers",
+                "linkTo": "GeneticModification"
             }
         },
-        "sequences_tested_summary": {
-            "title": "Sequences tested sumamry",
-            "description": "Summary document containing a list of candidate regulatory sequences tested in reporter assay.",
+        "modifications_tested_summary": {
+            "title": "Modifications tested sumamry",
+            "description": "Summary document containing a list of genetic modifications (e.g. candidate regulatory sequences inserted) tested in reporter assay.",
             "type": "string",
             "comment": "See document.json for available identifiers.",
             "linkTo": "Document"
