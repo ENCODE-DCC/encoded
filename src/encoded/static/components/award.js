@@ -482,7 +482,7 @@ StatusChart.contextTypes = {
 
 
 const ChartRenderer = (props) => {
-    const { award, experiments, annotations } = props;
+    const { award, experiments, annotations, antibodies } = props;
 
     // Put all search-related configuration data in one consistent place.
     const searchData = {
@@ -508,20 +508,33 @@ const ChartRenderer = (props) => {
             uriBase: '/search/?type=Annotation&award.name=',
             linkUri: '/matrix/?type=Annotation&award.name=',
         },
+        antibodies: {
+            ident: 'antibodies',
+            data: [],
+            labs: [],
+            categoryData: [],
+            statuses: [],
+            categoryFacet: 'lot_reviews.status',
+            title: 'Antibodies',
+            uriBase: 'type=AntibodyLot&award=/awards', //REMEMBER: the award number (e.g. /UM1HG009409/) needs to have those slashes around it
+        },
     };
 
     // Find the chart data in the returned facets.
     const experimentsConfig = searchData.experiments;
     const annotationsConfig = searchData.annotations;
+    const antibodiesConfig = searchData.antibodies;
     searchData.experiments.data = (experiments && experiments.facets) || [];
     searchData.annotations.data = (annotations && annotations.facets) || [];
-    ['experiments', 'annotations'].forEach((chartCategory) => {
+    searchData.antibodies.data = (antibodies && antibodies.facets) || [];
+
+    ['experiments', 'annotations', 'antibodies'].forEach((chartCategory) => {
         if (searchData[chartCategory].data.length) {
             // Get the array of lab data.
             const labFacet = searchData[chartCategory].data.find(facet => facet.field === 'lab.title');
             searchData[chartCategory].labs = (labFacet && labFacet.terms && labFacet.terms.length) ? labFacet.terms.sort((a, b) => (a.key < b.key ? -1 : (a.key > b.key ? 1 : 0))) : [];
 
-            // Get the array of data specific to experiments or annotations.
+            // Get the array of data specific to experiments, annotations, or antibodies
             const categoryFacet = searchData[chartCategory].data.find(facet => facet.field === searchData[chartCategory].categoryFacet);
             searchData[chartCategory].categoryData = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length) ? categoryFacet.terms : [];
 
@@ -591,6 +604,21 @@ const ChartRenderer = (props) => {
                     <div className="browser-error">No annotations were submitted under this award</div>
                 }
             </div>
+            <div className="award-chart__group-wrapper">
+                <h2>Antibodies</h2>
+                {antibodiesConfig.categoryData.length ?
+                    <div className="award-chart__group">
+                        <CategoryChart
+                            award={award}
+                            categoryData={antibodiesConfig.categoryData}
+                            //linkUri={antibodiesConfig.linkUri}
+                            ident={antibodiesConfig.ident}
+                        />
+                    </div>
+                    :
+                    <div className="browser-error">No antibodies were submitted under this award</div>
+                }
+            </div>
         </div>
     );
 };
@@ -658,11 +686,14 @@ ChartRenderer.propTypes = {
     award: PropTypes.object.isRequired, // Award being displayed
     experiments: PropTypes.object, // Search result of matching experiments
     annotations: PropTypes.object, // Search result of matching annotations
+    antibodies: PropTypes.object, // Search result of matching antibodies
+
 };
 
 ChartRenderer.defaultProps = {
     experiments: {},
     annotations: {},
+    antibodies: {},
 };
 
 
@@ -697,6 +728,7 @@ class AwardCharts extends React.Component {
         // Create searchTerm-specific query strings
         const AnnotationQuery = generateQuery(this.state.selectedOrganisms, 'organism.scientific_name=');
         const ExperimentQuery = generateQuery(this.state.selectedOrganisms, 'replicates.library.biosample.donor.organism.scientific_name=');
+        const AntibodyQuery = generateQuery(this.state.selectedOrganisms, 'targets.organism.scientific_name=');
         return (
             <Panel>
                 <PanelHeading>
@@ -708,6 +740,7 @@ class AwardCharts extends React.Component {
                     <FetchedData ignoreErrors>
                         <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}${ExperimentQuery}`} />
                         <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}${AnnotationQuery}`} />
+                        <Param name="antibodies" url={`/search/?type=AntibodyLot&award=${award['@id']}${AntibodyQuery}`} />
                         <ChartRenderer award={award} />
                     </FetchedData>
                 </PanelBody>
