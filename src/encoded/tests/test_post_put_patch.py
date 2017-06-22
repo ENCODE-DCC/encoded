@@ -266,7 +266,7 @@ def test_post_object_with_child(testapp):
     parent_id = res.json['@graph'][0]['@id']
     source = res.json['@graph'][0]['reverse'][0]
     res = testapp.get(source)
-    assert res.json['target'] == parent_id
+    assert res.json['target']['@id'] == parent_id
 
 
 def test_etag_if_match_tid(testapp, organism):
