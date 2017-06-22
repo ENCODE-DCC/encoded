@@ -894,7 +894,7 @@
             "description": "The experiment or dataset the file belongs to.",
             "comment": "Required. See dataset.json for available identifiers.",
             "type": "string",
-            "linkTo": ["Dataset"]
+            "linkTo": "Dataset"
         },
         "replicate": {
             "title": "Replicate",
