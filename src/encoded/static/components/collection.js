@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
-import globals from './globals';
+import * as globals from './globals';
 import StickyHeader from './StickyHeader';
 
 
@@ -33,7 +33,7 @@ Collection.propTypes = {
     context: PropTypes.object.isRequired,
 };
 
-globals.content_views.register(Collection, 'Collection');
+globals.contentViews.register(Collection, 'Collection');
 
 
 class Cell {
@@ -234,12 +234,12 @@ class Table extends React.Component {
                     let factory;
                     let value = lookupColumn(item, column);
                     if (column === '@id') {
-                        factory = globals.listing_titles.lookup(item);
+                        factory = globals.listingTitles.lookup(item);
                         value = factory({ context: item });
                     } else if (value === null || value === undefined) {
                         value = '';
                     } else if (!(value instanceof Array) && value['@type']) {
-                        factory = globals.listing_titles.lookup(value);
+                        factory = globals.listingTitles.lookup(value);
                         value = factory({ context: value });
                     }
                     const sortable = String(value).toLowerCase();

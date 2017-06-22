@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Field } from '../form';
-import globals from '../globals';
+import * as globals from '../globals';
 import JsonPanel from '../item';
 
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import globals from '../globals';
+import * as globals from '../globals';
 
 
 export default class RichTextBlockView extends React.Component {

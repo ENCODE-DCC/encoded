@@ -4,7 +4,7 @@ import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { DropdownButton } from '../libs/bootstrap/button';
 import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
-import globals from './globals';
+import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
@@ -263,7 +263,7 @@ AnnotationComponent.contextTypes = {
 
 const Annotation = auditDecor(AnnotationComponent);
 
-globals.content_views.register(Annotation, 'Annotation');
+globals.contentViews.register(Annotation, 'Annotation');
 
 
 // Display Annotation page, a subtype of Dataset.
@@ -427,7 +427,7 @@ PublicationDataComponent.contextTypes = {
 
 const PublicationData = auditDecor(PublicationDataComponent);
 
-globals.content_views.register(PublicationData, 'PublicationData');
+globals.contentViews.register(PublicationData, 'PublicationData');
 
 
 // Display Annotation page, a subtype of Dataset.
@@ -591,7 +591,7 @@ ReferenceComponent.contextTypes = {
 
 const Reference = auditDecor(ReferenceComponent);
 
-globals.content_views.register(Reference, 'Reference');
+globals.contentViews.register(Reference, 'Reference');
 
 
 // Display Annotation page, a subtype of Dataset.
@@ -779,7 +779,7 @@ ProjectComponent.contextTypes = {
 
 const Project = auditDecor(ProjectComponent);
 
-globals.content_views.register(Project, 'Project');
+globals.contentViews.register(Project, 'Project');
 
 
 // Display Annotation page, a subtype of Dataset.
@@ -953,7 +953,7 @@ UcscBrowserCompositeComponent.contextTypes = {
 
 const UcscBrowserComposite = auditDecor(UcscBrowserCompositeComponent);
 
-globals.content_views.register(UcscBrowserComposite, 'UcscBrowserComposite');
+globals.contentViews.register(UcscBrowserComposite, 'UcscBrowserComposite');
 
 
 export const FilePanelHeader = (props) => {
@@ -1436,7 +1436,7 @@ export class SeriesComponent extends React.Component {
                 {/* Display list of released and unreleased files */}
                 <FetchedItems
                     {...this.props}
-                    url={globals.unreleased_files_url(context)}
+                    url={globals.unreleasedFilesUrl(context)}
                     Component={DatasetFiles}
                     filePanelHeader={<FilePanelHeader context={context} />}
                     encodevers={globals.encodeVersion(context)}
@@ -1462,7 +1462,7 @@ SeriesComponent.contextTypes = {
 
 const Series = auditDecor(SeriesComponent);
 
-globals.content_views.register(Series, 'Series');
+globals.contentViews.register(Series, 'Series');
 
 
 // Display a count of experiments in the footer, with a link to the corresponding search if needed

@@ -5,7 +5,7 @@ import _ from 'underscore';
 import { auditDecor } from './audit';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
-import globals, { statusOrder } from './globals';
+import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
@@ -28,7 +28,7 @@ const LotComponent = (props, reactContext) => {
     ];
 
     // Build antibody status panel
-    const PanelView = globals.panel_views.lookup(context);
+    const PanelView = globals.panelViews.lookup(context);
     const antibodyStatuses = <PanelView context={context} key={context['@id']} />;
 
     // Make an array of targets with no falsy entries and no repeats
@@ -231,7 +231,7 @@ LotComponent.contextTypes = {
 
 const Lot = auditDecor(LotComponent);
 
-globals.content_views.register(Lot, 'AntibodyLot');
+globals.contentViews.register(Lot, 'AntibodyLot');
 
 // Must export for Jest testing.
 export default Lot;
@@ -269,7 +269,7 @@ const AntibodyStatus = (props) => {
     // Sort the lot reviews by their status according to our predefined order
     // given in the statusOrder array we imported from globals.js.
     const lotReviews = _.sortBy(context.lot_reviews, lotReview =>
-        statusOrder.indexOf(lotReview.status) // Use underscore indexOf so that this works in IE8
+        globals.statusOrder.indexOf(lotReview.status) // Use underscore indexOf so that this works in IE8
     );
 
     // Build antibody display object as a hierarchy: status=>organism=>biosample_term_name
@@ -333,7 +333,7 @@ AntibodyStatus.propTypes = {
     context: PropTypes.object.isRequired,
 };
 
-globals.panel_views.register(AntibodyStatus, 'AntibodyLot');
+globals.panelViews.register(AntibodyStatus, 'AntibodyLot');
 
 
 // Antibody characterization documents
@@ -506,9 +506,9 @@ CharacterizationDetail.defaultProps = {
 
 
 // Parts of individual document panels
-globals.panel_views.register(Document, 'AntibodyCharacterization');
-globals.document_views.header.register(CharacterizationHeader, 'AntibodyCharacterization');
-globals.document_views.caption.register(CharacterizationCaption, 'AntibodyCharacterization');
-globals.document_views.preview.register(DocumentPreview, 'AntibodyCharacterization');
-globals.document_views.file.register(CharacterizationFile, 'AntibodyCharacterization');
-globals.document_views.detail.register(CharacterizationDetail, 'AntibodyCharacterization');
+globals.panelViews.register(Document, 'AntibodyCharacterization');
+globals.documentViews.header.register(CharacterizationHeader, 'AntibodyCharacterization');
+globals.documentViews.caption.register(CharacterizationCaption, 'AntibodyCharacterization');
+globals.documentViews.preview.register(DocumentPreview, 'AntibodyCharacterization');
+globals.documentViews.file.register(CharacterizationFile, 'AntibodyCharacterization');
+globals.documentViews.detail.register(CharacterizationDetail, 'AntibodyCharacterization');

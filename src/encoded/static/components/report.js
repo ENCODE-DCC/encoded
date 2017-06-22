@@ -4,7 +4,7 @@ import _ from 'underscore';
 import url from 'url';
 import { svgIcon } from '../libs/svg-icons';
 import { FetchedData, Param } from './fetched';
-import globals from './globals';
+import * as globals from './globals';
 import { FacetList } from './search';
 import StickyHeader from './StickyHeader';
 
@@ -90,7 +90,7 @@ function lookupColumn(result, column) {
     const names = column.split('.');
 
     // Get the column's custom display function and call it if it exists
-    const colViewer = globals.report_cell.lookup(result, column);
+    const colViewer = globals.reportCell.lookup(result, column);
     if (colViewer) {
         const colViewResult = colViewer(result, column);
         if (colViewResult) {
@@ -194,12 +194,12 @@ class Table extends React.Component {
                 let factory;
                 let value = lookupColumn(item, column.path);
                 if (column.path === '@id') {
-                    factory = globals.listing_titles.lookup(item);
+                    factory = globals.listingTitles.lookup(item);
                     value = factory({ context: item });
                 } else if (value === null || value === undefined) {
                     value = '';
                 } else if (!(value instanceof Array) && value['@type']) {
-                    factory = globals.listing_titles.lookup(value);
+                    factory = globals.listingTitles.lookup(value);
                     value = factory({ context: value });
                 }
                 return new Cell(value);
@@ -546,7 +546,7 @@ ReportLoader.propTypes = {
     context: PropTypes.object,
 };
 
-globals.content_views.register(ReportLoader, 'Report');
+globals.contentViews.register(ReportLoader, 'Report');
 
 
 // Custom cell-display function example.
@@ -563,4 +563,4 @@ globals.content_views.register(ReportLoader, 'Report');
 
 
 // Register cell-display components
-// globals.report_cell.register(CustomCellDisplay, @type[0] in quotes, column property name in quotes);
+// globals.reportCell.register(CustomCellDisplay, @type[0] in quotes, column property name in quotes);

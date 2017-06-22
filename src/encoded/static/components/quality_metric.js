@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
 import _ from 'underscore';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import { AttachmentPanel } from './doc';
 import { FetchedData, Param } from './fetched';
-import globals from './globals';
+import * as globals from './globals';
 
 
 const collapsedHeight = 200; // Match collapsed-height from _quality_metrics.scss

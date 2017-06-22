@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FetchedData, Param } from '../fetched';
-import globals from '../globals';
+import * as globals from '../globals';
 import { ObjectPicker } from '../inputs';
 
 
 const ItemBlockView = (props) => {
-    const ViewComponent = globals.content_views.lookup(props.context);
+    const ViewComponent = globals.contentViews.lookup(props.context);
     return <ViewComponent {...props} />;
 };
 

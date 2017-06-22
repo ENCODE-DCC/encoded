@@ -6,7 +6,7 @@ import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { Document, DocumentsPanel, DocumentPreview, DocumentFile } from './doc';
 import { GeneticModificationSummary } from './genetic_modification';
-import globals from './globals';
+import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
@@ -433,7 +433,7 @@ BiosampleComponent.contextTypes = {
 
 const Biosample = auditDecor(BiosampleComponent);
 
-globals.content_views.register(Biosample, 'Biosample');
+globals.contentViews.register(Biosample, 'Biosample');
 
 
 // Certain hrefs in a biosample context object could be empty, or have the value 'N/A'. This
@@ -525,7 +525,7 @@ Treatment.propTypes = {
     context: PropTypes.object.isRequired, // Treatment context object
 };
 
-globals.panel_views.register(Treatment, 'Treatment');
+globals.panelViews.register(Treatment, 'Treatment');
 
 
 // Display a panel with details of the biosample construct. Also displays any embedded documents
@@ -604,7 +604,7 @@ Construct.defaultProps = {
     embeddedDocs: null,
 };
 
-globals.panel_views.register(Construct, 'Construct');
+globals.panelViews.register(Construct, 'Construct');
 
 
 const RNAi = (props) => {
@@ -672,7 +672,7 @@ RNAi.propTypes = {
     context: PropTypes.object.isRequired, // RNAi context object to render
 };
 
-globals.panel_views.register(RNAi, 'RNAi');
+globals.panelViews.register(RNAi, 'RNAi');
 
 
 // Biosample and donor characterization documents
@@ -769,20 +769,20 @@ CharacterizationDetail.defaultProps = {
 
 
 // Parts of individual document panels
-globals.panel_views.register(Document, 'BiosampleCharacterization');
-globals.panel_views.register(Document, 'DonorCharacterization');
+globals.panelViews.register(Document, 'BiosampleCharacterization');
+globals.panelViews.register(Document, 'DonorCharacterization');
 
-globals.document_views.header.register(CharacterizationHeader, 'BiosampleCharacterization');
-globals.document_views.header.register(CharacterizationHeader, 'DonorCharacterization');
+globals.documentViews.header.register(CharacterizationHeader, 'BiosampleCharacterization');
+globals.documentViews.header.register(CharacterizationHeader, 'DonorCharacterization');
 
-globals.document_views.caption.register(CharacterizationCaption, 'BiosampleCharacterization');
-globals.document_views.caption.register(CharacterizationCaption, 'DonorCharacterization');
+globals.documentViews.caption.register(CharacterizationCaption, 'BiosampleCharacterization');
+globals.documentViews.caption.register(CharacterizationCaption, 'DonorCharacterization');
 
-globals.document_views.preview.register(DocumentPreview, 'BiosampleCharacterization');
-globals.document_views.preview.register(DocumentPreview, 'DonorCharacterization');
+globals.documentViews.preview.register(DocumentPreview, 'BiosampleCharacterization');
+globals.documentViews.preview.register(DocumentPreview, 'DonorCharacterization');
 
-globals.document_views.file.register(DocumentFile, 'BiosampleCharacterization');
-globals.document_views.file.register(DocumentFile, 'DonorCharacterization');
+globals.documentViews.file.register(DocumentFile, 'BiosampleCharacterization');
+globals.documentViews.file.register(DocumentFile, 'DonorCharacterization');
 
-globals.document_views.detail.register(CharacterizationDetail, 'BiosampleCharacterization');
-globals.document_views.detail.register(CharacterizationDetail, 'DonorCharacterization');
+globals.documentViews.detail.register(CharacterizationDetail, 'BiosampleCharacterization');
+globals.documentViews.detail.register(CharacterizationDetail, 'DonorCharacterization');

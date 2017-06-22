@@ -4,7 +4,7 @@ import moment from 'moment';
 import querystring from 'querystring';
 import _ from 'underscore';
 import url from 'url';
-import globals from './globals';
+import * as globals from './globals';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 
 
@@ -108,8 +108,8 @@ DefaultFacet.propTypes = {
 
 // Register this component to be the fallback facet-display component used when no other facet
 // field has been registered to specifically render that kind of facet.
-globals.facet_view.register(DefaultFacet, '');
-globals.facet_view.fallback = () => DefaultFacet;
+globals.facetView.register(DefaultFacet, '');
+globals.facetView.fallback = () => DefaultFacet;
 
 
 // Special news facet-rendering component to render facets with facet.field==='month_released'.
@@ -296,7 +296,7 @@ DateFacet.propTypes = {
     searchFilters: PropTypes.object.isRequired, // Search-result filter object; see <NewsFacets />
 };
 
-globals.facet_view.register(DateFacet, 'month_released');
+globals.facetView.register(DateFacet, 'month_released');
 
 
 // Display the news facets.
@@ -336,7 +336,7 @@ const NewsFacets = (props) => {
     return (
         <div className="news-facets">
             {nonEmptyFacets.map((facet) => {
-                const FacetView = globals.facet_view.lookup(facet);
+                const FacetView = globals.facetView.lookup(facet);
 
                 return <FacetView key={facet.field} facet={facet} baseUri={baseUri} searchFilters={searchFilters} />;
             })}
@@ -393,4 +393,4 @@ News.propTypes = {
     context: PropTypes.object.isRequired, // Search results
 };
 
-globals.content_views.register(News, 'News');
+globals.contentViews.register(News, 'News');

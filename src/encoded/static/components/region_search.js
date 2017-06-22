@@ -6,7 +6,7 @@ import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { FacetList, Listing } from './search';
 import { FetchedData, Param } from './fetched';
-import globals from './globals';
+import * as globals from './globals';
 
 
 const regionGenomes = [
@@ -376,4 +376,4 @@ RegionSearch.contextTypes = {
     navigate: PropTypes.func,
 };
 
-globals.content_views.register(RegionSearch, 'region-search');
+globals.contentViews.register(RegionSearch, 'region-search');

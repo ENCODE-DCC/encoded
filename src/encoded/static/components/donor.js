@@ -6,7 +6,7 @@ import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
 import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, DocumentsSubpanels } from './doc';
-import globals from './globals';
+import * as globals from './globals';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
 import { requestObjects } from './objectutils';
@@ -124,7 +124,7 @@ HumanDonor.defaultProps = {
     biosample: null,
 };
 
-globals.panel_views.register(HumanDonor, 'HumanDonor');
+globals.panelViews.register(HumanDonor, 'HumanDonor');
 
 
 /**
@@ -314,7 +314,7 @@ MouseDonor.propTypes = {
     biosample: PropTypes.object, // Biosample object this donor belongs to
 };
 
-globals.panel_views.register(MouseDonor, 'MouseDonor');
+globals.panelViews.register(MouseDonor, 'MouseDonor');
 
 
 const FlyWormDonor = (props) => {
@@ -428,8 +428,8 @@ FlyWormDonor.propTypes = {
     biosample: PropTypes.object, // Biosample object this donor belongs to
 };
 
-globals.panel_views.register(FlyWormDonor, 'FlyDonor');
-globals.panel_views.register(FlyWormDonor, 'WormDonor');
+globals.panelViews.register(FlyWormDonor, 'FlyDonor');
+globals.panelViews.register(FlyWormDonor, 'WormDonor');
 
 
 // This component activates for any donors that aren't any of the above registered types.
@@ -518,7 +518,7 @@ class Donor extends React.Component {
         const { context } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
         const altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
-        const PanelView = globals.panel_views.lookup(context);
+        const PanelView = globals.panelViews.lookup(context);
         let characterizationDocuments = [];
         let donorDocuments = [];
 
@@ -594,4 +594,4 @@ Donor.contextTypes = {
     session: PropTypes.object, // Login information
 };
 
-globals.content_views.register(Donor, 'Donor');
+globals.contentViews.register(Donor, 'Donor');

@@ -4,7 +4,7 @@ import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
 import { DocumentsPanel } from './doc';
-import globals from './globals';
+import * as globals from './globals';
 import { DbxrefList } from './dbxref';
 import { ExperimentTable } from './dataset';
 import { FetchedItems } from './fetched';
@@ -667,7 +667,7 @@ ExperimentComponent.contextTypes = {
 const Experiment = auditDecor(ExperimentComponent);
 export default Experiment;
 
-globals.content_views.register(Experiment, 'Experiment');
+globals.contentViews.register(Experiment, 'Experiment');
 
 
 const replicateTableColumns = {

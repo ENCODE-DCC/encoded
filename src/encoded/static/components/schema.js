@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import marked from 'marked';
 import fetched from './fetched';
-import globals from './globals';
+import * as globals from './globals';
 
 
 const Markdown = (props) => {
@@ -66,4 +66,4 @@ SchemaPage.propTypes = {
     context: PropTypes.object.isRequired,
 };
 
-globals.content_views.register(SchemaPage, 'JSONSchema');
+globals.contentViews.register(SchemaPage, 'JSONSchema');

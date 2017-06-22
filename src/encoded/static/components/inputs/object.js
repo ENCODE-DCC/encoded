@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FetchedData, Param } from '../fetched';
-import globals from '../globals';
+import * as globals from '../globals';
 import { ResultTable } from '../search';
 
 
@@ -46,7 +46,7 @@ class SearchBlockEdit extends React.Component {
 export const ItemPreview = (props) => {
     const context = props.data;
     if (context === undefined) return null;
-    const Listing = globals.listing_views.lookup(context);
+    const Listing = globals.listingViews.lookup(context);
     return (
         <ul className="nav result-table" onClick={openLinksInNewWindow}>
             <Listing context={context} key={context['@id']} />

@@ -12,4 +12,4 @@ var TestingRenderErrorPanel = module.exports.TestingRenderErrorPanel = createRea
     }
 });
 
-globals.panel_views.register(TestingRenderErrorPanel, 'TestingRenderError');
+globals.panelViews.register(TestingRenderErrorPanel, 'TestingRenderError');

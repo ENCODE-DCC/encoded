@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import globals from './globals';
+import * as globals from './globals';
 
 export function dbxref(attributes) {
     const value = attributes.value || '';
@@ -31,7 +31,7 @@ export function dbxref(attributes) {
         prefix = 'FlyBaseStock';
     }
 
-    const base = prefix && globals.dbxref_prefix_map[prefix];
+    const base = prefix && globals.dbxrefPrefixMap[prefix];
     if (!base) {
         return <span>{value}</span>;
     }

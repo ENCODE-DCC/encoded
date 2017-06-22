@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import globals from './globals';
+import * as globals from './globals';
 
 
 export class Param extends React.Component {
@@ -194,7 +194,7 @@ export class FetchedData extends React.Component {
             return (
                 <div className="error done">
                     {errors.map((error, i) => {
-                        const ErrorView = globals.content_views.lookup(error);
+                        const ErrorView = globals.contentViews.lookup(error);
                         return <ErrorView key={i} {...this.props} context={error} />;
                     })}
                 </div>

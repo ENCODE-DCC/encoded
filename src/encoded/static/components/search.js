@@ -9,7 +9,7 @@ import { TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
 import { FetchedData, Param } from './fetched';
 import GenomeBrowser from './genome_browser';
-import globals from './globals';
+import * as globals from './globals';
 import { Attachment } from './image';
 import { BrowserSelector } from './objectutils';
 import { DbxrefList } from './dbxref';
@@ -79,7 +79,7 @@ export function Listing(reactProps) {
         context = reactProps;
         viewProps = { context, key: context['@id'] };
     }
-    const ListingView = globals.listing_views.lookup(viewProps.context);
+    const ListingView = globals.listingViews.lookup(viewProps.context);
     return <ListingView {...viewProps} />;
 }
 
@@ -111,7 +111,7 @@ PickerActions.contextTypes = {
 class ItemComponent extends React.Component {
     render() {
         const result = this.props.context;
-        const title = globals.listing_titles.lookup(result)({ context: result });
+        const title = globals.listingTitles.lookup(result)({ context: result });
         const itemType = result['@type'][0];
         return (
             <li>
@@ -148,7 +148,7 @@ ItemComponent.contextTypes = {
 
 const Item = auditDecor(ItemComponent);
 
-globals.listing_views.register(Item, 'Item');
+globals.listingViews.register(Item, 'Item');
 
 
 // Display one antibody status indicator
@@ -325,7 +325,7 @@ AntibodyComponent.contextTypes = {
 
 const Antibody = auditDecor(AntibodyComponent);
 
-globals.listing_views.register(Antibody, 'AntibodyLot');
+globals.listingViews.register(Antibody, 'AntibodyLot');
 
 
 class BiosampleComponent extends React.Component {
@@ -403,7 +403,7 @@ BiosampleComponent.contextTypes = {
 
 const Biosample = auditDecor(BiosampleComponent);
 
-globals.listing_views.register(Biosample, 'Biosample');
+globals.listingViews.register(Biosample, 'Biosample');
 
 
 class ExperimentComponent extends React.Component {
@@ -497,7 +497,7 @@ ExperimentComponent.contextTypes = {
 
 const Experiment = auditDecor(ExperimentComponent);
 
-globals.listing_views.register(Experiment, 'Experiment');
+globals.listingViews.register(Experiment, 'Experiment');
 
 
 class DatasetComponent extends React.Component {
@@ -606,7 +606,7 @@ DatasetComponent.contextTypes = {
 
 const Dataset = auditDecor(DatasetComponent);
 
-globals.listing_views.register(Dataset, 'Dataset');
+globals.listingViews.register(Dataset, 'Dataset');
 
 
 class TargetComponent extends React.Component {
@@ -651,7 +651,7 @@ TargetComponent.contextTypes = {
 
 const Target = auditDecor(TargetComponent);
 
-globals.listing_views.register(Target, 'Target');
+globals.listingViews.register(Target, 'Target');
 
 
 const Image = (props) => {
@@ -679,7 +679,7 @@ Image.propTypes = {
     context: PropTypes.object, // Image search results
 };
 
-globals.listing_views.register(Image, 'Image');
+globals.listingViews.register(Image, 'Image');
 
 
 /**
@@ -1574,4 +1574,4 @@ Search.lastRegion = {
     region: React.PropTypes.string,
 };
 
-globals.content_views.register(Search, 'Search');
+globals.contentViews.register(Search, 'Search');

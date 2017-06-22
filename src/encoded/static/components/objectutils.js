@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
-import globals from './globals';
+import * as globals from './globals';
 
 
 // Display a summary sentence for a single treatment.
@@ -563,6 +563,6 @@ export function PanelLookup(properties) {
     }
 
     // `props` is an object with at least { context: ENCODE context object }.
-    const PanelView = globals.panel_views.lookup(localProps.context);
+    const PanelView = globals.panelViews.lookup(localProps.context);
     return <PanelView key={localProps.context.uuid} {...localProps} />;
 }

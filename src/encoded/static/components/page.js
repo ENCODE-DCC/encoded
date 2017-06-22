@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Panel } from '../libs/bootstrap/panel';
-import globals from './globals';
+import * as globals from './globals';
 import Layout from './layout';
 import { PickerActions } from './search';
 
@@ -41,7 +41,7 @@ Page.propTypes = {
     context: PropTypes.object.isRequired, // Page object being displayed
 };
 
-globals.content_views.register(Page, 'Page');
+globals.contentViews.register(Page, 'Page');
 
 
 const Listing = (props) => {
@@ -65,7 +65,7 @@ Listing.propTypes = {
     context: PropTypes.object.isRequired, // Search result object
 };
 
-globals.listing_views.register(Listing, 'Page');
+globals.listingViews.register(Listing, 'Page');
 
 
 // Display a list of keywords for the news article in the `post` prop.

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import globals from './globals';
+import * as globals from './globals';
 import { SortTablePanel, SortTable } from './sorttable';
 
 

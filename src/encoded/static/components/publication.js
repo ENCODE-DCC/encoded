@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { auditDecor } from './audit';
-import globals from './globals';
+import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { PickerActions } from './search';
@@ -65,7 +65,7 @@ PublicationComponent.contextTypes = {
 const Publication = auditDecor(PublicationComponent);
 export default Publication;
 
-globals.content_views.register(Publication, 'Publication');
+globals.contentViews.register(Publication, 'Publication');
 
 
 const Citation = (props) => {
@@ -278,4 +278,4 @@ ListingComponent.contextTypes = {
 
 const Listing = auditDecor(ListingComponent);
 
-globals.listing_views.register(Listing, 'Publication');
+globals.listingViews.register(Listing, 'Publication');

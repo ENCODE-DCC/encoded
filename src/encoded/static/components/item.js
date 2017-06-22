@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import url from 'url';
 import Table from './collection';
 import { FetchedData, Param } from './fetched';
-import globals from './globals';
+import * as globals from './globals';
 import { JSONSchemaForm } from './form';
 
 
@@ -39,8 +39,8 @@ Fallback.contextTypes = {
 const Item = (props) => {
     const context = props.context;
     const itemClass = globals.itemClass(context, 'view-item');
-    const title = globals.listing_titles.lookup(context)({ context });
-    const ItemPanel = globals.panel_views.lookup(context);
+    const title = globals.listingTitles.lookup(context)({ context });
+    const ItemPanel = globals.panelViews.lookup(context);
 
     // Make string of alternate accessions
     const altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
@@ -67,10 +67,10 @@ Item.propTypes = {
     context: PropTypes.object.isRequired, // Object being displayed as a generic item.
 };
 
-globals.content_views.register(Item, 'Item');
+globals.contentViews.register(Item, 'Item');
 
 // Also use this view as a fallback for anything we haven't registered.
-globals.content_views.fallback = function fallback() {
+globals.contentViews.fallback = function fallback() {
     return Fallback;
 };
 
@@ -93,10 +93,10 @@ JsonPanel.propTypes = {
 
 export default JsonPanel;
 
-globals.panel_views.register(JsonPanel, 'Item');
+globals.panelViews.register(JsonPanel, 'Item');
 
 // Also use this view as a fallback for anything we haven't registered
-globals.panel_views.fallback = function fallback() {
+globals.panelViews.fallback = function fallback() {
     return JsonPanel;
 };
 
@@ -106,10 +106,10 @@ function listingTitle(props) {
     return context.title || context.name || context.accession || context['@id'];
 }
 
-globals.listing_titles.register(listingTitle, 'Item');
+globals.listingTitles.register(listingTitle, 'Item');
 
 // Also use this view as a fallback for anything we haven't registered
-globals.listing_titles.fallback = function fallback() {
+globals.listingTitles.fallback = function fallback() {
     return listingTitle;
 };
 
@@ -130,7 +130,7 @@ class ItemEdit extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
-        let title = globals.listing_titles.lookup(context)({ context });
+        let title = globals.listingTitles.lookup(context)({ context });
         let action;
         let fetchedForm;
         let type;
@@ -178,8 +178,8 @@ ItemEdit.contextTypes = {
     navigate: PropTypes.func,
 };
 
-globals.content_views.register(ItemEdit, 'Item', 'edit');
-globals.content_views.register(ItemEdit, 'Collection', 'add');
+globals.contentViews.register(ItemEdit, 'Item', 'edit');
+globals.contentViews.register(ItemEdit, 'Collection', 'add');
 
 
 const FetchedRelatedItems = (props) => {

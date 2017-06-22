@@ -5,7 +5,7 @@ import FallbackBlockEdit from './blocks/fallback';
 import closest from '../libs/closest';
 import offset from '../libs/offset';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
-import globals from './globals';
+import * as globals from './globals';
 
 
 const LAYOUT_CONTEXT = {

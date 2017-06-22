@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import moment from 'moment';
-import globals from './globals';
+import * as globals from './globals';
 import { Panel, PanelHeading } from '../libs/bootstrap/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { auditDecor, auditsDisplayed, AuditIcon } from './audit';
@@ -833,7 +833,7 @@ export class FileGallery extends React.Component {
 
         return (
             <FetchedData>
-                <Param name="data" url={globals.unreleased_files_url(context)} />
+                <Param name="data" url={globals.unreleasedFilesUrl(context)} />
                 <Param name="schemas" url="/profiles/" />
                 <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
             </FetchedData>
@@ -1742,7 +1742,7 @@ class FileGraphComponent extends React.Component {
                         if (currContributing[node.metadata.contributing]) {
                             // We have this file's object in the cache, so just display it.
                             node.metadata.ref = currContributing[node.metadata.contributing];
-                            meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, session, sessionProperties);
+                            meta = globals.graphDetail.lookup(node)(node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, session, sessionProperties);
                             meta.type = node['@type'][0];
                         } else if (!this.contributingRequestOutstanding) {
                             // We don't have this file's object in the cache, so request it from
@@ -1761,7 +1761,7 @@ class FileGraphComponent extends React.Component {
                     } else {
                         // Regular File data in the node from when we generated the graph. Just
                         // display the file data from there.
-                        meta = globals.graph_detail.lookup(node)(node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, session, sessionProperties);
+                        meta = globals.graphDetail.lookup(node)(node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, session, sessionProperties);
                         meta.type = node['@type'][0];
                     }
                 }
@@ -2033,4 +2033,4 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
     return { header, body };
 };
 
-globals.graph_detail.register(FileDetailView, 'File');
+globals.graphDetail.register(FileDetailView, 'File');

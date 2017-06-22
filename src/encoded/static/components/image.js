@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
-import globals from './globals';
+import * as globals from './globals';
 
 
 // Fixed-position lightbox background and image
@@ -194,7 +194,7 @@ Image.propTypes = {
     context: PropTypes.object.isRequired, // Image object to display
 };
 
-globals.content_views.register(Image, 'Image');
+globals.contentViews.register(Image, 'Image');
 
 
 // Displays a graphic badge for the award project.

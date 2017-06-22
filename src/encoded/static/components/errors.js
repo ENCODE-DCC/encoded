@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import globals from './globals';
+import * as globals from './globals';
 
 
 const Error = (props) => {
@@ -18,7 +18,7 @@ Error.propTypes = {
     context: PropTypes.object.isRequired,
 };
 
-globals.content_views.register(Error, 'Error');
+globals.contentViews.register(Error, 'Error');
 
 
 const HTTPNotFound = (props) => {
@@ -40,7 +40,7 @@ HTTPNotFound.propTypes = {
     context: PropTypes.object.isRequired,
 };
 
-globals.content_views.register(HTTPNotFound, 'HTTPNotFound');
+globals.contentViews.register(HTTPNotFound, 'HTTPNotFound');
 
 
 class HTTPForbidden extends React.Component {
@@ -70,7 +70,7 @@ HTTPForbidden.contextTypes = {
     session: PropTypes.object,
 };
 
-globals.content_views.register(HTTPForbidden, 'HTTPForbidden');
+globals.contentViews.register(HTTPForbidden, 'HTTPForbidden');
 
 
 const LoginDenied = (props) => {
@@ -100,7 +100,7 @@ LoginDenied.propTypes = {
     context: PropTypes.object.isRequired,
 };
 
-globals.content_views.register(LoginDenied, 'LoginDenied');
+globals.contentViews.register(LoginDenied, 'LoginDenied');
 
 
 const RenderingError = (props) => {
@@ -119,4 +119,4 @@ RenderingError.propTypes = {
     context: PropTypes.object.isRequired,
 };
 
-globals.content_views.register(RenderingError, 'RenderingError');
+globals.contentViews.register(RenderingError, 'RenderingError');

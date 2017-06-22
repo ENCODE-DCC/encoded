@@ -6,7 +6,7 @@ import _ from 'underscore';
 import url from 'url';
 import jsonScriptEscape from '../libs/jsonScriptEscape';
 import origin from '../libs/origin';
-import globals from './globals';
+import * as globals from './globals';
 import DataColors from './datacolors';
 import Navigation from './navigation';
 import Footer from './footer';
@@ -920,7 +920,7 @@ class App extends React.Component {
                 context = context.default_page;
             }
             if (context) {
-                const ContentView = globals.content_views.lookup(context, currentAction);
+                const ContentView = globals.contentViews.lookup(context, currentAction);
                 content = <ContentView context={context} />;
                 containerClass = 'container';
             }

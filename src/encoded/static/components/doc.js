@@ -4,7 +4,7 @@ import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
-import globals from './globals';
+import * as globals from './globals';
 import { Attachment } from './image';
 
 const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
@@ -59,7 +59,7 @@ export const DocumentsPanel = (props) => {
                     <PanelBody addClasses="panel-body-doc doc-panel__outer">
                         <section className="doc-panel__inner">
                             {allDocs.map((doc) => {
-                                const PanelView = globals.panel_views.lookup(doc);
+                                const PanelView = globals.panelViews.lookup(doc);
                                 return <PanelView key={doc['@id']} label={docLabelMap[doc.uuid]} context={doc} />;
                             })}
                         </section>
@@ -88,7 +88,7 @@ export const DocumentsSubpanels = (props) => {
         <div>
             <div className="panel-docs-list">
                 {documentSpec.documents.map((doc) => {
-                    const PanelView = globals.panel_views.lookup(doc);
+                    const PanelView = globals.panelViews.lookup(doc);
                     return <PanelView key={doc['@id']} label={documentSpec.label} context={doc} />;
                 })}
             </div>
@@ -130,11 +130,11 @@ export class Document extends React.Component {
         const context = this.props.context;
 
         // Set up rendering components
-        const DocumentHeaderView = globals.document_views.header.lookup(context);
-        const DocumentCaptionView = globals.document_views.caption.lookup(context);
-        const DocumentPreviewView = globals.document_views.preview.lookup(context);
-        const DocumentFileView = globals.document_views.file.lookup(context);
-        const DocumentDetailView = globals.document_views.detail.lookup(context);
+        const DocumentHeaderView = globals.documentViews.header.lookup(context);
+        const DocumentCaptionView = globals.documentViews.caption.lookup(context);
+        const DocumentPreviewView = globals.documentViews.preview.lookup(context);
+        const DocumentFileView = globals.documentViews.file.lookup(context);
+        const DocumentDetailView = globals.documentViews.detail.lookup(context);
 
         return (
             <section className="flexcol flexcol--doc">
@@ -313,22 +313,22 @@ DocumentDetail.defaultProps = {
 
 
 // Register document @types so they display in the standard document panel
-globals.panel_views.register(Document, 'Document');
+globals.panelViews.register(Document, 'Document');
 
 // Register document header rendering components
-globals.document_views.header.register(DocumentHeader, 'Document');
+globals.documentViews.header.register(DocumentHeader, 'Document');
 
 // Register document caption rendering components
-globals.document_views.caption.register(DocumentCaption, 'Document');
+globals.documentViews.caption.register(DocumentCaption, 'Document');
 
 // Register document preview rendering components
-globals.document_views.preview.register(DocumentPreview, 'Document');
+globals.documentViews.preview.register(DocumentPreview, 'Document');
 
 // Register document file rendering components
-globals.document_views.file.register(DocumentFile, 'Document');
+globals.documentViews.file.register(DocumentFile, 'Document');
 
 // Register document detail rendering components
-globals.document_views.detail.register(DocumentDetail, 'Document');
+globals.documentViews.detail.register(DocumentDetail, 'Document');
 
 
 const QCAttachmentCaption = props => (
@@ -366,8 +366,8 @@ export const AttachmentPanel = (props) => {
     const { context, attachment, title, modal } = props;
 
     // Set up rendering components.
-    const DocumentCaptionView = globals.document_views.caption.lookup(context);
-    const DocumentPreviewView = globals.document_views.preview.lookup(context);
+    const DocumentCaptionView = globals.documentViews.caption.lookup(context);
+    const DocumentPreviewView = globals.documentViews.preview.lookup(context);
 
     // Determine the attachment area CSS classes based on whether they're displayed in a modal
     // or not.
@@ -399,7 +399,7 @@ AttachmentPanel.defaultProps = {
 
 
 // Register document caption rendering components
-globals.document_views.caption.register(QCAttachmentCaption, 'QualityMetric');
+globals.documentViews.caption.register(QCAttachmentCaption, 'QualityMetric');
 
 // Register document preview rendering components
-globals.document_views.preview.register(QCAttachmentPreview, 'QualityMetric');
+globals.documentViews.preview.register(QCAttachmentPreview, 'QualityMetric');

@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
 import { Panel } from '../libs/bootstrap/panel';
 import { DocumentsPanel } from './doc';
-import globals from './globals';
+import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { PanelLookup } from './objectutils';
 import { PickerActions } from './search';
@@ -50,7 +49,7 @@ TalenPage.propTypes = {
     context: PropTypes.object.isRequired,
 };
 
-globals.content_views.register(TalenPage, 'TALEN');
+globals.contentViews.register(TalenPage, 'TALEN');
 
 
 // Display a TALENs panel. We can have multiple TALENs in one panel
@@ -104,7 +103,7 @@ Talen.propTypes = {
     context: PropTypes.object.isRequired, // TALEN object
 };
 
-globals.panel_views.register(Talen, 'TALEN');
+globals.panelViews.register(Talen, 'TALEN');
 
 
 // Search result page output
@@ -118,7 +117,7 @@ const Listing = (props) => {
                 <PickerActions {...this.props} />
                 <div className="pull-right search-meta">
                     <p className="type meta-title">TALEN</p>
-                    {result.status ? <p className="type meta-status">{' ' + result.status}</p> : ''}
+                    {result.status ? <p className="type meta-status">{` ${result.status}`}</p> : ''}
                 </div>
                 <div className="accession">
                     <a href={result['@id']}>{result.name}</a>
@@ -140,4 +139,4 @@ Listing.propTypes = {
     context: PropTypes.object.isRequired,
 };
 
-globals.listing_views.register(Listing, 'TALEN');
+globals.listingViews.register(Listing, 'TALEN');

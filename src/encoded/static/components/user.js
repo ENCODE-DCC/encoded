@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import ItemStore from './lib/store';
 import { Modal, ModalHeader, ModalBody } from '../libs/bootstrap/modal';
 import { Form } from './form';
-import globals from './globals';
+import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 
 
@@ -53,7 +53,7 @@ class AccessKeyTable extends React.Component {
     }
 
     onError(error) {
-        const View = globals.content_views.lookup(error);
+        const View = globals.contentViews.lookup(error);
         this.setState({
             modal: (
                 <Modal closeModal={this.hideModal}>
@@ -247,7 +247,7 @@ User.propTypes = {
     context: PropTypes.object.isRequired, // User object from DB
 };
 
-globals.content_views.register(User, 'User');
+globals.contentViews.register(User, 'User');
 
 
 const ImpersonateUserSchema = {
@@ -293,4 +293,4 @@ ImpersonateUserForm.contextTypes = {
     navigate: PropTypes.func.isRequired,
 };
 
-globals.content_views.register(ImpersonateUserForm, 'Portal', 'impersonate-user');
+globals.contentViews.register(ImpersonateUserForm, 'Portal', 'impersonate-user');

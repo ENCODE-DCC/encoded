@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FetchedData, Param } from './fetched';
-import globals from './globals';
+import * as globals from './globals';
 
 
 function sortedJson(obj) {
@@ -155,7 +155,7 @@ EditForm.contextTypes = {
 const ItemEdit = (props) => {
     const context = props.context;
     const itemClass = globals.itemClass(context, 'view-item');
-    const title = globals.listing_titles.lookup(context)({ context });
+    const title = globals.listingTitles.lookup(context)({ context });
     const url = `${context['@id']}?frame=edit`;
     return (
         <div className={itemClass}>
@@ -176,4 +176,4 @@ ItemEdit.propTypes = {
     context: PropTypes.object.isRequired,
 };
 
-globals.content_views.register(ItemEdit, 'Item', 'edit-json');
+globals.contentViews.register(ItemEdit, 'Item', 'edit-json');

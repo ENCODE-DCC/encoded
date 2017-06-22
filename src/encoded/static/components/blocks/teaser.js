@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { FetchedData, Param } from '../fetched';
-import globals from '../globals';
+import * as globals from '../globals';
 import { ObjectPicker } from '../inputs';
 import ItemBlockView from './item';
 import RichTextBlockView from './richtext';

@@ -4,7 +4,7 @@ import color from 'color';
 import _ from 'underscore';
 import url from 'url';
 import { svgIcon } from '../libs/svg-icons';
-import globals from './globals';
+import * as globals from './globals';
 import { BrowserSelector } from './objectutils';
 import { BatchDownload, FacetList, TextFilter } from './search';
 
@@ -372,4 +372,4 @@ Matrix.contextTypes = {
     biosampleTypeColors: PropTypes.object, // DataColor instance for experiment project
 };
 
-globals.content_views.register(Matrix, 'Matrix');
+globals.contentViews.register(Matrix, 'Matrix');

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import DataColors from './datacolors';
 import { FetchedData, Param } from './fetched';
-import globals from './globals';
+import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { PickerActions } from './search';
 import StatusLabel from './statuslabel';
@@ -624,7 +624,7 @@ Award.propTypes = {
     context: PropTypes.object.isRequired, // Award object being rendered
 };
 
-globals.content_views.register(Award, 'Award');
+globals.contentViews.register(Award, 'Award');
 
 
 const Listing = (props) => {
@@ -653,4 +653,4 @@ Listing.propTypes = {
     context: PropTypes.object.isRequired, // Object whose search result we're displaying
 };
 
-globals.listing_views.register(Listing, 'Award');
+globals.listingViews.register(Listing, 'Award');

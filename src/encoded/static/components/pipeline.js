@@ -5,7 +5,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/mo
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
 import { DocumentsPanel } from './doc';
-import globals from './globals';
+import * as globals from './globals';
 import { Graph, JsonGraph } from './graph';
 import { Breadcrumbs } from './navigation';
 import { PanelLookup } from './objectutils';
@@ -154,7 +154,7 @@ class PipelineComponent extends React.Component {
         if (infoNodeId) {
             const node = jsonGraph.getNode(infoNodeId);
             if (node) {
-                meta = globals.graph_detail.lookup(node)(node);
+                meta = globals.graphDetail.lookup(node)(node);
             }
         }
 
@@ -474,7 +474,7 @@ PipelineComponent.contextTypes = {
 
 const Pipeline = auditDecor(PipelineComponent);
 
-globals.content_views.register(Pipeline, 'Pipeline');
+globals.contentViews.register(Pipeline, 'Pipeline');
 
 
 // Display the metadata of the selected analysis step in the graph
@@ -493,7 +493,7 @@ const StepDetailView = function StepDetailView(node) {
     };
 };
 
-globals.graph_detail.register(StepDetailView, 'Step');
+globals.graphDetail.register(StepDetailView, 'Step');
 
 
 class ListingComponent extends React.Component {
@@ -560,4 +560,4 @@ ListingComponent.contextTypes = {
 
 const Listing = auditDecor(ListingComponent);
 
-globals.listing_views.register(Listing, 'Pipeline');
+globals.listingViews.register(Listing, 'Pipeline');

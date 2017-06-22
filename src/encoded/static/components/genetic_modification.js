@@ -5,7 +5,7 @@ import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import { auditDecor } from './audit';
 import { SortTable } from './sorttable';
-import globals from './globals';
+import * as globals from './globals';
 import StatusLabel from './statuslabel';
 import { ProjectBadge, Attachment } from './image';
 import { RelatedItems } from './item';
@@ -53,7 +53,7 @@ GeneticModificationCharacterizations.propTypes = {
 function geneticModificationTechniques(techniques) {
     if (techniques && techniques.length) {
         return techniques.map((technique) => {
-            const ModificationTechniqueView = globals.panel_views.lookup(technique);
+            const ModificationTechniqueView = globals.panelViews.lookup(technique);
             return <ModificationTechniqueView key={technique.uuid} context={technique} />;
         });
     }
@@ -302,7 +302,7 @@ GeneticModificationComponent.contextTypes = {
 
 const GeneticModification = auditDecor(GeneticModificationComponent);
 
-globals.content_views.register(GeneticModification, 'GeneticModification');
+globals.contentViews.register(GeneticModification, 'GeneticModification');
 
 
 const GMAttachmentCaption = (props) => {
@@ -339,10 +339,10 @@ GMAttachmentPreview.propTypes = {
 };
 
 // Register document caption rendering components
-globals.document_views.caption.register(GMAttachmentCaption, 'GeneticModificationCharacterization');
+globals.documentViews.caption.register(GMAttachmentCaption, 'GeneticModificationCharacterization');
 
 // Register document preview rendering components
-globals.document_views.preview.register(GMAttachmentPreview, 'GeneticModificationCharacterization');
+globals.documentViews.preview.register(GMAttachmentPreview, 'GeneticModificationCharacterization');
 
 
 // Display modification technique specific to the CRISPR type.
@@ -403,7 +403,7 @@ TechniqueCrispr.propTypes = {
     context: PropTypes.object.isRequired, // CRISPR genetic modificiation technique to display
 };
 
-globals.panel_views.register(TechniqueCrispr, 'Crispr');
+globals.panelViews.register(TechniqueCrispr, 'Crispr');
 
 
 // Display modification technique specific to the TALE type.
@@ -467,7 +467,7 @@ TechniqueTale.propTypes = {
     context: PropTypes.object.isRequired, // TALE genetic modificiation technique to display
 };
 
-globals.panel_views.register(TechniqueTale, 'Tale');
+globals.panelViews.register(TechniqueTale, 'Tale');
 
 
 class ListingComponent extends React.Component {
@@ -519,7 +519,7 @@ ListingComponent.contextTypes = {
 
 const Listing = auditDecor(ListingComponent);
 
-globals.listing_views.register(Listing, 'GeneticModification');
+globals.listingViews.register(Listing, 'GeneticModification');
 
 
 // Root function for getGMModificationTechniques, which caches the results based on the genetic
