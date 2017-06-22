@@ -141,7 +141,7 @@ ModalHeader.propTypes = {
         PropTypes.func, // If not using an actuator on <Modal>, provide a function to close the modal
     ]),
     children: PropTypes.node,
-    c_closeModal: PropTypes.func.isRequired, // Auto-added
+    c_closeModal: PropTypes.func, // Auto-added
 };
 
 ModalHeader.defaultProps = {
@@ -149,6 +149,7 @@ ModalHeader.defaultProps = {
     title: null,
     closeModal: null,
     children: null,
+    c_closeModal: null,
 };
 
 

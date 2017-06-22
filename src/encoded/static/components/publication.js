@@ -230,6 +230,12 @@ class SupplementaryDataListing extends React.Component {
 
 SupplementaryDataListing.propTypes = {
     data: PropTypes.object.isRequired,
+    id: PropTypes.string.isRequired,
+    index: PropTypes.number,
+};
+
+SupplementaryDataListing.defaultProps = {
+    index: 0,
 };
 
 
