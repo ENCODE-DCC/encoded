@@ -255,12 +255,10 @@ LabChart.contextTypes = {
     navigate: PropTypes.func,
 };
 
-
 // Display and handle clicks in the chart of assays.
 class CategoryChart extends React.Component {
     constructor() {
         super();
-
         this.createChart = this.createChart.bind(this);
         this.updateChart = this.updateChart.bind(this);
     }
@@ -482,7 +480,7 @@ StatusChart.contextTypes = {
 
 
 const ChartRenderer = (props) => {
-    const { award, experiments, annotations } = props;
+    const { award, experiments, annotations, biosamples } = props;
 
     // Put all search-related configuration data in one consistent place.
     const searchData = {
@@ -508,13 +506,25 @@ const ChartRenderer = (props) => {
             uriBase: '/search/?type=Annotation&award.name=',
             linkUri: '/matrix/?type=Annotation&award.name=',
         },
+        biosamples: {
+            ident: 'biosamples',
+            data: [],
+            labs: [],
+            categoryData: [],
+            statuses: [],
+            categoryFacet: 'biosample_type',
+            title: 'Biosamples',
+            uriBase: '/search/?type=Biosample&award.name=',
+        },
     };
 
     // Find the chart data in the returned facets.
     const experimentsConfig = searchData.experiments;
     const annotationsConfig = searchData.annotations;
+    const biosamplesConfig = searchData.biosamples;
     searchData.experiments.data = (experiments && experiments.facets) || [];
     searchData.annotations.data = (annotations && annotations.facets) || [];
+    searchData.biosamples.data = (biosamples && biosamples.facets) || [];
     ['experiments', 'annotations'].forEach((chartCategory) => {
         if (searchData[chartCategory].data.length) {
             // Get the array of lab data.
@@ -528,6 +538,12 @@ const ChartRenderer = (props) => {
             // Get the array of status data.
             const statusFacet = searchData[chartCategory].data.find(facet => facet.field === 'status');
             searchData[chartCategory].statuses = (statusFacet && statusFacet.terms && statusFacet.terms.length) ? statusFacet.terms : [];
+        }
+    });
+    ['biosamples'].forEach((chartCategory) => {
+        if (searchData[chartCategory].data.length) {
+            const categoryFacet = searchData[chartCategory].data.find(facet => facet.field === searchData[chartCategory].categoryFacet);
+            searchData[chartCategory].categoryData = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length) ? categoryFacet.terms : [];
         }
     });
 
@@ -589,6 +605,22 @@ const ChartRenderer = (props) => {
                     </div>
                 :
                     <div className="browser-error">No annotations were submitted under this award</div>
+                }
+            </div>
+            <div className="award-chart__group-wrapper">
+                <h2>Reagents</h2>
+                {biosamplesConfig.categoryData.length ?
+                    <div className="award-chart__group">
+                        <CategoryChart
+                            award={award}
+                            categoryData={biosamplesConfig.categoryData || []}
+                            title={biosamplesConfig.title}
+                            categoryFacet={biosamplesConfig.categoryFacet}
+                            ident={biosamplesConfig.ident}
+                        />
+                    </div>
+                :
+                    <div className="browser-error">No reagents were submitted under this award</div>
                 }
             </div>
         </div>
@@ -658,11 +690,13 @@ ChartRenderer.propTypes = {
     award: PropTypes.object.isRequired, // Award being displayed
     experiments: PropTypes.object, // Search result of matching experiments
     annotations: PropTypes.object, // Search result of matching annotations
+    biosamples: PropTypes.object,
 };
 
 ChartRenderer.defaultProps = {
     experiments: {},
     annotations: {},
+    biosamples: {},
 };
 
 
@@ -697,6 +731,7 @@ class AwardCharts extends React.Component {
         // Create searchTerm-specific query strings
         const AnnotationQuery = generateQuery(this.state.selectedOrganisms, 'organism.scientific_name=');
         const ExperimentQuery = generateQuery(this.state.selectedOrganisms, 'replicates.library.biosample.donor.organism.scientific_name=');
+        const BiosampleQuery = generateQuery(this.state.selectedOrganisms, 'biosample_type=');
         return (
             <Panel>
                 <PanelHeading>
@@ -708,6 +743,7 @@ class AwardCharts extends React.Component {
                     <FetchedData ignoreErrors>
                         <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}${ExperimentQuery}`} />
                         <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}${AnnotationQuery}`} />
+                        <Param name="biosamples" url={`/search/?type=Biosample&award.name=${award.name}${BiosampleQuery}`} />
                         <ChartRenderer award={award} />
                     </FetchedData>
                 </PanelBody>
