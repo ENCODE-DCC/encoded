@@ -516,7 +516,7 @@ const ChartRenderer = (props) => {
             statuses: [],
             categoryFacet: 'lot_reviews.status',
             title: 'Antibodies',
-            uriBase: 'type=AntibodyLot&award=/awards', //REMEMBER: the award number (e.g. /UM1HG009409/) needs to have those slashes around it
+            uriBase: 'type=AntibodyLot&award=/awards',
         },
     };
 
@@ -605,17 +605,17 @@ const ChartRenderer = (props) => {
                 }
             </div>
             <div className="award-chart__group-wrapper">
-                <h2>Antibodies</h2>
+                <h2>Reagents</h2>
                 {antibodiesConfig.categoryData.length ?
                     <div className="award-chart__group">
                         <CategoryChart
                             award={award}
                             categoryData={antibodiesConfig.categoryData}
-                            //linkUri={antibodiesConfig.linkUri}
+                            title={antibodiesConfig.title}
                             ident={antibodiesConfig.ident}
                         />
                     </div>
-                    :
+                :
                     <div className="browser-error">No antibodies were submitted under this award</div>
                 }
             </div>
