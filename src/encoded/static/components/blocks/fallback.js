@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Field } from '../form';
 import * as globals from '../globals';
-import JsonPanel from '../item';
+import { Panel } from '../item';
 
 
-const FallbackBlockView = props => (
+const FallbackBlockView = (props) => (
     <div>
         <h2>{props.blocktype.label}</h2>
-        <JsonPanel context={props.value} />
+        <Panel context={props.value} />
     </div>
 );
 

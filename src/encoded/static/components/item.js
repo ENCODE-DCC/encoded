@@ -75,7 +75,7 @@ globals.contentViews.fallback = function fallback() {
 };
 
 
-const JsonPanel = (props) => {
+export const Panel = (props) => {
     const context = props.context;
     const itemClass = globals.itemClass(context, 'view-detail panel');
     return (
@@ -87,24 +87,23 @@ const JsonPanel = (props) => {
     );
 };
 
-JsonPanel.propTypes = {
+Panel.propTypes = {
     context: PropTypes.object.isRequired,
 };
 
-export default JsonPanel;
+globals.panelViews.register(Panel, 'Item');
 
-globals.panelViews.register(JsonPanel, 'Item');
 
 // Also use this view as a fallback for anything we haven't registered
 globals.panelViews.fallback = function fallback() {
-    return JsonPanel;
+    return Panel;
 };
 
 
-function listingTitle(props) {
+const listingTitle = function listingTitle(props) {
     const context = props.context;
     return context.title || context.name || context.accession || context['@id'];
-}
+};
 
 globals.listingTitles.register(listingTitle, 'Item');
 
