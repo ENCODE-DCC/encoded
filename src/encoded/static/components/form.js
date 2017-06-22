@@ -1030,7 +1030,7 @@ JSONSchemaForm.propTypes = {
     method: PropTypes.string.isRequired,
     etag: PropTypes.string,
     showReadOnly: PropTypes.bool,
-    id: PropTypes.string.isRequired,
+    id: PropTypes.string,
     onFinish: PropTypes.func.isRequired,
 };
 

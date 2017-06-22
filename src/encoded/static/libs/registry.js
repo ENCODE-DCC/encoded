@@ -1,17 +1,15 @@
 import _ from 'underscore';
 
+/*eslint class-methods-use-this: ["error", { "exceptMethods": ["providedBy", "fallback"] }] */
 export default class Registry {
-    static providedBy(obj) {
-        return obj['@type'] || [];
-    }
-
-    static fallback() {
-    }
-
     constructor(options) {
         // May provide custom providedBy and fallback functions
         this.views = {};
         _.extend(this, options);
+    }
+
+    providedBy(obj) {
+        return obj['@type'] || [];
     }
 
     register(view, for_, name) {
@@ -34,21 +32,24 @@ export default class Registry {
     lookup(obj, name) {
         const views = this.views[name || ''];
         if (!views) {
-            return Registry.fallback(obj, name);
+            return this.fallback(obj, name);
         }
 
-        const provided = Registry.providedBy(obj);
+        const provided = this.providedBy(obj);
         for (let i = 0, len = provided.length; i < len; i += 1) {
             const view = views[provided[i]];
             if (view) {
                 return view;
             }
         }
-        return Registry.fallback(obj, name);
+        return this.fallback(obj, name);
     }
 
     getAll(name) {
         const views = this.views[name || ''];
         return views || {};
+    }
+
+    static fallback() {
     }
 }

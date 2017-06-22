@@ -264,7 +264,7 @@ class Table extends React.Component {
         if (request) {
             request.abort();
         }
-        if (context.all) {
+        if (context.all && this.componentMounted) {
             communicating = true;
             request = this.context.fetch(context.all, {
                 headers: { Accept: 'application/json' },
@@ -274,8 +274,10 @@ class Table extends React.Component {
                 return response.json();
             })
             .then((data) => {
-                this.extractData({ context: data });
-                this.setState({ communicating: false });
+                if (this.componentMounted) {
+                    this.extractData({ context: data });
+                    this.setState({ communicating: false });
+                }
             }, globals.parseAndLogError.bind(undefined, 'allRequest'));
             this.setState({
                 allRequest: request,
