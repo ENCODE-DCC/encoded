@@ -29,6 +29,7 @@
         "external_ids": {
             "title": "Unique external identifier(s) of strain or donor",
             "description": "External identifiers that uniquely identify the donor of the sample, e.g. for strains it might be a strain identifier at a repository or a de-identified donor ID for a person.",
+            "comment": "",
             "type": "array",
             "uniqueItems": true,
             "items": {
@@ -63,12 +64,14 @@
         "url": {
             "title": "URL",
             "description": "An external resource with additional information about the donor.",
+            "comment": "",
             "type": "string",
             "format": "uri"
         },
         "internal_tags": {
             "title": "Internal tags",
             "description": "Some donors are part of particular data collections",
+            "comment": "",
             "type": "array",
             "default": [],
             "permission": "import_items",

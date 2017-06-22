@@ -25,7 +25,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "genotype": {
             "description": "The genotype of the strain according to accepted nomenclature conventions: http://www.wormbase.org/about/userguide/nomenclature#k89607hgcf24ea13jbid5--10."
@@ -52,17 +52,6 @@
                 "451f9e49-685d-40d5-ad89-760b2512262a"
             ],
             "permission": "import_items"
-        },
-        "status": {
-            "enum" : [
-                "in progress",
-                "deleted",
-                "replaced",
-                "released",
-                "revoked",
-                "preliminary",
-                "proposed"
-            ]
         },
         "dbxrefs": {
             "@type": "@id",

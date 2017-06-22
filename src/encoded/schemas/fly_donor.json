@@ -25,7 +25,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "genotype": {
             "description": "The genotype of the strain according to accepted nomenclature conventions: http://flybase.org/wiki/FlyBase:Nomenclature"
@@ -41,17 +41,6 @@
                 "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c"
             ],
             "permission": "import_items"
-        },
-        "status": {
-            "enum" : [
-                "in progress",
-                "deleted",
-                "replaced",
-                "released",
-                "revoked",
-                "preliminary",
-                "proposed"
-            ]
         },
         "dbxrefs": {
             "@type": "@id",
