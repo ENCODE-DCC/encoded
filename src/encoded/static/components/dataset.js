@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
-import { DropdownButton } from '../libs/bootstrap/button';
+import DropdownButton from '../libs/bootstrap/button';
 import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';

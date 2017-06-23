@@ -17,7 +17,7 @@ import { DropdownMenu } from './dropdown-menu';
 // Click handling method taken from:
 // https://github.com/facebook/react/issues/579#issuecomment-60841923
 
-class DropdownButton extends React.Component {
+export default class DropdownButton extends React.Component {
     constructor() {
         super();
 
