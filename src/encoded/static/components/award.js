@@ -365,7 +365,7 @@ CategoryChart.propTypes = {
 CategoryChart.contextTypes = {
     navigate: PropTypes.func,
 };
-
+// Display and handle clicks in the chart of antibodies.
 class AntibodyChart extends React.Component {
     constructor() {
         super();
@@ -462,6 +462,7 @@ class AntibodyChart extends React.Component {
         );
     }
 }
+
 AntibodyChart.propTypes = {
     award: PropTypes.object.isRequired, // Award being displayed
     categoryData: PropTypes.array.isRequired, // Type-specific data to display in a chart
@@ -472,6 +473,7 @@ AntibodyChart.propTypes = {
 AntibodyChart.contextTypes = {
     navigate: PropTypes.func,
 };
+// Display and handle clicks in the chart of biosamples.
 class BiosampleChart extends React.Component {
     constructor() {
         super();
@@ -568,7 +570,6 @@ class BiosampleChart extends React.Component {
         );
     }
 }
-
 
 BiosampleChart.propTypes = {
     award: PropTypes.object.isRequired, // Award being displayed
