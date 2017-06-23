@@ -391,7 +391,7 @@ class Col extends React.Component {
 Col.propTypes = {
     pos: PropTypes.array,
     className: PropTypes.string,
-    value: PropTypes.object,
+    value: PropTypes.any,
 };
 
 Col.contextTypes = LAYOUT_CONTEXT;
@@ -443,7 +443,7 @@ class Row extends React.Component {
 
 Row.propTypes = {
     pos: PropTypes.array,
-    value: PropTypes.object,
+    value: PropTypes.any,
 };
 
 Row.contextTypes = LAYOUT_CONTEXT;

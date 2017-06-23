@@ -79,7 +79,7 @@ class SearchBlock extends React.Component {
 }
 
 SearchBlock.propTypes = {
-    value: PropTypes.string,
+    value: PropTypes.any,
     mode: PropTypes.string,
     onChange: PropTypes.func,
 };
