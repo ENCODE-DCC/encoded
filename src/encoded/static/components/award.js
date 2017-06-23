@@ -473,6 +473,7 @@ AntibodyChart.propTypes = {
 AntibodyChart.contextTypes = {
     navigate: PropTypes.func,
 };
+
 // Display and handle clicks in the chart of biosamples.
 class BiosampleChart extends React.Component {
     constructor() {
@@ -831,6 +832,7 @@ const ChartRenderer = (props) => {
             </div>
             <div className="award-chart__group-wrapper">
                 <h2>Reagents</h2>
+                {antibodiesConfig.categoryData.length || biosamplesConfig.categoryData.length ?
                     <div className="award-chart__group">
                         <AntibodyChart
                             award={award}
@@ -845,6 +847,9 @@ const ChartRenderer = (props) => {
                             ident={biosamplesConfig.ident}
                         />
                     </div>
+                :
+                    <div className="browser-error">No reagents were submitted under this award</div>
+                }
             </div>
         </div>
     );
