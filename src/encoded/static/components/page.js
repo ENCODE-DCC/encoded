@@ -123,11 +123,11 @@ export default function newsHead(props, siteUrl) {
 
     if (context.news) {
         return [
-            <meta property="og:url" content={props.href} />,
-            <meta property="og:type" content="article" />,
-            <meta property="og:title" content={context.title} />,
-            <meta property="og:description" content={context.news_excerpt} />,
-            <meta property="og:image" content={`${siteUrl}/static/img/encode-logo-small-2x.png`} />,
+            <meta key="url" property="og:url" content={props.href} />,
+            <meta key="type" property="og:type" content="article" />,
+            <meta key="title" property="og:title" content={context.title} />,
+            <meta key="desc" property="og:description" content={context.news_excerpt} />,
+            <meta key="image" property="og:image" content={`${siteUrl}/static/img/encode-logo-small-2x.png`} />,
         ];
     }
     return null;

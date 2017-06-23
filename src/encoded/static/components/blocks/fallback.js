@@ -5,7 +5,7 @@ import * as globals from '../globals';
 import { Panel } from '../item';
 
 
-const FallbackBlockView = (props) => (
+const FallbackBlockView = props => (
     <div>
         <h2>{props.blocktype.label}</h2>
         <Panel context={props.value} />

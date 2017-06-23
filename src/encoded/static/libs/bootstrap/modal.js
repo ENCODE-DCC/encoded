@@ -264,7 +264,7 @@ ModalFooter.propTypes = {
 
 ModalFooter.defaultProps = {
     submitBtn: null,
-    closeModal: null,
+    closeModal: undefined,
     dontClose: false,
     c_closeModal: null,
     children: null,

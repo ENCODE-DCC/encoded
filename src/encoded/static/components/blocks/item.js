@@ -10,6 +10,10 @@ const ItemBlockView = (props) => {
     return <ViewComponent {...props} />;
 };
 
+ItemBlockView.propTypes = {
+    context: PropTypes.object.isRequired,
+};
+
 export default ItemBlockView;
 
 
@@ -49,13 +53,13 @@ globals.blocks.register({
             item: {
                 title: 'Item',
                 type: 'string',
-                formInput: <ObjectPicker />
+                formInput: <ObjectPicker />,
             },
             className: {
                 title: 'CSS Class',
-                type: 'string'
-            }
-        }
+                type: 'string',
+            },
+        },
     },
     view: FetchedItemBlockView,
 }, 'itemblock');
