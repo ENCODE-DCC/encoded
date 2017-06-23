@@ -142,5 +142,5 @@ def fly_worm_donor_4_5_and_human_mouse_7_8(value, system):
 @upgrade_step('mouse_donor', '8', '9')
 def fly_worm_donor_5_6_and_human_mouse_8_9(value, system):
     # http://redmine.encodedcc.org/issues/5041
-    if value['status'] in ['preliminary', 'proposed']:
+    if value.get('status') in ['preliminary', 'proposed']:
         value['status'] = "in progress"
