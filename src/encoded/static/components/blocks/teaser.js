@@ -18,7 +18,7 @@ class TeaserCore extends React.Component {
 
     renderImage() {
         const context = this.props.value.image;
-        if (typeof context === 'object') {
+        if (context && typeof context === 'object') {
             return <ItemBlockView context={context} />;
         }
         if (typeof context === 'string') {

@@ -11,7 +11,11 @@ const ItemBlockView = (props) => {
 };
 
 ItemBlockView.propTypes = {
-    context: PropTypes.object.isRequired,
+    context: PropTypes.object,
+};
+
+ItemBlockView.defaultProps = {
+    context: null,
 };
 
 export default ItemBlockView;
@@ -40,7 +44,11 @@ class FetchedItemBlockView extends React.Component {
 }
 
 FetchedItemBlockView.propTypes = {
-    value: PropTypes.object.isRequired,
+    value: PropTypes.object,
+};
+
+FetchedItemBlockView.defaultProps = {
+    value: null,
 };
 
 
