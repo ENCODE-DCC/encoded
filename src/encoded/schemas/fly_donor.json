@@ -47,6 +47,8 @@
             "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "External identifiers",
             "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
+            "comment": "Do not submit. DCC personnel is responsible for submission of donor external resource identifiers.",
+            "permission": "import_items",
             "type": "array",
             "default": [],
             "uniqueItems": true,
