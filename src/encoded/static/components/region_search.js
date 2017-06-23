@@ -19,6 +19,7 @@ const regionGenomes = [
 
 const AutocompleteBox = (props) => {
     const terms = props.auto['@graph']; // List of matching terms from server
+    const handleClick = props.handleClick;
     const userTerm = props.userTerm && props.userTerm.toLowerCase(); // Term user entered
 
     if (!props.hide && userTerm && userTerm.length && terms && terms.length) {
@@ -43,7 +44,7 @@ const AutocompleteBox = (props) => {
                     return (
                         <AutocompleteBoxMenu
                             key={term.text}
-                            handleClick={props.handleClick}
+                            handleClick={handleClick}
                             term={term}
                             name={props.name}
                             preText={preText}
@@ -62,14 +63,17 @@ const AutocompleteBox = (props) => {
 AutocompleteBox.propTypes = {
     auto: PropTypes.object,
     userTerm: PropTypes.string,
-    handleClick: PropTypes.func.isRequired,
+    handleClick: PropTypes.func,
     hide: PropTypes.bool,
+    name: PropTypes.string,
 };
 
 AutocompleteBox.defaultProps = {
     auto: {}, // Looks required, but because it's built from <Param>, it can fail type checks.
     userTerm: '',
+    handleClick: null,
     hide: false,
+    name: '',
 };
 
 
@@ -247,9 +251,9 @@ class RegionSearch extends React.Component {
         if (this.props.onChange) {
             const search = e.currentTarget.getAttribute('href');
             this.props.onChange(search);
+            e.stopPropagation();
+            e.preventDefault();
         }
-        e.stopPropagation();
-        e.preventDefault();
     }
 
     render() {
