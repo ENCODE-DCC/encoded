@@ -366,7 +366,7 @@ CategoryChart.contextTypes = {
     navigate: PropTypes.func,
 };
 
-class ReagentChart extends React.Component {
+class AntibodyChart extends React.Component {
     constructor() {
         super();
         this.createChart = this.createChart.bind(this);
@@ -416,7 +416,7 @@ class ReagentChart extends React.Component {
     }
 
     createChart(chartId, facetData) {
-        const { award, linkUri, categoryFacet } = this.props;
+        const { award, categoryFacet } = this.props;
 
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
@@ -430,7 +430,7 @@ class ReagentChart extends React.Component {
         const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
 
         // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, `${linkUri}${award.name}&${categoryFacet}=`, (uri) => { this.context.navigate(uri); })
+        createDoughnutChart(chartId, values, labels, colors, `${award.name}&${categoryFacet}=`, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -462,19 +462,17 @@ class ReagentChart extends React.Component {
         );
     }
 }
-ReagentChart.propTypes = {
+AntibodyChart.propTypes = {
     award: PropTypes.object.isRequired, // Award being displayed
     categoryData: PropTypes.array.isRequired, // Type-specific data to display in a chart
-    // title: PropTypes.string.isRequired, // Title to display above the chart
-    linkUri: PropTypes.string.isRequired, // Element of matrix URI to select
     categoryFacet: PropTypes.string.isRequired, // Add to linkUri to link to matrix facet item
     ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
 };
 
-ReagentChart.contextTypes = {
+AntibodyChart.contextTypes = {
     navigate: PropTypes.func,
 };
-class ReagentChart2 extends React.Component {
+class BiosampleChart extends React.Component {
     constructor() {
         super();
         this.createChart = this.createChart.bind(this);
@@ -524,7 +522,7 @@ class ReagentChart2 extends React.Component {
     }
 
     createChart(chartId, facetData) {
-        const { award, linkUri, categoryFacet } = this.props;
+        const { award, categoryFacet } = this.props;
 
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
@@ -538,7 +536,7 @@ class ReagentChart2 extends React.Component {
         const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
 
         // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, `${linkUri}${award.name}&${categoryFacet}=`, (uri) => { this.context.navigate(uri); })
+        createDoughnutChart(chartId, values, labels, colors, `${award.name}&${categoryFacet}=`, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -572,16 +570,14 @@ class ReagentChart2 extends React.Component {
 }
 
 
-ReagentChart2.propTypes = {
+BiosampleChart.propTypes = {
     award: PropTypes.object.isRequired, // Award being displayed
     categoryData: PropTypes.array.isRequired, // Type-specific data to display in a chart
-    // title: PropTypes.string.isRequired, // Title to display above the chart
-    linkUri: PropTypes.string.isRequired, // Element of matrix URI to select
     categoryFacet: PropTypes.string.isRequired, // Add to linkUri to link to matrix facet item
     ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
 };
 
-ReagentChart2.contextTypes = {
+BiosampleChart.contextTypes = {
     navigate: PropTypes.func,
 };
 
@@ -835,14 +831,15 @@ const ChartRenderer = (props) => {
             <div className="award-chart__group-wrapper">
                 <h2>Reagents</h2>
                     <div className="award-chart__group">
-                        <ReagentChart
+                        <AntibodyChart
                             award={award}
                             categoryData={antibodiesConfig.categoryData}
+                            categoryFacet={antibodiesConfig.categoryFacet}
                             ident={antibodiesConfig.ident}
                         />
-                        <ReagentChart2
+                        <BiosampleChart
                             award={award}
-                            categoryData={biosamplesConfig.categoryData || []}
+                            categoryData={biosamplesConfig.categoryData}
                             categoryFacet={biosamplesConfig.categoryFacet}
                             ident={biosamplesConfig.ident}
                         />
@@ -959,7 +956,7 @@ class AwardCharts extends React.Component {
         // Create searchTerm-specific query strings
         const AnnotationQuery = generateQuery(this.state.selectedOrganisms, 'organism.scientific_name=');
         const ExperimentQuery = generateQuery(this.state.selectedOrganisms, 'replicates.library.biosample.donor.organism.scientific_name=');
-        const BiosampleQuery = generateQuery(this.state.selectedOrganisms, 'biosample_type=');
+        const BiosampleQuery = generateQuery(this.state.selectedOrganisms, 'organism.scientific_name=');
         const AntibodyQuery = generateQuery(this.state.selectedOrganisms, 'targets.organism.scientific_name=');
         return (
             <Panel>
