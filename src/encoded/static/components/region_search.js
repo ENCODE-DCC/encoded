@@ -45,7 +45,7 @@ const AutocompleteBox = (props) => {
                             key={term.text}
                             handleClick={props.handleClick}
                             term={term}
-                            name={this.props.name}
+                            name={props.name}
                             preText={preText}
                             matchText={matchText}
                             postText={postText}
