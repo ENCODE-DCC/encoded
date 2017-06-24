@@ -68,6 +68,42 @@
             "type": "string",
             "linkTo": "User"
         },
+        "milestones": {
+            "title": "Milestones",
+            "description": "Project milestones for mapping centers",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Milestone",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "assay_name": {
+                        "title": "Assay Name",
+                        "description": "The assay to which the milestone applies",
+                        "type": "string"
+                    },
+                    "count": {
+                        "title": "The experiment count of the milestone",
+                        "type": "int"
+                    },
+                    "date": {
+                        "title": "The signed date of the milestone contract",
+                        "type": "string"
+                    },
+                    "units": {
+                        "title": "The units of the milestone",
+                        "type": "string",
+                        "enum": [
+                            "replicated experiments",
+                            "libraries",
+                            "experiments",
+                            "single-cell experiments"
+                            ]
+                    }
+                }
+            }
+        },
         "rfa": {
             "title": "Phase",
             "description": "The name of the bioproject phase.",
