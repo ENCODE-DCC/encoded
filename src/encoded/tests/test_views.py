@@ -1,4 +1,6 @@
 import pytest
+from pprint import pprint as pp
+import pdb
 
 
 def _type_length():
@@ -94,6 +96,7 @@ def test_html_server_pages(workbook, item_type, wsgi_server):
         headers={'Accept': 'application/json'},
     )
     for item in res.json['@graph']:
+        pp(item)
         res = testapp.get(item['@id'], status=200)
         assert res.body.startswith(b'<!DOCTYPE html>')
         assert b'Internal Server Error' not in res.body

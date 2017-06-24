@@ -263,7 +263,7 @@ var ExperimentComponent = createReactClass({
         // Make array of supersedes accessions
         let supersedes = [];
         if (context.supersedes && context.supersedes.length) {
-            supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
+            supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede['@id']));
         }
 
         // Determine whether the experiment is isogenic or anisogenic. No replication_type indicates isogenic.

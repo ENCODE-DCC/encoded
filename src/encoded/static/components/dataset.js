@@ -98,7 +98,7 @@ const AnnotationComponent = createReactClass({
         // Make array of supersedes accessions
         let supersedes = [];
         if (context.supersedes && context.supersedes.length) {
-            supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
+            supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede['@id']));
         }
 
         // Get a list of reference links, if any
