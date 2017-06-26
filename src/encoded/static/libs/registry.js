@@ -1,6 +1,6 @@
 import _ from 'underscore';
 
-/*eslint class-methods-use-this: ["error", { "exceptMethods": ["providedBy", "fallback"] }] */
+/* eslint class-methods-use-this: ["error", { "exceptMethods": ["providedBy", "fallback"] }] */
 export default class Registry {
     constructor(options) {
         // May provide custom providedBy and fallback functions
