@@ -50,6 +50,6 @@ export default class Registry {
         return views || {};
     }
 
-    static fallback() {
+    fallback() {
     }
 }
