@@ -211,8 +211,8 @@ class Dataset(Item):
             if assembly_name in ['hg19', 'GRCh38', 'mm10', 'mm10-minimal' ,'mm9','dm6','dm3','ce10','ce11']:
                 if status not in ["proposed", "started", "deleted", "revoked", "replaced"]:
                     file_formats = '&file_format=bigBed&file_format=bigWig'
-                    file_inclusions = '&status=released&status=in+progress'
-                    bd_path = ('/search/?type=File&assembly=%s&dataset=%s%s%s#browser' %
+                    file_inclusions = '&status=released&status=in+progress&status=browser'
+                    bd_path = ('/search/?type=File&assembly=%s&dataset=%s%s%s' %
                                (assembly_name,request.path,file_formats,file_inclusions))
                     browser_urls['Quick View'] = bd_path  # no host to avoid 'test' problems
             if browser_urls:

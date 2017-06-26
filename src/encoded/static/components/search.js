@@ -1178,7 +1178,7 @@ export class ResultTable extends React.Component {
     componentDidMount() {
         if (window !== undefined) {
             // Determining this in componentDidMount to avoid server/client reactJS conflict.
-            if (window.location.hash === '#browser') {
+            if (window.location.search.includes('&status=browser')) {
                 this.setState({ selectedTab: 'browserpane' });
             }
         }

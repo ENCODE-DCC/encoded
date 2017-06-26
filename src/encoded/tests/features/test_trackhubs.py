@@ -171,11 +171,11 @@ def test_visualize(submitter_testapp, workbook):
     expected = {
         'GRCh38': {
             'Ensembl': 'http://www.ensembl.org/Trackhub?url=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt;species=Homo_sapiens;redirect=no',
-            'Quick View': '/search/?type=File&assembly=GRCh38&dataset=/experiments/ENCSR000AEN/&file_format=bigBed&file_format=bigWig&status=released&status=in+progress#browser',
+            'Quick View': '/search/?type=File&assembly=GRCh38&dataset=/experiments/ENCSR000AEN/&file_format=bigBed&file_format=bigWig&status=released&status=in+progress&status=browser',
             'UCSC': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt&db=hg38'
         },
         'hg19': {
-            'Quick View': '/search/?type=File&assembly=hg19&dataset=/experiments/ENCSR000AEN/&file_format=bigBed&file_format=bigWig&status=released&status=in+progress#browser',
+            'Quick View': '/search/?type=File&assembly=hg19&dataset=/experiments/ENCSR000AEN/&file_format=bigBed&file_format=bigWig&status=released&status=in+progress&status=browser',
             'UCSC': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt&db=hg19'
         }
     }
