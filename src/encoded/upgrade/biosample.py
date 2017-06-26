@@ -292,3 +292,16 @@ def biosample_15_16(value, system):
     if value.get('derived_from'):
         value['originated_from'] = value['derived_from']
         del value['derived_from']
+
+
+@upgrade_step('biosample', '16', '17')
+def biosample_16_17(value, system):
+    harvest_date = value.get('culture_harvest_date')
+    culture_start_date = value.get('culture_start_date')
+    date_obtained = value.get('date_obtained')
+    if harvest_date:
+        value['culture_harvest_date'] = truncate_the_time(harvest_date)
+    if culture_start_date:
+        value['culture_start_date'] = truncate_the_time(culture_start_date)
+    if date_obtained:
+        value['date_obtained'] = truncate_the_time(date_obtained)

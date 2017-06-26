@@ -333,7 +333,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "16"
+            "default": "17"
         },
         "accession": {
             "accessionType": "BS"
@@ -351,7 +351,7 @@
                 "comment": "Only accessions of objects that have status equal replaced will work here.",
                 "type": "string",
                 "format": "accession",
-                "pattern": "^(ENCBS\\d{3}[A-Z]{3})$|^(TSTBS\\d{6})$"
+                "pattern": "^(ENC1BS\\d{3}[A-Z]{3})$|^(TST1BS\\d{6})$"
             }
         },
         "description": {
