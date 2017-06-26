@@ -29,7 +29,8 @@
         "_test": "has references",
         "accession": "ENCBS000AAA",
         "aliases": [
-            "richard-myers:MCF-7 rep 3"
+            "richard-myers:MCF-7 rep 3",
+            "andrew-fire:biosample 1"
         ],
         "award": "ENCODE2",
         "biosample_term_id": "EFO:0001203",
