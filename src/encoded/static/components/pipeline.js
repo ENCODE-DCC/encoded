@@ -60,7 +60,7 @@ function AnalysisStep(step, node) {
             <div className="details-view-info">
                 <h4>
                     {swVersions ?
-                        <span>{`${step.title} — Version ${node.metadata.stepVersion.minor_version}`}</span>
+                        <span>{`${step.title} — Version ${node.metadata.ref.major_version}-${node.metadata.stepVersion.minor_version}`}</span>
                     :
                         <span>{step.title}</span>
                     }
