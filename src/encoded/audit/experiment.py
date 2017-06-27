@@ -2852,6 +2852,11 @@ def audit_experiment_control(value, system):
 def audit_experiment_platforms_mismatches(value, system):
     if value['status'] in ['deleted', 'replaced']:
         return
+
+    # do not apply the audit to DNase-seq and genetic modification followed by DNase-seq
+    if value.get("assay_term_id") in ["OBI:0001853", "NTR:0004774"]:
+        return
+
     if 'original_files' not in value or \
        value['original_files'] == []:
         return
