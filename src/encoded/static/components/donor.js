@@ -53,6 +53,12 @@ const HumanDonor = createReactClass({
                                 </div>
                             : null}
 
+                            {context.external_ids && context.external_ids.length ?
+                                <div data-test="externalid">
+                                    <dt></dt>
+                                </div>
+                            : null}
+
                             {context.organism.scientific_name ?
                                 <div data-test="species">
                                     <dt>Species</dt>
