@@ -177,5 +177,7 @@
         "software_type": 1.0,
         "references.title": 1.0,
         "references.identifiers": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/software.md"
+
 }

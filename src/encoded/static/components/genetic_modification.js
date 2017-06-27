@@ -15,7 +15,7 @@ import { DbxrefList } from './dbxref';
 import { Breadcrumbs } from './navigation';
 import { treatmentDisplay, singleTreatment } from './objectutils';
 import { BiosampleTable } from './typeutils';
-import { DocumentsPanel } from './doc';
+import { AttachmentPanel, DocumentsPanel } from './doc';
 import { PickerActions } from './search';
 
 
@@ -70,6 +70,10 @@ export const GeneticModificationComponent = createReactClass({
         context: PropTypes.object.isRequired, // GM object being displayed
         auditIndicators: PropTypes.func.isRequired, // Audit HOC function to display audit indicators
         auditDetail: PropTypes.func.isRequired, // Audit HOC function to display audit details
+    },
+
+    contextTypes: {
+        session: PropTypes.object, // Login information from <App>
     },
 
     render: function () {
@@ -136,11 +140,11 @@ export const GeneticModificationComponent = createReactClass({
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />
                             </div>
-                            {this.props.auditIndicators(context.audit, 'genetic-modification-audit')}
+                            {this.props.auditIndicators(context.audit, 'genetic-modification-audit', { session: this.context.session })}
                         </div>
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'genetic-modification-audit', { except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'genetic-modification-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
@@ -478,67 +482,15 @@ const TechniqueTale = createReactClass({
 globals.panel_views.register(TechniqueTale, 'Tale');
 
 
-// Display a panel for attachments that aren't a part of an associated document
-export const AttachmentPanel = createReactClass({
-    propTypes: {
-        context: PropTypes.object.isRequired, // Object that owns the attachment; needed for attachment path
-        attachment: PropTypes.object.isRequired, // Attachment being rendered
-        title: PropTypes.string, // Title to display in the caption area
-    },
-
-    getDefaultProps: function () {
-        return {
-            title: '',
-        };
-    },
-
-    render: function () {
-        const { context, attachment, title } = this.props;
-
-        // Make the download link
-        let download;
-        let attachmentHref;
-        if (attachment.href && attachment.download) {
-            attachmentHref = url.resolve(context['@id'], attachment.href);
-            download = (
-                <div className="dl-link">
-                    <i className="icon icon-download" />&nbsp;
-                    <a data-bypass="true" href={attachmentHref} download={attachment.download}>
-                        Download
-                    </a>
-                </div>
-            );
-        } else {
-            download = <em>Attachment not available to download</em>;
-        }
-
-        return (
-            <div className="flexcol panel-attachment">
-                <Panel addClasses={globals.itemClass(context, 'view-detail')}>
-                    <figure>
-                        <Attachment context={context} attachment={attachment} className="characterization" />
-                    </figure>
-                    <div className="document-intro document-meta-data">
-                        {title ?
-                            <div data-test="attachments">
-                                <strong>Method: </strong>
-                                {title}
-                            </div>
-                        : null}
-                        {download}
-                    </div>
-                </Panel>
-            </div>
-        );
-    },
-});
-
-
 const ListingComponent = createReactClass({
     propTypes: {
         context: PropTypes.object.isRequired, // Search results object
         auditDetail: PropTypes.func.isRequired, // Audit HOC function to show audit details
         auditIndicators: PropTypes.func.isRequired, // Audit HOC function to display audit indicators
+    },
+
+    contextTypes: {
+        session: PropTypes.object, // Login information from <App>
     },
 
     render: function () {
@@ -564,14 +516,14 @@ const ListingComponent = createReactClass({
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Genetic modifications</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
-                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession"><a href={result['@id']}>{result.modification_type}</a></div>
                     <div className="data-row">
                         {techniques.length ? <div><strong>Modification techniques: </strong>{techniques.join(', ')}</div> : null}
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
             </li>
         );
     },

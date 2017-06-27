@@ -27,6 +27,10 @@ var {DocumentsPanel, Document, DocumentPreview, DocumentFile} = doc;
 
 
 var LotComponent = createReactClass({
+    contextTypes: {
+        session: PropTypes.object, // Login information from <App>
+    },
+
     render: function() {
         var context = this.props.context;
 

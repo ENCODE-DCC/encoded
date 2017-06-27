@@ -4,7 +4,7 @@ import _ from 'underscore';
 import url from 'url';
 import globals from './globals';
 import { Breadcrumbs } from './navigation';
-import search from './search';
+import { PickerActions } from './search';
 import { pubReferenceList } from './reference';
 import StatusLabel from './statuslabel';
 import { auditDecor } from './audit';
@@ -52,10 +52,10 @@ class SoftwareComponent extends React.Component {
                         <div className="characterization-status-labels">
                             <StatusLabel title="Status" status={context.status} />
                         </div>
-                        {this.props.auditIndicators(context.audit, 'software-audit')}
+                        {this.props.auditIndicators(context.audit, 'software-audit', { session: this.context.session })}
                     </div>
                 </header>
-                {this.props.auditDetail(context.audit, 'software-audit', { except: context['@id'] })}
+                {this.props.auditDetail(context.audit, 'software-audit', { session: this.context.session, except: context['@id'] })}
 
                 <div className="panel">
                     <dl className="key-value">
@@ -114,7 +114,9 @@ SoftwareComponent.propTypes = {
 
 SoftwareComponent.contextTypes = {
     location_href: PropTypes.string,
+    session: PropTypes.object,
 };
+
 
 // Note: need to export for Jest tests even though no other module imports it.
 export const Software = auditDecor(SoftwareComponent);
@@ -165,41 +167,46 @@ SoftwareVersionTable.defaultProps = {
 };
 
 
-const ListingComponent = (props) => {
-    const result = props.context;
-    return (
-        <li>
-            <div className="clearfix">
-                <search.PickerActions {...props} />
-                <div className="pull-right search-meta">
-                    <p className="type meta-title">Software</p>
-                    {result.status ? <p className="type meta-status">{` ${result.status}`}</p> : ''}
-                    {props.auditIndicators(result.audit, result['@id'], { search: true })}
+class ListingComponent extends React.Component {
+    render() {
+        const result = this.props.context;
+        return (
+            <li>
+                <div className="clearfix">
+                    <PickerActions {...this.props} />
+                    <div className="pull-right search-meta">
+                        <p className="type meta-title">Software</p>
+                        {result.status ? <p className="type meta-status">{` ${result.status}`}</p> : ''}
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
+                    </div>
+                    <div className="accession">
+                        <a href={result['@id']}>{result.title}</a>
+                        {result.source_url ? <span className="accession-note"> &mdash; <a href={result.source_url}>source</a></span> : ''}
+                    </div>
+                    <div className="data-row">
+                        <div>{result.description}</div>
+                        {result.software_type && result.software_type.length ?
+                            <div>
+                                <strong>Software type: </strong>
+                                {result.software_type.join(', ')}
+                            </div>
+                        : null}
+                    </div>
                 </div>
-                <div className="accession">
-                    <a href={result['@id']}>{result.title}</a>
-                    {result.source_url ? <span className="accession-note"> &mdash; <a href={result.source_url}>source</a></span> : ''}
-                </div>
-                <div className="data-row">
-                    <div>{result.description}</div>
-                    {result.software_type && result.software_type.length ?
-                        <div>
-                            <strong>Software type: </strong>
-                            {result.software_type.join(', ')}
-                        </div>
-                    : null}
-
-                </div>
-            </div>
-            {props.auditDetail(result.audit, result['@id'], { except: result['@id'], forcedEditLink: true })}
-        </li>
-    );
-};
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
+            </li>
+        );
+    }
+}
 
 ListingComponent.propTypes = {
     context: PropTypes.object.isRequired, // Software object being rendered as a search result.
     auditIndicators: PropTypes.func.isRequired, // From auditDecor
     auditDetail: PropTypes.func.isRequired, // From auditDecor
+};
+
+ListingComponent.contextTypes = {
+    session: PropTypes.object,
 };
 
 const Listing = auditDecor(ListingComponent);

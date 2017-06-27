@@ -13,6 +13,7 @@ from .shared_calculated_properties import (
 )
 import re
 
+
 @collection(
     name='biosamples',
     unique_key='accession',
@@ -66,7 +67,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'documents.lab',
         'documents.award',
         'documents.submitted_by',
-        'derived_from',
+        'originated_from',
         'part_of',
         'part_of.documents',
         'part_of.documents.award',
@@ -84,7 +85,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'part_of.rnais.documents.lab',
         'part_of.rnais.documents.submitted_by',
         'part_of.treatments.documents',
-        'part_of.talens.documents',
         'parent_of',
         'pooled_from',
         'characterizations.submitted_by',
@@ -99,11 +99,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'rnais.documents.lab',
         'organism',
         'references',
-        'talens',
-        'talens.documents',
-        'talens.documents.award',
-        'talens.documents.lab',
-        'talens.documents.submitted_by',
         'genetic_modifications',
         'genetic_modifications.award',
         'genetic_modifications.lab',
@@ -116,60 +111,27 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'donor.mutated_gene',
         'donor.organism',
         'donor.characterizations',
-        'donor.characterizations.award',
-        'donor.characterizations.lab',
-        'donor.characterizations.submitted_by',
         'donor.donor_documents',
-        'donor.donor_documents.award',
-        'donor.donor_documents.lab',
-        'donor.donor_documents.submitted_by',
         'donor.references',
         'model_organism_donor_constructs',
-        'model_organism_donor_constructs.submitted_by',
         'model_organism_donor_constructs.target',
         'model_organism_donor_constructs.documents',
-        'model_organism_donor_constructs.documents.award',
-        'model_organism_donor_constructs.documents.lab',
-        'model_organism_donor_constructs.documents.submitted_by',
         'submitted_by',
         'lab',
         'award',
-        'award.pi.lab',
         'source',
         'treatments',
-        'treatments.documents.submitted_by',
-        'treatments.documents.lab',
-        'treatments.documents.award',
         'constructs',
-        'constructs.documents.submitted_by',
-        'constructs.documents.award',
-        'constructs.documents.lab',
         'constructs.target',
-        'documents.lab',
-        'documents.award',
-        'documents.submitted_by',
-        'derived_from',
+        'originated_from',
         'pooled_from',
-        'characterizations.submitted_by',
-        'characterizations.award',
-        'characterizations.lab',
         'rnais',
         'rnais.target',
         'rnais.target.organism',
         'rnais.source',
-        'rnais.documents.submitted_by',
-        'rnais.documents.award',
-        'rnais.documents.lab',
         'organism',
         'references',
-        'talens',
-        'talens.documents',
-        'talens.documents.award',
-        'talens.documents.lab',
-        'talens.documents.submitted_by',
         'genetic_modifications',
-        'genetic_modifications.award',
-        'genetic_modifications.lab',
         'genetic_modifications.modification_techniques',
         'genetic_modifications.treatments',
         'genetic_modifications.target'
@@ -341,6 +303,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         return paths_filtered_by_status(request, characterizations)
 
     @calculated_property(schema={
+        "description": "The biosample(s) that have this biosample in their part_of property.",
+        "comment": "Do not submit. Values in the list are reverse links of a biosamples that are part_of this biosample.",
         "title": "Child biosamples",
         "type": "array",
         "items": {
@@ -453,7 +417,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 post_treatment_time_units=None,
                 treatments=None,
                 part_of=None,
-                derived_from=None,
+                originated_from=None,
                 transfection_method=None,
                 transfection_type=None,
                 genetic_modifications=None,
@@ -470,7 +434,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             'sex_stage_age',
             'synchronization',
             'modifications_list',
-            'derived_from',
+            'originated_from',
             'transfection_type',
             'rnais',
             'treatments_phrase',
@@ -495,9 +459,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         if part_of is not None:
             part_of_object = request.embed(part_of, '@@object')
 
-        derived_from_object = None
-        if derived_from is not None:
-            derived_from_object = request.embed(derived_from, '@@object')
+        originated_from_object = None
+        if originated_from is not None:
+            originated_from_object = request.embed(originated_from, '@@object')
 
         modifications_list = None
         if genetic_modifications is not None and len(genetic_modifications) > 0:
@@ -578,7 +542,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             transfection_type,
             treatment_objects_list,
             part_of_object,
-            derived_from_object,
+            originated_from_object,
             modifications_list,
             construct_objects_list,
             model_construct_objects_list,
@@ -610,7 +574,7 @@ def generate_summary_dictionary(
     transfection_type=None,
     treatment_objects_list=None,
     part_of_object=None,
-    derived_from_object=None,
+    originated_from_object=None,
     modifications_list=None,
     construct_objects_list=None,
     model_construct_objects_list=None,
@@ -625,7 +589,7 @@ def generate_summary_dictionary(
             'fractionated': '',
             'sex_stage_age': '',
             'synchronization': '',
-            'derived_from': '',
+            'originated_from': '',
             'transfection_type': '',
             'rnais': '',
             'treatments_phrase': '',
@@ -835,10 +799,10 @@ def generate_summary_dictionary(
         if part_of_object is not None:
             dict_of_phrases['part_of'] = 'separated from biosample '+part_of_object['accession']
 
-        if derived_from_object is not None:
-            if 'biosample_term_name' in derived_from_object:
-                dict_of_phrases['derived_from'] = ('derived from ' +
-                                                   derived_from_object['biosample_term_name'])
+        if originated_from_object is not None:
+            if 'biosample_term_name' in originated_from_object:
+                dict_of_phrases['originated_from'] = ('originated from ' +
+                                                      originated_from_object['biosample_term_name'])
 
         if transfection_type is not None:  # stable/transient
             if transfection_type == 'stable':

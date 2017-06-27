@@ -1,17 +1,22 @@
 'use strict';
 var React = require('react');
+import PropTypes from 'prop-types';
 import createReactClass from 'create-react-class';
 import { auditDecor } from './audit';
 var globals = require('./globals');
 var navigation = require('./navigation');
 var dbxref = require('./dbxref');
-var search = require('./search');
+import { PickerActions } from './search';
 
 var Breadcrumbs = navigation.Breadcrumbs;
 var DbxrefList = dbxref.DbxrefList;
 
 
 var PublicationComponent = createReactClass({
+    contextTypes: {
+        session: PropTypes.object, // Login information from <App>
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -30,8 +35,8 @@ var PublicationComponent = createReactClass({
             <div className={itemClass}>
                 <Breadcrumbs root='/search/?type=publication' crumbs={crumbs} />
                 <h2>{context.title}</h2>
-                {this.props.auditIndicators(context.audit, 'publication-audit')}
-                {this.props.auditDetail(context.audit, 'publication-audit', { except: context['@id'] })}
+                {this.props.auditIndicators(context.audit, 'publication-audit', { session: this.context.session })}
+                {this.props.auditDetail(context.audit, 'publication-audit', { session: this.context.session, except: context['@id'] })}
                 {context.authors ? <div className="authors">{context.authors}.</div> : null}
                 <div className="journal">
                     <Citation {...this.props} />
@@ -214,6 +219,10 @@ var SupplementaryDataListing = createReactClass({
 
 
 var ListingComponent = createReactClass({
+    contextTypes: {
+        session: PropTypes.object, // Login information from <App>
+    },
+
     render: function() {
         var result = this.props.context;
         var authorList = result.authors && result.authors.length ? result.authors.split(', ', 4) : [];
@@ -222,11 +231,11 @@ var ListingComponent = createReactClass({
         return (
             <li>
                 <div className="clearfix">
-                    <search.PickerActions {...this.props} />
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Publication</p>
                         <p className="type meta-status">{' ' + result.status}</p>
-                        {this.props.auditIndicators(result.audit, result['@id'], { search: true })}
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession"><a href={result['@id']}>{result.title}</a></div>
                     <div className="data-row">
@@ -242,7 +251,7 @@ var ListingComponent = createReactClass({
                         : null}
                     </div>
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { forcedEditLink: true })}
+                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, forcedEditLink: true })}
             </li>
         );
     }
