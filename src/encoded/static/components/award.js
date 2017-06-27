@@ -148,6 +148,39 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
 }
 
 
+// function createLineGraph(chartId) {
+//     // const datereleased = {date_released};
+//     // const dateinteger = string.match(/\d+/g).map(Number);
+//     return (
+//         require.ensure(['chart.js'], (require) => {
+//             const Chart = require('chart.js');
+
+//             // Create the chart.
+//             const canvas = document.getElementById(`${chartId}-chart`);
+//             const parent = document.getElementById(chartId);
+//             canvas.width = parent.offsetWidth;
+//             canvas.height = parent.offsetHeight;
+//             canvas.style.width = `${parent.offsetWidth}px`;
+//             canvas.style.height = `${parent.offsetHeight}px`;
+//             const ctx = canvas.getContext('2d');
+//             const data = [{
+//                 x: 10,
+//                 y: 20,
+//             }, {
+//                 x: 15,
+//                 y: 10,
+//             }];
+//             const chart = new Chart(ctx, {
+//                 type: 'line',
+//                 data: data,
+//                 options: {
+//                     showLines: false, // disable for all datasets
+//                 },
+//             });
+//         })
+//     );
+// }
+
 // Display and handle clicks in the chart of labs.
 class LabChart extends React.Component {
     constructor() {
@@ -594,6 +627,184 @@ const ChartRenderer = (props) => {
         </div>
     );
 };
+
+ChartRenderer.propTypes = {
+    award: PropTypes.object.isRequired, // Award being displayed
+    experiments: PropTypes.object, // Search result of matching experiments
+    annotations: PropTypes.object, // Search result of matching annotations
+};
+
+ChartRenderer.defaultProps = {
+    experiments: {},
+    annotations: {},
+};
+
+// class CumulativeGraph extends React.Component {
+//     constructor() {
+//         super();
+//         this.createChart = this.createChart.bind(this);
+//         this.updateChart = this.updateChart.bind(this);
+//     }
+
+//     componentDidMount() {
+//         if (this.props.categoryData.length) {
+//             this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
+//         }
+//     }
+
+//     componentDidUpdate() {
+//         if (this.props.categoryData.length) {
+//             if (this.chart) {
+//                 this.updateChart(this.chart, this.props.categoryData);
+//             } else {
+//                 this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
+//             }
+//         } else if (this.chart) {
+//             this.chart.destroy();
+//             this.chart = null;
+//         }
+//     }
+
+//     // Update existing chart with new data.
+//     updateChart(chart, facetData) {
+//         // Extract the non-zero values, and corresponding labels and colors for the data.
+//         const values = [];
+//         const labels = [];
+//         facetData.forEach((item) => {
+//             if (item.doc_count) {
+//                 values.push(item.doc_count);
+//                 labels.push(item.key);
+//             }
+//         });
+//         const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
+
+//         // Update chart data and redraw with the new data.
+//         chart.data.datasets[0].data = values;
+//         chart.data.datasets[0].backgroundColor = colors;
+//         chart.data.labels = labels;
+//         chart.update();
+
+//         // Redraw the updated legend
+//         document.getElementById(`${categoryChartId}-${this.props.ident}-legend`).innerHTML = chart.generateLegend();
+//     }
+
+//     createChart(chartId, facetData) {
+//         const { award, linkUri, categoryFacet } = this.props;
+
+//         // Extract the non-zero values, and corresponding labels and colors for the data.
+//         const values = [];
+//         const labels = [];
+//         facetData.forEach((item) => {
+//             if (item.doc_count) {
+//                 values.push(item.doc_count);
+//                 labels.push(item.key);
+//             }
+//         });
+//         const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
+
+//         // Create the chart.
+//         createLineGraph(chartId, values, labels, colors, `${linkUri}${award.name}&${categoryFacet}=`, (uri) => { this.context.navigate(uri); })
+//             .then((chartInstance) => {
+//                 // Save the created chart instance.
+//                 this.chart = chartInstance;
+//             });
+//     }
+
+//     render() {
+//         const { categoryData, title, ident } = this.props;
+
+//         // Calculate a (hopefully) unique ID to put on the DOM elements.
+//         const id = `${categoryChartId}-${ident}`;
+
+//         return (
+//             <div className="award-charts__chart">
+//                 <div className="title">
+//                     {title}
+//                 </div>
+//                 {categoryData.length ?
+//                     <div className="award-charts__visual">
+//                         <div id={id} className="award-charts__canvas">
+//                             <canvas id={`${id}-chart`} />
+//                         </div>
+//                         <div id={`${id}-legend`} className="award-charts__legend" />
+//                     </div>
+//                 :
+//                     <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
+//                 }
+//             </div>
+//         );
+//     }
+// }
+
+// CumulativeGraph.propTypes = {
+//     award: PropTypes.object.isRequired, // Award being displayed
+//     categoryData: PropTypes.array.isRequired, // Type-specific data to display in a chart
+//     title: PropTypes.string.isRequired, // Title to display above the chart
+//     linkUri: PropTypes.string.isRequired, // Element of matrix URI to select
+//     categoryFacet: PropTypes.string.isRequired, // Add to linkUri to link to matrix facet item
+//     ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
+// };
+
+// CumulativeGraph.contextTypes = {
+//     navigate: PropTypes.func,
+// };
+
+// const GraphRenderer = (props) => {
+//     const { award, experiments } = props;
+
+//     // Put all search-related configuration data in one consistent place.
+//     const searchData = {
+//         experiments: {
+//             ident: 'experiments',
+//             data: [],
+//             labs: [],
+//             categoryData: [],
+//             statuses: [],
+//             categoryFacet: 'assay_title',
+//             title: 'Assays',
+//             uriBase: '/search/?type=Experiment&award.name=',
+//             linkUri: '/matrix/?type=Experiment&award.name=',
+//         },
+//     };
+
+//     // Find the chart data in the returned facets.
+//     const experimentsConfig = searchData.experiments;
+//     searchData.experiments.data = (experiments && experiments.facets) || [];
+//     ['experiments', 'annotations'].forEach((chartCategory) => {
+//         if (searchData[chartCategory].data.length) {
+//             // Get the array of data specific to experiments or annotations.
+//             const categoryFacet = searchData[chartCategory].data.find(facet => facet.field === searchData[chartCategory].categoryFacet);
+//             searchData[chartCategory].categoryData = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length) ? categoryFacet.terms : [];
+//         }
+//     });
+
+//     return (
+//         <div className="award-charts">
+//             <div className="award-chart__group-wrapper">
+//                 {experimentsConfig.labs.length ?
+//                     <div className="award-chart__group">
+//                         <CumulativeGraph
+//                             award={award}
+//                             labs={experimentsConfig.labs}
+//                             linkUri={experimentsConfig.linkUri}
+//                             ident={experimentsConfig.ident}
+//                         />
+//                     </div>
+//                 :
+//                     <div className="browser-error">No assays were submitted under this award</div>
+//                 }
+//             </div>
+//         </div>
+//     );
+// };
+
+// GraphRenderer.propTypes = {
+//     award: PropTypes.object.isRequired, // Award being displayed
+//     experiments: PropTypes.object, // Search result of matching experiments
+// };
+// GraphRenderer.defaultProps = {
+//     experiments: {},
+// };
 // Create new tabdisplay of genus buttons
 class GenusButtons extends React.Component {
     render() {
@@ -608,7 +819,6 @@ class GenusButtons extends React.Component {
         );
     }
 }
-
 
 GenusButtons.propTypes = {
     selectedOrganisms: PropTypes.array, // Array of currently selected buttons
@@ -652,17 +862,6 @@ OrganismSelector.defaultProps = {
 
 OrganismSelector.contextTypes = {
     organismButtonClick: PropTypes.func,
-};
-
-ChartRenderer.propTypes = {
-    award: PropTypes.object.isRequired, // Award being displayed
-    experiments: PropTypes.object, // Search result of matching experiments
-    annotations: PropTypes.object, // Search result of matching annotations
-};
-
-ChartRenderer.defaultProps = {
-    experiments: {},
-    annotations: {},
 };
 
 
@@ -720,10 +919,48 @@ AwardCharts.propTypes = {
     award: PropTypes.object.isRequired, // Award represented by this chart
 };
 
+class PleaseWork extends React.Component {
+
+    componentDidMount() {
+        require.ensure(['chart.js'], (require) => {
+            const Chart = require('chart.js');
+            // const canvas = this.refs.myChart;
+            // const parent = this.refs.myChart;
+            // canvas.width = parent.offsetWidth;
+            // canvas.height = parent.offsetHeight;
+            // canvas.style.width = `${parent.offsetWidth}px`;
+            // canvas.style.height = `${parent.offsetHeight}px`;
+            const ctx = document.getElementById('myChart').getContext('2d');
+            this.chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+                    datasets: [{
+                        label: 'apples',
+                        data: [12, 19, 3, 17, 6, 3, 7],
+                        backgroundColor: 'rgba(153,255,51,0.6)',
+                    }, {
+                        label: 'oranges',
+                        data: [2, 29, 5, 5, 2, 3, 10],
+                        backgroundColor: 'rgba(255,153,0,0.6)',
+                    }],
+                },
+            });
+        });
+    }
+
+    render() {
+        return (
+            <canvas id="myChart" />
+        );
+    }
+}
+
 
 class Award extends React.Component {
 
     render() {
+        // const { award } = this.props;
         const { context } = this.props;
         const statuses = [{ status: context.status, title: 'Status' }];
         return (
@@ -759,6 +996,14 @@ class Award extends React.Component {
                         }
                     </PanelBody>
                 </Panel>
+                <Panel>
+                    <PanelHeading>
+                        <h4>Cumulative Number of Experiments</h4>
+                    </PanelHeading>
+                    <PanelBody>
+                        <PleaseWork />
+                    </PanelBody>
+                </Panel>
             </div>
         );
     }
@@ -767,6 +1012,7 @@ class Award extends React.Component {
 
 Award.propTypes = {
     context: PropTypes.object.isRequired, // Award object being rendered
+    // award: PropTypes.object.isRequired, // Award represented by this chart
 };
 
 globals.content_views.register(Award, 'Award');
