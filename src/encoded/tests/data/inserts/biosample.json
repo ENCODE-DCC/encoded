@@ -48,7 +48,7 @@
         ],
         "lab": "gregory-crawford",
         "organism": "human",
-        "phase": "S",
+        
         "pooled_from": [
             "ENCBS492ENC",
             "ENCBS493ENC"
