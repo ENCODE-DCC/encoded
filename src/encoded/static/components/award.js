@@ -39,25 +39,29 @@ function generateQuery(chosenOrganisms, searchTerm) {
 
 // Draw the total chart count in the middle of the donut.
 function drawDonutCenter(chart) {
-    const data = chart.data.datasets[0].data;
-    if (data.length) {
-        const width = chart.chart.width;
-        const height = chart.chart.height;
-        const ctx = chart.chart.ctx;
-
-        ctx.fillStyle = '#000000';
-        ctx.restore();
-        const fontSize = (height / 114).toFixed(2);
-        ctx.font = `${fontSize}em sans-serif`;
-        ctx.textBaseline = 'middle';
-
-        const total = data.reduce((prev, curr) => prev + curr);
-        const textX = Math.round((width - ctx.measureText(total).width) / 2);
-        const textY = height / 2;
-
+    const canvasId = chart.chart.canvas.id;
+    const width = chart.chart.width;
+    const height = chart.chart.height;
+    const ctx = chart.chart.ctx;
+    if (canvasId === 'myGraph') {
         ctx.clearRect(0, 0, width, height);
-        ctx.fillText(total, textX, textY);
-        ctx.save();
+    } else {
+        const data = chart.data.datasets[0].data;
+        if (data.length) {
+            ctx.fillStyle = '#000000';
+            ctx.restore();
+            const fontSize = (height / 114).toFixed(2);
+            ctx.font = `${fontSize}em sans-serif`;
+            ctx.textBaseline = 'middle';
+
+            const total = data.reduce((prev, curr) => prev + curr);
+            const textX = Math.round((width - ctx.measureText(total).width) / 2);
+            const textY = height / 2;
+
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillText(total, textX, textY);
+            ctx.save();
+        }
     }
 }
 
@@ -924,13 +928,8 @@ class PleaseWork extends React.Component {
     componentDidMount() {
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
-            // const canvas = this.refs.myChart;
-            // const parent = this.refs.myChart;
-            // canvas.width = parent.offsetWidth;
-            // canvas.height = parent.offsetHeight;
-            // canvas.style.width = `${parent.offsetWidth}px`;
-            // canvas.style.height = `${parent.offsetHeight}px`;
-            const ctx = document.getElementById('myChart').getContext('2d');
+            const ctx = document.getElementById('myGraph').getContext('2d');
+
             this.chart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -941,7 +940,7 @@ class PleaseWork extends React.Component {
                         backgroundColor: 'rgba(153,255,51,0.6)',
                     }, {
                         label: 'oranges',
-                        data: [2, 29, 5, 5, 2, 3, 10],
+                        data: [2, 40, 5, 5, 37, 20, 10],
                         backgroundColor: 'rgba(255,153,0,0.6)',
                     }],
                 },
@@ -951,7 +950,7 @@ class PleaseWork extends React.Component {
 
     render() {
         return (
-            <canvas id="myChart" />
+            <canvas id="myGraph" />
         );
     }
 }
