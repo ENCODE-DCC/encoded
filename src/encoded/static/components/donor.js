@@ -102,13 +102,6 @@ const HumanDonor = createReactClass({
                                 </div>
                             : null}
 
-                            {context.dbxrefs && context.dbxrefs.length ?
-                                <div data-test="external-resources">
-                                    <dt>External resources</dt>
-                                    <dd><DbxrefList values={context.dbxrefs} /></dd>
-                                </div>
-                            : null}
-
                             {references ?
                                 <div data-test="references">
                                     <dt>References</dt>
@@ -288,13 +281,6 @@ const MouseDonor = createReactClass({
                                 </div>
                             : null}
 
-                            {context.dbxrefs && context.dbxrefs.length ?
-                                <div data-test="external-resources">
-                                    <dt>External resources</dt>
-                                    <dd><DbxrefList values={context.dbxrefs} /></dd>
-                                </div>
-                            : null}
-
                             {context.references && context.references.length ?
                                 <div data-test="references">
                                     <dt>References</dt>
@@ -425,13 +411,6 @@ const FlyWormDonor = createReactClass({
                                 <div data-test="strain-name">
                                     <dt>Strain name</dt>
                                     <dd>{context.strain_name}</dd>
-                                </div>
-                            : null}
-
-                            {context.dbxrefs && context.dbxrefs.length ?
-                                <div data-test="external-resources">
-                                    <dt>External resources</dt>
-                                    <dd><DbxrefList values={context.dbxrefs} /></dd>
                                 </div>
                             : null}
 
