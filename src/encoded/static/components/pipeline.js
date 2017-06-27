@@ -49,7 +49,7 @@ function AnalysisStep(step, node) {
             swStepVersions = _.compact(stepVersions.map((version) => {
                 if (version.software_versions && version.software_versions.length) {
                     return (
-                        <span className="sw-step-versions" key={version.uuid}><strong>Version {step.major_version}-{version.minor_version}</strong>: {softwareVersionList(version.software_versions)}<br /></span>
+                        <span className="sw-step-versions" key={version.uuid}><strong>Version {step.major_version}&mdash;{version.minor_version}</strong>: {softwareVersionList(version.software_versions)}<br /></span>
                     );
                 }
                 return { header: null, body: null };
@@ -60,7 +60,7 @@ function AnalysisStep(step, node) {
             <div className="details-view-info">
                 <h4>
                     {swVersions ?
-                        <span>{`${step.title} — Version ${node.metadata.ref.major_version}-${node.metadata.stepVersion.minor_version}`}</span>
+                        <span>{`${step.title} — Version ${node.metadata.ref.major_version}—${node.metadata.stepVersion.minor_version}`}</span>
                     :
                         <span>{step.title}</span>
                     }
