@@ -55,7 +55,8 @@ const HumanDonor = createReactClass({
 
                             {context.external_ids && context.external_ids.length ?
                                 <div data-test="externalid">
-                                    <dt></dt>
+                                    <dt>Donor external identifiers</dt>
+                                    <dd><DbxrefList values={context.external_ids} /></dd>
                                 </div>
                             : null}
 
@@ -224,6 +225,13 @@ const MouseDonor = createReactClass({
                                 </div>
                             : null}
 
+                            {context.external_ids && context.external_ids.length ?
+                                <div data-test="externalid">
+                                    <dt>Donor external identifiers</dt>
+                                    <dd><DbxrefList values={context.external_ids} /></dd>
+                                </div>
+                            : null}
+
                             {context.organism.scientific_name ?
                                 <div data-test="organism">
                                     <dt>Species</dt>
@@ -354,6 +362,13 @@ const FlyWormDonor = createReactClass({
                                 <div data-test="aliases">
                                     <dt>Aliases</dt>
                                     <dd>{context.aliases.join(', ')}</dd>
+                                </div>
+                            : null}
+
+                            {context.external_ids && context.external_ids.length ?
+                                <div data-test="externalid">
+                                    <dt>Donor external identifiers</dt>
+                                    <dd><DbxrefList values={context.external_ids} /></dd>
                                 </div>
                             : null}
 
