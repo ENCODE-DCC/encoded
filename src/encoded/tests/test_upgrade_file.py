@@ -99,6 +99,15 @@ def file_9(file_base):
 
 
 @pytest.fixture
+def file_10(file_base):
+    item = file_base.copy()
+    item.update({
+        'schema_version': '10'
+    })
+    return item
+
+
+@pytest.fixture
 def old_file(experiment):
     return {
         'accession': 'ENCFF000OLD',
@@ -188,3 +197,9 @@ def test_file_upgrade8(upgrader, file_8a, file_8b):
 def test_file_upgrade_9_to_10(upgrader, file_9):
     value = upgrader.upgrade('file', file_9, current_version='9', target_version='10')
     assert value['date_created'] == '2017-04-28T00:00:00.000000+00:00'
+
+
+def test_file_upgrade_10_to_11(upgrader, file_10):
+    value = upgrader.upgrade('file', file_10, current_version='10', target_version='11')
+    assert value['schema_version'] == '11'
+    assert value['no_file_available'] is False
