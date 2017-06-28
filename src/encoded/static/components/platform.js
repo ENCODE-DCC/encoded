@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import globals from './globals';
+import * as globals from './globals';
 import { DbxrefList } from './dbxref';
 
 const Platform = (props) => {
@@ -36,7 +36,7 @@ Platform.propTypes = {
     context: PropTypes.object.isRequired,
 };
 
-globals.panel_views.register(Platform, 'Platform');
+globals.panelViews.register(Platform, 'Platform');
 
 // Need to export this for Jest tests.
 export default Platform;

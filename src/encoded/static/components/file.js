@@ -7,7 +7,7 @@ import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel } from './doc';
-import globals from './globals';
+import * as globals from './globals';
 import { requestFiles, requestObjects, requestSearch, RestrictedDownloadButton } from './objectutils';
 import { ProjectBadge } from './image';
 import { QualityMetricsPanel } from './quality_metric';
@@ -315,7 +315,7 @@ class FileComponent extends React.Component {
         const derivedFromFileIds = file.derived_from && file.derived_from.length ? file.derived_from : [];
         if (derivedFromFileIds.length) {
             requestFiles(derivedFromFileIds).then((derivedFromFiles) => {
-                this.setState({ derivedFromFiles: derivedFromFiles });
+                this.setState({ derivedFromFiles });
             });
         }
 
@@ -570,7 +570,7 @@ FileComponent.contextTypes = {
 
 const File = auditDecor(FileComponent);
 
-globals.content_views.register(File, 'File');
+globals.contentViews.register(File, 'File');
 
 
 // Display the sequence file summary panel for fastq files.
@@ -695,4 +695,4 @@ Listing.propTypes = {
     context: PropTypes.object, // File object being rendered
 };
 
-globals.listing_views.register(Listing, 'File');
+globals.listingViews.register(Listing, 'File');
