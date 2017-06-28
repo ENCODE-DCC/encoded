@@ -1,12 +1,11 @@
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
-const FallbackBlockEdit = require('./blocks/fallback').FallbackBlockEdit;
-const globals = require('./globals');
-const closest = require('../libs/closest');
-const offset = require('../libs/offset');
-const { Modal, ModalHeader, ModalBody, ModalFooter } = require('../libs/bootstrap/modal');
-const _ = require('underscore');
+import _ from 'underscore';
+import FallbackBlockEdit from './blocks/fallback';
+import closest from '../libs/closest';
+import offset from '../libs/offset';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
+import * as globals from './globals';
 
 
 const LAYOUT_CONTEXT = {
@@ -37,42 +36,41 @@ const MODAL_CONTEXT = {
     portal: PropTypes.object,
 };
 
-const BlockEditModal = createReactClass({
-    propTypes: {
-        modalcontext: PropTypes.object,
-        value: PropTypes.any,
-        onCancel: PropTypes.func,
-        onChange: PropTypes.func,
-        actuator: PropTypes.element,
-    },
+class BlockEditModal extends React.Component {
+    constructor(props) {
+        super(props);
 
-    childContextTypes: MODAL_CONTEXT,
+        // Set the initial React state
+        this.state = { value: this.props.value };
 
-    getInitialState() {
-        return { value: this.props.value };
-    },
+        // Bind this to non-React methods.
+        this.onChange = this.onChange.bind(this);
+        this.openModal = this.openModal.bind(this);
+        this.cancel = this.cancel.bind(this);
+        this.save = this.save.bind(this);
+    }
 
     getChildContext() {
         return this.props.modalcontext;
-    },
+    }
 
     onChange(value) {
         this.setState({ value });
-    },
+    }
 
     openModal() {
         this.modal.openModal();
-    },
+    }
 
     cancel() {
         if (this.props.onCancel !== undefined) {
             this.props.onCancel();
         }
-    },
+    }
 
     save() {
         this.props.onChange(this.state.value);
-    },
+    }
 
     render() {
         const blocktype = globals.blocks.lookup(this.props.value);
@@ -89,50 +87,76 @@ const BlockEditModal = createReactClass({
                 />
             </Modal>
         );
-    },
-});
+    }
+}
 
-const Block = module.exports.Block = createReactClass({
-    propTypes: {
-        value: PropTypes.any,
-        pos: PropTypes.array,
-    },
+BlockEditModal.propTypes = {
+    modalcontext: PropTypes.object,
+    value: PropTypes.any,
+    onCancel: PropTypes.func,
+    onChange: PropTypes.func,
+    actuator: PropTypes.element,
+};
 
-    contextTypes: _.extend({}, MODAL_CONTEXT, LAYOUT_CONTEXT),
+BlockEditModal.defaultProps = {
+    modalcontext: null,
+    value: '',
+    onCancel: undefined,
+    onChange: undefined,
+    actuator: undefined,
+};
 
-    getInitialState() {
-        return { hover: false, focused: false };
-    },
+BlockEditModal.childContextTypes = MODAL_CONTEXT;
+
+
+class Block extends React.Component {
+    constructor() {
+        super();
+
+        // Set initial React state.
+        this.state = { hover: false, focused: false };
+
+        // Bind this to non-React methods.
+        this.onChange = this.onChange.bind(this);
+        this.onCancelEdit = this.onCancelEdit.bind(this);
+        this.mouseEnter = this.mouseEnter.bind(this);
+        this.mouseLeave = this.mouseLeave.bind(this);
+        this.focus = this.focus.bind(this);
+        this.blur = this.blur.bind(this);
+        this.dragStart = this.dragStart.bind(this);
+        this.dragOver = this.dragOver.bind(this);
+    }
 
     componentDidMount() {
         if (this.props.value.is_new) { this.modal.openModal(); }
-    },
+    }
+
     componentDidUpdate() {
         if (this.props.value.is_new) { this.modal.openModal(); }
-    },
+    }
 
     onChange(value) {
         delete value.is_new;
         this.context.change(value);
-    },
+    }
 
     onCancelEdit() {
         if (this.props.value.is_new) {
             this.remove();
         }
-    },
+    }
 
-    mouseEnter() { this.setState({ hover: true }); },
-    mouseLeave() { this.setState({ hover: false }); },
-    focus() { this.setState({ focused: true }); },
-    blur() { this.setState({ focused: false }); },
+    mouseEnter() { this.setState({ hover: true }); }
+    mouseLeave() { this.setState({ hover: false }); }
+    focus() { this.setState({ focused: true }); }
+    blur() { this.setState({ focused: false }); }
 
-    dragStart(e) { this.context.dragStart(e, this.props.value, this.props.pos); },
-    dragOver(e) { this.context.dragOver(e, this); },
+    dragStart(e) { this.context.dragStart(e, this.props.value, this.props.pos); }
+    dragOver(e) { this.context.dragOver(e, this); }
 
     remove() {
         this.context.remove(this.props.value, this.props.pos);
-    },
+    }
 
     renderToolbar() {
         const modal = (<BlockEditModal
@@ -153,7 +177,7 @@ const Block = module.exports.Block = createReactClass({
                 ><i className="icon icon-trash-o" /></button>
             </div>
         );
-    },
+    }
 
     render() {
         const block = this.props.value;
@@ -195,18 +219,30 @@ const Block = module.exports.Block = createReactClass({
             {this.context.editable ? this.renderToolbar() : ''}
             <BlockView value={block} onChange={this.onChange} />
         </div>);
-    },
-});
+    }
+}
 
-const BlockAddButton = createReactClass({
-    propTypes: {
-        blocktype: PropTypes.string,
-        blockprops: PropTypes.object,
-    },
+Block.propTypes = {
+    value: PropTypes.any.isRequired,
+    pos: PropTypes.array,
+};
 
-    contextTypes: LAYOUT_CONTEXT,
+Block.defaultProps = {
+    pos: null,
+};
 
-    click(e) { e.preventDefault(); },
+Block.contextTypes = Object.assign({}, MODAL_CONTEXT, LAYOUT_CONTEXT);
+
+
+class BlockAddButton extends React.Component {
+    static click(e) { e.preventDefault(); }
+
+    constructor() {
+        super();
+
+        // Bind this to non-React methods.
+        this.dragStart = this.dragStart.bind(this);
+    }
 
     dragStart(e) {
         let block = {
@@ -218,7 +254,7 @@ const BlockAddButton = createReactClass({
             block = _.extend({}, block, this.props.blockprops.initial);
         }
         this.context.dragStart(e, block);
-    },
+    }
 
     render() {
         const classes = `icon-lg ${this.props.blockprops.icon}`;
@@ -226,7 +262,7 @@ const BlockAddButton = createReactClass({
             <span>
                 <button
                     className="btn btn-primary navbar-btn btn-sm"
-                    onClick={this.click}
+                    onClick={BlockAddButton.click}
                     draggable="true" onDragStart={this.dragStart} onDragEnd={this.context.dragEnd}
                     title={this.props.blockprops.label}
                 >
@@ -235,33 +271,41 @@ const BlockAddButton = createReactClass({
                 {' '}
             </span>
         );
-    },
-});
+    }
+}
+
+BlockAddButton.propTypes = {
+    blocktype: PropTypes.string.isRequired,
+    blockprops: PropTypes.object.isRequired,
+};
+
+BlockAddButton.contextTypes = LAYOUT_CONTEXT;
+
 
 // "sticky" toolbar for editing layout
-const LayoutToolbar = createReactClass({
+class LayoutToolbar extends React.Component {
+    constructor() {
+        super();
 
-    contextTypes: {
-        canSave: PropTypes.func,
-        onTriggerSave: PropTypes.func,
-    },
+        // Set initial React state.
+        this.state = { fixed: false };
 
-    getInitialState() {
-        return { fixed: false };
-    },
+        // Bind this to non-React methods.
+        this.scrollspy = this.scrollspy.bind(this);
+    }
 
     componentDidMount() {
         this.origTop = offset(this.domNode).top;
         globals.bindEvent(window, 'scroll', this.scrollspy);
-    },
+    }
 
     componentWillUnmount() {
         globals.unbindEvent(window, 'scroll', this.scrollspy);
-    },
+    }
 
     scrollspy() {
         this.setState({ fixed: window.pageYOffset > this.origTop });
-    },
+    }
 
     render() {
         const blocks = globals.blocks.getAll();
@@ -296,21 +340,24 @@ const LayoutToolbar = createReactClass({
             );
         }
         return toolbar;
-    },
+    }
+}
 
-});
+LayoutToolbar.contextTypes = {
+    canSave: PropTypes.func,
+    onTriggerSave: PropTypes.func,
+};
 
 
-const Col = createReactClass({
-    propTypes: {
-        pos: PropTypes.array,
-        className: PropTypes.string,
-        value: PropTypes.object,
-    },
+class Col extends React.Component {
+    constructor() {
+        super();
 
-    contextTypes: LAYOUT_CONTEXT,
+        // Bind this to non-React methods.
+        this.dragOver = this.dragOver.bind(this);
+    }
 
-    dragOver(e) { this.context.dragOver(e, this); },
+    dragOver(e) { this.context.dragOver(e, this); }
 
     renderBlock(blockId, k) {
         const pos = this.props.pos.concat([k]);
@@ -320,7 +367,7 @@ const Col = createReactClass({
         }
         const row = blockId;
         return <Row value={row} key={k} pos={pos} />;
-    },
+    }
 
     render() {
         const classes = {};
@@ -338,18 +385,27 @@ const Col = createReactClass({
                 {blocks.map((blockId, k) => this.renderBlock(blockId, k))}
             </div>
         );
-    },
-});
+    }
+}
 
-const Row = createReactClass({
-    propTypes: {
-        pos: PropTypes.array,
-        value: PropTypes.object,
-    },
+Col.propTypes = {
+    pos: PropTypes.array,
+    className: PropTypes.string,
+    value: PropTypes.any,
+};
 
-    contextTypes: LAYOUT_CONTEXT,
+Col.contextTypes = LAYOUT_CONTEXT;
 
-    dragOver(e) { this.context.dragOver(e, this); },
+
+class Row extends React.Component {
+    constructor() {
+        super();
+
+        // Bind this to non-React methods.
+        this.dragOver = this.dragOver.bind(this);
+    }
+
+    dragOver(e) { this.context.dragOver(e, this); }
 
     render() {
         const classes = {
@@ -382,27 +438,75 @@ const Row = createReactClass({
                 />)}
             </div>
         );
-    },
-});
+    }
+}
 
-module.exports.Layout = createReactClass({
-    propTypes: {
-        editable: PropTypes.bool,
-        onChange: PropTypes.func,
-    },
+Row.propTypes = {
+    pos: PropTypes.array,
+    value: PropTypes.any,
+};
 
-    childContextTypes: LAYOUT_CONTEXT,
+Row.contextTypes = LAYOUT_CONTEXT;
 
-    getDefaultProps() {
+
+export default class Layout extends React.Component {
+    static stateFromProps(props) {
+        let value = props.value;
+
+        const blockMap = {};
+        let nextBlockNum = 2;
+        value.blocks.forEach((block) => {
+            const blockId = block['@id'];
+            blockMap[blockId] = block;
+            const blockNum = parseInt(blockId.replace(/\D/g, ''), 10);
+            if (blockNum >= nextBlockNum) nextBlockNum = blockNum + 1;
+        });
+        value = Object.assign({}, value, { blocks: blockMap });
+
         return {
-            editable: false,
-            pos: [],
+            nextBlockNum,
+            value,
+            src_pos: null,
+            dst_pos: null,
+            dst_quad: null,
         };
-    },
+    }
 
-    getInitialState() {
-        return this.stateFromProps(this.props);
-    },
+    static isBlockDragEvent(e) {
+        const types = e.dataTransfer.types;
+        if (types.indexOf && types.indexOf('application/x-encoded-block') !== -1) {
+            return true;
+        } else if (types.contains && types.contains('application/x-encoded-block')) {
+            return true;
+        }
+        e.preventDefault();
+        return false;
+    }
+
+    static drop(e) {
+        if (Layout.isBlockDragEvent(e)) {
+            e.preventDefault();
+        }
+    }
+
+    constructor(props) {
+        super(props);
+
+        // Set initial React state.
+        this.state = Layout.stateFromProps(this.props);
+
+        // Bind this to non-React methods.
+        this.onChange = this.onChange.bind(this);
+        this.dragStart = this.dragStart.bind(this);
+        this.traverse = this.traverse.bind(this);
+        this.dragEnd = this.dragEnd.bind(this);
+        this.dragOver = this.dragOver.bind(this);
+        this.change = this.change.bind(this);
+        this.remove = this.remove.bind(this);
+        this.filter = this.filter.bind(this);
+        this.cleanup = this.cleanup.bind(this);
+        this.mapBlocks = this.mapBlocks.bind(this);
+    }
 
     getChildContext() {
         return {
@@ -417,11 +521,11 @@ module.exports.Layout = createReactClass({
             dst_quad: this.state.dst_quad,
             blocks: this.state.value.blocks,
         };
-    },
+    }
 
     componentWillReceiveProps(nextProps) {
-        this.setState(this.stateFromProps(nextProps));
-    },
+        this.setState(Layout.stateFromProps(nextProps));
+    }
 
     onChange() {
         let value = this.state.value;
@@ -429,29 +533,7 @@ module.exports.Layout = createReactClass({
             blockId => value.blocks[blockId]);
         value = _.extend({}, value, { blocks: blockList });
         this.props.onChange(value);
-    },
-
-    stateFromProps(props) {
-        let value = props.value;
-
-        const blockMap = {};
-        let nextBlockNum = 2;
-        value.blocks.forEach((block) => {
-            const blockId = block['@id'];
-            blockMap[blockId] = block;
-            const blockNum = parseInt(blockId.replace(/\D/g, ''), 10);
-            if (blockNum >= nextBlockNum) nextBlockNum = blockNum + 1;
-        });
-        value = _.extend({}, value, { blocks: blockMap });
-
-        return {
-            nextBlockNum: nextBlockNum,
-            value: value,
-            src_pos: null,
-            dst_pos: null,
-            dst_quad: null,
-        };
-    },
+    }
 
     dragStart(e, block, pos) {
         if (!this.props.editable) {
@@ -470,24 +552,7 @@ module.exports.Layout = createReactClass({
 
         this.dragged_block = block;
         this.setState({ src_pos: pos });
-    },
-
-    isBlockDragEvent(e) {
-        const types = e.dataTransfer.types;
-        if (types.indexOf && types.indexOf('application/x-encoded-block') !== -1) {
-            return true;
-        } else if (types.contains && types.contains('application/x-encoded-block')) {
-            return true;
-        }
-        e.preventDefault();
-        return false;
-    },
-
-    drop(e) {
-        if (this.isBlockDragEvent(e)) {
-            e.preventDefault();
-        }
-    },
+    }
 
     traverse(pos) {
         const layout = this.state.value;
@@ -503,20 +568,20 @@ module.exports.Layout = createReactClass({
             } else if (target.type === 'col') {
                 const obj = target.obj.blocks[targetIdx];
                 if (typeof obj === 'string') {
-                    path.push({ type: 'block', obj: obj });
+                    path.push({ type: 'block', obj });
                 } else {
-                    path.push({ type: 'row', obj: obj });
+                    path.push({ type: 'row', obj });
                 }
             }
             target = path[path.length - 1];
         }
         return {
-            path: path,
-            target: target,
+            path,
+            target,
             container: path[path.length - 2],
             target_idx: targetIdx,
         };
-    },
+    }
 
     dragEnd(e) {
         const dstPos = this.state.dst_pos;
@@ -587,15 +652,17 @@ module.exports.Layout = createReactClass({
         }
 
         this.cleanup();
-        this.state.dst_pos = this.state.dst_quad = this.state.src_pos = null;
+        this.state.src_pos = null;
+        this.state.dst_pos = null;
+        this.state.dst_quad = null;
 
         // make sure we re-render and notify form of new value
         this.setState(this.state);
         this.onChange(this.state.value);
-    },
+    }
 
     dragOver(e, target) {
-        if (this.isBlockDragEvent(e)) {
+        if (Layout.isBlockDragEvent(e)) {
             e.preventDefault();
         }
         e.stopPropagation();
@@ -641,13 +708,13 @@ module.exports.Layout = createReactClass({
             dst_pos: pos,
             dst_quad: quad,
         });
-    },
+    }
 
     change(value) {
         this.state.value.blocks[value['@id']] = value;
         this.setState(this.state);
         this.onChange(this.state.value);
-    },
+    }
 
     remove(block, pos) {
         delete this.state.value.blocks[block['@id']];
@@ -656,7 +723,7 @@ module.exports.Layout = createReactClass({
         this.cleanup();
         this.setState(this.state);
         this.onChange(this.state.value);
-    },
+    }
 
     filter(objs) {
         return objs.filter((obj) => {
@@ -676,18 +743,18 @@ module.exports.Layout = createReactClass({
             }
             return true;
         });
-    },
+    }
 
     cleanup() {
         // remove empty rows and cols
         this.state.value.rows = this.filter(this.state.value.rows);
-    },
+    }
 
     mapBlocks(func) {
         Object.keys(this.state.value.blocks).forEach((blockId) => {
             func.call(this, this.state.value.blocks[blockId]);
         });
-    },
+    }
 
     render() {
         const classes = { layout: true };
@@ -699,12 +766,24 @@ module.exports.Layout = createReactClass({
         }
         const classStr = Object.keys(classes).join(' ');
         return (
-            <div className={classStr} onDragOver={this.dragOver} onDrop={this.drop} ref={(comp) => { this.domNode = comp; }}>
+            <div className={classStr} onDragOver={this.dragOver} onDrop={Layout.drop} ref={(comp) => { this.domNode = comp; }}>
                 {this.props.editable ? <LayoutToolbar /> : ''}
                 {this.state.value.rows.map((row, i) => <Row value={row} key={i} pos={[i]} />)}
                 <canvas id="drag-marker" height="1" width="1" />
             </div>
         );
-    },
+    }
+}
 
-});
+Layout.propTypes = {
+    editable: PropTypes.bool,
+    onChange: PropTypes.func,
+};
+
+Layout.childContextTypes = LAYOUT_CONTEXT;
+
+Layout.defaultProps = {
+    editable: false,
+    pos: [],
+};
+
