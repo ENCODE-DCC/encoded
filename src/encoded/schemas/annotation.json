@@ -48,7 +48,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "13"
+            "default": "12"
         },
         "annotation_type": {
             "title": "Type",
@@ -57,7 +57,7 @@
             "enum": [
                 "binding sites",
                 "blacklist",
-                "candidate regulatory elements",
+                "candidate regulatory regions",
                 "chromatin state",
                 "enhancer-like regions",
                 "gene expression",
