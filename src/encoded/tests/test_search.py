@@ -73,15 +73,15 @@ class FakeRequest(object):
 
 
 def test_set_filters():
-    from encoded.search import set_filters
+    from snowflakes.search import set_filters
 
     request = FakeRequest((
         ('field1', 'value1'),
     ))
     query = {
-        'filter': {
-            'and': {
-                'filters': [],
+        'query': {
+            'bool': {
+                'filter': [],
             },
         },
     }
@@ -90,18 +90,18 @@ def test_set_filters():
 
     assert used_filters == {'field1': ['value1']}
     assert query == {
-        'filter': {
-            'and': {
-                'filters': [
+        'query': {
+            'bool': {
+                'filter': [
                     {
                         'terms': {
-                            'embedded.field1.raw': ['value1'],
+                            'embedded.field1': ['value1'],
                         },
                     },
                 ],
             },
         },
-    }
+            }
     assert result == {
         'filters': [
             {
@@ -114,15 +114,15 @@ def test_set_filters():
 
 
 def test_set_filters_searchTerm():
-    from encoded.search import set_filters
+    from snowflakes.search import set_filters
 
     request = FakeRequest((
         ('searchTerm', 'value1'),
     ))
     query = {
-        'filter': {
-            'and': {
-                'filters': [],
+        'query': {
+            'bool': {
+                'filter': [],
             },
         },
     }
@@ -131,9 +131,9 @@ def test_set_filters_searchTerm():
 
     assert used_filters == {}
     assert query == {
-        'filter': {
-            'and': {
-                'filters': [],
+        'query': {
+            'bool': {
+                'filter': [],
             },
         },
     }
@@ -147,22 +147,20 @@ def test_set_filters_searchTerm():
         ]
     }
 
-
 # Reserved params should NOT act as filters
 @pytest.mark.parametrize('param', [
-    'type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
-    'format', 'frame', 'datastore', 'field', 'region', 'genome',
-    'sort', 'from', 'referrer'])
+    'type', 'limit', 'mode',
+    'format', 'frame', 'datastore', 'field', 'sort', 'from', 'referrer'])
 def test_set_filters_reserved_params(param):
-    from encoded.search import set_filters
+    from snowflakes.search import set_filters
 
     request = FakeRequest((
         (param, 'foo'),
     ))
     query = {
-        'filter': {
-            'and': {
-                'filters': [],
+        'query': {
+            'bool': {
+                'filter': [],
             },
         },
     }
@@ -171,9 +169,9 @@ def test_set_filters_reserved_params(param):
 
     assert used_filters == {}
     assert query == {
-        'filter': {
-            'and': {
-                'filters': [],
+        'query': {
+            'bool': {
+                'filter': [],
             },
         },
     }
@@ -183,16 +181,16 @@ def test_set_filters_reserved_params(param):
 
 
 def test_set_filters_multivalued():
-    from encoded.search import set_filters
+    from snowflakes.search import set_filters
 
     request = FakeRequest((
         ('field1', 'value1'),
         ('field1', 'value2'),
     ))
     query = {
-        'filter': {
-            'and': {
-                'filters': [],
+        'query': {
+            'bool': {
+                'filter': [],
             },
         },
     }
@@ -201,12 +199,12 @@ def test_set_filters_multivalued():
 
     assert used_filters == {'field1': ['value1', 'value2']}
     assert query == {
-        'filter': {
-            'and': {
-                'filters': [
+        'query': {
+            'bool': {
+                'filter': [
                     {
                         'terms': {
-                            'embedded.field1.raw': ['value1', 'value2'],
+                            'embedded.field1': ['value1', 'value2'],
                         },
                     },
                 ],
@@ -230,15 +228,15 @@ def test_set_filters_multivalued():
 
 
 def test_set_filters_negated():
-    from encoded.search import set_filters
+    from snowflakes.search import set_filters
 
     request = FakeRequest((
         ('field1!', 'value1'),
     ))
     query = {
-        'filter': {
-            'and': {
-                'filters': [],
+        'query': {
+            'bool': {
+                'filter': [],
             },
         },
     }
@@ -247,13 +245,13 @@ def test_set_filters_negated():
 
     assert used_filters == {'field1!': ['value1']}
     assert query == {
-        'filter': {
-            'and': {
-                'filters': [
+        'query': {
+            'bool': {
+                'filter': [
                     {
                         'not': {
-                            'terms': {
-                                'embedded.field1.raw': ['value1'],
+                            'term': {
+                                'embedded.field1': ['value1'],
                             },
                         },
                     },
@@ -273,15 +271,15 @@ def test_set_filters_negated():
 
 
 def test_set_filters_audit():
-    from encoded.search import set_filters
+    from snowflakes.search import set_filters
 
     request = FakeRequest((
         ('audit.foo', 'value1'),
     ))
     query = {
-        'filter': {
-            'and': {
-                'filters': [],
+        'query': {
+            'bool': {
+                'filter': [],
             },
         },
     }
@@ -290,9 +288,9 @@ def test_set_filters_audit():
 
     assert used_filters == {'audit.foo': ['value1']}
     assert query == {
-        'filter': {
-            'and': {
-                'filters': [
+        'query': {
+            'bool': {
+                'filter': [
                     {
                         'terms': {
                             'audit.foo': ['value1'],
@@ -314,16 +312,16 @@ def test_set_filters_audit():
 
 
 def test_set_filters_exists_missing():
-    from encoded.search import set_filters
+    from snowflakes.search import set_filters
 
     request = FakeRequest((
         ('field1', '*'),
         ('field2!', '*'),
     ))
     query = {
-        'filter': {
-            'and': {
-                'filters': [],
+        'query': {
+            'bool': {
+                'filter': [],
             },
         },
     }
@@ -335,17 +333,17 @@ def test_set_filters_exists_missing():
         'field2!': ['*'],
     }
     assert query == {
-        'filter': {
-            'and': {
-                'filters': [
+        'query': {
+            'bool': {
+                'filter': [
                     {
                         'exists': {
-                            'field': 'embedded.field1.raw',
+                            'field': 'embedded.field1',
                         },
                     },
                     {
                         'missing': {
-                            'field': 'embedded.field2.raw',
+                            'field': 'embedded.field2',
                         }
                     }
                 ],
@@ -370,7 +368,7 @@ def test_set_filters_exists_missing():
 
 def test_set_facets():
     from collections import OrderedDict
-    from encoded.search import set_facets
+    from snowflakes.search import set_facets
     facets = [
         ('type', {'title': 'Type'}),
         ('audit.foo', {'title': 'Audit'}),
@@ -381,15 +379,15 @@ def test_set_facets():
         ('audit.foo', ['value2']),
     ))
     principals = ['group.admin']
-    doc_types = ['Experiment']
+    doc_types = ['Snowball']
     aggs = set_facets(facets, used_filters, principals, doc_types)
 
-    assert {
+    expected = {
         'type': {
             'aggs': {
                 'type': {
                     'terms': {
-                        'field': 'embedded.@type.raw',
+                        'field': 'embedded.@type',
                         'exclude': ['Item'],
                         'min_doc_count': 0,
                         'size': 100,
@@ -400,8 +398,8 @@ def test_set_facets():
                 'bool': {
                     'must': [
                         {'terms': {'principals_allowed.view': ['group.admin']}},
-                        {'terms': {'embedded.@type.raw': ['Experiment']}},
-                        {'terms': {'embedded.facet1.raw': ['value1']}},
+                        {'terms': {'embedded.@type': ['Snowball']}},
+                        {'terms': {'embedded.facet1': ['value1']}},
                         {'terms': {'audit.foo': ['value2']}},
                     ],
                 },
@@ -421,8 +419,8 @@ def test_set_facets():
                 'bool': {
                     'must': [
                         {'terms': {'principals_allowed.view': ['group.admin']}},
-                        {'terms': {'embedded.@type.raw': ['Experiment']}},
-                        {'terms': {'embedded.facet1.raw': ['value1']}},
+                        {'terms': {'embedded.@type': ['Snowball']}},
+                        {'terms': {'embedded.facet1': ['value1']}},
                     ],
                 },
             },
@@ -431,7 +429,7 @@ def test_set_facets():
             'aggs': {
                 'facet1': {
                     'terms': {
-                        'field': 'embedded.facet1.raw',
+                        'field': 'embedded.facet1',
                         'min_doc_count': 0,
                         'size': 100,
                     },
@@ -441,18 +439,19 @@ def test_set_facets():
                 'bool': {
                     'must': [
                         {'terms': {'principals_allowed.view': ['group.admin']}},
-                        {'terms': {'embedded.@type.raw': ['Experiment']}},
+                        {'terms': {'embedded.@type': ['Snowball']}},
                         {'terms': {'audit.foo': ['value2']}},
                     ],
                 },
             },
         }
-    } == aggs
+    }
+    assert(expected == aggs)
 
 
 def test_set_facets_negated_filter():
     from collections import OrderedDict
-    from encoded.search import set_facets
+    from snowflakes.search import set_facets
     facets = [
         ('facet1', {'title': 'Facet 1'}),
     ]
@@ -460,7 +459,7 @@ def test_set_facets_negated_filter():
         ('field2!', ['value1']),
     ))
     principals = ['group.admin']
-    doc_types = ['Experiment']
+    doc_types = ['Snowball']
     aggs = set_facets(facets, used_filters, principals, doc_types)
 
     assert {
@@ -468,7 +467,7 @@ def test_set_facets_negated_filter():
             'aggs': {
                 'facet1': {
                     'terms': {
-                        'field': 'embedded.facet1.raw',
+                        'field': 'embedded.facet1',
                         'min_doc_count': 0,
                         'size': 100,
                     },
@@ -478,8 +477,8 @@ def test_set_facets_negated_filter():
                 'bool': {
                     'must': [
                         {'terms': {'principals_allowed.view': ['group.admin']}},
-                        {'terms': {'embedded.@type.raw': ['Experiment']}},
-                        {'not': {'terms': {'embedded.field2.raw': ['value1']}}},
+                        {'terms': {'embedded.@type': ['Snowball']}},
+                        {'not': {'terms': {'embedded.field2': ['value1']}}},
                     ],
                 },
             },
@@ -489,7 +488,7 @@ def test_set_facets_negated_filter():
 
 def test_set_facets_type_exists():
     from collections import OrderedDict
-    from encoded.search import set_facets
+    from snowflakes.search import set_facets
     facets = [
         ('field1', {'title': 'Facet 1', 'type': 'exists'}),
         ('field2', {'title': 'Facet 2', 'type': 'exists'}),
@@ -499,7 +498,7 @@ def test_set_facets_type_exists():
         ('field2!', ['*']),
     ))
     principals = ['group.admin']
-    doc_types = ['Experiment']
+    doc_types = ['Snowball']
     aggs = set_facets(facets, used_filters, principals, doc_types)
 
     assert {
@@ -509,10 +508,10 @@ def test_set_facets_type_exists():
                     'filters': {
                         'filters': {
                             'yes': {
-                                'exists': {'field': 'embedded.field1.raw'}
+                                'exists': {'field': 'embedded.field1'}
                             },
                             'no': {
-                                'missing': {'field': 'embedded.field1.raw'}
+                                'missing': {'field': 'embedded.field1'}
                             }
                         },
                     },
@@ -522,8 +521,8 @@ def test_set_facets_type_exists():
                 'bool': {
                     'must': [
                         {'terms': {'principals_allowed.view': ['group.admin']}},
-                        {'terms': {'embedded.@type.raw': ['Experiment']}},
-                        {'missing': {'field': 'embedded.field2.raw'}},
+                        {'terms': {'embedded.@type': ['Snowball']}},
+                        {'missing': {'field': 'embedded.field2'}},
                     ],
                 },
             },
@@ -534,10 +533,10 @@ def test_set_facets_type_exists():
                     'filters': {
                         'filters': {
                             'yes': {
-                                'exists': {'field': 'embedded.field2.raw'}
+                                'exists': {'field': 'embedded.field2'}
                             },
                             'no': {
-                                'missing': {'field': 'embedded.field2.raw'}
+                                'missing': {'field': 'embedded.field2'}
                             }
                         },
                     },
@@ -547,8 +546,8 @@ def test_set_facets_type_exists():
                 'bool': {
                     'must': [
                         {'terms': {'principals_allowed.view': ['group.admin']}},
-                        {'terms': {'embedded.@type.raw': ['Experiment']}},
-                        {'exists': {'field': 'embedded.field1.raw'}},
+                        {'terms': {'embedded.@type': ['Snowball']}},
+                        {'exists': {'field': 'embedded.field1'}},
                     ],
                 },
             },
@@ -557,7 +556,7 @@ def test_set_facets_type_exists():
 
 
 def test_format_facets():
-    from encoded.search import format_facets
+    from snowflakes.search import format_facets
     es_result = {
         'aggregations': {
             'field1': {
@@ -639,3 +638,36 @@ def test_format_facets_skips_single_bucket_facets():
         es_result, facets, used_filters, schemas, total, principals)
 
     assert result == []
+
+
+def test_format_facets_adds_pseudo_facet_for_extra_filters():
+    from encoded.search import format_facets
+    es_result = {
+        'aggregations': {},
+    }
+    facets = []
+    used_filters = {
+        'title': ['titlevalue'],
+    }
+    schemas = [{
+        'properties': {
+            'title': {
+                'title': 'Title',
+            },
+        },
+    }]
+    total = 42
+    principals = []
+    result = format_facets(
+        es_result, facets, used_filters, schemas, total, principals)
+
+    assert result == [{
+        'field': 'title',
+        'title': 'Title',
+        'terms': [
+            {
+                'key': 'titlevalue',
+            },
+        ],
+        'total': 42,
+    }]

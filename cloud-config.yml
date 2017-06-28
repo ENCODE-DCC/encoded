@@ -4,7 +4,7 @@
 
 apt_sources:
 - source: "ppa:webupd8team/java"
-- source: "deb http://packages.elasticsearch.org/elasticsearch/1.7/debian stable main"
+- source: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
@@ -99,18 +99,18 @@ bootcmd:
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
-- MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
-- if [ "$MEMGIGS" -gt 32 ]
-- then
--    echo "ES_HEAP_SIZE=16g" > /etc/default/elasticsearch
-- elif [ "$MEMGIGS" -gt 12 ]
-- then
--    echo "ES_HEAP_SIZE=8g" > /etc/default/elasticsearch
-- else
--    echo "ES_HEAP_SIZE=4g" > /etc/default/elasticsearch
--    sysctl "vm.swappiness=1"
--    swapon /swapfile
-- fi
+# - MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
+# - if [ "$MEMGIGS" -gt 32 ]
+# - then
+# -    echo "ES_HEAP_SIZE=16g" > /etc/default/elasticsearch
+# - elif [ "$MEMGIGS" -gt 12 ]
+# - then
+# -    echo "ES_HEAP_SIZE=8g" > /etc/default/elasticsearch
+# - else
+# -    echo "ES_HEAP_SIZE=4g" > /etc/default/elasticsearch
+# -    sysctl "vm.swappiness=1"
+# -    swapon /swapfile
+# - fi
 
 package_upgrade: true
 
@@ -231,7 +231,7 @@ runcmd:
 # - sleep 60
 # - sudo -i -u encoded PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd" > tests.out
 # - sudo echo "00 7 * * * sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main" > /home/ubuntu/wal-e-backup
-# - sudo crontab /home/ubuntu/wal-e-backup
+# - sudo crontab /home/ubuntu/wal-e-backup 
 
 users:
 - default
@@ -248,28 +248,29 @@ users:
   homedir: /srv/encoded
 
 write_files:
-- path: /etc/apt/apt.conf.d/20auto-upgrades
-  content: |
-    APT::Periodic::Update-Package-Lists "1";
-    APT::Periodic::Unattended-Upgrade "1";
+#  These files are causing errors, need to be debugged separately from ES upgrade
+# - path: /etc/apt/apt.conf.d/20auto-upgrades
+#   content: |
+#     APT::Periodic::Update-Package-Lists "1";
+#     APT::Periodic::Unattended-Upgrade "1";
 
-- path: /etc/apt/apt.conf.d/50unattended-upgrades
-  content: |
-    Unattended-Upgrade::Allowed-Origins {
-        "${distro_id} ${distro_codename}-security";
-    };
-    Unattended-Upgrade::Mail "encode-devops@lists.stanford.edu";
-    Unattended-Upgrade::Automatic-Reboot "false";
+# - path: /etc/apt/apt.conf.d/50unattended-upgrades
+#   content: |
+#     Unattended-Upgrade::Allowed-Origins {
+#         "${distro_id} ${distro_codename}-security";
+#     };
+#     Unattended-Upgrade::Mail "encode-devops@lists.stanford.edu";
+#     Unattended-Upgrade::Automatic-Reboot "false";
 
 - path: /etc/cron.d/cloudwatchmon
   content: |
     */5 * * * * nobody /opt/cloudwatchmon/bin/mon-put-instance-stats.py --mem-util --swap-util --disk-space-util --disk-path=/ --from-cron
 
-- path: /etc/elasticsearch/elasticsearch.yml
-  content: |
-    index.search.slowlog.threshold.query.warn: 8s
-    index.search.slowlog.threshold.fetch.warn: 1s
-    index.indexing.slowlog.threshold.index.warn: 25s
+# - path: /etc/elasticsearch/elasticsearch.yml
+#   content: |
+#     index.search.slowlog.threshold.query.warn: 8s
+#     index.search.slowlog.threshold.fetch.warn: 1s
+#     index.indexing.slowlog.threshold.index.warn: 25s
 
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |

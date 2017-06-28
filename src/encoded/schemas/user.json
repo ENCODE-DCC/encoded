@@ -13,7 +13,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "4"
         },
         "email": {
             "title": "Email",
@@ -123,9 +123,6 @@
         }
     },
     "boost_values": {
-        "title": 1.0,
-        "lab": 1.0
-    },
-    "changelog": "/profiles/changelogs/user.md"
-
+        "title": 1.0
+    }
 }
