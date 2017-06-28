@@ -1,56 +1,69 @@
-'use strict';
-var React = require('react');
-import createReactClass from 'create-react-class';
-var globals = require('./globals');
-var fetched = require('./fetched');
+import React from 'react';
+import PropTypes from 'prop-types';
+import marked from 'marked';
+import fetched from './fetched';
+import * as globals from './globals';
 
 
-var Markdown = module.exports.Markdown = createReactClass({
-    render: function() {
-        var marked = require('marked');
-        var html = marked(this.props.source, {sanitize: true});
-        return <div dangerouslySetInnerHTML={{__html: html}} />;
-    }
-});
+const Markdown = (props) => {
+    const html = marked(props.source, { sanitize: true });
+    return <div dangerouslySetInnerHTML={{ __html: html }} />;
+};
+
+Markdown.propTypes = {
+    source: PropTypes.string,
+};
+
+Markdown.defaultProps = {
+    source: '',
+};
 
 
-var ChangeLog = module.exports.ChangeLog = createReactClass({
-    render: function() {
-        return (
+const ChangeLog = props => (
+    <section className="view-detail panel">
+        <div className="container">
+            <Markdown source={props.source} />
+        </div>
+    </section>
+);
+
+ChangeLog.propTypes = {
+    source: PropTypes.string,
+};
+
+ChangeLog.defaultProps = {
+    source: '',
+};
+
+
+const SchemaPage = (props) => {
+    const context = props.context;
+    const itemClass = globals.itemClass(context);
+    const title = context.title;
+    const changelog = context.changelog;
+    return (
+        <div className={itemClass}>
+            <header className="row">
+                <div className="col-sm-12">
+                    <h2>{title}</h2>
+                </div>
+            </header>
+            {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
             <section className="view-detail panel">
                 <div className="container">
-                    <Markdown source={this.props.source} />
+                    <pre>{JSON.stringify(context, null, 4)}</pre>
                 </div>
             </section>
-        );
-    }
-});
+            {changelog && <fetched.FetchedData>
+                <fetched.Param name="source" url={changelog} type="text" />
+                <ChangeLog />
+            </fetched.FetchedData>}
+        </div>
+    );
+};
 
-var SchemaPage = module.exports.SchemaPage = createReactClass({
-    render: function() {
-        var context = this.props.context;
-        var itemClass = globals.itemClass(context);
-        var title = context['title'];
-        var changelog = context['changelog'];
-        return (
-            <div className={itemClass}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <h2>{title}</h2>
-                    </div>
-                </header>
-                {typeof context.description == "string" ? <p className="description">{context.description}</p> : null}
-                <section className="view-detail panel">
-                    <div className="container">
-                        <pre>{JSON.stringify(context, null, 4)}</pre>
-                    </div>
-                </section>
-                {changelog && <fetched.FetchedData>
-                    <fetched.Param name="source" url={changelog} type='text' />
-                    <ChangeLog />
-                </fetched.FetchedData>}
-            </div>
-        );
-    }
-});
-globals.content_views.register(SchemaPage, 'JSONSchema');
+SchemaPage.propTypes = {
+    context: PropTypes.object.isRequired,
+};
+
+globals.contentViews.register(SchemaPage, 'JSONSchema');

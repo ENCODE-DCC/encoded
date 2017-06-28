@@ -1,12 +1,11 @@
 /** @preventMunge */
 /* ^ see http://stackoverflow.com/questions/30110437/leading-underscore-transpiled-wrong-with-es6-classes */
 
-'use strict';
-var _ = require('underscore');
-var parseAndLogError = require('../globals').parseAndLogError;
+import _ from 'underscore';
+import { parseAndLogError } from '../globals';
 
 
-module.exports.ItemStore = class ItemStore {
+export default class ItemStore {
     /*
     * Store for a collection of items persisted via the backend REST API
     *
@@ -17,7 +16,7 @@ module.exports.ItemStore = class ItemStore {
     constructor(items, view, stateKey) {
         this._fetch = view.context ? view.context.fetch : undefined;
         this._items = items;
-        this._listeners = [{view: view, stateKey: stateKey}];
+        this._listeners = [{ view, stateKey }];
     }
 
     /* create an item */
@@ -25,8 +24,8 @@ module.exports.ItemStore = class ItemStore {
         return this.fetch(collection, {
             method: 'POST',
             body: JSON.stringify(data),
-        }, response => {
-            var item = response['@graph'][0];
+        }, (response) => {
+            const item = response['@graph'][0];
             this._items.push(item);
             this.dispatch('onCreate', response);
         });
@@ -37,8 +36,8 @@ module.exports.ItemStore = class ItemStore {
         return this.fetch(data['@id'], {
             method: 'PUT',
             body: JSON.stringify(data),
-        }, response => {
-            var item = _.find(this._items, i => i['@id'] == data['@id']);
+        }, () => {
+            const item = _.find(this._items, i => i['@id'] === data['@id']);
             _.extend(item, data);
             this.dispatch('onUpdate', item);
         });
@@ -46,12 +45,12 @@ module.exports.ItemStore = class ItemStore {
 
     /* delete an item (set its status to deleted) */
     delete(id) {
-        return this.fetch(id + '?render=false', {
+        return this.fetch(`${id}?render=false`, {
             method: 'PATCH',
-            body: JSON.stringify({status: 'deleted'}),
-        }, response => {
-            var item = _.find(this._items, i => i['@id'] == id);
-            this._items = _.reject(this._items, i => i['@id'] == id);
+            body: JSON.stringify({ status: 'deleted' }),
+        }, () => {
+            const item = _.find(this._items, i => i['@id'] === id);
+            this._items = _.reject(this._items, i => i['@id'] === id);
             this.dispatch('onDelete', item);
         });
     }
@@ -59,33 +58,33 @@ module.exports.ItemStore = class ItemStore {
     /* call the backend */
     fetch(url, options, then) {
         options.headers = _.extend(options.headers || {}, {
-            'Accept': 'application/json',
+            Accept: 'application/json',
             'Content-Type': 'application/json',
         });
         return this._fetch(
             url, options
-        ).then(response => {
+        ).then((response) => {
             if (!response.ok) throw response;
             return response.json();
-        }).then(then).catch(err => {
-            return parseAndLogError('ItemStore', err).then(response => {
+        }).then(then).catch(err =>
+            parseAndLogError('ItemStore', err).then((response) => {
                 this.dispatch('onError', response);
-            });
-        });
+            })
+        );
     }
 
     /* notify listening views of actions and update their state
     *  (should we update state optimistically?)
     */
     dispatch(method, arg) {
-        this._listeners.forEach(listener => {
-            var view = listener.view;
+        this._listeners.forEach((listener) => {
+            const view = listener.view;
             if (view[method] !== undefined) {
                 view[method](arg);
             }
-            var newState = {};
+            const newState = {};
             newState[listener.stateKey] = this._items;
             view.setState(newState);
         });
     }
-};
+}

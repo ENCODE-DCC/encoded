@@ -1,7 +1,7 @@
-'use strict';
-var _ = require('underscore');
+import _ from 'underscore';
 
-class Registry {
+/* eslint class-methods-use-this: ["error", { "exceptMethods": ["providedBy", "fallback"] }] */
+export default class Registry {
     constructor(options) {
         // May provide custom providedBy and fallback functions
         this.views = {};
@@ -13,31 +13,31 @@ class Registry {
     }
 
     register(view, for_, name) {
-        name = name || '';
-        var views = this.views[name];
+        const localName = name || '';
+        let views = this.views[localName];
         if (!views) {
-            this.views[name] = views = {};
+            views = {};
+            this.views[localName] = views;
         }
         views[for_] = view;
     }
 
     unregister(for_, name) {
-        var views = this.views[name || ''];
-        if (!views) {
-            return;
+        const views = this.views[name || ''];
+        if (views) {
+            delete views[for_];
         }
-        delete views[for_];
     }
 
     lookup(obj, name) {
-        var views = this.views[name || ''];
+        const views = this.views[name || ''];
         if (!views) {
             return this.fallback(obj, name);
         }
 
-        var provided = this.providedBy(obj);
-        for (var i = 0, len = provided.length; i < len; i++) {
-            var view = views[provided[i]];
+        const provided = this.providedBy(obj);
+        for (let i = 0, len = provided.length; i < len; i += 1) {
+            const view = views[provided[i]];
             if (view) {
                 return view;
             }
@@ -46,13 +46,10 @@ class Registry {
     }
 
     getAll(name) {
-        var views = this.views[name || ''];
+        const views = this.views[name || ''];
         return views || {};
     }
 
-    fallback(obj, name) {
-        return;
+    fallback() {
     }
 }
-
-module.exports = Registry;
