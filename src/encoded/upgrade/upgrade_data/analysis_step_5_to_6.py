@@ -239,6 +239,8 @@ major_version_mapping = {
     'christina-leslie:chip_seq_fastq_to_bam': 1,
     'christina-leslie:rna_seq_bam_to_counts': 1,
     'christina-leslie:rna_seq_fastq_to_bam': 1,
+    'david-gilbert:repli-seq-coverage': 1,
+    'david-gilbert:repli-seq-alignment': 1,
     'dnanexus:align-star-pe-v-1': 1,
     'dnanexus:align-star-se-v-1': 1,
     'dnanexus:align-star-se-v-2': 2,
@@ -543,8 +545,10 @@ title_mapping = {
     'dnanexus:prep-star-v-1': 'STAR genome indexing step',
     'j-michael-cherry:359d63f3-8e92-4731-a719-58fb7053bdb9': 'STAR genome indexing step',
     'dnanexus:prep-tophat-v-1': 'TopHat genome indexing step',
-    'encode:wgbs-bismark-alignment-step-v-1,dnanexus:dme-align-se-v-1': 'WGBS Bismark alignment step',
-    'encode:wgbs-bismark-indexing-step-v-1,dnanexus:dme-index-bismark-v-2': 'WGBS Bismark genome indexing step',
+    'encode:wgbs-bismark-alignment-step-v-1': 'WGBS Bismark alignment step',
+    'dnanexus:dme-align-se-v-1': 'WGBS Bismark alignment step',
+    'encode:wgbs-bismark-indexing-step-v-1': 'WGBS Bismark genome indexing step',
+    'dnanexus:dme-index-bismark-v-2': 'WGBS Bismark genome indexing step',
     'encode:wgbs-bismark-quantification-step-v-1': 'WGBS Bismark methylation quantification step',
     'dnanexus:dme-align-pe-v-1': 'WGBS Bismark paired-end alignment step',
     'dnanexus:dme-rep-corr-v-1': 'WGBS Bismark paired-end CpG methylation correlation step',
@@ -552,8 +556,8 @@ title_mapping = {
     'dnanexus:dme-align-se': 'WGBS Bismark single-end alignment step',
     'dnanexus:dme-rep-corr-alt-v-1': 'WGBS Bismark single-end CpG methylation correlation step',
     'dnanexus:dme-extract-se-v-2': 'WGBS Bismark single-end methylation extraction step',
-    'j-michael-cherry:fecdf1f3-6547-41f5-ae38-501437ef8357': 'WGBS Bismark/bowtie1 genome indexing step',
-    'dnanexus:dme-index-bismark-bowtie2-v-2': 'WGBS Bismark/bowtie2 genome indexing step',
+    'j-michael-cherry:fecdf1f3-6547-41f5-ae38-501437ef8357': 'WGBS Bismark bowtie1 genome indexing step',
+    'dnanexus:dme-index-bismark-bowtie2-v-2': 'WGBS Bismark bowtie2 genome indexing step',
     'dnanexus:bigbed-conversion-v-2.6': 'WGBS methylation state to bigbed file conversion step'
 }
 
