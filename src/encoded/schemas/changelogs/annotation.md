@@ -1,5 +1,9 @@
 ## Changelog for annotation.json
 
+### Schema version 13
+
+* *annotation_type* 'candidate regulatory regions' was changed into 'candidate regulatory elements'
+
 ### Schema version 12
 
 * *alternate_accessions* now must match accession format, "ENCSR..." or "TSTSR..."
