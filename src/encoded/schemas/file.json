@@ -74,6 +74,11 @@
                         {
                             "oneOf": [
                                 {
+                                    "not": {
+                                        "required": ["status"]
+                                    }
+                                },
+                                {
                                     "required": ["file_size"],
                                     "properties": {
                                         "status": {
