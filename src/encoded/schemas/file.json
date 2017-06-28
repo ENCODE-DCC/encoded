@@ -742,6 +742,7 @@
                         "methylation state at CHH",
                         "enrichment",
                         "replication timing profile",
+                        "relative replication signal",
                         "maternal variant calls",
                         "paternal variant calls",
                         "phased variant calls",
@@ -894,7 +895,7 @@
             "description": "The experiment or dataset the file belongs to.",
             "comment": "Required. See dataset.json for available identifiers.",
             "type": "string",
-            "linkTo": ["Dataset"]
+            "linkTo": "Dataset"
         },
         "replicate": {
             "title": "Replicate",
@@ -1133,6 +1134,7 @@
         "percentage normalized signal":"signal",
         "summed densities signal": "signal",
         "wavelet-smoothed signal": "signal",
+        "relative replication signal": "signal",
 
         "enrichment": "quantification",
         "library fraction": "quantification",

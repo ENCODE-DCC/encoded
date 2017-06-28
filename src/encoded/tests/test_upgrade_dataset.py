@@ -89,6 +89,17 @@ def annotation_8(award, lab):
 
 
 @pytest.fixture
+def annotation_12(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '12',
+        'annotation_type': 'candidate regulatory regions',
+        'status': 'released'
+    }
+
+
+@pytest.fixture
 def experiment_10(root, experiment):
     item = root.get_by_uuid(experiment['uuid'])
     properties = item.properties.copy()
@@ -250,3 +261,11 @@ def test_bad_dataset_alias_upgrade_10_11(root, upgrader, experiment_10):
     assert 'UCSC_encode_db:Illumina_HiSeq_2000' not in value['aliases']
     for alias in value['aliases']:
         assert len(alias.split(':')) == 2
+
+
+def test_anotation_upgrade_12_13(root, upgrader, annotation_12):
+    value = upgrader.upgrade('annotation',
+                             annotation_12,
+                             current_version='12', target_version='13')
+    assert value['schema_version'] == '13'
+    assert value['annotation_type'] == 'candidate regulatory elements'

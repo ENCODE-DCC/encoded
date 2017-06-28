@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
-import globals from './globals';
+import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
+import pubReferenceList from './reference';
 import { PickerActions } from './search';
-import { pubReferenceList } from './reference';
 import StatusLabel from './statuslabel';
 import { auditDecor } from './audit';
 
@@ -121,7 +121,7 @@ SoftwareComponent.contextTypes = {
 // Note: need to export for Jest tests even though no other module imports it.
 export const Software = auditDecor(SoftwareComponent);
 
-globals.content_views.register(Software, 'Software');
+globals.contentViews.register(Software, 'Software');
 
 
 const SoftwareVersionTable = (props) => {
@@ -211,7 +211,7 @@ ListingComponent.contextTypes = {
 
 const Listing = auditDecor(ListingComponent);
 
-globals.listing_views.register(Listing, 'Software');
+globals.listingViews.register(Listing, 'Software');
 
 
 // Display a list of software versions from the given software_version list. This is meant to be displayed

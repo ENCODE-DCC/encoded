@@ -59,7 +59,7 @@ export default class Home extends React.Component {
         if (this.state.assayCategory === assayCategory) {
             this.setState({ assayCategory: '' });
         } else {
-            this.setState({ assayCategory: assayCategory });
+            this.setState({ assayCategory });
         }
     }
 
@@ -304,7 +304,7 @@ const HomepageChartLoader = (props) => {
     const { query, organisms, assayCategory } = props;
 
     return (
-        <FetchedData ignoreErrors>
+        <FetchedData>
             <Param name="data" url={`/search/${query}`} />
             <ChartGallery organisms={organisms} assayCategory={assayCategory} query={query} />
         </FetchedData>
@@ -402,9 +402,9 @@ class HomepageChart extends React.Component {
                 this.myPieChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: labels,
+                        labels,
                         datasets: [{
-                            data: data,
+                            data,
                             backgroundColor: colors,
                         }],
                     },
@@ -593,9 +593,9 @@ class HomepageChart2 extends React.Component {
                 this.myPieChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: labels,
+                        labels,
                         datasets: [{
-                            data: data,
+                            data,
                             backgroundColor: colors,
                         }],
                     },
@@ -815,9 +815,9 @@ class HomepageChart3 extends React.Component {
                 this.myPieChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: labels, // full labels
+                        labels, // full labels
                         datasets: [{
-                            data: data,
+                            data,
                             backgroundColor: colors,
                         }],
                     },
@@ -832,8 +832,8 @@ class HomepageChart3 extends React.Component {
                         },
                         animation: {
                             duration: 0,
-                            onProgress: function () { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); },
-                            onComplete: function () { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); },
+                            onProgress: function onProgress() { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); },
+                            onComplete: function onComplete() { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); },
                         },
                         scales: {
                             xAxes: [{
@@ -889,8 +889,8 @@ class HomepageChart3 extends React.Component {
         Chart.data.labels = labels;
         Chart.data.datasets[0].backgroundColor = colors;
         Chart.options.hover.mode = false;
-        Chart.options.animation.onProgress = function () { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); };
-        Chart.options.animation.onComplete = function () { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); };
+        Chart.options.animation.onProgress = function onProgress() { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); };
+        Chart.options.animation.onComplete = function onComplete() { drawColumnSelects(selectedAssay, this.chart.ctx, this.data); };
         Chart.update();
     }
 
@@ -957,7 +957,7 @@ class News extends React.Component {
     }
 
     render() {
-        const { items, nodeRef } = this.props;
+        const { items } = this.props;
         if (items && items.length) {
             return (
                 <div ref={(node) => { this.nodeRef = node; }} className="news-listing">
@@ -981,7 +981,6 @@ class News extends React.Component {
 News.propTypes = {
     items: PropTypes.array,
     newsLoaded: PropTypes.func.isRequired, // Called parent once the news is loaded
-    nodeRef: PropTypes.func, // React ref callback so we can get the news-listing DOM element in a higher component
 };
 
 
@@ -989,7 +988,7 @@ News.propTypes = {
 // because we attach `ref` to this, and stateless components don't support that.
 class NewsLoader extends React.Component {
     render() {
-        return <FetchedItems {...this.props} url={`${newsUri}&limit=5`} Component={News} ignoreErrors newsLoaded={this.props.newsLoaded} />;
+        return <FetchedItems {...this.props} url={`${newsUri}&limit=5`} Component={News} newsLoaded={this.props.newsLoaded} />;
     }
 }
 

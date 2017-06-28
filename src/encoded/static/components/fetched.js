@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import globals from './globals';
+import * as globals from './globals';
 
 
 export class Param extends React.Component {
@@ -193,9 +193,9 @@ export class FetchedData extends React.Component {
             // Render whatever error we got back from the server on the page.
             return (
                 <div className="error done">
-                    {errors.map((error) => {
-                        const ErrorView = globals.content_views.lookup(error);
-                        return <ErrorView {...this.props} context={error} />;
+                    {errors.map((error, i) => {
+                        const ErrorView = globals.contentViews.lookup(error);
+                        return <ErrorView key={i} {...this.props} context={error} />;
                     })}
                 </div>
             );
@@ -247,7 +247,7 @@ Items.defaultProps = {
 
 
 export const FetchedItems = props => (
-    <FetchedData ignoreErrors={props.ignoreErrors}>
+    <FetchedData>
         <Param name="data" url={props.url} />
         <Items {...props} />
     </FetchedData>
@@ -255,9 +255,4 @@ export const FetchedItems = props => (
 
 FetchedItems.propTypes = {
     url: PropTypes.string.isRequired,
-    ignoreErrors: PropTypes.bool,
-};
-
-FetchedItems.defaultProps = {
-    ignoreErrors: false,
 };
