@@ -537,6 +537,7 @@ const ChartRenderer = (props) => {
 
     return (
         <div className="award-charts">
+            {console.log(experimentsConfig.labs)}
             <div className="award-chart__group-wrapper">
                 <h2>Assays</h2>
                 {experimentsConfig.labs.length ?
@@ -634,6 +635,34 @@ GenusButtons.defaultProps = {
     selectedOrganisms: [],
 };
 
+
+const ExperimentDate = (props) => {
+    const { experiments } = props;
+    let dateArray;
+    // const experimentsConfig = searchData.experiments;
+    if (experiments && experiments.facets && experiments.facets.length) {
+        const categoryFacet = experiments.facets.find(facet => facet.field === 'month_released');
+        dateArray = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length) ? categoryFacet.terms : [];
+    }
+
+    return (
+        <div>
+            {console.log(dateArray)}
+            <CumulativeGraph />
+        </div>
+    );
+};
+
+ExperimentDate.propTypes = {
+    award: PropTypes.object.isRequired, // Award represented by this chart
+    experiments: PropTypes.object,
+};
+
+ExperimentDate.defaultProps = {
+    experiments: {},
+};
+
+
 // Add the new style class to the selected button when it is clicked
 class OrganismSelector extends React.Component {
     constructor() {
@@ -724,6 +753,23 @@ AwardCharts.propTypes = {
     award: PropTypes.object.isRequired, // Award represented by this chart
 };
 
+class FetchGraphData extends React.Component {
+
+    render() {
+        const { award } = this.props;
+        return (
+            <FetchedData>
+                <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}`} />
+                <ExperimentDate award={award} />
+            </FetchedData>
+        );
+    }
+}
+
+FetchGraphData.propTypes = {
+    award: PropTypes.object.isRequired, // Award represented by this chart
+};
+
 class CumulativeGraph extends React.Component {
 
     componentDidMount() {
@@ -805,7 +851,8 @@ class Award extends React.Component {
                         <h4>Cumulative Number of Experiments</h4>
                     </PanelHeading>
                     <PanelBody>
-                        <CumulativeGraph />
+                        {/* <CumulativeGraph />*/}
+                        <FetchGraphData award={context} />
                     </PanelBody>
                 </Panel>
             </div>
