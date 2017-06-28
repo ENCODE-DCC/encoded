@@ -76,10 +76,15 @@
                                 {
                                     "not": {
                                         "required": ["status"]
+                                    },                                   
+                                    "properties": {                                        
+                                        "no_file_available": {
+                                            "enum": [false]
+                                        }
                                     }
-                                },
+                                },                                    
                                 {
-                                    "required": ["file_size"],
+                                    "required": ["file_size", "status"],
                                     "properties": {
                                         "status": {
                                             "enum": ["in progress",  "revoked", "archived", "released"]
@@ -90,6 +95,7 @@
                                     }
                                 },
                                 {
+                                    "required": ["status"],
                                     "properties": {
                                         "status": {
                                             "enum": ["uploading", "upload failed", "deleted", "replaced", "content error"]
