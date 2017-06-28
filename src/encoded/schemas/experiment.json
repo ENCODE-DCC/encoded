@@ -84,6 +84,14 @@
         "schema_version": {
             "default": "12"
         },
+        "submission_date": {
+            "title": "Submission date" ,
+            "description": "The date that the experiment was submitted.",
+            "comment": "Do not submit. Submission date will be submitted only by DCC personnel.",
+            "type": "string",
+            "format": "date-time",
+            "permission": "import_items"
+        },
         "target": {
             "title": "Target",
             "description": "For assays, such as ChIP-seq or RIP-seq, the name of the gene whose expression or product is under investigation for the experiment.",
