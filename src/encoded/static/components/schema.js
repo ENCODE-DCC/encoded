@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import marked from 'marked';
-import fetched from './fetched';
+import { Param, FetchedData } from './fetched';
 import * as globals from './globals';
 
 
@@ -54,10 +54,10 @@ const SchemaPage = (props) => {
                     <pre>{JSON.stringify(context, null, 4)}</pre>
                 </div>
             </section>
-            {changelog && <fetched.FetchedData>
-                <fetched.Param name="source" url={changelog} type="text" />
+            {changelog && <FetchedData>
+                <Param name="source" url={changelog} type="text" />
                 <ChangeLog />
-            </fetched.FetchedData>}
+            </FetchedData>}
         </div>
     );
 };
