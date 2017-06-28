@@ -13,7 +13,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "email": {
             "title": "Email",
@@ -125,4 +125,5 @@
     "boost_values": {
         "title": 1.0
     }
+
 }

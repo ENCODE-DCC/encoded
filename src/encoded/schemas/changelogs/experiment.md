@@ -1,5 +1,14 @@
 ## Changelog for experiment.json
 
+### Schema version 12
+
+* *alternate_accessions* now must match accession format, "ENCSR..." or "TSTSR..."
+
+### Schema version 11
+
+* *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
+* unsafe characters such as " # @ % ^ & | ~ ; ` [ ] { } and consecutive whitespaces will no longer be allowed in the alias
+
 ### Schema version 10
 
 * *assay_term_name* is now a required property

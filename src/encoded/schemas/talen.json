@@ -31,7 +31,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "name": {
             "title": "Construct name",
@@ -72,7 +72,9 @@
         "RVD_sequence": {
             "title": "RVD sequence",
             "description": "The repeat variable diresidue sequence. E.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
+            "comment": "The permissions are switched to DCC only, to prevent submission of these objects. We are in a process of migrating these objects to genetic modification.",
             "type": "string",
+            "permission": "import_items",
             "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
         },
         "target_sequence": {
@@ -215,5 +217,7 @@
             "title": "Genome assembly",
             "description": "The GRC genome assembly to which the target coordinates relate.  E.g. GRCh38"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/talen.md"
+
 }

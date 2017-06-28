@@ -1,6 +1,29 @@
 ## Changelog for file.json
 
+### Schema version 11
+
+* *alternate_accessions* now must match accession format, "ENCFF..." or "TSTFF..."
+* *no_file_available* field was added. The DCC will post this boolean field. Files with no_files_available = true will not be required to specify md5sum and file_size values.
+* *revoke_detail* was added.  The DCC will post this field. The goal is to mkae the reason for file revoke clear.:
+
+        "revoke_detail": {
+            "title": "Revoke error detail",
+            "description": "Explanation of why the file was revoked.",
+            "comment": "Do not submit. The field would be posted by DCC.",
+            "type": "string",
+            "permission": "import_items"
+        }
+#### Formats and enums are more restrictive for several fields:
+
+* *output_type* values ["predicted forebrain enhancers", "predicted heart enhancers", "predicted whole brain enhancers", "sequence alignability",] added to the list of values that could be submitted only by DCC personnel
+* *revoke_detail* is available only for files with status = revoked
+
 ### Schema version 10
+
+* *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
+* unsafe characters such as " # @ % ^ & | ~ ; ` [ ] { } and consecutive whitespaces will no longer be allowed in the alias
+
+### Schema version 9.a
 
 #### Fields restricted to DCC access only:
 * *status*

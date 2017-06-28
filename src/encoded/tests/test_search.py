@@ -638,36 +638,3 @@ def test_format_facets_skips_single_bucket_facets():
         es_result, facets, used_filters, schemas, total, principals)
 
     assert result == []
-
-
-def test_format_facets_adds_pseudo_facet_for_extra_filters():
-    from encoded.search import format_facets
-    es_result = {
-        'aggregations': {},
-    }
-    facets = []
-    used_filters = {
-        'title': ['titlevalue'],
-    }
-    schemas = [{
-        'properties': {
-            'title': {
-                'title': 'Title',
-            },
-        },
-    }]
-    total = 42
-    principals = []
-    result = format_facets(
-        es_result, facets, used_filters, schemas, total, principals)
-
-    assert result == [{
-        'field': 'title',
-        'title': 'Title',
-        'terms': [
-            {
-                'key': 'titlevalue',
-            },
-        ],
-        'total': 42,
-    }]

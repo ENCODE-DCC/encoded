@@ -19,7 +19,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "sample size": {
             "title": "Sample size",
@@ -102,5 +102,7 @@
                 }
             }
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/complexity_xcorr_quality_metric.md"
+
 }

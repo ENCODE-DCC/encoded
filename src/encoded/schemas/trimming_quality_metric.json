@@ -19,7 +19,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "PE read-pairs processed": {
             "title": "PE read-pairs processed",
@@ -41,5 +41,7 @@
             "type": "number",
             "description": "Total number (single-end) reads trimmed"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/trimming_quality_metric.md"
+
 }

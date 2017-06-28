@@ -19,7 +19,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "pre-filter all reads": {
             "title": "Total reads after filtering",
@@ -41,5 +41,7 @@
             "type": "number",
             "description": "Count of mapped reads after filtering"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/filtering_quality_metric.md"
+
 }

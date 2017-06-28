@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import DataColors from './datacolors';
 import { FetchedData, Param } from './fetched';
-import globals from './globals';
+import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { PickerActions } from './search';
 import StatusLabel from './statuslabel';
@@ -74,7 +74,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
             const chart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: labels,
+                    labels,
                     datasets: [{
                         data: values,
                         backgroundColor: colors,
@@ -106,7 +106,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                         text.push('</ul>');
                         return text.join('');
                     },
-                    onClick: function (e) {
+                    onClick: function onClick(e) {
                         // React to clicks on pie sections
                         const activePoints = chart.getElementAtEvent(e);
 
@@ -562,7 +562,7 @@ const AwardCharts = (props) => {
                 <ProjectBadge award={award} addClasses="badge-heading" />
             </PanelHeading>
             <PanelBody>
-                <FetchedData ignoreErrors>
+                <FetchedData>
                     <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}`} />
                     <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}`} />
                     <ChartRenderer award={award} />
@@ -624,7 +624,7 @@ Award.propTypes = {
     context: PropTypes.object.isRequired, // Award object being rendered
 };
 
-globals.content_views.register(Award, 'Award');
+globals.contentViews.register(Award, 'Award');
 
 
 const Listing = (props) => {
@@ -653,4 +653,4 @@ Listing.propTypes = {
     context: PropTypes.object.isRequired, // Object whose search result we're displaying
 };
 
-globals.listing_views.register(Listing, 'Award');
+globals.listingViews.register(Listing, 'Award');

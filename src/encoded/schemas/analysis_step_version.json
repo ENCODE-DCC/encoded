@@ -17,7 +17,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "version": {
             "title": "Version",
@@ -42,5 +42,6 @@
                 "linkTo": "SoftwareVersion"
             }
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/analysis_step_version.md"
 }

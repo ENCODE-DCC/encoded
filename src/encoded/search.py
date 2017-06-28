@@ -579,23 +579,6 @@ def format_facets(es_results, facets, used_filters, schemas, total, principals):
             'terms': terms,
             'total': aggregations[agg_name]['doc_count']
         })
-
-    # Show any filters that aren't facets as a fake facet with one entry,
-    # so that the filter can be viewed and removed
-    for field, values in used_filters.items():
-        if field not in used_facets and field.rstrip('!') not in exists_facets:
-            title = field
-            for schema in schemas:
-                if field in schema['properties']:
-                    title = schema['properties'][field].get('title', field)
-                    break
-            result.append({
-                'field': field,
-                'title': title,
-                'terms': [{'key': v} for v in values],
-                'total': total,
-                })
-
     return result
 
 

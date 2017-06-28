@@ -31,7 +31,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "document_type": {
             "title": "Type",
@@ -139,5 +139,6 @@
         "lab.institute_name": 1.0,
         "lab.institute_label": 1.0,
         "lab.title": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/document.md"
 }

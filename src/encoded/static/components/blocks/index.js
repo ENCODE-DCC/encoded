@@ -1,8 +1,13 @@
-'use strict';
+import FallbackBlockEdit from './fallback';
+import RichTextBlockView from './richtext';
+import ItemBlockView from './item';
+import SearchBlockEdit from './search';
+import './teaser';
 
-require('./fallback');
-require('./richtext');
-require('./item');
-require('./search');
-require('./teaser');
-require('./homepage_summary');
+
+export {
+    FallbackBlockEdit,
+    RichTextBlockView,
+    ItemBlockView,
+    SearchBlockEdit
+};

@@ -150,6 +150,7 @@ def dataset_6_7(value, system):
 @upgrade_step('reference', '7', '8')
 @upgrade_step('project', '7', '8')
 @upgrade_step('publication_data', '7', '8')
+@upgrade_step('matched_set', '7', '8')
 @upgrade_step('ucsc_browser_composite', '7', '8')
 @upgrade_step('organism_development_series', '7', '8')
 @upgrade_step('reference_epigenome', '7', '8')
@@ -187,6 +188,7 @@ def dataset_7_8(value, system):
 @upgrade_step('annotation', '8', '9')
 @upgrade_step('reference', '8', '9')
 @upgrade_step('project', '8', '9')
+@upgrade_step('matched_set', '8', '9')
 @upgrade_step('publication_data', '8', '9')
 @upgrade_step('ucsc_browser_composite', '8', '9')
 @upgrade_step('organism_development_series', '8', '9')
@@ -225,6 +227,7 @@ def dataset_8_9(value, system):
 @upgrade_step('annotation', '9', '10')
 @upgrade_step('reference', '9', '10')
 @upgrade_step('project', '9', '10')
+@upgrade_step('matched_set', '9', '10')
 @upgrade_step('publication_data', '9', '10')
 @upgrade_step('ucsc_browser_composite', '9', '10')
 @upgrade_step('organism_development_series', '9', '10')
@@ -255,3 +258,28 @@ def dataset_9_10(value, system):
     # http://redmine.encodedcc.org/issues/2491
     if 'assay_term_id' in value:
         del value['assay_term_id']
+
+
+@upgrade_step('experiment', '11', '12')
+@upgrade_step('annotation', '11', '12')
+@upgrade_step('matched_set', '11', '12')
+@upgrade_step('project', '11', '12')
+@upgrade_step('publication_data', '11', '12')
+@upgrade_step('reference', '11', '12')
+@upgrade_step('reference_epigenome', '11', '12')
+@upgrade_step('organism_development_series', '11', '12')
+@upgrade_step('replication_timing_series', '11', '12')
+@upgrade_step('treatment_time_series', '11', '12')
+@upgrade_step('treatment_concentration_series', '11', '12')
+@upgrade_step('ucsc_browser_composite', '11', '12')
+def dataset_11_12(value, system):
+    # http://redmine.encodedcc.org/issues/5049
+    return
+
+
+@upgrade_step('annotation', '12', '13')
+def dataset_12_13(value, system):
+    # http://redmine.encodedcc.org/issues/5178
+    annotation_type = value.get('annotation_type')
+    if annotation_type and annotation_type == 'candidate regulatory regions':
+        value['annotation_type'] = 'candidate regulatory elements'

@@ -18,7 +18,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "name": {
             "title": "Name",
@@ -124,6 +124,7 @@
                     "methylation state at CHH",
                     "enrichment",
                     "replication timing profile",
+                    "relative replication signal",
                     "maternal variant calls",
                     "paternal variant calls",
                     "phased variant calls",
@@ -231,6 +232,7 @@
                     "methylation state at CHH",
                     "enrichment",
                     "replication timing profile",
+                    "relative replication signal",
                     "maternal variant calls",
                     "paternal variant calls",
                     "phased variant calls",
@@ -311,5 +313,6 @@
                 "linkTo": "AnalysisStep"
             }
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/analysis_step.md"
 }
