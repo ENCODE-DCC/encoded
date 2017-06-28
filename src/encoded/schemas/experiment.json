@@ -89,7 +89,7 @@
             "description": "The date that the experiment was submitted.",
             "comment": "Do not submit. Submission date will be submitted only by DCC personnel.",
             "type": "string",
-            "format": "date-time",
+            "format": "date",
             "permission": "import_items"
         },
         "target": {
