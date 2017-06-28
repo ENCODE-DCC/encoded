@@ -1,4 +1,3 @@
-'use strict';
 // This module displays a table that can be sorted by any column. You can set one up for display with:
 //     <SortTablePanel>
 //         <SortTable list={array of objects} columns={object describing table columns} meta={table-specific data} />
@@ -58,98 +57,136 @@
 //                         list, columns, and meta that <SortTable> itself gets.
 // }
 
-var React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
-var _ = require('underscore');
-var moment = require('moment');
-var panel = require('../libs/bootstrap/panel');
-
-var {Panel, PanelHeading} = panel;
+import { Panel, PanelHeading } from '../libs/bootstrap/panel';
 
 
 // Required sortable table wrapper component. Takes no parameters but puts the table in a Bootstrap panel
 // and makes it responsive. You can place multiple <SortTable />s as children of this component.
-var SortTablePanel = module.exports.SortTablePanel = createReactClass({
-    propTypes: {
-        // Note: `title` overrides `header`
-        title: PropTypes.oneOfType([ // Title to display in table panel header
-            PropTypes.string, // When title is a simple string
-            PropTypes.object // When title is JSX
-        ]),
-        header: PropTypes.object, // React component to render inside header
-        noDefaultClasses: PropTypes.bool // T to skip default <Panel> classes
-    },
+export const SortTablePanel = (props) => {
+    const { title, header, noDefaultClasses } = props;
 
-    render: function() {
-        var {title, header, noDefaultClasses} = this.props;
+    return (
+        <Panel addClasses={`table-file + ${noDefaultClasses ? '' : ' table-panel'}`} noDefaultClasses={noDefaultClasses}>
+            {title ?
+                <PanelHeading key="heading">
+                    <h4>{title ? <span>{props.title}</span> : null}</h4>
+                </PanelHeading>
+            : (header ?
+                <PanelHeading key="heading" addClasses="clearfix">{props.header}</PanelHeading>
+            : null)}
 
-        return (
-            <Panel addClasses={'table-file' + (noDefaultClasses ? '' : ' table-panel')} noDefaultClasses={noDefaultClasses}>
-                {this.props.title ?
-                    <PanelHeading key="heading">
-                        <h4>{this.props.title ? <span>{this.props.title}</span> : null}</h4>
-                    </PanelHeading>
-                : (this.props.header ?
-                    <PanelHeading key="heading" addClasses="clearfix">{this.props.header}</PanelHeading>
-                : null)}
-
-                <div className="table-responsive" key="table">
-                    {this.props.children}
-                </div>
-            </Panel>
-        );
-    }
-});
-
-
-var SortTableComponent = module.exports.SortTableComponent = createReactClass({
-    propTypes: {
-        // Note: `title` overrides `header`
-        title: PropTypes.oneOfType([ // Title to display in table panel header
-            PropTypes.string, // When title is a simple string
-            PropTypes.object // When title is JSX
-        ]),
-        header: PropTypes.object // React component to render inside header
-    },
-
-    render: function() {
-        return (
-            <div className="tableFiles">
-                {this.props.title ?
-                    <PanelHeading key="heading">
-                        <h4>{this.props.title ? <span>{this.props.title}</span> : null}</h4>
-                    </PanelHeading>
-                : (this.props.header ?
-                    <PanelHeading key="heading" addClasses="clearfix">{this.props.header}</PanelHeading>
-                : null)}
-
-                <div className="table-responsive" key="table">
-                    {this.props.children}
-                </div>
+            <div className="table-responsive" key="table">
+                {props.children}
             </div>
+        </Panel>
+    );
+};
+
+SortTablePanel.propTypes = {
+    // Note: `title` overrides `header`
+    title: PropTypes.oneOfType([ // Title to display in table panel header
+        PropTypes.string, // When title is a simple string
+        PropTypes.object, // When title is JSX
+    ]),
+    header: PropTypes.object, // React component to render inside header
+    noDefaultClasses: PropTypes.bool, // T to skip default <Panel> classes
+    children: PropTypes.node, // Table components within a SortTablePanel
+};
+
+SortTablePanel.defaultProps = {
+    title: '',
+    header: null,
+    noDefaultClasses: false,
+    children: null,
+};
+
+
+const SortTableComponent = props => (
+    <div className="tableFiles">
+        {props.title ?
+            <PanelHeading key="heading">
+                <h4>{props.title ? <span>{props.title}</span> : null}</h4>
+            </PanelHeading>
+        : (props.header ?
+            <PanelHeading key="heading" addClasses="clearfix">{props.header}</PanelHeading>
+        : null)}
+
+        <div className="table-responsive" key="table">
+            {props.children}
+        </div>
+    </div>
+);
+
+SortTableComponent.propTypes = {
+    // Note: `title` overrides `header`
+    title: PropTypes.oneOfType([ // Title to display in table panel header
+        PropTypes.string, // When title is a simple string
+        PropTypes.object, // When title is JSX
+    ]),
+    header: PropTypes.object, // React component to render inside header
+    children: PropTypes.node,
+};
+
+SortTableComponent.defaultProps = {
+    title: null,
+    header: null,
+    children: null,
+};
+
+
+// Mostly this is a click handler for the column sorting direction icon. It ties the ID of the
+// clicked header to the parent's click handler.
+class ColumnSortDir extends React.Component {
+    constructor() {
+        super();
+
+        // Bind this to non-React methods.
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    // Called when the column sort direction icon gets clicked. Passes it up to the parent component
+    // along with the ID of the column the icon belongs to.
+    handleClick() {
+        this.props.sortDir(this.props.columnId);
+    }
+
+    render() {
+        const { columnId, thClass, title, columnClass } = this.props;
+
+        return (
+            <th key={columnId} className={thClass} onClick={this.handleClick}>
+                <span>{title}<i className={columnClass} /></span>
+            </th>
         );
     }
-});
+}
+
+ColumnSortDir.propTypes = {
+    sortDir: PropTypes.func.isRequired, // Parent function to handle the sorting-direction click
+    columnId: PropTypes.string.isRequired, // ID of the column containing the sort-direction icon
+    thClass: PropTypes.string, // CSS class for the column header <th>
+    title: PropTypes.oneOfType([ // Title to display in table header
+        PropTypes.string, // When title is a simple string
+        PropTypes.object, // When title is JSX
+    ]),
+    columnClass: PropTypes.string, // CSS class for the sorting icon; pointing up, down, or both
+};
+
+ColumnSortDir.defaultProps = {
+    thClass: '',
+    title: null,
+    columnClass: '',
+};
 
 
 // Displays one table within a <SortTablePanel></SortTablePanel>.
-var SortTable = module.exports.SortTable = createReactClass({
-    propTypes: {
-        title: PropTypes.oneOfType([ // Title to display in table header
-            PropTypes.string, // When title is a simple string
-            PropTypes.object // When title is JSX
-        ]),
-        list: PropTypes.array, // Array of objects to display in the table
-        columns: PropTypes.object.isRequired, // Defines the columns of the table
-        rowClasses: PropTypes.func, // If provided, gets called for each row of table to generate per-row CSS classes
-        sortColumn: PropTypes.string, // ID of column to sort by default; first column if not given
-        footer: PropTypes.object, // Optional component to display in the footer
-        collapsed: PropTypes.bool // T if only title bar should be displayed
-    },
+export class SortTable extends React.Component {
+    constructor(props) {
+        super(props);
 
-    getInitialState: function() {
-        var sortColumn;
+        let sortColumn;
 
         // Get the given sort column ID, or the default (first key in columns object) if none given
         if (this.props.sortColumn) {
@@ -158,28 +195,35 @@ var SortTable = module.exports.SortTable = createReactClass({
             sortColumn = Object.keys(this.props.columns)[0];
         }
 
-        return {
-            sortColumn: sortColumn, // ID of currently sorting column
-            reversed: false // True if sorting of current sort column is reversed
+        // Set initial React state.
+        this.state = {
+            sortColumn, // ID of currently sorting column
+            reversed: false, // True if sorting of current sort column is reversed
         };
-    },
+
+        // Bind this to non-React methods.
+        this.sortDir = this.sortDir.bind(this);
+        this.sortColumn = this.sortColumn.bind(this);
+    }
 
     // Handle clicks in the column headers for sorting columns
-    sortDir: function(column) {
-        var reversed = column === this.state.sortColumn ? !this.state.reversed : false;
-        this.setState({sortColumn: column, reversed: reversed});
-    },
+    sortDir(column) {
+        const reversed = column === this.state.sortColumn ? !this.state.reversed : false;
+        this.setState({ sortColumn: column, reversed });
+    }
 
     // Called when any column needs sorting. If the column has a sorter function, call it
     // to handle its sorting. Otherwise assume the values can be retrieved from the currently sorted column ID.
-    sortColumn: function(a, b) {
-        var columnId = this.state.sortColumn;
-        var sorter = this.props.columns[columnId].sorter;
+    sortColumn(a, b) {
+        const columnId = this.state.sortColumn;
+        const sorter = this.props.columns[columnId].sorter;
 
         if (sorter !== false) {
-            var aVal, bVal, result;
-            var objSorter = this.props.columns[columnId].objSorter;
-            var getValue = this.props.columns[columnId].getValue;
+            let aVal;
+            let bVal;
+            let result;
+            const objSorter = this.props.columns[columnId].objSorter;
+            const getValue = this.props.columns[columnId].getValue;
 
             // If the columns for this column has `getValue` defined, use it to get the cell's value. Otherwise
             // just get it from the passed objects directly.
@@ -196,37 +240,34 @@ var SortTable = module.exports.SortTable = createReactClass({
                 result = sorter(aVal, bVal);
             } else if (objSorter) {
                 result = objSorter(a, b);
+            } else if (aVal && bVal) {
+                result = aVal > bVal ? 1 : -1;
             } else {
-                if (aVal && bVal) {
-                    result = aVal > bVal ? 1 : -1;
-                } else {
-                    result = aVal ? -1 : (bVal ? 1 : 0);
-                }
+                result = aVal ? -1 : (bVal ? 1 : 0);
             }
             return this.state.reversed ? -result : result;
         }
 
         // Column doesn't sort
         return 0;
-    },
+    }
 
-    render: function() {
-        var {list, columns, rowClasses, meta} = this.props;
-        var columnIds = Object.keys(columns);
-        var hiddenColumns = {};
-        var hiddenCount = 0;
-        var widthStyle = {};
+    render() {
+        const { list, columns, rowClasses, meta } = this.props;
+        const columnIds = Object.keys(columns);
+        const hiddenColumns = {};
+        let hiddenCount = 0;
 
         // See if any columns hidden by making an array keyed by column ID that's true for each hidden column.
         // Also keep a count of hidden columns so we can calculate colspan later.
-        columnIds.forEach(columnId => {
-            var hidden = !!(columns[columnId].hide && columns[columnId].hide(list, columns, meta));
+        columnIds.forEach((columnId) => {
+            const hidden = !!(columns[columnId].hide && columns[columnId].hide(list, columns, meta));
             hiddenColumns[columnId] = hidden;
             hiddenCount += hidden ? 1 : 0;
         });
 
         // Calculate the colspan for the table
-        var colCount = columnIds.length - hiddenCount;
+        const colCount = columnIds.length - hiddenCount;
 
         // Now display the table, but only if we were passed a non-empty list
         if (list && list.length) {
@@ -238,23 +279,19 @@ var SortTable = module.exports.SortTable = createReactClass({
 
                         {!this.props.collapsed ?
                             <tr key="header">
-                                {columnIds.map(columnId => {
+                                {columnIds.map((columnId) => {
                                     if (!hiddenColumns[columnId]) {
-                                        var columnClass;
+                                        let columnClass;
 
                                         if (columns[columnId].sorter !== false) {
                                             columnClass = columnId === this.state.sortColumn ? (this.state.reversed ? 'tcell-desc' : 'tcell-asc') : 'tcell-sort';
                                         } else {
                                             columnClass = null;
                                         }
-                                        var title = (typeof columns[columnId].title === 'function') ? columns[columnId].title(list, columns, meta) : columns[columnId].title;
-                                        var thClass = (columns[columnId].sorter !== false) ? 'tcell-sortable' : null;
+                                        const title = (typeof columns[columnId].title === 'function') ? columns[columnId].title(list, columns, meta) : columns[columnId].title;
+                                        const thClass = (columns[columnId].sorter !== false) ? 'tcell-sortable' : null;
 
-                                        return (
-                                            <th key={columnId} className={thClass} onClick={this.sortDir.bind(null, columnId)}>
-                                                <span>{title}<i className={columnClass}></i></span>
-                                            </th>
-                                        );
+                                        return <ColumnSortDir key={columnId} sortDir={this.sortDir} columnId={columnId} thClass={thClass} title={title} columnClass={columnClass} />;
                                     }
 
                                     // Column hidden
@@ -267,17 +304,17 @@ var SortTable = module.exports.SortTable = createReactClass({
                     {!this.props.collapsed ?
                         <tbody>
                             {list.sort(this.sortColumn).map((item, i) => {
-                                let rowClassStr = rowClasses ? rowClasses(item, i) : '';
+                                const rowClassStr = rowClasses ? rowClasses(item, i) : '';
                                 return (
                                     <tr key={i} className={rowClassStr}>
-                                        {columnIds.map(columnId => {
+                                        {columnIds.map((columnId) => {
                                             if (!hiddenColumns[columnId]) {
                                                 if (columns[columnId].display) {
                                                     return <td key={columnId}>{columns[columnId].display(item, meta)}</td>;
                                                 }
 
                                                 // No custom display function; just display the standard way
-                                                var itemValue = columns[columnId].getValue ? columns[columnId].getValue(item, meta) : item[columnId];
+                                                const itemValue = columns[columnId].getValue ? columns[columnId].getValue(item, meta) : item[columnId];
                                                 return (
                                                     <td key={columnId}>{itemValue}</td>
                                                 );
@@ -294,7 +331,7 @@ var SortTable = module.exports.SortTable = createReactClass({
 
                     <tfoot>
                         <tr>
-                            <td className={'file-table-footer' + (this.props.collapsed ? ' hiding' : '')} colSpan={colCount}>
+                            <td className={`file-table-footer${this.props.collapsed ? ' hiding' : ''}`} colSpan={colCount}>
                                 {this.props.footer}
                             </td>
                         </tr>
@@ -306,4 +343,28 @@ var SortTable = module.exports.SortTable = createReactClass({
         // Empty list; render nothing.
         return null;
     }
-});
+}
+
+SortTable.propTypes = {
+    title: PropTypes.oneOfType([ // Title to display in table header
+        PropTypes.string, // When title is a simple string
+        PropTypes.object, // When title is JSX
+    ]),
+    meta: PropTypes.object, // Extra information to display items.
+    list: PropTypes.array, // Array of objects to display in the table
+    columns: PropTypes.object.isRequired, // Defines the columns of the table
+    rowClasses: PropTypes.func, // If provided, gets called for each row of table to generate per-row CSS classes
+    sortColumn: PropTypes.string, // ID of column to sort by default; first column if not given
+    footer: PropTypes.object, // Optional component to display in the footer
+    collapsed: PropTypes.bool, // T if only title bar should be displayed
+};
+
+SortTable.defaultProps = {
+    title: null,
+    meta: null,
+    list: null,
+    rowClasses: null,
+    sortColumn: '',
+    footer: null,
+    collapsed: false,
+};
