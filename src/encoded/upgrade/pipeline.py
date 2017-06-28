@@ -22,6 +22,9 @@ def pipeline_2_3(value, system):
     elif value.get('accession') == 'ENCPL521QAX':
         value['status'] = 'deleted'
 
+    # Patch applied to upgrade pipeline objects in http://redmine.encodedcc.org/issues/3093#note-14
+    # can be found in ./upgrade_data/pipeline_2_to_3_patch.json
+
 
 @upgrade_step('pipeline', '3', '4')
 def pipeline_3_4(value, system):

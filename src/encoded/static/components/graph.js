@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
 import _ from 'underscore';
 import { Panel } from '../libs/bootstrap/panel';
 import { BrowserFeat } from './browserfeat';
@@ -154,21 +153,79 @@ export class JsonGraph {
 }
 
 
-export const Graph = createReactClass({
-    propTypes: {
-        graph: PropTypes.object, // JSON graph object to render
-        nodeClickHandler: PropTypes.func, // Function to call to handle clicks in a node
-        noDefaultClasses: PropTypes.bool, // True to supress default CSS classes on <Panel> components
-        children: PropTypes.node,
-    },
+export class Graph extends React.Component {
+    // Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
+    // jsonGraph: JsonGraph object containing nodes and edges.
+    // graph: Initialized empty Dagre-D3 graph.
+    static convertGraph(jsonGraph, graph) {
+        // graph: dagre graph object
+        // parent: JsonGraph node to insert nodes into
+        function convertGraphInner(subgraph, parent) {
+            // For each node in parent node (or top-level graph)
+            parent.nodes.forEach((node) => {
+                subgraph.setNode(node.id, {
+                    label: node.label.length > 1 ? node.label : node.label[0],
+                    rx: node.metadata.cornerRadius,
+                    ry: node.metadata.cornerRadius,
+                    class: node.metadata.cssClass,
+                    shape: node.metadata.shape,
+                    paddingLeft: '20',
+                    paddingRight: '20',
+                    paddingTop: '10',
+                    paddingBottom: '10',
+                    subnodes: node.subnodes,
+                });
+                if (!parent.root) {
+                    subgraph.setParent(node.id, parent.id);
+                }
+                if (node.nodes.length) {
+                    convertGraphInner(subgraph, node);
+                }
+            });
+        }
 
-    getInitialState: () => ({
-        dlDisabled: false, // Download button disabled because of IE
-        verticalGraph: false, // True for vertically oriented graph, false for horizontal
-        zoomLevel: null, // Graph zoom level; null to indicate not set
-    }),
+        // Convert the nodes
+        convertGraphInner(graph, jsonGraph);
 
-    componentDidMount: function () {
+        // Convert the edges
+        jsonGraph.edges.forEach((edge) => {
+            graph.setEdge(edge.source, edge.target, { lineInterpolate: 'basis' });
+        });
+    }
+
+    constructor() {
+        super();
+
+        // Set initial React component state.
+        this.state = {
+            dlDisabled: false, // Download button disabled because of IE
+            verticalGraph: false, // True for vertically oriented graph, false for horizontal
+            zoomLevel: null, // Graph zoom level; null to indicate not set
+        };
+
+        // Component state variables we don't want to cause a rerender
+        this.cv = {
+            viewBoxWidth: 0, // Width of the SVG's viewBox
+            viewBoxHeight: 0, // Height of the SVG's viewBox
+            aspectRatio: 0, // Aspect ratio of graph -- width:height
+            zoomMouseDown: false, // Mouse currently controlling zoom slider
+            dagreLoaded: false, // Dagre JS library has been loaded
+            zoomFactor: 0, // Amount zoom slider value changes should change width of graph
+        };
+
+        // Bind `this` to non-React methods.
+        this.setInitialZoomLevel = this.setInitialZoomLevel.bind(this);
+        this.drawGraph = this.drawGraph.bind(this);
+        this.bindClickHandlers = this.bindClickHandlers.bind(this);
+        this.handleOrientationClick = this.handleOrientationClick.bind(this);
+        this.handleDlClick = this.handleDlClick.bind(this);
+        this.rangeChange = this.rangeChange.bind(this);
+        this.rangeMouseDown = this.rangeMouseDown.bind(this);
+        this.rangeMouseUp = this.rangeMouseUp.bind(this);
+        this.rangeDoubleClick = this.rangeDoubleClick.bind(this);
+    }
+
+    componentDidMount() {
         if (BrowserFeat.getBrowserCaps('svg')) {
             // Delay loading dagre for Jest testing compatibility;
             // Both D3 and Jest have their own conflicting JSDOM instances
@@ -218,10 +275,10 @@ export const Graph = createReactClass({
         if (BrowserFeat.getBrowserCaps('uaTrident') || BrowserFeat.getBrowserCaps('uaEdge')) {
             this.setState({ dlDisabled: true });
         }
-    },
+    }
 
     // State change; redraw the graph
-    componentDidUpdate: function () {
+    componentDidUpdate() {
         if (this.dagreD3 && !this.cv.zoomMouseDown) {
             const el = this.refs.graphdisplay; // Change in React 0.14
             const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el);
@@ -241,13 +298,13 @@ export const Graph = createReactClass({
             this.cv.viewBoxWidth = viewBoxWidth;
             this.cv.viewBoxHeight = viewBoxHeight;
         }
-    },
+    }
 
     // For the given container element and its svg, calculate an initial zoom level that fits the
     // graph into the container element. Returns the zoom level appropriate for the initial zoom.
     // Also sets component variables for later zoom calculations, and sets the "width" and "height"
     // of the SVG to scale it to fit the container element.
-    setInitialZoomLevel: function (el, svg) {
+    setInitialZoomLevel(el, svg) {
         let svgWidth;
         let svgHeight;
         const viewBox = svg.attr('viewBox').split(' ');
@@ -274,52 +331,13 @@ export const Graph = createReactClass({
         const zoomLevel = (svgWidth - this.cv.minZoomWidth) / this.cv.zoomFactor;
         svg.attr('width', svgWidth).attr('height', svgHeight);
         return zoomLevel;
-    },
-
-    // Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
-    // jsonGraph: JsonGraph object containing nodes and edges.
-    // graph: Initialized empty Dagre-D3 graph.
-    convertGraph: function (jsonGraph, graph) {
-        // graph: dagre graph object
-        // parent: JsonGraph node to insert nodes into
-        function convertGraphInner(subgraph, parent) {
-            // For each node in parent node (or top-level graph)
-            parent.nodes.forEach((node) => {
-                subgraph.setNode(node.id, {
-                    label: node.label.length > 1 ? node.label : node.label[0],
-                    rx: node.metadata.cornerRadius,
-                    ry: node.metadata.cornerRadius,
-                    class: node.metadata.cssClass,
-                    shape: node.metadata.shape,
-                    paddingLeft: '20',
-                    paddingRight: '20',
-                    paddingTop: '10',
-                    paddingBottom: '10',
-                    subnodes: node.subnodes,
-                });
-                if (!parent.root) {
-                    subgraph.setParent(node.id, parent.id);
-                }
-                if (node.nodes.length) {
-                    convertGraphInner(subgraph, node);
-                }
-            });
-        }
-
-        // Convert the nodes
-        convertGraphInner(graph, jsonGraph);
-
-        // Convert the edges
-        jsonGraph.edges.forEach((edge) => {
-            graph.setEdge(edge.source, edge.target, { lineInterpolate: 'basis' });
-        });
-    },
+    }
 
     // Draw the graph on initial draw as well as on state changes. An <svg> element to draw into
     // must already exist in the HTML element in the el parm. This also sets the viewBox of the
     // SVG to its natural height. eslint exception for dagreD3.render call.
     /* eslint new-cap: ["error", { "newIsCap": false }] */
-    drawGraph: function (el) {
+    drawGraph(el) {
         const d3 = this.d3;
         const dagreD3 = this.dagreD3;
         d3.selectAll('svg#pipeline-graph > *').remove(); // http://stackoverflow.com/questions/22452112/nvd3-clear-svg-before-loading-new-chart#answer-22453174
@@ -335,7 +353,7 @@ export const Graph = createReactClass({
         const render = new dagreD3.render();
 
         // Convert from given node architecture to the dagre nodes and edges
-        this.convertGraph(this.props.graph, g);
+        Graph.convertGraph(this.props.graph, g);
 
         // Run the renderer. This is what draws the final graph.
         render(svg, g);
@@ -362,10 +380,10 @@ export const Graph = createReactClass({
         }
 
         // Return the SVG so callers can do more with this after drawing the unscaled graph
-        return { viewBoxWidth: viewBoxWidth, viewBoxHeight: viewBoxHeight };
-    },
+        return { viewBoxWidth, viewBoxHeight };
+    }
 
-    bindClickHandlers: function (d3, el) {
+    bindClickHandlers(d3, el) {
         // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
         const svg = d3.select(el);
         const nodes = svg.selectAll('g.node');
@@ -378,13 +396,13 @@ export const Graph = createReactClass({
             d3.event.stopPropagation();
             this.props.nodeClickHandler(subnode.id);
         });
-    },
+    }
 
-    handleOrientationClick: function () {
+    handleOrientationClick() {
         this.setState({ verticalGraph: !this.state.verticalGraph });
-    },
+    }
 
-    handleDlClick: function () {
+    handleDlClick() {
         // Collect CSS styles that apply to the graph and insert them into the given SVG element
         function attachStyles(el) {
             let stylesText = '';
@@ -441,7 +459,7 @@ export const Graph = createReactClass({
         img.src = `data:image/svg+xml;base64,${window.btoa(svgXml)}`;
 
         // Once the svg is loaded into the image (purely in memory, not in DOM), draw it into a <canvas>
-        img.onload = function () {
+        img.onload = function onload() {
             // Make a new memory-based canvas and draw the image into it.
             const canvas = document.createElement('canvas');
             canvas.width = img.width;
@@ -457,9 +475,9 @@ export const Graph = createReactClass({
             document.body.appendChild(a);
             a.click();
         }.bind(this);
-    },
+    }
 
-    rangeChange: function (e) {
+    rangeChange(e) {
         // Called when the user clicks/drags the zoom slider; value comes from the slider 0-100
         const value = e.target.value;
 
@@ -474,38 +492,28 @@ export const Graph = createReactClass({
 
         // Remember zoom level as a state -- causes rerender remember!
         this.setState({ zoomLevel: value });
-    },
+    }
 
-    rangeMouseDown: function () {
+    rangeMouseDown() {
         // Mouse clicked in zoom slider
         this.cv.zoomMouseDown = true;
-    },
+    }
 
-    rangeMouseUp: function (e) {
+    rangeMouseUp(e) {
         // Mouse released from zoom slider
         this.cv.zoomMouseDown = false;
         this.rangeChange(e); // Fix for IE11 as onChange doesn't get called; at least call this after dragging
         // For IE11 fix, see https://github.com/facebook/react/issues/554#issuecomment-188288228
-    },
+    }
 
-    rangeDoubleClick: function () {
+    rangeDoubleClick() {
         // Handle a double click in the zoom slider
         const el = this.refs.graphdisplay;
         const zoomLevel = this.setInitialZoomLevel(el, this.cv.savedSvg);
-        this.setState({ zoomLevel: zoomLevel });
-    },
+        this.setState({ zoomLevel });
+    }
 
-    // Component state variables we don't want to cause a rerender
-    cv: {
-        viewBoxWidth: 0, // Width of the SVG's viewBox
-        viewBoxHeight: 0, // Height of the SVG's viewBox
-        aspectRatio: 0, // Aspect ratio of graph -- width:height
-        zoomMouseDown: false, // Mouse currently controlling zoom slider
-        dagreLoaded: false, // Dagre JS library has been loaded
-        zoomFactor: 0, // Amount zoom slider value changes should change width of graph
-    },
-
-    render: function () {
+    render() {
         const orientBtnAlt = `Orient graph ${this.state.verticalGraph ? 'horizontally' : 'vertically'}`;
         const currOrientKey = this.state.verticalGraph ? 'orientH' : 'orientV';
         const noDefaultClasses = this.props.noDefaultClasses;
@@ -531,5 +539,17 @@ export const Graph = createReactClass({
                 {this.props.children}
             </Panel>
         );
-    },
-});
+    }
+}
+
+Graph.propTypes = {
+    graph: PropTypes.object.isRequired, // JSON graph object to render
+    nodeClickHandler: PropTypes.func.isRequired, // Function to call to handle clicks in a node
+    noDefaultClasses: PropTypes.bool, // True to supress default CSS classes on <Panel> components
+    children: PropTypes.node,
+};
+
+Graph.defaultProps = {
+    children: null,
+    noDefaultClasses: false,
+};

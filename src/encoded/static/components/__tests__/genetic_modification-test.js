@@ -84,15 +84,15 @@ describe('Genetic modification functionality', () => {
                     dbxrefs: ['addgene:234235'],
                     source: 'gregory-crawford',
                     insert_sequence: 'ACTCGT',
-                }
+                },
             ],
             treatments: [
                 require('../testdata/treatment/CHEBI34730'),
-                require('../testdata/treatment/CHEBI44616')
+                require('../testdata/treatment/CHEBI44616'),
             ],
             submitted_by: 'dignissim.euismod@amet.habitant',
-            target: require('../testdata/target/HNRNPA1-human')
-        }
+            target: require('../testdata/target/HNRNPA1-human'),
+        },
     ];
 
     test('retrieves modification technique strings', () => {
