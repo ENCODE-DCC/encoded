@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import moment from 'moment';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import DataColors from './datacolors';
 import { FetchedData, Param } from './fetched';
@@ -644,10 +645,25 @@ const ExperimentDate = (props) => {
         const categoryFacet = experiments.facets.find(facet => facet.field === 'month_released');
         dateArray = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length) ? categoryFacet.terms : [];
     }
+    const standardTerms = dateArray.map((term) => {
+        const standardDate = moment(term.key).format('YYYY-MM');
+        return { key: standardDate, doc_count: term.doc_count };
+    });
+
+    const sortedTerms = standardTerms.sort((termA, termB) => {
+        if (termA.key < termB.key) {
+            return -1;
+        } else if (termB.key < termA.key) {
+            return 1;
+        } else {
+            return 0;
+        }
+    });
 
     return (
         <div>
             {console.log(dateArray)}
+            {console.log(sortedTerms)}
             <CumulativeGraph />
         </div>
     );
