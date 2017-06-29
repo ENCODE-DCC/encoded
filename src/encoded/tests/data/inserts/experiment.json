@@ -26,6 +26,7 @@
         "description": "RNA Evaluation K562 Long Poly-A+  RNA-seq from Gingeras",
         "lab": "thomas-gingeras",
         "status": "released",
+        "supersedes": ["ENCSR000AES"],
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "a357b33b-cdaa-4312-91c0-086bfec24181"
@@ -40,7 +41,7 @@
         "biosample_type": "immortalized cell line",
         "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
         "lab": "thomas-gingeras",
-        "status": "released",
+        "status": "archived",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "d8e3c296-ae36-417b-855a-8bfbe3d33e3b"

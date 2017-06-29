@@ -70,7 +70,7 @@ def test_analysis_step_unique_array(upgrader, analysis_step_3):
 def test_analysis_step_5_6(upgrader, analysis_step_5):
     value = upgrader.upgrade('analysis_step', analysis_step_5, current_version='5', target_version='6')
     assert value['schema_version'] == '6'
-    assert value['title'] == 'Long RNA-seq STAR single-ended alignment step v2.0'
+    assert value['title'] == 'Long RNA-seq STAR single-ended alignment step'
     assert value['step_label'] == 'deleted-lrna-se-star-alignment-step'
     assert 'encode:deleted-lrna-se-star-alignment-step-v-2' in value['aliases']
     assert value['major_version'] == 2

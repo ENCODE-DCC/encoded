@@ -547,7 +547,7 @@ def software_version(testapp, software):
 def analysis_step(testapp):
     item = {
         'step_label': 'fastqc-step',
-        'title': 'fastqc',
+        'title': 'fastqc step',
         'major_version': 1,
         'input_file_types': ['reads'],
         'analysis_step_types': ['QA calculation'],
@@ -763,7 +763,11 @@ def donor_2(testapp, lab, award, organism):
 def analysis_step_bam(testapp):
     item = {
         'step_label': 'bamqc-step',
+<<<<<<< HEAD
         'title': 'bamqc',
+=======
+        'title': 'bamqc step',
+>>>>>>> master
         'input_file_types': ['reads'],
         'analysis_step_types': ['QA calculation'],
         'major_version': 2

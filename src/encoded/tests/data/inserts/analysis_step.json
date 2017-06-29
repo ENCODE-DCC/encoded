@@ -2,7 +2,7 @@
     {
         "step_label": "alignment-test-step",
         "major_version": 1,
-        "title": "Alignment test step 1",
+        "title": "Alignment test step",
         "analysis_step_types": ["alignment"],
         "input_file_types": ["reads"],
         "output_file_types": ["alignments"],
@@ -12,7 +12,7 @@
     {
         "step_label": "signal-test-step",
         "major_version": 1,
-        "title": "Signal calling test step 1",
+        "title": "Signal calling test step",
         "analysis_step_types": ["signal generation"],
         "input_file_types": ["alignments"],
         "output_file_types": [
@@ -26,7 +26,7 @@
     {
         "step_label": "alignment-test-step",
         "major_version": 2,
-        "title": "Alignment test step 2",
+        "title": "Alignment test step",
         "analysis_step_types": ["alignment"],
         "input_file_types": ["reads"],
         "output_file_types": ["alignments"],
@@ -36,7 +36,7 @@
     {
         "step_label": "quantification-test-step",
         "major_version": 1,
-        "title": "Quantification test step 1",
+        "title": "Quantification test step",
         "analysis_step_types": ["quantification"],
         "input_file_types": ["alignments", "genome reference"],
         "output_file_types": ["gene quantifications"],
@@ -47,7 +47,7 @@
     {
         "step_label": "idr-test-step",
         "major_version": 1,
-        "title": "IDR test step 1",
+        "title": "IDR test step",
         "analysis_step_types": ["IDR"],
         "input_file_types": ["gene quantifications"],
         "output_file_types": ["gene quantifications"],
@@ -75,7 +75,7 @@
     {
         "step_label": "idr-test-step",
         "major_version": 2,
-        "title": "IDR test step 2",
+        "title": "IDR test step",
         "analysis_step_types": [ "IDR"],
         "input_file_types": ["peaks"],
         "qa_stats_generated": ["self-consistency ratio", "rescue ratio", "IDR plot"],
@@ -86,7 +86,7 @@
     {
         "step_label": "alignment-test-step",
         "major_version": 3,
-        "title": "Alignment test step 3",
+        "title": "Alignment test step",
         "analysis_step_types": ["alignment"],
         "input_file_types": ["reads"],
         "output_file_types": ["alignments"],
@@ -96,7 +96,7 @@
     {
         "step_label": "peak-calling-test-step",
         "major_version": 1,
-        "title": "Peak calling test step 1",
+        "title": "Peak calling test step",
         "analysis_step_types": ["peak calling"],
         "input_file_types": ["alignments"],
         "output_file_types": ["peaks"],
@@ -107,7 +107,7 @@
     {
         "step_label": "prep-bismark-step",
         "major_version": 1,
-        "title": "prep-bismark",
+        "title": "prep-bismark-step",
         "input_file_types": ["genome reference"],
         "parents": [],
         "analysis_step_types": ["genome indexing"],
@@ -116,7 +116,7 @@
     {
         "step_label": "mott-trim-align-bismark-step",
         "major_version": 1,
-        "title": "mott-trim-align-bismark",
+        "title": "mott-trim-align-bismark-step",
         "input_file_types": ["reads"],
         "output_file_types": ["alignments"],
         "analysis_step_types": ["filtering", "alignment"],
@@ -125,7 +125,7 @@
     {
         "step_label": "extract-bismark-step",
         "major_version": 1,
-        "title": "extract-bismark",
+        "title": "extract-bismark-step",
         "input_file_types": ["alignments"],
         "output_file_types": ["methylation state at CpG"],
         "parents": ["mott-trim-align-bismark-step-v-1"],
@@ -142,7 +142,7 @@
     {
         "step_label": "prep-star-step",
         "major_version": 1,
-        "title": "prep-star",
+        "title": "prep-star-step",
         "input_file_types": ["genome reference"],
         "parents": [],
         "analysis_step_types": ["genome indexing"],
@@ -151,7 +151,7 @@
     {
         "step_label": "prep-tophat-step",
         "major_version": 1,
-        "title": "prep-tophat",
+        "title": "prep-tophat-step",
         "input_file_types": ["genome reference"],
         "analysis_step_types": ["genome indexing"],
         "uuid": "90979a4b-86fe-4d64-bf2c-88b818fb3431"
@@ -159,7 +159,7 @@
     {
         "step_label": "prep-rsem-step",
         "major_version": 1,
-        "title": "prep-rsem",
+        "title": "prep-rsem-step",
         "input_file_types": ["genome reference"],
         "analysis_step_types": ["genome indexing"],
         "uuid": "42f8c766-cb38-4827-a4b1-a24001419517"
@@ -167,7 +167,7 @@
     {
         "step_label": "align-star-step",
         "major_version": 1,
-        "title": "align-star",
+        "title": "align-star-step",
         "input_file_types": ["reads"],
         "output_file_types": ["alignments"],
         "parents": [
@@ -179,7 +179,7 @@
     {
         "step_label": "quant-rsem-step",
         "major_version": 1,
-        "title": "quant-rsem",
+        "title": "quant-rsem-step",
         "input_file_types": ["alignments"],
         "parents": [
             "prep-rsem-step-v-1",
@@ -191,7 +191,7 @@
     {
         "step_label": "align-tophat-step",
         "major_version": 1,
-        "title": "align-tophat",
+        "title": "align-tophat-step",
         "input_file_types": ["reads"],
         "output_file_types": ["alignments"],
         "parents": ["prep-tophat-step-v-1"],
@@ -201,7 +201,7 @@
     {
         "step_label": "bam-to-bigwig-tophat-step",
         "major_version": 1,
-        "title": "bam-to-bigwig-tophat",
+        "title": "bam-to-bigwig-tophat-step",
         "input_file_types": ["alignments"],
         "output_file_types": [
             "minus strand signal of all reads",
@@ -216,7 +216,7 @@
     {
         "step_label": "bam-to-bigwig-star-step",
         "major_version": 1,
-        "title": "bam-to-bigwig-star",
+        "title": "bam-to-bigwig-star-step",
         "input_file_types": ["alignments"],
         "output_file_types": [
             "minus strand signal of all reads",
@@ -231,7 +231,7 @@
     {
         "step_label": "fastqc-step",
         "major_version": 1,
-        "title": "fastqc",
+        "title": "fastqc step",
         "input_file_types": ["reads"],
         "qa_stats_generated":  ["number of reads", "read length", "number of low-quality reads"],
         "analysis_step_types": ["QA calculation"],
@@ -240,7 +240,7 @@
     {
         "step_label": "mad-cc-lrna-step",
         "major_version": 1,
-        "title": "MAD and correlations for long-RNA-Seq",
+        "title": "MAD and correlations for long-RNA-Seq step",
         "input_file_types": ["gene quantifications"],
         "qa_stats_generated":  [
             "MAD of log ratios",
@@ -254,7 +254,7 @@
     {
         "step_label": "wgbs-lambda-qc-step",
         "major_version": 1,
-        "title": "Bismark Lambda QC",
+        "title": "Bismark Lambda QC Step",
         "aliases": ["encode:ONE", "encode:TWO"],
         "input_file_types": ["alignments"],
         "output_file_types": ["methylation state at CpG"],
@@ -276,7 +276,7 @@
     {
         "step_label": "variant-calling-step",
         "major_version": 1,
-        "title": "Variant calling",
+        "title": "Variant calling step",
         "input_file_types": [
             "alignments", 
             "reference variants"

@@ -218,7 +218,7 @@ def chipseq_bam_quality_metric_2(testapp, analysis_step_run_bam, file7, lab, awa
 def analysis_step_bam(testapp):
     item = {
         'step_label': 'bamqc-step',
-        'title': 'bamqc',
+        'title': 'bamqc step',
         'major_version': 1,
         'input_file_types': ['reads'],
         'analysis_step_types': ['QA calculation']
