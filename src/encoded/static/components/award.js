@@ -641,7 +641,6 @@ const ExperimentDate = (props) => {
     const { experiments } = props;
     let dateArray;
     let accumulator = 0;
-    let standardDate;
 
     // 'no-const-assign': 0;
     // const experimentsConfig = searchData.experiments;
@@ -650,7 +649,7 @@ const ExperimentDate = (props) => {
         dateArray = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length) ? categoryFacet.terms : [];
     }
     const standardTerms = dateArray.map((term) => {
-        standardDate = moment(term.key, 'MMMM, YYYY').format('YYYY-MM');
+        const standardDate = moment(term.key, 'MMMM, YYYY').format('YYYY-MM');
         return { key: standardDate, doc_count: term.doc_count };
     });
 
@@ -665,7 +664,7 @@ const ExperimentDate = (props) => {
 
     const accumulatedData = sortedTerms.map((term) => {
         accumulator += term.doc_count;
-        return { key: standardDate, doc_count: accumulator };
+        return { key: term.key, doc_count: accumulator };
     });
 
 
