@@ -20,17 +20,15 @@ def user_3_4(value, system):
 @upgrade_step('user', '5', '6')
 def user_5_6(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3409
-    if ['phone1'] in value:
+    if 'phone1' in value:
         del value['phone1']
-    if ['phone2'] in value:
+    if 'phone2' in value:
         del value['phone2']
-    if ['fax'] in value:
+    if 'fax' in value:
         del value['fax']
-    if ['skype'] in value:
+    if 'skype' in value:
         del value['skype']
-    if ['google'] in value:
+    if 'google' in value:
         del value['google']
-    if ['timezone'] in value:
+    if 'timezone' in value:
         del value['timezone']
-    if ['schema_version'] in value:
-        value['schema'] == '6'
