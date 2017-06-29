@@ -640,6 +640,9 @@ GenusButtons.defaultProps = {
 const ExperimentDate = (props) => {
     const { experiments } = props;
     let dateArray;
+    let dateReleased;
+    let datapoint;
+
     // 'no-const-assign': 0;
     // const experimentsConfig = searchData.experiments;
     if (experiments && experiments.facets && experiments.facets.length) {
@@ -660,28 +663,20 @@ const ExperimentDate = (props) => {
         return 0;
     });
 
-    // const arrayLength = sortedTerms.length;
-    // let cnt = -1;
-    // let current = null;
+    const dateFormat = sortedTerms.map((term) => {
+        dateReleased = [];
+        const standardDate = moment(term.key).format('MMMM; YYYY');
+        dateReleased.push(standardDate);
+        return { dateReleased };
+    });
 
-    // for (let i = 0; i < arrayLength; i += i) {
-    //     if (i !== current) {
-    //         if (cnt < i && sortedTerms[i].key === sortedTerms[i + 1].key) {
-    //             const newdoccount = sortedTerms[i].doc_count + sortedTerms[i + 1].doc_count;
-    //             sortedTerms.splice(i, 2, { doc_count: newdoccount, key: sortedTerms[i].key });
-    //         }
-    //         i -= 1;
-    //         cnt = i;
-    //         current = i;
-    //     } else {
-    //         cnt += 1;
-    //         current = i;
-    //     }
-    // }
+    sortedTerms.forEach(dateFormat);
 
     return (
         <div>
             {console.log(sortedTerms)}
+            {console.log(dateFormat)}
+            {console.log(dateReleased)}
             <CumulativeGraph xaxisorigin={sortedTerms[0].key} />
         </div>
     );
@@ -805,6 +800,7 @@ FetchGraphData.propTypes = {
 };
 
 class CumulativeGraph extends React.Component {
+
 
     componentDidMount() {
         const { xaxisorigin } = this.props;
