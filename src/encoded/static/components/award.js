@@ -640,13 +640,14 @@ GenusButtons.defaultProps = {
 const ExperimentDate = (props) => {
     const { experiments } = props;
     let dateArray;
+    // 'no-const-assign': 0;
     // const experimentsConfig = searchData.experiments;
     if (experiments && experiments.facets && experiments.facets.length) {
         const categoryFacet = experiments.facets.find(facet => facet.field === 'month_released');
         dateArray = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length) ? categoryFacet.terms : [];
     }
     const standardTerms = dateArray.map((term) => {
-        const standardDate = moment(term.key).format('YYYY-MM');
+        const standardDate = moment(term.key, 'MMMM, YYYY').format('YYYY-MM');
         return { key: standardDate, doc_count: term.doc_count };
     });
 
@@ -655,16 +656,33 @@ const ExperimentDate = (props) => {
             return -1;
         } else if (termB.key < termA.key) {
             return 1;
-        } else {
-            return 0;
         }
+        return 0;
     });
+
+    // const arrayLength = sortedTerms.length;
+    // let cnt = -1;
+    // let current = null;
+
+    // for (let i = 0; i < arrayLength; i += i) {
+    //     if (i !== current) {
+    //         if (cnt < i && sortedTerms[i].key === sortedTerms[i + 1].key) {
+    //             const newdoccount = sortedTerms[i].doc_count + sortedTerms[i + 1].doc_count;
+    //             sortedTerms.splice(i, 2, { doc_count: newdoccount, key: sortedTerms[i].key });
+    //         }
+    //         i -= 1;
+    //         cnt = i;
+    //         current = i;
+    //     } else {
+    //         cnt += 1;
+    //         current = i;
+    //     }
+    // }
 
     return (
         <div>
-            {console.log(dateArray)}
             {console.log(sortedTerms)}
-            <CumulativeGraph />
+            <CumulativeGraph xaxisorigin={sortedTerms[0].key} />
         </div>
     );
 };
@@ -789,6 +807,7 @@ FetchGraphData.propTypes = {
 class CumulativeGraph extends React.Component {
 
     componentDidMount() {
+        const { xaxisorigin } = this.props;
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
             const ctx = document.getElementById('myGraph').getContext('2d');
@@ -796,7 +815,7 @@ class CumulativeGraph extends React.Component {
             this.chart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+                    labels: [xaxisorigin, 'T', 'W', 'T', 'F', 'S', 'S'],
                     datasets: [{
                         label: 'apples',
                         data: [12, 19, 3, 40, 6, 3, 7],
@@ -819,6 +838,14 @@ class CumulativeGraph extends React.Component {
         );
     }
 }
+
+CumulativeGraph.propTypes = {
+    xaxisorigin: PropTypes.string.isRequired,
+};
+
+CumulativeGraph.defaultProps = {
+    xaxisorigin: '',
+};
 
 // const datereleased = {date_released};
 //     // const dateinteger = string.match(/\d+/g).map(Number);
