@@ -226,5 +226,7 @@
         "title": 1.0,
         "news_keywords": 1.0,
         "layout.blocks.body": 1.0
-    }
+    },
+    
+    "changelog": "/profiles/changelogs/page.md"
 }
