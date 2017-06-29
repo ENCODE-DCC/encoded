@@ -640,8 +640,8 @@ GenusButtons.defaultProps = {
 const ExperimentDate = (props) => {
     const { experiments } = props;
     let dateArray;
-    let dateReleased;
-    let datapoint;
+    let accumulator = 0;
+    let standardDate;
 
     // 'no-const-assign': 0;
     // const experimentsConfig = searchData.experiments;
@@ -650,7 +650,7 @@ const ExperimentDate = (props) => {
         dateArray = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length) ? categoryFacet.terms : [];
     }
     const standardTerms = dateArray.map((term) => {
-        const standardDate = moment(term.key, 'MMMM, YYYY').format('YYYY-MM');
+        standardDate = moment(term.key, 'MMMM, YYYY').format('YYYY-MM');
         return { key: standardDate, doc_count: term.doc_count };
     });
 
@@ -663,21 +663,27 @@ const ExperimentDate = (props) => {
         return 0;
     });
 
-    const dateFormat = sortedTerms.map((term) => {
-        dateReleased = [];
-        const standardDate = moment(term.key).format('MMMM; YYYY');
-        dateReleased.push(standardDate);
-        return { dateReleased };
+    const accumulatedData = sortedTerms.map((term) => {
+        accumulator += term.doc_count;
+        return { key: standardDate, doc_count: accumulator };
     });
 
-    sortedTerms.forEach(dateFormat);
+    const dataset = accumulatedData.map((term) => {
+        const datapoint = term.doc_count;
+        return datapoint;
+    });
+
+    const dateFormat = accumulatedData.map((term) => {
+        standardDate = moment(term.key).format('MMMM; YYYY');
+        return standardDate;
+    });
 
     return (
         <div>
             {console.log(sortedTerms)}
             {console.log(dateFormat)}
-            {console.log(dateReleased)}
-            <CumulativeGraph xaxisorigin={sortedTerms[0].key} />
+            {console.log(dataset)}
+            <CumulativeGraph xaxisorigin={accumulatedData[0].key} />
         </div>
     );
 };
