@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
 
 
 const maxFilesBrowsed = 40; // Maximum number of files to browse
@@ -243,7 +242,7 @@ function rAssemblyToSources(assembly, region) {
                 name: 'Genes',
                 desc: 'Gene structures from UCSC BDGP6 + ISO1 MT/dm6',
                 bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/dm6_UCSC_RefSeq_track.bb',
-                //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/',
+                // stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/',
                 collapseSuperGroups: true,
                 trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/dm6_UCSC_RefSeq_track.ix',
             },
@@ -251,7 +250,7 @@ function rAssemblyToSources(assembly, region) {
                 name: 'Repeats',
                 desc: 'Repeat annotation from UCSC',
                 bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/repeats_dm6.bb',
-                //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/',
+                // stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/',
                 forceReduction: -1,
             },
         ];
@@ -280,7 +279,7 @@ function rAssemblyToSources(assembly, region) {
                 name: 'Genes',
                 desc: 'Gene structures from UCSC BDGP R5/dm3',
                 bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/dm3_UCSC_RefSeq_track.bb',
-                //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/',
+                // stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm6/',
                 collapseSuperGroups: true,
                 trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/dm3_UCSC_RefSeq_track.ix',
             },
@@ -288,7 +287,7 @@ function rAssemblyToSources(assembly, region) {
                 name: 'Repeats',
                 desc: 'Repeat annotation from UCSC',
                 bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/repeats_dm3.bb',
-                //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/',
+                // stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/dm3/',
                 forceReduction: -1,
             },
         ];
@@ -317,7 +316,7 @@ function rAssemblyToSources(assembly, region) {
                 name: 'Genes',
                 desc: 'Gene structures from UCSC ce11/WBCel235',
                 bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/ce11_UCSC_RefSeq_track.bb',
-                //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/',
+                // stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/',
                 collapseSuperGroups: true,
                 trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/ce11_UCSC_RefSeq_track.ix',
             },
@@ -325,7 +324,7 @@ function rAssemblyToSources(assembly, region) {
                 name: 'Repeats',
                 desc: 'Repeat annotation from UCSC',
                 bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/repeats_ce11.bb',
-                //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/',
+                // stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce11/',
                 forceReduction: -1,
             },
         ];
@@ -354,7 +353,7 @@ function rAssemblyToSources(assembly, region) {
                 name: 'Genes',
                 desc: 'Gene structures from UCSC ce10/WS220',
                 bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce10/ce10_UCSC_RefSeq_track.bb',
-                //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce10/',
+                // stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce10/',
                 collapseSuperGroups: true,
                 trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce10/ce10_UCSC_RefSeq_track.ix',
             },
@@ -362,7 +361,7 @@ function rAssemblyToSources(assembly, region) {
                 name: 'Repeats',
                 desc: 'Repeat annotation from UCSC',
                 bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce10/repeats_ce10.bb',
-                //stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce10/',
+                // stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/ce10/',
                 forceReduction: -1,
             },
         ];
@@ -371,31 +370,23 @@ function rAssemblyToSources(assembly, region) {
 }
 
 
-const GenomeBrowser = createReactClass({
-    propTypes: {
-        files: PropTypes.array.isRequired, // Array of files to represent
-        assembly: PropTypes.string.isRequired, // Assembly to use with browser
-        region: PropTypes.string, // Region to use with browser
-        visBlobs: PropTypes.object, // This should contain one or more vis_blobs for dataset(s)
-        limitFiles: PropTypes.bool, // True to limit # files to maxFilesBrowsed
-        currentRegion: PropTypes.func,
-    },
+class GenomeBrowser extends React.Component {
+    constructor() {
+        super();
 
-    contextTypes: {
-        location_href: PropTypes.string,
-        localInstance: PropTypes.bool,
-    },
+        // Bind this to non-React methods.
+        this.locationChange = this.locationChange.bind(this);
+        this.makeTrackLabel = this.makeTrackLabel.bind(this);
+    }
 
-    componentDidMount: function () {
+    componentDidMount() {
         const { assembly, region, limitFiles } = this.props;
         // console.log('DidMount ASSEMBLY: %s', assembly);
 
-         // Probably not worth a define in globals.js for visualizable types and statuses.
+        // Probably not worth a define in globals.js for visualizable types and statuses.
         // Extract only bigWig and bigBed files from the list:
         let files = this.props.files.filter(file => file.file_format === 'bigWig' || file.file_format === 'bigBed');
-        files = files.filter(file =>
-                    ['released', 'in progress', 'archived'].indexOf(file.status) > -1
-                );
+        files = files.filter(file => ['released', 'in progress', 'archived'].indexOf(file.status) > -1);
 
 
         // Make some fake file objects from "test" just to give the genome browser something to
@@ -471,11 +462,9 @@ const GenomeBrowser = createReactClass({
             });
             this.browser.addViewListener(this.locationChange);
         });
-    },
+    }
 
-    componentDidUpdate: function () {
-        console.log('DidUpdate ASSEMBLY: %s', this.props.assembly);
-
+    componentDidUpdate() {
         // Remove old tiers
         if (this.browser && this.browserFiles && this.browserFiles.length) {
             this.browserFiles.forEach((fileSource) => {
@@ -527,9 +516,9 @@ const GenomeBrowser = createReactClass({
                 }
             });
         }
-    },
+    }
 
-    locationChange: function (chr, min, max) {
+    locationChange(chr, min, max) {
         const location = `chr${chr}:${min}-${max}`;
         if (location !== this.props.region) {
             if (this.props.currentRegion) {
@@ -537,9 +526,9 @@ const GenomeBrowser = createReactClass({
                 // console.log('locationChange %s %s', this.props.assembly, this.props.region);
             }
         }
-    },
+    }
 
-    makeTrackLabel: function (file) {
+    makeTrackLabel(file) {
         const datasetAccession = file.dataset.split('/')[2];
         // Unreleased files are not in visBlob so get default labels
         const trackLabels = {
@@ -563,14 +552,34 @@ const GenomeBrowser = createReactClass({
             }
         });
         return trackLabels;
-    },
+    }
 
-    render: function () {
+    render() {
         return (
             <div id="svgHolder" className="trackhub-element" />
         );
-    },
-});
+    }
+}
 
+GenomeBrowser.propTypes = {
+    files: PropTypes.array.isRequired, // Array of files to represent
+    assembly: PropTypes.string.isRequired, // Assembly to use with browser
+    region: PropTypes.string, // Region to use with browser
+    visBlobs: PropTypes.object, // This should contain one or more vis_blobs for dataset(s)
+    limitFiles: PropTypes.bool, // True to limit # files to maxFilesBrowsed
+    currentRegion: PropTypes.func,
+};
+
+GenomeBrowser.defaultProps = {
+    region: '',
+    visBlobs: undefined,
+    limitFiles: false,
+    currentRegion: undefined,
+};
+
+GenomeBrowser.contextTypes = {
+    location_href: PropTypes.string,
+    localInstance: PropTypes.bool,
+};
 
 export default GenomeBrowser;
