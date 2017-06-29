@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
 
 const renderSubtreeIntoContainer = ReactDOM.unstable_renderSubtreeIntoContainer;
 
@@ -89,22 +88,15 @@ const renderSubtreeIntoContainer = ReactDOM.unstable_renderSubtreeIntoContainer;
 // DOM comes from: http://jamesknelson.com/rendering-react-components-to-the-document-body/
 
 
-export const ModalHeader = createReactClass({
-    propTypes: {
-        addCss: PropTypes.string, // CSS classes to add to modal header
-        title: PropTypes.oneOfType([
-            PropTypes.string, // String to display as an <h4> title
-            PropTypes.object, // React component to display for the title
-        ]),
-        closeModal: PropTypes.oneOfType([
-            PropTypes.bool, // True to display the close button in the header with the built-in handler
-            PropTypes.func, // If not using an actuator on <Modal>, provide a function to close the modal
-        ]),
-        children: PropTypes.node,
-        c_closeModal: PropTypes.func, // Auto-added
-    },
+export class ModalHeader extends React.Component {
+    constructor() {
+        super();
 
-    closeModal: function () {
+        // Bind this to non-React methods.
+        this.closeModal = this.closeModal.bind(this);
+    }
+
+    closeModal() {
         // Call close button's existing close handler if it had one first.
         if (this.chainedCloseModal) {
             this.chainedCloseModal();
@@ -112,9 +104,9 @@ export const ModalHeader = createReactClass({
 
         // Now call the standard close handler.
         this.props.c_closeModal();
-    },
+    }
 
-    render: function () {
+    render() {
         const { title, closeModal, addCss } = this.props;
         let titleRender = null;
 
@@ -135,42 +127,57 @@ export const ModalHeader = createReactClass({
                 {this.props.children}
             </div>
         );
-    },
-});
+    }
+}
+
+ModalHeader.propTypes = {
+    addCss: PropTypes.string, // CSS classes to add to modal header
+    title: PropTypes.oneOfType([
+        PropTypes.string, // String to display as an <h4> title
+        PropTypes.object, // React component to display for the title
+    ]),
+    closeModal: PropTypes.oneOfType([
+        PropTypes.bool, // True to display the close button in the header with the built-in handler
+        PropTypes.func, // If not using an actuator on <Modal>, provide a function to close the modal
+    ]),
+    children: PropTypes.node,
+    c_closeModal: PropTypes.func, // Auto-added
+};
+
+ModalHeader.defaultProps = {
+    addCss: '',
+    title: null,
+    closeModal: null,
+    children: null,
+    c_closeModal: null,
+};
 
 
-export const ModalBody = createReactClass({
-    propTypes: {
-        children: PropTypes.node,
-    },
+export const ModalBody = props => (
+    <div className="modal-body">
+        {props.children}
+    </div>
+);
 
-    render: function () {
-        return (
-            <div className="modal-body">
-                {this.props.children}
-            </div>
-        );
-    },
-});
+ModalBody.propTypes = {
+    children: PropTypes.node,
+};
+
+ModalBody.defaultProps = {
+    children: null,
+};
 
 
-export const ModalFooter = createReactClass({
-    propTypes: {
-        submitBtn: PropTypes.oneOfType([
-            PropTypes.object, // Submit button is a React component; just render it
-            PropTypes.func, // Function to call when default-rendered Submit button clicked
-        ]),
-        closeModal: PropTypes.oneOfType([
-            PropTypes.bool, // Use default-rendered Cancel button that closes the modal
-            PropTypes.object, // Cancel button is a React component; just render it
-            PropTypes.func, // Function to call when default-rendered Cancel button clicked
-        ]),
-        dontClose: PropTypes.bool, // True to *not* close the modal when the user clicks Submit
-        c_closeModal: PropTypes.func, // Auto-add
-        children: PropTypes.node,
-    },
+export class ModalFooter extends React.Component {
+    constructor() {
+        super();
 
-    closeModal: function () {
+        // Bind this to non-React methods.
+        this.closeModal = this.closeModal.bind(this);
+        this.submitModal = this.submitModal.bind(this);
+    }
+
+    closeModal() {
         // Call close button's existing close handler if it had one first.
         if (this.chainedCloseModal) {
             this.chainedCloseModal();
@@ -178,9 +185,9 @@ export const ModalFooter = createReactClass({
 
         // Now call the standard close handler.
         this.props.c_closeModal();
-    },
+    }
 
-    submitModal: function () {
+    submitModal() {
         const { submitBtn, dontClose } = this.props;
         if (typeof submitBtn === 'function') {
             submitBtn();
@@ -188,9 +195,9 @@ export const ModalFooter = createReactClass({
         if (!dontClose) {
             this.closeModal();
         }
-    },
+    }
 
-    render: function () {
+    render() {
         const { submitBtn } = this.props;
         let { closeModal } = this.props;
         let submitBtnComponent = null;
@@ -237,25 +244,50 @@ export const ModalFooter = createReactClass({
                 {this.props.children}
             </div>
         );
-    },
-});
+    }
+}
+
+ModalFooter.propTypes = {
+    submitBtn: PropTypes.oneOfType([
+        PropTypes.object, // Submit button is a React component; just render it
+        PropTypes.func, // Function to call when default-rendered Submit button clicked
+    ]),
+    closeModal: PropTypes.oneOfType([
+        PropTypes.bool, // Use default-rendered Cancel button that closes the modal
+        PropTypes.object, // Cancel button is a React component; just render it
+        PropTypes.func, // Function to call when default-rendered Cancel button clicked
+    ]),
+    dontClose: PropTypes.bool, // True to *not* close the modal when the user clicks Submit
+    c_closeModal: PropTypes.func, // Auto-add
+    children: PropTypes.node,
+};
+
+ModalFooter.defaultProps = {
+    submitBtn: null,
+    closeModal: undefined,
+    dontClose: false,
+    c_closeModal: null,
+    children: null,
+};
 
 
-export const Modal = createReactClass({
-    propTypes: {
-        actuator: PropTypes.object, // Component (usually a button) that makes the modal appear
-        closeModal: PropTypes.func, // Called to close the modal if an actuator isn't provided
-        addClasses: PropTypes.string, // CSS classes to add to the default
-        children: PropTypes.node,
-    },
+export class Modal extends React.Component {
+    constructor() {
+        super();
 
-    getInitialState: function () {
-        return {
+        // Set initial React component state.
+        this.state = {
             modalOpen: false, // True if modal is visible. Ignored if no actuator given
         };
-    },
 
-    componentDidMount: function () {
+        // Bind this to non-React methods.
+        this.handleEsc = this.handleEsc.bind(this);
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.renderModal = this.renderModal.bind(this);
+    }
+
+    componentDidMount() {
         // Modal HTML gets injected at the end of <body> so the backdrop overlay works, even with other
         // fixed elements on the page.
         this.modalEl = document.createElement('div');
@@ -264,20 +296,20 @@ export const Modal = createReactClass({
 
         // Have ESC key press close the modal.
         document.addEventListener('keydown', this.handleEsc, false);
-    },
+    }
 
-    componentDidUpdate: function () {
+    componentDidUpdate() {
         this.renderModal();
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         ReactDOM.unmountComponentAtNode(this.modalEl);
         document.body.removeChild(this.modalEl);
         document.removeEventListener('keydown', this.handleEsc, false);
-    },
+    }
 
     // Called when the user presses the ESC key.
-    handleEsc: function (e) {
+    handleEsc(e) {
         if ((!this.props.actuator || this.state.modalOpen) && e.keyCode === 27) {
             if (this.props.closeModal) {
                 this.props.closeModal();
@@ -285,28 +317,28 @@ export const Modal = createReactClass({
                 this.closeModal();
             }
         }
-    },
+    }
 
     // Open the modal
-    openModal: function () {
+    openModal() {
         this.setState({ modalOpen: true });
 
         // Add class to body element to make modal-backdrop div visible
         document.body.classList.add('modal-open');
-    },
+    }
 
     // Default function to close the modal without doing anything.
-    closeModal: function () {
+    closeModal() {
         this.setState({ modalOpen: false });
 
         // Remove class from body element to make modal-backdrop div visible
         document.body.classList.remove('modal-open');
-    },
+    }
 
     // Render the modal JSX into the element this component appended to the <body> element. that
     // lets us properly render the fixed-position backdrop so that it overlays the fixed-position
     // navigation bar.
-    renderModal: function () {
+    renderModal() {
         renderSubtreeIntoContainer(
             this,
             <div>
@@ -325,9 +357,9 @@ export const Modal = createReactClass({
             </div>,
             this.modalEl,
         );
-    },
+    }
 
-    render: function () {
+    render() {
         // We don't require/allow a click handler for the actuator, so we attach the one from
         // ModalMixin here. You can't add attributes to an existing component in React, but React
         // has no issue adding attributes while cloning a component.
@@ -343,5 +375,19 @@ export const Modal = createReactClass({
         });
 
         return actuator ? <span>{actuator}</span> : null;
-    },
-});
+    }
+}
+
+Modal.propTypes = {
+    actuator: PropTypes.object, // Component (usually a button) that makes the modal appear
+    closeModal: PropTypes.func, // Called to close the modal if an actuator isn't provided
+    addClasses: PropTypes.string, // CSS classes to add to the default
+    children: PropTypes.node,
+};
+
+Modal.defaultProps = {
+    actuator: null,
+    closeModal: null,
+    addClasses: '',
+    children: null,
+};
