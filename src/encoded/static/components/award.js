@@ -640,6 +640,9 @@ GenusButtons.defaultProps = {
 const ExperimentDate = (props) => {
     const { experiments } = props;
     let dateArray;
+    let accumulator = 0;
+    let standardDate;
+
     // 'no-const-assign': 0;
     // const experimentsConfig = searchData.experiments;
     if (experiments && experiments.facets && experiments.facets.length) {
@@ -647,7 +650,7 @@ const ExperimentDate = (props) => {
         dateArray = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length) ? categoryFacet.terms : [];
     }
     const standardTerms = dateArray.map((term) => {
-        const standardDate = moment(term.key, 'MMMM, YYYY').format('YYYY-MM');
+        standardDate = moment(term.key, 'MMMM, YYYY').format('YYYY-MM');
         return { key: standardDate, doc_count: term.doc_count };
     });
 
@@ -660,29 +663,16 @@ const ExperimentDate = (props) => {
         return 0;
     });
 
-    // const arrayLength = sortedTerms.length;
-    // let cnt = -1;
-    // let current = null;
+    const accumulatedData = sortedTerms.map((term) => {
+        accumulator += term.doc_count;
+        return { key: standardDate, doc_count: accumulator };
+    });
 
-    // for (let i = 0; i < arrayLength; i += i) {
-    //     if (i !== current) {
-    //         if (cnt < i && sortedTerms[i].key === sortedTerms[i + 1].key) {
-    //             const newdoccount = sortedTerms[i].doc_count + sortedTerms[i + 1].doc_count;
-    //             sortedTerms.splice(i, 2, { doc_count: newdoccount, key: sortedTerms[i].key });
-    //         }
-    //         i -= 1;
-    //         cnt = i;
-    //         current = i;
-    //     } else {
-    //         cnt += 1;
-    //         current = i;
-    //     }
-    // }
 
     return (
         <div>
-            {console.log(sortedTerms)}
-            <CumulativeGraph xaxisorigin={sortedTerms[0].key} />
+            {console.log(accumulatedData)}
+            <CumulativeGraph xaxisorigin={accumulatedData[0].key} />
         </div>
     );
 };
