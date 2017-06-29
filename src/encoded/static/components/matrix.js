@@ -1,69 +1,45 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
+import color from 'color';
+import _ from 'underscore';
+import url from 'url';
+import { svgIcon } from '../libs/svg-icons';
+import * as globals from './globals';
+import { BrowserSelector } from './objectutils';
 import { BatchDownload, FacetList, TextFilter } from './search';
-var color = require('color');
-var svgIcon = require('../libs/svg-icons').svgIcon;
-var globals = require('./globals');
-var url = require('url');
-var _ = require('underscore');
-var button = require('../libs/bootstrap/button');
-var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
-var navbar = require('../libs/bootstrap/navbar');
-var { BrowserSelector } = require('./objectutils');
-
-var DropdownButton = button.DropdownButton;
-var DropdownMenu = dropdownMenu.DropdownMenu;
-var NavItem = navbar.NavItem;
 
 
-var HIGHLIGHT_COLOR = color('#4e7294');
-// 9-class pastel Brewer palette from http://colorbrewer2.org/
-var COLORS = [
-    '#fbb4ae',
-    '#b3cde3',
-    '#ccebc5',
-    '#decbe4',
-    '#fed9a6',
-    '#ffffcc',
-    '#e5d8bd',
-    '#fddaec',
-    '#f2f2f2'
-];
+class GroupMoreButton extends React.Component {
+    constructor() {
+        super();
 
+        // Bind this to non-React components.
+        this.localHandleClick = this.localHandleClick.bind(this);
+    }
 
-const yGroupLimit = 5; // Maximum number of items in a Y group unless the group is opened.
-
-
-const GroupMoreButton = createReactClass({
-    propTypes: {
-        id: React.PropTypes.string, // ID for the handleClick function to know which control was clicked
-        handleClick: React.PropTypes.func, // Call this parent function to handle the click in the button
-        displayText: React.PropTypes.string, // Text to display in the button while closed
-    },
-
-    localHandleClick: function () {
+    localHandleClick() {
         this.props.handleClick(this.props.id);
-    },
+    }
 
-    render: function () {
+    render() {
         return <button className="group-more-cell__button" onClick={this.localHandleClick}>{this.props.displayText}</button>;
-    },
-});
+    }
+}
+
+GroupMoreButton.propTypes = {
+    id: PropTypes.string, // ID for the handleClick function to know which control was clicked
+    handleClick: PropTypes.func.isRequired, // Call this parent function to handle the click in the button
+    displayText: PropTypes.string, // Text to display in the button while closed
+};
+
+GroupMoreButton.defaultProps = {
+    id: '',
+    displayText: '',
+};
 
 
-var Matrix = module.exports.Matrix = createReactClass({
-    propTypes: {
-        context: React.PropTypes.object,
-    },
-
-    contextTypes: {
-        location_href: PropTypes.string,
-        navigate: PropTypes.func,
-        biosampleTypeColors: PropTypes.object // DataColor instance for experiment project
-    },
-
-    generateYGroupOpen: function(matrix) {
+class Matrix extends React.Component {
+    static generateYGroupOpen(matrix) {
         // Make a state for each of the Y groups (each Y group currently shows a biosample type).
         // To do that, we have to get each of the bucket keys, which will be the keys into the
         // object that keeps track of whether the group shows all or not. If a group has fewer than
@@ -80,50 +56,71 @@ var Matrix = module.exports.Matrix = createReactClass({
             }
         });
         return yGroupOpen;
-    },
+    }
 
-    getInitialState: function () {
-        const yGroupOpen = this.generateYGroupOpen(this.props.context.matrix);
-        return {
-            yGroupOpen: yGroupOpen,
+    constructor(props) {
+        super(props);
+
+        // Set initial React state.
+        const yGroupOpen = Matrix.generateYGroupOpen(this.props.context.matrix);
+        this.state = {
+            yGroupOpen,
             allYGroupsOpen: false,
         };
-    },
 
-    componentWillReceiveProps: function (nextProps) {
+        // Bind this to non-React methods.
+        this.onChange = this.onChange.bind(this);
+        this.onFilter = this.onFilter.bind(this);
+        this.updateElement = this.updateElement.bind(this);
+        this.handleClick = this.handleClick.bind(this);
+        this.handleSeeAllClick = this.handleSeeAllClick.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
         // This callback makes possible updating the See More buttons when the user clicks a facet,
         // which could cause these buttons to not be needed. This resets all the buttons to the See
         // More state.
-        const yGroupOpen = this.generateYGroupOpen(nextProps.context.matrix);
+        const yGroupOpen = Matrix.generateYGroupOpen(nextProps.context.matrix);
         this.setState({
-            yGroupOpen: yGroupOpen,
+            yGroupOpen,
             allYGroupsOpen: false,
         });
+    }
 
-    },
+    onChange(href) {
+        this.context.navigate(href);
+    }
 
-    // Called when the Visualize button dropdown menu gets opened or closed. `dropdownEl` is the DOM node for the dropdown menu.
-    // This sets inline CSS to set the height of the wrapper <div> to make room for the dropdown.
-    updateElement: function(dropdownEl) {
-        var wrapperEl = this.refs.hubscontrols;
-        var dropdownHeight = dropdownEl.clientHeight;
+    onFilter(e) {
+        const search = e.currentTarget.getAttribute('href');
+        this.context.navigate(search);
+        e.stopPropagation();
+        e.preventDefault();
+    }
+
+    // Called when the Visualize button dropdown menu gets opened or closed. `dropdownEl` is the
+    // DOM node for the dropdown menu. This sets inline CSS to set the height of the wrapper <div>
+    // to make room for the dropdown.
+    updateElement(dropdownEl) {
+        const wrapperEl = this.hubscontrols;
+        const dropdownHeight = dropdownEl.clientHeight;
         if (dropdownHeight === 0) {
             // The dropdown menu has closed
             wrapperEl.style.height = 'auto';
         } else {
             // The menu has dropped down
-            wrapperEl.style.height = wrapperEl.clientHeight + dropdownHeight + 'px';
+            wrapperEl.style.height = `${wrapperEl.clientHeight}${dropdownHeight}px`;
         }
-    },
+    }
 
     // Handle a click in a See More link within the matrix (not for the facets)
-    handleClick: function (groupKey) {
+    handleClick(groupKey) {
         const groupOpen = _.clone(this.state.yGroupOpen);
         groupOpen[groupKey] = !groupOpen[groupKey];
         this.setState({ yGroupOpen: groupOpen });
-    },
+    }
 
-    handleSeeAllClick: function () {
+    handleSeeAllClick() {
         this.setState((prevState) => {
             const newState = {};
 
@@ -142,82 +139,83 @@ var Matrix = module.exports.Matrix = createReactClass({
             newState.allYGroupsOpen = !prevState.allYGroupsOpen;
             return newState;
         });
-    },
+    }
 
-    render: function() {
-        var context = this.props.context;
-        var matrix = context.matrix;
-        var parsed_url = url.parse(this.context.location_href);
-        var matrix_base = parsed_url.search || '';
-        var matrix_search = matrix_base + (matrix_base ? '&' : '?');
-        var notification = context['notification'];
+    render() {
+        const context = this.props.context;
+        const matrix = context.matrix;
+        const parsedUrl = url.parse(this.context.location_href);
+        const matrixBase = parsedUrl.search || '';
+        const matrixSearch = matrixBase + (matrixBase ? '&' : '?');
+        const notification = context.notification;
         const visualizeLimit = 500;
-        if (context.notification == 'Success' || context.notification == 'No results found') {
-            var x_facets = matrix.x.facets.map(f => _.findWhere(context.facets, {field: f})).filter(f => f);
-            var y_facets = matrix.y.facets.map(f => _.findWhere(context.facets, {field: f})).filter(f => f);
-            y_facets = y_facets.concat(_.reject(context.facets, f => _.contains(matrix.x.facets, f.field) || _.contains(matrix.y.facets, f.field)));
-            var x_grouping = matrix.x.group_by;
-            var primary_y_grouping = matrix.y.group_by[0];
-            var secondary_y_grouping = matrix.y.group_by[1];
-            var x_buckets = matrix.x.buckets;
-            var x_limit = matrix.x.limit || x_buckets.length;
-            var y_groups = matrix.y[primary_y_grouping].buckets;
-            var y_limit = matrix.y.limit;
-            var y_group_facet = _.findWhere(context.facets, {field: primary_y_grouping});
-            var y_group_options = y_group_facet ? y_group_facet.terms.map(term => term.key) : [];
-            y_group_options.sort();
-            var search_base = context.matrix.search_base;
-            var visualize_disabled = matrix.doc_count > visualizeLimit;
-
-            var colCount = Math.min(x_buckets.length, x_limit + 1);
-            var rowCount = y_groups.length ? y_groups.map(g => Math.min(g[secondary_y_grouping].buckets.length, y_limit ? y_limit + 1 : g[secondary_y_grouping].buckets.length) + 1).reduce((a, b) => a + b) : 0;
+        if (notification === 'Success' || notification === 'No results found') {
+            const xFacets = matrix.x.facets.map(f => _.findWhere(context.facets, { field: f })).filter(f => f);
+            let yFacets = matrix.y.facets.map(f => _.findWhere(context.facets, { field: f })).filter(f => f);
+            yFacets = yFacets.concat(_.reject(context.facets, f => _.contains(matrix.x.facets, f.field) || _.contains(matrix.y.facets, f.field)));
+            const xGrouping = matrix.x.group_by;
+            const primaryYGrouping = matrix.y.group_by[0];
+            const secondaryYGrouping = matrix.y.group_by[1];
+            const xBuckets = matrix.x.buckets;
+            const xLimit = matrix.x.limit || xBuckets.length;
+            const yGroups = matrix.y[primaryYGrouping].buckets;
+            const yGroupFacet = _.findWhere(context.facets, { field: primaryYGrouping });
+            const yGroupOptions = yGroupFacet ? yGroupFacet.terms.map(term => term.key) : [];
+            yGroupOptions.sort();
+            const searchBase = context.matrix.search_base;
+            const visualizeDisabled = matrix.doc_count > visualizeLimit;
+            const colCount = Math.min(xBuckets.length, xLimit + 1);
 
             // Get a sorted list of batch hubs keys with case-insensitive sort
             // NOTE: Tim thinks this is overkill as opposed to simple sort()
-            var visualizeKeys = [];
+            let visualizeKeys = [];
             if (context.visualize_batch && Object.keys(context.visualize_batch).length) {
                 visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
-                    var aLower = a.toLowerCase();
-                    var bLower = b.toLowerCase();
+                    const aLower = a.toLowerCase();
+                    const bLower = b.toLowerCase();
                     return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
                 });
             }
 
             // Map view icons to svg icons
-            var view2svg = {
+            const view2svg = {
                 'list-alt': 'search',
-                'table': 'table'
+                table: 'table',
             };
 
             // Make an array of colors corresponding to the ordering of biosample_type
-            var biosampleTypeColors = this.context.biosampleTypeColors.colorList(y_groups.map(y_group => y_group.key));
+            const biosampleTypeColors = this.context.biosampleTypeColors.colorList(yGroups.map(yGroup => yGroup.key));
 
             return (
                 <div>
                     <div className="panel data-display main-panel">
                         <div className="row">
-                            <div className="col-sm-5 col-md-4 col-lg-3 sm-no-padding" style={{paddingRight: 0}}>
+                            <div className="col-sm-5 col-md-4 col-lg-3 sm-no-padding" style={{ paddingRight: 0 }}>
                                 <div className="row">
                                     <div className="col-sm-11">
                                         <div>
-                                            <h3 style={{marginTop: 0}}>{context.title}</h3>
+                                            <h3 style={{ marginTop: 0 }}>{context.title}</h3>
                                             <div>
                                                 <p>Click or enter search terms to filter the experiments included in the matrix.</p>
-                                                <TextFilter filters={context.filters} searchBase={matrix_search} onChange={this.onChange} />
+                                                <TextFilter filters={context.filters} searchBase={matrixSearch} onChange={this.onChange} />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-sm-7 col-md-8 col-lg-9 sm-no-padding" style={{paddingLeft: 0}}>
-                                <FacetList facets={x_facets} filters={context.filters} orientation="horizontal"
-                                           searchBase={matrix_search} onFilter={this.onFilter} />
+                            <div className="col-sm-7 col-md-8 col-lg-9 sm-no-padding" style={{ paddingLeft: 0 }}>
+                                <FacetList
+                                    facets={xFacets}
+                                    filters={context.filters}
+                                    orientation="horizontal"
+                                    searchBase={matrixSearch}
+                                    onFilter={this.onFilter}
+                                />
                             </div>
                         </div>
                         <div className="row">
-                            <div className="col-sm-5 col-md-4 col-lg-3 sm-no-padding" style={{paddingRight: 0}}>
-                                <FacetList facets={y_facets} filters={context.filters}
-                                           searchBase={matrix_search} onFilter={this.onFilter} />
+                            <div className="col-sm-5 col-md-4 col-lg-3 sm-no-padding" style={{ paddingRight: 0 }}>
+                                <FacetList facets={yFacets} filters={context.filters} searchBase={matrixSearch} onFilter={this.onFilter} />
                             </div>
                             <div className="col-sm-7 col-md-8 col-lg-9 sm-no-padding">
                                 <div className="matrix-wrapper">
@@ -230,12 +228,11 @@ var Matrix = module.exports.Matrix = createReactClass({
                                         <tbody>
                                             {matrix.doc_count ?
                                                 <tr>
-                                                    <th style={{width: 20}}></th>
-                                                    <th colSpan={colCount + 1}
-                                                        style={{padding: "5px", borderBottom: "solid 1px #ddd", textAlign: "center"}}>{matrix.x.label.toUpperCase()}</th>
+                                                    <th style={{ width: 20 }} />
+                                                    <th colSpan={colCount + 1} style={{ padding: '5px', borderBottom: 'solid 1px #ddd', textAlign: 'center' }}>{matrix.x.label.toUpperCase()}</th>
                                                 </tr>
                                             : null}
-                                            <tr style={{borderBottom: "solid 1px #ddd"}}>
+                                            <tr style={{ borderBottom: 'solid 1px #ddd' }}>
                                                 <th style={{ textAlign: 'center', width: 200 }}>
                                                     <h3>
                                                       {matrix.doc_count} results
@@ -245,80 +242,78 @@ var Matrix = module.exports.Matrix = createReactClass({
                                                     </div>
                                                     {context.filters.length ?
                                                         <div className="clear-filters-control-matrix">
-                                                            <a href={context.matrix.clear_matrix}>Clear Filters <i className="icon icon-times-circle"></i></a>
+                                                            <a href={context.matrix.clear_matrix}>Clear Filters <i className="icon icon-times-circle" /></a>
                                                         </div>
                                                     : null}
                                                 </th>
-                                                {x_buckets.map(function(xb, i) {
-                                                    if (i < x_limit) {
-                                                        var href = search_base + '&' + x_grouping + '=' + globals.encodedURIComponent(xb.key);
-                                                        return <th key={i} className="rotate30" style={{width: 10}}><div><a title={xb.key} href={href}>{xb.key}</a></div></th>;
-                                                    } else if (i == x_limit) {
-                                                        var parsed = url.parse(matrix_base, true);
+                                                {xBuckets.map((xb, i) => {
+                                                    if (i < xLimit) {
+                                                        const href = `${searchBase}&${xGrouping}=${globals.encodedURIComponent(xb.key)}`;
+                                                        return <th key={i} className="rotate30" style={{ width: 10 }}><div><a title={xb.key} href={href}>{xb.key}</a></div></th>;
+                                                    } else if (i === xLimit) {
+                                                        const parsed = url.parse(matrixBase, true);
                                                         parsed.query['x.limit'] = null;
                                                         delete parsed.search; // this makes format compose the search string out of the query object
-                                                        var unlimited_href = url.format(parsed);
-                                                        return <th key={i} className="rotate30" style={{width: 10}}><div><span><a href={unlimited_href}>...and {x_buckets.length - x_limit} more</a></span></div></th>;
-                                                    } else {
-                                                        return null;
+                                                        const unlimitedHref = url.format(parsed);
+                                                        return <th key={i} className="rotate30" style={{ width: 10 }}><div><span><a href={unlimitedHref}>...and {xBuckets.length - xLimit} more</a></span></div></th>;
                                                     }
+                                                    return null;
                                                 })}
                                             </tr>
-                                            {y_groups.map((group, i) => {
-                                                var seriesIndex = y_group_options.indexOf(group.key);
-                                                var groupColor = biosampleTypeColors[i];
-                                                var seriesColor = color(groupColor);
-                                                var parsed = url.parse(matrix_base, true);
-                                                parsed.query[primary_y_grouping] = group.key;
+                                            {yGroups.map((group, i) => {
+                                                const groupColor = biosampleTypeColors[i];
+                                                const seriesColor = color(groupColor);
+                                                const parsed = url.parse(matrixBase, true);
+                                                parsed.query[primaryYGrouping] = group.key;
                                                 parsed.query['y.limit'] = null;
                                                 delete parsed.search; // this makes format compose the search string out of the query object
-                                                var group_href = url.format(parsed);
-                                                var rows = [<tr key={group.key}>
-                                                    <th colSpan={colCount + 1} style={{textAlign: 'left', backgroundColor: groupColor}}>
-                                                        <a href={group_href} style={{color: '#fff'}}>{group.key}</a>
+                                                const groupHref = url.format(parsed);
+                                                const rows = [<tr key={group.key}>
+                                                    <th colSpan={colCount + 1} style={{ textAlign: 'left', backgroundColor: groupColor }}>
+                                                        <a href={groupHref} style={{ color: '#fff' }}>{group.key}</a>
                                                     </th>
                                                 </tr>];
-                                                var group_buckets = group[secondary_y_grouping].buckets;
-                                                var y_limit = matrix.y.limit || group_buckets.length;
+                                                const groupBuckets = group[secondaryYGrouping].buckets;
+                                                const yLimit = matrix.y.limit || groupBuckets.length;
 
                                                 // If this group isn't open (noted by
                                                 // this.state.yGroupOpen[key]), extract just the
                                                 // group rows that are under the display limit.
-                                                const groupRows = (this.state.yGroupOpen[group.key] || this.state.allYGroupsOpen) ? group_buckets : group_buckets.slice(0, y_limit);
-                                                rows.push.apply(rows, groupRows.map((yb, j) => {
-                                                    var href = search_base + '&' + secondary_y_grouping + '=' + globals.encodedURIComponent(yb.key);
+                                                const groupRows = (this.state.yGroupOpen[group.key] || this.state.allYGroupsOpen) ? groupBuckets : groupBuckets.slice(0, yLimit);
+                                                rows.push(...groupRows.map((yb) => {
+                                                    const href = `${searchBase}&${secondaryYGrouping}=${globals.encodedURIComponent(yb.key)}`;
                                                     return (
                                                         <tr key={yb.key}>
-                                                            <th style={{backgroundColor: "#ddd", border: "solid 1px white"}}><a href={href}>{yb.key}</a></th>
-                                                            {x_buckets.map(function(xb, i) {
-                                                                if (i < x_limit) {
-                                                                    var value = yb[x_grouping][i];
-                                                                    var color = seriesColor.clone();
+                                                            <th style={{ backgroundColor: '#ddd', border: 'solid 1px white' }}><a href={href}>{yb.key}</a></th>
+                                                            {xBuckets.map((xb, k) => {
+                                                                if (k < xLimit) {
+                                                                    const value = yb[xGrouping][k];
+                                                                    const cellColor = seriesColor.clone();
                                                                     // scale color between white and the series color
-                                                                    color.lightness(color.lightness() + (1 - value / matrix.max_cell_doc_count) * (100 - color.lightness()));
-                                                                    let textColor = color.luminosity() > .5 ? '#000' : '#fff';
-                                                                    var href = search_base + '&' + secondary_y_grouping + '=' + globals.encodedURIComponent(yb.key)
-                                                                                        + '&' + x_grouping + '=' + globals.encodedURIComponent(xb.key);
-                                                                    var title = yb.key + ' / ' + xb.key + ': ' + value;
-                                                                    return <td key={xb.key} style={{backgroundColor: color.hexString()}}>
-                                                                        {value ? <a href={href} style={{color: textColor}} title={title}>{value}</a> : ''}
-                                                                    </td>;
-                                                                } else {
-                                                                    return null;
+                                                                    cellColor.lightness(cellColor.lightness() + ((1 - (value / matrix.max_cell_doc_count)) * (100 - cellColor.lightness())));
+                                                                    const textColor = cellColor.luminosity() > 0.5 ? '#000' : '#fff';
+                                                                    const cellHref = `${searchBase}&${secondaryYGrouping}=${globals.encodedURIComponent(yb.key)}&${xGrouping}=${globals.encodedURIComponent(xb.key)}`;
+                                                                    const title = `${yb.key} / ${xb.key}: ${value}`;
+                                                                    return (
+                                                                        <td key={xb.key} style={{ backgroundColor: cellColor.hexString() }}>
+                                                                            {value ? <a href={cellHref} style={{ color: textColor }} title={title}>{value}</a> : null}
+                                                                        </td>
+                                                                    );
                                                                 }
+                                                                return null;
                                                             })}
-                                                            {x_buckets.length > x_limit && <td></td>}
+                                                            {xBuckets.length > xLimit && <td />}
                                                         </tr>
                                                     );
                                                 }));
-                                                if (group_buckets.length > y_limit && !this.state.allYGroupsOpen) {
+                                                if (groupBuckets.length > yLimit && !this.state.allYGroupsOpen) {
                                                     rows.push(
                                                         <tr>
                                                             <th className="group-more-cell">
                                                                 <GroupMoreButton
                                                                     id={group.key}
                                                                     handleClick={this.handleClick}
-                                                                    displayText={this.state.yGroupOpen[group.key] ? '- See fewer' : `+ See ${group_buckets.length - y_limit} more…`}
+                                                                    displayText={this.state.yGroupOpen[group.key] ? '- See fewer' : `+ See ${groupBuckets.length - yLimit} more…`}
                                                                 />
                                                             </th>
                                                             {_.range(colCount - 1).map(n => <td key={n} />)}
@@ -345,15 +340,15 @@ var Matrix = module.exports.Matrix = createReactClass({
                                     </table>
                                 </div>
                                 <div className="hubs-controls" ref="hubscontrols">
-                                    {context['batch_download'] ?
+                                    {context.batch_download ?
                                         <BatchDownload context={context} />
                                     : null}
                                     {' '}
                                     {visualizeKeys.length ?
                                         <BrowserSelector
                                             visualizeCfg={context.visualize_batch}
-                                            disabled={visualize_disabled}
-                                            title={visualize_disabled ? 'Filter to ' + visualizeLimit + ' to visualize' : 'Visualize'}
+                                            disabled={visualizeDisabled}
+                                            title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'}
                                         />
                                     : null}
                                 </div>
@@ -362,22 +357,19 @@ var Matrix = module.exports.Matrix = createReactClass({
                     </div>
                 </div>
             );
-        } else {
-            return <h4>{context.notification}</h4>;
         }
-    },
-
-    onFilter: function(e) {
-        var search = e.currentTarget.getAttribute('href');
-        this.context.navigate(search);
-        e.stopPropagation();
-        e.preventDefault();
-    },
-
-    onChange: function(href) {
-        this.context.navigate(href);
+        return <h4>{notification}</h4>;
     }
+}
 
-});
+Matrix.propTypes = {
+    context: React.PropTypes.object.isRequired,
+};
 
-globals.content_views.register(Matrix, 'Matrix');
+Matrix.contextTypes = {
+    location_href: PropTypes.string,
+    navigate: PropTypes.func,
+    biosampleTypeColors: PropTypes.object, // DataColor instance for experiment project
+};
+
+globals.contentViews.register(Matrix, 'Matrix');

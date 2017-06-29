@@ -6,12 +6,12 @@ import _ from 'underscore';
 import url from 'url';
 import jsonScriptEscape from '../libs/jsonScriptEscape';
 import origin from '../libs/origin';
-import globals from './globals';
+import * as globals from './globals';
 import DataColors from './datacolors';
 import Navigation from './navigation';
 import Footer from './footer';
 import Home from './home';
-import { newsHead } from './page';
+import newsHead from './page';
 
 const portal = {
     portal_title: 'ENCODE',
@@ -136,7 +136,7 @@ function recordServerStats(serverStats, timingVar) {
         if (name.indexOf('_time') !== -1) {
             ga('send', 'timing', {
                 timingCategory: name,
-                timingVar: timingVar,
+                timingVar,
                 timingValue: Math.round(serverStats[name] / 1000),
             });
         }
@@ -149,7 +149,7 @@ function recordBrowserStats(browserStats, timingVar) {
         if (name.indexOf('_time') !== -1) {
             ga('send', 'timing', {
                 timingCategory: name,
-                timingVar: timingVar,
+                timingVar,
                 timingValue: browserStats[name],
             });
         }
@@ -247,9 +247,9 @@ class App extends React.Component {
             listActionsFor: this.listActionsFor,
             currentResource: this.currentResource,
             location_href: this.state.href,
-            portal: portal,
-            projectColors: projectColors,
-            biosampleTypeColors: biosampleTypeColors,
+            portal,
+            projectColors,
+            biosampleTypeColors,
             fetch: this.fetch,
             navigate: this.navigate,
             adviseUnsavedChanges: this.adviseUnsavedChanges,
@@ -270,7 +270,7 @@ class App extends React.Component {
         this.setState({
             href: window.location.href,
             session_cookie: sessionCookie,
-            session: session,
+            session,
         });
 
         // Make a URL for the logo.
@@ -460,7 +460,7 @@ class App extends React.Component {
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ accessToken: accessToken }),
+            body: JSON.stringify({ accessToken }),
         }).then((response) => {
             this.lock.hide();
             if (!response.ok) {
@@ -694,7 +694,7 @@ class App extends React.Component {
                 this.requestCurrent = false;
             }
             this.setState({
-                href: href,  // href should be consistent with context
+                href,  // href should be consistent with context
                 context: event.state,
             });
         }
@@ -720,6 +720,7 @@ class App extends React.Component {
         if (this.state.unsavedChanges.length) {
             return 'You have unsaved changes.';
         }
+        return undefined;
     }
 
     navigate(href, options) {
@@ -919,12 +920,12 @@ class App extends React.Component {
                 context = context.default_page;
             }
             if (context) {
-                const ContentView = globals.content_views.lookup(context, currentAction);
+                const ContentView = globals.contentViews.lookup(context, currentAction);
                 content = <ContentView context={context} />;
                 containerClass = 'container';
             }
         }
-        const errors = this.state.errors.map(() => <div className="alert alert-error" />);
+        const errors = this.state.errors.map(i => <div key={i} className="alert alert-error" />);
 
         let appClass = 'done';
         if (this.state.slow) {
@@ -1032,7 +1033,7 @@ module.exports = App;
 
 
 // Only used for Jest tests.
-module.exports.getRenderedProps = function (document) {
+module.exports.getRenderedProps = function getRenderedProps(document) {
     const props = {};
 
     // Ensure the initial render is exactly the same

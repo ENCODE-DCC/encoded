@@ -556,6 +556,7 @@ OUTPUT_TYPE_8CHARS = {
     "methylation state at CHH":             "mth CHH",
     "enrichment":                           "enrich",
     "replication timing profile":           "repli tm",
+    "relative replication signal":          "relrepsg",
     "variant calls":                        "vars",
     "filtered SNPs":                        "f SNPs",
     "filtered indels":                      "f indel",
