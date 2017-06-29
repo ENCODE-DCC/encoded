@@ -21,16 +21,16 @@ def user_3_4(value, system):
 def user_5_6(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3409
     if ['phone1'] in value:
-        value['phone1'] is None
+        del value['phone1']
     if ['phone2'] in value:
-        value['phone2'] is None
+        del value['phone2']
     if ['fax'] in value:
-        value['fax'] is None
+        del value['fax']
     if ['skype'] in value:
-        value['skype'] is None
+        del value['skype']
     if ['google'] in value:
-        value['google'] is None
+        del value['google']
     if ['timezone'] in value:
-        value['timezone'] is None
+        del value['timezone']
     if ['schema_version'] in value:
         value['schema'] == '6'

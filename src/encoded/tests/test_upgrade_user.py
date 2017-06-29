@@ -60,9 +60,9 @@ def user_6(user):
 def test_user_upgrade_contact_info(upgrader, user_6):
     value = upgrader.upgrade('user', user_6, target_version='6')
     assert value['schema_version'] == '6'
-    assert value['phone1'] is None
-    assert value['phone2'] is None
-    assert value['fax'] is None
-    assert value['skype'] is None
-    assert value['google'] is None
-    assert value['timezone'] is None
+    assert ['phone1'] not in value
+    assert ['phone2'] not in value
+    assert ['fax'] not in value
+    assert ['skype'] not in value
+    assert ['google'] not in value
+    assert ['timezone'] not in value
