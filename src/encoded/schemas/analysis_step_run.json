@@ -16,7 +16,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "analysis_step_version": {
             "title": "Analysis Step Version",
@@ -82,12 +82,13 @@
             "title": "Status",
             "type": "string",
             "enum" : [
-                "waiting",
-                "running",
-                "finished",
-                "error",
+                "in progress",
+                "released",
+                "deleted",
                 "virtual"
             ]
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/analysis_step_run.md"
+
 }

@@ -1,110 +1,76 @@
-'use strict';
-const React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
-const panel = require('../libs/bootstrap/panel');
-const _ = require('underscore');
-const url = require('url');
+import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
-const globals = require('./globals');
-const navigation = require('./navigation');
-const dataset = require('./dataset');
-const dbxref = require('./dbxref');
+import { ExperimentTable } from './dataset';
+import { DbxrefList } from './dbxref';
+import { Document, DocumentsPanel, DocumentPreview, DocumentFile } from './doc';
+import { GeneticModificationSummary } from './genetic_modification';
+import * as globals from './globals';
+import { ProjectBadge } from './image';
+import { RelatedItems } from './item';
+import { Breadcrumbs } from './navigation';
+import { singleTreatment, treatmentDisplay, PanelLookup } from './objectutils';
+import pubReferenceList from './reference';
 import StatusLabel from './statuslabel';
-const image = require('./image');
-const item = require('./item');
-const { pubReferenceList } = require('./reference');
-const { singleTreatment, treatmentDisplay } = require('./objectutils');
-const doc = require('./doc');
-const {BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable} = require('./typeutils');
-const {GeneticModificationSummary} = require('./genetic_modification');
-
-const Breadcrumbs = navigation.Breadcrumbs;
-const DbxrefList = dbxref.DbxrefList;
-const {Document, DocumentsPanel, DocumentsSubpanels, DocumentPreview, DocumentFile} = doc;
-const ExperimentTable = dataset.ExperimentTable;
-const RelatedItems = item.RelatedItems;
-const ProjectBadge = image.ProjectBadge;
-const {Panel, PanelBody, PanelHeading} = panel;
+import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable } from './typeutils';
 
 
-var PanelLookup = function (props) {
-    // XXX not all panels have the same markup
-    var context;
-    if (props['@id']) {
-        context = props;
-        props = {context: context, key: context['@id']};
-    }
-    var PanelView = globals.panel_views.lookup(props.context);
-    return <PanelView key={props.context.uuid} {...props} />;
-};
+class BiosampleComponent extends React.Component {
+    render() {
+        const context = this.props.context;
+        const itemClass = globals.itemClass(context, 'view-item');
+        const aliasList = context.aliases.join(', ');
 
-
-var BiosampleComponent = module.exports.Biosample = createReactClass({
-    contextTypes: {
-        session: PropTypes.object, // Login information from <App>
-    },
-
-    render: function() {
-        var context = this.props.context;
-        var itemClass = globals.itemClass(context, 'view-item');
-        var aliasList = context.aliases.join(", ");
-
-        // Set up the breadcrumbs
-        var crumbs = [
-            {id: 'Biosamples'},
-            {id: context.biosample_type, query: 'biosample_type=' + context.biosample_type, tip: context.biosample_type},
-            {id: <i>{context.organism.scientific_name}</i>, query: 'organism.scientific_name=' + context.organism.scientific_name, tip: context.organism.scientific_name},
-            {id: context.biosample_term_name, query: 'biosample_term_name=' + context.biosample_term_name, tip: context.biosample_term_name}
+        // Set up the breadcrumbs.
+        const crumbs = [
+            { id: 'Biosamples' },
+            { id: context.biosample_type, query: `biosample_type=${context.biosample_type}`, tip: context.biosample_type },
+            { id: <i>{context.organism.scientific_name}</i>, query: `organism.scientific_name=${context.organism.scientific_name}`, tip: context.organism.scientific_name },
+            { id: context.biosample_term_name, query: `biosample_term_name=${context.biosample_term_name}`, tip: context.biosample_term_name },
         ];
 
         // Build the text of the synchronization string
-        var synchText;
+        let synchText;
         if (context.synchronization) {
             synchText = context.synchronization +
                 (context.post_synchronization_time ?
-                    ' + ' + context.post_synchronization_time + (context.post_synchronization_time_units ? ' ' + context.post_synchronization_time_units : '')
+                    ` + ${context.post_synchronization_time}${context.post_synchronization_time_units ? ` ${context.post_synchronization_time_units}` : ''}`
                 : '');
         }
 
         // Collect all documents in this biosample
-        var combinedDocs = CollectBiosampleDocs(context);
+        let combinedDocs = CollectBiosampleDocs(context);
 
         // If this biosample is part of another, collect those documents too, then remove
         // any duplicate documents in the combinedDocs array.
         if (context.part_of) {
-            var parentCombinedDocs = CollectBiosampleDocs(context.part_of);
+            const parentCombinedDocs = CollectBiosampleDocs(context.part_of);
             combinedDocs = combinedDocs.concat(parentCombinedDocs);
         }
         combinedDocs = globals.uniqueObjectsArray(combinedDocs);
 
         // Collect up biosample and model organism donor constructs
-        var constructs = ((context.constructs && context.constructs.length) ? context.constructs : [])
+        const constructs = ((context.constructs && context.constructs.length) ? context.constructs : [])
             .concat((context.model_organism_donor_constructs && context.model_organism_donor_constructs.length) ? context.model_organism_donor_constructs : []);
 
         // Make string of alternate accessions
-        var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
+        const altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
         // Get a list of reference links, if any
-        var references = pubReferenceList(context.references);
+        const references = pubReferenceList(context.references);
 
         // Render tags badges
-        var tagBadges;
+        let tagBadges;
         if (context.internal_tags && context.internal_tags.length) {
-            tagBadges = context.internal_tags.map(tag => <img src={'/static/img/tag-' + tag + '.png'} alt={tag + ' tag'} />);
-        }
-
-        // Make the donor panel (if any) title
-        var donorPanelTitle;
-        if (context.donor) {
-            donorPanelTitle = (context.donor.organism.name === 'human' ? 'Donor' : 'Strain') + ' information';
+            tagBadges = context.internal_tags.map(tag => <img key={tag} src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
         }
 
         return (
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root='/search/?type=Biosample' crumbs={crumbs} />
+                        <Breadcrumbs root="/search/?type=Biosample" crumbs={crumbs} />
                         <h2>
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
                         </h2>
@@ -139,7 +105,7 @@ var BiosampleComponent = module.exports.Biosample = createReactClass({
                                         <dd>{BiosampleSummaryString(context)}</dd>
                                     </div>
 
-                                    {context.description ? 
+                                    {context.description ?
                                         <div data-test="description">
                                             <dt>Description</dt>
                                             <dd className="sentence-case">{context.description}</dd>
@@ -156,7 +122,7 @@ var BiosampleComponent = module.exports.Biosample = createReactClass({
                                     {context.donor && context.donor.organism.name !== 'human' && context.age ?
                                         <div data-test="age">
                                             <dt>Age</dt>
-                                            <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd>
+                                            <dd className="sentence-case">{context.age}{context.age_units ? ` ${context.age_units}` : null}</dd>
                                         </div>
                                     : null}
 
@@ -185,14 +151,12 @@ var BiosampleComponent = module.exports.Biosample = createReactClass({
                                         <div data-test="depletedin">
                                             <dt>Depleted in</dt>
                                             <dd>
-                                                {context.depleted_in_term_name.map(function(termName, i) {
-                                                    return (
-                                                        <span key={i}>
-                                                            {i > 0 ? ', ' : ''}
-                                                            {termName}
-                                                        </span>
-                                                    );
-                                                })}
+                                                {context.depleted_in_term_name.map((termName, i) => (
+                                                    <span key={i}>
+                                                        {i > 0 ? ', ' : ''}
+                                                        {termName}
+                                                    </span>
+                                                ))}
                                             </dd>
                                         </div>
                                     : null}
@@ -253,10 +217,10 @@ var BiosampleComponent = module.exports.Biosample = createReactClass({
                                         </div>
                                     : null}
 
-                                    {context.derived_from ?
-                                        <div data-test="derivedfrom">
-                                            <dt>Derived from biosample</dt>
-                                            <dd><a href={context.derived_from['@id']}>{context.derived_from.accession}</a></dd>
+                                    {context.originated_from ?
+                                        <div data-test="originatedfrom">
+                                            <dt>Originated from biosample</dt>
+                                            <dd><a href={context.originated_from['@id']}>{context.originated_from.accession}</a></dd>
                                         </div>
                                     : null}
 
@@ -369,18 +333,16 @@ var BiosampleComponent = module.exports.Biosample = createReactClass({
                             </div>
                         </div>
 
-                        {context.pooled_from.length ?
+                        {context.pooled_from && context.pooled_from.length ?
                             <section data-test="pooledfrom">
                                 <hr />
                                 <h4>Pooled from biosamples</h4>
                                 <ul className="non-dl-list">
-                                    {context.pooled_from.map(function (biosample) {
-                                        return (
-                                            <li key={biosample['@id']}>
-                                                <a href={biosample['@id']}>{biosample.accession}</a>
-                                            </li>
-                                        );
-                                    })}
+                                    {context.pooled_from.map(biosample => (
+                                        <li key={biosample['@id']}>
+                                            <a href={biosample['@id']}>{biosample.accession}</a>
+                                        </li>
+                                    ))}
                                 </ul>
                             </section>
                         : null}
@@ -429,204 +391,156 @@ var BiosampleComponent = module.exports.Biosample = createReactClass({
 
                 <RelatedItems
                     title="Experiments using this biosample"
-                    url={'/search/?type=Experiment&replicates.library.biosample.uuid=' + context.uuid}
-                    Component={ExperimentTable} ignoreErrors />
+                    url={`/search/?type=Experiment&replicates.library.biosample.uuid=${context.uuid}`}
+                    Component={ExperimentTable}
+                />
 
-                <RelatedItems title="Biosamples that are part of this biosample"
-                              url={'/search/?type=Biosample&part_of.uuid=' + context.uuid}
-                              Component={BiosampleTable} ignoreErrors />
+                <RelatedItems
+                    title="Biosamples that are part of this biosample"
+                    url={`/search/?type=Biosample&part_of.uuid=${context.uuid}`}
+                    Component={BiosampleTable}
+                />
 
-                <RelatedItems title="Biosamples that are derived from this biosample"
-                              url={'/search/?type=Biosample&derived_from.uuid=' + context.uuid}
-                              Component={BiosampleTable} ignoreErrors />
+                <RelatedItems
+                    title="Biosamples originating from this biosample"
+                    url={`/search/?type=Biosample&originated_from.uuid=${context.uuid}`}
+                    Component={BiosampleTable}
+                />
 
-                <RelatedItems title="Biosamples that are pooled from this biosample"
-                              url={'/search/?type=Biosample&pooled_from.uuid=' + context.uuid}
-                              Component={BiosampleTable} ignoreErrors />
+                <RelatedItems
+                    title="Biosamples that are pooled from this biosample"
+                    url={`/search/?type=Biosample&pooled_from.uuid=${context.uuid}`}
+                    Component={BiosampleTable}
+                />
 
                 {combinedDocs.length ?
-                    <DocumentsPanel documentSpecs={[{documents: combinedDocs}]} />
+                    <DocumentsPanel documentSpecs={[{ documents: combinedDocs }]} />
                 : null}
             </div>
         );
     }
-});
+}
+
+BiosampleComponent.propTypes = {
+    context: PropTypes.object.isRequired, // ENCODE biosample object to be rendered
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+BiosampleComponent.contextTypes = {
+    session: PropTypes.object, // Login information
+};
 
 const Biosample = auditDecor(BiosampleComponent);
 
-globals.content_views.register(Biosample, 'Biosample');
+globals.contentViews.register(Biosample, 'Biosample');
 
 
-var MaybeLink = createReactClass({
-    render() {
-        if (!this.props.href || this.props.href === 'N/A') {
-            return <span>{this.props.children}</span>;
-        } else {
-            return (
-                <a {...this.props}>{this.props.children}</a>
-            );
-        }
+// Certain hrefs in a biosample context object could be empty, or have the value 'N/A'. This
+// component renders the child components of this one (likely just a string) as just an unadorned
+// component. But if href has any value besides this, the child component is rendered as a link
+// with this href.
+
+const MaybeLink = (props) => {
+    const { href, children } = props;
+
+    if (!href || href === 'N/A') {
+        return <span>{children}</span>;
     }
-});
+    return <a {...props}>{children}</a>;
+};
 
+MaybeLink.propTypes = {
+    href: PropTypes.string, // String
+    children: PropTypes.node.isRequired, // React child components to this one
+};
+
+MaybeLink.defaultProps = {
+    href: '',
+};
+
+
+// Map from prefixes to corresponding URL bases. Not all term ID prefixes covered here. Specific
+// term IDs are appended to these after converting ':' to '_'.
+const urlMap = {
+    EFO: 'http://www.ebi.ac.uk/efo/',
+    UBERON: 'http://www.ontobee.org/ontology/UBERON?iri=http://purl.obolibrary.org/obo/',
+    CL: 'http://www.ontobee.org/ontology/CL?iri=http://purl.obolibrary.org/obo/',
+};
 
 // Display the biosample term ID given in `termId`, and link to a corresponding site if the prefix
 // of the term ID needs it. Any term IDs with prefixes not maching any in the `urlMap` property
 // simply display without a link.
-var BiosampleTermId = createReactClass({
-    propTypes: {
-        termId: PropTypes.string // Biosample whose term is being displayed.
-    },
+const BiosampleTermId = (props) => {
+    const termId = props.termId;
 
-    // Map from prefixes to corresponding URL bases. Not all term ID prefixes covered here.
-    // Specific term IDs are appended to these after converting ':' to '_'.
-    urlMap: {
-        'EFO': 'http://www.ebi.ac.uk/efo/',
-        'UBERON': 'http://www.ontobee.org/ontology/UBERON?iri=http://purl.obolibrary.org/obo/',
-        'CL': 'http://www.ontobee.org/ontology/CL?iri=http://purl.obolibrary.org/obo/'
-    },
-
-    render: function() {
-        var termId = this.props.termId;
-
-        if (termId) {
-            // All are of the form XXX:nnnnnnn...
-            var idPieces = termId.split(':');
-            if (idPieces.length === 2) {
-                var urlBase = this.urlMap[idPieces[0]];
-                if (urlBase) {
-                    return <a href={urlBase + termId.replace(':', '_')}>{termId}</a>;
-                }
+    if (termId) {
+        // All are of the form XXX:nnnnnnn...
+        const idPieces = termId.split(':');
+        if (idPieces.length === 2) {
+            const urlBase = urlMap[idPieces[0]];
+            if (urlBase) {
+                return <a href={urlBase + termId.replace(':', '_')}>{termId}</a>;
             }
-
-            // Either term ID not in specified form (schema should disallow) or not one of the ones
-            // we link to. Just display the term ID without linking out.
-            return <span>{termId}</span>;
         }
 
-        // biosample_term_id is a required property, but just in case...
-        return null;
+        // Either term ID not in specified form (schema should disallow) or not one of the ones
+        // we link to. Just display the term ID without linking out.
+        return <span>{termId}</span>;
     }
-});
+
+    // biosample_term_id is a required property, but just in case...
+    return null;
+};
+
+BiosampleTermId.propTypes = {
+    termId: PropTypes.string, // Biosample whose term is being displayed.
+};
+
+BiosampleTermId.defaultProps = {
+    termId: '',
+};
 
 
-var Treatment = module.exports.Treatment = createReactClass({
-    render: function() {
-        var context = this.props.context;
-        var treatmentText = '';
+const Treatment = (props) => {
+    const context = props.context;
 
-        treatmentText = singleTreatment(context);
-        return (
-            <dl className="key-value">
-                <div data-test="treatment">
-                    <dt>Treatment</dt>
-                    <dd>{treatmentText}</dd>
-                </div>
-
-                <div data-test="type">
-                    <dt>Type</dt>
-                    <dd>{context.treatment_type}</dd>
-                </div>
-            </dl>
-        );
-    }
-});
-
-globals.panel_views.register(Treatment, 'Treatment');
-
-
-var Construct = module.exports.Construct = createReactClass({
-    render: function() {
-        var context = this.props.context;
-        var embeddedDocs = this.props.embeddedDocs;
-        var construct_documents = {};
-        context.documents.forEach(function (doc) {
-            construct_documents[doc['@id']] = PanelLookup({context: doc, embeddedDocs: embeddedDocs});
-        });
-
-        return (
-            <div>
-                <dl className="key-value">
-                    {context.target ?
-                        <div data-test="target">
-                            <dt>Target</dt>
-                            <dd><a href={context.target['@id']}>{context.target.name}</a></dd>
-                        </div>
-                    : null}
-
-                    {context.vector_backbone_name ?
-                        <div data-test="vector">
-                            <dt>Vector</dt>
-                            <dd>{context.vector_backbone_name}</dd>
-                        </div>
-                    : null}
-
-                    {context.construct_type ?
-                        <div data-test="construct-type">
-                            <dt>Construct Type</dt>
-                            <dd>{context.construct_type}</dd>
-                        </div>
-                    : null}
-
-                    {context.description ?
-                        <div data-test="description">
-                            <dt>Description</dt>
-                            <dd>{context.description}</dd>
-                        </div>
-                    : null}
-
-                    {context.tags.length ?
-                        <div data-test="tags">
-                            <dt>Tags</dt>
-                            <dd>
-                                <ul>
-                                    {context.tags.map(function (tag, index) {
-                                        return (
-                                            <li key={index}>
-                                                {tag.name} (Location: {tag.location})
-                                            </li>
-                                        );
-                                    })}
-                                </ul>
-                            </dd>
-                        </div>
-                    : null}
-
-                    {context.source.title ?
-                        <div data-test="source">
-                            <dt>Source</dt>
-                            <dd>{context.source.title}</dd>
-                        </div>
-                    : null}
-
-                    {context.product_id ?
-                        <div data-test="product-id">
-                            <dt>Product ID</dt>
-                            <dd><MaybeLink href={context.url}>{context.product_id}</MaybeLink></dd>
-                        </div>
-                    : null}
-                </dl>
-
-                {embeddedDocs && Object.keys(construct_documents).length ?
-                    <div>
-                        <hr />
-                        <h4>Construct documents</h4>
-                        <div className="row">{construct_documents}</div>
-                    </div>
-                : null}
+    const treatmentText = singleTreatment(context);
+    return (
+        <dl className="key-value">
+            <div data-test="treatment">
+                <dt>Treatment</dt>
+                <dd>{treatmentText}</dd>
             </div>
-        );
-    }
-});
 
-globals.panel_views.register(Construct, 'Construct');
+            <div data-test="type">
+                <dt>Type</dt>
+                <dd>{context.treatment_type}</dd>
+            </div>
+        </dl>
+    );
+};
+
+Treatment.propTypes = {
+    context: PropTypes.object.isRequired, // Treatment context object
+};
+
+globals.panelViews.register(Treatment, 'Treatment');
 
 
-var RNAi = module.exports.RNAi = createReactClass({
-    render: function() {
-        var context = this.props.context;
-        return (
-             <dl className="key-value">
+// Display a panel with details of the biosample construct. Also displays any embedded documents
+// for the construct.
+
+const Construct = (props) => {
+    const { context, embeddedDocs } = props;
+    const constructDocuments = {};
+    context.documents.forEach((doc) => {
+        constructDocuments[doc['@id']] = PanelLookup({ context: doc, embeddedDocs });
+    });
+
+    return (
+        <div>
+            <dl className="key-value">
                 {context.target ?
                     <div data-test="target">
                         <dt>Target</dt>
@@ -634,170 +548,241 @@ var RNAi = module.exports.RNAi = createReactClass({
                     </div>
                 : null}
 
-                {context.rnai_type ?
-                    <div data-test="type">
-                        <dt>RNAi type</dt>
-                        <dd>{context.rnai_type}</dd>
+                {context.vector_backbone_name ?
+                    <div data-test="vector">
+                        <dt>Vector</dt>
+                        <dd>{context.vector_backbone_name}</dd>
                     </div>
                 : null}
 
-                {context.source && context.source.title ?
+                {context.construct_type ?
+                    <div data-test="construct-type">
+                        <dt>Construct Type</dt>
+                        <dd>{context.construct_type}</dd>
+                    </div>
+                : null}
+
+                {context.description ?
+                    <div data-test="description">
+                        <dt>Description</dt>
+                        <dd>{context.description}</dd>
+                    </div>
+                : null}
+
+                {context.source.title ?
                     <div data-test="source">
                         <dt>Source</dt>
-                        <dd>
-                            {context.source.url ?
-                                <a href={context.source.url}>{context.source.title}</a>
-                            :
-                                <span>{context.source.title}</span>
-                            }
-                        </dd>
+                        <dd>{context.source.title}</dd>
                     </div>
                 : null}
 
                 {context.product_id ?
-                    <div data-test="productid">
+                    <div data-test="product-id">
                         <dt>Product ID</dt>
-                        <dd>
-                            {context.url ?
-                                <a href={context.url}>{context.product_id}</a>
-                            :
-                                <span>{context.product_id}</span>
-                            }
-                        </dd>
-                    </div>
-                : null}
-
-                {context.rnai_target_sequence ?
-                    <div data-test="targetsequence">
-                        <dt>Target sequence</dt>
-                        <dd>{context.rnai_target_sequence}</dd>
-                    </div>
-                : null}
-
-                {context.vector_backbone_name ?
-                    <div data-test="vectorbackbone">
-                        <dt>Vector backbone</dt>
-                        <dd>{context.vector_backbone_name}</dd>
+                        <dd><MaybeLink href={context.url}>{context.product_id}</MaybeLink></dd>
                     </div>
                 : null}
             </dl>
-        );
-    }
-});
 
-globals.panel_views.register(RNAi, 'RNAi');
+            {embeddedDocs && Object.keys(constructDocuments).length ?
+                <div>
+                    <hr />
+                    <h4>Construct documents</h4>
+                    <div className="row">{constructDocuments}</div>
+                </div>
+            : null}
+        </div>
+    );
+};
+
+Construct.propTypes = {
+    context: PropTypes.object.isRequired, // Construct context object being rendered here
+    embeddedDocs: PropTypes.array, // Array of document objects to render within the Construct panel
+};
+
+Construct.defaultProps = {
+    embeddedDocs: null,
+};
+
+globals.panelViews.register(Construct, 'Construct');
 
 
-//**********************************************************************
+const RNAi = (props) => {
+    const context = props.context;
+    return (
+            <dl className="key-value">
+            {context.target ?
+                <div data-test="target">
+                    <dt>Target</dt>
+                    <dd><a href={context.target['@id']}>{context.target.name}</a></dd>
+                </div>
+            : null}
+
+            {context.rnai_type ?
+                <div data-test="type">
+                    <dt>RNAi type</dt>
+                    <dd>{context.rnai_type}</dd>
+                </div>
+            : null}
+
+            {context.source && context.source.title ?
+                <div data-test="source">
+                    <dt>Source</dt>
+                    <dd>
+                        {context.source.url ?
+                            <a href={context.source.url}>{context.source.title}</a>
+                        :
+                            <span>{context.source.title}</span>
+                        }
+                    </dd>
+                </div>
+            : null}
+
+            {context.product_id ?
+                <div data-test="productid">
+                    <dt>Product ID</dt>
+                    <dd>
+                        {context.url ?
+                            <a href={context.url}>{context.product_id}</a>
+                        :
+                            <span>{context.product_id}</span>
+                        }
+                    </dd>
+                </div>
+            : null}
+
+            {context.rnai_target_sequence ?
+                <div data-test="targetsequence">
+                    <dt>Target sequence</dt>
+                    <dd>{context.rnai_target_sequence}</dd>
+                </div>
+            : null}
+
+            {context.vector_backbone_name ?
+                <div data-test="vectorbackbone">
+                    <dt>Vector backbone</dt>
+                    <dd>{context.vector_backbone_name}</dd>
+                </div>
+            : null}
+        </dl>
+    );
+};
+
+RNAi.propTypes = {
+    context: PropTypes.object.isRequired, // RNAi context object to render
+};
+
+globals.panelViews.register(RNAi, 'RNAi');
+
+
 // Biosample and donor characterization documents
 
 const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 
 // Document header component -- Characterizations
-var CharacterizationHeader = createReactClass({
-    propTypes: {
-        doc: PropTypes.object.isRequired // Document object to render
-    },
+const CharacterizationHeader = props => (
+    <div className="document__header">
+        {props.doc.characterization_method}
+    </div>
+);
 
-    render: function() {
-        var doc = this.props.doc;
+CharacterizationHeader.propTypes = {
+    doc: PropTypes.object.isRequired, // Document object to render
+};
 
-        return (
-            <div className="document__header">
-                {doc.characterization_method}
-            </div>
-        );
-    }
-});
 
 // Document caption component -- Characterizations
-var CharacterizationCaption = createReactClass({
-    propTypes: {
-        doc: PropTypes.object.isRequired // Document object to render
-    },
+const CharacterizationCaption = (props) => {
+    const doc = props.doc;
+    const caption = doc.caption;
+    let excerpt;
 
-    render: function() {
-        var doc = this.props.doc;
-        var excerpt, caption = doc.caption;
-        if (caption && caption.length > EXCERPT_LENGTH) {
-            excerpt = globals.truncateString(caption, EXCERPT_LENGTH);
-        }
-
-        return (
-            <div className="document__caption">
-                {excerpt || caption ?
-                    <div data-test="caption">
-                        <strong>{excerpt ? 'Caption excerpt: ' : 'Caption: '}</strong>
-                        {excerpt ? <span>{excerpt}</span> : <span>{caption}</span>}
-                    </div>
-                : <em>No caption</em>}
-            </div>
-        );
+    if (caption && caption.length > EXCERPT_LENGTH) {
+        excerpt = globals.truncateString(caption, EXCERPT_LENGTH);
     }
-});
+
+    return (
+        <div className="document__caption">
+            {excerpt || caption ?
+                <div data-test="caption">
+                    <strong>{excerpt ? 'Caption excerpt: ' : 'Caption: '}</strong>
+                    {excerpt ? <span>{excerpt}</span> : <span>{caption}</span>}
+                </div>
+            : <em>No caption</em>}
+        </div>
+    );
+};
+
+CharacterizationCaption.propTypes = {
+    doc: PropTypes.object.isRequired, // Document object to render
+};
+
 
 // Document detail component -- default
-var CharacterizationDetail = createReactClass({
-    propTypes: {
-        doc: PropTypes.object.isRequired, // Document object to render
-        detailOpen: PropTypes.bool, // True if detail panel is visible
-        key: PropTypes.string // Unique key for identification
-    },
+const CharacterizationDetail = (props) => {
+    const doc = props.doc;
+    const keyClass = `document__detail${props.detailOpen ? ' active' : ''}`;
+    const excerpt = doc.description && doc.description.length > EXCERPT_LENGTH;
 
-    render: function() {
-        var doc = this.props.doc;
-        var keyClass = 'document__detail' + (this.props.detailOpen ? ' active' : '');
-        var excerpt = doc.description && doc.description.length > EXCERPT_LENGTH;
-
-        return (
-            <div className={keyClass}>
-                <dl className='key-value-doc' id={'panel' + this.props.id} aria-labelledby={'tab' + this.props.id} role="tabpanel">
-                    {excerpt ?
-                        <div data-test="caption">
-                            <dt>Caption</dt>
-                            <dd>{doc.caption}</dd>
-                        </div>
-                    : null}
-
-                    {doc.submitted_by && doc.submitted_by.title ?
-                        <div data-test="submitted-by">
-                            <dt>Submitted by</dt>
-                            <dd>{doc.submitted_by.title}</dd>
-                        </div>
-                    : null}
-
-                    <div data-test="lab">
-                        <dt>Lab</dt>
-                        <dd>{doc.lab.title}</dd>
+    return (
+        <div className={keyClass}>
+            <dl className="key-value-doc" id={`panel${props.id}`} aria-labelledby={`tab${props.id}`} role="tabpanel">
+                {excerpt ?
+                    <div data-test="caption">
+                        <dt>Caption</dt>
+                        <dd>{doc.caption}</dd>
                     </div>
+                : null}
 
-                    {doc.award && doc.award.name ?
-                        <div data-test="award">
-                            <dt>Grant</dt>
-                            <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
-                        </div>
-                    : null}
-                </dl>
-            </div>
-        );
-    }
-});
+                {doc.submitted_by && doc.submitted_by.title ?
+                    <div data-test="submitted-by">
+                        <dt>Submitted by</dt>
+                        <dd>{doc.submitted_by.title}</dd>
+                    </div>
+                : null}
+
+                <div data-test="lab">
+                    <dt>Lab</dt>
+                    <dd>{doc.lab.title}</dd>
+                </div>
+
+                {doc.award && doc.award.name ?
+                    <div data-test="award">
+                        <dt>Grant</dt>
+                        <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
+                    </div>
+                : null}
+            </dl>
+        </div>
+    );
+};
+
+CharacterizationDetail.propTypes = {
+    doc: PropTypes.object.isRequired, // Document object to render
+    id: PropTypes.string.isRequired, // Unique ID string for the detail panel
+    detailOpen: PropTypes.bool, // True if detail panel is visible
+};
+
+CharacterizationDetail.defaultProps = {
+    detailOpen: false,
+};
+
 
 // Parts of individual document panels
-globals.panel_views.register(Document, 'BiosampleCharacterization');
-globals.panel_views.register(Document, 'DonorCharacterization');
+globals.panelViews.register(Document, 'BiosampleCharacterization');
+globals.panelViews.register(Document, 'DonorCharacterization');
 
-globals.document_views.header.register(CharacterizationHeader, 'BiosampleCharacterization');
-globals.document_views.header.register(CharacterizationHeader, 'DonorCharacterization');
+globals.documentViews.header.register(CharacterizationHeader, 'BiosampleCharacterization');
+globals.documentViews.header.register(CharacterizationHeader, 'DonorCharacterization');
 
-globals.document_views.caption.register(CharacterizationCaption, 'BiosampleCharacterization');
-globals.document_views.caption.register(CharacterizationCaption, 'DonorCharacterization');
+globals.documentViews.caption.register(CharacterizationCaption, 'BiosampleCharacterization');
+globals.documentViews.caption.register(CharacterizationCaption, 'DonorCharacterization');
 
-globals.document_views.preview.register(DocumentPreview, 'BiosampleCharacterization');
-globals.document_views.preview.register(DocumentPreview, 'DonorCharacterization');
+globals.documentViews.preview.register(DocumentPreview, 'BiosampleCharacterization');
+globals.documentViews.preview.register(DocumentPreview, 'DonorCharacterization');
 
-globals.document_views.file.register(DocumentFile, 'BiosampleCharacterization');
-globals.document_views.file.register(DocumentFile, 'DonorCharacterization');
+globals.documentViews.file.register(DocumentFile, 'BiosampleCharacterization');
+globals.documentViews.file.register(DocumentFile, 'DonorCharacterization');
 
-globals.document_views.detail.register(CharacterizationDetail, 'BiosampleCharacterization');
-globals.document_views.detail.register(CharacterizationDetail, 'DonorCharacterization');
+globals.documentViews.detail.register(CharacterizationDetail, 'BiosampleCharacterization');
+globals.documentViews.detail.register(CharacterizationDetail, 'DonorCharacterization');

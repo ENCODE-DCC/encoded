@@ -197,7 +197,8 @@
                 "mouseENCODE",
                 "modENCODE",
                 "Roadmap",
-                "community"
+                "community",
+                "historical reference"
                 ]
             }
         },
@@ -289,5 +290,7 @@
             "order": "desc",
             "missing": "_last" 
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/publication.md"
+
 }

@@ -22,6 +22,9 @@ def pipeline_2_3(value, system):
     elif value.get('accession') == 'ENCPL521QAX':
         value['status'] = 'deleted'
 
+    # Patch applied to upgrade pipeline objects in http://redmine.encodedcc.org/issues/3093#note-14
+    # can be found in ./upgrade_data/pipeline_2_to_3_patch.json
+
 
 @upgrade_step('pipeline', '3', '4')
 def pipeline_3_4(value, system):
@@ -45,3 +48,9 @@ def pipeline_4_5(value, system):
     # There shouldn't be any pipelines with just assay_term_ids and not names at the time of this upgrade
     if 'assay_term_id' in value:
         del value['assay_term_id']
+
+
+@upgrade_step('pipeline', '6', '7')
+def pipeline_6_7(value, system):
+    # http://redmine.encodedcc.org/issues/5049
+    return

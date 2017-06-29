@@ -217,8 +217,9 @@ def chipseq_bam_quality_metric_2(testapp, analysis_step_run_bam, file7, lab, awa
 @pytest.fixture
 def analysis_step_bam(testapp):
     item = {
-        'name': 'bamqc',
-        'title': 'bamqc',
+        'step_label': 'bamqc-step',
+        'title': 'bamqc step',
+        'major_version': 1,
         'input_file_types': ['reads'],
         'analysis_step_types': ['QA calculation']
     }
@@ -302,44 +303,6 @@ def test_audit_file_read_length_controlled_by_exclusion(testapp, file1_2,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] != 'inconsistent control read length' for error in errors_list)
-
-
-def test_audit_file_inconsistent_controlled_by(testapp, file1,
-                                               file2, file3,
-                                               file_rep1_2,
-                                               file_rep2):
-    testapp.patch_json(file1['@id'], {'replicate': file_rep2['@id']})
-    testapp.patch_json(file3['@id'], {'replicate': file_rep1_2['@id']})
-    testapp.patch_json(file1['@id'], {'controlled_by': [file2['@id'], file3['@id']]})
-
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent controlled_by replicates' for
-                                    error in errors_list)
-
-
-def test_audit_file_missing_paired_controlled_by(testapp, file1,
-                                                 file2, file3,
-                                                 file_rep2):
-    testapp.patch_json(file3['@id'], {'replicate': file_rep2['@id'],
-                                      'paired_with': file2['@id'],
-                                      'run_type': 'paired-ended',
-                                      'paired_end': '2'})
-    testapp.patch_json(file2['@id'], {'replicate': file_rep2['@id'],
-                                      'run_type': 'paired-ended',
-                                      'paired_end': '1'})
-    testapp.patch_json(file1['@id'], {'controlled_by': [file2['@id']]})
-
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing paired_with in controlled_by' for
-                                    error in errors_list)
 
 
 def test_audit_file_replicate_match(testapp, file1, file_rep2):
@@ -526,6 +489,40 @@ def test_audit_file_bam_derived_from_bam_no_fastq(testapp, file7, file6):
                                       'file_format': 'bam',
                                       'assembly': 'hg19'})
     testapp.patch_json(file7['@id'], {'file_format': 'bam', 'assembly': 'hg19'})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'missing derived_from'
+               for error in errors_list)
+
+
+def test_audit_file_bam_derived_from_revoked_bam_no_fastq(testapp, file7, file6):
+    testapp.patch_json(file6['@id'], {'derived_from': [file7['@id']],
+                                      'status': 'released',
+                                      'file_format': 'bam',
+                                      'assembly': 'hg19'})
+    testapp.patch_json(file7['@id'], {'file_format': 'bam',
+                                      'assembly': 'hg19',
+                                      'status': 'revoked'})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing derived_from'
+               for error in errors_list)
+
+
+def test_audit_file_revoked_bam_derived_from_revoked_bam_no_fastq(testapp, file7, file6):
+    testapp.patch_json(file6['@id'], {'derived_from': [file7['@id']],
+                                      'status': 'revoked',
+                                      'file_format': 'bam',
+                                      'assembly': 'hg19'})
+    testapp.patch_json(file7['@id'], {'file_format': 'bam',
+                                      'assembly': 'hg19',
+                                      'status': 'revoked'})
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []

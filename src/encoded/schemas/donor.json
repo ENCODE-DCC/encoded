@@ -26,6 +26,33 @@
         "accession": {
             "accessionType": "DO"
         },
+        "external_ids": {
+            "title": "Unique external identifier(s) of strain or donor",
+            "description": "External identifiers that uniquely identify the donor of the sample, e.g. for strains it might be a strain identifier at a repository or a de-identified donor ID for a person.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "description": "External identifier that uniquely identify the donor of the sample, e.g. for strains it might be a strain identifier at a repository or a de-identified donor ID for a person.",
+                "pattern": "^(BDSC:\\d+)$|^(NICHD:\\d+)$|^(CGC:[A-Z]{2,3}[0-9]+)$|^(PGP:hu[A-Z0-9]+)$|^(PromoCell:\\d+)$|^(BioChain:[A-Z0-9-]+)$|^(DSSC:[0-9.-]+)$|^(DGGR:\\d+)$|^(GEO:SAMN\\d+)$|^(MGI.D:[A-Za-z0-9]+)$|^(GTEx:[A-Z0-9-]+)$|^(FlyBase:FBst\\d+)$"
+            }
+        },
+        "alternate_accessions": {
+            "title": "Alternate accessions",
+            "description": "Accessions previously assigned to objects that have been merged with this object.",
+            "comment": "Do not submit. Only admins are allowed to set or update this value.",
+            "type": "array",
+            "default": [],
+            "permission": "import_items",
+            "items": {
+                "title": "Alternate Accession",
+                "description": "An accession previously assigned to an object that has been merged with this object.",
+                "comment": "Only accessions of objects that have status equal replaced will work here.",
+                "type": "string",
+                "format": "accession",
+                "pattern": "^(ENCDO\\d{3}[A-Z]{3})$|^(TSTDO\\d{6})$"
+            }
+        },
         "organism": {
             "title": "Organism",
             "description": "Organism of the donor.",
@@ -57,6 +84,7 @@
         }
     },
     "boost_values": {
-        "internal_tags": 1.0
+        "internal_tags": 1.0,
+        "external_ids": 1.0
     }
 }

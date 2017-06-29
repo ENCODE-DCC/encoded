@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import globals from './globals';
+import * as globals from './globals';
 
 
 export class Param extends React.Component {
@@ -31,7 +31,6 @@ export class Param extends React.Component {
         if (xhr) {
             console.log('abort param xhr');
             xhr.abort();
-            this.props.handleAbort();
         }
     }
 
@@ -98,7 +97,6 @@ export class Param extends React.Component {
 Param.propTypes = {
     url: PropTypes.string.isRequired,
     handleFetch: PropTypes.func, // Actually required, but added in cloneElement
-    handleAbort: PropTypes.func, // Actually required, but added in cloneElement
     type: PropTypes.string,
     name: PropTypes.string.isRequired,
     etagName: PropTypes.string,
@@ -108,7 +106,6 @@ Param.defaultProps = {
     type: 'json',
     etagName: undefined,
     handleFetch: undefined, // Actually required, but added in cloneElement
-    handleAbort: undefined, // Actually required, but added in cloneElement
 };
 
 Param.contextTypes = {
@@ -121,21 +118,30 @@ export class FetchedData extends React.Component {
     constructor() {
         super();
         this.state = {};
-        this.aborted = false;
+        this.componentMounted = false;
         this.handleFetch = this.handleFetch.bind(this);
-        this.handleAbort = this.handleAbort.bind(this);
+    }
+
+    componentDidMount() {
+        // Need to keep track of whether FetchedData is mounted or not, because `handleFetch` can
+        // get called after it has unmounted. I (forresttanaka) had used an abort callback from
+        // <Param> to control whether `handleFetch` set the state or not, but I didn't add a way
+        // to reset the aborted state. For Redmine #5126, I changed to just keeping track of the
+        // mounted state of <FetchedData>. The abort tracking caused the forms page to hang when
+        // you drop down an embedded form. This comment applies to
+        // <FetchedData>.componentWillUnmount as well.
+        this.componentMounted = true;
+    }
+
+    componentWillUnmount() {
+        this.componentMounted = false;
     }
 
     handleFetch(result) {
         // Set state to returned search result data to cause rerender of child components.
-        if (!this.aborted) {
+        if (this.componentMounted) {
             this.setState(result);
         }
-    }
-
-    handleAbort() {
-        // If <Param> aborts a request, we need to know that.
-        this.aborted = true;
     }
 
     render() {
@@ -151,7 +157,6 @@ export class FetchedData extends React.Component {
                     params.push(React.cloneElement(child, {
                         key: child.props.name,
                         handleFetch: this.handleFetch,
-                        handleAbort: this.handleAbort,
                     }));
 
                     // Still communicating with server if handleFetch not yet called
@@ -188,9 +193,9 @@ export class FetchedData extends React.Component {
             // Render whatever error we got back from the server on the page.
             return (
                 <div className="error done">
-                    {errors.map((error) => {
-                        const ErrorView = globals.content_views.lookup(error);
-                        return <ErrorView {...this.props} context={error} />;
+                    {errors.map((error, i) => {
+                        const ErrorView = globals.contentViews.lookup(error);
+                        return <ErrorView key={i} {...this.props} context={error} />;
                     })}
                 </div>
             );
@@ -242,7 +247,7 @@ Items.defaultProps = {
 
 
 export const FetchedItems = props => (
-    <FetchedData ignoreErrors={props.ignoreErrors}>
+    <FetchedData>
         <Param name="data" url={props.url} />
         <Items {...props} />
     </FetchedData>
@@ -250,9 +255,4 @@ export const FetchedItems = props => (
 
 FetchedItems.propTypes = {
     url: PropTypes.string.isRequired,
-    ignoreErrors: PropTypes.bool,
-};
-
-FetchedItems.defaultProps = {
-    ignoreErrors: false,
 };
