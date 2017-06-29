@@ -102,8 +102,6 @@ def item_alias_tighten(value, system):
 
         rest = '_'.join(parts[1:]).strip()
         # Remove or substitute bad characters and multiple whitespaces
-        
-        import re
         if '"' or '#' or '@' or '^' or '&' or '|' or '~' or '<' or '>' or '?' or '=' or ';' or '`' in rest:
             rest = re.sub(r'[\"#@^&|~<>?=;`\/\\]', '', rest)
             rest = ' '.join(rest.split())
@@ -113,11 +111,11 @@ def item_alias_tighten(value, system):
             rest = re.sub('[\[{]', '(', rest)
         if ']' or '}' in rest:
             rest = re.sub('[\]}]', ')', rest)
-        
+
         new_alias = ':'.join([namespace, rest])
         if new_alias not in aliases:
             aliases[i] = new_alias
-    
+
     if aliases_to_remove and aliases:
         for a in aliases_to_remove:
             if a in aliases:

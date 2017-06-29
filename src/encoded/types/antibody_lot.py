@@ -157,7 +157,7 @@ def lot_reviews(characterizations, targets, request):
             is_histone_mod = True
 
         organism = target['organism']
-        target_organisms = { 'all' : [] }
+        target_organisms = {'all': []}
         target_organisms['all'].append(organism)
         target_organisms[organism] = target['@id']
 
