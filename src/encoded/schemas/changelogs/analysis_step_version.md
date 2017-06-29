@@ -8,6 +8,9 @@
         "deleted",
         "released"
     ]
+* *version* property has been renamed to *minor_version* and allowed to start from 0
+* *name* has been added as a calculated name made up of the analysis step label, major and minor version numbers.
+
 
 ### Schema version 3
 

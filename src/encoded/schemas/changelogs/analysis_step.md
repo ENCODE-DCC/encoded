@@ -8,6 +8,10 @@
         "deleted",
         "released"
     ]
+* *name* has been renamed to *step_label*. The *name* property will now be a calculated name with the major_version number.
+* *major_version* number property has been added and made required so all steps must be versioned, starting from 1.
+* all new analysis steps should be accompanied by a new step version object as well.
+
 
 ### Schema version 5
 
