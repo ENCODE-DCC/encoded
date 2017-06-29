@@ -423,7 +423,7 @@ title_mapping = {
     'j-michael-cherry:ff1f5989-1866-417e-a4b7-04879283cb3e': 'DNase-seq mapping and peak calling step',
     'j-michael-cherry:3fa67405-fa88-4627-b3eb-04f789eb5d29': 'Long RNA-seq STAR paired-ended alignment step v2.0',
     'dnanexus:align-star-se-v-2': 'Long RNA-seq STAR single-ended alignment step v2.0',
-    'dnanexus:dme-index-bismark-bowtie2-v-2': 'WGBS Bismark-bowtie2 genome indexing step - Version 1'
+    'dnanexus:dme-index-bismark-bowtie2-v-2': 'WGBS Bismark-bowtie2 genome indexing step - Version 1',
     'ross-hardison:atac-seq-alignment-step-v-1': 'ATAC-seq filtration and alignment step',
     'ross-hardison:atac-seq-peak-calling-step-v-1': 'ATAC-seq peak calling step',
     'ross-hardison:atac-seq-peak-filtering-step-v-1': 'ATAC-seq peak filtering step',
