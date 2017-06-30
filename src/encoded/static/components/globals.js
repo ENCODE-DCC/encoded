@@ -284,7 +284,7 @@ export const dbxrefPrefixMap = {
     // This WormBase link is strictly for C. elegans strains
     WormBase: 'http://www.wormbase.org/species/c_elegans/strain/',
     NBP: 'http://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq=',
-    CGC: 'http://www.cgc.cbs.umn.edu/search.php?st=',
+    CGC: 'https://cgc.umn.edu/strain/',
     DSSC: 'https://stockcenter.ucsd.edu/index.php?action=view&q=',
     MGI: 'http://www.informatics.jax.org/marker/',
     MGID: 'http://www.informatics.jax.org/external/festing/mouse/docs/',
