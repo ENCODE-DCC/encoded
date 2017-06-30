@@ -538,7 +538,6 @@ const ChartRenderer = (props) => {
 
     return (
         <div className="award-charts">
-            {console.log(experimentsConfig.labs)}
             <div className="award-chart__group-wrapper">
                 <h2>Assays</h2>
                 {experimentsConfig.labs.length ?
@@ -641,6 +640,8 @@ const ExperimentDate = (props) => {
     const { experiments } = props;
     let dateArray;
     let accumulator = 0;
+    const deduplicated = {};
+    const data = [];
 
     // 'no-const-assign': 0;
     // const experimentsConfig = searchData.experiments;
@@ -649,7 +650,7 @@ const ExperimentDate = (props) => {
         dateArray = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length) ? categoryFacet.terms : [];
     }
     const standardTerms = dateArray.map((term) => {
-        const standardDate = moment(term.key, 'MMMM, YYYY').format('YYYY-MM');
+        const standardDate = moment(term.key, ['MMMM, YYYY', 'YYYY-MM']).format('YYYY-MM');
         return { key: standardDate, doc_count: term.doc_count };
     });
 
@@ -667,22 +668,26 @@ const ExperimentDate = (props) => {
         return { key: term.key, doc_count: accumulator };
     });
 
-    const dataset = accumulatedData.map((term) => {
-        const datapoint = term.doc_count;
-        return datapoint;
+    accumulatedData.forEach((elem) => {
+        if (deduplicated[elem.key]) {
+            deduplicated[elem.key] += elem.doc_count;
+        } else {
+            deduplicated[elem.key] = elem.doc_count;
+        }
     });
 
-    const dateFormat = accumulatedData.map((term) => {
-        standardDate = moment(term.key).format('MMMM; YYYY');
-        return standardDate;
+    const date = Object.keys(deduplicated).map((term) => {
+        const label = term;
+        return label;
     });
+
+    data[0] = deduplicated[date[0]];
 
     return (
         <div>
-            {console.log(sortedTerms)}
-            {console.log(dateFormat)}
-            {console.log(dataset)}
-            <CumulativeGraph xaxisorigin={accumulatedData[0].key} />
+            {console.log(data)}
+            {console.log(date)}
+            <CumulativeGraph xaxisorigin={accumulatedData[0].key} data={data} monthReleased={date} />
         </div>
     );
 };
@@ -808,7 +813,7 @@ class CumulativeGraph extends React.Component {
 
 
     componentDidMount() {
-        const { xaxisorigin } = this.props;
+        const { data, monthReleased } = this.props;
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
             const ctx = document.getElementById('myGraph').getContext('2d');
@@ -816,18 +821,55 @@ class CumulativeGraph extends React.Component {
             this.chart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: [xaxisorigin, 'T', 'W', 'T', 'F', 'S', 'S'],
+                    labels: monthReleased,
                     datasets: [{
-                        label: 'apples',
-                        data: [12, 19, 3, 40, 6, 3, 7],
+                        data: data,
+                        backgroundColor: ['rgba(255, 99, 132, 0.2)'],
                     }],
                 },
                 options: {
+                    legend: {
+                        display: false,
+                        labels: {
+                            display: false,
+                        },
+                    },
                     elements: {
                         line: {
                             tension: 0,
                         },
                     },
+                    // scales: {
+                    //     xAxes: [
+                    //         {
+                    //             id: 'xAxis1',
+                    //             type: 'category',
+                    //             ticks: {
+                    //                 callback: function (labels) {
+                    //                     month = monthReleased.split(';')[0];
+                    //                     year = monthReleased.split(';')[1];
+                    //                     return month;
+                    //                 },
+                    //             },
+                    //         },
+                    //         {
+                    //             id: 'xAxis2',
+                    //             type: 'category',
+                    //             gridLines: {
+                    //                 drawOnChartArea: false, // only want the grid lines for one axis to show up
+                    //             },
+                    //             ticks: {
+                    //                 callback: function (label) {
+                    //                     month = label.split(';')[0];
+                    //                     year = label.split(';')[1];
+                    //                     if (month === 'February') {
+                    //                         return year;
+                    //                     } return '';
+                    //                 },
+                    //             },
+                    //         },
+                    //     ],
+                    // },
                 },
             });
         });
@@ -841,11 +883,14 @@ class CumulativeGraph extends React.Component {
 }
 
 CumulativeGraph.propTypes = {
-    xaxisorigin: PropTypes.string.isRequired,
+    // xaxisorigin: PropTypes.string.isRequired,
+    data: PropTypes.array.isRequired,
+    monthReleased: PropTypes.array.isRequired,
 };
 
 CumulativeGraph.defaultProps = {
-    xaxisorigin: '',
+    data: [],
+    monthReleased: [],
 };
 
 // const datereleased = {date_released};
