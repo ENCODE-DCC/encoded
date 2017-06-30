@@ -9,7 +9,7 @@ import { TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
 import { FetchedData, Param } from './fetched';
 import GenomeBrowser from './genome_browser';
-import globals from './globals';
+import * as globals from './globals';
 import { Attachment } from './image';
 import { BrowserSelector } from './objectutils';
 import { DbxrefList } from './dbxref';
@@ -71,19 +71,17 @@ const datasetTypes = {
 // Note: this function really doesn't do much of value, but it does do something and it's been
 // around since the beginning of encoded, so it stays for now.
 
-function Listing(reactProps) {
+export function Listing(reactProps) {
     // XXX not all panels have the same markup
     let context;
     let viewProps = reactProps;
     if (reactProps['@id']) {
         context = reactProps;
-        viewProps = { context: context, key: context['@id'] };
+        viewProps = { context, key: context['@id'] };
     }
-    const ListingView = globals.listing_views.lookup(viewProps.context);
+    const ListingView = globals.listingViews.lookup(viewProps.context);
     return <ListingView {...viewProps} />;
 }
-
-export { Listing };
 
 
 export class PickerActions extends React.Component {
@@ -113,7 +111,7 @@ PickerActions.contextTypes = {
 class ItemComponent extends React.Component {
     render() {
         const result = this.props.context;
-        const title = globals.listing_titles.lookup(result)({ context: result });
+        const title = globals.listingTitles.lookup(result)({ context: result });
         const itemType = result['@type'][0];
         return (
             <li>
@@ -150,7 +148,7 @@ ItemComponent.contextTypes = {
 
 const Item = auditDecor(ItemComponent);
 
-globals.listing_views.register(Item, 'Item');
+globals.listingViews.register(Item, 'Item');
 
 
 // Display one antibody status indicator
@@ -194,10 +192,10 @@ class StatusIndicator extends React.Component {
         const leftOffset = resultBounds.right - tipBounds.right;
         if (leftOffset < 0) {
             // Tooltip goes outside right edge of result table; move it to the left
-            this.setState({ tipStyles: { left: `${leftOffset + 10}px`, maxWidth: `${resultWidth}px`, whiteSpace: whiteSpace, width: `${width}px` } });
+            this.setState({ tipStyles: { left: `${leftOffset + 10}px`, maxWidth: `${resultWidth}px`, whiteSpace, width: `${width}px` } });
         } else {
             // Tooltip fits inside result table; move it to native position
-            this.setState({ tipStyles: { left: '10px', maxWidth: `${resultWidth}px`, whiteSpace: whiteSpace, width: `${width}px` } });
+            this.setState({ tipStyles: { left: '10px', maxWidth: `${resultWidth}px`, whiteSpace, width: `${width}px` } });
         }
 
         this.setState({ tipOpen: true });
@@ -266,7 +264,7 @@ class AntibodyComponent extends React.Component {
                 // If we haven't seen this target, save it in targetTree along with the
                 // corresponding target and organism structures.
                 if (!targetTree[target.name]) {
-                    targetTree[target.name] = { target: target };
+                    targetTree[target.name] = { target };
                 }
                 const targetNode = targetTree[target.name];
 
@@ -327,7 +325,7 @@ AntibodyComponent.contextTypes = {
 
 const Antibody = auditDecor(AntibodyComponent);
 
-globals.listing_views.register(Antibody, 'AntibodyLot');
+globals.listingViews.register(Antibody, 'AntibodyLot');
 
 
 class BiosampleComponent extends React.Component {
@@ -405,7 +403,7 @@ BiosampleComponent.contextTypes = {
 
 const Biosample = auditDecor(BiosampleComponent);
 
-globals.listing_views.register(Biosample, 'Biosample');
+globals.listingViews.register(Biosample, 'Biosample');
 
 
 class ExperimentComponent extends React.Component {
@@ -499,7 +497,7 @@ ExperimentComponent.contextTypes = {
 
 const Experiment = auditDecor(ExperimentComponent);
 
-globals.listing_views.register(Experiment, 'Experiment');
+globals.listingViews.register(Experiment, 'Experiment');
 
 
 class DatasetComponent extends React.Component {
@@ -608,7 +606,7 @@ DatasetComponent.contextTypes = {
 
 const Dataset = auditDecor(DatasetComponent);
 
-globals.listing_views.register(Dataset, 'Dataset');
+globals.listingViews.register(Dataset, 'Dataset');
 
 
 class TargetComponent extends React.Component {
@@ -653,7 +651,7 @@ TargetComponent.contextTypes = {
 
 const Target = auditDecor(TargetComponent);
 
-globals.listing_views.register(Target, 'Target');
+globals.listingViews.register(Target, 'Target');
 
 
 const Image = (props) => {
@@ -662,7 +660,7 @@ const Image = (props) => {
     return (
         <li>
             <div className="clearfix">
-                <PickerActions {...this.props} />
+                <PickerActions {...props} />
                 <div className="pull-right search-meta">
                     <p className="type meta-title">Image</p>
                 </div>
@@ -681,7 +679,7 @@ Image.propTypes = {
     context: PropTypes.object, // Image search results
 };
 
-globals.listing_views.register(Image, 'Image');
+globals.listingViews.register(Image, 'Image');
 
 
 /**
@@ -732,8 +730,8 @@ function termSelected(term, facet, filters) {
         // whether this term was a negation term or not.
         return {
             selected: url.parse(matchingFilter.remove).search,
-            negated: negated,
-            exists: exists,
+            negated,
+            exists,
         };
     }
 
@@ -742,7 +740,7 @@ function termSelected(term, facet, filters) {
     return {
         selected: null,
         negated: false,
-        exists: exists,
+        exists,
     };
 }
 
@@ -1427,7 +1425,7 @@ ResultTable.contextTypes = {
 };
 
 
-const BrowserTabQuickView = function () {
+const BrowserTabQuickView = function BrowserTabQuickView() {
     return <div>Quick View <span className="beta-badge">BETA</span></div>;
 };
 
@@ -1437,7 +1435,7 @@ const ResultTableList = (props) => {
     return (
         <ul className={`nav result-table${tabbed ? ' result-table-tabbed' : ''}`} id="result-table">
             {results.length ?
-                results.map(result => Listing({ context: result, columns: columns, key: result['@id'] }))
+                results.map(result => Listing({ context: result, columns, key: result['@id'] }))
             : null}
         </ul>
     );
@@ -1527,8 +1525,8 @@ class Search extends React.Component {
     currentRegion(assembly, region) {
         if (assembly && region) {
             this.lastRegion = {
-                assembly: assembly,
-                region: region,
+                assembly,
+                region,
             };
         }
         return Search.lastRegion;
@@ -1576,4 +1574,4 @@ Search.lastRegion = {
     region: React.PropTypes.string,
 };
 
-globals.content_views.register(Search, 'Search');
+globals.contentViews.register(Search, 'Search');

@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 // Import test component and data.
-import { Lot as Antibody } from '../antibody';
+import Antibody from '../antibody';
 import context from '../testdata/antibody/ENCAB000AUZ';
 
 
