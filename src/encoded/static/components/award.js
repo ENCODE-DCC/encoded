@@ -639,9 +639,11 @@ GenusButtons.defaultProps = {
 const ExperimentDate = (props) => {
     const { experiments } = props;
     let dateArray;
-    let accumulator = 0;
     const deduplicated = {};
-    const data = [];
+    let label = [];
+    let data = [];
+    let cumulativedataset = [];
+    let accumulator = 0;
 
     // 'no-const-assign': 0;
     // const experimentsConfig = searchData.experiments;
@@ -663,12 +665,7 @@ const ExperimentDate = (props) => {
         return 0;
     });
 
-    const accumulatedData = sortedTerms.map((term) => {
-        accumulator += term.doc_count;
-        return { key: term.key, doc_count: accumulator };
-    });
-
-    accumulatedData.forEach((elem) => {
+    sortedTerms.forEach((elem) => {
         if (deduplicated[elem.key]) {
             deduplicated[elem.key] += elem.doc_count;
         } else {
@@ -677,17 +674,25 @@ const ExperimentDate = (props) => {
     });
 
     const date = Object.keys(deduplicated).map((term) => {
-        const label = term;
+        label = term;
         return label;
     });
 
-    data[0] = deduplicated[date[0]];
+    const dataset = Object.keys(deduplicated).map((item) => {
+        label = item;
+        data = deduplicated[label];
+        return data;
+    });
+
+    const accumulatedData = dataset.map((term) => {
+        accumulator += term;
+        cumulativedataset = accumulator;
+        return cumulativedataset;
+    });
 
     return (
         <div>
-            {console.log(data)}
-            {console.log(date)}
-            <CumulativeGraph xaxisorigin={accumulatedData[0].key} data={data} monthReleased={date} />
+             <CumulativeGraph data={accumulatedData} monthReleased={date} />
         </div>
     );
 };
