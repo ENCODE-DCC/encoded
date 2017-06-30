@@ -101,9 +101,3 @@ def antibody_lot_5_6(value, system):
 def antibody_lot_7_8(value, system):
     # http://redmine.encodedcc.org/issues/5049
     return
-
-
-@upgrade_step('antibody_lot', '8', '9')
-def antibody_lot_8_9(value, system):
-    # http://redmine.encodedcc.org/issues/5041
-    return
