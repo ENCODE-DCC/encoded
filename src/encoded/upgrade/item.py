@@ -122,8 +122,6 @@ def item_alias_tighten(value, system):
                 aliases.remove(a)
 
 
-@upgrade_step('analysis_step', '5', '6')
-@upgrade_step('analysis_step_version', '3', '4')
 @upgrade_step('bismark_quality_metric', '7', '8')
 @upgrade_step('biosample_characterization', '9', '10')
 @upgrade_step('chipseq_filter_quality_metric', '6', '7')
