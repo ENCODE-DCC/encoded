@@ -146,6 +146,7 @@ class Matrix extends React.Component {
         const matrix = context.matrix;
         //ADDED START
         const auditMatrix = context.auditMatrix;
+        const auditFacets = context.facets;
         //ADDED END
         const parsedUrl = url.parse(this.context.location_href);
         const matrixBase = parsedUrl.search || '';
