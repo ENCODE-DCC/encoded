@@ -72,7 +72,10 @@
         "status": {
             "title": "Status",
             "type": "string",
+            "permission": "import_items",
             "default": "in progress",
+            "description": "The status of the metadata object.",
+            "comment": "Do not submit.  This is set by admins along the process of metadata submission.",
             "enum": [
                 "in progress",
                 "deleted",
@@ -301,11 +304,13 @@
         "strain_background": {
             "title": "Strain background",
             "description": "The specific parent strain designation of a non-human donor.",
+            "comment": "Strain background of fly/worm/mouse strains.",
             "type": "string"
         },
         "strain_name": {
             "title": "Strain name",
             "description": "The specific strain designation of a non-human donor.",
+            "comment": "Strain name of fly/worm/mouse strains.",
             "type": "string"
         }
     },
@@ -331,11 +336,13 @@
         "genotype": {
             "title": "Strain genotype",
             "description": "The genotype of the strain according to accepted nomenclature conventions.",
+            "comment": "Genotype of fly/worm/mouse strains.",
             "type": "string"
         },
         "mutagen": {
             "title": "Mutagen",
             "description": "The mutagen used to create the strain, if applicable",
+            "comment": "Type of a mutagen used to create fly/worm/mouse strain.",
             "type": "string",
             "enum": [
                 "bombardment",
@@ -345,8 +352,7 @@
                 "PTT",
                 "transposon",
                 "TMP/UV",
-                "unknown",
-                "none"
+                "unknown"
             ]
         },
         "constructs": {

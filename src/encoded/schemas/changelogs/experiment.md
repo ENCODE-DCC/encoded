@@ -3,6 +3,7 @@
 ### Schema version 12
 
 * *alternate_accessions* now must match accession format, "ENCSR..." or "TSTSR..."
+* *submission_date* property was added to Experiment schema and can only be submitted by DCC personnel
 
 ### Schema version 11
 

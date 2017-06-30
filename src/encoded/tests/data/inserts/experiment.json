@@ -10,6 +10,7 @@
         "description": "RNA Evaluation K562 Long Total RAMPAGE from Gingeras",
         "lab": "thomas-gingeras",
         "status": "released",
+        "submission_date": "2016-01-20",
         "date_released": "2016-01-01",
         "internal_tags":["DREAM", "ENTEx", "ENCORE"],
         "submitted_by": "dignissim.euismod@amet.habitant",
@@ -26,6 +27,7 @@
         "description": "RNA Evaluation K562 Long Poly-A+  RNA-seq from Gingeras",
         "lab": "thomas-gingeras",
         "status": "released",
+        "submission_date": "2016-02-20",
         "supersedes": ["ENCSR000AES"],
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
@@ -41,6 +43,7 @@
         "biosample_type": "immortalized cell line",
         "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
         "lab": "thomas-gingeras",
+        "submission_date": "2016-03-20",
         "status": "archived",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
@@ -65,6 +68,7 @@
         ],
         "lab": "sherman-weissman",
         "status": "released",
+        "submission_date": "2016-04-20",
         "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "Control-mouse",
@@ -92,6 +96,7 @@
             "df02f3f9-a6d4-40e4-a8dc-c1c7387e4556"
         ],
         "status": "released",
+        "submission_date": "2016-05-20",
         "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "H3K4me3-mouse",
@@ -119,6 +124,7 @@
             "df02f3f9-a6d4-40e4-a8dc-c1c7387e4556"
         ],
         "status": "released",
+        "submission_date": "2016-06-20",
         "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "H3K4me3-mouse",
@@ -142,6 +148,7 @@
         ],
         "lab": "richard-myers",
         "status": "released",
+        "submission_date": "2016-07-20",
         "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "TAF1-human",
@@ -167,6 +174,7 @@
         ],
         "lab": "richard-myers",
         "status": "released",
+        "submission_date": "2016-08-20",
         "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "b29de469-ed4b-4acf-8b4d-f1af02def8e8"
@@ -179,6 +187,7 @@
         "description": "Irvine Hi-C GM12878",
         "lab": "ali-mortazavi",
         "status": "released",
+        "submission_date": "2016-09-20",
         "date_released": "2016-01-01",
         "submitted_by": "netus.lorem@risus.lobortis",
         "uuid": "355ffbf8-0bc9-4545-ad3c-1ae71b4e2d85"
@@ -195,6 +204,7 @@
         "internal_tags": ["dbGaP"],
         "lab": "brenton-graveley",
         "status": "released",
+        "submission_date": "2016-10-20",
         "date_released": "2016-01-01",
         "references": [
             "4cb65ec0-bd49-11e4-bb52-0800200c9a66",
@@ -214,6 +224,7 @@
         "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
         "lab": "thomas-gingeras",
         "status": "released",
+        "submission_date": "2016-11-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "ddd11381-7958-4d58-af02-fc56255c838b"
@@ -229,6 +240,7 @@
         "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
         "lab": "thomas-gingeras",
         "status": "released",
+        "submission_date": "2016-12-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "223af596-e5ca-4048-9ea8-9a41c240181d"
@@ -244,6 +256,7 @@
         "description": "UW  SAEC",
         "lab": "richard-myers",
         "status": "released",
+        "submission_date": "2016-01-20",
         "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "509cf1b1-4113-4a1e-a49f-d62ebf3367cf"
@@ -259,6 +272,7 @@
         "description": "UW  SAEC",
         "lab": "richard-myers",
         "status": "released",
+        "submission_date": "2016-02-20",
         "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "4ae10d69-f6fa-4757-b243-821dd8a9bf25",
@@ -275,6 +289,7 @@
         "description": "UW  SAEC",
         "lab": "richard-myers",
         "status": "released",
+        "submission_date": "2016-03-20",
         "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "a099b9ac-50c0-4c96-a3eb-9fa032388ebf",
@@ -288,6 +303,7 @@
         "description": "Sample “RNA Bind-n-Seq” (RBNS) experiment against PTBP1",
         "lab": "chris-burge",
         "status": "released",
+        "submission_date": "2016-04-20",
         "date_released": "2016-01-01",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "32bd1f35-d011-4b8e-9601-2929d9688474",
@@ -304,6 +320,7 @@
         "organ_slims": [],
         "biosample_term_name": "K562",
         "status": "released",
+        "submission_date": "2016-05-20",
         "date_released": "2016-01-01",
         "description": "HAIB Whole Genome Bisulfite Sequencing K562",
         "assay_term_name": "whole-genome shotgun bisulfite sequencing",
@@ -325,6 +342,7 @@
         "description": "Control ChIP-seq on human GM12878",
         "lab": "michael-snyder",
         "status": "released",
+        "submission_date": "2016-06-20",
         "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "Control-human",
@@ -348,6 +366,7 @@
             "ENCSR000EYX"
         ],
         "status": "released",
+        "submission_date": "2016-07-20",
         "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "EBF1-human",
@@ -365,6 +384,7 @@
         "description": "Control ChIP-seq on A549 cell line. (set to type 5C for testing)",
         "lab": "robert-waterston",
         "status": "released",
+        "submission_date": "2016-08-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "e162561a-08c0-463c-93d8-c4f924584e13"
@@ -382,6 +402,7 @@
         "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 8 hours.",
         "lab": "robert-waterston",
         "status": "released",
+        "submission_date": "2016-09-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "4cead359-10e9-49a8-9d20-f05b2499b919",
@@ -400,6 +421,7 @@
         "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 10 hours.",
         "lab": "robert-waterston",
         "status": "released",
+        "submission_date": "2016-10-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "2e83f6f9-6744-4ab1-893b-0c14d0a6e8ed"
@@ -416,6 +438,7 @@
         "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 12 hours.",
         "lab": "robert-waterston",
         "status": "released",
+        "submission_date": "2016-11-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "fe9fe0cb-b859-461c-8d0f-4fa5f8e9377f"
@@ -433,6 +456,7 @@
         "description": "TCF4 ChIP-seq on A549 cell line treated with 100 nM dexamethasone for 8 hours.",
         "lab": "robert-waterston",
         "status": "released",
+        "submission_date": "2016-12-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "7a9ac6d3-278f-4a0f-bc6b-8356ff10fa8b"
@@ -467,6 +491,7 @@
         "description": "TCF4 ChIP-seq on A549 cell line treated with 60 nM dexamethasone for 8 hours.",
         "lab": "robert-waterston",
         "status": "released",
+        "submission_date": "2016-01-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "aca3295c-755b-4495-91cf-8a4c00a0db00"
@@ -483,6 +508,7 @@
         "description": "RNA-seq on fkh-10 deletion strain (RB884) embryos, 80 minutes after egg bleaching.",
         "lab": "robert-waterston",
         "status": "released",
+        "submission_date": "2016-02-20",
         "date_released": "2016-01-01",
         "aliases": ["robert-waterston:experiment_RB884_80_1"],
         "submitted_by": "dignissim.euismod@amet.habitant",
@@ -500,6 +526,7 @@
         "description": "RNA-seq on fkh-10 deletion strain (RB884) embryos, 680 minutes after egg bleaching.",
         "lab": "robert-waterston",
         "status": "released",
+        "submission_date": "2016-03-20",
         "date_released": "2016-01-01",
         "aliases": ["robert-waterston:experiment_RB884_680_1"],
         "submitted_by": "dignissim.euismod@amet.habitant",
@@ -533,6 +560,7 @@
         "description": "Repli-seq on SK-N-SH cell line at G2 phase.",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
+        "submission_date": "2016-04-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "87958f5b-27f8-4e54-b398-d5bd5ba3e2a0"
@@ -548,6 +576,7 @@
         "description": "Repli-seq on SK-N-SH cell line at S1 phase.",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
+        "submission_date": "2016-05-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "fe9d124e-9ca1-488f-a1f2-2f9d389562f1"
@@ -563,6 +592,7 @@
         "description": "Repli-seq on SK-N-SH cell line at S2 phase.",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
+        "submission_date": "2016-06-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "8dc4b825-a5d9-4663-9f1a-cf769c1a0f8c"
@@ -578,6 +608,7 @@
         "description": "RNA-seq of K562",
         "lab": "thomas-gingeras",
         "status": "released",
+        "submission_date": "2016-07-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "dc7baa06-bd53-4b5c-809a-85e0c6bd23d6"
@@ -593,6 +624,7 @@
         "description": "WGBS of K562",
         "lab": "richard-myers",
         "status": "released",
+        "submission_date": "2016-08-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "4e0a5e53-fc05-4c9b-8d86-8572c8d227a2"
@@ -609,6 +641,7 @@
         "description": "ChIP-seq of K562",
         "lab": "bradley-bernstein",
         "status": "released",
+        "submission_date": "2016-09-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "59584793-f9ad-4cb3-a6e9-e2bd6112116b"
@@ -625,6 +658,7 @@
         "description": "ChIP-seq of K562",
         "lab": "bradley-bernstein",
         "status": "released",
+        "submission_date": "2016-10-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "b7a37424-cc23-4c28-ac0d-5dd311f993f4"
@@ -641,6 +675,7 @@
         "description": "ChIP-seq of K562",
         "lab": "bradley-bernstein",
         "status": "released",
+        "submission_date": "2016-11-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "36bb66bc-c6d6-4fde-a0b6-b984926ca081"
@@ -657,6 +692,7 @@
         "description": "ChIP-seq of K562",
         "lab": "bradley-bernstein",
         "status": "released",
+        "submission_date": "2016-12-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "c70c0fb9-08c5-404f-9905-11aac1069b4e"
@@ -673,6 +709,7 @@
         "description": "ChIP-seq of K562",
         "lab": "bradley-bernstein",
         "status": "released",
+        "submission_date": "2016-01-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "0fd18fa0-eeab-48d1-b249-84eca0ea0d6f"
@@ -689,6 +726,7 @@
         "description": "ChIP-seq of K562",
         "lab": "bradley-bernstein",
         "status": "released",
+        "submission_date": "2016-02-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "d63e3ea5-86b2-4780-9c07-becbc6c4a63f"
@@ -705,6 +743,7 @@
         "description": "ChIP-seq of K562",
         "lab": "bradley-bernstein",
         "status": "released",
+        "submission_date": "2016-03-20",
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "ce9bb310-d52d-464c-9e2d-c250ab287c7a"
@@ -728,6 +767,7 @@
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "biosample_term_name": "midbrain",
         "status": "released",
+        "submission_date": "2016-04-20",
         "biosample_type": "tissue",
         "award": "U54HG007010",
         "assay_term_name": "DNase-seq",
