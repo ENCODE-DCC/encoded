@@ -74,7 +74,17 @@
                         {
                             "oneOf": [
                                 {
-                                    "required": ["file_size"],
+                                    "not": {
+                                        "required": ["status"]
+                                    },                                   
+                                    "properties": {                                        
+                                        "no_file_available": {
+                                            "enum": [false]
+                                        }
+                                    }
+                                },                                    
+                                {
+                                    "required": ["file_size", "status"],
                                     "properties": {
                                         "status": {
                                             "enum": ["in progress",  "revoked", "archived", "released"]
@@ -85,6 +95,7 @@
                                     }
                                 },
                                 {
+                                    "required": ["status"],
                                     "properties": {
                                         "status": {
                                             "enum": ["uploading", "upload failed", "deleted", "replaced", "content error"]
@@ -296,7 +307,15 @@
                 }
             ]
         },
-       
+        "content_error_detail":{
+            "comment": "Specification of status of content error is required if content_error_detail is specified",
+            "required": ["status"],
+            "properties": {
+                "status": {
+                    "enum": ["content error"]
+                }
+            }
+        },
         "status": {
             "comment": "file_size is required in files with statuses in progress, revoked, archived and released unless the file is not available from the portal. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
             "allOf": [
