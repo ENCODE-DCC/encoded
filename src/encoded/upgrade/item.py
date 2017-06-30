@@ -166,6 +166,5 @@ def item_alias_tighten(value, system):
 def item_shared_statuses(value, system):
     # http://redmine.encodedcc.org/issues/5050
 
-    if value['status'] == 'replaced':
+    if value.get('status') == 'replaced':
         value['status'] = 'deleted'
-    return

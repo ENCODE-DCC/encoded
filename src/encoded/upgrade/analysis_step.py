@@ -154,6 +154,5 @@ def analysis_step_5_6(value, system):
 
     # http://redmine.encodedcc.org/issues/5050
 
-    if value['status'] == 'replaced':
+    if value.get('status') == 'replaced':
         value['status'] = 'deleted'
-    return
