@@ -212,7 +212,7 @@ class Dataset(Item):
                 if status not in ["proposed", "started", "deleted", "revoked", "replaced"]:
                     file_formats = '&file_format=bigBed&file_format=bigWig'
                     file_inclusions = '&status=released&status=in+progress'
-                    bd_path = ('/search/?type=File&assembly=%s&dataset=%s%s%s#browserpane' %
+                    bd_path = ('/search/?type=File&assembly=%s&dataset=%s%s%s&context=browser' %
                                (assembly_name,request.path,file_formats,file_inclusions))
                     browser_urls['Quick View'] = bd_path  # no host to avoid 'test' problems
             if browser_urls:
