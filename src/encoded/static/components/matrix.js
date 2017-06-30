@@ -144,6 +144,9 @@ class Matrix extends React.Component {
     render() {
         const context = this.props.context;
         const matrix = context.matrix;
+        //ADDED START
+        const auditMatrix = context.auditMatrix;
+        //ADDED END
         const parsedUrl = url.parse(this.context.location_href);
         const matrixBase = parsedUrl.search || '';
         const matrixSearch = matrixBase + (matrixBase ? '&' : '?');
@@ -218,6 +221,129 @@ class Matrix extends React.Component {
                                 <FacetList facets={yFacets} filters={context.filters} searchBase={matrixSearch} onFilter={this.onFilter} />
                             </div>
                             <div className="col-sm-7 col-md-8 col-lg-9 sm-no-padding">
+                                {/*ADDED START*/}
+                                <div className="matrix-wrapper">
+                                    <div className="matrix-group-heading">
+                                        <div className="matrix-group-heading__content">
+                                            {matrix.y.label.toUpperCase()}
+                                        </div>
+                                    </div>
+                                    <table className="matrix">
+                                        <tbody>
+                                            {matrix.doc_count ?
+                                                <tr>
+                                                    <th style={{ width: 20 }} />
+                                                    <th colSpan={colCount + 1} style={{ padding: '5px', borderBottom: 'solid 1px #ddd', textAlign: 'center' }}>{matrix.x.label.toUpperCase()}</th>
+                                                </tr>
+                                            : null}
+                                            <tr style={{ borderBottom: 'solid 1px #ddd' }}>
+                                                <th style={{ textAlign: 'center', width: 200 }}>
+                                                    <h3>
+                                                      {matrix.doc_count} results
+                                                    </h3>
+                                                    <div className="btn-attached">
+                                                        {matrix.doc_count && context.views ? context.views.map(view => <a href={view.href} key={view.icon} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{svgIcon(view2svg[view.icon])}</a>) : ''}
+                                                    </div>
+                                                    {context.filters.length ?
+                                                        <div className="clear-filters-control-matrix">
+                                                            <a href={context.matrix.clear_matrix}>Clear Filters <i className="icon icon-times-circle" /></a>
+                                                        </div>
+                                                    : null}
+                                                </th>
+                                                {xBuckets.map((xb, i) => {
+                                                    if (i < xLimit) {
+                                                        const href = `${searchBase}&${xGrouping}=${globals.encodedURIComponent(xb.key)}`;
+                                                        return <th key={i} className="rotate30" style={{ width: 10 }}><div><a title={xb.key} href={href}>{xb.key}</a></div></th>;
+                                                    } else if (i === xLimit) {
+                                                        const parsed = url.parse(matrixBase, true);
+                                                        parsed.query['x.limit'] = null;
+                                                        delete parsed.search; // this makes format compose the search string out of the query object
+                                                        const unlimitedHref = url.format(parsed);
+                                                        return <th key={i} className="rotate30" style={{ width: 10 }}><div><span><a href={unlimitedHref}>...and {xBuckets.length - xLimit} more</a></span></div></th>;
+                                                    }
+                                                    return null;
+                                                })}
+                                            </tr>
+                                            {yGroups.map((group, i) => {
+                                                const groupColor = biosampleTypeColors[i];
+                                                const seriesColor = color(groupColor);
+                                                const parsed = url.parse(matrixBase, true);
+                                                parsed.query[primaryYGrouping] = group.key;
+                                                parsed.query['y.limit'] = null;
+                                                delete parsed.search; // this makes format compose the search string out of the query object
+                                                const groupHref = url.format(parsed);
+                                                const rows = [<tr key={group.key}>
+                                                    <th colSpan={colCount + 1} style={{ textAlign: 'left', backgroundColor: groupColor }}>
+                                                        <a href={groupHref} style={{ color: '#fff' }}>{group.key}</a>
+                                                    </th>
+                                                </tr>];
+                                                const groupBuckets = group[secondaryYGrouping].buckets;
+                                                const yLimit = matrix.y.limit || groupBuckets.length;
+
+                                                // If this group isn't open (noted by
+                                                // this.state.yGroupOpen[key]), extract just the
+                                                // group rows that are under the display limit.
+                                                const groupRows = (this.state.yGroupOpen[group.key] || this.state.allYGroupsOpen) ? groupBuckets : groupBuckets.slice(0, yLimit);
+                                                rows.push(...groupRows.map((yb) => {
+                                                    const href = `${searchBase}&${secondaryYGrouping}=${globals.encodedURIComponent(yb.key)}`;
+                                                    return (
+                                                        <tr key={yb.key}>
+                                                            <th style={{ backgroundColor: '#ddd', border: 'solid 1px white' }}><a href={href}>{yb.key}</a></th>
+                                                            {xBuckets.map((xb, k) => {
+                                                                if (k < xLimit) {
+                                                                    const value = yb[xGrouping][k];
+                                                                    const cellColor = seriesColor.clone();
+                                                                    // scale color between white and the series color
+                                                                    cellColor.lightness(cellColor.lightness() + ((1 - (value / matrix.max_cell_doc_count)) * (100 - cellColor.lightness())));
+                                                                    const textColor = cellColor.luminosity() > 0.5 ? '#000' : '#fff';
+                                                                    const cellHref = `${searchBase}&${secondaryYGrouping}=${globals.encodedURIComponent(yb.key)}&${xGrouping}=${globals.encodedURIComponent(xb.key)}`;
+                                                                    const title = `${yb.key} / ${xb.key}: ${value}`;
+                                                                    return (
+                                                                        <td key={xb.key} style={{ backgroundColor: cellColor.hexString() }}>
+                                                                            {value ? <a href={cellHref} style={{ color: textColor }} title={title}>{value}</a> : null}
+                                                                        </td>
+                                                                    );
+                                                                }
+                                                                return null;
+                                                            })}
+                                                            {xBuckets.length > xLimit && <td />}
+                                                        </tr>
+                                                    );
+                                                }));
+                                                if (groupBuckets.length > yLimit && !this.state.allYGroupsOpen) {
+                                                    rows.push(
+                                                        <tr>
+                                                            <th className="group-more-cell">
+                                                                <GroupMoreButton
+                                                                    id={group.key}
+                                                                    handleClick={this.handleClick}
+                                                                    displayText={this.state.yGroupOpen[group.key] ? '- See fewer' : `+ See ${groupBuckets.length - yLimit} more…`}
+                                                                />
+                                                            </th>
+                                                            {_.range(colCount - 1).map(n => <td key={n} />)}
+                                                        </tr>
+                                                    );
+                                                }
+                                                return rows;
+                                            })}
+
+                                            {/* Display the See Fewer/See All button controlling
+                                                the whole table if at least one biosample_type has
+                                                more than the limit. We know this is the case if at
+                                                least one yGroupOpen state member exists. */}
+                                            {Object.keys(this.state.yGroupOpen).length ?
+                                                <tr>
+                                                    <th className="group-all-groups-cell">
+                                                        <button className="group-all-groups-cell__button" onClick={this.handleSeeAllClick}>
+                                                            {this.state.allYGroupsOpen ? 'See fewer biosamples' : 'See all biosamples'}
+                                                        </button>
+                                                    </th>
+                                                </tr>
+                                            : null}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {/*ADDED END*/}
                                 <div className="matrix-wrapper">
                                     <div className="matrix-group-heading">
                                         <div className="matrix-group-heading__content">
