@@ -61,3 +61,9 @@ def test_alt_accession_ENCSR_regex(testapp, experiment_no_error):
     assert res.status_code == 422
     res = testapp.patch_json(expt['@id'], {'status': 'replaced', 'alternate_accessions': ['ENCSR123ABC']})
     assert res.status_code == 200
+
+def test_submission_date(testapp, experiment_no_error):
+    expt = testapp.post_json('/experiment', experiment_no_error).json['@graph'][0]
+    res = testapp.patch_json(expt['@id'], {'submission_date': '2000-10-10'}, expect_errors=True)
+    assert res.status_code == 200
+
