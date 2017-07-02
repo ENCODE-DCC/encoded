@@ -1,6 +1,6 @@
-## Changelog for rnai.json
+## Changelog for file.json
 
-### Schema version 5
+### Schema version 2
 
 * *status* property was restricted to one of  
     "enum" : [
@@ -8,3 +8,4 @@
         "deleted",
         "released"
     ]
+

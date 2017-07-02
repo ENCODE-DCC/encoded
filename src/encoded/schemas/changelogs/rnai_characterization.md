@@ -1,6 +1,6 @@
-## Changelog for rnai.json
+## Change log for rnai_characterization.json
 
-### Schema version 5
+### Schema version 10
 
 * *status* property was restricted to one of  
     "enum" : [

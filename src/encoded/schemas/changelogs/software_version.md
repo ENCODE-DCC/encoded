@@ -1,6 +1,6 @@
-## Changelog for rnai.json
+## Changelog for software.json
 
-### Schema version 5
+### Schema version 4
 
 * *status* property was restricted to one of  
     "enum" : [
