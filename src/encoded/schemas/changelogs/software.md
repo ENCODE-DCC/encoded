@@ -1,14 +1,5 @@
 ## Changelog for software.json
 
-### Schema version 5
-
-* *status* property was restricted to one of  
-    "enum" : [
-        "in progress",
-        "deleted",
-        "released"
-    ]
-
 ### Schema version 4
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces

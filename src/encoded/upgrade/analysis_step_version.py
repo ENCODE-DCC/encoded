@@ -10,8 +10,3 @@ def analysis_step_version_3_4(value, system):
         else:
             value['minor_version'] = 0
         value.pop('version', None)
-
-    # http://redmine.encodedcc.org/issues/5050
-
-    if value.get('status') == 'replaced':
-        value['status'] = 'deleted'

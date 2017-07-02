@@ -65,20 +65,9 @@ def test_document_upgrade_status_deleted(upgrader, document_1):
     assert value['status'] == 'deleted'
 
 
-def test_document_upgrade_references(root, upgrader,
-                                     document, document_3,
-                                     publication,
-                                     threadlocals, dummy_request):
+def test_document_upgrade_references(root, upgrader, document, document_3, publication, threadlocals, dummy_request):
     context = root.get_by_uuid(document['uuid'])
     dummy_request.context = context
     value = upgrader.upgrade('document', document_3, target_version='4', context=context)
     assert value['schema_version'] == '4'
     assert value['references'] == [publication['uuid']]
-
-
-def test_document_upgrade_status_replaced(upgrader, document_base):
-    document_base['status'] = 'replaced'
-    document_base['schema_version'] = '7'
-    value = upgrader.upgrade('document', document_base, current_version='7', target_version='8')
-    assert value['schema_version'] == '8'
-    assert value['status'] == 'deleted'

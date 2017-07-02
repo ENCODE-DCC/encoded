@@ -1,14 +1,5 @@
 ## Changelog for chipseq_filter_quality_metric.json
 
-### Schema version 7
-
-* *status* property was restricted to one of  
-    "enum" : [
-        "in progress",
-        "deleted",
-        "released"
-    ]
-
 ### Schema version 6
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces

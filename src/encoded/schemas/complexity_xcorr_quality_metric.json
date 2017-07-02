@@ -19,7 +19,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "7"
+            "default": "6"
         },
         "sample size": {
             "title": "Sample size",

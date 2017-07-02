@@ -1,13 +1,4 @@
-## Changelog for trimming_quality_metric.json
-
-### Schema version 7
-
-* *status* property was restricted to one of  
-    "enum" : [
-        "in progress",
-        "deleted",
-        "released"
-    ]
+## Changelog for correlation_quality_metric.json
 
 ### Schema version 6
 
