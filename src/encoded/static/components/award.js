@@ -859,7 +859,8 @@ class CumulativeGraph extends React.Component {
                     }],
                 },
                 options: {
-                    maintainAspectRatio: true,
+                    responsive: true,
+                    maintainAspectRatio: false,
                     legend: {
                         display: false,
                         labels: {
@@ -923,6 +924,7 @@ class Award extends React.Component {
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
+                                <a href={`/report/?type=Experiment&award.name=${context.name}`}>Report</a>
                             </div>
                         </div>
                     </div>
