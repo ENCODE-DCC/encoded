@@ -644,6 +644,8 @@ const ExperimentDate = (props) => {
     let data = [];
     let cumulativedataset = [];
     let accumulator = 0;
+    let monthdiff = 0;
+    let previousmonthdiff = 0;
 
     // 'no-const-assign': 0;
     // const experimentsConfig = searchData.experiments;
@@ -651,6 +653,7 @@ const ExperimentDate = (props) => {
         const categoryFacet = experiments.facets.find(facet => facet.field === 'month_released');
         dateArray = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length) ? categoryFacet.terms : [];
     }
+
     const standardTerms = dateArray.map((term) => {
         const standardDate = moment(term.key, ['MMMM, YYYY', 'YYYY-MM']).format('YYYY-MM');
         return { key: standardDate, doc_count: term.doc_count };
@@ -665,7 +668,23 @@ const ExperimentDate = (props) => {
         return 0;
     });
 
-    sortedTerms.forEach((elem) => {
+    const arrayLength = sortedTerms.length;
+    for (let j = 0; j < arrayLength; j += 1) {
+        const startDate = moment(sortedTerms[monthdiff].key);
+        const endDate = moment(sortedTerms[monthdiff + 1].key);
+        monthdiff = endDate.diff(startDate, 'months', false);
+        for (let i = 1; i < monthdiff; i += 1) {
+            sortedTerms.splice(previousmonthdiff + i, 0, { key: startDate.add(1, 'months').format('YYYY-MM'), doc_count: 0 });
+        }
+        previousmonthdiff = monthdiff;
+    }
+
+    const formatTerms = sortedTerms.map((term) => {
+        const formattedDate = moment(term.key, ['YYYY-MM']).format('MM/YYYY');
+        return { key: formattedDate, doc_count: term.doc_count };
+    });
+
+    formatTerms.forEach((elem) => {
         if (deduplicated[elem.key]) {
             deduplicated[elem.key] += elem.doc_count;
         } else {
@@ -692,7 +711,7 @@ const ExperimentDate = (props) => {
 
     return (
         <div>
-             <CumulativeGraph data={accumulatedData} monthReleased={date} />
+            <CumulativeGraph data={accumulatedData} monthReleased={date} />
         </div>
     );
 };
@@ -829,7 +848,7 @@ class CumulativeGraph extends React.Component {
                     labels: monthReleased,
                     datasets: [{
                         data: data,
-                        backgroundColor: ['rgba(255, 99, 132, 0.2)'],
+                        backgroundColor: ['rgba(75, 192, 192, 0.2)'],
                     }],
                 },
                 options: {
@@ -849,12 +868,9 @@ class CumulativeGraph extends React.Component {
                     //         {
                     //             id: 'xAxis1',
                     //             type: 'category',
+                    //             interval: 50,
                     //             ticks: {
-                    //                 callback: function (labels) {
-                    //                     month = monthReleased.split(';')[0];
-                    //                     year = monthReleased.split(';')[1];
-                    //                     return month;
-                    //                 },
+                    //                 monthReleased,
                     //             },
                     //         },
                     //         {
@@ -863,14 +879,8 @@ class CumulativeGraph extends React.Component {
                     //             gridLines: {
                     //                 drawOnChartArea: false, // only want the grid lines for one axis to show up
                     //             },
+                    //             interval: 50 * 12,
                     //             ticks: {
-                    //                 callback: function (label) {
-                    //                     month = label.split(';')[0];
-                    //                     year = label.split(';')[1];
-                    //                     if (month === 'February') {
-                    //                         return year;
-                    //                     } return '';
-                    //                 },
                     //             },
                     //         },
                     //     ],
