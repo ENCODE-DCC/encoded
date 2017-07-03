@@ -1,6 +1,6 @@
-dist: trusty
 language: python
-sudo: false
+dist: trusty
+sudo: required
 cache:
   directories:
     - eggs
