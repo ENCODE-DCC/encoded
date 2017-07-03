@@ -1,11 +1,4 @@
 from snovault import upgrade_step
-from .upgrade_data.analysis_step_5_to_6 import (
-    label_mapping,
-    status_mapping,
-    title_mapping,
-    major_version_mapping,
-    aliases_mapping
-)
 
 
 @upgrade_step('analysis_step', '1', '2')
@@ -84,7 +77,7 @@ def analysis_step_2_3(value, system):
 
     # http://redmine.encodedcc.org/issues/3074
     del value['software_versions']
-
+    
     # http://redmine.encodedcc.org/issues/3074 note 16 and 3073
     if value.get('name') in ['lrna-se-star-alignment-step-v-2-0',
                             'lrna-pe-star-alignment-step-v-2-0',
@@ -130,24 +123,3 @@ def analysis_step_3_4(value, system):
 
     if 'documents' in value:
         value['documents'] = list(set(value['documents']))
-
-
-@upgrade_step('analysis_step', '5', '6')
-def analysis_step_5_6(value, system):
-    # http://redmine.encodedcc.org/issues/4987
-
-    obj_aliases = value.get('aliases', None)
-    if obj_aliases:
-        if obj_aliases[0] in label_mapping:
-            value['step_label'] = label_mapping[obj_aliases[0]]
-        else:
-            value['step_label'] = value['name']
-        value.pop('name', None)
-        if obj_aliases[0] in major_version_mapping:
-            value['major_version'] = major_version_mapping[obj_aliases[0]]
-        if obj_aliases[0] in title_mapping:
-            value['title'] = title_mapping[obj_aliases[0]]
-        if obj_aliases[0] in status_mapping:
-            value['status'] = status_mapping[obj_aliases[0]]
-        if obj_aliases[0] in aliases_mapping:
-            value['aliases'].append(aliases_mapping[obj_aliases[0]])

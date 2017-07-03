@@ -1,39 +1,34 @@
 [
     {
-        "analysis_step": "alignment-test-step-v-1",
+        "analysis_step": "alignment-test-step-1",
         "software_versions": ["8369c9b0-50ad-11e4-916c-0800200c9a66"],
-        "uuid": "ab7ec880-50ab-11e4-916c-0800200c9a66",
-        "minor_version": 0
+        "uuid": "ab7ec880-50ab-11e4-916c-0800200c9a66"
     },
     {
-        "analysis_step": "signal-test-step-v-1",
+        "analysis_step": "signal-test-step-1",
         "software_versions": [
             "8eacefa0-50ad-11e4-916c-0800200c9a66",
             "956620a0-50ad-11e4-916c-0800200c9a66"
         ],
-        "uuid": "c4a33ee0-50ab-11e4-916c-0800200c9a66",
-        "minor_version": 1
+        "uuid": "c4a33ee0-50ab-11e4-916c-0800200c9a66"
     },
     {
-        "analysis_step": "alignment-test-step-v-2",
+        "analysis_step": "alignment-test-step-2",
         "software_versions": ["834e3145-b752-4486-a613-c0c625262051"],
-        "uuid": "54ae7770-5ae8-11e4-8ed6-0800200c9a66",
-        "minor_version": 0
+        "uuid": "54ae7770-5ae8-11e4-8ed6-0800200c9a66"
     },
     {
-        "analysis_step": "quantification-test-step-v-1",
+        "analysis_step": "quantification-test-step-1",
         "software_versions": ["d84714c0-5af2-11e4-8ed6-0800200c9a66"],
-        "uuid": "1e418e10-5ae9-11e4-8ed6-0800200c9a66",
-        "minor_version": 2
+        "uuid": "1e418e10-5ae9-11e4-8ed6-0800200c9a66"
     },
     {
-        "analysis_step": "idr-test-step-v-1",
+        "analysis_step": "idr-test-step-1",
         "software_versions": ["d2cde860-5af3-11e4-8ed6-0800200c9a66"],
-        "uuid": "27c011e0-5aef-11e4-8ed6-0800200c9a66",
-        "minor_version": 1
+        "uuid": "27c011e0-5aef-11e4-8ed6-0800200c9a66"
     },
     {
-        "analysis_step": "encode-2-step-v-1",
+        "analysis_step": "encode-2-step",
         "software_versions": [
             "d44db1ed-3af1-4e3b-ae7a-b0fb1085877f",
             "c11ff7d0-30b5-4946-9fb5-8a29783bdc0f",
@@ -44,143 +39,125 @@
             "beb915d5-157c-48d2-9867-7d2bbf8917fe",
             "d0c7d890-3446-41b5-82f0-388347f7e8dd"
         ],
-        "uuid": "1b7bec83-dd21-4086-8673-2e08cf8f1c0f",
-        "minor_version": 0
+        "uuid": "1b7bec83-dd21-4086-8673-2e08cf8f1c0f"
     },
     {
-        "analysis_step": "idr-test-step-v-2",
+        "analysis_step": "idr-test-step-2",
         "software_versions": [
             "195de123-3300-4485-a862-d301ff35fc4e"
         ],
-        "uuid":  "11440ed3-1228-4430-aa5a-54cd408ff105",
-        "minor_version": 2
+        "uuid":  "11440ed3-1228-4430-aa5a-54cd408ff105"
     },
     {
-        "analysis_step": "alignment-test-step-v-3",
+        "analysis_step": "alignment-test-step-3",
         "software_versions": [
             "7b939da7-32ae-44ac-86f3-a584d8a4a555"
         ],
-        "uuid": "2dd0f890-b287-4147-84ad-edd6d3612772",
-        "minor_version": 0
+        "uuid": "2dd0f890-b287-4147-84ad-edd6d3612772"
     },
     {
-        "analysis_step": "peak-calling-test-step-v-1",
+        "analysis_step": "peak-calling-test-step-1",
         "software_versions": [
             "0a2cde6c-61c5-407b-aab7-7cc4847d5a37"
         ],
-        "uuid": "8abc2031-9aab-46a3-b3a0-d800ae44656e",
-        "minor_version": 1
+        "uuid": "8abc2031-9aab-46a3-b3a0-d800ae44656e"
     },
     {
-        "analysis_step": "prep-bismark-step-v-1",
+        "analysis_step": "prep-bismark",
         "uuid": "a25381ab-1740-42f7-8d5a-20bb2a2b9549",
-        "software_versions": ["cf999bd4-0a93-453d-9e0e-69d1cfe6292d"],
-        "minor_version": 3
+        "software_versions": ["cf999bd4-0a93-453d-9e0e-69d1cfe6292d"]
     },
     {
-        "analysis_step": "mott-trim-align-bismark-step-v-1",
+        "analysis_step": "mott-trim-align-bismark",
         "uuid": "36a667fe-e98c-402d-babf-88a9d39df5ff",
         "software_versions": [
             "a86c9d15-deaf-4abd-8bce-bfa6595d70bb",
             "cf999bd4-0a93-453d-9e0e-69d1cfe6292d",
             "1b071b08-ef76-4a69-8f96-22408e2b380a"
-        ],
-        "minor_version": 2
+        ]
     },
     {
-        "analysis_step": "extract-bismark-step-v-1",
+        "analysis_step": "extract-bismark",
         "uuid": "aa598eaa-eda4-4fb3-b313-072f95de58a4",
         "software_versions": [
             "cf999bd4-0a93-453d-9e0e-69d1cfe6292d",
             "d44db1ed-3af1-4e3b-ae7a-b0fb1085877f",
             "913f5f5c-7e58-4dd2-9f6d-8fca92d0e91c"
-        ],
-        "minor_version": 1
+        ]
     },
     {
-        "analysis_step": "prep-star-step-v-1",
+        "analysis_step": "prep-star",
         "uuid": "36b3b2da-0691-49b1-9ff9-d22ea7da07c6",
-        "software_versions": ["834e3145-b752-4486-a613-c0c625262051"],
-        "minor_version": 0
+        "software_versions": ["834e3145-b752-4486-a613-c0c625262051"]
     },
     {
-        "analysis_step": "prep-tophat-step-v-1",
+        "analysis_step": "prep-tophat",
         "uuid": "3d3c36c4-17dd-4112-b77d-a7f64833d5db",
         "software_versions": [
             "8369c9b0-50ad-11e4-916c-0800200c9a66",
             "f21b7bbf-6178-4f1a-8c58-caeb6488bfc3",
             "9c51ea8f-ac73-4a25-8783-d31bce2d5aac"
-        ],
-        "minor_version": 2
+        ]
     },
     {
-        "analysis_step": "prep-rsem-step-v-1",
+        "analysis_step": "prep-rsem",
         "uuid": "c0f339bb-e681-40af-b98b-5b4c12aa61ba",
-        "software_versions": ["08a31dbd-e957-4004-bf0c-8506388d9fed"],
-        "minor_version": 0
+        "software_versions": ["08a31dbd-e957-4004-bf0c-8506388d9fed"]
     },
     {
-        "analysis_step": "align-star-step-v-1",
+        "analysis_step": "align-star",
         "uuid": "5cdff4b0-9b37-4fb1-a93e-664742dbe505",
         "software_versions": [
             "834e3145-b752-4486-a613-c0c625262051",
             "d44db1ed-3af1-4e3b-ae7a-b0fb1085877f"
-        ],
-        "minor_version": 1
+        ]
     },
     {
-        "analysis_step": "quant-rsem-step-v-1",
+        "analysis_step": "quant-rsem",
         "uuid": "7505ced9-3584-4146-84a1-7c5695cb8cf4",
-        "software_versions": ["08a31dbd-e957-4004-bf0c-8506388d9fed"],
-        "minor_version": 0
+        "software_versions": ["08a31dbd-e957-4004-bf0c-8506388d9fed"]
     },
     {
-        "analysis_step": "align-tophat-step-v-1",
+        "analysis_step": "align-tophat",
         "uuid": "dcdb54a7-3b13-4ac6-b36e-0e0669367350",
         "software_versions": [
             "8369c9b0-50ad-11e4-916c-0800200c9a66",
             "f21b7bbf-6178-4f1a-8c58-caeb6488bfc3",
             "9c51ea8f-ac73-4a25-8783-d31bce2d5aac"
-        ],
-        "minor_version": 2
+        ]
     },
     {
-        "analysis_step": "bam-to-bigwig-tophat-step-v-1",
+        "analysis_step": "bam-to-bigwig-tophat",
         "uuid": "b9d7eea7-8546-41f4-80e3-0fbee31fba8b",
-        "software_versions": ["834e3145-b752-4486-a613-c0c625262051"],
-        "minor_version": 0
+        "software_versions": ["834e3145-b752-4486-a613-c0c625262051"]
     },
     {
-        "analysis_step": "bam-to-bigwig-star-step-v-1",
+        "analysis_step": "bam-to-bigwig-star",
         "uuid": "5b5bc4ed-1c35-4d74-ace2-76609df36846",
-        "software_versions": ["834e3145-b752-4486-a613-c0c625262051"],
-        "minor_version": 1
+        "software_versions": ["834e3145-b752-4486-a613-c0c625262051"]
     },
     {
-        "analysis_step": "fastqc-step-v-1",
+        "analysis_step": "fastqc",
         "uuid": "9c0120e0-a594-11e4-bcd8-0800200c9a66",
         "software_versions": [
             "225b2920-a594-11e4-bcd8-0800200c9a66"
-        ],
-        "minor_version": 0
+        ]
     },
     {
         "uuid": "78a19d0d-cfff-418a-9549-6aed3d492e6f",
-        "analysis_step": "mad-cc-lrna-step-v-1",
+        "analysis_step": "mad_cc_lrna",
         "software_versions": [
             "a87e214a-c07d-4df2-8a30-3eebd8b607ee"
-        ],
-        "minor_version": 2
+        ]
     },
     {
         "uuid": "4c4042c6-27b0-42c5-b608-9061005e32ab",
-        "analysis_step": "wgbs-lambda-qc-step-v-1",
+        "analysis_step": "wgbs_lambda_qc",
         "software_versions": [
             "cf999bd4-0a93-453d-9e0e-69d1cfe6292d",
             "d44db1ed-3af1-4e3b-ae7a-b0fb1085877f",
             "913f5f5c-7e58-4dd2-9f6d-8fca92d0e91c"
-        ],
-        "minor_version": 0
+        ]
     }
 
 ]
