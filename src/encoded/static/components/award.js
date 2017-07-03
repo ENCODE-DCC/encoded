@@ -635,7 +635,7 @@ GenusButtons.defaultProps = {
     selectedOrganisms: [],
 };
 
-
+// Overall component to render the cumulative line graph
 const ExperimentDate = (props) => {
     const { experiments } = props;
     let dateArray;
@@ -645,21 +645,21 @@ const ExperimentDate = (props) => {
     let cumulativedataset = [];
     let accumulator = 0;
     let monthdiff = 0;
-    // let previousmonthdiff = 0;
     const fillDates = [];
 
-    // 'no-const-assign': 0;
-    // const experimentsConfig = searchData.experiments;
+    // Search experiments for month_released in facets
     if (experiments && experiments.facets && experiments.facets.length) {
         const categoryFacet = experiments.facets.find(facet => facet.field === 'month_released');
         dateArray = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length) ? categoryFacet.terms : [];
     }
 
+    // Use Library Moment to format array of dates
     const standardTerms = dateArray.map((term) => {
         const standardDate = moment(term.key, ['MMMM, YYYY', 'YYYY-MM']).format('YYYY-MM');
         return { key: standardDate, doc_count: term.doc_count };
     });
 
+    // Sort array chronologically
     const sortedTerms = standardTerms.sort((termA, termB) => {
         if (termA.key < termB.key) {
             return -1;
@@ -669,6 +669,7 @@ const ExperimentDate = (props) => {
         return 0;
     });
 
+    // Add objects to the array with doc_count 0 for the missing months
     const arrayLength = sortedTerms.length;
     for (let j = 0; j < arrayLength - 1; j += 1) {
         fillDates.push(sortedTerms[j]);
@@ -680,10 +681,6 @@ const ExperimentDate = (props) => {
                 fillDates.push({ key: startDate.add(1, 'months').format('YYYY-MM'), doc_count: 0 });
             }
         }
-        // for (let i = 1; i < monthdiff; i += 1) {
-        //     sortedTerms.splice(previousmonthdiff + i, 0, { key: startDate.add(1, 'months').format('YYYY-MM'), doc_count: 0 });
-        // }
-        // previousmonthdiff = monthdiff;
     }
     fillDates.push(sortedTerms[arrayLength - 1]);
 
@@ -692,6 +689,7 @@ const ExperimentDate = (props) => {
         return { key: formattedDate, doc_count: term.doc_count };
     });
 
+    // Deduplicate dates
     formatTerms.forEach((elem) => {
         if (deduplicated[elem.key]) {
             deduplicated[elem.key] += elem.doc_count;
@@ -700,17 +698,20 @@ const ExperimentDate = (props) => {
         }
     });
 
+    // Create an array of dates
     const date = Object.keys(deduplicated).map((term) => {
         label = term;
         return label;
     });
 
+    // Create an array of data from objects' doc_counts
     const dataset = Object.keys(deduplicated).map((item) => {
         label = item;
         data = deduplicated[label];
         return data;
     });
 
+    // Make the data cumulative
     const accumulatedData = dataset.map((term) => {
         accumulator += term;
         cumulativedataset = accumulator;
@@ -719,14 +720,12 @@ const ExperimentDate = (props) => {
 
     return (
         <div>
-            {console.log(experiments)}
             <CumulativeGraph data={accumulatedData} monthReleased={date} />
         </div>
     );
 };
 
 ExperimentDate.propTypes = {
-    award: PropTypes.object.isRequired, // Award represented by this chart
     experiments: PropTypes.object,
 };
 
@@ -826,7 +825,6 @@ AwardCharts.propTypes = {
 };
 
 class FetchGraphData extends React.Component {
-
     render() {
         const { award } = this.props;
         return (
@@ -842,8 +840,8 @@ FetchGraphData.propTypes = {
     award: PropTypes.object.isRequired, // Award represented by this chart
 };
 
+// Create a cumulative line chart in the div.
 class CumulativeGraph extends React.Component {
-
 
     componentDidMount() {
         const { data, monthReleased } = this.props;
@@ -861,6 +859,7 @@ class CumulativeGraph extends React.Component {
                     }],
                 },
                 options: {
+                    maintainAspectRatio: true,
                     legend: {
                         display: false,
                         labels: {
@@ -871,29 +870,19 @@ class CumulativeGraph extends React.Component {
                         line: {
                             tension: 0,
                         },
+                        point: {
+                            radius: 0,
+                        },
                     },
-                    // scales: {
-                    //     xAxes: [
-                    //         {
-                    //             id: 'xAxis1',
-                    //             type: 'category',
-                    //             interval: 50,
-                    //             ticks: {
-                    //                 monthReleased,
-                    //             },
-                    //         },
-                    //         {
-                    //             id: 'xAxis2',
-                    //             type: 'category',
-                    //             gridLines: {
-                    //                 drawOnChartArea: false, // only want the grid lines for one axis to show up
-                    //             },
-                    //             interval: 50 * 12,
-                    //             ticks: {
-                    //             },
-                    //         },
-                    //     ],
-                    // },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                autoSkip: true,
+                                maxTicksLimit: 15,
+                            },
+                        },
+                        ],
+                    },
                 },
             });
         });
@@ -964,7 +953,6 @@ class Award extends React.Component {
                         <h4>Cumulative Number of Experiments</h4>
                     </PanelHeading>
                     <PanelBody>
-                        {/* <CumulativeGraph />*/}
                         <FetchGraphData award={context} />
                     </PanelBody>
                 </Panel>
