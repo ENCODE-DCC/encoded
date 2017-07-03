@@ -157,7 +157,6 @@ def item_alias_tighten(value, system):
 @upgrade_step('star_quality_metric', '6', '7')
 @upgrade_step('trimming_quality_metric', '6', '7')
 @upgrade_step('treatment', '7', '8')
-@upgrade_step('user', '5', '6')
 @upgrade_step('platform', '5', '6')
 @upgrade_step('organism', '3', '4')
 @upgrade_step('lab', '4', '5')
