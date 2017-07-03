@@ -645,7 +645,8 @@ const ExperimentDate = (props) => {
     let cumulativedataset = [];
     let accumulator = 0;
     let monthdiff = 0;
-    let previousmonthdiff = 0;
+    // let previousmonthdiff = 0;
+    const fillDates = [];
 
     // 'no-const-assign': 0;
     // const experimentsConfig = searchData.experiments;
@@ -669,17 +670,24 @@ const ExperimentDate = (props) => {
     });
 
     const arrayLength = sortedTerms.length;
-    for (let j = 0; j < arrayLength; j += 1) {
-        const startDate = moment(sortedTerms[monthdiff].key);
-        const endDate = moment(sortedTerms[monthdiff + 1].key);
+    for (let j = 0; j < arrayLength - 1; j += 1) {
+        fillDates.push(sortedTerms[j]);
+        const startDate = moment(sortedTerms[j].key);
+        const endDate = moment(sortedTerms[j + 1].key);
         monthdiff = endDate.diff(startDate, 'months', false);
-        for (let i = 1; i < monthdiff; i += 1) {
-            sortedTerms.splice(previousmonthdiff + i, 0, { key: startDate.add(1, 'months').format('YYYY-MM'), doc_count: 0 });
+        if (monthdiff > 1) {
+            for (let i = 0; i < monthdiff; i += 1) {
+                fillDates.push({ key: startDate.add(1, 'months').format('YYYY-MM'), doc_count: 0 });
+            }
         }
-        previousmonthdiff = monthdiff;
+        // for (let i = 1; i < monthdiff; i += 1) {
+        //     sortedTerms.splice(previousmonthdiff + i, 0, { key: startDate.add(1, 'months').format('YYYY-MM'), doc_count: 0 });
+        // }
+        // previousmonthdiff = monthdiff;
     }
+    fillDates.push(sortedTerms[arrayLength - 1]);
 
-    const formatTerms = sortedTerms.map((term) => {
+    const formatTerms = fillDates.map((term) => {
         const formattedDate = moment(term.key, ['YYYY-MM']).format('MM/YYYY');
         return { key: formattedDate, doc_count: term.doc_count };
     });
@@ -711,6 +719,7 @@ const ExperimentDate = (props) => {
 
     return (
         <div>
+            {console.log(experiments)}
             <CumulativeGraph data={accumulatedData} monthReleased={date} />
         </div>
     );
