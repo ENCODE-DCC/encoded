@@ -4,6 +4,7 @@ cache:
   directories:
     - eggs
     - .npm
+    - node_modules
 notifications:
   slack:
     secure: hlTj34WpuzQmsyxnUnFEwlAJeDcElshGfgw7oHuicAD83LorBFTc9ap6FhZXI5LFnqEl28FZ9YkJJRl0tFZgaApllrMmNCeK2FfRjnF8XGz2JS6Iiyj+hgWrKHHIbcS2g5R6L2/uzIhdMvCb97cReZckjo9lumYAdXGHY8DJbik=
@@ -28,8 +29,6 @@ env:
     - PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
 matrix:
   include:
-    - python: "2.7"
-      env: BROWSER=
     - python: "3.4"
       env: BROWSER=Chrome
     - python: "3.4"
