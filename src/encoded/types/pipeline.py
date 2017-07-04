@@ -10,10 +10,6 @@ from .base import (
 from .shared_calculated_properties import (
     CalculatedAssayTermID
 )
-from pyramid.traversal import (
-    find_root,
-)
-
 
 @collection(
     name='pipelines',
@@ -55,6 +51,7 @@ class Pipeline(Item, CalculatedAssayTermID):
 class AnalysisStep(Item):
     item_type = 'analysis_step'
     schema = load_schema('encoded:schemas/analysis_step.json')
+    name_key = 'name'
     rev = {
         'pipelines': ('Pipeline', 'analysis_steps'),
         'versions': ('AnalysisStepVersion', 'analysis_step')
@@ -65,29 +62,6 @@ class AnalysisStep(Item):
         'current_version.software_versions.software',
         'parents'
     ]
-
-    def unique_keys(self, properties):
-        keys = super(AnalysisStep, self).unique_keys(properties)
-        keys.setdefault('analysis_step:name', []).append(self._name(properties))
-        return keys
-
-    @calculated_property(schema={
-        "title": "Name",
-        "type": "string",
-        "description": "Full name of the analysis step with major version number.",
-        "comment": "Do not submit. Value is automatically assigned by the server.",
-        "uniqueKey": "name"
-    })
-    def name(self):
-        return self.__name__
-
-    @property
-    def __name__(self):
-        properties = self.upgrade_properties()
-        return self._name(properties)
-
-    def _name(self, properties):
-        return u'{}-v-{}'.format(properties['step_label'], properties['major_version'])
 
     @calculated_property(schema={
         "title": "Pipelines",
@@ -111,7 +85,7 @@ class AnalysisStep(Item):
             for path in paths_filtered_by_status(request, versions)
         ]
         if version_objects:
-            current = max(version_objects, key=lambda obj: obj['minor_version'])
+            current = max(version_objects, key=lambda obj: obj['version'])
             return current['@id']
 
     @calculated_property(schema={
@@ -128,7 +102,6 @@ class AnalysisStep(Item):
 
 @collection(
     name='analysis-step-versions',
-    unique_key='analysis-step-version:name',
     properties={
         'title': 'Analysis step versions',
         'description': 'Listing of Analysis Step Versions',
@@ -139,26 +112,9 @@ class AnalysisStepVersion(Item):
 
     def unique_keys(self, properties):
         keys = super(AnalysisStepVersion, self).unique_keys(properties)
-        keys.setdefault('analysis-step-version:name', []).append(self._name(properties))
+        value = u'{analysis_step}/{version}'.format(**properties)
+        keys.setdefault('analysis_step_version:analysis_step_version', []).append(value)
         return keys
-
-    @calculated_property(schema={
-        "title": "Name",
-        "type": "string",
-    })
-    def name(self):
-        return self.__name__
-
-    @property
-    def __name__(self):
-        properties = self.upgrade_properties()
-        return self._name(properties)
-
-    def _name(self, properties):
-        root = find_root(self)
-        analysis_step = root.get_by_uuid(properties['analysis_step'])
-        step_props = analysis_step.upgrade_properties()
-        return u'{}-v-{}-{}'.format(step_props['step_label'], step_props['major_version'], properties['minor_version'])
 
 
 @collection(

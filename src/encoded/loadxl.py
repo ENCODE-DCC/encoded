@@ -547,19 +547,13 @@ PHASE1_PIPELINES = {
         remove_keys('lab', 'submits_for'),
     ],
     'biosample': [
-        remove_keys('derived_from', 'pooled_from', 'part_of', 'host'),
+        remove_keys('originated_from', 'pooled_from', 'part_of'),
     ],
     'library': [
         remove_keys('spikeins_used'),
     ],
     'experiment': [
-        remove_keys('possible_controls', 'related_files', 'supersedes'),
-    ],
-    'mouse_donor': [
-        remove_keys('parent_strains'),
-    ],
-    'worm_donor': [
-        remove_keys('outcrossed_strain'),
+        remove_keys('possible_controls', 'related_files'),
     ],
     'human_donor': [
         remove_keys('parents', 'children', 'siblings', 'fraternal_twin', 'identical_twin'),
@@ -601,15 +595,11 @@ PHASE1_PIPELINES = {
         remove_keys('related_datasets'),
     ],
     'file': [
-        remove_keys('derived_from', 'controlled_by', 'supersedes')
+        remove_keys('derived_from', 'controlled_by')
     ],
     'analysis_step': [
         remove_keys('parents')
-    ],
-    'treatment': [
-        remove_keys('biosamples_used')
     ]
-
 }
 
 
@@ -625,22 +615,16 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('lab', 'submits_for'),
     ],
     'biosample': [
-        skip_rows_missing_all_keys('derived_from', 'pooled_from', 'part_of', 'host'),
+        skip_rows_missing_all_keys('originated_from', 'pooled_from', 'part_of'),
     ],
     'library': [
         skip_rows_missing_all_keys('spikeins_used'),
     ],
     'experiment': [
-        skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes'),
+        skip_rows_missing_all_keys('related_files', 'possible_controls'),
     ],
     'human_donor': [
         skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'fraternal_twin', 'identical_twin'),
-    ],
-    'mouse_donor': [
-        skip_rows_missing_all_keys('parent_strains'),
-    ],
-    'worm_donor': [
-        skip_rows_missing_all_keys('outcrossed_strain'),
     ],
     'annotation': [
         skip_rows_missing_all_keys('related_files', 'software_used'),
@@ -679,13 +663,10 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('datasets'),
     ],
     'file': [
-        skip_rows_missing_all_keys('derived_from', 'controlled_by', 'supersedes')
+        skip_rows_missing_all_keys('derived_from', 'controlled_by')
     ],
     'analysis_step': [
         skip_rows_missing_all_keys('parents')
-    ],
-    'treatment': [
-        skip_rows_missing_all_keys('biosamples_used')
     ]
 }
 

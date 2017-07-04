@@ -2332,10 +2332,7 @@ def audit_experiment_consistent_sequencing_runs(value, system):
     if 'assay_term_name' not in value:  # checked in audit_experiment_assay
         return
 
-    if value.get('assay_term_name') not in [
-       'ChIP-seq',
-       'DNase-seq',
-       'genetic modification followed by DNase-seq']:
+    if value.get('assay_term_name') not in ['ChIP-seq', 'DNase-seq']:
         return
 
     replicate_pairing_statuses = {}
@@ -2358,15 +2355,11 @@ def audit_experiment_consistent_sequencing_runs(value, system):
                         replicate_pairing_statuses[bio_rep_number] = set()
                     replicate_pairing_statuses[bio_rep_number].add(file_object['run_type'])
 
-    length_threshold = 2
-    # different length threshold for DNase-seq and genetic modification followed by DNase-seq
-    if value.get("assay_term_id") in ["OBI:0001853", "NTR:0004774"]:
-        length_threshold = 9
     for key in replicate_read_lengths:
         if len(replicate_read_lengths[key]) > 1:
             upper_value = max(list(replicate_read_lengths[key]))
             lower_value = min(list(replicate_read_lengths[key]))
-            if ((upper_value - lower_value) > length_threshold):
+            if ((upper_value - lower_value) > 2):
                 detail = 'Biological replicate {} '.format(key) + \
                          'in experiment {} '.format(value['@id']) + \
                          'has mixed sequencing read lengths {}.'.format(replicate_read_lengths[key])
@@ -2395,9 +2388,9 @@ def audit_experiment_consistent_sequencing_runs(value, system):
                 j_min = min(j_lengths)
 
                 diff_flag = False
-                if (i_max - j_min) > length_threshold:
+                if (i_max - j_min) > 2:
                     diff_flag = True
-                if (j_max - i_min) > length_threshold:
+                if (j_max - i_min) > 2:
                     diff_flag = True
 
                 if diff_flag is True:
@@ -2859,11 +2852,6 @@ def audit_experiment_control(value, system):
 def audit_experiment_platforms_mismatches(value, system):
     if value['status'] in ['deleted', 'replaced']:
         return
-
-    # do not apply the audit to DNase-seq and genetic modification followed by DNase-seq
-    if value.get("assay_term_id") in ["OBI:0001853", "NTR:0004774"]:
-        return
-
     if 'original_files' not in value or \
        value['original_files'] == []:
         return

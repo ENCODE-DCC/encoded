@@ -27,8 +27,11 @@
         "description": "RNA Evaluation K562 Long Poly-A+  RNA-seq from Gingeras",
         "lab": "thomas-gingeras",
         "status": "released",
+<<<<<<< HEAD
         "submission_date": "2016-02-20",
         "supersedes": ["ENCSR000AES"],
+=======
+>>>>>>> parent of ec067e8... Merge remote-tracking branch 'origin/master' into 5161-batchupgrade-errors
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "a357b33b-cdaa-4312-91c0-086bfec24181"
@@ -43,8 +46,12 @@
         "biosample_type": "immortalized cell line",
         "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
         "lab": "thomas-gingeras",
+<<<<<<< HEAD
         "submission_date": "2016-03-20",
         "status": "archived",
+=======
+        "status": "released",
+>>>>>>> parent of ec067e8... Merge remote-tracking branch 'origin/master' into 5161-batchupgrade-errors
         "date_released": "2016-01-01",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "d8e3c296-ae36-417b-855a-8bfbe3d33e3b"

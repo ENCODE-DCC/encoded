@@ -1405,23 +1405,6 @@ def test_audit_experiment_mismatched_valid_inter_length_sequencing_files(testapp
                for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_DNase_mismatched_valid_inter_length_sequencing_files(
-    testapp, base_experiment,
-    replicate_1_1, replicate_2_1,
-    library_1, library_2,
-    biosample_1, biosample_2,
-    mouse_donor_1,  mouse_donor_2,
-    file_fastq_3, file_fastq_4,
-        file_fastq_5):
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'DNase-seq'})
-    testapp.patch_json(file_fastq_4['@id'], {'read_length': 27})
-    testapp.patch_json(file_fastq_3['@id'], {'read_length': 27})
-    testapp.patch_json(file_fastq_5['@id'], {'read_length': 36})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert all(error['category'] != 'mixed read lengths'
-               for error in collect_audit_errors(res))
-
-
 def test_audit_experiment_rampage_standards(testapp,
                                             base_experiment,
                                             replicate_1_1,
