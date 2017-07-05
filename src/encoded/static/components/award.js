@@ -851,13 +851,6 @@ class CumulativeGraph extends React.Component {
 
             this.chart = new Chart(ctx, {
                 type: 'line',
-                data: {
-                    labels: monthReleased,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: ['rgba(75, 192, 192, 0.2)'],
-                    }],
-                },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -885,13 +878,20 @@ class CumulativeGraph extends React.Component {
                         ],
                     },
                 },
+                data: {
+                    labels: monthReleased,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: ['rgba(75, 192, 192, 0.2)'],
+                    }],
+                },
             });
         });
     }
 
     render() {
         return (
-            <canvas id="myGraph" />
+            <canvas id="myGraph" style={{ height: 300 }} />
         );
     }
 }
@@ -955,7 +955,9 @@ class Award extends React.Component {
                         <h4>Cumulative Number of Experiments</h4>
                     </PanelHeading>
                     <PanelBody>
-                        <FetchGraphData award={context} />
+                        <div>
+                            <FetchGraphData award={context} />
+                        </div>
                     </PanelBody>
                 </Panel>
             </div>
