@@ -96,19 +96,33 @@ export function unbindEvent(el, eventName, eventHandler) {
     }
 }
 
-export function unreleasedFilesUrl(context) {
-    const fileStates = [
+export function unreleasedFilesUrl(context, modifiers) {
+    const toAdd = (modifiers && modifiers.toAdd) || [];
+    const toSubtract = (modifiers && modifiers.toSubtract) || [];
+
+    // Start with the basic set of states, then add or subtract specific ones as needed.
+    let basicFileStatuses = [
         '',
         'uploading',
-        'uploaded',
-        'upload failed',
-        'format check failed',
+        'content error',
         'in progress',
         'released',
         'archived',
-        'content error',
-    ].map(encodeURIComponent).join('&status=');
-    return `/search/?limit=all&type=File&dataset=${context['@id']}${fileStates}`;
+    ];
+
+    // Add requested additional statuses to the basic statuses; note `splice` mutates the given
+    // array.
+    if (toAdd.length) {
+        basicFileStatuses.push(...toAdd);
+    }
+
+    // Remove requested statuses from basic statuses.
+    basicFileStatuses = (toSubtract && toSubtract.length) ? _(basicFileStatuses).without(...toSubtract) : basicFileStatuses;
+
+    // Now that we have the statuses we need to search, convert and return the statuses as a search
+    // URL.
+    const fileStatuses = basicFileStatuses.map(encodeURIComponent).join('&status=');
+    return `/search/?limit=all&type=File&dataset=${context['@id']}${fileStatuses}`;
 }
 
 
