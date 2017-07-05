@@ -111,3 +111,18 @@
         display: flex;
     }
 }
+
+.description {
+    display: block;
+
+    @at-root #{&}__columnone {
+        display: block;
+        float: left;
+        width: 50%
+    }
+
+}
+
+.affiliatedlabsinline {
+    display: inline;
+}

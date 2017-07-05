@@ -1070,7 +1070,7 @@ class AwardCharts extends React.Component {
         return (
             <Panel>
                 <PanelHeading>
-                    <h4>{award.pi && award.pi.lab ? <span>{award.pi.lab.title}</span> : <span>No PI indicated</span>}</h4>
+                    <h4>Current Production</h4>
                     <ProjectBadge award={award} addClasses="badge-heading" />
                 </PanelHeading>
                 <GenusButtons handleClick={this.handleClick} selectedOrganisms={this.state.selectedOrganisms} />
@@ -1098,7 +1098,7 @@ class FetchGraphData extends React.Component {
         return (
             <FetchedData>
                 <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}`} />
-                <ExperimentDate award={award} />
+                 <ExperimentDate award={award} />
             </FetchedData>
         );
     }
@@ -1175,8 +1175,42 @@ CumulativeGraph.defaultProps = {
     monthReleased: [],
 };
 
-// const datereleased = {date_released};
-//     // const dateinteger = string.match(/\d+/g).map(Number);
+const AffiliatedLabsArray = (props) => {
+    const { labs } = props;
+
+    const sortedArray = labs['@graph'].map(term => term.title);
+
+    return (
+        <div>
+            {sortedArray.join(', ')}
+        </div>
+    );
+};
+
+AffiliatedLabsArray.propTypes = {
+    labs: PropTypes.object,
+};
+
+AffiliatedLabsArray.defaultProps = {
+    labs: {},
+};
+
+
+class AffiliatedLabs extends React.Component {
+    render() {
+        const { award } = this.props;
+        return (
+            <FetchedData>
+                <Param name="labs" url={`/search/?type=Lab&awards.name=${award.name}`} />
+                <AffiliatedLabsArray award={award} />
+            </FetchedData>
+        );
+    }
+}
+
+AffiliatedLabs.propTypes = {
+    award: PropTypes.object.isRequired, // Award represented by this chart
+};
 
 class Award extends React.Component {
 
@@ -1188,7 +1222,7 @@ class Award extends React.Component {
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <h2>{context.title || context.name}</h2>
+                        <h2>AWARD SUMMARY for {context.pi.lab.title} ({context.name})</h2>
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -1200,15 +1234,9 @@ class Award extends React.Component {
                 <AwardCharts award={context} />
                 <Panel>
                     <PanelHeading>
-                        <h4>Description</h4>
+                        <h4>{context.title || context.name}</h4>
                     </PanelHeading>
                     <PanelBody>
-                        {context.url ?
-                            <div>
-                                <strong>NHGRI project information: </strong><a href={context.url} title={`${context.name} project page at NHGRI`}>{context.name}</a>
-                                <hr />
-                            </div>
-                        : null}
                         {context.description ?
                             <div className="two-column-long-text two-column-long-text--gap">
                                 <p>{context.description}</p>
@@ -1216,6 +1244,19 @@ class Award extends React.Component {
                         :
                             <p className="browser-error">Award has no description</p>
                         }
+                        <div className="description">
+                            <hr />
+                            <div className="description__columnone">
+                                <dl><dt>NHGRI project information: </dt><a href={context.url} title={`${context.name} project page at NHGRI`}>{context.name}</a></dl>
+                                <dl><dt>Primary Investigator: </dt>{context.pi.lab.title}</dl>
+                                <dl><dt> Milestones: </dt>insert list of phrases here</dl>
+                            </div>
+                            <div className="description__columnone">
+                                <dl><dt>Dates: </dt>{moment(context.start_date).format('MMMM DD, YYYY')} - {moment(context.end_date).format('MMMM DD, YYYY')}</dl>
+                                <dl><dt>Award RFA: </dt>{context.rfa}</dl>
+                                <dl><dt>Affiliated Labs: </dt> <AffiliatedLabs award={context} /> </dl>
+                            </div>
+                        </div>
                     </PanelBody>
                 </Panel>
                 <Panel>
