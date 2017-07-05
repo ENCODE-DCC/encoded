@@ -1,5 +1,10 @@
 ## Changelog for biosample.json
 
+### Schema version 17
+
+* *status* value "proposed" was removed
+
+
 ### Schema version 16
 
 * *talens* array was removed, as we are migrating towards the use of genetic_modification with modification_technique specifications

@@ -5,7 +5,7 @@ import moment from 'moment';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import DataColors from './datacolors';
 import { FetchedData, Param } from './fetched';
-import globals from './globals';
+import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { PickerActions } from './search';
 import StatusLabel from './statuslabel';
@@ -100,7 +100,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
             const chart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: labels,
+                    labels,
                     datasets: [{
                         data: values,
                         backgroundColor: colors,
@@ -132,7 +132,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                         text.push('</ul>');
                         return text.join('');
                     },
-                    onClick: function (e) {
+                    onClick: function onClick(e) {
                         // React to clicks on pie sections
                         const activePoints = chart.getElementAtEvent(e);
 
@@ -984,7 +984,7 @@ const ExperimentDate = (props) => {
 
     return (
         <div>
-            <CumulativeGraph data={accumulatedData} monthReleased={date} />
+            <CumulativeGraph datavalue={accumulatedData} monthReleased={date} />
         </div>
     );
 };
@@ -1112,7 +1112,7 @@ FetchGraphData.propTypes = {
 class CumulativeGraph extends React.Component {
 
     componentDidMount() {
-        const { data, monthReleased } = this.props;
+        const { datavalue, monthReleased } = this.props;
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
             const ctx = document.getElementById('myGraph').getContext('2d');
@@ -1149,7 +1149,7 @@ class CumulativeGraph extends React.Component {
                 data: {
                     labels: monthReleased,
                     datasets: [{
-                        data: data,
+                        data: datavalue,
                         backgroundColor: ['rgba(75, 192, 192, 0.2)'],
                     }],
                 },
@@ -1166,7 +1166,7 @@ class CumulativeGraph extends React.Component {
 
 CumulativeGraph.propTypes = {
     // xaxisorigin: PropTypes.string.isRequired,
-    data: PropTypes.array.isRequired,
+    datavalue: PropTypes.array.isRequired,
     monthReleased: PropTypes.array.isRequired,
 };
 
@@ -1237,7 +1237,7 @@ Award.propTypes = {
     // award: PropTypes.object.isRequired, // Award represented by this chart
 };
 
-globals.content_views.register(Award, 'Award');
+globals.contentViews.register(Award, 'Award');
 
 
 const Listing = (props) => {
@@ -1266,4 +1266,4 @@ Listing.propTypes = {
     context: PropTypes.object.isRequired, // Object whose search result we're displaying
 };
 
-globals.listing_views.register(Listing, 'Award');
+globals.listingViews.register(Listing, 'Award');

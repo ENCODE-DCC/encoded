@@ -1,5 +1,5 @@
 import 'whatwg-fetch';
-import { ItemStore } from '../lib/store';
+import ItemStore from '../lib/store';
 
 
 /* eslint no-underscore-dangle: ["error", { "allow": ["_items"] }] */

@@ -4,7 +4,7 @@ import _ from 'underscore';
 import url from 'url';
 
 // Import test component and data.
-import { Experiment } from '../experiment';
+import Experiment from '../experiment';
 import context from '../testdata/experiment';
 
 
@@ -69,7 +69,7 @@ describe('Experiment Page', () => {
             const dlBar = doc.find('.document__file');
             expect(dlBar).toHaveLength(1);
             const anchors = dlBar.find('a');
-            expect(anchors).toHaveLength(2);
+            expect(anchors).toHaveLength(1);
             expect(url.parse(anchors.at(0).prop('href')).pathname).toEqual('/documents/df9dd0ec-c1cf-4391-a745-a933ab1af7a7/@@download/attachment/Myers_Lab_ChIP-seq_Protocol_v042211.pdf');
         });
 

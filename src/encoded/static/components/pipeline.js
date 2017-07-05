@@ -5,9 +5,10 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/mo
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
 import { DocumentsPanel } from './doc';
-import globals from './globals';
+import * as globals from './globals';
 import { Graph, JsonGraph } from './graph';
 import { Breadcrumbs } from './navigation';
+import { PanelLookup } from './objectutils';
 import { PickerActions } from './search';
 import { softwareVersionList } from './software';
 import StatusLabel from './statuslabel';
@@ -15,19 +16,6 @@ import StatusLabel from './statuslabel';
 
 const stepNodePrefix = 'step'; // Prefix for step node IDs
 const fileNodePrefix = 'file'; // Prefix for file node IDs
-
-
-const PanelLookup = function (properties) {
-    // XXX not all panels have the same markup
-    let context;
-    let localProperties = properties;
-    if (localProperties['@id']) {
-        context = properties;
-        localProperties = { context: context };
-    }
-    const PanelView = globals.panel_views.lookup(localProperties.context);
-    return <PanelView {...localProperties} />;
-};
 
 
 function AnalysisStep(step, node) {
@@ -45,11 +33,11 @@ function AnalysisStep(step, node) {
             swVersions = node.metadata.stepVersion.software_versions;
         } else {
             // Get the analysis_step_version array from the step for pipeline graph display.
-            stepVersions = step.versions && _(step.versions).sortBy(version => version.version);
+            stepVersions = step.versions && _(step.versions).sortBy(version => version.minor_version);
             swStepVersions = _.compact(stepVersions.map((version) => {
                 if (version.software_versions && version.software_versions.length) {
                     return (
-                        <span className="sw-step-versions" key={version.uuid}><strong>Version {version.version}</strong>: {softwareVersionList(version.software_versions)}<br /></span>
+                        <span className="sw-step-versions" key={version.uuid}><strong>Version {step.major_version}.{version.minor_version}</strong>: {softwareVersionList(version.software_versions)}<br /></span>
                     );
                 }
                 return { header: null, body: null };
@@ -60,7 +48,7 @@ function AnalysisStep(step, node) {
             <div className="details-view-info">
                 <h4>
                     {swVersions ?
-                        <span>{`${step.title} — Version ${node.metadata.stepVersion.version}`}</span>
+                        <span>{`${step.title} — Version ${node.metadata.ref.major_version}.${node.metadata.stepVersion.minor_version}`}</span>
                     :
                         <span>{step.title}</span>
                     }
@@ -154,7 +142,7 @@ function AnalysisStep(step, node) {
             </div>
         );
     }
-    return { header: header, body: body };
+    return { header, body };
 }
 
 
@@ -166,7 +154,7 @@ class PipelineComponent extends React.Component {
         if (infoNodeId) {
             const node = jsonGraph.getNode(infoNodeId);
             if (node) {
-                meta = globals.graph_detail.lookup(node)(node);
+                meta = globals.graphDetail.lookup(node)(node);
             }
         }
 
@@ -475,9 +463,9 @@ class PipelineComponent extends React.Component {
 }
 
 PipelineComponent.propTypes = {
-    context: PropTypes.object, // Pipeline object being rendered
-    auditDetail: PropTypes.func, // Audit decorator function
-    auditIndicators: PropTypes.func, // Audit decorator function
+    context: PropTypes.object.isRequired, // Pipeline object being rendered
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
 };
 
 PipelineComponent.contextTypes = {
@@ -486,11 +474,11 @@ PipelineComponent.contextTypes = {
 
 const Pipeline = auditDecor(PipelineComponent);
 
-globals.content_views.register(Pipeline, 'Pipeline');
+globals.contentViews.register(Pipeline, 'Pipeline');
 
 
 // Display the metadata of the selected analysis step in the graph
-const StepDetailView = function (node) {
+const StepDetailView = function StepDetailView(node) {
     // The node is for a step. It can be called with analysis_step_run (for file graphs) or
     // analysis_step (for pipeline graphs) nodes. This code detects which is the case, and adjusts
     // accordingly.
@@ -505,7 +493,7 @@ const StepDetailView = function (node) {
     };
 };
 
-globals.graph_detail.register(StepDetailView, 'Step');
+globals.graphDetail.register(StepDetailView, 'Step');
 
 
 class ListingComponent extends React.Component {
@@ -561,9 +549,9 @@ class ListingComponent extends React.Component {
 }
 
 ListingComponent.propTypes = {
-    context: PropTypes.object, // Search result object
-    auditIndicators: PropTypes.func, // Audit decorator function
-    auditDetail: PropTypes.func, // Audit decorator function
+    context: PropTypes.object.isRequired, // Search result object
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
 };
 
 ListingComponent.contextTypes = {
@@ -572,4 +560,4 @@ ListingComponent.contextTypes = {
 
 const Listing = auditDecor(ListingComponent);
 
-globals.listing_views.register(Listing, 'Pipeline');
+globals.listingViews.register(Listing, 'Pipeline');

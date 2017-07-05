@@ -1,6 +1,6 @@
 import React from 'react';
-import createReactClass from 'create-react-class';
-import globals from './globals';
+import PropTypes from 'prop-types';
+import * as globals from './globals';
 
 export function dbxref(attributes) {
     const value = attributes.value || '';
@@ -31,7 +31,7 @@ export function dbxref(attributes) {
         prefix = 'FlyBaseStock';
     }
 
-    const base = prefix && globals.dbxref_prefix_map[prefix];
+    const base = prefix && globals.dbxrefPrefixMap[prefix];
     if (!base) {
         return <span>{value}</span>;
     }
@@ -46,9 +46,6 @@ export function dbxref(attributes) {
     } else if (prefix === 'MGI.D') {
         id = value.substr(sep + 1);
         local = `${id}.shtml`;
-    } else if (prefix === 'CGC') {
-        id = value.substr(sep + 1);
-        local = `${id}&field=all&exst=&exfield=all`;
     } else if (prefix === 'DSSC') {
         id = value.substr(sep + 1);
         local = `${id}&table=Species&submit=Search`;
@@ -63,15 +60,20 @@ export function dbxref(attributes) {
     return <a href={base + local}>{value}</a>;
 }
 
-export const DbxrefList = createReactClass({
-    render: function () {
-        const props = this.props;
-        return (
-            <ul className={props.className}>
-                {props.values.map((value, index) =>
-                    <li key={index}>{dbxref({ value: value, prefix: props.prefix, target_gene: props.target_gene, target_ref: props.target_ref, cell_line: props.cell_line })}</li>,
-                )}
-            </ul>
-        );
-    },
-});
+export const DbxrefList = props => (
+    <ul className={props.className}>
+        {props.values.map((value, index) =>
+            <li key={index}>{dbxref({ value, prefix: props.prefix, target_gene: props.target_gene, target_ref: props.target_ref, cell_line: props.cell_line })}</li>
+        )}
+    </ul>
+);
+
+DbxrefList.propTypes = {
+    values: PropTypes.array.isRequired, // Array of dbxref values to display
+    className: PropTypes.string, // CSS class to apply to dbxref list
+    cell_line: PropTypes.string,
+};
+
+DbxrefList.defaultProps = {
+    className: '',
+};

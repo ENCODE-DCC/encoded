@@ -1,8 +1,5 @@
-from pyramid.traversal import find_root
-from uuid import UUID
 from snovault import upgrade_step
 import re
-from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 
 
 @upgrade_step('experiment', '10', '11')
@@ -86,7 +83,8 @@ def item_alias_tighten(value, system):
             if '||' in aliases[i]:
                 scrub_parts = aliases[i].split('||')
                 date_split = scrub_parts[1].split(' ')
-                date = "-".join([date_split[1].strip(), date_split[2].strip(), date_split[5].strip()])
+                date = "-".join(
+                    [date_split[1].strip(), date_split[2].strip(), date_split[5].strip()])
                 scrubbed_list = [scrub_parts[0].strip(), date.strip(), scrub_parts[2].strip()]
                 if len(scrub_parts) == 4:
                     scrubbed_list.append(scrub_parts[3].strip())
@@ -102,9 +100,9 @@ def item_alias_tighten(value, system):
 
         rest = '_'.join(parts[1:]).strip()
         # Remove or substitute bad characters and multiple whitespaces
-        
-        import re
-        if '"' or '#' or '@' or '^' or '&' or '|' or '~' or '<' or '>' or '?' or '=' or ';' or '`' in rest:
+
+        if '"' or '#' or '@' or '^' or '&' or '|' or \
+           '~' or '<' or '>' or '?' or '=' or ';' or '`' in rest:
             rest = re.sub(r'[\"#@^&|~<>?=;`\/\\]', '', rest)
             rest = ' '.join(rest.split())
         if '%' in rest:
@@ -113,12 +111,60 @@ def item_alias_tighten(value, system):
             rest = re.sub('[\[{]', '(', rest)
         if ']' or '}' in rest:
             rest = re.sub('[\]}]', ')', rest)
-        
+
         new_alias = ':'.join([namespace, rest])
         if new_alias not in aliases:
             aliases[i] = new_alias
-    
+
     if aliases_to_remove and aliases:
         for a in aliases_to_remove:
             if a in aliases:
                 aliases.remove(a)
+
+
+@upgrade_step('bismark_quality_metric', '7', '8')
+@upgrade_step('biosample_characterization', '9', '10')
+@upgrade_step('chipseq_filter_quality_metric', '6', '7')
+@upgrade_step('complexity_xcorr_quality_metric', '6', '7')
+@upgrade_step('construct_characterization', '9', '10')
+@upgrade_step('cpg_correlation_quality_metric', '6', '7')
+@upgrade_step('correlation_quality_metric', '6', '7')
+@upgrade_step('construct', '5', '6')
+@upgrade_step('crispr', '2', '3')
+@upgrade_step('document', '7', '8')
+@upgrade_step('donor_characterization', '9', '10')
+@upgrade_step('edwbamstats_quality_metric', '6', '7')
+@upgrade_step('duplicates_quality_metric', '5', '6')
+@upgrade_step('filtering_quality_metric', '6', '7')
+@upgrade_step('fastqc_quality_metric', '6', '7')
+@upgrade_step('generic_quality_metric', '6', '7')
+@upgrade_step('genetic_modification', '4', '5')
+@upgrade_step('genetic_modification_characterization', '2', '3')
+@upgrade_step('hotspot_quality_metric', '6', '7')
+@upgrade_step('idr_summary_quality_metric', '6', '7')
+@upgrade_step('idr_quality_metric', '5', '6')
+@upgrade_step('rnai_characterization', '9', '10')
+@upgrade_step('rnai', '4', '5')
+@upgrade_step('replicate', '7', '8')
+@upgrade_step('page', '2', '3')
+@upgrade_step('image', '1', '2')
+@upgrade_step('mad_quality_metric', '5', '6')
+@upgrade_step('samtools_stats_quality_metric', '6', '7')
+@upgrade_step('samtools_flagstats_quality_metric', '6', '7')
+@upgrade_step('software', '4', '5')
+@upgrade_step('software_version', '3', '4')
+@upgrade_step('tale', '2', '3')
+@upgrade_step('star_quality_metric', '6', '7')
+@upgrade_step('trimming_quality_metric', '6', '7')
+@upgrade_step('treatment', '7', '8')
+@upgrade_step('user', '5', '6')
+@upgrade_step('platform', '5', '6')
+@upgrade_step('organism', '3', '4')
+@upgrade_step('lab', '4', '5')
+@upgrade_step('award', '4', '5')
+@upgrade_step('source', '4', '5')
+def item_shared_statuses(value, system):
+    # http://redmine.encodedcc.org/issues/5050
+
+    if value.get('status') == 'replaced':
+        value['status'] = 'deleted'

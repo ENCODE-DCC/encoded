@@ -4,9 +4,9 @@
     "id": "/profiles/analysis_step.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["name", "title", "analysis_step_types", "input_file_types"],
+    "required": ["step_label", "title", "analysis_step_types", "input_file_types", "major_version"],
     "additionalProperties": false,
-    "identifyingProperties": ["uuid", "aliases", "name"],
+    "identifyingProperties": ["uuid", "aliases", "name-major_version"],
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/aliases" },
@@ -18,20 +18,27 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
-        "name": {
-            "title": "Name",
-            "description": "Unique name of the analysis step",
-            "comment": "Unique for each parent analysis_step, using a naming system where the pipeline, software used, the purpose and the version of the step is described: rampage-grit-peak-calling-step-v-1",
+        "step_label": {
+            "title": "Step label",
+            "description": "Unique label of the analysis step using a naming system where the pipeline, software used, the purpose is described, e.g. rampage-grit-peak-calling-step",
+            "comment": "Unique for each parent analysis_step, do not include version number in the label, it will be calculated.",
             "type": "string",
-            "pattern": "^[a-z0-9\\-\\_]+$",
-            "uniqueKey": true
+            "pattern": "^[a-z0-9-]+-step$"
         },
         "title": {
             "title": "Title",
             "description": "The preferred viewable name of the analysis step, likely the same as the name.",
-            "type": "string"
+            "type": "string",
+            "pattern": "^[a-zA-Z\\d_().,-]+(?:\\s[a-zA-Z\\d_().,-]+)*[step|Step]$"
+        },
+        "major_version": {
+            "title": "Major version",
+            "description": "The major version of the analysis step.",
+            "comment": "Please increment as whole numbers starting from 1.",
+            "type": "integer",
+            "pattern": "^[1-9]\\d*$"
         },
         "analysis_step_types": {
             "title": "Types",
@@ -124,6 +131,7 @@
                     "methylation state at CHH",
                     "enrichment",
                     "replication timing profile",
+                    "relative replication signal",
                     "maternal variant calls",
                     "paternal variant calls",
                     "phased variant calls",
@@ -231,6 +239,7 @@
                     "methylation state at CHH",
                     "enrichment",
                     "replication timing profile",
+                    "relative replication signal",
                     "maternal variant calls",
                     "paternal variant calls",
                     "phased variant calls",
