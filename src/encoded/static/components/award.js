@@ -260,12 +260,10 @@ LabChart.contextTypes = {
     navigate: PropTypes.func,
 };
 
-
 // Display and handle clicks in the chart of assays.
 class CategoryChart extends React.Component {
     constructor() {
         super();
-
         this.createChart = this.createChart.bind(this);
         this.updateChart = this.updateChart.bind(this);
     }
@@ -372,7 +370,223 @@ CategoryChart.propTypes = {
 CategoryChart.contextTypes = {
     navigate: PropTypes.func,
 };
+// Display and handle clicks in the chart of antibodies.
+class AntibodyChart extends React.Component {
+    constructor() {
+        super();
+        this.createChart = this.createChart.bind(this);
+        this.updateChart = this.updateChart.bind(this);
+    }
 
+    componentDidMount() {
+        if (this.props.categoryData.length) {
+            this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.props.categoryData.length) {
+            if (this.chart) {
+                this.updateChart(this.chart, this.props.categoryData);
+            } else {
+                this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
+            }
+        } else if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    }
+
+    // Update existing chart with new data.
+    updateChart(chart, facetData) {
+        // Extract the non-zero values, and corresponding labels and colors for the data.
+        const values = [];
+        const labels = [];
+        facetData.forEach((item) => {
+            if (item.doc_count) {
+                values.push(item.doc_count);
+                labels.push(item.key);
+            }
+        });
+        const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
+
+        // Update chart data and redraw with the new data.
+        chart.data.datasets[0].data = values;
+        chart.data.datasets[0].backgroundColor = colors;
+        chart.data.labels = labels;
+        chart.update();
+
+        // Redraw the updated legend
+        document.getElementById(`${categoryChartId}-${this.props.ident}-legend`).innerHTML = chart.generateLegend();
+    }
+
+    createChart(chartId, facetData) {
+        const { award, categoryFacet } = this.props;
+
+        // Extract the non-zero values, and corresponding labels and colors for the data.
+        const values = [];
+        const labels = [];
+        facetData.forEach((item) => {
+            if (item.doc_count) {
+                values.push(item.doc_count);
+                labels.push(item.key);
+            }
+        });
+        const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
+
+        // Create the chart.
+        createDoughnutChart(chartId, values, labels, colors, `${award.name}&${categoryFacet}=`, (uri) => { this.context.navigate(uri); })
+            .then((chartInstance) => {
+                // Save the created chart instance.
+                this.chart = chartInstance;
+            });
+    }
+
+    render() {
+        const { categoryData, ident } = this.props;
+
+        // Calculate a (hopefully) unique ID to put on the DOM elements.
+        const id = `${categoryChartId}-${ident}`;
+
+        return (
+            <div className="award-charts__chart">
+                <div className="award-charts__title">
+                    Antibodies
+                </div>
+                {categoryData.length ?
+                    <div className="award-charts__visual">
+                        <div id={id} className="award-charts__canvas">
+                            <canvas id={`${id}-chart`} />
+                        </div>
+                        <div id={`${id}-legend`} className="award-charts__legend" />
+                    </div>
+                :
+                    <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
+                }
+            </div>
+        );
+    }
+}
+
+AntibodyChart.propTypes = {
+    award: PropTypes.object.isRequired, // Award being displayed
+    categoryData: PropTypes.array.isRequired, // Type-specific data to display in a chart
+    categoryFacet: PropTypes.string.isRequired, // Add to linkUri to link to matrix facet item
+    ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
+};
+
+AntibodyChart.contextTypes = {
+    navigate: PropTypes.func,
+};
+
+// Display and handle clicks in the chart of biosamples.
+class BiosampleChart extends React.Component {
+    constructor() {
+        super();
+        this.createChart = this.createChart.bind(this);
+        this.updateChart = this.updateChart.bind(this);
+    }
+
+    componentDidMount() {
+        if (this.props.categoryData.length) {
+            this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.props.categoryData.length) {
+            if (this.chart) {
+                this.updateChart(this.chart, this.props.categoryData);
+            } else {
+                this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
+            }
+        } else if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    }
+
+    // Update existing chart with new data.
+    updateChart(chart, facetData) {
+        // Extract the non-zero values, and corresponding labels and colors for the data.
+        const values = [];
+        const labels = [];
+        facetData.forEach((item) => {
+            if (item.doc_count) {
+                values.push(item.doc_count);
+                labels.push(item.key);
+            }
+        });
+        const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
+
+        // Update chart data and redraw with the new data.
+        chart.data.datasets[0].data = values;
+        chart.data.datasets[0].backgroundColor = colors;
+        chart.data.labels = labels;
+        chart.update();
+
+        // Redraw the updated legend
+        document.getElementById(`${categoryChartId}-${this.props.ident}-legend`).innerHTML = chart.generateLegend();
+    }
+
+    createChart(chartId, facetData) {
+        const { award, categoryFacet } = this.props;
+
+        // Extract the non-zero values, and corresponding labels and colors for the data.
+        const values = [];
+        const labels = [];
+        facetData.forEach((item) => {
+            if (item.doc_count) {
+                values.push(item.doc_count);
+                labels.push(item.key);
+            }
+        });
+        const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
+
+        // Create the chart.
+        createDoughnutChart(chartId, values, labels, colors, `${award.name}&${categoryFacet}=`, (uri) => { this.context.navigate(uri); })
+            .then((chartInstance) => {
+                // Save the created chart instance.
+                this.chart = chartInstance;
+            });
+    }
+
+    render() {
+        const { categoryData, ident } = this.props;
+
+        // Calculate a (hopefully) unique ID to put on the DOM elements.
+        const id = `${categoryChartId}-${ident}`;
+
+        return (
+            <div className="award-charts__chart">
+                <div className="award-charts__title">
+                    Biosamples
+                </div>
+                {categoryData.length ?
+                    <div className="award-charts__visual">
+                        <div id={id} className="award-charts__canvas">
+                            <canvas id={`${id}-chart`} />
+                        </div>
+                        <div id={`${id}-legend`} className="award-charts__legend" />
+                    </div>
+                :
+                    <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
+                }
+            </div>
+        );
+    }
+}
+
+BiosampleChart.propTypes = {
+    award: PropTypes.object.isRequired, // Award being displayed
+    categoryData: PropTypes.array.isRequired, // Type-specific data to display in a chart
+    categoryFacet: PropTypes.string.isRequired, // Add to linkUri to link to matrix facet item
+    ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
+};
+
+BiosampleChart.contextTypes = {
+    navigate: PropTypes.func,
+};
 
 // Display and handle clicks in the chart of labs.
 class StatusChart extends React.Component {
@@ -487,7 +701,7 @@ StatusChart.contextTypes = {
 
 
 const ChartRenderer = (props) => {
-    const { award, experiments, annotations } = props;
+    const { award, experiments, annotations, antibodies, biosamples } = props;
 
     // Put all search-related configuration data in one consistent place.
     const searchData = {
@@ -513,20 +727,45 @@ const ChartRenderer = (props) => {
             uriBase: '/search/?type=Annotation&award.name=',
             linkUri: '/matrix/?type=Annotation&award.name=',
         },
+        biosamples: {
+            ident: 'biosamples',
+            data: [],
+            labs: [],
+            categoryData: [],
+            statuses: [],
+            categoryFacet: 'biosample_type',
+            title: 'Biosamples',
+            uriBase: '/search/?type=Biosample&award.name=',
+        },
+
+        antibodies: {
+            ident: 'antibodies',
+            data: [],
+            labs: [],
+            categoryData: [],
+            statuses: [],
+            categoryFacet: 'lot_reviews.status',
+            title: 'Antibodies',
+            uriBase: 'type=AntibodyLot&award=/awards',
+        },
     };
 
     // Find the chart data in the returned facets.
     const experimentsConfig = searchData.experiments;
     const annotationsConfig = searchData.annotations;
+    const biosamplesConfig = searchData.biosamples;
+    const antibodiesConfig = searchData.antibodies;
     searchData.experiments.data = (experiments && experiments.facets) || [];
     searchData.annotations.data = (annotations && annotations.facets) || [];
-    ['experiments', 'annotations'].forEach((chartCategory) => {
+    searchData.biosamples.data = (biosamples && biosamples.facets) || [];
+    searchData.antibodies.data = (antibodies && antibodies.facets) || [];
+    ['experiments', 'annotations', 'antibodies', 'biosamples'].forEach((chartCategory) => {
         if (searchData[chartCategory].data.length) {
             // Get the array of lab data.
             const labFacet = searchData[chartCategory].data.find(facet => facet.field === 'lab.title');
             searchData[chartCategory].labs = (labFacet && labFacet.terms && labFacet.terms.length) ? labFacet.terms.sort((a, b) => (a.key < b.key ? -1 : (a.key > b.key ? 1 : 0))) : [];
 
-            // Get the array of data specific to experiments or annotations.
+            // Get the array of data specific to experiments, annotations, or antibodies
             const categoryFacet = searchData[chartCategory].data.find(facet => facet.field === searchData[chartCategory].categoryFacet);
             searchData[chartCategory].categoryData = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length) ? categoryFacet.terms : [];
 
@@ -596,6 +835,27 @@ const ChartRenderer = (props) => {
                     <div className="browser-error">No annotations were submitted under this award</div>
                 }
             </div>
+            <div className="award-chart__group-wrapper">
+                <h2>Reagents</h2>
+                {antibodiesConfig.categoryData.length || biosamplesConfig.categoryData.length ?
+                    <div className="award-chart__group">
+                        <AntibodyChart
+                            award={award}
+                            categoryData={antibodiesConfig.categoryData}
+                            categoryFacet={antibodiesConfig.categoryFacet}
+                            ident={antibodiesConfig.ident}
+                        />
+                        <BiosampleChart
+                            award={award}
+                            categoryData={biosamplesConfig.categoryData}
+                            categoryFacet={biosamplesConfig.categoryFacet}
+                            ident={biosamplesConfig.ident}
+                        />
+                    </div>
+                :
+                    <div className="browser-error">No reagents were submitted under this award</div>
+                }
+            </div>
         </div>
     );
 };
@@ -604,11 +864,15 @@ ChartRenderer.propTypes = {
     award: PropTypes.object.isRequired, // Award being displayed
     experiments: PropTypes.object, // Search result of matching experiments
     annotations: PropTypes.object, // Search result of matching annotations
+    antibodies: PropTypes.object, // Search result of matching antibodies
+    biosamples: PropTypes.object, // Search result of matching biosamples
 };
 
 ChartRenderer.defaultProps = {
     experiments: {},
     annotations: {},
+    antibodies: {},
+    biosamples: {},
 };
 
 // Create new tabdisplay of genus buttons
@@ -801,6 +1065,8 @@ class AwardCharts extends React.Component {
         // Create searchTerm-specific query strings
         const AnnotationQuery = generateQuery(this.state.selectedOrganisms, 'organism.scientific_name=');
         const ExperimentQuery = generateQuery(this.state.selectedOrganisms, 'replicates.library.biosample.donor.organism.scientific_name=');
+        const BiosampleQuery = generateQuery(this.state.selectedOrganisms, 'organism.scientific_name=');
+        const AntibodyQuery = generateQuery(this.state.selectedOrganisms, 'targets.organism.scientific_name=');
         return (
             <Panel>
                 <PanelHeading>
@@ -812,6 +1078,8 @@ class AwardCharts extends React.Component {
                     <FetchedData ignoreErrors>
                         <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}${ExperimentQuery}`} />
                         <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}${AnnotationQuery}`} />
+                        <Param name="biosamples" url={`/search/?type=Biosample&award.name=${award.name}${BiosampleQuery}`} />
+                        <Param name="antibodies" url={`/search/?type=AntibodyLot&award=${award['@id']}${AntibodyQuery}`} />
                         <ChartRenderer award={award} />
                     </FetchedData>
                 </PanelBody>
