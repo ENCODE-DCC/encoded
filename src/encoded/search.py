@@ -1124,8 +1124,6 @@ def news(context, request):
 #ADDED FROM HERE DOWN
 @view_config(route_name='audit', request_method='GET', permission='search')
 def audit(context, request):
-    import pdb
-    pdb.set_trace()
     """
     Return search results aggregated by x and y buckets for building a matrix display.
     """
@@ -1133,7 +1131,7 @@ def audit(context, request):
     result = {
         '@context': request.route_path('jsonld_context'),
         '@id': request.route_path('audit', slash='/') + search_base,
-        '@type': ['Matrix'],
+        '@type': ['AuditMatrix'],
         'filters': [],
         'notification': '',
     }
@@ -1213,6 +1211,22 @@ def audit(context, request):
         if search_audit and 'group.submitter' in principals or 'INTERNAL_ACTION' not in audit_facet[0]:
             facets.append(audit_facet)
 
+    # To get list of audit categories from facets
+    audit_list = []
+    for item in facets:
+        if item[0].rfind('audit.') > -1:
+            audit_list.append(item)
+    
+    # Gets just the labels from the tuples and converts it into format usable by summarize buckets
+    for item in audit_list: # for each audit label
+        temp = item[0] # copy string to modify
+        index = temp.find('.') # find first index of .
+        while index > 0: # if index exists
+            temp = temp[:index] + '-' + temp[(index+1):] # replace . with -
+            index = temp.find('.') # find repeat index of .
+        audit_index = audit_list.index(item)
+        audit_list[audit_index] = temp
+        
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Group results in 2 dimensions
@@ -1253,6 +1267,15 @@ def audit(context, request):
     result['matrix']['doc_count'] = total = aggregations['matrix']['doc_count']
     result['matrix']['max_cell_doc_count'] = 0
 
+    # Create new dictionary that contains all the audit keys from aggregations and use that as 
+    # y_bucket below
+    temp_dict = {}
+    for item in aggregations.items():
+        if item[0].rfind('audit') > -1:
+            temp_dict.update(item[1])
+    
+    #tempValues = dict(temp_dict.values())
+
     # Format facets for results
     result['facets'] = format_facets(
         es_results, facets, used_filters, (schema,), total, principals)
@@ -1260,7 +1283,7 @@ def audit(context, request):
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
         group_by = grouping_fields[0]
         grouping_fields = grouping_fields[1:]
-        if not grouping_fields:
+        if grouping_fields:
             counts = {}
             for bucket in outer_bucket[group_by]['buckets']:
                 doc_count = bucket['doc_count']
@@ -1271,18 +1294,27 @@ def audit(context, request):
             for bucket in x_buckets:
                 summary.append(counts.get(bucket['key'], 0))
             outer_bucket[group_by] = summary
+        """
         else:
             for bucket in outer_bucket[group_by]['buckets']:
                 summarize_buckets(matrix, x_buckets, bucket, grouping_fields)
+        """
 
     summarize_buckets(
         result['matrix'],
         aggregations['matrix']['x']['buckets'],
-        aggregations['matrix'],
-        y_groupings + [x_grouping])
+        temp_dict,
+        #aggregations['matrix'],
+        audit_list)
 
-    result['matrix']['y'][y_groupings[0]] = aggregations['matrix'][y_groupings[0]]
+    result['matrix']['y']['audit_category'] = temp_dict
+    result['matrix']['y']['label'] = "Audit Category"
+    result['matrix']['y']['group_by'][0] = "audit_category"
+    result['matrix']['y']['group_by'][1] = "audit_label"
     result['matrix']['x'].update(aggregations['matrix']['x'])
+
+    import pdb
+    pdb.set_trace()
 
     # Add batch actions
     result.update(search_result_actions(request, doc_types, es_results))
