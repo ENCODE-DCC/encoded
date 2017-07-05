@@ -955,9 +955,7 @@ class Award extends React.Component {
                         <h4>Cumulative Number of Experiments</h4>
                     </PanelHeading>
                     <PanelBody>
-                        <div>
-                            <FetchGraphData award={context} />
-                        </div>
+                        <FetchGraphData award={context} />
                     </PanelBody>
                 </Panel>
             </div>
