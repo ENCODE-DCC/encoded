@@ -806,14 +806,14 @@ RawFileTable.propTypes = {
 };
 
 
-// Called once searches for unreleased files returns results in this.props.items. Displays both released and
+// Called once searches for unreleased files returns results in props.items. Displays both released and
 // unreleased files.
 export const DatasetFiles = (props) => {
     const { items } = props;
 
     const files = _.uniq((items && items.length) ? items : []);
     if (files.length) {
-        return <FileTable {...this.props} items={files} />;
+        return <FileTable {...props} items={files} />;
     }
     return null;
 };
