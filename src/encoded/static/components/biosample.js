@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
 import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
-import { Document, DocumentsPanel, DocumentPreview, DocumentFile, DocumentsSubpanels } from './doc';
+import { Document, DocumentsPanel, DocumentPreview, DocumentFile } from './doc';
 import { GeneticModificationSummary } from './genetic_modification';
 import * as globals from './globals';
 import { ProjectBadge } from './image';
@@ -533,14 +532,11 @@ globals.panelViews.register(Treatment, 'Treatment');
 // for the construct.
 
 const Construct = (props) => {
-    const { context } = props;
-
-    // Get the construct's documents, if any, and remove any duplicates. Also check the type of the
-    // first construct document and only handle them if they're embedded in the construct. If it's
-    // not embedded, and is an array of @ids instead, then don't render any construct documents.
-    // That only happens if this component gets called from an individual construct page, which we
-    // don't really support.
-    const constructDocuments = (context.documents && context.documents.length && (typeof context.documents[0] === 'object')) ? _(context.documents).uniq(doc => doc['@id']) : [];
+    const { context, embeddedDocs } = props;
+    const constructDocuments = {};
+    context.documents.forEach((doc) => {
+        constructDocuments[doc['@id']] = PanelLookup({ context: doc, embeddedDocs });
+    });
 
     return (
         <div>
@@ -603,13 +599,11 @@ const Construct = (props) => {
                 : null}
             </dl>
 
-            {constructDocuments.length ?
+            {embeddedDocs && Object.keys(constructDocuments).length ?
                 <div>
                     <hr />
                     <h4>Construct documents</h4>
-                    <PanelBody addClasses="panel-body-doc-interior">
-                        <DocumentsSubpanels documentSpec={{ documents: constructDocuments }} />
-                    </PanelBody>
+                    <div className="row">{constructDocuments}</div>
                 </div>
             : null}
         </div>
@@ -618,6 +612,11 @@ const Construct = (props) => {
 
 Construct.propTypes = {
     context: PropTypes.object.isRequired, // Construct context object being rendered here
+    embeddedDocs: PropTypes.array, // Array of document objects to render within the Construct panel
+};
+
+Construct.defaultProps = {
+    embeddedDocs: null,
 };
 
 globals.panelViews.register(Construct, 'Construct');
