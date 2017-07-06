@@ -52,6 +52,7 @@ def test_audit_biosample_constructs_whole_organism(testapp, base_biosample,
     testapp.patch_json(base_biosample['@id'], {'biosample_type': 'whole organisms',
                                                'donor': fly_donor['@id'],
                                                'organism': fly['@id'],
+                                               'transfection_method': 'chemical',
                                                'transfection_type': 'stable',
                                                'constructs': [construct['@id']]})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
@@ -77,7 +78,9 @@ def test_audit_biosample_constructs_whole_organism_compliant(testapp, base_biosa
 
 
 def test_audit_biosample_term_ntr(testapp, base_biosample):
-    testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'NTR:0000022', 'biosample_term_name': 'myocyte', 'biosample_type': 'in vitro differentiated cells'})
+    testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'NTR:0000022',
+                                               'biosample_term_name': 'myocyte',
+                                               'biosample_type': 'in vitro differentiated cells'})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -87,7 +90,9 @@ def test_audit_biosample_term_ntr(testapp, base_biosample):
 
 
 def test_audit_biosample_culture_dates(testapp, base_biosample):
-    testapp.patch_json(base_biosample['@id'], {'culture_start_date': '2014-06-30', 'culture_harvest_date': '2014-06-25'})
+    testapp.patch_json(base_biosample['@id'], {'biosample_type': 'primary cell',
+                                               'culture_start_date': '2014-06-30',
+                                               'culture_harvest_date': '2014-06-25'})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -106,7 +111,8 @@ def test_audit_biosample_donor(testapp, base_biosample):
 
 
 def test_audit_biosample_donor_organism(testapp, base_biosample, base_human_donor, base_chipmunk):
-    testapp.patch_json(base_biosample['@id'], {'donor': base_human_donor['@id'], 'organism': base_chipmunk['@id']})
+    testapp.patch_json(base_biosample['@id'], {'donor': base_human_donor['@id'],
+                                               'organism': base_chipmunk['@id']})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -117,6 +123,7 @@ def test_audit_biosample_donor_organism(testapp, base_biosample, base_human_dono
 
 def test_audit_biosample_status(testapp, base_biosample, construct):
     testapp.patch_json(base_biosample['@id'], {'status': 'released',
+                                               'transfection_method': 'chemical',
                                                'transfection_type': 'stable',
                                                'constructs': [construct['@id']]})
     res = testapp.get(base_biosample['@id'] + '@@index-data')

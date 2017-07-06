@@ -125,3 +125,22 @@ def fly_worm_donor_2_3_and_human_mouse_5_6(value, system):
     # http://redmine.encodedcc.org/issues/3743
     if 'donor_documents' in value:
         del value['donor_documents']
+
+
+@upgrade_step('fly_donor', '4', '5')
+@upgrade_step('worm_donor', '4', '5')
+@upgrade_step('human_donor', '7', '8')
+@upgrade_step('mouse_donor', '7', '8')
+def fly_worm_donor_4_5_and_human_mouse_7_8(value, system):
+    # http://redmine.encodedcc.org/issues/5049
+    return
+
+
+@upgrade_step('fly_donor', '5', '6')
+@upgrade_step('worm_donor', '5', '6')
+@upgrade_step('human_donor', '8', '9')
+@upgrade_step('mouse_donor', '8', '9')
+def fly_worm_donor_5_6_and_human_mouse_8_9(value, system):
+    # http://redmine.encodedcc.org/issues/5041
+    if value.get('status') in ['preliminary', 'proposed']:
+        value['status'] = "in progress"

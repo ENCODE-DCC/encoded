@@ -137,7 +137,15 @@
     },
     "properties": {
         "schema_version": {
-            "default": "12"
+            "default": "13"
+        },
+        "submission_date": {
+            "title": "Submission date" ,
+            "description": "The date that the experiment received all required replicates and files",
+            "comment": "Do not submit. Submission date will be submitted only by DCC personnel.",
+            "type": "string",
+            "format": "date",
+            "permission": "import_items"
         },
         "target": {
             "title": "Target",
@@ -165,13 +173,13 @@
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "External identifiers",
-            "description": "Unique identifiers from external resources.",
+            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "External identifier",
-                "description": "A unique identifier from external resource.",
+                "description": "An identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
                 "pattern": "^(UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|GEO:(GSM|GSE)\\d+|GEO-obsolete:(GSM|GSE)\\d+|RBPImage:[^\\s].*)$"
             }
@@ -473,5 +481,6 @@
         "replicates.library.biosample.rnais.product_id": 1.0,
         "notes": 1.0,
         "internal_tags": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/experiment.md"
 }

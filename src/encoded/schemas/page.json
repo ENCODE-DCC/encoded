@@ -64,7 +64,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "parent": {
             "title": "Parent Page",
@@ -226,5 +226,7 @@
         "title": 2.0,
         "news_keywords": 2.0,
         "layout.blocks.body": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/page.md"
+
 }

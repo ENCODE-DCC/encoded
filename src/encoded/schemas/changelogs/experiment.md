@@ -1,8 +1,13 @@
 ## Changelog for experiment.json
 
-### Schema version 12
-    
+### Schema version 13
+
 * *biosample_type* and *biosample_term_id* consistency added to the list of schema dependencies
+
+### Schema version 12
+
+* *alternate_accessions* now must match accession format, "ENCSR..." or "TSTSR..."
+* *submission_date* property was added to Experiment schema and can only be submitted by DCC personnel
 
 ### Schema version 11
     

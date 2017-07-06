@@ -43,7 +43,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "construct_type": {
             "title": "Type",
@@ -245,5 +245,7 @@
         "target.gene_name": 1.0,
         "target.label": 1.0,
         "target.aliases": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/construct.md"
+
 }

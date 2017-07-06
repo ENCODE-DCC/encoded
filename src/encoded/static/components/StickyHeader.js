@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
 import offset from '../libs/offset';
 
 
@@ -8,26 +7,29 @@ import offset from '../libs/offset';
 // navigation bar of that’s position fixed (as it is if the browser window is wide enough). Note
 // that this method makes the sticky header shudder up and down while scrolling. Better ways exist
 // to do this without shudderingm, but they don't work on tables.
-const StickyHeader = createReactClass({
-    propTypes: {
-        children: PropTypes.object.isRequired,
-    },
+export default class StickyHeader extends React.Component {
+    constructor() {
+        super();
 
-    componentDidMount: function () {
+        // Bind this to non-React components.
+        this.stickyHeader = this.stickyHeader.bind(this);
+    }
+
+    componentDidMount() {
         // Avoid shimming as ie8 does not support css transform
         if (window.getComputedStyle === undefined) return;
         this.stickyHeader();
         window.addEventListener('scroll', this.stickyHeader);
         window.addEventListener('resize', this.stickyHeader);
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         if (window.getComputedStyle === undefined) return;
         window.removeEventListener('scroll', this.stickyHeader);
         window.removeEventListener('resize', this.stickyHeader);
-    },
+    }
 
-    stickyHeader: function () {
+    stickyHeader() {
         // http://stackoverflow.com/a/6625189/199100
         // http://css-tricks.com/persistent-headers/
         const header = this.stickyHeaderComp;
@@ -49,12 +51,14 @@ const StickyHeader = createReactClass({
             const transform = `translate(0px,${y}px)`;
             header.style.transform = transform;
         }
-    },
+    }
 
-    render: function () {
+    render() {
         const child = React.cloneElement(this.props.children, { ref: (comp) => { this.stickyHeaderComp = comp; } });
         return React.Children.only(child);
-    },
-});
+    }
+}
 
-module.exports = StickyHeader;
+StickyHeader.propTypes = {
+    children: PropTypes.object.isRequired,
+};

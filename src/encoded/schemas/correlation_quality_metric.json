@@ -19,7 +19,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "Pearson correlation": {
             "title": "Pearson correlation",
@@ -51,5 +51,7 @@
             "type": "string",
             "description": "Description of methods"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/correlation_quality_metric.md"
+
 }

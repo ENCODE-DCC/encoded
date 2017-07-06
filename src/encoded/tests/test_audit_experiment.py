@@ -5,6 +5,18 @@ AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
 9TXL0Y4OHwAAAABJRU5ErkJggg=="""
 
 
+def collect_audit_errors(result, error_types=None):
+    errors = result.json['audit']
+    errors_list = []
+    if error_types:
+        for error_type in error_types:
+            errors_list.extend(errors[error_type])
+    else:
+        for error_type in errors:
+            errors_list.extend(errors[error_type])
+    return errors_list
+
+
 @pytest.fixture
 def library_no_biosample(testapp, lab, award):
     item = {
@@ -623,11 +635,8 @@ def test_audit_experiment_mixed_libraries(testapp,
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mixed libraries' for error in errors_list)
+    assert any(error['category'] == 'mixed libraries'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_released_with_unreleased_files(testapp, base_experiment, file_fastq):
@@ -635,22 +644,16 @@ def test_audit_experiment_released_with_unreleased_files(testapp, base_experimen
                                                 'date_released': '2016-01-01'})
     testapp.patch_json(file_fastq['@id'], {'status': 'in progress'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched file status' for error in errors_list)
+    assert any(error['category'] == 'mismatched file status'
+               for error in collect_audit_errors(res))
 
 
 def test_ChIP_possible_control(testapp, base_experiment, ctrl_experiment, IgG_ctrl_rep):
     testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']],
                                                 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'invalid possible_control' for error in errors_list)
+    assert any(error['category'] == 'invalid possible_control'
+               for error in collect_audit_errors(res))
 
 
 def test_ChIP_possible_control_roadmap(testapp, base_experiment, ctrl_experiment, IgG_ctrl_rep,
@@ -659,11 +662,8 @@ def test_ChIP_possible_control_roadmap(testapp, base_experiment, ctrl_experiment
     testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']],
                                                 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'invalid possible_control' for error in errors_list)
+    assert any(error['category'] == 'invalid possible_control'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_input_control(testapp, base_experiment,
@@ -673,31 +673,22 @@ def test_audit_input_control(testapp, base_experiment,
     testapp.patch_json(base_experiment['@id'], {'possible_controls': [ctrl_experiment['@id']],
                                                 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing input control' for error in errors_list)
+    assert any(error['category'] == 'missing input control'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_target(testapp, base_experiment):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing target' for error in errors_list)
+    assert any(error['category'] == 'missing target'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'status': 'ready for review'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'unreplicated experiment' for error in errors_list)
+    assert any(error['category'] == 'unreplicated experiment'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_technical_replicates_same_library(testapp, base_experiment,
@@ -705,66 +696,55 @@ def test_audit_experiment_technical_replicates_same_library(testapp, base_experi
                                                             base_library):
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     testapp.patch_json(base_replicate_two['@id'], {'library': base_library['@id']})
-    testapp.patch_json(base_experiment['@id'], {'replicates': [base_replicate['@id'],base_replicate_two['@id']]})
+    testapp.patch_json(base_experiment['@id'], {
+                       'replicates': [base_replicate['@id'], base_replicate_two['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-
-    assert any(error['category'] == 'sequencing runs labeled as technical replicates' for error in errors_list)
+    assert any(error['category'] == 'sequencing runs labeled as technical replicates'
+               for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_biological_replicates_biosample(testapp, base_experiment,base_biosample, library_1, library_2, replicate_1_1, replicate_2_1):
+def test_audit_experiment_biological_replicates_biosample(
+        testapp, base_experiment, base_biosample,
+        library_1, library_2, replicate_1_1, replicate_2_1):
     testapp.patch_json(library_1['@id'], {'biosample': base_biosample['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': base_biosample['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'biological replicates with identical biosample' for error in errors_list)
+    assert any(error['category'] == 'biological replicates with identical biosample'
+               for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_technical_replicates_biosample(testapp, base_experiment, biosample_1, biosample_2, library_1, library_2, replicate_1_1, replicate_1_2):
+def test_audit_experiment_technical_replicates_biosample(
+        testapp, base_experiment, biosample_1, biosample_2,
+        library_1, library_2, replicate_1_1, replicate_1_2):
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_1_2['@id'], {'library': library_2['@id']})
 
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'technical replicates with not identical biosample' for error in errors_list)
+    assert any(error['category'] == 'technical replicates with not identical biosample'
+               for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_with_libraryless_replicated(testapp, base_experiment, base_replicate, base_library):
+def test_audit_experiment_with_libraryless_replicated(
+        testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'status': 'ready for review'})
     testapp.patch_json(base_experiment['@id'], {'replicates': [base_replicate['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'replicate with no library' for error in errors_list)
+    assert any(error['category'] == 'replicate with no library'
+               for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_single_cell_replicated(testapp, base_experiment, base_replicate,
-                                                 base_library):
+def test_audit_experiment_single_cell_replicated(
+        testapp, base_experiment, base_replicate, base_library):
     testapp.patch_json(base_experiment['@id'], {'status': 'ready for review'})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name':
                                                 'single cell isolation followed by RNA-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'unreplicated experiment' for error in errors_list)
+    assert all(error['category'] != 'unreplicated experiment'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_RNA_bind_n_seq_replicated(testapp, base_experiment, base_replicate,
@@ -773,23 +753,19 @@ def test_audit_experiment_RNA_bind_n_seq_replicated(testapp, base_experiment, ba
     testapp.patch_json(base_experiment['@id'], {'assay_term_name':
                                                 'RNA Bind-n-Seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'unreplicated experiment' for error in errors_list)
+    assert all(error['category'] != 'unreplicated experiment'
+               for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_roadmap_replicated(testapp, base_experiment, base_replicate, base_library, award):
+def test_audit_experiment_roadmap_replicated(
+        testapp, base_experiment, base_replicate, base_library, award):
     testapp.patch_json(award['@id'], {'rfa': 'Roadmap'})
     testapp.patch_json(base_experiment['@id'], {'award': award['@id']})
-    testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
+    testapp.patch_json(base_experiment['@id'],
+                       {'status': 'released', 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'unreplicated experiment' for error in errors_list)
+    assert all(error['category'] != 'unreplicated experiment'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, base_library):
@@ -797,48 +773,50 @@ def test_audit_experiment_spikeins(testapp, base_experiment, base_replicate, bas
     testapp.patch_json(base_library['@id'], {'size_range': '>200'})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing spikeins' for error in errors_list)
+    assert any(error['category'] == 'missing spikeins'
+               for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_not_tag_antibody(testapp, base_experiment, base_replicate, organism, antibody_lot):
-    other_target = testapp.post_json('/target', {'organism': organism['uuid'], 'label': 'eGFP-AVCD', 'investigated_as': ['recombinant protein']}).json['@graph'][0]
+def test_audit_experiment_not_tag_antibody(
+        testapp, base_experiment, base_replicate, organism, antibody_lot):
+    other_target = testapp.post_json(
+        '/target',
+        {'organism': organism['uuid'],
+            'label': 'eGFP-AVCD',
+            'investigated_as': ['recombinant protein']}).json['@graph'][0]
     testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['uuid']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'target': other_target['@id']})
+    testapp.patch_json(base_experiment['@id'],
+                       {'assay_term_name': 'ChIP-seq', 'target': other_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'not tagged antibody' for error in errors_list)
+    assert any(error['category'] == 'not tagged antibody'
+               for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_target_tag_antibody(testapp, base_experiment, base_replicate, organism, base_antibody, tag_target):
-    ha_target = testapp.post_json('/target', {'organism': organism['uuid'], 'label': 'HA-ABCD', 'investigated_as': ['recombinant protein']}).json['@graph'][0]
+def test_audit_experiment_target_tag_antibody(
+        testapp, base_experiment, base_replicate, organism, base_antibody, tag_target):
+    ha_target = testapp.post_json(
+        '/target',
+        {'organism': organism['uuid'],
+            'label': 'HA-ABCD',
+            'investigated_as': ['recombinant protein']}).json['@graph'][0]
     base_antibody['targets'] = [tag_target['@id']]
     tag_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
     testapp.patch_json(base_replicate['@id'], {'antibody': tag_antibody['@id']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'target': ha_target['@id']})
+    testapp.patch_json(
+        base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'target': ha_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched tag target' for error in errors_list)
+    assert any(error['category'] == 'mismatched tag target'
+               for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_target_mismatch(testapp, base_experiment, base_replicate, base_target, antibody_lot):
+def test_audit_experiment_target_mismatch(
+        testapp, base_experiment, base_replicate, base_target, antibody_lot):
     testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['uuid']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'target': base_target['@id']})
+    testapp.patch_json(
+        base_experiment['@id'], {'assay_term_name': 'ChIP-seq', 'target': base_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent target' for error in errors_list)
+    assert any(error['category'] == 'inconsistent target'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_no_characterizations_antibody(testapp,
@@ -856,11 +834,8 @@ def test_audit_experiment_no_characterizations_antibody(testapp,
                                                 'biosample_type': 'immortalized cell line',
                                                 'target': target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'uncharacterized antibody' for error in errors_list)
+    assert any(error['category'] == 'uncharacterized antibody'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_wrong_organism_histone_antibody(testapp,
@@ -899,15 +874,19 @@ def test_audit_experiment_wrong_organism_histone_antibody(testapp,
             'lane': 2
         }
     ]
-    testapp.patch_json(base_antibody_characterization1['@id'], {'target': target_H3K9me3['@id'],
-                                                                'characterizes': histone_antibody['@id'],
-                                                                'status': 'compliant',
-                                                                'reviewed_by': wrangler['@id'],
-                                                                'characterization_reviews': characterization_reviews})
-    testapp.patch_json(base_antibody_characterization2['@id'], {'target': target_H3K9me3['@id'],
-                                                                'characterizes': histone_antibody['@id'],
-                                                                'status': 'compliant',
-                                                                'reviewed_by': wrangler['@id']})
+    testapp.patch_json(
+        base_antibody_characterization1['@id'],
+        {'target': target_H3K9me3['@id'],
+            'characterizes': histone_antibody['@id'],
+            'status': 'compliant',
+            'reviewed_by': wrangler['@id'],
+            'characterization_reviews': characterization_reviews})
+    testapp.patch_json(
+        base_antibody_characterization2['@id'],
+        {'target': target_H3K9me3['@id'],
+            'characterizes': histone_antibody['@id'],
+            'status': 'compliant',
+            'reviewed_by': wrangler['@id']})
     testapp.patch_json(base_replicate['@id'], {'antibody': histone_antibody['@id'],
                                                'library': base_library['@id'],
                                                'experiment': base_experiment['@id']})
@@ -917,11 +896,8 @@ def test_audit_experiment_wrong_organism_histone_antibody(testapp,
                                                 'biosample_type': 'immortalized cell line',
                                                 'target': mouse_H3K9me3['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'antibody not characterized to standard' for error in errors_list)
+    assert any(error['category'] == 'antibody not characterized to standard'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_partially_characterized_antibody(testapp,
@@ -957,11 +933,13 @@ def test_audit_experiment_partially_characterized_antibody(testapp,
             'lane': 2
         }
     ]
-    testapp.patch_json(base_antibody_characterization1['@id'], {'target': base_target['@id'],
-                                                                'characterizes': TF_antibody['@id'],
-                                                                'status': 'compliant',
-                                                                'reviewed_by': wrangler['@id'],
-                                                                'characterization_reviews': characterization_reviews})
+    testapp.patch_json(
+        base_antibody_characterization1['@id'],
+        {'target': base_target['@id'],
+            'characterizes': TF_antibody['@id'],
+            'status': 'compliant',
+            'reviewed_by': wrangler['@id'],
+            'characterization_reviews': characterization_reviews})
 
     testapp.patch_json(base_replicate['@id'], {'antibody': TF_antibody['@id'],
                                                'library': base_library['@id'],
@@ -973,31 +951,23 @@ def test_audit_experiment_partially_characterized_antibody(testapp,
                                                 'target': base_target['@id']})
 
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'partially characterized antibody' for error in errors_list)
+    assert any(error['category'] == 'partially characterized antibody'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_geo_submission(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
+    testapp.patch_json(
+        base_experiment['@id'], {'status': 'released', 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'experiment not submitted to GEO' for error in errors_list)
+    assert any(error['category'] == 'experiment not submitted to GEO'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_biosample_type_missing(testapp, base_experiment):
     testapp.patch_json(base_experiment['@id'], {'biosample_term_name': 'K562'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing biosample_type' for error in errors_list)
+    assert any(error['category'] == 'missing biosample_type'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_biosample_match(testapp, base_experiment,
@@ -1011,21 +981,15 @@ def test_audit_experiment_biosample_match(testapp, base_experiment,
                                                 'biosample_term_name': 'ileum',
                                                 'biosample_type': 'tissue'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent library biosample' for error in errors_list)
+    assert any(error['category'] == 'inconsistent library biosample'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_documents(testapp, base_experiment, base_library, base_replicate):
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing documents' for error in errors_list)
+    assert any(error['category'] == 'missing documents'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_documents_excluded(testapp, base_experiment,
@@ -1033,11 +997,8 @@ def test_audit_experiment_documents_excluded(testapp, base_experiment,
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     testapp.patch_json(award['@id'], {'rfa': 'modENCODE'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] != 'missing documents' for error in errors_list)
+    assert any(error['category'] != 'missing documents'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_model_organism_mismatched_sex(testapp,
@@ -1064,11 +1025,8 @@ def test_audit_experiment_model_organism_mismatched_sex(testapp,
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent sex' for error in errors_list)
+    assert any(error['category'] == 'inconsistent sex'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_model_organism_mismatched_age(testapp,
@@ -1095,11 +1053,8 @@ def test_audit_experiment_model_organism_mismatched_age(testapp,
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
 
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent age' for error in errors_list)
+    assert any(error['category'] == 'inconsistent age'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_model_organism_mismatched_donor(testapp,
@@ -1123,22 +1078,16 @@ def test_audit_experiment_model_organism_mismatched_donor(testapp,
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent donor' for error in errors_list)
+    assert any(error['category'] == 'inconsistent donor'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_with_library_without_biosample(testapp, base_experiment, base_replicate,
                                                          library_no_biosample):
     testapp.patch_json(base_replicate['@id'], {'library': library_no_biosample['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing biosample' for error in errors_list)
+    assert any(error['category'] == 'missing biosample'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_with_RNA_library_no_size_range(testapp, base_experiment, base_replicate,
@@ -1146,11 +1095,8 @@ def test_audit_experiment_with_RNA_library_no_size_range(testapp, base_experimen
     testapp.patch_json(base_library['@id'], {'nucleic_acid_term_name': 'RNA'})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing RNA fragment size' for error in errors_list)
+    assert any(error['category'] == 'missing RNA fragment size'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_with_RNA_library_with_size_range(testapp, base_experiment, base_replicate,
@@ -1158,11 +1104,8 @@ def test_audit_experiment_with_RNA_library_with_size_range(testapp, base_experim
     testapp.patch_json(base_library['@id'], {'nucleic_acid_term_name': 'RNA', 'size_range': '>200'})
     testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'missing RNA fragment size' for error in errors_list)
+    assert all(error['category'] != 'missing RNA fragment size'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experiment,
@@ -1173,11 +1116,8 @@ def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experi
     testapp.patch_json(base_experiment['@id'], {'assay_term_name':
                                                 'transcription profiling by array assay'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'missing RNA fragment size' for error in errors_list)
+    assert all(error['category'] != 'missing RNA fragment size'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_replicate_with_file(testapp, file_fastq,
@@ -1189,11 +1129,8 @@ def test_audit_experiment_replicate_with_file(testapp, file_fastq,
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all((error['category'] != 'missing raw data in replicate') for error in errors_list)
+    assert all((error['category'] != 'missing raw data in replicate')
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_pipeline_assay_term_name_consistency(
@@ -1210,11 +1147,8 @@ def test_audit_experiment_pipeline_assay_term_name_consistency(
                                              'assay_term_name': 'RNA-seq'})
     testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     res = testapp.get(experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent assay_term_name' for error in errors_list)
+    assert any(error['category'] == 'inconsistent assay_term_name'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_replicate_with_no_files(testapp,
@@ -1225,11 +1159,8 @@ def test_audit_experiment_replicate_with_no_files(testapp,
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing raw data in replicate' for error in errors_list)
+    assert any(error['category'] == 'missing raw data in replicate'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_replicate_with_no_files_dream(testapp,
@@ -1241,11 +1172,8 @@ def test_audit_experiment_replicate_with_no_files_dream(testapp,
                                                 'status': 'released',
                                                 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'missing raw data in replicate' for error in errors_list)
+    assert all(error['category'] != 'missing raw data in replicate'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_replicate_with_no_files_warning(testapp, file_bed_methyl,
@@ -1258,52 +1186,39 @@ def test_audit_experiment_replicate_with_no_files_warning(testapp, file_bed_meth
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
-    for error_type in errors:
-        if error_type == 'ERROR':
-            errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing raw data in replicate' for error in errors_list)
+    assert any(error['category'] ==
+               'missing raw data in replicate' for
+               error in collect_audit_errors(res, ['ERROR']))
 
 
 def test_audit_experiment_missing_biosample_term_id(testapp, base_experiment):
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
     assert any(error['category'] ==
-               'experiment missing biosample_term_id' for error in errors_list)
+               'experiment missing biosample_term_id'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_bind_n_seq_missing_biosample_term_id(testapp, base_experiment):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA Bind-n-Seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
     assert all(error['category'] !=
-               'experiment missing biosample_term_id' for error in errors_list)
+               'experiment missing biosample_term_id'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_missing_biosample_type(testapp, base_experiment):
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
     assert any(error['category'] ==
-               'experiment missing biosample_type' for error in errors_list)
+               'experiment missing biosample_type'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_with_biosample_type(testapp, base_experiment):
     testapp.patch_json(base_experiment['@id'], {'biosample_type': 'immortalized cell line'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
     assert all(error['category'] !=
-               'experiment missing biosample_type' for error in errors_list)
+               'experiment missing biosample_type'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_not_uploaded_files(testapp, file_bam,
@@ -1312,11 +1227,8 @@ def test_audit_experiment_not_uploaded_files(testapp, file_bam,
                                              base_library):
     testapp.patch_json(file_bam['@id'], {'status': 'upload failed'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'file validation error' for error in errors_list)
+    assert any(error['category'] == 'file validation error'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_replicate_with_no_fastq_files(testapp, file_bam,
@@ -1327,11 +1239,8 @@ def test_audit_experiment_replicate_with_no_fastq_files(testapp, file_bam,
     testapp.patch_json(base_experiment['@id'], {'status': 'released',
                                                 'date_released': '2016-01-01'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing raw data in replicate' for error in errors_list)
+    assert any(error['category'] == 'missing raw data in replicate'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_mismatched_length_sequencing_files(testapp, file_bam, file_fastq,
@@ -1340,12 +1249,8 @@ def test_audit_experiment_mismatched_length_sequencing_files(testapp, file_bam, 
                                                              base_library):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
     assert any(error['category'] == 'mixed run types'
-               for error in errors_list)
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_mismatched_platforms(testapp, file_fastq,
@@ -1355,12 +1260,8 @@ def test_audit_experiment_mismatched_platforms(testapp, file_fastq,
     testapp.patch_json(file_fastq['@id'], {'platform': platform1['@id']})
     testapp.patch_json(file_fastq_2['@id'], {'platform': platform2['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent platforms'
-               for error in errors_list)
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_archived_files_mismatched_platforms(
@@ -1370,12 +1271,8 @@ def test_audit_experiment_archived_files_mismatched_platforms(
                                            'status': 'archived'})
     testapp.patch_json(file_fastq_2['@id'], {'platform': platform2['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
     assert all(error['category'] != 'inconsistent platforms'
-               for error in errors_list)
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_internal_tag(testapp, base_experiment,
@@ -1386,11 +1283,8 @@ def test_audit_experiment_internal_tag(testapp, base_experiment,
     testapp.patch_json(library_1['@id'], {'biosample': base_biosample['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent internal tags' for error in errors_list)
+    assert any(error['category'] == 'inconsistent internal tags'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_internal_tags(testapp, base_experiment,
@@ -1407,11 +1301,8 @@ def test_audit_experiment_internal_tags(testapp, base_experiment,
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_2['@id'], {'library': library_2['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent internal tags' for error in errors_list)
+    assert any(error['category'] == 'inconsistent internal tags'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_internal_tags2(testapp, base_experiment,
@@ -1427,11 +1318,8 @@ def test_audit_experiment_internal_tags2(testapp, base_experiment,
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_2['@id'], {'library': library_2['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent internal tags' for error in errors_list)
+    assert any(error['category'] ==
+               'inconsistent internal tags' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_mismatched_inter_paired_sequencing_files(testapp,
@@ -1448,12 +1336,8 @@ def test_audit_experiment_mismatched_inter_paired_sequencing_files(testapp,
                                                                    file_fastq_4):
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
     assert any(error['category'] == 'mixed run types'
-               for error in errors_list)
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_mismatched_inter_length_sequencing_files(testapp,
@@ -1473,12 +1357,8 @@ def test_audit_experiment_mismatched_inter_length_sequencing_files(testapp,
     testapp.patch_json(file_fastq_3['@id'], {'read_length': 50})
     testapp.patch_json(file_fastq_5['@id'], {'read_length': 150})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
     assert any(error['category'] == 'mixed read lengths'
-               for error in errors_list)
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_mismatched_valid_inter_length_sequencing_files(testapp,
@@ -1498,12 +1378,25 @@ def test_audit_experiment_mismatched_valid_inter_length_sequencing_files(testapp
     testapp.patch_json(file_fastq_3['@id'], {'read_length': 50})
     testapp.patch_json(file_fastq_5['@id'], {'read_length': 52})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
     assert all(error['category'] != 'mixed read lengths'
-               for error in errors_list)
+               for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_DNase_mismatched_valid_inter_length_sequencing_files(
+    testapp, base_experiment,
+    replicate_1_1, replicate_2_1,
+    library_1, library_2,
+    biosample_1, biosample_2,
+    mouse_donor_1,  mouse_donor_2,
+    file_fastq_3, file_fastq_4,
+        file_fastq_5):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'DNase-seq'})
+    testapp.patch_json(file_fastq_4['@id'], {'read_length': 27})
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 27})
+    testapp.patch_json(file_fastq_5['@id'], {'read_length': 36})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(error['category'] != 'mixed read lengths'
+               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_rampage_standards(testapp,
@@ -1555,12 +1448,8 @@ def test_audit_experiment_rampage_standards(testapp,
                                                 'date_released': '2016-01-01',
                                                 'assay_term_name': 'RAMPAGE'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-
-    assert any(error['category'] == 'extremely low read depth' for error in errors_list)
+    assert any(error['category'] ==
+               'extremely low read depth' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_small_rna_standards(testapp,
@@ -1615,11 +1504,8 @@ def test_audit_experiment_small_rna_standards(testapp,
                                                 'date_released': '2016-01-01',
                                                 'assay_term_name': 'RNA-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'low read depth' for error in errors_list)
+    assert any(error['category'] ==
+               'low read depth' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_MAD_long_rna_standards(testapp,
@@ -1674,11 +1560,8 @@ def test_audit_experiment_MAD_long_rna_standards(testapp,
                                                 'date_released': '2016-01-01',
                                                 'assay_term_name': 'RNA-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'low replicate concordance' for error in errors_list)
+    assert any(error['category'] ==
+               'low replicate concordance' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_long_rna_standards_crispr(testapp,
@@ -1735,12 +1618,11 @@ def test_audit_experiment_long_rna_standards_crispr(testapp,
                                                 'date_released': '2016-01-01',
                                                 'assay_term_name': 'CRISPR genome editing followed by RNA-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insufficient read depth' for error in errors_list) and \
-        any(error['category'] == 'missing spikeins' for error in errors_list)
+    assert any(
+        error['category'] ==
+        'insufficient read depth' for error in collect_audit_errors(res)) and \
+        any(error['category'] ==
+            'missing spikeins' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_long_rna_standards(testapp,
@@ -1799,11 +1681,8 @@ def test_audit_experiment_long_rna_standards(testapp,
                                                 'date_released': '2016-01-01',
                                                 'assay_term_name': 'RNA-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+    assert any(error['category'] ==
+               'insufficient read depth' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_long_rna_standards_encode2(testapp,
@@ -1864,11 +1743,8 @@ def test_audit_experiment_long_rna_standards_encode2(testapp,
                                                 'assay_term_name': 'RNA-seq',
                                                 'award': encode2_award['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'insufficient read depth' for error in errors_list)
+    assert all(error['category'] !=
+               'insufficient read depth' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_chip_seq_standards_depth(testapp,
@@ -1925,11 +1801,8 @@ def test_audit_experiment_chip_seq_standards_depth(testapp,
                                                 'date_released': '2016-01-01',
                                                 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'low read depth' for error in errors_list)
+    assert any(error['category'] ==
+               'low read depth' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_chip_seq_standards(testapp,
@@ -1985,11 +1858,8 @@ def test_audit_experiment_chip_seq_standards(testapp,
                                                 'date_released': '2016-01-01',
                                                 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+    assert any(error['category'] ==
+               'insufficient read depth' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_chip_seq_standards_encode2(testapp,
@@ -2047,13 +1917,8 @@ def test_audit_experiment_chip_seq_standards_encode2(testapp,
                                                 'assay_term_name': 'ChIP-seq',
                                                 'award': encode2_award['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-        for e in errors[error_type]:
-            print (e)
-    assert all(error['category'] != 'insufficient read depth' for error in errors_list)
+    assert all(error['category'] !=
+               'insufficient read depth' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_chip_seq_no_target_standards(testapp,
@@ -2110,11 +1975,8 @@ def test_audit_experiment_chip_seq_no_target_standards(testapp,
                                                 'date_released': '2016-01-01',
                                                 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing target' for error in errors_list)
+    assert any(error['category'] ==
+               'missing target' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_chip_seq_library_complexity_standards(testapp,
@@ -2172,11 +2034,8 @@ def test_audit_experiment_chip_seq_library_complexity_standards(testapp,
                                                 'date_released': '2016-01-01',
                                                 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'severe bottlenecking' for error in errors_list)
+    assert any(error['category'] ==
+               'severe bottlenecking' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_dnase_low_spot_score(testapp,
@@ -2211,11 +2070,8 @@ def test_audit_experiment_dnase_low_spot_score(testapp,
                                                 'date_released': '2016-01-01',
                                                 'assay_term_name': 'DNase-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'low spot score' for error in errors_list)
+    assert any(error['category'] ==
+               'low spot score' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_dnase_seq_low_read_depth(testapp,
@@ -2249,11 +2105,8 @@ def test_audit_experiment_dnase_seq_low_read_depth(testapp,
                                                 'date_released': '2016-01-01',
                                                 'assay_term_name': 'DNase-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'extremely low read depth' for error in errors_list)
+    assert any(error['category'] ==
+               'extremely low read depth' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_dnase_low_read_length(testapp,
@@ -2287,11 +2140,8 @@ def test_audit_experiment_dnase_low_read_length(testapp,
                                                 'date_released': '2016-01-01',
                                                 'assay_term_name': 'DNase-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insufficient read length' for error in errors_list)
+    assert any(error['category'] ==
+               'insufficient read length' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_dnase_low_correlation(testapp,
@@ -2333,11 +2183,8 @@ def test_audit_experiment_dnase_low_correlation(testapp,
                                                 'date_released': '2016-01-01',
                                                 'assay_term_name': 'DNase-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insufficient replicate concordance' for error in errors_list)
+    assert any(error['category'] ==
+               'insufficient replicate concordance' for error in collect_audit_errors(res))
 
 # duplication rate audit was removed from v54
 
@@ -2371,11 +2218,8 @@ def test_audit_experiment_dnase_seq_missing_read_depth(testapp,
                                                 'date_released': '2016-01-01',
                                                 'assay_term_name': 'DNase-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing read depth' for error in errors_list)
+    assert any(error['category'] ==
+               'missing read depth' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_chip_seq_unfiltered_missing_read_depth(testapp,
@@ -2428,11 +2272,8 @@ def test_audit_experiment_chip_seq_unfiltered_missing_read_depth(testapp,
                                                 'date_released': '2016-01-01',
                                                 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'missing read depth' for error in errors_list)
+    assert all(error['category'] !=
+               'missing read depth' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_out_of_date_analysis_added_fastq(testapp,
@@ -2448,11 +2289,8 @@ def test_audit_experiment_out_of_date_analysis_added_fastq(testapp,
     testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'out of date analysis' for error in errors_list)
+    assert any(error['category'] ==
+               'out of date analysis' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_out_of_date_analysis_removed_fastq(testapp,
@@ -2468,11 +2306,7 @@ def test_audit_experiment_out_of_date_analysis_removed_fastq(testapp,
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(file_fastq_3['@id'], {'status': 'deleted'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'out of date analysis' for error in errors_list)
+    assert any(error['category'] == 'out of date analysis' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_no_out_of_date_analysis(testapp,
@@ -2486,11 +2320,8 @@ def test_audit_experiment_no_out_of_date_analysis(testapp,
     testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'out of date analysis' for error in errors_list)
+    assert all(error['category'] !=
+               'out of date analysis' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_control_out_of_date_analysis_paired_fastqs(
@@ -2525,11 +2356,8 @@ def test_audit_experiment_control_out_of_date_analysis_paired_fastqs(
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']],
                                              'dataset': ctrl_experiment['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'out of date analysis' for error in errors_list)
+    assert all(error['category'] !=
+               'out of date analysis' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_control_out_of_date_analysis(testapp,
@@ -2560,11 +2388,8 @@ def test_audit_experiment_control_out_of_date_analysis(testapp,
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']],
                                              'dataset': ctrl_experiment['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'out of date analysis' for error in errors_list)
+    assert any(error['category'] ==
+               'out of date analysis' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_control_out_of_date_analysis_no_signal_files(testapp,
@@ -2587,11 +2412,8 @@ def test_audit_experiment_control_out_of_date_analysis_no_signal_files(testapp,
     testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']],
                                              'dataset': ctrl_experiment['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'out of date analysis' for error in errors_list)
+    assert all(error['category'] !=
+               'out of date analysis' for error in collect_audit_errors(res))
 
 # def test_audit_experiment_modERN_control_missing_files() removed from v54
 # def test_audit_experiment_modERN_experiment_missing_files() removed from v54
@@ -2644,11 +2466,8 @@ def test_audit_experiment_wgbs_standards(testapp,
                                                 'date_released': '2016-01-01',
                                                 'assay_term_name': 'whole-genome shotgun bisulfite sequencing'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'high lambda C methylation ratio' for error in errors_list)
+    assert any(error['category'] ==
+               'high lambda C methylation ratio' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_modern_chip_seq_standards(testapp,
@@ -2706,12 +2525,8 @@ def test_audit_experiment_modern_chip_seq_standards(testapp,
                                                 'assay_term_name': 'ChIP-seq',
                                                 'award': award_modERN['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'insufficient read depth' for error in errors_list)
+    assert any(error['category'] ==
+               'insufficient read depth' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_missing_construct(testapp,
@@ -2741,11 +2556,8 @@ def test_audit_experiment_missing_construct(testapp,
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
                                                 'target': recombinant_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing tag construct' for error in errors_list)
+    assert any(error['category'] ==
+               'missing tag construct' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_missing_unfiltered_bams(testapp,
@@ -2766,11 +2578,8 @@ def test_audit_experiment_missing_unfiltered_bams(testapp,
                                              'output_type': 'unfiltered alignments'})
     testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing unfiltered alignments' for error in errors_list)
+    assert any(error['category'] ==
+               'missing unfiltered alignments' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_wrong_construct(testapp,
@@ -2802,17 +2611,16 @@ def test_audit_experiment_wrong_construct(testapp,
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
     testapp.patch_json(biosample_1['@id'], {'constructs': [construct['@id']],
+                                            'transfection_method': 'chemical',
                                             'transfection_type': 'stable'})
     testapp.patch_json(biosample_2['@id'], {'constructs': [construct['@id']],
+                                            'transfection_method': 'chemical',
                                             'transfection_type': 'stable'})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
                                                 'target': recombinant_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'mismatched construct target' for error in errors_list)
+    assert any(error['category'] ==
+               'mismatched construct target' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_chip_seq_mapped_read_length(testapp,
@@ -2834,8 +2642,29 @@ def test_audit_experiment_chip_seq_mapped_read_length(testapp,
 
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent mapped reads lengths' for error in errors_list)
+    assert any(error['category'] ==
+               'inconsistent mapped reads lengths' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_chip_seq_consistent_mapped_read_length(
+        testapp,
+        base_experiment,
+        file_fastq_3,
+        file_fastq_4,
+        file_bam_1_1,
+        file_bam_2_1,
+        file_tsv_1_2):
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 124})
+    testapp.patch_json(file_fastq_4['@id'], {'read_length': 130})
+    testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']]})
+    testapp.patch_json(file_tsv_1_2['@id'], {'derived_from': [file_bam_2_1['@id'],
+                                                              file_bam_1_1['@id']],
+                                             'file_format_type': 'narrowPeak',
+                                             'file_format': 'bed',
+                                             'output_type': 'peaks'})
+
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(error['category'] !=
+               'inconsistent mapped reads lengths' for error in collect_audit_errors(res))

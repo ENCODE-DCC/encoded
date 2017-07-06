@@ -1,6 +1,6 @@
 from snovault import upgrade_step
 from pyramid.traversal import find_root
-from datetime import date, datetime, time
+from datetime import datetime, time
 
 
 @upgrade_step('file', '', '2')
@@ -548,5 +548,12 @@ def file_9_10(value, system):
 
 @upgrade_step('file', '10', '11')
 def file_10_11(value, system):
+    # http://redmine.encodedcc.org/issues/5049
     # http://redmine.encodedcc.org/issues/5081
-    return
+    # http://redmine.encodedcc.org/issues/4924
+    if not value.get('no_file_available'):
+        value['no_file_available'] = False
+
+    # The above change also required the files whose values should be set to True
+    # to also be upgraded or patched. The patch was applied post-release and 
+    # can be found in ./upgrade_data/file_10_to_11_patch.tsv

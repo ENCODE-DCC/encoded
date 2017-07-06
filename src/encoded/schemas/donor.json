@@ -19,12 +19,55 @@
         { "$ref": "mixins.json#/genetic_modifications" }
 
     ],
+    "dependencies": {
+        "mutagen": {
+            "comment": "Mutagen could be specified only for model organism strains.",
+            "not": {
+                "properties": {
+                    "organism": {
+                        "linkTo": "Organism",
+                        "linkEnum": [
+                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+                        ]
+                    }
+                }
+            }
+        }
+    },
     "properties": {
         "schema_version": {
             "hidden comment": "Bump the default in the subclasses."
         },
         "accession": {
             "accessionType": "DO"
+        },
+        "external_ids": {
+            "title": "Unique external identifier(s) of strain or donor",
+            "description": "External identifiers that uniquely identify the donor of the sample, e.g. for strains it might be a strain identifier at a repository or a de-identified donor ID for a person.",
+            "comment": "List of identifiers that are used by external resources that can be used to identify samples from that particular donor or strain.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "description": "External identifier that uniquely identify the donor of the sample, e.g. for strains it might be a strain identifier at a repository or a de-identified donor ID for a person.",
+                "pattern": "^(BDSC:\\d+)$|^(NICHD:\\d+)$|^(CGC:[A-Z]{2,3}[0-9]+)$|^(PGP:hu[A-Z0-9]+)$|^(PromoCell:\\d+)$|^(BioChain:[A-Z0-9-]+)$|^(DSSC:[0-9.-]+)$|^(DGGR:\\d+)$|^(GEO:SAMN\\d+)$|^(MGI.D:[A-Za-z0-9]+)$|^(GTEx:[A-Z0-9-]+)$|^(FlyBase:FBst\\d+)$"
+            }
+        },
+        "alternate_accessions": {
+            "title": "Alternate accessions",
+            "description": "Accessions previously assigned to objects that have been merged with this object.",
+            "comment": "Do not submit. Only admins are allowed to set or update this value.",
+            "type": "array",
+            "default": [],
+            "permission": "import_items",
+            "items": {
+                "title": "Alternate Accession",
+                "description": "An accession previously assigned to an object that has been merged with this object.",
+                "comment": "Only accessions of objects that have status equal replaced will work here.",
+                "type": "string",
+                "format": "accession",
+                "pattern": "^(ENCDO\\d{3}[A-Z]{3})$|^(TSTDO\\d{6})$"
+            }
         },
         "organism": {
             "title": "Organism",
@@ -36,12 +79,14 @@
         "url": {
             "title": "URL",
             "description": "An external resource with additional information about the donor.",
+            "comment": "URL to an external resource with additional information about that particular donor or strain.",
             "type": "string",
             "format": "uri"
         },
         "internal_tags": {
             "title": "Internal tags",
             "description": "Some donors are part of particular data collections",
+            "comment": "Do not submit. DCC personnel is responsible for submission of this property.",
             "type": "array",
             "default": [],
             "permission": "import_items",
@@ -57,6 +102,7 @@
         }
     },
     "boost_values": {
-        "internal_tags": 1.0
+        "internal_tags": 1.0,
+        "external_ids": 1.0
     }
 }

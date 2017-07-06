@@ -59,7 +59,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "url": {
             "title": "URL",
@@ -206,5 +206,7 @@
         "status": {
             "title": "Genetic modification status"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/genetic_modification.md"
+
 }
