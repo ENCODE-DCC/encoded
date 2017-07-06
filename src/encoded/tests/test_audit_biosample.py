@@ -92,7 +92,8 @@ def test_audit_biosample_term_ntr(testapp, base_biosample):
 def test_audit_biosample_culture_dates(testapp, base_biosample):
     testapp.patch_json(base_biosample['@id'], {'biosample_type': 'primary cell',
                                                'culture_start_date': '2014-06-30',
-                                               'culture_harvest_date': '2014-06-25'})
+                                               'culture_harvest_date': '2014-06-25',
+                                               'biosample_term_id': 'NTR:0000022'})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
