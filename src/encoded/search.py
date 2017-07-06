@@ -1121,7 +1121,7 @@ def news(context, request):
     result['facets'] = format_facets(es_results, facets, used_filters, schemas, total, principals)
 
     return result
-#ADDED FROM HERE DOWN
+
 @view_config(route_name='audit', request_method='GET', permission='search')
 def audit(context, request):
     """
@@ -1230,6 +1230,7 @@ def audit(context, request):
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Group results in 2 dimensions
+    # Don't use these groupings for audit matrix
     x_grouping = matrix['x']['group_by']
     y_groupings = matrix['y']['group_by']
     x_agg = {
@@ -1273,8 +1274,6 @@ def audit(context, request):
     for item in aggregations.items():
         if item[0].rfind('audit') > -1:
             temp_dict.update(item[1])
-    
-    #tempValues = dict(temp_dict.values())
 
     # Format facets for results
     result['facets'] = format_facets(
@@ -1304,17 +1303,14 @@ def audit(context, request):
         result['matrix'],
         aggregations['matrix']['x']['buckets'],
         temp_dict,
-        #aggregations['matrix'],
         audit_list)
 
+    # Reformats matrix categories to ones applicable to audits
     result['matrix']['y']['audit_category'] = temp_dict
     result['matrix']['y']['label'] = "Audit Category"
     result['matrix']['y']['group_by'][0] = "audit_category"
     result['matrix']['y']['group_by'][1] = "audit_label"
     result['matrix']['x'].update(aggregations['matrix']['x'])
-
-    import pdb
-    pdb.set_trace()
 
     # Add batch actions
     result.update(search_result_actions(request, doc_types, es_results))
