@@ -84,10 +84,10 @@
         "schema_version": {
             "default": "12"
         },
-        "submission_date": {
-            "title": "Submission date" ,
+        "date_submitted": {
+            "title": "Date submitted" ,
             "description": "The date that the experiment received all required replicates and files",
-            "comment": "Do not submit. Submission date will be submitted only by DCC personnel.",
+            "comment": "Do not submit. date_submitted will be assigned only by DCC personnel.",
             "type": "string",
             "format": "date",
             "permission": "import_items"
