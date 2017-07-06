@@ -88,6 +88,7 @@
 
 // Provides the flex structure for a group of charts.
 .award-chart__group-wrapper {
+    padding: 5px;
 
     &:first-child {
     margin: 50px 0 0 0;
@@ -101,6 +102,17 @@
         font-weight: normal;
         text-align: center;
         border-bottom: 1px solid #a0a0a0;
+        float: center;
+    }
+
+    .reporttitle {
+        float: left;
+        position: absolute;
+        padding-top: 7px;
+        padding-bottom: 3px;
+        @at-root #{&}__reagents {
+            margin-right: 10px;
+        }
     }
 }
 
@@ -123,6 +135,3 @@
 
 }
 
-.affiliatedlabsinline {
-    display: inline;
-}

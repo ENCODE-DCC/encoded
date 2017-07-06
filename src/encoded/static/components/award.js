@@ -443,13 +443,14 @@ class AntibodyChart extends React.Component {
     }
 
     render() {
-        const { categoryData, ident } = this.props;
+        const { categoryData, ident, award } = this.props;
 
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${categoryChartId}-${ident}`;
 
         return (
             <div className="award-charts__chart">
+                <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=AntibodyLot&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                 <div className="award-charts__title">
                     Antibodies
                 </div>
@@ -552,13 +553,14 @@ class BiosampleChart extends React.Component {
     }
 
     render() {
-        const { categoryData, ident } = this.props;
+        const { categoryData, ident, award } = this.props;
 
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${categoryChartId}-${ident}`;
 
         return (
             <div className="award-charts__chart">
+                <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Biosample&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                 <div className="award-charts__title">
                     Biosamples
                 </div>
@@ -778,6 +780,7 @@ const ChartRenderer = (props) => {
     return (
         <div className="award-charts">
             <div className="award-chart__group-wrapper">
+                <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Experiment&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                 <h2>Assays</h2>
                 {experimentsConfig.labs.length ?
                     <div className="award-chart__group">
@@ -807,6 +810,7 @@ const ChartRenderer = (props) => {
                 }
             </div>
             <div className="award-chart__group-wrapper">
+                <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Annotation&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                 <h2>Annotations</h2>
                 {annotationsConfig.labs.length ?
                     <div className="award-chart__group">
@@ -901,7 +905,7 @@ GenusButtons.defaultProps = {
 
 // Overall component to render the cumulative line graph
 const ExperimentDate = (props) => {
-    const { experiments } = props;
+    const { experiments, award } = props;
     let dateArray;
     const deduplicated = {};
     let label = [];
@@ -933,12 +937,22 @@ const ExperimentDate = (props) => {
         return 0;
     });
 
-    // Add objects to the array with doc_count 0 for the missing months
     const arrayLength = sortedTerms.length;
+    const assayStart = award.start_date;
+    const shortenedArray = [];
     for (let j = 0; j < arrayLength - 1; j += 1) {
-        fillDates.push(sortedTerms[j]);
-        const startDate = moment(sortedTerms[j].key);
-        const endDate = moment(sortedTerms[j + 1].key);
+        if (moment(sortedTerms[j].key).isAfter(assayStart, 'date')) {
+            shortenedArray.push(sortedTerms[j]);
+        }
+    }
+
+
+    // Add objects to the array with doc_count 0 for the missing months
+    const shortenedArrayLength = shortenedArray.length;
+    for (let j = 0; j < shortenedArrayLength - 1; j += 1) {
+        fillDates.push(shortenedArray[j]);
+        const startDate = moment(shortenedArray[j].key);
+        const endDate = moment(shortenedArray[j + 1].key);
         monthdiff = endDate.diff(startDate, 'months', false);
         if (monthdiff > 1) {
             for (let i = 0; i < monthdiff; i += 1) {
@@ -946,10 +960,11 @@ const ExperimentDate = (props) => {
             }
         }
     }
-    fillDates.push(sortedTerms[arrayLength - 1]);
+    fillDates.push(shortenedArray[shortenedArrayLength - 1]);
+
 
     const formatTerms = fillDates.map((term) => {
-        const formattedDate = moment(term.key, ['YYYY-MM']).format('MM/YYYY');
+        const formattedDate = moment(term.key, ['YYYY-MM']).format('MMM YY');
         return { key: formattedDate, doc_count: term.doc_count };
     });
 
@@ -961,6 +976,7 @@ const ExperimentDate = (props) => {
             deduplicated[elem.key] = elem.doc_count;
         }
     });
+
 
     // Create an array of dates
     const date = Object.keys(deduplicated).map((term) => {
@@ -984,6 +1000,7 @@ const ExperimentDate = (props) => {
 
     return (
         <div>
+            {console.log(shortenedArray, fillDates)}
             <CumulativeGraph datavalue={accumulatedData} monthReleased={date} />
         </div>
     );
@@ -991,6 +1008,7 @@ const ExperimentDate = (props) => {
 
 ExperimentDate.propTypes = {
     experiments: PropTypes.object,
+    award: PropTypes.object.isRequired,
 };
 
 ExperimentDate.defaultProps = {
@@ -1226,7 +1244,6 @@ class Award extends React.Component {
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
-                                <a href={`/report/?type=Experiment&award.name=${context.name}`}>Report</a>
                             </div>
                         </div>
                     </div>
