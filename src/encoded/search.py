@@ -1338,13 +1338,24 @@ def audit(context, request):
                     doc_count = bucket['doc_count']
                     if doc_count > matrix['max_cell_doc_count']:
                         matrix['max_cell_doc_count'] = doc_count
-                    counts_key = str(bucket['assay_title']['buckets'])
+                    counts[bucket['key']] = doc_count
+                    """
+                    counts_string = str(bucket['assay_title']['buckets'])
+                    temp = counts_string
+                    index = counts_string.find('[') # find first index of .
+                    temp = temp[:index] + temp[(index+1):] # take out [
+                    index = temp.find(']') # find end brace index of
+                    temp = temp[:index] + temp[(index+1):]
+                    bucket_dict = {}
+                    import ast
+                    bucket_dict = ast.literal_eval(temp)
                     #find index of both []
                     #substring out both []
                     #convert string to dict
-                    counts[bucket['key']] = doc_count
-                    import pdb
-                    pdb.set_trace()
+                    counts[bucket_dict['key']] = doc_count
+                """
+                import pdb
+                pdb.set_trace()
                 summary = []
                 for bucket in x_buckets:
                     summary.append(counts.get(bucket['key'], 0))
@@ -1357,6 +1368,8 @@ def audit(context, request):
         y_groupings + [x_grouping])
     #result['matrix']['y'][y_groupings[0]] = aggregations['matrix'][y_groupings[0]]
     # Reformats matrix categories to ones applicable to audits
+    import pdb
+    pdb.set_trace()
     result['matrix']['y']['audit_category'] = temp_dict
     result['matrix']['y']['label'] = "Audit Category"
     result['matrix']['y']['group_by'][0] = "audit_category"
