@@ -450,16 +450,18 @@ class AntibodyChart extends React.Component {
 
         return (
             <div className="award-charts__chart">
-                <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=AntibodyLot&award.name=${award.name}?type=AntibodyLot&field=accession&field=lot_reviews.status&field=lot_reviews.targets.label&field=lot_reviews.targets.organism.scientific_name&field=source.title&field=product_id&field=lot_id&field=date_created`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                 <div className="award-charts__title">
                     Antibodies
                 </div>
                 {categoryData.length ?
-                    <div className="award-charts__visual">
-                        <div id={id} className="award-charts__canvas">
-                            <canvas id={`${id}-chart`} />
+                    <div>
+                        <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=AntibodyLot&award.name=${award.name}&field=accession&field=lot_reviews.status&field=lot_reviews.targets.label&field=lot_reviews.targets.organism.scientific_name&field=source.title&field=product_id&field=lot_id&field=date_created`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                        <div className="award-charts__visual">
+                            <div id={id} className="award-charts__canvas">
+                                <canvas id={`${id}-chart`} />
+                            </div>
+                            <div id={`${id}-legend`} className="award-charts__legend" />
                         </div>
-                        <div id={`${id}-legend`} className="award-charts__legend" />
                     </div>
                 :
                     <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
@@ -780,60 +782,64 @@ const ChartRenderer = (props) => {
     return (
         <div className="award-charts">
             <div className="award-chart__group-wrapper">
-                <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Experiment&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                 <h2>Assays</h2>
                 {experimentsConfig.labs.length ?
-                    <div className="award-chart__group">
-                        <LabChart
-                            award={award}
-                            labs={experimentsConfig.labs}
-                            linkUri={experimentsConfig.linkUri}
-                            ident={experimentsConfig.ident}
-                        />
-                        <CategoryChart
-                            award={award}
-                            categoryData={experimentsConfig.categoryData || []}
-                            title={experimentsConfig.title}
-                            linkUri={experimentsConfig.linkUri}
-                            categoryFacet={experimentsConfig.categoryFacet}
-                            ident={experimentsConfig.ident}
-                        />
-                        <StatusChart
-                            award={award}
-                            statuses={experimentsConfig.statuses || []}
-                            linkUri={experimentsConfig.linkUri}
-                            ident={experimentsConfig.ident}
-                        />
+                    <div>
+                        <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Experiment&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                        <div className="award-chart__group">
+                            <LabChart
+                                award={award}
+                                labs={experimentsConfig.labs}
+                                linkUri={experimentsConfig.linkUri}
+                                ident={experimentsConfig.ident}
+                            />
+                            <CategoryChart
+                                award={award}
+                                categoryData={experimentsConfig.categoryData || []}
+                                title={experimentsConfig.title}
+                                linkUri={experimentsConfig.linkUri}
+                                categoryFacet={experimentsConfig.categoryFacet}
+                                ident={experimentsConfig.ident}
+                            />
+                            <StatusChart
+                                award={award}
+                                statuses={experimentsConfig.statuses || []}
+                                linkUri={experimentsConfig.linkUri}
+                                ident={experimentsConfig.ident}
+                            />
+                        </div>
                     </div>
                 :
                     <div className="browser-error">No assays were submitted under this award</div>
                 }
             </div>
             <div className="award-chart__group-wrapper">
-                <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Annotation&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                 <h2>Annotations</h2>
                 {annotationsConfig.labs.length ?
-                    <div className="award-chart__group">
-                        <LabChart
-                            award={award}
-                            labs={annotationsConfig.labs}
-                            linkUri={annotationsConfig.linkUri}
-                            ident={annotationsConfig.ident}
-                        />
-                        <CategoryChart
-                            award={award}
-                            categoryData={annotationsConfig.categoryData || []}
-                            linkUri={annotationsConfig.linkUri}
-                            categoryFacet={annotationsConfig.categoryFacet}
-                            title={annotationsConfig.title}
-                            ident={annotationsConfig.ident}
-                        />
-                        <StatusChart
-                            award={award}
-                            statuses={annotationsConfig.statuses || []}
-                            linkUri={annotationsConfig.linkUri}
-                            ident={annotationsConfig.ident}
-                        />
+                    <div>
+                        <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Annotation&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                        <div className="award-chart__group">
+                            <LabChart
+                                award={award}
+                                labs={annotationsConfig.labs}
+                                linkUri={annotationsConfig.linkUri}
+                                ident={annotationsConfig.ident}
+                            />
+                            <CategoryChart
+                                award={award}
+                                categoryData={annotationsConfig.categoryData || []}
+                                linkUri={annotationsConfig.linkUri}
+                                categoryFacet={annotationsConfig.categoryFacet}
+                                title={annotationsConfig.title}
+                                ident={annotationsConfig.ident}
+                            />
+                            <StatusChart
+                                award={award}
+                                statuses={annotationsConfig.statuses || []}
+                                linkUri={annotationsConfig.linkUri}
+                                ident={annotationsConfig.ident}
+                            />
+                        </div>
                     </div>
                 :
                     <div className="browser-error">No annotations were submitted under this award</div>
@@ -1200,7 +1206,7 @@ const AffiliatedLabsArray = (props) => {
 
     return (
         <div>
-            {sortedArray.join(', ')}
+            {sortedArray.map(item => <div>{item}</div>)}
         </div>
     );
 };
@@ -1266,12 +1272,12 @@ class Award extends React.Component {
                             <div className="description__columnone">
                                 <dl><dt>NHGRI project information: </dt><a href={context.url} title={`${context.name} project page at NHGRI`}>{context.name}</a></dl>
                                 <dl><dt>Primary Investigator: </dt>{context.pi.lab.title}</dl>
-                                <dl><dt> Milestones: </dt>insert list of phrases here</dl>
+                                <dl><dt>Affiliated Labs: </dt> <AffiliatedLabs award={context} /> </dl>
                             </div>
                             <div className="description__columnone">
                                 <dl><dt>Dates: </dt>{moment(context.start_date).format('MMMM DD, YYYY')} - {moment(context.end_date).format('MMMM DD, YYYY')}</dl>
                                 <dl><dt>Award RFA: </dt>{context.rfa}</dl>
-                                <dl><dt>Affiliated Labs: </dt> <AffiliatedLabs award={context} /> </dl>
+                                <dl><dt> Milestones: </dt>insert list of phrases here</dl>
                             </div>
                         </div>
                     </PanelBody>
