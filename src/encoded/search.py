@@ -3,6 +3,7 @@ from pyramid.view import view_config
 from snovault import (
     AbstractCollection,
     TYPES,
+    COLLECTIONS
 )
 from snovault.elasticsearch import ELASTIC_SEARCH
 from snovault.resource_views import collection_view_listing_db
@@ -615,6 +616,7 @@ def search(context, request, search_type=None, return_generator=False):
     Search view connects to ElasticSearch and returns the results
     """
     types = request.registry[TYPES]
+    collections = list(request.registry[COLLECTIONS].by_item_type.keys())
     search_base = normalize_query(request)
     result = {
         '@context': request.route_path('jsonld_context'),
@@ -625,7 +627,7 @@ def search(context, request, search_type=None, return_generator=False):
     }
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    es_index = request.registry.settings['snovault.elasticsearch.index']
+    es_index = '_all'
     search_audit = request.has_permission('search_audit')
 
     from_, size = get_pagination(request)
@@ -920,7 +922,7 @@ def matrix(context, request):
 
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    es_index = request.registry.settings['snovault.elasticsearch.index']
+    es_index = '_all'
 
     search_term = prepare_search_term(request)
 
