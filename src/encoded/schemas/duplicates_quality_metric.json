@@ -19,7 +19,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "Reads Examined": {
             "title": "Reads Examined",
@@ -76,5 +76,6 @@
             "type": "number",
             "description": "Library size in reads as estimated by picard"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/duplicates_quality_metric.md"
 }

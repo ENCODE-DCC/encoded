@@ -74,7 +74,17 @@
                         {
                             "oneOf": [
                                 {
-                                    "required": ["file_size"],
+                                    "not": {
+                                        "required": ["status"]
+                                    },                                   
+                                    "properties": {                                        
+                                        "no_file_available": {
+                                            "enum": [false]
+                                        }
+                                    }
+                                },                                    
+                                {
+                                    "required": ["file_size", "status"],
                                     "properties": {
                                         "status": {
                                             "enum": ["in progress",  "revoked", "archived", "released"]
@@ -85,6 +95,7 @@
                                     }
                                 },
                                 {
+                                    "required": ["status"],
                                     "properties": {
                                         "status": {
                                             "enum": ["uploading", "upload failed", "deleted", "replaced", "content error"]
@@ -296,7 +307,15 @@
                 }
             ]
         },
-       
+        "content_error_detail":{
+            "comment": "Specification of status of content error is required if content_error_detail is specified",
+            "required": ["status"],
+            "properties": {
+                "status": {
+                    "enum": ["content error"]
+                }
+            }
+        },
         "status": {
             "comment": "file_size is required in files with statuses in progress, revoked, archived and released unless the file is not available from the portal. content_error_details can be specified in files with status deleted and is required in files with the status content error.",
             "allOf": [
@@ -388,6 +407,22 @@
         },
         "accession": {
             "accessionType": "FF"
+        },
+        "alternate_accessions": {
+            "title": "Alternate accessions",
+            "description": "Accessions previously assigned to objects that have been merged with this object.",
+            "comment": "Do not submit. Only admins are allowed to set or update this value.",
+            "type": "array",
+            "default": [],
+            "permission": "import_items",
+            "items": {
+                "title": "Alternate Accession",
+                "description": "An accession previously assigned to an object that has been merged with this object.",
+                "comment": "Only accessions of objects that have status equal replaced will work here.",
+                "type": "string",
+                "format": "accession",
+                "pattern": "^(ENCFF\\d{3}[A-Z]{3})$|^(TSTFF\\d{6})$"
+            }
         },
         "external_accession": {
             "title": "External accession",
@@ -726,6 +761,7 @@
                         "methylation state at CHH",
                         "enrichment",
                         "replication timing profile",
+                        "relative replication signal",
                         "maternal variant calls",
                         "paternal variant calls",
                         "phased variant calls",
@@ -878,7 +914,7 @@
             "description": "The experiment or dataset the file belongs to.",
             "comment": "Required. See dataset.json for available identifiers.",
             "type": "string",
-            "linkTo": ["Dataset"]
+            "linkTo": "Dataset"
         },
         "replicate": {
             "title": "Replicate",
@@ -952,14 +988,14 @@
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "External identifiers",
-            "description": "Unique identifiers from external resources.",
-            "comment": "Do not submit.  This is for admins to make virtual file objcts for files at external resources.",
+            "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
+            "comment": "Do not submit.  This is for admins to make virtual file objects for files at external resources.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "External identifier",
-                "description": "A unique identifier from external resource.",
+                "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
                 "pattern": "^(SRA:(SRR|SRX)\\d+)$"
             }
@@ -1117,6 +1153,7 @@
         "percentage normalized signal":"signal",
         "summed densities signal": "signal",
         "wavelet-smoothed signal": "signal",
+        "relative replication signal": "signal",
 
         "enrichment": "quantification",
         "library fraction": "quantification",

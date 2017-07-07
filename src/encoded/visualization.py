@@ -183,6 +183,7 @@ SUPPORTED_MASK_TOKENS = [
                                                 # variable and seems to not be being applied
                                                 # # correctly in the html generation
     "{lab.title}",                              # In metadata
+    "{award.rfa}",                              # To distinguish vis_defs based upon award
     # TODO "{software? or pipeline?}",  # Cricket: "I am stumbling over the fact that we
     #                                   #    can't distinguish tophat and star produced files"
     # TODO "{phase}",                   # Cricket: "If we get to the point of being fancy
@@ -220,7 +221,9 @@ def lookup_token(token, dataset, a_file=None):
     if token in SIMPLE_DATASET_TOKENS:
         term = dataset.get(token[1:-1])
         if term is None:
-            term = "Unknown " + token[1:-1].split('_')[0].capitalize()
+            return "Unknown " + token[1:-1].split('_')[0].capitalize()
+        elif isinstance(term,list) and len(term) > 3:
+            return "Collection of %d %ss" % (len(term),token[1:-1].split('_')[0].capitalize())
         return term
     elif token == "{experiment.accession}":
         return dataset['accession']
@@ -269,6 +272,8 @@ def lookup_token(token, dataset, a_file=None):
         return term
     elif token == "{lab.title}":
         return dataset['lab'].get('title', 'unknown')
+    elif token == "{award.rfa}":
+        return dataset['award'].get('rfa', 'unknown')
     elif token == "{biosample_term_name|multiple}":
         return dataset.get("biosample_term_name", "multiple biosamples")
     # TODO: rna_species
@@ -551,6 +556,7 @@ OUTPUT_TYPE_8CHARS = {
     "methylation state at CHH":             "mth CHH",
     "enrichment":                           "enrich",
     "replication timing profile":           "repli tm",
+    "relative replication signal":          "relrepsg",
     "variant calls":                        "vars",
     "filtered SNPs":                        "f SNPs",
     "filtered indels":                      "f indel",
@@ -732,7 +738,7 @@ def sanitize_label(s):
     '''Encodes the string to swap special characters and leaves spaces alone.'''
     new_s = ""      # longLabel and shorLabel can have spaces and some special characters
     for c in s:
-        new_s += sanitize_char(c, [' ', '_', '.', '-', '(', ')', '+'], htmlize=True)
+        new_s += sanitize_char(c, [' ', '_', '.', '-', '(', ')', '+'], htmlize=False)
     return new_s
 
 
@@ -1007,8 +1013,8 @@ def biosamples_for_file(a_file, dataset):
     '''Returns a dict of biosamples for file.'''
     biosamples = {}
     replicates = dataset.get("replicates")
-    if replicates is None:
-        return[]
+    if replicates is None or not isinstance(replicates[0],dict):
+        return []
 
     for bio_rep in a_file.get("biological_replicates", []):
         for replicate in replicates:
@@ -1075,8 +1081,12 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
         output_types = view.get("output_type", [])
         file_format_types = view.get("file_format_type", [])
         file_format = view["type"].split()[0]
-        if file_format == "bigBed" and "scoreFilter" in view:
-            view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
+        if file_format == "bigBed":
+            format_type = view.get('file_format_type','')
+            if format_type == 'bedMethyl' or "itemRgb" in view:
+                view["type"] = "bigBed 9 +"  # itemRgb implies at least 9 +
+            elif format_type in ['broadPeak','narrowPeak'] or "scoreFilter" in view:
+                view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
         # log.debug("%d files looking for type %s" % (len(dataset["files"]),view["type"]))
         for a_file in dataset["files"]:
             if a_file['status'] not in VISIBLE_FILE_STATUSES:
@@ -1152,6 +1162,9 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
             if "tracks" not in view:
                 view["tracks"] = []
             track = {}
+            files_dataset = dataset
+            if 'dataset' in a_file and isinstance(a_file['dataset'],dict):
+                files_dataset = a_file['dataset']
             track["name"] = a_file['accession']
             track["type"] = view["type"]
             track["bigDataUrl"] = "%s?proxy=true" % a_file["href"]
@@ -1160,7 +1173,7 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
                 longLabel = ("{assay_title} of {biosample_term_name} {output_type} "
                              "{biological_replicate_number}")
             longLabel += " {experiment.accession} - {file.accession}"  # Always add the accessions
-            track["longLabel"] = sanitize_label(convert_mask(longLabel, dataset, a_file))
+            track["longLabel"] = sanitize_label(convert_mask(longLabel, files_dataset, a_file))
             # Specialized addendum comments because subtle details alway get in the way of elegance.
             addendum = ""
             submitted_name = a_file.get('submitted_file_name', "none")
@@ -1185,7 +1198,7 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
             # Expecting short label to change when making assay based composites
             shortLabel = vis_defs.get('file_defs', {}).get('shortLabel',
                                                            "{replicate} {output_type_short_label}")
-            track["shortLabel"] = sanitize_label(convert_mask(shortLabel, dataset, a_file))
+            track["shortLabel"] = sanitize_label(convert_mask(shortLabel, files_dataset, a_file))
 
             # How about subgroups!
             membership = {}
@@ -1217,10 +1230,10 @@ def acc_composite_extend_with_tracks(composite, vis_defs, dataset, assembly, hos
                                 '"<a href=\'%s/%s/\' TARGET=\'_blank\' title=\'%s details at the ENCODE portal\'>%s</a>"' %
                                 (host, subgroup["url"], group_title, subgroup["title"]))
                         elif group_title == "Biosample":
-                            bs_value = sanitize_label(dataset.get("biosample_summary", ""))
+                            bs_value = sanitize_label(files_dataset.get("biosample_summary", ""))
                             if len(bs_value) == 0:
                                 bs_value = subgroup["title"]
-                            biosamples = biosamples_for_file(a_file, dataset)
+                            biosamples = biosamples_for_file(a_file, files_dataset)
                             if len(biosamples) > 0:
                                 for bs_acc in sorted(biosamples.keys()):
                                     bs_value += ( \
@@ -1880,6 +1893,57 @@ def find_or_make_acc_composite(request, assembly, acc, dataset=None, hide=False,
 
     return (found_or_made, acc_composite)
 
+def generate_set_trackDb(request, acc, dataset, ucsc_assembly, hide=False, regen=False):
+    '''Handles 'Series' and 'FileSet' dataset types similar to search results.'''
+
+    sub_accessions = []
+    if 'FileSet' in dataset['@type'] and 'files' in dataset:
+        files = dataset['files']
+        sub_accessions = [ file['dataset']['accession'] for file in files ]
+    elif 'Series' in dataset['@type'] and 'related_datasets' in dataset:
+        # Note that 'Series' don't actually reach here yet because they are rejected higher up for having no files.
+        related_datasets = dataset['related_datasets']
+        sub_accessions = [ related['accession'] for related in related_datasets ]
+
+    sub_accessions = set(sub_accessions) # Only unique accessions need apply
+    #log.warn("trackDb series: found %d sub_accessions  %.3f secs" % (len(sub_accessions), (time.time() - PROFILE_START_TIME)))
+
+    acc_composites = {}
+    made = 0
+    found = 0
+    for sub_acc in sub_accessions:
+        (found_or_made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly, sub_acc,
+                                                                    None, hide=hide, regen=regen)
+        if found_or_made == "made":
+            made += 1
+        else:
+            found += 1
+        acc_composites[sub_acc] = acc_composite
+
+    blob = ""
+    set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100)
+    for set_key in set_composites.keys():
+        set_composite = set_composites[set_key]
+        if set_composite:
+            set_composite['longLabel']  = "%s %s" % (acc, set_composite['longLabel'])
+            if set_composite['shortLabel'].startswith('ENCODE '):
+                set_composite['shortLabel'] = "ENCODE %s %s" % (acc,set_composite['shortLabel'].split(None,1)[1])
+            else:
+                set_composite['shortLabel'] = "%s %s" % (acc,set_composite['shortLabel'])
+
+    if request.url.endswith(".json"):
+        blob = json.dumps(set_composites, indent=4, sort_keys=True)
+    else:
+        for composite_tag in sorted(set_composites.keys()):
+            blob += ucsc_trackDb_composite_blob(set_composites[composite_tag],composite_tag)
+    if regen:  # Want to see message if regen was requested
+        log.info("acc_composites: %s generated, %d found, %d set(s). len(txt):%s  %.3f secs" %
+                (made, found, len(set_composites), len(blob), (time.time() - PROFILE_START_TIME)))
+    else:
+        log.debug("acc_composites: %s generated, %d found, %d set(s). len(txt):%s  %.3f secs" %
+                (made, found, len(set_composites), len(blob), (time.time() - PROFILE_START_TIME)))
+    return blob
+
 
 def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
     '''Returns string content for a requested  single experiment trackDb.txt.'''
@@ -1897,6 +1961,12 @@ def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
 
     acc = dataset['accession']
     ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
+
+    # If we could detect this as a series dataset, then we could treat this as a batch_trackDb
+    if set(['Experiment', 'Annotation']).isdisjoint(dataset['@type']) and \
+          not set(['Series', 'FileSet']).isdisjoint(dataset['@type']):
+        return generate_set_trackDb(request, acc, dataset, ucsc_assembly, hide=hide, regen=regen)
+
     (found_or_made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly,
                                                                 dataset["accession"], dataset,
                                                                 hide=hide, regen=regen)

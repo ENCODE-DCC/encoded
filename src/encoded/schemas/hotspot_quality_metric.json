@@ -19,7 +19,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "SPOT1 score": {
             "title": "SPOT1 score",
@@ -51,5 +51,7 @@
             "type": "number",
             "description": "Count of read tags discovered to be in hotspots"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/hotspot_quality_metric.md"
+
 }

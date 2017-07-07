@@ -2,6 +2,7 @@
 
 ### Schema version 11
 
+* *alternate_accessions* now must match accession format, "ENCFF..." or "TSTFF..."
 * *no_file_available* field was added. The DCC will post this boolean field. Files with no_files_available = true will not be required to specify md5sum and file_size values.
 * *revoke_detail* was added.  The DCC will post this field. The goal is to mkae the reason for file revoke clear.:
 
@@ -14,9 +15,8 @@
         }
 #### Formats and enums are more restrictive for several fields:
 
-* *output_type* values ["predicted forebrain enhancers", "predicted heart enhancers", "predicted whole brain enhancers", "sequence alignability",] added to the ist of values that could be submitted only by DCC personnel
+* *output_type* values ["predicted forebrain enhancers", "predicted heart enhancers", "predicted whole brain enhancers", "sequence alignability",] added to the list of values that could be submitted only by DCC personnel
 * *revoke_detail* is available only for files with status = revoked
-
 
 ### Schema version 10
 

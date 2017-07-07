@@ -1,35 +1,10 @@
 [
     {
-        "_test": "pooled biosample",
-        "accession": "ENCBS356AAA",
-        "award": "ENCODE2",
-        "biosample_term_id": "UBERON:0000006",
-        "biosample_term_name": "islet of Langerhans",
-        "biosample_type": "tissue",
-        "description": "dedifferentiated human pancreatic islets from the National Disease Research Interchange (NDRI), same source as PanIslets",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:PanIsletD"
-        ],
-        "lab": "gregory-crawford",
-        "organism": "human",
-        "phase": "S",
-        "pooled_from": [
-            "ENCBS492ENC",
-            "ENCBS493ENC"
-        ],
-        "documents": [
-            "encode:PanIsletD_Crawford_protocol"
-        ],
-        "source": "ndri",
-        "submitted_by": "metus.donec@nisl.montes",
-        "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
-        "uuid": "467c7505-5039-4935-8da1-6ad22d813310"
-    },
-    {
         "_test": "has references",
         "accession": "ENCBS000AAA",
         "aliases": [
-            "richard-myers:MCF-7 rep 3"
+            "richard-myers:MCF-7 rep 3",
+            "andrew-fire:biosample 1"
         ],
         "award": "ENCODE2",
         "biosample_term_id": "EFO:0001203",
@@ -59,6 +34,32 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
         "uuid": "56e94f2b-25ac-4c58-9828-f63b66220999"
+    },
+    {
+        "_test": "pooled biosample",
+        "accession": "ENCBS356AAA",
+        "award": "ENCODE2",
+        "biosample_term_id": "UBERON:0000006",
+        "biosample_term_name": "islet of Langerhans",
+        "biosample_type": "tissue",
+        "description": "dedifferentiated human pancreatic islets from the National Disease Research Interchange (NDRI), same source as PanIslets",
+        "dbxrefs": [
+            "UCSC-ENCODE-cv:PanIsletD"
+        ],
+        "lab": "gregory-crawford",
+        "organism": "human",
+        
+        "pooled_from": [
+            "ENCBS492ENC",
+            "ENCBS493ENC"
+        ],
+        "documents": [
+            "encode:PanIsletD_Crawford_protocol"
+        ],
+        "source": "ndri",
+        "submitted_by": "metus.donec@nisl.montes",
+        "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
+        "uuid": "467c7505-5039-4935-8da1-6ad22d813310"
     },
     {
         "accession": "ENCBS001AAA",
@@ -240,7 +241,7 @@
             "893d806f-3a88-43eb-afdf-dcc16c79ee45"
         ],
         "culture_harvest_date": "2012-12-19",
-        "derived_from": "ENCBS039ENC",
+        "originated_from": "ENCBS039ENC",
         "description": "leukemia, The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. - ATCC.",
         "donor": "ENCDO000HUM",
         "dbxrefs": [
@@ -250,14 +251,11 @@
         "organism": "human",
         "source": "kevin-white",
         "submitted_by": "eni.lectus@nullam.sed",
-        "talens": [
-            "TL-1008",
-            "TL-1009"
-        ],
         "rnais": [
             "d2dc22ba-5e7c-4626-87ac-257c6fff090c"
         ],
         "transfection_type": "stable",
+        "transfection_method": "chemical",
         "uuid": "bfb3dbb0-57e0-4190-90a6-b9150204f893"
     },
     {
@@ -340,6 +338,7 @@
         "source": "ecacc",
         "submitted_by": "metus.donec@nisl.montes",
         "transfection_type": "stable",
+        "transfection_method": "chemical",
         "url": "http://www.hpacultures.org.uk/products/celllines/generalcell/detail.jsp?refId=86012803&collection=ecacc_gc",
         "uuid": "ddefc862-0107-4478-9398-acbe76b90f36"
     },
@@ -365,6 +364,7 @@
         ],
         "source": "atcc",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
+        "transfection_method": "chemical",
         "transfection_type": "stable",
         "treatments": [
             "2e33a097-412c-4646-87f9-858dfaaa7c06"
@@ -401,7 +401,7 @@
         "biosample_term_id": "NTR:0000022",
         "biosample_term_name": "myocyte",
         "biosample_type": "in vitro differentiated cells",
-        "derived_from": "ENCBS124ENC",
+        "originated_from": "ENCBS124ENC",
         "description": "Myoblast cell line derived from thigh muscle of C3H mice after crush injury; differentiated from C2C12 cells for 7 days",
         "donor": "ENCDO000MUS",
         "lab": "barbara-wold",

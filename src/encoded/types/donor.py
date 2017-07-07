@@ -42,6 +42,13 @@ class Donor(Item):
         'characterizations': ('DonorCharacterization', 'characterizes'),
     }
 
+    def unique_keys(self, properties):
+        keys = super(Donor, self).unique_keys(properties)
+        if properties.get('status') != 'replaced':
+            if 'external_ids' in properties:
+                keys.setdefault('alias', []).extend(properties['external_ids'])
+        return keys
+
     @calculated_property(schema={
         "title": "Characterizations",
         "type": "array",

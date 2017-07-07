@@ -1,10 +1,14 @@
 ## Changelog for experiment.json
 
-### Schema version 12
+### Schema version 13
 
 * *biosample_type* is a required field
-* *biosample_term_id* is required for experiments with *biosample_type* != "in vitro sample"    
-* *biosample_type* and *biosample_term_id* consistency added to the list of schema dependencies
+* *biosample_term_id* is required for experiments with *biosample_type* != "in vitro sample"  * *biosample_type* and *biosample_term_id* consistency added to the list of schema dependencies
+
+### Schema version 12
+
+* *alternate_accessions* now must match accession format, "ENCSR..." or "TSTSR..."
+* *date_submitted* property was added to indicate when submission requirements were met. This value is assigned by the DCC.
 
 ### Schema version 11
     
