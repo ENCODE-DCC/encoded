@@ -13,6 +13,7 @@
         {"$ref": "mixins.json#/biosample_classification"},
         {"$ref": "mixins.json#/product_id"},
         {"$ref": "mixins.json#/lot_id"},
+        {"$ref": "mixins.json#/url" },
         {"$ref": "mixins.json#/source"},
         {"$ref": "mixins.json#/references"},
         {"$ref": "mixins.json#/documents"},
@@ -637,9 +638,7 @@
         },
         "url": {
             "title": "URL",
-            "description": "An external resource with additional information about the biosample.",
-            "type": "string",
-            "format": "uri"
+            "description": "An external resource with additional information about the biosample."
         },
         "model_organism_sex": {
             "title": "Model organism sex",

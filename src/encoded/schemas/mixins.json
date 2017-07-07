@@ -272,6 +272,16 @@
 	        "linkTo": "Source"
         }
     },
+    "url": {
+        "url": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "URL",
+            "description": "An external resource with additional information about the RNAi construct.",
+            "type": "string",
+            "format": "uri"
+        }
+    },
     "notes": {
         "notes": {
             "title": "Notes",

@@ -15,6 +15,7 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/genetic_modifications" }
 
@@ -62,9 +63,7 @@
         },
         "url": {
             "title": "URL",
-            "description": "An external resource with additional information about the donor.",
-            "type": "string",
-            "format": "uri"
+            "description": "An external resource with additional information about the donor."
         },
         "internal_tags": {
             "title": "Internal tags",

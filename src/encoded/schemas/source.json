@@ -11,6 +11,7 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/shared_status" },
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/aliases" }
     ],
@@ -39,9 +40,7 @@
         },
         "url": {
             "title": "URL",
-            "description": "An external resource with additional information about the source.",
-            "type": "string",
-            "format": "uri"
+            "description": "An external resource with additional information about the source."
         }
     },
     "boost_values": {

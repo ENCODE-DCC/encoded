@@ -15,7 +15,7 @@
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/product_id" },
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/documents" }
@@ -149,9 +149,9 @@
                 "validation"          
             ]
         },
-        "target": {
-            "title": "Target",
-            "description": "The name of the gene whose expression or product is modified by the genetic modification.",
+        "modified_target_id": {
+            "title": "Modiified target id",
+            "description": "The ENCODE target object representing the gene whose expression or product is modified by the genetic modification.",
             "comment": "See target.json for available identifiers.",
             "type": "string",
             "linkTo": "Target"
@@ -317,9 +317,7 @@
         },
         "url": {
             "title": "URL",
-            "description": "An external resource with additional information about the modification.",
-            "type": "string",
-            "format": "uri"
+            "description": "An external resource with additional information about the modification."
         },
         "modification_techniques": {
             "title": "Modification techniques",

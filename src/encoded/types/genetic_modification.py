@@ -63,7 +63,8 @@ class GeneticModification(Item):
     }
 
     @calculated_property(schema={
-        "title": "Biosamples genetically altered using this modification",
+        "title": "Biosamples modified",
+        "description": "Biosamples genetically altered using this modification",
         "type": "array",
         "items": {
             "type": ['string', 'object'],
@@ -74,7 +75,8 @@ class GeneticModification(Item):
         return paths_filtered_by_status(request, biosamples_modified)
 
     @calculated_property(schema={
-        "title": "Donors genetically altered using this modification",
+        "title": "Donors modified",
+        "description": "Donors genetically altered using this modification",
         "type": "array",
         "items": {
             "type": ['string', 'object'],
