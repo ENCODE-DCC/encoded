@@ -324,18 +324,6 @@ class RegionSearch extends React.Component {
                                                 </span>
                                             }
 
-                                            {context.download_elements ?
-                                                <DropdownButton title="Download Elements" label="downloadelements" wrapperClasses="results-table-button">
-                                                    <DropdownMenu>
-                                                        {context.download_elements.map(link =>
-                                                            <a key={link} data-bypass="true" target="_blank" rel="noopener noreferrer" href={link}>
-                                                                {link.split('.').pop()}
-                                                            </a>
-                                                        )}
-                                                    </DropdownMenu>
-                                                </DropdownButton>
-                                            : null}
-
                                             {visualizeKeys ?
                                                 <DropdownButton disabled={visualizeDisabled} title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'} label="batchhubs" wrapperClasses="results-table-button">
                                                     <DropdownMenu>
