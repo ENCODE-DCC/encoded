@@ -1334,11 +1334,23 @@ def audit(context, request):
             grouping_fields = grouping_fields[1:]
             if grouping_fields:
                 counts = {}
-                for bucket in outer_bucket[group_by]['buckets']:
-                    doc_count = bucket['doc_count']
-                    if doc_count > matrix['max_cell_doc_count']:
-                        matrix['max_cell_doc_count'] = doc_count
-                    counts[bucket['key']] = doc_count
+                for bucket in outer_bucket[category]['buckets']:
+                    for assay in bucket['assay_title']['buckets']:
+                        doc_count = assay['doc_count']
+                        if doc_count > matrix['max_cell_doc_count']:
+                            matrix['max_cell_doc_count'] = doc_count
+                        if 'key' in assay:
+                            counts[assay['key']] = doc_count
+                        else:
+                            for col in assay:
+                                assay_index = 0
+                                counts[bucket[assay_index]['key']] = doc_count
+                                assay_index += 1
+                    summary = []
+                    for xbucket in x_buckets:
+                        summary.append(counts.get(xbucket['key'], 0))
+                    bucket['assay_title'] = summary
+                   #counts[bucket['key']] = doc_count
                     """
                     counts_string = str(bucket['assay_title']['buckets'])
                     temp = counts_string
@@ -1349,17 +1361,12 @@ def audit(context, request):
                     bucket_dict = {}
                     import ast
                     bucket_dict = ast.literal_eval(temp)
+                    """
                     #find index of both []
                     #substring out both []
                     #convert string to dict
-                    counts[bucket_dict['key']] = doc_count
-                """
-                import pdb
-                pdb.set_trace()
-                summary = []
-                for bucket in x_buckets:
-                    summary.append(counts.get(bucket['key'], 0))
-                outer_bucket[group_by] = summary 
+                    
+                 
 
     summarize_buckets(
         result['matrix'],
@@ -1368,12 +1375,27 @@ def audit(context, request):
         y_groupings + [x_grouping])
     #result['matrix']['y'][y_groupings[0]] = aggregations['matrix'][y_groupings[0]]
     # Reformats matrix categories to ones applicable to audits
-    import pdb
-    pdb.set_trace()
-    result['matrix']['y']['audit_category'] = temp_dict
+
+    #result['matrix']['y']['audit_category'] = temp_dict
     result['matrix']['y']['label'] = "Audit Category"
     result['matrix']['y']['group_by'][0] = "audit_category"
     result['matrix']['y']['group_by'][1] = "audit_label"
+    bucket_audit_category_list = []
+    for audit in aggregations['matrix']:
+        if "audit" in audit:
+            audit_category_dict = {}
+            audit_category_dict['audit_label'] = aggregations['matrix'][audit]
+            audit_category_dict['key'] = audit
+            bucket_audit_category_list.append(audit_category_dict)
+    """
+    audit_category_dict = {}
+    audit_category_dict['audit-ERROR-category'] = aggregations['matrix']['audit-ERROR-category']
+    audit_category_dict['audit-WARNING-category'] = aggregations['matrix']['audit-WARNING-category']
+    audit_category_dict['audit-NOT_COMPLIANT-category'] = aggregations['matrix']['audit-NOT_COMPLIANT-category']
+    """
+    bucket_audit_category_dict = {}
+    bucket_audit_category_dict['buckets'] = bucket_audit_category_list
+    result['matrix']['y']['audit_category'] = bucket_audit_category_dict
     result['matrix']['x'].update(aggregations['matrix']['x'])
 
     # Add batch actions
