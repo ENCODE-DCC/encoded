@@ -110,9 +110,12 @@
         position: absolute;
         padding-top: 7px;
         padding-bottom: 3px;
-        @at-root #{&}__reagents {
-            margin-right: 10px;
-        }
+        margin-left: 8px;
+    }
+
+    .reagentsreporttitle {
+        padding-top: 3px;
+        padding-bottom: 0px;
     }
 }
 
