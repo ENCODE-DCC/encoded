@@ -158,7 +158,7 @@ def set_sort_order(request, search_term, types, doc_types, query, result):
         if not sort:
             sort['embedded.date_created'] = result_sort['date_created'] = {
                 'order': 'desc',
-                'unmapped_type': 'date',
+                'unmapped_type': 'keyword',
             }
             sort['embedded.label'] = result_sort['label'] = {
                 'order': 'asc',
