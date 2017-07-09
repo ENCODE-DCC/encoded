@@ -920,29 +920,50 @@ GenusButtons.defaultProps = {
 // Overall component to render the cumulative line graph
 const ExperimentDate = (props) => {
     const { experiments, award } = props;
-    let dateArray;
-    const deduplicated = {};
+    let dateReleasedArray;
+    let dateSubmittedArray;
+    const deduplicatedreleased = {};
+    const deduplicatedsubmitted = {};
     let label = [];
     let data = [];
-    let cumulativedataset = [];
-    let accumulator = 0;
-    let monthdiff = 0;
-    const fillDates = [];
+    let cumulativedatasetReleased = [];
+    let cumulativedatasetSubmitted = [];
+    let accumulatorreleased = 0;
+    let accumulatorsubmitted = 0;
+    let monthreleaseddiff = 0;
+    let monthsubmitteddiff = 0;
+    const fillreleasedDates = [];
+    const fillsubmittedDates = [];
 
     // Search experiments for month_released in facets
     if (experiments && experiments.facets && experiments.facets.length) {
-        const categoryFacet = experiments.facets.find(facet => facet.field === 'month_released');
-        dateArray = (categoryFacet && categoryFacet.terms && categoryFacet.terms.length) ? categoryFacet.terms : [];
+        const monthReleasedFacet = experiments.facets.find(facet => facet.field === 'month_released');
+        const dateSubmittedFacet = experiments.facets.find(facet => facet.field === 'date_submitted');
+        dateReleasedArray = (monthReleasedFacet && monthReleasedFacet.terms && monthReleasedFacet.terms.length) ? monthReleasedFacet.terms : [];
+        dateSubmittedArray = (dateSubmittedFacet && dateSubmittedFacet.terms && dateSubmittedFacet.terms.length) ? dateSubmittedFacet.terms : [];
     }
 
     // Use Library Moment to format array of dates
-    const standardTerms = dateArray.map((term) => {
+    const standardreleasedTerms = dateReleasedArray.map((term) => {
+        const standardDate = moment(term.key, ['MMMM, YYYY', 'YYYY-MM']).format('YYYY-MM');
+        return { key: standardDate, doc_count: term.doc_count };
+    });
+
+    const standardsubmittedTerms = dateSubmittedArray.map((term) => {
         const standardDate = moment(term.key, ['MMMM, YYYY', 'YYYY-MM']).format('YYYY-MM');
         return { key: standardDate, doc_count: term.doc_count };
     });
 
     // Sort array chronologically
-    const sortedTerms = standardTerms.sort((termA, termB) => {
+    const sortedreleasedTerms = standardreleasedTerms.sort((termA, termB) => {
+        if (termA.key < termB.key) {
+            return -1;
+        } else if (termB.key < termA.key) {
+            return 1;
+        }
+        return 0;
+    });
+    const sortedsubmittedTerms = standardsubmittedTerms.sort((termA, termB) => {
         if (termA.key < termB.key) {
             return -1;
         } else if (termB.key < termA.key) {
@@ -951,71 +972,125 @@ const ExperimentDate = (props) => {
         return 0;
     });
 
-    const arrayLength = sortedTerms.length;
-    const assayStart = award.start_date;
-    const shortenedArray = [];
-    for (let j = 0; j < arrayLength - 1; j += 1) {
-        if (moment(sortedTerms[j].key).isAfter(assayStart, 'date')) {
-            shortenedArray.push(sortedTerms[j]);
-        }
+    if (moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isAfter(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
+        sortedreleasedTerms.push({ key: sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key, doc_count: 0 });
+        console.log('yay');
+    } else if (moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isBefore(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
+        sortedsubmittedTerms.push({ key: sortedreleasedTerms[sortedreleasedTerms.length - 1].key, doc_count: 0 });
+        console.log('neigh');
     }
 
+    sortedsubmittedTerms.unshift({ key: award.start_date, doc_count: 0 });
+    sortedreleasedTerms.unshift({ key: award.start_date, doc_count: 0 });
 
     // Add objects to the array with doc_count 0 for the missing months
-    const shortenedArrayLength = shortenedArray.length;
-    for (let j = 0; j < shortenedArrayLength - 1; j += 1) {
-        fillDates.push(shortenedArray[j]);
-        const startDate = moment(shortenedArray[j].key);
-        const endDate = moment(shortenedArray[j + 1].key);
-        monthdiff = endDate.diff(startDate, 'months', false);
-        if (monthdiff > 1) {
-            for (let i = 0; i < monthdiff; i += 1) {
-                fillDates.push({ key: startDate.add(1, 'months').format('YYYY-MM'), doc_count: 0 });
+    const sortedreleasedTermsLength = sortedreleasedTerms.length;
+    for (let j = 0; j < sortedreleasedTermsLength - 1; j += 1) {
+        fillreleasedDates.push(sortedreleasedTerms[j]);
+        const startDate = moment(sortedreleasedTerms[j].key);
+        const endDate = moment(sortedreleasedTerms[j + 1].key);
+        monthreleaseddiff = endDate.diff(startDate, 'months', false);
+        if (monthreleaseddiff > 1) {
+            for (let i = 0; i < monthreleaseddiff; i += 1) {
+                fillreleasedDates.push({ key: startDate.add(1, 'months').format('YYYY-MM'), doc_count: 0 });
             }
         }
     }
-    fillDates.push(shortenedArray[shortenedArrayLength - 1]);
+    fillreleasedDates.push(sortedreleasedTerms[sortedreleasedTerms - 1]);
 
+    const sortedsubmittedTermsLength = sortedsubmittedTerms.length;
+    for (let j = 0; j < sortedsubmittedTermsLength - 1; j += 1) {
+        fillsubmittedDates.push(sortedsubmittedTerms[j]);
+        const startDate = moment(sortedsubmittedTerms[j].key);
+        const endDate = moment(sortedsubmittedTerms[j + 1].key);
+        monthsubmitteddiff = endDate.diff(startDate, 'months', false);
+        if (monthsubmitteddiff > 1) {
+            for (let i = 0; i < monthsubmitteddiff; i += 1) {
+                fillsubmittedDates.push({ key: startDate.add(1, 'months').format('YYYY-MM'), doc_count: 0 });
+            }
+        }
+    }
+    fillsubmittedDates.push(sortedsubmittedTerms[sortedsubmittedTermsLength - 1]);
 
-    const formatTerms = fillDates.map((term) => {
+    const arrayreleasedLength = fillreleasedDates.length;
+    const arraysubmittedLength = fillsubmittedDates.length;
+    const assayreleasedStart = award.start_date;
+    const shortenedreleasedArray = [];
+    const shortenedsubmittedArray = [];
+    for (let j = 0; j < arrayreleasedLength - 2; j += 1) {
+        if (moment(fillreleasedDates[j].key).isAfter(assayreleasedStart, 'date')) {
+            shortenedreleasedArray.push(fillreleasedDates[j]);
+        }
+    }
+    for (let j = 0; j < arraysubmittedLength - 2; j += 1) {
+        if (moment(fillsubmittedDates[j].key).isAfter(assayreleasedStart, 'date')) {
+            shortenedsubmittedArray.push(fillsubmittedDates[j]);
+        }
+    }
+
+    const formatreleasedTerms = shortenedreleasedArray.map((term) => {
+        const formattedDate = moment(term.key, ['YYYY-MM']).format('MMM YY');
+        return { key: formattedDate, doc_count: term.doc_count };
+    });
+
+    const formatsubmittedTerms = shortenedsubmittedArray.map((term) => {
         const formattedDate = moment(term.key, ['YYYY-MM']).format('MMM YY');
         return { key: formattedDate, doc_count: term.doc_count };
     });
 
     // Deduplicate dates
-    formatTerms.forEach((elem) => {
-        if (deduplicated[elem.key]) {
-            deduplicated[elem.key] += elem.doc_count;
+    formatreleasedTerms.forEach((elem) => {
+        if (deduplicatedreleased[elem.key]) {
+            deduplicatedreleased[elem.key] += elem.doc_count;
         } else {
-            deduplicated[elem.key] = elem.doc_count;
+            deduplicatedreleased[elem.key] = elem.doc_count;
+        }
+    });
+
+    formatsubmittedTerms.forEach((elem) => {
+        if (deduplicatedsubmitted[elem.key]) {
+            deduplicatedsubmitted[elem.key] += elem.doc_count;
+        } else {
+            deduplicatedsubmitted[elem.key] = elem.doc_count;
         }
     });
 
 
     // Create an array of dates
-    const date = Object.keys(deduplicated).map((term) => {
+    const date = Object.keys(deduplicatedreleased).map((term) => {
         label = term;
         return label;
     });
 
     // Create an array of data from objects' doc_counts
-    const dataset = Object.keys(deduplicated).map((item) => {
+    const datasetreleased = Object.keys(deduplicatedreleased).map((item) => {
         label = item;
-        data = deduplicated[label];
+        data = deduplicatedreleased[label];
+        return data;
+    });
+    const datasetsubmitted = Object.keys(deduplicatedsubmitted).map((item) => {
+        label = item;
+        data = deduplicatedsubmitted[label];
         return data;
     });
 
     // Make the data cumulative
-    const accumulatedData = dataset.map((term) => {
-        accumulator += term;
-        cumulativedataset = accumulator;
-        return cumulativedataset;
+    const accumulatedDataReleased = datasetreleased.map((term) => {
+        accumulatorreleased += term;
+        cumulativedatasetReleased = accumulatorreleased;
+        return cumulativedatasetReleased;
+    });
+    const accumulatedDataSubmitted = datasetsubmitted.map((term) => {
+        accumulatorsubmitted += term;
+        cumulativedatasetSubmitted = accumulatorsubmitted;
+        return cumulativedatasetSubmitted;
     });
 
     return (
         <div>
-            {console.log(shortenedArray, fillDates)}
-            <CumulativeGraph datavalue={accumulatedData} monthReleased={date} />
+            {console.log(accumulatedDataSubmitted)}
+            {console.log(accumulatedDataReleased)}
+            <CumulativeGraph releaseddatavalue={accumulatedDataReleased} submitteddatavalue={accumulatedDataSubmitted} monthReleased={date} />
         </div>
     );
 };
@@ -1130,7 +1205,7 @@ class FetchGraphData extends React.Component {
         return (
             <FetchedData>
                 <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}`} />
-                 <ExperimentDate award={award} />
+                <ExperimentDate award={award} />
             </FetchedData>
         );
     }
@@ -1144,7 +1219,7 @@ FetchGraphData.propTypes = {
 class CumulativeGraph extends React.Component {
 
     componentDidMount() {
-        const { datavalue, monthReleased } = this.props;
+        const { releaseddatavalue, submitteddatavalue, monthReleased } = this.props;
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
             const ctx = document.getElementById('myGraph').getContext('2d');
@@ -1159,6 +1234,7 @@ class CumulativeGraph extends React.Component {
                         labels: {
                             display: false,
                         },
+                        position: 'bottom',
                     },
                     elements: {
                         line: {
@@ -1182,8 +1258,13 @@ class CumulativeGraph extends React.Component {
                     labels: monthReleased,
                     datasets: [{
                         label: 'Date Released',
-                        data: datavalue,
+                        data: releaseddatavalue,
                         backgroundColor: ['rgba(75, 192, 192, 0.2)'],
+                    },
+                    {
+                        label: 'Date Submitted',
+                        data: submitteddatavalue,
+                        backgroundColor: ['rgba(54, 162, 235, 0.2)'],
                     }],
                 },
             });
@@ -1199,7 +1280,8 @@ class CumulativeGraph extends React.Component {
 
 CumulativeGraph.propTypes = {
     // xaxisorigin: PropTypes.string.isRequired,
-    datavalue: PropTypes.array.isRequired,
+    releaseddatavalue: PropTypes.array.isRequired,
+    submitteddatavalue: PropTypes.array.isRequired,
     monthReleased: PropTypes.array.isRequired,
 };
 
