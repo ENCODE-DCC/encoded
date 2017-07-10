@@ -26,7 +26,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "RVD_sequence": {
             "title": "RVD sequence",

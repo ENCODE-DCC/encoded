@@ -46,9 +46,6 @@ export function dbxref(attributes) {
     } else if (prefix === 'MGI.D') {
         id = value.substr(sep + 1);
         local = `${id}.shtml`;
-    } else if (prefix === 'CGC') {
-        id = value.substr(sep + 1);
-        local = `${id}&field=all&exst=&exfield=all`;
     } else if (prefix === 'DSSC') {
         id = value.substr(sep + 1);
         local = `${id}&table=Species&submit=Search`;

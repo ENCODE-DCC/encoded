@@ -43,10 +43,10 @@ def test_user_upgrade_viewing_groups(upgrader, user_3):
 
 
 @pytest.fixture
-def user_6(user):
+def user_7(user):
     item = user.copy()
     item.update({
-        'schema_version': '5',
+        'schema_version': '6',
         'phone1': '206-685-2672',
         'phone2': '206-267-1098',
         'fax': '206-267-1094',
@@ -57,9 +57,9 @@ def user_6(user):
     return item
 
 
-def test_user_upgrade_contact_info(upgrader, user_6):
-    value = upgrader.upgrade('user', user_6, current_version='5', target_version='6')
-    assert value['schema_version'] == '6'
+def test_user_upgrade_contact_info(upgrader, user_7):
+    value = upgrader.upgrade('user', user_6, current_version='6', target_version='7')
+    assert value['schema_version'] == '7'
     assert 'phone1' not in value
     assert 'phone2' not in value
     assert 'fax' not in value

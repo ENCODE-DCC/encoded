@@ -17,8 +17,8 @@ def user_3_4(value, system):
     ]
 
 
-@upgrade_step('user', '5', '6')
-def user_5_6(value, system):
+@upgrade_step('user', '6', '7')
+def user_6_7(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3409
     if 'phone1' in value:
         del value['phone1']

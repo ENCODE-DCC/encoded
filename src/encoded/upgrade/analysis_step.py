@@ -151,3 +151,8 @@ def analysis_step_5_6(value, system):
             value['status'] = status_mapping[obj_aliases[0]]
         if obj_aliases[0] in aliases_mapping:
             value['aliases'].append(aliases_mapping[obj_aliases[0]])
+
+    # http://redmine.encodedcc.org/issues/5050
+
+    if value.get('status') == 'replaced':
+        value['status'] = 'deleted'

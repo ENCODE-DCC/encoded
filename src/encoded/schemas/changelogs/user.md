@@ -1,12 +1,22 @@
 ## Changelog for user.json
 
-### Schema version 6
+### Schema version 7
 
 * *phone1* removed
 * *phone2* removed
 * *fax* removed
 * *skype* removed
 * *google* removed
+
+### Schema version 6
+
+* *status* property was restricted to one of  
+    "enum" : [
+        "current",
+        "deleted",
+        "disabled"
+    ]
+>>>>>>> master
 
 ### Schema version 5
 

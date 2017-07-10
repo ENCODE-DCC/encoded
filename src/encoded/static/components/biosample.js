@@ -569,6 +569,21 @@ const Construct = (props) => {
                     </div>
                 : null}
 
+                {context.tags.length ?
+                    <div data-test="tags">
+                        <dt>Tags</dt>
+                        <dd>
+                            <ul>
+                                {context.tags.map((tag, index) => (
+                                    <li key={index}>
+                                        {tag.name} (Location: {tag.location})
+                                    </li>
+                                ))}
+                            </ul>
+                        </dd>
+                    </div>
+                : null}
+
                 {context.source.title ?
                     <div data-test="source">
                         <dt>Source</dt>

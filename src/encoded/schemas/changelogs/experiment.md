@@ -3,6 +3,7 @@
 ### Schema version 12
 
 * *alternate_accessions* now must match accession format, "ENCSR..." or "TSTSR..."
+* *date_submitted* property was added to indicate when submission requirements were met. This value is assigned by the DCC.
 
 ### Schema version 11
 
