@@ -334,7 +334,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "16"
+            "default": "17"
         },
         "accession": {
             "accessionType": "BS"
@@ -573,7 +573,9 @@
                 "S1",
                 "S2",
                 "S3",
-                "S4"
+                "S4",
+                "early S",
+                "late S"
             ]
         },
         "transfection_type": {
@@ -635,10 +637,6 @@
                 "μg",
                 "whole animals"
             ]
-        },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the biosample."
         },
         "model_organism_sex": {
             "title": "Model organism sex",
@@ -804,21 +802,6 @@
             "type": "string",
             "description": "Health status of the model organism.",
             "comment": "model_organism_health_status is not valid for a human biosample."
-        },
-        "status": {
-            "title": "Status",
-            "type": "string",
-            "permission": "import_items",
-            "description": "The status of the biosample object.",
-            "comment": "Do not submit.  This is set by admins along the process of metadata submission.",
-            "enum" : [
-                "in progress",
-                "deleted",
-                "replaced",
-                "released",
-                "revoked",
-                "proposed"
-            ]
         }
     },
     "facets": {
@@ -1007,9 +990,6 @@
         "rnais.product_id": 1.0,
         "rnais.target.label": 1.0,
         "rnais.target.aliases": 1.0,
-        "constructs.target.label": 1.0,
-        "constructs.target.aliases": 1.0,
-        "constructs.target.gene_name": 1.0,
         "award.pi.title": 1.0,
         "notes": 1.0,
         "internal_tags": 1.0

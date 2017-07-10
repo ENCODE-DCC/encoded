@@ -45,7 +45,7 @@ class TransgenicOrganism(ValidationTechnique):
         'biosample.model_organism_donor_modifications.lab',
         'biosample.model_organism_donor_modifications.modification_techniques',
         'biosample.model_organism_donor_modifications.treatments',
-        'biosample.model_organism_donor_modifications.target',
+        'biosample.model_organism_donor_modifications.modified_target_id',
         'biosample.donor',
         'biosample.donor.mutated_gene',
         'biosample.donor.organism',

@@ -26,25 +26,13 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
-        },
-        "RVD_sequence": {
-            "title": "RVD sequence",
-            "description": "The repeat variable diresidue sequence. E.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
-            "type": "string",
-            "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
+            "default": "3"
         },
         "talen_platform": {
             "title": "TALEN platform",
             "description": "The TALEN platform used to make the construct. E.g. Golden Gate",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
-        },
-         "target_sequence": {
-            "title": "Target sequence",
-            "descrition": "The target genome sequence recognized by the TALE domain.",
-            "type": "string",
-            "pattern": "^[ACTG]+$"
         }
     },
     "facets": {

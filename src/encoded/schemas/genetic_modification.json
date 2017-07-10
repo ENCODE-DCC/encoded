@@ -315,10 +315,6 @@
                 "heterozygous"
             ]
         },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the modification."
-        },
         "modification_techniques": {
             "title": "Modification techniques",
             "description": "Genetic modification technique(s)/tool(s) used to perform the modification.",

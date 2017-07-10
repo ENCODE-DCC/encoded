@@ -1,5 +1,14 @@
 ## Changelog for idr_quality_metric.json
 
+### Schema version 6
+
+* *status* property was restricted to one of  
+    "enum" : [
+        "in progress",
+        "deleted",
+        "released"
+    ]
+
 ### Schema version 5
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces

@@ -56,7 +56,7 @@ describe('Software', () => {
         },
     };
 
-    describe('Make a table and verify row and column counts', function() {
+    describe('Make a table and verify row and column counts', () => {
         let table;
         let tableOutput;
         let rows;

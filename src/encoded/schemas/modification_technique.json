@@ -38,7 +38,51 @@
                 "type":  "string",
                 "pattern": "^addgene:\\d+"
             }
-        }             
+        },
+        "sequence_information": {
+            "title": "Sequence information",
+            "description": "A list of relevant sequences related to the technique described.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Sequences",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "rnai_sequence": {
+                        "title": "RNAi sequence",
+                        "description": "Sequence of the inhibitory RNA.",
+                        "type": "string",
+                        "pattern": "^[ACUNTG-]+$"
+                    },
+                    "target_sequence": {
+                        "title": "Target sequence",
+                        "description": "Genomic sequence targeted by the inhibitory RNA or TALE.",
+                        "type": "string",
+                        "pattern": "^[ACTG]+|non-mammalian target$"
+                    },
+                    "guide_rna_sequences": {
+                        "title": "Guide RNA sequences",
+                        "description": "gRNA sequences used in CRISPR genetic modification",
+                        "type": "array",
+                        "default": [],
+                        "uniqueItems": true,
+                        "items": {
+                            "title": "gRNA sequence",
+                            "description": "guide RNA sequence used in the experiment.",
+                            "type": "string",
+                            "pattern": "^[ACUNTG]+$"
+                        }
+                    },
+                    "RVD_sequence": {
+                        "title": "RVD sequence",
+                        "description": "The repeat variable diresidue sequence of the TAL effector. E.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
+                        "type": "string",
+                        "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
+                    }
+                }
+            }
+        }         
     }
 }
     

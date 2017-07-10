@@ -28,7 +28,7 @@ class GeneticModification(Item):
         'lab',
         'source',
         'submitted_by',
-        'target',
+        'modified_target_id',
         'documents',
         'documents.award',
         'documents.lab',

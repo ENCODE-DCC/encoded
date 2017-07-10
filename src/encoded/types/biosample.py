@@ -52,7 +52,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'model_organism_donor_constructs.documents.submitted_by',
         'model_organism_donor_modifications',
         'model_organism_donor_modifications.submitted_by',
-        'model_organism_donor_modifications.target',
+        'model_organism_donor_modifications.modified_target_id',
         'model_organism_donor_modifications.documents',
         'model_organism_donor_modifications.documents.award',
         'model_organism_donor_modifications.documents.lab',
@@ -111,7 +111,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'genetic_modifications.lab',
         'genetic_modifications.modification_techniques',
         'genetic_modifications.treatments',
-        'genetic_modifications.target'
+        'genetic_modifications.modified_target_id'
     ]
     audit_inherit = [
         'donor',

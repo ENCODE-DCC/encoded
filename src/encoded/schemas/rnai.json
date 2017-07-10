@@ -17,6 +17,7 @@
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
@@ -31,10 +32,6 @@
                 "shRNA",
                 "siRNA"
             ]
-        },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the RNAi construct."
         },
         "target": {
             "title": "Target",

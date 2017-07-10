@@ -17,6 +17,7 @@
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/url"},
         { "$ref": "mixins.json#/documents" },
         { "$ref": "modification_technique.json#/properties" }
     ],
@@ -39,29 +40,36 @@
                 "siRNA"
             ]
         },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the RNAi construct.",
-            "type": "string",
-            "format": "uri"
-        },
         "vector_backbone_name": {
             "title": "Backbone name",
             "description": "The name of the vector backbone used for the construct.",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
-        "rnai_sequence": {
-            "title": "RNAi sequence",
-            "description": "Sequence of the inhibitory RNA.",
-            "type": "string",
-            "pattern": "^[ACUNTG-]+$"
-        },
-        "rnai_target_sequence": {
-            "title": "Target sequence",
-            "description": "Genomic sequence targeted by the RNA.",
-            "type": "string",
-            "pattern": "^[ACTG]+|non-mammalian target$"
+        "sequence_information": {
+            "title": "Sequence information",
+            "description": "A list of relevant sequences related to the RNAi process described.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Sequences",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "rnai_sequence": {
+                        "title": "RNAi sequence",
+                        "description": "Sequence of the inhibitory RNA.",
+                        "type": "string",
+                        "pattern": "^[ACUNTG-]+$"
+                    },
+                    "rnai_target_sequence": {
+                        "title": "Target sequence",
+                        "description": "Genomic sequence targeted by the RNA.",
+                        "type": "string",
+                        "pattern": "^[ACTG]+|non-mammalian target$"
+                    }
+                }
+            }
         },
         "transfection_type": {
             "title": "Transfection type",

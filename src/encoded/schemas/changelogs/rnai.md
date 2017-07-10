@@ -2,6 +2,7 @@
 
 ### Schema version 5
 
+<<<<<<< HEAD
 * *sequence_information* is an array of objects with paired *rnai_sequence* and *rnai_target_sequence* properties so more than one set can be specified at a time, if applicable. Old properties *rnai_sequence* and *rnai_target_sequence* were removed
 and the values were migrated into *sequence_information*.
 
@@ -13,3 +14,11 @@ and the values were migrated into *sequence_information*.
 ### Schema version 3
 
 * array properties *aliases* and documents will only allow for unique elements.
+=======
+* *status* property was restricted to one of  
+    "enum" : [
+        "in progress",
+        "deleted",
+        "released"
+    ]
+>>>>>>> master

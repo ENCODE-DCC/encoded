@@ -20,7 +20,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "software_type": {
             "title": "Types",
@@ -68,12 +68,6 @@
         "source_url": {
             "title": "Source URL",
             "description": "An external resource to the code base.",
-            "type": "string",
-            "format": "uri"
-        },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the software.",
             "type": "string",
             "format": "uri"
         },

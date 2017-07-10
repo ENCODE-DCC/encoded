@@ -58,10 +58,6 @@
             },
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
         },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the construct."
-        },
         "vector_backbone_name": {
             "title": "Backbone name",
             "description": "The cloning vector used to make the construct. E.g. PEGFP (delGFP-TAL2-truncNLS)",

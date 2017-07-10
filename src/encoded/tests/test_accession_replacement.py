@@ -1,5 +1,6 @@
 import pytest
 
+
 # also tests schema_formats generally
 @pytest.fixture
 def human_donor(lab, award, organism):
@@ -7,7 +8,7 @@ def human_donor(lab, award, organism):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'organism': organism['uuid'],
-        'url': 'http://www.test.org',
+        'url': 'http://www.test.org'
     }
 
 

@@ -22,9 +22,7 @@
         "amount": ["amount_units"],
         "amount_units": ["amount"],
         "duration": ["duration_units"],
-        "duration_units": ["duration"]
-    },
-    "dependencies": {
+        "duration_units": ["duration"],
         "treatment_type": {
             "comment": "Each treatment needs a term_name or a mutagen specified.",
             "oneOf":[

@@ -17,7 +17,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "description": {
             "title": "Description",
@@ -37,10 +37,6 @@
             "type": "string",
             "pattern": "^[a-z0-9\\-]+$",
             "uniqueKey": true
-        },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the source."
         }
     },
     "boost_values": {

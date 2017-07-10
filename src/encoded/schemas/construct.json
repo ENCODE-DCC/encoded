@@ -44,7 +44,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "construct_type": {
             "title": "Type",
@@ -70,10 +70,6 @@
                 ]
             },
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
-        },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the construct."
         },
         "target": {
             "title": "Target",

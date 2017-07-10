@@ -14,7 +14,7 @@
     "type": "object",
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "title": {
             "rdfs:subPropertyOf": "dc:title",
@@ -53,10 +53,6 @@
                 {"format": "date-time"},
                 {"format": "date"}
             ]
-        },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the grant."
         },
         "pi": {
             "title": "P.I.",
