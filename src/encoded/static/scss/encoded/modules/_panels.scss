@@ -281,21 +281,18 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 }
 
 .file-gallery-controls {
+    display: flex;
+    justify-content: space-between;
     padding: 5px 0;
     background-color: #c0c0c0;
     border-top: 1px solid #a0a0a0;
     border-bottom: 1px solid #a0a0a0;
 
-    @at-root #{&}--control {
-        display: inline-block;
+    @at-root #{&}__assembly-selector {
+        flex: 0 1 auto;
         position: relative;
         vertical-align: bottom;
         margin-right: 5px;
-
-        @media screen and (min-width: $screen-sm-min) {
-            margin-right: 0;
-            margin-left: 5px;
-        }
 
         select {
             height: 30px;
@@ -305,7 +302,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
             -moz-appearance: none;
         }
 
-        &.file-gallery-control-select:after {
+        &:after {
             content: '\f0dc';
             font-family: FontAwesome;
             padding: 8px;
@@ -319,6 +316,13 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
             color: #428bca;
             pointer-events: none;
         }
+    }
+
+    @at-root #{&}__assembly-selector {
+        flex: 0 1 auto;
+        position: relative;
+        vertical-align: bottom;
+        margin-right: 5px;
     }
 }
 

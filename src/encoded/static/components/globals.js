@@ -96,12 +96,15 @@ export function unbindEvent(el, eventName, eventHandler) {
     }
 }
 
-export function unreleasedFilesUrl(context, modifiers) {
-    const toAdd = (modifiers && modifiers.toAdd) || [];
-    const toSubtract = (modifiers && modifiers.toSubtract) || [];
 
-    // Start with the basic set of states, then add or subtract specific ones as needed.
-    let basicFileStatuses = [
+/**
+ * Returns the basic file statuses used with file searches that `unreleasedFilesUrl` uses. Useful
+ * if you just need the array of file statuses that `unreleasedFilesUri` returns as search URI.
+ *
+ * @return {array} Strings matching file schema statuses used in standard searches.
+ */
+export function getBasicFileStatuses() {
+    return [
         '',
         'uploading',
         'content error',
@@ -109,15 +112,35 @@ export function unreleasedFilesUrl(context, modifiers) {
         'released',
         'archived',
     ];
+}
+
+
+/**
+ * Make a search query string for basic file statuses to load in search results.
+ *
+ * @param {object} context - Dataset object that relates the files we're searching for.
+ * @param {object} modifiers - Additions and subtractions from basic statuses in the form of two
+ *     arrays, one with the key `addStatuses` with the value of an array containing file statuses
+ *     you'd like to search in addition to the basic ones. The other has the key `subtractStatuses`
+ *     and has the value of an array containing the basic file statuses you'd like to subtract from
+ *     the basic ones.
+ * @return {string} - URI of file search string only including desired statuses.
+ */
+export function unreleasedFilesUrl(context, modifiers) {
+    const addStatuses = (modifiers && modifiers.addStatuses) || [];
+    const subtractStatuses = (modifiers && modifiers.subtractStatuses) || [];
+
+    // Start with the basic set of states, then add or subtract specific ones as needed.
+    let basicFileStatuses = getBasicFileStatuses();
 
     // Add requested additional statuses to the basic statuses; note `splice` mutates the given
     // array.
-    if (toAdd.length) {
-        basicFileStatuses.push(...toAdd);
+    if (addStatuses.length) {
+        basicFileStatuses.push(...addStatuses);
     }
 
     // Remove requested statuses from basic statuses.
-    basicFileStatuses = (toSubtract && toSubtract.length) ? _(basicFileStatuses).without(...toSubtract) : basicFileStatuses;
+    basicFileStatuses = (subtractStatuses && subtractStatuses.length) ? _(basicFileStatuses).without(...subtractStatuses) : basicFileStatuses;
 
     // Now that we have the statuses we need to search, convert and return the statuses as a search
     // URL.

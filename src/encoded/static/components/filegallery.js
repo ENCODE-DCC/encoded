@@ -125,6 +125,7 @@ export class FileTable extends React.Component {
         const loggedIn = !!(session && session['auth.userid']);
 
         let datasetFiles = _((items && items.length) ? items : []).uniq(file => file['@id']);
+
         if (datasetFiles.length) {
             const unfilteredCount = datasetFiles.length;
 
@@ -830,7 +831,7 @@ export class FileGallery extends React.Component {
 
         return (
             <FetchedData>
-                <Param name="data" url={globals.unreleasedFilesUrl(context)} />
+                <Param name="data" url={globals.unreleasedFilesUrl(context, { addStatuses: ['revoked'] })} />
                 <Param name="schemas" url="/profiles/" />
                 <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
             </FetchedData>
@@ -1362,36 +1363,68 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
 class FilterControls extends React.Component {
     constructor() {
         super();
+
+        // Set intial React state.
+        this.state = {
+            incArchived: false,
+        };
+
+        // Bind this to non-React methods.
+        this.handleAssemblyAnnotationChange = this.handleAssemblyAnnotationChange.bind(this);
+        this.handleInclusionChange = this.handleInclusionChange.bind(this);
+    }
+
+    handleAssemblyAnnotationChange(e) {
+        this.props.handleAssemblyAnnotationChange(e.target.value);
+    }
+
+    handleInclusionChange(e) {
+        // Get the checkbox element in the DOM so we can see whether it's been checked or not.
+        const checked = e.target.checked;
+
+        // Call the parent component with the new checked state.
+        this.props.handleInclusionChange(checked);
     }
 
     render() {
-        const { filterOptions, selectedFilterValue, handleFilterChange } = this.props;
+        const { filterOptions, selectedFilterValue, inclusionOn } = this.props;
 
-        return (
-            <div className="file-gallery-controls">
-                {filterOptions.length ?
-                    <div className="file-gallery-controls--control file-gallery-control-select">
-                        <FilterMenu selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={handleFilterChange} />
+        if (filterOptions.length) {
+            return (
+                <div className="file-gallery-controls">
+                    <div className="file-gallery-controls--assembly-selector">
+                        <FilterMenu selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleAssemblyAnnotationChange} />
                     </div>
-                : null}
-            </div>
-        );
+                    <div className="file-gallery-controls--qualifier-selector">
+                        <div className="checkbox">
+                            <label htmlFor="filterIncArchive">Include revoked / archived files<input name="filterIncArchive" type="checkbox" checked={inclusionOn} onChange={this.handleInclusionChange} /></label>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        return null;
     }
 }
 
 FilterControls.propTypes = {
     filterOptions: PropTypes.array.isRequired,
     selectedFilterValue: PropTypes.string,
-    handleFilterChange: PropTypes.func.isRequired,
+    handleAssemblyAnnotationChange: PropTypes.func.isRequired,
+    handleInclusionChange: PropTypes.func.isRequired,
+    inclusionOn: PropTypes.bool, // True to make the inclusion box checked
 };
 
 FilterControls.defaultProps = {
-    selectedFilterValue: "0",
+    selectedFilterValue: '0',
+    inclusionOn: false,
 };
 
 
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
 // the displayed experiment) return.
+
 class FileGalleryRenderer extends React.Component {
     constructor() {
         super();
@@ -1401,13 +1434,16 @@ class FileGalleryRenderer extends React.Component {
             infoNodeId: '', // @id of node whose info panel is open
             infoModalOpen: false, // True if info modal is open
             relatedFiles: [],
+            inclusionOn: false, // True to exclude files with certain statuses
         };
 
         // Bind `this` to non-React methods.
         this.setInfoNodeId = this.setInfoNodeId.bind(this);
         this.setInfoNodeVisible = this.setInfoNodeVisible.bind(this);
         this.setFilter = this.setFilter.bind(this);
-        this.handleFilterChange = this.handleFilterChange.bind(this);
+        this.handleAssemblyAnnotationChange = this.handleAssemblyAnnotationChange.bind(this);
+        this.handleInclusionChange = this.handleInclusionChange.bind(this);
+        this.filterForInclusion = this.filterForInclusion.bind(this);
     }
 
     componentWillMount() {
@@ -1456,8 +1492,30 @@ class FileGalleryRenderer extends React.Component {
     }
 
     // React to a filter menu selection. The synthetic event given in `e`
-    handleFilterChange(e) {
-        this.setFilter(e.target.value);
+    handleAssemblyAnnotationChange(value) {
+        this.setFilter(value);
+    }
+
+    // When the exclusion filter changes from typcially the user clicking the checkbox in
+    // <FilterControls>,
+    handleInclusionChange(checked) {
+        this.setState({ inclusionOn: checked });
+    }
+
+    // If the inclusionOn state property is enabled, we'll just display all the files we got. If
+    // inclusionOn is disabled, we filter out any files with states in
+    // FileGalleryRenderer.inclusionStatuses.
+    filterForInclusion(files) {
+        if (!this.state.inclusionOn) {
+            // The user has chosen to not see file swith statuses in
+            // FileGalleryRenderer.inclusionStatuses. Create an array with files having those
+            // statuses filtered out. Start by making an array of files with a filtered-out status
+            return files.filter(file => FileGalleryRenderer.inclusionStatuses.indexOf(file.status) === -1);
+        }
+
+        // The user requested seeing everything including revoked and archived files, so just
+        // return the unmodified array.
+        return files;
     }
 
     render() {
@@ -1478,8 +1536,8 @@ class FileGalleryRenderer extends React.Component {
             selectedAnnotation = filterOptions[this.state.selectedFilterValue].annotation;
         }
 
-        // Get a list of files for the graph (filters out archived files)
-        const graphFiles = _(files).filter(file => file.status !== 'archived');
+        // Get a list of files for the graph (filters out excluded files if requested by the user).
+        const graphFiles = this.filterForInclusion(files);
 
         // Build node graph of the files and analysis steps with this experiment
         if (graphFiles && graphFiles.length && !hideGraph) {
@@ -1506,7 +1564,13 @@ class FileGalleryRenderer extends React.Component {
                 </PanelHeading>
 
                 {/* Display the strip of filgering controls */}
-                <FilterControls selectedFilterValue={this.state.selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleFilterChange} />
+                <FilterControls
+                    selectedFilterValue={this.state.selectedFilterValue}
+                    filterOptions={filterOptions}
+                    inclusionOn={this.state.inclusionOn}
+                    handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
+                    handleInclusionChange={this.handleInclusionChange}
+                />
 
                 <TabPanel tabs={{ graph: 'Association graph', tables: 'File details' }}>
                     <TabPanelPane key="graph">
@@ -1535,7 +1599,7 @@ class FileGalleryRenderer extends React.Component {
                             files from dataset.files */}
                         <FileTable
                             {...this.props}
-                            items={files}
+                            items={graphFiles}
                             selectedFilterValue={this.state.selectedFilterValue}
                             filterOptions={filterOptions}
                             graphedFiles={allGraphedFiles}
@@ -1556,6 +1620,12 @@ class FileGalleryRenderer extends React.Component {
         );
     }
 }
+
+// Keeps a list of file statuses to include or exclude based on the checkbox in FilterControls.
+FileGalleryRenderer.inclusionStatuses = [
+    'archived',
+    'revoked',
+];
 
 FileGalleryRenderer.propTypes = {
     context: PropTypes.object, // Dataset whose files we're rendering
