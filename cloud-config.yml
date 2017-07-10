@@ -246,10 +246,6 @@ users:
   # Specified homedir must exist
   # https://github.com/rubygems/rubygems/issues/689
   homedir: /srv/encoded
-- name: elasticsearch
-  gecos: Elasticsearch user
-  system: true
-  inactive: true
 
 write_files:
 #  These files are causing errors, need to be debugged separately from ES upgrade
