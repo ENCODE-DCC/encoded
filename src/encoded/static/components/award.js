@@ -1297,7 +1297,7 @@ const AffiliatedLabsArray = (props) => {
 
     return (
         <div>
-            {sortedArray.map(item => <div>{item}</div>)}
+            {sortedArray.map((item, index) => <div key={index}>{item}</div>)}
         </div>
     );
 };
