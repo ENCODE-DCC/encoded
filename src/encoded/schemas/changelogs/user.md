@@ -16,7 +16,6 @@
         "deleted",
         "disabled"
     ]
->>>>>>> master
 
 ### Schema version 5
 
