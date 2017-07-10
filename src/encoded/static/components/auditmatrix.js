@@ -184,7 +184,7 @@ class AuditMatrix extends React.Component {
             if (context.visualize_batch && Object.keys(context.visualize_batch).length) {
                 visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
                     const aLower = a.toLowerCase();
-                    const bLower = b.toLowerCase();
+                    const bLower = b.toLowerCase();   
                     return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
                 });
             }
@@ -343,7 +343,7 @@ class AuditMatrix extends React.Component {
                                                 <tr>
                                                     <th className="group-all-groups-cell">
                                                         <button className="group-all-groups-cell__button" onClick={this.handleSeeAllClick}>
-                                                            {this.state.allYGroupsOpen ? 'See fewer biosamples' : 'See all biosamples'}
+                                                            {this.state.allYGroupsOpen ? 'See fewer audits' : 'See all audits'}
                                                         </button>
                                                     </th>
                                                 </tr>
