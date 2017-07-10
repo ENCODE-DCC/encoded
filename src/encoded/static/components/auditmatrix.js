@@ -185,7 +185,6 @@ class AuditMatrix extends React.Component {
 
             // Make an array of colors corresponding to the ordering of biosample_type
             const biosampleTypeColors = this.context.biosampleTypeColors.colorList(yGroups.map(yGroup => yGroup.key));
-            const auditCategoryColors = this.context.auditCategoryColors.colorList(yGroups.map(yGroup => yGroup.key));
 
             return (
                 <div>
