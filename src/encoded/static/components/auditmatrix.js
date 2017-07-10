@@ -280,9 +280,14 @@ class AuditMatrix extends React.Component {
                                                 parsed.query['y.limit'] = null;
                                                 delete parsed.search; // this makes format compose the search string out of the query object
                                                 const groupHref = url.format(parsed);
+                                                // The next 2 lines make the category title text
+                                                // color white or black based on the background
+                                                // color.
+                                                const rowColor = seriesColor.clone();
+                                                const categoryTextColor = rowColor.luminosity() > 0.5 ? '#000' : '#fff';
                                                 const rows = [<tr key={group.key}>
                                                     <th colSpan={colCount + 1} style={{ textAlign: 'left', backgroundColor: groupColor }}>
-                                                        <a href={groupHref} style={{ color: '#fff' }}>{group.key}</a>
+                                                        <a href={groupHref} style={{ color: categoryTextColor }}>{group.key}</a>
                                                     </th>
                                                 </tr>];
                                                 const groupBuckets = group[secondaryYGrouping].buckets;
