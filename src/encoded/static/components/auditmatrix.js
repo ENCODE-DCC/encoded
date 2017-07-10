@@ -158,7 +158,19 @@ class AuditMatrix extends React.Component {
             const secondaryYGrouping = matrix.y.group_by[1];
             const xBuckets = matrix.x.buckets;
             const xLimit = matrix.x.limit || xBuckets.length;
-            const yGroups = matrix.y[primaryYGrouping].buckets;
+            var yGroups = matrix.y[primaryYGrouping].buckets;
+            const orderKey = ['audit-ERROR-category', 'audit-NOT_COMPLIANT-category', 'audit-WARNING-category', 'audit-INTERNAL_ACTION-category'];
+            var orderIndex = 0;
+            var tempYGroups = [];
+            while(orderIndex < orderKey.length){
+                yGroups.forEach((group) => {
+                    if(group.key === orderKey[orderIndex]){
+                        tempYGroups.push(group);
+                    }
+                });
+                orderIndex++;
+            }
+            yGroups = tempYGroups;
             const yGroupFacet = _.findWhere(context.facets, { field: primaryYGrouping });
             const yGroupOptions = yGroupFacet ? yGroupFacet.terms.map(term => term.key) : [];
             yGroupOptions.sort();
@@ -184,7 +196,7 @@ class AuditMatrix extends React.Component {
             };
 
             // Make an array of colors corresponding to the ordering of biosample_type
-            const biosampleTypeColors = this.context.biosampleTypeColors.colorList(yGroups.map(yGroup => yGroup.key));
+            const biosampleTypeColors = ["#cc0700", "#ff8000", "#e0e000"];
 
             return (
                 <div>
