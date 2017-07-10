@@ -58,7 +58,7 @@ def user_7(user):
 
 
 def test_user_upgrade_contact_info(upgrader, user_7):
-    value = upgrader.upgrade('user', user_6, current_version='6', target_version='7')
+    value = upgrader.upgrade('user', user_7, current_version='6', target_version='7')
     assert value['schema_version'] == '7'
     assert 'phone1' not in value
     assert 'phone2' not in value
