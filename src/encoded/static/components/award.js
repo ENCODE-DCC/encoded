@@ -917,7 +917,7 @@ GenusButtons.defaultProps = {
     selectedOrganisms: [],
 };
 
-// Overall component to render the cumulative line graph
+// Overall component to render the cumulative line chart
 const ExperimentDate = (props) => {
     const { experiments, award } = props;
     let dateReleasedArray;
@@ -935,7 +935,7 @@ const ExperimentDate = (props) => {
     const fillreleasedDates = [];
     const fillsubmittedDates = [];
 
-    // Search experiments for month_released in facets
+    // Search experiments for month_released and date_submitted in facets
     if (experiments && experiments.facets && experiments.facets.length) {
         const monthReleasedFacet = experiments.facets.find(facet => facet.field === 'month_released');
         const dateSubmittedFacet = experiments.facets.find(facet => facet.field === 'date_submitted');
@@ -943,7 +943,7 @@ const ExperimentDate = (props) => {
         dateSubmittedArray = (dateSubmittedFacet && dateSubmittedFacet.terms && dateSubmittedFacet.terms.length) ? dateSubmittedFacet.terms : [];
     }
 
-    // Use Library Moment to format array of dates
+    // Use Moment to format arrays of submitted and released date
     const standardreleasedTerms = dateReleasedArray.map((term) => {
         const standardDate = moment(term.key, ['MMMM, YYYY', 'YYYY-MM']).format('YYYY-MM');
         return { key: standardDate, doc_count: term.doc_count };
@@ -954,7 +954,7 @@ const ExperimentDate = (props) => {
         return { key: standardDate, doc_count: term.doc_count };
     });
 
-    // Sort array chronologically
+    // Sort arrays chronologically
     const sortedreleasedTerms = standardreleasedTerms.sort((termA, termB) => {
         if (termA.key < termB.key) {
             return -1;
@@ -972,14 +972,14 @@ const ExperimentDate = (props) => {
         return 0;
     });
 
+    // Add an object with the most current date to one of the arrays
     if (moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isAfter(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
         sortedreleasedTerms.push({ key: sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key, doc_count: 0 });
-        console.log('yay');
     } else if (moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isBefore(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
         sortedsubmittedTerms.push({ key: sortedreleasedTerms[sortedreleasedTerms.length - 1].key, doc_count: 0 });
-        console.log('neigh');
     }
 
+    // Add an object with the award start date to both arrays
     sortedsubmittedTerms.unshift({ key: award.start_date, doc_count: 0 });
     sortedreleasedTerms.unshift({ key: award.start_date, doc_count: 0 });
 
@@ -1012,6 +1012,7 @@ const ExperimentDate = (props) => {
     }
     fillsubmittedDates.push(sortedsubmittedTerms[sortedsubmittedTermsLength - 1]);
 
+    // Remove any objects with keys before the start date of the award
     const arrayreleasedLength = fillreleasedDates.length;
     const arraysubmittedLength = fillsubmittedDates.length;
     const assayreleasedStart = award.start_date;
@@ -1088,8 +1089,6 @@ const ExperimentDate = (props) => {
 
     return (
         <div>
-            {console.log(accumulatedDataSubmitted)}
-            {console.log(accumulatedDataReleased)}
             <CumulativeGraph releaseddatavalue={accumulatedDataReleased} submitteddatavalue={accumulatedDataSubmitted} monthReleased={date} />
         </div>
     );
@@ -1217,7 +1216,6 @@ FetchGraphData.propTypes = {
 
 // Create a cumulative line chart in the div.
 class CumulativeGraph extends React.Component {
-
     componentDidMount() {
         const { releaseddatavalue, submitteddatavalue, monthReleased } = this.props;
         require.ensure(['chart.js'], (require) => {
@@ -1234,7 +1232,7 @@ class CumulativeGraph extends React.Component {
                         labels: {
                             display: false,
                         },
-                        position: 'bottom',
+                        position: 'bottom', // Position the legend beneath the line chart
                     },
                     elements: {
                         line: {
@@ -1248,7 +1246,7 @@ class CumulativeGraph extends React.Component {
                         xAxes: [{
                             ticks: {
                                 autoSkip: true,
-                                maxTicksLimit: 15,
+                                maxTicksLimit: 15, // sets maximum number of x-axis labels
                             },
                         },
                         ],
@@ -1257,14 +1255,14 @@ class CumulativeGraph extends React.Component {
                 data: {
                     labels: monthReleased,
                     datasets: [{
-                        label: 'Date Released',
-                        data: releaseddatavalue,
-                        backgroundColor: ['rgba(75, 192, 192, 0.2)'],
-                    },
-                    {
                         label: 'Date Submitted',
                         data: submitteddatavalue,
-                        backgroundColor: ['rgba(54, 162, 235, 0.2)'],
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    },
+                    {
+                        label: 'Date Released',
+                        data: releaseddatavalue,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     }],
                 },
             });
@@ -1273,13 +1271,12 @@ class CumulativeGraph extends React.Component {
 
     render() {
         return (
-            <canvas id="myGraph" style={{ height: 300 }} />
+            <canvas id="myGraph" style={{ height: 300 }} /> // responsive and maintainAspectRatio allow for height to be set here
         );
     }
 }
 
 CumulativeGraph.propTypes = {
-    // xaxisorigin: PropTypes.string.isRequired,
     releaseddatavalue: PropTypes.array.isRequired,
     submitteddatavalue: PropTypes.array.isRequired,
     monthReleased: PropTypes.array.isRequired,
@@ -1290,11 +1287,10 @@ CumulativeGraph.defaultProps = {
     monthReleased: [],
 };
 
+// Create Affiliated Labs list with carriage return to be displayed under description panel
 const AffiliatedLabsArray = (props) => {
     const { labs } = props;
-
     const sortedArray = labs['@graph'].map(term => term.title);
-
     return (
         <div>
             {sortedArray.map((item, index) => <div key={index}>{item}</div>)}
@@ -1309,7 +1305,6 @@ AffiliatedLabsArray.propTypes = {
 AffiliatedLabsArray.defaultProps = {
     labs: {},
 };
-
 
 class AffiliatedLabs extends React.Component {
     render() {
@@ -1368,7 +1363,7 @@ class Award extends React.Component {
                             <div className="description__columnone">
                                 <dl><dt>Dates: </dt>{moment(context.start_date).format('MMMM DD, YYYY')} - {moment(context.end_date).format('MMMM DD, YYYY')}</dl>
                                 <dl><dt>Award RFA: </dt>{context.rfa}</dl>
-                                <dl><dt> Milestones: </dt>insert list of phrases here</dl>
+                                <dl><dt> Milestones: </dt></dl>
                             </div>
                         </div>
                     </PanelBody>
@@ -1386,14 +1381,11 @@ class Award extends React.Component {
     }
 }
 
-
 Award.propTypes = {
     context: PropTypes.object.isRequired, // Award object being rendered
-    // award: PropTypes.object.isRequired, // Award represented by this chart
 };
 
 globals.contentViews.register(Award, 'Award');
-
 
 const Listing = (props) => {
     const result = props.context;
