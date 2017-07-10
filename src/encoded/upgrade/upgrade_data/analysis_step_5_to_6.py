@@ -205,7 +205,9 @@ label_mapping = {
     'zhiping-weng:bed-2-bigbed': 'bed-2-bigbed-step',
     'zhiping-weng:celltype-cre-id': 'celltype-cre-identification-step',
     'zhiping-weng:cluster-filter': 'cluster-filter-step',
-    'zhiping-weng:generalized-cre-id': 'generalized-cre-identification-step'
+    'zhiping-weng:generalized-cre-id': 'generalized-cre-identification-step',
+    'zhiping-weng:ChromHMM-bed-conversion-step': 'chromhmm-bedtobigbed-step',
+    'zhiping-weng:ChromHMM-chromatin-state-calling-step': 'chromhmm-chromatin-state-calling-step'
 }
 
 major_version_mapping = {
@@ -415,15 +417,17 @@ major_version_mapping = {
     'zhiping-weng:bed-2-bigbed': 1,
     'zhiping-weng:celltype-cre-id': 1,
     'zhiping-weng:cluster-filter': 1,
-    'zhiping-weng:generalized-cre-id': 1
+    'zhiping-weng:generalized-cre-id': 1,
+    'zhiping-weng:ChromHMM-bed-conversion-step': 1,
+    'zhiping-weng:ChromHMM-chromatin-state-calling-step': 1
 }
 
 title_mapping = {
-    'j-michael-cherry:fecdf1f3-6547-41f5-ae38-501437ef8357': 'WGBS Bismark-bowtie1 genome indexing step - Version 2',
+    'j-michael-cherry:fecdf1f3-6547-41f5-ae38-501437ef8357': 'WGBS Bismark-bowtie1 genome indexing step',
     'j-michael-cherry:ff1f5989-1866-417e-a4b7-04879283cb3e': 'DNase-seq mapping and peak calling step',
-    'j-michael-cherry:3fa67405-fa88-4627-b3eb-04f789eb5d29': 'Long RNA-seq STAR paired-ended alignment step v2.0',
-    'dnanexus:align-star-se-v-2': 'Long RNA-seq STAR single-ended alignment step v2.0',
-    'dnanexus:dme-index-bismark-bowtie2-v-2': 'WGBS Bismark-bowtie2 genome indexing step - Version 1',
+    'j-michael-cherry:3fa67405-fa88-4627-b3eb-04f789eb5d29': 'Long RNA-seq STAR paired-ended alignment step',
+    'dnanexus:align-star-se-v-2': 'Long RNA-seq STAR single-ended alignment step',
+    'dnanexus:dme-index-bismark-bowtie2-v-2': 'WGBS Bismark-bowtie2 genome indexing step',
     'ross-hardison:atac-seq-alignment-step-v-1': 'ATAC-seq filtration and alignment step',
     'ross-hardison:atac-seq-peak-calling-step-v-1': 'ATAC-seq peak calling step',
     'ross-hardison:atac-seq-peak-filtering-step-v-1': 'ATAC-seq peak filtering step',
@@ -563,7 +567,9 @@ title_mapping = {
     'dnanexus:dme-extract-se-v-2': 'WGBS Bismark single-end methylation extraction step',
     'j-michael-cherry:fecdf1f3-6547-41f5-ae38-501437ef8357': 'WGBS Bismark bowtie1 genome indexing step',
     'dnanexus:dme-index-bismark-bowtie2-v-2': 'WGBS Bismark bowtie2 genome indexing step',
-    'dnanexus:bigbed-conversion-v-2.6': 'WGBS methylation state to bigbed file conversion step'
+    'dnanexus:bigbed-conversion-v-2.6': 'WGBS methylation state to bigbed file conversion step',
+    'zhiping-weng:ChromHMM-bed-conversion-step': 'Chromatin state calling bed to bigBed conversion step',
+    'zhiping-weng:ChromHMM-chromatin-state-calling-step': 'Chromatin state calling step by ChromHMM'
 }
 
 status_mapping = {
