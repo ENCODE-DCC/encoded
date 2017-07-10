@@ -1121,6 +1121,22 @@
         ],
         "timezone": "US/Pacific",
         "uuid": "986b362f-4eb6-4a9c-8173-3ab267307e3b"
+    },
+    {
+        "email": "kd@karend.net",
+        "first_name": "Karen",
+        "groups": [
+            "admin"
+        ],
+        "job_title": "Software Engineer",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Dalton",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "7dfbe70c-995d-4bc5-94c3-7d39d2baf001"
     }
 
 ]

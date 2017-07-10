@@ -1,159 +1,159 @@
-'use strict';
-var React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
-var collection = require('./collection');
-var fetched = require('./fetched');
-var globals = require('./globals');
-import { auditDecor } from './audit';
-var form = require('./form');
-var _ = require('underscore');
-
-var JSONSchemaForm = form.JSONSchemaForm;
-var Table = collection.Table;
+import url from 'url';
+import Table from './collection';
+import { FetchedData, Param } from './fetched';
+import * as globals from './globals';
+import { JSONSchemaForm } from './form';
 
 
-var Fallback = module.exports.Fallback = createReactClass({
-    contextTypes: {
-        location_href: PropTypes.string
-    },
-
-    render: function() {
-        var url = require('url');
-        var context = this.props.context;
-        var title = typeof context.title == "string" ? context.title : url.parse(this.context.location_href).path;
-        return (
-            <div className="view-item">
-                <header className="row">
-                    <div className="col-sm-12">
-                        <h2>{title}</h2>
-                    </div>
-                </header>
-                {typeof context.description == "string" ? <p className="description">{context.description}</p> : null}
-                <section className="view-detail panel">
-                    <div className="container">
-                        <pre>{JSON.stringify(context, null, 4)}</pre>
-                    </div>
-                </section>
-            </div>
-        );
-    }
-});
-
-
-var ItemComponent = module.exports.Item = createReactClass({
-    render: function() {
-        var context = this.props.context;
-        var itemClass = globals.itemClass(context, 'view-item');
-        var title = globals.listing_titles.lookup(context)({context: context});
-        var Panel = globals.panel_views.lookup(context);
-
-        // Make string of alternate accessions
-        var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
-
-        return (
-            <div className={itemClass}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <h2>{title}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
-                        <div className="status-line">
-                            {this.props.auditIndicators(context.audit, 'item-audit')}
-                        </div>
-                    </div>
-                </header>
-                {this.props.auditDetail(context.audit, 'item-audit', { except: context['@id'] })}
-                <div className="row item-row">
-                    <div className="col-sm-12">
-                        {context.description ? <p className="description">{context.description}</p> : null}
-                    </div>
-                    <Panel {...this.props} />
+const Fallback = (props, reactContext) => {
+    const context = props.context;
+    const title = typeof context.title === 'string' ? context.title : url.parse(reactContext.location_href).path;
+    return (
+        <div className="view-item">
+            <header className="row">
+                <div className="col-sm-12">
+                    <h2>{title}</h2>
                 </div>
+            </header>
+            {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
+            <section className="view-detail panel">
+                <div className="container">
+                    <pre>{JSON.stringify(context, null, 4)}</pre>
+                </div>
+            </section>
+        </div>
+    );
+};
+
+Fallback.propTypes = {
+    context: PropTypes.object.isRequired, // Object being displayed
+};
+
+Fallback.contextTypes = {
+    location_href: PropTypes.string,
+};
+
+
+const Item = (props) => {
+    const context = props.context;
+    const itemClass = globals.itemClass(context, 'view-item');
+    const title = globals.listingTitles.lookup(context)({ context });
+    const ItemPanel = globals.panelViews.lookup(context);
+
+    // Make string of alternate accessions
+    const altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
+
+    return (
+        <div className={itemClass}>
+            <header className="row">
+                <div className="col-sm-12">
+                    <h2>{title}</h2>
+                    {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                </div>
+            </header>
+            <div className="row item-row">
+                <div className="col-sm-12">
+                    {context.description ? <p className="description">{context.description}</p> : null}
+                </div>
+                <ItemPanel {...props} />
             </div>
-        );
-    }
-});
+        </div>
+    );
+};
 
-const Item = auditDecor(ItemComponent);
+Item.propTypes = {
+    context: PropTypes.object.isRequired, // Object being displayed as a generic item.
+};
 
-globals.content_views.register(Item, 'Item');
+globals.contentViews.register(Item, 'Item');
 
-
-// Also use this view as a fallback for anything we haven't registered
-globals.content_views.fallback = function () {
+// Also use this view as a fallback for anything we haven't registered.
+globals.contentViews.fallback = function fallback() {
     return Fallback;
 };
 
 
-var Panel = module.exports.Panel = createReactClass({
-    render: function() {
-        var context = this.props.context;
-        var itemClass = globals.itemClass(context, 'view-detail panel');
-        return (
-            <section className="col-sm-12">
-                <div className={itemClass}>
-                    <pre>{JSON.stringify(context, null, 4)}</pre>
-                </div>
-            </section>
-        );
-    }
-});
+export const Panel = (props) => {
+    const context = props.context;
+    const itemClass = globals.itemClass(context, 'view-detail panel');
+    return (
+        <section className="col-sm-12">
+            <div className={itemClass}>
+                <pre>{JSON.stringify(context, null, 4)}</pre>
+            </div>
+        </section>
+    );
+};
 
-globals.panel_views.register(Panel, 'Item');
+Panel.propTypes = {
+    context: PropTypes.object.isRequired,
+};
+
+globals.panelViews.register(Panel, 'Item');
 
 
 // Also use this view as a fallback for anything we haven't registered
-globals.panel_views.fallback = function () {
+globals.panelViews.fallback = function fallback() {
     return Panel;
 };
 
 
-var title = module.exports.title = function (props) {
-    var context = props.context;
+const listingTitle = function listingTitle(props) {
+    const context = props.context;
     return context.title || context.name || context.accession || context['@id'];
 };
 
-globals.listing_titles.register(title, 'Item');
-
+globals.listingTitles.register(listingTitle, 'Item');
 
 // Also use this view as a fallback for anything we haven't registered
-globals.listing_titles.fallback = function () {
-    return title;
+globals.listingTitles.fallback = function fallback() {
+    return listingTitle;
 };
 
 
-var ItemEdit = module.exports.ItemEdit = createReactClass({
-    contextTypes: {
-        navigate: PropTypes.func
-    },
+class ItemEdit extends React.Component {
+    constructor() {
+        super();
 
-    render: function() {
-        var context = this.props.context;
-        var itemClass = globals.itemClass(context, 'view-item');
-        var title = globals.listing_titles.lookup(context)({context: context});
-        var action, form, schemaUrl, type;
+        // Bind this to non-React methods.
+        this.finished = this.finished.bind(this);
+    }
+
+    finished(data) {
+        const atId = data['@graph'][0]['@id'];
+        this.context.navigate(atId);
+    }
+
+    render() {
+        const context = this.props.context;
+        const itemClass = globals.itemClass(context, 'view-item');
+        let title = globals.listingTitles.lookup(context)({ context });
+        let action;
+        let fetchedForm;
+        let type;
         if (context['@type'][0].indexOf('Collection') !== -1) {  // add form
             type = context['@type'][0].substr(0, context['@type'][0].length - 10);
-            title = title + ': Add';
+            title = `${title}: Add`;
             action = context['@id'];
-            form = (
-                <fetched.FetchedData>
-                    <fetched.Param name="schemas" url="/profiles/" />
-                    <JSONSchemaForm type={type} action={action} method="POST" onFinish={this.finished}
-                                    showReadOnly={false} />
-                </fetched.FetchedData>
+            fetchedForm = (
+                <FetchedData>
+                    <Param name="schemas" url="/profiles/" />
+                    <JSONSchemaForm type={type} action={action} method="POST" onFinish={this.finished} showReadOnly={false} />
+                </FetchedData>
             );
         } else {  // edit form
             type = context['@type'][0];
-            title = 'Edit ' + title;
-            var id = this.props.context['@id'];
-            var url = id + '?frame=edit';
-            form = (
-                <fetched.FetchedData>
-                    <fetched.Param name="context" url={url} etagName="etag" />
-                    <fetched.Param name="schemas" url="/profiles/" />
+            title = `Edit ${title}`;
+            const id = this.props.context['@id'];
+            const editUrl = `${id}?frame=edit`;
+            fetchedForm = (
+                <FetchedData>
+                    <Param name="context" url={editUrl} etagName="etag" />
+                    <Param name="schemas" url="/profiles/" />
                     <JSONSchemaForm id={id} type={type} action={id} method="PUT" onFinish={this.finished} />
-                </fetched.FetchedData>
+                </FetchedData>
             );
         }
         return (
@@ -163,53 +163,68 @@ var ItemEdit = module.exports.ItemEdit = createReactClass({
                         <h2>{title}</h2>
                     </div>
                 </header>
-                {form}
+                {fetchedForm}
             </div>
         );
-    },
-    finished: function(data) {
-      var url = data['@graph'][0]['@id'];
-      this.context.navigate(url);
     }
-});
+}
 
-globals.content_views.register(ItemEdit, 'Item', 'edit');
-globals.content_views.register(ItemEdit, 'Collection', 'add');
+ItemEdit.propTypes = {
+    context: PropTypes.object.isRequired,
+};
 
+ItemEdit.contextTypes = {
+    navigate: PropTypes.func,
+};
 
-var FetchedRelatedItems = createReactClass({
-    getDefaultProps: function() {
-        return {Component: Table};
-    },
-
-    render: function() {
-        var {Component, context, title, url, ...props} = this.props;
-        if (context === undefined) return null;
-        var items = context['@graph'];
-        if (!items || !items.length) return null;
-
-        return (
-            <Component {...props} title={title} context={context} total={context.total} items={items} url={url} showControls={false} />
-        );
-    },
-
-});
+globals.contentViews.register(ItemEdit, 'Item', 'edit');
+globals.contentViews.register(ItemEdit, 'Collection', 'add');
 
 
-var RelatedItems = module.exports.RelatedItems = createReactClass({
-    getDefaultProps: function() {
-        return {limit: 5};
-    },
+const FetchedRelatedItems = (props) => {
+    const { Component, context, title, itemUrl } = props;
+    if (context === undefined) return null;
+    const items = context['@graph'];
+    if (!items || !items.length) return null;
 
-    render: function() {
-        var url = globals.encodedURI(this.props.url + '&status!=deleted&status!=revoked&status!=replaced');
-        var limited_url = url + '&limit=' + this.props.limit;
-        var unlimited_url = url + '&limit=all';
-        return (
-            <fetched.FetchedData ignoreErrors={this.props.ignoreErrors}>
-                <fetched.Param name="context" url={limited_url} />
-                <FetchedRelatedItems {...this.props} url={unlimited_url} />
-            </fetched.FetchedData>
-        );
-    },
-});
+    return (
+        <Component {...props} title={title} context={context} total={context.total} items={items} url={itemUrl} showControls={false} />
+    );
+};
+
+FetchedRelatedItems.propTypes = {
+    Component: PropTypes.any,
+    context: PropTypes.object,
+    title: PropTypes.string,
+    itemUrl: PropTypes.string,
+};
+
+FetchedRelatedItems.defaultProps = {
+    Component: Table,
+    context: null,
+    title: '',
+    itemUrl: '',
+};
+
+
+export const RelatedItems = (props) => {
+    const itemUrl = globals.encodedURI(`${props.url}&status=released&status=started&status=proposed&status=submitted&status=ready+for+review&status=in+progress`);
+    const limitedUrl = `${itemUrl}&limit=${props.limit}`;
+    const unlimitedUrl = `${itemUrl}&limit=all`;
+    return (
+        <FetchedData>
+            <Param name="context" url={limitedUrl} />
+            <FetchedRelatedItems {...props} itemUrl={unlimitedUrl} />
+        </FetchedData>
+    );
+};
+
+RelatedItems.propTypes = {
+    url: PropTypes.string,
+    limit: PropTypes.number,
+};
+
+RelatedItems.defaultProps = {
+    url: '',
+    limit: 5,
+};

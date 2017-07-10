@@ -95,7 +95,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "8"
+            "default": "9"
         },
         "reviewed_by": {
             "title": "Reviewed by",
@@ -116,8 +116,8 @@
                 "9851ccbc-2df9-4529-a4f3-90edee981fc0",
                 "85978cd9-131e-48e2-a389-f752ab05b0a6",
                 "2eb068c5-b7a6-48ec-aca2-c439e4dabb08",
-                "332d0e03-a907-4f53-8358-bb00118277c8"
-
+                "332d0e03-a907-4f53-8358-bb00118277c8",
+                "ca6e2de3-a6bd-4fce-8b6d-52ef41e7c0c5"
             ]
         },
         "characterizes": {
@@ -253,5 +253,7 @@
         "lab.title": {
             "title": "Lab"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/antibody_characterization.md"
+
 }

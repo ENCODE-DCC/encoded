@@ -1,14 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import shortid from 'shortid';
 import _ from 'underscore';
 import Pager from '../libs/bootstrap/pager';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel } from './doc';
-import globals from './globals';
+import * as globals from './globals';
 import { requestFiles, requestObjects, requestSearch, RestrictedDownloadButton } from './objectutils';
 import { ProjectBadge } from './image';
 import { QualityMetricsPanel } from './quality_metric';
@@ -316,7 +315,7 @@ class FileComponent extends React.Component {
         const derivedFromFileIds = file.derived_from && file.derived_from.length ? file.derived_from : [];
         if (derivedFromFileIds.length) {
             requestFiles(derivedFromFileIds).then((derivedFromFiles) => {
-                this.setState({ derivedFromFiles: derivedFromFiles });
+                this.setState({ derivedFromFiles });
             });
         }
 
@@ -571,7 +570,7 @@ FileComponent.contextTypes = {
 
 const File = auditDecor(FileComponent);
 
-globals.content_views.register(File, 'File');
+globals.contentViews.register(File, 'File');
 
 
 // Display the sequence file summary panel for fastq files.
@@ -580,13 +579,6 @@ class SequenceFileInfo extends React.Component {
         const { file } = this.props;
         const pairedWithAccession = file.paired_with ? globals.atIdToAccession(file.paired_with) : '';
         const platformAccession = file.platform ? decodeURIComponent(globals.atIdToAccession(file.platform)) : '';
-
-        // Generate keys for the flowcell details.
-        if (file.flowcell_details && file.flowcell_details.map) {
-            file.flowcell_details.forEach((detail) => {
-                detail.id = shortid.generate();
-            });
-        }
 
         return (
             <Panel>
@@ -607,14 +599,14 @@ class SequenceFileInfo extends React.Component {
                             <div data-test="flowcelldetails">
                                 <dt>Flowcell</dt>
                                 <dd>
-                                    {file.flowcell_details.map((detail) => {
+                                    {file.flowcell_details.map((detail, i) => {
                                         const items = [
                                             detail.machine ? detail.machine : '',
                                             detail.flowcell ? detail.flowcell : '',
                                             detail.lane ? detail.lane : '',
                                             detail.barcode ? detail.barcode : '',
                                         ];
-                                        return <span className="line-item" key={detail.id}>{items.join(':')}</span>;
+                                        return <span className="line-item" key={i}>{items.join(':')}</span>;
                                     })}
                                 </dd>
                             </div>
@@ -703,4 +695,4 @@ Listing.propTypes = {
     context: PropTypes.object, // File object being rendered
 };
 
-globals.listing_views.register(Listing, 'File');
+globals.listingViews.register(Listing, 'File');

@@ -1,35 +1,10 @@
 [
     {
-        "_test": "pooled biosample",
-        "accession": "ENCBS356AAA",
-        "award": "ENCODE2",
-        "biosample_term_id": "UBERON:0000006",
-        "biosample_term_name": "islet of Langerhans",
-        "biosample_type": "tissue",
-        "description": "dedifferentiated human pancreatic islets from the National Disease Research Interchange (NDRI), same source as PanIslets",
-        "dbxrefs": [
-            "UCSC-ENCODE-cv:PanIsletD"
-        ],
-        "lab": "gregory-crawford",
-        "organism": "human",
-        "phase": "S",
-        "pooled_from": [
-            "ENCBS492ENC",
-            "ENCBS493ENC"
-        ],
-        "documents": [
-            "ENCODE:PanIsletD_Crawford_protocol"
-        ],
-        "source": "ndri",
-        "submitted_by": "metus.donec@nisl.montes",
-        "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
-        "uuid": "467c7505-5039-4935-8da1-6ad22d813310"
-    },
-    {
         "_test": "has references",
         "accession": "ENCBS000AAA",
         "aliases": [
-            "richard-myers:MCF-7 rep 3"
+            "richard-myers:MCF-7 rep 3",
+            "andrew-fire:biosample 1"
         ],
         "award": "ENCODE2",
         "biosample_term_id": "EFO:0001203",
@@ -53,12 +28,38 @@
         "passage_number": 5,
         "product_id": "HTB-22",
         "documents": [
-            "ENCODE:MCF-7_Farnham_growth_protocol"
+            "encode:MCF-7_Farnham_growth_protocol"
         ],
         "source": "atcc",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
         "uuid": "56e94f2b-25ac-4c58-9828-f63b66220999"
+    },
+    {
+        "_test": "pooled biosample",
+        "accession": "ENCBS356AAA",
+        "award": "ENCODE2",
+        "biosample_term_id": "UBERON:0000006",
+        "biosample_term_name": "islet of Langerhans",
+        "biosample_type": "tissue",
+        "description": "dedifferentiated human pancreatic islets from the National Disease Research Interchange (NDRI), same source as PanIslets",
+        "dbxrefs": [
+            "UCSC-ENCODE-cv:PanIsletD"
+        ],
+        "lab": "gregory-crawford",
+        "organism": "human",
+        
+        "pooled_from": [
+            "ENCBS492ENC",
+            "ENCBS493ENC"
+        ],
+        "documents": [
+            "encode:PanIsletD_Crawford_protocol"
+        ],
+        "source": "ndri",
+        "submitted_by": "metus.donec@nisl.montes",
+        "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
+        "uuid": "467c7505-5039-4935-8da1-6ad22d813310"
     },
     {
         "accession": "ENCBS001AAA",
@@ -82,7 +83,7 @@
         "passage_number": 5,
         "product_id": "HTB-22",
         "documents": [
-            "ENCODE:MCF-7_Farnham_growth_protocol"
+            "encode:MCF-7_Farnham_growth_protocol"
         ],
         "source": "atcc",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
@@ -135,7 +136,7 @@
         "model_organism_sex": "male",
         "organism": "mouse",
         "documents": [
-            "ENCODE:EPC_Stam_protocol"
+            "encode:EPC_Stam_protocol"
         ],
         "source": "michael-bender",
         "submitted_by": "blandit.orci@conubia.magna",
@@ -156,7 +157,7 @@
         "organism": "human",
         "product_id": "CCL-243",
         "documents": [
-            "ENCODE:K562_protocol"
+            "encode:K562_protocol"
         ],
         "source": "atcc",
         "submitted_by": "elementum.mus@dictumst.nostra",
@@ -240,7 +241,7 @@
             "893d806f-3a88-43eb-afdf-dcc16c79ee45"
         ],
         "culture_harvest_date": "2012-12-19",
-        "derived_from": "ENCBS039ENC",
+        "originated_from": "ENCBS039ENC",
         "description": "leukemia, The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. - ATCC.",
         "donor": "ENCDO000HUM",
         "dbxrefs": [
@@ -250,14 +251,11 @@
         "organism": "human",
         "source": "kevin-white",
         "submitted_by": "eni.lectus@nullam.sed",
-        "talens": [
-            "TL-1008",
-            "TL-1009"
-        ],
         "rnais": [
             "d2dc22ba-5e7c-4626-87ac-257c6fff090c"
         ],
         "transfection_type": "stable",
+        "transfection_method": "chemical",
         "uuid": "bfb3dbb0-57e0-4190-90a6-b9150204f893"
     },
     {
@@ -332,7 +330,7 @@
         "organism": "human",
         "product_id": "86012803",
         "documents": [
-            "ENCODE:MCF-7_Crawford_growth_protocol"
+            "encode:MCF-7_Crawford_growth_protocol"
         ],
         "rnais": [
             "d2dc22ba-5e7c-4626-87ac-257c6fff090c"
@@ -340,6 +338,7 @@
         "source": "ecacc",
         "submitted_by": "metus.donec@nisl.montes",
         "transfection_type": "stable",
+        "transfection_method": "chemical",
         "url": "http://www.hpacultures.org.uk/products/celllines/generalcell/detail.jsp?refId=86012803&collection=ecacc_gc",
         "uuid": "ddefc862-0107-4478-9398-acbe76b90f36"
     },
@@ -361,10 +360,11 @@
         "organism": "human",
         "product_id": "HTB-22",
         "documents": [
-            "ENCODE:MCF-7_Farnham_growth_protocol"
+            "encode:MCF-7_Farnham_growth_protocol"
         ],
         "source": "atcc",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
+        "transfection_method": "chemical",
         "transfection_type": "stable",
         "treatments": [
             "2e33a097-412c-4646-87f9-858dfaaa7c06"
@@ -388,7 +388,7 @@
         "model_organism_sex": "unknown",
         "organism": "mouse",
         "documents": [
-            "ENCODE:C2C12_Wold_growth_protocol"
+            "encode:C2C12_Wold_growth_protocol"
         ],
         "source": "barbara-wold",
         "submitted_by": "vitae.quis@mauris.aptent",
@@ -401,7 +401,7 @@
         "biosample_term_id": "NTR:0000022",
         "biosample_term_name": "myocyte",
         "biosample_type": "in vitro differentiated cells",
-        "derived_from": "ENCBS124ENC",
+        "originated_from": "ENCBS124ENC",
         "description": "Myoblast cell line derived from thigh muscle of C3H mice after crush injury; differentiated from C2C12 cells for 7 days",
         "donor": "ENCDO000MUS",
         "lab": "barbara-wold",
@@ -410,7 +410,7 @@
         "model_organism_sex": "unknown",
         "organism": "mouse",
         "documents": [
-            "ENCODE:C2C12_Wold_differentiation_protocol"
+            "encode:C2C12_Wold_differentiation_protocol"
         ],
         "source": "barbara-wold",
         "submitted_by": "vitae.quis@mauris.aptent",
@@ -429,7 +429,7 @@
         "mouse_life_stage": "embryonic",
         "organism": "mouse",
         "documents": [
-            "ENCODE:ZhBTc4_Stam_protocol"
+            "encode:ZhBTc4_Stam_protocol"
         ],
         "source": "dana-levasseur",
         "submitted_by": "blandit.orci@conubia.magna",
@@ -455,7 +455,7 @@
         "phase": "S4",
         "product_id": "GM06990",
         "documents": [
-            "ENCODE:Stam_15_protocols"
+            "encode:Stam_15_protocols"
         ],
         "source": "coriell",
         "submitted_by": "blandit.orci@conubia.magna",
@@ -477,7 +477,7 @@
         "organism": "human",
         "product_id": "CC-2547",
         "documents": [
-            "ENCODE:SAEC_Stam_protocol"
+            "encode:SAEC_Stam_protocol"
         ],
         "source": "lonza",
         "submitted_by": "facilisis.venenatis@mauris.mauris",
@@ -556,8 +556,8 @@
         "passage_number": 2,
         "product_id": "C-14053",
         "documents": [
-            "ENCODE:HAoSMC_PC_8121902.2P_certificate_of_analysis",
-            "ENCODE:HAoSMC_PC_8121902.2P_general_protocol"
+            "encode:HAoSMC_PC_8121902.2P_certificate_of_analysis",
+            "encode:HAoSMC_PC_8121902.2P_general_protocol"
         ],
         "source": "promocell",
         "starting_amount": 600000.0,
@@ -586,8 +586,8 @@
         "lab": "thomas-gingeras",
         "organism": "human",
         "documents": [
-            "ENCODE:Heart_STL003_excision_protocol",
-            "ENCODE:Heart_STL003_general_protocol"
+            "encode:Heart_STL003_excision_protocol",
+            "encode:Heart_STL003_general_protocol"
         ],
         "source": "michael-snyder",
         "submitted_by": "dignissim.euismod@amet.habitant",
@@ -687,7 +687,7 @@
         "_test": "embryonic stem cell",
         "accession": "ENCBS987RNP",
         "aliases": [
-            "ENCODE:H9-cells"
+            "encode:H9-cells"
         ],
         "award": "ENCODE2",
         "biosample_term_id": "NTR:0000838",
@@ -774,7 +774,7 @@
         "worm_synchronization_stage": "egg bleaching",
         "post_synchronization_time": "80",
         "post_synchronization_time_units": "minute",
-        "aliases": ["robert-waterston:biosample:RB884_80_1"],
+        "aliases": ["robert-waterston:biosample_RB884_80_1"],
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "uuid": "96233c08-6eb1-4cd6-a0f3-2dc43dd2d1b1",
         "status": "released"
@@ -794,7 +794,7 @@
         "worm_synchronization_stage": "egg bleaching",
         "post_synchronization_time": "480",
         "post_synchronization_time_units": "minute",
-        "aliases": ["robert-waterston:biosample:RB884_680_1"],
+        "aliases": ["robert-waterston:biosample_RB884_680_1"],
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "uuid": "ac5a990a-aaf7-4270-8080-cc15bf1676da",
         "status": "released"
@@ -814,7 +814,7 @@
         "worm_synchronization_stage": "egg bleaching",
         "post_synchronization_time": "880",
         "post_synchronization_time_units": "minute",
-        "aliases": ["robert-waterston:biosample:RB884_880_1"],
+        "aliases": ["robert-waterston:biosample_RB884_880_1"],
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "uuid": "3510713d-3a33-4db9-8582-9173b8dcdb06",
         "status": "revoked"
@@ -1003,7 +1003,7 @@
         "donor": "/mouse-donors/ENCDO242AAA/",
         "lab": "/labs/michael-snyder",
         "documents": [
-            "ENCODE:EPC_Stam_protocol"
+            "encode:EPC_Stam_protocol"
         ],
         "organism": "/organisms/mouse/",
         "source": "/sources/atcc",

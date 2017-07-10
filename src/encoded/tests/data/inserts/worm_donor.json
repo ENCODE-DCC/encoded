@@ -1,5 +1,21 @@
 [
     {
+        "accession": "ENCDO976AYR",
+        "award": "U41HG006992",
+        "lab": "j-michael-cherry",
+        "organism": "celegans",
+        "aliases": ["cgc:OP493"],
+        "outcrossed_strain": "ENCDO244AAA",
+        "genotype": "unc-119(tm4063) III; wgIs493.",
+        "mutagen": "bombardment",
+        "mutated_gene": "mes-4-celegans",
+        "url": "http://www.cgc.cbs.umn.edu/search.php?st=OP493",
+        "documents": [
+            "encode:sample_strain_generation_protocol"
+        ],
+        "uuid": "7a1b8636-54fe-48c6-873a-257e3782d5fa"
+    },
+    {
         "accession": "ENCDO244AAA",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
@@ -15,25 +31,9 @@
         "num_times_outcrossed": "x10",
         "constructs": ["893d806f-3a88-43eb-afdf-dcc16c79ee45"],
         "uuid": "a09ce89d-e73a-4bbb-a3c9-9b46cc3a8e5f"
-    },
+    },    
     {
-        "accession": "ENCDO976AYR",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "organism": "celegans",
-        "aliases": ["CGC:OP493"],
-        "outcrossed_strain": "ENCDO244AAA",
-        "genotype": "unc-119(tm4063) III; wgIs493.",
-        "mutagen": "bombardment",
-        "mutated_gene": "mes-4-celegans",
-        "url": "http://www.cgc.cbs.umn.edu/search.php?st=OP493",
-        "documents": [
-            "ENCODE:sample_strain_generation_protocol"
-        ],
-        "uuid": "7a1b8636-54fe-48c6-873a-257e3782d5fa"
-    },
-    {
-        "aliases": ["CGC:RB884"],
+        "aliases": ["cgc:RB884"],
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "organism": "/organisms/celegans/",
         "accession": "ENCDO604LIQ",

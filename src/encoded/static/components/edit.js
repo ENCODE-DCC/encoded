@@ -1,141 +1,90 @@
-'use strict';
-var React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
-var globals = require('./globals');
-var fetched = require('./fetched');
-var _ = require('underscore');
-var ga = require('google-analytics');
+import { FetchedData, Param } from './fetched';
+import * as globals from './globals';
 
 
-var sorted_json = module.exports.sorted_json = function (obj) {
+function sortedJson(obj) {
     if (obj instanceof Array) {
-        return obj.map(function (value) {
-            return sorted_json(value);
-        });
+        return obj.map(value => sortedJson(value));
     } else if (obj instanceof Object) {
-        var sorted = {};
-        Object.keys(obj).sort().forEach(function (key) {
+        const sorted = {};
+        Object.keys(obj).sort().forEach((key) => {
             sorted[key] = obj[key];
         });
         return sorted;
-    } else {
-        return obj;
     }
-};
+    return obj;
+}
 
 
-var ItemEdit = module.exports.ItemEdit = createReactClass({
-    render: function() {
-        var context = this.props.context;
-        var itemClass = globals.itemClass(context, 'view-item');
-        var title = globals.listing_titles.lookup(context)({context: context});
-        var url = this.props.context['@id'] + '?frame=edit';
-        return (
-            <div className={itemClass}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <h2>Edit {title}</h2>
-                    </div>
-                </header>
-                <fetched.FetchedData>
-                    <fetched.Param name="data" url={url} etagName="etag" />
-                    <EditForm {...this.props} />
-                </fetched.FetchedData>
-            </div>
-        );
+class EditForm extends React.Component {
+    constructor() {
+        super();
+
+        // Intialize component state.
+        this.state = {
+            communicating: false,
+            data: undefined,
+            putRequest: undefined,
+            erred: false,
+        };
+
+        // Bind `this` to non-React methods.
+        this.setupEditor = this.setupEditor.bind(this);
+        this.hasErrors = this.hasErrors.bind(this);
+        this.save = this.save.bind(this);
+        this.receive = this.receive.bind(this);
     }
-});
 
-var EditForm = module.exports.EditForm = createReactClass({
-    contextTypes: {
-        fetch: PropTypes.func,
-        navigate: PropTypes.func
-    },
-
-    render: function () {
-        var error = this.state.error;
-        return (
-            <div>
-                <div ref="editor" style={{
-                    position: "relative !important",
-                    border: "1px solid lightgray",
-                    margin: "auto",
-                    width: "100%"
-                }}></div>
-                <div style={{"float": "right", "margin": "10px"}}>
-                    <a href="" className="btn btn-default">Cancel</a>
-                    {' '}
-                    <button onClick={this.save} className="btn btn-success" disabled={this.communicating || this.state.editor_error}>Save</button>
-                </div>
-                <ul style={{clear: 'both'}}>
-                    {error && error.code === 422 ? error.errors.map(error => {
-                        return <li className="alert alert-error"><b>{'/' + (error.name || []).join('/') + ': '}</b><span>{error.description}</span></li>;
-                    }) : error ? <li className="alert alert-error">{JSON.stringify(error)}</li> : null}
-                </ul>
-            </div>
-        );
-    },
-
-    componentDidMount: function () {
+    componentDidMount() {
         this.setupEditor();
-    },
+    }
 
-    setupEditor: function () {
+    setupEditor() {
         require.ensure([
             'brace',
             'brace/mode/json',
-            'brace/theme/solarized_light'
+            'brace/theme/solarized_light',
         ], (require) => {
-            var ace = require('brace');
+            const ace = require('brace');
             require('brace/mode/json');
             require('brace/theme/solarized_light');
-            var value = JSON.stringify(sorted_json(this.props.data), null, 4);
-            var editor = ace.edit(this.refs.editor);
-            var session = editor.getSession();
+            const value = JSON.stringify(sortedJson(this.props.data), null, 4);
+            const editor = ace.edit(this.editor);
+            const session = editor.getSession();
             session.setMode('ace/mode/json');
             editor.setValue(value);
             editor.setOptions({
                 maxLines: 1000,
-                minLines: 24
+                minLines: 24,
             });
             editor.clearSelection();
-            this.setState({editor: editor});
-            session.on("changeAnnotation", this.hasErrors);
+            this.setState({ editor });
+            session.on('changeAnnotation', this.hasErrors);
         }, 'brace');
-    },
+    }
 
-    hasErrors: function () {
-        var annotations = this.state.editor.getSession().getAnnotations();
-        var has_error = annotations.reduce(function (value, anno) {
-            return value || (anno.type === "error");
-        }, false);
-        this.setState({editor_error: has_error});
-    },
+    hasErrors() {
+        const annotations = this.state.editor.getSession().getAnnotations();
+        const hasError = annotations.reduce((value, anno) => value || (anno.type === 'error'), false);
+        this.setState({ editor_error: hasError });
+    }
 
-    getInitialState: function () {
-        return {
-            communicating: false,
-            data: undefined,
-            putRequest: undefined,
-            erred: false
-        };
-    },
-
-    save: function (e) {
+    save(e) {
         e.preventDefault();
-        var value = this.state.editor.getValue();
-        var url = this.props.context['@id'];
-        var request = this.context.fetch(url, {
+        const value = this.state.editor.getValue();
+        const url = this.props.context['@id'];
+        const request = this.context.fetch(url, {
             method: 'PUT',
             headers: {
                 'If-Match': this.props.etag,
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
             },
-            body: value
+            body: value,
         });
-        request.then(response => {
+        request.then((response) => {
             if (!response.ok) throw response;
             return response.json();
         })
@@ -143,20 +92,88 @@ var EditForm = module.exports.EditForm = createReactClass({
         .then(this.receive);
         this.setState({
             communicating: true,
-            putRequest: request
+            putRequest: request,
         });
-    },
+    }
 
-    receive: function (data) {
-        var erred = (data['@type'] || []).indexOf('Error') > -1;
+    receive(data) {
+        const erred = (data['@type'] || []).indexOf('Error') > -1;
         this.setState({
-            data: data,
+            data,
             communicating: false,
-            erred: erred,
-            error: erred ? data : undefined
+            erred,
+            error: erred ? data : undefined,
         });
         if (!erred) this.context.navigate('');
     }
-});
 
-globals.content_views.register(ItemEdit, 'Item', 'edit-json');
+    render() {
+        const error = this.state.error;
+        return (
+            <div>
+                <div
+                    ref={(div) => { this.editor = div; }}
+                    style={{
+                        position: 'relative !important',
+                        border: '1px solid lightgray',
+                        margin: 'auto',
+                        width: '100%',
+                    }}
+                />
+                <div style={{ float: 'right', margin: '10px' }}>
+                    <a href="" className="btn btn-default">Cancel</a>
+                    {' '}
+                    <button onClick={this.save} className="btn btn-success" disabled={this.communicating || this.state.editor_error}>Save</button>
+                </div>
+                <ul style={{ clear: 'both' }}>
+                    {error && error.code === 422 ? error.errors.map(err => (
+                        <li className="alert alert-error"><b>{`/${(err.name || []).join('/')}: `}</b><span>{err.description}</span></li>
+                    )) : error ? <li className="alert alert-error">{JSON.stringify(error)}</li> : null}
+                </ul>
+            </div>
+        );
+    }
+}
+
+EditForm.propTypes = {
+    context: PropTypes.object.isRequired,
+    data: PropTypes.object,
+    etag: PropTypes.string,
+};
+
+EditForm.defaultProps = {
+    data: {},
+    etag: '',
+};
+
+EditForm.contextTypes = {
+    fetch: PropTypes.func,
+    navigate: PropTypes.func,
+};
+
+
+const ItemEdit = (props) => {
+    const context = props.context;
+    const itemClass = globals.itemClass(context, 'view-item');
+    const title = globals.listingTitles.lookup(context)({ context });
+    const url = `${context['@id']}?frame=edit`;
+    return (
+        <div className={itemClass}>
+            <header className="row">
+                <div className="col-sm-12">
+                    <h2>Edit {title}</h2>
+                </div>
+            </header>
+            <FetchedData>
+                <Param name="data" url={url} etagName="etag" />
+                <EditForm {...props} />
+            </FetchedData>
+        </div>
+    );
+};
+
+ItemEdit.propTypes = {
+    context: PropTypes.object.isRequired,
+};
+
+globals.contentViews.register(ItemEdit, 'Item', 'edit-json');

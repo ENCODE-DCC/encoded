@@ -1,5 +1,19 @@
 ## Changelog for replicate.json
 
+### Schema version 8
+
+* *status* property was restricted to one of  
+    "enum" : [
+        "in progress",
+        "deleted",
+        "released"
+    ]
+
+### Schema version 7
+
+* *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
+* unsafe characters such as " # @ % ^ & | ~ ; ` [ ] { } and consecutive whitespaces will no longer be allowed in the alias
+
 ### Schema version 6
 
 * array property *aliases* is now only allowed to contain unique elements

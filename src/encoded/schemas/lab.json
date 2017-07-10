@@ -13,7 +13,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "5"
         },
         "name": {
             "title": "Name",
@@ -133,5 +133,7 @@
         "awards.title":1.0,
         "institute_name": 1.0,
         "institute_label": 1.0
-    }
+    },
+    "changelog": "/profiles/changelogs/lab.md"
+
 }

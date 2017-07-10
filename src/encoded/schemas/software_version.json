@@ -17,7 +17,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "4"
         },
         "software": {
             "title": "Software",

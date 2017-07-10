@@ -1,5 +1,10 @@
 ## Changelog for rnai.json
 
-### Schema version 3
+### Schema version 5
 
-* array properties *aliases* and documents will only allow for unique elements.
+* *status* property was restricted to one of  
+    "enum" : [
+        "in progress",
+        "deleted",
+        "released"
+    ]

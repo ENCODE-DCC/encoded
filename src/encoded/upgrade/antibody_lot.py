@@ -95,3 +95,15 @@ def antibody_lot_5_6(value, system):
             value['antigen_description'] = value['antigen_description'].strip()
         else:
             del value['antigen_description']
+
+
+@upgrade_step('antibody_lot', '7', '8')
+def antibody_lot_7_8(value, system):
+    # http://redmine.encodedcc.org/issues/5049
+    return
+
+
+@upgrade_step('antibody_lot', '8', '9')
+def antibody_lot_8_9(value, system):
+    # http://redmine.encodedcc.org/issues/5041
+    return

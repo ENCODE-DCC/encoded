@@ -53,12 +53,15 @@ def audit_file_processed_derived_from(value, system):
     derived_from_files = value.get('derived_from')
     fastq_bam_counter = 0
     for f in derived_from_files:
-        if f['status'] not in ['deleted', 'replaced', 'revoked'] and \
-           (f['file_format'] == 'bam' or
+        if (f['file_format'] == 'bam' or
             f['file_format'] == 'fastq' or (f['file_format'] == 'fasta' and
                                             f['output_type'] == 'reads' and
                                             f['output_category'] == 'raw data')):
-            fastq_bam_counter += 1
+
+            if f['status'] not in ['deleted', 'replaced', 'revoked'] or \
+               f['status'] == value['status']:
+                fastq_bam_counter += 1
+
             if f['dataset'] != value['dataset']:
                 detail = 'derived_from is a list of files that were used to create a given file; ' + \
                          'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
@@ -78,18 +81,8 @@ def audit_file_processed_derived_from(value, system):
                            detail, level='INTERNAL_ACTION')
 
 
-@audit_checker('File', frame=['derived_from'])
-def audit_file_derived_from_revoked(value, system):
-    if 'derived_from' in value and len(value['derived_from']) > 0:
-        for f in value['derived_from']:
-            if f['status'] == 'revoked':
-                detail = 'The file {} '.format(value['@id']) + \
-                         'with a status {} '.format(value['status']) + \
-                         'was derived from file {} '.format(f['@id']) + \
-                         'that has a status \'revoked\'.'
-                yield AuditFailure('mismatched file status',
-                                   detail, level='INTERNAL_ACTION')
-                return
+# def audit_file_derived_from_revoked(value, system): removed at release 56
+# http://redmine.encodedcc.org/issues/5018
 
 
 @audit_checker('File', frame=['derived_from'])
@@ -227,42 +220,6 @@ def audit_file_controlled_by(value, system):
                  'is missing the requisite file specification in controlled_by list.'
         yield AuditFailure('missing controlled_by', detail, level='NOT_COMPLIANT')
         return
-
-    if value['dataset'].get('assay_term_name') in ['ChIP-seq',
-                                                   'RAMPAGE']:
-        bio_rep_numbers = set()
-        pe_files = []
-        if len(value['controlled_by']) > 0:
-            for control_file in value['controlled_by']:
-                if 'replicate' in control_file:
-                    bio_rep_numbers.add(control_file['replicate']['biological_replicate_number'])
-                if 'run_type' in control_file:
-                    if control_file['run_type'] == 'paired-ended':
-                        pe_files.append(control_file)
-        for pe_file in pe_files:
-            if 'paired_with' not in pe_file:
-                detail = 'Fastq file {} '.format(value['@id']) + \
-                         'from experiment {} '.format(value['dataset']['@id']) + \
-                         'contains in controlled_by list PE fastq file ' + \
-                         '{} with missing paired_with property.'.format(pe_file['@id'])
-                yield AuditFailure('missing paired_with in controlled_by',
-                                   detail, level='INTERNAL_ACTION')
-            elif check_presence(pe_file['paired_with'], pe_files) is False:
-                detail = 'Fastq file {} '.format(value['@id']) + \
-                         'from experiment {} '.format(value['dataset']['@id']) + \
-                         'contains in controlled_by list PE fastq file ' + \
-                         '{} which is paired to a file {} '.format(pe_file['@id'],
-                                                                   pe_file['paired_with']['@id']) + \
-                         'that is not included in the controlled_by list'
-                yield AuditFailure('missing paired_with in controlled_by', detail,
-                                   level='INTERNAL_ACTION')
-
-        if len(bio_rep_numbers) > 1:
-            detail = 'Fastq file {} '.format(value['@id']) + \
-                     'from experiment {} '.format(value['dataset']['@id']) + \
-                     'contains in controlled_by list fastq files ' + \
-                     'from diferent biological replicates {}.'.format(list(bio_rep_numbers))
-            yield AuditFailure('inconsistent controlled_by replicates', detail, level='ERROR')
 
     possible_controls = value['dataset'].get('possible_controls')
     biosample = value['dataset'].get('biosample_term_id')

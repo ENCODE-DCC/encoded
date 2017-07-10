@@ -1,5 +1,23 @@
 ## Changelog for analysis_step.json
 
+### Schema version 6
+
+* *status* property was restricted to one of  
+    "enum" : [
+        "in progress",
+        "deleted",
+        "released"
+    ]
+* *name* has been renamed to *step_label*. The *name* property will now be a calculated name with the major_version number.
+* *major_version* number property has been added and made required so all steps must be versioned, starting from 1.
+* all new analysis steps should be accompanied by a new step version object as well.
+
+
+### Schema version 5
+
+* *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
+* unsafe characters such as " # @ % ^ & | ~ ; ` [ ] { } and consecutive whitespaces will no longer be allowed in the alias
+
 ### Schema version 4
 
 * *analysis_step_types*, *input_file_types*, *output_file_types*, *qa_stats_generated*, *parents*, *aliases*, *documents* arrays must contain unique elements.

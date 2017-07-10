@@ -19,7 +19,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "7"
         },
         "alignedBy": {
             "title": "Aligner used",
@@ -101,5 +101,6 @@
             "type": "number",
             "description": "Count of reads uniquely mapped"
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/edwbamstats_quality_metric.md"
 }
