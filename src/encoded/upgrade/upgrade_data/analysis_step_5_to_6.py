@@ -569,7 +569,7 @@ title_mapping = {
     'dnanexus:dme-index-bismark-bowtie2-v-2': 'WGBS Bismark bowtie2 genome indexing step',
     'dnanexus:bigbed-conversion-v-2.6': 'WGBS methylation state to bigbed file conversion step',
     'zhiping-weng:ChromHMM-bed-conversion-step': 'Chromatin state calling bed to bigBed conversion step',
-    'zhiping-weng:ChromHMM-chromatin-state-calling-step': 'Chromatin state calling step by ChromHMM'
+    'zhiping-weng:ChromHMM-chromatin-state-calling-step': 'Chromatin state calling by ChromHMM step'
 }
 
 status_mapping = {
