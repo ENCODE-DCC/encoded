@@ -1021,12 +1021,12 @@ const ExperimentDate = (props) => {
     const shortenedreleasedArray = [];
     const shortenedsubmittedArray = [];
     for (let j = 0; j < arrayreleasedLength - 2; j += 1) {
-        if (moment(fillreleasedDates[j].key).isAfter(assayreleasedStart, 'date')) {
+        if (moment(fillreleasedDates[j].key).isSameOrAfter(assayreleasedStart, 'date')) {
             shortenedreleasedArray.push(fillreleasedDates[j]);
         }
     }
     for (let j = 0; j < arraysubmittedLength - 2; j += 1) {
-        if (moment(fillsubmittedDates[j].key).isAfter(assayreleasedStart, 'date')) {
+        if (moment(fillsubmittedDates[j].key).isSameOrAfter(assayreleasedStart, 'date')) {
             shortenedsubmittedArray.push(fillsubmittedDates[j]);
         }
     }
@@ -1091,7 +1091,18 @@ const ExperimentDate = (props) => {
 
     return (
         <div>
-            <CumulativeGraph releaseddatavalue={accumulatedDataReleased} submitteddatavalue={accumulatedDataSubmitted} monthReleased={date} />
+            {experiments && experiments.facets && experiments.facets.length ?
+                <Panel>
+                <PanelHeading>
+                    <h4>Cumulative Number of Experiments</h4>
+                </PanelHeading>
+                <PanelBody>
+                    <CumulativeGraph releaseddatavalue={accumulatedDataReleased} submitteddatavalue={accumulatedDataSubmitted} monthReleased={date} />
+                </PanelBody>
+                </Panel>
+            :
+                null
+            }
         </div>
     );
 };
@@ -1204,10 +1215,12 @@ class FetchGraphData extends React.Component {
     render() {
         const { award } = this.props;
         return (
-            <FetchedData>
-                <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}`} />
-                <ExperimentDate award={award} />
-            </FetchedData>
+            <div>
+                <FetchedData ignoreErrors>
+                    <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}`} />
+                    <ExperimentDate award={award} />
+                </FetchedData>
+            </div>
         );
     }
 }
@@ -1215,6 +1228,7 @@ class FetchGraphData extends React.Component {
 FetchGraphData.propTypes = {
     award: PropTypes.object.isRequired, // Award represented by this chart
 };
+
 
 // Create a cumulative line chart in the div.
 class CumulativeGraph extends React.Component {
@@ -1370,14 +1384,7 @@ class Award extends React.Component {
                         </div>
                     </PanelBody>
                 </Panel>
-                <Panel>
-                    <PanelHeading>
-                        <h4>Cumulative Number of Experiments</h4>
-                    </PanelHeading>
-                    <PanelBody>
-                        <FetchGraphData award={context} />
-                    </PanelBody>
-                </Panel>
+                <FetchGraphData award={context} />
             </div>
         );
     }
