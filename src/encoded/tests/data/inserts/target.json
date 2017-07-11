@@ -405,5 +405,25 @@
         "dbxref": [
             "UniProtKB:Q71DI3"
         ]
+    },
+    {
+        "uuid": "e6d8b23f-f6ca-4d77-adab-03ba81b7742a",
+        "gene_name": "FTO",
+        "investigated_as": [
+            "RNA binding protein"
+        ],
+        "label": "FTO",
+        "organism": "human",
+        "dbxref": [
+            "ENSEMBL:ENSG00000140718",
+            "HGNC:24678",
+            "HGNC:ALKBH9",
+            "HGNC:KIAA1752",
+            "HGNC:MGC5149",
+            "GeneID:79068",
+            "UniProtKB:Q9C0B1"
+        ],
+        "status": "current"
     }
+
 ]

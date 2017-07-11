@@ -7,17 +7,27 @@
         "status": "released",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
-        "documents": [
-            "encode:Antibody_characterization_standards_February_2014"
+        "modification_type": "insertion",
+        "purpose": "tagging",
+        "epitope_tags": [
+            {
+                "name": "eGFP",
+                "location": "C-terminal"
+            }
         ],
-        "source":"gregory-crawford",
-        "modification_type": "replacement",
-        "modification_techniques": [
-        	"encode:crispr-test-1"
+        "modified_target_id": "/targets/CTCF-human/",
+        "techniques_used": [
+            { 
+                "technique_used": "CRISPR",
+                "sequence_information": {
+                    "guide_rna_sequences": [
+                        "GCGTAGCCAGTGACCAGCT",
+                        "TGGGCTAACATTAGCCAGA"
+                    ]
+                }
+            }
         ],
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "target": "/targets/H3K4me3-human",
-        "treatments": []
+        "submitted_by": "dignissim.euismod@amet.habitant"
     },
     {
         "aliases": [
@@ -27,7 +37,6 @@
         "status": "released",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
-        "source":"gregory-crawford",
         "description": "Scientists in India have delayed the ripening of tomatoes by silencing two genes encoding N-glycoprotein modifying enzymes, α-mannosidase and β-D-N-acetylhexosaminidase.",
         "modified_site": {
             "assembly": "GRCh38",
@@ -37,63 +46,74 @@
         },
         "purpose": "repression",
         "modification_type": "deletion",
-        "modification_techniques": [
-            "encode:tale-test-1",
-        	"encode:crispr-test-1"
-        ],
-        "treatments": [
-            "2e33a097-412c-4646-87f9-858dfaaa7c06",
-            "3280b708-0f05-40fa-bff2-54e2b6505c13"
+        "techniques_used":[
+            {
+                "technique_used": "CRISPR",
+                "reagent_identifiers": ["CRL-2522"],
+                "reagent_repository": "atcc",
+                "sequence_information": {
+                    "guide_rna_sequences": [
+                        "CAGTTAGCAGTACATGGAACACAGT"
+                    ]
+                }
+            },
+            {
+                "technique_used": "TALE",
+                "sequence_information": {
+                    "RVD_sequences": [
+                        "NN"
+                    ]
+                }
+            }
         ],
         "zygosity": "homozygous",
-        "product_id": "CRL-2522",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "target": "/targets/H3K4me3-human",
-        "url": "http://www.atcc.org/ATCCAdvancedCatalogSearch/ProductDetails/tabid/452/Default.aspx?ATCCNum=CRL-2522&Template=cellBiology"
+        "submitted_by": "amet.fusce@est.fermentum"
     },
     {
-        "modified_site": {
-            "chromosome": "X",
-            "end": 48658983,
-            "assembly": "hg19",
-            "start": 48658969
-        },
-        "modification_techniques": [
-            "2f1feb18-c724-4cdf-8434-c5126ca78a9e"
+        "techniques_used":[
+            {
+                "technique_used": "RNAi",
+                "reagent_repository": "sigma",
+                "reagent_identifiers": ["TRCN0000246247"]
+            }
         ],
+        "modified_target_id": "/targets/FTO-human/",
         "submitted_by": "amet.fusce@est.fermentum",
-        "modification_type": "deletion",
-        "source":"gregory-crawford",
+        "modification_type": "interference",
+        "purpose": "repression",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
         "uuid": "ef12855f-5d3e-4da5-8684-3a594c60505a",
         "status": "released",
-        "description": "Also aligns to the following location in the hg19 build:chr3:139375066-139375080, chr6:20406320-2040",
-        "notes": "TL1595   /tales/2f1feb18-c724-4cdf-8434-c5126ca78a9e/"
+        "description": "shRNA targeting FTO"
     },
     {
         "submitted_by": "amet.fusce@est.fermentum",
         "status": "released",
-        "source":"gregory-crawford",
-        "modification_techniques": [
-            "0e23048f-4cbc-416f-9238-e63ef4fd7d17"
+        "epitope_tags": [
+            {
+                "name": "eGFP",
+                "location": "C-terminal"
+            }
         ],
-        "notes": "TL1596   /tales/0e23048f-4cbc-416f-9238-e63ef4fd7d17/",
+        "modified_target_id": "/targets/FTO-human/",
         "lab": "/labs/robert-waterston/",
-        "modification_type": "deletion",
+        "modification_type": "insertion",
+        "purpose": "tagging",
+        "techniques_used":[
+            {
+                "technique_used": "stable transfection",
+                "reagent_repository": "kevin-white",
+                "reagent_identifiers":["CH322-135D17"],
+                "documents": ["kevin-white:K562_BAC_transfection_White_protocol"]
+            }
+        ],
         "award": "/awards/U41HG007355/",
-        "modified_site": {
-            "start": 48658999,
-            "assembly": "hg19",
-            "chromosome": "X",
-            "end": 48659017
-        },
         "uuid": "2f33a486-e3d9-4633-8682-a363b48ba67d"
     },
     {
-        "status": "released",
-        "treatments": [],
-        "notes": "TL1597   /tales/69790723-e4de-41d3-ab89-6e06a67d84d6/",
+        "status": "released", 
+
         "modified_site": {
             "chromosome": "X",
             "assembly": "hg19",
@@ -104,9 +124,15 @@
         "lab": "/labs/robert-waterston/",
         "uuid": "b9264c83-2222-4678-a82f-4915af941fa4",
         "submitted_by": "amet.fusce@est.fermentum",
-        "modification_type": "deletion",
-        "modification_techniques": [
-            "69790723-e4de-41d3-ab89-6e06a67d84d6"
-        ]
+        "modification_type": "replacement",
+        "techniques_used": [
+            {
+                "technique_used": "TALE",
+                "sequence_information": {
+                    "RVD_sequences": ["NN", "NG", "HD", "NI"]
+                }
+            }
+        ],
+        "insert_sequence": "TACGGAGCTAGCTGGAACTAGCCATGCATAAACGATAGCTTGCTC"
     }
 ]
