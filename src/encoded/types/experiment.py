@@ -89,9 +89,7 @@ class Experiment(Dataset,
         'replicates.library.biosample.donor.characterizations.submitted_by',
         'replicates.library.biosample.donor.organism',
         'replicates.library.biosample.genetic_modifications',
-        'replicates.library.biosample.genetic_modifications.target',
-        'replicates.library.biosample.genetic_modifications.modification_techniques',
-        'replicates.library.biosample.genetic_modifications.treatments',
+        'replicates.library.biosample.genetic_modifications.modified_target_id',
         'replicates.library.biosample.part_of.characterizations',
         'replicates.library.biosample.part_of.characterizations.award',
         'replicates.library.biosample.part_of.characterizations.lab',
@@ -229,7 +227,7 @@ class Experiment(Dataset,
                             originated_from_object = None
                             if 'originated_from' in biosampleObject:
                                 originated_from_object = request.embed(biosampleObject['originated_from'],
-                                                                    '@@object')
+                                                                       '@@object')
 
                             modifications_list = None
                             genetic_modifications = biosampleObject.get('genetic_modifications')
@@ -237,12 +235,8 @@ class Experiment(Dataset,
                                 modifications_list = []
                                 for gm in genetic_modifications:
                                     gm_object = request.embed(gm, '@@object')
-                                    if 'modification_techniques' in gm_object and \
-                                       len(gm_object['modification_techniques']) > 0:
-                                        for gmt in gm_object['modification_techniques']:
-                                            modifications_list.append(
-                                                (gm_object['modification_type'],
-                                                 request.embed(gmt, '@@object')))
+                                    modifications_list.append(
+                                        (gm_object['modification_type'], gm_object))
 
                             construct_objects_list = None
                             constructs = biosampleObject.get('constructs')

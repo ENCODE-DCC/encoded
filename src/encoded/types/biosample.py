@@ -132,9 +132,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'organism',
         'references',
         'genetic_modifications',
-        'genetic_modifications.modification_techniques',
-        'genetic_modifications.treatments',
-        'genetic_modifications.target'
+        'genetic_modifications.modified_target_id'
     ]
 
     @calculated_property(define=True,
@@ -468,11 +466,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             modifications_list = []
             for gm in genetic_modifications:
                 gm_object = request.embed(gm, '@@object')
-                if 'modification_techniques' in gm_object and \
-                   len(gm_object['modification_techniques']) > 0:
-                    for gmt in gm_object['modification_techniques']:
-                        modifications_list.append((gm_object['modification_type'],
-                                                  request.embed(gmt, '@@object')))
+                modifications_list.append((gm_object['modification_type'], gm_object))
 
         construct_objects_list = None
         if constructs is not None and len(constructs) > 0:
