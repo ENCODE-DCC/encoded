@@ -1,4 +1,3 @@
-import React from 'react';
 import { mount } from 'enzyme';
 
 // Import test component and data.

@@ -1,5 +1,3 @@
-'use strict';
-
 // Require all components to ensure javascript load ordering
 require('./lib');
 require('./antibody');

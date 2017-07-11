@@ -1,17 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
 import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
-import { DropdownButton } from '../libs/bootstrap/button';
+import DropdownButton from '../libs/bootstrap/button';
 import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
-import globals from './globals';
+import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
 import { auditDecor } from './audit';
 import StatusLabel from './statuslabel';
-import { pubReferenceList } from './reference';
+import pubReferenceList from './reference';
 import { donorDiversity, publicDataset } from './objectutils';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -51,17 +50,8 @@ function breakSetName(name) {
 
 
 // Display Annotation page, a subtype of Dataset.
-const AnnotationComponent = createReactClass({
-    propTypes: {
-        context: PropTypes.object, // Annotation being displayed
-    },
-
-    contextTypes: {
-        session: PropTypes.object, // Login session information
-        session_properties: PropTypes.object,
-    },
-
-    render: function () {
+class AnnotationComponent extends React.Component {
+    render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
@@ -257,26 +247,28 @@ const AnnotationComponent = createReactClass({
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
         );
-    },
-});
+    }
+}
+
+AnnotationComponent.propTypes = {
+    context: PropTypes.object, // Annotation being displayed
+    auditIndicators: PropTypes.func.isRequired, // From audit decorator
+    auditDetail: PropTypes.func.isRequired, // From audit decorator
+};
+
+AnnotationComponent.contextTypes = {
+    session: PropTypes.object, // Login session information
+    session_properties: PropTypes.object,
+};
 
 const Annotation = auditDecor(AnnotationComponent);
 
-globals.content_views.register(Annotation, 'Annotation');
+globals.contentViews.register(Annotation, 'Annotation');
 
 
 // Display Annotation page, a subtype of Dataset.
-const PublicationDataComponent = createReactClass({
-    propTypes: {
-        context: PropTypes.object, // PublicationData object to display
-    },
-
-    contextTypes: {
-        session: PropTypes.object, // Login session information
-        session_properties: PropTypes.object,
-    },
-
-    render: function () {
+class PublicationDataComponent extends React.Component {
+    render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
@@ -419,26 +411,28 @@ const PublicationDataComponent = createReactClass({
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
         );
-    },
-});
+    }
+}
+
+PublicationDataComponent.propTypes = {
+    context: PropTypes.object, // PublicationData object to display
+    auditIndicators: PropTypes.func.isRequired, // From audit decorator
+    auditDetail: PropTypes.func.isRequired, // From audit decorator
+};
+
+PublicationDataComponent.contextTypes = {
+    session: PropTypes.object, // Login session information
+    session_properties: PropTypes.object,
+};
 
 const PublicationData = auditDecor(PublicationDataComponent);
 
-globals.content_views.register(PublicationData, 'PublicationData');
+globals.contentViews.register(PublicationData, 'PublicationData');
 
 
 // Display Annotation page, a subtype of Dataset.
-const ReferenceComponent = createReactClass({
-    propTypes: {
-        context: PropTypes.object, // Reference object to display
-    },
-
-    contextTypes: {
-        session: PropTypes.object, // Login session information
-        session_properties: PropTypes.object,
-    },
-
-    render: function () {
+class ReferenceComponent extends React.Component {
+    render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
@@ -581,26 +575,28 @@ const ReferenceComponent = createReactClass({
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
         );
-    },
-});
+    }
+}
+
+ReferenceComponent.propTypes = {
+    context: PropTypes.object, // Reference object to display
+    auditIndicators: PropTypes.func.isRequired, // From audit decorator
+    auditDetail: PropTypes.func.isRequired, // From audit decorator
+};
+
+ReferenceComponent.contextTypes = {
+    session: PropTypes.object, // Login session information
+    session_properties: PropTypes.object,
+};
 
 const Reference = auditDecor(ReferenceComponent);
 
-globals.content_views.register(Reference, 'Reference');
+globals.contentViews.register(Reference, 'Reference');
 
 
 // Display Annotation page, a subtype of Dataset.
-const ProjectComponent = createReactClass({
-    propTypes: {
-        context: PropTypes.object, // Project object to display
-    },
-
-    contextTypes: {
-        session: PropTypes.object, // Login session information
-        session_properties: PropTypes.object,
-    },
-
-    render: function () {
+class ProjectComponent extends React.Component {
+    render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
@@ -767,26 +763,28 @@ const ProjectComponent = createReactClass({
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
         );
-    },
-});
+    }
+}
+
+ProjectComponent.propTypes = {
+    context: PropTypes.object, // Project object to display
+    auditIndicators: PropTypes.func.isRequired, // From audit decorator
+    auditDetail: PropTypes.func.isRequired, // From audit decorator
+};
+
+ProjectComponent.contextTypes = {
+    session: PropTypes.object, // Login session information
+    session_properties: PropTypes.object,
+};
 
 const Project = auditDecor(ProjectComponent);
 
-globals.content_views.register(Project, 'Project');
+globals.contentViews.register(Project, 'Project');
 
 
 // Display Annotation page, a subtype of Dataset.
-const UcscBrowserCompositeComponent = createReactClass({
-    propTypes: {
-        context: PropTypes.object, // UCSC browser composite object to display
-    },
-
-    contextTypes: {
-        session: PropTypes.object, // Login session information
-        session_properties: PropTypes.object,
-    },
-
-    render: function () {
+class UcscBrowserCompositeComponent extends React.Component {
+    render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
@@ -939,44 +937,53 @@ const UcscBrowserCompositeComponent = createReactClass({
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
         );
-    },
-});
+    }
+}
+
+UcscBrowserCompositeComponent.propTypes = {
+    context: PropTypes.object, // UCSC browser composite object to display
+    auditIndicators: PropTypes.func.isRequired, // From audit decorator
+    auditDetail: PropTypes.func.isRequired, // From audit decorator
+};
+
+UcscBrowserCompositeComponent.contextTypes = {
+    session: PropTypes.object, // Login session information
+    session_properties: PropTypes.object,
+};
 
 const UcscBrowserComposite = auditDecor(UcscBrowserCompositeComponent);
 
-globals.content_views.register(UcscBrowserComposite, 'UcscBrowserComposite');
+globals.contentViews.register(UcscBrowserComposite, 'UcscBrowserComposite');
 
 
-export const FilePanelHeader = createReactClass({
-    propTypes: {
-        context: PropTypes.object, // Object being displayed
-    },
+export const FilePanelHeader = (props) => {
+    const context = props.context;
 
-    render: function () {
-        const context = this.props.context;
+    return (
+        <div>
+            {context.visualize && context.status === 'released' ?
+                <span className="pull-right">
+                    <DropdownButton title="Visualize Data" label="filepaneheader">
+                        <DropdownMenu>
+                            {Object.keys(context.visualize).sort().map(assembly =>
+                                Object.keys(context.visualize[assembly]).sort().map(browser =>
+                                    <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize[assembly][browser]}>
+                                    {assembly} {browser}
+                                    </a>,
+                                )
+                            )}
+                        </DropdownMenu>
+                    </DropdownButton>
+                </span>
+            : null}
+            <h4>File summary</h4>
+        </div>
+    );
+};
 
-        return (
-            <div>
-                {context.visualize && context.status === 'released' ?
-                    <span className="pull-right">
-                        <DropdownButton title="Visualize Data" label="filepaneheader">
-                            <DropdownMenu>
-                                {Object.keys(context.visualize).sort().map(assembly =>
-                                    Object.keys(context.visualize[assembly]).sort().map(browser =>
-                                        <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize[assembly][browser]}>
-                                        {assembly} {browser}
-                                        </a>,
-                                    )
-                                )}
-                            </DropdownMenu>
-                        </DropdownButton>
-                    </span>
-                : null}
-                <h4>File summary</h4>
-            </div>
-        );
-    },
-});
+FilePanelHeader.propTypes = {
+    context: PropTypes.object, // Object being displayed
+};
 
 
 function displayPossibleControls(item, adminUser) {
@@ -1224,27 +1231,19 @@ const organismDevelopmentSeriesTableColumns = {
     },
 };
 
-export const SeriesComponent = createReactClass({
-    propTypes: {
-        context: PropTypes.object, // Series object to display
-    },
 
-    contextTypes: {
-        session: PropTypes.object,
-        session_properties: PropTypes.object,
-    },
+// Map series @id to title and table columns
+const seriesComponents = {
+    MatchedSet: { title: 'matched set series', table: basicTableColumns },
+    OrganismDevelopmentSeries: { title: 'organism development series', table: organismDevelopmentSeriesTableColumns },
+    ReferenceEpigenome: { title: 'reference epigenome series', table: basicTableColumns },
+    ReplicationTimingSeries: { title: 'replication timing series', table: replicationTimingSeriesTableColumns },
+    TreatmentConcentrationSeries: { title: 'treatment concentration series', table: treatmentSeriesTableColumns },
+    TreatmentTimeSeries: { title: 'treatment time series', table: treatmentSeriesTableColumns },
+};
 
-    // Map series @id to title and table columns
-    seriesComponents: {
-        MatchedSet: { title: 'matched set series', table: basicTableColumns },
-        OrganismDevelopmentSeries: { title: 'organism development series', table: organismDevelopmentSeriesTableColumns },
-        ReferenceEpigenome: { title: 'reference epigenome series', table: basicTableColumns },
-        ReplicationTimingSeries: { title: 'replication timing series', table: replicationTimingSeriesTableColumns },
-        TreatmentConcentrationSeries: { title: 'treatment concentration series', table: treatmentSeriesTableColumns },
-        TreatmentTimeSeries: { title: 'treatment time series', table: treatmentSeriesTableColumns },
-    },
-
-    render: function () {
+export class SeriesComponent extends React.Component {
+    render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
@@ -1277,7 +1276,7 @@ export const SeriesComponent = createReactClass({
         const references = pubReferenceList(context.references);
 
         // Make the series title
-        const seriesComponent = this.seriesComponents[seriesType];
+        const seriesComponent = seriesComponents[seriesType];
         const seriesTitle = seriesComponent ? seriesComponent.title : 'series';
 
         // Calculate the biosample summary
@@ -1428,9 +1427,7 @@ export const SeriesComponent = createReactClass({
                             <SortTable
                                 list={experimentList}
                                 columns={seriesComponent.table}
-                                meta={{
-                                    adminUser: adminUser,
-                                }}
+                                meta={{ adminUser }}
                             />
                         </SortTablePanel>
                     </div>
@@ -1439,106 +1436,112 @@ export const SeriesComponent = createReactClass({
                 {/* Display list of released and unreleased files */}
                 <FetchedItems
                     {...this.props}
-                    url={globals.unreleased_files_url(context)}
+                    url={globals.unreleasedFilesUrl(context)}
                     Component={DatasetFiles}
                     filePanelHeader={<FilePanelHeader context={context} />}
                     encodevers={globals.encodeVersion(context)}
                     session={this.context.session}
-                    ignoreErrors
                 />
 
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
         );
-    },
-});
+    }
+}
+
+SeriesComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Series object to display
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
+};
+
+SeriesComponent.contextTypes = {
+    session: PropTypes.object,
+    session_properties: PropTypes.object,
+};
 
 const Series = auditDecor(SeriesComponent);
 
-globals.content_views.register(Series, 'Series');
+globals.contentViews.register(Series, 'Series');
 
 
 // Display a count of experiments in the footer, with a link to the corresponding search if needed
-const ExperimentTableFooter = createReactClass({
-    propTypes: {
-        items: PropTypes.array, // Array of experiments that were displayed in the table
-        total: PropTypes.number, // Total number of experiments
-        url: PropTypes.string, // URL to link to equivalent experiment search results
+const ExperimentTableFooter = (props) => {
+    const { items, total, url } = props;
+
+    return (
+        <div>
+            <span>Displaying {items.length} of {total} </span>
+            {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
+        </div>
+    );
+};
+
+ExperimentTableFooter.propTypes = {
+    items: PropTypes.array, // Array of experiments that were displayed in the table
+    total: PropTypes.number, // Total number of experiments
+    url: PropTypes.string, // URL to link to equivalent experiment search results
+};
+
+
+const experimentTableColumns = {
+    accession: {
+        title: 'Accession',
+        display: item => <a href={item['@id']} title={`View page for experiment ${item.accession}`}>{item.accession}</a>,
     },
 
-    render: function () {
-        const { items, total, url } = this.props;
-
-        return (
-            <div>
-                <span>Displaying {items.length} of {total} </span>
-                {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
-            </div>
-        );
-    },
-});
-
-
-export const ExperimentTable = createReactClass({
-    propTypes: {
-        items: PropTypes.array, // List of experiments to display in the table
-        limit: PropTypes.number, // Maximum number of experiments to display in the table
-        total: PropTypes.number, // Total number of experiments
-        url: PropTypes.string, // URI to go to equivalent search results
-        title: PropTypes.oneOfType([ // Title for the table of experiments; can be string or component
-            PropTypes.string,
-            PropTypes.node,
-        ]),
+    assay_term_name: {
+        title: 'Assay',
     },
 
-    tableColumns: {
-        accession: {
-            title: 'Accession',
-            display: item => <a href={item['@id']} title={`View page for experiment ${item.accession}`}>{item.accession}</a>,
-        },
-
-        assay_term_name: {
-            title: 'Assay',
-        },
-
-        biosample_term_name: {
-            title: 'Biosample term name',
-        },
-
-        target: {
-            title: 'Target',
-            getValue: item => item.target && item.target.label,
-        },
-
-        description: {
-            title: 'Description',
-        },
-
-        title: {
-            title: 'Lab',
-            getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
-        },
+    biosample_term_name: {
+        title: 'Biosample term name',
     },
 
-    render: function () {
-        let experiments;
-
-        // If there's a limit on entries to display and the array is greater than that
-        // limit, then clone the array with just that specified number of elements
-        if (this.props.limit && (this.props.limit < this.props.items.length)) {
-            // Limit the experiment list by cloning first {limit} elements
-            experiments = this.props.items.slice(0, this.props.limit);
-        } else {
-            // No limiting; just reference the original array
-            experiments = this.props.items;
-        }
-
-        return (
-            <div>
-                <SortTablePanel title={this.props.title}>
-                    <SortTable list={experiments} columns={this.tableColumns} footer={<ExperimentTableFooter items={experiments} total={this.props.total} url={this.props.url} />} />
-                </SortTablePanel>
-            </div>
-        );
+    target: {
+        title: 'Target',
+        getValue: item => item.target && item.target.label,
     },
-});
+
+    description: {
+        title: 'Description',
+    },
+
+    title: {
+        title: 'Lab',
+        getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+    },
+};
+
+export const ExperimentTable = (props) => {
+    let experiments;
+
+    // If there's a limit on entries to display and the array is greater than that
+    // limit, then clone the array with just that specified number of elements
+    if (props.limit && (props.limit < props.items.length)) {
+        // Limit the experiment list by cloning first {limit} elements
+        experiments = props.items.slice(0, props.limit);
+    } else {
+        // No limiting; just reference the original array
+        experiments = props.items;
+    }
+
+    return (
+        <div>
+            <SortTablePanel title={props.title}>
+                <SortTable list={experiments} columns={experimentTableColumns} footer={<ExperimentTableFooter items={experiments} total={props.total} url={props.url} />} />
+            </SortTablePanel>
+        </div>
+    );
+};
+
+ExperimentTable.propTypes = {
+    items: PropTypes.array, // List of experiments to display in the table
+    limit: PropTypes.number, // Maximum number of experiments to display in the table
+    total: PropTypes.number, // Total number of experiments
+    url: PropTypes.string, // URI to go to equivalent search results
+    title: PropTypes.oneOfType([ // Title for the table of experiments; can be string or component
+        PropTypes.string,
+        PropTypes.node,
+    ]),
+};

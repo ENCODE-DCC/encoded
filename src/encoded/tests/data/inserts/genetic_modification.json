@@ -113,7 +113,6 @@
     },
     {
         "status": "released", 
-
         "modified_site": {
             "chromosome": "X",
             "assembly": "hg19",
@@ -134,5 +133,26 @@
             }
         ],
         "insert_sequence": "TACGGAGCTAGCTGGAACTAGCCATGCATAAACGATAGCTTGCTC"
+    },
+    {
+        "status": "in progress",
+        "modified_site":{
+            "chromosome": "2R",
+            "assembly": "dm6",
+            "start": 833235,
+            "end": 890382
+        },
+        "award": "/awards/U41HG007355/",
+        "lab": "/labs/kevin-white/",
+        "uuid": "10f82b48-4082-479d-8184-a1a73f9ff16d",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "modification_type": "mutagenesis",
+        "purpose": "repression",
+        "techniques_used":[
+            {
+                "technique_used": "mutagen",
+                "treatments": ["3280b708-0f05-40fa-bff2-54e2b6505c13"]
+            }
+        ]
     }
 ]

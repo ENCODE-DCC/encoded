@@ -546,8 +546,9 @@ def software_version(testapp, software):
 @pytest.fixture
 def analysis_step(testapp):
     item = {
-        'name': 'fastqc',
-        'title': 'fastqc',
+        'step_label': 'fastqc-step',
+        'title': 'fastqc step',
+        'major_version': 1,
         'input_file_types': ['reads'],
         'analysis_step_types': ['QA calculation'],
 
@@ -559,6 +560,7 @@ def analysis_step(testapp):
 def analysis_step_version(testapp, analysis_step, software_version):
     item = {
         'analysis_step': analysis_step['@id'],
+        'minor_version': 0,
         'software_versions': [
             software_version['@id'],
         ],
@@ -760,10 +762,11 @@ def donor_2(testapp, lab, award, organism):
 @pytest.fixture
 def analysis_step_bam(testapp):
     item = {
-        'name': 'bamqc',
-        'title': 'bamqc',
+        'step_label': 'bamqc-step',
+        'title': 'bamqc step',
         'input_file_types': ['reads'],
-        'analysis_step_types': ['QA calculation']
+        'analysis_step_types': ['QA calculation'],
+        'major_version': 2
     }
     return testapp.post_json('/analysis_step', item).json['@graph'][0]
 
@@ -772,6 +775,7 @@ def analysis_step_bam(testapp):
 def analysis_step_version_bam(testapp, analysis_step_bam, software_version):
     item = {
         'analysis_step': analysis_step_bam['@id'],
+        'minor_version': 0,
         'software_versions': [
             software_version['@id'],
         ],

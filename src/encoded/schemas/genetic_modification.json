@@ -265,7 +265,6 @@
                         "description": "Supporting documents describing how the genetic modification(s) was/were produced.",
                         "comment": "If reagents were not deposited into a repository with relevant details, then please describe the methods in attached documents.",
                         "type": "array",
-                        "default": [],
                         "uniqueItems": true,
                         "items": {
                             "title": "Document",
@@ -273,6 +272,19 @@
                             "type": "string",
                             "comment": "See document.json for available identifiers.",
                             "linkTo": "Document"
+                        }
+                    },
+                    "treatments": {
+                        "title": "Treatment",
+                        "description": "A list of relevant treatments applied to result in the modification.",
+                        "type": "array",
+                        "uniqueItems": true,
+                        "items": {
+                            "title": "Treatment",
+                            "description": "Treatment applied to result in the modification.",
+                            "type": "string",
+                            "comment": "See treatment.json for available identifiers.",
+                            "linkTo": "Treatment"
                         }
                     },
                     "sequence_information": {
