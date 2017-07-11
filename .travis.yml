@@ -28,8 +28,6 @@ env:
     - PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
 matrix:
   include:
-    - python: "2.7"
-      env: BROWSER=
     - python: "3.4"
       env: BROWSER=Chrome
     - python: "3.4"
