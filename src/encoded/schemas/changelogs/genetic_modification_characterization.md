@@ -1,4 +1,4 @@
-## Changelog for page.json
+## Changelog for genetic_modification_characterization.json
 
 ### Schema version 3
 
@@ -8,7 +8,3 @@
         "deleted",
         "released"
     ]
-
-### Schema version 2
-
-* *news_keywords* field changed from free-entry string to controlled enum

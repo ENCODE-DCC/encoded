@@ -1,5 +1,14 @@
 ## Changelog for award.json
 
+### Schema version 5
+
+* *status* property was restricted to one of  
+    "enum" : [
+        "current",
+        "deleted",
+        "disabled"
+    ]
+
 ### Schema version 4
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces

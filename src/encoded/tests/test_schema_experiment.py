@@ -64,6 +64,5 @@ def test_alt_accession_ENCSR_regex(testapp, experiment_no_error):
 
 def test_submission_date(testapp, experiment_no_error):
     expt = testapp.post_json('/experiment', experiment_no_error).json['@graph'][0]
-    res = testapp.patch_json(expt['@id'], {'submission_date': '2000-10-10'}, expect_errors=True)
+    res = testapp.patch_json(expt['@id'], {'date_submitted': '2000-10-10'}, expect_errors=True)
     assert res.status_code == 200
-
