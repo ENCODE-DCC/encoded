@@ -12,6 +12,7 @@ from .base import (
 
 @collection(
     name='genetic-modifications',
+    unique_key='accession',
     properties={
         'title': 'Genetic modifications',
         'description': 'Listing of genetic modifications',
@@ -19,6 +20,7 @@ from .base import (
 class GeneticModification(Item):
     item_type = 'genetic_modification'
     schema = load_schema('encoded:schemas/genetic_modification.json')
+    name_key = 'accession'
     embedded = [
         'award',
         'award.pi',
@@ -26,7 +28,7 @@ class GeneticModification(Item):
         'lab',
         'source',
         'submitted_by',
-        'target',
+        'modified_target_id',
         'documents',
         'documents.award',
         'documents.lab',
@@ -35,14 +37,8 @@ class GeneticModification(Item):
         'characterizations.documents.award',
         'characterizations.documents.lab',
         'characterizations.documents.submitted_by',
-        'modification_techniques',
-        'modification_techniques.award.pi.lab',
-        'modification_techniques.lab',
-        'modification_techniques.source',
-        'modification_techniques.documents',
-        'modification_techniques.documents.award',
-        'modification_techniques.documents.lab',
-        'modification_techniques.documents.submitted_by',
+        'techniques_used.reagent_repository',
+        'techniques_used.documents',
         'biosamples_modified.documents',
         'biosamples_modified.documents.award',
         'biosamples_modified.documents.lab',
