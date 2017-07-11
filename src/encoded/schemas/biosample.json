@@ -366,8 +366,8 @@
                 "default": "analyzed",
                 "enum": [
                     "analyzed",
-                    "not_analyzed",
-                    "no"
+                    "no",
+                    "not_analyzed"
                 ]
             },
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
@@ -464,18 +464,18 @@
             "items": {
                 "type": "string",
                 "enum": [
+                    "adult maxillary segment",
+                    "antenna",
+                    "arthropod fat body",
+                    "digestive system",
+                    "female gonad",
+                    "female reproductive system",
                     "head",
                     "limb",
-                    "salivary gland",
                     "male accessory sex gland",
-                    "testis",
-                    "female gonad",
-                    "digestive system",
-                    "arthropod fat body",
-                    "antenna",
-                    "adult maxillary segment",
-                    "female reproductive system",
-                    "male reproductive system"
+                    "male reproductive system",
+                    "salivary gland",
+                    "testis"
                 ]
             }
         },
@@ -486,9 +486,9 @@
             "type": "string",
             "enum": [
                 "mated",
-                "virgin",
+                "mixed",
                 "sterile",
-                "mixed"
+                "virgin"
             ]
         },
         "internal_tags": {
@@ -565,16 +565,16 @@
             "comment": "The phase property is restricted to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "type": "string",
             "enum": [
+                "early S",
                 "G1",
                 "G1b",
                 "G2",
+                "late S",
                 "S",
                 "S1",
                 "S2",
                 "S3",
-                "S4",
-                "early S",
-                "late S"
+                "S4"
             ]
         },
         "transfection_type": {
@@ -583,7 +583,7 @@
             "comment": "transfection_type requires specification of transfection_method.",
             "type": "string",
             "enum": [
-                "stable", "transient"
+                "transient", "stable"
             ]
         },
         "transfection_method": {
@@ -592,7 +592,7 @@
             "comment": "transfection_method requires specification of transfection_type.",
             "type": "string",
             "enum": [
-                "electroporation", "transduction", "chemical"
+                "chemical", "electroporation", "transduction"
             ]
         },
         "culture_harvest_date": {
@@ -627,14 +627,14 @@
             "description": "The units used to quantify the amount of cells or tissue obtained.",
             "type": "string",
             "enum": [
-                "g",
-                "mg",
-                "cells/ml",
                 "cells", 
-                "whole embryos", 
+                "cells/ml",
+                "g",
                 "items", 
-                "μg",
-                "whole animals"
+                "mg",
+                "whole animals",
+                "whole embryos", 
+                "μg"
             ]
         },
         "url": {
@@ -649,11 +649,11 @@
             "description": "The sex of the organism the biosample comes from.",
             "comment": "model_organism_sex is not valid for a human biosample.",
             "enum": [
-                "male",
                 "female",
-                "unknown",
-                "mixed",
                 "hermaphrodite"
+                "male",
+                "mixed",
+                "unknown",
             ]
         },
         "mouse_life_stage": {
@@ -663,9 +663,9 @@
             "comment": "mouse_life_stage is not valid for a human biosample.",
             "enum": [
                 "adult",
-                "unknown",
                 "embryonic",
-                "postnatal"
+                "postnatal",
+                "unkonwn"
             ]
         },
         "fly_life_stage": {
@@ -674,15 +674,15 @@
             "description": "Fly development stage of the animals used to prepare the biosample.",
             "comment": "fly_life_stage is valid only for fly biosamples.",
             "enum": [
+                "adult",
                 "embryonic",
-                "larva",
                 "first instar larva",
-                "second instar larva",
-                "third instar larva",
-                "wandering third instar larva",
+                "larva",
                 "prepupa",
                 "pupa",
-                "adult"
+                "second instar larva",
+                "third instar larva",
+                "wandering third instar larva"
             ]
         },
         "fly_synchronization_stage": {
@@ -691,15 +691,15 @@
             "comment": "Stage at which flies were synchronized. If available use in conjunction with time and time units post-synchronization.",
             "type": "string",
             "enum": [
-                "fertilization",
+                "eclosion",
                 "egg laying",
+                "fertilization",
                 "first larval molt",
-                "second larval molt",
                 "puff stage: PS (1-2), dark blue gut",
                 "puff stage: PS (3-6), light blue gut",
                 "puff stage: PS (7-9), clear gut",
-                "white prepupa",
-                "eclosion"
+                "second larval molt",
+                "white prepupa"
             ]  
         },
         "post_synchronization_time": {
@@ -715,12 +715,12 @@
             "comment": "Use in conjunction with fly_synchronization_stage or worm_synchronization_stage and post_synchronization_time to specify time elapsed post-synchronization.",
             "type": "string",
             "enum": [
-                "minute",
-                "hour",
                 "day",
-                "week",
+                "hour",
+                "minute",
                 "month",
-                "stage"
+                "stage",
+                "week"
             ]
         },
         "post_treatment_time": {
@@ -736,12 +736,12 @@
             "comment": "Use in conjunction with post_treatment_time and treatment to specify time elapsed post-treatment. post_treatment_time_units specification requires non-empty treatments list and post_treatment_time specification.",
             "type": "string",
             "enum": [
-                "minute",
-                "hour",
                 "day",
-                "week",
+                "hour",
+                "minute",
                 "month",
-                "stage"
+                "stage",
+                "week"
             ]
         },              
         "worm_life_stage":{
@@ -750,20 +750,20 @@
             "description": "Worm development stage of the animals used to prepare the biosample.",
             "comment": "worm_life_stage is valid only for worm biosamples.",
             "enum": [
+                "adult",
+                "dauer",
                 "early embryonic",
-                "midembryonic",
-                "late embryonic",
-                "mixed stage (embryonic)",
-                "mixed stage (late embryonic and L1 larva)",
                 "L1 larva",
                 "L2 larva",
                 "L2d larva",
                 "L3 larva",
                 "L4 larva",
-                "dauer",
                 "L4/young adult",
-                "young adult",
-                "adult"
+                "late embryonic",
+                "midembryonic",
+                "mixed stage (embryonic)",
+                "mixed stage (late embryonic and L1 larva)",
+                "young adult"
             ]    
         },
         "worm_synchronization_stage": {
@@ -772,12 +772,12 @@
             "comment": "Stage at which worms were synchronized. Use in conjunction with time and time units post-synchronization.  worm_life_stage is valid only for worm biosamples.",
             "type": "string",
             "enum": [
-                "fertilization",
-                "egg laying",
-                "egg bleaching",
                 "4 cell",
-                "L1 larva starved after bleaching",
-                "dauer exit"
+                "dauer exit",
+                "egg bleaching",
+                "egg laying",
+                "fertilization",
+                "L1 larva starved after bleaching"
             ]
         },
         "model_organism_age": {
@@ -793,13 +793,13 @@
             "description": "Age units of the model organism.",
             "comment": "model_organism_age_units are not valid for a human biosample.",
             "enum": [
-                "minute",
-                "hour",
                 "day",
-                "week",
+                "hour",
+                "minute",
                 "month",
-                "year",
-                "stage"
+                "stage",
+                "week",
+                "year"
             ]
         },
         "model_organism_health_status": {
