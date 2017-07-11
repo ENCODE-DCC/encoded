@@ -105,7 +105,6 @@ def test_indexing_simple(testapp, indexer_testapp):
     res = indexer_testapp.post_json('/index', {'record': True})
     assert res.json['indexed'] == 1
     assert 'txn_count' not in res.json
-
     res = testapp.post_json('/testing-post-put-patch/', {'required': ''})
     uuid = res.json['@graph'][0]['uuid']
     res = indexer_testapp.post_json('/index', {'record': True})
