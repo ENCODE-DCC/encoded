@@ -1112,9 +1112,9 @@ def news(context, request):
     # Set sort order to sort by date_created.
     sort = OrderedDict()
     result_sort = OrderedDict()
-    sort['embedded.date_created.raw'] = result_sort['date_created'] = {
+    sort['embedded.date_created'] = result_sort['date_created'] = {
         'order': 'desc',
-        'ignore_unmapped': True,
+        'unmapped_type': 'keyword',
     }
     query['sort'] = sort
     result['sort'] = result_sort
