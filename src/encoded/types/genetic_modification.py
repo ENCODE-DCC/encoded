@@ -26,19 +26,17 @@ class GeneticModification(Item):
         'award.pi',
         'award.pi.lab',
         'lab',
-        'source',
         'submitted_by',
         'modified_target_id',
-        'documents',
-        'documents.award',
-        'documents.lab',
-        'documents.submitted_by',
         'characterizations.documents',
         'characterizations.documents.award',
         'characterizations.documents.lab',
         'characterizations.documents.submitted_by',
         'techniques_used.reagent_repository',
         'techniques_used.documents',
+        'techniques_used.documents.award',
+        'techniques_used.documents.lab',
+        'techniques_used.documents.submitted_by',
         'biosamples_modified.documents',
         'biosamples_modified.documents.award',
         'biosamples_modified.documents.lab',
@@ -46,8 +44,7 @@ class GeneticModification(Item):
         'donors_modified.documents',
         'donors_modified.documents.award',
         'donors_modified.documents.lab',
-        'donors_modified.documents.submitted_by',
-        'treatments'
+        'donors_modified.documents.submitted_by'
     ]
 
     rev = {

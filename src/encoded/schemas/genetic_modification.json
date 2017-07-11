@@ -10,9 +10,10 @@
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" }
     ],    
@@ -226,10 +227,12 @@
                 "title": "Technique used",
                 "description": "Techniques and reagents used to produce the described genetic modification.",
                 "additionalProperties": false,
+                "type": "object",
                 "properties": {
                     "technique_used": {
                         "title": "Technique used",
                         "description": "Technique used to produce the described genetic modification.",
+                        "type": "string",
                         "enum":[
                             "CRISPR",
                             "TALE",
@@ -244,6 +247,7 @@
                         "title": "Reagent repository",
                         "description": "Repository where reagent used to produce the described genetic modification can be obtained, if applicable.",
                         "comment": "See source.json for identifiers (e.g. addgene, bacpac, rnai-consortium",
+                        "type": "string",
                         "linkTo": "Source"
                     },
                     "reagent_identifiers": {
