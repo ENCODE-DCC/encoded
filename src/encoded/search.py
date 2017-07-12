@@ -1230,7 +1230,7 @@ def audit(context, request):
             index = temp.find('.') # find repeat index of .
         audit_index = audit_list_label.index(item)
         audit_list_label[audit_index] = temp
-        
+
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Group results in 2 dimensions
@@ -1271,14 +1271,16 @@ def audit(context, request):
                 },
             'terms': {'field': 'audit.NOT_COMPLIANT.category', 'size': 0
         }
-    }, 'audit.INTERNAL_ACTION.category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
+    }
+}
+    if "audit.INTERNAL_ACTION.category" in facets:
+        aggs['audit.INTERNAL_ACTION.category'] = {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
                         }
                     }
                 },
             'terms': {'field': 'audit.INTERNAL_ACTION.category', 'size': 0
         }
     }
-}
     aggs['x'] = x_agg
     query['aggs']['matrix'] = {
         "filter": {
@@ -1309,6 +1311,8 @@ def audit(context, request):
         es_results, facets, used_filters, (schema,), total, principals)
 
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
+        import pdb
+        pdb.set_trace()
         for category in grouping_fields:
             group_by = grouping_fields[0]
             grouping_fields = grouping_fields[1:]
