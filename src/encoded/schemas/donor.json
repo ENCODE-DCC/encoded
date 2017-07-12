@@ -71,8 +71,8 @@
         },
         "organism": {
             "title": "Organism",
-            "description": "Organism of the donor.",
-            "comment": "Do not submit, value is assigned by the object.",
+            "description": "Organism of the donor (strain).",
+            "comment": "Please choose the organism that is consistent with the donor (strain) type. For example human_donor.json would allow only selection of /organisms/human/.",
             "type": "string",
             "linkTo": "Organism"
         },
