@@ -1,11 +1,11 @@
 {
     "title": "Mouse donor",
-    "description": "Schema for submitting a mouse donor.",
+    "description": "Schema for submitting metadata for a mouse strain.",
     "id": "/profiles/mouse_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "organism"],
-    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "identifyingProperties": ["uuid", "accession", "aliases", "external_ids"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -25,7 +25,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "littermates": {
             "title": "Littermates",

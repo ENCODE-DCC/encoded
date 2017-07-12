@@ -1,5 +1,9 @@
 ## Changelog for fly_donor.json
 
+### Schema version 7
+
+* *external_ids* were added to identifyingProperties
+
 ### Schema version 6
 
 * *status* values "proposed" and "preliminary" were removed

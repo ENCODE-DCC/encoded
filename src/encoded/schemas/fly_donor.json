@@ -1,11 +1,11 @@
 {
     "title": "Fly donor",
-    "description": "Schema for submitting a fly donor.",
+    "description": "Schema for submitting metadata for a fly strain.",
     "id": "/profiles/fly_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "organism"],
-    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "identifyingProperties": ["uuid", "accession", "aliases", "external_ids"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -25,7 +25,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "genotype": {
             "description": "The genotype of the strain according to accepted nomenclature conventions: http://flybase.org/wiki/FlyBase:Nomenclature"

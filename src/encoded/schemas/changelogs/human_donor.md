@@ -1,5 +1,9 @@
 ## Changelog for human_donor.json
 
+### Schema version 10
+
+* *external_ids* were added to identifyingProperties
+
 ### Schema version 9
 
 * *status* values "proposed" and "preliminary" were removed
