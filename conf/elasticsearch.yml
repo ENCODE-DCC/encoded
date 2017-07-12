@@ -1,0 +1,3 @@
+cluster.name: elasticsearch_on_travis
+path.data: /home/travis/elasticsearch/
+path.logs: /home/travis/log/elasticsearch/
