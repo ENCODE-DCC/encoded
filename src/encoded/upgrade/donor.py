@@ -145,9 +145,11 @@ def fly_worm_donor_5_6_and_human_mouse_8_9(value, system):
     if value.get('status') in ['preliminary', 'proposed']:
         value['status'] = "in progress"
 
+
 @upgrade_step('fly_donor', '6', '7')
 @upgrade_step('worm_donor', '6', '7')
 @upgrade_step('human_donor', '9', '10')
 @upgrade_step('mouse_donor', '9', '10')
-def fly_worm_donor_5_6_and_human_mouse_8_9(value, system):
+def fly_worm_donor_6_7_and_human_mouse_9_10(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3415
+    return
