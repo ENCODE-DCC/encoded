@@ -45,15 +45,15 @@ bootcmd:
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
-- MEMGIGS=$(awk '/MemTotal/{printf int($2 / 1024**2)}' /proc/meminfo)
-- if [ "$MEMGIGS" -gt 12 ];
-- then
--    echo "ES_HEAP_SIZE=8g" > /etc/default/elasticsearch
-- else
--    echo "ES_HEAP_SIZE=4g" > /etc/default/elasticsearch
--    sysctl "vm.swappiness=1"
--    swapon /swapfile
-- fi
+# - MEMGIGS=$(awk '/MemTotal/{printf int($2 / 1024**2)}' /proc/meminfo)
+# - if [ "$MEMGIGS" -gt 12 ];
+# - then
+# -    echo "ES_HEAP_SIZE=8g" > /etc/default/elasticsearch
+# - else
+# -    echo "ES_HEAP_SIZE=4g" > /etc/default/elasticsearch
+# -    sysctl "vm.swappiness=1"
+# -    swapon /swapfile
+# - fi
 
 package_upgrade: true
 
@@ -141,8 +141,6 @@ write_files:
     index.search.slowlog.threshold.fetch.warn: 1s
     index.indexing.slowlog.threshold.index.warn: 25s
     network.host: 0.0.0.0
-    action.auto_create_index: false
-    index.mapper.dynamic: false
 
     node.master: false
     node.data: true
@@ -154,7 +152,6 @@ write_files:
 
     discovery.ec2.groups: elasticsearch-https, ssh-http-https
 
-    # discovery.zen.minimum_master_nodes: 2
 
 - path: /etc/elasticsearch/cluster.sh
   content: |
