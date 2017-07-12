@@ -159,7 +159,7 @@ class AuditMatrix extends React.Component {
             const xBuckets = matrix.x.buckets;
             const xLimit = matrix.x.limit || xBuckets.length;
             var yGroups = matrix.y[primaryYGrouping].buckets;
-            const orderKey = ['audit-ERROR-category', 'audit-NOT_COMPLIANT-category', 'audit-WARNING-category', 'audit-INTERNAL_ACTION-category'];
+            const orderKey = ['audit.ERROR.category', 'audit.NOT_COMPLIANT.category', 'audit.WARNING.category', 'audit.INTERNAL_ACTION.category'];
             var orderIndex = 0;
             var tempYGroups = [];
             while(orderIndex < orderKey.length){
@@ -196,7 +196,7 @@ class AuditMatrix extends React.Component {
             };
 
             // Make an array of colors corresponding to the ordering of biosample_type
-            const biosampleTypeColors = ["#cc0700", "#ff8000", "#e0e000"];
+            const biosampleTypeColors = ["#cc0700", "#ff8000", "#e0e000", "#a0a0a0"];
 
             return (
                 <div>
@@ -276,7 +276,8 @@ class AuditMatrix extends React.Component {
                                                 const groupColor = biosampleTypeColors[i];
                                                 const seriesColor = color(groupColor);
                                                 const parsed = url.parse(matrixBase, true);
-                                                parsed.query[primaryYGrouping] = group.key;
+                                                const searchTerm = "*"; // shows all of certain audit category
+                                                parsed.query[group.key] = searchTerm;
                                                 parsed.query['y.limit'] = null;
                                                 delete parsed.search; // this makes format compose the search string out of the query object
                                                 const groupHref = url.format(parsed);

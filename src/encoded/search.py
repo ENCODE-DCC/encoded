@@ -1236,7 +1236,7 @@ def audit(context, request):
     # Group results in 2 dimensions
     # Don't use these groupings for audit matrix
     x_grouping = matrix['x']['group_by']
-    y_groupings = audit_list_label
+    y_groupings = audit_list_field
     x_agg = {
         "terms": {
             "field": 'embedded.' + x_grouping + '.raw',
@@ -1253,23 +1253,29 @@ def audit(context, request):
             },
         }
     
-    aggs = {'audit-ERROR-category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
+    aggs = {'audit.ERROR.category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
                         }
                     }
                 },
             'terms': {'field': 'audit.ERROR.category', 'size': 0
         }
-    }, 'audit-WARNING-category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
+    }, 'audit.WARNING.category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
                         }
                     }
                 },
             'terms': {'field': 'audit.WARNING.category', 'size': 0
         }
-    }, 'audit-NOT_COMPLIANT-category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
+    }, 'audit.NOT_COMPLIANT.category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
                         }
                     }
                 },
             'terms': {'field': 'audit.NOT_COMPLIANT.category', 'size': 0
+        }
+    }, 'audit.INTERNAL_ACTION.category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
+                        }
+                    }
+                },
+            'terms': {'field': 'audit.INTERNAL_ACTION.category', 'size': 0
         }
     }
 }
