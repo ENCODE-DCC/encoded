@@ -1308,32 +1308,6 @@ def audit(context, request):
     result['facets'] = format_facets(
         es_results, facets, used_filters, (schema,), total, principals)
 
-    """
-
-    def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
-        group_by = grouping_fields[0]
-        #grouping_fields = grouping_fields[1:]
-        if grouping_fields:
-            counts = {}
-            for bucket in outer_bucket[group_by]['buckets']:
-                doc_count = bucket['doc_count']
-                if doc_count > matrix['max_cell_doc_count']:
-                    matrix['max_cell_doc_count'] = doc_count
-                counts[bucket['key']] = doc_count
-            summary = []
-            for bucket in x_buckets:
-                summary.append(counts.get(bucket['key'], 0))
-            outer_bucket[group_by] = summary
-
-    summarize_buckets(
-        result['matrix'],
-        aggregations['matrix']['x']['buckets'],
-        aggregations['matrix'],
-        y_groupings + [x_grouping])
-
-    result['matrix']['y'][y_groupings[0]] = aggregations['matrix'][y_groupings[0]]
-    result['matrix']['x'].update(aggregations['matrix']['x'])    
-    """
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
         for category in grouping_fields:
             group_by = grouping_fields[0]
@@ -1371,18 +1345,13 @@ def audit(context, request):
                     #find index of both []
                     #substring out both []
                     #convert string to dict
-                    
-                 
 
     summarize_buckets(
         result['matrix'],
         aggregations['matrix']['x']['buckets'],
         aggregations['matrix'],
         y_groupings + [x_grouping])
-    #result['matrix']['y'][y_groupings[0]] = aggregations['matrix'][y_groupings[0]]
-    # Reformats matrix categories to ones applicable to audits
 
-    #result['matrix']['y']['audit_category'] = temp_dict
     result['matrix']['y']['label'] = "Audit Category"
     result['matrix']['y']['group_by'][0] = "audit_category"
     result['matrix']['y']['group_by'][1] = "audit_label"
@@ -1393,12 +1362,7 @@ def audit(context, request):
             audit_category_dict['audit_label'] = aggregations['matrix'][audit]
             audit_category_dict['key'] = audit
             bucket_audit_category_list.append(audit_category_dict)
-    """
-    audit_category_dict = {}
-    audit_category_dict['audit-ERROR-category'] = aggregations['matrix']['audit-ERROR-category']
-    audit_category_dict['audit-WARNING-category'] = aggregations['matrix']['audit-WARNING-category']
-    audit_category_dict['audit-NOT_COMPLIANT-category'] = aggregations['matrix']['audit-NOT_COMPLIANT-category']
-    """
+
     bucket_audit_category_dict = {}
     bucket_audit_category_dict['buckets'] = bucket_audit_category_list
     result['matrix']['y']['audit_category'] = bucket_audit_category_dict
