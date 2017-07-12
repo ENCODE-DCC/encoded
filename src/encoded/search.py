@@ -13,9 +13,6 @@ from urllib.parse import urlencode
 from collections import OrderedDict
 from .visualization import vis_format_external_url
 
-import pdb
-from pprint import pprint as pp
-
 
 
 CHAR_COUNT = 32
@@ -76,7 +73,8 @@ def get_filtered_query(term, search_fields, result_fields, principals, doc_types
                         'operator': 'and'
                     }
                 },
-                'filter': [ 
+                'must_not': [],
+                'filter': [
                     {
                         'terms': {
                             'principals_allowed.view': principals
@@ -259,47 +257,47 @@ def list_result_fields(request, doc_types):
     return fields
 
 
-def build_terms_filter(field, terms):
+def build_terms_filter(query_filters, field, terms, query):
     if field.endswith('!'):
         field = field[:-1]
         if not field.startswith('audit'):
             field = 'embedded.' + field
         # Setting not filter instead of terms filter
         if terms == ['*']:
-            return {
+            filter_condition = {
                 'missing': {
                     'field': field,
                 }
             }
         else:
-            return {
-                'not': {
-                    'term': {
-                        field: terms,
-                    }
+            query_filters['must_not'].append({
+                'terms': {
+                    field: terms
                 }
-            }
+            })
+            return
     else:
         if not field.startswith('audit'):
             field = 'embedded.' + field
         if terms == ['*']:
-            return {
+            filter_condition = {
                 'exists': {
                     'field': field,
                 }
             }
         else:
-            return {
+            filter_condition = {
                 'terms': {
                     field: terms,
                 },
             }
+    query_filters['filter'].append(filter_condition)
 
 def set_filters(request, query, result, static_items=None):
     """
     Sets filters in the query
     """
-    query_filters = query['query']['bool']['filter']
+    query_filters = query['query']['bool']
     used_filters = {}
     if static_items is None:
         static_items = []
@@ -349,11 +347,7 @@ def set_filters(request, query, result, static_items=None):
         used_filters[field] = terms
 
         # Add filter to query
-        query_filters.append(build_terms_filter(field, terms))
-    # pp('used and query filters ')
-    # pp(used_filters)
-    # pp('')
-    # pp(query_filters)
+        build_terms_filter(query_filters, field, terms, query)
 
     return used_filters
 
@@ -410,6 +404,7 @@ def set_facets(facets, used_filters, principals, doc_types):
             {'terms': {'principals_allowed.view': principals}},
             {'terms': {'embedded.@type': doc_types}},
         ]
+        negative_filters = []
         # Also apply any filters NOT from the same field as the facet
         for field, terms in used_filters.items():
             if field.endswith('!'):
@@ -429,7 +424,7 @@ def set_facets(facets, used_filters, principals, doc_types):
                 if terms == ['*']:
                     filters.append({'missing': {'field': query_field}})
                 else:
-                    filters.append({'not': {'terms': {query_field: terms}}})
+                    negative_filters.append({'terms': {query_field: terms}})
             else:
                 if terms == ['*']:
                     filters.append({'exists': {'field': query_field}})
@@ -444,6 +439,7 @@ def set_facets(facets, used_filters, principals, doc_types):
             'filter': {
                 'bool': {
                     'must': filters,
+                    'must_not': negative_filters
                 },
             },
         }
@@ -785,16 +781,10 @@ def search(context, request, search_type=None, return_generator=False):
     # Decide whether to use scan for results.
     do_scan = size is None or size > 1000
     # Execute the query
-    # pdb.set_trace()
     if do_scan:
-        # pp('###### inside search type count')
-        # pp(query)
-        # pdb.set_trace()
 
         es_results = es.search(body=query, index=es_index, search_type='query_then_fetch')
     else:
-        # pp(query)
-        # pdb.set_trace()
         es_results = es.search(body=query, index=es_index, from_=from_, size=size)
 
     result['total'] = total = es_results['hits']['total']
@@ -993,10 +983,11 @@ def matrix(context, request):
     # Setting filters.
     # Rather than setting them at the top level of the query
     # we collect them for use in aggregations later.
-    query_filters = query['query']['bool'].pop('filter')
-    filter_collector = {'query': { 'bool': {'filter': query_filters}}}
+    query_filters = query['query'].pop('bool')
+    filter_collector = {'query': {'bool': query_filters}}
     used_filters = set_filters(request, filter_collector, result)
     filters = filter_collector['query']['bool']['filter']
+    negative_filters = filter_collector['query']['bool']['must_not']
 
     # Adding facets to the query
     facets = [(field, facet) for field, facet in schema['facets'].items() if
@@ -1034,6 +1025,7 @@ def matrix(context, request):
         "filter": {
             "bool": {
                 "must": filters,
+                "must_not": negative_filters
             }
         },
         "aggs": aggs,
