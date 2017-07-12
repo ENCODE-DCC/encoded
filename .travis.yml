@@ -9,9 +9,8 @@ notifications:
     secure: hlTj34WpuzQmsyxnUnFEwlAJeDcElshGfgw7oHuicAD83LorBFTc9ap6FhZXI5LFnqEl28FZ9YkJJRl0tFZgaApllrMmNCeK2FfRjnF8XGz2JS6Iiyj+hgWrKHHIbcS2g5R6L2/uzIhdMvCb97cReZckjo9lumYAdXGHY8DJbik=
 addons:
   apt:
-    sources:
-      - elasticsearch-1.7
     packages:
+      - oracle-java8-set-default
       - bsdtar
       - elasticsearch
       - graphviz
@@ -25,6 +24,9 @@ env:
         WmE7J5Vxheir50Heuji0JVpEmoYH5iPkLMQFgnocY1UspO1ka1+8M7SOgsUH
         SK5yLKZ/6oJyhlySqqTmCfYy3y/WXRNG76dy1kjVj/DEbx+n6Yu0nElw84ED
         ZR5KkpFMaKLA505soY+4lJc4jRl5u0qwCB1Ad3UgTgfkI4QSaGM=
+    - JAVA_HOME=/usr/lib/jvm/java-8-oracle
+    - ES_VERSION=5.4.1
+    - ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.deb
     - PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
 matrix:
   include:
@@ -42,6 +44,8 @@ before_install:
   - node --version
   - npm config set python /usr/bin/python2.7
 install:
+  - curl -O  ${ES_DOWNLOAD_URL}
+  - sudo dpkg -i --force-confnew elasticsearch-${ES_VERSION}.deb
   - python bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
 before_script:
