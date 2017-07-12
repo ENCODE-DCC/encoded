@@ -32,9 +32,9 @@ matrix:
   include:
     - python: "2.7"
       env: BROWSER=
-    - python: "3.5.1"
+    - python: "3.6"
       env: BROWSER=Chrome
-    - python: "3.5.1"
+    - python: "3.6"
       env: BROWSER=
 before_install:
   - postgres --version
