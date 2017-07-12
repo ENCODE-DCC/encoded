@@ -24,6 +24,7 @@ env:
         WmE7J5Vxheir50Heuji0JVpEmoYH5iPkLMQFgnocY1UspO1ka1+8M7SOgsUH
         SK5yLKZ/6oJyhlySqqTmCfYy3y/WXRNG76dy1kjVj/DEbx+n6Yu0nElw84ED
         ZR5KkpFMaKLA505soY+4lJc4jRl5u0qwCB1Ad3UgTgfkI4QSaGM=
+    - BOTO_CONFIG=tmp/bogusvalue
     - JAVA_HOME=/usr/lib/jvm/java-8-oracle
     - ES_VERSION=5.4.1
     - ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.deb
