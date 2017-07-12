@@ -1139,6 +1139,21 @@
         "uuid": "7dfbe70c-995d-4bc5-94c3-7d39d2baf001"
     },
     {
+        "email": "ksgraham@stanford.edu",
+        "first_name": "Keenan",
+        "groups": [
+            "admin"
+        ],
+        "job_title": "Research Data Analyst",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Graham",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific"
+    },
+    {
         "email": "kritijn21@gmail.com",
         "first_name": "Kriti",
         "groups": [
