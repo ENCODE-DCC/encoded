@@ -16,7 +16,22 @@
         { "$ref": "mixins.json#/notes"},
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/submitted"},
-        { "$ref": "mixins.json#/assay"},
+        { "$ref": "mixins.json#/assay" },     
+        { "assay_term_names": {
+                "title": "Pipeline Assays",
+                "description": "Pipeline assays.",
+                "type": "array",
+                "default": [],
+                "permission": "import_items",
+                "uniqueItems": true,
+                "items": {
+                    "type": "string",
+                    "enum": [
+                        { "$ref": "mixins.json#/assay/assay_term_name/enum" }                   
+                    ]   
+                }                 
+            }
+        },
         { "$ref": "mixins.json#/documents" }
     ],
     "properties": {
