@@ -1330,21 +1330,7 @@ def audit(context, request):
                     for xbucket in x_buckets:
                         summary.append(counts.get(xbucket['key'], 0))
                     bucket['assay_title'] = summary
-                   #counts[bucket['key']] = doc_count
-                    """
-                    counts_string = str(bucket['assay_title']['buckets'])
-                    temp = counts_string
-                    index = counts_string.find('[') # find first index of .
-                    temp = temp[:index] + temp[(index+1):] # take out [
-                    index = temp.find(']') # find end brace index of
-                    temp = temp[:index] + temp[(index+1):]
-                    bucket_dict = {}
-                    import ast
-                    bucket_dict = ast.literal_eval(temp)
-                    """
-                    #find index of both []
-                    #substring out both []
-                    #convert string to dict
+
 
     summarize_buckets(
         result['matrix'],
