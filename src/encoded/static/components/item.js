@@ -214,7 +214,7 @@ export const RelatedItems = (props) => {
     return (
         <FetchedData>
             <Param name="context" url={limitedUrl} />
-            <FetchedRelatedItems {...props} url={unlimitedUrl} />
+            <FetchedRelatedItems {...props} itemUrl={unlimitedUrl} />
         </FetchedData>
     );
 };
