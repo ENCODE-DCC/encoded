@@ -68,6 +68,7 @@ before_script:
         --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY > /dev/null &
       while test -f "$SC_PIDFILE" && test ! -f "$SC_READYFILE"; do sleep .5; done
     fi
+    sudo service elasticsearch stop
 script:
   - if test -z "$BROWSER"; then npm test; fi
   - if test -z "$BROWSER"; then bin/test -v -v --timeout=400 -m "not bdd"; fi
