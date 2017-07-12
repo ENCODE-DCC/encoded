@@ -299,7 +299,7 @@ class AuditMatrix extends React.Component {
                                                 // group rows that are under the display limit.
                                                 const groupRows = (this.state.yGroupOpen[group.key] || this.state.allYGroupsOpen) ? groupBuckets : groupBuckets.slice(0, yLimit);
                                                 rows.push(...groupRows.map((yb) => {
-                                                    const href = `${searchBase}&${secondaryYGrouping}=${globals.encodedURIComponent(yb.key)}`;
+                                                    const href = `${searchBase}&${group.key}=${globals.encodedURIComponent(yb.key)}`;
                                                     return (
                                                         <tr key={yb.key}>
                                                             <th style={{ backgroundColor: '#ddd', border: 'solid 1px white' }}><a href={href}>{yb.key}</a></th>
