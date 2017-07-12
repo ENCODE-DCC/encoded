@@ -1273,7 +1273,7 @@ def audit(context, request):
         }
     }
 }
-    if "audit.INTERNAL_ACTION.category" in facets:
+    if "audit.INTERNAL_ACTION.category" in facets[len(facets)-1]:
         aggs['audit.INTERNAL_ACTION.category'] = {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
                         }
                     }
@@ -1311,8 +1311,6 @@ def audit(context, request):
         es_results, facets, used_filters, (schema,), total, principals)
 
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
-        import pdb
-        pdb.set_trace()
         for category in grouping_fields:
             group_by = grouping_fields[0]
             grouping_fields = grouping_fields[1:]
