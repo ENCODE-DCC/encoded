@@ -40,9 +40,7 @@ def run(app):
         'properties': {
             'name_suggest': {
                 'type': 'completion',
-                'index_analyzer': 'standard',
-                'search_analyzer': 'standard',
-                'payloads': True
+                'analyzer': 'standard',
             }
         }
     }
