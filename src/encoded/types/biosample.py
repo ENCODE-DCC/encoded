@@ -99,10 +99,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'rnais.documents.lab',
         'organism',
         'references',
-        'genetic_modifications',
-        'genetic_modifications.award',
-        'genetic_modifications.lab',
-        'genetic_modifications.modified_target_id'
+        'genetic_modifications'
     ]
     audit_inherit = [
         'donor',
@@ -129,8 +126,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'rnais.source',
         'organism',
         'references',
-        'genetic_modifications',
-        'genetic_modifications.modified_target_id'
+        'genetic_modifications'
     ]
 
     @calculated_property(define=True,
