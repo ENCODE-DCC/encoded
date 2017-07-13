@@ -319,7 +319,7 @@ def set_filters(request, query, result, static_items=None):
         terms = all_terms[field]
         if field in ['type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
                      'format', 'frame', 'datastore', 'field', 'region', 'genome',
-                     'sort', 'from', 'referrer']:
+                     'sort', 'from', 'referrer', 'matrix.target']:
             continue
 
         # Add filter to result
@@ -899,6 +899,13 @@ def matrix(context, request):
     else:
         result['title'] = type_info.name + ' Matrix'
 
+    # Determine if "matrix.target=true" was in the query string, indicating we should do a target-
+    # based search. We do a normal assay-based search for any other value for target, or no target
+    # in the query string at all, target_mode is true if "matrix.target=true" was in the query
+    # string.
+    target_value = request.params.getall('matrix.target')
+    target_mode = len(target_value) == 1 and target_value[0] == 'true'
+
     matrix = result['matrix'] = type_info.factory.matrix.copy()
     matrix['x']['limit'] = request.params.get('x.limit', 20)
     matrix['y']['limit'] = request.params.get('y.limit', 5)
@@ -957,15 +964,42 @@ def matrix(context, request):
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Group results in 2 dimensions
-    x_grouping = matrix['x']['group_by']
+    if target_mode:
+        x_groupings = matrix['x']['group_by_target']
+        for index, field in enumerate(list(reversed(x_groupings))):
+            if index == 0:
+                x_target_agg = {
+                    "terms": {
+                        "field": 'embedded.' + field + '.raw',
+                        "size": 0,  # no limit
+                    }
+                }
+                x_agg = {
+                    field: x_target_agg
+                }
+            else:
+                x_agg = {
+                    field: {
+                        "terms": {
+                            "field": 'embedded.' + field + '.raw',
+                            "size": 0,  # no limit
+                        },
+                        "aggs": x_agg,
+                    },
+                }
+        aggs = x_agg
+        x_grouping = x_groupings[0]
+    else:
+        x_grouping = matrix['x']['group_by']
+        x_agg = {
+            "terms": {
+                "field": 'embedded.' + x_grouping + '.raw',
+                "size": 0,  # no limit
+            },
+        }
+        aggs = {x_grouping: x_agg}
+
     y_groupings = matrix['y']['group_by']
-    x_agg = {
-        "terms": {
-            "field": 'embedded.' + x_grouping + '.raw',
-            "size": 0,  # no limit
-        },
-    }
-    aggs = {x_grouping: x_agg}
     for field in reversed(y_groupings):
         aggs = {
             field: {
@@ -976,7 +1010,12 @@ def matrix(context, request):
                 "aggs": aggs,
             },
         }
-    aggs['x'] = x_agg
+
+    if target_mode:
+        aggs['x'] = x_target_agg
+    else:
+        aggs['x'] = x_agg
+
     query['aggs']['matrix'] = {
         "filter": {
             "bool": {
