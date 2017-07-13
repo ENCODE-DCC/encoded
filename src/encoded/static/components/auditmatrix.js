@@ -310,7 +310,7 @@ class AuditMatrix extends React.Component {
                                                                     // scale color between white and the series color
                                                                     cellColor.lightness(cellColor.lightness() + ((1 - (value / matrix.max_cell_doc_count)) * (100 - cellColor.lightness())));
                                                                     const textColor = cellColor.luminosity() > 0.5 ? '#000' : '#fff';
-                                                                    const cellHref = `${searchBase}&${secondaryYGrouping}=${globals.encodedURIComponent(yb.key)}&${xGrouping}=${globals.encodedURIComponent(xb.key)}`;
+                                                                    const cellHref = `${searchBase}&${group.key}=${globals.encodedURIComponent(yb.key)}&${xGrouping}=${globals.encodedURIComponent(xb.key)}`;
                                                                     const title = `${yb.key} / ${xb.key}: ${value}`;
                                                                     return (
                                                                         <td key={xb.key} style={{ backgroundColor: cellColor.hexString() }}>
