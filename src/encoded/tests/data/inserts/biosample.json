@@ -610,7 +610,7 @@
         "uuid": "45cf28e8-c017-42a6-a0bf-726f633c13e1"
     },
     {
-        "_test": "has fly life stage and model organism age",
+        "_test": "has fly life stage, model organism age and mutagen",
         "accession": "ENCBS000FLY",
         "award": "U41HG007355",
         "biosample_term_id": "UBERON:0000468",
@@ -620,6 +620,7 @@
         "donor": "ENCDO180XXX",
         "lab": "kevin-white",
         "organism": "dmelanogaster",
+        "genetic_modifications": ["10f82b48-4082-479d-8184-a1a73f9ff16d"],
         "source": "kevin-white",
         "fly_life_stage": "embryonic",
         "model_organism_age": "12-14",

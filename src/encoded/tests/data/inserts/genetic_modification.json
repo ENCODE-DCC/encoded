@@ -9,17 +9,21 @@
         "award": "/awards/U41HG007355/",
         "modification_type": "insertion",
         "purpose": "tagging",
-        "epitope_tags": [
+        "introduced_content": {
+            "epitope_tags": [
+                {
+                    "name": "eGFP",
+                    "location": "C-terminal"
+                }
+            ]
+        },
+        "modified_site": {
+            "location_by_target_id": "/targets/CTCF-human/"
+        },
+        "modification_techniques_used": [
             {
-                "name": "eGFP",
-                "location": "C-terminal"
-            }
-        ],
-        "modified_target_id": "/targets/CTCF-human/",
-        "techniques_used": [
-            { 
-                "technique_used": "CRISPR",
-                "sequence_information": {
+                "technique_name": "CRISPR",
+                "technique_details": {
                     "guide_rna_sequences": [
                         "GCGTAGCCAGTGACCAGCT",
                         "TGGGCTAACATTAGCCAGA"
@@ -38,120 +42,165 @@
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
         "description": "Scientists in India have delayed the ripening of tomatoes by silencing two genes encoding N-glycoprotein modifying enzymes, α-mannosidase and β-D-N-acetylhexosaminidase.",
-        "modified_site": {
-            "assembly": "GRCh38",
-            "chromosome": "11",
-            "start": 20000,
-            "end": 21000
-        },
         "purpose": "repression",
         "modification_type": "deletion",
-        "techniques_used":[
+        "zygosity": "homozygous",
+        "modified_site": {
+            "location_by_coordinates": {
+                "assembly": "GRCh38",
+                "chromosome": "11",
+                "start": 20000,
+                "end": 21000
+            }
+        },
+        "modification_techniques_used": [
             {
-                "technique_used": "CRISPR",
-                "reagent_identifiers": ["CRL-2522"],
-                "reagent_repository": "atcc",
-                "sequence_information": {
+                "technique_name": "CRISPR",
+                "reagent_details": {
+                    "reagent_identifiers": ["CRL-2522"],
+                    "reagent_repository": "atcc"
+                },
+                "technique_details": {
                     "guide_rna_sequences": [
                         "CAGTTAGCAGTACATGGAACACAGT"
                     ]
                 }
             },
             {
-                "technique_used": "TALE",
-                "sequence_information": {
-                    "RVD_sequences": [
-                        "NN"
-                    ]
+                "technique_name": "TALE",
+                "technique_details": {
+                    "RVD_sequence": "NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
+                    "target_sequence": "GATTACGTACGTTATTCCCATCACGATTACAGACT"
                 }
             }
         ],
-        "zygosity": "homozygous",
         "submitted_by": "amet.fusce@est.fermentum"
     },
     {
-        "techniques_used":[
-            {
-                "technique_used": "RNAi",
-                "reagent_repository": "sigma",
-                "reagent_identifiers": ["TRCN0000246247"]
-            }
-        ],
-        "modified_target_id": "/targets/FTO-human/",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "modification_type": "interference",
-        "purpose": "repression",
+        "uuid": "ef12855f-5d3e-4da5-8684-3a594c60505a",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
-        "uuid": "ef12855f-5d3e-4da5-8684-3a594c60505a",
         "status": "released",
-        "description": "shRNA targeting FTO"
-    },
-    {
-        "submitted_by": "amet.fusce@est.fermentum",
-        "status": "released",
-        "epitope_tags": [
+        "description": "shRNA targeting FTO",
+        "modification_type": "interference",
+        "purpose": "repression",
+        "modified_site": {
+            "location_by_target_id": "/targets/FTO-human/"
+        },
+        "modification_techniques_used": [
             {
-                "name": "eGFP",
-                "location": "C-terminal"
+                "technique_name": "RNAi",
+                "reagent_details": {
+                    "reagent_repository": "sigma",
+                    "reagent_identifiers": ["TRCN0000246247"]
+                }
             }
         ],
-        "modified_target_id": "/targets/FTO-human/",
+        "submitted_by": "amet.fusce@est.fermentum"
+    },
+    {
+        "uuid": "2f33a486-e3d9-4633-8682-a363b48ba67d",
+        "award": "/awards/U41HG007355/",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "status": "released",
         "lab": "/labs/robert-waterston/",
         "modification_type": "insertion",
         "purpose": "tagging",
-        "techniques_used":[
+        "modified_site": {
+            "location_by_target_id": "/targets/FTO-human/"
+        },
+        "introduced_content": {
+            "epitope_tags": [
+                {
+                    "name": "eGFP",
+                    "location": "C-terminal"
+                }
+            ]
+        },
+        "modification_techniques_used":[
             {
-                "technique_used": "stable transfection",
-                "reagent_repository": "kevin-white",
-                "reagent_identifiers":["CH322-135D17"],
-                "documents": ["kevin-white:K562_BAC_transfection_White_protocol"]
+                "technique_name": "stable transfection",
+                "reagent_details": {
+                    "reagent_repository": "kevin-white",
+                    "reagent_identifiers":["CH322-135D17"]
+                },
+                "technique_details": {
+                    "documents": ["kevin-white:K562_BAC_transfection_White_protocol"]
+                }
             }
-        ],
-        "award": "/awards/U41HG007355/",
-        "uuid": "2f33a486-e3d9-4633-8682-a363b48ba67d"
+        ]
     },
     {
-        "status": "released", 
-        "modified_site": {
-            "chromosome": "X",
-            "assembly": "hg19",
-            "start": 48560532,
-            "end": 48560547
-        },
+        "status": "released",
         "award": "/awards/U41HG007355/",
         "lab": "/labs/robert-waterston/",
         "uuid": "b9264c83-2222-4678-a82f-4915af941fa4",
         "submitted_by": "amet.fusce@est.fermentum",
         "modification_type": "replacement",
-        "techniques_used": [
+        "purpose": "validation",
+        "modified_site": {
+            "location_by_coordinates": {
+                "chromosome": "X",
+                "assembly": "hg19",
+                "start": 48560532,
+                "end": 48560547
+            }
+        },
+        "modification_techniques_used": [
             {
-                "technique_used": "TALE",
-                "sequence_information": {
-                    "RVD_sequences": ["NN", "NG", "HD", "NI"]
+                "technique_name": "TALE",
+                "technique_details": {
+                    "RVD_sequence": "NN,NG,HD,NI,NI,NG,NG,NN,HD,NN,NN",
+                    "target_sequence": "GATTACGTACGTTATTCCCATCACGATTACAGACT"
                 }
             }
         ],
-        "insert_sequence": "TACGGAGCTAGCTGGAACTAGCCATGCATAAACGATAGCTTGCTC"
+        "introduced_content": {
+            "introduced_sequence": "TACGGAGCTAGCTGGAACTAGCCATGCATAAACGATAGCTTGCTC"
+        }
     },
     {
-        "status": "in progress",
-        "modified_site":{
-            "chromosome": "2R",
-            "assembly": "dm6",
-            "start": 833235,
-            "end": 890382
-        },
+        "uuid": "10f82b48-4082-479d-8184-a1a73f9ff16d",
         "award": "/awards/U41HG007355/",
         "lab": "/labs/kevin-white/",
-        "uuid": "10f82b48-4082-479d-8184-a1a73f9ff16d",
         "submitted_by": "amet.fusce@est.fermentum",
+        "status": "in progress",
         "modification_type": "mutagenesis",
         "purpose": "repression",
-        "techniques_used":[
+        "modified_site":{
+            "location_by_coordinates": {
+                "chromosome": "2R",
+                "assembly": "dm6",
+                "start": 833235,
+                "end": 890382
+            }
+        },
+        "modification_techniques_used":[
             {
-                "technique_used": "mutagen",
-                "treatments": ["3280b708-0f05-40fa-bff2-54e2b6505c13"]
+                "technique_name": "mutagen",
+                "technique_details": {
+                    "treatments": ["3280b708-0f05-40fa-bff2-54e2b6505c13"]
+                }
+            }
+        ]
+    },
+    {
+        "uuid": "dd2afd83-0472-4a05-aacd-f0d1e12bb528",
+        "status": "in progress",
+        "award": "/awards/U41HG007355/",
+        "lab": "/labs/robert-waterston/",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "modification_type": "interference",
+        "purpose": "repression",
+        "modified_site": {
+            "location_by_target_id": "mes-4-celegans"
+        },
+        "modification_techniques_used": [
+            {
+                "technique_name": "RNAi",
+                "technique_details": {
+                    "rnai_sequences": ["AGCTCAGCTACGATTAGGCACT", "ATTTGCCCAGTGGACCTTTA"]
+                }
             }
         ]
     }

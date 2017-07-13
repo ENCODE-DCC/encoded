@@ -29,7 +29,7 @@
         "lab": "j-michael-cherry",
         "organism": "celegans",
         "num_times_outcrossed": "x10",
-        "constructs": ["893d806f-3a88-43eb-afdf-dcc16c79ee45"],
+        "genetic_modifications": ["dd2afd83-0472-4a05-aacd-f0d1e12bb528"],
         "uuid": "a09ce89d-e73a-4bbb-a3c9-9b46cc3a8e5f"
     },    
     {
