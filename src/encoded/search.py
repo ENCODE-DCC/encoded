@@ -319,7 +319,7 @@ def set_filters(request, query, result, static_items=None):
         terms = all_terms[field]
         if field in ['type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
                      'format', 'frame', 'datastore', 'field', 'region', 'genome',
-                     'sort', 'from', 'referrer', 'matrix.target']:
+                     'sort', 'from', 'referrer', 'matrix.type']:
             continue
 
         # Add filter to result
@@ -899,12 +899,17 @@ def matrix(context, request):
     else:
         result['title'] = type_info.name + ' Matrix'
 
-    # Determine if "matrix.target=true" was in the query string, indicating we should do a target-
-    # based search. We do a normal assay-based search for any other value for target, or no target
-    # in the query string at all, target_mode is true if "matrix.target=true" was in the query
-    # string.
-    target_value = request.params.getall('matrix.target')
-    target_mode = len(target_value) == 1 and target_value[0] == 'true'
+    # Determine if "matrix.target=target" was in the query string, indicating we should do a target-
+    # based search. We do a normal assay-based search if "matrix.target=assay" is in the query
+    # string, or no matrix.target at all exists.
+    target_value = request.params.getall('matrix.type')
+    if len(target_value) > 1:
+        msg = 'Matrix results require at most one matrix type.'
+        raise HTTPBadRequest(explanation=msg)
+    elif len(target_value) == 1 and (target_value[0] != 'target' and target_value[0] != 'assay'):
+        msg = 'Matrix type must be "assay" or "target" to produce results.'
+        raise HTTPBadRequest(explanation=msg)
+    target_mode = len(target_value) == 1 and target_value[0] == 'target'
 
     matrix = result['matrix'] = type_info.factory.matrix.copy()
     matrix['x']['limit'] = request.params.get('x.limit', 20)
@@ -965,6 +970,9 @@ def matrix(context, request):
 
     # Group results in 2 dimensions
     if target_mode:
+        # Target matrix requested. Get parameters of the target search from group_by_target array
+        # in data type's configuration. We buidl the request from the lowest level first to fit
+        # aggs search
         x_groupings = matrix['x']['group_by_target']
         for index, field in enumerate(list(reversed(x_groupings))):
             if index == 0:
@@ -990,6 +998,7 @@ def matrix(context, request):
         aggs = x_agg
         x_grouping = x_groupings[0]
     else:
+        # Assay matrix requested. Get parameters of the assay search from the group_by string.
         x_grouping = matrix['x']['group_by']
         x_agg = {
             "terms": {
@@ -1032,6 +1041,7 @@ def matrix(context, request):
     aggregations = es_results['aggregations']
     result['matrix']['doc_count'] = total = aggregations['matrix']['doc_count']
     result['matrix']['max_cell_doc_count'] = 0
+    result['matrix']['matrix_type'] = 'target' if target_mode else 'assay'
 
     # Format facets for results
     result['facets'] = format_facets(
