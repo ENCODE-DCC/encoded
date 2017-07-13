@@ -39,6 +39,9 @@
                     "purpose": {
                             "enum": ["tagging"]
                         }
+                    },
+                    "epitope_tags": {
+                        "minItems": 1
                     }
                 },
                 {
@@ -78,7 +81,15 @@
                     "enum": ["deletion"]
                 }
             }
-        }           
+        },
+        "epitope_tags": {
+            "comment": "Specified epitope tags shoul dinclude at least one entry.",
+            "properties":{
+                "epitope_tags": {
+                    "minItems": 1
+                }
+            }
+        }          
 
            
     },
