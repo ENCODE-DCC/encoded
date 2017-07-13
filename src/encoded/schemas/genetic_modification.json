@@ -4,7 +4,19 @@
     "id": "/profiles/genetic_modification.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["lab", "award", "modification_type"],
+    "anyOf": [
+        {
+            "required": ["lab", "award", "modification_type", "purpose", "location_by_target_id"]
+        },
+        {
+            "required": ["lab", "award", "modification_type", "purpose", "location_by_coordinates"]
+        },
+        {
+            "required": ["lab", "award", "modification_type", "purpose", "location_by_sequence"]
+        }
+
+    ],
+    
     "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -46,16 +58,29 @@
                     }
                 },
                 {
-                    "not": {
-                        "properties": {
-                            "purpose": {
-                                "enum": ["tagging", "overexpression", "repression", "activation", "validation"]
-                            }
+                    "properties": {
+                        "purpose": {
+                            "enum": ["analysis"]
                         }
                     }
+                  
                 }
             ]
-        }      
+        },
+        "modification_type": {
+            "properties": {
+                "not": {
+                    "purpose": {
+                        "enum": ["tagging"]
+                    }
+                },                
+                "modification_type": {
+                    "enum": ["deletion"]
+                }
+            }
+        }           
+
+           
     },
     "properties": {
         "schema_version": {
@@ -216,7 +241,8 @@
                 "activation",
                 "overexpression",
                 "tagging",
-                "validation"
+                "validation",
+                "analysis"
             ]
         },
         "zygosity":{
