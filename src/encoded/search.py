@@ -1281,6 +1281,7 @@ def audit(context, request):
     }
     
 }
+    # if internal action data is able to be seen in facets then add it to aggs
     if "audit.INTERNAL_ACTION.category" in facets[len(facets)-1]:
         aggs['audit.INTERNAL_ACTION.category'] = {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
                         }
@@ -1343,7 +1344,7 @@ def audit(context, request):
                         for xbucket in x_buckets:
                             summary.append(counts.get(xbucket['key'], 0))
                         bucket['assay_title'] = summary
-                else:
+                else: # for no audits row
                     for assay in outer_bucket[category]['assay_title']['buckets']:
                         doc_count = assay['doc_count']
                         if doc_count > matrix['max_cell_doc_count']:
@@ -1370,8 +1371,9 @@ def audit(context, request):
     result['matrix']['y']['label'] = "Audit Category"
     result['matrix']['y']['group_by'][0] = "audit_category"
     result['matrix']['y']['group_by'][1] = "audit_label"
-    bucket_audit_category_list = []
 
+    # The following lines organize the no audit data into the same format as the audit data
+    # so auditmatrix.js can treat it the same way
     no_audits_dict = {}
     no_audits_list = []
     no_audits_temp = {}
@@ -1380,8 +1382,11 @@ def audit(context, request):
     no_audits_list.append(no_audits_temp)
     no_audits_dict['buckets'] = no_audits_list
 
+    # Replaces 'no.audits' in aggregations['matrix'] with the correctly formatted 'no.audits' data
     aggregations['matrix']['no.audits'] = no_audits_dict
 
+    # Formats all audit categories into readable/usable format for auditmatrix.js
+    bucket_audit_category_list = []
     for audit in aggregations['matrix']:
         if "audit" in audit:
             audit_category_dict = {}
@@ -1391,6 +1396,8 @@ def audit(context, request):
 
     bucket_audit_category_dict = {}
     bucket_audit_category_dict['buckets'] = bucket_audit_category_list
+
+    # Add correctly formatted data to results
     result['matrix']['y']['audit_category'] = bucket_audit_category_dict
     result['matrix']['x'].update(aggregations['matrix']['x'])
 
