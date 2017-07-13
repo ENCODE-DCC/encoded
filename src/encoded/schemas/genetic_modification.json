@@ -90,8 +90,11 @@
             ]
         },
         "modification_type": {
-            "allOf": [
+            "oneOf": [
                 {
+                    "not": {
+                        "required": ["epitope_tags", "insert_sequence"]
+                    },
                     "properties": {
                         "not": {
                             "purpose": {
@@ -104,7 +107,7 @@
                     }
                 },
                 {
-                    "required": ["insert_sequence"], 
+                    "required": ["insert_sequence"],                
                     "properties": {                                        
                         "modification_type": {
                             "enum": ["insertion"]
@@ -113,12 +116,45 @@
                 },
                 {
                     "required": ["technique_by_treatment"], 
+                    "not": {
+                        "required": ["epitope_tags", "insert_sequence"]
+                    },
                     "properties": {                                        
                         "modification_type": {
                             "enum": ["mutagenesis"]
                         }
                     }    
+                },
+                {
+                    "required": ["insert_sequence"], 
+                    "properties": {                                        
+                        "modification_type": {
+                            "enum": ["replacement"]
+                        }
+                    }    
+                },
+                {
+                    "not": {
+                        "required": ["epitope_tags", "insert_sequence"]
+                    },
+                    "properties": {                                        
+                        "modification_type": {
+                            "enum": ["interference"]
+                        },
+                        "technique_name":{
+                            "enum": [
+                                "CRISPR",
+                                "stable transfection",
+                                "transient transfection",
+                                "transduction",
+                                "RNAi"
+                            ]                            
+                        }
+                    }    
                 }
+
+
+                
             ]
         },
         "epitope_tags": {
