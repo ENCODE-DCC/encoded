@@ -1237,6 +1237,7 @@ def audit(context, request):
     # Don't use these groupings for audit matrix
     x_grouping = matrix['x']['group_by']
     y_groupings = audit_list_field
+    y_groupings.append("no.audits")
     x_agg = {
         "terms": {
             "field": 'embedded.' + x_grouping + '.raw',
@@ -1244,7 +1245,7 @@ def audit(context, request):
         },
     }
     aggs = {x_grouping: x_agg}
-    
+    """
     for field in (y_groupings):
         aggs[field] = {
             "terms": {
@@ -1252,7 +1253,7 @@ def audit(context, request):
                 "size": 0,  # no limit
             },
         }
-    
+    """
     aggs = {'audit.ERROR.category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
                         }
                     }
@@ -1271,7 +1272,14 @@ def audit(context, request):
                 },
             'terms': {'field': 'audit.NOT_COMPLIANT.category', 'size': 0
         }
+    }, 'no.audits': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
+                        }
+                    }
+                },
+                'missing': {'field': 'audit.ERROR.category'
+                        }
     }
+    
 }
     if "audit.INTERNAL_ACTION.category" in facets[len(facets)-1]:
         aggs['audit.INTERNAL_ACTION.category'] = {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
@@ -1279,8 +1287,8 @@ def audit(context, request):
                     }
                 },
             'terms': {'field': 'audit.INTERNAL_ACTION.category', 'size': 0
-        }
-    }
+                    }
+            }
     aggs['x'] = x_agg
     query['aggs']['matrix'] = {
         "filter": {
@@ -1309,15 +1317,34 @@ def audit(context, request):
     # Format facets for results
     result['facets'] = format_facets(
         es_results, facets, used_filters, (schema,), total, principals)
-
+    
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
-        for category in grouping_fields:
+        for category in grouping_fields: # for each audit category
             group_by = grouping_fields[0]
             grouping_fields = grouping_fields[1:]
             if grouping_fields:
                 counts = {}
-                for bucket in outer_bucket[category]['buckets']:
-                    for assay in bucket['assay_title']['buckets']:
+                if "no" not in category: # if an audit category and not one that excludes audits
+                    for bucket in outer_bucket[category]['buckets']:
+                        for assay in bucket['assay_title']['buckets']:
+                            doc_count = assay['doc_count']
+                            if doc_count > matrix['max_cell_doc_count']:
+                                matrix['max_cell_doc_count'] = doc_count
+                            if 'key' in assay:
+                                counts[assay['key']] = doc_count
+                            """
+                            else:
+                                for col in assay:
+                                    assay_index = 0
+                                    counts[bucket[assay_index]['key']] = doc_count
+                                    assay_index += 1
+                            """
+                        summary = []
+                        for xbucket in x_buckets:
+                            summary.append(counts.get(xbucket['key'], 0))
+                        bucket['assay_title'] = summary
+                else:
+                    for assay in outer_bucket[category]['assay_title']['buckets']:
                         doc_count = assay['doc_count']
                         if doc_count > matrix['max_cell_doc_count']:
                             matrix['max_cell_doc_count'] = doc_count
@@ -1326,12 +1353,12 @@ def audit(context, request):
                         else:
                             for col in assay:
                                 assay_index = 0
-                                counts[bucket[assay_index]['key']] = doc_count
+                                counts[assay[assay_index]['key']] = doc_count
                                 assay_index += 1
                     summary = []
                     for xbucket in x_buckets:
                         summary.append(counts.get(xbucket['key'], 0))
-                    bucket['assay_title'] = summary
+                    outer_bucket[category]['assay_title'] = summary
 
 
     summarize_buckets(
@@ -1344,6 +1371,17 @@ def audit(context, request):
     result['matrix']['y']['group_by'][0] = "audit_category"
     result['matrix']['y']['group_by'][1] = "audit_label"
     bucket_audit_category_list = []
+
+    no_audits_dict = {}
+    no_audits_list = []
+    no_audits_temp = {}
+    no_audits_temp = aggregations['matrix']['no.audits']
+    no_audits_temp['key'] = "experiments with no audits"
+    no_audits_list.append(no_audits_temp)
+    no_audits_dict['buckets'] = no_audits_list
+
+    aggregations['matrix']['no.audits'] = no_audits_dict
+
     for audit in aggregations['matrix']:
         if "audit" in audit:
             audit_category_dict = {}
