@@ -4,7 +4,7 @@
     "id": "/profiles/genetic_modification.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["lab", "award", "modification_type"],
+    "required": ["lab", "award", "modified_site", "modification_type"],
     "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -16,47 +16,7 @@
         { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" }
-    ],    
-    "dependencies": {
-        "purpose": {
-            "comment": "Modifications for tagging purposes need to include the epitope_tag property in combination with a target. Modifications for other purposes also need either the site and/or target specified.",
-            "oneOf": [
-                {
-                    "required": ["modified_target_id", "epitope_tags"],
-                    "properties": {
-                    "purpose": {
-                            "enum": ["tagging"]
-                        }
-                    }
-                },
-                {
-                    "required": ["modified_target_id"],
-                    "properties": {
-                    "purpose": {
-                            "enum": ["repression", "activation", "overexpression", "validation"]
-                        }
-                    }
-                },
-                {
-                    "required": ["modified_site"],
-                    "properties": {
-                    "purpose": {
-                            "enum": ["repression", "activation", "overexpression", "validation"]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "properties": {
-                            "purpose": {
-                                "enum": ["tagging", "overexpression", "repression", "activation", "validation"]
-                            }
-                        }
-                    }
-                }
-            ]
-        }      
-    },
+    ],
     "properties": {
         "schema_version": {
             "default": "5"
@@ -85,103 +45,6 @@
             "description": "A plain text description of the genetic modification.",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
-        },
-        "modified_target_id": {
-            "title": "Modified target ID",
-            "description": "The name (ENCODE target ID) of the gene whose expression or product is modified by the genetic modification.",
-            "comment": "See target.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Target"
-        },
-        "modified_site": {
-            "title": "Modified site",
-            "description": "Genomic coordinates of the modification.",
-            "type": "object",
-            "additionalProperties": false,
-            "required":["assembly", "chromosome", "start", "end"],
-            "properties": {
-                "assembly": {
-                    "title": "Mapping assembly",
-                    "description": "The genome assembly to which modification coordinates relate. e.g. GRCh38.",
-                    "type": "string",
-                    "enum": [
-                        "mm9",
-                        "mm10",
-                        "mm10-minimal",
-                        "hg19",
-                        "GRCh38",
-                        "GRCh38-minimal",
-                        "ce10",
-                        "ce11",
-                        "dm3",
-                        "dm6",
-                        "J02459.1"
-                        ]
-                },
-                "chromosome": {
-                    "title": "Chromosome",
-                    "description": "The number (or letter) designation for the target chromosome. e.g. 1, 2L, or X",
-                    "type": "string"
-                },
-                "start": {
-                    "title": "Start",
-                    "description": "The starting coordinate.",
-                    "type": "integer"
-                },
-                "end": {
-                    "title": "End",
-                    "description": "The ending coordinate (possibly equal to the starting coordinate for one base.)",
-                    "type": "integer"
-                }
-            }
-        },
-        "epitope_tags": {
-            "title": "Protein epitope tags",
-            "description": "Eptiope tags introduced in the modification.",
-            "type": "array",
-            "items": {
-                "title": "Protein epitope tag",
-                "description": "Epitope tag introduced in the modification.",
-                "comment": "Submit tag name and tag location. If the fusion protein is designed to be expressed with a non-native promoter, please indicate the promoter used.",
-                "type": "object",
-                "additionalProperties": false,
-                "required": ["name", "location"],
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "enum": [
-                            "eGFP",
-                            "V5",
-                            "HA",
-                            "ER",
-                            "3xFLAG",
-                            "DsRed",
-                            "TRE",
-                            "T2A",
-                            "YFP",
-                            "FLAG",
-                            "mCherry"
-                        ]
-                    },
-                    "location": {
-                        "type": "string",
-                        "enum": [
-                            "N-terminal",
-                            "C-terminal",
-                            "internal",
-                            "other",
-                            "unknown"
-                        ]
-                    },
-                    "promoter_used": {
-                        "title": "Promoter used in construct",
-                        "description": "The name of the gene that the promoter regulates natively.",
-                        "comment": "See target.json for available identifiers.",
-                        "type": "string",
-                        "linkTo": "Target"
-                    }
-                }
-            }
         },
         "modification_type": {
             "title": "Modification type",
@@ -216,90 +79,317 @@
                 "heterozygous"
             ]
         },
-        "techniques_used": {
-            "title": "Techniques used",
-            "description": "Genetic modification technique(s)/tool(s) used to perform the modification.",
+        "modified_site": {
+            "title": "Modified site",
+            "description": "Site of the described genetic modificiation",
+            "type": "object",
+            "additionalProperties": false,
+            "dependencies": {
+                "purpose": {
+                    "oneOf": [
+                        {
+                            "modified_site": {
+                                "required": ["location_by_target_id"]
+                            }
+                        },
+                        {
+                            "modified_site": {
+                                "required": ["location_by_coordinates"]
+                            }
+                        },
+                        {
+                            "not": {
+                                "modified_site": {
+                                    "required": ["location_by_target_id", "location_by_coordinates"]
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "properties": {
+                "location_by_target_id": {
+                    "title": "Location by target ID",
+                    "description": "The modified location, specified by name (ENCODE target ID) of the gene whose expression or product is modified by the genetic modification.",
+                    "comment": "See target.json for available identifiers.",
+                    "type": "string",
+                    "linkTo": "Target"
+                },
+                "location_by_coordinates": {
+                    "title": "Location by coordinates",
+                    "description": "The modified location, specified by its genomic coordinates.",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required":["assembly", "chromosome", "start", "end"],
+                    "properties": {
+                        "assembly": {
+                            "title": "Mapping assembly",
+                            "description": "The genome assembly to which modification coordinates relate. e.g. GRCh38.",
+                            "type": "string",
+                            "enum": [
+                                "mm9",
+                                "mm10",
+                                "mm10-minimal",
+                                "hg19",
+                                "GRCh38",
+                                "GRCh38-minimal",
+                                "ce10",
+                                "ce11",
+                                "dm3",
+                                "dm6",
+                                "J02459.1"
+                                ]
+                        },
+                        "chromosome": {
+                            "title": "Chromosome",
+                            "description": "The number (or letter) designation for the target chromosome. e.g. 1, 2L, or X",
+                            "type": "string"
+                        },
+                        "start": {
+                            "title": "Start",
+                            "description": "The starting coordinate.",
+                            "type": "integer"
+                        },
+                        "end": {
+                            "title": "End",
+                            "description": "The ending coordinate (possibly equal to the starting coordinate for one base.)",
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "introduced_content": {
+            "title": "Introduced content",
+            "description": "If modification_type is insertion or replacement, the new content introduced by the modification.",
+            "type": "object",
+            "additionalProperties": false,
+            "dependencies": {
+                "modification_type": {
+                    "oneOf": [
+                        {
+                            "required": ["epitope_tags"],
+                            "modification_type": {
+                                "properties": {
+                                    "enum": ["insertion", "replacement"]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["introduced_sequence"],
+                            "modification_type": {
+                                "properties": {
+                                    "enum": ["insertion", "replacement"]
+                                }
+                            }
+                        },
+                        {
+                            "not": {
+                                "allOf": [
+                                    {
+                                        "modification_type": {
+                                            "properties": {
+                                                "enum": ["insertion", "replacement"]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "required": ["epitope_tags"],
+                                        "modification_type": {
+                                            "properties": {
+                                                "enum": ["deletion", "mutagenesis", "interference"]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "required": ["introduced_sequence"],
+                                        "modification_type": {
+                                            "properties": {
+                                                "enum": ["deletion", "mutagenesis", "interference"]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "required": ["epitope_tags", "introduced_sequence"],
+                                        "modification_type": {
+                                            "properties": {
+                                                "enum": ["deletion", "mutagenesis", "interference", "insertion", "replacement"]
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            "properties": {
+                "epitope_tags": {
+                    "title": "Protein epitope tags",
+                    "description": "Eptiope tags introduced in the modification.",
+                    "type": "array",
+                    "items": {
+                        "title": "Protein epitope tag",
+                        "description": "Epitope tag introduced in the modification.",
+                        "comment": "Submit tag name and tag location. If the fusion protein is designed to be expressed with a non-native promoter, please indicate the promoter used.",
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["name", "location"],
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "enum": [
+                                    "eGFP",
+                                    "V5",
+                                    "HA",
+                                    "ER",
+                                    "3xFLAG",
+                                    "DsRed",
+                                    "TRE",
+                                    "T2A",
+                                    "YFP",
+                                    "FLAG",
+                                    "mCherry"
+                                ]
+                            },
+                            "location": {
+                                "type": "string",
+                                "enum": [
+                                    "N-terminal",
+                                    "C-terminal",
+                                    "internal",
+                                    "other",
+                                    "unknown"
+                                ]
+                            },
+                            "promoter_used": {
+                                "title": "Promoter used in construct",
+                                "description": "The name of the gene that the promoter regulates natively.",
+                                "comment": "See target.json for available identifiers.",
+                                "type": "string",
+                                "linkTo": "Target"
+                            }
+                        }
+                    }
+                },
+                "introduced_sequence": {
+                    "title": "Introduced sequence",
+                    "description": "New sequence introduced into the genome by the modification.",
+                    "type": "string",
+                    "pattern": "^[ACTG]+$"	
+                }
+            }
+        },
+        "modification_techniques_used": {
+            "title": "Modification techniques used",
+            "description": "Genetic modification techniques and reagents used to perform the modification.",
             "type": "array",
             "default": [],
             "permission": "import_items",
             "uniqueItems": true,
             "items":{
-                "title": "Technique used",
-                "description": "Techniques and reagents used to produce the described genetic modification.",
+                "title": "Modification technique used",
+                "description": "Technique/reagents used to produce the described genetic modification.",
                 "additionalProperties": false,
                 "type": "object",
+                "dependencies": {
+                    "modification_techniques_used": {
+                        "comment": "Please fill out either the reagent information if deposited into a repository or details of the technique (or both, if you like).",
+                        "oneOf": [
+                            {
+                                "required": ["reagent_details"],
+                                "properties": {
+                                    "technique_name": {
+                                        "enum": ["CRISPR", "mutagen", "RNAi", "stable transfection", "TALE", "transient transfection", "transduction"]
+                                    }
+                                }
+                            },
+                            {
+                                "required": ["technique_details"],
+                                "properties": {
+                                    "technique_name": {
+                                        "enum": ["CRISPR", "mutagen", "RNAi", "stable transfection", "TALE", "transient transfection", "transduction"]
+                                    }
+                                }
+                            },
+                            {
+                                "required": ["technique_details", "reagent_details"],
+                                "properties": {
+                                    "technique_name": {
+                                        "enum": ["CRISPR", "mutagen", "RNAi", "stable transfection", "TALE", "transient transfection", "transduction"]
+                                    }
+                                }
+                            },
+                            {
+                                "not": {
+                                    "properties": {
+                                        "technique_name": {
+                                            "enum": ["CRISPR", "mutagen", "RNAi", "stable transfection", "TALE", "transient transfection", "transduction"]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }       
+                },
                 "properties": {
-                    "technique_used": {
-                        "title": "Technique used",
+                    "technique_name": {
+                        "title": "Technique name",
                         "description": "Technique used to produce the described genetic modification.",
                         "type": "string",
                         "enum":[
                             "CRISPR",
-                            "TALE",
-                            "stable transfection",
-                            "transient transfection",
-                            "transduction",
+                            "mutagen",
                             "RNAi",
-                            "mutagen"
+                            "stable transfection",
+                            "TALE",
+                            "transient transfection",
+                            "transduction"
                         ]
                     },
-                    "reagent_repository": {
-                        "title": "Reagent repository",
-                        "description": "Repository where reagent used to produce the described genetic modification can be obtained, if applicable.",
-                        "comment": "See source.json for identifiers (e.g. addgene, bacpac, rnai-consortium",
-                        "type": "string",
-                        "linkTo": "Source"
-                    },
-                    "reagent_identifiers": {
-                        "title": "Reagent identifier",
-                        "description": "Repository identifier of the reagent used to produce the describe genetic modification, if applicable.",
-                        "comment": "If a mutagenic chemical is used, please provide the ChEBI ID.",
-                        "type": "array",
-                        "items":{
-                            "type": "string",
-                            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
-                        }
-                    },
-                    "documents": {
-                        "title": "Documents",
-                        "description": "Supporting documents describing how the genetic modification(s) was/were produced.",
-                        "comment": "If reagents were not deposited into a repository with relevant details, then please describe the methods in attached documents.",
-                        "type": "array",
-                        "uniqueItems": true,
-                        "items": {
-                            "title": "Document",
-                            "description": "Supporting document describing how the genetic modification(s) was/were produced.",
-                            "type": "string",
-                            "comment": "See document.json for available identifiers.",
-                            "linkTo": "Document"
-                        }
-                    },
-                    "treatments": {
-                        "title": "Treatment",
-                        "description": "A list of relevant treatments applied to result in the modification.",
-                        "type": "array",
-                        "uniqueItems": true,
-                        "items": {
-                            "title": "Treatment",
-                            "description": "Treatment applied to result in the modification.",
-                            "type": "string",
-                            "comment": "See treatment.json for available identifiers.",
-                            "linkTo": "Treatment"
-                        }
-                    },
-                    "sequence_information": {
-                        "title": "Sequence information",
-                        "description": "A list of relevant sequences related to the technique described.",
+                    "reagent_details": {
+                        "title": "Reagent details",
+                        "description": "Details of the reagents used to create the modification.",
+                        "comment": "If reagents used to create the modification are deposited in a public repository and annotated with metadata, please provide those details.",
                         "type": "object",
                         "additionalProperties": false,
                         "dependencies": {
                             "reagent_identifiers": ["reagent_repository"],
-                            "techniques_used": {
+                            "reagent_repository": ["reagent_identifiers"]
+                        },
+                        "properties": {
+                            "reagent_repository": {
+                                "title": "Reagent repository",
+                                "description": "Repository where reagents used to produce the described genetic modification can be obtained, if applicable.",
+                                "comment": "See source.json for identifiers (e.g. addgene, bacpac, rnai-consortium)",
+                                "type": "string",
+                                "linkTo": "Source"
+                            },
+                            "reagent_identifiers": {
+                                "title": "Reagent identifier",
+                                "description": "Repository identifier of the reagent used to produce the describe genetic modification, if applicable.",
+                                "type": "array",
+                                "items":{
+                                    "type": "string",
+                                    "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
+                                }
+                            }
+                        }
+                    },
+                    "technique_details": {
+                        "title": "Technique details",
+                        "description": "Details of the relevant sequences or treatment related to the technique described.",
+                        "comment": "Please fill this out if reagents are not depoited into a public repository with accompanying metadata",
+                        "type": "object",
+                        "additionalProperties": false,
+                        "dependencies": {
+                            "technique_details": {
+                                "comment": "Each technique choice must be accompanied by the property detail as stipulated. (e.g. gRNA sequences must accompany CRISPR).",
                                 "oneOf": [
                                     {
                                         "required": ["guide_rna_sequences"],
                                         "properties": {
-                                            "technique_used": {
+                                            "technique_name": {
                                                 "enum": ["CRISPR"]
                                             }
                                         }
@@ -307,28 +397,53 @@
                                     {
                                         "required": ["rnai_sequences"],
                                         "properties":{
-                                            "technique_used": {
+                                            "technique_name": {
                                                 "enum": ["RNAi"]
                                             }
                                         }
                                     },
                                     {
-                                        "required": ["RVD_sequences"],
+                                        "required": ["RVD_sequence", "target_sequence"],
                                         "properties":{
-                                            "technique_used": {
+                                            "technique_name": {
                                                 "enum": ["TALE"]
                                             }
                                         }
                                     },
                                     {
-                                        "properties":{
-                                            "technique_used": {
+                                        "required": ["treatments"],
+                                        "properties": {
+                                            "technique_name": {
+                                                "enum": ["mutagen"]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "required": ["documents"],
+                                        "properties": {
+                                            "technique_name": {
                                                 "enum": [
                                                     "stable transfection",
                                                     "transient transfection",
-                                                    "transduction",
-                                                    "mutagen"
+                                                    "transduction"
                                                 ]
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "not": {
+                                            "properties": {
+                                                "technique_name": {
+                                                    "enum": [
+                                                        "CRISPR",
+                                                        "mutagen",
+                                                        "RNAi",
+                                                        "stable transfection",
+                                                        "TALE",
+                                                        "transient transfection",
+                                                        "transduction"
+                                                    ]
+                                                }
                                             }
                                         }
                                     }
@@ -338,7 +453,7 @@
                         "properties": {
                             "rnai_sequences": {
                                 "title": "RNAi sequences",
-                                "description": "Sequences of the inhibitory RNA.",
+                                "description": "Sequences of the inhibitory RNA (RNAi).",
                                 "type": "array",
                                 "uniqueItems": true,
                                 "items": {
@@ -358,36 +473,52 @@
                                 "title": "Guide RNA sequences",
                                 "description": "gRNA sequences used in CRISPR genetic modification",
                                 "type": "array",
-                                "default": [],
                                 "uniqueItems": true,
                                 "items": {
                                     "title": "gRNA sequence",
-                                    "description": "guide RNA sequence used in the experiment.",
+                                    "description": "CRISPR guide RNA sequence used in the experiment.",
                                     "type": "string",
                                     "pattern": "^[ACUNTG]+$"
                                 }
                             },
-                            "RVD_sequences": {
-                                "title": "RVD sequences",
-                                "description": "The repeat variable diresidue sequences of the TAL effector. E.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
+                            "RVD_sequence": {
+                                "title": "RVD sequence",
+                                "description": "The repeat variable diresidue sequences of the TAL effector (TALE). E.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
+                                "type": "string",
+                                "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
+                            },
+                            "treatments": {
+                                "title": "Treatments",
+                                "description": "A list of relevant treatments applied to result in the modification.",
                                 "type": "array",
+                                "uniqueItems": true,
                                 "items": {
-                                    "title": "RVD sequence",
+                                    "title": "Treatment",
+                                    "description": "Treatment applied to result in the modification.",
                                     "type": "string",
-                                    "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
+                                    "comment": "See treatment.json for available identifiers.",
+                                    "linkTo": "Treatment"
+                                }
+                            },
+                            "documents": {
+                                "title": "Documents",
+                                "description": "Supporting documents describing how the genetic modification(s) was/were produced.",
+                                "comment": "If reagents were not deposited into a repository with relevant details, then please describe the methods in attached documents.",
+                                "type": "array",
+                                "uniqueItems": true,
+                                "items": {
+                                    "title": "Document",
+                                    "description": "Supporting document describing how the genetic modification(s) was/were produced.",
+                                    "type": "string",
+                                    "comment": "See document.json for available identifiers.",
+                                    "linkTo": "Document"
                                 }
                             }
                         }
                     }
                 }
             }
-        },
-        "insert_sequence": {
-            "title": "Insert sequence",
-            "description": "Insert sequence",
-        	"type": "string",
-            "pattern": "^[ACTG]+$"	
-		}
+        }
     },
     "columns": {
         "aliases": {
