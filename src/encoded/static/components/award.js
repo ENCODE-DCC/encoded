@@ -967,7 +967,7 @@ class GenusButtons extends React.Component {
     render() {
         const { updatedGenusArray, selectedOrganisms, handleClick } = this.props;
         // if updatedGenusArray.length >1 (do the following), else return null
-        if (updatedGenusArray.length > 1) {
+        if (updatedGenusArray.length) {
             return (
                 <div className="organism-selector" ref="tabdisplay">
                     {updatedGenusArray.indexOf('HUMAN') !== -1 ?
@@ -986,8 +986,6 @@ class GenusButtons extends React.Component {
                         <OrganismSelector organism="FLY" selected={selectedOrganisms.indexOf('FLY') !== -1} organismButtonClick={handleClick} />
                     :
                     null}
-                {/* Add this condition: when there is only one organism present, no buttons will show.
-                Might have to do a nested ternary function or have to use some "destroy" function to remove any button that showed up */}
                 </div>
             );
         }
