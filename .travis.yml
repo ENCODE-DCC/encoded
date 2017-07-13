@@ -1,5 +1,5 @@
 language: python
-sudo: true
+sudo: required
 cache:
   directories:
     - eggs
@@ -27,7 +27,6 @@ env:
     - BOTO_CONFIG=tmp/bogusvalue
     - JAVA_HOME=/usr/lib/jvm/java-8-oracle
     - ES_VERSION=5.4.1
-    - ES_HOME=/home/travis/build/ENCODE-DCC/encoded/conf
     - ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.deb
     - PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
 matrix:
