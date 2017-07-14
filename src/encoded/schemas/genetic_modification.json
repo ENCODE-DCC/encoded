@@ -184,7 +184,7 @@
                     }
                 },
                 {
-                    "required": ["RVD_sequences"],
+                    "required": ["RVD_sequences", "target_sequence"],
                     "properties":{
                         "technique_name": {
                             "enum": ["TALE"]
@@ -192,18 +192,35 @@
                     }
                 },
                 {
+                    "required": ["technique_by_treatment"],
+                     "properties":{
+                        "technique_name": {
+                            "enum": [
+                                "mutagen"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "required": ["documents"],
                     "properties":{
                         "technique_name": {
                             "enum": [
                                 "stable transfection",
                                 "transient transfection",
-                                "transduction",
-                                "mutagen"
+                                "transduction"
                             ]
                         }
                     }
                 }
             ]
+        },
+        "target_sequence": {
+            "properties":{
+                "technique_name": {
+                    "enum": ["TALE", "RNAi"]
+                }
+            }
         }  
     },
     "properties": {
