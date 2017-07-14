@@ -1237,7 +1237,7 @@ def audit(context, request):
     # Don't use these groupings for audit matrix
     x_grouping = matrix['x']['group_by']
     y_groupings = audit_list_field
-    y_groupings.append("no.audits")
+    #y_groupings.append("no.audits")
     x_agg = {
         "terms": {
             "field": 'embedded.' + x_grouping + '.raw',
@@ -1327,6 +1327,7 @@ def audit(context, request):
                 counts = {}
                 if "no" not in category: # if an audit category and not one that excludes audits
                     for bucket in outer_bucket[category]['buckets']:
+                        counts = {}
                         for assay in bucket['assay_title']['buckets']:
                             doc_count = assay['doc_count']
                             if doc_count > matrix['max_cell_doc_count']:
