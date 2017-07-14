@@ -51,7 +51,6 @@ install:
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
 before_script:
   - sudo chown elasticsearch: home/travis/elasticsearch/ /home/travis/log/elasticsearch/
-  - sudo chmod u+w home/travis/elasticsearch/ /home/travis/log/elasticsearch/
   - >
     if test -n "$BROWSER"; then
       CONNECT_URL=https://saucelabs.com/downloads/sc-4.4.4-linux.tar.gz 
