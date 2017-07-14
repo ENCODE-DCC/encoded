@@ -1237,7 +1237,7 @@ def audit(context, request):
     # Don't use these groupings for audit matrix
     x_grouping = matrix['x']['group_by']
     y_groupings = audit_list_field
-    #y_groupings.append("no.audits")
+    y_groupings.append("no.audits")
     x_agg = {
         "terms": {
             "field": 'embedded.' + x_grouping + '.raw',
