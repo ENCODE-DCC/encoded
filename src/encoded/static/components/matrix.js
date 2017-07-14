@@ -150,16 +150,26 @@ class Matrix extends React.Component {
         const notification = context.notification;
         const visualizeLimit = 500;
         if (notification === 'Success' || notification === 'No results found') {
-            const xFacets = matrix.x.facets.map(f => _.findWhere(context.facets, { field: f })).filter(f => f);
-            let yFacets = matrix.y.facets.map(f => _.findWhere(context.facets, { field: f })).filter(f => f);
-            yFacets = yFacets.concat(_.reject(context.facets, f => _.contains(matrix.x.facets, f.field) || _.contains(matrix.y.facets, f.field)));
+            // For each facet title in the matrix.x.facets array of facet titles, find the
+            // corresponding object from the search results facets to make the corresponding array
+            // of those. Finally, filter out any missing objects in the resulting array --
+            // matrix.x.facets that don't have a corresponding entry in the search results facets.
+            // Do this process for both the horizontal and vertical facet arrays.
+            const xFacets = matrix.x.facets.map(facetTitle => _(context.facets).findWhere({ field: facetTitle })).filter(facetObj => facetObj);
+            let yFacets = matrix.y.facets.map(facetTitle => _(context.facets).findWhere({ field: facetTitle })).filter(facetObj => facetObj);
+
+            // Generate an array of search result facets that DON'T appear in either the vertical
+            // or horizontal matrix facet arrays. Add this array to the array of vertical facets
+            // we generated in the last step.
+            yFacets = yFacets.concat(_(context.facets).reject(facet => _(matrix.x.facets).contains(facet.field) || _(matrix.y.facets).contains(facet.field)));
+
             const xGrouping = matrix.x.group_by;
             const primaryYGrouping = matrix.y.group_by[0];
             const secondaryYGrouping = matrix.y.group_by[1];
             const xBuckets = matrix.x.buckets;
             const xLimit = matrix.x.limit || xBuckets.length;
             const yGroups = matrix.y[primaryYGrouping].buckets;
-            const yGroupFacet = _.findWhere(context.facets, { field: primaryYGrouping });
+            const yGroupFacet = _(context.facets).findWhere({ field: primaryYGrouping });
             const yGroupOptions = yGroupFacet ? yGroupFacet.terms.map(term => term.key) : [];
             yGroupOptions.sort();
             const searchBase = context.matrix.search_base;
@@ -373,3 +383,15 @@ Matrix.contextTypes = {
 };
 
 globals.contentViews.register(Matrix, 'Matrix');
+
+
+// Display the experiment matrix that focuses on targets.
+class MatrixTarget extends React.Component {
+    render() {
+        return null;
+    }
+}
+
+MatrixTarget.propTypes = {
+    matrixData: PropTypes.object.isRequired, // Matrix search result data -- all the data to display in the matrix
+};

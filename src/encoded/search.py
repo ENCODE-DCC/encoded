@@ -1037,6 +1037,8 @@ def matrix(context, request):
     # Execute the query
     es_results = es.search(body=query, index=es_index, search_type='count')
 
+    print('{}'.format(es_results))
+
     # Format matrix for results
     aggregations = es_results['aggregations']
     result['matrix']['doc_count'] = total = aggregations['matrix']['doc_count']
@@ -1047,29 +1049,70 @@ def matrix(context, request):
     result['facets'] = format_facets(
         es_results, facets, used_filters, (schema,), total, principals)
 
+    # Convert Elasticsearch returned matrix search data to a form usable by the front end matrix
+    # code, using only the 'matrix' object within the search data. It contains nested terms and
+    # their matrix search results in 'bucket' arrays, with the exact terms being defined in the
+    # .py file for the object we're querying in the object's 'matrix' property.
+    #
+    # matrix (dictionary): 'matrix' object within the Elasticsearch matrix search results, containing
+    #        all the data to render the matrix and its headers, but not the facets that appear
+    #        along the top and bottom.
+    # x_buckets (dictionary): 'x' object within the Elasticsearch matrix search results, containing
+    #        the headers that give titles to each column of the chart, as well as summary counts
+    #        we don't currently use on the front end.
+    # outer_bucket (list): search result bucket containing the first term in 'grouping_fields'. As
+    #        we dig deeper into the buckets recursively, this parameter exists at the depth we're
+    #        converting.
+    # grouping_fields (list): Strings that outline the hierarchy of terms we dig through within the
+    #        buckets. Once we get to a single element within the recursive loop, we convert the
+    #        data we find there.
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
+        # Loop by recursion through grouping_fields until we get the terminal grouping field. So
+        # get the initial grouping field in the list and save the rest for the recursive call.
         group_by = grouping_fields[0]
         grouping_fields = grouping_fields[1:]
         if not grouping_fields:
+            # We have recursed through to the last grouping_field in the array given in the top-
+            # level summarize_buckets call. Now we can get down to actually converting the search
+            # result data. First loop through each element in the term's 'buckets' which contain
+            # displayable key and a count.
             counts = {}
             for bucket in outer_bucket[group_by]['buckets']:
+                # Grab the count for the row, and keep track of the maximum count we find by
+                # mutating the max_cell_doc_count property of the matrix for the front end to use
+                # to color the cells. Then we add to a counts dictionary that keeps track of each
+                # displayed term and the corresponding count.
                 doc_count = bucket['doc_count']
                 if doc_count > matrix['max_cell_doc_count']:
                     matrix['max_cell_doc_count'] = doc_count
                 counts[bucket['key']] = doc_count
+
+            # We now have `counts` containing each displayed key and the corresponding count for a
+            # row of the matrix. Convert that to a list of counts (cell values for a row of the
+            # matrix) to replace the existing bucket for the given grouping_fields term with a
+            # simple list of counts without their keys -- the position within the list corresponds
+            # to the keys within 'x'.
             summary = []
             for bucket in x_buckets:
                 summary.append(counts.get(bucket['key'], 0))
             outer_bucket[group_by] = summary
         else:
+            # We still have grouping fields, so we need to dig down into those to format the data
+            # for the front end. The `matrix` object in aggregations contains an object keyed with
+            # the first grouping field in the array passed to the top-most summarize_bucket call.
+            # It contains a bucket, with further nested grouping fields, and so on until we get to
+            # the last nested field. Each level of bucket gets reformatted for the front end in the
+            # above if statement. Loop through the buckets in the current level of grouping_field
+            # to convert the data within.
             for bucket in outer_bucket[group_by]['buckets']:
                 summarize_buckets(matrix, x_buckets, bucket, grouping_fields)
 
+    groupings = y_groupings + x_groupings if target_mode else [x_grouping]
     summarize_buckets(
         result['matrix'],
         aggregations['matrix']['x']['buckets'],
         aggregations['matrix'],
-        y_groupings + [x_grouping])
+        groupings)
 
     result['matrix']['y'][y_groupings[0]] = aggregations['matrix'][y_groupings[0]]
     result['matrix']['x'].update(aggregations['matrix']['x'])
