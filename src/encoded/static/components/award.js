@@ -124,7 +124,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                         for (let i = 0; i < chartData.length; i += 1) {
                             if (chartData[i]) {
                                 text.push(`<li><a href="${baseSearchUri}${chartLabels[i]}">`);
-                                text.push(`<span class="chart-legend-chip" style="background-color:${chartColors[i]}"></span>`);
+                                text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${chartColors[i]}"></i>`);
                                 text.push(`<span class="chart-legend-label">${chartLabels[i]}</span>`);
                                 text.push('</a></li>');
                             }
@@ -758,6 +758,7 @@ const ChartRenderer = (props) => {
             uriBase: 'type=AntibodyLot&award=/awards',
         },
     };
+    // Match the species to their genera
     const speciesGenusMap = {
         'Homo sapiens': 'HUMAN',
         'Mus musculus': 'MOUSE',
@@ -800,6 +801,7 @@ const ChartRenderer = (props) => {
             searchData[chartCategory].statuses = (statusFacet && statusFacet.terms && statusFacet.terms.length) ? statusFacet.terms : [];
         }
     });
+    // If there are experiements, then the corresponding species are added to the array of species
     if (experiments && experiments.facets && experiments.facets.length) {
         const genusFacet = experiments.facets.find(facet => facet.field === 'replicates.library.biosample.donor.organism.scientific_name');
         experimentSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
@@ -810,6 +812,7 @@ const ChartRenderer = (props) => {
             }
         }
     }
+    // If there are annotations, then the corresponding species are added to the array of species
     if (annotations && annotations.facets && annotations.facets.length) {
         const genusFacet = annotations.facets.find(facet => facet.field === 'organism.scientific_name');
         annotationSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
@@ -820,6 +823,7 @@ const ChartRenderer = (props) => {
             }
         }
     }
+    // If there are biosamples, then the corresponding species are iadded to the array of species
     if (biosamples && biosamples.facets && biosamples.facets.length) {
         const genusFacet = biosamples.facets.find(facet => facet.field === 'organism.scientific_name=');
         biosampleSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
@@ -830,6 +834,7 @@ const ChartRenderer = (props) => {
             }
         }
     }
+    // If there are antibodies, then the corresponding species are added to the array of species
     if (antibodies && antibodies.facets && antibodies.facets.length) {
         const genusFacet = antibodies.facets.find(facet => facet.field === 'targets.organism.scientific_name=');
         antibodySpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
@@ -840,7 +845,10 @@ const ChartRenderer = (props) => {
             }
         }
     }
+    // Array of species is converted to an array of genera
     let updatedGenusArray = updatedSpeciesArray.map(species => speciesGenusMap[species]);
+
+    // Array of genera is deduplicated
     updatedGenusArray = _.uniq(updatedGenusArray);
 
     return (
@@ -935,11 +943,6 @@ const ChartRenderer = (props) => {
                     }
                 </div>
             </PanelBody>
-            {console.log(experimentSpeciesArray)}
-            {console.log(annotationSpeciesArray)}
-            {console.log(biosampleSpeciesArray)}
-            {console.log(antibodySpeciesArray)}
-            {console.log(updatedGenusArray)}
         </div>
     );
 };
@@ -950,8 +953,8 @@ ChartRenderer.propTypes = {
     annotations: PropTypes.object, // Search result of matching annotations
     antibodies: PropTypes.object, // Search result of matching antibodies
     biosamples: PropTypes.object, // Search result of matching biosamples
-    handleClick: PropTypes.func.isRequired,
-    selectedOrganisms: PropTypes.array,
+    handleClick: PropTypes.func.isRequired, // Function to call when a button is clicked
+    selectedOrganisms: PropTypes.array, // Array of currently selected buttons
 };
 
 ChartRenderer.defaultProps = {
@@ -966,7 +969,7 @@ ChartRenderer.defaultProps = {
 class GenusButtons extends React.Component {
     render() {
         const { updatedGenusArray, selectedOrganisms, handleClick } = this.props;
-        // if updatedGenusArray.length >1 (do the following), else return null
+        // If genera exist, then the button for each specific genus is created
         if (updatedGenusArray.length) {
             return (
                 <div className="organism-selector" ref="tabdisplay">
@@ -996,7 +999,7 @@ class GenusButtons extends React.Component {
 GenusButtons.propTypes = {
     selectedOrganisms: PropTypes.array, // Array of currently selected buttons
     handleClick: PropTypes.func.isRequired, // Function to call when a button is clicked
-    updatedGenusArray: PropTypes.array,
+    updatedGenusArray: PropTypes.array, // Array of existing genera
 };
 
 GenusButtons.defaultProps = {
@@ -1290,7 +1293,7 @@ class AwardCharts extends React.Component {
 
 AwardCharts.propTypes = {
     award: PropTypes.object.isRequired, // Award represented by this chart
-    updatedGenusArray: PropTypes.array,
+    updatedGenusArray: PropTypes.array, //Array of existing genera
 };
 AwardCharts.defaultProps = {
     updatedGenusArray: [],
