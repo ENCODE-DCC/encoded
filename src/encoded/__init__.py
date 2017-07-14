@@ -178,9 +178,9 @@ def app_version(config):
     import os
     import subprocess
     version = subprocess.check_output(
-        ['git', '-C', os.path.dirname(__file__), 'describe']).decode('utf-8').strip()
+        ['git', '-C', os.path.dirname(__file__), 'describe']).decode('utf-8').strip(), stderr=subprocess.STDOUT
     diff = subprocess.check_output(
-        ['git', '-C', os.path.dirname(__file__), 'diff', '--no-ext-diff'])
+        ['git', '-C', os.path.dirname(__file__), 'diff', '--no-ext-diff'], stderr=subprocess.STDOUT)
     if diff:
         version += '-patch' + hashlib.sha1(diff).hexdigest()[:7]
     config.registry.settings['snovault.app_version'] = version
