@@ -1037,8 +1037,6 @@ def matrix(context, request):
     # Execute the query
     es_results = es.search(body=query, index=es_index, search_type='count')
 
-    print('{}'.format(es_results))
-
     # Format matrix for results
     aggregations = es_results['aggregations']
     result['matrix']['doc_count'] = total = aggregations['matrix']['doc_count']
