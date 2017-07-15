@@ -19,10 +19,12 @@ def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
 
 @pytest.yield_fixture(scope='session')
 def app(app_settings):
+    import time
     from .. import test_indexing
     from snovault.elasticsearch import create_mapping
     for app in test_indexing.app(app_settings):
         create_mapping.run(app)
+        time.sleep(20)
         yield app
 
 
