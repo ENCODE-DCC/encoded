@@ -184,9 +184,9 @@ def app_version(config):
             ['git', '-C', os.path.dirname(__file__), 'diff', '--no-ext-diff'])
         if diff:
             version += '-patch' + hashlib.sha1(diff).hexdigest()[:7]
-    except subprocess.CalledProcessError as e:
-        import pprint
-        pprint.pprint(e.output)
+    except:
+        # Travis can't run git describe without crashing
+        version = 'version_test'
     config.registry.settings['snovault.app_version'] = version
 
 
