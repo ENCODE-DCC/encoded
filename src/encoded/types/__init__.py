@@ -11,9 +11,6 @@ from .base import (
     ALLOW_CURRENT,
     DELETED,
 )
-from .shared_calculated_properties import (
-    CalculatedAssayTermID
-)
 
 
 def includeme(config):
@@ -41,7 +38,7 @@ class Lab(Item):
         'title': 'Awards (Grants)',
         'description': 'Listing of awards (aka grants)',
     })
-class Award(Item, CalculatedAssayTermID):
+class Award(Item):
     item_type = 'award'
     schema = load_schema('encoded:schemas/award.json')
     name_key = 'name'
