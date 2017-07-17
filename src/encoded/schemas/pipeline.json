@@ -166,8 +166,12 @@
             "type": "string",
             "format": "uri"
         },
-        "version": {
-            
+        "pipeline_version": {
+            "title": "Pipeline version",
+            "description": "The pipeline version.",
+            "comment": "Please increment as whole numbers starting from 1.",
+            "type": "integer",
+            "pattern": "^[1-9]\\d*$"
         }
     },
     "facets": {

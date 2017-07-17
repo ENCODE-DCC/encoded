@@ -3,7 +3,7 @@
 ### Schema version 8
 
 * *assay_term_name* property was replaced by *assay_term_name*, a list of assay names consistent with the pipeline type
-* *version* property was added to represent pipeline version
+* *pipeline_version* property was added to represent pipeline version
 
 ### Schema version 7
 
