@@ -14,31 +14,31 @@
     {
         "caption": "ENCBS000AAA",
         "attachment": "ENCBS000AAA.png",
-        "submitted_by": "cricketsloan@stanford.edu",
+        "submitted_by": "crickets@stanford.edu",
         "uuid": "1a0df3d4-2496-4d1f-ba4f-519bc2a22cfd"
     },
     {
         "caption": "ENCBS000AAA JSON",
         "attachment": "ENCBS000AAA-json.png",
-        "submitted_by": "cricketsloan@stanford.edu",
+        "submitted_by": "crickets@stanford.edu",
         "uuid": "218ffd6c-d595-4bbc-8fa4-7c82a5855d4a"
     },
     {
         "caption": "curl output",
         "attachment": "curl-output.png",
-        "submitted_by": "cricketsloan@stanford.edu",
+        "submitted_by": "crickets@stanford.edu",
         "uuid": "5bc125bf-cff4-4129-87ed-56d23d983dc1"
     },
     {
         "caption": "Search result example",
         "attachment": "search-result-bone-chip.png",
-        "submitted_by": "cricketsloan@stanford.edu",
+        "submitted_by": "crickets@stanford.edu",
         "uuid": "6e4bca66-a415-4823-9d48-d9a18b81b775"
     },
     {
         "caption": "ENCODE library object structure",
         "attachment": "encode-library-object-structure.jpg",
-        "submitted_by": "cricketsloan@stanford.edu",
+        "submitted_by": "crickets@stanford.edu",
         "uuid": "498ce836-3050-47b6-b4cf-b0ac911a7d38"
     }
 ]
