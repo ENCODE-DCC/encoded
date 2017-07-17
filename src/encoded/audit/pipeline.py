@@ -30,14 +30,8 @@ def audit_pipeline_assay(value, system):
 
     # Term name is required and term id is calculated, so we probably don't need this
     # audit anymore.
-    if 'assay_term_id' not in value:
-        detail = 'Pipeline {} is missing assay_term_id'.format(value['@id'])
-        yield AuditFailure('missing assay information', detail, level='ERROR')
-        return
-    if 'assay_term_name' not in value:
-        detail = 'Pipeline {} is missing assay_term_name'.format(value['@id'])
-        yield AuditFailure('missing assay information', detail, level='ERROR')
-        return
+    # https://encodedcc.atlassian.net/browse/ENCD-3416 
+    # removing assay_term_id and name checks
 
     ontology = system['registry']['ontology']
     term_id = value.get('assay_term_id')

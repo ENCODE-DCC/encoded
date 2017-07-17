@@ -242,7 +242,6 @@
         "analysis_steps.current_version.software_versions.software.used_by": 1.0,
         "analysis_steps.current_version.software_versions.software.references.title": 1.0,
         "assay_term_names": 1.0,
-        "assay_term_id": 1.0,
         "title": 1.0
     },
     "changelog": "/profiles/changelogs/pipeline.md"

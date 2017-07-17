@@ -1167,7 +1167,7 @@ def test_audit_experiment_pipeline_assay_term_name_consistency(
     testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id']})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'RNA-seq of long RNAs (single-end, unstranded)',
-                                             'assay_term_names': ['RNA-seq']})
+                                             'assay_term_names': ['RNA-seq', 'RAMPAGE']})
     testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     res = testapp.get(experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent assay_term_name'
