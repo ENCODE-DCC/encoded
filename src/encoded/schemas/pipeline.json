@@ -175,7 +175,7 @@
         }
     },
     "facets": {
-        "assay_term_name": {
+        "assay_term_names": {
             "title": "Assay"
         },
         "status": {
@@ -198,7 +198,7 @@
         "title": {
             "title": "Pipeline"
         },
-        "assay_term_name": {
+        "assay_term_names": {
             "title": "Assay type"
         },
         "version": {
@@ -241,7 +241,7 @@
         "analysis_steps.current_version.software_versions.software.purpose": 1.0,
         "analysis_steps.current_version.software_versions.software.used_by": 1.0,
         "analysis_steps.current_version.software_versions.software.references.title": 1.0,
-        "assay_term_name": 1.0,
+        "assay_term_names": 1.0,
         "assay_term_id": 1.0,
         "title": 1.0
     },
