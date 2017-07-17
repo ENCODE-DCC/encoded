@@ -124,7 +124,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                         for (let i = 0; i < chartData.length; i += 1) {
                             if (chartData[i]) {
                                 text.push(`<li><a href="${baseSearchUri}${chartLabels[i]}">`);
-                                text.push(`<span class="chart-legend-chip" style="background-color:${chartColors[i]}"></span>`);
+                                text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${chartColors[i]}"></i>`);
                                 text.push(`<span class="chart-legend-label">${chartLabels[i]}</span>`);
                                 text.push('</a></li>');
                             }
@@ -225,7 +225,7 @@ function createBarChart(chartId, unreplicatedLabel, unreplicatedDataset, isogeni
                         for (let i = 0; i < LegendLabels.length; i += 1) {
                             if (LegendLabels[i]) {
                                 text.push(`<li><a href="${baseSearchUri}${LegendLabels[i]}">`);
-                                text.push(`<span class="chart-legend-chip" style="background-color:${chartInstance.data.datasets[i].backgroundColor}"></span>`);
+                                text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${chartInstance.data.datasets[i].backgroundColor}"></i>`);
                                 text.push(`<span class="chart-legend-label">${LegendLabels[i]}</span>`);
                                 text.push('</a></li>');
                             }
@@ -985,9 +985,8 @@ StatusChart.contextTypes = {
     // navigate: PropTypes.func,
 };
 
-
 const ChartRenderer = (props) => {
-    const { award, experiments, annotations, antibodies, biosamples, unreplicated, isogenic, anisogenic } = props;
+    const { award, experiments, annotations, antibodies, biosamples, handleClick, selectedOrganisms, unreplicated, isogenic, anisogenic } = props;
 
     // Put all search-related configuration data in one consistent place.
     const searchData = {
@@ -1035,11 +1034,30 @@ const ChartRenderer = (props) => {
             uriBase: 'type=AntibodyLot&award=/awards',
         },
     };
+    // Match the species to their genera
+    const speciesGenusMap = {
+        'Homo sapiens': 'HUMAN',
+        'Mus musculus': 'MOUSE',
+        'Caenorhabditis elegans': 'WORM',
+        'Drosophila melanogaster': 'FLY',
+        'Drosophila pseudoobscura': 'FLY',
+        'Drosophila simulans': 'FLY',
+        'Drosophila mojavensis': 'FLY',
+        'Drosophila ananassae': 'FLY',
+        'Drosophila virilis': 'FLY',
+        'Drosophila yakuba': 'FLY',
+    };
+
     // Find the chart data in the returned facets.
     const experimentsConfig = searchData.experiments;
     const annotationsConfig = searchData.annotations;
     const biosamplesConfig = searchData.biosamples;
     const antibodiesConfig = searchData.antibodies;
+    let experimentSpeciesArray;
+    let annotationSpeciesArray;
+    let biosampleSpeciesArray;
+    let antibodySpeciesArray;
+    const updatedSpeciesArray = [];
     searchData.experiments.data = (experiments && experiments.facets) || [];
     searchData.annotations.data = (annotations && annotations.facets) || [];
     searchData.biosamples.data = (biosamples && biosamples.facets) || [];
@@ -1060,100 +1078,152 @@ const ChartRenderer = (props) => {
             searchData[chartCategory].statuses = (statusFacet && statusFacet.terms && statusFacet.terms.length) ? statusFacet.terms : [];
         }
     });
+    // If there are experiements, then the corresponding species are added to the array of species
+    if (experiments && experiments.facets && experiments.facets.length) {
+        const genusFacet = experiments.facets.find(facet => facet.field === 'replicates.library.biosample.donor.organism.scientific_name');
+        experimentSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
+        const experimentSpeciesArrayLength = experimentSpeciesArray.length;
+        for (let j = 0; j < experimentSpeciesArrayLength; j += 1) {
+            if (experimentSpeciesArray[j].doc_count !== 0) {
+                updatedSpeciesArray.push(experimentSpeciesArray[j].key);
+            }
+        }
+    }
+    // If there are annotations, then the corresponding species are added to the array of species
+    if (annotations && annotations.facets && annotations.facets.length) {
+        const genusFacet = annotations.facets.find(facet => facet.field === 'organism.scientific_name');
+        annotationSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
+        const annotationSpeciesArrayLength = annotationSpeciesArray.length;
+        for (let j = 0; j < annotationSpeciesArrayLength; j += 1) {
+            if (annotationSpeciesArray[j].doc_count !== 0) {
+                updatedSpeciesArray.push(annotationSpeciesArray[j].key);
+            }
+        }
+    }
+    // If there are biosamples, then the corresponding species are iadded to the array of species
+    if (biosamples && biosamples.facets && biosamples.facets.length) {
+        const genusFacet = biosamples.facets.find(facet => facet.field === 'organism.scientific_name=');
+        biosampleSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
+        const biosampleSpeciesArrayLength = biosampleSpeciesArray.length;
+        for (let j = 0; j < biosampleSpeciesArrayLength; j += 1) {
+            if (biosampleSpeciesArray[j].doc_count !== 0) {
+                updatedSpeciesArray.push(biosampleSpeciesArray[j].key);
+            }
+        }
+    }
+    // If there are antibodies, then the corresponding species are added to the array of species
+    if (antibodies && antibodies.facets && antibodies.facets.length) {
+        const genusFacet = antibodies.facets.find(facet => facet.field === 'targets.organism.scientific_name=');
+        antibodySpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
+        const antibodySpeciesArrayLength = antibodySpeciesArray.length;
+        for (let j = 0; j < antibodySpeciesArrayLength; j += 1) {
+            if (antibodySpeciesArray[j].doc_count !== 0) {
+                updatedSpeciesArray.push(antibodySpeciesArray[j].key);
+            }
+        }
+    }
+    // Array of species is converted to an array of genera
+    let updatedGenusArray = updatedSpeciesArray.map(species => speciesGenusMap[species]);
+
+    // Array of genera is deduplicated
+    updatedGenusArray = _.uniq(updatedGenusArray);
 
     return (
         <div className="award-charts">
-            <div className="award-chart__group-wrapper">
-                <h2>Assays {experimentsConfig.labs.length ?
-                <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Experiment&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
-                : null}</h2>
-                {experimentsConfig.labs.length ?
-                    <div>
+            <div> <GenusButtons handleClick={handleClick} selectedOrganisms={selectedOrganisms} updatedGenusArray={updatedGenusArray} /> </div>
+            <PanelBody>
+                <div className="award-chart__group-wrapper">
+                    <h2>Assays {experimentsConfig.labs.length ?
+                    <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Experiment&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                    : null}</h2>
+                    {experimentsConfig.labs.length ?
+                        <div>
+                            <div className="award-chart__group">
+                                <LabChart
+                                    award={award}
+                                    labs={experimentsConfig.labs}
+                                    linkUri={experimentsConfig.linkUri}
+                                    ident={experimentsConfig.ident}
+                                />
+                                <CategoryChart
+                                    award={award}
+                                    categoryData={experimentsConfig.categoryData || []}
+                                    title={experimentsConfig.title}
+                                    linkUri={experimentsConfig.linkUri}
+                                    categoryFacet={experimentsConfig.categoryFacet}
+                                    ident={experimentsConfig.ident}
+                                />
+                                <StatusExperimentChart
+                                    award={award}
+                                    experiments={experiments}
+                                    statuses={experimentsConfig.statuses || []}
+                                    linkUri={experimentsConfig.linkUri}
+                                    ident={experimentsConfig.ident}
+                                    unreplicated={unreplicated}
+                                    isogenic={isogenic}
+                                    anisogenic={anisogenic}
+                                />
+                            </div>
+                        </div>
+                    :
+                        <div className="browser-error">No assays were submitted under this award</div>
+                    }
+                </div>
+                <div className="award-chart__group-wrapper">
+                    <h2>Annotations {annotationsConfig.labs.length ?
+                    <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Annotation&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                    : null}</h2>
+                    {annotationsConfig.labs.length ?
+                        <div>
+                            <div className="award-chart__group">
+                                <LabChart
+                                    award={award}
+                                    labs={annotationsConfig.labs}
+                                    linkUri={annotationsConfig.linkUri}
+                                    ident={annotationsConfig.ident}
+                                />
+                                <CategoryChart
+                                    award={award}
+                                    categoryData={annotationsConfig.categoryData || []}
+                                    linkUri={annotationsConfig.linkUri}
+                                    categoryFacet={annotationsConfig.categoryFacet}
+                                    title={annotationsConfig.title}
+                                    ident={annotationsConfig.ident}
+                                />
+                                <StatusChart
+                                    award={award}
+                                    statuses={annotationsConfig.statuses || []}
+                                    linkUri={annotationsConfig.linkUri}
+                                    ident={annotationsConfig.ident}
+                                />
+                            </div>
+                        </div>
+                    :
+                        <div className="browser-error">No annotations were submitted under this award</div>
+                    }
+                </div>
+                <div className="award-chart__group-wrapper">
+                    <h2>Reagents</h2>
+                    {antibodiesConfig.categoryData.length || biosamplesConfig.categoryData.length ?
                         <div className="award-chart__group">
-                            <LabChart
+                            <AntibodyChart
                                 award={award}
-                                labs={experimentsConfig.labs}
-                                linkUri={experimentsConfig.linkUri}
-                                ident={experimentsConfig.ident}
+                                categoryData={antibodiesConfig.categoryData}
+                                categoryFacet={antibodiesConfig.categoryFacet}
+                                ident={antibodiesConfig.ident}
                             />
-                            <CategoryChart
+                            <BiosampleChart
                                 award={award}
-                                categoryData={experimentsConfig.categoryData || []}
-                                title={experimentsConfig.title}
-                                linkUri={experimentsConfig.linkUri}
-                                categoryFacet={experimentsConfig.categoryFacet}
-                                ident={experimentsConfig.ident}
-                            />
-                            <StatusExperimentChart
-                                award={award}
-                                experiments={experiments}
-                                statuses={experimentsConfig.statuses || []}
-                                linkUri={experimentsConfig.linkUri}
-                                ident={experimentsConfig.ident}
-                                unreplicated={unreplicated}
-                                isogenic={isogenic}
-                                anisogenic={anisogenic}
+                                categoryData={biosamplesConfig.categoryData}
+                                categoryFacet={biosamplesConfig.categoryFacet}
+                                ident={biosamplesConfig.ident}
                             />
                         </div>
-                    </div>
-                :
-                    <div className="browser-error">No assays were submitted under this award</div>
-                }
-            </div>
-            <div className="award-chart__group-wrapper">
-                <h2>Annotations {annotationsConfig.labs.length ?
-                <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Annotation&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
-                : null}</h2>
-                {annotationsConfig.labs.length ?
-                    <div>
-                        <div className="award-chart__group">
-                            <LabChart
-                                award={award}
-                                labs={annotationsConfig.labs}
-                                linkUri={annotationsConfig.linkUri}
-                                ident={annotationsConfig.ident}
-                            />
-                            <CategoryChart
-                                award={award}
-                                categoryData={annotationsConfig.categoryData || []}
-                                linkUri={annotationsConfig.linkUri}
-                                categoryFacet={annotationsConfig.categoryFacet}
-                                title={annotationsConfig.title}
-                                ident={annotationsConfig.ident}
-                            />
-                            <StatusChart
-                                award={award}
-                                statuses={annotationsConfig.statuses || []}
-                                linkUri={annotationsConfig.linkUri}
-                                ident={annotationsConfig.ident}
-                            />
-                        </div>
-                    </div>
-                :
-                    <div className="browser-error">No annotations were submitted under this award</div>
-                }
-            </div>
-            <div className="award-chart__group-wrapper">
-                <h2>Reagents</h2>
-                {antibodiesConfig.categoryData.length || biosamplesConfig.categoryData.length ?
-                    <div className="award-chart__group">
-                        <AntibodyChart
-                            award={award}
-                            categoryData={antibodiesConfig.categoryData}
-                            categoryFacet={antibodiesConfig.categoryFacet}
-                            ident={antibodiesConfig.ident}
-                        />
-                        <BiosampleChart
-                            award={award}
-                            categoryData={biosamplesConfig.categoryData}
-                            categoryFacet={biosamplesConfig.categoryFacet}
-                            ident={biosamplesConfig.ident}
-                        />
-                    </div>
-                :
-                    <div className="browser-error">No reagents were submitted under this award</div>
-                }
-            </div>
+                    :
+                        <div className="browser-error">No reagents were submitted under this award</div>
+                    }
+                </div>
+            </PanelBody>
         </div>
     );
 };
@@ -1167,6 +1237,8 @@ ChartRenderer.propTypes = {
     unreplicated: PropTypes.object,
     isogenic: PropTypes.object,
     anisogenic: PropTypes.object,
+    handleClick: PropTypes.func.isRequired, // Function to call when a button is clicked
+    selectedOrganisms: PropTypes.array, // Array of currently selected buttons
 };
 
 ChartRenderer.defaultProps = {
@@ -1177,30 +1249,49 @@ ChartRenderer.defaultProps = {
     unreplicated: {},
     isogenic: {},
     anisogenic: {},
+    selectedOrganisms: [],
 };
 
 // Create new tabdisplay of genus buttons
 class GenusButtons extends React.Component {
     render() {
-        const { selectedOrganisms, handleClick } = this.props;
-        return (
-            <div className="organism-selector" ref="tabdisplay">
-                <OrganismSelector organism="HUMAN" selected={selectedOrganisms.indexOf('HUMAN') !== -1} organismButtonClick={handleClick} />
-                <OrganismSelector organism="MOUSE" selected={selectedOrganisms.indexOf('MOUSE') !== -1} organismButtonClick={handleClick} />
-                <OrganismSelector organism="WORM" selected={selectedOrganisms.indexOf('WORM') !== -1} organismButtonClick={handleClick} />
-                <OrganismSelector organism="FLY" selected={selectedOrganisms.indexOf('FLY') !== -1} organismButtonClick={handleClick} />
-            </div>
-        );
+        const { updatedGenusArray, selectedOrganisms, handleClick } = this.props;
+        // If genera exist, then the button for each specific genus is created
+        if (updatedGenusArray.length) {
+            return (
+                <div className="organism-selector" ref="tabdisplay">
+                    {updatedGenusArray.indexOf('HUMAN') !== -1 ?
+                        <OrganismSelector organism="HUMAN" selected={selectedOrganisms.indexOf('HUMAN') !== -1} organismButtonClick={handleClick} />
+                    :
+                    null}
+                    {updatedGenusArray.indexOf('MOUSE') !== -1 ?
+                        <OrganismSelector organism="MOUSE" selected={selectedOrganisms.indexOf('MOUSE') !== -1} organismButtonClick={handleClick} />
+                    :
+                    null}
+                    {updatedGenusArray.indexOf('WORM') !== -1 ?
+                        <OrganismSelector organism="WORM" selected={selectedOrganisms.indexOf('WORM') !== -1} organismButtonClick={handleClick} />
+                    :
+                    null}
+                    {updatedGenusArray.indexOf('FLY') !== -1 ?
+                        <OrganismSelector organism="FLY" selected={selectedOrganisms.indexOf('FLY') !== -1} organismButtonClick={handleClick} />
+                    :
+                    null}
+                </div>
+            );
+        }
+        return null;
     }
 }
 
 GenusButtons.propTypes = {
     selectedOrganisms: PropTypes.array, // Array of currently selected buttons
     handleClick: PropTypes.func.isRequired, // Function to call when a button is clicked
+    updatedGenusArray: PropTypes.array, // Array of existing genera
 };
 
 GenusButtons.defaultProps = {
     selectedOrganisms: [],
+    updatedGenusArray: [],
 };
 
 // Overall component to render the cumulative line chart
@@ -1425,17 +1516,12 @@ class OrganismSelector extends React.Component {
 OrganismSelector.propTypes = {
     organism: PropTypes.string, // Organism this selector represents
     selected: PropTypes.bool, // `true` if selector is selected
-    organismButtonClick: PropTypes.func, // Function that takes in the prop organism when button is clicked
+    organismButtonClick: PropTypes.func.isRequired, // Function that takes in the prop organism when button is clicked
 };
 
 OrganismSelector.defaultProps = {
     organism: {},
     selected: {},
-    organismButtonClick: {},
-};
-
-OrganismSelector.contextTypes = {
-    organismButtonClick: PropTypes.func,
 };
 
 
@@ -1466,7 +1552,7 @@ class AwardCharts extends React.Component {
     }
 
     render() {
-        const { award } = this.props;
+        const { award, updatedGenusArray } = this.props;
         // Create searchTerm-specific query strings
         const AnnotationQuery = generateQuery(this.state.selectedOrganisms, 'organism.scientific_name=');
         const ExperimentQuery = generateQuery(this.state.selectedOrganisms, 'replicates.library.biosample.donor.organism.scientific_name=');
@@ -1478,8 +1564,7 @@ class AwardCharts extends React.Component {
                     <h4>Current Production</h4>
                     <ProjectBadge award={award} addClasses="badge-heading" />
                 </PanelHeading>
-                <GenusButtons handleClick={this.handleClick} selectedOrganisms={this.state.selectedOrganisms} />
-                <PanelBody>
+                <div>
                     <FetchedData ignoreErrors>
                         <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}${ExperimentQuery}`} />
                         <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}${AnnotationQuery}`} />
@@ -1488,9 +1573,9 @@ class AwardCharts extends React.Component {
                         <Param name="unreplicated" url={`/search/?type=Experiment&replication_type=unreplicated&award.name=${award.name}${ExperimentQuery}`} />
                         <Param name="isogenic" url={`/search/?type=Experiment&replication_type=isogenic&award.name=${award.name}${ExperimentQuery}`} />
                         <Param name="anisogenic" url={`/search/?type=Experiment&replication_type=anisogenic&award.name=${award.name}${ExperimentQuery}`} />
-                        <ChartRenderer award={award} />
+                        <ChartRenderer award={award} updatedGenusArray={updatedGenusArray} handleClick={this.handleClick} selectedOrganisms={this.state.selectedOrganisms} />
                     </FetchedData>
-                </PanelBody>
+                </div>
             </Panel>
         );
     }
@@ -1498,6 +1583,10 @@ class AwardCharts extends React.Component {
 
 AwardCharts.propTypes = {
     award: PropTypes.object.isRequired, // Award represented by this chart
+    updatedGenusArray: PropTypes.array, //Array of existing genera
+};
+AwardCharts.defaultProps = {
+    updatedGenusArray: [],
 };
 
 class FetchGraphData extends React.Component {
