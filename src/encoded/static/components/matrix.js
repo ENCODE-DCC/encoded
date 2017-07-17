@@ -38,7 +38,7 @@ GroupMoreButton.defaultProps = {
 };
 
 
-class Matrix extends React.Component {
+class MatrixAssay extends React.Component {
     static generateYGroupOpen(matrix) {
         // Make a state for each of the Y groups (each Y group currently shows a biosample type).
         // To do that, we have to get each of the bucket keys, which will be the keys into the
@@ -62,7 +62,7 @@ class Matrix extends React.Component {
         super(props);
 
         // Set initial React state.
-        const yGroupOpen = Matrix.generateYGroupOpen(this.props.context.matrix);
+        const yGroupOpen = MatrixAssay.generateYGroupOpen(this.props.context.matrix);
         this.state = {
             yGroupOpen,
             allYGroupsOpen: false,
@@ -80,7 +80,7 @@ class Matrix extends React.Component {
         // This callback makes possible updating the See More buttons when the user clicks a facet,
         // which could cause these buttons to not be needed. This resets all the buttons to the See
         // More state.
-        const yGroupOpen = Matrix.generateYGroupOpen(nextProps.context.matrix);
+        const yGroupOpen = MatrixAssay.generateYGroupOpen(nextProps.context.matrix);
         this.setState({
             yGroupOpen,
             allYGroupsOpen: false,
@@ -372,26 +372,44 @@ class Matrix extends React.Component {
     }
 }
 
-Matrix.propTypes = {
+MatrixAssay.propTypes = {
     context: React.PropTypes.object.isRequired,
 };
 
-Matrix.contextTypes = {
+MatrixAssay.contextTypes = {
     location_href: PropTypes.string,
     navigate: PropTypes.func,
     biosampleTypeColors: PropTypes.object, // DataColor instance for experiment project
 };
 
-globals.contentViews.register(Matrix, 'Matrix');
-
 
 // Display the experiment matrix that focuses on targets.
 class MatrixTarget extends React.Component {
     render() {
+        const { context } = this.props;
         return null;
     }
 }
 
 MatrixTarget.propTypes = {
-    matrixData: PropTypes.object.isRequired, // Matrix search result data -- all the data to display in the matrix
+    context: PropTypes.object.isRequired, // Matrix search result data -- all the data to display in the matrix
 };
+
+
+class Matrix extends React.Component {
+    render() {
+        const { context } = this.props;
+        if (context.matrix_type === 'assay') {
+            return <MatrixAssay context={context} />;
+        } else if (context.matrix_type === 'target') {
+            return <MatrixTarget context={context} />;
+        }
+        return null;
+    }
+}
+
+Matrix.propTypes = {
+    context: React.PropTypes.object.isRequired,
+};
+
+globals.contentViews.register(Matrix, 'Matrix');
