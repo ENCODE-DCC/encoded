@@ -104,7 +104,6 @@ def audit_experiment_mixed_libraries(value, system):
 
 
 @audit_checker('Experiment', frame=['original_files',
-                                    'original_files.replicate',
                                     'original_files.derived_from',
                                     'original_files.analysis_step_version',
                                     'original_files.analysis_step_version.analysis_step',
@@ -112,25 +111,19 @@ def audit_experiment_mixed_libraries(value, system):
 def audit_experiment_pipeline_assay_details(value, system):
     if 'original_files' not in value or len(value['original_files']) == 0:
         return
-    if 'assay_term_id' not in value:
-        return
     files_to_check = []
     for f in value['original_files']:
         if f['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
             files_to_check.append(f)
     pipelines = get_pipeline_objects(files_to_check)
-    reported_pipelines = []
+
     for p in pipelines:
-        if 'assay_term_id' not in p:
-            continue
-        if p['assay_term_id'] != value['assay_term_id'] and \
-           p['assay_term_id'] not in reported_pipelines:
-                reported_pipelines.append(p['assay_term_id'])
-                detail = 'This experiment ' + \
-                         'contains file(s) associated with ' + \
-                         'pipeline {} '.format(p['@id']) + \
-                         'which assay_term_id does not match experiments\'s asssay_term_id.'
-                yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
+        if value.get('assay_term_name') not in p['assay_term_names']:
+            detail = 'This experiment ' + \
+                        'contains file(s) associated with ' + \
+                        'pipeline {} '.format(p['@id']) + \
+                        'which assay_term_names list does not include experiments\'s asssay_term_name.'
+            yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
 
 
 # def audit_experiment_missing_processed_files(value, system): removed from v54
