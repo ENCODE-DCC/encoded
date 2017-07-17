@@ -1,5 +1,5 @@
 // DataColors is a class for managing symbolic data colors throughout the app. Essentially it
-// statically maps data keys to colors consistently even when the data changes. 
+// statically maps data keys to colors consistently even when the data changes.
 //
 // Creating a new mapping of data keys to colors, passing in an array of data keys. The order of
 // keys in the given array determines their color assignment.

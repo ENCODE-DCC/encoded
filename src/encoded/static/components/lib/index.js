@@ -1,3 +1,3 @@
-'use strict';
+import ItemStore from './store';
 
-require('./store');
+export default ItemStore;
