@@ -35,6 +35,47 @@
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
+        "milestones": {
+            "title": "Milestones",
+            "description": "A set of grant milestone deliverables agreed upon by the awardee and NIH.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Milestone",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {             
+                    "assay_term_name": {
+                        "$ref": "mixins.json#/assay"
+                    },
+                    "proposed_count": {
+                        "title": "Proposed count",
+                        "description": "Count (in number of units) of the deliverable proposed.",
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "deliverable_unit": {
+                        "title": "Deliverable unit",
+                        "description": "Unit of the proposed milestone deliverable.",
+                        "type": "string",
+                        "enum": [
+                            "replicated experiments",
+                            "unreplicated experiments",
+                            "control experiments",
+                            "libraries",
+                            "replicates",
+                            "single cell experiments"
+                        ]
+                    },
+                    "contract_date": {
+                        "title": "Contract date",
+                        "description": "Date on which the milestone was agreed upon.",
+                        "type": "string",
+                        "format": "date"
+                    }
+                }
+            }
+        },
         "start_date": {
             "title": "Start date",
             "comment": "Date can be submitted as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
