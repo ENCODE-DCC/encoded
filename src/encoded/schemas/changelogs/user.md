@@ -2,11 +2,7 @@
 
 ### Schema version 7
 
-* *phone1* removed
-* *phone2* removed
-* *fax* removed
-* *skype* removed
-* *google* removed
+* unused/detailed user properties *phone1*, *phone2*, *fax*, *skype*, and *google* were removed
 
 ### Schema version 6
 
