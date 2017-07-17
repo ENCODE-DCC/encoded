@@ -44,7 +44,7 @@ function drawDonutCenter(chart) {
     const width = chart.chart.width;
     const height = chart.chart.height;
     const ctx = chart.chart.ctx;
-    if (canvasId === 'myGraph') {
+    if (canvasId === 'myGraph' || canvasId === 'status-chart-experiments-chart') {
         ctx.clearRect(0, 0, width, height);
     } else {
         const data = chart.data.datasets[0].data;
@@ -147,6 +147,105 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
             document.getElementById(`${chartId}-legend`).innerHTML = chart.generateLegend();
 
             // Resolve the webpack loader promise with the chart instance.
+            resolve(chart);
+        }, 'chartjs');
+    });
+}
+
+function createBarChart(chartId, unreplicatedLabel, unreplicatedDataset, isogenicDataset, anisogenicDataset, colors, labels, replicatelabels, baseSearchUri, navigate) {
+    return new Promise((resolve) => {
+        require.ensure(['chart.js'], (require) => {
+            const Chart = require('chart.js');
+
+            // Create the chart.
+            const canvas = document.getElementById(`${chartId}-chart`);
+            const parent = document.getElementById(chartId);
+            canvas.width = parent.offsetWidth;
+            canvas.height = parent.offsetHeight;
+            canvas.style.width = `${parent.offsetWidth}px`;
+            canvas.style.height = `${parent.offsetHeight}px`;
+            const ctx = canvas.getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'unreplicated',
+                        data: unreplicatedDataset,
+                        backgroundColor: colors[0],
+                    }, {
+                        label: 'isogenic',
+                        data: isogenicDataset,
+                        backgroundColor: colors[1],
+                    }, {
+                        label: 'anisogenic',
+                        data: anisogenicDataset,
+                        backgroundColor: colors[2],
+                    }],
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    legend: {
+                        display: false,
+                    },
+                    scales: {
+                        xAxes: [{
+                            scaleLabel: {
+                                display: false,
+                            },
+                            gridLines: {
+                            },
+                            stacked: true,
+                        }],
+                        yAxes: [{
+                            gridLines: {
+                                display: false,
+                                color: '#fff',
+                                zeroLineColor: '#fff',
+                                zeroLineWidth: 0,
+                            },
+                            stacked: true,
+                        }],
+                    },
+                    animation: {
+                        duration: 200,
+                    },
+                    legendCallback: (chartInstance) => {
+                        const chartLabels = replicatelabels;
+                        const LegendLabels = [];
+                        // If data array has value, add to legend
+                        for (let i = 0; i < chartLabels.length; i += 1) {
+                            if (chartInstance.data.datasets[i].data.length !== 0) {
+                                LegendLabels.push(chartInstance.data.datasets[i].label);
+                            }
+                        }
+                        const text = [];
+                        text.push('<ul>');
+                        for (let i = 0; i < LegendLabels.length; i += 1) {
+                            if (LegendLabels[i]) {
+                                text.push(`<li><a href="${baseSearchUri}${LegendLabels[i]}">`);
+                                text.push(`<span class="chart-legend-chip" style="background-color:${chartInstance.data.datasets[i].backgroundColor}"></span>`);
+                                text.push(`<span class="chart-legend-label">${LegendLabels[i]}</span>`);
+                                text.push('</a></li>');
+                            }
+                        }
+                        text.push('</ul>');
+                        return text.join('');
+                    },
+                    onClick: function onClick(e) {
+                        // React to clicks on pie sections
+                        const activePoints = chart.getElementAtEvent(e);
+
+                        if (activePoints[0]) { // if click on wrong area, do nothing
+                            const clickedElementIndex = activePoints[0]._index;
+                            const term = chart.data.labels[clickedElementIndex];
+                            navigate(`${baseSearchUri}${globals.encodedURIComponent(term)}`);
+                        }
+                    },
+                },
+            });
+            document.getElementById(`${chartId}-legend`).innerHTML = chart.generateLegend();
             resolve(chart);
         }, 'chartjs');
     });
@@ -598,6 +697,182 @@ BiosampleChart.contextTypes = {
     navigate: PropTypes.func,
 };
 
+// Function to be called in createChart and updateChart of class StatusExperimentChart, creates arrays for chart data
+function StatusData(experiments, unreplicated, isogenic, anisogenic) {
+    let unreplicatedArray;
+    let isogenicArray;
+    let anisogenicArray;
+    const unreplicatedLabel = [];
+    const unreplicatedDataset = [];
+    const isogenicLabel = [];
+    const isogenicDataset = [];
+    const anisogenicLabel = [];
+    const anisogenicDataset = [];
+
+    if (experiments && experiments.facets && experiments.facets.length) {
+        const unreplicatedFacet = unreplicated.facets.find(facet => facet.field === 'status');
+        const isogenicFacet = isogenic.facets.find(facet => facet.field === 'status');
+        const anisogenicFacet = anisogenic.facets.find(facet => facet.field === 'status');
+        unreplicatedArray = (unreplicatedFacet && unreplicatedFacet.terms && unreplicatedFacet.terms.length) ? unreplicatedFacet.terms : [];
+        isogenicArray = (isogenicFacet && isogenicFacet.terms && isogenicFacet.terms.length) ? isogenicFacet.terms : [];
+        anisogenicArray = (anisogenicFacet && anisogenicFacet.terms && anisogenicFacet.terms.length) ? anisogenicFacet.terms : [];
+    }
+    const labels = ['proposed', 'started', 'submitted', 'released', 'deleted', 'replaced', 'archived', 'revoked'];
+    if (unreplicatedArray.length) {
+        for (let j = 0; j < labels.length; j += 1) {
+            for (let i = 0; i < unreplicatedArray.length; i += 1) {
+                if (unreplicatedArray[i].key === labels[j]) {
+                    unreplicatedLabel.push(unreplicatedArray[i].key);
+                    unreplicatedDataset.push(unreplicatedArray[i].doc_count);
+                }
+            }
+        }
+        for (let j = 0; j < labels.length; j += 1) {
+            if (labels[j] !== unreplicatedLabel[j]) {
+                unreplicatedLabel.splice(j, 0, labels[j]);
+                unreplicatedDataset.splice(j, 0, 0);
+            }
+        }
+    }
+    if (isogenicArray.length) {
+        for (let j = 0; j < labels.length; j += 1) {
+            for (let i = 0; i < isogenicArray.length; i += 1) {
+                if (isogenicArray[i].key === labels[j]) {
+                    isogenicLabel.push(isogenicArray[i].key);
+                    isogenicDataset.push(isogenicArray[i].doc_count);
+                }
+            }
+        }
+        for (let j = 0; j < labels.length; j += 1) {
+            if (labels[j] !== isogenicLabel[j]) {
+                isogenicLabel.splice(j, 0, labels[j]);
+                isogenicDataset.splice(j, 0, 0);
+            }
+        }
+    }
+    if (anisogenicArray.length) {
+        for (let j = 0; j < labels.length; j += 1) {
+            for (let i = 0; i < anisogenicArray.length; i += 1) {
+                if (anisogenicArray[i].key === labels[j]) {
+                    anisogenicLabel.push(anisogenicArray[i].key);
+                    anisogenicDataset.push(anisogenicArray[i].doc_count);
+                }
+            }
+        }
+        for (let j = 0; j < labels.length; j += 1) {
+            if (labels[j] !== anisogenicLabel[j]) {
+                anisogenicLabel.splice(j, 0, labels[j]);
+                anisogenicDataset.splice(j, 0, 0);
+            }
+        }
+    }
+    return ([labels, unreplicatedLabel, unreplicatedDataset, isogenicDataset, anisogenicDataset]);
+}
+
+class StatusExperimentChart extends React.Component {
+    constructor() {
+        super();
+        this.createChart = this.createChart.bind(this);
+        this.updateChart = this.updateChart.bind(this);
+    }
+
+    componentDidMount() {
+        if (this.props.statuses.length) {
+            this.createChart(`${statusChartId}-${this.props.ident}`, this.props.statuses);
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.props.statuses.length) {
+            if (this.chart) {
+                this.updateChart(this.chart, this.props.statuses);
+            } else {
+                this.createChart(`${statusChartId}-${this.props.ident}`, this.props.statuses);
+            }
+        } else if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    }
+
+    updateChart(chart) {
+        const { experiments, unreplicated, isogenic, anisogenic } = this.props;
+        const data = StatusData(experiments, unreplicated, isogenic, anisogenic); // Array of datasets and labels
+        const statusLabel = data[1];
+        const unreplicatedDataset = data[2];
+        const isogenicDataset = data[3];
+        const anisogenicDataset = data[4];
+        chart.data.datasets[0].data = unreplicatedDataset;
+        chart.data.datasets[1].data = isogenicDataset;
+        chart.data.datasets[2].data = anisogenicDataset;
+        chart.data.labels = statusLabel;
+        chart.update();
+
+        document.getElementById(`${statusChartId}-${this.props.ident}-legend`).innerHTML = chart.generateLegend();
+    }
+
+    createChart(chartId) {
+        const { experiments, unreplicated, isogenic, anisogenic } = this.props;
+        const data = StatusData(experiments, unreplicated, isogenic, anisogenic); // Array of datasets and labels
+        const labels = data[0];
+        const statusLabel = data[1];
+        const unreplicatedDataset = data[2];
+        const isogenicDataset = data[3];
+        const anisogenicDataset = data[4];
+        const replicatelabels = ['unreplicated', 'isogenic', 'anisogenic'];
+        const colors = replicatelabels.map((label, i) => statusColorList[i % statusColorList.length]);
+
+        createBarChart(chartId, statusLabel, unreplicatedDataset, isogenicDataset, anisogenicDataset, colors, labels, replicatelabels, `${this.props.linkUri}${this.props.award.name}&status=`, (uri) => { this.context.navigate(uri); })
+            .then((chartInstance) => {
+                // Save the created chart instance.
+                this.chart = chartInstance;
+            });
+    }
+
+    render() {
+        const { statuses, ident } = this.props;
+
+        // Calculate a (hopefully) unique ID to put on the DOM elements.
+        const id = `${statusChartId}-${ident}`;
+
+        return (
+            <div className="award-charts__chart">
+                <div className="award-charts__title">
+                    Status
+                </div>
+                 {statuses.length ?
+                    <div className="award-charts__visual">
+                        <div id={id} className="award-charts__canvas">
+                            <canvas id={`${id}-chart`} />
+                        </div>
+                        <div id={`${id}-legend`} className="award-charts__legend" />
+                    </div>
+                :
+                    <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
+                }
+            </div>
+        );
+    }
+}
+
+StatusExperimentChart.propTypes = {
+    award: PropTypes.object.isRequired, // Award being displayed
+    statuses: PropTypes.array, // Array of status facet data
+    linkUri: PropTypes.string.isRequired, // URI to use for matrix links
+    ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
+    experiments: PropTypes.object.isRequired,
+    unreplicated: PropTypes.object,
+    anisogenic: PropTypes.object,
+    isogenic: PropTypes.object,
+};
+
+StatusExperimentChart.defaultProps = {
+    statuses: [],
+    unreplicated: {},
+    anisogenic: {},
+    isogenic: {},
+};
+
 // Display and handle clicks in the chart of labs.
 class StatusChart extends React.Component {
     // Update existing chart with new data.
@@ -636,6 +911,7 @@ class StatusChart extends React.Component {
                 labels.push(item.key);
             }
         });
+
         const colors = labels.map((label, i) => statusColorList[i % statusColorList.length]);
 
         // Update chart data and redraw with the new data
@@ -706,12 +982,12 @@ StatusChart.defaultProps = {
 };
 
 StatusChart.contextTypes = {
-    navigate: PropTypes.func,
+    // navigate: PropTypes.func,
 };
 
 
 const ChartRenderer = (props) => {
-    const { award, experiments, annotations, antibodies, biosamples } = props;
+    const { award, experiments, annotations, antibodies, biosamples, unreplicated, isogenic, anisogenic } = props;
 
     // Put all search-related configuration data in one consistent place.
     const searchData = {
@@ -759,7 +1035,6 @@ const ChartRenderer = (props) => {
             uriBase: 'type=AntibodyLot&award=/awards',
         },
     };
-
     // Find the chart data in the returned facets.
     const experimentsConfig = searchData.experiments;
     const annotationsConfig = searchData.annotations;
@@ -769,6 +1044,7 @@ const ChartRenderer = (props) => {
     searchData.annotations.data = (annotations && annotations.facets) || [];
     searchData.biosamples.data = (biosamples && biosamples.facets) || [];
     searchData.antibodies.data = (antibodies && antibodies.facets) || [];
+
     ['experiments', 'annotations', 'antibodies', 'biosamples'].forEach((chartCategory) => {
         if (searchData[chartCategory].data.length) {
             // Get the array of lab data.
@@ -808,11 +1084,15 @@ const ChartRenderer = (props) => {
                                 categoryFacet={experimentsConfig.categoryFacet}
                                 ident={experimentsConfig.ident}
                             />
-                            <StatusChart
+                            <StatusExperimentChart
                                 award={award}
+                                experiments={experiments}
                                 statuses={experimentsConfig.statuses || []}
                                 linkUri={experimentsConfig.linkUri}
                                 ident={experimentsConfig.ident}
+                                unreplicated={unreplicated}
+                                isogenic={isogenic}
+                                anisogenic={anisogenic}
                             />
                         </div>
                     </div>
@@ -884,6 +1164,9 @@ ChartRenderer.propTypes = {
     annotations: PropTypes.object, // Search result of matching annotations
     antibodies: PropTypes.object, // Search result of matching antibodies
     biosamples: PropTypes.object, // Search result of matching biosamples
+    unreplicated: PropTypes.object,
+    isogenic: PropTypes.object,
+    anisogenic: PropTypes.object,
 };
 
 ChartRenderer.defaultProps = {
@@ -891,6 +1174,9 @@ ChartRenderer.defaultProps = {
     annotations: {},
     antibodies: {},
     biosamples: {},
+    unreplicated: {},
+    isogenic: {},
+    anisogenic: {},
 };
 
 // Create new tabdisplay of genus buttons
@@ -1199,6 +1485,9 @@ class AwardCharts extends React.Component {
                         <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}${AnnotationQuery}`} />
                         <Param name="biosamples" url={`/search/?type=Biosample&award.name=${award.name}${BiosampleQuery}`} />
                         <Param name="antibodies" url={`/search/?type=AntibodyLot&award=${award['@id']}${AntibodyQuery}`} />
+                        <Param name="unreplicated" url={`/search/?type=Experiment&replication_type=unreplicated&award.name=${award.name}${ExperimentQuery}`} />
+                        <Param name="isogenic" url={`/search/?type=Experiment&replication_type=isogenic&award.name=${award.name}${ExperimentQuery}`} />
+                        <Param name="anisogenic" url={`/search/?type=Experiment&replication_type=anisogenic&award.name=${award.name}${ExperimentQuery}`} />
                         <ChartRenderer award={award} />
                     </FetchedData>
                 </PanelBody>
@@ -1372,14 +1661,43 @@ class Award extends React.Component {
                         <div className="description">
                             <hr />
                             <div className="description__columnone">
-                                <dl><dt>NHGRI project information: </dt><a href={context.url} title={`${context.name} project page at NHGRI`}>{context.name}</a></dl>
-                                <dl><dt>Primary Investigator: </dt>{context.pi.lab.title}</dl>
-                                <dl><dt>Affiliated Labs: </dt> <AffiliatedLabs award={context} /> </dl>
+                                <dl className="key-value">
+                                    <div data-test="projectinfo">
+                                        <dt>NHGRI project information</dt>
+                                        <dd><a href={context.url} title={`${context.name} project page at NHGRI`}>{context.name}</a></dd>
+                                    </div>
+                                </dl>
+                                <dl className="key-value">
+                                    <div data-test="pi">
+                                        <dt>Primary Investigator</dt>
+                                        <dd>{context.pi.lab.title}</dd>
+                                    </div>
+                                </dl>
+                                <dl className="key-value">
+                                    <div data-test="labs">
+                                        <dt>Affiliated Labs</dt>
+                                        <dd><AffiliatedLabs award={context} /> </dd>
+                                    </div>
+                                </dl>
                             </div>
                             <div className="description__columnone">
-                                <dl><dt>Dates: </dt>{moment(context.start_date).format('MMMM DD, YYYY')} - {moment(context.end_date).format('MMMM DD, YYYY')}</dl>
-                                <dl><dt>Award RFA: </dt>{context.rfa}</dl>
-                                <dl><dt> Milestones: </dt></dl>
+                                <dl className="key-value">
+                                    <div data-test="dates">
+                                        <dt>Dates</dt>
+                                        <dd>{moment(context.start_date).format('MMMM DD, YYYY')} - {moment(context.end_date).format('MMMM DD, YYYY')}</dd>
+                                    </div>
+                                </dl>
+                                <dl className="key-value">
+                                    <div data-test="rfa">
+                                        <dt>Award RFA</dt>
+                                        <dd>{context.rfa}</dd>
+                                    </div>
+                                </dl>
+                                <dl className="key-value">
+                                    <div data-test="milestone">
+                                        <dt>Milestones</dt>
+                                    </div>
+                                </dl>
                             </div>
                         </div>
                     </PanelBody>
