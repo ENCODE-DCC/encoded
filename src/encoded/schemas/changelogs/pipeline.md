@@ -1,5 +1,10 @@
 ## Changelog for pipeline.json
 
+### Schema version 8
+
+* *assay_term_name* property was replaced by *assay_term_name*, a list of assay names consistent with the pipeline type
+* *version* property was added to represent pipeline version
+
 ### Schema version 7
 
 * *alternate_accessions* now must match accession format, "ENCPL..." or "TSTPL..."

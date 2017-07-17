@@ -165,6 +165,9 @@
             "description": "An external resource to the code base.",
             "type": "string",
             "format": "uri"
+        },
+        "version": {
+            
         }
     },
     "facets": {
