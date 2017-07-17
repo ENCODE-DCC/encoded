@@ -291,6 +291,7 @@ export const dbxrefPrefixMap = {
     RBPImage: 'http://rnabiology.ircm.qc.ca/RBPImage/gene.php?cells=',
     RefSeq: 'https://www.ncbi.nlm.nih.gov/gene/?term=',
     JAX: 'https://www.jax.org/strain/',
+    NBRP: 'https://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq=',
     // UCSC links need assembly (&db=) and accession (&hgt_mdbVal1=) added to url
     'UCSC-ENCODE-mm9': 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=mm9&hgt_mdbVal1=',
     'UCSC-ENCODE-hg19': 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1=',
