@@ -6,6 +6,39 @@ import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import { JSONSchemaForm } from './form';
 
+class DisplayText extends React.Component {
+    render() {
+        const { context } = this.props;
+        const dataArray = [];
+        const values = [];
+        const labels = [];
+        dataArray.push(context);
+        for (let i = 0; i < dataArray.length; i += 1) {
+            const obj = dataArray[i];
+            dataArray.forEach((item) => {
+                const attrName = item;
+                const attrValue = obj[item];
+                values.push(attrName);
+                labels.push(attrValue);
+            });
+        }
+        return (
+            <div>
+                <h1> HELLO </h1>
+                <h1> {values} </h1>
+                <h1> {labels} </h1>
+            </div>
+        );
+    }
+}
+
+DisplayText.propTypes = {
+    context: PropTypes.object,
+};
+
+DisplayText.defaultProps = {
+    context: {},
+};
 
 const Fallback = (props, reactContext) => {
     const context = props.context;
@@ -20,7 +53,14 @@ const Fallback = (props, reactContext) => {
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
             <section className="view-detail panel">
                 <div className="container">
-                    <pre>{JSON.stringify(context, null, 4)}</pre>
+                    <DisplayText context={context} />
+                    {/* <dl className="key-value">
+                        <div data-test="title">
+                            <dt>title</dt>
+                            <dd>{context.title}</dd>
+                        </div>
+                    </dl>*/}
+                    {/*<pre>{JSON.stringify(context, null, 4)}</pre>*/}
                 </div>
             </section>
         </div>

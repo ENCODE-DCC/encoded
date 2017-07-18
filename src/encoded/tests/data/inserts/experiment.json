@@ -187,6 +187,7 @@
         "description": "Irvine Hi-C GM12878",
         "lab": "ali-mortazavi",
         "status": "released",
+        "date_submitted": "2015-09-20",
         "date_released": "2016-01-01",
         "submitted_by": "netus.lorem@risus.lobortis",
         "uuid": "355ffbf8-0bc9-4545-ad3c-1ae71b4e2d85"
@@ -319,6 +320,7 @@
         "organ_slims": [],
         "biosample_term_name": "K562",
         "status": "released",
+        "date_submitted": "2015-05-20",
         "date_released": "2016-01-01",
         "description": "HAIB Whole Genome Bisulfite Sequencing K562",
         "assay_term_name": "whole-genome shotgun bisulfite sequencing",

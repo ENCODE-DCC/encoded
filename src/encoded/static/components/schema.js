@@ -51,6 +51,7 @@ const SchemaPage = (props) => {
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
             <section className="view-detail panel">
                 <div className="container">
+                    <h1>test2</h1>
                     <pre>{JSON.stringify(context, null, 4)}</pre>
                 </div>
             </section>
