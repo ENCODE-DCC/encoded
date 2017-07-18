@@ -7,7 +7,7 @@ import { DocumentsPanel } from './doc';
 import * as globals from './globals';
 import { DbxrefList } from './dbxref';
 import { ExperimentTable } from './dataset';
-import { FetchedItems } from './fetched';
+import { FetchedData, Param, FetchedItems } from './fetched';
 import { FileGallery } from './filegallery';
 import { GeneticModificationSummary } from './genetic_modification';
 import { ProjectBadge } from './image';
@@ -362,8 +362,8 @@ class ExperimentComponent extends React.Component {
                 }
             });
         }
-        analysisStepDocs = analysisStepDocs.length ? globals.uniqueObjectsArray(analysisStepDocs) : [];
-        pipelineDocs = pipelineDocs.length ? globals.uniqueObjectsArray(pipelineDocs) : [];
+        analysisStepDocs = analysisStepDocs.length ? _.uniq(analysisStepDocs) : [];
+        pipelineDocs = pipelineDocs.length ? _.uniq(pipelineDocs) : [];
 
         // Determine this experiment's ENCODE version
         const encodevers = globals.encodeVersion(context);
@@ -421,17 +421,13 @@ class ExperimentComponent extends React.Component {
         ];
 
         // Compile the document list
-        const combinedDocuments = _(documents.concat(
+        const combinedDocuments = _.uniq(documents.concat(
             biosampleDocs,
             libraryDocs,
             biosampleDocs,
             pipelineDocs,
             analysisStepDocs
-        ))
-            .chain()
-            .uniq(doc => (doc ? doc.uuid : null))
-            .compact()
-            .value();
+        ));
 
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
@@ -646,7 +642,12 @@ class ExperimentComponent extends React.Component {
 
                 <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
 
-                {combinedDocuments.length ? <DocumentsPanel documentSpecs={[{ documents: combinedDocuments }]} /> : null}
+                {combinedDocuments.length ?
+                    <FetchedData>
+                        <Param name="documentSearch" url={`/search/?type=Item&${combinedDocuments.map(docAtId => `@id=${docAtId}`).join('&')}`} />
+                        <DocumentsPanelRenderer />
+                    </FetchedData>
+                : null}
             </div>
         );
     }
@@ -668,6 +669,26 @@ const Experiment = auditDecor(ExperimentComponent);
 export default Experiment;
 
 globals.contentViews.register(Experiment, 'Experiment');
+
+
+// Called when a GET request for all the documents associated with an experiment returns with the
+// array of matching documents.
+const DocumentsPanelRenderer = (props) => {
+    const documents = props.documentSearch['@graph'];
+    console.log('DOCRENDER: %o', documents);
+    if (documents && documents.length) {
+        return <DocumentsPanel documentSpecs={[{ documents }]} />;
+    }
+    return null;
+};
+
+DocumentsPanelRenderer.propTypes = {
+    documentSearch: PropTypes.object, // Search result object; we use its @graph to get the documents,
+};
+
+DocumentsPanelRenderer.defaultProps = {
+    documentSearch: null,
+};
 
 
 const replicateTableColumns = {

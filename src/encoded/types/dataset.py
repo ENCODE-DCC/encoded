@@ -80,9 +80,6 @@ class Dataset(Item):
         'submitted_by',
         'lab',
         'award.pi.lab',
-        'documents.lab',
-        'documents.award',
-        'documents.submitted_by',
         'references'
     ]
     audit_inherit = [

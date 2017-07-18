@@ -87,7 +87,7 @@ export function CollectBiosampleDocs(biosample) {
 
     // Put together the document list for rendering
     // Compile the document list
-    const combinedDocuments = _([].concat(
+    const combinedDocuments = _.uniq([].concat(
         protocolDocuments,
         characterizations,
         constructDocuments,
@@ -97,8 +97,7 @@ export function CollectBiosampleDocs(biosample) {
         donorConstructs,
         talenDocuments,
         treatmentDocuments,
-    )).chain().uniq(doc => (doc ? doc.uuid : null)).compact()
-    .value();
+    ));
 
     return combinedDocuments;
 }
