@@ -60,7 +60,7 @@ def test_matrix_view(workbook, testapp):
         'biosample_term_name']['buckets']) > 0
     assert len(res['matrix']['y'][
         'biosample_term_name']['buckets'][0][
-        'biosample_term_name']['buckets']) > 0
+        'biosample_summary']['buckets']) > 0
 
 
 # Unit tests
