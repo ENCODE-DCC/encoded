@@ -53,13 +53,13 @@ def test_matrix_view(workbook, testapp):
     assert len(res['matrix']['x']['buckets']) > 0
     assert len(res['matrix']['x']['facets']) > 0
     assert res['matrix']['y']['group_by'] == [
-        'biosample_summary', 'biosample_term_name']
+        'biosample_term_name', 'biosample_summary']
     assert res['matrix']['y']['label'] == 'Biosample'
     assert res['matrix']['y']['limit'] == 5
     assert len(res['matrix']['y'][
-        'biosample_summary']['buckets']) > 0
+        'biosample_term_name']['buckets']) > 0
     assert len(res['matrix']['y'][
-        'biosample_summary']['buckets'][0][
+        'biosample_term_name']['buckets'][0][
         'biosample_term_name']['buckets']) > 0
 
 

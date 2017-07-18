@@ -543,7 +543,7 @@ class Experiment(Dataset,
                 'assembly',
                 'internal_status'
             ],
-            'group_by': ['biosample_summary', 'biosample_term_name'],
+            'group_by': ['biosample_term_name', 'biosample_summary'],
             'label': 'Biosample',
         },
         'x': {
