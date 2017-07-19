@@ -341,9 +341,8 @@ def get_assemblies(list_of_files):
 #  def audit_experiment_control_out_of_date_analysis(value, system):
 #  removed due to https://encodedcc.atlassian.net/browse/ENCD-3460
 
-def is_outdated_bams_replicate(bam_file):
-    if 'lab' not in bam_file or bam_file['lab'] != '/labs/encode-processing-pipeline/' or \
-       'dataset' not in bam_file or 'original_files' not in bam_file['dataset']:
+def is_outdated_bams_replicate(bam_file, original_files):
+    if 'lab' not in bam_file or bam_file['lab'] != '/labs/encode-processing-pipeline/':
         return False
     derived_from_fastqs = get_derived_from_files_set([bam_file], 'fastq', True)
     if len(derived_from_fastqs) == 0:
@@ -359,7 +358,7 @@ def is_outdated_bams_replicate(bam_file):
                 bio_rep.append(entry)
             break
     fastq_files = scan_files_for_file_format_output_type(
-        bam_file['dataset']['original_files'],
+        original_files,
         'fastq', 'reads')
     bio_rep_fastqs = []
     for fastq_file in fastq_files:
@@ -399,10 +398,7 @@ def audit_experiment_with_uploading_files(value, system):
 
 
 @audit_checker('Experiment', frame=['original_files',
-                                    'original_files.replicate',
-                                    'original_files.derived_from',
-                                    'original_files.dataset',
-                                    'original_files.dataset.original_files'])
+                                    'original_files.derived_from'])
 def audit_experiment_out_of_date_analysis(value, system):
     if value['assay_term_name'] not in ['ChIP-seq', 'DNase-seq']:
         return
@@ -421,7 +417,7 @@ def audit_experiment_out_of_date_analysis(value, system):
     for bam_file in (alignment_files + transcriptome_alignments + not_filtered_alignments):
 
         if bam_file['lab'] == '/labs/encode-processing-pipeline/':
-            if is_outdated_bams_replicate(bam_file):
+            if is_outdated_bams_replicate(bam_file, value['original_files']):
                 assembly_detail = ''
                 if bam_file.get('assembly'):
                     assembly_detail = ' for {} assembly '.format(bam_file['assembly'])
