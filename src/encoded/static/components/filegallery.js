@@ -1364,11 +1364,6 @@ class FilterControls extends React.Component {
     constructor() {
         super();
 
-        // Set intial React state.
-        this.state = {
-            incArchived: false,
-        };
-
         // Bind this to non-React methods.
         this.handleAssemblyAnnotationChange = this.handleAssemblyAnnotationChange.bind(this);
         this.handleInclusionChange = this.handleInclusionChange.bind(this);
@@ -1378,12 +1373,9 @@ class FilterControls extends React.Component {
         this.props.handleAssemblyAnnotationChange(e.target.value);
     }
 
-    handleInclusionChange(e) {
-        // Get the checkbox element in the DOM so we can see whether it's been checked or not.
-        const checked = e.target.checked;
-
-        // Call the parent component with the new checked state.
-        this.props.handleInclusionChange(checked);
+    // Called when the switch button is clicked.
+    handleInclusionChange() {
+        this.props.handleInclusionChange(!this.props.inclusionOn);
     }
 
     render() {
@@ -1392,12 +1384,14 @@ class FilterControls extends React.Component {
         if (filterOptions.length) {
             return (
                 <div className="file-gallery-controls">
-                    <div className="file-gallery-controls--assembly-selector">
+                    <div className="file-gallery-controls__assembly-selector">
                         <FilterMenu selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleAssemblyAnnotationChange} />
                     </div>
-                    <div className="file-gallery-controls--qualifier-selector">
-                        <div className="checkbox">
-                            <label htmlFor="filterIncArchive">Include revoked / archived files<input name="filterIncArchive" type="checkbox" checked={inclusionOn} onChange={this.handleInclusionChange} /></label>
+                    <div className="file-gallery-controls__inclusion-selector">
+                        <div className="checkbox--right">
+                            <label htmlFor="filterIncArchive">Include revoked / archived files
+                                <input name="filterIncArchive" type="checkbox" checked={inclusionOn} onChange={this.handleInclusionChange} />
+                            </label>
                         </div>
                     </div>
                 </div>

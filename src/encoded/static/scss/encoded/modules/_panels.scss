@@ -283,7 +283,8 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 .file-gallery-controls {
     display: flex;
     justify-content: space-between;
-    padding: 5px 0;
+    align-items: center;
+    padding: 5px;
     background-color: #c0c0c0;
     border-top: 1px solid #a0a0a0;
     border-bottom: 1px solid #a0a0a0;
@@ -318,11 +319,8 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
         }
     }
 
-    @at-root #{&}__assembly-selector {
+    @at-root #{&}__inclusion-selector {
         flex: 0 1 auto;
-        position: relative;
-        vertical-align: bottom;
-        margin-right: 5px;
     }
 }
 
@@ -372,8 +370,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     text-align: center;
     font-size: 0.9rem;
     color: #606060;
-    background-color: #d8d8d8;
-    border-top: 1px solid #a0a0a0;
+    background-color: #fff;
     border-bottom: 1px solid #a0a0a0;
 }
 
@@ -523,10 +520,11 @@ $nav-tab-border-radius: 4px;
 
         a, a:focus {
             margin: 0;
-            padding: 10px 20px;
+            padding: 5px 20px;
             border-top: 3px solid transparent;
             border-right: 1px solid transparent;
             border-left: 1px solid transparent;
+            border-bottom: 1px solid transparent;
             border-radius: 0;
             color: #606060;
 
@@ -537,13 +535,12 @@ $nav-tab-border-radius: 4px;
 
         &.active {
             a {
-                padding-bottom: 9px;
                 border-top: 3px solid #00cc00;
                 border-right: $nav-tab-border-style;
                 border-left: $nav-tab-border-style;
+                border-bottom: 1px solid #fff;
                 pointer-events: none;
                 background-color: #fff;
-                border-bottom: 1px solid #fff;
                 color: #000;
             }
         }
