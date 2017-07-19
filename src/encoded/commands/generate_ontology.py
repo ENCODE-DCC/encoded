@@ -364,7 +364,25 @@ slim_shims = {
         'EFO:0007601': 'spinal cord',
         'EFO:0005480': 'spleen',
         'EFO:0005912': 'uterus',
-        'EFO:0005718': 'uterus'
+        'EFO:0005718': 'uterus',
+        'EFO:0005284': 'blood',
+        'EFO:0002869': 'bone element',
+        'EFO:0004389': 'bone element',
+        'EFO:0002717': 'bone marrow',
+        'EFO:0001084': 'embryo',
+        'EFO:0002078': 'embryo',
+        'EFO:0005914': 'embryo',
+        'EFO:0005915': 'embryo',
+        'EFO:0005916': 'embryo',
+        'EFO:0005650': 'limb',
+        'EFO:0005744': 'limb',
+        'EFO:0002324': 'lymphoid tissue',
+        'EFO:0002787': 'lymphoid tissue',
+        'EFO:0007096': 'skin of body',
+        'EFO:0007098': 'skin of body',
+        'EFO:0007095': 'skin of body',
+        'EFO:0007097': 'skin of body',
+        'EFO:0002779': 'skin of body'
     }
 
 }
