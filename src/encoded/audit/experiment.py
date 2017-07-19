@@ -2235,33 +2235,28 @@ def audit_experiment_frame_object(value, system):
     if term_id.startswith('NTR:'):
         detail = 'Assay_term_id is a New Term Request ({} - {})'.format(term_id, term_name)
         yield AuditFailure('NTR assay', detail, level='INTERNAL_ACTION')
+    
     '''
     Released experiments should be submitted to GEO.
     '''
     if value['status'] in ['released'] and \
-    :
-        return
-    if 'assay_term_id' in value and \
-       value['assay_term_id'] in ['NTR:0000612',
-                                  'OBI:0001923',
-                                  'OBI:0002044']:
-        return
-    submitted_flag = False
-    detail = 'Experiment {} '.format(value['@id']) + \
-             'is released, but was not submitted to GEO.'
-    if 'dbxrefs' in value and value['dbxrefs'] != []:
-        for entry in value['dbxrefs']:
-            if entry.startswith('GEO:'):
-                submitted_flag = True
-    if submitted_flag is False:
-        detail = 'Experiment {} '.format(value['@id']) + \
-                 'is released, but is not submitted to GEO.'
-        yield AuditFailure('experiment not submitted to GEO', detail, level='INTERNAL_ACTION')
-    return        
-    
+       'assay_term_id' in value and \
+       value['assay_term_id'] not in ['NTR:0000612',
+                                      'OBI:0001923',
+                                      'OBI:0002044']:
+        submitted_flag = False
+        if 'dbxrefs' in value and value['dbxrefs'] != []:
+            for entry in value['dbxrefs']:
+                if entry.startswith('GEO:'):
+                    submitted_flag = True
+        if submitted_flag is False:
+            detail = 'Experiment {} '.format(value['@id']) + \
+                    'is released, but is not submitted to GEO.'
+            yield AuditFailure('experiment not submitted to GEO', detail, level='INTERNAL_ACTION')
+
 # CONDENSING
 # def audit_experiment_geo_submission(value, system):
-# def audit_experiment_assay(value, system):     
+# def audit_experiment_assay(value, system):
 
 # def audit_experiment_biosample_term_id(value, system): removed release 56
 # http://redmine.encodedcc.org/issues/4900
