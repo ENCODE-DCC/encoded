@@ -1229,21 +1229,6 @@ def test_audit_experiment_bind_n_seq_missing_biosample_term_id(testapp, base_exp
                for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_missing_biosample_type(testapp, base_experiment):
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(error['category'] ==
-               'experiment missing biosample_type'
-               for error in collect_audit_errors(res))
-
-
-def test_audit_experiment_with_biosample_type(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'biosample_type': 'immortalized cell line'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert all(error['category'] !=
-               'experiment missing biosample_type'
-               for error in collect_audit_errors(res))
-
-
 def test_audit_experiment_not_uploaded_files(testapp, file_bam,
                                              base_experiment,
                                              base_replicate,
