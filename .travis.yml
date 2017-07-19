@@ -26,7 +26,7 @@ env:
         ZR5KkpFMaKLA505soY+4lJc4jRl5u0qwCB1Ad3UgTgfkI4QSaGM=
     - BOTO_CONFIG=tmp/bogusvalue
     - JAVA_HOME=/usr/lib/jvm/java-8-oracle
-    - ES_VERSION=5.4.1
+    - ES_VERSION=5.5.0
     - ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.deb
     - PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
 matrix:
