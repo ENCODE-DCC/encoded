@@ -2260,24 +2260,8 @@ def audit_experiment_geo_submission(value, system):
     return
 
 
-@audit_checker('experiment', frame=['object'])
-def audit_experiment_biosample_term_id(value, system):
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
-    # excluding Bind-n-Seq because they dont have biosamples
-    if 'assay_term_name' in value and value['assay_term_name'] == 'RNA Bind-n-Seq':
-        return
-
-    if value['status'] not in ['preliminary', 'proposed']:
-        if 'biosample_term_id' not in value:
-            detail = 'Experiment {} '.format(value['@id']) + \
-                     'has no biosample_term_id'
-            yield AuditFailure('experiment missing biosample_term_id', detail, level='INTERNAL_ACTION')
-        if 'biosample_type' not in value:
-            detail = 'Experiment {} '.format(value['@id']) + \
-                     'has no biosample_type'
-            yield AuditFailure('experiment missing biosample_type', detail, level='INTERNAL_ACTION')
-    return
+# def audit_experiment_biosample_term_id(value, system): removed release 56
+# http://redmine.encodedcc.org/issues/4900
 
 
 @audit_checker('experiment',
