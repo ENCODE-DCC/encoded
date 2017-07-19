@@ -135,7 +135,7 @@ def test_biosample_summary(testapp,
     testapp.patch_json(donor_1['@id'], {'age_units': 'day', 'age': '10'})
     testapp.patch_json(donor_1['@id'], {'sex': 'male'})
     testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'],
-                                            "biosample_term_id": "EFO:0002784",
+                                            "biosample_term_id": "UBERON:0002784",
                                             "biosample_term_name": "liver",
                                             "biosample_type": "tissue",
                                             'treatments': [treatment['@id']]})
@@ -154,7 +154,7 @@ def test_biosample_summary_construct(testapp,
     testapp.patch_json(construct['@id'],
                        {'promoter_used': target_promoter['@id']})
     testapp.patch_json(biosample_1['@id'], {'donor': fly_donor['@id'],
-                                            'biosample_term_id': 'EFO:0002784',
+                                            'biosample_term_id': 'UBERON:0002784',
                                             'biosample_term_name': 'liver',
                                             'biosample_type': 'tissue',
                                             'constructs': [construct['@id']],

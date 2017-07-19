@@ -3,7 +3,6 @@ from snovault import (
     audit_checker,
 )
 from .conditions import rfa
-from .ontology_data import biosampleType_ontologyPrefix
 
 
 @audit_checker('antibody_characterization', frame=['characterization_reviews'])
@@ -12,7 +11,10 @@ def audit_antibody_characterization_review(value, system):
     Make sure that biosample terms are in ontology
     for each characterization_review.
     '''
-    if (value['status'] in ['not reviewed', 'not submitted for review by lab', 'deleted', 'in progress']):
+    if (value['status'] in ['not reviewed',
+                            'not submitted for review by lab',
+                            'deleted',
+                            'in progress']):
         return
 
     if 'secondary_characterization_method' in value:
@@ -23,8 +25,6 @@ def audit_antibody_characterization_review(value, system):
         for review in value['characterization_reviews']:
             term_id = review['biosample_term_id']
             term_name = review['biosample_term_name']
-            term_type = review['biosample_type']
-
             if term_id.startswith('NTR:'):
                 detail = '{} contains a New Term Request {} - {}'.format(
                     value['@id'],
@@ -49,17 +49,6 @@ def audit_antibody_characterization_review(value, system):
                              term_id) + \
                          'is {}.'.format(ontology_term_name)
                 yield AuditFailure('inconsistent ontology term', detail, level='ERROR')
-                return
-            biosample_prefix = term_id.split(':')[0]
-            if biosample_prefix not in biosampleType_ontologyPrefix[review['biosample_type']]:
-                detail = 'Antibody characterization {} is '.format(value['@id']) + \
-                         'of type {} '.format(term_type) + \
-                         'and has biosample_term_id {} '.format(term_id) + \
-                         'that is not one of ' + \
-                         '{}'.format(biosampleType_ontologyPrefix[term_type])
-                yield AuditFailure('characterization review with biosample term-type mismatch',
-                                   detail,
-                                   level='INTERNAL_ACTION')
                 return
 
 
