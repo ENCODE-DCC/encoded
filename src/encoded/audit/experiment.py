@@ -2238,8 +2238,22 @@ def audit_experiment_gtex_biosample(value, system):
 '''
 
 @audit_checker('Experiment', frame=['object'])
-def audit_experiment_geo_submission(value, system):
-    if value['status'] not in ['released']:
+def audit_experiment_frame_object(value, system):
+    '''
+    Experiments should have assays with valid ontologies term ids and names that
+    are a valid synonym.
+    '''
+    term_id = value.get('assay_term_id')
+    term_name = value.get('assay_term_name')
+
+    if term_id.startswith('NTR:'):
+        detail = 'Assay_term_id is a New Term Request ({} - {})'.format(term_id, term_name)
+        yield AuditFailure('NTR assay', detail, level='INTERNAL_ACTION')
+    '''
+    Released experiments should be submitted to GEO.
+    '''
+    if value['status'] in ['released'] and \
+    :
         return
     if 'assay_term_id' in value and \
        value['assay_term_id'] in ['NTR:0000612',
@@ -2257,8 +2271,11 @@ def audit_experiment_geo_submission(value, system):
         detail = 'Experiment {} '.format(value['@id']) + \
                  'is released, but is not submitted to GEO.'
         yield AuditFailure('experiment not submitted to GEO', detail, level='INTERNAL_ACTION')
-    return
-
+    return        
+    
+# CONDENSING
+# def audit_experiment_geo_submission(value, system):
+# def audit_experiment_assay(value, system):     
 
 # def audit_experiment_biosample_term_id(value, system): removed release 56
 # http://redmine.encodedcc.org/issues/4900
@@ -2655,21 +2672,7 @@ def audit_experiment_documents(value, system):
         raise AuditFailure('missing documents', detail, level='NOT_COMPLIANT')
 
 
-@audit_checker('experiment', frame='object')
-def audit_experiment_assay(value, system):
-    '''
-    Experiments should have assays with valid ontologies term ids and names that
-    are a valid synonym.
-    '''
-    if value['status'] == 'deleted':
-        return
 
-    term_id = value.get('assay_term_id')
-    term_name = value.get('assay_term_name')
-
-    if term_id.startswith('NTR:'):
-        detail = 'Assay_term_id is a New Term Request ({} - {})'.format(term_id, term_name)
-        yield AuditFailure('NTR assay', detail, level='INTERNAL_ACTION')
 
 
 
