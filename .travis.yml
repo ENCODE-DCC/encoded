@@ -38,7 +38,6 @@ matrix:
 before_install:
   - postgres --version
   - initdb --version
-  - elasticsearch -v
   - nvm install 6
   - node --version
   - npm config set python /usr/bin/python2.7
