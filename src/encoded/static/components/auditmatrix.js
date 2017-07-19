@@ -160,11 +160,13 @@ class AuditMatrix extends React.Component {
             const xLimit = matrix.x.limit || xBuckets.length;
             var yGroups = matrix.y[primaryYGrouping].buckets;
             const orderKey = ['audit.ERROR.category', 'audit.NOT_COMPLIANT.category', 'audit.WARNING.category', 'no.audits', 'audit.INTERNAL_ACTION.category'];
+            const titleKey = ['Error', 'Not Compliant', 'Warning', 'No audits', 'Internal Action'];
             var orderIndex = 0;
             var tempYGroups = [];
             while(orderIndex < orderKey.length){
                 yGroups.forEach((group) => {
                     if(group.key === orderKey[orderIndex]){
+                        group.title = titleKey[orderIndex];
                         tempYGroups.push(group);
                     }
                 });
@@ -288,7 +290,7 @@ class AuditMatrix extends React.Component {
                                                 const categoryTextColor = rowColor.luminosity() > 0.5 ? '#000' : '#fff';
                                                 const rows = [<tr key={group.key}>
                                                     <th colSpan={colCount + 1} style={{ textAlign: 'left', backgroundColor: groupColor }}>
-                                                        <a href={groupHref} style={{ color: categoryTextColor }}>{group.key}</a>
+                                                        <a href={groupHref} style={{ color: categoryTextColor }}>{group.title}</a>
                                                     </th>
                                                 </tr>];
                                                 const groupBuckets = group[secondaryYGrouping].buckets;
