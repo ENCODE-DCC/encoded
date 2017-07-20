@@ -1436,7 +1436,11 @@ class Award extends React.Component {
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
+                    {context.pi && context.pi.lab ?
                         <h2>AWARD SUMMARY for {context.pi.lab.title} ({context.name})</h2>
+                        :
+                        <h2>AWARD SUMMARY for ({context.name})</h2>
+                    }
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -1461,7 +1465,11 @@ class Award extends React.Component {
                             <hr />
                             <div className="description__columnone">
                                 <dl><dt>NHGRI project information: </dt><a href={context.url} title={`${context.name} project page at NHGRI`}>{context.name}</a></dl>
-                                <dl><dt>Primary Investigator: </dt>{context.pi.lab.title}</dl>
+                                {context.pi && context.pi.lab ?
+                                    <dl><dt>Primary Investigator: </dt>{context.pi.lab.title}</dl>
+                                :
+                                    null
+                                }
                                 <dl><dt>Affiliated Labs: </dt> <AffiliatedLabs award={context} /> </dl>
                             </div>
                             <div className="description__columnone">
