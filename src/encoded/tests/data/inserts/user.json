@@ -832,7 +832,6 @@
         "submits_for": [
             "/labs/j-michael-cherry/"
         ],
-        "timezone": "US/Pacific",
         "uuid": "7e95dcd6-9c35-4082-9c53-09d14c5752be"
     },
     {
@@ -848,7 +847,6 @@
         "submits_for": [
             "/labs/j-michael-cherry/"
         ],
-        "timezone": "US/Pacific",
         "uuid": "4136f132-304e-4ddd-b87a-db04605f47b7"
     }
 ]
