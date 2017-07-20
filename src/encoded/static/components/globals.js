@@ -191,6 +191,7 @@ export const encodeVersionMap = {
 // Order that assemblies should appear in lists
 export const assemblyPriority = [
     'GRCh38',
+    'GRCh38-minimal',
     'hg19',
     'mm10',
     'mm10-minimal',
