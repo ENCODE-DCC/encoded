@@ -3012,6 +3012,7 @@ def audit_experiment_biosample_term(value, system):
         yield AuditFailure('NTR biosample', detail, level='INTERNAL_ACTION')
     else:
         biosample_prefix = term_id.split(':')[0]
+
         if term_id not in ontology:
             detail = 'Experiment {} has term_id {} which is not in ontology'.format(
                 value['@id'], term_id)

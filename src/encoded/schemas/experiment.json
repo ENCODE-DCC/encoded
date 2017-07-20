@@ -25,6 +25,7 @@
         { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
+
         "biosample_type": {
             "oneOf": [
                 {                   

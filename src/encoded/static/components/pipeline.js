@@ -50,7 +50,7 @@ function AnalysisStep(step, node) {
                     {swVersions ?
                         <span>{`${step.title} — Version ${node.metadata.ref.major_version}.${node.metadata.stepVersion.minor_version}`}</span>
                     :
-                        <span>{step.title}</span>
+                        <span>{step.title} — Version {node.metadata.ref.major_version}</span>
                     }
                 </h4>
             </div>

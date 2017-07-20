@@ -1,15 +1,10 @@
 [
     {
         "email": "netus.lorem@risus.lobortis",
-        "fax": "000-000-0000",
         "first_name": "Ali",
-        "google": "google",
         "job_title": "PI",
         "lab": "Ali Mortazavi, UCI",
         "last_name": "Mortazavi",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Richard Myers, HAIB",
             "Barbara Wold, Caltech",
@@ -21,145 +16,100 @@
         "viewing_groups": [
             "ENCODE3"
         ],
-        "timezone": "US/Pacific",
         "uuid": "9f161054-aa2c-40b7-8239-04eb7f08b15d"
     },
     {
         "email": "felis.senectus@hymenaeos.nibh",
-        "fax": "000-000-0000",
         "first_name": "Aleksandar",
-        "google": "google",
         "job_title": "PI",
         "lab": "Roadmap Epigenomics, Baylor",
         "last_name": "Milosavljevic",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Roadmap Epigenomics, Baylor"
         ],
-        "timezone": "US/Central",
         "uuid": "0d48e8c4-5954-4bf5-8c75-1e386eb27e31"
     },
     {
         "email": "ipsum.mi@torquent.eleifend",
-        "fax": "000-000-0000",
         "first_name": "Mi",
-        "google": "google",
         "job_title": "Submitter",
         "lab": "Len Pennacchio, JGI",
         "last_name": "Neque-Primis",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Bing Ren, UCSD",
             "Len Pennacchio, JGI",
             "Joe Ecker, Salk"
         ],
-        "timezone": "US/Pacific",
         "uuid": "5e99a8f5-2808-43c6-b1ba-13d5d110a6c1"
     },
     {
         "email": "hymenaeos.blandit@sit.dictum",
-        "fax": "000-000-0000",
         "first_name": "Bradley",
-        "google": "google",
         "job_title": "PI",
         "lab": "Bradley Bernstein, Broad",
         "last_name": "Bernstein",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Bradley Bernstein, Broad",
             "John Rinn, Broad"
         ],
-        "timezone": "US/Eastern",
         "uuid": "aa57ecb5-3d0e-4b1f-9608-665785270ad7"
     },
     {
         "email": "tristique.sem@faucibus.semper",
-        "fax": "000-000-0000",
         "first_name": "Bing",
-        "google": "google",
         "job_title": "PI",
         "lab": "Bing Ren, UCSD",
         "last_name": "Ren",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Bing Ren, UCSD",
             "Len Pennacchio, JGI",
             "Joe Ecker, Salk"
         ],
-        "timezone": "US/Pacific",
         "uuid": "ea5e2bd6-be7a-4b18-a2e8-dee86005422f"
     },
     {
         "email": "mus.mi@porttitor.molestie",
-        "fax": "000-000-0000",
         "first_name": "Brenton",
-        "google": "google",
         "job_title": "PI",
         "lab": "Brenton Graveley, UConn",
         "last_name": "Graveley",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Brenton Graveley, UConn",
             "Gene Yeo, UCSD",
             "Xiang-Dong Fu, UCSD",
             "Chris Burge, MIT"
         ],
-        "timezone": "US/Eastern",
         "uuid": "4fa80b58-322a-4c8e-9b33-d2a00c8405bd"
     },
     {
         "email": "orci.mus@odio.per",
-        "fax": "000-000-0000",
         "first_name": "Chris",
-        "google": "google",
         "job_title": "PI",
         "lab": "Chris Burge, MIT",
         "last_name": "Burge",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Brenton Graveley, UConn",
             "Gene Yeo, UCSD",
             "Xiang-Dong Fu, UCSD",
             "Chris Burge, MIT"
         ],
-        "timezone": "US/Eastern",
         "uuid": "de7f5444-ee87-4e4e-b621-9c136ea1d4b1"
     },
     {
         "email": "massa.porta@varius.mauris",
-        "fax": "000-000-0000",
         "first_name": "J. Michael",
-        "google": "google",
         "job_title": "PI",
         "lab": "J. Michael Cherry, Stanford",
         "last_name": "Cherry",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "J. Michael Cherry, Stanford",
             "W. James Kent, UCSC"
         ],
-        "timezone": "US/Pacific",
         "uuid": "860c4750-8d3c-40f5-8f2c-90c5e5d19e88"
     },
     {
-        "email": "cricketsloan@stanford.edu",
-        "fax": "000-000-0000",
+        "email": "crickets@stanford.edu",
         "first_name": "Elit",
-        "google": "google",
         "groups": [
             "admin",
             "wrangler"
@@ -167,38 +117,26 @@
         "job_title": "Data Wrangler",
         "lab": "J. Michael Cherry, Stanford",
         "last_name": "Iaculis",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "J. Michael Cherry, Stanford"
         ],
-        "timezone": "US/Pacific",
         "uuid": "81a6cc12-2847-4e2e-8f2c-f566699eb29e"
     },
     {
         "email": "dignissim.euismod@amet.habitant",
-        "fax": "000-000-0000",
         "first_name": "Ad",
-        "google": "google",
         "job_title": "Project Manager",
         "lab": "Thomas Gingeras, CSHL",
         "last_name": "Est",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Thomas Gingeras, CSHL",
             "Roderic Guigo, CRG"
         ],
-        "timezone": "US/Eastern",
         "uuid": "0abbd494-b852-433c-b360-93996f679dae"
     },
     {
         "email": "duis.pede@nonummy.scelerisque",
-        "fax": "000-000-0000",
         "first_name": "Inceptos",
-        "google": "google",
         "groups": [
             "admin",
             "wrangler"
@@ -206,61 +144,40 @@
         "job_title": "Data Wrangler",
         "lab": "J. Michael Cherry, Stanford",
         "last_name": "Nullam",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "J. Michael Cherry, Stanford"
         ],
-        "timezone": "US/Pacific",
         "uuid": "3787a0ac-f13a-40fc-a524-69628b04cd59"
     },
     {
         "email": "sagittis.proin@ultricies.parturient",
-        "fax": "000-000-0000",
         "first_name": "Joe",
-        "google": "google",
         "job_title": "PI",
         "lab": "Joe Ecker, Salk",
         "last_name": "Ecker",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Bing Ren, UCSD",
             "Len Pennacchio, JGI",
             "Joe Ecker, Salk"
         ],
-        "timezone": "US/Pacific",
         "uuid": "a53cb5c0-62fd-4da8-a503-48211db16326"
     },
     {
         "email": "eni.lectus@nullam.sed",
-        "fax": "000-000-0000",
         "first_name": "Torquent",
-        "google": "google",
         "job_title": "Staff Scientist",
         "lab": "Kevin White, UChicago",
         "last_name": "Fusce",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Kevin White, UChicago"
         ],
-        "timezone": "US/Central",
         "uuid": "29f3829e-a942-4175-9637-1b691ff268e5"
     },
     {
         "email": "elementum.mus@dictumst.nostra",
-        "fax": "000-000-0000",
         "first_name": "Magnis",
-        "google": "google",
         "lab": "ENCODE2 Project, UCSC",
         "last_name": "Senectus",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "ENCODE2 Project, UCSC"
         ],
@@ -268,9 +185,7 @@
     },
     {
         "email": "etchan@stanford.edu",
-        "fax": "000-000-0000",
         "first_name": "Bibendum",
-        "google": "google",
         "groups": [
             "admin",
             "wrangler"
@@ -278,20 +193,14 @@
         "job_title": "Data Wrangler",
         "lab": "J. Michael Cherry, Stanford",
         "last_name": "Sodales-Luctus",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "J. Michael Cherry, Stanford"
         ],
-        "timezone": "US/Pacific",
         "uuid": "4c23ec32-c7c8-4ac0-affb-04befcc881d4"
     },
     {
         "email": "ipsum.imperdiet@ipsum.venenatis",
-        "fax": "000-000-0000",
         "first_name": "Euismod",
-        "google": "google",
         "groups": [
             "admin",
             "wrangler"
@@ -299,27 +208,18 @@
         "job_title": "Project Manager",
         "lab": "J. Michael Cherry, Stanford",
         "last_name": "Platea-Ad",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "J. Michael Cherry, Stanford",
             "W. James Kent, UCSC"
         ],
-        "timezone": "US/Pacific",
         "uuid": "ce2bde01-07ec-4b8a-b179-554ef95b71dd"
     },
     {
         "email": "facilisi.tristique@potenti.vivamus",
-        "fax": "000-000-0000",
         "first_name": "Tincidunt",
-        "google": "google",
         "job_title": "Project Manager",
         "lab": "Richard Myers, HAIB",
         "last_name": "Volutpat-Ullamcorper",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Richard Myers, HAIB",
             "Barbara Wold, Caltech",
@@ -328,20 +228,14 @@
             "Tim Reddy, Duke",
             "Greg Cooper, HAIB"
         ],
-        "timezone": "US/Central",
         "uuid": "df9f3c8e-b819-4885-8f16-08f6ef0001e8"
     },
     {
         "email": "ad.cursus@proin.quam",
-        "fax": "000-000-0000",
         "first_name": "Greg",
-        "google": "google",
         "job_title": "PI",
         "lab": "Greg Cooper, HAIB",
         "last_name": "Cooper",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Richard Myers, HAIB",
             "Barbara Wold, Caltech",
@@ -350,71 +244,50 @@
             "Tim Reddy, Duke",
             "Greg Cooper, HAIB"
         ],
-        "timezone": "US/Central",
         "uuid": "9a144e02-c84f-4cc8-b474-49e5c8afa7c7"
     },
     {
         "email": "accumsan.egestas@imperdiet.rutrum",
-        "fax": "000-000-0000",
         "first_name": "Gene",
-        "google": "google",
         "job_title": "PI",
         "lab": "Gene Yeo, UCSD",
         "last_name": "Yeo",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Brenton Graveley, UConn",
             "Gene Yeo, UCSD",
             "Xiang-Dong Fu, UCSD",
             "Chris Burge, MIT"
         ],
-        "timezone": "US/Pacific",
         "uuid": "4640ff09-f1b4-4cc4-9167-6a36f2b8d9bc"
     },
     {
         "email": "viverra.dis@integer.platea",
-        "fax": "000-000-0000",
         "first_name": "Thomas",
-        "google": "google",
         "job_title": "PI",
         "lab": "Thomas Gingeras, CSHL",
         "last_name": "Gingeras",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Thomas Gingeras, CSHL",
             "Roderic Guigo, CRG"
         ],
-        "timezone": "US/Eastern",
         "uuid": "09d05b87-4d30-4dfb-b243-3327005095f2"
     },
     {
         "email": "metus.donec@nisl.montes",
-        "fax": "000-000-0000",
         "first_name": "Gregory",
-        "google": "google",
         "job_title": "PI",
         "lab": "Gregory Crawford, Duke",
         "last_name": "Crawford",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Gregory Crawford, Duke",
             "Jason Lieb, UNC",
             "Vishwanath Iyer, UTA"
         ],
-        "timezone": "US/Eastern",
         "uuid": "e74547f3-1676-43de-bcfc-9b946f0024c9"
     },
     {
         "email": "orci.porta@morbi.eu",
-        "fax": "000-000-0000",
         "first_name": "Parturient",
-        "google": "google",
         "groups": [
             "admin",
             "programmer"
@@ -422,20 +295,14 @@
         "job_title": "Software Engineer",
         "lab": "J. Michael Cherry, Stanford",
         "last_name": "Urna",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "J. Michael Cherry, Stanford"
         ],
-        "timezone": "US/Pacific",
         "uuid": "95f5b53d-d206-4ec3-97ba-7c2abd84aab5"
     },
     {
         "email": "justo.tincidunt@risus.pede",
-        "fax": "000-000-0000",
         "first_name": "Justo",
-        "google": "google",
         "groups": [
             "admin",
             "programmer"
@@ -443,185 +310,125 @@
         "job_title": "Group Leader, Software",
         "lab": "J. Michael Cherry, Stanford",
         "last_name": "Lobortis",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "J. Michael Cherry, Stanford"
         ],
-        "timezone": "US/Pacific",
         "uuid": "8be3a346-1440-4bd6-85e8-3236ae469c0c"
     },
     {
         "email": "quisque.consequat@venenatis.magna",
-        "fax": "000-000-0000",
         "first_name": "Jason",
-        "google": "google",
         "job_title": "PI",
         "lab": "Jason Lieb, UNC",
         "last_name": "Lieb",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Gregory Crawford, Duke",
             "Jason Lieb, UNC",
             "Vishwanath Iyer, UTA"
         ],
-        "timezone": "US/Eastern",
         "uuid": "f56a4449-1a87-4824-8a34-9c6917544b1b"
     },
     {
         "email": "augue.eros@nisi.turpis",
-        "fax": "000-000-0000",
         "first_name": "Job",
-        "google": "google",
         "job_title": "PI",
         "lab": "Job Dekker, UMass",
         "last_name": "Dekker",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "John Stamatoyannopoulos, UW",
             "Job Dekker, UMass"
         ],
-        "timezone": "US/Eastern",
         "uuid": "077c758e-f7e9-47f0-bf8d-c862bc45bde8"
     },
     {
         "email": "sapien.mi@adipiscing.justo",
-        "fax": "000-000-0000",
         "first_name": "John",
-        "google": "google",
         "job_title": "PI",
         "lab": "John Rinn, Broad",
         "last_name": "Rinn",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Bradley Bernstein, Broad",
             "John Rinn, Broad"
         ],
-        "timezone": "US/Eastern",
         "uuid": "6183c69b-e862-41ab-99be-69214fc9f27e"
     },
     {
         "email": "blandit.orci@conubia.magna",
-        "fax": "000-000-0000",
         "first_name": "John",
-        "google": "google",
         "job_title": "PI",
         "lab": "John Stamatoyannopoulos, UW",
         "last_name": "Stamatoyannopoulos",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "John Stamatoyannopoulos, UW",
             "Job Dekker, UMass"
         ],
-        "timezone": "US/Pacific",
         "uuid": "ec729133-c5f3-4c53-be5b-a5ea73a367dd"
     },
     {
         "email": "risus.fermentum@vel.at",
-        "fax": "000-000-0000",
         "first_name": "Erat",
-        "google": "google",
         "job_title": "Submitter",
         "lab": "Roderic Guigo, CRG",
         "last_name": "Commodo",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Thomas Gingeras, CSHL",
             "Roderic Guigo, CRG"
         ],
-        "timezone": "Europe/Madrid",
         "uuid": "f5b7857d-208e-4acc-ac4d-4c2520814fe1"
     },
     {
         "email": "consequat.nullam@facilisis.vel",
-        "fax": "000-000-0000",
         "first_name": "Fringilla",
-        "google": "google",
         "job_title": "Senior software developer",
         "lab": "W. James Kent, UCSC",
         "last_name": "Enim",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "W. James Kent, UCSC"
         ],
-        "timezone": "US/Pacific",
         "uuid": "8f9f5064-3e2f-4182-8925-c66ab6b24e15"
     },
     {
         "email": "vestibulum.tortor@vitae.nec",
-        "fax": "000-000-0000",
         "first_name": "W. James",
-        "google": "google",
         "job_title": "PI",
         "lab": "W. James Kent, UCSC",
         "last_name": "Kent",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "J. Michael Cherry, Stanford",
             "W. James Kent, UCSC"
         ],
-        "timezone": "US/Pacific",
         "uuid": "746eef27-d857-4b38-a469-cac93fb02164"
     },
     {
         "email": "rutrum.fermentum@platea.turpis",
-        "fax": "000-000-0000",
         "first_name": "Kevin",
-        "google": "google",
         "job_title": "PI",
         "lab": "Kevin White, UChicago",
         "last_name": "White",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Michael Snyder, Stanford",
             "Kevin White, UChicago",
             "Peggy Farnham, USC",
             "Sherman Weissman, Yale"
         ],
-        "timezone": "US/Central",
         "uuid": "b0a10b06-9ad0-4e59-aac9-a7797781d29e"
     },
     {
         "email": "venenatis.tempus@tincidunt.nostra",
-        "fax": "000-000-0000",
         "first_name": "Len",
-        "google": "google",
         "job_title": "PI",
         "lab": "Len Pennacchio, JGI",
         "last_name": "Pennacchio",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Bing Ren, UCSD",
             "Len Pennacchio, JGI",
             "Joe Ecker, Salk"
         ],
-        "timezone": "US/Pacific",
         "uuid": "864c3e01-dce4-4f41-925a-383ccc82ee5d"
     },
     {
         "email": "lrowe@stanford.edu",
-        "fax": "000-000-0000",
         "first_name": "Faucibus",
-        "google": "google",
         "groups": [
             "admin",
             "programmer"
@@ -629,58 +436,40 @@
         "job_title": "Senior software engineer",
         "lab": "J. Michael Cherry, Stanford",
         "last_name": "Hac",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "J. Michael Cherry, Stanford"
         ],
-        "timezone": "US/Pacific",
         "uuid": "1ec85168-059e-407e-9cb1-f96200e72499"
     },
     {
         "email": "sit.nascetur@accumsan.quis",
-        "fax": "000-000-0000",
         "first_name": "Nonummy",
-        "google": "google",
         "job_title": "Project Coordinator",
         "lab": "Bradley Bernstein, Broad",
         "last_name": "Eros-Cursus",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Bradley Bernstein, Broad",
             "John Rinn, Broad"
         ],
-        "timezone": "US/Eastern",
         "uuid": "f74511d2-d30a-44d9-8e54-79104353e7af"
     },
     {
         "email": "fames.at@per.varius",
-        "fax": "000-000-0000",
         "first_name": "Michael",
-        "google": "google",
         "job_title": "PI",
         "lab": "Michael Snyder, Stanford",
         "last_name": "Snyder",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Michael Snyder, Stanford",
             "Kevin White, UChicago",
             "Peggy Farnham, USC",
             "Sherman Weissman, Yale"
         ],
-        "timezone": "US/Pacific",
         "uuid": "27e105ca-c741-4459-bf17-90e003508639"
     },
     {
         "email": "dictumst.dui@a.dis",
-        "fax": "000-000-0000",
         "first_name": "Maecenas",
-        "google": "google",
         "groups": [
             "admin",
             "programmer"
@@ -688,83 +477,56 @@
         "job_title": "Senior software engineer",
         "lab": "J. Michael Cherry, Stanford",
         "last_name": "Montes",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "J. Michael Cherry, Stanford"
         ],
-        "timezone": "US/Pacific",
         "uuid": "9b52a07a-e46f-4b74-bbe3-e5fd45b768e0"
     },
     {
         "email": "sit.duis@blandit.hendrerit",
-        "fax": "000-000-0000",
         "first_name": "Habitasse",
-        "google": "google",
         "job_title": "Submitter",
         "lab": "Michael Snyder, Stanford",
         "last_name": "Laoreet",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Michael Snyder, Stanford"
         ],
-        "timezone": "US/Pacific",
         "uuid": "5d76a10b-1f18-4544-a00e-d0d83f1021a1"
     },
     {
         "email": "taciti.vehicula@vitae.vivamus",
-        "fax": "000-000-0000",
         "first_name": "Peggy",
-        "google": "google",
         "job_title": "PI",
         "lab": "Peggy Farnham, USC",
         "last_name": "Farnham",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Michael Snyder, Stanford",
             "Kevin White, UChicago",
             "Peggy Farnham, USC",
             "Sherman Weissman, Yale"
         ],
-        "timezone": "US/Pacific",
         "uuid": "2eb068c5-b7a6-48ec-aca2-c439e4dabb08"
     },
     {
         "email": "tempor.convallis@libero.nibh",
-        "fax": "000-000-0000",
         "first_name": "Ross",
-        "google": "google",
         "job_title": "PI",
         "lab": "Ross Hardison, PennState",
         "last_name": "Hardison",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Richard Myers, HAIB",
             "Barbara Wold, Caltech",
             "Ali Mortazavi, UCI",
             "Ross Hardison, PennState"
         ],
-        "timezone": "US/Eastern",
         "uuid": "0a61ce48-e33d-48bf-8b6b-b085b722b467"
     },
     {
         "email": "maecenas.curabitur@nibh.phasellus",
-        "fax": "000-000-0000",
         "first_name": "Richard",
-        "google": "google",
         "job_title": "PI",
         "lab": "Richard Myers, HAIB",
         "last_name": "Myers",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Richard Myers, HAIB",
             "Barbara Wold, Caltech",
@@ -773,76 +535,52 @@
             "Tim Reddy, Duke",
             "Greg Cooper, HAIB"
         ],
-        "timezone": "US/Central",
         "uuid": "a62cfec5-57a0-45ab-b943-8ca0e0057bb6"
     },
     {
         "email": "ultrices.id@tristique.natoque",
-        "fax": "000-000-0000",
         "first_name": "Roderic",
-        "google": "google",
         "job_title": "PI",
         "lab": "Roderic Guigo, CRG",
         "last_name": "Guigo",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Thomas Gingeras, CSHL",
             "Roderic Guigo, CRG"
         ],
-        "timezone": "Europe/Madrid",
         "uuid": "046eea49-9ab6-4e4d-ba42-be8f8fc92de3"
     },
     {
         "email": "semper.habitant@ut.venenatis",
-        "fax": "000-000-0000",
         "first_name": "Sherman",
-        "google": "google",
         "job_title": "PI",
         "lab": "Sherman Weissman, Yale",
         "last_name": "Weissman",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Michael Snyder, Stanford",
             "Kevin White, UChicago",
             "Peggy Farnham, USC",
             "Sherman Weissman, Yale"
         ],
-        "timezone": "US/Eastern",
         "uuid": "4b135999-ec2d-41b5-b962-fc6a5f8934ac"
     },
     {
         "email": "facilisis.venenatis@mauris.mauris",
-        "fax": "000-000-0000",
         "first_name": "Sociis",
-        "google": "google",
         "job_title": "Submitter",
         "lab": "John Stamatoyannopoulos, UW",
         "last_name": "Non-Urna",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "John Stamatoyannopoulos, UW",
             "Job Dekker, UMass"
         ],
-        "timezone": "US/Pacific",
         "uuid": "073079fd-d589-4663-9fd4-3d488208d075"
     },
     {
         "email": "conubia.phasellus@et.montes",
-        "fax": "000-000-0000",
         "first_name": "Tim",
-        "google": "google",
         "job_title": "PI",
         "lab": "Tim Reddy, Duke",
         "last_name": "Reddy",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Richard Myers, HAIB",
             "Barbara Wold, Caltech",
@@ -850,70 +588,49 @@
             "Ross Hardison, PennState",
             "Tim Reddy, Duke"
         ],
-        "timezone": "US/Eastern",
         "uuid": "261fcf1a-04d9-4879-a56a-320915587586"
     },
     {
         "email": "amet.fusce@est.fermentum",
-        "fax": "000-000-0000",
         "first_name": "Aenean",
-        "google": "google",
         "job_title": "Project Manager",
         "lab": "Michael Snyder, Stanford",
         "last_name": "Et-Quisque",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Michael Snyder, Stanford",
             "Kevin White, UChicago",
             "Peggy Farnham, USC",
             "Sherman Weissman, Yale"
         ],
-        "timezone": "US/Pacific",
         "uuid": "d48be354-153c-4ca8-acaa-bf067c1fd836"
     },
     {
         "email": "parturient.ut@et.ve",
-        "fax": "000-000-0000",
         "first_name": "Donec",
-        "google": "google",
         "job_title": "Post-doc",
         "lab": "Xiang-Dong Fu, UCSD",
         "last_name": "Arcu",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Xiang-Dong Fu, UCSD"
         ],
-        "timezone": "US/Pacific",
         "uuid": "cc0edf23-b9fd-48e2-8609-54ad07bdd5f7"
     },
     {
         "email": "tempor.nec@torquent.ve",
-        "fax": "000-000-0000",
         "first_name": "Vishwanath",
-        "google": "google",
         "job_title": "PI",
         "lab": "Vishwanath Iyer, UTA",
         "last_name": "Iyer",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Gregory Crawford, Duke",
             "Jason Lieb, UNC",
             "Vishwanath Iyer, UTA"
         ],
-        "timezone": "US/Eastern",
         "uuid": "6282e6de-8696-4fa1-91e4-415e729558e9"
     },
     {
         "email": "cubilia.adipiscing@at.auctor",
-        "fax": "000-000-0000",
         "first_name": "Tortor",
-        "google": "google",
         "groups": [
             "admin",
             "wrangler"
@@ -921,46 +638,31 @@
         "job_title": "Data Wrangler",
         "lab": "J. Michael Cherry, Stanford",
         "last_name": "Torquent",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "J. Michael Cherry, Stanford"
         ],
-        "timezone": "US/Pacific",
         "uuid": "ff7b77e7-bb55-4307-b665-814c9f1e65fb"
     },
     {
         "email": "platea.a@volutpat.viverra",
-        "fax": "000-000-0000",
         "first_name": "Magna",
-        "google": "google",
         "job_title": "Submitter",
         "lab": "Brenton Graveley, UConn",
         "last_name": "Bibendum",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Brenton Graveley, UConn",
             "Gene Yeo, UCSD",
             "Xiang-Dong Fu, UCSD",
             "Chris Burge, MIT"
         ],
-        "timezone": "US/Pacific",
         "uuid": "599e4901-78bf-422f-b65d-f3443c6a6450"
     },
     {
         "email": "vitae.quis@mauris.aptent",
-        "fax": "000-000-0000",
         "first_name": "Barbara",
-        "google": "google",
         "job_title": "PI",
         "lab": "Barbara Wold, Caltech",
         "last_name": "Wold",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Richard Myers, HAIB",
             "Barbara Wold, Caltech",
@@ -969,44 +671,31 @@
             "Tim Reddy, Duke",
             "Greg Cooper, HAIB"
         ],
-        "timezone": "US/Pacific",
         "uuid": "0598c868-0b4a-4c5b-9112-8f85c5de5374"
     },
     {
         "email": "laoreet.arcu@orci.leo",
-        "fax": "000-000-0000",
         "first_name": "Xiang-Dong",
-        "google": "google",
         "job_title": "PI",
         "lab": "Xiang-Dong Fu, UCSD",
         "last_name": "Fu",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Brenton Graveley, UConn",
             "Gene Yeo, UCSD",
             "Xiang-Dong Fu, UCSD",
             "Chris Burge, MIT"
         ],
-        "timezone": "US/Pacific",
         "uuid": "94c85be4-e034-4647-b6b3-15055701a656"
     },
     {
         "email": "uskuf.shyec@doton.danona",
-        "fax": "000-000-0000",
         "first_name": "Nuech",
-        "google": "google",
         "job_title": "PI",
         "lab": "Robert Waterston, UW",
         "last_name": "Shueng",
-        "phone1": "000-000-0000",
-        "phone2": "000-000-0000",
-        "skype": "skype",
         "submits_for": [
             "Robert Waterston, UW"
         ],
-        "timezone": "US/Pacific",
         "uuid": "7e763d5a-634b-4181-a812-4361183359e9"
     },
     {
@@ -1021,7 +710,6 @@
         "submits_for": [
             "/labs/j-michael-cherry/"
         ],
-        "timezone": "US/Pacific",
         "uuid": "04d1cd63-d5d9-4ea4-8d9b-7adad3d5377d"
     },
     {
@@ -1036,7 +724,6 @@
         "submits_for": [
             "/labs/j-michael-cherry/"
         ],
-        "timezone": "US/Pacific",
         "uuid": "627eedbc-7cb3-4de3-9743-a86266e435a6"
     },
     {
@@ -1053,7 +740,6 @@
         "submits_for": [
             "/labs/j-michael-cherry/"
         ],
-        "timezone": "US/Pacific",
         "uuid": "9e889180-9db1-11e4-bd06-0800200c9a66"
     },
     {
@@ -1070,7 +756,6 @@
         "submits_for": [
             "/labs/j-michael-cherry/"
         ],
-        "timezone": "US/Pacific",
         "uuid": "6800d05f-7213-48b1-9ad8-254c73c5b83f"
     },
     {
@@ -1087,7 +772,6 @@
         "submits_for": [
             "/labs/j-michael-cherry/"
         ],
-        "timezone": "US/Pacific",
         "uuid": "98fb23d3-0d79-4c3d-981d-01539e6589f1"
     },
     {
@@ -1103,7 +787,6 @@
         "submits_for": [
             "/labs/j-michael-cherry/"
         ],
-        "timezone": "US/Pacific",
         "uuid": "45cd6450-c5f0-49dc-9a68-d233f51039c5"
     },
     {
@@ -1119,7 +802,6 @@
         "submits_for": [
             "/labs/j-michael-cherry/"
         ],
-        "timezone": "US/Pacific",
         "uuid": "986b362f-4eb6-4a9c-8173-3ab267307e3b"
     },
     {
@@ -1135,8 +817,38 @@
         "submits_for": [
             "/labs/j-michael-cherry/"
         ],
-        "timezone": "US/Pacific",
         "uuid": "7dfbe70c-995d-4bc5-94c3-7d39d2baf001"
+    },
+    {
+        "email": "ksgraham@stanford.edu",
+        "first_name": "Keenan",
+        "groups": [
+            "admin"
+        ],
+        "job_title": "Research Data Analyst",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Graham",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "7e95dcd6-9c35-4082-9c53-09d14c5752be"
+    },
+    {
+        "email": "kritijn21@gmail.com",
+        "first_name": "Kriti",
+        "groups": [
+            "admin"
+        ],
+        "job_title": "Software Engineer",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Jain",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "4136f132-304e-4ddd-b87a-db04605f47b7"
     }
-
 ]
