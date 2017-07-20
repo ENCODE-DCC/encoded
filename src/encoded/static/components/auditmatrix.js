@@ -159,8 +159,8 @@ class AuditMatrix extends React.Component {
             const xBuckets = matrix.x.buckets;
             const xLimit = matrix.x.limit || xBuckets.length;
             var yGroups = matrix.y[primaryYGrouping].buckets;
-            const orderKey = ['audit.ERROR.category', 'audit.NOT_COMPLIANT.category', 'audit.WARNING.category', 'no.audits', 'audit.INTERNAL_ACTION.category'];
-            const titleKey = ['Error', 'Not Compliant', 'Warning', 'No audits', 'Internal Action'];
+            const orderKey = ['audit.ERROR.category', 'audit.NOT_COMPLIANT.category', 'audit.WARNING.category', 'no.audits', "no.test", 'audit.INTERNAL_ACTION.category'];
+            const titleKey = ['Error', 'Not Compliant', 'Warning', 'No audits', "Test", 'Internal Action'];
             var orderIndex = 0;
             var tempYGroups = [];
             while(orderIndex < orderKey.length){
@@ -198,7 +198,7 @@ class AuditMatrix extends React.Component {
             };
 
             // Make an array of colors corresponding to the ordering of biosample_type
-            const biosampleTypeColors = ["#cc0700", "#ff8000", "#e0e000", "#009802", "#a0a0a0"];
+            const biosampleTypeColors = ["#cc0700", "#ff8000", "#e0e000", "#009802", "#a0a0a0", "#a0a0a0"];
 
             return (
                 <div>

@@ -1237,7 +1237,7 @@ def audit(context, request):
     # Don't use these groupings for audit matrix
     x_grouping = matrix['x']['group_by']
     y_groupings = audit_list_field
-    y_groupings.append("no.audits")
+    #y_groupings.append("no.audits")
     x_agg = {
         "terms": {
             "field": 'embedded.' + x_grouping + '.raw',
@@ -1245,6 +1245,18 @@ def audit(context, request):
         },
     }
     aggs = {x_grouping: x_agg}
+    """
+    for field in y_groupings:
+        aggs = {
+            "missing" + field: {
+                "missing": {
+                    "field": field,
+                    "size": 0,  # no limit
+                },
+                "aggs": aggs,
+            },
+        }
+    """
     """
     for field in (y_groupings):
         aggs[field] = {
@@ -1254,6 +1266,7 @@ def audit(context, request):
             },
         }
     """
+    y_groupings.append("no.audits")
     aggs = {'audit.ERROR.category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
                         }
                     }
@@ -1281,6 +1294,40 @@ def audit(context, request):
     }
     
 }
+
+
+    aggs.update({'no.error': {'missing': {'field': 'audit.ERROR.category'
+        }, 
+                            'aggs': {'no.warning': {'missing': {'field': 'audit.WARNING.category'
+                }, 'aggs': {'no.not_compliant': {'missing': {'field': 'audit.NOT_COMPLIANT'},
+                                                    'aggs': {'assay_title': {'terms': {'field': 'embedded.assay_title.raw', 'size': 0
+                                                                                        }
+                                                                            }
+                                                            }
+                                                }
+                            }
+                            
+            }
+        }
+    }
+})
+
+
+    """
+    aggs.update({'missingaudit.WARNING.category': {'aggs': {'missingaudit.NOT_COMPLIANT.category': {'aggs': {'missingaudit.ERROR.category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
+                                }
+                            }
+                        }, 'missing': {'field': 'audit.ERROR.category'
+                        }
+                    }
+                }, 'missing': {'field': 'audit.NOT_COMPLIANT.category'
+                }
+            }
+        }, 'missing': {'field': 'audit.WARNING.category'
+        }
+    }
+})
+    """
     # if internal action data is able to be seen in facets then add it to aggs
     if "audit.INTERNAL_ACTION.category" in facets[len(facets)-1]:
         aggs['audit.INTERNAL_ACTION.category'] = {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
@@ -1346,6 +1393,8 @@ def audit(context, request):
                             summary.append(counts.get(xbucket['key'], 0))
                         bucket['assay_title'] = summary
                 else: # for no audits row
+                    import pdb
+                    pdb.set_trace()
                     for assay in outer_bucket[category]['assay_title']['buckets']:
                         doc_count = assay['doc_count']
                         if doc_count > matrix['max_cell_doc_count']:
@@ -1379,7 +1428,7 @@ def audit(context, request):
     no_audits_list = []
     no_audits_temp = {}
     no_audits_temp = aggregations['matrix']['no.audits']
-    no_audits_temp['key'] = "experiments with no audits"
+    no_audits_temp['key'] = "experiments with no red audits"
     no_audits_list.append(no_audits_temp)
     no_audits_dict['buckets'] = no_audits_list
 
