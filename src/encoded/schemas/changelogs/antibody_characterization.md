@@ -1,5 +1,9 @@
 ## Change log for antibody_characterization.json
 
+### Schema version 10
+    
+* *biosample_type* and *biosample_term_id* consistency added to the list of schema dependencies
+
 ### Schema version 9
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
