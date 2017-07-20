@@ -1,5 +1,9 @@
 ## Changelog for user.json
 
+### Schema version 7
+
+* unused/detailed user properties *phone1*, *phone2*, *fax*, *skype*, and *google* were removed
+
 ### Schema version 6
 
 * *status* property was restricted to one of  

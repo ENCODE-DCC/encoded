@@ -1,5 +1,9 @@
 ## Changelog for biosample.json
 
+### Schema version 18
+
+* *biosample_type* and *biosample_term_id* consistency added to the list of schema dependencies
+
 ### Schema version 17
 
 * *status* value "proposed" was removed
@@ -20,11 +24,11 @@
 * *derived_from* property was renamed to *originated_from*
 * *alternate_accessions* now must match accession format, "ENCBS..." or "TSTBS..."
 
-
 ### Schema version 15
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
 * unsafe characters such as " # @ % ^ & | ~ ; ` [ ] { } and consecutive whitespaces will no longer be allowed in the alias
+
 
 ### Schema version 14
 

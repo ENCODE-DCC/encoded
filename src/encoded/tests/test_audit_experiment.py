@@ -964,8 +964,7 @@ def test_audit_experiment_geo_submission(testapp, base_experiment):
 
 
 def test_audit_experiment_biosample_type_missing(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': "EFO:0002067",
-                                                'biosample_term_name': 'K562'})
+    testapp.patch_json(base_experiment['@id'], {'biosample_term_name': 'K562'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'missing biosample_type'
                for error in collect_audit_errors(res))
@@ -1118,28 +1117,6 @@ def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experi
                                                 'transcription profiling by array assay'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert all(error['category'] != 'missing RNA fragment size'
-               for error in collect_audit_errors(res))
-
-
-def test_audit_experiment_biosample_term_id(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': 'CL:349829',
-                                                'biosample_type': 'tissue',
-                                                'status': 'released',
-                                                'date_released': '2016-01-01'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(error['category'] ==
-               'experiment with biosample term-type mismatch'
-               for error in collect_audit_errors(res))
-
-
-def test_audit_experiment_biosample_ntr_term_id(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': 'NTR:349829',
-                                                'biosample_type': 'tissue',
-                                                'status': 'released',
-                                                'date_released': '2016-01-01'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert all(error['category'] !=
-               'experiment with biosample term-type mismatch'
                for error in collect_audit_errors(res))
 
 
