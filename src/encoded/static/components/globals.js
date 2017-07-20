@@ -69,7 +69,7 @@ export function truncateString(str, len) {
         localStr = localStr.substr(0, len - 1); // Truncate to length ignoring word boundary
         localStr = `${!isOneWord ? localStr.substr(0, localStr.lastIndexOf(' ')) : localStr}…`; // Back up to word boundary
     }
-    return str;
+    return localStr;
 }
 
 // Given an array of objects with @id properties, this returns the same array but with any
