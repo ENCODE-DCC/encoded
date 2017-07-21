@@ -102,7 +102,7 @@ const Fallback = (props, reactContext) => {
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
             <section className="view-detail panel">
                 <div className="container">
-                    <DisplayText context={context} />
+                    <DisplayText dataObject={context} />
                      <pre>{JSON.stringify(context, null, 4)}</pre>
                 </div>
             </section>
