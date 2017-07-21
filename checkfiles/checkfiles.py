@@ -483,7 +483,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                                  read_lengths_list,
                                  item['read_length'],
                                  read_count,
-                                 0.95,
+                                 0.9,
                                  errors,
                                  result)
         else:
