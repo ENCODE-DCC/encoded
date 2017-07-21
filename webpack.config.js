@@ -1,11 +1,11 @@
-/*global process, __dirname */
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+/* global process, __dirname */
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
 
-var path = require('path');
-var webpack = require('webpack');
-var env = process.env.NODE_ENV;
+const env = process.env.NODE_ENV;
 
-var PATHS = {
+const PATHS = {
     static: path.resolve(__dirname, 'src/encoded/static'),
     build: path.resolve(__dirname, 'src/encoded/static/build'),
     serverbuild: path.resolve(__dirname, 'src/encoded/static/build-server'),
@@ -13,34 +13,32 @@ var PATHS = {
     images: path.resolve(__dirname, 'src/encoded/static/img'),
 };
 
-var plugins = [];
+const plugins = [];
 // don't include momentjs locales (large)
 plugins.push(new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/]));
-var chunkFilename = '[name].js';
-var styleFilename = './css/[name].css';
+let chunkFilename = '[name].js';
+let styleFilename = './css/[name].css';
 
 if (env === 'production') {
     // uglify code for production
     plugins.push(new webpack.optimize.UglifyJsPlugin({ minimize: true }));
+
+    // Set production version of React
+    // https://stackoverflow.com/questions/37311972/react-doesnt-switch-to-production-mode#answer-37311994
+    plugins.push(
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: JSON.stringify(env),
+            },
+        })
+    );
+
     // add chunkhash to chunk names for production only (it's slower)
     chunkFilename = '[name].[chunkhash].js';
     styleFilename = './css/[name].[chunkhash].css';
 }
 
-var preLoaders = [
-    // Strip @jsx pragma in react-forms, which makes babel abort
-    {
-        test: /(\.js|\.es6)$/,
-        include: path.resolve(__dirname, 'node_modules/react-forms'),
-        loader: 'string-replace',
-        query: {
-            search: '@jsx',
-            replace: 'jsx',
-        },
-    },
-];
-
-var loaders = [
+const loaders = [
     // add babel to load .js files as ES6 and transpile JSX
     {
         test: /\.js$/,
@@ -77,10 +75,10 @@ module.exports = [
             path: PATHS.build,
             publicPath: '/static/build/',
             filename: '[name].js',
-            chunkFilename: chunkFilename,
+            chunkFilename,
         },
         module: {
-            loaders: loaders,
+            loaders,
         },
         devtool: 'source-map',
         plugins: plugins.concat(
@@ -94,8 +92,8 @@ module.exports = [
             // Add a browser-only plugin executed when webpack is done with all transforms. it
             // writes minimal build statistics to the "build" directory that contains the hashed
             // CSS file names that the server can render into the <link rel="stylesheet"> tag.
-            function() {
-                this.plugin('done', function(stats) {
+            function writeWPStats() {
+                this.plugin('done', (stats) => {
                     // Write hash stats to stats.json so we can extract the CSS hashed file name.
                     require('fs').writeFileSync(
                         path.join(PATHS.build, 'stats.json'),
@@ -131,13 +129,13 @@ module.exports = [
             publicPath: '/static/build-server',
             filename: '[name].js',
             libraryTarget: 'commonjs2',
-            chunkFilename: chunkFilename,
+            chunkFilename,
         },
         module: {
-            loaders: loaders,
+            loaders,
         },
         devtool: 'source-map',
-        plugins: plugins,
+        plugins,
         debug: true,
     },
 ];
