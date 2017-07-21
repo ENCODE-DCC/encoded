@@ -253,10 +253,14 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
     # demo vs prod
     if profile_name == 'production':
         domain = 'production'
-        automatic_reboot = "\"false\""
+        automatic_reboot = "false"
+        # role_access_id = "PROD_ACCESS_ID"
+        # role_access_key = "PROD_ACCESS_KEY"
     else:
         domain = 'instance'
-        automatic_reboot = "\"true\""
+        automatic_reboot = "true"
+        # role_access_id = "DEMO_ACCESS_ID"
+        # role_access_key = "DEMO_ACCESS_KEY"
     instance_url_name = '{0}.{1}.encodedcc.org'.format(name, domain)
 
     if any(ec2.instances.filter(
@@ -282,6 +286,8 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
             'ROLE': role,
             'INSTANCE_URL_NAME': instance_url_name,
             'AUTOMATIC_REBOOT': automatic_reboot,
+            # 'ROLE_ACCESS_ID': role_access_id,
+            # 'ROLE_ACCESS_KEY': role_access_key,
         }
 
         if cluster_name:
