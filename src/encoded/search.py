@@ -996,7 +996,7 @@ def matrix(context, request):
     aggregations = es_results['aggregations']
     result['matrix']['doc_count'] = total = aggregations['matrix']['doc_count']
     result['matrix']['max_cell_doc_count'] = 0
-
+    
     # Format facets for results
     result['facets'] = format_facets(
         es_results, facets, used_filters, (schema,), total, principals)
@@ -1237,7 +1237,8 @@ def audit(context, request):
     # Don't use these groupings for audit matrix
     x_grouping = matrix['x']['group_by']
     y_groupings = audit_list_field
-    #y_groupings.append("no.audits")
+    y_groupings.append("no.audits")
+    #y_groupings.append("no.error")
     x_agg = {
         "terms": {
             "field": 'embedded.' + x_grouping + '.raw',
@@ -1266,7 +1267,6 @@ def audit(context, request):
             },
         }
     """
-    y_groupings.append("no.audits")
     aggs = {'audit.ERROR.category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
                         }
                     }
@@ -1293,25 +1293,39 @@ def audit(context, request):
                         }
     }
     
-}
+} 
 
-
-    aggs.update({'no.error': {'missing': {'field': 'audit.ERROR.category'
-        }, 
-                            'aggs': {'no.warning': {'missing': {'field': 'audit.WARNING.category'
-                }, 'aggs': {'no.not_compliant': {'missing': {'field': 'audit.NOT_COMPLIANT'},
-                                                    'aggs': {'assay_title': {'terms': {'field': 'embedded.assay_title.raw', 'size': 0
-                                                                                        }
-                                                                            }
-                                                            }
-                                                }
+    """
+    aggs.update({
+        "no.error": {
+            "missing": {
+                "field": "audit.ERROR.category"
+            },
+            "aggs": {
+                "no.warning": {
+                    "missing": {
+                        "field": "audit.WARNING.category"
+                    },
+                    "aggs": {
+                        "no.not_compliant": {
+                            "missing": {
+                                "field": "audit.NOT_COMPLIANT"
+                            },
+                            "aggs": {
+                                "assay_title": {
+                                    "terms": {
+                                        "field": "embedded.assay_title.raw",
+                                        "size": 0
+                                    }
+                                }
                             }
-                            
+                        }
+                    }
+                }
             }
         }
-    }
-})
-
+    })
+    """
 
     """
     aggs.update({'missingaudit.WARNING.category': {'aggs': {'missingaudit.NOT_COMPLIANT.category': {'aggs': {'missingaudit.ERROR.category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
@@ -1349,7 +1363,8 @@ def audit(context, request):
 
     # Execute the query
     es_results = es.search(body=query, index=es_index, search_type='count')
-
+    import pdb
+    pdb.set_trace()
     # Format matrix for results
     aggregations = es_results['aggregations']
     result['matrix']['doc_count'] = total = aggregations['matrix']['doc_count']
@@ -1393,9 +1408,9 @@ def audit(context, request):
                             summary.append(counts.get(xbucket['key'], 0))
                         bucket['assay_title'] = summary
                 else: # for no audits row
-                    import pdb
-                    pdb.set_trace()
                     for assay in outer_bucket[category]['assay_title']['buckets']:
+                        import pdb
+                        pdb.set_trace()
                         doc_count = assay['doc_count']
                         if doc_count > matrix['max_cell_doc_count']:
                             matrix['max_cell_doc_count'] = doc_count
@@ -1417,7 +1432,7 @@ def audit(context, request):
         aggregations['matrix']['x']['buckets'],
         aggregations['matrix'],
         y_groupings + [x_grouping])
-
+    
     result['matrix']['y']['label'] = "Audit Category"
     result['matrix']['y']['group_by'][0] = "audit_category"
     result['matrix']['y']['group_by'][1] = "audit_label"
