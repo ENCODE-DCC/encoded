@@ -16,6 +16,7 @@ import re
 from urllib.parse import urljoin
 import requests
 import copy
+from slackclient import SlackClient
 
 EPILOG = __doc__
 
@@ -972,7 +973,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.14'
+    version = '1.15'
 
     out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
               (version, search_query, nprocesses, dr, datetime.datetime.now()))
@@ -1013,6 +1014,21 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
 
     out.write("FINISHED Checkfiles at %s\n" % datetime.datetime.now())
 
+    output_filename = out.name
+    out.close()
+
+    sc = SlackClient('xoxb-216151022738-q0HoXLoixM5GokF4Iaqm08XX')
+    user_slack_id = "U1KNK05D3"
+    api_call = sc.api_call("im.list")
+    if api_call.get('ok'):
+        for im in api_call.get("ims"):
+            if im.get("user") == user_slack_id:
+                im_channel = im.get("id")
+                with open(output_filename, 'r') as output_file:
+                    x = sc.api_call("files.upload",
+                                    channels=im_channel,
+                                    content=output_file.read(),
+                                    as_user=True)
 
 def main():
     import argparse
