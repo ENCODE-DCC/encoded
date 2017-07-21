@@ -217,8 +217,8 @@ runcmd:
 - then
 -   sudo -i -u encoded bin/batchupgrade production.ini --app-name app
 - else
--   sudo sed -i "s/WSGIDaemonProcess encoded-fileindexer/#WSGIDaemonProcess encoded-fileindexer/" /etc/encoded-apache.conf
--   sudo sed -i "s/WSGIScriptAlias \/_fileindexer/#WSGIScriptAlias \/_fileindexer/" /etc/encoded-apache.conf
+-   sudo sed -i "s/WSGIDaemonProcess encoded-fileindexer/#WSGIDaemonProcess encoded-fileindexer/" /srv/encoded/etc/encoded-apache.conf
+-   sudo sed -i "s/WSGIScriptAlias \/_fileindexer/#WSGIScriptAlias \/_fileindexer/" /srv/encoded/etc/encoded-apache.conf
 - fi
 - sudo sed -i -e 's/inet_interfaces = all/inet_interfaces = loopback-only/g' /etc/postfix/main.cf
 #- PUBLIC_DNS_NAME="$(curl http://169.254.169.254/latest/meta-data/public-hostname)"
