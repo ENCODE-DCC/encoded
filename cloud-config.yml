@@ -172,8 +172,6 @@ runcmd:
 -   echo "include 'demo.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 - else
 -   curl -1 -sS "https://static.userify.com/installer.sh" | static_host="static.userify.com" shim_host="configure.userify.com" company_name="Encode-Test" project_name="test-server1" self_signed=0 api_id="eg988nlrrdqxh7cumvhqhn_user" api_key="3JkeJcNbQbwSj8skBEympciKJHkSVPAwV2Z3Tp32K9W6pGZJbc" /bin/sh
--   sudo sed -i "s/WSGIDaemonProcess encoded-fileindexer/#WSGIDaemonProcess encoded-fileindexer/" /etc/encoded-apache.conf
--   sudo sed -i "s/WSGIScriptAlias \/_fileindexer/#WSGIScriptAlias \/_fileindexer/" /etc/encoded-apache.conf
 - fi
 - sudo -u postgres createuser encoded
 - sudo -u postgres createdb --owner=encoded encoded
@@ -218,6 +216,9 @@ runcmd:
 - if test "%(ROLE)s" = "demo"
 - then
 -   sudo -i -u encoded bin/batchupgrade production.ini --app-name app
+- else
+-   sudo sed -i "s/WSGIDaemonProcess encoded-fileindexer/#WSGIDaemonProcess encoded-fileindexer/" /etc/encoded-apache.conf
+-   sudo sed -i "s/WSGIScriptAlias \/_fileindexer/#WSGIScriptAlias \/_fileindexer/" /etc/encoded-apache.conf
 - fi
 - sudo sed -i -e 's/inet_interfaces = all/inet_interfaces = loopback-only/g' /etc/postfix/main.cf
 #- PUBLIC_DNS_NAME="$(curl http://169.254.169.254/latest/meta-data/public-hostname)"
