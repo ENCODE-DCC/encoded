@@ -116,14 +116,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                         duration: 200,
                     },
                     legendCallback: (chartInstance) => {
-                        let chartData;
-                        if (chartInstance.data.datasets[0].data.length) {
-                            chartData = chartInstance.data.datasets[0].data;
-                        } else if (chartInstance.data.datasets[1].data.length) {
-                            chartData = chartInstance.data.datasets[1].data;
-                        } else if (chartInstance.data.datasets[2].data.length) {
-                            chartData = chartInstance.data.datasets[2].data;
-                        }
+                        const chartData = chartInstance.data.datasets[0].data;
                         const chartColors = chartInstance.data.datasets[0].backgroundColor;
                         const chartLabels = chartInstance.data.labels;
                         const text = [];
@@ -221,10 +214,12 @@ function createBarChart(chartId, unreplicatedLabel, unreplicatedDataset, isogeni
                     legendCallback: (chartInstance) => {
                         const chartLabels = replicatelabels;
                         const LegendLabels = [];
+                        const dataColors = [];
                         // If data array has value, add to legend
                         for (let i = 0; i < chartLabels.length; i += 1) {
-                            if (chartInstance.data.datasets[i].data.length !== 0) {
+                            if (chartInstance.data.datasets[i].data.some(x => x > 0)) {
                                 LegendLabels.push(chartInstance.data.datasets[i].label);
+                                dataColors.push(chartInstance.data.datasets[i].backgroundColor);
                             }
                         }
                         const text = [];
@@ -232,7 +227,7 @@ function createBarChart(chartId, unreplicatedLabel, unreplicatedDataset, isogeni
                         for (let i = 0; i < LegendLabels.length; i += 1) {
                             if (LegendLabels[i]) {
                                 text.push(`<li><a href="${baseSearchUri}${LegendLabels[i]}">`);
-                                text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${chartInstance.data.datasets[i].backgroundColor}"></i>`);
+                                text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${dataColors[i]}"></i>`);
                                 text.push(`<span class="chart-legend-label">${LegendLabels[i]}</span>`);
                                 text.push('</a></li>');
                             }
@@ -710,11 +705,11 @@ function StatusData(experiments, unreplicated, isogenic, anisogenic) {
     let isogenicArray;
     let anisogenicArray;
     const unreplicatedLabel = [];
-    const unreplicatedDataset = [];
+    let unreplicatedDataset = [];
     const isogenicLabel = [];
-    const isogenicDataset = [];
+    let isogenicDataset = [];
     const anisogenicLabel = [];
-    const anisogenicDataset = [];
+    let anisogenicDataset = [];
 
     if (experiments && experiments.facets && experiments.facets.length) {
         const unreplicatedFacet = unreplicated.facets.find(facet => facet.field === 'status');
@@ -740,6 +735,8 @@ function StatusData(experiments, unreplicated, isogenic, anisogenic) {
                 unreplicatedDataset.splice(j, 0, 0);
             }
         }
+    } else {
+        unreplicatedDataset = [0, 0, 0, 0, 0, 0, 0, 0];
     }
     if (isogenicArray.length) {
         for (let j = 0; j < labels.length; j += 1) {
@@ -756,6 +753,8 @@ function StatusData(experiments, unreplicated, isogenic, anisogenic) {
                 isogenicDataset.splice(j, 0, 0);
             }
         }
+    } else {
+        isogenicDataset = [0, 0, 0, 0, 0, 0, 0, 0];
     }
     if (anisogenicArray.length) {
         for (let j = 0; j < labels.length; j += 1) {
@@ -772,6 +771,8 @@ function StatusData(experiments, unreplicated, isogenic, anisogenic) {
                 anisogenicDataset.splice(j, 0, 0);
             }
         }
+    } else {
+        anisogenicDataset = [0, 0, 0, 0, 0, 0, 0, 0];
     }
     return ([labels, unreplicatedLabel, unreplicatedDataset, isogenicDataset, anisogenicDataset]);
 }
