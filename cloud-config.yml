@@ -224,7 +224,7 @@ runcmd:
 - sudo echo "127.0.0.0 $INSTANCE_URL_NAME" | sudo tee --append /etc/hosts
 - sudo mv /etc/mailname /etc/mailname.OLD
 - sudo echo "$INSTANCE_URL_NAME" | sudo tee --append /etc/mailname
-- sudo sed -i "/:root:/:$INSTANCE_URL_NAME:/" /etc/passwd
+- sudo sed -i "s/:root:/:$INSTANCE_URL_NAME:/" /etc/passwd
 - sudo service postfix restart
 # - sleep 10
 # - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
