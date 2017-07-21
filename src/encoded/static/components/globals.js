@@ -69,7 +69,7 @@ export function truncateString(str, len) {
         localStr = localStr.substr(0, len - 1); // Truncate to length ignoring word boundary
         localStr = `${!isOneWord ? localStr.substr(0, localStr.lastIndexOf(' ')) : localStr}…`; // Back up to word boundary
     }
-    return str;
+    return localStr;
 }
 
 // Given an array of objects with @id properties, this returns the same array but with any
@@ -191,6 +191,7 @@ export const encodeVersionMap = {
 // Order that assemblies should appear in lists
 export const assemblyPriority = [
     'GRCh38',
+    'GRCh38-minimal',
     'hg19',
     'mm10',
     'mm10-minimal',
@@ -290,6 +291,8 @@ export const dbxrefPrefixMap = {
     MGID: 'http://www.informatics.jax.org/external/festing/mouse/docs/',
     RBPImage: 'http://rnabiology.ircm.qc.ca/RBPImage/gene.php?cells=',
     RefSeq: 'https://www.ncbi.nlm.nih.gov/gene/?term=',
+    JAX: 'https://www.jax.org/strain/',
+    NBRP: 'https://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq=',
     // UCSC links need assembly (&db=) and accession (&hgt_mdbVal1=) added to url
     'UCSC-ENCODE-mm9': 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=mm9&hgt_mdbVal1=',
     'UCSC-ENCODE-hg19': 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1=',
