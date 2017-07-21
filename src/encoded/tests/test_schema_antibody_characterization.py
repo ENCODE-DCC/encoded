@@ -38,8 +38,37 @@ def test_no_attachment(testapp, antibody_characterization):
     testapp.post_json('/antibody_characterization', antibody_characterization, status=422)
 
 
-def test_antibody_characterization_exemption_no_explanation(testapp, antibody_characterization, document):
-    antibody_characterization['characterization_reviews'] = [{"organism": "human", "lane": 2, "biosample_type": "immortalized cell line", "biosample_term_name": "K562", "biosample_term_id": "EFO:0002067", "lane_status": "exempt from standards"}]
+def test_antibody_characterization_exemption_no_explanation(testapp,
+                                                            antibody_characterization,
+                                                            document):
+    antibody_characterization['characterization_reviews'] = [{"organism": "human", "lane": 2,
+                                                              "biosample_type":
+                                                              "immortalized cell line",
+                                                              "biosample_term_name": "K562",
+                                                              "biosample_term_id": "EFO:0002067",
+                                                              "lane_status":
+                                                              "exempt from standards"}]
     antibody_characterization['documents'] = [document]
     antibody_characterization['reviewed_by'] = '81a6cc12-2847-4e2e-8f2c-f566699eb29e'
     testapp.post_json('/antibody_characterization', antibody_characterization, status=422)
+
+
+def test_antibody_biosample_invalid_term_in_review(testapp, antibody_characterization):
+    antibody_characterization['attachment'] = {'download': 'red-dot.png', 'href': RED_DOT}
+    antibody_characterization['primary_characterization_method'] = 'immunoblot'
+    antibody_characterization['characterization_reviews'] = [{"organism": "human", "lane": 2,
+                                                              "biosample_type":
+                                                              "immortalized cell line",
+                                                              "biosample_term_name": "K562",
+                                                              "biosample_term_id": "UBERON:0002067",
+                                                              "lane_status":
+                                                              "exempt from standards"}]
+    testapp.post_json('/antibody_characterization', antibody_characterization, status=422)
+    antibody_characterization['characterization_reviews'] = [{"organism": "human", "lane": 2,
+                                                              "biosample_type":
+                                                              "immortalized cell line",
+                                                              "biosample_term_name": "K562",
+                                                              "biosample_term_id": "EFO:0002067",
+                                                              "lane_status":
+                                                              "exempt from standards"}]
+    testapp.post_json('/antibody_characterization', antibody_characterization, status=201)

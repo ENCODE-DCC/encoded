@@ -7,8 +7,10 @@ def file_exp(lab, award, testapp, experiment):
         'lab': lab['uuid'],
         'award': award['uuid'],
         'assay_term_name': 'RAMPAGE',
+        'biosample_type': 'tissue',
         'biosample_term_id': 'NTR:000012',
         'biosample_term_name': 'Some body part',
+        'biosample_type': 'tissue',
         'possible_controls': [experiment['uuid']],
         'status': 'released',
         'date_released': '2016-01-01'
@@ -33,6 +35,7 @@ def file_exp2(lab, award, testapp):
         'award': award['uuid'],
         'assay_term_name': 'RAMPAGE',
         'biosample_term_id': 'NTR:000013',
+        'biosample_type': 'tissue',
         'biosample_term_name': 'Some other body part',
         'status': 'released',
         'date_released': '2016-01-01'

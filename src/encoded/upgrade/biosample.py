@@ -299,3 +299,9 @@ def biosample_16_17(value, system):
     # http://redmine.encodedcc.org/issues/5041
     if value.get('status') == 'proposed':
         value['status'] = "in progress"
+
+
+@upgrade_step('biosample', '17', '18')
+def biosample_17_18(value, system):
+    # http://redmine.encodedcc.org/issues/4925
+    return
