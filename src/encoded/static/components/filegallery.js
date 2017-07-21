@@ -114,7 +114,6 @@ export class FileTable extends React.Component {
             encodevers,
             selectedFilterValue,
             filterOptions,
-            handleFilterChange,
             anisogenic,
             showFileCount,
             session,
@@ -248,7 +247,6 @@ FileTable.propTypes = {
     encodevers: PropTypes.string, // ENCODE version of the experiment
     selectedFilterValue: PropTypes.string, // Selected filter from popup menu
     filterOptions: PropTypes.array, // Array of assambly/annotation from file array
-    handleFilterChange: PropTypes.func, // Called when user changes filter
     anisogenic: PropTypes.bool, // True if experiment is anisogenic
     showFileCount: PropTypes.bool, // True to show count of files in table
     setInfoNodeId: PropTypes.func, // Function to call to set the currently selected node ID
@@ -1425,6 +1423,7 @@ class FileGalleryRenderer extends React.Component {
 
         // Initialize React state variables.
         this.state = {
+            selectedFilterValue: 'default', // <select> value of selected filter
             infoNodeId: '', // @id of node whose info panel is open
             infoModalOpen: false, // True if info modal is open
             relatedFiles: [],
