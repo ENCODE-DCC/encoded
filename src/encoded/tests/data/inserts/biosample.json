@@ -650,7 +650,7 @@
         "_test": "has worm life stage and worm_anatomy ontology term",
         "accession": "ENCBS000WRM",
         "award": "U41HG007355",
-        "biosample_term_id": "WBbt:0005842",
+        "biosample_term_id": "NTR:0005842",
         "biosample_term_name": "AVA",
         "biosample_type": "in vitro differentiated cells",
         "description": "Young adult worms",
