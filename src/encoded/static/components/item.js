@@ -8,36 +8,89 @@ import { JSONSchemaForm } from './form';
 
 class DisplayText extends React.Component {
     render() {
-        const { context } = this.props;
-        const dataArray = [];
-        const values = [];
-        const labels = [];
-        dataArray.push(context);
+        const { dataObject } = this.props;
+        const mixinArray = [];
+        const idvalues = [];
+        const titles = [];
+        const dataArray = Object.keys(dataObject).map((term) => {
+            const labels = term;
+            return labels;
+        });
+        // const title = date.map((term) => {
+        //     const values = term.title;
+        //     return values;
+        // });
         for (let i = 0; i < dataArray.length; i += 1) {
-            const obj = dataArray[i];
-            dataArray.forEach((item) => {
-                const attrName = item;
-                const attrValue = obj[item];
-                values.push(attrName);
-                labels.push(attrValue);
-            });
+            const key = dataArray[i];
+
+            if (dataObject[key].title && dataObject[key].title.length > 0) {
+                titles.push(dataObject[key].title);
+            } else {
+                titles.push(dataArray[i]);
+            }
+            if (dataObject[key].id) {
+                const str = dataObject[key].id;
+                const extract = str.match(/profiles\/(.*)\.json/);
+                idvalues.push(extract[1]);
+            } else {
+                idvalues.push('N/A');
+            }
+            if (dataObject[key].mixinProperties && dataObject[key].mixinProperties.length) {
+                mixinArray.push(dataObject[key].mixinProperties);
+            } else {
+                mixinArray.push('N/A');
+            }
         }
+
+        const dataRenderObject = dataArray.map((item, index) => {
+            const objectmixin = mixinArray[index];
+            // if (objectmixin == Array){
+            //     objectmixin.map((item, index) => <dd>{objectmixin[index]}</dd>)
+            // } else {
+            //     <dd>{objectmixin}</dd>
+            // }
+            return (
+            // dataArray.forEach(term =>
+                <div key={index}>
+                    <h4>{titles[index]}</h4>
+                    <dl className="key-value">
+                        <div data-test="id">
+                            <dt>ID</dt>
+                            <dd>{idvalues[index]}</dd>
+                        </div>
+                        <div data-test="mixin">
+                            <dt>Mixin Properties</dt>
+                            {objectmixin == Array ?
+                                objectmixin.map((term, i) => <dd>{objectmixin[i]}</dd>)
+                            :
+                            null
+                            }
+                            {objectmixin === 'N/A' ?
+                                <dd>{objectmixin}</dd>
+                            :
+                            null
+                            }
+                        </div>
+                    </dl>
+                </div>
+            );
+        });
         return (
             <div>
-                <h1> HELLO </h1>
-                <h1> {values} </h1>
-                <h1> {labels} </h1>
+                <dl className="key-value">
+                    {dataRenderObject}
+                </dl>
             </div>
         );
     }
 }
 
 DisplayText.propTypes = {
-    context: PropTypes.object,
+    dataObject: PropTypes.object,
 };
 
 DisplayText.defaultProps = {
-    context: {},
+    dataObject: {},
 };
 
 const Fallback = (props, reactContext) => {
@@ -53,14 +106,8 @@ const Fallback = (props, reactContext) => {
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
             <section className="view-detail panel">
                 <div className="container">
-                    <DisplayText context={context} />
-                    {/* <dl className="key-value">
-                        <div data-test="title">
-                            <dt>title</dt>
-                            <dd>{context.title}</dd>
-                        </div>
-                    </dl>*/}
-                    {/*<pre>{JSON.stringify(context, null, 4)}</pre>*/}
+                    <DisplayText dataObject={context} />
+                    <pre>{JSON.stringify(context, null, 4)}</pre>
                 </div>
             </section>
         </div>

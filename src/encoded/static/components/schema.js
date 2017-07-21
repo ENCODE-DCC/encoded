@@ -35,6 +35,31 @@ ChangeLog.defaultProps = {
     source: '',
 };
 
+class DisplayText extends React.Component {
+    render() {
+        const { dataObject } = this.props;
+        // const dataArray = [];
+        // const values = [];
+        // const titles = [];
+        const date = Object.keys(dataObject).map((term) => {
+            const labels = term;
+            return labels;
+        });
+        return (
+            <div>
+                {date.map((item, index) => <div key={index}>{item}</div>)}
+            </div>
+        );
+    }
+}
+
+DisplayText.propTypes = {
+    dataObject: PropTypes.object,
+};
+
+DisplayText.defaultProps = {
+    dataObject: {},
+};
 
 const SchemaPage = (props) => {
     const context = props.context;
@@ -51,7 +76,7 @@ const SchemaPage = (props) => {
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
             <section className="view-detail panel">
                 <div className="container">
-                    <h1>test2</h1>
+                    <DisplayText dataObject={context} />
                     <pre>{JSON.stringify(context, null, 4)}</pre>
                 </div>
             </section>

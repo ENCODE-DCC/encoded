@@ -116,7 +116,14 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                         duration: 200,
                     },
                     legendCallback: (chartInstance) => {
-                        const chartData = chartInstance.data.datasets[0].data;
+                        let chartData;
+                        if (chartInstance.data.datasets[0].data.length) {
+                            chartData = chartInstance.data.datasets[0].data;
+                        } else if (chartInstance.data.datasets[1].data.length) {
+                            chartData = chartInstance.data.datasets[1].data;
+                        } else if (chartInstance.data.datasets[2].data.length) {
+                            chartData = chartInstance.data.datasets[2].data;
+                        }
                         const chartColors = chartInstance.data.datasets[0].backgroundColor;
                         const chartLabels = chartInstance.data.labels;
                         const text = [];
@@ -847,7 +854,7 @@ class ControlsChart extends React.Component {
         return (
             <div className="award-charts__chart">
                 <div className="award-charts__title">
-                    Status
+                    Controls
                 </div>
                 {statuses.length ?
                     <div className="award-charts__visual">
