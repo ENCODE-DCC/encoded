@@ -5,7 +5,7 @@
     "id": "/profiles/experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["award", "lab", "assay_term_name"],
+    "required": ["award", "lab", "assay_term_name", "biosample_type"],
     "approvalRequired": ["assay_term_id", "biosample_term_id", "biosample_type"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
@@ -25,7 +25,35 @@
         { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
-         "biosample_term_id":{
+
+        "biosample_type": {
+            "oneOf": [
+                {                   
+                    "properties": {
+                        "biosample_type": {
+                            "enum": ["in vitro sample"]
+                        }
+                    }
+                },
+                {
+                    "required": ["biosample_term_id"],
+                    "properties": {
+                        "biosample_type": {
+                            "enum": [                
+                                "primary cell",
+                                "immortalized cell line",
+                                "tissue",
+                                "in vitro differentiated cells",
+                                "induced pluripotent stem cell line",
+                                "whole organisms",
+                                "stem cell"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        "biosample_term_id":{
             "oneOf": [
                 { 
                     "properties": {

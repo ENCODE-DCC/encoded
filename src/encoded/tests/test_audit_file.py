@@ -7,6 +7,7 @@ def file_exp(lab, award, testapp, experiment):
         'lab': lab['uuid'],
         'award': award['uuid'],
         'assay_term_name': 'RAMPAGE',
+        'biosample_type': 'tissue',
         'biosample_term_id': 'NTR:000012',
         'biosample_term_name': 'Some body part',
         'biosample_type': 'tissue',
