@@ -215,7 +215,8 @@ runcmd:
 -   sudo -i -u encoded bin/batchupgrade production.ini --app-name app
 - fi
 - sudo sed -i -e 's/inet_interfaces = all/inet_interfaces = loopback-only/g' /etc/postfix/main.cf
-- PUBLIC_DNS_NAME="$(curl http://169.254.169.254/latest/meta-data/public-hostname)"
+#- PUBLIC_DNS_NAME="$(curl http://169.254.169.254/latest/meta-data/public-hostname)"
+- PUBLIC_DNS_NAME="%(INSTANCE_URL_NAME)s"
 - sudo sed -i "/myhostname/c\myhostname = $PUBLIC_DNS_NAME" /etc/postfix/main.cf
 - sudo echo "127.0.0.0 $PUBLIC_DNS_NAME" | sudo tee --append /etc/hosts
 - sudo mv /etc/mailname /etc/mailname.OLD
@@ -259,7 +260,8 @@ write_files:
         "${distro_id} ${distro_codename}-security";
     };
     Unattended-Upgrade::Mail "encode-devops@lists.stanford.edu";
-    Unattended-Upgrade::Automatic-Reboot "false";
+    Unattended-Upgrade::Automatic-Reboot "%(AUTOMATIC_REBOOT)s";
+    Unattended-Upgrade::Automatic-Reboot-Time "01:00";
 
 - path: /etc/cron.d/cloudwatchmon
   content: |

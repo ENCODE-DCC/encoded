@@ -249,7 +249,15 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
     session = boto3.Session(region_name='us-west-2', profile_name=profile_name)
     ec2 = session.resource('ec2')
 
-    domain = 'production' if profile_name == 'production' else 'instance'
+    # domain = 'production' if profile_name == 'production' else 'instance'
+    # demo vs prod
+    if profile_name == 'production':
+        domain = 'production'
+        automatic_reboot = "\"false\""
+    else:
+        domain = 'instance'
+        automatic_reboot = "\"true\""
+    instance_url_name = '{0}.{1}.encodedcc.org'.format(name, domain)
 
     if any(ec2.instances.filter(
             Filters=[
@@ -267,11 +275,15 @@ def run(wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance, s
         else:
             config_file = ':cloud-config.yml'
         user_data = subprocess.check_output(['git', 'show', commit + config_file]).decode('utf-8')
+
         data_insert = {
             'WALE_S3_PREFIX': wale_s3_prefix,
             'COMMIT': commit,
             'ROLE': role,
+            'INSTANCE_URL_NAME': instance_url_name,
+            'AUTOMATIC_REBOOT': automatic_reboot,
         }
+
         if cluster_name:
             data_insert['CLUSTER_NAME'] = cluster_name
         user_data = user_data % data_insert
@@ -368,6 +380,8 @@ def main():
     parser.add_argument('--cluster-name', default=None, help="Name of the cluster")
     args = parser.parse_args()
 
+    # print(dict(**vars(args)))
+    # return True
     return run(**vars(args))
 
 
