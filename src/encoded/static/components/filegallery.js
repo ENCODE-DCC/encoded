@@ -1368,7 +1368,7 @@ class FileGalleryRenderer extends React.Component {
 
         // Initialize React state variables.
         this.state = {
-            selectedFilterValue: '', // <select> value of selected filter
+            selectedFilterValue: 'default', // <select> value of selected filter
             infoNodeId: '', // @id of node whose info panel is open
             infoModalOpen: false, // True if info modal is open
             relatedFiles: [], // List of related files

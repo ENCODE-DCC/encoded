@@ -117,7 +117,7 @@ def test_submitter_post_non_lab_collection(submitter_testapp):
 
 
 def test_submitter_post_update_experiment(submitter_testapp, lab, award):
-    experiment = {'lab': lab['@id'], 'award': award['@id'], 'assay_term_name': 'RNA-seq'}
+    experiment = {'lab': lab['@id'], 'award': award['@id'], 'biosample_type': 'in vitro sample', 'assay_term_name': 'RNA-seq'}
     res = submitter_testapp.post_json('/experiment', experiment, status=201)
     location = res.location
     res = submitter_testapp.get(location + '@@testing-allowed?permission=edit', status=200)
@@ -127,13 +127,13 @@ def test_submitter_post_update_experiment(submitter_testapp, lab, award):
 
 
 def test_submitter_post_other_lab(submitter_testapp, other_lab, award):
-    experiment = {'lab': other_lab['@id'], 'award': award['@id'], 'assay_term_name': 'RNA-seq'}
+    experiment = {'lab': other_lab['@id'], 'biosample_type': 'in vitro sample', 'biosample_type': 'in vitro sample', 'award': award['@id'], 'assay_term_name': 'RNA-seq'}
     res = submitter_testapp.post_json('/experiment', experiment, status=422)
     assert "not in user submits_for" in res.json['errors'][0]['description']
 
 
 def test_wrangler_post_other_lab(wrangler_testapp, other_lab, award):
-    experiment = {'lab': other_lab['@id'], 'award': award['@id'], 'assay_term_name': 'RNA-seq'}
+    experiment = {'lab': other_lab['@id'], 'award': award['@id'], 'biosample_type': 'in vitro sample', 'assay_term_name': 'RNA-seq'}
     wrangler_testapp.post_json('/experiment', experiment, status=201)
 
 
