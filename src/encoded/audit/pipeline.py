@@ -2,7 +2,6 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
-from .ontology_data import NTR_assay_lookup
 
 
 @audit_checker('Pipeline', frame=['analysis_steps'])
@@ -19,46 +18,5 @@ def audit_analysis_steps_closure(value, system):
         raise AuditFailure('incomplete analysis_steps', detail, level='ERROR')
 
 
-@audit_checker('Pipeline', frame='object')
-def audit_pipeline_assay(value, system):
-    '''
-    Pipelines should have assays with valid ontologies term ids and names that
-    are a valid synonym.
-    '''
-    if value['status'] == 'deleted':
-        return
-
-    # Term name is required and term id is calculated, so we probably don't need this
-    # audit anymore.
-    # https://encodedcc.atlassian.net/browse/ENCD-3416 
-    # removing assay_term_id and name checks
-
-    ontology = system['registry']['ontology']
-    term_id = value.get('assay_term_id')
-    term_name = value.get('assay_term_name')
-
-    if term_id.startswith('NTR:'):
-        detail = 'assay_term_id is a New Term Request ({} - {})'.format(term_id, term_name)
-        yield AuditFailure('NTR assay', detail, level='INTERNAL_ACTION')
-
-        if term_name != NTR_assay_lookup[term_id]:
-            detail = 'Pipeline has a mismatch between assay_term_name ' + \
-                     '"{}" and assay_term_id "{}"'.format(term_name,
-                                                          term_id)
-            yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
-            return
-    elif term_id not in ontology:
-        detail = 'Assay_term_id {} is not found in cached version of ontology'.format(term_id)
-        yield AuditFailure('assay_term_id not in ontology', term_id, level='INTERNAL_ACTION')
-        return
-
-    ontology_term_name = ontology[term_id]['name']
-    modifed_term_name = term_name + ' assay'
-    if (ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']) and \
-        (ontology_term_name != modifed_term_name and
-            modifed_term_name not in ontology[term_id]['synonyms']):
-        detail = 'Pipeline has a mismatch between ' + \
-                 'assay_term_name "{}" and assay_term_id "{}"'.format(term_name,
-                                                                      term_id)
-        yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
-        return
+# def audit_pipeline_assay(value, system):
+# https://encodedcc.atlassian.net/browse/ENCD-3416
