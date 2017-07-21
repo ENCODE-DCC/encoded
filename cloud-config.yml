@@ -172,6 +172,8 @@ runcmd:
 -   echo "include 'demo.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 - else
 -   curl -1 -sS "https://static.userify.com/installer.sh" | static_host="static.userify.com" shim_host="configure.userify.com" company_name="Encode-Test" project_name="test-server1" self_signed=0 api_id="eg988nlrrdqxh7cumvhqhn_user" api_key="3JkeJcNbQbwSj8skBEympciKJHkSVPAwV2Z3Tp32K9W6pGZJbc" /bin/sh
+-   sudo sed -i "s/WSGIDaemonProcess encoded-fileindexer/#WSGIDaemonProcess encoded-fileindexer/" /etc/encoded-apache.conf
+-   sudo sed -i "s/WSGIScriptAlias \/_fileindexer/#WSGIScriptAlias \/_fileindexer/" /etc/encoded-apache.conf
 - fi
 - sudo -u postgres createuser encoded
 - sudo -u postgres createdb --owner=encoded encoded
