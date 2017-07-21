@@ -975,8 +975,17 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
 
     version = '1.15'
 
-    out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
-              (version, search_query, nprocesses, dr, datetime.datetime.now()))
+    sc = SlackClient('xoxb-216151022738-q0HoXLoixM5GokF4Iaqm08XX')
+    initiating_run = 'STARTING Checkfiles version ' + \
+        '{} ({}): with {} processes {} at {}'.format(
+            version, search_query, nprocesses, dr, datetime.datetime.now())
+    sc.api_call(
+        "chat.postMessage",
+        channel="#bot-reporting",
+        text=initiating_run
+    )
+
+    out.write(initiating_run + '\n')
     if processes == 0:
         # Easier debugging without multiprocessing.
         imap = map
@@ -1012,23 +1021,33 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
             if job['errors']:
                 err.write(tab_report + '\n')
 
-    out.write("FINISHED Checkfiles at %s\n" % datetime.datetime.now())
+    finishing_run = 'FINISHED Checkfiles at {}'.format(datetime.datetime.now())
+    out.write(finishing_run + '\n')
 
     output_filename = out.name
     out.close()
+    error_filename = err.name
+    err.close()
 
-    sc = SlackClient('xoxb-216151022738-q0HoXLoixM5GokF4Iaqm08XX')
-    user_slack_id = "U1KNK05D3"
-    api_call = sc.api_call("im.list")
-    if api_call.get('ok'):
-        for im in api_call.get("ims"):
-            if im.get("user") == user_slack_id:
-                im_channel = im.get("id")
-                with open(output_filename, 'r') as output_file:
-                    x = sc.api_call("files.upload",
-                                    channels=im_channel,
-                                    content=output_file.read(),
-                                    as_user=True)
+    with open(output_filename, 'r') as output_file:
+        x = sc.api_call("files.upload",
+                        title=output_filename,
+                        channels='#bot-reporting',
+                        content=output_file.read(),
+                        as_user=True)
+
+    with open(error_filename, 'r') as output_file:
+        x = sc.api_call("files.upload",
+                        title=error_filename,
+                        channels='#bot-reporting',
+                        content=output_file.read(),
+                        as_user=True)
+
+    sc.api_call(
+        "chat.postMessage",
+        channel="#bot-reporting",
+        text=finishing_run
+    )
 
 def main():
     import argparse
