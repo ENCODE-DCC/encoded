@@ -78,6 +78,20 @@
         "rfa": "ENCODE3",
         "start_date": "2012-09-21",
         "status": "current",
+        "milestones": [
+            {
+                "assay_term_name": "ChIP-seq",
+                "proposed_count": 1000,
+                "deliverable_unit": "replicated experiments",
+                "contract_date": "2012-10-01"
+            },
+            {
+                "assay_term_name": "ChIA-PET",
+                "proposed_count": 25,
+                "deliverable_unit": "replicated experiments",
+                "contract_date": "2012-10-31"
+            }
+        ],
         "title": "PRODUCTION CENTER FOR MAPPING REGULATORY REGIONS OF THE HUMAN GENOME",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8402423",
         "uuid": "4d462953-2da5-4fcf-a695-7206f2d5cf45",
@@ -188,6 +202,20 @@
         "project": "ENCODE",
         "rfa": "ENCODE4",
         "start_date": "2017-02-01",
+        "milestones": [
+            {
+                "assay_term_name": "ATAC-seq",
+                "proposed_count": 6000,
+                "deliverable_unit": "single cell experiments",
+                "contract_date": "2017-02-28"
+            },
+            {
+                "assay_term_name": "ChIP-seq",
+                "proposed_count": 800,
+                "deliverable_unit": "replicated experiments",
+                "contract_date": "2017-03-02"
+            }
+        ],
         "status": "current",
         "title": "PRODUCTION CENTER FOR MAPPING REGULATORY REGIONS OF THE HUMAN GENOME",
         "url": "https://projectreporter.nih.gov/project_info_description.cfm?aid=9247694&icde=32921696&ddparam=&ddvalue=&ddsub=&cr=1&csb=default&cs=ASC&pball=",
@@ -214,6 +242,14 @@
         "project": "ENCODE",
         "rfa": "ENCODE4",
         "start_date": "2017-02-01",
+        "milestones": [
+            {
+                "assay_term_name": "ChIP-seq",
+                "proposed_count": 300,
+                "deliverable_unit": "replicated experiments",
+                "contract_date": "2017-03-15"
+            }
+        ],
         "status": "current",
         "title": "AN ENCODE CHIP-SEQ PIPELINE USING ENDOGENOUSLY TAGGED HUMAN DNA-ASSOCIATED PROTEINS",
         "url": "https://projectreporter.nih.gov/project_info_description.cfm?aid=9247485&icde=32921409&ddparam=&ddvalue=&ddsub=&cr=1&csb=default&cs=ASC&pball=",
@@ -226,6 +262,14 @@
         "pi": "blandit.orci@conubia.magna",
         "project": "ENCODE",
         "rfa": "ENCODE4",
+        "milestones": [
+            {
+                "assay_term_name": "DNase-seq",
+                "proposed_count": 300,
+                "deliverable_unit": "replicated experiments",
+                "contract_date": "2017-03-03"
+            }
+        ],
         "start_date": "2017-02-01",
         "status": "current",
         "title": "ENCODE MAPPING CENTER-A COMPREHENSIVE CATALOG OF DNASE I HYPERSENSITIVE SITES",
