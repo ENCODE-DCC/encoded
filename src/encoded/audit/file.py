@@ -542,7 +542,7 @@ def extract_award_version(bam_file):
             return 'ENC2'
     return 'ENC3'
 
-
+'''
 @audit_checker('File', frame=[
     'award',
     'quality_metrics',
@@ -573,10 +573,10 @@ def audit_file_chip_seq_control_read_depth(value, system,
                                                          'ENCODE2',
                                                          'ENCODE',
                                                          'Roadmap')):
-    '''
+
     An alignment file from the ENCODE Processing Pipeline should have read depth
     in accordance with the criteria
-    '''
+
 
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
@@ -767,3 +767,4 @@ def check_control_read_depth_standards(value,
             elif read_depth < 3000000:
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
         return
+'''
