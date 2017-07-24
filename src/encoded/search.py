@@ -1237,8 +1237,10 @@ def audit(context, request):
     # Don't use these groupings for audit matrix
     x_grouping = matrix['x']['group_by']
     y_groupings = audit_list_field
-    y_groupings.append("no.audits")
+    no_audits_groupings = ['no.error', 'no.not_compliant', 'no.warning']
     #y_groupings.append("no.error")
+    #y_groupings.append("no.not_compliant")
+    #y_groupings.append("no.warning")
     x_agg = {
         "terms": {
             "field": 'embedded.' + x_grouping + '.raw',
@@ -1302,9 +1304,15 @@ def audit(context, request):
                 "field": "audit.ERROR.category"
             },
             "aggs": {
-                "no.warning": {
+                "assay_title": {
+                    "terms": {
+                        "field": "embedded.assay_title.raw",
+                        "size": 0
+                    }
+                },
+                "no.not_compliant": {
                     "missing": {
-                        "field": "audit.WARNING.category"
+                        "field": "audit.NOT_COMPLIANT.category"
                     },
                     "aggs": {
                         "assay_title": {
@@ -1313,9 +1321,9 @@ def audit(context, request):
                                 "size": 0
                             }
                         },
-                        "no.not_compliant": {
+                        "no.warning": {
                             "missing": {
-                                "field": "audit.NOT_COMPLIANT"
+                                "field": "audit.WARNING.category"
                             },
                             "aggs": {
                                 "assay_title": {
@@ -1369,8 +1377,7 @@ def audit(context, request):
 
     # Execute the query
     es_results = es.search(body=query, index=es_index, search_type='count')
-    import pdb
-    pdb.set_trace()
+
     # Format matrix for results
     aggregations = es_results['aggregations']
     result['matrix']['doc_count'] = total = aggregations['matrix']['doc_count']
@@ -1387,57 +1394,76 @@ def audit(context, request):
     result['facets'] = format_facets(
         es_results, facets, used_filters, (schema,), total, principals)
     
+    
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
+        # Get audit category and then decide whether it is one that includes or excludes audits
         for category in grouping_fields: # for each audit category
-            group_by = grouping_fields[0]
-            grouping_fields = grouping_fields[1:]
-            if grouping_fields:
+            # Gets first index of grouping_fields and keeps shortening grouping_fields until
+            # only the no audits fields are left. This allows the recursion to happen in the
+            # else statement.
+            #group_by = grouping_fields[0]
+            #grouping_fields = grouping_fields[1:]
+            #if grouping_fields:
+            counts = {}
+            #if "no" not in category : # if includes audit category
+            for bucket in outer_bucket[category]['buckets']:
                 counts = {}
-                if "no" not in category: # if an audit category and not one that excludes audits
-                    for bucket in outer_bucket[category]['buckets']:
-                        counts = {}
-                        for assay in bucket['assay_title']['buckets']:
-                            doc_count = assay['doc_count']
-                            if doc_count > matrix['max_cell_doc_count']:
-                                matrix['max_cell_doc_count'] = doc_count
-                            if 'key' in assay:
-                                counts[assay['key']] = doc_count
-                            """
-                            else:
-                                for col in assay:
-                                    assay_index = 0
-                                    counts[bucket[assay_index]['key']] = doc_count
-                                    assay_index += 1
-                            """
-                        summary = []
-                        for xbucket in x_buckets:
-                            summary.append(counts.get(xbucket['key'], 0))
-                        bucket['assay_title'] = summary
-                else: # for no audits row
-                    for assay in outer_bucket[category]['assay_title']['buckets']:
-                        import pdb
-                        pdb.set_trace()
-                        doc_count = assay['doc_count']
-                        if doc_count > matrix['max_cell_doc_count']:
-                            matrix['max_cell_doc_count'] = doc_count
-                        if 'key' in assay:
-                            counts[assay['key']] = doc_count
-                        else:
-                            for col in assay:
-                                assay_index = 0
-                                counts[assay[assay_index]['key']] = doc_count
-                                assay_index += 1
-                    summary = []
-                    for xbucket in x_buckets:
-                        summary.append(counts.get(xbucket['key'], 0))
-                    outer_bucket[category]['assay_title'] = summary
+                for assay in bucket['assay_title']['buckets']:
+                    doc_count = assay['doc_count']
+                    if doc_count > matrix['max_cell_doc_count']:
+                        matrix['max_cell_doc_count'] = doc_count
+                    if 'key' in assay:
+                        counts[assay['key']] = doc_count
+                    """
+                    else:
+                        for col in assay:
+                            assay_index = 0
+                            counts[bucket[assay_index]['key']] = doc_count
+                            assay_index += 1
+                    """
+                summary = []
+                for xbucket in x_buckets:
+                    summary.append(counts.get(xbucket['key'], 0))
+                bucket['assay_title'] = summary
+    
+    def summarize_no_audits(matrix, x_buckets, outer_bucket, grouping_fields, aggregations):
+        # If it excludes audits then needs to go through nested aggs through recursion
+        group_by = grouping_fields[0]
+        grouping_fields = grouping_fields[1:]
 
+        if grouping_fields:
+            summarize_no_audits(matrix, x_buckets, outer_bucket[group_by], grouping_fields, aggregations)
+
+        counts = {}
+        for assay in outer_bucket[group_by]['assay_title']['buckets']:
+            doc_count = assay['doc_count']
+            if doc_count > matrix['max_cell_doc_count']:
+                matrix['max_cell_doc_count'] = doc_count
+            if 'key' in assay:
+                counts[assay['key']] = doc_count
+            else:
+                for col in assay:
+                    assay_index = 0
+                    counts[assay[assay_index]['key']] = doc_count
+                    assay_index += 1
+        summary = []
+        for xbucket in x_buckets:
+            summary.append(counts.get(xbucket['key'], 0))
+        aggregations[group_by] = outer_bucket[group_by]
+        aggregations[group_by]['assay_title'] = summary
 
     summarize_buckets(
         result['matrix'],
         aggregations['matrix']['x']['buckets'],
         aggregations['matrix'],
-        y_groupings + [x_grouping])
+        y_groupings)
+    
+    summarize_no_audits(
+        result['matrix'],
+        aggregations['matrix']['x']['buckets'],
+        aggregations['matrix'],
+        no_audits_groupings,
+        aggregations['matrix'])
     
     result['matrix']['y']['label'] = "Audit Category"
     result['matrix']['y']['group_by'][0] = "audit_category"
