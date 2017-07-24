@@ -1295,7 +1295,7 @@ def audit(context, request):
     
 } 
 
-    """
+    
     aggs.update({
         "no.error": {
             "missing": {
@@ -1307,6 +1307,12 @@ def audit(context, request):
                         "field": "audit.WARNING.category"
                     },
                     "aggs": {
+                        "assay_title": {
+                            "terms": {
+                                "field": "embedded.assay_title.raw",
+                                "size": 0
+                            }
+                        },
                         "no.not_compliant": {
                             "missing": {
                                 "field": "audit.NOT_COMPLIANT"
@@ -1325,7 +1331,7 @@ def audit(context, request):
             }
         }
     })
-    """
+    
 
     """
     aggs.update({'missingaudit.WARNING.category': {'aggs': {'missingaudit.NOT_COMPLIANT.category': {'aggs': {'missingaudit.ERROR.category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
