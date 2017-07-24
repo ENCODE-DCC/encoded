@@ -62,9 +62,9 @@ class DisplayText extends React.Component {
                         <div data-test="mixin">
                             <dt>Mixin Properties</dt>
                             {Array.isArray(objectmixin) ?
-                                objectmixin.map((term, i) => <dd>{objectmixin[i]}</dd>)
+                                objectmixin.map((term, i) => <div key={i}><dd>{term}</dd></div>)
                             :
-                            <dd>{objectmixin}</dd>
+                            null
                             }
                         </div>
                     </dl>
@@ -73,9 +73,7 @@ class DisplayText extends React.Component {
         });
         return (
             <div>
-                <dl className="key-value">
-                    {dataRenderObject}
-                </dl>
+                {dataRenderObject}
             </div>
         );
     }
@@ -103,7 +101,7 @@ const Fallback = (props, reactContext) => {
             <section className="view-detail panel">
                 <div className="container">
                     <DisplayText dataObject={context} />
-                     <pre>{JSON.stringify(context, null, 4)}</pre>
+                    <pre>{JSON.stringify(context, null, 4)}</pre>
                 </div>
             </section>
         </div>
