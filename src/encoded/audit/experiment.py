@@ -3,22 +3,8 @@ from snovault import (
     audit_checker,
 )
 from .conditions import rfa
-from .ontology_data import (biosampleType_ontologyPrefix, NTR_assay_lookup)
 from .gtex_data import gtexDonorsList
 from .standards_data import pipelines_with_read_depth
-
-from .pipeline_structures import (
-    modERN_TF_control,
-    modERN_TF_replicate,
-    modERN_TF_pooled,
-    encode_chip_control,
-    encode_chip_histone_experiment_pooled,
-    encode_chip_tf_experiment_pooled,
-    encode_chip_experiment_replicate,
-    encode_rampage_experiment_replicate,
-    encode_rampage_experiment_pooled
-    )
-
 
 targetBasedAssayList = [
     'ChIP-seq',
@@ -2259,25 +2245,8 @@ def audit_experiment_geo_submission(value, system):
         yield AuditFailure('experiment not submitted to GEO', detail, level='INTERNAL_ACTION')
     return
 
-
-@audit_checker('experiment', frame=['object'])
-def audit_experiment_biosample_term_id(value, system):
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
-    # excluding Bind-n-Seq because they dont have biosamples
-    if 'assay_term_name' in value and value['assay_term_name'] == 'RNA Bind-n-Seq':
-        return
-
-    if value['status'] not in ['preliminary', 'proposed']:
-        if 'biosample_term_id' not in value:
-            detail = 'Experiment {} '.format(value['@id']) + \
-                     'has no biosample_term_id'
-            yield AuditFailure('experiment missing biosample_term_id', detail, level='INTERNAL_ACTION')
-        if 'biosample_type' not in value:
-            detail = 'Experiment {} '.format(value['@id']) + \
-                     'has no biosample_type'
-            yield AuditFailure('experiment missing biosample_type', detail, level='INTERNAL_ACTION')
-    return
+# def audit_experiment_biosample_term_id(value, system): removed release 56
+# http://redmine.encodedcc.org/issues/4900
 
 
 @audit_checker('experiment',
@@ -2988,16 +2957,12 @@ def audit_experiment_biosample_term(value, system):
     term_type = value.get('biosample_type')
     term_name = value.get('biosample_term_name')
 
-    if 'biosample_type' not in value:
-        detail = '{} is missing biosample_type'.format(value['@id'])
-        yield AuditFailure('missing biosample_type', detail, level='ERROR')
-
     if 'biosample_term_name' not in value:
         detail = '{} is missing biosample_term_name'.format(value['@id'])
         yield AuditFailure('missing biosample_term_name', detail, level='ERROR')
-    # The type and term name should be put into dependancies
+    # The type and term name should be put into dependencies
 
-    if term_id is None:
+    if not term_id:
         detail = '{} is missing biosample_term_id'.format(value['@id'])
         yield AuditFailure('missing biosample_term_id', detail, level='ERROR')
         return
@@ -3007,17 +2972,8 @@ def audit_experiment_biosample_term(value, system):
         yield AuditFailure('NTR biosample', detail, level='INTERNAL_ACTION')
     else:
         biosample_prefix = term_id.split(':')[0]
-        if 'biosample_type' in value and \
-           biosample_prefix not in biosampleType_ontologyPrefix[term_type]:
-            detail = 'Experiment {} has '.format(value['@id']) + \
-                     'a biosample of type {} '.format(term_type) + \
-                     'with biosample_term_id {} '.format(value['biosample_term_id']) + \
-                     'that is not one of ' + \
-                     '{}'.format(biosampleType_ontologyPrefix[term_type])
-            yield AuditFailure('experiment with biosample term-type mismatch', detail,
-                               level='INTERNAL_ACTION')
 
-        elif term_id not in ontology:
+        if term_id not in ontology:
             detail = 'Experiment {} has term_id {} which is not in ontology'.format(
                 value['@id'], term_id)
             yield AuditFailure('term_id not in ontology', term_id, level='INTERNAL_ACTION')

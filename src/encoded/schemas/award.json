@@ -35,6 +35,103 @@
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
+        "milestones": {
+            "title": "Milestones",
+            "description": "A set of grant milestone deliverables agreed upon by the awardee and NIH.",
+            "type": "array",
+            "uniqueItems": true,
+            "permission": "import_items",
+            "items": {
+                "title": "Milestone",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {             
+                    "assay_term_name": {
+                        "title": "Assay name",
+                        "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
+                        "type": "string",
+                        "enum": [
+                            "ChIP-seq",
+                            "RNA-seq",
+                            "DNase-seq",
+                            "eCLIP",
+                            "shRNA knockdown followed by RNA-seq",
+                            "RNA Bind-n-Seq",
+                            "transcription profiling by array assay",
+                            "DNA methylation profiling by array assay",
+                            "whole-genome shotgun bisulfite sequencing",
+                            "RRBS",
+                            "siRNA knockdown followed by RNA-seq",
+                            "RAMPAGE",
+                            "comparative genomic hybridization by array",
+                            "CAGE",
+                            "single cell isolation followed by RNA-seq",
+                            "Repli-seq",
+                            "microRNA-seq",
+                            "microRNA counts",
+                            "MRE-seq",
+                            "RIP-seq",
+                            "Repli-chip",
+                            "MeDIP-seq",
+                            "ChIA-PET",
+                            "FAIRE-seq",
+                            "ATAC-seq",
+                            "PAS-seq",
+                            "RIP-chip",
+                            "RNA-PET",
+                            "genotyping by high throughput sequencing assay",
+                            "CRISPR genome editing followed by RNA-seq",
+                            "protein sequencing by tandem mass spectrometry assay",
+                            "5C",
+                            "HiC",
+                            "TAB-seq",
+                            "iCLIP",
+                            "DNA-PET",
+                            "Switchgear",
+                            "5' RLM RACE",
+                            "MNase-seq",
+                            "5' RACE",
+                            "3' RACE",
+                            "small RNA-seq",
+                            "Bru-seq",
+                            "BruChase-seq",
+                            "genetic modification followed by DNase-seq",
+                            "CRISPRi followed by RNA-seq",
+                            "genotype phasing by HiC",
+                            "Circulome-seq",
+                            "whole genome sequencing assay",
+                            "BruUV-seq",
+                            "Mint-ChIP-seq"
+                        ]
+                    },
+                    "proposed_count": {
+                        "title": "Proposed count",
+                        "description": "Count (in number of units) of the deliverable proposed.",
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "deliverable_unit": {
+                        "title": "Deliverable unit",
+                        "description": "Unit of the proposed milestone deliverable.",
+                        "type": "string",
+                        "enum": [
+                            "replicated experiments",
+                            "unreplicated experiments",
+                            "control experiments",
+                            "libraries",
+                            "replicates",
+                            "single cell experiments"
+                        ]
+                    },
+                    "contract_date": {
+                        "title": "Contract date",
+                        "description": "Date on which the milestone was agreed upon.",
+                        "type": "string",
+                        "format": "date"
+                    }
+                }
+            }
+        },
         "start_date": {
             "title": "Start date",
             "comment": "Date can be submitted as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
