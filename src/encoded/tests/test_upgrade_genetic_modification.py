@@ -35,6 +35,13 @@ def crispr(lab, award, source):
         'lab': lab['uuid'],
         'award': award['uuid'],
         'source': source['uuid'],
+        'guide_rna_sequences': [
+            "ACA",
+            "GCG"
+        ],
+        'insert_sequence': 'TCGA',
+        'aliases': ['encode:crispr_technique1'],
+        '@type': ['Crispr', 'ModificationTechnique', 'Item'],
         'uuid': 'd16821e3-a8b6-40a5-835c-355c619a9011'
     }
 
@@ -48,7 +55,7 @@ def genetic_modification_5(lab, award, crispr):
         'description': 'blah blah description blah',
         'zygosity': 'homozygous',
         'treatments': [],
-        'modification_techniques': [crispr['uuid']],
+        'modification_techniques': [crispr],
         'modified_site': [{
             'assembly': 'GRCh38',
             'chromosome': '11',
@@ -80,8 +87,12 @@ def test_genetic_modification_upgrade_5_6(upgrader, genetic_modification_5, cris
     value = upgrader.upgrade('genetic_modification', genetic_modification_5,
                              current_version='5', target_version='6')
     assert value['schema_version'] == '6'
-    assert isinstance(value.get('modification_technique'), str)
+    assert 'modification_techniques' not in value
+    assert value['modification_technique'] == 'CRISPR'
     assert 'modified_site' not in value
     assert 'target' not in value
     assert 'purpose' in value
     assert value['purpose'] == 'analysis'
+    assert len(value['guide_rna_sequences']) == 2
+    assert value['aliases'][0] == 'encode:crispr_technique1-CRISPR'
+    assert value['introduced_sequence'] == 'TCGA'

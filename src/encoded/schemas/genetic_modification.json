@@ -381,8 +381,8 @@
             }
         },
         "introduced_sequence": {
-            "title": "Insert sequence",
-            "description": "Insert sequence",
+            "title": "Introduced sequence",
+            "description": "If modification_type = insertion or replacement, the newly introduced sequence via the modification.",
         	"type": "string",
             "pattern": "^[ACTG]+$"	
 		},
