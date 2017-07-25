@@ -51,7 +51,7 @@ def genetic_modification_5_6(value, system):
         for technique in value['modification_techniques']:
             if 'aliases' in technique:
                 alias_flag = True
-            if 'Crispr' in technique.get('@type'):
+            if technique['@id'].startswith('/crisprs/'):
                 value['modification_technique'] = 'CRISPR'
                 if 'guide_rna_sequences' in technique:
                     value['guide_rna_sequences'] = technique['guide_rna_sequences']
@@ -64,8 +64,7 @@ def genetic_modification_5_6(value, system):
                             value['aliases'].append(b)
                         else:
                             value['aliases'] = [b]
-
-            elif 'Tale' in technique.get('@type'):
+            elif technique['@id'].startswith('/tales/'):
                 value['modification_technique'] = 'TALE'
                 # We think these should have purpose = repression if empty. For the purposes
                 # of the upgrade, let's add that in for now.

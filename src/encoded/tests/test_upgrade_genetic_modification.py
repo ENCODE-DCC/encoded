@@ -42,6 +42,7 @@ def crispr(lab, award, source):
         'insert_sequence': 'TCGA',
         'aliases': ['encode:crispr_technique1'],
         '@type': ['Crispr', 'ModificationTechnique', 'Item'],
+        '@id': '/crisprs/d16821e3-a8b6-40a5-835c-355c619a9011/',
         'uuid': 'd16821e3-a8b6-40a5-835c-355c619a9011'
     }
 
