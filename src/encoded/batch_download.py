@@ -376,7 +376,10 @@ def report_download(context, request):
     def format_header(seq):
         currenttime = str(i)
         a = '&'
-        urlseq = [request.host_url, request.query_string]
+        s = ''
+        reportseq = [request.host_url, '/report/']
+        urlsequence = s.join(reportseq)
+        urlseq = [urlsequence, request.query_string]
         url = a.join(urlseq)
         newheader = [currenttime, url]
         return b'\t'.join([bytes_(n, 'utf-8') for n in newheader]) + b'\r\n'
