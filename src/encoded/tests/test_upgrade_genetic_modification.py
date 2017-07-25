@@ -29,6 +29,35 @@ def genetic_modification_2(lab, award):
     }
 
 
+@pytest.fixture
+def crispr(lab, award, source):
+    return {
+        'lab': lab['uuid'],
+        'award': award['uuid'],
+        'source': source['uuid'],
+        'uuid': 'd16821e3-a8b6-40a5-835c-355c619a9011'
+    }
+
+
+@pytest.fixture
+def genetic_modification_5(lab, award, crispr):
+    return {
+        'modification_type': 'deletion',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'description': 'blah blah description blah',
+        'zygosity': 'homozygous',
+        'treatments': [],
+        'modification_techniques': [crispr['uuid']],
+        'modified_site': [{
+            'assembly': 'GRCh38',
+            'chromosome': '11',
+            'start': 5309435,
+            'end': 5309451
+            }]
+    }
+
+
 def test_genetic_modification_upgrade_1_2(upgrader, genetic_modification_1):
     value = upgrader.upgrade('genetic_modification', genetic_modification_1,
                              current_version='1', target_version='2')
@@ -45,3 +74,14 @@ def test_genetic_modification_upgrade_2_3(upgrader, genetic_modification_2):
     assert value.get('purpose') == 'tagging'
     assert 'modification_genome_coordinates' not in value
     assert 'modification_treatments' not in value
+
+
+def test_genetic_modification_upgrade_5_6(upgrader, genetic_modification_5, crispr):
+    value = upgrader.upgrade('genetic_modification', genetic_modification_5,
+                             current_version='5', target_version='6')
+    assert value['schema_version'] == '6'
+    assert isinstance(value.get('modification_technique'), str)
+    assert 'modified_site' not in value
+    assert 'target' not in value
+    assert 'purpose' in value
+    assert value['purpose'] == 'analysis'
