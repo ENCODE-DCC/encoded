@@ -15,7 +15,7 @@
                 "location": "C-terminal"
             }
         ],
-        "modified_location_by_target_id": "/targets/CTCF-human/",
+        "modified_site_by_target_id": "/targets/CTCF-human/",
         "modification_technique": "CRISPR",
         "guide_rna_sequences": [
             "GCGTAGCCAGTGACCAGCT",
@@ -32,7 +32,7 @@
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
         "description": "Scientists in India have delayed the ripening of tomatoes by silencing two genes encoding N-glycoprotein modifying enzymes, α-mannosidase and β-D-N-acetylhexosaminidase.",
-        "modified_location_by_coordinates": {
+        "modified_site_by_coordinates": {
             "assembly": "GRCh38",
             "chromosome": "11",
             "start": 20000,
@@ -55,7 +55,7 @@
         "modification_technique": "RNAi",
         "reagent_repository": "sigma",
         "reagent_identifiers": ["TRCN0000246247"],
-        "modified_location_by_target_id": "/targets/FTO-human/",
+        "modified_site_by_target_id": "/targets/FTO-human/",
         "modification_type": "interference",
         "purpose": "repression",
         "lab": "/labs/robert-waterston/",
@@ -73,7 +73,7 @@
                 "location": "C-terminal"
             }
         ],
-        "modified_location_by_target_id": "/targets/FTO-human/",
+        "modified_site_by_target_id": "/targets/FTO-human/",
         "lab": "/labs/robert-waterston/",
         "modification_type": "insertion",
         "purpose": "tagging",
@@ -86,7 +86,7 @@
     },
     {
         "status": "released", 
-        "modified_location_by_coordinates": {
+        "modified_site_by_coordinates": {
             "chromosome": "X",
             "assembly": "hg19",
             "start": 48560532,
@@ -98,10 +98,15 @@
         "submitted_by": "amet.fusce@est.fermentum",
         "modification_type": "replacement",
         "purpose": "validation",
+        "zygosity": "heterozygous",
         "modification_technique": "TALE",
-        "RVD_sequence_1": "NN,NG,HD,NI,NI,NN",
-        "RVD_sequence_2": "NI,NN,ND,NG,NG,ND",
-        "target_sequences": [
+        "RVD_sequence_pair1": {
+            "left_RVD_sequence": "NN,NG,HD,NI,NI,NN"
+        },
+        "RVD_sequence_pair2": {
+            "left_RVD_sequence": "NI,NN,ND,NG,NG,ND"
+        },
+        "targeted_sequences": [
             "TTATTGAGGCGATGACT",
             "ATTAGCCAGGGATTATG"
         ],
@@ -109,7 +114,7 @@
     },
     {
         "status": "in progress",
-        "modified_location_by_coordinates":{
+        "modified_site_by_coordinates":{
             "chromosome": "2R",
             "assembly": "dm6",
             "start": 833235,
@@ -122,6 +127,6 @@
         "modification_type": "mutagenesis",
         "purpose": "repression",
         "modification_technique": "mutagenesis",
-        "mutagenesis_treatment": "3280b708-0f05-40fa-bff2-54e2b6505c13"
+        "treatments": ["3280b708-0f05-40fa-bff2-54e2b6505c13"]
     }
 ]

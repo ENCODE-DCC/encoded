@@ -22,7 +22,7 @@
             "comment": "Modifications for tagging purposes need to include the epitope_tag property in combination with a target. Modifications for other purposes also need either the site and/or target specified.",
             "oneOf": [
                 {
-                    "required": ["modified_location_by_target_id", "epitope_tags"],
+                    "required": ["modified_site_by_target_id", "epitope_tags"],
                     "properties": {
                     "purpose": {
                             "enum": ["tagging"]
@@ -33,7 +33,7 @@
                     }
                 },
                 {
-                    "required": ["modified_location_by_target_id"],
+                    "required": ["modified_site_by_target_id"],
                     "properties": {
                     "purpose": {
                             "enum": ["repression", "activation", "overexpression", "validation"]
@@ -41,7 +41,7 @@
                     }
                 },
                 {
-                    "required": ["modified_location_by_coordinates"],
+                    "required": ["modified_site_by_coordinates"],
                     "properties": {
                     "purpose": {
                             "enum": ["repression", "activation", "overexpression", "validation"]
@@ -49,7 +49,7 @@
                     }
                 },
                 {
-                    "required": ["modified_location_by_sequence"],
+                    "required": ["modified_site_by_sequence"],
                     "properties": {
                     "purpose": {
                             "enum": ["repression", "activation", "overexpression", "validation"]
@@ -156,7 +156,7 @@
                 {
                     "anyOf": [
                         {
-                            "required": ["RVD_sequence_1", "RVD_sequence_2", "target_sequences"],
+                            "required": ["zygosity", "RVD_sequence_pair1", "RVD_sequence_pair2", "targeted_sequences"],
                             "properties":{
                                 "modification_technique": {
                                     "enum": ["TALE"]
@@ -174,7 +174,7 @@
                     ]   
                 },
                 {
-                    "required": ["mutagenesis_treatment"],
+                    "required": ["treatments"],
                      "properties":{
                         "modification_technique": {
                             "enum": [
@@ -216,7 +216,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "accession": {
             "accessionType": "GM"
@@ -277,15 +277,15 @@
                 "heterozygous"
             ]
         },
-        "modified_location_by_target_id": {
-            "title": "Modified target ID",
+        "modified_site_by_target_id": {
+            "title": "Modified site by target ID",
             "description": "The name (ENCODE target ID) of the gene whose expression or product is modified by the genetic modification.",
             "comment": "See target.json for available identifiers.",
             "type": "string",
             "linkTo": "Target"
         },
-        "modified_location_by_coordinates": {
-            "title": "Modified site",
+        "modified_site_by_coordinates": {
+            "title": "Modified site by coordinates",
             "description": "Genomic coordinates of the modification.",
             "type": "object",
             "additionalProperties": false,
@@ -326,8 +326,8 @@
                 }
             }
         },
-        "modified_location_by_sequence" : {
-            "title": "Location sequence",
+        "modified_site_by_sequence" : {
+            "title": "Modified site by sequence",
             "description": "Genomic sequence specifying location of the modification.",
             "type": "string",
             "pattern": "^[ACTG]+$"
@@ -400,12 +400,20 @@
                 "mutagenesis"
             ]
         },
-        "mutagenesis_treatment": { 
-            "title": "Treatment",
-            "description": "Relevant treatment applied to result in the modification.",
-            "type": "string",
-            "comment": "See treatment.json for available identifiers.",
-            "linkTo": "Treatment"
+        "treatments": { 
+            "title": "Treatments",
+            "description": "Relevant mutagenesis treatments applied to result in the modification.",
+            "type": "array",
+            "default": [],
+            "permission": "import_items",
+            "uniqueItems": true,
+            "items": {
+                "title": "Treatment",
+                "description": "Relevant mutagenesis treatment applied to result in the modification.",
+                "comment": "See treatment.json for available identifiers.",
+                "type":  "string",
+                "linkTo": "Treatment"
+            }
         },
         "rnai_sequences": {
             "title": "RNAi sequences",
@@ -419,13 +427,13 @@
                 "pattern": "^[ACUNTG-]+$"
             }
         },
-        "target_sequences": {
-            "title": "Target sequences",
+        "targeted_sequences": {
+            "title": "Targeted sequences - MAYBE DELETE IF OK THAT ITS NOT STRAIGHTFORWARD TO FIGURE OUT FOR SHRNAS",
             "description": "Genomic sequences targeted by the inhibitory RNA (1) or TALEs (2).",
             "type": "array",
             "uniqueItems": true,
             "items": {
-                "title": "Target sequence",
+                "title": "Targeted sequence",
                 "description": "Genomic sequence targeted by the inhibitory RNA or TALE.",
                 "type": "string",
                 "pattern": "^[ACTG]+|non-mammalian target$"
@@ -444,17 +452,114 @@
                 "pattern": "^[ACUNTG]+$"
             }
         },
-        "RVD_sequence_1": {
-            "title": "RVD sequence 1",
-            "description": "One of the expected pair of repeat variable diresidue sequence of the TAL effector. E.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
-            "type": "string",
-            "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
+        "RVD_sequence_pair1": {
+            "title": "RVD sequence pair 1",
+            "description": "The pair of repeat variable diresidue sequences of the TAL effectors that recognize the left and right half sites at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
+            "type": "object",
+            "additionalProperties": false,
+            "dependencies": {
+                "zygosity": {
+                    "comment": "At each cut site, two RVD sequences are needed for the TALE to recognize the half-site on each strand. If heterozygous, the the left_RVD_sequence from each pair should be specified and if homozygous, both the left_ and right_RVD_sequences from both pairs should be specified.",
+                    "oneOf": [
+                        {
+                            "required":["left_RVD_sequence", "right_RVD_sequence"],
+                            "properties": {
+                                "zygosity": {
+                                    "enum": ["homozygous"]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["left_RVD_sequence"],
+                            "properties": {
+                                "zygosity": {
+                                    "enum": ["heterozygous"]
+                                }
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["right_RVD_sequence"],
+                                "properties": {
+                                    "zygosity": {
+                                        "enum": ["homozygous"]
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "properties": {
+                "left_RVD_sequence": {
+                    "title": "Left RVD sequence",
+                    "description": "The repeat variable diresidue sequence of the left half-site for recognized by the TAL effector at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
+                    "comment": "For heterozygous deletions, specify pair1 and pair2's left_RVD_sequence (oriented as + strand).",
+                    "type": "string",
+                    "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
+                },
+                "right_RVD_sequence": {
+                    "title": "Right RVD sequence",
+                    "description": "The repeat variable diresidue sequence of the right half-site for recognized by the TAL effector at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
+                    "type": "string",
+                    "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
+                }
+            }
         },
-        "RVD_sequence_2": {
-            "title": "RVD sequence 2",
-            "description": "The other of the expected pair of repeat variable diresidue sequence of the TAL effector. E.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
-            "type": "string",
-            "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
+        "RVD_sequence_pair2": {
+            "title": "RVD sequence pair 2",
+            "description": "The pair of repeat variable diresidue sequences of the TAL effectors that recognize the left and right half sites at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
+            "comment": "This property needs to be specified along with RVD_sequence_pair1 if excising a particular region via a deletion.",
+            "type": "object",
+            "additionalProperties": false,
+            "dependencies": {
+                "zygosity": {
+                    "comment": "At each cut site, two RVD sequences are needed for the TALE to recognize the half-site on each strand. If heterozygous, the the left_RVD_sequence from each pair should be specified and if homozygous, both the left_ and right_RVD_sequences from both pairs should be specified.",
+                    "oneOf": [
+                        {
+                            "required":["left_RVD_sequence", "right_RVD_sequence"],
+                            "properties": {
+                                "zygosity": {
+                                    "enum": ["homozygous"]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["left_RVD_sequence"],
+                            "properties": {
+                                "zygosity": {
+                                    "enum": ["heterozygous"]
+                                }
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["right_RVD_sequence"],
+                                "properties": {
+                                    "zygosity": {
+                                        "enum": ["homozygous"]
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "properties": {
+                "left_RVD_sequence": {
+                    "title": "Left RVD sequence",
+                    "description": "The repeat variable diresidue sequence of the left half-site for recognized by the TAL effector at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
+                    "comment": "For heterozygous deletions, specify pair1 and pair2's left_RVD_sequence (oriented as + strand).",
+                    "type": "string",
+                    "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
+                },
+                "right_RVD_sequence": {
+                    "title": "Right RVD sequence",
+                    "description": "The repeat variable diresidue sequence of the right half-site for recognized by the TAL effector at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
+                    "type": "string",
+                    "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
+                }
+            }
         },
         "reagent_repository": {
             "title": "Reagent repository",
@@ -505,7 +610,7 @@
         "modification_type": {
             "title": "Modification type"
         },
-        "target.label": {
+        "modified_site_by_target_id.label": {
             "title": "Target"
         },
         "status": {
