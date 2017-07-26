@@ -112,3 +112,17 @@ blockquote {
     margin: 10px;
     text-align: center;
 }
+
+
+.checkbox--right {
+	pointer: normal;
+
+	label {
+		cursor: default;
+	}
+
+	input[type="checkbox"] {
+		float: none;
+		margin-left: 10px;
+	}
+}
