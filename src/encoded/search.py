@@ -1237,7 +1237,7 @@ def audit(context, request):
     # Don't use these groupings for audit matrix
     x_grouping = matrix['x']['group_by']
     y_groupings = audit_list_field
-    no_audits_groupings = ['no.error', 'no.not_compliant', 'no.warning']
+    no_audits_groupings = ['no.audit.error', 'no.audit.not_compliant', 'no.audit.warning']
     #y_groupings.append("no.error")
     #y_groupings.append("no.not_compliant")
     #y_groupings.append("no.warning")
@@ -1299,7 +1299,7 @@ def audit(context, request):
 
     
     aggs.update({
-        "no.error": {
+        "no.audit.error": {
             "missing": {
                 "field": "audit.ERROR.category"
             },
@@ -1310,7 +1310,7 @@ def audit(context, request):
                         "size": 0
                     }
                 },
-                "no.not_compliant": {
+                "no.audit.not_compliant": {
                     "missing": {
                         "field": "audit.NOT_COMPLIANT.category"
                     },
@@ -1321,7 +1321,7 @@ def audit(context, request):
                                 "size": 0
                             }
                         },
-                        "no.warning": {
+                        "no.audit.warning": {
                             "missing": {
                                 "field": "audit.WARNING.category"
                             },
@@ -1449,8 +1449,9 @@ def audit(context, request):
         summary = []
         for xbucket in x_buckets:
             summary.append(counts.get(xbucket['key'], 0))
-        aggregations[group_by] = outer_bucket[group_by]
+        aggregations[group_by] = outer_bucket[group_by]['assay_title']
         aggregations[group_by]['assay_title'] = summary
+        
 
     summarize_buckets(
         result['matrix'],
@@ -1471,16 +1472,35 @@ def audit(context, request):
 
     # The following lines organize the no audit data into the same format as the audit data
     # so auditmatrix.js can treat it the same way
-    no_audits_dict = {}
-    no_audits_list = []
-    no_audits_temp = {}
-    no_audits_temp = aggregations['matrix']['no.audits']
-    no_audits_temp['key'] = "experiments with no red audits"
-    no_audits_list.append(no_audits_temp)
-    no_audits_dict['buckets'] = no_audits_list
+    no_audits_error_dict = {}
+    no_audits_error_list = []
+    no_audits_error_temp = {}
+    no_audits_error_temp = aggregations['matrix']['no.audit.error']
+    no_audits_error_temp['key'] = "experiments with no red audits"
+    no_audits_error_list.append(no_audits_error_temp)
+    no_audits_error_dict['buckets'] = no_audits_error_list
+
+    no_audits_nc_dict = {}
+    no_audits_nc_list = []
+    no_audits_nc_temp = {}
+    no_audits_nc_temp = aggregations['matrix']['no.audit.not_compliant']
+    no_audits_nc_temp['key'] = "experiments with no red or orange audits"
+    no_audits_nc_list.append(no_audits_nc_temp)
+    no_audits_nc_dict['buckets'] = no_audits_nc_list
+
+    no_audits_warning_dict = {}
+    no_audits_warning_list = []
+    no_audits_warning_temp = {}
+    no_audits_warning_temp = aggregations['matrix']['no.audit.warning']
+    no_audits_warning_temp['key'] = "experiments with no red or orange or yellow audits"
+    no_audits_warning_list.append(no_audits_warning_temp)
+    no_audits_warning_dict['buckets'] = no_audits_warning_list
+
 
     # Replaces 'no.audits' in aggregations['matrix'] with the correctly formatted 'no.audits' data
-    aggregations['matrix']['no.audits'] = no_audits_dict
+    aggregations['matrix']['no.audit.error'] = no_audits_error_dict
+    aggregations['matrix']['no.audit.not_compliant'] = no_audits_nc_dict
+    aggregations['matrix']['no.audit.warning'] = no_audits_warning_dict
 
     # Formats all audit categories into readable/usable format for auditmatrix.js
     bucket_audit_category_list = []
