@@ -1451,6 +1451,9 @@ def audit(context, request):
             summary.append(counts.get(xbucket['key'], 0))
         aggregations[group_by] = outer_bucket[group_by]['assay_title']
         aggregations[group_by]['assay_title'] = summary
+        aggregations[group_by].pop("buckets", None)
+        aggregations[group_by].pop("sum_other_doc_count", None)
+        aggregations[group_by].pop("doc_count_error_upper_bound", None)
         
 
     summarize_buckets(
@@ -1502,6 +1505,7 @@ def audit(context, request):
     aggregations['matrix']['no.audit.not_compliant'] = no_audits_nc_dict
     aggregations['matrix']['no.audit.warning'] = no_audits_warning_dict
 
+    aggregations['matrix'].pop("no.audits", None)
     # Formats all audit categories into readable/usable format for auditmatrix.js
     bucket_audit_category_list = []
     for audit in aggregations['matrix']:
@@ -1529,5 +1533,7 @@ def audit(context, request):
         # http://googlewebmastercentral.blogspot.com/2014/02/faceted-navigation-best-and-5-of-worst.html
         request.response.status_code = 404
         result['notification'] = 'No results found'
-
+    
+    import pdb
+    pdb.set_trace()
     return result
