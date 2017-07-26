@@ -1,5 +1,14 @@
 from functools import lru_cache
 
+@lru_cache()
+def assay_name(*assay_names):
+    """ experiment.assay_term_name auditor condition factory
+    """
+    def assay_name_condition(value, system):
+        return value['assay_term_name'] in assay_names
+
+    return assay_name_condition
+
 
 @lru_cache()
 def rfa(*rfa_names):

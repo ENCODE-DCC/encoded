@@ -3,7 +3,7 @@ from snovault import (
     audit_checker,
 )
 from .conditions import (
-    rfa,
+    rfa, assay_term_name
 )
 from .standards_data import pipelines_with_read_depth
 
@@ -542,7 +542,7 @@ def extract_award_version(bam_file):
             return 'ENC2'
     return 'ENC3'
 
-'''
+
 @audit_checker('File', frame=[
     'award',
     'quality_metrics',
@@ -568,16 +568,17 @@ def extract_award_version(bam_file):
     'derived_from.controlled_by.dataset.original_files.analysis_step_version.software_versions',
     'derived_from.controlled_by.dataset.original_files.analysis_step_version.software_versions.software'])
 def audit_file_chip_seq_control_read_depth(value, system,
-                                           condition=rfa('ENCODE3',
-                                                         'ENCODE2-Mouse',
-                                                         'ENCODE2',
-                                                         'ENCODE',
-                                                         'Roadmap')):
-
+                                           condition=assay_term_name('ChIP-seq')):
+    '''
     An alignment file from the ENCODE Processing Pipeline should have read depth
     in accordance with the criteria
-
-
+    '''
+    if not value.get('award') or value.get('award') not in ['ENCODE3',
+                                                            'ENCODE2-Mouse',
+                                                            'ENCODE2',
+                                                            'ENCODE',
+                                                            'Roadmap']:
+        return
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
@@ -767,4 +768,3 @@ def check_control_read_depth_standards(value,
             elif read_depth < 3000000:
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
         return
-'''
