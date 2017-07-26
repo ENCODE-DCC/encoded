@@ -317,7 +317,7 @@ def test_audit_file_replicate_match(testapp, file1, file_rep2):
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent replicate' for error in errors_list)
 
-
+'''
 def test_audit_file_insufficient_control_read_depth_chip_seq_paired_end(
     testapp,
     file_exp,
@@ -361,7 +361,7 @@ def test_audit_file_insufficient_control_read_depth_chip_seq_paired_end(
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'control extremely low read depth' for error in errors_list)
-
+'''
 '''
 def test_audit_modERN_missing_step_run(testapp, file_exp, file3, award):
     testapp.patch_json(award['@id'], {'rfa': 'modERN'})
