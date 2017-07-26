@@ -1,20 +1,13 @@
 from functools import lru_cache
 
 @lru_cache()
-def assay_term_name(*assay_names):
-    """ file.dataset.assay_term_name auditor condition factory
+def assay_name(*assay_names):
+    """ experiment.assay_term_name auditor condition factory
     """
     def assay_name_condition(value, system):
-        context = system['context']
-        assay_uuid = context.upgrade_properties()['dataset']
-        assay_name = _assay_name(assay_uuid, system['root'])
-        return assay_name in assay_names
-    return assay_name_condition
+        return value['assay_term_name'] in assay_names
 
-@lru_cache()
-def _assay_name(assay_uuid, root):
-    assay = root.get_by_uuid(assay_uuid)
-    return assay.upgrade_properties().get('assay_term_name')
+    return assay_name_condition
 
 
 @lru_cache()
