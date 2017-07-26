@@ -1105,7 +1105,7 @@ def matrix(context, request):
             for bucket in outer_bucket[group_by]['buckets']:
                 summarize_buckets(matrix, x_buckets, bucket, grouping_fields)
 
-    groupings = y_groupings + x_groupings if target_mode else [x_grouping]
+    groupings = y_groupings + (x_groupings if target_mode else [x_grouping])
     summarize_buckets(
         result['matrix'],
         aggregations['matrix']['x']['buckets'],

@@ -399,9 +399,9 @@ MatrixTarget.propTypes = {
 class Matrix extends React.Component {
     render() {
         const { context } = this.props;
-        if (context.matrix_type === 'assay') {
+        if (context.matrix.matrix_type === 'assay') {
             return <MatrixAssay context={context} />;
-        } else if (context.matrix_type === 'target') {
+        } else if (context.matrix.matrix_type === 'target') {
             return <MatrixTarget context={context} />;
         }
         return null;
