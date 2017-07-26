@@ -1287,12 +1287,6 @@ def audit(context, request):
                 },
             'terms': {'field': 'audit.NOT_COMPLIANT.category', 'size': 0
         }
-    }, 'no.audits': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
-                        }
-                    }
-                },
-                'missing': {'field': 'audit.ERROR.category'
-                        }
     }
     
 } 
@@ -1341,21 +1335,6 @@ def audit(context, request):
     })
     
 
-    """
-    aggs.update({'missingaudit.WARNING.category': {'aggs': {'missingaudit.NOT_COMPLIANT.category': {'aggs': {'missingaudit.ERROR.category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
-                                }
-                            }
-                        }, 'missing': {'field': 'audit.ERROR.category'
-                        }
-                    }
-                }, 'missing': {'field': 'audit.NOT_COMPLIANT.category'
-                }
-            }
-        }, 'missing': {'field': 'audit.WARNING.category'
-        }
-    }
-})
-    """
     # if internal action data is able to be seen in facets then add it to aggs
     if "audit.INTERNAL_ACTION.category" in facets[len(facets)-1]:
         aggs['audit.INTERNAL_ACTION.category'] = {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
@@ -1505,7 +1484,7 @@ def audit(context, request):
     aggregations['matrix']['no.audit.not_compliant'] = no_audits_nc_dict
     aggregations['matrix']['no.audit.warning'] = no_audits_warning_dict
 
-    aggregations['matrix'].pop("no.audits", None)
+    # aggregations['matrix'].pop("no.audits", None)
     # Formats all audit categories into readable/usable format for auditmatrix.js
     bucket_audit_category_list = []
     for audit in aggregations['matrix']:
@@ -1533,7 +1512,5 @@ def audit(context, request):
         # http://googlewebmastercentral.blogspot.com/2014/02/faceted-navigation-best-and-5-of-worst.html
         request.response.status_code = 404
         result['notification'] = 'No results found'
-    
-    import pdb
-    pdb.set_trace()
+
     return result
