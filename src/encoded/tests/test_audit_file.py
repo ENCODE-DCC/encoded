@@ -325,9 +325,7 @@ def test_audit_file_insufficient_control_read_depth_chip_seq_paired_end(
         analysis_step_bam,
         target_H3K27ac,
         target_control,
-        award,
         pipeline_bam):
-
     testapp.patch_json(file_exp['@id'], {'target': target_H3K27ac['@id'],
                                          'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(file_exp2['@id'], {'target': target_control['@id'],
