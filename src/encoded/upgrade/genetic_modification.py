@@ -1,4 +1,7 @@
-from snovault import upgrade_step
+from snovault import (
+    CONNECTION,
+    upgrade_step
+)
 
 
 @upgrade_step('genetic_modification', '1', '2')
@@ -37,6 +40,8 @@ def genetic_modification_2_3(value, system):
 def genetic_modification_5_6(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3088
 
+    conn = system['registry'][CONNECTION]
+
     if 'target' in value:
         value['modified_site_by_target_id'] = value['target']
         value.pop('target')
@@ -45,44 +50,60 @@ def genetic_modification_5_6(value, system):
         value['modified_site_by_coordinates'] = value['modified_site']
         value.pop('modified_site')
 
+    if 'source' in value:
+        # If for some inexplicable reason, there is a source associated with the genetic_modification,
+        # let's move it to reagent repository for now. If there is one in the technique, we'll overwrite it
+        # and use that one instead.
+        value['reagent_repository'] = value['source']
+        value.pop('source')
+
     # New required properties modification_technique and purpose need to be handled somehow
     if value['modification_techniques']:
         alias_flag = False
-        for technique in value['modification_techniques']:
-            if 'aliases' in technique:
+        for t in value['modification_techniques']:
+            technique = conn.get_by_uuid(t)
+            if 'aliases' in technique.properties:
                 alias_flag = True
-            if 'Crispr' in technique['@type']:
+            if 'source' in technique.properties:
+                    value['reagent_repository'] = technique.properties['source']
+            if 'product_id' in technique.properties:
+                if 'reagent_identifiers' in value:
+                    value['reagent_identifiers'].append(technique.properties['product_id'])
+                else:
+                    value['reagent_identifiers'] = list(technique.properties['product_id'])
+                value.pop('product_id')
+            if 'guide_rna_sequences' in technique.properties:
+                value['guide_rna_sequences'] = technique.properties['guide_rna_sequences']
                 value['modification_technique'] = 'CRISPR'
-                if 'guide_rna_sequences' in technique:
-                    value['guide_rna_sequences'] = technique['guide_rna_sequences']
-                if 'insert_sequence' in technique:
-                    value['introduced_sequence'] = technique['insert_sequence']
+
+                if 'insert_sequence' in technique.properties:
+                    value['introduced_sequence'] = technique.properties['insert_sequence']
                 if alias_flag:
-                    for a in technique['aliases']:
+                    for a in technique.properties['aliases']:
                         b = a + '-CRISPR'
                         if 'aliases' in value:
                             value['aliases'].append(b)
                         else:
                             value['aliases'] = [b]
-            elif 'Tale' in technique['@type']:
+            elif 'talen_platform' in technique.properties:
                 value['modification_technique'] = 'TALE'
                 # We think these should have purpose = repression if empty. For the purposes
                 # of the upgrade, let's add that in for now.
                 if 'purpose' not in value:
                     value['purpose'] = 'repression'
                 if 'notes' in value:
-                    value['notes'] = value['notes'] + '. TALEN platform: ' + technique['talen_platform']
+                    value['notes'] = value['notes'] + '. TALEN platform: ' + technique.properties['talen_platform']
                 else:
-                    value['notes'] = 'TALEN platform ' + technique['talen_platform']
-                if 'target_sequence' in technique:
+                    value['notes'] = 'TALEN platform ' + technique.properties['talen_platform']
+                if 'target_sequence' in technique.properties:
                     # These won't be in the same order as the RVD_sequences but at least
                     # it will save the manual migration. We can't enforce the same order anyway.
                     if 'targeted_sequences' in value:
-                        value['targeted_sequences'].append(technique['target_sequence'])
+                        value['targeted_sequences'].append(technique.properties['target_sequence'])
                     else:
-                        value['targeted_sequences'] = [technique['target_sequence']]
+                        value['targeted_sequences'] = [technique.properties['target_sequence']]
                 if alias_flag:
-                    for a in technique['aliases']:
+                    for a in technique.properties['aliases']:
                         b = a + '-TALE'
                         if 'aliases' in value:
                             value['aliases'].append(b)
