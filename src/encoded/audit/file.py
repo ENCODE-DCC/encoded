@@ -542,7 +542,7 @@ def extract_award_version(bam_file):
             return 'ENC2'
     return 'ENC3'
 
-
+'''
 @audit_checker('File', frame=[
     'award',
     'quality_metrics',
@@ -769,3 +769,4 @@ def check_control_read_depth_standards(value,
             elif read_depth < 3000000:
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
         return
+'''
