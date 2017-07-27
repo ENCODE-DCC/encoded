@@ -554,10 +554,11 @@ class Experiment(Dataset,
                 'month_released',
                 'files.file_type',
             ],
-            'group_by_target': ['target.label'],
+            'group_by_target': 'target.label',
             'group_by': 'assay_title',
             'label': 'Assay',
         },
+        "x_groupings": ['target.investigated_as', 'target.label']
     }
 
 

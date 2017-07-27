@@ -968,45 +968,15 @@ def matrix(context, request):
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
-    # Group results in 2 dimensions
-    if target_mode:
-        # Target matrix requested. Get parameters of the target search from group_by_target array
-        # in data type's configuration. We buidl the request from the lowest level first to fit
-        # aggs search
-        x_groupings = matrix['x']['group_by_target']
-        for index, field in enumerate(list(reversed(x_groupings))):
-            if index == 0:
-                x_target_agg = {
-                    "terms": {
-                        "field": 'embedded.' + field + '.raw',
-                        "size": 0,  # no limit
-                    }
-                }
-                x_agg = {
-                    field: x_target_agg
-                }
-            else:
-                x_agg = {
-                    field: {
-                        "terms": {
-                            "field": 'embedded.' + field + '.raw',
-                            "size": 0,  # no limit
-                        },
-                        "aggs": x_agg,
-                    },
-                }
-        aggs = x_agg
-        x_grouping = x_groupings[0]
-    else:
-        # Assay matrix requested. Get parameters of the assay search from the group_by string.
-        x_grouping = matrix['x']['group_by']
-        x_agg = {
-            "terms": {
-                "field": 'embedded.' + x_grouping + '.raw',
-                "size": 0,  # no limit
-            },
-        }
-        aggs = {x_grouping: x_agg}
+    # Assay matrix requested. Get parameters of the assay search from the group_by string.
+    x_grouping = matrix['x']['group_by_target'] if target_mode else matrix['x']['group_by']
+    x_agg = {
+        "terms": {
+            "field": 'embedded.' + x_grouping + '.raw',
+            "size": 0,  # no limit
+        },
+    }
+    aggs = {x_grouping: x_agg}
 
     y_groupings = matrix['y']['group_by']
     for field in reversed(y_groupings):
@@ -1020,11 +990,24 @@ def matrix(context, request):
             },
         }
 
+    # For target matrices, add an aggregation to determine the hierarchy of data on the x axis of
+    # the matrix.
     if target_mode:
-        aggs['x'] = x_target_agg
-    else:
-        aggs['x'] = x_agg
+        x_groupings = matrix['x_groupings']
+        x_groupings_aggs = {}
+        for field in x_groupings:
+            x_groupings_aggs = {
+                field: {
+                    "terms": {
+                        "field": 'embedded.' + field + '.raw',
+                        "size": 0,  # no limit
+                    },
+                    "aggs": x_groupings_aggs,
+                },
+            }
+        aggs['x_groupings'] = x_groupings_aggs[field]
 
+    aggs['x'] = x_agg
     query['aggs']['matrix'] = {
         "filter": {
             "bool": {
@@ -1036,6 +1019,7 @@ def matrix(context, request):
 
     # Execute the query
     es_results = es.search(body=query, index=es_index, search_type='count')
+    print('{}'.format(es_results))
 
     # Format matrix for results
     aggregations = es_results['aggregations']
@@ -1052,9 +1036,9 @@ def matrix(context, request):
     # their matrix search results in 'bucket' arrays, with the exact terms being defined in the
     # .py file for the object we're querying in the object's 'matrix' property.
     #
-    # matrix (dictionary): 'matrix' object within the Elasticsearch matrix search results, containing
-    #        all the data to render the matrix and its headers, but not the facets that appear
-    #        along the top and bottom.
+    # matrix (dictionary): 'matrix' object within the Elasticsearch matrix search results,
+    #        containing all the data to render the matrix and its headers, but not the facets that
+    #        appear along the top and bottom.
     # x_buckets (dictionary): 'x' object within the Elasticsearch matrix search results, containing
     #        the headers that give titles to each column of the chart, as well as summary counts
     #        we don't currently use on the front end.
@@ -1105,7 +1089,7 @@ def matrix(context, request):
             for bucket in outer_bucket[group_by]['buckets']:
                 summarize_buckets(matrix, x_buckets, bucket, grouping_fields)
 
-    groupings = y_groupings + (x_groupings if target_mode else [x_grouping])
+    groupings = y_groupings + [x_grouping]
     summarize_buckets(
         result['matrix'],
         aggregations['matrix']['x']['buckets'],

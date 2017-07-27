@@ -38,7 +38,7 @@ GroupMoreButton.defaultProps = {
 };
 
 
-class MatrixAssay extends React.Component {
+class Matrix extends React.Component {
     static generateYGroupOpen(matrix) {
         // Make a state for each of the Y groups (each Y group currently shows a biosample type).
         // To do that, we have to get each of the bucket keys, which will be the keys into the
@@ -62,7 +62,7 @@ class MatrixAssay extends React.Component {
         super(props);
 
         // Set initial React state.
-        const yGroupOpen = MatrixAssay.generateYGroupOpen(this.props.context.matrix);
+        const yGroupOpen = Matrix.generateYGroupOpen(this.props.context.matrix);
         this.state = {
             yGroupOpen,
             allYGroupsOpen: false,
@@ -80,7 +80,7 @@ class MatrixAssay extends React.Component {
         // This callback makes possible updating the See More buttons when the user clicks a facet,
         // which could cause these buttons to not be needed. This resets all the buttons to the See
         // More state.
-        const yGroupOpen = MatrixAssay.generateYGroupOpen(nextProps.context.matrix);
+        const yGroupOpen = Matrix.generateYGroupOpen(nextProps.context.matrix);
         this.setState({
             yGroupOpen,
             allYGroupsOpen: false,
@@ -144,6 +144,7 @@ class MatrixAssay extends React.Component {
     render() {
         const context = this.props.context;
         const matrix = context.matrix;
+        const matrixType = context.matrix.matrix_type;
         const parsedUrl = url.parse(this.context.location_href);
         const matrixBase = parsedUrl.search || '';
         const matrixSearch = matrixBase + (matrixBase ? '&' : '?');
@@ -163,7 +164,7 @@ class MatrixAssay extends React.Component {
             // we generated in the last step.
             yFacets = yFacets.concat(_(context.facets).reject(facet => _(matrix.x.facets).contains(facet.field) || _(matrix.y.facets).contains(facet.field)));
 
-            const xGrouping = matrix.x.group_by;
+            const xGrouping = matrixType === 'target' ? matrix.x.group_by_target : matrix.x.group_by;
             const primaryYGrouping = matrix.y.group_by[0];
             const secondaryYGrouping = matrix.y.group_by[1];
             const xBuckets = matrix.x.buckets;
@@ -206,6 +207,7 @@ class MatrixAssay extends React.Component {
                                         <div>
                                             <h3 style={{ marginTop: 0 }}>{context.title}</h3>
                                             <div>
+                                                <a href="/matrix/?type=Experiment&matrix.type=target">Target</a>
                                                 <p>Click or enter search terms to filter the experiments included in the matrix.</p>
                                                 <TextFilter filters={context.filters} searchBase={matrixSearch} onChange={this.onChange} />
                                             </div>
@@ -372,44 +374,14 @@ class MatrixAssay extends React.Component {
     }
 }
 
-MatrixAssay.propTypes = {
+Matrix.propTypes = {
     context: React.PropTypes.object.isRequired,
 };
 
-MatrixAssay.contextTypes = {
+Matrix.contextTypes = {
     location_href: PropTypes.string,
     navigate: PropTypes.func,
     biosampleTypeColors: PropTypes.object, // DataColor instance for experiment project
-};
-
-
-// Display the experiment matrix that focuses on targets.
-class MatrixTarget extends React.Component {
-    render() {
-        const { context } = this.props;
-        return null;
-    }
-}
-
-MatrixTarget.propTypes = {
-    context: PropTypes.object.isRequired, // Matrix search result data -- all the data to display in the matrix
-};
-
-
-class Matrix extends React.Component {
-    render() {
-        const { context } = this.props;
-        if (context.matrix.matrix_type === 'assay') {
-            return <MatrixAssay context={context} />;
-        } else if (context.matrix.matrix_type === 'target') {
-            return <MatrixTarget context={context} />;
-        }
-        return null;
-    }
-}
-
-Matrix.propTypes = {
-    context: React.PropTypes.object.isRequired,
 };
 
 globals.contentViews.register(Matrix, 'Matrix');
