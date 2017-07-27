@@ -57,6 +57,16 @@ def genetic_modification_5_6(value, system):
         value['reagent_repository'] = value['source']
         value.pop('source')
 
+    if 'product_id' in value:
+        # If for some inexplicable reason, there is a product_id associated with the genetic_modification,
+        # let's move it to reagent identifiers for now. If there is one in the technique, we'll overwrite it
+        # and use those instead.
+        if 'reagent_identifiers' in value:
+            value['reagent_identifiers'].append(value['product_id'])
+        else:
+            value['reagent_identifiers'] = list(value['product_id'])
+        value.pop('product_id')
+
     # New required properties modification_technique and purpose need to be handled somehow
     if value['modification_techniques']:
         alias_flag = False
@@ -71,7 +81,6 @@ def genetic_modification_5_6(value, system):
                     value['reagent_identifiers'].append(technique.properties['product_id'])
                 else:
                     value['reagent_identifiers'] = list(technique.properties['product_id'])
-                value.pop('product_id')
             if 'guide_rna_sequences' in technique.properties:
                 value['guide_rna_sequences'] = technique.properties['guide_rna_sequences']
                 value['modification_technique'] = 'CRISPR'
