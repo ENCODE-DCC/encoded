@@ -1447,13 +1447,24 @@ def audit(context, request):
         aggregations['matrix'],
         no_audits_groupings,
         aggregations['matrix'])
-    
+
+    aggregations['matrix']['no.audit.error']['key'] = 'no red audits'
+    aggregations['matrix']['no.audit.not_compliant']['key'] = 'no red or orange audits'
+    aggregations['matrix']['no.audit.warning']['key'] = 'no red or orange or yellow audits'
+    aggregations['matrix']['no_audits'] = {}
+    aggregations['matrix']['no_audits']['buckets'] = []
+
+    for category in aggregations['matrix']:
+        if "no.audit" in category:
+            aggregations['matrix']['no_audits']['buckets'].append(aggregations['matrix'][category])
+
     result['matrix']['y']['label'] = "Audit Category"
     result['matrix']['y']['group_by'][0] = "audit_category"
     result['matrix']['y']['group_by'][1] = "audit_label"
 
     # The following lines organize the no audit data into the same format as the audit data
     # so auditmatrix.js can treat it the same way
+    """
     no_audits_error_dict = {}
     no_audits_error_list = []
     no_audits_error_temp = {}
@@ -1477,12 +1488,12 @@ def audit(context, request):
     no_audits_warning_temp['key'] = "experiments with no red or orange or yellow audits"
     no_audits_warning_list.append(no_audits_warning_temp)
     no_audits_warning_dict['buckets'] = no_audits_warning_list
-
+    """
 
     # Replaces 'no.audits' in aggregations['matrix'] with the correctly formatted 'no.audits' data
-    aggregations['matrix']['no.audit.error'] = no_audits_error_dict
-    aggregations['matrix']['no.audit.not_compliant'] = no_audits_nc_dict
-    aggregations['matrix']['no.audit.warning'] = no_audits_warning_dict
+    aggregations['matrix'].pop('no.audit.error')
+    aggregations['matrix'].pop('no.audit.not_compliant')
+    aggregations['matrix'].pop('no.audit.warning')
 
     # aggregations['matrix'].pop("no.audits", None)
     # Formats all audit categories into readable/usable format for auditmatrix.js
@@ -1512,5 +1523,5 @@ def audit(context, request):
         # http://googlewebmastercentral.blogspot.com/2014/02/faceted-navigation-best-and-5-of-worst.html
         request.response.status_code = 404
         result['notification'] = 'No results found'
-
+    
     return result

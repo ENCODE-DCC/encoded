@@ -159,13 +159,27 @@ class AuditMatrix extends React.Component {
             const xBuckets = matrix.x.buckets;
             const xLimit = matrix.x.limit || xBuckets.length;
             var yGroups = matrix.y[primaryYGrouping].buckets;
-            const orderKey = ['audit.ERROR.category', 'audit.NOT_COMPLIANT.category', 'audit.WARNING.category', 'no.audit.error', "no.audit.not_compliant", "no.audit.warning", 'audit.INTERNAL_ACTION.category'];
-            const titleKey = ['Error', 'Not Compliant', 'Warning', 'No audits', "No audits", "No audits", 'Internal Action'];
+            const orderKey = ['audit.ERROR.category', 'audit.NOT_COMPLIANT.category', 'audit.WARNING.category', 'no_audits', 'audit.INTERNAL_ACTION.category'];
+            const titleKey = ['Error', 'Not Compliant', 'Warning', 'No audits', 'Internal Action'];
+            const noAuditKey = ['no red or orange or yellow audits', 'no red or orange audits' , 'no red audits'];
             var orderIndex = 0;
+            var rowIndex = 0;
             var tempYGroups = [];
+            var tempNoAudits = []
             while(orderIndex < orderKey.length){
                 yGroups.forEach((group) => {
                     if(group.key === orderKey[orderIndex]){
+                        if(group.key === "no_audits"){
+                            while(rowIndex < noAuditKey.length){
+                                group["audit_label"]["buckets"].forEach((row) => {
+                                    if(row.key === noAuditKey[rowIndex]){
+                                        tempNoAudits.push(row);
+                                    }
+                                });
+                                rowIndex++;
+                            }
+                            group["audit_label"]["buckets"] = tempNoAudits;
+                        }
                         group.title = titleKey[orderIndex];
                         tempYGroups.push(group);
                     }
@@ -301,7 +315,16 @@ class AuditMatrix extends React.Component {
                                                 // group rows that are under the display limit.
                                                 const groupRows = (this.state.yGroupOpen[group.key] || this.state.allYGroupsOpen) ? groupBuckets : groupBuckets.slice(0, yLimit);
                                                 rows.push(...groupRows.map((yb) => {
-                                                    const href = `${searchBase}&${group.key}=${globals.encodedURIComponent(yb.key)}`;
+                                                    var href = `${searchBase}&${group.key}=${globals.encodedURIComponent(yb.key)}`;
+                                                    if(yb.key === "no red audits"){
+                                                        var href = `${searchBase}&audit.ERROR.category!=*`;
+                                                    }
+                                                    if(yb.key === "no red or orange audits"){
+                                                        var href = `${searchBase}&audit.ERROR.category!=*&audit.NOT_COMPLIANT.category!=*`;
+                                                    }
+                                                    if(yb.key === "no red or orange or yellow audits"){
+                                                        var href = `${searchBase}&audit.ERROR.category!=*&audit.NOT_COMPLIANT.category!=*&audit.WARNING.category!=*`;
+                                                    }
                                                     return (
                                                         <tr key={yb.key}>
                                                             <th style={{ backgroundColor: '#ddd', border: 'solid 1px white' }}><a href={href}>{yb.key}</a></th>
@@ -312,7 +335,7 @@ class AuditMatrix extends React.Component {
                                                                     // scale color between white and the series color
                                                                     cellColor.lightness(cellColor.lightness() + ((1 - (value / matrix.max_cell_doc_count)) * (100 - cellColor.lightness())));
                                                                     const textColor = cellColor.luminosity() > 0.5 ? '#000' : '#fff';
-                                                                    const cellHref = `${searchBase}&${group.key}=${globals.encodedURIComponent(yb.key)}&${xGrouping}=${globals.encodedURIComponent(xb.key)}`;
+                                                                    const cellHref = `${href}&${xGrouping}=${globals.encodedURIComponent(xb.key)}`;
                                                                     const title = `${yb.key} / ${xb.key}: ${value}`;
                                                                     return (
                                                                         <td key={xb.key} style={{ backgroundColor: cellColor.hexString() }}>
