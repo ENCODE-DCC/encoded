@@ -71,12 +71,12 @@ class DisplayText extends React.Component {
                         </div>
                         <div data-test="mixin">
                         <dt>Mixin Properties</dt>
-                             {/* {Array.isArray(objectmixin) ?
+                            {Array.isArray(objectmixin) ?
                                 objectmixin.map((term, i) => <div key={i}>{term.$ref}</div>)
                             :
                             null
-                            }*/}
-                            {/*<dd>{mixinref}</dd>*/}
+                            }
+                            {/* <dd>{mixinref}</dd>*/}
                         </div>
                     </dl>
                 </div>
