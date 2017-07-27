@@ -227,6 +227,7 @@
             "comment": "Do not submit. Only admins are allowed to set or update this value.",
             "type": "array",
             "default": [],
+            "uniqueItems": true,
             "permission": "import_items",
             "items": {
                 "title": "Alternate Accession",
@@ -573,6 +574,7 @@
             "description": "Repository identifiers of the reagent used to produce the describe genetic modification, if applicable.",
             "comment": "If a mutagenic chemical is used, please provide the ChEBI ID.",
             "type": "array",
+            "uniqueItems": true,
             "items":{
                 "title": "Reagent identifier",
                 "description": "Repository identifier of the reagent used to produce the describe genetic modification, if applicable.",
