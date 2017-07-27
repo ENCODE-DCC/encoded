@@ -46,14 +46,14 @@ class DisplayText extends React.Component {
         const dataRenderObject = dataArray.map((item, index) => {
             const objectmixin = mixinArray[index];
             // console.log(objectmixin);
-            let mixinref;
-            if (Array.isArray(objectmixin)) {
-                objectmixin.map((term) => {
-                    mixinref = term.$ref;
-                    return mixinref;
-                });
-            }
-            console.log(index, mixinref);
+            // let mixinref;
+            // if (Array.isArray(objectmixin)) {
+            //     objectmixin.map((term) => {
+            //         mixinref = term.$ref;
+            //         return mixinref;
+            //     });
+            // }
+            // console.log(index, mixinref);
 
             // if (objectmixin == Array){
             //     objectmixin.map((item, index) => <dd>{objectmixin[index]}</dd>)
@@ -71,11 +71,16 @@ class DisplayText extends React.Component {
                         </div>
                         <div data-test="mixin">
                         <dt>Mixin Properties</dt>
-                            {Array.isArray(objectmixin) ?
-                                objectmixin.map((term, i) => <div key={i}>{term.$ref}</div>)
+                        {Array.isArray(objectmixin) ?
+                            objectmixin.map((term, i) => <dd key={i}>{objectmixin[i].$ref}</dd>)
+                        : <dd>no one here</dd>
+                        }
+                        {console.log(objectmixin[0].$ref)}
+                            {/* {Array.isArray(objectmixin) ?
+                                objectmixin.map((term, i) => <dd key={i}><div key={i}>{term.$ref}</div></dd>)
                             :
                             null
-                            }
+                            } */}
                             {/* <dd>{mixinref}</dd>*/}
                         </div>
                     </dl>
