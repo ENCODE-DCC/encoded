@@ -968,15 +968,41 @@ def matrix(context, request):
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
-    # Assay matrix requested. Get parameters of the assay search from the group_by string.
-    x_grouping = matrix['x']['group_by_target'] if target_mode else matrix['x']['group_by']
-    x_agg = {
-        "terms": {
-            "field": 'embedded.' + x_grouping + '.raw',
-            "size": 0,  # no limit
-        },
-    }
-    aggs = {x_grouping: x_agg}
+    if target_mode:
+        # Target matrix requested. Get parameters of the target search from group_by_target array
+        # in data type's configuration. We build the request from the lowest level first to fit
+        # aggs search.
+        x_groupings = matrix['x']['group_by_target']
+        for index, field in enumerate(list(reversed(x_groupings))):
+            if index == 0:
+                x_agg = {
+                    field: {
+                        "terms": {
+                            "field": 'embedded.' + field + '.raw',
+                            "size": 0,  # no limit
+                        }
+                    }
+                }
+            else:
+                x_agg = {
+                    "terms": {
+                        "field": 'embedded.' + field + '.raw',
+                        "size": 0,  # no limit
+                    },
+                    "aggs": x_agg,
+                }
+        aggs = x_agg
+        x_grouping = x_groupings
+    else:
+        # Assay matrix requested. Get parameters of the assay search from the group_by string.
+        x_grouping = matrix['x']['group_by']
+        x_agg = {
+            "terms": {
+                "field": 'embedded.' + x_grouping + '.raw',
+                "size": 0,  # no limit
+            },
+        }
+        aggs = {x_grouping: x_agg}
 
     y_groupings = matrix['y']['group_by']
     for field in reversed(y_groupings):
@@ -990,24 +1016,8 @@ def matrix(context, request):
             },
         }
 
-    # For target matrices, add an aggregation to determine the hierarchy of data on the x axis of
-    # the matrix.
-    if target_mode:
-        x_groupings = matrix['x_groupings']
-        x_groupings_aggs = {}
-        for field in x_groupings:
-            x_groupings_aggs = {
-                field: {
-                    "terms": {
-                        "field": 'embedded.' + field + '.raw',
-                        "size": 0,  # no limit
-                    },
-                    "aggs": x_groupings_aggs,
-                },
-            }
-        aggs['x_groupings'] = x_groupings_aggs[field]
-
     aggs['x'] = x_agg
+
     query['aggs']['matrix'] = {
         "filter": {
             "bool": {
@@ -1018,8 +1028,8 @@ def matrix(context, request):
     }
 
     # Execute the query
+    print('{}'.format(query))
     es_results = es.search(body=query, index=es_index, search_type='count')
-    print('{}'.format(es_results))
 
     # Format matrix for results
     aggregations = es_results['aggregations']
