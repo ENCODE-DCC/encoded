@@ -247,7 +247,6 @@
             "title": "Guide RNA sequences",
             "description": "gRNA sequences used in CRISPR genetic modification",
             "type": "array",
-            "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "gRNA sequence",
