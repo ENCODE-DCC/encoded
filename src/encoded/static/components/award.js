@@ -161,7 +161,39 @@ function createBarChart(chartId, unreplicatedLabel, unreplicatedDataset, isogeni
     return new Promise((resolve) => {
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
-
+            const datasets = [{}, {}, {}];
+            if (unreplicatedDataset.some(x => x > 0)) {
+                datasets[0].label = 'unreplicated';
+                datasets[0].data = unreplicatedDataset;
+                datasets[0].backgroundColor = colors[0];
+                if (isogenicDataset.some(x => x > 0)) {
+                    datasets[1].label = 'isogenic';
+                    datasets[1].data = isogenicDataset;
+                    datasets[1].backgroundColor = colors[1];
+                    if (anisogenicDataset.some(x => x > 0)) {
+                        datasets[2].label = 'anisogenic';
+                        datasets[2].data = anisogenicDataset;
+                        datasets[2].backgroundColor = colors[2];
+                    }
+                } else if (isogenicDataset.every(x => x === 0) && anisogenicDataset.some(x => x > 0)) {
+                    datasets[1].label = 'anisogenic';
+                    datasets[1].data = anisogenicDataset;
+                    datasets[1].backgroundColor = colors[1];
+                }
+            } else if (unreplicatedDataset.every(x => x === 0) && isogenicDataset.some(x => x > 0)) {
+                datasets[0].label = 'isogenic';
+                datasets[0].data = isogenicDataset;
+                datasets[0].backgroundColor = colors[0];
+                if (anisogenicDataset.some(x => x > 0)) {
+                    datasets[1].label = 'anisogenic';
+                    datasets[1].data = anisogenicDataset;
+                    datasets[1].backgroundColor = colors[1];
+                }
+            } else if (unreplicatedDataset.every(x => x === 0) && isogenicDataset.every(x => x === 0) && anisogenicDataset.some(x => x > 0)) {
+                datasets[0].label = 'anisogenic';
+                datasets[0].data = anisogenicDataset;
+                datasets[0].backgroundColors = colors[0];
+            }
             // Create the chart.
             const canvas = document.getElementById(`${chartId}-chart`);
             const parent = document.getElementById(chartId);
@@ -174,19 +206,7 @@ function createBarChart(chartId, unreplicatedLabel, unreplicatedDataset, isogeni
                 type: 'bar',
                 data: {
                     labels,
-                    datasets: [{
-                        label: 'unreplicated',
-                        data: unreplicatedDataset,
-                        backgroundColor: colors[0],
-                    }, {
-                        label: 'isogenic',
-                        data: isogenicDataset,
-                        backgroundColor: colors[1],
-                    }, {
-                        label: 'anisogenic',
-                        data: anisogenicDataset,
-                        backgroundColor: colors[2],
-                    }],
+                    datasets,
                 },
                 options: {
                     maintainAspectRatio: false,
@@ -954,14 +974,70 @@ class StatusExperimentChart extends React.Component {
     updateChart(chart) {
         const { experiments, unreplicated, isogenic, anisogenic, linkUri, award, objectQuery } = this.props;
         const data = StatusData(experiments, unreplicated, isogenic, anisogenic); // Array of datasets and labels
-        const statusLabel = data[1];
+        const replicatelabels = ['unreplicated', 'isogenic', 'anisogenic'];
+        const colors = replicatelabels.map((label, i) => statusColorList[i % statusColorList.length]);
         const unreplicatedDataset = data[2];
         const isogenicDataset = data[3];
         const anisogenicDataset = data[4];
-        chart.data.datasets[0].data = unreplicatedDataset;
-        chart.data.datasets[1].data = isogenicDataset;
-        chart.data.datasets[2].data = anisogenicDataset;
-        chart.data.labels = statusLabel;
+        if (unreplicatedDataset.some(x => x > 0)) {
+            chart.data.datasets[0].label = 'unreplicated';
+            chart.data.datasets[0].data = unreplicatedDataset;
+            chart.data.datasets[0].backgroundColor = colors[0];
+            if (isogenicDataset.some(x => x > 0)) {
+                chart.data.datasets[1].label = 'isogenic';
+                chart.data.datasets[1].data = isogenicDataset;
+                chart.data.datasets[1].backgroundColor = colors[1];
+                if (anisogenicDataset.some(x => x > 0)) {
+                    chart.data.datasets[2].label = 'anisogenic';
+                    chart.data.datasets[2].data = anisogenicDataset;
+                    chart.data.datasets[2].backgroundColor = colors[2];
+                } else if (anisogenicDataset.every(x => x === 0)) {
+                    chart.data.datasets[2] = {};
+                }
+            } else if (isogenicDataset.every(x => x === 0) && anisogenicDataset.some(x => x > 0)) {
+                chart.data.datasets[1].label = 'anisogenic';
+                chart.data.datasets[1].data = anisogenicDataset;
+                chart.data.datasets[1].backgroundColor = colors[1];
+                chart.data.datasets[2] = {};
+            }
+        } else if (unreplicatedDataset.every(x => x === 0) && isogenicDataset.some(x => x > 0)) {
+            chart.data.datasets[0].label = 'isogenic';
+            chart.data.datasets[0].data = isogenicDataset;
+            chart.data.datasets[0].backgroundColor = colors[0];
+            if (anisogenicDataset.some(x => x > 0)) {
+                chart.data.datasets[1].label = 'anisogenic';
+                chart.data.datasets[1].data = anisogenicDataset;
+                chart.data.datasets[1].backgroundColor = colors[1];
+                chart.data.datasets[2] = {};
+            } else if (anisogenicDataset.every(x => x === 0)) {
+                chart.data.datasets[1] = {};
+                chart.data.datasets[2] = {};
+            }
+        } else if (unreplicatedDataset.every(x => x === 0) && isogenicDataset.every(x => x === 0) && anisogenicDataset.some(x => x > 0)) {
+            chart.data.datasets[0].label = 'anisogenic';
+            chart.data.datasets[0].data = anisogenicDataset;
+            chart.data.datasets[0].backgroundColors = colors[0];
+            chart.data.datasets[1] = {};
+            chart.data.datasets[2] = {};
+        }
+        // if (unreplicatedDataset.some(x => x > 0)) {
+        //     chart.data.datasets[0].data = unreplicatedDataset;
+        //     if (isogenicDataset.some(x => x > 0)) {
+        //         chart.data.datasets[1].data = isogenicDataset;
+        //         if (anisogenicDataset.some(x => x > 0)) {
+        //             chart.data.datasets[2].data = anisogenicDataset;
+        //         }
+        //     } else if (isogenicDataset.every(x => x === 0) && anisogenicDataset.some(x => x > 0)) {
+        //         chart.data.datasets[1].data = anisogenicDataset;
+        //     }
+        // } else if (unreplicatedDataset.every(x => x === 0) && isogenicDataset.some(x => x >0)) {
+        //     chart.data.datasets[0].data = isogenicDataset;
+        //     if (anisogenicDataset.some(x => x > 0)) {
+        //         chart.data.datasets[1].data = anisogenicDataset;
+        //     }
+        // } else if (unreplicatedDataset.every(x => x === 0) && isogenicDataset.every(x => x === 0) && anisogenicDataset.some(x => x > 0)) {
+        //     chart.data.datasets[0].data = anisogenicDataset;
+        // }
         chart.options.onClick.baseSearchUri = `${linkUri}${award.name}${objectQuery}`;
         chart.update();
 
