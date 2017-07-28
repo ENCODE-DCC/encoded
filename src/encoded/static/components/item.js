@@ -13,6 +13,7 @@ class DisplayText extends React.Component {
         const mixinArray = [];
         const idvalues = [];
         const titles = [];
+        const typevalues = [];
         const dataArray = Object.keys(dataObject).map((term) => {
             const labels = term;
             return labels;
@@ -36,6 +37,11 @@ class DisplayText extends React.Component {
             } else {
                 idvalues.push('N/A');
             }
+            if (dataObject[key].type) {
+                typevalues.push(dataObject[key].type);
+            } else {
+                typevalues.push('N/A');
+            }
             if (dataObject[key].mixinProperties && dataObject[key].mixinProperties.length) {
                 mixinArray.push(dataObject[key].mixinProperties);
             } else {
@@ -45,21 +51,7 @@ class DisplayText extends React.Component {
 
         const dataRenderObject = dataArray.map((item, index) => {
             const objectmixin = mixinArray[index];
-            // console.log(objectmixin);
-            // let mixinref;
-            // if (Array.isArray(objectmixin)) {
-            //     objectmixin.map((term) => {
-            //         mixinref = term.$ref;
-            //         return mixinref;
-            //     });
-            // }
-            // console.log(index, mixinref);
 
-            // if (objectmixin == Array){
-            //     objectmixin.map((item, index) => <dd>{objectmixin[index]}</dd>)
-            // } else {
-            //     <dd>{objectmixin}</dd>
-            // }
             return (
             // dataArray.forEach(term =>
                 <div key={index}>
@@ -69,19 +61,19 @@ class DisplayText extends React.Component {
                             <dt>ID</dt>
                             <dd>{idvalues[index]}</dd>
                         </div>
+                        <div data-test="type">
+                            <dt>Type</dt>
+                            <dd>{typevalues[index]}</dd>
+                        </div>
                         <div data-test="mixin">
-                        <dt>Mixin Properties</dt>
-                        {Array.isArray(objectmixin) ?
-                            objectmixin.map((term, i) => <dd key={i}>{objectmixin[i].$ref}</dd>)
-                        : <dd>no one here</dd>
-                        }
-                        {console.log(objectmixin[0].$ref)}
-                            {/* {Array.isArray(objectmixin) ?
-                                objectmixin.map((term, i) => <dd key={i}><div key={i}>{term.$ref}</div></dd>)
-                            :
-                            null
-                            } */}
-                            {/* <dd>{mixinref}</dd>*/}
+                            <dt>Mixin Properties</dt>
+                            <dd>
+                                {Array.isArray(objectmixin) ?
+                                    objectmixin.map((term, i) => <div key={i}>{term.$ref}</div>)
+                                :
+                                <div>{objectmixin}</div>
+                                }
+                            </dd>
                         </div>
                     </dl>
                 </div>
