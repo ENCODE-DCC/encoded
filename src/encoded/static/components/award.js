@@ -248,7 +248,11 @@ function createBarChart(chartId, unreplicatedLabel, unreplicatedDataset, isogeni
                             const clickedElementdataset = activePoints[0]._datasetIndex;
                             const term = chart.data.labels[clickedElementIndex];
                             const item = chart.data.datasets[clickedElementdataset].label;
-                            navigate(`${baseSearchUri}&status=${globals.encodedURIComponent(term)}&replication_type=${item}`);
+                            if (chart.options.onClick.baseSearchUri) {
+                                navigate(`${chart.options.onClick.baseSearchUri}&status=${globals.encodedURIComponent(term)}&replication_type=${item}`);
+                            } else {
+                                navigate(`${baseSearchUri}&status=${globals.encodedURIComponent(term)}&replication_type=${item}`);
+                            }
                         }
                     },
                 },
@@ -289,7 +293,7 @@ class LabChart extends React.Component {
 
     // Update existing chart with new data.
     updateChart(chart, facetData) {
-        const { award } = this.props;
+        const { award, linkUri, objectQuery } = this.props;
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
         const labels = [];
@@ -300,17 +304,11 @@ class LabChart extends React.Component {
             }
         });
         const colors = labels.map((label, i) => labColorList[i % labColorList.length]);
-        const AnnotationQuery = generateQuery(this.props.selectedOrganisms, 'organism.scientific_name=');
-        const ExperimentQuery = generateQuery(this.props.selectedOrganisms, 'replicates.library.biosample.donor.organism.scientific_name=');
         // Update chart data and redraw with the new data
         chart.data.datasets[0].data = values;
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
-        if (chart.chart.canvas.id === 'lab-chart-annotations-chart') {
-            chart.options.onClick.baseSearchUri = `/matrix/?type=Annotation&award.name=${award.name}&${AnnotationQuery}&lab.title=`;
-        } else if (chart.chart.canvas.id === 'lab-chart-experiments-chart') {
-            chart.options.onClick.baseSearchUri = `/matrix/?type=Experiment&award.name=${award.name}&target.investigated_as!=control&${ExperimentQuery}&lab.title=`;
-        }
+        chart.options.onClick.baseSearchUri = `${linkUri}${award.name}${objectQuery}&lab.title=`;
         chart.update();
 
         // Redraw the updated legend
@@ -368,11 +366,11 @@ LabChart.propTypes = {
     labs: PropTypes.array.isRequired, // Array of labs facet data
     linkUri: PropTypes.string.isRequired, // Base URI for matrix links
     ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
-    selectedOrganisms: PropTypes.array,
+    objectQuery: PropTypes.string,
 };
 
 LabChart.defaultProps = {
-    selectedOrganisms: [],
+    objectQuery: '',
 };
 
 LabChart.contextTypes = {
@@ -408,7 +406,7 @@ class CategoryChart extends React.Component {
 
     // Update existing chart with new data.
     updateChart(chart, facetData) {
-        const { award } = this.props;
+        const { award, linkUri, objectQuery, categoryFacet } = this.props;
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
         const labels = [];
@@ -419,18 +417,12 @@ class CategoryChart extends React.Component {
             }
         });
         const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
-        const AnnotationQuery = generateQuery(this.props.selectedOrganisms, 'organism.scientific_name=');
-        const ExperimentQuery = generateQuery(this.props.selectedOrganisms, 'replicates.library.biosample.donor.organism.scientific_name=');
 
         // Update chart data and redraw with the new data.
         chart.data.datasets[0].data = values;
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
-        if (chart.chart.canvas.id === 'category-chart-annotations-chart') {
-            chart.options.onClick.baseSearchUri = `/matrix/?type=Annotation&award.name=${award.name}&${AnnotationQuery}&assay_title=`;
-        } else if (chart.chart.canvas.id === 'category-chart-experiments-chart') {
-            chart.options.onClick.baseSearchUri = `/matrix/?type=Experiment&award.name=${award.name}&target.investigated_as!=control&${ExperimentQuery}&assay_title=`;
-        }
+        chart.options.onClick.baseSearchUri = `${linkUri}${award.name}${objectQuery}&${categoryFacet}=`;
         chart.update();
 
         // Redraw the updated legend
@@ -492,11 +484,11 @@ CategoryChart.propTypes = {
     linkUri: PropTypes.string.isRequired, // Element of matrix URI to select
     categoryFacet: PropTypes.string.isRequired, // Add to linkUri to link to matrix facet item
     ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
-    selectedOrganisms: PropTypes.array,
+    objectQuery: PropTypes.string,
 };
 
 CategoryChart.defaultProps = {
-    selectedOrganisms: [],
+    objectQuery: '',
 };
 
 CategoryChart.contextTypes = {
@@ -846,7 +838,7 @@ class ControlsChart extends React.Component {
     }
 
     updateChart(chart, facetData) {
-        const { award } = this.props;
+        const { award, objectQuery } = this.props;
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
         const labels = [];
@@ -858,13 +850,12 @@ class ControlsChart extends React.Component {
         });
 
         const colors = labels.map((label, i) => statusColorList[i % statusColorList.length]);
-        const ExperimentQuery = generateQuery(this.props.selectedOrganisms, 'replicates.library.biosample.donor.organism.scientific_name=');
 
         // Update chart data and redraw with the new data
         chart.data.datasets[0].data = values;
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
-        chart.options.onClick.baseSearchUri = `/report/?type=Experiments&target.investigated_as=control&award.name=${award.name}&${ExperimentQuery}&status=`;
+        chart.options.onClick.baseSearchUri = `/matrix/?type=Experiment&target.investigated_as=control&award.name=${award.name}&${objectQuery}&status=`;
         chart.update();
 
         // Redraw the updated legend
@@ -922,12 +913,12 @@ ControlsChart.propTypes = {
     statuses: PropTypes.array, // Array of status facet data
     linkUri: PropTypes.string.isRequired, // URI to use for matrix links
     ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
-    selectedOrganisms: PropTypes.array,
+    objectQuery: PropTypes.string,
 };
 
 ControlsChart.defaultProps = {
     statuses: [],
-    selectedOrganisms: [],
+    objectQuery: '',
 };
 
 ControlsChart.contextTypes = {
@@ -961,7 +952,7 @@ class StatusExperimentChart extends React.Component {
     }
 
     updateChart(chart) {
-        const { experiments, unreplicated, isogenic, anisogenic } = this.props;
+        const { experiments, unreplicated, isogenic, anisogenic, linkUri, award, objectQuery } = this.props;
         const data = StatusData(experiments, unreplicated, isogenic, anisogenic); // Array of datasets and labels
         const statusLabel = data[1];
         const unreplicatedDataset = data[2];
@@ -971,6 +962,7 @@ class StatusExperimentChart extends React.Component {
         chart.data.datasets[1].data = isogenicDataset;
         chart.data.datasets[2].data = anisogenicDataset;
         chart.data.labels = statusLabel;
+        chart.options.onClick.baseSearchUri = `${linkUri}${award.name}${objectQuery}`;
         chart.update();
 
         document.getElementById(`${statusChartId}-${this.props.ident}-legend`).innerHTML = chart.generateLegend();
@@ -1029,6 +1021,7 @@ StatusExperimentChart.propTypes = {
     unreplicated: PropTypes.object,
     anisogenic: PropTypes.object,
     isogenic: PropTypes.object,
+    objectQuery: PropTypes.string,
 };
 
 StatusExperimentChart.defaultProps = {
@@ -1036,6 +1029,7 @@ StatusExperimentChart.defaultProps = {
     unreplicated: {},
     anisogenic: {},
     isogenic: {},
+    objectQuery: '',
 };
 
 StatusExperimentChart.contextTypes = {
@@ -1071,7 +1065,7 @@ class StatusChart extends React.Component {
     }
 
     updateChart(chart, facetData) {
-        const { award } = this.props;
+        const { award, linkUri, objectQuery } = this.props;
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
         const labels = [];
@@ -1083,15 +1077,11 @@ class StatusChart extends React.Component {
         });
 
         const colors = labels.map((label, i) => statusColorList[i % statusColorList.length]);
-        const AnnotationQuery = generateQuery(this.props.selectedOrganisms, 'organism.scientific_name=');
-
         // Update chart data and redraw with the new data
         chart.data.datasets[0].data = values;
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
-        if (chart.chart.canvas.id === 'status-chart-annotations-chart') {
-            chart.options.onClick.baseSearchUri = `/matrix/?type=Annotation&award.name=${award.name}&${AnnotationQuery}&status=`;
-        }
+        chart.options.onClick.baseSearchUri = `${linkUri}${award.name}${objectQuery}&status=`;
         chart.update();
 
         // Redraw the updated legend
@@ -1149,12 +1139,12 @@ StatusChart.propTypes = {
     statuses: PropTypes.array, // Array of status facet data
     linkUri: PropTypes.string.isRequired, // URI to use for matrix links
     ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
-    selectedOrganisms: PropTypes.array,
+    objectQuery: PropTypes.string,
 };
 
 StatusChart.defaultProps = {
     statuses: [],
-    selectedOrganisms: [],
+    objectQuery: '',
 };
 
 StatusChart.contextTypes = {
@@ -1338,7 +1328,7 @@ const ChartRenderer = (props) => {
                                     labs={experimentsConfig.labs}
                                     linkUri={experimentsConfig.linkUri}
                                     ident={experimentsConfig.ident}
-                                    selectedOrganisms={updatedGenusArray}
+                                    objectQuery={ExperimentQuery}
                                 />
                                 <CategoryChart
                                     award={award}
@@ -1348,6 +1338,7 @@ const ChartRenderer = (props) => {
                                     categoryFacet={experimentsConfig.categoryFacet}
                                     ident={experimentsConfig.ident}
                                     selectedOrganisms={updatedGenusArray}
+                                    objectQuery={ExperimentQuery}
                                 />
                                 <StatusExperimentChart
                                     award={award}
@@ -1359,6 +1350,7 @@ const ChartRenderer = (props) => {
                                     isogenic={isogenic}
                                     anisogenic={anisogenic}
                                     selectedOrganisms={updatedGenusArray}
+                                    objectQuery={ExperimentQuery}
                                 />
                             </div>
                         </div>
@@ -1379,6 +1371,7 @@ const ChartRenderer = (props) => {
                                     linkUri={annotationsConfig.linkUri}
                                     ident={annotationsConfig.ident}
                                     selectedOrganisms={selectedOrganisms}
+                                    objectQuery={AnnotationQuery}
                                 />
                                 <CategoryChart
                                     award={award}
@@ -1388,6 +1381,7 @@ const ChartRenderer = (props) => {
                                     title={annotationsConfig.title}
                                     ident={annotationsConfig.ident}
                                     selectedOrganisms={selectedOrganisms}
+                                    objectQuery={AnnotationQuery}
                                 />
                                 <StatusChart
                                     award={award}
@@ -1395,6 +1389,7 @@ const ChartRenderer = (props) => {
                                     linkUri={annotationsConfig.linkUri}
                                     ident={annotationsConfig.ident}
                                     selectedOrganisms={selectedOrganisms}
+                                    objectQuery={AnnotationQuery}
                                 />
                             </div>
                         </div>
@@ -1428,7 +1423,7 @@ const ChartRenderer = (props) => {
                                 statuses={controlsConfig.statuses || []}
                                 linkUri={controlsConfig.linkUri}
                                 ident={controlsConfig.ident}
-                                selectedOrganisms={selectedOrganisms}
+                                objectQuery={ExperimentQuery}
                             />
                         </div>
                     :
