@@ -1238,9 +1238,7 @@ def audit(context, request):
     x_grouping = matrix['x']['group_by']
     y_groupings = audit_list_field
     no_audits_groupings = ['no.audit.error', 'no.audit.not_compliant', 'no.audit.warning']
-    #y_groupings.append("no.error")
-    #y_groupings.append("no.not_compliant")
-    #y_groupings.append("no.warning")
+
     x_agg = {
         "terms": {
             "field": 'embedded.' + x_grouping + '.raw',
@@ -1344,6 +1342,20 @@ def audit(context, request):
             'terms': {'field': 'audit.INTERNAL_ACTION.category', 'size': 0
                     }
             }
+        aggs['no.audit.error']['aggs']['no.audit.not_compliant']['aggs']['no.audit.warning']['aggs']['no.audit.internal_action'] = {
+                            "missing": {
+                                "field": "audit.INTERNAL_ACTION.category"
+                            },
+                            "aggs": {
+                                "assay_title": {
+                                    "terms": {
+                                        "field": "embedded.assay_title.raw",
+                                        "size": 0
+                                    }
+                                }
+                            }
+                        }
+        no_audits_groupings.append("no.audit.internal_action")
     aggs['x'] = x_agg
     query['aggs']['matrix'] = {
         "filter": {
@@ -1393,13 +1405,7 @@ def audit(context, request):
                         matrix['max_cell_doc_count'] = doc_count
                     if 'key' in assay:
                         counts[assay['key']] = doc_count
-                    """
-                    else:
-                        for col in assay:
-                            assay_index = 0
-                            counts[bucket[assay_index]['key']] = doc_count
-                            assay_index += 1
-                    """
+
                 summary = []
                 for xbucket in x_buckets:
                     summary.append(counts.get(xbucket['key'], 0))
@@ -1451,6 +1457,8 @@ def audit(context, request):
     aggregations['matrix']['no.audit.error']['key'] = 'no red audits'
     aggregations['matrix']['no.audit.not_compliant']['key'] = 'no red or orange audits'
     aggregations['matrix']['no.audit.warning']['key'] = 'no red or orange or yellow audits'
+    if "no.audit.internal_action" in no_audits_groupings:
+        aggregations['matrix']['no.audit.internal_action']['key'] = "no audits"
     aggregations['matrix']['no_audits'] = {}
     aggregations['matrix']['no_audits']['buckets'] = []
 
@@ -1491,9 +1499,11 @@ def audit(context, request):
     """
 
     # Replaces 'no.audits' in aggregations['matrix'] with the correctly formatted 'no.audits' data
-    aggregations['matrix'].pop('no.audit.error')
-    aggregations['matrix'].pop('no.audit.not_compliant')
-    aggregations['matrix'].pop('no.audit.warning')
+    for audit in no_audits_groupings:
+        aggregations['matrix'].pop(audit)
+    #aggregations['matrix'].pop('no.audit.error')
+    #aggregations['matrix'].pop('no.audit.not_compliant')
+    #aggregations['matrix'].pop('no.audit.warning')
 
     # aggregations['matrix'].pop("no.audits", None)
     # Formats all audit categories into readable/usable format for auditmatrix.js

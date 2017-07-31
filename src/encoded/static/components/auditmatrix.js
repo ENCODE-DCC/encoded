@@ -161,7 +161,7 @@ class AuditMatrix extends React.Component {
             var yGroups = matrix.y[primaryYGrouping].buckets;
             const orderKey = ['audit.ERROR.category', 'audit.NOT_COMPLIANT.category', 'audit.WARNING.category', 'no_audits', 'audit.INTERNAL_ACTION.category'];
             const titleKey = ['Error', 'Not Compliant', 'Warning', 'No audits', 'Internal Action'];
-            const noAuditKey = ['no red or orange or yellow audits', 'no red or orange audits' , 'no red audits'];
+            const noAuditKey = ['no red or orange or yellow audits', 'no red or orange audits' , 'no red audits', 'no audits'];
             var orderIndex = 0;
             var rowIndex = 0;
             var tempYGroups = [];
@@ -212,7 +212,7 @@ class AuditMatrix extends React.Component {
             };
 
             // Make an array of colors corresponding to the ordering of biosample_type
-            const biosampleTypeColors = ["#cc0700", "#ff8000", "#e0e000", "#009802", "#009802", "#009802", "#a0a0a0"];
+            const biosampleTypeColors = ["#cc0700", "#ff8000", "#e0e000", "#009802", "#a0a0a0"];
 
             return (
                 <div>
@@ -324,6 +324,9 @@ class AuditMatrix extends React.Component {
                                                     }
                                                     if(yb.key === "no red or orange or yellow audits"){
                                                         var href = `${searchBase}&audit.ERROR.category!=*&audit.NOT_COMPLIANT.category!=*&audit.WARNING.category!=*`;
+                                                    }
+                                                    if(yb.key === "no audits"){
+                                                        var href = `${searchBase}&audit.ERROR.category!=*&audit.NOT_COMPLIANT.category!=*&audit.WARNING.category!=*&audit.INTERNAL_ACTION.category!=*`;
                                                     }
                                                     return (
                                                         <tr key={yb.key}>
