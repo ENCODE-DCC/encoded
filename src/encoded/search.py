@@ -991,7 +991,7 @@ def matrix(context, request):
                     },
                     "aggs": x_agg,
                 }
-        aggs = x_agg
+        aggs = {x_groupings[0]: x_agg}
         x_grouping = x_groupings
     else:
         # Assay matrix requested. Get parameters of the assay search from the group_by string.
@@ -1028,8 +1028,8 @@ def matrix(context, request):
     }
 
     # Execute the query
-    print('{}'.format(query))
     es_results = es.search(body=query, index=es_index, search_type='count')
+    print('{}'.format(es_results))
 
     # Format matrix for results
     aggregations = es_results['aggregations']
@@ -1062,8 +1062,8 @@ def matrix(context, request):
         # Loop by recursion through grouping_fields until we get the terminal grouping field. So
         # get the initial grouping field in the list and save the rest for the recursive call.
         group_by = grouping_fields[0]
-        grouping_fields = grouping_fields[1:]
-        if not grouping_fields:
+        grouping_fields_remaining = grouping_fields[1:]
+        if not grouping_fields_remaining:
             # We have recursed through to the last grouping_field in the array given in the top-
             # level summarize_buckets call. Now we can get down to actually converting the search
             # result data. First loop through each element in the term's 'buckets' which contain
@@ -1097,9 +1097,9 @@ def matrix(context, request):
             # above if statement. Loop through the buckets in the current level of grouping_field
             # to convert the data within.
             for bucket in outer_bucket[group_by]['buckets']:
-                summarize_buckets(matrix, x_buckets, bucket, grouping_fields)
+                summarize_buckets(matrix, x_buckets, bucket, grouping_fields_remaining)
 
-    groupings = y_groupings + [x_grouping]
+    groupings = y_groupings + x_grouping if target_mode else [x_grouping]
     summarize_buckets(
         result['matrix'],
         aggregations['matrix']['x']['buckets'],
