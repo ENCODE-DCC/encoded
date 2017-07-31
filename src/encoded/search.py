@@ -1029,7 +1029,6 @@ def matrix(context, request):
 
     # Execute the query
     es_results = es.search(body=query, index=es_index, search_type='count')
-    print('{}'.format(es_results))
 
     # Format matrix for results
     aggregations = es_results['aggregations']
@@ -1099,7 +1098,7 @@ def matrix(context, request):
             for bucket in outer_bucket[group_by]['buckets']:
                 summarize_buckets(matrix, x_buckets, bucket, grouping_fields_remaining)
 
-    groupings = y_groupings + x_grouping if target_mode else [x_grouping]
+    groupings = y_groupings + (x_grouping if target_mode else [x_grouping])
     summarize_buckets(
         result['matrix'],
         aggregations['matrix']['x']['buckets'],
