@@ -296,7 +296,10 @@ class AuditMatrix extends React.Component {
                                                 parsed.query[group.key] = searchTerm;
                                                 parsed.query['y.limit'] = null;
                                                 delete parsed.search; // this makes format compose the search string out of the query object
-                                                const groupHref = url.format(parsed);
+                                                var groupHref = url.format(parsed);
+                                                if(group.key === "no_audits"){
+                                                    groupHref = "?type=Experiment&status=released&audit.ERROR.category!=*&audit.NOT_COMPLIANT.category!=*&audit.WARNING.category!=*&audit.INTERNAL_ACTION.category!=*&y.limit=";
+                                                }
                                                 // The next 2 lines make the category title text
                                                 // color white or black based on the background
                                                 // color.
