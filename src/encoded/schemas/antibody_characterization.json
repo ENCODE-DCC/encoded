@@ -287,6 +287,7 @@
                 "knockdown or knockout",
                 "immunoprecipitation followed by mass spectrometry",
                 "ChIP-seq comparison",
+                "ChIP-string comparison",
                 "motif enrichment",
                 "dot blot assay",
                 "peptide array assay",
