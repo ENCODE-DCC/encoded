@@ -1212,31 +1212,27 @@ def audit(context, request):
             facets.append(audit_facet)
 
     # To get list of audit categories from facets
-    audit_list_label = []
+    audit_list_field_copy = []
     audit_list_field = []
     for item in facets:
         if item[0].rfind('audit.') > -1:
             audit_list_field.append(item)
 
-    audit_list_label = audit_list_field.copy()
+    audit_list_field_copy = audit_list_field.copy()
 
-    # Gets just the labels from the tuples and converts it into format usable by summarize buckets
-    for item in audit_list_label: # for each audit label
-        temp = item[0] # copy string to modify
-        audit_list_field[audit_list_field.index(item)] = temp
-        index = temp.find('.') # find first index of .
-        while index > 0: # if index exists
-            temp = temp[:index] + '-' + temp[(index+1):] # replace . with -
-            index = temp.find('.') # find repeat index of .
-        audit_index = audit_list_label.index(item)
-        audit_list_label[audit_index] = temp
+    # Gets just the fields from the tuples from facet data
+    for item in audit_list_field_copy: # for each audit label
+        temp = item[0]
+        audit_list_field[audit_list_field.index(item)] = temp #replaces list with just audit field
+
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Group results in 2 dimensions
-    # Don't use these groupings for audit matrix
     x_grouping = matrix['x']['group_by']
     y_groupings = audit_list_field
+
+    # Creates a list of fields used in no audit row
     no_audits_groupings = ['no.audit.error', 'no.audit.not_compliant', 'no.audit.warning']
 
     x_agg = {
@@ -1246,27 +1242,8 @@ def audit(context, request):
         },
     }
     aggs = {x_grouping: x_agg}
-    """
-    for field in y_groupings:
-        aggs = {
-            "missing" + field: {
-                "missing": {
-                    "field": field,
-                    "size": 0,  # no limit
-                },
-                "aggs": aggs,
-            },
-        }
-    """
-    """
-    for field in (y_groupings):
-        aggs[field] = {
-            "terms": {
-                "field": audit_list_field[y_groupings.index(field)],
-                "size": 0,  # no limit
-            },
-        }
-    """
+
+    # aggs query for audit category rows
     aggs = {'audit.ERROR.category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
                         }
                     }
@@ -1289,7 +1266,9 @@ def audit(context, request):
     
 } 
 
-    
+    # Aggs query gets updated with no audit row.
+    # This is a nested query with error as top most level and warning action as innermost level.
+    # It allows for there to be multiple missing fields in the query.
     aggs.update({
         "no.audit.error": {
             "missing": {
@@ -1333,7 +1312,9 @@ def audit(context, request):
     })
     
 
-    # if internal action data is able to be seen in facets then add it to aggs
+    # If internal action data is able to be seen in facets then add it to aggs for both
+    # a normal audit category row and to the no audits row as innermost level of nested query.
+    # Additionally, add it to the no_audits_groupings list to be used in summarize_no_audits later.
     if "audit.INTERNAL_ACTION.category" in facets[len(facets)-1]:
         aggs['audit.INTERNAL_ACTION.category'] = {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
                         }
@@ -1356,6 +1337,7 @@ def audit(context, request):
                             }
                         }
         no_audits_groupings.append("no.audit.internal_action")
+
     aggs['x'] = x_agg
     query['aggs']['matrix'] = {
         "filter": {
@@ -1374,13 +1356,6 @@ def audit(context, request):
     result['matrix']['doc_count'] = total = aggregations['matrix']['doc_count']
     result['matrix']['max_cell_doc_count'] = 0
 
-    # Create new dictionary that contains all the audit keys from aggregations and use that as 
-    # y_bucket below
-    temp_dict = {}
-    for item in aggregations.items():
-        if item[0].rfind('audit') > -1:
-            temp_dict.update(item[1])
-    
     # Format facets for results
     result['facets'] = format_facets(
         es_results, facets, used_filters, (schema,), total, principals)
@@ -1498,7 +1473,8 @@ def audit(context, request):
     no_audits_warning_dict['buckets'] = no_audits_warning_list
     """
 
-    # Replaces 'no.audits' in aggregations['matrix'] with the correctly formatted 'no.audits' data
+    # Replaces all audit categories in aggregations['matrix'] with the correctly formatted data
+    # for that specific audit category
     for audit in no_audits_groupings:
         aggregations['matrix'].pop(audit)
     #aggregations['matrix'].pop('no.audit.error')
