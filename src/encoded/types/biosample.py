@@ -265,13 +265,13 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             return request.embed(donor, '@@object').get('synchronization')
 
     @calculated_property(schema={
-        "title": "DNA constructs",
+        "title": "Model organism donor constructs",
         "description":
             "Expression or targeting vectors stably or transiently transfected "
             "(not RNAi) into a donor organism.",
         "type": "array",
         "items": {
-            "title": "DNA Constructs",
+            "title": "Model organism donor construct",
             "description": "An expression or targeting vector stably or transiently transfected "
             "(not RNAi) into a donor organism.",
             "comment": "See contstruct.json for available identifiers.",
@@ -282,6 +282,23 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
     def model_organism_donor_constructs(self, request, donor=None):
         if donor is not None:
             return request.embed(donor, '@@object').get('constructs')
+
+    @calculated_property(schema={
+        "title": "Model organism genetic modifications",
+        "description":
+            "Genetic modifications made in the donor organism of the biosample.",
+        "type": "array",
+        "items": {
+            "title": "Model organism genetic modification",
+            "description": "Genetic modification made in the donor organism of the biosample.",
+            "comment": "See genetic_modification.json for available identifiers.",
+            "type": "string",
+            "linkTo": "GeneticModification",
+        },
+    }, define=True)
+    def model_organism_donor_modifications(self, request, donor=None):
+        if donor is not None:
+            return request.embed(donor, '@@object').get('genetic_modifications')
 
     @calculated_property(schema={
         "title": "Characterizations",
