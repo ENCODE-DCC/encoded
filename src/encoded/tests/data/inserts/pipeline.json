@@ -2,7 +2,7 @@
 [
      {
         "accession": "ENCPL001MQC",
-        "assay_term_name": "whole-genome shotgun bisulfite sequencing",
+        "assay_term_names": ["whole-genome shotgun bisulfite sequencing"],
         "uuid": "9e3f23ae-716a-4fe0-a238-b9bbd98508d5",
         "title": "WGBS Methlyation Pipeline - QC",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
@@ -15,7 +15,8 @@
     },
     {
         "accession": "ENCPL000MEG",
-        "assay_term_name": "whole-genome shotgun bisulfite sequencing",
+        "pipeline_version": 1,
+        "assay_term_names": ["whole-genome shotgun bisulfite sequencing"],
         "uuid": "23b2f12c-8a55-4860-b013-423b5de9de0d",
         "title": "WGBS Methlyation Pipeline - Genome Conversion",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
@@ -32,7 +33,7 @@
     },
     {
         "accession": "ENCPL002BIS",
-        "assay_term_name": "whole-genome shotgun bisulfite sequencing",
+        "assay_term_names": ["whole-genome shotgun bisulfite sequencing"],
         "uuid": "b0636cbe-e2f4-4606-b68b-faf6bbda5959",
         "title": "WGBS Methlyation Pipeline",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
@@ -46,7 +47,7 @@
     },
     {
         "accession": "ENCPL003RNA",
-        "assay_term_name": "RNA-seq",
+        "assay_term_names": ["RNA-seq"],
         "uuid": "007ba3be-87cd-418c-8eb0-2ba2bf3e57a9",
         "title": "long-rna-seq-pipeline-pe",
         "award": "U54HG007004",
@@ -66,7 +67,7 @@
     },
     {
         "accession": "ENCPL001GRV",
-        "assay_term_name": "RNA-seq",
+        "assay_term_names": ["RNA-seq"],
         "analysis_steps": [
             "alignment-test-step-v-1",
             "signal-test-step-v-1"
@@ -82,7 +83,7 @@
     },
     {
         "accession": "ENCPL001CRG",
-        "assay_term_name": "RNA-seq",
+        "assay_term_names": ["RNA-seq"],
         "analysis_steps": [
             "alignment-test-step-v-2",
             "quantification-test-step-v-1",
@@ -99,7 +100,7 @@
     },
     {
         "accession": "ENCPL001ENC",
-        "assay_term_name": "ChIP-seq",
+        "assay_term_names": ["ChIP-seq"],
         "analysis_steps": [
             "encode-2-step-v-1",
             "idr-test-step-v-2"
@@ -116,7 +117,7 @@
     },
     {
         "accession": "ENCPL001CLP",
-        "assay_term_name": "eCLIP",
+        "assay_term_names": ["eCLIP"],
         "analysis_steps": [
             "alignment-test-step-v-3",
             "peak-calling-test-step-v-1"
@@ -132,7 +133,7 @@
     },
     {
         "accession": "ENCPL001FVD",
-        "assay_term_name": "RNA-seq",
+        "assay_term_names": ["RNA-seq", "eCLIP"],
         "analysis_steps": [
             "fastqc-step-v-1"
         ],
