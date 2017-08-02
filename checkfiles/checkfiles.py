@@ -896,7 +896,7 @@ def fetch_files(session, url, search_query, out, include_unexpired_upload=False,
 def patch_file(session, url, job):
     result = job['result']
     errors = job['errors']
-    data = None
+    data = {}
 
     if not errors:
         data = {
