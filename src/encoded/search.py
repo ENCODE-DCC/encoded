@@ -12,6 +12,7 @@ from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
 from .visualization import vis_format_external_url
+import copy
 
 
 
@@ -1156,7 +1157,11 @@ def audit(context, request):
     else:
         result['title'] = type_info.name + ' Matrix'
 
-    matrix = result['matrix'] = type_info.factory.matrix.copy()
+    # Because the formatting of the query edits the sub-objects of the matrix, we need to 
+    # deepcopy the matrix so the original type_info.factory.matrix is not modified, allowing
+    # /matrix to get the correct data.
+    temp_matrix = copy.deepcopy(type_info.factory.matrix)
+    matrix = result['matrix'] = temp_matrix
     matrix['x']['limit'] = request.params.get('x.limit', 20)
     matrix['y']['limit'] = request.params.get('y.limit', 5)
     matrix['search_base'] = request.route_path('search', slash='/') + search_base
