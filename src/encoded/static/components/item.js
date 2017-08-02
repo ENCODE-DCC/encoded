@@ -1,81 +1,88 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
+import _ from 'underscore';
 import Table from './collection';
 import { FetchedData, Param } from './fetched';
 import { JSONSchemaForm } from './form';
 import * as globals from './globals';
 import { AlternateAccession } from './objectutils';
 
+
 class DisplayText extends React.Component {
     render() {
         const { dataObject } = this.props;
-        const mixinArray = [];
-        const idvalues = [];
-        const titles = [];
-        const typevalues = [];
+        // const mixinArray = [];
+        // const typevalues = [];
+        // const categoryTitles = [];
         const dataArray = Object.keys(dataObject).map((term) => {
             const labels = term;
             return labels;
         });
-        // const title = date.map((term) => {
-        //     const values = term.title;
-        //     return values;
-        // });
-        for (let i = 0; i < dataArray.length; i += 1) {
-            const key = dataArray[i];
+        const titles = [];
+        const idvalues = [];
+
+
+            // if (dataObject[key].type) {
+            //     typevalues.push(dataObject[key].type);
+            // } else {
+            //     typevalues.push('N/A');
+            // }
+            // if (dataObject[key].mixinProperties && dataObject[key].mixinProperties.length) {
+            //     mixinArray.push(dataObject[key].mixinProperties);
+            // } else {
+            //     mixinArray.push('N/A');
+            // }
+
+        const dataRenderObject = dataArray.map((item, index) => {
+            // const arrayObject = mixinArray[index];
+            // for (let i = 0; i < dataArray.length; i += 1) {
+            const key = dataArray[index];
+            const singleObject = dataObject[key];
+            // console.log(_.size(singleObject));
+            const objectKeys = Object.keys(singleObject);
+            // const objectValues = Object.values(singleObject); // Only available in ES2017
+            const objectValues = Object.keys(singleObject).map(stuff =>
+                singleObject[stuff]
+            );
+            console.log(objectValues);
 
             if (dataObject[key].title && dataObject[key].title.length > 0) {
                 titles.push(dataObject[key].title);
             } else {
-                titles.push(dataArray[i]);
+                titles.push(dataArray[index]);
             }
-            if (dataObject[key].id) {
+            if (dataObject[key].id && dataObject[key].id.length > 0) {
                 const str = dataObject[key].id;
                 const extract = str.match(/profiles\/(.*)\.json/);
                 idvalues.push(extract[1]);
             } else {
                 idvalues.push('N/A');
             }
-            if (dataObject[key].type) {
-                typevalues.push(dataObject[key].type);
-            } else {
-                typevalues.push('N/A');
-            }
-            if (dataObject[key].mixinProperties && dataObject[key].mixinProperties.length) {
-                mixinArray.push(dataObject[key].mixinProperties);
-            } else {
-                mixinArray.push('N/A');
-            }
-        }
-
-        const dataRenderObject = dataArray.map((item, index) => {
-            const objectmixin = mixinArray[index];
-
             return (
-            // dataArray.forEach(term =>
-                <div key={index}>
-                    <h4>{titles[index]}</h4>
-                    <dl className="key-value">
-                        <div data-test="id">
-                            <dt>ID</dt>
-                            <dd>{idvalues[index]}</dd>
+                <div key={index} className="panel panel-default">
+                    <div className="file-gallery-graph-header collapsing-title"><button className="collapsing-title-trigger pull-left" data-trigger="true"><svg className="collapsing-title-control collapsing-title-icon" data-name="Collapse Icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><g><title>Panel open</title><circle className="bg" cx="256" cy="256" r="240" /><line className="content-line" x1="151.87" y1="256" x2="360.13" y2="256" /></g></svg></button><h4>{titles[index]}</h4></div>
+                    {objectKeys.map((term, id) =>
+                        <div key={id}>
+                            <div className="container" data-role="collapsible">
+                                <dl className="key-value">
+                                    <div data-test="id">
+                                        <dt>{term}</dt>
+                                        <dd>
+                                            {objectKeys[id] === 'id' ?
+                                                <div>{idvalues[index]}</div>
+                                            :
+                                                Array.isArray(objectValues[id]) !== true && typeof objectValues[id] !== 'object' && objectValues[id] !== false ?
+                                                <div>{objectValues[id]}</div>
+                                            :
+                                            null
+                                            }
+                                        </dd>
+                                    </div>
+                                </dl>
+                            </div>
                         </div>
-                        <div data-test="type">
-                            <dt>Type</dt>
-                            <dd>{typevalues[index]}</dd>
-                        </div>
-                        <div data-test="mixin">
-                            <dt>Mixin Properties</dt>
-                            <dd>
-                                {Array.isArray(objectmixin) ?
-                                    objectmixin.map((term, i) => <div key={i}>{term.$ref}</div>)
-                                :
-                                <div>{objectmixin}</div>
-                                }
-                            </dd>
-                        </div>
-                    </dl>
+                    )};
                 </div>
             );
         });
@@ -106,12 +113,12 @@ const Fallback = (props, reactContext) => {
                 </div>
             </header>
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
-            <section className="view-detail panel">
-                <div className="container">
+            {/* <section className="view-detail panel"> */}
+                {/* <div className="container"> */}
                     <DisplayText dataObject={context} />
                     <pre>{JSON.stringify(context, null, 4)}</pre>
-                </div>
-            </section>
+                {/* </div> */}
+            {/* </section> */}
         </div>
     );
 };
