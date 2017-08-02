@@ -1890,7 +1890,7 @@ AwardCharts.defaultProps = {
     updatedGenusArray: [],
 };
 
-class FetchGraphData extends React.Component {
+class LineChart extends React.Component {
     render() {
         const { award } = this.props;
         return (
@@ -1904,7 +1904,7 @@ class FetchGraphData extends React.Component {
     }
 }
 
-FetchGraphData.propTypes = {
+LineChart.propTypes = {
     award: PropTypes.object.isRequired, // Award represented by this chart
 };
 
@@ -2101,7 +2101,7 @@ class Award extends React.Component {
                 :
                 null
                 }
-                <FetchGraphData award={context} />
+                <LineChart award={context} />
             </div>
         );
     }
