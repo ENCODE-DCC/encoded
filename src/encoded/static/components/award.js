@@ -45,6 +45,7 @@ function drawDonutCenter(chart) {
     const width = chart.chart.width;
     const height = chart.chart.height;
     const ctx = chart.chart.ctx;
+    // Undraws donut centers for Cumulative Line Chart and Status Stacked Bar Chart.
     if (canvasId === 'myGraph' || canvasId === 'status-chart-experiments-chart') {
         ctx.clearRect(0, 0, width, height);
     } else {
@@ -1020,24 +1021,6 @@ class StatusExperimentChart extends React.Component {
             chart.data.datasets[1] = {};
             chart.data.datasets[2] = {};
         }
-        // if (unreplicatedDataset.some(x => x > 0)) {
-        //     chart.data.datasets[0].data = unreplicatedDataset;
-        //     if (isogenicDataset.some(x => x > 0)) {
-        //         chart.data.datasets[1].data = isogenicDataset;
-        //         if (anisogenicDataset.some(x => x > 0)) {
-        //             chart.data.datasets[2].data = anisogenicDataset;
-        //         }
-        //     } else if (isogenicDataset.every(x => x === 0) && anisogenicDataset.some(x => x > 0)) {
-        //         chart.data.datasets[1].data = anisogenicDataset;
-        //     }
-        // } else if (unreplicatedDataset.every(x => x === 0) && isogenicDataset.some(x => x >0)) {
-        //     chart.data.datasets[0].data = isogenicDataset;
-        //     if (anisogenicDataset.some(x => x > 0)) {
-        //         chart.data.datasets[1].data = anisogenicDataset;
-        //     }
-        // } else if (unreplicatedDataset.every(x => x === 0) && isogenicDataset.every(x => x === 0) && anisogenicDataset.some(x => x > 0)) {
-        //     chart.data.datasets[0].data = anisogenicDataset;
-        // }
         chart.options.onClick.baseSearchUri = `${linkUri}${award.name}${objectQuery}`;
         chart.update();
 
@@ -2109,11 +2092,6 @@ class Award extends React.Component {
                                         <dd>{context.rfa}</dd>
                                     </div>
                                 </dl>
-                                {/* <dl className="key-value">
-                                    <div data-test="milestone">
-                                        <dt>Milestones</dt>
-                                    </div>
-                                </dl>*/}
                             </div>
                         </div>
                     </PanelBody>
