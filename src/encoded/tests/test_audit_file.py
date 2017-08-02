@@ -319,23 +319,20 @@ def test_audit_file_replicate_match(testapp, file1, file_rep2):
 
 
 def test_audit_file_insufficient_control_read_depth_chip_seq_paired_end(
-    testapp,
-    file_exp,
-    file_exp2,
-    file6,
-    file2,
-    file7,
-    file4,
-    chipseq_bam_quality_metric,
-    chipseq_bam_quality_metric_2,
-    analysis_step_run_bam,
-    analysis_step_version_bam,
-    analysis_step_bam,
-    target_H3K27ac,
-    target_control,
+        testapp, file_exp,
+        file_exp2, file6, file2, file7, file4,
+        chipseq_bam_quality_metric,
+        chipseq_bam_quality_metric_2,
+        analysis_step_run_bam,
+        analysis_step_version_bam,
+        analysis_step_bam,
+        target_H3K27ac,
+        target_control,
         pipeline_bam):
-    testapp.patch_json(file_exp['@id'], {'target': target_H3K27ac['@id']})
-    testapp.patch_json(file_exp2['@id'], {'target': target_control['@id']})
+    testapp.patch_json(file_exp['@id'], {'target': target_H3K27ac['@id'],
+                                         'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file_exp2['@id'], {'target': target_control['@id'],
+                                          'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(chipseq_bam_quality_metric['@id'], {'total': 1000})
     testapp.patch_json(chipseq_bam_quality_metric_2['@id'], {'total': 1000})
     testapp.patch_json(file2['@id'], {'dataset': file_exp2['@id']})
