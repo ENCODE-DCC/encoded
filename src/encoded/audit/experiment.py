@@ -3,22 +3,8 @@ from snovault import (
     audit_checker,
 )
 from .conditions import rfa
-from .ontology_data import (biosampleType_ontologyPrefix, NTR_assay_lookup)
 from .gtex_data import gtexDonorsList
 from .standards_data import pipelines_with_read_depth
-
-from .pipeline_structures import (
-    modERN_TF_control,
-    modERN_TF_replicate,
-    modERN_TF_pooled,
-    encode_chip_control,
-    encode_chip_histone_experiment_pooled,
-    encode_chip_tf_experiment_pooled,
-    encode_chip_experiment_replicate,
-    encode_rampage_experiment_replicate,
-    encode_rampage_experiment_pooled
-    )
-
 
 targetBasedAssayList = [
     'ChIP-seq',
@@ -104,7 +90,6 @@ def audit_experiment_mixed_libraries(value, system):
 
 
 @audit_checker('Experiment', frame=['original_files',
-                                    'original_files.replicate',
                                     'original_files.derived_from',
                                     'original_files.analysis_step_version',
                                     'original_files.analysis_step_version.analysis_step',
@@ -112,25 +97,19 @@ def audit_experiment_mixed_libraries(value, system):
 def audit_experiment_pipeline_assay_details(value, system):
     if 'original_files' not in value or len(value['original_files']) == 0:
         return
-    if 'assay_term_id' not in value:
-        return
     files_to_check = []
     for f in value['original_files']:
         if f['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
             files_to_check.append(f)
     pipelines = get_pipeline_objects(files_to_check)
-    reported_pipelines = []
+
     for p in pipelines:
-        if 'assay_term_id' not in p:
-            continue
-        if p['assay_term_id'] != value['assay_term_id'] and \
-           p['assay_term_id'] not in reported_pipelines:
-                reported_pipelines.append(p['assay_term_id'])
-                detail = 'This experiment ' + \
-                         'contains file(s) associated with ' + \
-                         'pipeline {} '.format(p['@id']) + \
-                         'which assay_term_id does not match experiments\'s asssay_term_id.'
-                yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
+        if value.get('assay_term_name') not in p['assay_term_names']:
+            detail = 'This experiment ' + \
+                        'contains file(s) associated with ' + \
+                        'pipeline {} '.format(p['@id']) + \
+                        'which assay_term_names list does not include experiments\'s asssay_term_name.'
+            yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
 
 
 # def audit_experiment_missing_processed_files(value, system): removed from v54
@@ -338,48 +317,11 @@ def get_assemblies(list_of_files):
                 assemblies.add(f['assembly'])
     return assemblies
 
+#  def audit_experiment_control_out_of_date_analysis(value, system):
+#  removed due to https://encodedcc.atlassian.net/browse/ENCD-3460
 
-@audit_checker('Experiment', frame=[
-    'target',
-    'original_files',
-    'original_files.derived_from',
-    'original_files.derived_from.derived_from',
-    'original_files.derived_from.dataset',
-    'original_files.derived_from.dataset.original_files'])
-def audit_experiment_control_out_of_date_analysis(value, system):
-    if value['assay_term_name'] not in ['ChIP-seq']:
-        return
-    if 'target' in value and 'investigated_as' in value['target'] and \
-       'control' in value['target']['investigated_as']:
-        return
-    all_signal_files = scan_files_for_file_format_output_type(value['original_files'],
-                                                              'bigWig', 'signal p-value')
-    signal_files = []
-    for signal_file in all_signal_files:
-        if 'lab' in signal_file and signal_file['lab'] == '/labs/encode-processing-pipeline/':
-            signal_files.append(signal_file)
-
-    if len(signal_files) == 0:
-        return
-
-    derived_from_bams = get_derived_from_files_set(signal_files, 'bam', True)
-    for bam_file in derived_from_bams:
-        if bam_file['dataset']['accession'] != value['accession'] and \
-           is_outdated_bams_replicate(bam_file):
-            assembly_detail = ''
-            if bam_file.get('assembly'):
-                assembly_detail = ' for {} assembly '.format(bam_file['assembly'])
-            detail = 'Experiment {} '.format(value['@id']) + \
-                     'processed files are using alignment file {} '.format(
-                         bam_file['@id']) + assembly_detail + \
-                     'from a control replicate that is out of date.'
-            yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
-            return
-
-
-def is_outdated_bams_replicate(bam_file):
-    if 'lab' not in bam_file or bam_file['lab'] != '/labs/encode-processing-pipeline/' or \
-       'dataset' not in bam_file or 'original_files' not in bam_file['dataset']:
+def is_outdated_bams_replicate(bam_file, original_files):
+    if 'lab' not in bam_file or bam_file['lab'] != '/labs/encode-processing-pipeline/':
         return False
     derived_from_fastqs = get_derived_from_files_set([bam_file], 'fastq', True)
     if len(derived_from_fastqs) == 0:
@@ -395,7 +337,7 @@ def is_outdated_bams_replicate(bam_file):
                 bio_rep.append(entry)
             break
     fastq_files = scan_files_for_file_format_output_type(
-        bam_file['dataset']['original_files'],
+        original_files,
         'fastq', 'reads')
     bio_rep_fastqs = []
     for fastq_file in fastq_files:
@@ -435,10 +377,7 @@ def audit_experiment_with_uploading_files(value, system):
 
 
 @audit_checker('Experiment', frame=['original_files',
-                                    'original_files.replicate',
-                                    'original_files.derived_from',
-                                    'original_files.dataset',
-                                    'original_files.dataset.original_files'])
+                                    'original_files.derived_from'])
 def audit_experiment_out_of_date_analysis(value, system):
     if value['assay_term_name'] not in ['ChIP-seq', 'DNase-seq']:
         return
@@ -457,7 +396,7 @@ def audit_experiment_out_of_date_analysis(value, system):
     for bam_file in (alignment_files + transcriptome_alignments + not_filtered_alignments):
 
         if bam_file['lab'] == '/labs/encode-processing-pipeline/':
-            if is_outdated_bams_replicate(bam_file):
+            if is_outdated_bams_replicate(bam_file, value['original_files']):
                 assembly_detail = ''
                 if bam_file.get('assembly'):
                     assembly_detail = ' for {} assembly '.format(bam_file['assembly'])
@@ -2299,25 +2238,8 @@ def audit_experiment_geo_submission(value, system):
         yield AuditFailure('experiment not submitted to GEO', detail, level='INTERNAL_ACTION')
     return
 
-
-@audit_checker('experiment', frame=['object'])
-def audit_experiment_biosample_term_id(value, system):
-    if value['status'] in ['deleted', 'replaced', 'revoked']:
-        return
-    # excluding Bind-n-Seq because they dont have biosamples
-    if 'assay_term_name' in value and value['assay_term_name'] == 'RNA Bind-n-Seq':
-        return
-
-    if value['status'] not in ['preliminary', 'proposed']:
-        if 'biosample_term_id' not in value:
-            detail = 'Experiment {} '.format(value['@id']) + \
-                     'has no biosample_term_id'
-            yield AuditFailure('experiment missing biosample_term_id', detail, level='INTERNAL_ACTION')
-        if 'biosample_type' not in value:
-            detail = 'Experiment {} '.format(value['@id']) + \
-                     'has no biosample_type'
-            yield AuditFailure('experiment missing biosample_type', detail, level='INTERNAL_ACTION')
-    return
+# def audit_experiment_biosample_term_id(value, system): removed release 56
+# http://redmine.encodedcc.org/issues/4900
 
 
 @audit_checker('experiment',
@@ -3028,16 +2950,12 @@ def audit_experiment_biosample_term(value, system):
     term_type = value.get('biosample_type')
     term_name = value.get('biosample_term_name')
 
-    if 'biosample_type' not in value:
-        detail = '{} is missing biosample_type'.format(value['@id'])
-        yield AuditFailure('missing biosample_type', detail, level='ERROR')
-
     if 'biosample_term_name' not in value:
         detail = '{} is missing biosample_term_name'.format(value['@id'])
         yield AuditFailure('missing biosample_term_name', detail, level='ERROR')
-    # The type and term name should be put into dependancies
+    # The type and term name should be put into dependencies
 
-    if term_id is None:
+    if not term_id:
         detail = '{} is missing biosample_term_id'.format(value['@id'])
         yield AuditFailure('missing biosample_term_id', detail, level='ERROR')
         return
@@ -3047,17 +2965,8 @@ def audit_experiment_biosample_term(value, system):
         yield AuditFailure('NTR biosample', detail, level='INTERNAL_ACTION')
     else:
         biosample_prefix = term_id.split(':')[0]
-        if 'biosample_type' in value and \
-           biosample_prefix not in biosampleType_ontologyPrefix[term_type]:
-            detail = 'Experiment {} has '.format(value['@id']) + \
-                     'a biosample of type {} '.format(term_type) + \
-                     'with biosample_term_id {} '.format(value['biosample_term_id']) + \
-                     'that is not one of ' + \
-                     '{}'.format(biosampleType_ontologyPrefix[term_type])
-            yield AuditFailure('experiment with biosample term-type mismatch', detail,
-                               level='INTERNAL_ACTION')
 
-        elif term_id not in ontology:
+        if term_id not in ontology:
             detail = 'Experiment {} has term_id {} which is not in ontology'.format(
                 value['@id'], term_id)
             yield AuditFailure('term_id not in ontology', term_id, level='INTERNAL_ACTION')

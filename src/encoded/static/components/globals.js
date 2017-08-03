@@ -69,7 +69,7 @@ export function truncateString(str, len) {
         localStr = localStr.substr(0, len - 1); // Truncate to length ignoring word boundary
         localStr = `${!isOneWord ? localStr.substr(0, localStr.lastIndexOf(' ')) : localStr}…`; // Back up to word boundary
     }
-    return str;
+    return localStr;
 }
 
 // Given an array of objects with @id properties, this returns the same array but with any
@@ -96,19 +96,56 @@ export function unbindEvent(el, eventName, eventHandler) {
     }
 }
 
-export function unreleasedFilesUrl(context) {
-    const fileStates = [
+
+/**
+ * Returns the basic file statuses used with file searches that `unreleasedFilesUrl` uses. Useful
+ * if you just need the array of file statuses that `unreleasedFilesUri` returns as search URI.
+ *
+ * @return {array} Strings matching file schema statuses used in standard searches.
+ */
+export function getBasicFileStatuses() {
+    return [
         '',
         'uploading',
-        'uploaded',
-        'upload failed',
-        'format check failed',
+        'content error',
         'in progress',
         'released',
         'archived',
-        'content error',
-    ].map(encodeURIComponent).join('&status=');
-    return `/search/?limit=all&type=File&dataset=${context['@id']}${fileStates}`;
+    ];
+}
+
+
+/**
+ * Make a search query string for basic file statuses to load in search results.
+ *
+ * @param {object} context - Dataset object that relates the files we're searching for.
+ * @param {object} modifiers - Additions and subtractions from basic statuses in the form of two
+ *     arrays, one with the key `addStatuses` with the value of an array containing file statuses
+ *     you'd like to search in addition to the basic ones. The other has the key `subtractStatuses`
+ *     and has the value of an array containing the basic file statuses you'd like to subtract from
+ *     the basic ones.
+ * @return {string} - URI of file search string only including desired statuses.
+ */
+export function unreleasedFilesUrl(context, modifiers) {
+    const addStatuses = (modifiers && modifiers.addStatuses) || [];
+    const subtractStatuses = (modifiers && modifiers.subtractStatuses) || [];
+
+    // Start with the basic set of states, then add or subtract specific ones as needed.
+    let basicFileStatuses = getBasicFileStatuses();
+
+    // Add requested additional statuses to the basic statuses; note `splice` mutates the given
+    // array.
+    if (addStatuses.length) {
+        basicFileStatuses.push(...addStatuses);
+    }
+
+    // Remove requested statuses from basic statuses.
+    basicFileStatuses = (subtractStatuses && subtractStatuses.length) ? _(basicFileStatuses).without(...subtractStatuses) : basicFileStatuses;
+
+    // Now that we have the statuses we need to search, convert and return the statuses as a search
+    // URL.
+    const fileStatuses = basicFileStatuses.map(encodeURIComponent).join('&status=');
+    return `/search/?limit=all&type=File&dataset=${context['@id']}${fileStatuses}`;
 }
 
 
@@ -191,6 +228,7 @@ export const encodeVersionMap = {
 // Order that assemblies should appear in lists
 export const assemblyPriority = [
     'GRCh38',
+    'GRCh38-minimal',
     'hg19',
     'mm10',
     'mm10-minimal',
@@ -290,6 +328,8 @@ export const dbxrefPrefixMap = {
     MGID: 'http://www.informatics.jax.org/external/festing/mouse/docs/',
     RBPImage: 'http://rnabiology.ircm.qc.ca/RBPImage/gene.php?cells=',
     RefSeq: 'https://www.ncbi.nlm.nih.gov/gene/?term=',
+    JAX: 'https://www.jax.org/strain/',
+    NBRP: 'https://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq=',
     // UCSC links need assembly (&db=) and accession (&hgt_mdbVal1=) added to url
     'UCSC-ENCODE-mm9': 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=mm9&hgt_mdbVal1=',
     'UCSC-ENCODE-hg19': 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1=',

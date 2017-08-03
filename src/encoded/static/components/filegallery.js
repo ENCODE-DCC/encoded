@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import moment from 'moment';
 import * as globals from './globals';
-import { Panel, PanelHeading } from '../libs/bootstrap/panel';
+import { Panel, PanelHeading, TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { auditDecor, auditsDisplayed, AuditIcon } from './audit';
 import StatusLabel from './statuslabel';
@@ -114,7 +114,6 @@ export class FileTable extends React.Component {
             encodevers,
             selectedFilterValue,
             filterOptions,
-            handleFilterChange,
             anisogenic,
             showFileCount,
             session,
@@ -125,6 +124,7 @@ export class FileTable extends React.Component {
         const loggedIn = !!(session && session['auth.userid']);
 
         let datasetFiles = _((items && items.length) ? items : []).uniq(file => file['@id']);
+
         if (datasetFiles.length) {
             const unfilteredCount = datasetFiles.length;
 
@@ -191,9 +191,6 @@ export class FileTable extends React.Component {
                                 <CollapsingTitle
                                     title="Processed data" collapsed={this.state.collapsed.proc}
                                     handleCollapse={this.handleCollapseProc}
-                                    selectedFilterValue={selectedFilterValue}
-                                    filterOptions={filterOptions}
-                                    handleFilterChange={handleFilterChange}
                                 />
                             }
                             rowClasses={this.rowClasses}
@@ -250,7 +247,6 @@ FileTable.propTypes = {
     encodevers: PropTypes.string, // ENCODE version of the experiment
     selectedFilterValue: PropTypes.string, // Selected filter from popup menu
     filterOptions: PropTypes.array, // Array of assambly/annotation from file array
-    handleFilterChange: PropTypes.func, // Called when user changes filter
     anisogenic: PropTypes.bool, // True if experiment is anisogenic
     showFileCount: PropTypes.bool, // True to show count of files in table
     setInfoNodeId: PropTypes.func, // Function to call to set the currently selected node ID
@@ -833,7 +829,7 @@ export class FileGallery extends React.Component {
 
         return (
             <FetchedData>
-                <Param name="data" url={globals.unreleasedFilesUrl(context)} />
+                <Param name="data" url={globals.unreleasedFilesUrl(context, { addStatuses: ['revoked'] })} />
                 <Param name="schemas" url="/profiles/" />
                 <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
             </FetchedData>
@@ -1360,25 +1356,87 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
 }
 
 
+// Displays the file filtering controls for the file association graph and file tables.
+
+class FilterControls extends React.Component {
+    constructor() {
+        super();
+
+        // Bind this to non-React methods.
+        this.handleAssemblyAnnotationChange = this.handleAssemblyAnnotationChange.bind(this);
+        this.handleInclusionChange = this.handleInclusionChange.bind(this);
+    }
+
+    handleAssemblyAnnotationChange(e) {
+        this.props.handleAssemblyAnnotationChange(e.target.value);
+    }
+
+    // Called when the switch button is clicked.
+    handleInclusionChange() {
+        this.props.handleInclusionChange(!this.props.inclusionOn);
+    }
+
+    render() {
+        const { filterOptions, selectedFilterValue, inclusionOn } = this.props;
+
+        if (filterOptions.length) {
+            return (
+                <div className="file-gallery-controls">
+                    <div className="file-gallery-controls__assembly-selector">
+                        <FilterMenu selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleAssemblyAnnotationChange} />
+                    </div>
+                    <div className="file-gallery-controls__inclusion-selector">
+                        <div className="checkbox--right">
+                            <label htmlFor="filterIncArchive">Include revoked / archived files
+                                <input name="filterIncArchive" type="checkbox" checked={inclusionOn} onChange={this.handleInclusionChange} />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        return null;
+    }
+}
+
+FilterControls.propTypes = {
+    filterOptions: PropTypes.array.isRequired,
+    selectedFilterValue: PropTypes.string,
+    handleAssemblyAnnotationChange: PropTypes.func.isRequired,
+    handleInclusionChange: PropTypes.func.isRequired,
+    inclusionOn: PropTypes.bool, // True to make the inclusion box checked
+};
+
+FilterControls.defaultProps = {
+    selectedFilterValue: '0',
+    inclusionOn: false,
+};
+
+
 // Function to render the file gallery, and it gets called after the file search results (for files associated with
 // the displayed experiment) return.
+
 class FileGalleryRenderer extends React.Component {
     constructor() {
         super();
 
         // Initialize React state variables.
         this.state = {
-            selectedFilterValue: '', // <select> value of selected filter
+            selectedFilterValue: 'default', // <select> value of selected filter
             infoNodeId: '', // @id of node whose info panel is open
             infoModalOpen: false, // True if info modal is open
-            relatedFiles: [], // List of related files
+            relatedFiles: [],
+            inclusionOn: false, // True to exclude files with certain statuses
         };
 
         // Bind `this` to non-React methods.
         this.setInfoNodeId = this.setInfoNodeId.bind(this);
         this.setInfoNodeVisible = this.setInfoNodeVisible.bind(this);
         this.setFilter = this.setFilter.bind(this);
-        this.handleFilterChange = this.handleFilterChange.bind(this);
+        this.handleAssemblyAnnotationChange = this.handleAssemblyAnnotationChange.bind(this);
+        this.handleInclusionChange = this.handleInclusionChange.bind(this);
+        this.filterForInclusion = this.filterForInclusion.bind(this);
     }
 
     componentWillMount() {
@@ -1392,7 +1450,7 @@ class FileGalleryRenderer extends React.Component {
         }
     }
 
-    // Set the default filter after the graph has been analayzed once.
+    // Set the default filter after the graph has been analyzed once.
     componentDidMount() {
         if (!this.props.altFilterDefault) {
             this.setFilter('0');
@@ -1427,8 +1485,30 @@ class FileGalleryRenderer extends React.Component {
     }
 
     // React to a filter menu selection. The synthetic event given in `e`
-    handleFilterChange(e) {
-        this.setFilter(e.target.value);
+    handleAssemblyAnnotationChange(value) {
+        this.setFilter(value);
+    }
+
+    // When the exclusion filter changes from typcially the user clicking the checkbox in
+    // <FilterControls>,
+    handleInclusionChange(checked) {
+        this.setState({ inclusionOn: checked });
+    }
+
+    // If the inclusionOn state property is enabled, we'll just display all the files we got. If
+    // inclusionOn is disabled, we filter out any files with states in
+    // FileGalleryRenderer.inclusionStatuses.
+    filterForInclusion(files) {
+        if (!this.state.inclusionOn) {
+            // The user has chosen to not see file swith statuses in
+            // FileGalleryRenderer.inclusionStatuses. Create an array with files having those
+            // statuses filtered out. Start by making an array of files with a filtered-out status
+            return files.filter(file => FileGalleryRenderer.inclusionStatuses.indexOf(file.status) === -1);
+        }
+
+        // The user requested seeing everything including revoked and archived files, so just
+        // return the unmodified array.
+        return files;
     }
 
     render() {
@@ -1449,8 +1529,8 @@ class FileGalleryRenderer extends React.Component {
             selectedAnnotation = filterOptions[this.state.selectedFilterValue].annotation;
         }
 
-        // Get a list of files for the graph (filters out archived files)
-        const graphFiles = _(files).filter(file => file.status !== 'archived');
+        // Get a list of files for the graph (filters out excluded files if requested by the user).
+        const graphFiles = this.filterForInclusion(files);
 
         // Build node graph of the files and analysis steps with this experiment
         if (graphFiles && graphFiles.length && !hideGraph) {
@@ -1469,62 +1549,76 @@ class FileGalleryRenderer extends React.Component {
             <Panel>
                 <PanelHeading addClasses="file-gallery-heading">
                     <h4>Files</h4>
-                    <div className="file-gallery-controls">
+                    <div className="file-gallery-visualize">
                         {context.visualize ?
-                            <div className="file-gallery-control">
-                                <BrowserSelector visualizeCfg={context.visualize} />
-                            </div>
-                        : null}
-                        {filterOptions.length ?
-                            <div className="file-gallery-control file-gallery-control-select">
-                                <FilterMenu selectedFilterValue={this.state.selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleFilterChange} />
-                            </div>
+                            <BrowserSelector visualizeCfg={context.visualize} />
                         : null}
                     </div>
                 </PanelHeading>
 
-                {!hideGraph ?
-                    <FileGraph
-                        context={context}
-                        items={graphFiles}
-                        graph={jsonGraph}
-                        selectedAssembly={selectedAssembly}
-                        selectedAnnotation={selectedAnnotation}
-                        session={this.context.session}
-                        infoNodeId={this.state.infoNodeId}
-                        setInfoNodeId={this.setInfoNodeId}
-                        infoNodeVisible={this.state.infoNodeVisible}
-                        setInfoNodeVisible={this.setInfoNodeVisible}
-                        schemas={schemas}
-                        sessionProperties={this.context.session_properties}
-                        forceRedraw
-                    />
-                : null}
-
-                {/* If logged in and dataset is released, need to combine search of files that reference
-                    this dataset to get released and unreleased ones. If not logged in, then just get
-                    files from dataset.files */}
-                <FileTable
-                    {...this.props}
-                    items={files}
+                {/* Display the strip of filgering controls */}
+                <FilterControls
                     selectedFilterValue={this.state.selectedFilterValue}
                     filterOptions={filterOptions}
-                    graphedFiles={allGraphedFiles}
-                    handleFilterChange={this.handleFilterChange}
-                    encodevers={globals.encodeVersion(context)}
-                    session={this.context.session}
-                    infoNodeId={this.state.infoNodeId}
-                    setInfoNodeId={this.setInfoNodeId}
-                    infoNodeVisible={this.state.infoNodeVisible}
-                    setInfoNodeVisible={this.setInfoNodeVisible}
-                    showFileCount
-                    noDefaultClasses
-                    adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
+                    inclusionOn={this.state.inclusionOn}
+                    handleAssemblyAnnotationChange={this.handleAssemblyAnnotationChange}
+                    handleInclusionChange={this.handleInclusionChange}
                 />
+
+                <TabPanel tabs={{ graph: 'Association graph', tables: 'File details' }}>
+                    <TabPanelPane key="graph">
+                        {!hideGraph ?
+                            <FileGraph
+                                context={context}
+                                items={graphFiles}
+                                graph={jsonGraph}
+                                selectedAssembly={selectedAssembly}
+                                selectedAnnotation={selectedAnnotation}
+                                session={this.context.session}
+                                infoNodeId={this.state.infoNodeId}
+                                setInfoNodeId={this.setInfoNodeId}
+                                infoNodeVisible={this.state.infoNodeVisible}
+                                setInfoNodeVisible={this.setInfoNodeVisible}
+                                schemas={schemas}
+                                sessionProperties={this.context.session_properties}
+                                forceRedraw
+                            />
+                        : null}
+                    </TabPanelPane>
+
+                    <TabPanelPane key="tables">
+                        {/* If logged in and dataset is released, need to combine search of files that reference
+                            this dataset to get released and unreleased ones. If not logged in, then just get
+                            files from dataset.files */}
+                        <FileTable
+                            {...this.props}
+                            items={graphFiles}
+                            selectedFilterValue={this.state.selectedFilterValue}
+                            filterOptions={filterOptions}
+                            graphedFiles={allGraphedFiles}
+                            handleFilterChange={this.handleFilterChange}
+                            encodevers={globals.encodeVersion(context)}
+                            session={this.context.session}
+                            infoNodeId={this.state.infoNodeId}
+                            setInfoNodeId={this.setInfoNodeId}
+                            infoNodeVisible={this.state.infoNodeVisible}
+                            setInfoNodeVisible={this.setInfoNodeVisible}
+                            showFileCount
+                            noDefaultClasses
+                            adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
+                        />
+                    </TabPanelPane>
+                </TabPanel>
             </Panel>
         );
     }
 }
+
+// Keeps a list of file statuses to include or exclude based on the checkbox in FilterControls.
+FileGalleryRenderer.inclusionStatuses = [
+    'archived',
+    'revoked',
+];
 
 FileGalleryRenderer.propTypes = {
     context: PropTypes.object, // Dataset whose files we're rendering
@@ -1542,18 +1636,11 @@ FileGalleryRenderer.contextTypes = {
 
 
 const CollapsingTitle = (props) => {
-    const { title, handleCollapse, collapsed, filterOptions, selectedFilterValue, handleFilterChange } = props;
+    const { title, handleCollapse, collapsed } = props;
     return (
         <div className="collapsing-title">
             <button className="collapsing-title-trigger pull-left" data-trigger onClick={handleCollapse}>{collapseIcon(collapsed, 'collapsing-title-icon')}</button>
             <h4>{title}</h4>
-            {filterOptions && filterOptions.length && handleFilterChange ?
-                <div className="file-gallery-controls ">
-                    <div className="file-gallery-control file-gallery-control-select">
-                        <FilterMenu filterOptions={filterOptions} selectedFilterValue={selectedFilterValue} handleFilterChange={handleFilterChange} />
-                    </div>
-                </div>
-            : null}
         </div>
     );
 };
@@ -1561,9 +1648,6 @@ const CollapsingTitle = (props) => {
 CollapsingTitle.propTypes = {
     title: PropTypes.string.isRequired, // Title to display in the title bar
     handleCollapse: PropTypes.func.isRequired, // Function to call to handle click in collapse button
-    selectedFilterValue: PropTypes.string, // Currently selected filter
-    filterOptions: PropTypes.array, // Array of filtering options
-    handleFilterChange: PropTypes.func, // Function to call when filter menu item is chosen
     collapsed: PropTypes.bool, // T if the panel this is over has been collapsed
 };
 
@@ -1681,12 +1765,10 @@ class FileGraphComponent extends React.Component {
             contributingFiles: {}, // List of contributing file objects we've requested; acts as a cache too
             coalescedFiles: {}, // List of coalesced files we've requested; acts as a cache too
             infoModalOpen: false, // Graph information modal open
-            collapsed: false, // T if graphing panel is collapsed
         };
 
         // Bind `this` to non-React methods.
         this.handleNodeClick = this.handleNodeClick.bind(this);
-        this.handleCollapse = this.handleCollapse.bind(this);
         this.closeModal = this.closeModal.bind(this);
     }
 
@@ -1777,11 +1859,6 @@ class FileGraphComponent extends React.Component {
         this.props.setInfoNodeVisible(true);
     }
 
-    handleCollapse() {
-        // Handle click on panel collapse icon
-        this.setState({ collapsed: !this.state.collapsed });
-    }
-
     closeModal() {
         // Called when user wants to close modal somehow
         this.props.setInfoNodeVisible(false);
@@ -1807,16 +1884,7 @@ class FileGraphComponent extends React.Component {
 
                     return (
                         <div>
-                            <div className="file-gallery-graph-header collapsing-title">
-                                <button className="collapsing-title-trigger" onClick={this.handleCollapse}>{collapseIcon(this.state.collapsed, 'collapsing-title-icon')}</button>
-                                <h4>Association graph</h4>
-                            </div>
-                            {!this.state.collapsed ?
-                                <div>
-                                    <Graph graph={graph} nodeClickHandler={this.handleNodeClick} nodeMouseenterHandler={this.handleHoverIn} nodeMouseleaveHandler={this.handleHoverOut} noDefaultClasses forceRedraw />
-                                </div>
-                            : null}
-                            <div className={`file-gallery-graph-footer${this.state.collapsed ? ' hiding' : ''}`} />
+                            <Graph graph={graph} nodeClickHandler={this.handleNodeClick} nodeMouseenterHandler={this.handleHoverIn} nodeMouseleaveHandler={this.handleHoverOut} noDefaultClasses forceRedraw />
                             {meta && infoNodeVisible ?
                                 <Modal closeModal={this.closeModal}>
                                     <ModalHeader closeModal={this.closeModal} addCss={modalClass}>

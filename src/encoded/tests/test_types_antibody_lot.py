@@ -260,7 +260,7 @@ def test_histone_mod_characterizations(testapp,
     characterization_review_human = {
         'biosample_term_name': 'liver',
         'biosample_term_id': 'UBERON:0002107',
-        'biosample_type': 'immortalized cell line',
+        'biosample_type': 'tissue',
         'organism': human['@id'],
         'lane': 1,
         'lane_status': 'compliant'
@@ -268,7 +268,7 @@ def test_histone_mod_characterizations(testapp,
     characterization_review_mouse = {
         'biosample_term_name': 'liver',
         'biosample_term_id': 'UBERON:0002107',
-        'biosample_type': 'immortalized cell line',
+        'biosample_type': 'tissue',
         'organism': mouse['@id'],
         'lane': 1,
         'lane_status': 'not compliant'

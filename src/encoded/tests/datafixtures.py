@@ -224,7 +224,8 @@ def experiment(testapp, lab, award):
     item = {
         'lab': lab['@id'],
         'award': award['@id'],
-        'assay_term_name': 'RNA-seq'
+        'assay_term_name': 'RNA-seq',
+        'biosample_type': 'in vitro sample'
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
 
@@ -235,6 +236,8 @@ def base_experiment(testapp, lab, award):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'assay_term_name': 'RNA-seq',
+        'biosample_type': 'tissue',
+        'biosample_term_id': 'UBERON:349829',
         'status': 'started'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
@@ -517,7 +520,7 @@ def pipeline(testapp, lab, award):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'title': "Test pipeline",
-        'assay_term_name': 'RNA-seq'
+        'assay_term_names': ['RNA-seq']
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]
 
@@ -799,7 +802,7 @@ def pipeline_bam(testapp, lab, award, analysis_step_bam):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'title': "ChIP-seq read mapping",
-        'assay_term_name': 'ChIP-seq',
+        'assay_term_names': ['ChIP-seq'],
         'analysis_steps': [analysis_step_bam['@id']]
     }
     return testapp.post_json('/pipeline', item).json['@graph'][0]
