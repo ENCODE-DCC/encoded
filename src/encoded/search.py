@@ -1159,7 +1159,7 @@ def audit(context, request):
 
     # Because the formatting of the query edits the sub-objects of the matrix, we need to 
     # deepcopy the matrix so the original type_info.factory.matrix is not modified, allowing
-    # /matrix to get the correct data.
+    # /matrix to get the correct data and to not be able to access the /audit data.
     temp_matrix = copy.deepcopy(type_info.factory.matrix)
     matrix = result['matrix'] = temp_matrix
     matrix['x']['limit'] = request.params.get('x.limit', 20)
@@ -1271,8 +1271,8 @@ def audit(context, request):
     
 } 
 
-    # Aggs query gets updated with no audit row.
-    # This is a nested query with error as top most level and warning action as innermost level.
+    # Aggs query gets updated with no audits queries.
+    # This is a nested query with error as the top most level and warning as the innermost level.
     # It allows for there to be multiple missing fields in the query.
     aggs.update({
         "no.audit.error": {
@@ -1317,8 +1317,9 @@ def audit(context, request):
     })
     
 
-    # If internal action data is able to be seen in facets then add it to aggs for both
-    # a normal audit category row and to the no audits row as innermost level of nested query.
+    # If internal action data is able to be seen in facets (if logged in) then add it to aggs for 
+    # both: 1) an audit category row for Internal Action and 2) the no audits row as innermost 
+    # level of nested query to create a no audits at all row within no audits.
     # Additionally, add it to the no_audits_groupings list to be used in summarize_no_audits later.
     if "audit.INTERNAL_ACTION.category" in facets[len(facets)-1]:
         aggs['audit.INTERNAL_ACTION.category'] = {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
@@ -1364,7 +1365,8 @@ def audit(context, request):
     # Format facets for results
     result['facets'] = format_facets(
         es_results, facets, used_filters, (schema,), total, principals)
-    
+
+    # For each audit category row.
     # Convert Elasticsearch returned matrix search data to a form usable by the front end matrix
     # code, using only the 'matrix' object within the search data. It contains matrix search 
     # results in 'bucket' arrays, with the exact terms being defined in the .py file for the object
@@ -1433,8 +1435,28 @@ def audit(context, request):
                 bucket['assay_title'] = summary
     """
     
+    # For the no audits row.
+    # Convert Elasticsearch returned matrix search data to a form usable by the front end matrix
+    # code, using only the 'matrix' object within the search data. It contains matrix search 
+    # results in 'bucket' arrays, with the exact terms being defined in the .py file for the object
+    # we're querying in the object's 'matrix' property.
+    #
+    # matrix (dictionary): 'matrix' object within the Elasticsearch matrix search results,
+    #        containing all the data to render the matrix and its headers, but not the facets that
+    #        appear along the top and bottom.
+    # x_buckets (dictionary): 'x' object within the Elasticsearch matrix search results, containing
+    #        the headers that give titles to each column of the chart, as well as summary counts
+    #        we don't currently use on the front end.
+    # outer_bucket (list): search result bucket containing the term from which to group by.
+    # grouping_fields (list): List of no audit labels in order that is hard coded above. Allows
+    #        for recursion through the nested query.
+    # aggregations (list): same as outer_bucket. Allows for aggregations to be modified so that 
+    #        the nested query that allows for each level of no audits can become separate rows
+    #        under the overall no audits row.
+
     def summarize_no_audits(matrix, x_buckets, outer_bucket, grouping_fields, aggregations):
-        # If it excludes audits then needs to go through nested aggs through recursion
+        # Loop by recursion through grouping_fields until we get the terminal no audit field. So
+        # get the initial no audit field in the list and save the rest for the recursive call.
         group_by = grouping_fields[0]
         grouping_fields = grouping_fields[1:]
 
