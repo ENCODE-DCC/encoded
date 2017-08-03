@@ -1545,6 +1545,28 @@ class FileGalleryRenderer extends React.Component {
             }
         }
 
+        // Render the file table. I extract this call so it can be used both for drawing within a
+        // tab and standalone.
+        const fileTableComponent = (
+            <FileTable
+                {...this.props}
+                items={graphFiles}
+                selectedFilterValue={this.state.selectedFilterValue}
+                filterOptions={filterOptions}
+                graphedFiles={allGraphedFiles}
+                handleFilterChange={this.handleFilterChange}
+                encodevers={globals.encodeVersion(context)}
+                session={this.context.session}
+                infoNodeId={this.state.infoNodeId}
+                setInfoNodeId={this.setInfoNodeId}
+                infoNodeVisible={this.state.infoNodeVisible}
+                setInfoNodeVisible={this.setInfoNodeVisible}
+                showFileCount
+                noDefaultClasses
+                adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
+            />
+        );
+
         return (
             <Panel>
                 <PanelHeading addClasses="file-gallery-heading">
@@ -1565,50 +1587,34 @@ class FileGalleryRenderer extends React.Component {
                     handleInclusionChange={this.handleInclusionChange}
                 />
 
-                <TabPanel tabs={{ graph: 'Association graph', tables: 'File details' }}>
-                    <TabPanelPane key="graph">
-                        {!hideGraph ?
-                            <FileGraph
-                                context={context}
-                                items={graphFiles}
-                                graph={jsonGraph}
-                                selectedAssembly={selectedAssembly}
-                                selectedAnnotation={selectedAnnotation}
-                                session={this.context.session}
-                                infoNodeId={this.state.infoNodeId}
-                                setInfoNodeId={this.setInfoNodeId}
-                                infoNodeVisible={this.state.infoNodeVisible}
-                                setInfoNodeVisible={this.setInfoNodeVisible}
-                                schemas={schemas}
-                                sessionProperties={this.context.session_properties}
-                                forceRedraw
-                            />
-                        : null}
-                    </TabPanelPane>
+                {!hideGraph ?
+                    <TabPanel tabs={{ graph: 'Association graph', tables: 'File details' }}>
+                        <TabPanelPane key="graph">
+                                <FileGraph
+                                    context={context}
+                                    items={graphFiles}
+                                    graph={jsonGraph}
+                                    selectedAssembly={selectedAssembly}
+                                    selectedAnnotation={selectedAnnotation}
+                                    session={this.context.session}
+                                    infoNodeId={this.state.infoNodeId}
+                                    setInfoNodeId={this.setInfoNodeId}
+                                    infoNodeVisible={this.state.infoNodeVisible}
+                                    setInfoNodeVisible={this.setInfoNodeVisible}
+                                    schemas={schemas}
+                                    sessionProperties={this.context.session_properties}
+                                    forceRedraw
+                                />
+                            : null}
+                        </TabPanelPane>
 
-                    <TabPanelPane key="tables">
-                        {/* If logged in and dataset is released, need to combine search of files that reference
-                            this dataset to get released and unreleased ones. If not logged in, then just get
-                            files from dataset.files */}
-                        <FileTable
-                            {...this.props}
-                            items={graphFiles}
-                            selectedFilterValue={this.state.selectedFilterValue}
-                            filterOptions={filterOptions}
-                            graphedFiles={allGraphedFiles}
-                            handleFilterChange={this.handleFilterChange}
-                            encodevers={globals.encodeVersion(context)}
-                            session={this.context.session}
-                            infoNodeId={this.state.infoNodeId}
-                            setInfoNodeId={this.setInfoNodeId}
-                            infoNodeVisible={this.state.infoNodeVisible}
-                            setInfoNodeVisible={this.setInfoNodeVisible}
-                            showFileCount
-                            noDefaultClasses
-                            adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
-                        />
-                    </TabPanelPane>
-                </TabPanel>
+                        <TabPanelPane key="tables">
+                            {fileTableComponent}
+                        </TabPanelPane>
+                    </TabPanel>
+                :
+                    <div>{fileTableComponent}</div>
+                }
             </Panel>
         );
     }
