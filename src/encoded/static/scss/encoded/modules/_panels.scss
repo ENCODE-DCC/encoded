@@ -319,6 +319,10 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
         }
     }
 
+    @at-root #{&}__selector-placeholder {
+        flex: 0 1 auto;
+    }
+
     @at-root #{&}__inclusion-selector {
         flex: 0 1 auto;
     }

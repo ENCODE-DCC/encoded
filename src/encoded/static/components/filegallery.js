@@ -1379,24 +1379,24 @@ class FilterControls extends React.Component {
     render() {
         const { filterOptions, selectedFilterValue, inclusionOn } = this.props;
 
-        if (filterOptions.length) {
-            return (
-                <div className="file-gallery-controls">
+        return (
+            <div className="file-gallery-controls">
+                {filterOptions.length ?
                     <div className="file-gallery-controls__assembly-selector">
                         <FilterMenu selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleAssemblyAnnotationChange} />
                     </div>
-                    <div className="file-gallery-controls__inclusion-selector">
-                        <div className="checkbox--right">
-                            <label htmlFor="filterIncArchive">Include revoked / archived files
-                                <input name="filterIncArchive" type="checkbox" checked={inclusionOn} onChange={this.handleInclusionChange} />
-                            </label>
-                        </div>
+                :
+                    <div className="file-gallery-controls__selector-placeholder" />
+                }
+                <div className="file-gallery-controls__inclusion-selector">
+                    <div className="checkbox--right">
+                        <label htmlFor="filterIncArchive">Include revoked / archived files
+                            <input name="filterIncArchive" type="checkbox" checked={inclusionOn} onChange={this.handleInclusionChange} />
+                        </label>
                     </div>
                 </div>
-            );
-        }
-
-        return null;
+            </div>
+        );
     }
 }
 

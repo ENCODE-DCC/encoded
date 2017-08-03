@@ -7,7 +7,6 @@ import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
 import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
-import { FetchedItems } from './fetched';
 import { auditDecor } from './audit';
 import StatusLabel from './statuslabel';
 import pubReferenceList from './reference';
@@ -16,7 +15,7 @@ import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
 import { DocumentsPanel } from './doc';
-import { FileGallery, DatasetFiles } from './filegallery';
+import { FileGallery } from './filegallery';
 import { AwardRef } from './typeutils';
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
@@ -1434,14 +1433,7 @@ export class SeriesComponent extends React.Component {
                 : null }
 
                 {/* Display list of released and unreleased files */}
-                <FetchedItems
-                    {...this.props}
-                    url={globals.unreleasedFilesUrl(context)}
-                    Component={DatasetFiles}
-                    filePanelHeader={<FilePanelHeader context={context} />}
-                    encodevers={globals.encodeVersion(context)}
-                    session={this.context.session}
-                />
+                <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
                 <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
             </div>
