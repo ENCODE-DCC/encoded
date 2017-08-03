@@ -1365,8 +1365,49 @@ def audit(context, request):
     result['facets'] = format_facets(
         es_results, facets, used_filters, (schema,), total, principals)
     
+    # Convert Elasticsearch returned matrix search data to a form usable by the front end matrix
+    # code, using only the 'matrix' object within the search data. It contains matrix search 
+    # results in 'bucket' arrays, with the exact terms being defined in the .py file for the object
+    # we're querying in the object's 'matrix' property.
+    #
+    # matrix (dictionary): 'matrix' object within the Elasticsearch matrix search results,
+    #        containing all the data to render the matrix and its headers, but not the facets that
+    #        appear along the top and bottom.
+    # x_buckets (dictionary): 'x' object within the Elasticsearch matrix search results, containing
+    #        the headers that give titles to each column of the chart, as well as summary counts
+    #        we don't currently use on the front end.
+    # outer_bucket (list): search result bucket containing the term from which to group by.
+    # grouping_fields (list): List of audit categories that is hard coded above.
     
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
+        # Loop through each audit category and get proper search result data and format it
+        for category in grouping_fields: # for each audit category
+            counts = {}
+            # Go through each bucket
+            for bucket in outer_bucket[category]['buckets']:
+                counts = {}
+                # Go through each assay for a key/row and get count and add to counts dictionary
+                # that keeps track of counts for each key/row.
+                for assay in bucket['assay_title']['buckets']:
+                    doc_count = assay['doc_count']
+                    if doc_count > matrix['max_cell_doc_count']:
+                        matrix['max_cell_doc_count'] = doc_count
+                    if 'key' in assay:
+                        counts[assay['key']] = doc_count
+
+                # We now have `counts` containing each displayed key and the corresponding count for a
+                # row of the matrix. Convert that to a list of counts (cell values for a row of the
+                # matrix) to replace the existing bucket for the given grouping_fields term with a
+                # simple list of counts without their keys -- the position within the list corresponds
+                # to the keys within 'x'.
+                summary = []
+                for xbucket in x_buckets:
+                    summary.append(counts.get(xbucket['key'], 0))
+                bucket['assay_title'] = summary
+
+
+    """
+        def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
         # Get audit category and then decide whether it is one that includes or excludes audits
         for category in grouping_fields: # for each audit category
             # Gets first index of grouping_fields and keeps shortening grouping_fields until
@@ -1390,6 +1431,7 @@ def audit(context, request):
                 for xbucket in x_buckets:
                     summary.append(counts.get(xbucket['key'], 0))
                 bucket['assay_title'] = summary
+    """
     
     def summarize_no_audits(matrix, x_buckets, outer_bucket, grouping_fields, aggregations):
         # If it excludes audits then needs to go through nested aggs through recursion
