@@ -23,8 +23,12 @@ $pipeline-node-types:
             }
         }
 
-        &.error, &.restricted {
+        &.error, &.restricted, &.revoked {
             fill: #ffc0c0;
+        }
+
+        &.archived {
+            fill: #c0c0c0;
         }
 
         &:hover {
