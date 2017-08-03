@@ -1130,7 +1130,7 @@ def summary(context, request):
     result = {
         '@context': request.route_path('jsonld_context'),
         '@id': request.route_path('summary', slash='/') + search_base,
-        '@type': ['Matrix'],
+        '@type': ['Summary'],
         'filters': [],
         'notification': '',
     }
@@ -1156,8 +1156,8 @@ def summary(context, request):
         result['title'] = type_info.name + ' Matrix'
 
     matrix = result['matrix'] = type_info.factory.matrix.copy()
-    matrix['x']['limit'] = request.params.get('x.limit', 20)
-    matrix['y']['limit'] = request.params.get('y.limit', 5)
+    #matrix['x']['limit'] = request.params.get('x.limit', 20)
+    #matrix['y']['limit'] = request.params.get('y.limit', 5)
     matrix['search_base'] = request.route_path('search', slash='/') + search_base
     matrix['clear_matrix'] = request.route_path('matrix', slash='/') + '?type=' + item_type
 
@@ -1213,15 +1213,18 @@ def summary(context, request):
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Group results in 2 dimensions
-    x_grouping = matrix['x']['group_by']
-    y_groupings = matrix['y']['group_by']
+    #x_grouping = matrix['x']['group_by']
+    #y_groupings = matrix['y']['group_by']
+    """
     x_agg = {
         "terms": {
             "field": 'embedded.' + x_grouping + '.raw',
             "size": 0,  # no limit
         },
     }
-    aggs = {x_grouping: x_agg}
+    """
+    #aggs = {x_grouping: x_agg}
+    """
     for field in reversed(y_groupings):
         aggs = {
             field: {
@@ -1232,6 +1235,8 @@ def summary(context, request):
                 "aggs": aggs,
             },
         }
+    """
+    """
     aggs['x'] = x_agg
     query['aggs']['matrix'] = {
         "filter": {
@@ -1241,14 +1246,17 @@ def summary(context, request):
         },
         "aggs": aggs,
     }
-
+    """
     # Execute the query
     es_results = es.search(body=query, index=es_index, search_type='count')
 
     # Format matrix for results
     aggregations = es_results['aggregations']
-    result['matrix']['doc_count'] = total = aggregations['matrix']['doc_count']
-    result['matrix']['max_cell_doc_count'] = 0
+    #ADDED FROM HERE
+    total = aggregations['month_released']['doc_count']
+    #ADDED END HERE
+    #result['matrix']['doc_count'] = total = aggregations['matrix']['doc_count']
+    #result['matrix']['max_cell_doc_count'] = 0
 
     # Format facets for results
     result['facets'] = format_facets(
@@ -1272,14 +1280,15 @@ def summary(context, request):
             for bucket in outer_bucket[group_by]['buckets']:
                 summarize_buckets(matrix, x_buckets, bucket, grouping_fields)
 
+    """
     summarize_buckets(
         result['matrix'],
         aggregations['matrix']['x']['buckets'],
         aggregations['matrix'],
         y_groupings + [x_grouping])
-
-    result['matrix']['y'][y_groupings[0]] = aggregations['matrix'][y_groupings[0]]
-    result['matrix']['x'].update(aggregations['matrix']['x'])
+    """
+    #result['matrix']['y'][y_groupings[0]] = aggregations['matrix'][y_groupings[0]]
+    #result['matrix']['x'].update(aggregations['matrix']['x'])
 
     # Add batch actions
     result.update(search_result_actions(request, doc_types, es_results))
