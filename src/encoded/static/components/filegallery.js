@@ -1588,7 +1588,7 @@ class FileGalleryRenderer extends React.Component {
                 />
 
                 {!hideGraph ?
-                    <TabPanel tabs={{ graph: 'Association graph', tables: 'File details' }}>
+                    <TabPanel tabs={{ graph: 'Graph view', tables: 'List view' }}>
                         <TabPanelPane key="graph">
                                 <FileGraph
                                     context={context}
