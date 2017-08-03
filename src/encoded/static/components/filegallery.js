@@ -1590,22 +1590,21 @@ class FileGalleryRenderer extends React.Component {
                 {!hideGraph ?
                     <TabPanel tabs={{ graph: 'Graph view', tables: 'List view' }}>
                         <TabPanelPane key="graph">
-                                <FileGraph
-                                    context={context}
-                                    items={graphFiles}
-                                    graph={jsonGraph}
-                                    selectedAssembly={selectedAssembly}
-                                    selectedAnnotation={selectedAnnotation}
-                                    session={this.context.session}
-                                    infoNodeId={this.state.infoNodeId}
-                                    setInfoNodeId={this.setInfoNodeId}
-                                    infoNodeVisible={this.state.infoNodeVisible}
-                                    setInfoNodeVisible={this.setInfoNodeVisible}
-                                    schemas={schemas}
-                                    sessionProperties={this.context.session_properties}
-                                    forceRedraw
-                                />
-                            : null}
+                            <FileGraph
+                                context={context}
+                                items={graphFiles}
+                                graph={jsonGraph}
+                                selectedAssembly={selectedAssembly}
+                                selectedAnnotation={selectedAnnotation}
+                                session={this.context.session}
+                                infoNodeId={this.state.infoNodeId}
+                                setInfoNodeId={this.setInfoNodeId}
+                                infoNodeVisible={this.state.infoNodeVisible}
+                                setInfoNodeVisible={this.setInfoNodeVisible}
+                                schemas={schemas}
+                                sessionProperties={this.context.session_properties}
+                                forceRedraw
+                            />
                         </TabPanelPane>
 
                         <TabPanelPane key="tables">
