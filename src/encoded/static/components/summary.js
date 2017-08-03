@@ -1355,7 +1355,7 @@ export class ResultTable extends React.Component {
                                             {results.length > 25 ?
                                                 <a
                                                     className="btn btn-info btn-sm"
-                                                    href={trimmedSearchBase || '/search/'}
+                                                    href={trimmedSearchBase || '/summary/'}
                                                     onClick={this.onFilter}
                                                 >
                                                     View 25
@@ -1514,7 +1514,7 @@ AssemblyChooser.propTypes = {
 };
 
 
-class Search extends React.Component {
+class Summary extends React.Component {
     constructor() {
         super();
 
@@ -1529,7 +1529,7 @@ class Search extends React.Component {
                 region,
             };
         }
-        return Search.lastRegion;
+        return Summary.lastRegion;
     }
 
     render() {
@@ -1559,17 +1559,17 @@ class Search extends React.Component {
     }
 }
 
-Search.propTypes = {
+Summary.propTypes = {
     context: PropTypes.object,
 };
 
-Search.contextTypes = {
+Summary.contextTypes = {
     location_href: PropTypes.string,
     navigate: PropTypes.func,
 };
 
 // optionally make a persistent region
-Search.lastRegion = {
+Summary.lastRegion = {
     assembly: React.PropTypes.string,
     region: React.PropTypes.string,
 };

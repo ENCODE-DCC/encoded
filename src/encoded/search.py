@@ -1122,88 +1122,125 @@ def news(context, request):
 
 
 @view_config(route_name='summary', request_method='GET', permission='search')
-def summary(context, request):
+def summary(context, request, search_type=None, return_generator=False):
     """
-    Return search results aggregated by x and y buckets for building a matrix display.
+    Search view connects to ElasticSearch and returns the results
     """
+    types = request.registry[TYPES]
     search_base = normalize_query(request)
     result = {
         '@context': request.route_path('jsonld_context'),
-        '@id': request.route_path('summary', slash='/') + search_base,
-        '@type': ['Summary'],
+        '@id': '/summary/' + search_base,
+        '@type': ['Search'],
+        'title': 'Summary',
         'filters': [],
-        'notification': '',
     }
-    search_audit = request.has_permission('search_audit')
-
-    doc_types = request.params.getall('type')
-    if len(doc_types) != 1:
-        msg = 'Search result matrix currently requires specifying a single type.'
-        raise HTTPBadRequest(explanation=msg)
-    item_type = doc_types[0]
-    types = request.registry[TYPES]
-    if item_type not in types:
-        msg = 'Invalid type: {}'.format(item_type)
-        raise HTTPBadRequest(explanation=msg)
-    type_info = types[item_type]
-    if not hasattr(type_info.factory, 'matrix'):
-        msg = 'No matrix configured for type: {}'.format(item_type)
-        raise HTTPBadRequest(explanation=msg)
-    schema = type_info.schema
-    if type_info.name is 'Annotation':
-        result['title'] = 'Encyclopedia'
-    else:
-        result['title'] = type_info.name + ' Matrix'
-
-    matrix = result['matrix'] = type_info.factory.matrix.copy()
-    #matrix['x']['limit'] = request.params.get('x.limit', 20)
-    #matrix['y']['limit'] = request.params.get('y.limit', 5)
-    matrix['search_base'] = request.route_path('search', slash='/') + search_base
-    matrix['clear_matrix'] = request.route_path('matrix', slash='/') + '?type=' + item_type
-
-    result['views'] = [
-        {
-            'href': request.route_path('search', slash='/') + search_base,
-            'title': 'View results as list',
-            'icon': 'list-alt',
-        },
-        {
-            'href': request.route_path('report', slash='/') + search_base,
-            'title': 'View tabular report',
-            'icon': 'table',
-        }
-    ]
-
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
     es_index = request.registry.settings['snovault.elasticsearch.index']
+    search_audit = request.has_permission('search_audit')
+
+    from_, size = get_pagination(request)
 
     search_term = prepare_search_term(request)
+
+    if search_type is None:
+        doc_types = request.params.getall('type')
+        if '*' in doc_types:
+            doc_types = ['Item']
+
+    else:
+        doc_types = [search_type]
+
+    # Normalize to item_type
+    try:
+        doc_types = sorted({types[name].name for name in doc_types})
+    except KeyError:
+        # Check for invalid types
+        bad_types = [t for t in doc_types if t not in types]
+        msg = "Invalid type: {}".format(', '.join(bad_types))
+        raise HTTPBadRequest(explanation=msg)
+
+    # Clear Filters path -- make a path that clears all non-datatype filters.
+    # http://stackoverflow.com/questions/16491988/how-to-convert-a-list-of-strings-to-a-query-string#answer-16492046
+    searchterm_specs = request.params.getall('searchTerm')
+    searchterm_only = urlencode([("searchTerm", searchterm) for searchterm in searchterm_specs])
+    if searchterm_only:
+        # Search term in query string; clearing keeps that
+        clear_qs = searchterm_only
+    else:
+        # Possibly type(s) in query string
+        clear_qs = urlencode([("type", typ) for typ in doc_types])
+    result['clear_filters'] = request.route_path('summary', slash='/') + (('?' + clear_qs) if clear_qs else '')
+
+    # Building query for filters
+    if not doc_types:
+        if request.params.get('mode') == 'picker':
+            doc_types = ['Item']
+        else:
+            doc_types = DEFAULT_DOC_TYPES
+    else:
+        for item_type in doc_types:
+            ti = types[item_type]
+            qs = urlencode([
+                (k.encode('utf-8'), v.encode('utf-8'))
+                for k, v in request.params.items() if not (k == 'type' and types['Item' if v == '*' else v] is ti)
+            ])
+            result['filters'].append({
+                'field': 'type',
+                'term': ti.name,
+                'remove': '{}?{}'.format(request.path, qs)
+            })
+        if len(doc_types) == 1:
+            result['views'] = views = []
+            views.append({
+                'href': request.route_path('report', slash='/') + search_base,
+                'title': 'View tabular report',
+                'icon': 'table',
+            })
+            if hasattr(ti.factory, 'matrix'):
+                views.append({
+                    'href': request.route_path('matrix', slash='/') + search_base,
+                    'title': 'View summary matrix',
+                    'icon': 'th',
+                })
 
     search_fields, highlights = get_search_fields(request, doc_types)
 
     # Builds filtered query which supports multiple facet selection
     query = get_filtered_query(search_term,
                                search_fields,
-                               [],
+                               sorted(list_result_fields(request, doc_types)),
                                principals,
                                doc_types)
 
+    schemas = [types[doc_type].schema for doc_type in doc_types]
+    columns = list_visible_columns_for_schemas(request, schemas)
+    if columns:
+        result['columns'] = columns
+
+    # If no text search, use match_all query instead of query_string
     if search_term == '*':
         query['query']['match_all'] = {}
         del query['query']['query_string']
+    # If searching for more than one type, don't specify which fields to search
+    elif len(doc_types) != 1:
+        del query['query']['query_string']['fields']
+        query['query']['query_string']['fields'] = ['_all', '*.uuid', '*.md5sum', '*.submitted_file_name']
 
-    # Setting filters.
-    # Rather than setting them at the top level of the query
-    # we collect them for use in aggregations later.
-    query_filters = query.pop('filter')
-    filter_collector = {'filter': query_filters}
-    used_filters = set_filters(request, filter_collector, result)
-    filters = filter_collector['filter']['and']['filters']
+
+    # Set sort order
+    set_sort_order(request, search_term, types, doc_types, query, result)
+
+    # Setting filters
+    used_filters = set_filters(request, query, result)
 
     # Adding facets to the query
-    facets = [(field, facet) for field, facet in schema['facets'].items() if
-              field in matrix['x']['facets'] or field in matrix['y']['facets']]
+    facets = [
+        ('type', {'title': 'Data Type'}),
+    ]
+    if len(doc_types) == 1 and 'facets' in types[doc_types[0]].schema:
+        facets.extend(types[doc_types[0]].schema['facets'].items())
 
     # Display all audits if logged in, or all but INTERNAL_ACTION if logged out
     for audit_facet in audit_facets:
@@ -1212,94 +1249,70 @@ def summary(context, request):
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
-    # Group results in 2 dimensions
-    #x_grouping = matrix['x']['group_by']
-    #y_groupings = matrix['y']['group_by']
-    """
-    x_agg = {
-        "terms": {
-            "field": 'embedded.' + x_grouping + '.raw',
-            "size": 0,  # no limit
-        },
-    }
-    """
-    #aggs = {x_grouping: x_agg}
-    """
-    for field in reversed(y_groupings):
-        aggs = {
-            field: {
-                "terms": {
-                    "field": 'embedded.' + field + '.raw',
-                    "size": 0,  # no limit
-                },
-                "aggs": aggs,
-            },
-        }
-    """
-    """
-    aggs['x'] = x_agg
-    query['aggs']['matrix'] = {
-        "filter": {
-            "bool": {
-                "must": filters,
-            }
-        },
-        "aggs": aggs,
-    }
-    """
+    # Decide whether to use scan for results.
+    do_scan = size is None or size > 1000
     # Execute the query
-    es_results = es.search(body=query, index=es_index, search_type='count')
+    if do_scan:
+        es_results = es.search(body=query, index=es_index, search_type='count')
+    else:
+        es_results = es.search(body=query, index=es_index, from_=from_, size=size)
 
-    # Format matrix for results
-    aggregations = es_results['aggregations']
-    #ADDED FROM HERE
-    total = aggregations['month_released']['doc_count']
-    #ADDED END HERE
-    #result['matrix']['doc_count'] = total = aggregations['matrix']['doc_count']
-    #result['matrix']['max_cell_doc_count'] = 0
+    result['total'] = total = es_results['hits']['total']
 
-    # Format facets for results
+    schemas = (types[item_type].schema for item_type in doc_types)
     result['facets'] = format_facets(
-        es_results, facets, used_filters, (schema,), total, principals)
-
-    def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
-        group_by = grouping_fields[0]
-        grouping_fields = grouping_fields[1:]
-        if not grouping_fields:
-            counts = {}
-            for bucket in outer_bucket[group_by]['buckets']:
-                doc_count = bucket['doc_count']
-                if doc_count > matrix['max_cell_doc_count']:
-                    matrix['max_cell_doc_count'] = doc_count
-                counts[bucket['key']] = doc_count
-            summary = []
-            for bucket in x_buckets:
-                summary.append(counts.get(bucket['key'], 0))
-            outer_bucket[group_by] = summary
-        else:
-            for bucket in outer_bucket[group_by]['buckets']:
-                summarize_buckets(matrix, x_buckets, bucket, grouping_fields)
-
-    """
-    summarize_buckets(
-        result['matrix'],
-        aggregations['matrix']['x']['buckets'],
-        aggregations['matrix'],
-        y_groupings + [x_grouping])
-    """
-    #result['matrix']['y'][y_groupings[0]] = aggregations['matrix'][y_groupings[0]]
-    #result['matrix']['x'].update(aggregations['matrix']['x'])
+        es_results, facets, used_filters, schemas, total, principals)
 
     # Add batch actions
     result.update(search_result_actions(request, doc_types, es_results))
 
-    # Adding total
-    result['total'] = es_results['hits']['total']
-    if result['total']:
-        result['notification'] = 'Success'
-    else:
+    # Add all link for collections
+    if size is not None and size < result['total']:
+        params = [(k, v) for k, v in request.params.items() if k != 'limit']
+        params.append(('limit', 'all'))
+        result['all'] = '%s?%s' % (request.resource_path(context), urlencode(params))
+
+    if not result['total']:
         # http://googlewebmastercentral.blogspot.com/2014/02/faceted-navigation-best-and-5-of-worst.html
         request.response.status_code = 404
         result['notification'] = 'No results found'
+        result['@graph'] = []
+        return result if not return_generator else []
 
-    return result
+    result['notification'] = 'Success'
+    # Format results for JSON-LD
+    if not do_scan:
+        graph = format_results(request, es_results['hits']['hits'], result)
+        if return_generator:
+            return graph
+        else:
+            result['@graph'] = list(graph)
+            return result
+
+    # Scan large result sets.
+    del query['aggs']
+    if size is None:
+        # preserve_order=True has unexpected results in clustered environment
+        # https://github.com/elastic/elasticsearch-py/blob/master/elasticsearch/helpers/__init__.py#L257
+        hits = scan(es, query=query, index=es_index, preserve_order=False)
+    else:
+        hits = scan(es, query=query, index=es_index, from_=from_, size=size, preserve_order=False)
+    graph = format_results(request, hits, result)
+
+    # Support for request.embed() and `return_generator`
+    if request.__parent__ is not None or return_generator:
+        if return_generator:
+            return graph
+        else:
+            result['@graph'] = list(graph)
+            return result
+
+    # Stream response using chunked encoding.
+    # XXX BeforeRender event listeners not called.
+    app_iter = iter_long_json('@graph', graph, result)
+    request.response.content_type = 'application/json'
+    if str is bytes:  # Python 2 vs 3 wsgi differences
+        request.response.app_iter = app_iter  # Python 2
+    else:
+        request.response.app_iter = (s.encode('utf-8') for s in app_iter)
+    return request.response
