@@ -1509,6 +1509,8 @@ class FileGalleryRendererComponent extends React.Component {
             infoModalOpen: false, // True if info modal is open
             relatedFiles: [],
             inclusionOn: false, // True to exclude files with certain statuses
+            contributingFiles: {}, // List of contributing file objects we've requested; acts as a cache too
+            coalescedFiles: {}, // List of coalesced files we've requested; acts as a cache too
         };
 
         // Bind `this` to non-React methods.
@@ -1881,39 +1883,26 @@ FilterMenu.propTypes = {
 };
 
 
-class FileGraph extends React.Component {
-    constructor() {
-        super();
+const FileGraph = (props) => {
+    const { items, graph, selectedAssembly, selectedAnnotation } = props;
+    const files = items;
 
-        // Initialize React state variables.
-        this.state = {
-            contributingFiles: {}, // List of contributing file objects we've requested; acts as a cache too
-            coalescedFiles: {}, // List of coalesced files we've requested; acts as a cache too
-            infoModalOpen: false, // Graph information modal open
-        };
-    }
-
-    render() {
-        const { items, graph, selectedAssembly, selectedAnnotation } = this.props;
-        const files = items;
-
-        // Build node graph of the files and analysis steps with this experiment
-        if (files && files.length) {
-            // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
-            const goodGraph = graph && Object.keys(graph).length;
-            if (goodGraph) {
-                if (selectedAssembly || selectedAnnotation) {
-                    return (
-                        <Graph graph={graph} nodeClickHandler={this.props.handleNodeClick} nodeMouseenterHandler={this.handleHoverIn} nodeMouseleaveHandler={this.handleHoverOut} noDefaultClasses forceRedraw />
-                    );
-                }
-                return <p className="browser-error">Choose an assembly to see file association graph</p>;
+    // Build node graph of the files and analysis steps with this experiment
+    if (files && files.length) {
+        // If we have a graph, or if we have a selected assembly/annotation, draw the graph panel
+        const goodGraph = graph && Object.keys(graph).length;
+        if (goodGraph) {
+            if (selectedAssembly || selectedAnnotation) {
+                return (
+                    <Graph graph={graph} nodeClickHandler={props.handleNodeClick} noDefaultClasses forceRedraw />
+                );
             }
-            return <p className="browser-error">Graph not applicable for the selected assembly/annotation.</p>;
+            return <p className="browser-error">Choose an assembly to see file association graph</p>;
         }
-        return null;
+        return <p className="browser-error">Graph not applicable for the selected assembly/annotation.</p>;
     }
-}
+    return null;
+};
 
 FileGraph.propTypes = {
     items: PropTypes.array, // Array of files we're graphing
