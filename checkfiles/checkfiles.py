@@ -845,15 +845,23 @@ def fetch_files(session, url, search_query, out, include_unexpired_upload=False,
         for acc in ACCESSIONS:
             r = session.get(
                 urljoin(url, '/search/?field=@id&limit=all&type=File&accession=' + acc))
-            r.raise_for_status()
-            local = copy.deepcopy(r.json()['@graph'])
-            graph.extend(local)
+            try:
+                r.raise_for_status()
+            except requests.HTTPError:
+                return
+            else:
+                local = copy.deepcopy(r.json()['@graph'])
+                graph.extend(local)
     # checkfiles using a query
     else:
         r = session.get(
             urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
-        r.raise_for_status()
-        graph = r.json()['@graph']
+        try:
+            r.raise_for_status()
+        except requests.HTTPError:
+            return
+        else:
+            graph = r.json()['@graph']
 
     for result in graph:
         job = {
@@ -973,16 +981,23 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.15'
+    version = '1.16'
+
+    try:
+        ip = subprocess.check_output(
+            ['hostname'], stderr=subprocess.STDOUT).strip()
+    except subprocess.CalledProcessError as e:
+        ip = ''
 
     sc = SlackClient('xoxb-216151022738-q0HoXLoixM5GokF4Iaqm08XX')
     initiating_run = 'STARTING Checkfiles version ' + \
-        '{} ({}): with {} processes {} at {}'.format(
-            version, search_query, nprocesses, dr, datetime.datetime.now())
+        '{} ({}): with {} processes {} on {} at {}'.format(
+            version, search_query, nprocesses, dr, ip, datetime.datetime.now())
     sc.api_call(
         "chat.postMessage",
         channel="#bot-reporting",
-        text=initiating_run
+        text=initiating_run,
+        as_user=True
     )
 
     out.write(initiating_run + '\n')
@@ -1046,7 +1061,8 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
     sc.api_call(
         "chat.postMessage",
         channel="#bot-reporting",
-        text=finishing_run
+        text=finishing_run,
+        as_user=True
     )
 
 def main():
