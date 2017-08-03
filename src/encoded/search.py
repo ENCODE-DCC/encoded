@@ -23,6 +23,7 @@ def includeme(config):
     config.add_route('report', '/report{slash:/?}')
     config.add_route('matrix', '/matrix{slash:/?}')
     config.add_route('news', '/news/')
+    config.add_route('summary', '/summary/')
     config.scan(__name__)
 
 
@@ -1116,5 +1117,180 @@ def news(context, request):
     types = request.registry[TYPES]
     schemas = [types[doc_type].schema for doc_type in doc_types]
     result['facets'] = format_facets(es_results, facets, used_filters, schemas, total, principals)
+
+    return result
+
+
+@view_config(route_name='summary', request_method='GET', permission='search')
+def summary(context, request):
+    """
+    Return search results aggregated by x and y buckets for building a matrix display.
+    """
+    search_base = normalize_query(request)
+    result = {
+        '@context': request.route_path('jsonld_context'),
+        '@id': request.route_path('summary', slash='/') + search_base,
+        '@type': ['Matrix'],
+        'filters': [],
+        'notification': '',
+    }
+    search_audit = request.has_permission('search_audit')
+
+    doc_types = request.params.getall('type')
+    if len(doc_types) != 1:
+        msg = 'Search result matrix currently requires specifying a single type.'
+        raise HTTPBadRequest(explanation=msg)
+    item_type = doc_types[0]
+    types = request.registry[TYPES]
+    if item_type not in types:
+        msg = 'Invalid type: {}'.format(item_type)
+        raise HTTPBadRequest(explanation=msg)
+    type_info = types[item_type]
+    if not hasattr(type_info.factory, 'matrix'):
+        msg = 'No matrix configured for type: {}'.format(item_type)
+        raise HTTPBadRequest(explanation=msg)
+    schema = type_info.schema
+    if type_info.name is 'Annotation':
+        result['title'] = 'Encyclopedia'
+    else:
+        result['title'] = type_info.name + ' Matrix'
+
+    matrix = result['matrix'] = type_info.factory.matrix.copy()
+    matrix['x']['limit'] = request.params.get('x.limit', 20)
+    matrix['y']['limit'] = request.params.get('y.limit', 5)
+    matrix['search_base'] = request.route_path('search', slash='/') + search_base
+    matrix['clear_matrix'] = request.route_path('matrix', slash='/') + '?type=' + item_type
+
+    result['views'] = [
+        {
+            'href': request.route_path('search', slash='/') + search_base,
+            'title': 'View results as list',
+            'icon': 'list-alt',
+        },
+        {
+            'href': request.route_path('report', slash='/') + search_base,
+            'title': 'View tabular report',
+            'icon': 'table',
+        }
+    ]
+
+    principals = effective_principals(request)
+    es = request.registry[ELASTIC_SEARCH]
+    es_index = request.registry.settings['snovault.elasticsearch.index']
+
+    search_term = prepare_search_term(request)
+
+    search_fields, highlights = get_search_fields(request, doc_types)
+
+    # Builds filtered query which supports multiple facet selection
+    query = get_filtered_query(search_term,
+                               search_fields,
+                               [],
+                               principals,
+                               doc_types)
+
+    if search_term == '*':
+        query['query']['match_all'] = {}
+        del query['query']['query_string']
+
+    # Setting filters.
+    # Rather than setting them at the top level of the query
+    # we collect them for use in aggregations later.
+    query_filters = query.pop('filter')
+    filter_collector = {'filter': query_filters}
+    used_filters = set_filters(request, filter_collector, result)
+    filters = filter_collector['filter']['and']['filters']
+
+    # Adding facets to the query
+    facets = [(field, facet) for field, facet in schema['facets'].items() if
+              field in matrix['x']['facets'] or field in matrix['y']['facets']]
+
+    # Display all audits if logged in, or all but INTERNAL_ACTION if logged out
+    for audit_facet in audit_facets:
+        if search_audit and 'group.submitter' in principals or 'INTERNAL_ACTION' not in audit_facet[0]:
+            facets.append(audit_facet)
+
+    query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
+
+    # Group results in 2 dimensions
+    x_grouping = matrix['x']['group_by']
+    y_groupings = matrix['y']['group_by']
+    x_agg = {
+        "terms": {
+            "field": 'embedded.' + x_grouping + '.raw',
+            "size": 0,  # no limit
+        },
+    }
+    aggs = {x_grouping: x_agg}
+    for field in reversed(y_groupings):
+        aggs = {
+            field: {
+                "terms": {
+                    "field": 'embedded.' + field + '.raw',
+                    "size": 0,  # no limit
+                },
+                "aggs": aggs,
+            },
+        }
+    aggs['x'] = x_agg
+    query['aggs']['matrix'] = {
+        "filter": {
+            "bool": {
+                "must": filters,
+            }
+        },
+        "aggs": aggs,
+    }
+
+    # Execute the query
+    es_results = es.search(body=query, index=es_index, search_type='count')
+
+    # Format matrix for results
+    aggregations = es_results['aggregations']
+    result['matrix']['doc_count'] = total = aggregations['matrix']['doc_count']
+    result['matrix']['max_cell_doc_count'] = 0
+
+    # Format facets for results
+    result['facets'] = format_facets(
+        es_results, facets, used_filters, (schema,), total, principals)
+
+    def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
+        group_by = grouping_fields[0]
+        grouping_fields = grouping_fields[1:]
+        if not grouping_fields:
+            counts = {}
+            for bucket in outer_bucket[group_by]['buckets']:
+                doc_count = bucket['doc_count']
+                if doc_count > matrix['max_cell_doc_count']:
+                    matrix['max_cell_doc_count'] = doc_count
+                counts[bucket['key']] = doc_count
+            summary = []
+            for bucket in x_buckets:
+                summary.append(counts.get(bucket['key'], 0))
+            outer_bucket[group_by] = summary
+        else:
+            for bucket in outer_bucket[group_by]['buckets']:
+                summarize_buckets(matrix, x_buckets, bucket, grouping_fields)
+
+    summarize_buckets(
+        result['matrix'],
+        aggregations['matrix']['x']['buckets'],
+        aggregations['matrix'],
+        y_groupings + [x_grouping])
+
+    result['matrix']['y'][y_groupings[0]] = aggregations['matrix'][y_groupings[0]]
+    result['matrix']['x'].update(aggregations['matrix']['x'])
+
+    # Add batch actions
+    result.update(search_result_actions(request, doc_types, es_results))
+
+    # Adding total
+    result['total'] = es_results['hits']['total']
+    if result['total']:
+        result['notification'] = 'Success'
+    else:
+        # http://googlewebmastercentral.blogspot.com/2014/02/faceted-navigation-best-and-5-of-worst.html
+        request.response.status_code = 404
+        result['notification'] = 'No results found'
 
     return result
