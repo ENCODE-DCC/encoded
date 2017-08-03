@@ -107,7 +107,8 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                     }],
                 },
                 options: {
-                    maintainAspectRatio: false,
+                    cutoutPercentage: 70,
+                    maintainAspectRatio: false, // originally false
                     responsive: true,
                     legend: {
                         display: false,
@@ -125,7 +126,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                             if (chartData[i]) {
                                 text.push(`<li><a href="${baseSearchUri}${chartLabels[i]}">`);
                                 text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${chartColors[i]}"></i>`);
-                                text.push(`<span class="chart-legend-label">${chartLabels[i]}</span>`);
+                                text.push(`<div class="chart-legend-label">${chartLabels[i]}</div>`);
                                 text.push('</a></li>');
                             }
                         }
@@ -449,8 +450,8 @@ class AntibodyChart extends React.Component {
         const id = `${categoryChartId}-${ident}`;
 
         return (
-            <div className="award-charts__chart">
-                <div className="award-charts__title">
+            <div className="reagent-charts__chart">
+                <div className="reagent-charts__title">
                     Antibodies {categoryData.length ?
                     <a className="btn btn-info btn-xs reagentsreporttitle" href={`/report/?type=AntibodyLot&award=${award['@id']}&field=accession&field=lot_reviews.status&field=lot_reviews.targets.label&field=lot_reviews.targets.organism.scientific_name&field=source.title&field=product_id&field=lot_id&field=date_created`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                     :
@@ -458,11 +459,11 @@ class AntibodyChart extends React.Component {
                     </div>
                 {categoryData.length ?
                     <div>
-                        <div className="award-charts__visual">
-                            <div id={id} className="award-charts__canvas">
+                        <div className="reagent-charts__visual">
+                            <div id={id} className="reagent-charts__canvas">
                                 <canvas id={`${id}-chart`} />
                             </div>
-                            <div id={`${id}-legend`} className="award-charts__legend" />
+                            <div id={`${id}-legend`} className="reagent-charts__legend" />
                         </div>
                     </div>
                 :
@@ -563,20 +564,20 @@ class BiosampleChart extends React.Component {
         const id = `${categoryChartId}-${ident}`;
 
         return (
-            <div className="award-charts__chart">
-                <div className="award-charts__title">
+            <div className="reagent-charts__chart">
+                <div className="reagent-charts__title">
                     Biosamples {categoryData.length ?
-                    <a className="btn btn-info btn-sm reagentsreporttitle" href={`/report/?type=Biosample&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                    <a className="btn btn-info btn-xs reagentsreporttitle" href={`/report/?type=Biosample&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                     :
                     null}
                 </div>
                     {categoryData.length ?
                     <div>
-                        <div className="award-charts__visual">
-                            <div id={id} className="award-charts__canvas">
+                        <div className="reagent-charts__visual">
+                            <div id={id} className="reagent-charts__canvas">
                                 <canvas id={`${id}-chart`} />
                             </div>
-                            <div id={`${id}-legend`} className="award-charts__legend" />
+                            <div id={`${id}-legend`} className="reagent-charts__legend" />
                         </div>
                     </div>
                 :
@@ -852,41 +853,41 @@ const ChartRenderer = (props) => {
     updatedGenusArray = _.uniq(updatedGenusArray);
 
     return (
-        <div className="award-charts">
+        <div>
             <div> <GenusButtons handleClick={handleClick} selectedOrganisms={selectedOrganisms} updatedGenusArray={updatedGenusArray} /> </div>
-            <PanelBody>
+            <div className="award-charts">
                 <div className="award-chart__group-wrapper">
-                    <h2>Assays {experimentsConfig.labs.length ?
-                    <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Experiment&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
-                    : null}</h2>
-                    {experimentsConfig.labs.length ?
-                        <div>
-                            <div className="award-chart__group">
-                                <LabChart
-                                    award={award}
-                                    labs={experimentsConfig.labs}
-                                    linkUri={experimentsConfig.linkUri}
-                                    ident={experimentsConfig.ident}
-                                />
-                                <CategoryChart
-                                    award={award}
-                                    categoryData={experimentsConfig.categoryData || []}
-                                    title={experimentsConfig.title}
-                                    linkUri={experimentsConfig.linkUri}
-                                    categoryFacet={experimentsConfig.categoryFacet}
-                                    ident={experimentsConfig.ident}
-                                />
-                                <StatusChart
-                                    award={award}
-                                    statuses={experimentsConfig.statuses || []}
-                                    linkUri={experimentsConfig.linkUri}
-                                    ident={experimentsConfig.ident}
-                                />
+                        <h2>Assays {experimentsConfig.labs.length ?
+                        <a className="btn btn-info btn-xs reporttitle" href={`/report/?type=Experiment&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                        : null}</h2>
+                        {experimentsConfig.labs.length ?
+                            <div>
+                                <div className="award-chart__group">
+                                    <LabChart
+                                        award={award}
+                                        labs={experimentsConfig.labs}
+                                        linkUri={experimentsConfig.linkUri}
+                                        ident={experimentsConfig.ident}
+                                    />
+                                    <CategoryChart
+                                        award={award}
+                                        categoryData={experimentsConfig.categoryData || []}
+                                        title={experimentsConfig.title}
+                                        linkUri={experimentsConfig.linkUri}
+                                        categoryFacet={experimentsConfig.categoryFacet}
+                                        ident={experimentsConfig.ident}
+                                    />
+                                    <StatusChart
+                                        award={award}
+                                        statuses={experimentsConfig.statuses || []}
+                                        linkUri={experimentsConfig.linkUri}
+                                        ident={experimentsConfig.ident}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                    :
-                        <div className="browser-error">No assays were submitted under this award</div>
-                    }
+                        :
+                            <div className="browser-error">No assays were submitted under this award</div>
+                        }
                 </div>
                 <div className="award-chart__group-wrapper">
                     <h2>Annotations {annotationsConfig.labs.length ?
@@ -921,28 +922,30 @@ const ChartRenderer = (props) => {
                         <div className="browser-error">No annotations were submitted under this award</div>
                     }
                 </div>
-                <div className="award-chart__group-wrapper">
-                    <h2>Reagents</h2>
-                    {antibodiesConfig.categoryData.length || biosamplesConfig.categoryData.length ?
-                        <div className="award-chart__group">
-                            <AntibodyChart
-                                award={award}
-                                categoryData={antibodiesConfig.categoryData}
-                                categoryFacet={antibodiesConfig.categoryFacet}
-                                ident={antibodiesConfig.ident}
-                            />
-                            <BiosampleChart
-                                award={award}
-                                categoryData={biosamplesConfig.categoryData}
-                                categoryFacet={biosamplesConfig.categoryFacet}
-                                ident={biosamplesConfig.ident}
-                            />
-                        </div>
-                    :
-                        <div className="browser-error">No reagents were submitted under this award</div>
-                    }
+            </div>
+            <div className="reagent-charts">
+                <div className="reagent-chart__group-wrapper">
+                        <h2>Reagents</h2>
+                        {antibodiesConfig.categoryData.length || biosamplesConfig.categoryData.length ?
+                            <div className="reagent-chart__group">
+                                <AntibodyChart
+                                    award={award}
+                                    categoryData={antibodiesConfig.categoryData}
+                                    categoryFacet={antibodiesConfig.categoryFacet}
+                                    ident={antibodiesConfig.ident}
+                                />
+                                <BiosampleChart
+                                    award={award}
+                                    categoryData={biosamplesConfig.categoryData}
+                                    categoryFacet={biosamplesConfig.categoryFacet}
+                                    ident={biosamplesConfig.ident}
+                                />
+                            </div>
+                        :
+                            <div className="browser-error">No reagents were submitted under this award</div>
+                        }
                 </div>
-            </PanelBody>
+            </div>
         </div>
     );
 };

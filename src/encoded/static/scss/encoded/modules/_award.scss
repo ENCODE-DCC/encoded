@@ -2,11 +2,135 @@
 .award-charts {
     display: block;
 
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-content: stretch;
+        align-items: flex-start;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    // Style for an individual chart.
+    @at-root #{&}__chart {
+        display: block; // not on the flexy box page
+        
+        @media screen and (min-width: $screen-sm-min) {
+            display: block;
+            order: 0;
+            flex: 0 0 33.333%;
+            width: 33.333%;
+            align-self: auto;
+        }
+
+        .title {
+            font-size: 1.2rem;
+        }
+    }
+
+    // Style for the chart.js <canvas> of an individual chart.
+    @at-root #{&}__canvas {
+        position: relative;
+        height: 180px;
+
+        @media screen and (min-width: $screen-sm-min) {
+            position: relative;
+            width: 180px;
+            margin-left: 30px;
+        }
+
+        @media screen and (min-width: $screen-md-min) {
+            position: relative;
+            height: 210px;
+            width: 150px;
+            margin-bottom: -25px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        canvas {
+            display: block;
+            width: 0;
+            height: 0;
+        }
+    }
+
+    @at-root #{&}__legend {
+        margin: 20px auto;
+        width: 100%;
+        margin-left: 20px;
+
+        @media screen and (min-width: $screen-md-min) {
+            margin-left: 0px;
+            }
+
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+            li {
+                @extend .clearfix;
+            }
+        }
+
+        a {
+            line-height: 13px;
+            margin: 0;
+            color: black;
+            text-decoration: none;
+
+            &:hover {
+                background-color: #e0e0e0;
+            }
+        }
+
+        .chart-legend-chip {
+            display: block;
+            margin: 0;
+            height: 1.7em;
+            float: left;
+            @media screen and (min-width: $screen-md-min) {
+                width: 10%;
+            }
+        }
+
+        .chart-legend-label {
+            display: block;
+            position: relative;
+            float: left;
+            line-height: 1.7em;
+            @media screen and (min-width: $screen-md-min) {
+                width: 90%;
+            }
+
+        }
+    }
+
+    @at-root #{&}__title {
+        padding-top: 10px;
+        text-align: center;
+        color: gray;
+        font-size: 1.2rem;
+        font-weight: 400;
+        padding-left: 0px;
+    }
+}
+
+// For the reagents panel
+// Chart area -- contains all charts.
+.reagent-charts {
+    display: block;
+
     // Style for an individual chart.
     @at-root #{&}__chart {
         display: block;
-
         @media screen and (min-width: $screen-sm-min) {
+            width: 50%;
+        }
+        @media screen and (min-width: $screen-md-min) {
             flex: 0 0 33.3333%;
             width: 33.3333%;
         }
@@ -20,7 +144,6 @@
     @at-root #{&}__canvas {
         position: relative;
         height: 180px;
-
         canvas {
             display: block;
             width: 0;
@@ -29,11 +152,10 @@
     }
 
     @at-root #{&}__legend {
-        margin: 50px auto;
+        margin: 20px auto;
         width: 100%;
 
         @media screen and (min-width: $screen-md-min) {
-            margin: 20px auto;
             width: 80%;
         }
 
@@ -48,7 +170,6 @@
         }
 
         a {
-            float: left;
             line-height: 13px;
             margin: 0;
             padding: 3px;
@@ -84,10 +205,83 @@
         font-weight: 400;
     }
 }
-
-
 // Provides the flex structure for a group of charts.
 .award-chart__group-wrapper {
+    padding: 5px;
+    @media screen and (min-width: $screen-md-min) {
+        width: 50%;
+    }
+
+    &:first-child {
+    margin: 50px 0 0 0;
+        margin-top: 0;
+    }
+    
+    @media screen and (min-width: $screen-md-min) {
+        &:first-child {
+        flex: 0 1 50%;
+        margin: 50px 0 0 0;
+            margin-top: 0;
+        }
+    }
+
+    h2 {
+        margin-top: 5px;
+        padding-bottom: 10px;
+        font-size: 1.8rem;
+        font-weight: normal;
+        text-align: center;
+        border-bottom: 1px solid #a0a0a0;
+        float: center;
+    }
+    .reporttitle {
+        float: left;
+        position: absolute;
+        padding-top: 7px;
+        padding-bottom: 3px;
+        margin-left: 8px;
+    }
+    @media screen and (min-width: $screen-md-min) {
+    
+        .reporttitle {
+            float: left;
+            position: absolute;
+            padding-top: 3px;
+            padding-bottom: 0px;
+            padding-left: 5px;
+            padding-right: 5px;
+            margin-top: 2px;
+            margin-left: 8px;
+        }
+    }
+
+    .reagentsreporttitle {
+        padding-top: 3px;
+        padding-bottom: 0px;
+    }
+}
+
+
+// Style for a group of charts, like for the experiment group or annotation group.
+.award-chart__group {
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
+    }
+}
+
+.description {
+    display: block;
+
+    @at-root #{&}__columnone {
+        display: block;
+        float: left;
+        width: 50%
+    }
+
+}
+
+// Provides the flex structure for a group of charts.
+.reagent-chart__group-wrapper {
     padding: 5px;
 
     &:first-child {
@@ -121,20 +315,9 @@
 
 
 // Style for a group of charts, like for the experiment group or annotation group.
-.award-chart__group {
+.reagent-chart__group {
     @media screen and (min-width: $screen-sm-min) {
         display: flex;
     }
-}
-
-.description {
-    display: block;
-
-    @at-root #{&}__columnone {
-        display: block;
-        float: left;
-        width: 50%
-    }
-
 }
 
