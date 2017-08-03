@@ -16,6 +16,7 @@ requires = [
     'boto',
     'botocore',
     'jmespath',
+    'redis',
     'boto3',
     'elasticsearch',
     'lucenequery',
