@@ -41,8 +41,12 @@
         "purpose": "repression",
         "modification_type": "deletion",
         "modification_technique": "CRISPR",
-        "reagent_repository": "atcc",
-        "reagent_identifiers": ["CRL-2522"],
+        "reagent_availability": [
+            { 
+                "repository": "atcc",
+                "identifier": "CRL-2522"
+            }
+        ],
         "guide_rna_sequences": [
             "CAGTTAGCAGTACATGGAACACAGT",
             "ATTAGCGGCTATAATTGCCGGTATT"
@@ -53,8 +57,12 @@
     {
         "description": "shRNA targeting FTO",
         "modification_technique": "RNAi",
-        "reagent_repository": "sigma",
-        "reagent_identifiers": ["TRCN0000246247"],
+        "reagent_availability": [
+            {
+                "repository": "sigma",
+                "identifier": "TRCN0000246247"
+            }
+        ],
         "modified_site_by_target_id": "/targets/FTO-human/",
         "modification_type": "interference",
         "purpose": "repression",
@@ -78,8 +86,12 @@
         "modification_type": "insertion",
         "purpose": "tagging",
         "modification_technique": "stable transfection",
-        "reagent_repository": "kevin-white",
-        "reagent_identifiers":["CH322-135D17"],
+        "reagent_availability": [
+            {
+                "repository": "kevin-white",
+                "identifier": "CH322-135D17"
+            }
+        ],
         "documents": ["kevin-white:K562_BAC_transfection_White_protocol"],
         "award": "/awards/U41HG007355/",
         "uuid": "2f33a486-e3d9-4633-8682-a363b48ba67d"
@@ -100,15 +112,11 @@
         "purpose": "validation",
         "zygosity": "heterozygous",
         "modification_technique": "TALE",
-        "RVD_sequence_pair1": {
-            "left_RVD_sequence": "NN,NG,HD,NI,NI,NN"
-        },
-        "RVD_sequence_pair2": {
-            "left_RVD_sequence": "NI,NN,ND,NG,NG,ND"
-        },
-        "targeted_sequences": [
-            "TTATTGAGGCGATGACT",
-            "ATTAGCCAGGGATTATG"
+        "RVD_sequence_pairs": [
+            {
+                "left_RVD_sequence": "NN,NG,HD,NI,NI,NN",
+                "right_RVD_sequence": "NI,NN,ND,NG,NG,ND"
+            }
         ],
         "introduced_sequence": "TACGGAGCTAGCTGGAACTAGCCATGCATAAACGATAGCTTGCTC"
     },
@@ -126,7 +134,7 @@
         "submitted_by": "amet.fusce@est.fermentum",
         "modification_type": "mutagenesis",
         "purpose": "repression",
-        "modification_technique": "mutagenesis",
+        "modification_technique": "mutagen treatment",
         "treatments": ["3280b708-0f05-40fa-bff2-54e2b6505c13"]
     }
 ]
