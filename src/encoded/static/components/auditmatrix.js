@@ -158,33 +158,33 @@ class AuditMatrix extends React.Component {
             const secondaryYGrouping = matrix.y.group_by[1];
             const xBuckets = matrix.x.buckets;
             const xLimit = matrix.x.limit || xBuckets.length;
-            var yGroups = matrix.y[primaryYGrouping].buckets;
+            let yGroups = matrix.y[primaryYGrouping].buckets;
             const orderKey = ['audit.ERROR.category', 'audit.NOT_COMPLIANT.category', 'audit.WARNING.category', 'no_audits', 'audit.INTERNAL_ACTION.category'];
             const titleKey = ['Error', 'Not Compliant', 'Warning', 'No audits', 'Internal Action'];
-            const noAuditKey = ['no red or orange or yellow audits', 'no red or orange audits' , 'no red audits', 'no audits'];
-            var orderIndex = 0;
-            var rowIndex = 0;
-            var tempYGroups = [];
-            var tempNoAudits = []
-            while(orderIndex < orderKey.length){
+            const noAuditKey = ['no red or orange or yellow audits', 'no red or orange audits', 'no red audits', 'no audits'];
+            let orderIndex = 0;
+            let rowIndex = 0;
+            const tempYGroups = [];
+            const tempNoAudits = [];
+            while (orderIndex < orderKey.length) {
                 yGroups.forEach((group) => {
-                    if(group.key === orderKey[orderIndex]){
-                        if(group.key === "no_audits"){
-                            while(rowIndex < noAuditKey.length){
-                                group["audit_label"]["buckets"].forEach((row) => {
-                                    if(row.key === noAuditKey[rowIndex]){
+                    if (group.key === orderKey[orderIndex]) {
+                        if (group.key === 'no_audits') {
+                            while (rowIndex < noAuditKey.length) {
+                                group.audit_label.buckets.forEach((row) => {
+                                    if (row.key === noAuditKey[rowIndex]) {
                                         tempNoAudits.push(row);
                                     }
                                 });
-                                rowIndex++;
+                                rowIndex += 1;
                             }
-                            group["audit_label"]["buckets"] = tempNoAudits;
+                            group.audit_label.buckets = tempNoAudits;
                         }
                         group.title = titleKey[orderIndex];
                         tempYGroups.push(group);
                     }
                 });
-                orderIndex++;
+                orderIndex += 1;
             }
             yGroups = tempYGroups;
             const yGroupFacet = _.findWhere(context.facets, { field: primaryYGrouping });
@@ -200,7 +200,7 @@ class AuditMatrix extends React.Component {
             if (context.visualize_batch && Object.keys(context.visualize_batch).length) {
                 visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
                     const aLower = a.toLowerCase();
-                    const bLower = b.toLowerCase();   
+                    const bLower = b.toLowerCase();
                     return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
                 });
             }
@@ -212,7 +212,7 @@ class AuditMatrix extends React.Component {
             };
 
             // Make an array of colors corresponding to the ordering of biosample_type
-            const biosampleTypeColors = ["#cc0700", "#ff8000", "#e0e000", "#009802", "#a0a0a0"];
+            const biosampleTypeColors = ['#cc0700', '#ff8000', '#e0e000', '#009802', '#a0a0a0'];
 
             return (
                 <div>
@@ -292,13 +292,13 @@ class AuditMatrix extends React.Component {
                                                 const groupColor = biosampleTypeColors[i];
                                                 const seriesColor = color(groupColor);
                                                 const parsed = url.parse(matrixBase, true);
-                                                const searchTerm = "*"; // shows all of certain audit category
+                                                const searchTerm = '*'; // shows all of certain audit category
                                                 parsed.query[group.key] = searchTerm;
                                                 parsed.query['y.limit'] = null;
                                                 delete parsed.search; // this makes format compose the search string out of the query object
-                                                var groupHref = url.format(parsed);
-                                                if(group.key === "no_audits"){
-                                                    groupHref = "?type=Experiment&status=released&audit.ERROR.category!=*&audit.NOT_COMPLIANT.category!=*&audit.WARNING.category!=*&audit.INTERNAL_ACTION.category!=*&y.limit=";
+                                                let groupHref = url.format(parsed);
+                                                if (group.key === 'no_audits') {
+                                                    groupHref = '?type=Experiment&status=released&audit.ERROR.category!=*&audit.NOT_COMPLIANT.category!=*&audit.WARNING.category!=*&audit.INTERNAL_ACTION.category!=*&y.limit=';
                                                 }
                                                 // The next 2 lines make the category title text
                                                 // color white or black based on the background
@@ -318,18 +318,18 @@ class AuditMatrix extends React.Component {
                                                 // group rows that are under the display limit.
                                                 const groupRows = (this.state.yGroupOpen[group.key] || this.state.allYGroupsOpen) ? groupBuckets : groupBuckets.slice(0, yLimit);
                                                 rows.push(...groupRows.map((yb) => {
-                                                    var href = `${searchBase}&${group.key}=${globals.encodedURIComponent(yb.key)}`;
-                                                    if(yb.key === "no red audits"){
-                                                        var href = `${searchBase}&audit.ERROR.category!=*`;
+                                                    let href = `${searchBase}&${group.key}=${globals.encodedURIComponent(yb.key)}`;
+                                                    if (yb.key === 'no red audits') {
+                                                        href = `${searchBase}&audit.ERROR.category!=*`;
                                                     }
-                                                    if(yb.key === "no red or orange audits"){
-                                                        var href = `${searchBase}&audit.ERROR.category!=*&audit.NOT_COMPLIANT.category!=*`;
+                                                    if (yb.key === 'no red or orange audits') {
+                                                        href = `${searchBase}&audit.ERROR.category!=*&audit.NOT_COMPLIANT.category!=*`;
                                                     }
-                                                    if(yb.key === "no red or orange or yellow audits"){
-                                                        var href = `${searchBase}&audit.ERROR.category!=*&audit.NOT_COMPLIANT.category!=*&audit.WARNING.category!=*`;
+                                                    if (yb.key === 'no red or orange or yellow audits') {
+                                                        href = `${searchBase}&audit.ERROR.category!=*&audit.NOT_COMPLIANT.category!=*&audit.WARNING.category!=*`;
                                                     }
-                                                    if(yb.key === "no audits"){
-                                                        var href = `${searchBase}&audit.ERROR.category!=*&audit.NOT_COMPLIANT.category!=*&audit.WARNING.category!=*&audit.INTERNAL_ACTION.category!=*`;
+                                                    if (yb.key === 'no audits') {
+                                                        href = `${searchBase}&audit.ERROR.category!=*&audit.NOT_COMPLIANT.category!=*&audit.WARNING.category!=*&audit.INTERNAL_ACTION.category!=*`;
                                                     }
                                                     return (
                                                         <tr key={yb.key}>
