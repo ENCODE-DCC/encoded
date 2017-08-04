@@ -10,6 +10,8 @@ import { ProjectBadge } from './image';
 import { PickerActions } from './search';
 import StatusLabel from './statuslabel';
 
+import { SortTablePanel, SortTable } from './sorttable';
+
 const labChartId = 'lab-chart'; // Lab chart <div> id attribute
 const categoryChartId = 'category-chart'; // Assay chart <div> id attribute
 const statusChartId = 'status-chart'; // Status chart <div> id attribute
@@ -44,7 +46,8 @@ function drawDonutCenter(chart) {
     const width = chart.chart.width;
     const height = chart.chart.height;
     const ctx = chart.chart.ctx;
-    if (canvasId === 'myGraph') {
+    // Undraws donut centers for Cumulative Line Chart and Status Stacked Bar Chart.
+    if (canvasId === 'myGraph' || canvasId === 'status-chart-experiments-chart') {
         ctx.clearRect(0, 0, width, height);
     } else {
         const data = chart.data.datasets[0].data;
@@ -126,7 +129,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                             if (chartData[i]) {
                                 text.push(`<li><a href="${baseSearchUri}${chartLabels[i]}">`);
                                 text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${chartColors[i]}"></i>`);
-                                text.push(`<div class="chart-legend-label">${chartLabels[i]}</div>`);
+                                text.push(`<span class="chart-legend-label">${chartLabels[i]}</span>`);
                                 text.push('</a></li>');
                             }
                         }
@@ -140,7 +143,11 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                         if (activePoints[0]) { // if click on wrong area, do nothing
                             const clickedElementIndex = activePoints[0]._index;
                             const term = chart.data.labels[clickedElementIndex];
-                            navigate(`${baseSearchUri}${globals.encodedURIComponent(term)}`);
+                            if (chart.options.onClick.baseSearchUri) {
+                                navigate(`${chart.options.onClick.baseSearchUri}${globals.encodedURIComponent(term)}`);
+                            } else {
+                                navigate(`${baseSearchUri}${globals.encodedURIComponent(term)}`);
+                            }
                         }
                     },
                 },
@@ -153,6 +160,131 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
     });
 }
 
+function createBarChart(chartId, unreplicatedLabel, unreplicatedDataset, isogenicDataset, anisogenicDataset, colors, labels, replicatelabels, baseSearchUri, navigate) {
+    return new Promise((resolve) => {
+        require.ensure(['chart.js'], (require) => {
+            const Chart = require('chart.js');
+            const datasets = [{}, {}, {}];
+            if (unreplicatedDataset.some(x => x > 0)) {
+                datasets[0].label = 'unreplicated';
+                datasets[0].data = unreplicatedDataset;
+                datasets[0].backgroundColor = colors[0];
+                if (isogenicDataset.some(x => x > 0)) {
+                    datasets[1].label = 'isogenic';
+                    datasets[1].data = isogenicDataset;
+                    datasets[1].backgroundColor = colors[1];
+                    if (anisogenicDataset.some(x => x > 0)) {
+                        datasets[2].label = 'anisogenic';
+                        datasets[2].data = anisogenicDataset;
+                        datasets[2].backgroundColor = colors[2];
+                    }
+                } else if (isogenicDataset.every(x => x === 0) && anisogenicDataset.some(x => x > 0)) {
+                    datasets[1].label = 'anisogenic';
+                    datasets[1].data = anisogenicDataset;
+                    datasets[1].backgroundColor = colors[1];
+                }
+            } else if (unreplicatedDataset.every(x => x === 0) && isogenicDataset.some(x => x > 0)) {
+                datasets[0].label = 'isogenic';
+                datasets[0].data = isogenicDataset;
+                datasets[0].backgroundColor = colors[0];
+                if (anisogenicDataset.some(x => x > 0)) {
+                    datasets[1].label = 'anisogenic';
+                    datasets[1].data = anisogenicDataset;
+                    datasets[1].backgroundColor = colors[1];
+                }
+            } else if (unreplicatedDataset.every(x => x === 0) && isogenicDataset.every(x => x === 0) && anisogenicDataset.some(x => x > 0)) {
+                datasets[0].label = 'anisogenic';
+                datasets[0].data = anisogenicDataset;
+                datasets[0].backgroundColors = colors[0];
+            }
+            // Create the chart.
+            const canvas = document.getElementById(`${chartId}-chart`);
+            const parent = document.getElementById(chartId);
+            canvas.width = parent.offsetWidth;
+            canvas.height = parent.offsetHeight;
+            canvas.style.width = `${parent.offsetWidth}px`;
+            canvas.style.height = `${parent.offsetHeight}px`;
+            const ctx = canvas.getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets,
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    legend: {
+                        display: false,
+                    },
+                    scales: {
+                        xAxes: [{
+                            scaleLabel: {
+                                display: false,
+                            },
+                            gridLines: {
+                            },
+                            stacked: true,
+                        }],
+                        yAxes: [{
+                            gridLines: {
+                                display: false,
+                                color: '#fff',
+                                zeroLineColor: '#fff',
+                                zeroLineWidth: 0,
+                            },
+                            stacked: true,
+                        }],
+                    },
+                    animation: {
+                        duration: 200,
+                    },
+                    legendCallback: (chartInstance) => {
+                        const chartLabels = replicatelabels;
+                        const LegendLabels = [];
+                        const dataColors = [];
+                        // If data array has value, add to legend
+                        for (let i = 0; i < chartLabels.length; i += 1) {
+                            if (chartInstance.data.datasets[i].data.some(x => x > 0)) {
+                                LegendLabels.push(chartInstance.data.datasets[i].label);
+                                dataColors.push(chartInstance.data.datasets[i].backgroundColor);
+                            }
+                        }
+                        const text = [];
+                        text.push('<ul>');
+                        for (let i = 0; i < LegendLabels.length; i += 1) {
+                            if (LegendLabels[i]) {
+                                text.push(`<li><a href="${baseSearchUri}&replication_type=${LegendLabels[i]}">`);
+                                text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${dataColors[i]}"></i>`);
+                                text.push(`<span class="chart-legend-label">${LegendLabels[i]}</span>`);
+                                text.push('</a></li>');
+                            }
+                        }
+                        text.push('</ul>');
+                        return text.join('');
+                    },
+                    onClick: function onClick(e) {
+                        const activePoints = chart.getElementAtEvent(e);
+
+                        if (activePoints[0]) { // if click on wrong area, do nothing
+                            const clickedElementIndex = activePoints[0]._index;
+                            const clickedElementdataset = activePoints[0]._datasetIndex;
+                            const term = chart.data.labels[clickedElementIndex];
+                            const item = chart.data.datasets[clickedElementdataset].label;
+                            if (chart.options.onClick.baseSearchUri) {
+                                navigate(`${chart.options.onClick.baseSearchUri}&status=${globals.encodedURIComponent(term)}&replication_type=${item}`);
+                            } else {
+                                navigate(`${baseSearchUri}&status=${globals.encodedURIComponent(term)}&replication_type=${item}`);
+                            }
+                        }
+                    },
+                },
+            });
+            document.getElementById(`${chartId}-legend`).innerHTML = chart.generateLegend();
+            resolve(chart);
+        }, 'chartjs');
+    });
+}
 
 // Display and handle clicks in the chart of labs.
 class LabChart extends React.Component {
@@ -183,6 +315,7 @@ class LabChart extends React.Component {
 
     // Update existing chart with new data.
     updateChart(chart, facetData) {
+        const { award, linkUri, objectQuery } = this.props;
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
         const labels = [];
@@ -193,11 +326,11 @@ class LabChart extends React.Component {
             }
         });
         const colors = labels.map((label, i) => labColorList[i % labColorList.length]);
-
         // Update chart data and redraw with the new data
         chart.data.datasets[0].data = values;
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
+        chart.options.onClick.baseSearchUri = `${linkUri}${award.name}${objectQuery}&lab.title=`;
         chart.update();
 
         // Redraw the updated legend
@@ -255,6 +388,11 @@ LabChart.propTypes = {
     labs: PropTypes.array.isRequired, // Array of labs facet data
     linkUri: PropTypes.string.isRequired, // Base URI for matrix links
     ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
+    objectQuery: PropTypes.string,
+};
+
+LabChart.defaultProps = {
+    objectQuery: '',
 };
 
 LabChart.contextTypes = {
@@ -290,6 +428,7 @@ class CategoryChart extends React.Component {
 
     // Update existing chart with new data.
     updateChart(chart, facetData) {
+        const { award, linkUri, objectQuery, categoryFacet } = this.props;
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
         const labels = [];
@@ -305,6 +444,7 @@ class CategoryChart extends React.Component {
         chart.data.datasets[0].data = values;
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
+        chart.options.onClick.baseSearchUri = `${linkUri}${award.name}${objectQuery}&${categoryFacet}=`;
         chart.update();
 
         // Redraw the updated legend
@@ -366,11 +506,17 @@ CategoryChart.propTypes = {
     linkUri: PropTypes.string.isRequired, // Element of matrix URI to select
     categoryFacet: PropTypes.string.isRequired, // Add to linkUri to link to matrix facet item
     ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
+    objectQuery: PropTypes.string,
+};
+
+CategoryChart.defaultProps = {
+    objectQuery: '',
 };
 
 CategoryChart.contextTypes = {
     navigate: PropTypes.func,
 };
+
 // Display and handle clicks in the chart of antibodies.
 class AntibodyChart extends React.Component {
     constructor() {
@@ -512,8 +658,9 @@ class BiosampleChart extends React.Component {
         }
     }
 
-    // Update existing chart with new data.
+// Update existing chart with new data.
     updateChart(chart, facetData) {
+        const { award } = this.props;
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
         const labels = [];
@@ -524,11 +671,13 @@ class BiosampleChart extends React.Component {
             }
         });
         const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
-
+        // if (this.props.selectedOrganisms.length)
+        const BiosampleQuery = generateQuery(this.props.selectedOrganisms, 'organism.scientific_name=');
         // Update chart data and redraw with the new data.
         chart.data.datasets[0].data = values;
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
+        chart.options.onClick.baseSearchUri = `/report/?type=Biosample&award.name=${award.name}&${BiosampleQuery}&biosample_type=`;
         chart.update();
 
         // Redraw the updated legend
@@ -536,7 +685,7 @@ class BiosampleChart extends React.Component {
     }
 
     createChart(chartId, facetData) {
-        const { award, categoryFacet } = this.props;
+        const { award, linkUri, categoryFacet, selectedOrganisms } = this.props;
 
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
@@ -548,9 +697,7 @@ class BiosampleChart extends React.Component {
             }
         });
         const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
-
-        // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, `${award.name}&${categoryFacet}=`, (uri) => { this.context.navigate(uri); })
+        createDoughnutChart(chartId, values, labels, colors, `${linkUri}${award.name}&${categoryFacet}=`, (uri) => { this.context.navigate(uri); }, selectedOrganisms)
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -559,25 +706,25 @@ class BiosampleChart extends React.Component {
 
     render() {
         const { categoryData, ident, award } = this.props;
-
+        const BiosampleQuery = generateQuery(this.props.selectedOrganisms, 'organism.scientific_name=');
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${categoryChartId}-${ident}`;
 
         return (
-            <div className="reagent-charts__chart">
-                <div className="reagent-charts__title">
+            <div className="award-charts__chart">
+                <div className="award-charts__title">
                     Biosamples {categoryData.length ?
-                    <a className="btn btn-info btn-xs reagentsreporttitle" href={`/report/?type=Biosample&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                    <a className="btn btn-info btn-sm reagentsreporttitle" href={`/report/?type=Biosample&${BiosampleQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                     :
                     null}
                 </div>
                     {categoryData.length ?
                     <div>
-                        <div className="reagent-charts__visual">
-                            <div id={id} className="reagent-charts__canvas">
+                        <div className="award-charts__visual">
+                            <div id={id} className="award-charts__canvas">
                                 <canvas id={`${id}-chart`} />
                             </div>
-                            <div id={`${id}-legend`} className="reagent-charts__legend" />
+                            <div id={`${id}-legend`} className="award-charts__legend" />
                         </div>
                     </div>
                 :
@@ -593,9 +740,356 @@ BiosampleChart.propTypes = {
     categoryData: PropTypes.array.isRequired, // Type-specific data to display in a chart
     categoryFacet: PropTypes.string.isRequired, // Add to linkUri to link to matrix facet item
     ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
+    linkUri: PropTypes.string.isRequired,
+    selectedOrganisms: PropTypes.array,
+};
+
+BiosampleChart.defaultProps = {
+    selectedOrganisms: [],
 };
 
 BiosampleChart.contextTypes = {
+    navigate: PropTypes.func,
+};
+
+// Function to be called in createChart and updateChart of class StatusExperimentChart, creates arrays for chart data
+function StatusData(experiments, unreplicated, isogenic, anisogenic) {
+    let unreplicatedArray;
+    let isogenicArray;
+    let anisogenicArray;
+    const unreplicatedLabel = [];
+    let unreplicatedDataset = [];
+    const isogenicLabel = [];
+    let isogenicDataset = [];
+    const anisogenicLabel = [];
+    let anisogenicDataset = [];
+
+    if (experiments && experiments.facets && experiments.facets.length) {
+        const unreplicatedFacet = unreplicated.facets.find(facet => facet.field === 'status');
+        const isogenicFacet = isogenic.facets.find(facet => facet.field === 'status');
+        const anisogenicFacet = anisogenic.facets.find(facet => facet.field === 'status');
+        unreplicatedArray = (unreplicatedFacet && unreplicatedFacet.terms && unreplicatedFacet.terms.length) ? unreplicatedFacet.terms : [];
+        isogenicArray = (isogenicFacet && isogenicFacet.terms && isogenicFacet.terms.length) ? isogenicFacet.terms : [];
+        anisogenicArray = (anisogenicFacet && anisogenicFacet.terms && anisogenicFacet.terms.length) ? anisogenicFacet.terms : [];
+    }
+    const labels = ['proposed', 'started', 'submitted', 'released', 'deleted', 'replaced', 'archived', 'revoked'];
+    if (unreplicatedArray.length) {
+        for (let j = 0; j < labels.length; j += 1) {
+            for (let i = 0; i < unreplicatedArray.length; i += 1) {
+                if (unreplicatedArray[i].key === labels[j]) {
+                    unreplicatedLabel.push(unreplicatedArray[i].key);
+                    unreplicatedDataset.push(unreplicatedArray[i].doc_count);
+                }
+            }
+        }
+        for (let j = 0; j < labels.length; j += 1) {
+            if (labels[j] !== unreplicatedLabel[j]) {
+                unreplicatedLabel.splice(j, 0, labels[j]);
+                unreplicatedDataset.splice(j, 0, 0);
+            }
+        }
+    } else {
+        unreplicatedDataset = [0, 0, 0, 0, 0, 0, 0, 0];
+    }
+    if (isogenicArray.length) {
+        for (let j = 0; j < labels.length; j += 1) {
+            for (let i = 0; i < isogenicArray.length; i += 1) {
+                if (isogenicArray[i].key === labels[j]) {
+                    isogenicLabel.push(isogenicArray[i].key);
+                    isogenicDataset.push(isogenicArray[i].doc_count);
+                }
+            }
+        }
+        for (let j = 0; j < labels.length; j += 1) {
+            if (labels[j] !== isogenicLabel[j]) {
+                isogenicLabel.splice(j, 0, labels[j]);
+                isogenicDataset.splice(j, 0, 0);
+            }
+        }
+    } else {
+        isogenicDataset = [0, 0, 0, 0, 0, 0, 0, 0];
+    }
+    if (anisogenicArray.length) {
+        for (let j = 0; j < labels.length; j += 1) {
+            for (let i = 0; i < anisogenicArray.length; i += 1) {
+                if (anisogenicArray[i].key === labels[j]) {
+                    anisogenicLabel.push(anisogenicArray[i].key);
+                    anisogenicDataset.push(anisogenicArray[i].doc_count);
+                }
+            }
+        }
+        for (let j = 0; j < labels.length; j += 1) {
+            if (labels[j] !== anisogenicLabel[j]) {
+                anisogenicLabel.splice(j, 0, labels[j]);
+                anisogenicDataset.splice(j, 0, 0);
+            }
+        }
+    } else {
+        anisogenicDataset = [0, 0, 0, 0, 0, 0, 0, 0];
+    }
+    return ([labels, unreplicatedLabel, unreplicatedDataset, isogenicDataset, anisogenicDataset]);
+}
+
+class ControlsChart extends React.Component {
+    constructor() {
+        super();
+        this.createChart = this.createChart.bind(this);
+        this.updateChart = this.updateChart.bind(this);
+    }
+
+    componentDidMount() {
+        if (this.props.statuses.length) {
+            this.createChart(`${statusChartId}-${this.props.ident}-controls`, this.props.statuses);
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.props.statuses.length) {
+            if (this.chart) {
+                this.updateChart(this.chart, this.props.statuses);
+            } else {
+                this.createChart(`${statusChartId}-${this.props.ident}-controls`, this.props.statuses);
+            }
+        } else if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    }
+
+    updateChart(chart, facetData) {
+        const { award, objectQuery } = this.props;
+        // Extract the non-zero values, and corresponding labels and colors for the data.
+        const values = [];
+        const labels = [];
+        facetData.forEach((item) => {
+            if (item.doc_count) {
+                values.push(item.doc_count);
+                labels.push(item.key);
+            }
+        });
+
+        const colors = labels.map((label, i) => statusColorList[i % statusColorList.length]);
+
+        // Update chart data and redraw with the new data
+        chart.data.datasets[0].data = values;
+        chart.data.datasets[0].backgroundColor = colors;
+        chart.data.labels = labels;
+        chart.options.onClick.baseSearchUri = `/matrix/?type=Experiment&target.investigated_as=control&award.name=${award.name}&${objectQuery}&status=`;
+        chart.update();
+
+        // Redraw the updated legend
+        document.getElementById(`${statusChartId}-${this.props.ident}-controls-legend`).innerHTML = chart.generateLegend();
+    }
+
+    createChart(chartId, facetData) {
+        // Extract the non-zero values, and corresponding labels and colors for the data.
+        const values = [];
+        const labels = [];
+        facetData.forEach((item) => {
+            if (item.doc_count) {
+                values.push(item.doc_count);
+                labels.push(item.key);
+            }
+        });
+        const colors = labels.map((label, i) => statusColorList[i % statusColorList.length]);
+
+        // Create the chart.
+        createDoughnutChart(chartId, values, labels, colors, `${this.props.linkUri}${this.props.award.name}&status=`, (uri) => { this.context.navigate(uri); })
+            .then((chartInstance) => {
+                // Save the created chart instance.
+                this.chart = chartInstance;
+            });
+    }
+
+    render() {
+        const { statuses, ident } = this.props;
+
+        // Calculate a (hopefully) unique ID to put on the DOM elements.
+        const id = `${statusChartId}-${ident}-controls`;
+
+        return (
+            <div className="award-charts__chart">
+                <div className="award-charts__title">
+                    Controls
+                </div>
+                {statuses.length ?
+                    <div className="award-charts__visual">
+                        <div id={id} className="award-charts__canvas">
+                            <canvas id={`${id}-chart`} />
+                        </div>
+                        <div id={`${id}-legend`} className="award-charts__legend" />
+                    </div>
+                :
+                    <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
+                }
+            </div>
+        );
+    }
+}
+
+ControlsChart.propTypes = {
+    award: PropTypes.object.isRequired, // Award being displayed
+    statuses: PropTypes.array, // Array of status facet data
+    linkUri: PropTypes.string.isRequired, // URI to use for matrix links
+    ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
+    objectQuery: PropTypes.string,
+};
+
+ControlsChart.defaultProps = {
+    statuses: [],
+    objectQuery: '',
+};
+
+ControlsChart.contextTypes = {
+    navigate: PropTypes.func,
+};
+
+class StatusExperimentChart extends React.Component {
+    constructor() {
+        super();
+        this.createChart = this.createChart.bind(this);
+        this.updateChart = this.updateChart.bind(this);
+    }
+
+    componentDidMount() {
+        if (this.props.statuses.length) {
+            this.createChart(`${statusChartId}-${this.props.ident}`, this.props.statuses);
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.props.statuses.length) {
+            if (this.chart) {
+                this.updateChart(this.chart, this.props.statuses);
+            } else {
+                this.createChart(`${statusChartId}-${this.props.ident}`, this.props.statuses);
+            }
+        } else if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    }
+
+    updateChart(chart) {
+        const { experiments, unreplicated, isogenic, anisogenic, linkUri, award, objectQuery } = this.props;
+        const data = StatusData(experiments, unreplicated, isogenic, anisogenic); // Array of datasets and labels
+        const replicatelabels = ['unreplicated', 'isogenic', 'anisogenic'];
+        const colors = replicatelabels.map((label, i) => statusColorList[i % statusColorList.length]);
+        const unreplicatedDataset = data[2];
+        const isogenicDataset = data[3];
+        const anisogenicDataset = data[4];
+        if (unreplicatedDataset.some(x => x > 0)) {
+            chart.data.datasets[0].label = 'unreplicated';
+            chart.data.datasets[0].data = unreplicatedDataset;
+            chart.data.datasets[0].backgroundColor = colors[0];
+            if (isogenicDataset.some(x => x > 0)) {
+                chart.data.datasets[1].label = 'isogenic';
+                chart.data.datasets[1].data = isogenicDataset;
+                chart.data.datasets[1].backgroundColor = colors[1];
+                if (anisogenicDataset.some(x => x > 0)) {
+                    chart.data.datasets[2].label = 'anisogenic';
+                    chart.data.datasets[2].data = anisogenicDataset;
+                    chart.data.datasets[2].backgroundColor = colors[2];
+                } else if (anisogenicDataset.every(x => x === 0)) {
+                    chart.data.datasets[2] = {};
+                }
+            } else if (isogenicDataset.every(x => x === 0) && anisogenicDataset.some(x => x > 0)) {
+                chart.data.datasets[1].label = 'anisogenic';
+                chart.data.datasets[1].data = anisogenicDataset;
+                chart.data.datasets[1].backgroundColor = colors[1];
+                chart.data.datasets[2] = {};
+            }
+        } else if (unreplicatedDataset.every(x => x === 0) && isogenicDataset.some(x => x > 0)) {
+            chart.data.datasets[0].label = 'isogenic';
+            chart.data.datasets[0].data = isogenicDataset;
+            chart.data.datasets[0].backgroundColor = colors[0];
+            if (anisogenicDataset.some(x => x > 0)) {
+                chart.data.datasets[1].label = 'anisogenic';
+                chart.data.datasets[1].data = anisogenicDataset;
+                chart.data.datasets[1].backgroundColor = colors[1];
+                chart.data.datasets[2] = {};
+            } else if (anisogenicDataset.every(x => x === 0)) {
+                chart.data.datasets[1] = {};
+                chart.data.datasets[2] = {};
+            }
+        } else if (unreplicatedDataset.every(x => x === 0) && isogenicDataset.every(x => x === 0) && anisogenicDataset.some(x => x > 0)) {
+            chart.data.datasets[0].label = 'anisogenic';
+            chart.data.datasets[0].data = anisogenicDataset;
+            chart.data.datasets[0].backgroundColors = colors[0];
+            chart.data.datasets[1] = {};
+            chart.data.datasets[2] = {};
+        }
+        chart.options.onClick.baseSearchUri = `${linkUri}${award.name}${objectQuery}`;
+        chart.update();
+
+        document.getElementById(`${statusChartId}-${this.props.ident}-legend`).innerHTML = chart.generateLegend();
+    }
+
+    createChart(chartId) {
+        const { experiments, unreplicated, isogenic, anisogenic } = this.props;
+        const data = StatusData(experiments, unreplicated, isogenic, anisogenic); // Array of datasets and labels
+        const labels = data[0];
+        const statusLabel = data[1];
+        const unreplicatedDataset = data[2];
+        const isogenicDataset = data[3];
+        const anisogenicDataset = data[4];
+        const replicatelabels = ['unreplicated', 'isogenic', 'anisogenic'];
+        const colors = replicatelabels.map((label, i) => statusColorList[i % statusColorList.length]);
+
+        createBarChart(chartId, statusLabel, unreplicatedDataset, isogenicDataset, anisogenicDataset, colors, labels, replicatelabels, `${this.props.linkUri}${this.props.award.name}`, (uri) => { this.context.navigate(uri); })
+            .then((chartInstance) => {
+                // Save the created chart instance.
+                this.chart = chartInstance;
+            });
+    }
+
+    render() {
+        const { statuses, ident } = this.props;
+
+        // Calculate a (hopefully) unique ID to put on the DOM elements.
+        const id = `${statusChartId}-${ident}`;
+
+        return (
+            <div className="award-charts__chart">
+                <div className="award-charts__title">
+                    Status
+                </div>
+                 {statuses.length ?
+                    <div className="award-charts__visual">
+                        <div id={id} className="award-charts__canvas">
+                            <canvas id={`${id}-chart`} />
+                        </div>
+                        <div id={`${id}-legend`} className="award-charts__legend" />
+                    </div>
+                :
+                    <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
+                }
+            </div>
+        );
+    }
+}
+
+StatusExperimentChart.propTypes = {
+    award: PropTypes.object.isRequired, // Award being displayed
+    statuses: PropTypes.array, // Array of status facet data
+    linkUri: PropTypes.string.isRequired, // URI to use for matrix links
+    ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
+    experiments: PropTypes.object.isRequired,
+    unreplicated: PropTypes.object,
+    anisogenic: PropTypes.object,
+    isogenic: PropTypes.object,
+    objectQuery: PropTypes.string,
+};
+
+StatusExperimentChart.defaultProps = {
+    statuses: [],
+    unreplicated: {},
+    anisogenic: {},
+    isogenic: {},
+    objectQuery: '',
+};
+
+StatusExperimentChart.contextTypes = {
     navigate: PropTypes.func,
 };
 
@@ -628,6 +1122,7 @@ class StatusChart extends React.Component {
     }
 
     updateChart(chart, facetData) {
+        const { award, linkUri, objectQuery } = this.props;
         // Extract the non-zero values, and corresponding labels and colors for the data.
         const values = [];
         const labels = [];
@@ -637,12 +1132,13 @@ class StatusChart extends React.Component {
                 labels.push(item.key);
             }
         });
-        const colors = labels.map((label, i) => statusColorList[i % statusColorList.length]);
 
+        const colors = labels.map((label, i) => statusColorList[i % statusColorList.length]);
         // Update chart data and redraw with the new data
         chart.data.datasets[0].data = values;
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
+        chart.options.onClick.baseSearchUri = `${linkUri}${award.name}${objectQuery}&status=`;
         chart.update();
 
         // Redraw the updated legend
@@ -700,10 +1196,12 @@ StatusChart.propTypes = {
     statuses: PropTypes.array, // Array of status facet data
     linkUri: PropTypes.string.isRequired, // URI to use for matrix links
     ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
+    objectQuery: PropTypes.string,
 };
 
 StatusChart.defaultProps = {
     statuses: [],
+    objectQuery: '',
 };
 
 StatusChart.contextTypes = {
@@ -711,7 +1209,7 @@ StatusChart.contextTypes = {
 };
 
 const ChartRenderer = (props) => {
-    const { award, experiments, annotations, antibodies, biosamples, handleClick, selectedOrganisms } = props;
+    const { award, experiments, annotations, antibodies, biosamples, handleClick, selectedOrganisms, unreplicated, isogenic, anisogenic, controls } = props;
 
     // Put all search-related configuration data in one consistent place.
     const searchData = {
@@ -723,8 +1221,8 @@ const ChartRenderer = (props) => {
             statuses: [],
             categoryFacet: 'assay_title',
             title: 'Assays',
-            uriBase: '/search/?type=Experiment&award.name=',
-            linkUri: '/matrix/?type=Experiment&award.name=',
+            uriBase: '/search/?type=Experiment&target.investigated_as!=control&award.name=',
+            linkUri: '/matrix/?type=Experiment&target.investigated_as!=control&award.name=',
         },
         annotations: {
             ident: 'annotations',
@@ -744,8 +1242,8 @@ const ChartRenderer = (props) => {
             categoryData: [],
             statuses: [],
             categoryFacet: 'biosample_type',
-            title: 'Biosamples',
             uriBase: '/search/?type=Biosample&award.name=',
+            linkUri: '/report/?type=Biosample&award.name=',
         },
 
         antibodies: {
@@ -757,7 +1255,21 @@ const ChartRenderer = (props) => {
             categoryFacet: 'lot_reviews.status',
             title: 'Antibodies',
             uriBase: 'type=AntibodyLot&award=/awards',
+            linkUri: '/report/?type=AntibodyLot&award=/awards/',
         },
+
+        controls: {
+            ident: 'experiments',
+            data: [],
+            labs: [],
+            categoryData: [],
+            statuses: [],
+            categoryFacet: 'assay_title',
+            title: 'Assays',
+            uriBase: '/search/?type=Experiment&target.investigated_as=control&award.name=',
+            linkUri: '/matrix/?type=Experiment&target.investigated_as=control&award.name=',
+        },
+
     };
     // Match the species to their genera
     const speciesGenusMap = {
@@ -778,16 +1290,20 @@ const ChartRenderer = (props) => {
     const annotationsConfig = searchData.annotations;
     const biosamplesConfig = searchData.biosamples;
     const antibodiesConfig = searchData.antibodies;
+    const controlsConfig = searchData.controls;
     let experimentSpeciesArray;
     let annotationSpeciesArray;
     let biosampleSpeciesArray;
     let antibodySpeciesArray;
+    // let controlSpeciesArray;
     const updatedSpeciesArray = [];
     searchData.experiments.data = (experiments && experiments.facets) || [];
     searchData.annotations.data = (annotations && annotations.facets) || [];
     searchData.biosamples.data = (biosamples && biosamples.facets) || [];
     searchData.antibodies.data = (antibodies && antibodies.facets) || [];
-    ['experiments', 'annotations', 'antibodies', 'biosamples'].forEach((chartCategory) => {
+    searchData.controls.data = (controls && controls.facets) || [];
+
+    ['experiments', 'annotations', 'antibodies', 'biosamples', 'controls'].forEach((chartCategory) => {
         if (searchData[chartCategory].data.length) {
             // Get the array of lab data.
             const labFacet = searchData[chartCategory].data.find(facet => facet.field === 'lab.title');
@@ -851,6 +1367,8 @@ const ChartRenderer = (props) => {
 
     // Array of genera is deduplicated
     updatedGenusArray = _.uniq(updatedGenusArray);
+    const ExperimentQuery = generateQuery(selectedOrganisms, 'replicates.library.biosample.donor.organism.scientific_name=');
+    const AnnotationQuery = generateQuery(selectedOrganisms, 'organism.scientific_name=');
 
     return (
         <div>
@@ -868,6 +1386,7 @@ const ChartRenderer = (props) => {
                                         labs={experimentsConfig.labs}
                                         linkUri={experimentsConfig.linkUri}
                                         ident={experimentsConfig.ident}
+                                        objectQuery={ExperimentQuery}
                                     />
                                     <CategoryChart
                                         award={award}
@@ -876,12 +1395,20 @@ const ChartRenderer = (props) => {
                                         linkUri={experimentsConfig.linkUri}
                                         categoryFacet={experimentsConfig.categoryFacet}
                                         ident={experimentsConfig.ident}
+                                        selectedOrganisms={updatedGenusArray}
+                                        objectQuery={ExperimentQuery}
                                     />
-                                    <StatusChart
+                                    <StatusExperimentChart
                                         award={award}
+                                        experiments={experiments}
                                         statuses={experimentsConfig.statuses || []}
                                         linkUri={experimentsConfig.linkUri}
                                         ident={experimentsConfig.ident}
+                                        unreplicated={unreplicated}
+                                        isogenic={isogenic}
+                                        anisogenic={anisogenic}
+                                        selectedOrganisms={updatedGenusArray}
+                                        objectQuery={ExperimentQuery}
                                     />
                                 </div>
                             </div>
@@ -901,6 +1428,8 @@ const ChartRenderer = (props) => {
                                     labs={annotationsConfig.labs}
                                     linkUri={annotationsConfig.linkUri}
                                     ident={annotationsConfig.ident}
+                                    selectedOrganisms={selectedOrganisms}
+                                    objectQuery={AnnotationQuery}
                                 />
                                 <CategoryChart
                                     award={award}
@@ -909,12 +1438,16 @@ const ChartRenderer = (props) => {
                                     categoryFacet={annotationsConfig.categoryFacet}
                                     title={annotationsConfig.title}
                                     ident={annotationsConfig.ident}
+                                    selectedOrganisms={selectedOrganisms}
+                                    objectQuery={AnnotationQuery}
                                 />
                                 <StatusChart
                                     award={award}
                                     statuses={annotationsConfig.statuses || []}
                                     linkUri={annotationsConfig.linkUri}
                                     ident={annotationsConfig.ident}
+                                    selectedOrganisms={selectedOrganisms}
+                                    objectQuery={AnnotationQuery}
                                 />
                             </div>
                         </div>
@@ -926,20 +1459,32 @@ const ChartRenderer = (props) => {
             <div className="reagent-charts">
                 <div className="reagent-chart__group-wrapper">
                         <h2>Reagents</h2>
-                        {antibodiesConfig.categoryData.length || biosamplesConfig.categoryData.length ?
+                        {antibodiesConfig.categoryData.length || biosamplesConfig.categoryData.length || controlsConfig.categoryData.length ?
                             <div className="reagent-chart__group">
-                                <AntibodyChart
-                                    award={award}
-                                    categoryData={antibodiesConfig.categoryData}
-                                    categoryFacet={antibodiesConfig.categoryFacet}
-                                    ident={antibodiesConfig.ident}
-                                />
-                                <BiosampleChart
-                                    award={award}
-                                    categoryData={biosamplesConfig.categoryData}
-                                    categoryFacet={biosamplesConfig.categoryFacet}
-                                    ident={biosamplesConfig.ident}
-                                />
+                            <AntibodyChart
+                                award={award}
+                                categoryData={antibodiesConfig.categoryData}
+                                categoryFacet={antibodiesConfig.categoryFacet}
+                                linkUri={antibodiesConfig.linkUri}
+                                ident={antibodiesConfig.ident}
+                                selectedOrganisms={selectedOrganisms}
+                            />
+                            <BiosampleChart
+                                award={award}
+                                categoryData={biosamplesConfig.categoryData}
+                                categoryFacet={biosamplesConfig.categoryFacet}
+                                linkUri={biosamplesConfig.linkUri}
+                                ident={biosamplesConfig.ident}
+                                selectedOrganisms={selectedOrganisms}
+                            />
+                            <ControlsChart
+                                award={award}
+                                experiments={experiments}
+                                statuses={controlsConfig.statuses || []}
+                                linkUri={controlsConfig.linkUri}
+                                ident={controlsConfig.ident}
+                                objectQuery={ExperimentQuery}
+                            />
                             </div>
                         :
                             <div className="browser-error">No reagents were submitted under this award</div>
@@ -956,6 +1501,10 @@ ChartRenderer.propTypes = {
     annotations: PropTypes.object, // Search result of matching annotations
     antibodies: PropTypes.object, // Search result of matching antibodies
     biosamples: PropTypes.object, // Search result of matching biosamples
+    unreplicated: PropTypes.object,
+    isogenic: PropTypes.object,
+    anisogenic: PropTypes.object,
+    controls: PropTypes.object,
     handleClick: PropTypes.func.isRequired, // Function to call when a button is clicked
     selectedOrganisms: PropTypes.array, // Array of currently selected buttons
 };
@@ -965,6 +1514,10 @@ ChartRenderer.defaultProps = {
     annotations: {},
     antibodies: {},
     biosamples: {},
+    unreplicated: {},
+    isogenic: {},
+    anisogenic: {},
+    controls: {},
     selectedOrganisms: [],
 };
 
@@ -1008,6 +1561,38 @@ GenusButtons.propTypes = {
 GenusButtons.defaultProps = {
     selectedOrganisms: [],
     updatedGenusArray: [],
+};
+
+const milestonesTableColumns = {
+    assay_term_name: {
+        title: 'Assay name',
+    },
+
+    proposed_count: {
+        title: 'Proposed count',
+    },
+
+
+    deliverable_unit: {
+        title: 'Biosample',
+    },
+
+    contract_date: {
+        title: 'Contract date',
+    },
+};
+
+const MilestonesTable = (props) => {
+    const { award } = props;
+    return (
+        <SortTablePanel title="Milestones">
+            <SortTable list={award.milestones} columns={milestonesTableColumns} />
+        </SortTablePanel>
+    );
+};
+
+MilestonesTable.propTypes = {
+    award: PropTypes.object.isRequired,
 };
 
 // Overall component to render the cumulative line chart
@@ -1277,15 +1862,19 @@ class AwardCharts extends React.Component {
         return (
             <Panel>
                 <PanelHeading>
-                    <h4>Current Production</h4>
+                    <h4>Wranglers</h4>
                     <ProjectBadge award={award} addClasses="badge-heading" />
                 </PanelHeading>
                 <div>
                     <FetchedData ignoreErrors>
-                        <Param name="experiments" url={`/search/?type=Experiment&award.name=${award.name}${ExperimentQuery}`} />
+                        <Param name="experiments" url={`/search/?type=Experiment&target.investigated_as!=control&award.name=${award.name}${ExperimentQuery}`} />
                         <Param name="annotations" url={`/search/?type=Annotation&award.name=${award.name}${AnnotationQuery}`} />
                         <Param name="biosamples" url={`/search/?type=Biosample&award.name=${award.name}${BiosampleQuery}`} />
                         <Param name="antibodies" url={`/search/?type=AntibodyLot&award=${award['@id']}${AntibodyQuery}`} />
+                        <Param name="controls" url={`/search/?type=Experiment&target.investigated_as=control&award.name=${award.name}${ExperimentQuery}`} />
+                        <Param name="unreplicated" url={`/search/?type=Experiment&target.investigated_as!=control&replication_type=unreplicated&award.name=${award.name}${ExperimentQuery}`} />
+                        <Param name="isogenic" url={`/search/?type=Experiment&target.investigated_as!=control&replication_type=isogenic&award.name=${award.name}${ExperimentQuery}`} />
+                        <Param name="anisogenic" url={`/search/?type=Experiment&target.investigated_as!=control&replication_type=anisogenic&award.name=${award.name}${ExperimentQuery}`} />
                         <ChartRenderer award={award} updatedGenusArray={updatedGenusArray} handleClick={this.handleClick} selectedOrganisms={this.state.selectedOrganisms} />
                     </FetchedData>
                 </div>
@@ -1302,7 +1891,7 @@ AwardCharts.defaultProps = {
     updatedGenusArray: [],
 };
 
-class FetchGraphData extends React.Component {
+class LineChart extends React.Component {
     render() {
         const { award } = this.props;
         return (
@@ -1316,10 +1905,9 @@ class FetchGraphData extends React.Component {
     }
 }
 
-FetchGraphData.propTypes = {
+LineChart.propTypes = {
     award: PropTypes.object.isRequired, // Award represented by this chart
 };
-
 
 // Create a cumulative line chart in the div.
 class CumulativeGraph extends React.Component {
@@ -1396,8 +1984,9 @@ CumulativeGraph.defaultProps = {
 
 // Create Affiliated Labs list with carriage return to be displayed under description panel
 const AffiliatedLabsArray = (props) => {
-    const { labs } = props;
-    const sortedArray = labs['@graph'].map(term => term.title);
+    const { labs, award } = props;
+    const labsArray = labs['@graph'].map(term => term.title);
+    const sortedArray = _.without(labsArray, award.pi.lab.title);
     return (
         <div>
             {sortedArray.map((item, index) => <div key={index}>{item}</div>)}
@@ -1407,6 +1996,7 @@ const AffiliatedLabsArray = (props) => {
 
 AffiliatedLabsArray.propTypes = {
     labs: PropTypes.object,
+    award: PropTypes.object.isRequired,
 };
 
 AffiliatedLabsArray.defaultProps = {
@@ -1429,6 +2019,7 @@ AffiliatedLabs.propTypes = {
     award: PropTypes.object.isRequired, // Award represented by this chart
 };
 
+
 class Award extends React.Component {
 
     render() {
@@ -1439,7 +2030,11 @@ class Award extends React.Component {
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <h2>AWARD SUMMARY for {context.pi.lab.title} ({context.name})</h2>
+                        {context.pi && context.pi.lab ?
+                            <h2>AWARD SUMMARY for {context.pi.lab.title} ({context.name})</h2>
+                            :
+                            <h2>AWARD SUMMARY for ({context.name})</h2>
+                        }
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -1463,19 +2058,51 @@ class Award extends React.Component {
                         <div className="description">
                             <hr />
                             <div className="description__columnone">
-                                <dl><dt>NHGRI project information: </dt><a href={context.url} title={`${context.name} project page at NHGRI`}>{context.name}</a></dl>
-                                <dl><dt>Primary Investigator: </dt>{context.pi.lab.title}</dl>
-                                <dl><dt>Affiliated Labs: </dt> <AffiliatedLabs award={context} /> </dl>
+                                <dl className="key-value">
+                                    <div data-test="projectinfo">
+                                        <dt>NHGRI project information</dt>
+                                        <dd><a href={context.url} title={`${context.name} project page at NHGRI`}>{context.name}</a></dd>
+                                    </div>
+                                </dl>
+                                {context.pi && context.pi.lab ?
+                                    <dl className="key-value">
+                                        <div data-test="pi">
+                                            <dt>Primary Investigator</dt><dd>{context.pi.lab.title}</dd>
+                                        </div>
+                                    </dl>
+                                :
+                                    null
+                                }
+                                <dl className="key-value">
+                                    <div data-test="labs">
+                                        <dt>Affiliated Labs</dt>
+                                        <dd><AffiliatedLabs award={context} /> </dd>
+                                    </div>
+                                </dl>
                             </div>
                             <div className="description__columnone">
-                                <dl><dt>Dates: </dt>{moment(context.start_date).format('MMMM DD, YYYY')} - {moment(context.end_date).format('MMMM DD, YYYY')}</dl>
-                                <dl><dt>Award RFA: </dt>{context.rfa}</dl>
-                                <dl><dt> Milestones: </dt></dl>
+                                <dl className="key-value">
+                                    <div data-test="dates">
+                                        <dt>Dates</dt>
+                                        <dd>{moment(context.start_date).format('MMMM DD, YYYY')} - {moment(context.end_date).format('MMMM DD, YYYY')}</dd>
+                                    </div>
+                                </dl>
+                                <dl className="key-value">
+                                    <div data-test="rfa">
+                                        <dt>Award RFA</dt>
+                                        <dd>{context.rfa}</dd>
+                                    </div>
+                                </dl>
                             </div>
                         </div>
                     </PanelBody>
                 </Panel>
-                <FetchGraphData award={context} />
+                {context.milestones ?
+                    <MilestonesTable award={context} />
+                :
+                null
+                }
+                <LineChart award={context} />
             </div>
         );
     }
