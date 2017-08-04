@@ -992,8 +992,8 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
 
     sc = SlackClient('xoxb-216151022738-q0HoXLoixM5GokF4Iaqm08XX')
     initiating_run = 'STARTING Checkfiles version ' + \
-        '{} ({}): with {} processes {} on {} at {}'.format(
-            version, search_query, nprocesses, dr, ip, datetime.datetime.now())
+        '{} ({}) ({}): with {} processes {} on {} at {}'.format(
+            version, url, search_query, nprocesses, dr, ip, datetime.datetime.now())
     sc.api_call(
         "chat.postMessage",
         channel="#bot-reporting",
