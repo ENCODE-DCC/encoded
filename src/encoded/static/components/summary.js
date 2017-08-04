@@ -3,6 +3,12 @@ import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import _ from 'underscore';
 import url from 'url';
+import moment from 'moment';
+import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
+import DataColors from './datacolors';
+import { ProjectBadge } from './image';
+import { PickerActions } from './search';
+import StatusLabel from './statuslabel';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
@@ -55,7 +61,6 @@ const datasetTypes = {
     UcscBrowserComposite: types.ucsc_browser_composite.title,
 };
 
-
 // You can use this function to render a listing view for the search results object with a couple
 // options:
 //   1. Pass a search results object directly in props. listing returns a React component that you
@@ -70,6 +75,120 @@ const datasetTypes = {
 // Note: this function really doesn't do much of value, but it does do something and it's been
 // around since the beginning of encoded, so it stays for now.
 
+// Display and handle clicks in the chart of biosamples.
+class BiosampleChart extends React.Component {
+    constructor() {
+        super();
+        this.createChart = this.createChart.bind(this);
+        this.updateChart = this.updateChart.bind(this);
+    }
+
+    componentDidMount() {
+        if (this.props.categoryData.length) {
+            this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.props.categoryData.length) {
+            if (this.chart) {
+                this.updateChart(this.chart, this.props.categoryData);
+            } else {
+                this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
+            }
+        } else if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
+    }
+
+    // Update existing chart with new data.
+    updateChart(chart, facetData) {
+        // Extract the non-zero values, and corresponding labels and colors for the data.
+        const values = [];
+        const labels = [];
+        facetData.forEach((item) => {
+            if (item.doc_count) {
+                values.push(item.doc_count);
+                labels.push(item.key);
+            }
+        });
+        const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
+
+        // Update chart data and redraw with the new data.
+        chart.data.datasets[0].data = values;
+        chart.data.datasets[0].backgroundColor = colors;
+        chart.data.labels = labels;
+        chart.update();
+
+        // Redraw the updated legend
+        document.getElementById(`${categoryChartId}-${this.props.ident}-legend`).innerHTML = chart.generateLegend();
+    }
+
+    createChart(chartId, facetData) {
+        const { award, categoryFacet } = this.props;
+
+        // Extract the non-zero values, and corresponding labels and colors for the data.
+        const values = [];
+        const labels = [];
+        facetData.forEach((item) => {
+            if (item.doc_count) {
+                values.push(item.doc_count);
+                labels.push(item.key);
+            }
+        });
+        const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
+
+        // Create the chart.
+        createDoughnutChart(chartId, values, labels, colors, `${award.name}&${categoryFacet}=`, (uri) => { this.context.navigate(uri); })
+            .then((chartInstance) => {
+                // Save the created chart instance.
+                this.chart = chartInstance;
+            });
+    }
+
+    render() {
+        const { categoryData, ident, award } = this.props;
+
+        // Calculate a (hopefully) unique ID to put on the DOM elements.
+        const id = `${categoryChartId}-${ident}`;
+
+        return (
+            <div className="reagent-charts__chart">
+                <div className="reagent-charts__title">
+                    Biosamples {categoryData.length ?
+                    <a className="btn btn-info btn-xs reagentsreporttitle" href={`/report/?type=Biosample&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                    :
+                    null}
+                </div>
+                    {categoryData.length ?
+                    <div>
+                        <div className="reagent-charts__visual">
+                            <div id={id} className="reagent-charts__canvas">
+                                <canvas id={`${id}-chart`} />
+                            </div>
+                            <div id={`${id}-legend`} className="reagent-charts__legend" />
+                        </div>
+                    </div>
+                :
+                    <div className="chart-no-data" style={{ height: this.wrapperHeight }}>No data to display</div>
+                }
+            </div>
+        );
+    }
+}
+
+BiosampleChart.propTypes = {
+    award: PropTypes.object.isRequired, // Award being displayed
+    categoryData: PropTypes.array.isRequired, // Type-specific data to display in a chart
+    categoryFacet: PropTypes.string.isRequired, // Add to linkUri to link to matrix facet item
+    ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
+};
+
+BiosampleChart.contextTypes = {
+    navigate: PropTypes.func,
+};
+
 export function Listing(reactProps) {
     // XXX not all panels have the same markup
     let context;
@@ -82,7 +201,7 @@ export function Listing(reactProps) {
     return <ListingView {...viewProps} />;
 }
 
-
+/*
 export class PickerActions extends React.Component {
     render() {
         if (this.context.actions && this.context.actions.length) {
@@ -105,7 +224,7 @@ PickerActions.propTypes = {
 PickerActions.contextTypes = {
     actions: PropTypes.array,
 };
-
+*/
 
 class ItemComponent extends React.Component {
     render() {
@@ -1123,315 +1242,6 @@ FacetList.contextTypes = {
 };
 
 
-export const BatchDownload = (props) => {
-    const link = props.context.batch_download;
-    return (
-        <Modal actuator={<button className="btn btn-info btn-sm">Download</button>}>
-            <ModalHeader title="Using batch download" closeModal />
-            <ModalBody>
-                <p>Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
-                The first line of the file will always be the URL to download the metadata file. <br />
-                Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.</p><br />
-                <p>The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
-                The following command using cURL can be used to download all the files in the list:</p><br />
-                <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
-            </ModalBody>
-            <ModalFooter
-                closeModal={<a className="btn btn-info btn-sm">Close</a>}
-                submitBtn={<a data-bypass="true" target="_self" className="btn btn-info btn-sm" href={link}>{'Download'}</a>}
-                dontClose
-            />
-        </Modal>
-    );
-};
-
-BatchDownload.propTypes = {
-    context: PropTypes.object,
-};
-
-
-export class ResultTable extends React.Component {
-    constructor(props) {
-        super(props);
-
-        // Set React component state.
-        this.state = {
-            browserAssembly: this.props.assemblies && this.props.assemblies[0], // Currently selected assembly for the browser
-            selectedTab: '',
-        };
-
-        // Bind `this` to non-React moethods.
-        this.onFilter = this.onFilter.bind(this);
-        this.assemblyChange = this.assemblyChange.bind(this);
-        this.handleTabClick = this.handleTabClick.bind(this);
-    }
-
-    getChildContext() {
-        return {
-            actions: this.props.actions,
-        };
-    }
-
-    componentDidMount() {
-        if (window !== undefined) {
-            // Determining this in componentDidMount to avoid server/client reactJS conflict.
-            if (window.location.hash === '#browser') {
-                this.setState({ selectedTab: 'browserpane' });
-            }
-        }
-    }
-
-    onFilter(e) {
-        const searchStr = e.currentTarget.getAttribute('href');
-        this.props.onChange(searchStr);
-        e.stopPropagation();
-        e.preventDefault();
-        this.setState({ selectedTab: 'listpane' });  // Always return to listpane so that browser can rerender
-    }
-
-    // Called when new value chosen from assembly dropdown.
-    assemblyChange(e) {
-        this.setState({ browserAssembly: e.target.value });
-    }
-
-    handleTabClick(tab) {
-        // Since we force TabPanel tab selection, we need to keep track of selectedTab.
-        if (this.state.selectedTab !== tab) {
-            this.setState({ selectedTab: tab });
-        }
-    }
-
-    render() {
-        const visualizeLimit = 100;
-        const { context, searchBase, assemblies, restrictions } = this.props;
-        const results = context['@graph'];
-        const total = context.total;
-        const visualizeDisabled = total > visualizeLimit;
-        const filters = context.filters;
-        let browseAllFiles = true; // True to pass all files to browser
-        let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
-        let browserDatasets = []; // Datasets will be used to get vis_json blobs
-        let browserFiles = [];   // Files to pass to ResultsBrowser component
-        let assemblyChooser;
-
-        const facets = context.facets.map((facet) => {
-            if (restrictions[facet.field] !== undefined) {
-                const workFacet = _.clone(facet);
-                workFacet.restrictions = restrictions[workFacet.field];
-                workFacet.terms = workFacet.terms.filter(term => _.contains(workFacet.restrictions, term.key));
-            }
-            return facet;
-        });
-
-        // See if a specific result type was requested ('type=x')
-        // Satisfied iff exactly one type is in the search
-        if (results.length) {
-            let specificFilter;
-            filters.forEach((filter) => {
-                if (filter.field === 'type') {
-                    specificFilter = specificFilter ? '' : filter.term;
-                }
-            });
-        }
-
-        // Get a sorted list of batch hubs keys with case-insensitive sort
-        // NOTE: Tim thinks this is overkill as opposed to simple sort()
-        let visualizeKeys = [];
-        if (context.visualize_batch && Object.keys(context.visualize_batch).length) {
-            visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
-                const aLower = a.toLowerCase();
-                const bLower = b.toLowerCase();
-                return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
-            });
-        }
-
-        // Check whether the search query qualifies for a genome browser display. Start by counting
-        // the number of "type" filters exist.
-        let typeFilter;
-        const counter = filters.reduce((prev, curr) => {
-            if (curr.field === 'type') {
-                typeFilter = curr;
-                return prev + 1;
-            }
-            return prev;
-        }, 0);
-
-        // If we have only one "type" term in the query string and it's for File, then we can
-        // display the List/Browser tabs. Otherwise we just get the list.
-        let browserAvail = counter === 1 && typeFilter && typeFilter.term === 'File' && assemblies.length === 1;
-        if (browserAvail) {
-            // If dataset is in the query string, we can show all files.
-            const datasetFilter = filters.find(filter => filter.field === 'dataset');
-            if (datasetFilter) {
-                browseAllFiles = true;
-
-                // Probably not worth a define in globals.js for visualizable types and statuses.
-                browserFiles = results.filter(file => ['bigBed', 'bigWig'].indexOf(file.file_format) > -1);
-                if (browserFiles.length > 0) {
-                    browserFiles = browserFiles.filter(file =>
-                        ['released', 'in progress', 'archived'].indexOf(file.status) > -1
-                    );
-                }
-                browserAvail = (browserFiles.length > 0);
-
-                if (browserAvail) {
-                    // Distill down to a list of datasets so they can be passed to genome_browser code.
-                    browserDatasets = browserFiles.reduce((datasets, file) => (
-                        (!file.dataset || datasets.indexOf(file.dataset) > -1) ? datasets : datasets.concat(file.dataset)
-                    ), []);
-                }
-            } else {
-                browseAllFiles = false;
-                browserAvail = false;    // NEW: Limit browser option to type=File&dataset=... only!
-            }
-        }
-
-        if (browserAvail) {
-            // Now determine if we have a mix of assemblies in the files, or just one. If we have
-            // a mix, we need to render a drop-down.
-            if (assemblies.length === 1) {
-                // Only one assembly in all the files. No menu needed.
-                browserAssembly = assemblies[0];
-                // empty div to avoid warning only.
-                assemblyChooser = (
-                    <div className="browser-assembly-chooser" />
-                );
-            } else {
-                browserAssembly = this.state.browserAssembly;
-                assemblyChooser = (
-                    <div className="browser-assembly-chooser">
-                        <div className="browser-assembly-chooser__title">Assembly:</div>
-                        <div className="browser-assembly-chooser__menu">
-                            <AssemblyChooser assemblies={assemblies} assemblyChange={this.assemblyChange} />
-                        </div>
-                    </div>
-                );
-            }
-        }
-
-        return (
-            <div>
-                <div className="row">
-                    {facets.length ? <div className="col-sm-5 col-md-4 col-lg-3">
-                        <FacetList
-                            {...this.props} facets={facets} filters={filters}
-                            searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`} onFilter={this.onFilter}
-                        />
-                    </div> : ''}
-                    <div>
-
-                        {context.notification === 'Success' ?
-                            <div>
-                                <div className="results-table-control">
-
-                                    {context.batch_download ?
-                                        <BatchDownload context={context} />
-                                    : null}
-
-                                    {visualizeKeys && context.visualize_batch ?
-                                        <BrowserSelector
-                                            visualizeCfg={context.visualize_batch}
-                                            disabled={visualizeDisabled}
-                                            title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'}
-                                        />
-                                    : null}
-                                </div>
-                                <hr />
-                                {browserAvail ?
-                                    <TabPanel tabs={{ listpane: 'List', browserpane: <BrowserTabQuickView /> }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} addClasses="browser-tab-bg" tabFlange>
-                                        <TabPanelPane key="browserpane">
-                                            {assemblyChooser}
-                                            <ResultBrowser files={results} assembly={browserAssembly} datasets={browserDatasets} limitFiles={!browseAllFiles} currentRegion={this.props.currentRegion} />
-                                        </TabPanelPane>
-                                    </TabPanel>
-                                :
-                                    null
-                                }
-                            </div>
-                        :
-                            <h4>{context.notification}</h4>
-                        }
-                    </div>
-                </div>
-            </div>
-        );
-    }
-}
-
-ResultTable.propTypes = {
-    context: PropTypes.object,
-    actions: PropTypes.array,
-    restrictions: PropTypes.object,
-    assemblies: PropTypes.array, // List of assemblies of all 'File' objects in search results
-    searchBase: PropTypes.string,
-    onChange: PropTypes.func,
-    currentRegion: PropTypes.func,
-};
-
-ResultTable.defaultProps = {
-    restrictions: {},
-    searchBase: '',
-};
-
-ResultTable.childContextTypes = {
-    actions: PropTypes.array,
-};
-
-ResultTable.contextTypes = {
-    session: React.PropTypes.object,
-};
-
-
-const BrowserTabQuickView = function BrowserTabQuickView() {
-    return <div>Quick View <span className="beta-badge">BETA</span></div>;
-};
-
-// Display a local genome browser in the ResultTable where search results would normally go. This
-// only gets displayed if the query string contains only one type and it's "File."
-const ResultBrowser = (props) => {
-    let visUrl = '';
-    const datasetCount = props.datasets.length;
-    let region;  // optionally make a persistent region
-    const lastRegion = props.currentRegion();
-    if (lastRegion && lastRegion.assembly === props.assembly) {
-        region = lastRegion.region;
-        console.log('found region %s', region);
-    }
-    if (datasetCount === 1) {
-        // /datasets/{ENCSR000AEI}/@@hub/{hg19}/jsonout/trackDb.txt
-        visUrl = `${props.datasets[0]}/@@hub/${props.assembly}/jsonout/trackDb.txt`;
-    } else if (datasetCount > 1) {
-        // /batch_hub/type%3DExperiment%2C%2Caccession%3D{ENCSR000AAA}%2C%2Caccession%3D{ENCSR000AEI}%2C%2Caccjson/{hg19}/trackDb.txt
-        for (let ix = 0; ix < datasetCount; ix += 1) {
-            const accession = props.datasets[ix].split('/')[2];
-            visUrl += `accession=${accession}%2C%2C`;
-        }
-        visUrl = `batch_hub/type=Experiment/${visUrl}&accjson/${props.assembly}/trackDb.txt`;
-    }
-    if (datasetCount > 0) {
-        return (
-            <FetchedData ignoreErrors>
-                <Param name="visBlobs" url={visUrl} />
-                <GenomeBrowser files={props.files} assembly={props.assembly} limitFiles={props.limitFiles} region={region} currentRegion={props.currentRegion} />
-            </FetchedData>
-        );
-    }
-    return (
-        <div>
-            <GenomeBrowser files={props.files} assembly={props.assembly} limitFiles={props.limitFiles} region={region} currentRegion={props.currentRegion} />
-        </div>
-    );
-};
-
-ResultBrowser.propTypes = {
-    files: PropTypes.array, // Array of files whose browser we're rendering
-    assembly: PropTypes.string, // Filter `files` by this assembly
-    datasets: PropTypes.array, // One or more '/dataset/ENCSRnnnXXX/' that files belong to
-    limitFiles: PropTypes.bool, // True to limit browsing to 20 files
-    currentRegion: PropTypes.func,
-};
-
-
 // Display a dropdown menu of the given assemblies.
 const AssemblyChooser = (props) => {
     const { assemblies, currentAssembly, assemblyChange } = props;
@@ -1484,7 +1294,13 @@ class Summary extends React.Component {
             // Reduce all found file assemblies so we don't have duplicates in the 'assemblies' array.
             assemblies = files.reduce((assembliesAcc, file) => ((!file.assembly || assembliesAcc.indexOf(file.assembly) > -1) ? assembliesAcc : assembliesAcc.concat(file.assembly)), []);
         }
+        return (
+            <div>
+                <BiosampleChart />
+            </div>
+        );
 
+        /*
         return (
             <div>
                 {facetdisplay ?
@@ -1494,6 +1310,7 @@ class Summary extends React.Component {
                 : <h4>{notification}</h4>}
             </div>
         );
+        */
     }
 }
 
