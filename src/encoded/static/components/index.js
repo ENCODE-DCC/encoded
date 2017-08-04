@@ -36,6 +36,7 @@ require('./blocks');
 require('./user');
 require('./schema');
 require('./region_search');
+require('./summary');
 
 
 module.exports = require('./app');

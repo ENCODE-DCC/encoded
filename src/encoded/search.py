@@ -1131,7 +1131,7 @@ def summary(context, request, search_type=None, return_generator=False):
     result = {
         '@context': request.route_path('jsonld_context'),
         '@id': '/summary/' + search_base,
-        '@type': ['Search'],
+        '@type': ['Summary'],
         'title': 'Summary',
         'filters': [],
     }
