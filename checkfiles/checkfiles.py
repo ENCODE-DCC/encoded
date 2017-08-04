@@ -984,8 +984,9 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
     version = '1.16'
 
     try:
-        ip = subprocess.check_output(
+        ip_output = subprocess.check_output(
             ['hostname'], stderr=subprocess.STDOUT).strip()
+        ip = ip_output.decode(errors='replace').rstrip('\n')
     except subprocess.CalledProcessError as e:
         ip = ''
 
