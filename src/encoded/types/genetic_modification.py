@@ -23,7 +23,7 @@ class GeneticModification(Item):
     name_key = 'accession'
     embedded = [
         'modified_site_by_target_id',
-        'reagent_repository',
+        'treatments',
         'documents',
         'characterizations.documents'
     ]
