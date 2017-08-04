@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import _ from 'underscore';
 import url from 'url';
-import { svgIcon } from '../libs/svg-icons';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
@@ -1208,10 +1207,7 @@ export class ResultTable extends React.Component {
         const results = context['@graph'];
         const total = context.total;
         const visualizeDisabled = total > visualizeLimit;
-        const columns = context.columns;
         const filters = context.filters;
-        const label = 'results';
-        const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
         let browseAllFiles = true; // True to pass all files to browser
         let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
         let browserDatasets = []; // Datasets will be used to get vis_json blobs
@@ -1248,12 +1244,6 @@ export class ResultTable extends React.Component {
                 return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
             });
         }
-
-        // Map view icons to svg icons
-        const view2svg = {
-            table: 'table',
-            th: 'matrix',
-        };
 
         // Check whether the search query qualifies for a genome browser display. Start by counting
         // the number of "type" filters exist.
@@ -1328,41 +1318,11 @@ export class ResultTable extends React.Component {
                             searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`} onFilter={this.onFilter}
                         />
                     </div> : ''}
-                    <div className="col-sm-7 col-md-8 col-lg-9">
+                    <div>
 
                         {context.notification === 'Success' ?
                             <div>
-                                <h4>Showing {results.length} of {total} {label}</h4>
                                 <div className="results-table-control">
-                                    {context.views ?
-                                        <div className="btn-attached">
-                                            {context.views.map((view, i) =>
-                                                <a key={i} className="btn btn-info btn-sm btn-svgicon" href={view.href} title={view.title}>{svgIcon(view2svg[view.icon])}</a>
-                                            )}
-                                        </div>
-                                    : null}
-
-                                    {total > results.length && searchBase.indexOf('limit=all') === -1 ?
-                                        <a
-                                            rel="nofollow" className="btn btn-info btn-sm"
-                                            href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
-                                            onClick={this.onFilter}
-                                        >
-                                            View All
-                                        </a>
-                                    :
-                                        <span>
-                                            {results.length > 25 ?
-                                                <a
-                                                    className="btn btn-info btn-sm"
-                                                    href={trimmedSearchBase || '/summary/'}
-                                                    onClick={this.onFilter}
-                                                >
-                                                    View 25
-                                                </a>
-                                            : null}
-                                        </span>
-                                    }
 
                                     {context.batch_download ?
                                         <BatchDownload context={context} />
@@ -1379,16 +1339,13 @@ export class ResultTable extends React.Component {
                                 <hr />
                                 {browserAvail ?
                                     <TabPanel tabs={{ listpane: 'List', browserpane: <BrowserTabQuickView /> }} selectedTab={this.state.selectedTab} handleTabClick={this.handleTabClick} addClasses="browser-tab-bg" tabFlange>
-                                        <TabPanelPane key="listpane">
-                                            <ResultTableList results={results} columns={columns} tabbed />
-                                        </TabPanelPane>
                                         <TabPanelPane key="browserpane">
                                             {assemblyChooser}
                                             <ResultBrowser files={results} assembly={browserAssembly} datasets={browserDatasets} limitFiles={!browseAllFiles} currentRegion={this.props.currentRegion} />
                                         </TabPanelPane>
                                     </TabPanel>
                                 :
-                                    <ResultTableList results={results} columns={columns} />
+                                    null
                                 }
                             </div>
                         :
@@ -1428,25 +1385,6 @@ ResultTable.contextTypes = {
 const BrowserTabQuickView = function BrowserTabQuickView() {
     return <div>Quick View <span className="beta-badge">BETA</span></div>;
 };
-
-
-const ResultTableList = (props) => {
-    const { results, columns, tabbed } = props;
-    return (
-        <ul className={`nav result-table${tabbed ? ' result-table-tabbed' : ''}`} id="result-table">
-            {results.length ?
-                results.map(result => Listing({ context: result, columns, key: result['@id'] }))
-            : null}
-        </ul>
-    );
-};
-
-ResultTableList.propTypes = {
-    results: PropTypes.array.isRequired, // Array of search results to display
-    columns: PropTypes.object.isRequired, // Columns from search results
-    tabbed: PropTypes.bool, // True if table is in a tab
-};
-
 
 // Display a local genome browser in the ResultTable where search results would normally go. This
 // only gets displayed if the query string contains only one type and it's "File."
