@@ -15,7 +15,7 @@
 
     // Style for an individual chart.
     @at-root #{&}__chart {
-        display: block; // not on the flexy box page
+        display: block;
         
         @media screen and (min-width: $screen-sm-min) {
             display: block;
@@ -23,6 +23,7 @@
             flex: 0 0 33.333%;
             width: 33.333%;
             align-self: auto;
+            margin-bottom: 0px;
         }
 
         .title {
@@ -127,10 +128,9 @@
     // Style for an individual chart.
     @at-root #{&}__chart {
         display: block;
+        margin-bottom: 20px;
+        
         @media screen and (min-width: $screen-sm-min) {
-            width: 50%;
-        }
-        @media screen and (min-width: $screen-md-min) {
             flex: 0 0 33.3333%;
             width: 33.3333%;
         }
