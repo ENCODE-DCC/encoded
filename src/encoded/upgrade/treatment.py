@@ -76,9 +76,9 @@ def treatment_5_6(value, system):
 
 @upgrade_step('treatment', '8', '9')
 def treatment_8_9(value, system):
-    if 'treatment_type' in value and value['treatment_type'] == 'protein':
-        if 'treatment_term_id' in value:
-            parts = value['treatment_term_id'].split(':')
-            namespace = parts[0]
-            if namespace == 'UniprotKB':
-                value['treatment_term_id'] = 'UniProtKB:' + parts[1]
+    # The namespace for UniProt is UniProtKB everywhere but in this object, where it was UniprotKB
+    if 'treatment_term_id' in value:
+        parts = value['treatment_term_id'].split(':')
+        namespace = parts[0]
+        if namespace == 'UniprotKB':
+            value['treatment_term_id'] = 'UniProtKB:' + parts[1]
