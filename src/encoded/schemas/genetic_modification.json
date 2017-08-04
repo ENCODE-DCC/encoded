@@ -201,7 +201,10 @@
                 "transient transfection",
                 "transduction",
                 "RNAi",
-                "mutagenesis"
+                "mutagen treatment",
+                "microinjection",
+                "bombardment",
+                "phiC31 integrase"
             ]
         },
         "treatments": { 
@@ -231,18 +234,6 @@
                 "pattern": "^[ACUNTG-]+$"
             }
         },
-        "targeted_sequences": {
-            "title": "Targeted sequences - MAYBE DELETE IF OK THAT ITS NOT STRAIGHTFORWARD TO FIGURE OUT FOR SHRNAS",
-            "description": "Genomic sequences targeted by the inhibitory RNA (1) or TALEs (2).",
-            "type": "array",
-            "uniqueItems": true,
-            "items": {
-                "title": "Targeted sequence",
-                "description": "Genomic sequence targeted by the inhibitory RNA or TALE.",
-                "type": "string",
-                "pattern": "^[ACTG]+|non-mammalian target$"
-            }
-        },
         "guide_rna_sequences": {
             "title": "Guide RNA sequences",
             "description": "gRNA sequences used in CRISPR genetic modification",
@@ -255,67 +246,60 @@
                 "pattern": "^[ACUNTG]+$"
             }
         },
-        "RVD_sequence_pair1": {
-            "title": "RVD sequence pair 1",
-            "description": "The pair of repeat variable diresidue sequences of the TAL effectors that recognize the left and right half sites at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "left_RVD_sequence": {
-                    "title": "Left RVD sequence",
-                    "description": "The repeat variable diresidue sequence of the left half-site for recognized by the TAL effector at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
-                    "comment": "For heterozygous deletions, specify pair1 and pair2's left_RVD_sequence (oriented as + strand).",
-                    "type": "string",
-                    "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
-                },
-                "right_RVD_sequence": {
-                    "title": "Right RVD sequence",
-                    "description": "The repeat variable diresidue sequence of the right half-site for recognized by the TAL effector at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
-                    "type": "string",
-                    "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
-                }
-            }
-        },
-        "RVD_sequence_pair2": {
-            "title": "RVD sequence pair 2",
-            "description": "The pair of repeat variable diresidue sequences of the TAL effectors that recognize the left and right half sites at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
-            "comment": "This property needs to be specified along with RVD_sequence_pair1 if excising a particular region via a deletion.",
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "left_RVD_sequence": {
-                    "title": "Left RVD sequence",
-                    "description": "The repeat variable diresidue sequence of the left half-site for recognized by the TAL effector at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
-                    "comment": "For heterozygous deletions, specify pair1 and pair2's left_RVD_sequence (oriented as + strand).",
-                    "type": "string",
-                    "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
-                },
-                "right_RVD_sequence": {
-                    "title": "Right RVD sequence",
-                    "description": "The repeat variable diresidue sequence of the right half-site for recognized by the TAL effector at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
-                    "type": "string",
-                    "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
-                }
-            }
-        },
-        "reagent_repository": {
-            "title": "Reagent repository",
-            "description": "Repository where reagent used to produce the described genetic modification can be obtained, if applicable.",
-            "comment": "See source.json for identifiers (e.g. addgene, bacpac, rnai-consortium",
-            "type": "string",
-            "linkTo": "Source"
-        },
-        "reagent_identifiers": {
-            "title": "Reagent identifiers",
-            "description": "Repository identifiers of the reagent used to produce the describe genetic modification, if applicable.",
-            "comment": "If a mutagenic chemical is used, please provide the ChEBI ID.",
+        "RVD_sequence_pairs": {
+            "title": "RVD sequence pairs",
+            "description": "The pair(s) of repeat variable diresidue sequences of the TAL effectors that recognize the left and right half sites at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
+            "comment": "Each cut should be specified by a pair. No more than two pairs should be specified per genetic_modification.",
             "type": "array",
-            "uniqueItems": true,
-            "items":{
-                "title": "Reagent identifier",
-                "description": "Repository identifier of the reagent used to produce the describe genetic modification, if applicable.",
-                "type": "string",
-                "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
+            "maximum": 2,
+            "required": ["left_RVD_sequence", "right_RVD_sequence"],
+            "additionalProperties": false,
+            "items": {
+                "title": "RVD sequence pair",
+                "description": "The pair of repeat variable diresidue sequences of the TAL effectors that recognize the left and right half sites at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
+                "type": "object",
+                "properties": {
+                    "left_RVD_sequence": {
+                        "title": "Left RVD sequence",
+                        "description": "The repeat variable diresidue sequence of the left half-site for recognized by the TAL effector at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
+                        "type": "string",
+                        "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
+                    },
+                    "right_RVD_sequence": {
+                        "title": "Right RVD sequence",
+                        "description": "The repeat variable diresidue sequence of the right half-site for recognized by the TAL effector at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
+                        "type": "string",
+                        "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
+                    }
+                }
+            }
+        },
+        "reagent_availability": {
+            "title": "Reagent availability",
+            "description": "Repositories where reagents used to produce the described genetic modification can be obtained, if applicable.",
+            "comment": "See source.json for identifiers (e.g. addgene, bacpac, rnai-consortium)",
+            "type": "array",
+            "minimum": 1,
+            "required": ["repository", "identifier"],
+            "items": {
+                "title": "Reagent availability",
+                "description": "Repository where reagents used to produce the described genetic modification can be obtained, if applicable.",
+                "type": "object",
+                "properties": {
+                    "repository": {
+                        "title": "Repository",
+                        "description": "Repository where reagent used to produce the described genetic modification can be obtained, if applicable.",
+                        "comment": "See source.json for identifiers (e.g. addgene, bacpac, rnai-consortium)",
+                        "type": "string",
+                        "linkTo": "Source"
+                    },
+                    "identifier": {
+                        "title": "Identifier",
+                        "description": "Repository identifier of the reagent used to produce the describe genetic modification, if applicable.",
+                        "type": "string",
+                        "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
+                    }
+                }
             }
         },
         "documents": {
