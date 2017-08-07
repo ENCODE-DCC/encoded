@@ -50,22 +50,22 @@ def genetic_modification_5_6(value, system):
         value['modified_site_by_coordinates'] = value['modified_site']
         value.pop('modified_site')
 
+    rep_obj = dict()
     if 'source' in value:
         # If for some inexplicable reason, there is a source associated with the genetic_modification,
         # let's move it to reagent repository for now. If there is one in the technique, we'll overwrite it
         # and use that one instead.
-        value['reagent_repository'] = value['source']
+        rep_obj['repository'] = value['source']
         value.pop('source')
 
     if 'product_id' in value:
         # If for some inexplicable reason, there is a product_id associated with the genetic_modification,
         # let's move it to reagent identifiers for now. If there is one in the technique, we'll overwrite it
         # and use those instead.
-        if 'reagent_identifiers' in value:
-            value['reagent_identifiers'].append(value['product_id'])
-        else:
-            value['reagent_identifiers'] = list(value['product_id'])
+        rep_obj['identifier'] = value['product_id']
         value.pop('product_id')
+    if rep_obj:
+        value['reagent_availability'].add(rep_obj)
 
     # New required properties modification_technique and purpose need to be handled somehow
     if value['modification_techniques']:
@@ -74,13 +74,13 @@ def genetic_modification_5_6(value, system):
             technique = conn.get_by_uuid(t)
             if 'aliases' in technique.properties:
                 alias_flag = True
+            rep_obj = dict()
             if 'source' in technique.properties:
-                    value['reagent_repository'] = technique.properties['source']
+                rep_obj['repository'] = technique.properties['source']
             if 'product_id' in technique.properties:
-                if 'reagent_identifiers' in value:
-                    value['reagent_identifiers'].append(technique.properties['product_id'])
-                else:
-                    value['reagent_identifiers'] = list(technique.properties['product_id'])
+                rep_obj['identifier'] = technique.properties['product_id']
+            if rep_obj:
+                value['reagent_availability'].add(rep_obj)
             if 'guide_rna_sequences' in technique.properties:
                 value['guide_rna_sequences'] = technique.properties['guide_rna_sequences']
                 value['modification_technique'] = 'CRISPR'

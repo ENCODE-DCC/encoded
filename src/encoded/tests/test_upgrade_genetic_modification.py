@@ -56,6 +56,8 @@ def genetic_modification_5(lab, award, crispr):
         'description': 'blah blah description blah',
         'zygosity': 'homozygous',
         'treatments': [],
+        'source': 'sigma',
+        'product_id': '12345',
         'modification_techniques': [crispr],
         'modified_site': [{
             'assembly': 'GRCh38',
@@ -98,4 +100,7 @@ def test_genetic_modification_upgrade_5_6(upgrader, genetic_modification_5, cris
     assert len(value['guide_rna_sequences']) == 2
     assert value['aliases'][0] == 'encode:crispr_technique1-CRISPR'
     assert value['introduced_sequence'] == 'TCGA'
+    assert 'reagent_availability' in value
+    assert value['reagent_availability']['repository'] == 'sigma'
+    assert value['reagent_availability']['product_id'] == '12345'
 '''
