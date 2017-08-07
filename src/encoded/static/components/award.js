@@ -757,6 +757,7 @@ function StatusData(experiments, unreplicated, isogenic, anisogenic) {
     let unreplicatedArray;
     let isogenicArray;
     let anisogenicArray;
+    const labels = [];
     const unreplicatedLabel = [];
     let unreplicatedDataset = [];
     const isogenicLabel = [];
@@ -772,7 +773,32 @@ function StatusData(experiments, unreplicated, isogenic, anisogenic) {
         isogenicArray = (isogenicFacet && isogenicFacet.terms && isogenicFacet.terms.length) ? isogenicFacet.terms : [];
         anisogenicArray = (anisogenicFacet && anisogenicFacet.terms && anisogenicFacet.terms.length) ? anisogenicFacet.terms : [];
     }
-    const labels = ['proposed', 'started', 'submitted', 'released', 'deleted', 'replaced', 'archived', 'revoked'];
+
+    if (experiments && experiments.facets && experiments.facets.length) {
+        const totalLabels = experiments.facets.find(facet => facet.field === 'status');
+        for (let i = 0; i < totalLabels.terms.length; i += 1) {
+            if (totalLabels.terms[i].doc_count !== 0) {
+                labels.push(totalLabels.terms[i].key);
+            }
+        }
+    }
+
+    // const totalLabels = ['proposed', 'started', 'submitted', 'released', 'deleted', 'replaced', 'archived', 'revoked'];
+    // // const labels = ['proposed', 'started', 'submitted', 'released', 'deleted', 'replaced', 'archived', 'revoked'];
+
+    // // if the unreplicatedArray[i].key === labels[j] and the unreplicatedArray[i].doc_count does not equal 0, then add unreplicatedArray[i].key to labels
+    // if (unreplicatedArray.length) {
+    //     for (let j = 0; j < totalLabels.length; j += 1) {
+    //         for (let i = 0; i < unreplicatedArray.length; i += 1) {
+    //             if (unreplicatedArray[i].key === totalLabels[j]) {
+    //                 if (unreplicatedArray[i].doc_count !== 0) {
+    //                     labels.push(unreplicatedArray[i].key);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
     if (unreplicatedArray.length) {
         for (let j = 0; j < labels.length; j += 1) {
             for (let i = 0; i < unreplicatedArray.length; i += 1) {
