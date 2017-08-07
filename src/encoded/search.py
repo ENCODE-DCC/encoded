@@ -1406,34 +1406,6 @@ def audit(context, request):
                 for xbucket in x_buckets:
                     summary.append(counts.get(xbucket['key'], 0))
                 bucket['assay_title'] = summary
-
-
-    """
-        def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
-        # Get audit category and then decide whether it is one that includes or excludes audits
-        for category in grouping_fields: # for each audit category
-            # Gets first index of grouping_fields and keeps shortening grouping_fields until
-            # only the no audits fields are left. This allows the recursion to happen in the
-            # else statement.
-            #group_by = grouping_fields[0]
-            #grouping_fields = grouping_fields[1:]
-            #if grouping_fields:
-            counts = {}
-            #if "no" not in category : # if includes audit category
-            for bucket in outer_bucket[category]['buckets']:
-                counts = {}
-                for assay in bucket['assay_title']['buckets']:
-                    doc_count = assay['doc_count']
-                    if doc_count > matrix['max_cell_doc_count']:
-                        matrix['max_cell_doc_count'] = doc_count
-                    if 'key' in assay:
-                        counts[assay['key']] = doc_count
-
-                summary = []
-                for xbucket in x_buckets:
-                    summary.append(counts.get(xbucket['key'], 0))
-                bucket['assay_title'] = summary
-    """
     
     # For the no audits row.
     # Convert Elasticsearch returned matrix search data to a form usable by the front end matrix
@@ -1460,24 +1432,39 @@ def audit(context, request):
         group_by = grouping_fields[0]
         grouping_fields = grouping_fields[1:]
 
+        # If there are still items in grouping_fields, then loop by recursion until there is
+        # nothing left in grouping_fields.
         if grouping_fields:
             summarize_no_audits(matrix, x_buckets, outer_bucket[group_by], grouping_fields, aggregations)
 
         counts = {}
+        # We have recursed through to the last grouping_field in the array given in the top-
+        # level summarize_buckets call. Now we can get down to actually converting the search
+        # result data. First loop through each element in the term's 'buckets' which contain
+        # displayable key and a count.
         for assay in outer_bucket[group_by]['assay_title']['buckets']:
+            # Grab the count for the row, and keep track of the maximum count we find by
+            # mutating the max_cell_doc_count property of the matrix for the front end to use
+            # to color the cells. Then we add to a counts dictionary that keeps track of each
+            # displayed term and the corresponding count.
             doc_count = assay['doc_count']
             if doc_count > matrix['max_cell_doc_count']:
                 matrix['max_cell_doc_count'] = doc_count
             if 'key' in assay:
                 counts[assay['key']] = doc_count
-            else:
-                for col in assay:
-                    assay_index = 0
-                    counts[assay[assay_index]['key']] = doc_count
-                    assay_index += 1
+
+        # We now have `counts` containing each displayed key and the corresponding count for a
+        # row of the matrix. Convert that to a list of counts (cell values for a row of the
+        # matrix) to replace the existing bucket for the given grouping_fields term with a
+        # simple list of counts without their keys -- the position within the list corresponds
+        # to the keys within 'x'.
         summary = []
         for xbucket in x_buckets:
             summary.append(counts.get(xbucket['key'], 0))
+        # Set proper results in aggregations. Instead of keeping the nested structure from the
+        # query, set each no audit category as a separate item. Delete the other information
+        # from the nested queries. *Not really sure if this information is necessary so I just
+        # took it out.*
         aggregations[group_by] = outer_bucket[group_by]['assay_title']
         aggregations[group_by]['assay_title'] = summary
         aggregations[group_by].pop("buckets", None)
@@ -1498,59 +1485,33 @@ def audit(context, request):
         no_audits_groupings,
         aggregations['matrix'])
 
+    # There is no generated key for the no audit categories, so we need to manually add them so
+    # that they will be able to be read in the JS file.
     aggregations['matrix']['no.audit.error']['key'] = 'no red audits'
     aggregations['matrix']['no.audit.not_compliant']['key'] = 'no red or orange audits'
     aggregations['matrix']['no.audit.warning']['key'] = 'no red or orange or yellow audits'
     if "no.audit.internal_action" in no_audits_groupings:
         aggregations['matrix']['no.audit.internal_action']['key'] = "no audits"
+    
+    # We need to format the no audits entries as subcategories in an overal 'no_audits' row.
+    # To do this, we need to make it the same format as the audit category entries so the JS
+    # file will read them and treat them equally.
     aggregations['matrix']['no_audits'] = {}
     aggregations['matrix']['no_audits']['buckets'] = []
 
+    # Add the no audit categories into the overall no_audits entry.
     for category in aggregations['matrix']:
         if "no.audit" in category:
             aggregations['matrix']['no_audits']['buckets'].append(aggregations['matrix'][category])
+
+    # Remove the no audit categories now that they have been added to the overall no_audits row.
+    for audit in no_audits_groupings:
+        aggregations['matrix'].pop(audit)
 
     result['matrix']['y']['label'] = "Audit Category"
     result['matrix']['y']['group_by'][0] = "audit_category"
     result['matrix']['y']['group_by'][1] = "audit_label"
 
-    # The following lines organize the no audit data into the same format as the audit data
-    # so auditmatrix.js can treat it the same way
-    """
-    no_audits_error_dict = {}
-    no_audits_error_list = []
-    no_audits_error_temp = {}
-    no_audits_error_temp = aggregations['matrix']['no.audit.error']
-    no_audits_error_temp['key'] = "experiments with no red audits"
-    no_audits_error_list.append(no_audits_error_temp)
-    no_audits_error_dict['buckets'] = no_audits_error_list
-
-    no_audits_nc_dict = {}
-    no_audits_nc_list = []
-    no_audits_nc_temp = {}
-    no_audits_nc_temp = aggregations['matrix']['no.audit.not_compliant']
-    no_audits_nc_temp['key'] = "experiments with no red or orange audits"
-    no_audits_nc_list.append(no_audits_nc_temp)
-    no_audits_nc_dict['buckets'] = no_audits_nc_list
-
-    no_audits_warning_dict = {}
-    no_audits_warning_list = []
-    no_audits_warning_temp = {}
-    no_audits_warning_temp = aggregations['matrix']['no.audit.warning']
-    no_audits_warning_temp['key'] = "experiments with no red or orange or yellow audits"
-    no_audits_warning_list.append(no_audits_warning_temp)
-    no_audits_warning_dict['buckets'] = no_audits_warning_list
-    """
-
-    # Replaces all audit categories in aggregations['matrix'] with the correctly formatted data
-    # for that specific audit category
-    for audit in no_audits_groupings:
-        aggregations['matrix'].pop(audit)
-    #aggregations['matrix'].pop('no.audit.error')
-    #aggregations['matrix'].pop('no.audit.not_compliant')
-    #aggregations['matrix'].pop('no.audit.warning')
-
-    # aggregations['matrix'].pop("no.audits", None)
     # Formats all audit categories into readable/usable format for auditmatrix.js
     bucket_audit_category_list = []
     for audit in aggregations['matrix']:
