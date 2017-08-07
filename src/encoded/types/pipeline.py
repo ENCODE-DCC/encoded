@@ -7,9 +7,6 @@ from .base import (
     Item,
     paths_filtered_by_status,
 )
-from .shared_calculated_properties import (
-    CalculatedAssayTermID
-)
 from pyramid.traversal import (
     find_root,
 )
@@ -22,7 +19,7 @@ from pyramid.traversal import (
         'title': 'Pipelines',
         'description': 'Listing of Pipelines',
     })
-class Pipeline(Item, CalculatedAssayTermID):
+class Pipeline(Item):
     item_type = 'pipeline'
     schema = load_schema('encoded:schemas/pipeline.json')
     name_key = 'accession'

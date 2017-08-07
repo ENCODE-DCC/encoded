@@ -3,7 +3,7 @@ from snovault import (
     audit_checker,
 )
 from .conditions import (
-    rfa,
+    rfa, assay_term_name
 )
 from .standards_data import pipelines_with_read_depth
 
@@ -566,17 +566,19 @@ def extract_award_version(bam_file):
     'derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step',
     'derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step.pipelines',
     'derived_from.controlled_by.dataset.original_files.analysis_step_version.software_versions',
-    'derived_from.controlled_by.dataset.original_files.analysis_step_version.software_versions.software'])
-def audit_file_chip_seq_control_read_depth(value, system,
-                                           condition=rfa('ENCODE3',
-                                                         'ENCODE2-Mouse',
-                                                         'ENCODE2',
-                                                         'ENCODE',
-                                                         'Roadmap')):
-    '''
-    An alignment file from the ENCODE Processing Pipeline should have read depth
-    in accordance with the criteria
-    '''
+    'derived_from.controlled_by.dataset.original_files.analysis_step_version.software_versions.software'],
+    condition=assay_term_name('ChIP-seq'))
+def audit_file_chip_seq_control_read_depth(value, system):
+
+    # An alignment file from the ENCODE Processing Pipeline should have read depth
+    # in accordance with the criteria
+    award = value.get('award')
+    if not award or award.get('rfa') not in ['ENCODE3',
+                                  'ENCODE2-Mouse',
+                                  'ENCODE2',
+                                  'ENCODE',
+                                  'Roadmap']:
+        return
 
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
