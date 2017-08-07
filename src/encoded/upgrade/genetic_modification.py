@@ -55,17 +55,17 @@ def genetic_modification_5_6(value, system):
         # If for some inexplicable reason, there is a source associated with the genetic_modification,
         # let's move it to reagent repository for now. If there is one in the technique, we'll overwrite it
         # and use that one instead.
-        rep_obj['repository'] = value['source']
+        rep_obj.update({'repository': value['source']})
         value.pop('source')
 
     if 'product_id' in value:
         # If for some inexplicable reason, there is a product_id associated with the genetic_modification,
         # let's move it to reagent identifiers for now. If there is one in the technique, we'll overwrite it
         # and use those instead.
-        rep_obj['identifier'] = value['product_id']
+        rep_obj.update{'identifier': value['product_id']})
         value.pop('product_id')
     if rep_obj:
-        value['reagent_availability'].add(rep_obj)
+        value['reagent_availability'].append(rep_obj)
 
     # New required properties modification_technique and purpose need to be handled somehow
     if value['modification_techniques']:
@@ -76,11 +76,11 @@ def genetic_modification_5_6(value, system):
                 alias_flag = True
             rep_obj = dict()
             if 'source' in technique.properties:
-                rep_obj['repository'] = technique.properties['source']
+                rep_obj.update({'repository': technique.properties['source']})
             if 'product_id' in technique.properties:
-                rep_obj['identifier'] = technique.properties['product_id']
+                rep_obj.update({'identifier': technique.properties['product_id']})
             if rep_obj:
-                value['reagent_availability'].add(rep_obj)
+                value['reagent_availability'].append(rep_obj)
             if 'guide_rna_sequences' in technique.properties:
                 value['guide_rna_sequences'] = technique.properties['guide_rna_sequences']
                 value['modification_technique'] = 'CRISPR'
