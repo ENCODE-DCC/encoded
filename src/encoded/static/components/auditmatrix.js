@@ -40,7 +40,7 @@ GroupMoreButton.defaultProps = {
 
 class AuditMatrix extends React.Component {
     static generateYGroupOpen(matrix) {
-        // Make a state for each of the Y groups (each Y group currently shows a biosample type).
+        // Make a state for each of the Y groups (each Y group currently shows an audit category).
         // To do that, we have to get each of the bucket keys, which will be the keys into the
         // object that keeps track of whether the group shows all or not. If a group has fewer than
         // the maximum number of items to show a See More button, it doesn't get included in the
@@ -159,9 +159,15 @@ class AuditMatrix extends React.Component {
             const xBuckets = matrix.x.buckets;
             const xLimit = matrix.x.limit || xBuckets.length;
             let yGroups = matrix.y[primaryYGrouping].buckets;
-            const orderKey = ['audit.ERROR.category', 'audit.NOT_COMPLIANT.category', 'audit.WARNING.category', 'no_audits', 'audit.INTERNAL_ACTION.category'];
+            // The following lines are to make sure that the audit categories are in the correct
+            // order and to assign a proper title to each colored row.
+            const orderKey = ['audit.ERROR.category', 'audit.NOT_COMPLIANT.category',
+                'audit.WARNING.category', 'no_audits', 'audit.INTERNAL_ACTION.category'];
             const titleKey = ['Error', 'Not Compliant', 'Warning', 'No audits', 'Internal Action'];
-            const noAuditKey = ['no red or orange or yellow audits', 'no red or orange audits', 'no red audits', 'no audits'];
+            const noAuditKey = ['no red or orange or yellow audits', 'no red or orange audits',
+                'no red audits', 'no audits'];
+            // For each group, compare against the key arrays above and format yGroups so that
+            // it has the same order as the keys and each group in yGroups has the correct title.
             let orderIndex = 0;
             let rowIndex = 0;
             const tempYGroups = [];
@@ -211,7 +217,8 @@ class AuditMatrix extends React.Component {
                 table: 'table',
             };
 
-            // Make an array of colors corresponding to the ordering of biosample_type
+            // Make an array of colors corresponding to the ordering of audits
+            // The last color doesn't appear unless you are logged in (DCC Action)
             const biosampleTypeColors = ['#cc0700', '#ff8000', '#e0e000', '#009802', '#a0a0a0'];
 
             return (
@@ -297,6 +304,7 @@ class AuditMatrix extends React.Component {
                                                 parsed.query['y.limit'] = null;
                                                 delete parsed.search; // this makes format compose the search string out of the query object
                                                 let groupHref = url.format(parsed);
+                                                // Change groupHref to the proper url if it is the no_audits row.
                                                 if (group.key === 'no_audits') {
                                                     groupHref = '?type=Experiment&status=released&audit.ERROR.category!=*&audit.NOT_COMPLIANT.category!=*&audit.WARNING.category!=*&audit.INTERNAL_ACTION.category!=*&y.limit=';
                                                 }
@@ -319,6 +327,7 @@ class AuditMatrix extends React.Component {
                                                 const groupRows = (this.state.yGroupOpen[group.key] || this.state.allYGroupsOpen) ? groupBuckets : groupBuckets.slice(0, yLimit);
                                                 rows.push(...groupRows.map((yb) => {
                                                     let href = `${searchBase}&${group.key}=${globals.encodedURIComponent(yb.key)}`;
+                                                    // The following lines give the proper urls to the no audits sub rows.
                                                     if (yb.key === 'no red audits') {
                                                         href = `${searchBase}&audit.ERROR.category!=*`;
                                                     }
