@@ -24,9 +24,7 @@ def includeme(config):
     config.add_route('report', '/report{slash:/?}')
     config.add_route('matrix', '/matrix{slash:/?}')
     config.add_route('news', '/news/')
-    #ADDED START
     config.add_route('audit', '/audit/')
-    #ADDED END
     config.scan(__name__)
 
 
@@ -1137,7 +1135,7 @@ def audit(context, request):
         'notification': '',
     }
     search_audit = request.has_permission('search_audit')
-
+    
     doc_types = request.params.getall('type')
     if len(doc_types) != 1:
         msg = 'Search result matrix currently requires specifying a single type.'
