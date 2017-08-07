@@ -8,6 +8,62 @@ import * as globals from './globals';
 import { AlternateAccession } from './objectutils';
 import { collapseIcon } from '../libs/svg-icons';
 
+let lookupLibrary;
+const outlineClass = ['indent-one', 'indent-two', 'indent-three', 'indent-four', 'indent-five', 'indent-six'];
+function stringMethod(term) {
+    return (
+        <span>{term}</span>
+    );
+}
+function arrayMethod(term, currentValue, outlineNumber) {
+    const outline = outlineNumber + 1;
+    return (
+        term.map((item, i) => <div key={i} className={outlineClass[outlineNumber]}>{lookupLibrary[typeof item](item, item, outline)}</div>)
+    );
+}
+function objectMethod(term, currentValue, outlineNumber) {
+    const newKey = Object.keys(currentValue);
+    const newValue = Object.values(currentValue);
+    const classname = outlineClass[outlineNumber];
+    const outline = outlineNumber + 1;
+    return (
+        <div>
+            {typeof term !== 'object' ?
+                <strong>{lookupLibrary[typeof term](term, currentValue, outline)}</strong>
+            :
+                null
+            }
+            {newValue.map((item, i) =>
+            <div key={i}>
+                {Array.isArray(item) ?
+                    outlineNumber === 1 ?
+                        <div className={classname}><i>{newKey[i]}:</i> {lookupLibrary.array(item, item, outline)}</div>
+                    :
+                        <div className={classname}>{newKey[i]}: {lookupLibrary.array(item, item, outline)}</div>
+                :
+                    outlineNumber === 1 ?
+                        <div className={classname}><i>{newKey[i]}:</i> {lookupLibrary[typeof item](item, item, outline)}</div>
+                    :
+                        <div className={classname}>{newKey[i]}: {lookupLibrary[typeof item](item, item, outline)}</div>
+                }
+            </div>)
+            }
+        </div>
+    );
+}
+
+lookupLibrary = {
+    string: (item, currentValue, outlineNumber) =>
+        stringMethod(item, currentValue, outlineNumber),
+    array: (item, currentValue, outlineNumber) =>
+        arrayMethod(item, currentValue, outlineNumber),
+    object: (item, currentValue, outlineNumber) =>
+        objectMethod(item, currentValue, outlineNumber),
+    boolean: (item, currentValue, outlineNumber) =>
+        <div className={outlineClass[outlineNumber]}>{item}</div>,
+    number: (item, currentValue, outlineNumber) =>
+        <div className={outlineClass[outlineNumber]}>{item}</div>,
+};
 class ObjectPanel extends React.Component {
     constructor() {
         super();
@@ -21,6 +77,7 @@ class ObjectPanel extends React.Component {
         // Handle click on panel collapse icon
         this.setState({ collapsed: !this.state.collapsed });
     }
+
     render() {
         const { title, idvalue, index, objectKeys, objectValues } = this.props;
         console.log(objectValues);
@@ -57,21 +114,15 @@ class ObjectPanel extends React.Component {
                                                 typeof objectValues[id] === 'object' && typeof objectValues[id][Object.keys(objectValues[id])[0]] === 'object' ?
                                                 Object.keys(objectValues[id]).map((item, i) =>
                                                 <div key={i}>
-                                                    <div key={index.id}>{Object.keys(objectValues[id])[i]}</div>
-                                                    <div>{typeof Object.values(objectValues[id])[i] === 'object' ?
-                                                            typeof Object.values(objectValues[id])[0] !== 'object' ?
-                                                                <div>{Object.values(objectValues[id])[i]}</div>
-                                                            :
-                                                            Array.isArray(Object.values(objectValues[id])[0]) ?
-                                                                <div> HELLO ARRAY HERE </div>
-                                                            :
-                                                            null
+                                                    {Array.isArray(objectValues[id]) ?
+                                                        <div className={outlineClass[0]}>lookupLibrary.array(objectValues[id][Object.keys(objectValues[id])[0]][Object.keys(objectValues[id][Object.keys(objectValues[id])[0]])], Object.values(objectValues[id])[i], 0)</div>
                                                     :
-                                                    null}
-                                                    </div>
-                                                </div>)
+                                                        <div className={outlineClass[0]}>{lookupLibrary[typeof objectValues[id]](item, Object.values(objectValues[id])[i], 0)}</div>
+                                                    }
+                                                </div>
+                                                )
                                             :
-                                                null
+                                            null
                                             }
                                         </dd>
                                     </div>
@@ -94,6 +145,7 @@ ObjectPanel.propTypes = {
     objectValues: PropTypes.array.isRequired,
     index: PropTypes.number.isRequired,
 };
+
 
 class DisplayText extends React.Component {
 
