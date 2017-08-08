@@ -62,7 +62,7 @@ def genetic_modification_5_6(value, system):
         # If for some inexplicable reason, there is a product_id associated with the genetic_modification,
         # let's move it to reagent identifiers for now. If there is one in the technique, we'll overwrite it
         # and use those instead.
-        rep_obj.update{'identifier': value['product_id']})
+        rep_obj.update({'identifier': value['product_id']})
         value.pop('product_id')
     if rep_obj:
         value['reagent_availability'].append(rep_obj)
