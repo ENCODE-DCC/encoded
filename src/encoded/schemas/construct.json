@@ -16,6 +16,7 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/documents" }
     ],
@@ -69,12 +70,6 @@
                 ]
             },
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
-        },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the construct.",
-            "type": "string",
-            "format": "uri"
         },
         "target": {
             "title": "Target",
