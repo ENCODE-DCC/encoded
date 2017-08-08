@@ -8,8 +8,8 @@ import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { PickerActions } from './search';
-import StatusLabel from './statuslabel';
 import { SortTablePanel, SortTable } from './sorttable';
+import StatusLabel from './statuslabel';
 
 const labChartId = 'lab-chart'; // Lab chart <div> id attribute
 const categoryChartId = 'category-chart'; // Assay chart <div> id attribute
@@ -137,7 +137,15 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                     onClick: function onClick(e) {
                         // React to clicks on pie sections
                         const activePoints = chart.getElementAtEvent(e);
-
+                        // chart.options.onClick.baseSearchUri responds to user input of selected Genus Buttons
+                        // Each type of Object (e.g. Experiments, Annotations, Biosample, AntibodyLot) has a unique
+                        //      query string for the corresponding report search
+                        // Cannot simply append something to baseSearchUri, as baseSearchUri ends with {searchtype}=
+                        //      so query string specifying genus must end up somewhere in the middle of the string that
+                        //      is baseSearchUri
+                        // chart.options.onClick.baseSearchUri must be defined in the type of chart (StatusChart, CategoryChart)
+                        //      that is passed to the createDonutChart or createBarChart functions because unable to directly
+                        //      make changes to the param baseSearchUri in updateChart()
                         if (activePoints[0]) { // if click on wrong area, do nothing
                             const clickedElementIndex = activePoints[0]._index;
                             const term = chart.data.labels[clickedElementIndex];
@@ -158,43 +166,38 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
     });
 }
 
-function createBarChart(chartId, unreplicatedLabel, unreplicatedDataset, isogenicDataset, anisogenicDataset, colors, labels, replicatelabels, baseSearchUri, navigate) {
+/**
+ * Create a stacked bar chart in the div.
+ *
+ * @param {object} chartId - Root HTML id of div to draw the chart into. Supply <divs> with `chartId`-chart for
+//            the chart itself, and `chartId`-legend for its legend.
+ * @param {object} data - Contains arrays of values to chart, array of string labels corresponding to the values (status)
+ * @param {array} colors - Hex colors corresponding to the values.
+ * @param {array} replicateLabels - Array of string labels corresponding to the values (replicate type)
+ * @param {object} baseSearchUri - Base URI to navigate to when clicking a bar chart section or legend item. Clicked
+//                  item label gets appended to it.
+ * @param {object} navigate - Called when when a bar chart section gets clicked. Gets passed the URI to go to. Needed
+//             because this function can't access the navigation function.
+ * @return {promise}
+ */
+function createBarChart(chartId, data, colors, replicateLabels, baseSearchUri, navigate) {
     return new Promise((resolve) => {
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
-            const datasets = [{}, {}, {}];
-            if (unreplicatedDataset.some(x => x > 0)) {
-                datasets[0].label = 'unreplicated';
-                datasets[0].data = unreplicatedDataset;
-                datasets[0].backgroundColor = colors[0];
-                if (isogenicDataset.some(x => x > 0)) {
-                    datasets[1].label = 'isogenic';
-                    datasets[1].data = isogenicDataset;
-                    datasets[1].backgroundColor = colors[1];
-                    if (anisogenicDataset.some(x => x > 0)) {
-                        datasets[2].label = 'anisogenic';
-                        datasets[2].data = anisogenicDataset;
-                        datasets[2].backgroundColor = colors[2];
-                    }
-                } else if (isogenicDataset.every(x => x === 0) && anisogenicDataset.some(x => x > 0)) {
-                    datasets[1].label = 'anisogenic';
-                    datasets[1].data = anisogenicDataset;
-                    datasets[1].backgroundColor = colors[1];
-                }
-            } else if (unreplicatedDataset.every(x => x === 0) && isogenicDataset.some(x => x > 0)) {
-                datasets[0].label = 'isogenic';
-                datasets[0].data = isogenicDataset;
-                datasets[0].backgroundColor = colors[0];
-                if (anisogenicDataset.some(x => x > 0)) {
-                    datasets[1].label = 'anisogenic';
-                    datasets[1].data = anisogenicDataset;
-                    datasets[1].backgroundColor = colors[1];
-                }
-            } else if (unreplicatedDataset.every(x => x === 0) && isogenicDataset.every(x => x === 0) && anisogenicDataset.some(x => x > 0)) {
-                datasets[0].label = 'anisogenic';
-                datasets[0].data = anisogenicDataset;
-                datasets[0].backgroundColors = colors[0];
+            const datasets = [];
+            if (data.unreplicatedDataset.some(x => x > 0)) {
+                datasets.push({ label: 'unreplicated', data: data.unreplicatedDataset, backgroundColor: colors[0] });
             }
+            if (data.isogenicDataset.some(x => x > 0)) {
+                datasets.push({ label: 'isogenic', data: data.isogenicDataset, backgroundColor: colors[1] });
+            }
+            if (data.anisogenicDataset.some(x => x > 0)) {
+                datasets.push({ label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[2] });
+            }
+            for (let i = 0; i < datasets.length; i += 1) {
+                datasets[i].backgroundColor = colors[i];
+            }
+
             // Create the chart.
             const canvas = document.getElementById(`${chartId}-chart`);
             const parent = document.getElementById(chartId);
@@ -206,7 +209,7 @@ function createBarChart(chartId, unreplicatedLabel, unreplicatedDataset, isogeni
             const chart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels,
+                    labels: data.labels,
                     datasets,
                 },
                 options: {
@@ -238,15 +241,12 @@ function createBarChart(chartId, unreplicatedLabel, unreplicatedDataset, isogeni
                         duration: 200,
                     },
                     legendCallback: (chartInstance) => {
-                        const chartLabels = replicatelabels;
                         const LegendLabels = [];
                         const dataColors = [];
                         // If data array has value, add to legend
-                        for (let i = 0; i < chartLabels.length; i += 1) {
-                            if (chartInstance.data.datasets[i].data.some(x => x > 0)) {
-                                LegendLabels.push(chartInstance.data.datasets[i].label);
-                                dataColors.push(chartInstance.data.datasets[i].backgroundColor);
-                            }
+                        for (let i = 0; i < datasets.length; i += 1) {
+                            LegendLabels.push(chartInstance.data.datasets[i].label);
+                            dataColors.push(chartInstance.data.datasets[i].backgroundColor);
                         }
                         const text = [];
                         text.push('<ul>');
@@ -829,7 +829,7 @@ function StatusData(experiments, unreplicated, isogenic, anisogenic) {
     } else {
         anisogenicDataset = [0, 0, 0, 0, 0, 0, 0, 0];
     }
-    return ([labels, unreplicatedLabel, unreplicatedDataset, isogenicDataset, anisogenicDataset]);
+    return ({ labels, unreplicatedLabel, unreplicatedDataset, isogenicDataset, anisogenicDataset });
 }
 
 class ControlsChart extends React.Component {
@@ -977,47 +977,32 @@ class StatusExperimentChart extends React.Component {
         const data = StatusData(experiments, unreplicated, isogenic, anisogenic); // Array of datasets and labels
         const replicatelabels = ['unreplicated', 'isogenic', 'anisogenic'];
         const colors = replicatelabels.map((label, i) => statusColorList[i % statusColorList.length]);
-        const unreplicatedDataset = data[2];
-        const isogenicDataset = data[3];
-        const anisogenicDataset = data[4];
-        if (unreplicatedDataset.some(x => x > 0)) {
-            chart.data.datasets[0].label = 'unreplicated';
-            chart.data.datasets[0].data = unreplicatedDataset;
-            chart.data.datasets[0].backgroundColor = colors[0];
-            if (isogenicDataset.some(x => x > 0)) {
-                chart.data.datasets[1].label = 'isogenic';
-                chart.data.datasets[1].data = isogenicDataset;
-                chart.data.datasets[1].backgroundColor = colors[1];
-                if (anisogenicDataset.some(x => x > 0)) {
-                    chart.data.datasets[2].label = 'anisogenic';
-                    chart.data.datasets[2].data = anisogenicDataset;
-                    chart.data.datasets[2].backgroundColor = colors[2];
-                } else if (anisogenicDataset.every(x => x === 0)) {
+        // Must specify each case of data availability - must remove available, data-less chart.data.datasets
+        // Ensures that the colors will be the default and legend labels does not include unnecessary strings
+        if (data.unreplicatedDataset.some(x => x > 0)) {
+            chart.data.datasets[0] = { label: 'unreplicated', data: data.unreplicatedDataset, backgroundColor: colors[0] };
+            if (data.isogenicDataset.some(x => x > 0)) {
+                chart.data.datasets[1] = { label: 'isogenic', data: data.isogenicDataset, backgroundColor: colors[1] };
+                if (data.anisogenicDataset.some(x => x > 0)) {
+                    chart.data.datasets[2] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[2] };
+                } else if (data.anisogenicDataset.every(x => x === 0)) {
                     chart.data.datasets[2] = {};
                 }
-            } else if (isogenicDataset.every(x => x === 0) && anisogenicDataset.some(x => x > 0)) {
-                chart.data.datasets[1].label = 'anisogenic';
-                chart.data.datasets[1].data = anisogenicDataset;
-                chart.data.datasets[1].backgroundColor = colors[1];
+            } else if (data.isogenicDataset.every(x => x === 0) && data.anisogenicDataset.some(x => x > 0)) {
+                chart.data.datasets[1] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[1] };
                 chart.data.datasets[2] = {};
             }
-        } else if (unreplicatedDataset.every(x => x === 0) && isogenicDataset.some(x => x > 0)) {
-            chart.data.datasets[0].label = 'isogenic';
-            chart.data.datasets[0].data = isogenicDataset;
-            chart.data.datasets[0].backgroundColor = colors[0];
-            if (anisogenicDataset.some(x => x > 0)) {
-                chart.data.datasets[1].label = 'anisogenic';
-                chart.data.datasets[1].data = anisogenicDataset;
-                chart.data.datasets[1].backgroundColor = colors[1];
+        } else if (data.unreplicatedDataset.every(x => x === 0) && data.isogenicDataset.some(x => x > 0)) {
+            chart.data.datasets[0] = { label: 'isogenic', data: data.isogenicDataset, backgroundColor: colors[0] };
+            if (data.anisogenicDataset.some(x => x > 0)) {
+                chart.data.datasets[1] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[1] };
                 chart.data.datasets[2] = {};
-            } else if (anisogenicDataset.every(x => x === 0)) {
+            } else if (data.anisogenicDataset.every(x => x === 0)) {
                 chart.data.datasets[1] = {};
                 chart.data.datasets[2] = {};
             }
-        } else if (unreplicatedDataset.every(x => x === 0) && isogenicDataset.every(x => x === 0) && anisogenicDataset.some(x => x > 0)) {
-            chart.data.datasets[0].label = 'anisogenic';
-            chart.data.datasets[0].data = anisogenicDataset;
-            chart.data.datasets[0].backgroundColors = colors[0];
+        } else if (data.unreplicatedDataset.every(x => x === 0) && data.isogenicDataset.every(x => x === 0) && data.anisogenicDataset.some(x => x > 0)) {
+            chart.data.datasets[0] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[1] };
             chart.data.datasets[1] = {};
             chart.data.datasets[2] = {};
         }
@@ -1029,16 +1014,12 @@ class StatusExperimentChart extends React.Component {
 
     createChart(chartId) {
         const { experiments, unreplicated, isogenic, anisogenic } = this.props;
-        const data = StatusData(experiments, unreplicated, isogenic, anisogenic); // Array of datasets and labels
-        const labels = data[0];
-        const statusLabel = data[1];
-        const unreplicatedDataset = data[2];
-        const isogenicDataset = data[3];
-        const anisogenicDataset = data[4];
+        // Object with arrays of labels, status labels, unreplicatedDataset, isogenicDataset, anisogenicDataset
+        const data = StatusData(experiments, unreplicated, isogenic, anisogenic);
         const replicatelabels = ['unreplicated', 'isogenic', 'anisogenic'];
         const colors = replicatelabels.map((label, i) => statusColorList[i % statusColorList.length]);
 
-        createBarChart(chartId, statusLabel, unreplicatedDataset, isogenicDataset, anisogenicDataset, colors, labels, replicatelabels, `${this.props.linkUri}${this.props.award.name}`, (uri) => { this.context.navigate(uri); })
+        createBarChart(chartId, data, colors, replicatelabels, `${this.props.linkUri}${this.props.award.name}`, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -1597,7 +1578,7 @@ MilestonesTable.propTypes = {
 // Overall component to render the cumulative line chart
 const ExperimentDate = (props) => {
     const { experiments, award } = props;
-    let dateReleasedArray = [];
+    let releasedDates = [];
     let dateSubmittedArray = [];
     const deduplicatedreleased = {};
     const deduplicatedsubmitted = {};
@@ -1616,12 +1597,12 @@ const ExperimentDate = (props) => {
     if (experiments && experiments.facets && experiments.facets.length) {
         const monthReleasedFacet = experiments.facets.find(facet => facet.field === 'month_released');
         const dateSubmittedFacet = experiments.facets.find(facet => facet.field === 'date_submitted');
-        dateReleasedArray = (monthReleasedFacet && monthReleasedFacet.terms && monthReleasedFacet.terms.length) ? monthReleasedFacet.terms : [];
+        releasedDates = (monthReleasedFacet && monthReleasedFacet.terms && monthReleasedFacet.terms.length) ? monthReleasedFacet.terms : [];
         dateSubmittedArray = (dateSubmittedFacet && dateSubmittedFacet.terms && dateSubmittedFacet.terms.length) ? dateSubmittedFacet.terms : [];
     }
 
     // Use Moment to format arrays of submitted and released date
-    const standardreleasedTerms = dateReleasedArray.map((term) => {
+    const standardreleasedTerms = releasedDates.map((term) => {
         const standardDate = moment(term.key, ['MMMM, YYYY', 'YYYY-MM']).format('YYYY-MM');
         return { key: standardDate, doc_count: term.doc_count };
     });
@@ -1650,7 +1631,7 @@ const ExperimentDate = (props) => {
     });
 
     // Add an object with the most current date to one of the arrays
-    if ((dateReleasedArray && dateReleasedArray.length) && (dateSubmittedArray && dateSubmittedArray.length)) {
+    if ((releasedDates && releasedDates.length) && (dateSubmittedArray && dateSubmittedArray.length)) {
         if (moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isAfter(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
             sortedreleasedTerms.push({ key: sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key, doc_count: 0 });
         } else if (moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isBefore(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
