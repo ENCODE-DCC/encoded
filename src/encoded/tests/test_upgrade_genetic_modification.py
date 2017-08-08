@@ -102,5 +102,5 @@ def test_genetic_modification_upgrade_5_6(upgrader, genetic_modification_5, cris
     assert value['introduced_sequence'] == 'TCGA'
     assert 'reagent_availability' in value
     assert value['reagent_availability']['repository'] == 'sigma'
-    assert value['reagent_availability']['product_id'] == '12345'
+    assert value['reagent_availability']['identifier'] == '12345'
 '''
