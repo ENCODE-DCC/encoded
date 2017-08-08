@@ -27,6 +27,22 @@ $pipeline-node-types:
             fill: #ffc0c0;
         }
 
+        &.error {
+            fill: #ffc300;
+        }
+
+        &.revoked {
+            fill: #B24342;
+
+            g.label {
+                fill: #fff;
+            }
+        }
+
+        &.archived {
+            fill: #c0c0c0;
+        }
+
         &:hover {
             cursor: pointer;
         }
