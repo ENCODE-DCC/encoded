@@ -2934,15 +2934,10 @@ def audit_experiment_spikeins(value, system):
                                     'replicates.library',
                                     'replicates.library.biosample'])
 def audit_experiment_biosample_term(value, system):
-    '''
-    The biosample term and id and type information should be present and
-    concordent with library biosamples,
-    Exception: RNA Bind-n-Seq
-    '''
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value.get('assay_term_name') == 'RNA Bind-n-Seq':
+    if value.get('biosample_type') == 'in vitro sample':
         return
 
     ontology = system['registry']['ontology']
@@ -2955,10 +2950,7 @@ def audit_experiment_biosample_term(value, system):
         yield AuditFailure('missing biosample_term_name', detail, level='ERROR')
     # The type and term name should be put into dependencies
 
-    if not term_id:
-        detail = '{} is missing biosample_term_id'.format(value['@id'])
-        yield AuditFailure('missing biosample_term_id', detail, level='ERROR')
-        return
+
 
     if term_id.startswith('NTR:'):
         detail = '{} has an NTR biosample {} - {}'.format(value['@id'], term_id, term_name)
