@@ -2,7 +2,7 @@
 
 ### Schema version 18
 
-* *biosample_type* and *biosample_term_id* consistency added to the list of schema dependencies
+* *biosample_type* and *biosample_term_id* properties are required, consistency between the type and ontology term_id is validated by schema dependency
 
 ### Schema version 17
 
