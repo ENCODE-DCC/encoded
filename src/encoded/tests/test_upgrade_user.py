@@ -40,3 +40,29 @@ def test_user_upgrade_viewing_groups(upgrader, user_3):
     value = upgrader.upgrade('user', user_3, target_version='4')
     assert value['schema_version'] == '4'
     assert value['viewing_groups'] == ['ENCODE3']
+
+
+@pytest.fixture
+def user_7(user):
+    item = user.copy()
+    item.update({
+        'schema_version': '6',
+        'phone1': '206-685-2672',
+        'phone2': '206-267-1098',
+        'fax': '206-267-1094',
+        'skype': 'fake_id',
+        'google': 'google',
+        'timezone': 'US/Pacific',
+    })
+    return item
+
+
+def test_user_upgrade_contact_info(upgrader, user_7):
+    value = upgrader.upgrade('user', user_7, current_version='6', target_version='7')
+    assert value['schema_version'] == '7'
+    assert 'phone1' not in value
+    assert 'phone2' not in value
+    assert 'fax' not in value
+    assert 'skype' not in value
+    assert 'google' not in value
+    assert 'timezone' not in value

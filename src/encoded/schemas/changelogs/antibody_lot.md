@@ -1,5 +1,9 @@
 ## Changelog for antibody_lot.json
 
+### Schema 9
+
+* *status* is restricted to DCC access only
+
 ### Schema version 8
 
 * *alternate_accessions* now must match accession format, "ENCLB..." or "TSTLB..."

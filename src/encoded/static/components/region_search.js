@@ -1,137 +1,206 @@
-'use strict';
-var React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
-var panel = require('../libs/bootstrap/panel');
-var globals = require('./globals');
-var fetched = require('./fetched');
-var url = require('url');
+import url from 'url';
+import DropdownButton from '../libs/bootstrap/button';
+import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
+import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { FacetList, Listing } from './search';
-var button = require('../libs/bootstrap/button');
-var dropdownMenu = require('../libs/bootstrap/dropdown-menu');
-
-var FetchedData = fetched.FetchedData;
-var Param = fetched.Param;
-var DropdownButton = button.DropdownButton;
-var DropdownMenu = dropdownMenu.DropdownMenu;
-var {Panel, PanelBody, PanelHeading} = panel;
+import { FetchedData, Param } from './fetched';
+import * as globals from './globals';
 
 
-var regionGenomes = [
-    {value: 'GRCh37', display: 'hg19'},
-    {value: 'GRCh38', display: 'GRCh38'},
-    {value: 'GRCm37', display: 'mm9'},
-    {value: 'GRCm38', display: 'mm10'}
+const regionGenomes = [
+    { value: 'GRCh37', display: 'hg19' },
+    { value: 'GRCh38', display: 'GRCh38' },
+    { value: 'GRCm37', display: 'mm9' },
+    { value: 'GRCm38', display: 'mm10' },
 ];
 
 
-var AutocompleteBox = createReactClass({
-    render: function() {
-        var terms = this.props.auto['@graph']; // List of matching terms from server
-        var userTerm = this.props.userTerm && this.props.userTerm.toLowerCase(); // Term user entered
+const AutocompleteBox = (props) => {
+    const terms = props.auto['@graph']; // List of matching terms from server
+    const handleClick = props.handleClick;
+    const userTerm = props.userTerm && props.userTerm.toLowerCase(); // Term user entered
 
-        if (!this.props.hide && userTerm && userTerm.length && terms && terms.length) {
-            return (
-                <ul className="adv-search-autocomplete">
-                    {terms.map(function(term) {
-                        var matchStart, matchEnd;
-                        var preText, matchText, postText;
+    if (!props.hide && userTerm && userTerm.length && terms && terms.length) {
+        return (
+            <ul className="adv-search-autocomplete">
+                {terms.map((term) => {
+                    let matchEnd;
+                    let preText;
+                    let matchText;
+                    let postText;
 
-                        // Boldface matching part of term
-                        matchStart = term.text.toLowerCase().indexOf(userTerm);
-                        if (matchStart >= 0) {
-                            matchEnd = matchStart + userTerm.length;
-                            preText = term.text.substring(0, matchStart);
-                            matchText = term.text.substring(matchStart, matchEnd);
-                            postText = term.text.substring(matchEnd);
-                        } else {
-                            preText = term.text;
-                        }
-                        return <li key={term.text} tabIndex="0" onClick={this.props.handleClick.bind(null, term.text, term.payload.id, this.props.name)}>{preText}<b>{matchText}</b>{postText}</li>;
-                    }, this)}
-                </ul>
-            );
-        } else {
-            return null;
-        }
+                    // Boldface matching part of term
+                    const matchStart = term.text.toLowerCase().indexOf(userTerm);
+                    if (matchStart >= 0) {
+                        matchEnd = matchStart + userTerm.length;
+                        preText = term.text.substring(0, matchStart);
+                        matchText = term.text.substring(matchStart, matchEnd);
+                        postText = term.text.substring(matchEnd);
+                    } else {
+                        preText = term.text;
+                    }
+                    return (
+                        <AutocompleteBoxMenu
+                            key={term.text}
+                            handleClick={handleClick}
+                            term={term}
+                            name={props.name}
+                            preText={preText}
+                            matchText={matchText}
+                            postText={postText}
+                        />
+                    );
+                }, this)}
+            </ul>
+        );
     }
-});
 
-var AdvSearch = createReactClass({
-    getInitialState: function() {
-        return {
+    return null;
+};
+
+AutocompleteBox.propTypes = {
+    auto: PropTypes.object,
+    userTerm: PropTypes.string,
+    handleClick: PropTypes.func,
+    hide: PropTypes.bool,
+    name: PropTypes.string,
+};
+
+AutocompleteBox.defaultProps = {
+    auto: {}, // Looks required, but because it's built from <Param>, it can fail type checks.
+    userTerm: '',
+    handleClick: null,
+    hide: false,
+    name: '',
+};
+
+
+// Draw the autocomplete box drop-down menu.
+class AutocompleteBoxMenu extends React.Component {
+    constructor() {
+        super();
+
+        // Bind this to non-React methods.
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    // Handle clicks in the drop-down menu. It just calls the parent's handleClick function, giving
+    // it the parameters of the clicked item.
+    handleClick() {
+        const { term, name } = this.props;
+        this.props.handleClick(term.text, term.payload.id, name);
+    }
+
+    render() {
+        const { preText, matchText, postText } = this.props;
+
+        return (
+            <li tabIndex="0" onClick={this.handleClick}>
+                {preText}<b>{matchText}</b>{postText}
+            </li>
+        );
+    }
+}
+
+AutocompleteBoxMenu.propTypes = {
+    handleClick: PropTypes.func.isRequired, // Parent function to handle a click in a drop-down menu item
+    term: PropTypes.object.isRequired, // Object for the term being searched
+    name: PropTypes.string,
+    preText: PropTypes.string, // Text before the matched term in the entered string
+    matchText: PropTypes.string, // Matching text in the entered string
+    postText: PropTypes.string, // Text after the matched term in the entered string
+};
+
+AutocompleteBoxMenu.defaultProps = {
+    name: '',
+    preText: '',
+    matchText: '',
+    postText: '',
+};
+
+
+class AdvSearch extends React.Component {
+    constructor() {
+        super();
+
+        // Set intial React state.
+        this.state = {
             disclosed: false,
             showAutoSuggest: false,
             searchTerm: '',
             coordinates: '',
             genome: regionGenomes[0].value,
-            terms: {}
+            terms: {},
         };
-    },
 
-    contextTypes: {
-        autocompleteTermChosen: PropTypes.bool,
-        autocompleteHidden: PropTypes.bool,
-        onAutocompleteHiddenChange: PropTypes.func,
-        location_href: PropTypes.string
-    },
+        // Bind this to non-React methods.
+        this.handleDiscloseClick = this.handleDiscloseClick.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleAutocompleteClick = this.handleAutocompleteClick.bind(this);
+        this.handleAssemblySelect = this.handleAssemblySelect.bind(this);
+        this.tick = this.tick.bind(this);
+    }
 
-    handleDiscloseClick: function(e) {
-        this.setState({disclosed: !this.state.disclosed});
-    },
-
-    handleChange: function(e) {
-        this.setState({showAutoSuggest: true, terms: {}});
-        this.newSearchTerm = e.target.value;
-    },
-
-    handleAutocompleteClick: function(term, id, name) {
-        var newTerms = {};
-        var inputNode = this.refs.annotation;
-        inputNode.value = term;
-        newTerms[name] = id;
-        this.setState({terms: newTerms});
-        this.setState({showAutoSuggest: false});
-        inputNode.focus();
-        // Now let the timer update the terms state when it gets around to it.
-    },
-
-    handleAssemblySelect: function(event) {
-        // Handle click in assembly-selection <select>
-        this.setState({genome: event.target.value});
-    },
-
-    componentDidMount: function() {
+    componentDidMount() {
         // Use timer to limit to one request per second
         this.timer = setInterval(this.tick, 1000);
-    },
+    }
 
-    componentWillUnmount: function() {
+    componentWillUnmount() {
         clearInterval(this.timer);
-    },
+    }
 
-    tick: function() {
+    handleDiscloseClick() {
+        this.setState(prevState => ({
+            disclosed: !prevState.disclosed,
+        }));
+    }
+
+    handleChange(e) {
+        this.setState({ showAutoSuggest: true, terms: {} });
+        this.newSearchTerm = e.target.value;
+    }
+
+    handleAutocompleteClick(term, id, name) {
+        const newTerms = {};
+        const inputNode = this.annotation;
+        inputNode.value = term;
+        newTerms[name] = id;
+        this.setState({ terms: newTerms, showAutoSuggest: false });
+        inputNode.focus();
+        // Now let the timer update the terms state when it gets around to it.
+    }
+
+    handleAssemblySelect(event) {
+        // Handle click in assembly-selection <select>
+        this.setState({ genome: event.target.value });
+    }
+
+    tick() {
         if (this.newSearchTerm !== this.state.searchTerm) {
-            this.setState({searchTerm: this.newSearchTerm});
+            this.setState({ searchTerm: this.newSearchTerm });
         }
-    },
+    }
 
-    render: function() {
-        var context = this.props.context;
-        var id = url.parse(this.context.location_href, true);
-        var region = id.query['region'] || '';
+    render() {
+        const context = this.props.context;
+        const id = url.parse(this.context.location_href, true);
+        const region = id.query.region || '';
+
         return (
             <Panel>
                 <PanelBody>
                     <form id="panel1" className="adv-search-form" ref="adv-search" role="form" autoComplete="off" aria-labelledby="tab1">
-                        <input type="hidden" name="annotation" value={this.state.terms['annotation']} />
+                        <input type="hidden" name="annotation" value={this.state.terms.annotation} />
                         <div className="form-group">
-                            <label>Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
+                            <label htmlFor="annotation" >Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
                             <div className="input-group input-group-region-input">
-                                <input ref="annotation" defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange} />
+                                <input id="annotation" ref={(input) => { this.annotation = input; }} defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange} />
                                 {(this.state.showAutoSuggest && this.state.searchTerm) ?
-                                    <FetchedData loadingComplete={true}>
-                                        <Param name="auto" url={'/suggest/?genome=' + this.state.genome + '&q=' + this.state.searchTerm  } type="json" />
+                                    <FetchedData loadingComplete>
+                                        <Param name="auto" url={`/suggest/?genome=${this.state.genome}&q=${this.state.searchTerm}`} type="json" />
                                         <AutocompleteBox name="annotation" userTerm={this.state.searchTerm} handleClick={this.handleAutocompleteClick} />
                                     </FetchedData>
                                 : null}
@@ -156,42 +225,56 @@ var AdvSearch = createReactClass({
             </Panel>
         );
     }
-});
+}
 
-var RegionSearch = module.exports.RegionSearch = createReactClass({
-    onFilter: function(e) {
-        var search = e.currentTarget.getAttribute('href');
-        this.props.onChange(search);
-        e.stopPropagation();
-        e.preventDefault();
-    },
-    contextTypes: {
-        location_href: PropTypes.string,
-        navigate: PropTypes.func
-    },
-    render: function() {
+AdvSearch.propTypes = {
+    context: PropTypes.object.isRequired,
+};
+
+AdvSearch.contextTypes = {
+    autocompleteTermChosen: PropTypes.bool,
+    autocompleteHidden: PropTypes.bool,
+    onAutocompleteHiddenChange: PropTypes.func,
+    location_href: PropTypes.string,
+};
+
+
+class RegionSearch extends React.Component {
+    constructor() {
+        super();
+
+        // Bind this to non-React methods.
+        this.onFilter = this.onFilter.bind(this);
+    }
+
+    onFilter(e) {
+        if (this.props.onChange) {
+            const search = e.currentTarget.getAttribute('href');
+            this.props.onChange(search);
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    }
+
+    render() {
         const visualizeLimit = 100;
-        var context = this.props.context;
-        var results = context['@graph'];
-        var columns = context['columns'];
-        var notification = context['notification'];
-        var assembly = ['hg19'];
-        var files = [];
-        var id = url.parse(this.context.location_href, true);
-        var region = context['region'] || '';
-        var searchBase = url.parse(this.context.location_href).search || '';
-        var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
-        var filters = context['filters'];
-        var facets = context['facets'];
-        var total = context['total'];
-        var visualize_disabled = total > visualizeLimit;
+        const context = this.props.context;
+        const results = context['@graph'];
+        const columns = context.columns;
+        const notification = context.notification;
+        const searchBase = url.parse(this.context.location_href).search || '';
+        const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
+        const filters = context.filters;
+        const facets = context.facets;
+        const total = context.total;
+        const visualizeDisabled = total > visualizeLimit;
 
         // Get a sorted list of batch hubs keys with case-insensitive sort
-        var visualizeKeys = [];
+        let visualizeKeys = [];
         if (context.visualize_batch && Object.keys(context.visualize_batch).length) {
             visualizeKeys = Object.keys(context.visualize_batch).sort((a, b) => {
-                var aLower = a.toLowerCase();
-                var bLower = b.toLowerCase();
+                const aLower = a.toLowerCase();
+                const bLower = b.toLowerCase();
                 return (aLower > bLower) ? 1 : ((aLower < bLower) ? -1 : 0);
             });
         }
@@ -200,12 +283,17 @@ var RegionSearch = module.exports.RegionSearch = createReactClass({
             <div>
                 <h2>Region search</h2>
                 <AdvSearch {...this.props} />
-                    {context['notification'] === 'Success' ?
+                    {notification === 'Success' ?
                         <div className="panel data-display main-panel">
                             <div className="row">
                                 <div className="col-sm-5 col-md-4 col-lg-3">
-                                    <FacetList {...this.props} facets={facets} filters={filters}
-                                        searchBase={searchBase ? searchBase + '&' : searchBase + '?'} onFilter={this.onFilter} />
+                                    <FacetList
+                                        {...this.props}
+                                        facets={facets}
+                                        filters={filters}
+                                        searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
+                                        onFilter={this.onFilter}
+                                    />
                                 </div>
                                 <div className="col-sm-7 col-md-8 col-lg-9">
                                     <div>
@@ -214,37 +302,34 @@ var RegionSearch = module.exports.RegionSearch = createReactClass({
                                         </h4>
                                         <div className="results-table-control">
                                             {total > results.length && searchBase.indexOf('limit=all') === -1 ?
-                                                    <a rel="nofollow" className="btn btn-info btn-sm"
-                                                         href={searchBase ? searchBase + '&limit=all' : '?limit=all'}
-                                                         onClick={this.onFilter}>View All</a>
+                                                    <a
+                                                        rel="nofollow"
+                                                        className="btn btn-info btn-sm"
+                                                        href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
+                                                        onClick={this.onFilter}
+                                                    >
+                                                        View All
+                                                    </a>
                                             :
                                                 <span>
                                                     {results.length > 25 ?
-                                                            <a className="btn btn-info btn-sm"
-                                                               href={trimmedSearchBase ? trimmedSearchBase : "/region-search/"}
-                                                               onClick={this.onFilter}>View 25</a>
+                                                            <a
+                                                                className="btn btn-info btn-sm"
+                                                                href={trimmedSearchBase || '/region-search/'}
+                                                                onClick={this.onFilter}
+                                                            >
+                                                                View 25
+                                                            </a>
                                                     : null}
                                                 </span>
                                             }
 
-                                            {context['download_elements'] ?
-                                                <DropdownButton title='Download Elements' label="downloadelements" wrapperClasses="results-table-button">
-                                                    <DropdownMenu>
-                                                        {context['download_elements'].map(link =>
-                                                            <a key={link} data-bypass="true" target="_blank" private-browsing="true" href={link}>
-                                                                {link.split('.').pop()}
-                                                            </a>
-                                                        )}
-                                                    </DropdownMenu>
-                                                </DropdownButton>
-                                            : null}
-
                                             {visualizeKeys ?
-                                                <DropdownButton disabled={visualize_disabled} title={visualize_disabled ? 'Filter to ' + visualizeLimit + ' to visualize' : 'Visualize'} label="batchhubs" wrapperClasses="results-table-button">
+                                                <DropdownButton disabled={visualizeDisabled} title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'} label="batchhubs" wrapperClasses="results-table-button">
                                                     <DropdownMenu>
                                                         {visualizeKeys.map(assembly =>
                                                             Object.keys(context.visualize_batch[assembly]).sort().map(browser =>
-                                                                <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" private-browsing="true" href={context.visualize_batch[assembly][browser]}>
+                                                                <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize_batch[assembly][browser]}>
                                                                     {assembly} {browser}
                                                                 </a>
                                                             )
@@ -258,9 +343,7 @@ var RegionSearch = module.exports.RegionSearch = createReactClass({
 
                                   <hr />
                                   <ul className="nav result-table" id="result-table">
-                                      {results.map(function (result) {
-                                          return Listing({context:result, columns: columns, key: result['@id']});
-                                      })}
+                                      {results.map(result => Listing({ context: result, columns, key: result['@id'] }))}
                                   </ul>
                                 </div>
                             </div>
@@ -269,6 +352,20 @@ var RegionSearch = module.exports.RegionSearch = createReactClass({
             </div>
         );
     }
-});
+}
 
-globals.content_views.register(RegionSearch, 'region-search');
+RegionSearch.propTypes = {
+    context: PropTypes.object.isRequired,
+    onChange: PropTypes.func,
+};
+
+RegionSearch.defaultProps = {
+    onChange: null,
+};
+
+RegionSearch.contextTypes = {
+    location_href: PropTypes.string,
+    navigate: PropTypes.func,
+};
+
+globals.contentViews.register(RegionSearch, 'region-search');

@@ -5,7 +5,7 @@
     "id": "/profiles/experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["award", "lab", "assay_term_name"],
+    "required": ["award", "lab", "assay_term_name", "biosample_type"],
     "approvalRequired": ["assay_term_id", "biosample_term_id", "biosample_type"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
@@ -25,6 +25,89 @@
         { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
+
+        "biosample_type": {
+            "oneOf": [
+                {                   
+                    "properties": {
+                        "biosample_type": {
+                            "enum": ["in vitro sample"]
+                        }
+                    }
+                },
+                {
+                    "required": ["biosample_term_id"],
+                    "properties": {
+                        "biosample_type": {
+                            "enum": [                
+                                "primary cell",
+                                "immortalized cell line",
+                                "tissue",
+                                "in vitro differentiated cells",
+                                "induced pluripotent stem cell line",
+                                "whole organisms",
+                                "stem cell"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        "biosample_term_id":{
+            "oneOf": [
+                { 
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "tissue",
+                                "whole organisms"
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(UBERON|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                },
+                { 
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "primary cell"                               
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(CL|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                },
+                { 
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "immortalized cell line",
+                                "induced pluripotent stem cell line"                               
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(EFO|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                },
+                { 
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "stem cell",
+                                "in vitro differentiated cells"                               
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(CL|EFO|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                }
+            ]
+        },
         "status": {
             "oneOf": [
                 {
@@ -82,7 +165,15 @@
     },
     "properties": {
         "schema_version": {
-            "default": "12"
+            "default": "13"
+        },
+        "date_submitted": {
+            "title": "Date submitted" ,
+            "description": "The date that the experiment received all required replicates and files",
+            "comment": "Do not submit. date_submitted will be assigned only by DCC personnel.",
+            "type": "string",
+            "format": "date",
+            "permission": "import_items"
         },
         "target": {
             "title": "Target",
