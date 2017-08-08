@@ -2950,14 +2950,10 @@ def audit_experiment_biosample_term(value, system):
         yield AuditFailure('missing biosample_term_name', detail, level='ERROR')
     # The type and term name should be put into dependencies
 
-
-
     if term_id.startswith('NTR:'):
         detail = '{} has an NTR biosample {} - {}'.format(value['@id'], term_id, term_name)
         yield AuditFailure('NTR biosample', detail, level='INTERNAL_ACTION')
     else:
-        biosample_prefix = term_id.split(':')[0]
-
         if term_id not in ontology:
             detail = 'Experiment {} has term_id {} which is not in ontology'.format(
                 value['@id'], term_id)
