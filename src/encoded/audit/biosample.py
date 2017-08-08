@@ -139,9 +139,6 @@ def audit_biosample_term(value, system):
     if value['status'] in ['deleted']:
         return
 
-    if 'biosample_term_id' not in value:
-        return
-
     ontology = system['registry']['ontology']
     term_id = value['biosample_term_id']
     term_name = value.get('biosample_term_name')
