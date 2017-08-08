@@ -11,11 +11,12 @@ from urllib.parse import (
 )
 from .search import iter_search_results
 from .search import list_visible_columns_for_schemas
-
 import csv
 import io
 import json
+import datetime
 
+i = datetime.datetime.now()
 
 
 def includeme(config):
@@ -349,6 +350,8 @@ def lookup_column_value(value, path):
     deduped_nodes = [n for n in nodes if not (n in seen or seen.add(n))]
     return u','.join(u'{}'.format(n) for n in deduped_nodes)
 
+# brequest.url'%(timestamp)s' % {'timestamp': i.isoformat()} + 
+
 
 def format_row(columns):
     """Format a list of text columns as a tab-separated byte string."""
@@ -367,6 +370,20 @@ def report_download(context, request):
 
     schemas = [request.registry[TYPES][types[0]].schema]
     columns = list_visible_columns_for_schemas(request, schemas)
+    u = types[0]
+    u = u.replace("'", '')
+
+    def format_header(seq):
+        currenttime = str(i)
+        a = '&'
+        s = ''
+        reportseq = [request.host_url, '/report/']
+        urlsequence = s.join(reportseq)
+        urlseq = [urlsequence, request.query_string]
+        url = a.join(urlseq)
+        newheader = [currenttime, url]
+        return b'\t'.join([bytes_(n, 'utf-8') for n in newheader]) + b'\r\n'
+    
 
     # Work around Excel bug; can't open single column TSV with 'ID' header
     if len(columns) == 1 and '@id' in columns:
@@ -375,6 +392,7 @@ def report_download(context, request):
     header = [column.get('title') or field for field, column in columns.items()]
 
     def generate_rows():
+        yield format_header(header)
         yield format_row(header)
         for item in iter_search_results(context, request):
             values = [lookup_column_value(item, path) for path in columns]
@@ -382,6 +400,6 @@ def report_download(context, request):
 
     # Stream response using chunked encoding.
     request.response.content_type = 'text/tsv'
-    request.response.content_disposition = 'attachment;filename="%s"' % 'report.tsv'
+    request.response.content_disposition = 'attachment;filename="%s"' % '%(doctype)s Report %(yyyy)s/%(mm)s/%(dd)s.tsv' % {'yyyy': i.year, 'mm': i.month, 'dd': i.day, 'doctype': u} #change file name
     request.response.app_iter = generate_rows()
     return request.response
