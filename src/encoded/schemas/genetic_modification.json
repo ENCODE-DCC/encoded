@@ -279,7 +279,7 @@
             "description": "Repositories where reagents used to produce the described genetic modification can be obtained, if applicable.",
             "comment": "See source.json for identifiers (e.g. addgene, bacpac, rnai-consortium)",
             "type": "array",
-            "minimum": 1,
+            "minItems": 1,
             "required": ["repository", "identifier"],
             "items": {
                 "title": "Reagent availability",
