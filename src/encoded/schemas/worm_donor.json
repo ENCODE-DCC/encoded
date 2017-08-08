@@ -19,6 +19,7 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/strains"},
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/genomic_alterations"},
         { "$ref": "mixins.json#/genetic_modifications" }
