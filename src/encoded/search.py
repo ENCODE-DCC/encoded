@@ -462,7 +462,7 @@ def format_results(request, hits, result=None):
 
     if frame in ['embedded', 'object']:
         for hit in hits:
-            if not any_released and hit['_source'][frame].get('status','released') == 'released':
+            if not any_released and hit['_source'][frame].get('status', 'released') == 'released':
                 any_released = True
             yield hit['_source'][frame]
     else:
@@ -1215,36 +1215,37 @@ def audit(context, request):
             facets.append(audit_facet)
 
     # To get list of audit categories from facets
-    audit_list_field_copy = []
-    audit_list_field = []
+    audit_field_list_copy = []
+    audit_field_list = []
     for item in facets:
         if item[0].rfind('audit.') > -1:
-            audit_list_field.append(item)
+            audit_field_list.append(item)
 
-    audit_list_field_copy = audit_list_field.copy()
+    audit_field_list_copy = audit_field_list.copy()
 
     # Gets just the fields from the tuples from facet data
-    for item in audit_list_field_copy: # for each audit label
+    for item in audit_field_list_copy: # for each audit label
         temp = item[0]
-        audit_list_field[audit_list_field.index(item)] = temp #replaces list with just audit field
+        audit_field_list[audit_field_list.index(item)] = temp #replaces list with just audit field
 
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Group results in 2 dimensions
     x_grouping = matrix['x']['group_by']
-    y_groupings = audit_list_field
+    y_groupings = audit_field_list
 
     # Creates a list of fields used in no audit row
     no_audits_groupings = ['no.audit.error', 'no.audit.not_compliant', 'no.audit.warning']
 
     x_agg = {
-        "terms": {
-            "field": 'embedded.' + x_grouping + '.raw',
-            "size": 0,  # no limit
-        },
+        x_grouping: {
+            "terms": {
+                "field": 'embedded.' + x_grouping + '.raw',
+                "size": 0,  # no limit
+            },
+        }
     }
-    aggs = {x_grouping: x_agg}
 
     # aggs query for audit category rows
     aggs = {'audit.ERROR.category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
@@ -1272,6 +1273,22 @@ def audit(context, request):
     # Aggs query gets updated with no audits queries.
     # This is a nested query with error as the top most level and warning as the innermost level.
     # It allows for there to be multiple missing fields in the query.
+    temp = {}
+    for group in reversed(no_audits_groupings):
+        temp = {
+            "missing": {
+                "field": audit_field_list[no_audits_groupings.index(group)]
+            },
+            "aggs": {
+                x_agg
+            },
+        }
+        if (no_audits_groupings.index(group)+1) < len(no_audits_groupings): # If not the last element in no_audits_groupings
+            temp["aggs"][no_audits_groupings[(no_audits_groupings.index(group)+1)]] = temp_copy
+        temp_copy = copy.deepcopy(temp)
+
+# no_audits_groupings[no_audits_groupings.index(group)+1] if (no_audits_groupings.index(group)+1) < len(no_audits_groupings) else "null": temp
+
     aggs.update({
         "no.audit.error": {
             "missing": {
