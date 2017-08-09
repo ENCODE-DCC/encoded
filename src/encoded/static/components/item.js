@@ -77,9 +77,9 @@ class ObjectPanel extends React.Component {
         // Handle click on panel collapse icon
         this.setState({ collapsed: !this.state.collapsed });
     }
-
     render() {
         const { title, idvalue, index, objectKeys, objectValues } = this.props;
+        const removedItemKeys = ['type', 'additionalProperties', 'mixinProperties'];
         console.log(objectValues);
         return (
             <div key={index} className="panel panel-default">
@@ -90,42 +90,46 @@ class ObjectPanel extends React.Component {
                         <div key={id}>
                             <div className="container">
                                 <dl className="key-value">
-                                    <div data-test="id">
-                                        <dt>{term}</dt>
-                                        <dd>
-                                            {objectKeys[id] === 'id' ?
-                                                <div>{idvalue}</div>
-                                            :
-                                                Array.isArray(objectValues[id]) !== true && typeof objectValues[id] !== 'object' && objectValues[id] !== false ?
-                                                <div>{objectValues[id]}</div>
-                                            :
-                                                Array.isArray(objectValues[id]) === true && typeof objectValues[id][0] === 'string' ?
-                                                objectValues[id].map((item, i) => <div key={i}>{item}</div>)
-                                            :
-                                                objectValues[id] === false && Array.isArray(objectValues[id]) !== true && typeof objectValues[id] !== 'object' ?
-                                                <div>false</div>
-                                            :
-                                                Array.isArray(objectValues[id]) === true && typeof objectValues[id][0] === 'object' && objectValues[id][0].$ref ?
-                                                Object.keys(objectValues[id]).map((item, i) => <div key={i}>{objectValues[id][i].$ref}</div>)
-                                            :
-                                                typeof objectValues[id] === 'object' && typeof objectValues[id][Object.keys(objectValues[id])[0]] !== 'object' ?
-                                                Object.keys(objectValues[id]).map((item, i) => <div key={i}>{Object.keys(objectValues[id])[i]}: {objectValues[id][Object.keys(objectValues[id])[i]]}</div>)
-                                            :
-                                                typeof objectValues[id] === 'object' && typeof objectValues[id][Object.keys(objectValues[id])[0]] === 'object' ?
-                                                Object.keys(objectValues[id]).map((item, i) =>
-                                                <div key={i}>
-                                                    {Array.isArray(objectValues[id]) ?
-                                                        <div className={outlineClass[0]}>lookupLibrary.array(objectValues[id][Object.keys(objectValues[id])[0]][Object.keys(objectValues[id][Object.keys(objectValues[id])[0]])], Object.values(objectValues[id])[i], 0)</div>
-                                                    :
-                                                        <div className={outlineClass[0]}>{lookupLibrary[typeof objectValues[id]](item, Object.values(objectValues[id])[i], 0)}</div>
-                                                    }
-                                                </div>
-                                                )
-                                            :
-                                            null
-                                            }
-                                        </dd>
-                                    </div>
+                                    {removedItemKeys.includes(term) ?
+                                        null
+                                    :
+                                        <div data-test="id">
+                                            <dt>{term}</dt>
+                                            <dd>
+                                                {objectKeys[id] === 'id' ?
+                                                    <div>{idvalue}</div>
+                                                :
+                                                    Array.isArray(objectValues[id]) !== true && typeof objectValues[id] !== 'object' && objectValues[id] !== false ?
+                                                    <div>{objectValues[id]}</div>
+                                                :
+                                                    Array.isArray(objectValues[id]) === true && typeof objectValues[id][0] === 'string' ?
+                                                    objectValues[id].map((item, i) => <div key={i}>{item}</div>)
+                                                :
+                                                    objectValues[id] === false && Array.isArray(objectValues[id]) !== true && typeof objectValues[id] !== 'object' ?
+                                                    <div>false</div>
+                                                :
+                                                    Array.isArray(objectValues[id]) === true && typeof objectValues[id][0] === 'object' && objectValues[id][0].$ref ?
+                                                    Object.keys(objectValues[id]).map((item, i) => <div key={i}>{objectValues[id][i].$ref}</div>)
+                                                :
+                                                    typeof objectValues[id] === 'object' && typeof objectValues[id][Object.keys(objectValues[id])[0]] !== 'object' ?
+                                                    Object.keys(objectValues[id]).map((item, i) => <div key={i}>{Object.keys(objectValues[id])[i]}: {objectValues[id][Object.keys(objectValues[id])[i]]}</div>)
+                                                :
+                                                    typeof objectValues[id] === 'object' && typeof objectValues[id][Object.keys(objectValues[id])[0]] === 'object' ?
+                                                    Object.keys(objectValues[id]).map((item, i) =>
+                                                    <div key={i}>
+                                                        {Array.isArray(objectValues[id]) ?
+                                                            <div className={outlineClass[0]}>lookupLibrary.array(objectValues[id][Object.keys(objectValues[id])[0]][Object.keys(objectValues[id][Object.keys(objectValues[id])[0]])], Object.values(objectValues[id])[i], 0)</div>
+                                                        :
+                                                            <div className={outlineClass[0]}>{lookupLibrary[typeof objectValues[id]](item, Object.values(objectValues[id])[i], 0)}</div>
+                                                        }
+                                                    </div>
+                                                    )
+                                                :
+                                                null
+                                                }
+                                            </dd>
+                                        </div>
+                                    }
                                 </dl>
                             </div>
                         </div>
