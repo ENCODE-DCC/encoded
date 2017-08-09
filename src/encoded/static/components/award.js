@@ -137,15 +137,15 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                     onClick: function onClick(e) {
                         // React to clicks on pie sections
                         const activePoints = chart.getElementAtEvent(e);
-                        // chart.options.onClick.baseSearchUri responds to user input of selected Genus Buttons
+                        // chart.options.onClick.baseSearchUri is created or altered based on user input of selected Genus Buttons
                         // Each type of Object (e.g. Experiments, Annotations, Biosample, AntibodyLot) has a unique
-                        //      query string for the corresponding report search
-                        // Cannot simply append something to baseSearchUri, as baseSearchUri ends with {searchtype}=
-                        //      so query string specifying genus must end up somewhere in the middle of the string that
-                        //      is baseSearchUri
+                        //      query string for the corresponding report search -- cannot simply append something
+                        //      to end of baseSearchUri, as baseSearchUri ends with {searchtype}=
+                        //      so, query string specifying genus must end up somewhere in the middle of the string
+                        //      that is baseSearchUri.
                         // chart.options.onClick.baseSearchUri must be defined in the type of chart (StatusChart, CategoryChart)
-                        //      that is passed to the createDonutChart or createBarChart functions because unable to directly
-                        //      make changes to the param baseSearchUri in updateChart()
+                        //      that is passed to the createDonutChart or createBarChart functions because cannot directly
+                        //      make changes to the param baseSearchUri in updateChart().
                         if (activePoints[0]) { // if click on wrong area, do nothing
                             const clickedElementIndex = activePoints[0]._index;
                             const term = chart.data.labels[clickedElementIndex];
@@ -269,6 +269,15 @@ function createBarChart(chartId, data, colors, replicateLabels, baseSearchUri, n
                             const clickedElementdataset = activePoints[0]._datasetIndex;
                             const term = chart.data.labels[clickedElementIndex];
                             const item = chart.data.datasets[clickedElementdataset].label;
+                            // chart.options.onClick.baseSearchUri is created or altered based on user input of selected Genus Buttons
+                            // Each type of Object (e.g. Experiments, Annotations, Biosample, AntibodyLot) has a unique
+                            //      query string for the corresponding report search -- cannot simply append something
+                            //      to end of baseSearchUri, as baseSearchUri ends with {searchtype}=
+                            //      so, query string specifying genus must end up somewhere in the middle of the string
+                            //      that is baseSearchUri.
+                            // chart.options.onClick.baseSearchUri must be defined in the type of chart (StatusChart, CategoryChart)
+                            //      that is passed to the createDonutChart or createBarChart functions because cannot directly
+                            //      make changes to the param baseSearchUri in updateChart().
                             if (chart.options.onClick.baseSearchUri) {
                                 navigate(`${chart.options.onClick.baseSearchUri}&status=${globals.encodedURIComponent(term)}&replication_type=${item}`);
                             } else {
@@ -754,7 +763,17 @@ BiosampleChart.contextTypes = {
     navigate: PropTypes.func,
 };
 
-// Function to be called in createChart and updateChart of class StatusExperimentChart, creates arrays for chart data
+/**
+ * Function to be called in createChart and updateChart of class StatusExperimentChart, creates arrays for chart data.
+ *
+ * @param {object} experiments - Fetched data for experiments in Award
+ * @param {object} unreplicated - Experiment search with specific replication_type unreplicated
+ * @param {array} isogenic - Experiment search with specific replication_type isogenic
+ * @param {array} anisogenic - Experiment search with specific replication_type anisogenic
+ * @return {object} - with labels (for status -- x-axis of bar chart), unreplicatedDataset, isogenicDataset, anisogenicDataset
+//              to be passed to the createChart function
+ */
+
 function StatusData(experiments, unreplicated, isogenic, anisogenic) {
     let unreplicatedArray;
     let isogenicArray;
@@ -766,6 +785,7 @@ function StatusData(experiments, unreplicated, isogenic, anisogenic) {
     const anisogenicLabel = [];
     let anisogenicDataset = [];
 
+    // Find status in facets for each replicate type (unreplicated, isogenic, anisogenic) search
     if (experiments && experiments.facets && experiments.facets.length) {
         const unreplicatedFacet = unreplicated.facets.find(facet => facet.field === 'status');
         const isogenicFacet = isogenic.facets.find(facet => facet.field === 'status');
@@ -775,6 +795,12 @@ function StatusData(experiments, unreplicated, isogenic, anisogenic) {
         anisogenicArray = (anisogenicFacet && anisogenicFacet.terms && anisogenicFacet.terms.length) ? anisogenicFacet.terms : [];
     }
     const labels = ['proposed', 'started', 'submitted', 'released', 'deleted', 'replaced', 'archived', 'revoked'];
+
+    // Check existence of data for each of the keys in array labels
+    // Ensures that for each replicate type there exists the same set of labels and the corresponding data values (in order)
+    //      so that it can be easily and accurately passed to chart.js in createBarChart
+    //      First pushes anything that has a key in labels, then sorts the dataset
+    //      If the array has no length, just push an array with 0 values
     if (unreplicatedArray.length) {
         for (let j = 0; j < labels.length; j += 1) {
             for (let i = 0; i < unreplicatedArray.length; i += 1) {
@@ -829,7 +855,7 @@ function StatusData(experiments, unreplicated, isogenic, anisogenic) {
     } else {
         anisogenicDataset = [0, 0, 0, 0, 0, 0, 0, 0];
     }
-    return ({ labels, unreplicatedLabel, unreplicatedDataset, isogenicDataset, anisogenicDataset });
+    return ({ labels, unreplicatedDataset, isogenicDataset, anisogenicDataset });
 }
 
 class ControlsChart extends React.Component {
@@ -974,7 +1000,8 @@ class StatusExperimentChart extends React.Component {
 
     updateChart(chart) {
         const { experiments, unreplicated, isogenic, anisogenic, linkUri, award, objectQuery } = this.props;
-        const data = StatusData(experiments, unreplicated, isogenic, anisogenic); // Array of datasets and labels
+        // Object with arrays of status labels, unreplicatedDataset, isogenicDataset, anisogenicDataset
+        const data = StatusData(experiments, unreplicated, isogenic, anisogenic);
         const replicatelabels = ['unreplicated', 'isogenic', 'anisogenic'];
         const colors = replicatelabels.map((label, i) => statusColorList[i % statusColorList.length]);
         // Must specify each case of data availability - must remove available, data-less chart.data.datasets
@@ -1014,7 +1041,7 @@ class StatusExperimentChart extends React.Component {
 
     createChart(chartId) {
         const { experiments, unreplicated, isogenic, anisogenic } = this.props;
-        // Object with arrays of labels, status labels, unreplicatedDataset, isogenicDataset, anisogenicDataset
+        // Object with arrays of status labels, unreplicatedDataset, isogenicDataset, anisogenicDataset
         const data = StatusData(experiments, unreplicated, isogenic, anisogenic);
         const replicatelabels = ['unreplicated', 'isogenic', 'anisogenic'];
         const colors = replicatelabels.map((label, i) => statusColorList[i % statusColorList.length]);
