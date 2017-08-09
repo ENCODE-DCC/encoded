@@ -4,6 +4,100 @@ import marked from 'marked';
 import { Param, FetchedData } from './fetched';
 import * as globals from './globals';
 
+let lookupLibrary;
+const outlineClass = ['indent-one', 'indent-two', 'indent-three', 'indent-four', 'indent-five', 'indent-six'];
+function stringMethod(term) {
+    return (
+        <span>{term}</span>
+    );
+}
+function arrayMethod(term, currentValue, outlineNumber) {
+    const outline = outlineNumber + 1;
+    return (
+        term.map((item, i) => <div key={i} className={outlineClass[outlineNumber]}>{lookupLibrary[typeof item](item, item, outline)}</div>)
+    );
+}
+function objectMethod(term, currentValue, outlineNumber) {
+    const newKey = Object.keys(currentValue);
+    const newValue = Object.keys(currentValue).map(stuff =>
+        currentValue[stuff]
+    );
+    // const newValue = Object.values(currentValue);
+    const classname = outlineClass[outlineNumber];
+    const outline = outlineNumber + 1;
+    return (
+        <div>
+            {typeof term !== 'object' ?
+                <strong>{lookupLibrary[typeof term](term, currentValue, outline)}</strong>
+            :
+                null
+            }
+            {newValue.map((item, i) =>
+            <div key={i}>
+                {Array.isArray(item) ?
+                    outlineNumber === 1 ?
+                        <div className={classname}><i>{newKey[i]}:</i> {lookupLibrary.array(item, item, outline)}</div>
+                    :
+                        <div className={classname}>{newKey[i]}: {lookupLibrary.array(item, item, outline)}</div>
+                :
+                    outlineNumber === 1 ?
+                        <div className={classname}><i>{newKey[i]}:</i> {lookupLibrary[typeof item](item, item, outline)}</div>
+                    :
+                        <div className={classname}>{newKey[i]}: {lookupLibrary[typeof item](item, item, outline)}</div>
+                }
+            </div>)
+            }
+        </div>
+    );
+}
+
+lookupLibrary = {
+    string: (item, currentValue, outlineNumber) =>
+        stringMethod(item, currentValue, outlineNumber),
+    array: (item, currentValue, outlineNumber) =>
+        arrayMethod(item, currentValue, outlineNumber),
+    object: (item, currentValue, outlineNumber) =>
+        objectMethod(item, currentValue, outlineNumber),
+    boolean: (item, currentValue, outlineNumber) =>
+        <div className={outlineClass[outlineNumber]}>{item}</div>,
+    number: (item, currentValue, outlineNumber) =>
+        <div className={outlineClass[outlineNumber]}>{item}</div>,
+};
+class DisplayObject extends React.Component {
+    render() {
+        const { dataObject } = this.props;
+        const dataArray = Object.keys(dataObject).map((term) => {
+            const labels = term;
+            return labels;
+        });
+        console.log(dataArray);
+        return (
+            <div>
+                {dataArray.map((term, id) =>
+                    <div key={id}>
+                        <dl className="key-value">
+                            <div data-test="id">
+                                <dt>{term}</dt>
+                                <dd>
+                                {Array.isArray(dataObject[term]) ?
+                                    <div>{lookupLibrary.array(dataObject[term], dataObject[term], 0)}</div>
+                                :
+                                    <div>{lookupLibrary[typeof dataObject[term]](dataObject[term], dataObject[term], 0)}</div>
+                                }
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                )}
+            </div>
+        );
+    }
+}
+
+DisplayObject.propTypes = {
+    dataObject: PropTypes.object.isRequired,
+};
+
 
 const Markdown = (props) => {
     const html = marked(props.source, { sanitize: true });
@@ -50,9 +144,7 @@ const SchemaPage = (props) => {
             </header>
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
             <section className="view-detail panel">
-                <div className="container">
-                    <pre>{JSON.stringify(context, null, 4)}</pre>
-                </div>
+                <DisplayObject dataObject={context} />
             </section>
             {changelog && <FetchedData>
                 <Param name="source" url={changelog} type="text" />
