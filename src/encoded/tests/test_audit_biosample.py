@@ -6,6 +6,7 @@ def base_biosample(testapp, lab, award, source, organism):
     item = {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
+        "biosample_term_name": "heart",
         'biosample_type': 'tissue',
         'lab': lab['uuid'],
         'organism': organism['uuid'],
@@ -19,6 +20,7 @@ def base_mouse_biosample(testapp, lab, award, source, mouse):
     item = {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
+        "biosample_term_name": "liver",
         'biosample_type': 'tissue',
         'lab': lab['uuid'],
         'organism': mouse['uuid'],
