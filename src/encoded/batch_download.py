@@ -16,7 +16,7 @@ import io
 import json
 import datetime
 
-i = datetime.datetime.now()
+currenttime = datetime.datetime.now()
 
 
 def includeme(config):
@@ -350,8 +350,6 @@ def lookup_column_value(value, path):
     deduped_nodes = [n for n in nodes if not (n in seen or seen.add(n))]
     return u','.join(u'{}'.format(n) for n in deduped_nodes)
 
-# brequest.url'%(timestamp)s' % {'timestamp': i.isoformat()} + 
-
 
 def format_row(columns):
     """Format a list of text columns as a tab-separated byte string."""
@@ -368,22 +366,15 @@ def report_download(context, request):
     # Make sure we get all results
     request.GET['limit'] = 'all'
 
-    schemas = [request.registry[TYPES][types[0]].schema]
+    type = types[0]
+    schemas = [request.registry[TYPES][type].schema]
     columns = list_visible_columns_for_schemas(request, schemas)
-    u = types[0]
-    u = u.replace("'", '')
+    type = type.replace("'", '')
 
     def format_header(seq):
-        currenttime = str(i)
-        a = '&'
-        s = ''
-        reportseq = [request.host_url, '/report/']
-        urlsequence = s.join(reportseq)
-        urlseq = [urlsequence, request.query_string]
-        url = a.join(urlseq)
-        newheader = [currenttime, url]
-        return b'\t'.join([bytes_(n, 'utf-8') for n in newheader]) + b'\r\n'
-    
+        newheader="%s\t%s%s?%s\r\n" % (currenttime, request.host_url, '/report/', request.query_string)
+        return(bytes(newheader, 'utf-8'))
+       
 
     # Work around Excel bug; can't open single column TSV with 'ID' header
     if len(columns) == 1 and '@id' in columns:
@@ -400,6 +391,6 @@ def report_download(context, request):
 
     # Stream response using chunked encoding.
     request.response.content_type = 'text/tsv'
-    request.response.content_disposition = 'attachment;filename="%s"' % '%(doctype)s Report %(yyyy)s/%(mm)s/%(dd)s.tsv' % {'yyyy': i.year, 'mm': i.month, 'dd': i.day, 'doctype': u} #change file name
+    request.response.content_disposition = 'attachment;filename="%s"' % '%(doctype)s Report %(yyyy)s/%(mm)s/%(dd)s.tsv' % {'yyyy': currenttime.year, 'mm': currenttime.month, 'dd': currenttime.day, 'doctype': type} #change file name
     request.response.app_iter = generate_rows()
     return request.response
