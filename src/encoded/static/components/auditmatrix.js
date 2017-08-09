@@ -161,9 +161,9 @@ class AuditMatrix extends React.Component {
             let yGroups = matrix.y[primaryYGrouping].buckets;
             // The following lines are to make sure that the audit categories are in the correct
             // order and to assign a proper title to each colored row.
-            const orderKey = ['audit.ERROR.category', 'audit.NOT_COMPLIANT.category',
-                'audit.WARNING.category', 'no_audits', 'audit.INTERNAL_ACTION.category'];
-            const titleKey = ['Error', 'Not Compliant', 'Warning', 'No audits', 'Internal Action'];
+            const orderKey = ['no_audits', 'audit.WARNING.category', 'audit.NOT_COMPLIANT.category',
+                'audit.ERROR.category', 'audit.INTERNAL_ACTION.category'];
+            const titleKey = ['No audits', 'Warning', 'Not Compliant', 'Error', 'Internal Action'];
             const noAuditKey = ['no red or orange or yellow audits', 'no red or orange audits',
                 'no red audits', 'no audits'];
             // For each group, compare against the key arrays above and format yGroups so that
@@ -219,7 +219,7 @@ class AuditMatrix extends React.Component {
 
             // Make an array of colors corresponding to the ordering of audits
             // The last color doesn't appear unless you are logged in (DCC Action)
-            const biosampleTypeColors = ['#cc0700', '#ff8000', '#e0e000', '#009802', '#a0a0a0'];
+            const biosampleTypeColors = ['#009802', '#e0e000', '#ff8000', '#cc0700', '#a0a0a0'];
 
             return (
                 <div>

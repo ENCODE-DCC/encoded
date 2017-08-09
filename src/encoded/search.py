@@ -1236,7 +1236,7 @@ def audit(context, request):
     y_groupings = audit_field_list
 
     # Creates a list of fields used in no audit row
-    no_audits_groupings = ['no.audit.error', 'no.audit.not_compliant', 'no.audit.warning']
+    no_audits_groupings = ['no.audit.warning', 'no.audit.not_compliant', 'no.audit.error']
 
     x_agg = {
         "terms": {
@@ -1246,17 +1246,17 @@ def audit(context, request):
     }
 
     # aggs query for audit category rows
-    aggs = {'audit.ERROR.category': {'aggs': {x_grouping: x_agg
-                },
-            'terms': {'field': 'audit.ERROR.category', 'size': 0
-        }
-    }, 'audit.WARNING.category': {'aggs': {x_grouping: x_agg
+    aggs = {'audit.WARNING.category': {'aggs': {x_grouping: x_agg
                 },
             'terms': {'field': 'audit.WARNING.category', 'size': 0
         }
     }, 'audit.NOT_COMPLIANT.category': {'aggs': {x_grouping: x_agg
                 },
             'terms': {'field': 'audit.NOT_COMPLIANT.category', 'size': 0
+        }
+    }, 'audit.ERROR.category': {'aggs': {x_grouping: x_agg
+                },
+            'terms': {'field': 'audit.ERROR.category', 'size': 0
         }
     }
     
