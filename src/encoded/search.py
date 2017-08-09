@@ -1228,7 +1228,6 @@ def audit(context, request):
         temp = item[0]
         audit_field_list[audit_field_list.index(item)] = temp #replaces list with just audit field
 
-
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
     # Group results in 2 dimensions
