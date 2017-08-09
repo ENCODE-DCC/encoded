@@ -1239,30 +1239,22 @@ def audit(context, request):
     no_audits_groupings = ['no.audit.error', 'no.audit.not_compliant', 'no.audit.warning']
 
     x_agg = {
-        x_grouping: {
-            "terms": {
-                "field": 'embedded.' + x_grouping + '.raw',
-                "size": 0,  # no limit
-            },
-        }
+        "terms": {
+            "field": 'embedded.' + x_grouping + '.raw',
+            "size": 0,  # no limit
+        },
     }
 
     # aggs query for audit category rows
-    aggs = {'audit.ERROR.category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
-                        }
-                    }
+    aggs = {'audit.ERROR.category': {'aggs': {x_grouping: x_agg
                 },
             'terms': {'field': 'audit.ERROR.category', 'size': 0
         }
-    }, 'audit.WARNING.category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
-                        }
-                    }
+    }, 'audit.WARNING.category': {'aggs': {x_grouping: x_agg
                 },
             'terms': {'field': 'audit.WARNING.category', 'size': 0
         }
-    }, 'audit.NOT_COMPLIANT.category': {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
-                        }
-                    }
+    }, 'audit.NOT_COMPLIANT.category': {'aggs': {x_grouping: x_agg
                 },
             'terms': {'field': 'audit.NOT_COMPLIANT.category', 'size': 0
         }
@@ -1270,9 +1262,10 @@ def audit(context, request):
     
 } 
 
-    # Aggs query gets updated with no audits queries.
     # This is a nested query with error as the top most level and warning as the innermost level.
     # It allows for there to be multiple missing fields in the query.
+    # To construct this we go through the no_audits_groupings backwards and construct the query
+    # from the inside out.
     temp = {}
     for group in reversed(no_audits_groupings):
         temp = {
@@ -1280,66 +1273,29 @@ def audit(context, request):
                 "field": audit_field_list[no_audits_groupings.index(group)]
             },
             "aggs": {
-                x_agg
+                x_grouping: x_agg
             },
         }
-        if (no_audits_groupings.index(group)+1) < len(no_audits_groupings): # If not the last element in no_audits_groupings
+        # If not the last element in no_audits_groupings then add the inner query
+        # inside the next category query. Therefore, as temp is updated, it sets the old temp, 
+        # which is now temp_copy, within itself. This creates the nested structure.
+        if (no_audits_groupings.index(group)+1) < len(no_audits_groupings):
             temp["aggs"][no_audits_groupings[(no_audits_groupings.index(group)+1)]] = temp_copy
         temp_copy = copy.deepcopy(temp)
 
-# no_audits_groupings[no_audits_groupings.index(group)+1] if (no_audits_groupings.index(group)+1) < len(no_audits_groupings) else "null": temp
+    # This adds the outermost grouping label to temp.
+    update_temp = {}
+    update_temp[no_audits_groupings[0]] = temp
 
-    aggs.update({
-        "no.audit.error": {
-            "missing": {
-                "field": "audit.ERROR.category"
-            },
-            "aggs": {
-                "assay_title": {
-                    "terms": {
-                        "field": "embedded.assay_title.raw",
-                        "size": 0
-                    }
-                },
-                "no.audit.not_compliant": {
-                    "missing": {
-                        "field": "audit.NOT_COMPLIANT.category"
-                    },
-                    "aggs": {
-                        "assay_title": {
-                            "terms": {
-                                "field": "embedded.assay_title.raw",
-                                "size": 0
-                            }
-                        },
-                        "no.audit.warning": {
-                            "missing": {
-                                "field": "audit.WARNING.category"
-                            },
-                            "aggs": {
-                                "assay_title": {
-                                    "terms": {
-                                        "field": "embedded.assay_title.raw",
-                                        "size": 0
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    })
-    
+    # Aggs query gets updated with no audits queries.
+    aggs.update(update_temp)
 
     # If internal action data is able to be seen in facets (if logged in) then add it to aggs for 
     # both: 1) an audit category row for Internal Action and 2) the no audits row as innermost 
     # level of nested query to create a no audits at all row within no audits.
     # Additionally, add it to the no_audits_groupings list to be used in summarize_no_audits later.
     if "audit.INTERNAL_ACTION.category" in facets[len(facets)-1]:
-        aggs['audit.INTERNAL_ACTION.category'] = {'aggs': {'assay_title': {'terms': {'size': 0, 'field': 'embedded.assay_title.raw'
-                        }
-                    }
+        aggs['audit.INTERNAL_ACTION.category'] = {'aggs': {x_grouping: x_agg
                 },
             'terms': {'field': 'audit.INTERNAL_ACTION.category', 'size': 0
                     }
@@ -1349,12 +1305,7 @@ def audit(context, request):
                                 "field": "audit.INTERNAL_ACTION.category"
                             },
                             "aggs": {
-                                "assay_title": {
-                                    "terms": {
-                                        "field": "embedded.assay_title.raw",
-                                        "size": 0
-                                    }
-                                }
+                                x_grouping: x_agg
                             }
                         }
         no_audits_groupings.append("no.audit.internal_action")
