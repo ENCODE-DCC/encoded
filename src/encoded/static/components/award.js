@@ -1007,32 +1007,73 @@ class StatusExperimentChart extends React.Component {
         // Must specify each case of data availability - must remove available, data-less chart.data.datasets
         // Ensures that the colors will be the default and legend labels does not include unnecessary strings
         if (data.unreplicatedDataset.some(x => x > 0)) {
-            chart.data.datasets[0] = { label: 'unreplicated', data: data.unreplicatedDataset, backgroundColor: colors[0] };
+            chart.data.datasets[0].label = 'unreplicated';
+            chart.data.datasets[0].data = data.unreplicatedDataset;
+            chart.data.datasets[0].backgroundColor = colors[0];
             if (data.isogenicDataset.some(x => x > 0)) {
-                chart.data.datasets[1] = { label: 'isogenic', data: data.isogenicDataset, backgroundColor: colors[1] };
+                chart.data.datasets[1].label = 'isogenic';
+                chart.data.datasets[1].data = data.isogenicDataset;
+                chart.data.datasets[1].backgroundColor = colors[1];
                 if (data.anisogenicDataset.some(x => x > 0)) {
-                    chart.data.datasets[2] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[2] };
+                    chart.data.datasets[2].label = 'anisogenic';
+                    chart.data.datasets[2].data = data.anisogenicDataset;
+                    chart.data.datasets[2].backgroundColor = colors[2];
                 } else if (data.anisogenicDataset.every(x => x === 0)) {
                     chart.data.datasets[2] = {};
                 }
             } else if (data.isogenicDataset.every(x => x === 0) && data.anisogenicDataset.some(x => x > 0)) {
-                chart.data.datasets[1] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[1] };
+                chart.data.datasets[1].label = 'anisogenic';
+                chart.data.datasets[1].data = data.anisogenicDataset;
+                chart.data.datasets[1].backgroundColor = colors[1];
                 chart.data.datasets[2] = {};
             }
         } else if (data.unreplicatedDataset.every(x => x === 0) && data.isogenicDataset.some(x => x > 0)) {
-            chart.data.datasets[0] = { label: 'isogenic', data: data.isogenicDataset, backgroundColor: colors[0] };
+            chart.data.datasets[0].label = 'isogenic';
+            chart.data.datasets[0].data = data.isogenicDataset;
+            chart.data.datasets[0].backgroundColor = colors[0];
             if (data.anisogenicDataset.some(x => x > 0)) {
-                chart.data.datasets[1] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[1] };
+                chart.data.datasets[1].label = 'anisogenic';
+                chart.data.datasets[1].data = data.anisogenicDataset;
+                chart.data.datasets[1].backgroundColor = colors[1];
                 chart.data.datasets[2] = {};
             } else if (data.anisogenicDataset.every(x => x === 0)) {
                 chart.data.datasets[1] = {};
                 chart.data.datasets[2] = {};
             }
         } else if (data.unreplicatedDataset.every(x => x === 0) && data.isogenicDataset.every(x => x === 0) && data.anisogenicDataset.some(x => x > 0)) {
-            chart.data.datasets[0] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[1] };
+            chart.data.datasets[0].label = 'anisogenic';
+            chart.data.datasets[0].data = data.anisogenicDataset;
+            chart.data.datasets[0].backgroundColors = colors[0];
             chart.data.datasets[1] = {};
             chart.data.datasets[2] = {};
         }
+        // if (data.unreplicatedDataset.some(x => x > 0)) {
+        //     chart.data.datasets[0] = { label: 'unreplicated', data: data.unreplicatedDataset, backgroundColor: colors[0] };
+        //     if (data.isogenicDataset.some(x => x > 0)) {
+        //         chart.data.datasets[1] = { label: 'isogenic', data: data.isogenicDataset, backgroundColor: colors[1] };
+        //         if (data.anisogenicDataset.some(x => x > 0)) {
+        //             chart.data.datasets[2] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[2] };
+        //         } else if (data.anisogenicDataset.every(x => x === 0)) {
+        //             chart.data.datasets[2] = {};
+        //         }
+        //     } else if (data.isogenicDataset.every(x => x === 0) && data.anisogenicDataset.some(x => x > 0)) {
+        //         chart.data.datasets[1] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[1] };
+        //         chart.data.datasets[2] = {};
+        //     }
+        // } else if (data.unreplicatedDataset.every(x => x === 0) && data.isogenicDataset.some(x => x > 0)) {
+        //     chart.data.datasets[0] = { label: 'isogenic', data: data.isogenicDataset, backgroundColor: colors[0] };
+        //     if (data.anisogenicDataset.some(x => x > 0)) {
+        //         chart.data.datasets[1] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[1] };
+        //         chart.data.datasets[2] = {};
+        //     } else if (data.anisogenicDataset.every(x => x === 0)) {
+        //         chart.data.datasets[1] = {};
+        //         chart.data.datasets[2] = {};
+        //     }
+        // } else if (data.unreplicatedDataset.every(x => x === 0) && data.isogenicDataset.every(x => x === 0) && data.anisogenicDataset.some(x => x > 0)) {
+        //     chart.data.datasets[0] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[1] };
+        //     chart.data.datasets[1] = {};
+        //     chart.data.datasets[2] = {};
+        // }
         chart.options.onClick.baseSearchUri = `${linkUri}${award.name}${objectQuery}`;
         chart.update();
 
