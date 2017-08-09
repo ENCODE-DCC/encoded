@@ -1712,11 +1712,8 @@ const ExperimentDate = (props) => {
     });
 
 
-    // Create an array of dates
-    const date = Object.keys(deduplicatedreleased).map((term) => {
-        label = term;
-        return label;
-    });
+    // // Create an array of dates
+    const date = Object.keys(deduplicatedreleased).map(term => term);
 
     // Create an array of data from objects' doc_counts
     const datasetreleased = Object.keys(deduplicatedreleased).map((item) => {
