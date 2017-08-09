@@ -51,11 +51,13 @@ def genetic_modification_5_6(value, system):
         value.pop('modified_site')
 
     rep_obj = dict()
+    has_source = False
     if 'source' in value:
         # If for some inexplicable reason, there is a source associated with the genetic_modification,
         # let's move it to reagent repository for now. If there is one in the technique, we'll overwrite it
         # and use that one instead.
         rep_obj.update({'repository': value['source']})
+        has_source = True
         value.pop('source')
 
     if 'product_id' in value:
@@ -64,11 +66,17 @@ def genetic_modification_5_6(value, system):
         # and use those instead.
         rep_obj.update({'identifier': value['product_id']})
         value.pop('product_id')
+    else:
+        # If we have a source but no product id, it's likely from a lab. Backfill with this default.
+        if has_source:
+            rep_obj.update({'identifier': 'please-contact-lab'})
+
     if rep_obj:
         if 'reagent_availability' not in value:
             value['reagent_availability'] = [rep_obj]
         else:
             value['reagent_availability'].append(rep_obj)
+        has_source = False
 
     # New required properties modification_technique and purpose need to be handled somehow
     if value['modification_techniques']:
@@ -80,13 +88,20 @@ def genetic_modification_5_6(value, system):
             rep_obj = dict()
             if 'source' in technique.properties:
                 rep_obj.update({'repository': technique.properties['source']})
+                has_source = True
             if 'product_id' in technique.properties:
                 rep_obj.update({'identifier': technique.properties['product_id']})
+            else:
+                # If we have a source but no product id, it's likely from a lab. Backfill with this default.
+                if has_source:
+                    rep_obj.update({'identifier': 'please-contact-lab'})
+
             if rep_obj:
                 if 'reagent_availability' not in value:
                     value['reagent_availability'] = [rep_obj]
                 else:
                     value['reagent_availability'].append(rep_obj)
+                has_source = False
             if 'guide_rna_sequences' in technique.properties:
                 value['guide_rna_sequences'] = technique.properties['guide_rna_sequences']
                 value['modification_technique'] = 'CRISPR'

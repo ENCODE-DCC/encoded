@@ -87,7 +87,9 @@ def test_genetic_modification_upgrade_2_3(upgrader, genetic_modification_2):
 
 
 '''
-def test_genetic_modification_upgrade_5_6(upgrader, genetic_modification_5, crispr):
+def test_genetic_modification_upgrade_5_6(upgrader, genetic_modification_5, crispr, registry):
+    from snovault import UPGRADER
+    upgrader = registry[UPGRADER]
     value = upgrader.upgrade('genetic_modification', genetic_modification_5,
                              current_version='5', target_version='6')
     assert value['schema_version'] == '6'
