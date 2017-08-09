@@ -397,12 +397,7 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
 class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssay, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedAssaySynonyms):
     item_type = 'publication_data'
     schema = load_schema('encoded:schemas/publication_data.json')
-    embedded = FileSet.embedded + [
-        'files.dataset',
-        'files.replicate.library',
-        'files.replicate.experiment.target',
-        'organism'
-    ]
+    embedded = FileSet.embedded
 
 
 @collection(
