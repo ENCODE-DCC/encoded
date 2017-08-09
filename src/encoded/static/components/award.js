@@ -1789,7 +1789,7 @@ class AwardCharts extends React.Component {
         return (
             <Panel>
                 <PanelHeading>
-                    <h4>Wranglers</h4>
+                    <h4>Current Production</h4>
                     <ProjectBadge award={award} addClasses="badge-heading" />
                 </PanelHeading>
                 <div>
