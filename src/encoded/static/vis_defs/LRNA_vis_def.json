@@ -1,5 +1,6 @@
 {
     "LRNA": {
+        "rule": "'{assay_title}' in ['polyA mRNA RNA-seq','polyA depleted RNA-seq',shRNA RNA-seq','total RNA-seq','siRNA RNA-seq','CRISPR RNA-seq','CRISPRi RNA']",
         "assay_composite": {
             "longLabel":  "Collection of ENCODE long-RNA-seq experiments",
             "shortLabel": "ENCODE long-RNA-seq"
