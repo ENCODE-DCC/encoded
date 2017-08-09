@@ -21,7 +21,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "characterizes": {
             "title": "Genetic modification characterized",
@@ -87,5 +87,6 @@
                 }
             }
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/genetic_modification_characterization.md"
 }

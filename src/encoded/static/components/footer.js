@@ -1,21 +1,14 @@
-'use strict';
-var React = require('react');
+import React from 'react';
 import PropTypes from 'prop-types';
-import createReactClass from 'create-react-class';
 
-var Footer = createReactClass({
-    contextTypes: {
-        session: PropTypes.object
-    },
 
-    propTypes: {
-        version: PropTypes.string // App version number
-    },
-
-    render: function() {
-        var session = this.context.session;
-        var disabled = !session;
-        var userActionRender;
+/* eslint "jsx-a11y/href-no-hash": 0 */
+// Reworking the data triggers to use buttons doesn't seem worth it to avoid an eslint warning.
+export default class Footer extends React.Component {
+    render() {
+        const session = this.context.session;
+        const disabled = !session;
+        let userActionRender;
 
         if (!(session && session['auth.userid'])) {
             userActionRender = <a href="#" data-trigger="login" disabled={disabled}>Submitter sign-in</a>;
@@ -54,6 +47,16 @@ var Footer = createReactClass({
             </footer>
         );
     }
-});
+}
 
-module.exports = Footer;
+Footer.contextTypes = {
+    session: PropTypes.object,
+};
+
+Footer.propTypes = {
+    version: PropTypes.string, // App version number
+};
+
+Footer.defaultProps = {
+    version: '',
+};

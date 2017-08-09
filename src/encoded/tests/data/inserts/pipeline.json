@@ -2,12 +2,12 @@
 [
      {
         "accession": "ENCPL001MQC",
-        "assay_term_name": "whole-genome shotgun bisulfite sequencing",
+        "assay_term_names": ["whole-genome shotgun bisulfite sequencing"],
         "uuid": "9e3f23ae-716a-4fe0-a238-b9bbd98508d5",
         "title": "WGBS Methlyation Pipeline - QC",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
         "analysis_steps": [
-            "wgbs_lambda_qc"
+            "wgbs-lambda-qc-step-v-1"
         ],
         "lab": "joe-ecker",
         "award": "U54HG006997",
@@ -15,7 +15,8 @@
     },
     {
         "accession": "ENCPL000MEG",
-        "assay_term_name": "whole-genome shotgun bisulfite sequencing",
+        "pipeline_version": 1,
+        "assay_term_names": ["whole-genome shotgun bisulfite sequencing"],
         "uuid": "23b2f12c-8a55-4860-b013-423b5de9de0d",
         "title": "WGBS Methlyation Pipeline - Genome Conversion",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
@@ -24,7 +25,7 @@
             "b163ba10-bd4a-11e4-bb52-0800200c9a66"
         ],
         "analysis_steps": [
-            "prep-bismark"
+            "prep-bismark-step-v-1"
         ],
         "lab": "joe-ecker",
         "award": "U54HG006997",
@@ -32,13 +33,13 @@
     },
     {
         "accession": "ENCPL002BIS",
-        "assay_term_name": "whole-genome shotgun bisulfite sequencing",
+        "assay_term_names": ["whole-genome shotgun bisulfite sequencing"],
         "uuid": "b0636cbe-e2f4-4606-b68b-faf6bbda5959",
         "title": "WGBS Methlyation Pipeline",
         "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline",
         "analysis_steps": [
-            "mott-trim-align-bismark",
-            "extract-bismark"
+            "mott-trim-align-bismark-step-v-1",
+            "extract-bismark-step-v-1"
         ],
         "lab": "joe-ecker",
         "award": "U54HG006997",
@@ -46,30 +47,30 @@
     },
     {
         "accession": "ENCPL003RNA",
-        "assay_term_name": "RNA-seq",
+        "assay_term_names": ["RNA-seq"],
         "uuid": "007ba3be-87cd-418c-8eb0-2ba2bf3e57a9",
         "title": "long-rna-seq-pipeline-pe",
         "award": "U54HG007004",
         "lab": "thomas-gingeras",
         "source_url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline",
         "analysis_steps": [
-            "prep-star",
-            "prep-tophat",
-            "prep-rsem",
-            "align-star",
-            "align-tophat",
-            "quant-rsem",
-            "bam-to-bigwig-tophat",
-            "bam-to-bigwig-star"
+            "prep-star-step-v-1",
+            "prep-tophat-step-v-1",
+            "prep-rsem-step-v-1",
+            "align-star-step-v-1",
+            "align-tophat-step-v-1",
+            "quant-rsem-step-v-1",
+            "bam-to-bigwig-tophat-step-v-1",
+            "bam-to-bigwig-star-step-v-1"
         ],
         "status": "active"
     },
     {
         "accession": "ENCPL001GRV",
-        "assay_term_name": "RNA-seq",
+        "assay_term_names": ["RNA-seq"],
         "analysis_steps": [
-            "alignment-test-step-1",
-            "signal-test-step-1"
+            "alignment-test-step-v-1",
+            "signal-test-step-v-1"
         ],
         "documents": [
             "brenton-graveley:Graveley_Group_RNA-Seq_Pipeline_02042013"
@@ -82,11 +83,11 @@
     },
     {
         "accession": "ENCPL001CRG",
-        "assay_term_name": "RNA-seq",
+        "assay_term_names": ["RNA-seq"],
         "analysis_steps": [
-            "alignment-test-step-2",
-            "quantification-test-step-1",
-            "idr-test-step-1"
+            "alignment-test-step-v-2",
+            "quantification-test-step-v-1",
+            "idr-test-step-v-1"
         ],
         "documents": [
             "roderic-guigo:GeneQuantificationPipeline"
@@ -99,10 +100,10 @@
     },
     {
         "accession": "ENCPL001ENC",
-        "assay_term_name": "ChIP-seq",
+        "assay_term_names": ["ChIP-seq"],
         "analysis_steps": [
-            "encode-2-step",
-            "idr-test-step-2"
+            "encode-2-step-v-1",
+            "idr-test-step-v-2"
         ],
         "documents": [
             "encode:ENCODE2_ChIP_seq_pipeline_diagram",
@@ -116,10 +117,10 @@
     },
     {
         "accession": "ENCPL001CLP",
-        "assay_term_name": "eCLIP",
+        "assay_term_names": ["eCLIP"],
         "analysis_steps": [
-            "alignment-test-step-3",
-            "peak-calling-test-step-1"
+            "alignment-test-step-v-3",
+            "peak-calling-test-step-v-1"
         ],
         "documents": [
              "gene-yeo:iCLIP_pipeline_ENCODE.pdf"
@@ -132,9 +133,9 @@
     },
     {
         "accession": "ENCPL001FVD",
-        "assay_term_name": "RNA-seq",
+        "assay_term_names": ["RNA-seq", "eCLIP"],
         "analysis_steps": [
-            "fastqc"
+            "fastqc-step-v-1"
         ],
         "status": "active",
         "lab": "brenton-graveley",

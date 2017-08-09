@@ -1,5 +1,13 @@
 ## Changelog for annotation.json
 
+### Schema version 14
+
+* *biosample_type* and *biosample_term_id* consistency added to the list of schema dependencies
+
+### Schema version 13
+
+* *annotation_type* 'candidate regulatory regions' was changed into 'candidate regulatory elements'
+
 ### Schema version 12
 
 * *alternate_accessions* now must match accession format, "ENCSR..." or "TSTSR..."

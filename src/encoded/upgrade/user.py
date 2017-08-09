@@ -15,3 +15,20 @@ def user_3_4(value, system):
         'ENCODE3' if v == 'ENCODE' else v
         for v in value['viewing_groups']
     ]
+
+
+@upgrade_step('user', '6', '7')
+def user_6_7(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3409
+    if 'phone1' in value:
+        del value['phone1']
+    if 'phone2' in value:
+        del value['phone2']
+    if 'fax' in value:
+        del value['fax']
+    if 'skype' in value:
+        del value['skype']
+    if 'google' in value:
+        del value['google']
+    if 'timezone' in value:
+        del value['timezone']
