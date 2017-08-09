@@ -394,10 +394,18 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms)
         'title': "Publication file set",
         'description': 'A set of files that are described/analyzed in a publication.',
     })
-class PublicationData(FileSet, CalculatedFileSetBiosample, CalculatedFileSetAssay, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedAssaySynonyms):
+class PublicationData(FileSet):
     item_type = 'publication_data'
     schema = load_schema('encoded:schemas/publication_data.json')
-    embedded = FileSet.embedded
+    embedded = [
+        'submitted_by',
+        'lab',
+        'award.pi.lab',
+        'documents.lab',
+        'documents.award',
+        'documents.submitted_by',
+        'references'
+    ]
 
 
 @collection(
