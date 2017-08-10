@@ -542,8 +542,8 @@ class Experiment(Dataset,
                 'award.project',
                 'assembly',
                 'internal_status',
-                'lab.title',
-                'audit_category' # Added for auditmatrix
+                'audit_category', # Added for auditmatrix
+                'lab.title'
             ],
             'group_by': ['biosample_type', 'biosample_term_name'],
             'label': 'Biosample',
