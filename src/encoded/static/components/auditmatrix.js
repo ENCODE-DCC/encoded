@@ -163,7 +163,7 @@ class AuditMatrix extends React.Component {
             // order and to assign a proper title to each colored row.
             const orderKey = ['no_audits', 'audit.WARNING.category', 'audit.NOT_COMPLIANT.category',
                 'audit.ERROR.category', 'audit.INTERNAL_ACTION.category'];
-            const titleKey = [ 'No audits', 'Warning', 'Not Compliant', 'Error', 'Internal Action'];
+            const titleKey = ['No audits', 'Warning', 'Not Compliant', 'Error', 'Internal Action'];
             const noAuditKey = ['no red or orange or yellow audits', 'no red or orange audits',
                 'no red audits', 'no audits'];
             // For each group, compare against the key arrays above and format yGroups so that
