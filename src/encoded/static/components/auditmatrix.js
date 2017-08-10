@@ -219,6 +219,7 @@ class AuditMatrix extends React.Component {
 
             // Make an array of colors corresponding to the ordering of audits
             // The last color doesn't appear unless you are logged in (DCC Action)
+            // In order: Green, Yellow, Orange, Red, Gray
             const biosampleTypeColors = ['#009802', '#e0e000', '#ff8000', '#cc0700', '#a0a0a0'];
 
             return (
