@@ -549,6 +549,7 @@ $detail-switch-width: 30px;
             line-height: $detail-switch-height;
             max-width: $detail-switch-width;
             background-color: #e8e8e8;
+            border: none;
 
             &:hover {
                 background-color: #b8c7d5;
