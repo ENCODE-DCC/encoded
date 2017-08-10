@@ -16,6 +16,7 @@ import re
 from urllib.parse import urljoin
 import requests
 import copy
+from slackclient import SlackClient
 
 EPILOG = __doc__
 
@@ -482,7 +483,7 @@ def process_fastq_file(job, fastq_data_stream, session, url):
                                  read_lengths_list,
                                  item['read_length'],
                                  read_count,
-                                 0.95,
+                                 0.9,
                                  errors,
                                  result)
         else:
@@ -844,15 +845,23 @@ def fetch_files(session, url, search_query, out, include_unexpired_upload=False,
         for acc in ACCESSIONS:
             r = session.get(
                 urljoin(url, '/search/?field=@id&limit=all&type=File&accession=' + acc))
-            r.raise_for_status()
-            local = copy.deepcopy(r.json()['@graph'])
-            graph.extend(local)
+            try:
+                r.raise_for_status()
+            except requests.HTTPError:
+                return
+            else:
+                local = copy.deepcopy(r.json()['@graph'])
+                graph.extend(local)
     # checkfiles using a query
     else:
         r = session.get(
             urljoin(url, '/search/?field=@id&limit=all&type=File&' + search_query))
-        r.raise_for_status()
-        graph = r.json()['@graph']
+        try:
+            r.raise_for_status()
+        except requests.HTTPError:
+            return
+        else:
+            graph = r.json()['@graph']
 
     for result in graph:
         job = {
@@ -895,7 +904,7 @@ def fetch_files(session, url, search_query, out, include_unexpired_upload=False,
 def patch_file(session, url, job):
     result = job['result']
     errors = job['errors']
-    data = None
+    data = {}
 
     if not errors:
         data = {
@@ -972,10 +981,27 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.14'
+    version = '1.16'
 
-    out.write("STARTING Checkfiles version %s (%s): with %d processes %s at %s\n" %
-              (version, search_query, nprocesses, dr, datetime.datetime.now()))
+    try:
+        ip_output = subprocess.check_output(
+            ['hostname'], stderr=subprocess.STDOUT).strip()
+        ip = ip_output.decode(errors='replace').rstrip('\n')
+    except subprocess.CalledProcessError as e:
+        ip = ''
+
+    sc = SlackClient('xoxb-216151022738-q0HoXLoixM5GokF4Iaqm08XX')
+    initiating_run = 'STARTING Checkfiles version ' + \
+        '{} ({}) ({}): with {} processes {} on {} at {}'.format(
+            version, url, search_query, nprocesses, dr, ip, datetime.datetime.now())
+    sc.api_call(
+        "chat.postMessage",
+        channel="#bot-reporting",
+        text=initiating_run,
+        as_user=True
+    )
+
+    out.write(initiating_run + '\n')
     if processes == 0:
         # Easier debugging without multiprocessing.
         imap = map
@@ -1011,8 +1037,34 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
             if job['errors']:
                 err.write(tab_report + '\n')
 
-    out.write("FINISHED Checkfiles at %s\n" % datetime.datetime.now())
+    finishing_run = 'FINISHED Checkfiles at {}'.format(datetime.datetime.now())
+    out.write(finishing_run + '\n')
 
+    output_filename = out.name
+    out.close()
+    error_filename = err.name
+    err.close()
+
+    with open(output_filename, 'r') as output_file:
+        x = sc.api_call("files.upload",
+                        title=output_filename,
+                        channels='#bot-reporting',
+                        content=output_file.read(),
+                        as_user=True)
+
+    with open(error_filename, 'r') as output_file:
+        x = sc.api_call("files.upload",
+                        title=error_filename,
+                        channels='#bot-reporting',
+                        content=output_file.read(),
+                        as_user=True)
+
+    sc.api_call(
+        "chat.postMessage",
+        channel="#bot-reporting",
+        text=finishing_run,
+        as_user=True
+    )
 
 def main():
     import argparse
