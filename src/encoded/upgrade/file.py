@@ -557,3 +557,8 @@ def file_10_11(value, system):
     # The above change also required the files whose values should be set to True
     # to also be upgraded or patched. The patch was applied post-release and 
     # can be found in ./upgrade_data/file_10_to_11_patch.tsv
+
+@upgrade_step('file', '11', '12')
+def file_11_12(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3347
+    return
