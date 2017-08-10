@@ -1218,6 +1218,22 @@ StatusChart.contextTypes = {
     navigate: PropTypes.func,
 };
 
+// The existing species are added to the array of species
+function generateUpdatedSpeciesArray(categories, query, updatedSpeciesArray) {
+    let categorySpeciesArray;
+    if (categories && categories.facets && categories.facets.length) {
+        const genusFacet = categories.facets.find(facet => facet.field === query);
+        categorySpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
+        const categorySpeciesArrayLength = categorySpeciesArray.length;
+        for (let j = 0; j < categorySpeciesArrayLength; j += 1) {
+            if (categorySpeciesArray[j].doc_count !== 0) {
+                updatedSpeciesArray.push(categorySpeciesArray[j].key);
+            }
+        }
+    }
+    return updatedSpeciesArray;
+}
+
 const ChartRenderer = (props) => {
     const { award, experiments, annotations, antibodies, biosamples, handleClick, selectedOrganisms, unreplicated, isogenic, anisogenic, controls } = props;
 
@@ -1256,7 +1272,6 @@ const ChartRenderer = (props) => {
             uriBase: '/search/?type=Biosample&award.name=',
             linkUri: '/report/?type=Biosample&award.name=',
         },
-
         antibodies: {
             ident: 'antibodies',
             data: [],
@@ -1378,6 +1393,15 @@ const ChartRenderer = (props) => {
     updatedGenusArray = _.uniq(updatedGenusArray);
     const ExperimentQuery = generateQuery(selectedOrganisms, 'replicates.library.biosample.donor.organism.scientific_name=');
     const AnnotationQuery = generateQuery(selectedOrganisms, 'organism.scientific_name=');
+
+    // For each category (experiments, annotations, biosamples, and antibodies), the corresponding species are added to the array of species
+    generateUpdatedSpeciesArray(experiments, 'replicates.library.biosample.donor.organism.scientific_name', updatedSpeciesArray);
+    generateUpdatedSpeciesArray(annotations, 'organism.scientific_name', updatedSpeciesArray);
+    generateUpdatedSpeciesArray(biosamples, 'organism.scientific_name=', updatedSpeciesArray);
+    generateUpdatedSpeciesArray(antibodies, 'targets.organism.scientific_name=', updatedSpeciesArray);
+
+    // Array of species is converted to an array of genera
+    updatedGenusArray = updatedSpeciesArray.map(species => speciesGenusMap[species]);
 
     return (
         <div className="award-charts">
@@ -1606,7 +1630,7 @@ MilestonesTable.propTypes = {
 const ExperimentDate = (props) => {
     const { experiments, award } = props;
     let releasedDates = [];
-    let dateSubmittedArray = [];
+    let submittedDates = [];
     let deduplicatedreleased = {};
     let deduplicatedsubmitted = {};
     const cumulativedatasetReleased = [];
@@ -1623,7 +1647,7 @@ const ExperimentDate = (props) => {
         const monthReleasedFacet = experiments.facets.find(facet => facet.field === 'month_released');
         const dateSubmittedFacet = experiments.facets.find(facet => facet.field === 'date_submitted');
         releasedDates = (monthReleasedFacet && monthReleasedFacet.terms && monthReleasedFacet.terms.length) ? monthReleasedFacet.terms : [];
-        dateSubmittedArray = (dateSubmittedFacet && dateSubmittedFacet.terms && dateSubmittedFacet.terms.length) ? dateSubmittedFacet.terms : [];
+        submittedDates = (dateSubmittedFacet && dateSubmittedFacet.terms && dateSubmittedFacet.terms.length) ? dateSubmittedFacet.terms : [];
     }
 
     function sortTerms(dateArray) {
@@ -1702,9 +1726,9 @@ const ExperimentDate = (props) => {
 
 
     const sortedsubmittedTerms = sortTerms(releasedDates);
-    const sortedreleasedTerms = sortTerms(dateSubmittedArray);
+    const sortedreleasedTerms = sortTerms(submittedDates);
     // Add an object with the most current date to one of the arrays
-    if ((releasedDates && releasedDates.length) && (dateSubmittedArray && dateSubmittedArray.length)) {
+    if ((releasedDates && releasedDates.length) && (submittedDates && submittedDates.length)) {
         if (moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isAfter(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
             sortedreleasedTerms.push({ key: sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key, doc_count: 0 });
         } else if (moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isBefore(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
@@ -1813,7 +1837,7 @@ class AwardCharts extends React.Component {
         return (
             <Panel>
                 <PanelHeading>
-                    <h4>Wranglers</h4>
+                    <h4>Current Production</h4>
                     <ProjectBadge award={award} addClasses="badge-heading" />
                 </PanelHeading>
                 <div>
@@ -2011,8 +2035,8 @@ class Award extends React.Component {
                             <div className="description__columnone">
                                 <dl className="key-value">
                                     <div data-test="projectinfo">
-                                        <dt>NHGRI project information</dt>
-                                        <dd><a href={context.url} title={`${context.name} project page at NHGRI`}>{context.name}</a></dd>
+                                        <dt>NIH Grant</dt>
+                                        <dd><a href={context.url} title={`${context.name} NIH Grant`}>{context.name}</a></dd>
                                     </div>
                                 </dl>
                                 {context.pi && context.pi.lab ?
