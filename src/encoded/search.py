@@ -1452,9 +1452,9 @@ def audit(context, request):
 
     # There is no generated key for the no audit categories, so we need to manually add them so
     # that they will be able to be read in the JS file.
-    aggregations['matrix']['no.audit.error']['key'] = 'no red audits'
-    aggregations['matrix']['no.audit.not_compliant']['key'] = 'no red or orange audits'
-    aggregations['matrix']['no.audit.warning']['key'] = 'no red or orange or yellow audits'
+    aggregations['matrix']['no.audit.error']['key'] = 'no errors'
+    aggregations['matrix']['no.audit.not_compliant']['key'] = 'no errors and compliant'
+    aggregations['matrix']['no.audit.warning']['key'] = 'no errors, compliant, and no warnings'
     if "no.audit.internal_action" in no_audits_groupings:
         aggregations['matrix']['no.audit.internal_action']['key'] = "no audits"
     

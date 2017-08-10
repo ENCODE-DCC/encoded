@@ -164,8 +164,8 @@ class AuditMatrix extends React.Component {
             const orderKey = ['no_audits', 'audit.WARNING.category', 'audit.NOT_COMPLIANT.category',
                 'audit.ERROR.category', 'audit.INTERNAL_ACTION.category'];
             const titleKey = ['No audits', 'Warning', 'Not Compliant', 'Error', 'Internal Action'];
-            const noAuditKey = ['no red or orange or yellow audits', 'no red or orange audits',
-                'no red audits', 'no audits'];
+            const noAuditKey = ['no errors, compliant, and no warnings', 'no errors and compliant',
+                'no errors', 'no audits'];
             // For each group, compare against the key arrays above and format yGroups so that
             // it has the same order as the keys and each group in yGroups has the correct title.
             let orderIndex = 0;
@@ -328,13 +328,13 @@ class AuditMatrix extends React.Component {
                                                 rows.push(...groupRows.map((yb) => {
                                                     let href = `${searchBase}&${group.key}=${globals.encodedURIComponent(yb.key)}`;
                                                     // The following lines give the proper urls to the no audits sub rows.
-                                                    if (yb.key === 'no red audits') {
+                                                    if (yb.key === 'no errors') {
                                                         href = `${searchBase}&audit.ERROR.category!=*`;
                                                     }
-                                                    if (yb.key === 'no red or orange audits') {
+                                                    if (yb.key === 'no errors and compliant') {
                                                         href = `${searchBase}&audit.ERROR.category!=*&audit.NOT_COMPLIANT.category!=*`;
                                                     }
-                                                    if (yb.key === 'no red or orange or yellow audits') {
+                                                    if (yb.key === 'no errors, compliant, and no warnings') {
                                                         href = `${searchBase}&audit.ERROR.category!=*&audit.NOT_COMPLIANT.category!=*&audit.WARNING.category!=*`;
                                                     }
                                                     if (yb.key === 'no audits') {
