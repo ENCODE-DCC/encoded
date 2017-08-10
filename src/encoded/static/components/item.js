@@ -15,6 +15,17 @@ function stringMethod(term) {
         <span>{term}</span>
     );
 }
+function booleanMethod(term) {
+    return (
+        <span>
+        {term === false ?
+            <span>false</span>
+        :
+            <span>true</span>
+        }
+        </span>
+    );
+}
 function arrayMethod(term, currentValue, outlineNumber) {
     const outline = outlineNumber + 1;
     return (
@@ -60,10 +71,57 @@ lookupLibrary = {
     object: (item, currentValue, outlineNumber) =>
         objectMethod(item, currentValue, outlineNumber),
     boolean: (item, currentValue, outlineNumber) =>
-        <div className={outlineClass[outlineNumber]}>{item}</div>,
+        booleanMethod(item, currentValue, outlineNumber),
     number: (item, currentValue, outlineNumber) =>
-        <div className={outlineClass[outlineNumber]}>{item}</div>,
+        <span className={outlineClass[outlineNumber]}>{item}</span>,
 };
+
+class CollapsibleElements extends React.Component {
+    constructor() {
+        super();
+        // Initialize React state variables.
+        this.state = {
+            collapsed: true, // Collapsed/uncollapsed state
+            active: false,
+        };
+        this.handleCollapse = this.handleCollapse.bind(this);
+    }
+    handleCollapse() {
+        // Handle click on panel collapse icon
+        this.setState({ collapsed: !this.state.collapsed, active: !this.state.active });
+    }
+
+    render() {
+        const { term, dataObject, i } = this.props;
+        return (
+            <div className="expandable">
+                <div className="dropPanel">
+                    <div onClick={this.handleCollapse} className={this.state.active ? 'triangle-down' : 'triangle-right'} />
+                    <span>{term}</span>
+                </div>
+                <div key={i}>
+                    {!this.state.collapsed ?
+                        Array.isArray(dataObject[term]) ?
+                            <div>{lookupLibrary.array(dataObject[term], dataObject[term], 0)}</div>
+                        :
+                            <div>{lookupLibrary[typeof dataObject[term]](dataObject[term], dataObject[term], 0)}</div>
+                    :
+                        null
+                    }
+                </div>
+            </div>
+        );
+    }
+}
+CollapsibleElements.propTypes = {
+    dataObject: PropTypes.object.isRequired,
+    term: PropTypes.string.isRequired,
+    i: PropTypes.number.isRequired,
+};
+CollapsibleElements.defaultProps = {
+    i: 0,
+};
+
 class ObjectPanel extends React.Component {
     constructor() {
         super();
@@ -80,7 +138,6 @@ class ObjectPanel extends React.Component {
     render() {
         const { title, idvalue, index, objectKeys, objectValues } = this.props;
         const removedItemKeys = ['type', 'additionalProperties', 'mixinProperties'];
-        console.log(objectValues);
         return (
             <div key={index} className="panel panel-default">
                 <div className="file-gallery-graph-header collapsing-title">
@@ -92,6 +149,16 @@ class ObjectPanel extends React.Component {
                                 <dl className="key-value">
                                     {removedItemKeys.includes(term) ?
                                         null
+                                    :
+                                        term === 'properties' || term === 'dependencies' ?
+                                        <div data-test="id">
+                                            <dt>{term}</dt>
+                                            <dd>
+                                                {Object.keys(objectValues[id]).map((item, i) =>
+                                                    <CollapsibleElements term={item} dataObject={objectValues[id]} key={i} />
+                                                )}
+                                            </dd>
+                                        </div>
                                     :
                                         <div data-test="id">
                                             <dt>{term}</dt>

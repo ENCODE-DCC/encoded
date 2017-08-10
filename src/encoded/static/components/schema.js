@@ -11,6 +11,17 @@ function stringMethod(term) {
         <span>{term}</span>
     );
 }
+function booleanMethod(term) {
+    return (
+        <span>
+        {term === false ?
+            <span>false</span>
+        :
+            <span>true</span>
+        }
+        </span>
+    );
+}
 function arrayMethod(term, currentValue, outlineNumber) {
     const outline = outlineNumber + 1;
     return (
@@ -27,25 +38,26 @@ function objectMethod(term, currentValue, outlineNumber) {
     const outline = outlineNumber + 1;
     return (
         <div>
-            {typeof term !== 'object' ?
-                <strong>{lookupLibrary[typeof term](term, currentValue, outline)}</strong>
-            :
-                null
-            }
-            {newValue.map((item, i) =>
-            <div key={i}>
-                {Array.isArray(item) ?
-                    outlineNumber === 1 ?
-                        <div className={classname}><i>{newKey[i]}:</i> {lookupLibrary.array(item, item, outline)}</div>
-                    :
-                        <div className={classname}>{newKey[i]}: {lookupLibrary.array(item, item, outline)}</div>
+            {
+                typeof term !== 'object' ?
+                    <strong>{lookupLibrary[typeof term](term, currentValue, outline)}</strong>
                 :
-                    outlineNumber === 1 ?
-                        <div className={classname}><i>{newKey[i]}:</i> {lookupLibrary[typeof item](item, item, outline)}</div>
-                    :
-                        <div className={classname}>{newKey[i]}: {lookupLibrary[typeof item](item, item, outline)}</div>
+                    null
                 }
-            </div>)
+                {newValue.map((item, i) =>
+                <div key={i}>
+                    {Array.isArray(item) ?
+                        outlineNumber === 1 ?
+                            <div className={classname}><i>{newKey[i]}:</i> {lookupLibrary.array(item, item, outline)}</div>
+                        :
+                            <div className={classname}>{newKey[i]}: {lookupLibrary.array(item, item, outline)}</div>
+                    :
+                        outlineNumber === 1 ?
+                            <div className={classname}><i>{newKey[i]}:</i> {lookupLibrary[typeof item](item, item, outline)}</div>
+                        :
+                            <div className={classname}>{newKey[i]}: {lookupLibrary[typeof item](item, item, outline)}</div>
+                    }
+                </div>)
             }
         </div>
     );
@@ -59,10 +71,57 @@ lookupLibrary = {
     object: (item, currentValue, outlineNumber) =>
         objectMethod(item, currentValue, outlineNumber),
     boolean: (item, currentValue, outlineNumber) =>
-        <div className={outlineClass[outlineNumber]}>{item}</div>,
+        booleanMethod(item, currentValue, outlineNumber),
     number: (item, currentValue, outlineNumber) =>
-        <div className={outlineClass[outlineNumber]}>{item}</div>,
+        <span className={outlineClass[outlineNumber]}>{item}</span>,
 };
+
+class CollapsibleElements extends React.Component {
+    constructor() {
+        super();
+        // Initialize React state variables.
+        this.state = {
+            collapsed: true, // Collapsed/uncollapsed state
+            active: false,
+        };
+        this.handleCollapse = this.handleCollapse.bind(this);
+    }
+    handleCollapse() {
+        // Handle click on panel collapse icon
+        this.setState({ collapsed: !this.state.collapsed, active: !this.state.active });
+    }
+
+    render() {
+        const { term, dataObject, i } = this.props;
+        return (
+            <div className="expandable">
+                <div className="dropPanel">
+                    <div onClick={this.handleCollapse} className={this.state.active ? 'triangle-down' : 'triangle-right'} />
+                    <span>{term}</span>
+                </div>
+                <div key={i}>
+                    {!this.state.collapsed ?
+                            Array.isArray(dataObject[term]) ?
+                                <div>{lookupLibrary.array(dataObject[term], dataObject[term], 0)}</div>
+                            :
+                                <div>{lookupLibrary[typeof dataObject[term]](dataObject[term], dataObject[term], 0)}</div>
+                    :
+                        null
+                    }
+                </div>
+            </div>
+        );
+    }
+}
+CollapsibleElements.propTypes = {
+    term: PropTypes.string.isRequired,
+    i: PropTypes.number,
+    dataObject: PropTypes.object.isRequired,
+};
+CollapsibleElements.defaultProps = {
+    i: 0,
+};
+
 class DisplayObject extends React.Component {
     render() {
         const { dataObject } = this.props;
@@ -70,22 +129,36 @@ class DisplayObject extends React.Component {
             const labels = term;
             return labels;
         });
-        console.log(dataArray);
+        const removedItemKeys = ['type', 'additionalProperties', 'mixinProperties'];
         return (
             <div>
                 {dataArray.map((term, id) =>
                     <div key={id}>
                         <dl className="key-value">
-                            <div data-test="id">
-                                <dt>{term}</dt>
-                                <dd>
-                                {Array.isArray(dataObject[term]) ?
-                                    <div>{lookupLibrary.array(dataObject[term], dataObject[term], 0)}</div>
+                            {removedItemKeys.includes(term) ?
+                                null
+                            :
+                                term === 'properties' || term === 'dependencies' ?
+                                    <div data-test="id">
+                                        <dt>{term}</dt>
+                                        <dd>
+                                            {Object.keys(dataObject[term]).map((item, i) =>
+                                                <CollapsibleElements term={item} dataObject={dataObject[term]} key={i} />
+                                            )}
+                                        </dd>
+                                    </div>
                                 :
-                                    <div>{lookupLibrary[typeof dataObject[term]](dataObject[term], dataObject[term], 0)}</div>
-                                }
-                                </dd>
-                            </div>
+                                <div data-test="id">
+                                    <dt>{term}</dt>
+                                    <dd>
+                                    {Array.isArray(dataObject[term]) ?
+                                        <div>{lookupLibrary.array(dataObject[term], dataObject[term], 0)}</div>
+                                    :
+                                        <div>{lookupLibrary[typeof dataObject[term]](dataObject[term], dataObject[term], 0)}</div>
+                                    }
+                                    </dd>
+                                </div>
+                            }
                         </dl>
                     </div>
                 )}
