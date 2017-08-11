@@ -7,33 +7,24 @@ from .conditions import (
 )
 from .standards_data import pipelines_with_read_depth
 
-current_statuses = ['released', 'in progress']
-not_current_statuses = ['revoked', 'obsolete', 'deleted']
-raw_data_formats = [
-    'fastq',
-    'csfasta',
-    'csqual',
-    'rcc',
-    'idat',
-    'CEL',
-    ]
-
-paired_end_assays = [
-    'RNA-PET',
-    'ChIA-PET',
-    'DNA-PET',
-    ]
-
-
 # def audit_file_pipeline_status(value, system): removed at release 56
 # http://redmine.encodedcc.org/issues/5017
-
 
 # def audit_file_md5sum_integrity(value, system): # removed release 55
 
 
-@audit_checker('File', frame=['derived_from'])
-def audit_file_processed_derived_from(value, system):
+@audit_checker('File', frame=[
+    'derived_from'
+    ])
+def audit_file_entry_function(value, system):
+    for failure in audit_file_processed_derived_from(value):
+        yield failure
+    for failure in audit_file_assembly(value):
+        yield failure
+    for failure in audit_file_biological_replicate_number_match(value):
+        yield failure
+
+def audit_file_processed_derived_from(value):
     if value['output_category'] in ['raw data',
                                     'reference']:
         return
@@ -85,8 +76,7 @@ def audit_file_processed_derived_from(value, system):
 # http://redmine.encodedcc.org/issues/5018
 
 
-@audit_checker('File', frame=['derived_from'])
-def audit_file_assembly(value, system):
+def audit_file_assembly(value):
     if 'derived_from' not in value:
         return
     for f in value['derived_from']:
@@ -103,44 +93,8 @@ def audit_file_assembly(value, system):
                 return
 
 
-@audit_checker('File', frame=['replicate', 'replicate.experiment',
-                              'derived_from', 'derived_from.replicate',
-                              'derived_from.replicate.experiment'])
-def audit_file_biological_replicate_number_match(value, system):
-
-    if 'replicate' not in value:
-        return
-
-    if 'derived_from' not in value or len(value['derived_from']) == 0:
-        return
-
-    bio_rep_number = value['replicate']['biological_replicate_number']
-    tech_rep_number = value['replicate']['technical_replicate_number']
-    file_replicate = (bio_rep_number, tech_rep_number)
-    file_exp_accession = value['replicate']['experiment']['accession']
-    derived_from_files = value['derived_from']
-
-    for derived_from_file in derived_from_files:
-        if 'replicate' in derived_from_file:
-
-            # excluding control files from different experiments
-            if derived_from_file['replicate']['experiment']['accession'] != file_exp_accession:
-                continue
-
-            derived_bio_rep_num = derived_from_file['replicate']['biological_replicate_number']
-            derived_tech_rep_num = derived_from_file['replicate']['technical_replicate_number']
-            derived_replicate = (derived_bio_rep_num, derived_tech_rep_num)
-            if file_replicate != derived_replicate:
-                detail = 'File {} '.format(value['@id']) + \
-                         'is associated with replicate [{},{}] '.format(file_replicate[0],
-                                                                        file_replicate[1]) + \
-                         ', but it was derived from file {} '.format(derived_from_file['@id']) + \
-                         'which is associated with a replicate [{},{}].'.format(
-                             derived_replicate[0],
-                             derived_replicate[1])
-                yield AuditFailure('inconsistent replicate',
-                                   detail, level='ERROR')
-                return
+# def audit_file_biological_replicate_number_match 
+# https://encodedcc.atlassian.net/browse/ENCD-3493
 
 
 @audit_checker('File', frame=['replicate', 'dataset', 'replicate.experiment'])
