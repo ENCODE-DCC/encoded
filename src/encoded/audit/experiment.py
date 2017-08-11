@@ -61,9 +61,60 @@ non_seq_assays = [
     ]
 
 
-@audit_checker('experiment', frame=['replicates',
-                                    'replicates.library'])
-def audit_experiment_mixed_libraries(value, system):
+@audit_checker('Experiment', frame=[
+    'replicates',
+    'replicates.library',
+    'replicates.library.biosample',
+    'original_files',
+    'original_files.replicate',
+    'replicates.library.biosample.constructs',
+    'replicates.library.biosample.constructs.target',
+    'replicates.library.biosample.donor',
+    'replicates.library.biosample.model_organism_donor_constructs',
+    'replicates.library.biosample.model_organism_donor_constructs.target',
+    'original_files.derived_from',
+    'original_files.derived_from.derived_from'
+    'original_files.analysis_step_version',
+    'original_files.analysis_step_version.analysis_step',
+    'original_files.analysis_step_version.analysis_step.pipelines',
+    'award',
+    'target',
+    ])
+def audit_experiment_entry_function(value, system):
+    for failure in audit_experiment_mixed_libraries(value):
+        yield failure
+    for failure in audit_experiment_pipeline_assay_details(value):
+        yield failure
+    for failure in audit_experiment_missing_unfiltered_bams(value):
+        yield failure
+    for failure in audit_experiment_with_uploading_files(value):
+        yield failure
+    for failure in audit_experiment_out_of_date_analysis(value):
+        yield failure
+    for failure in audit_experiment_internal_tag(value):
+        yield failure
+    for failure in audit_experiment_geo_submission(value):
+        yield failure
+    for failure in audit_experiment_consistent_sequencing_runs(value):
+        yield failure
+    for failure in audit_experiment_replicate_with_no_files(value):
+        yield failure
+    for failure in audit_experiment_mapped_read_length(value):
+        yield failure
+    for failure in audit_missing_construct(value):
+        yield failure
+    for failure in audit_library_RNA_size_range(value):
+        yield failure
+    for failure in (value):
+        yield failure
+    for failure in (value):
+        yield failure
+
+    for failure in (value):
+        yield failure
+
+
+def audit_experiment_mixed_libraries(value):
     '''
     Experiments should not have mixed libraries nucleic acids
     '''
@@ -89,12 +140,7 @@ def audit_experiment_mixed_libraries(value, system):
     return
 
 
-@audit_checker('Experiment', frame=['original_files',
-                                    'original_files.derived_from',
-                                    'original_files.analysis_step_version',
-                                    'original_files.analysis_step_version.analysis_step',
-                                    'original_files.analysis_step_version.analysis_step.pipelines'])
-def audit_experiment_pipeline_assay_details(value, system):
+def audit_experiment_pipeline_assay_details(value):
     if 'original_files' not in value or len(value['original_files']) == 0:
         return
     files_to_check = []
@@ -115,12 +161,7 @@ def audit_experiment_pipeline_assay_details(value, system):
 # def audit_experiment_missing_processed_files(value, system): removed from v54
 
 
-@audit_checker('Experiment', frame=['original_files',
-                                    'original_files.analysis_step_version',
-                                    'original_files.analysis_step_version.analysis_step',
-                                    'original_files.analysis_step_version.analysis_step.pipelines',
-                                    'original_files.derived_from'])
-def audit_experiment_missing_unfiltered_bams(value, system):
+def audit_experiment_missing_unfiltered_bams(value):
     if 'assay_term_id' not in value:  # unknown assay
         return
     if value['assay_term_id'] != 'OBI:0000716':  # not a ChIP-seq
@@ -364,8 +405,8 @@ def is_outdated_bams_replicate(bam_file, original_files):
     return False
 
 
-@audit_checker('Experiment', frame=['original_files'])
-def audit_experiment_with_uploading_files(value, system):
+
+def audit_experiment_with_uploading_files(value):
     if 'original_files' not in value:
         return
     for f in value['original_files']:
@@ -376,9 +417,8 @@ def audit_experiment_with_uploading_files(value, system):
             yield AuditFailure('file validation error', detail, level='INTERNAL_ACTION')
 
 
-@audit_checker('Experiment', frame=['original_files',
-                                    'original_files.derived_from'])
-def audit_experiment_out_of_date_analysis(value, system):
+
+def audit_experiment_out_of_date_analysis(value):
     if value['assay_term_name'] not in ['ChIP-seq', 'DNase-seq']:
         return
     alignment_files = scan_files_for_file_format_output_type(value['original_files'],
@@ -2091,10 +2131,7 @@ def get_biosamples(experiment):
     return biosamples_list
 
 
-@audit_checker('experiment', frame=['replicates',
-                                    'replicates.library',
-                                    'replicates.library.biosample'])
-def audit_experiment_internal_tag(value, system):
+def audit_experiment_internal_tag(value):
 
     if value['status'] in ['deleted', 'replaced']:
         return
@@ -2216,8 +2253,7 @@ def audit_experiment_gtex_biosample(value, system):
     return
 '''
 
-@audit_checker('Experiment', frame=['object'])
-def audit_experiment_geo_submission(value, system):
+def audit_experiment_geo_submission(value):
     if value['status'] not in ['released']:
         return
     if 'assay_term_id' in value and \
@@ -2242,9 +2278,7 @@ def audit_experiment_geo_submission(value, system):
 # http://redmine.encodedcc.org/issues/4900
 
 
-@audit_checker('experiment',
-               frame=['replicates', 'original_files', 'original_files.replicate'])
-def audit_experiment_consistent_sequencing_runs(value, system):
+def audit_experiment_consistent_sequencing_runs(value):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
     if 'replicates' not in value:
@@ -2356,11 +2390,7 @@ def audit_experiment_consistent_sequencing_runs(value, system):
     return
 
 
-@audit_checker('experiment',
-               frame=['award', 'replicates', 'original_files', 'original_files.replicate'],
-               condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR", "Roadmap",
-                             "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
-def audit_experiment_replicate_with_no_files(value, system):
+def audit_experiment_replicate_with_no_files(value):
     if 'internal_tags' in value and 'DREAM' in value['internal_tags']:
         return
 
@@ -3174,12 +3204,7 @@ def audit_experiment_library_biosample(value, system):
             yield AuditFailure('missing biosample', detail, level='ERROR')
 
 
-@audit_checker(
-    'experiment',
-    frame=[
-        'replicates',
-        'replicates.library'])
-def audit_library_RNA_size_range(value, system):
+def audit_library_RNA_size_range(value):
     '''
     An RNA library should have a size_range specified.
     This needs to accomodate the rfa
@@ -3207,19 +3232,7 @@ def audit_library_RNA_size_range(value, system):
             yield AuditFailure('missing RNA fragment size', detail, level='NOT_COMPLIANT')
 
 
-@audit_checker(
-    'experiment',
-    frame=[
-        'target',
-        'replicates',
-        'replicates.library',
-        'replicates.library.biosample',
-        'replicates.library.biosample.constructs',
-        'replicates.library.biosample.constructs.target',
-        'replicates.library.biosample.donor',
-        'replicates.library.biosample.model_organism_donor_constructs',
-        'replicates.library.biosample.model_organism_donor_constructs.target'])
-def audit_missing_construct(value, system):
+def audit_missing_construct(value):
 
     if value['status'] in ['deleted', 'replaced', 'proposed', 'revoked']:
         return
@@ -3300,15 +3313,7 @@ def get_mapped_length(bam_file):
             return length
     return None
 
-
-@audit_checker(
-    'Experiment',
-    frame=[
-        'original_files',
-        'original_files.derived_from',
-        'original_files.derived_from.derived_from'
-        ])
-def audit_experiment_mapped_read_length(value, system):
+def audit_experiment_mapped_read_length(value):
     assay_term_id = value.get('assay_term_id')
     if not assay_term_id or assay_term_id != 'OBI:0000716':  # not a ChIP-seq
         return
