@@ -788,6 +788,9 @@ def search(context, request, search_type=None, return_generator=False):
     else:
         es_results = es.search(body=query, index=es_index, from_=from_, size=size)
 
+    pp('QUERY')
+    pp(query)
+
     result['total'] = total = es_results['hits']['total']
 
     schemas = (types[item_type].schema for item_type in doc_types)
@@ -796,6 +799,9 @@ def search(context, request, search_type=None, return_generator=False):
 
     # Add batch actions
     result.update(search_result_actions(request, doc_types, es_results))
+
+    pp('RESULT')
+    pp(result)
 
     # Add all link for collections
     if size is not None and size < result['total']:
