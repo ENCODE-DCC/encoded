@@ -141,6 +141,7 @@ class AuditMatrix extends React.Component {
         });
     }
 
+/* eslint no-loop-func: 0 */
     render() {
         const context = this.props.context;
         const matrix = context.matrix;
