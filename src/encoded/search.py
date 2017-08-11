@@ -13,6 +13,7 @@ from urllib.parse import urlencode
 from collections import OrderedDict
 from .visualization import vis_format_external_url
 
+from pprint import pprint as pp
 
 
 CHAR_COUNT = 32
@@ -777,7 +778,7 @@ def search(context, request, search_type=None, return_generator=False):
             facets.append(audit_facet)
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
-
+    pp(query)
     # Decide whether to use scan for results.
     do_scan = size is None or size > 1000
     # Execute the query
