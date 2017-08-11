@@ -1007,73 +1007,32 @@ class StatusExperimentChart extends React.Component {
         // Must specify each case of data availability - must remove available, data-less chart.data.datasets
         // Ensures that the colors will be the default and legend labels does not include unnecessary strings
         if (data.unreplicatedDataset.some(x => x > 0)) {
-            chart.data.datasets[0].label = 'unreplicated';
-            chart.data.datasets[0].data = data.unreplicatedDataset;
-            chart.data.datasets[0].backgroundColor = colors[0];
+            chart.data.datasets[0] = { label: 'unreplicated', data: data.unreplicatedDataset, backgroundColor: colors[0] };
             if (data.isogenicDataset.some(x => x > 0)) {
-                chart.data.datasets[1].label = 'isogenic';
-                chart.data.datasets[1].data = data.isogenicDataset;
-                chart.data.datasets[1].backgroundColor = colors[1];
+                chart.data.datasets[1] = { label: 'isogenic', data: data.isogenicDataset, backgroundColor: colors[1] };
                 if (data.anisogenicDataset.some(x => x > 0)) {
-                    chart.data.datasets[2].label = 'anisogenic';
-                    chart.data.datasets[2].data = data.anisogenicDataset;
-                    chart.data.datasets[2].backgroundColor = colors[2];
+                    chart.data.datasets[2] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[2] };
                 } else if (data.anisogenicDataset.every(x => x === 0)) {
                     chart.data.datasets[2] = {};
                 }
             } else if (data.isogenicDataset.every(x => x === 0) && data.anisogenicDataset.some(x => x > 0)) {
-                chart.data.datasets[1].label = 'anisogenic';
-                chart.data.datasets[1].data = data.anisogenicDataset;
-                chart.data.datasets[1].backgroundColor = colors[1];
+                chart.data.datasets[1] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[1] };
                 chart.data.datasets[2] = {};
             }
         } else if (data.unreplicatedDataset.every(x => x === 0) && data.isogenicDataset.some(x => x > 0)) {
-            chart.data.datasets[0].label = 'isogenic';
-            chart.data.datasets[0].data = data.isogenicDataset;
-            chart.data.datasets[0].backgroundColor = colors[0];
+            chart.data.datasets[0] = { label: 'isogenic', data: data.isogenicDataset, backgroundColor: colors[0] };
             if (data.anisogenicDataset.some(x => x > 0)) {
-                chart.data.datasets[1].label = 'anisogenic';
-                chart.data.datasets[1].data = data.anisogenicDataset;
-                chart.data.datasets[1].backgroundColor = colors[1];
+                chart.data.datasets[1] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[1] };
                 chart.data.datasets[2] = {};
             } else if (data.anisogenicDataset.every(x => x === 0)) {
                 chart.data.datasets[1] = {};
                 chart.data.datasets[2] = {};
             }
         } else if (data.unreplicatedDataset.every(x => x === 0) && data.isogenicDataset.every(x => x === 0) && data.anisogenicDataset.some(x => x > 0)) {
-            chart.data.datasets[0].label = 'anisogenic';
-            chart.data.datasets[0].data = data.anisogenicDataset;
-            chart.data.datasets[0].backgroundColors = colors[0];
+            chart.data.datasets[0] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[0] };
             chart.data.datasets[1] = {};
             chart.data.datasets[2] = {};
         }
-        // if (data.unreplicatedDataset.some(x => x > 0)) {
-        //     chart.data.datasets[0] = { label: 'unreplicated', data: data.unreplicatedDataset, backgroundColor: colors[0] };
-        //     if (data.isogenicDataset.some(x => x > 0)) {
-        //         chart.data.datasets[1] = { label: 'isogenic', data: data.isogenicDataset, backgroundColor: colors[1] };
-        //         if (data.anisogenicDataset.some(x => x > 0)) {
-        //             chart.data.datasets[2] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[2] };
-        //         } else if (data.anisogenicDataset.every(x => x === 0)) {
-        //             chart.data.datasets[2] = {};
-        //         }
-        //     } else if (data.isogenicDataset.every(x => x === 0) && data.anisogenicDataset.some(x => x > 0)) {
-        //         chart.data.datasets[1] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[1] };
-        //         chart.data.datasets[2] = {};
-        //     }
-        // } else if (data.unreplicatedDataset.every(x => x === 0) && data.isogenicDataset.some(x => x > 0)) {
-        //     chart.data.datasets[0] = { label: 'isogenic', data: data.isogenicDataset, backgroundColor: colors[0] };
-        //     if (data.anisogenicDataset.some(x => x > 0)) {
-        //         chart.data.datasets[1] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[1] };
-        //         chart.data.datasets[2] = {};
-        //     } else if (data.anisogenicDataset.every(x => x === 0)) {
-        //         chart.data.datasets[1] = {};
-        //         chart.data.datasets[2] = {};
-        //     }
-        // } else if (data.unreplicatedDataset.every(x => x === 0) && data.isogenicDataset.every(x => x === 0) && data.anisogenicDataset.some(x => x > 0)) {
-        //     chart.data.datasets[0] = { label: 'anisogenic', data: data.anisogenicDataset, backgroundColor: colors[1] };
-        //     chart.data.datasets[1] = {};
-        //     chart.data.datasets[2] = {};
-        // }
         chart.options.onClick.baseSearchUri = `${linkUri}${award.name}${objectQuery}`;
         chart.update();
 
@@ -1356,7 +1315,11 @@ const ChartRenderer = (props) => {
     const biosamplesConfig = searchData.biosamples;
     const antibodiesConfig = searchData.antibodies;
     const controlsConfig = searchData.controls;
-    let updatedGenusArray;
+    let experimentSpeciesArray;
+    let annotationSpeciesArray;
+    let biosampleSpeciesArray;
+    let antibodySpeciesArray;
+    // let controlSpeciesArray;
     const updatedSpeciesArray = [];
     searchData.experiments.data = (experiments && experiments.facets) || [];
     searchData.annotations.data = (annotations && annotations.facets) || [];
@@ -1379,6 +1342,57 @@ const ChartRenderer = (props) => {
             searchData[chartCategory].statuses = (statusFacet && statusFacet.terms && statusFacet.terms.length) ? statusFacet.terms : [];
         }
     });
+    // If there are experiements, then the corresponding species are added to the array of species
+    if (experiments && experiments.facets && experiments.facets.length) {
+        const genusFacet = experiments.facets.find(facet => facet.field === 'replicates.library.biosample.donor.organism.scientific_name');
+        experimentSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
+        const experimentSpeciesArrayLength = experimentSpeciesArray.length;
+        for (let j = 0; j < experimentSpeciesArrayLength; j += 1) {
+            if (experimentSpeciesArray[j].doc_count !== 0) {
+                updatedSpeciesArray.push(experimentSpeciesArray[j].key);
+            }
+        }
+    }
+    // If there are annotations, then the corresponding species are added to the array of species
+    if (annotations && annotations.facets && annotations.facets.length) {
+        const genusFacet = annotations.facets.find(facet => facet.field === 'organism.scientific_name');
+        annotationSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
+        const annotationSpeciesArrayLength = annotationSpeciesArray.length;
+        for (let j = 0; j < annotationSpeciesArrayLength; j += 1) {
+            if (annotationSpeciesArray[j].doc_count !== 0) {
+                updatedSpeciesArray.push(annotationSpeciesArray[j].key);
+            }
+        }
+    }
+    // If there are biosamples, then the corresponding species are iadded to the array of species
+    if (biosamples && biosamples.facets && biosamples.facets.length) {
+        const genusFacet = biosamples.facets.find(facet => facet.field === 'organism.scientific_name=');
+        biosampleSpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
+        const biosampleSpeciesArrayLength = biosampleSpeciesArray.length;
+        for (let j = 0; j < biosampleSpeciesArrayLength; j += 1) {
+            if (biosampleSpeciesArray[j].doc_count !== 0) {
+                updatedSpeciesArray.push(biosampleSpeciesArray[j].key);
+            }
+        }
+    }
+    // If there are antibodies, then the corresponding species are added to the array of species
+    if (antibodies && antibodies.facets && antibodies.facets.length) {
+        const genusFacet = antibodies.facets.find(facet => facet.field === 'targets.organism.scientific_name=');
+        antibodySpeciesArray = (genusFacet && genusFacet.terms && genusFacet.terms.length) ? genusFacet.terms : [];
+        const antibodySpeciesArrayLength = antibodySpeciesArray.length;
+        for (let j = 0; j < antibodySpeciesArrayLength; j += 1) {
+            if (antibodySpeciesArray[j].doc_count !== 0) {
+                updatedSpeciesArray.push(antibodySpeciesArray[j].key);
+            }
+        }
+    }
+    // Array of species is converted to an array of genera
+    let updatedGenusArray = updatedSpeciesArray.map(species => speciesGenusMap[species]);
+
+    // Array of genera is deduplicated
+    updatedGenusArray = _.uniq(updatedGenusArray);
+    const ExperimentQuery = generateQuery(selectedOrganisms, 'replicates.library.biosample.donor.organism.scientific_name=');
+    const AnnotationQuery = generateQuery(selectedOrganisms, 'organism.scientific_name=');
 
     // For each category (experiments, annotations, biosamples, and antibodies), the corresponding species are added to the array of species
     generateUpdatedSpeciesArray(experiments, 'replicates.library.biosample.donor.organism.scientific_name', updatedSpeciesArray);
@@ -1388,11 +1402,6 @@ const ChartRenderer = (props) => {
 
     // Array of species is converted to an array of genera
     updatedGenusArray = updatedSpeciesArray.map(species => speciesGenusMap[species]);
-
-    // Array of genera is deduplicated
-    updatedGenusArray = _.uniq(updatedGenusArray);
-    const ExperimentQuery = generateQuery(selectedOrganisms, 'replicates.library.biosample.donor.organism.scientific_name=');
-    const AnnotationQuery = generateQuery(selectedOrganisms, 'organism.scientific_name=');
 
     return (
         <div className="award-charts">
@@ -1529,7 +1538,6 @@ ChartRenderer.propTypes = {
     controls: PropTypes.object,
     handleClick: PropTypes.func.isRequired, // Function to call when a button is clicked
     selectedOrganisms: PropTypes.array, // Array of currently selected buttons
-    // updatedSpeciesArray: PropTypes.array,
 };
 
 ChartRenderer.defaultProps = {
@@ -1542,7 +1550,6 @@ ChartRenderer.defaultProps = {
     anisogenic: {},
     controls: {},
     selectedOrganisms: [],
-    // updatedSpeciesArray: [],
 };
 
 // Create new tabdisplay of genus buttons
