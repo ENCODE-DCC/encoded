@@ -14,14 +14,15 @@ from .standards_data import pipelines_with_read_depth
 
 
 @audit_checker('File', frame=[
-    'derived_from'
+    'derived_from',
+    'replicate'
     ])
 def audit_file_entry_function(value, system):
     for failure in audit_file_processed_derived_from(value):
         yield failure
     for failure in audit_file_assembly(value):
         yield failure
-    for failure in audit_file_biological_replicate_number_match(value):
+    for failure in audit_file_replicate_match(value):
         yield failure
 
 def audit_file_processed_derived_from(value):
@@ -97,8 +98,7 @@ def audit_file_assembly(value):
 # https://encodedcc.atlassian.net/browse/ENCD-3493
 
 
-@audit_checker('File', frame=['replicate', 'dataset', 'replicate.experiment'])
-def audit_file_replicate_match(value, system):
+def audit_file_replicate_match(value):
     '''
     A file's replicate should belong to the same experiment that the file
     does.  These tend to get confused when replacing objects.
@@ -107,17 +107,17 @@ def audit_file_replicate_match(value, system):
     if 'replicate' not in value:
         return
 
-    rep_exp = value['replicate']['experiment']['uuid']
-    file_exp = value['dataset']['uuid']
+    rep_exp = value['replicate']['experiment']
+    file_exp = value['dataset']
 
     if rep_exp != file_exp:
-        detail = 'File {} from experiment {} '.format(value['@id'], value['dataset']['@id']) + \
+        detail = 'File {} from experiment {} '.format(value['@id'], value['dataset']) + \
                  'is associated with replicate [{},{}] '.format(
                      value['replicate']['biological_replicate_number'],
                      value['replicate']['technical_replicate_number']) + \
                  '{}, but that replicate is associated with a different '.format(
                      value['replicate']['@id']) + \
-                 'experiment {}.'.format(value['replicate']['experiment']['@id'])
+                 'experiment {}.'.format(value['replicate']['experiment'])
         yield AuditFailure('inconsistent replicate', detail, level='ERROR')
         return
 

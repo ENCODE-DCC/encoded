@@ -413,38 +413,6 @@ def test_audit_modERN_unexpected_step_run(testapp, file_exp, file2, award, analy
     assert any(error['category'] == 'unexpected step_run' for error in errors_list)
 '''
 
-def test_audit_file_biological_replicate_number_match(testapp,
-                                                      file_exp,
-                                                      file_rep,
-                                                      file1,
-                                                      file_rep1_2,
-                                                      file1_2):
-    testapp.patch_json(file1['@id'], {'derived_from': [file1['@id']]})
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert all(error['category'] != 'inconsistent replicate'
-               for error in errors_list)
-
-
-def test_audit_file_biological_replicate_number_mismatch(testapp,
-                                                         file_exp,
-                                                         file_rep,
-                                                         file1,
-                                                         file_rep1_2,
-                                                         file1_2):
-    testapp.patch_json(file1['@id'], {'derived_from': [file1_2['@id']]})
-    res = testapp.get(file1['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'inconsistent replicate'
-               for error in errors_list)
-
-
 def test_audit_file_assembly(testapp, file6, file7):
     testapp.patch_json(file6['@id'], {'assembly': 'GRCh38'})
     testapp.patch_json(file7['@id'], {'derived_from': [file6['@id']],
