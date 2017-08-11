@@ -15,7 +15,17 @@ from .standards_data import pipelines_with_read_depth
 
 @audit_checker('File', frame=[
     'derived_from',
-    'replicate'
+    'replicate',
+    'paired_with',
+    'file_format_specifications',
+    'dataset',
+    'dataset.target',
+    'platform',
+    'controlled_by',
+    'controlled_by.replicate',
+    'controlled_by.dataset',
+    'controlled_by.paired_with',
+    'controlled_by.platform'
     ])
 def audit_file_entry_function(value, system):
     for failure in audit_file_processed_derived_from(value):
@@ -23,6 +33,12 @@ def audit_file_entry_function(value, system):
     for failure in audit_file_assembly(value):
         yield failure
     for failure in audit_file_replicate_match(value):
+        yield failure
+    for failure in audit_paired_with(value):
+        yield failure
+    for failure in audit_file_format_specifications(value):
+        yield failure
+    for failure in audit_file_controlled_by(value):
         yield failure
 
 def audit_file_processed_derived_from(value):
@@ -131,16 +147,65 @@ def check_presence(file_to_check, files_list):
     return False
 
 
-@audit_checker('File',
-               frame=['dataset',
-                      'dataset.target',
-                      'platform',
-                      'controlled_by',
-                      'controlled_by.replicate',
-                      'controlled_by.dataset',
-                      'controlled_by.paired_with',
-                      'controlled_by.platform'])
-def audit_file_controlled_by(value, system):
+def audit_paired_with(value):
+    '''
+    A file with a paired_end needs a paired_with.
+    Should be handled in the schema.
+    A paired_with should be the same replicate
+    '''
+
+    if 'paired_end' not in value:
+        return
+
+    if value['paired_end'] in ['1,2']:
+        return
+
+    if 'paired_with' not in value:
+        return
+
+    if 'replicate' not in value['paired_with']:
+        return
+
+    if 'replicate' not in value:
+        detail = 'File {} has paired_end = {}. It requires a replicate'.format(
+            value['@id'],
+            value['paired_end'])
+        yield AuditFailure('missing replicate', detail, level='INTERNAL_ACTION')
+        return
+
+    if value['replicate'] != value['paired_with']['replicate']:
+        detail = 'File {} has replicate {}. It is paired_with file {} with replicate {}'.format(
+            value['@id'],
+            value.get('replicate'),
+            value['paired_with']['@id'],
+            value['paired_with'].get('replicate'))
+        yield AuditFailure('inconsistent paired_with', detail, level='ERROR')
+        return
+
+    if value['paired_end'] == '1':
+        context = system['context']
+        paired_with = context.get_rev_links('paired_with')
+        if len(paired_with) > 1:
+            detail = 'Paired end 1 file {} paired_with by multiple paired end 2 files: {!r}'.format(
+                value['@id'],
+                paired_with,
+            )
+            yield AuditFailure('multiple paired_with', detail, level='ERROR')
+            return
+
+
+def audit_file_format_specifications(value):
+    for doc in value.get('file_format_specifications', []):
+        if doc['document_type'] != "file format specification":
+            detail = 'File {} has document {} not of type file format specification'.format(
+                value['@id'],
+                doc['@id']
+                )
+            yield AuditFailure('inconsistent document_type', detail, level='ERROR')
+            return
+
+
+def audit_file_controlled_by(value):
     '''
     A fastq in a ChIP-seq experiment should have a controlled_by
     '''
@@ -255,247 +320,6 @@ def audit_file_controlled_by(value, system):
                 yield AuditFailure('inconsistent control read length',
                                    detail, level='WARNING')
                 return
-
-# def audit_file_flowcells(value, system): # removed in version 56
-# http://redmine.encodedcc.org/issues/5060
-
-
-@audit_checker('File', frame=['paired_with'])
-def audit_paired_with(value, system):
-    '''
-    A file with a paired_end needs a paired_with.
-    Should be handled in the schema.
-    A paired_with should be the same replicate
-    '''
-
-    if 'paired_end' not in value:
-        return
-
-    if value['paired_end'] in ['1,2']:
-        return
-
-    if 'paired_with' not in value:
-        return
-
-    if 'replicate' not in value['paired_with']:
-        return
-
-    if 'replicate' not in value:
-        detail = 'File {} has paired_end = {}. It requires a replicate'.format(
-            value['@id'],
-            value['paired_end'])
-        yield AuditFailure('missing replicate', detail, level='INTERNAL_ACTION')
-        return
-
-    if value['replicate'] != value['paired_with']['replicate']:
-        detail = 'File {} has replicate {}. It is paired_with file {} with replicate {}'.format(
-            value['@id'],
-            value.get('replicate'),
-            value['paired_with']['@id'],
-            value['paired_with'].get('replicate'))
-        yield AuditFailure('inconsistent paired_with', detail, level='ERROR')
-        return
-
-    if value['paired_end'] == '1':
-        context = system['context']
-        paired_with = context.get_rev_links('paired_with')
-        if len(paired_with) > 1:
-            detail = 'Paired end 1 file {} paired_with by multiple paired end 2 files: {!r}'.format(
-                value['@id'],
-                paired_with,
-            )
-            yield AuditFailure('multiple paired_with', detail, level='ERROR')
-            return
-
-'''
-@audit_checker('file', frame=['step_run',
-                              'dataset'], condition=rfa('modERN'))
-def audit_modERN_ChIP_pipeline_steps(value, system):
-
-    expt = value['dataset']
-    if 'Experiment' not in expt['@type']:
-        return
-
-    if expt['assay_term_name'] != 'ChIP-seq':
-        return
-
-    if value['status'] in ['archived', 'revoked', 'deleted', 'replaced']:
-        return
-
-    if value['file_format'] == 'fastq':
-        if 'step_run' in value:
-            detail = 'Fastq file {} should not have an associated step_run'.format(value['@id'])
-            yield AuditFailure('unexpected step_run', detail, level='ERROR')
-        return
-
-    if 'step_run' not in value:
-        detail = 'File {} is missing a step_run'.format(value['@id'])
-        yield AuditFailure('missing step_run', detail, level='WARNING')
-        return
-
-    if (value['file_format'] != 'fastq') and ('derived_from' not in value):
-        detail = 'File {} is missing its derived_from'.format(value['@id'])
-        return
-
-    step = value['step_run']
-    if (value['file_format'] == 'bam') and step['aliases'][0] != 'modern:chip-seq-bwa-alignment-step-run-v-1-virtual':
-        detail = 'Bam {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
-        yield AuditFailure('wrong step_run ChIP-seq bam', detail, level='WARNING')
-
-    if (value['output_type'] == 'normalized signal of all reads'):
-        if not ((step['aliases'][0] != 'modern:chip-seq-unique-read-signal-generation-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-unique-read-signal-generation-step-run-v-1-virtual')):
-            detail = 'Normalized signal of all reads {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
-            yield AuditFailure('wrong step_run for unique signal', detail, level='WARNING')
-
-    if (value['output_type']) == 'read-depth normalized signal':
-        if not ((step['aliases'][0] != 'modern:chip-seq-read-depth-normalized-signal-generation-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-read-depth-normalized-signal-generation-step-run-v-1-virtual')):
-            detail = 'Read depth normalized signal {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
-            yield AuditFailure('wrong step_run for depth signal', detail, level='WARNING')
-
-    if (value['output_type']) == 'control normalized signal':
-        if not ((step['aliases'][0] != 'modern:chip-seq-control-normalized-signal-generation-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-control-normalized-signal-generation-step-run-v-1-virtual')):
-            detail = 'Control normalized signal {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
-            yield AuditFailure('wrong step_run for control signal', detail, level='WARNING')
-
-    if (value['file_format'] == 'bigBed'):
-        if not ((step['aliases'][0] != 'modern:chip-seq-peaks-to-bigbed-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-optimal-idr-thresholded-peaks-to-bigbed-step-run-v-1-virtual')):
-            detail = 'bigBed {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
-            yield AuditFailure('wrong step_run for bigBed peaks', detail, level='WARNING')
-
-    if (value['output_type'] == 'peaks') and (value['file_format'] == 'bed'):
-        if (value['file_format_type'] == 'narrowPeak') and (step['aliases'][0] != 'modern:chip-seq-spp-peak-calling-step-run-v-1-virtual'):
-            detail = 'Peaks {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
-            yield AuditFailure('wrong step_run for peaks', detail, level='WARNING')
-
-    if (value['output_type'] == 'optimal idr thresholded peaks') and (value['file_format'] == 'bed'):
-        if (value['file_format_type'] == 'narrowPeak') and (step['aliases'][0] != 'modern:chip-seq-optimal-idr-step-run-v-1-virtual'):
-            detail = 'Optimal IDR thresholded peaks {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
-            yield AuditFailure('wrong step_run for IDR peaks', detail, level='WARNING')
-'''
-
-@audit_checker('File', frame=['file_format_specifications'],)
-def audit_file_format_specifications(value, system):
-
-    for doc in value.get('file_format_specifications', []):
-        if doc['document_type'] != "file format specification":
-            detail = 'File {} has document {} not of type file format specification'.format(
-                value['@id'],
-                doc['@id']
-                )
-            raise AuditFailure('inconsistent document_type', detail, level='ERROR')
-
-
-def get_chip_seq_bam_read_depth(bam_file):
-    if bam_file['status'] in ['deleted', 'replaced', 'revoked']:
-        return False
-
-    if bam_file['file_format'] != 'bam' or bam_file['output_type'] != 'alignments':
-        return False
-
-    # Check to see if bam is from ENCODE or modERN pipelines
-    if bam_file['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
-        return False
-
-    if has_pipelines(bam_file) is False:
-        return False
-
-    quality_metrics = bam_file.get('quality_metrics')
-
-    if (quality_metrics is None) or (quality_metrics == []):
-        return False
-
-    read_depth = 0
-
-    for metric in quality_metrics:
-        if ('total' in metric and
-            (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
-             ('processing_stage' not in metric))):
-                if "read1" in metric and "read2" in metric:
-                    read_depth = int(metric['total']/2)
-                else:
-                    read_depth = metric['total']
-                break
-
-    if read_depth == 0:
-        return False
-
-    return read_depth
-
-
-def get_control_bam(experiment_bam, pipeline_name):
-    #  get representative FASTQ file
-    if 'derived_from' not in experiment_bam or len(experiment_bam['derived_from']) < 1:
-        return False
-
-    derived_from_fastqs = experiment_bam['derived_from']
-    control_fastq = False
-    for entry in derived_from_fastqs:
-        if 'controlled_by' in entry and len(entry['controlled_by']) > 0:
-            control_fastq = entry['controlled_by'][0]  # getting representative FASTQ
-            break
-
-    # get representative FASTQ from control
-    if control_fastq is False:
-        return False
-    else:
-        if 'original_files' not in control_fastq['dataset']:
-            return False
-
-        control_bam = False
-        control_files = control_fastq['dataset']['original_files']
-        for control_file in control_files:
-            if control_file['status'] in ['deleted', 'replaced', 'revoked']:
-                continue
-            if control_file['file_format'] == 'bam' and \
-               control_file['output_type'] == 'alignments' and \
-               'assembly' in control_file and 'assembly' in experiment_bam and \
-               control_file['assembly'] == experiment_bam['assembly']:
-                #  we have BAM file, now we have to make sure it was created by pipeline
-                #  with similar pipeline_name
-
-                is_same_pipeline = False
-                if has_pipelines(control_file) is True:
-                    for pipeline in \
-                            control_file['analysis_step_version']['analysis_step']['pipelines']:
-                        if pipeline['title'] == pipeline_name:
-                            is_same_pipeline = True
-                            break
-
-                if is_same_pipeline is True and \
-                   'derived_from' in control_file and \
-                   len(control_file['derived_from']) > 0:
-                    derived_list = control_file['derived_from']
-                    for entry in derived_list:
-                        if entry['accession'] == control_fastq['accession']:
-                            control_bam = control_file
-                            break
-        return control_bam
-
-
-def has_pipelines(bam_file):
-    if 'analysis_step_version' not in bam_file:
-        return False
-    if 'analysis_step' not in bam_file['analysis_step_version']:
-        return False
-    if 'pipelines' not in bam_file['analysis_step_version']['analysis_step']:
-        return False
-    return True
-
-
-def get_target_name(bam_file):
-    if 'dataset' in bam_file and 'target' in bam_file['dataset'] and \
-       'name' in bam_file['dataset']['target']:
-            return bam_file['dataset']['target']['name']
-    return False
-
-
-def extract_award_version(bam_file):
-    if 'dataset' in bam_file and 'award' in bam_file['dataset'] and \
-       'rfa' in bam_file['dataset']['award']:
-        if bam_file['dataset']['award']['rfa'] in ['ENCODE2-Mouse', 'ENCODE2']:
-            return 'ENC2'
-    return 'ENC3'
-
 
 @audit_checker('File', frame=[
     'award',
@@ -619,6 +443,192 @@ def audit_file_chip_seq_control_read_depth(value, system):
                                                                   target_investigated_as,
                                                                   standards_version):
                     yield failure
+
+
+# def audit_file_flowcells(value, system): # removed in version 56
+# http://redmine.encodedcc.org/issues/5060
+
+
+
+
+'''
+@audit_checker('file', frame=['step_run',
+                              'dataset'], condition=rfa('modERN'))
+def audit_modERN_ChIP_pipeline_steps(value, system):
+
+    expt = value['dataset']
+    if 'Experiment' not in expt['@type']:
+        return
+
+    if expt['assay_term_name'] != 'ChIP-seq':
+        return
+
+    if value['status'] in ['archived', 'revoked', 'deleted', 'replaced']:
+        return
+
+    if value['file_format'] == 'fastq':
+        if 'step_run' in value:
+            detail = 'Fastq file {} should not have an associated step_run'.format(value['@id'])
+            yield AuditFailure('unexpected step_run', detail, level='ERROR')
+        return
+
+    if 'step_run' not in value:
+        detail = 'File {} is missing a step_run'.format(value['@id'])
+        yield AuditFailure('missing step_run', detail, level='WARNING')
+        return
+
+    if (value['file_format'] != 'fastq') and ('derived_from' not in value):
+        detail = 'File {} is missing its derived_from'.format(value['@id'])
+        return
+
+    step = value['step_run']
+    if (value['file_format'] == 'bam') and step['aliases'][0] != 'modern:chip-seq-bwa-alignment-step-run-v-1-virtual':
+        detail = 'Bam {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+        yield AuditFailure('wrong step_run ChIP-seq bam', detail, level='WARNING')
+
+    if (value['output_type'] == 'normalized signal of all reads'):
+        if not ((step['aliases'][0] != 'modern:chip-seq-unique-read-signal-generation-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-unique-read-signal-generation-step-run-v-1-virtual')):
+            detail = 'Normalized signal of all reads {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for unique signal', detail, level='WARNING')
+
+    if (value['output_type']) == 'read-depth normalized signal':
+        if not ((step['aliases'][0] != 'modern:chip-seq-read-depth-normalized-signal-generation-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-read-depth-normalized-signal-generation-step-run-v-1-virtual')):
+            detail = 'Read depth normalized signal {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for depth signal', detail, level='WARNING')
+
+    if (value['output_type']) == 'control normalized signal':
+        if not ((step['aliases'][0] != 'modern:chip-seq-control-normalized-signal-generation-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-control-normalized-signal-generation-step-run-v-1-virtual')):
+            detail = 'Control normalized signal {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for control signal', detail, level='WARNING')
+
+    if (value['file_format'] == 'bigBed'):
+        if not ((step['aliases'][0] != 'modern:chip-seq-peaks-to-bigbed-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-optimal-idr-thresholded-peaks-to-bigbed-step-run-v-1-virtual')):
+            detail = 'bigBed {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for bigBed peaks', detail, level='WARNING')
+
+    if (value['output_type'] == 'peaks') and (value['file_format'] == 'bed'):
+        if (value['file_format_type'] == 'narrowPeak') and (step['aliases'][0] != 'modern:chip-seq-spp-peak-calling-step-run-v-1-virtual'):
+            detail = 'Peaks {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for peaks', detail, level='WARNING')
+
+    if (value['output_type'] == 'optimal idr thresholded peaks') and (value['file_format'] == 'bed'):
+        if (value['file_format_type'] == 'narrowPeak') and (step['aliases'][0] != 'modern:chip-seq-optimal-idr-step-run-v-1-virtual'):
+            detail = 'Optimal IDR thresholded peaks {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for IDR peaks', detail, level='WARNING')
+'''
+
+def get_chip_seq_bam_read_depth(bam_file):
+    if bam_file['status'] in ['deleted', 'replaced', 'revoked']:
+        return False
+
+    if bam_file['file_format'] != 'bam' or bam_file['output_type'] != 'alignments':
+        return False
+
+    # Check to see if bam is from ENCODE or modERN pipelines
+    if bam_file['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
+        return False
+
+    if has_pipelines(bam_file) is False:
+        return False
+
+    quality_metrics = bam_file.get('quality_metrics')
+
+    if (quality_metrics is None) or (quality_metrics == []):
+        return False
+
+    read_depth = 0
+
+    for metric in quality_metrics:
+        if ('total' in metric and
+            (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
+             ('processing_stage' not in metric))):
+                if "read1" in metric and "read2" in metric:
+                    read_depth = int(metric['total']/2)
+                else:
+                    read_depth = metric['total']
+                break
+
+    if read_depth == 0:
+        return False
+
+    return read_depth
+
+
+def get_control_bam(experiment_bam, pipeline_name):
+    #  get representative FASTQ file
+    if 'derived_from' not in experiment_bam or len(experiment_bam['derived_from']) < 1:
+        return False
+
+    derived_from_fastqs = experiment_bam['derived_from']
+    control_fastq = False
+    for entry in derived_from_fastqs:
+        if 'controlled_by' in entry and len(entry['controlled_by']) > 0:
+            control_fastq = entry['controlled_by'][0]  # getting representative FASTQ
+            break
+
+    # get representative FASTQ from control
+    if control_fastq is False:
+        return False
+    else:
+        if 'original_files' not in control_fastq['dataset']:
+            return False
+
+        control_bam = False
+        control_files = control_fastq['dataset']['original_files']
+        for control_file in control_files:
+            if control_file['status'] in ['deleted', 'replaced', 'revoked']:
+                continue
+            if control_file['file_format'] == 'bam' and \
+               control_file['output_type'] == 'alignments' and \
+               'assembly' in control_file and 'assembly' in experiment_bam and \
+               control_file['assembly'] == experiment_bam['assembly']:
+                #  we have BAM file, now we have to make sure it was created by pipeline
+                #  with similar pipeline_name
+
+                is_same_pipeline = False
+                if has_pipelines(control_file) is True:
+                    for pipeline in \
+                            control_file['analysis_step_version']['analysis_step']['pipelines']:
+                        if pipeline['title'] == pipeline_name:
+                            is_same_pipeline = True
+                            break
+
+                if is_same_pipeline is True and \
+                   'derived_from' in control_file and \
+                   len(control_file['derived_from']) > 0:
+                    derived_list = control_file['derived_from']
+                    for entry in derived_list:
+                        if entry['accession'] == control_fastq['accession']:
+                            control_bam = control_file
+                            break
+        return control_bam
+
+
+def has_pipelines(bam_file):
+    if 'analysis_step_version' not in bam_file:
+        return False
+    if 'analysis_step' not in bam_file['analysis_step_version']:
+        return False
+    if 'pipelines' not in bam_file['analysis_step_version']['analysis_step']:
+        return False
+    return True
+
+
+def get_target_name(bam_file):
+    if 'dataset' in bam_file and 'target' in bam_file['dataset'] and \
+       'name' in bam_file['dataset']['target']:
+            return bam_file['dataset']['target']['name']
+    return False
+
+
+def extract_award_version(bam_file):
+    if 'dataset' in bam_file and 'award' in bam_file['dataset'] and \
+       'rfa' in bam_file['dataset']['award']:
+        if bam_file['dataset']['award']['rfa'] in ['ENCODE2-Mouse', 'ENCODE2']:
+            return 'ENC2'
+    return 'ENC3'
+
+
 
 
 def check_control_read_depth_standards(value,
