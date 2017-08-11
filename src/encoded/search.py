@@ -1245,27 +1245,40 @@ def audit(context, request):
     }
 
     # aggs query for audit category rows
-    aggs = {'audit.ERROR.category': {'aggs': {x_grouping: x_agg
-                },
-            'terms': {'field': 'audit.ERROR.category', 'size': 0
+    aggs = {
+        'audit.ERROR.category': {
+            'aggs': {
+                x_grouping: x_agg
+            },
+            'terms': {
+                'field': 'audit.ERROR.category', 'size': 0
+            }
+        }, 
+        'audit.WARNING.category': {
+            'aggs': {
+                x_grouping: x_agg
+            },
+            'terms': {
+                'field': 'audit.WARNING.category', 'size': 0
+            }
+        }, 
+        'audit.NOT_COMPLIANT.category': {
+            'aggs': {
+                x_grouping: x_agg
+            },
+            'terms': {
+                'field': 'audit.NOT_COMPLIANT.category', 'size': 0
+            }
         }
-    }, 'audit.WARNING.category': {'aggs': {x_grouping: x_agg
-                },
-            'terms': {'field': 'audit.WARNING.category', 'size': 0
-        }
-    }, 'audit.NOT_COMPLIANT.category': {'aggs': {x_grouping: x_agg
-                },
-            'terms': {'field': 'audit.NOT_COMPLIANT.category', 'size': 0
-        }
-    }
     
-} 
+    } 
 
     # This is a nested query with error as the top most level and warning as the innermost level.
     # It allows for there to be multiple missing fields in the query.
     # To construct this we go through the no_audits_groupings backwards and construct the query
     # from the inside out.
     temp = {}
+    temp_copy = {}
     for group in reversed(no_audits_groupings):
         temp = {
             "missing": {
@@ -1294,11 +1307,14 @@ def audit(context, request):
     # level of nested query to create a no audits at all row within no audits.
     # Additionally, add it to the no_audits_groupings list to be used in summarize_no_audits later.
     if "audit.INTERNAL_ACTION.category" in facets[len(facets)-1]:
-        aggs['audit.INTERNAL_ACTION.category'] = {'aggs': {x_grouping: x_agg
-                },
-            'terms': {'field': 'audit.INTERNAL_ACTION.category', 'size': 0
-                    }
+        aggs['audit.INTERNAL_ACTION.category'] = {
+            'aggs': {
+                x_grouping: x_agg
+            },
+            'terms': {
+                'field': 'audit.INTERNAL_ACTION.category', 'size': 0
             }
+        }
         aggs['no.audit.error']['aggs']['no.audit.not_compliant']['aggs']['no.audit.warning']['aggs']['no.audit.internal_action'] = {
                             "missing": {
                                 "field": "audit.INTERNAL_ACTION.category"
@@ -1306,7 +1322,7 @@ def audit(context, request):
                             "aggs": {
                                 x_grouping: x_agg
                             }
-                        }
+        }
         no_audits_groupings.append("no.audit.internal_action")
 
     aggs['x'] = x_agg
