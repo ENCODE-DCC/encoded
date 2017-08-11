@@ -264,6 +264,7 @@ def biosample_1(testapp, lab, award, source, organism):
     item = {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
+        'biosample_term_name': 'heart',
         'biosample_type': 'tissue',
         'lab': lab['uuid'],
         'organism': organism['uuid'],
@@ -277,6 +278,7 @@ def biosample_2(testapp, lab, award, source, organism):
     item = {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
+        'biosample_term_name': 'heart',
         'biosample_type': 'tissue',
         'lab': lab['uuid'],
         'organism': organism['uuid'],
