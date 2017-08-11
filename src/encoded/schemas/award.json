@@ -101,7 +101,9 @@
                             "Circulome-seq",
                             "whole genome sequencing assay",
                             "BruUV-seq",
-                            "Mint-ChIP-seq"
+                            "Mint-ChIP-seq",
+                            "single nuclei ATAC-seq",
+                            "icSHAPE"
                         ]
                     },
                     "proposed_count": {
