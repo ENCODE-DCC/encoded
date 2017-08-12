@@ -1172,7 +1172,7 @@ export function assembleGraph(context, session, infoNodeId, files, filterAssembl
         const file = matchingFiles[fileId];
         const fileNodeId = `file:${file['@id']}`;
         const fileNodeLabel = `${file.title} (${file.output_type})`;
-        const fileCssClass = `pipeline-node-file${infoNodeId === fileNodeId ? ' active' : ''}`;
+        const fileCssClass = `pipeline-node-file${infoNodeId === fileNodeId ? ' active' : ''}${file.status === 'revoked' ? ' revoked' : ''}${file.status === 'archived' ? ' archived' : ''}`;
         const fileRef = file;
         const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
         let metricsInfo;
