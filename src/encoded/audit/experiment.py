@@ -60,23 +60,27 @@ non_seq_assays = [
     '5C',
     ]
 
-
+   
 @audit_checker('Experiment', frame=[
     'replicates',
     'replicates.library',
     'replicates.library.biosample',
     'original_files',
     'original_files.replicate',
+    'original_files.platform',
     'replicates.library.biosample.constructs',
     'replicates.library.biosample.constructs.target',
     'replicates.library.biosample.donor',
     'replicates.library.biosample.model_organism_donor_constructs',
     'replicates.library.biosample.model_organism_donor_constructs.target',
     'original_files.derived_from',
-    'original_files.derived_from.derived_from'
+    'original_files.derived_from.derived_from',
     'original_files.analysis_step_version',
     'original_files.analysis_step_version.analysis_step',
     'original_files.analysis_step_version.analysis_step.pipelines',
+    'possible_controls',
+    'possible_controls.original_files',
+    'possible_controls.original_files.platform',
     'award',
     'target',
     ])
@@ -105,12 +109,11 @@ def audit_experiment_entry_function(value, system):
         yield failure
     for failure in audit_library_RNA_size_range(value):
         yield failure
-    for failure in (value):
+    for failure in audit_experiment_library_biosample(value):
         yield failure
-    for failure in (value):
+    for failure in audit_experiment_biosample_term(value, system):
         yield failure
-
-    for failure in (value):
+    for failure in audit_experiment_platforms_mismatches(value):
         yield failure
 
 
@@ -2803,12 +2806,7 @@ def audit_experiment_control(value, system):
             raise AuditFailure('inconsistent control', detail, level='ERROR')
 
 
-@audit_checker('experiment', frame=['possible_controls',
-                                    'possible_controls.original_files',
-                                    'possible_controls.original_files.platform',
-                                    'original_files',
-                                    'original_files.platform'])
-def audit_experiment_platforms_mismatches(value, system):
+def audit_experiment_platforms_mismatches(value):
     if value['status'] in ['deleted', 'replaced']:
         return
 
@@ -2960,9 +2958,6 @@ def audit_experiment_spikeins(value, system):
             # Informattional if ENCODE2 and release error if ENCODE3
 
 
-@audit_checker('experiment', frame=['replicates',
-                                    'replicates.library',
-                                    'replicates.library.biosample'])
 def audit_experiment_biosample_term(value, system):
     if value['status'] in ['deleted', 'replaced']:
         return
@@ -3182,12 +3177,8 @@ def audit_experiment_antibody_characterized(value, system):
                                    level='NOT_COMPLIANT')
 
 
-@audit_checker(
-    'experiment',
-    frame=[
-        'replicates',
-        'replicates.library'])
-def audit_experiment_library_biosample(value, system):
+
+def audit_experiment_library_biosample(value):
     if value['status'] in ['deleted', 'replaced']:
         return
 
