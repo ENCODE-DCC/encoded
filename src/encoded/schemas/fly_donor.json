@@ -30,7 +30,8 @@
         "genotype": {
             "description": "The genotype of the strain according to accepted nomenclature conventions: http://flybase.org/wiki/FlyBase:Nomenclature"
         },
-        "organism":{ 
+        "organism":{
+            "comment": "Do not submit. DCC personnel is responsible for submission of this property.",
             "linkEnum": [
                 "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
                 "5be68469-94ba-4d60-b361-dde8958399ca",
@@ -59,11 +60,6 @@
                 "pattern": "^(((BDSC|DSSC|Kyoto|VDRC|Harvard|NIG-FLY):.+)|(FlyBase:FBst\\d+)|(GEO:SAMN\\d+))$"
             }
         }
-    },
-    "boost_values": {
-        "internal_tags": 1.0,
-        "external_ids": 1.0,
-        "aliases": 1.0
     },
     "changelog": "/profiles/changelogs/fly_donor.md"
 }

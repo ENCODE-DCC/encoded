@@ -72,7 +72,6 @@
         "organism": {
             "title": "Organism",
             "description": "Organism of the donor.",
-            "comment": "Do not submit, value is assigned by the object.",
             "type": "string",
             "linkTo": "Organism"
         },
@@ -97,12 +96,14 @@
                     "DREAM",
                     "ENCORE",
                     "ENTEx",
+                    "PGP",
                     "SESCC"]
             }
         }
     },
     "boost_values": {
         "internal_tags": 1.0,
-        "external_ids": 1.0
+        "external_ids": 1.0,
+        "aliases": 1.0
     }
 }

@@ -42,6 +42,7 @@
             }
         },
         "organism": {
+            "comment": "Do not submit. DCC personnel is responsible for submission of this property.",
             "default": "3413218c-3d86-498b-a0a2-9a406638e786",
             "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"],
             "permission": "import_items"
@@ -77,11 +78,6 @@
                 "pattern": "^((GEO:SAMN\\d+)|(MGI.D:[A-Z0-9]+))$"
             }
         }
-    },
-    "boost_values": {
-        "internal_tags": 1.0,
-        "external_ids": 1.0,
-        "aliases": 1.0
     },
     "changelog": "/profiles/changelogs/mouse_donor.md"
 }

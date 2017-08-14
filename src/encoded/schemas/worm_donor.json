@@ -44,6 +44,7 @@
             "linkTo": "WormDonor"
         },
         "organism":{ 
+            "comment": "Do not submit. DCC personnel is responsible for submission of this property.",
             "linkEnum": [
                 "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
                 "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
@@ -70,11 +71,6 @@
                 "pattern": "^(((CGC|WormBase|NBP):.+)|(GEO:SAMN\\d+))$"
             }
         }
-    },
-    "boost_values": {
-        "internal_tags": 1.0,
-        "external_ids": 1.0,
-        "aliases": 1.0
     },
     "changelog": "/profiles/changelogs/worm_donor.md"
 }
