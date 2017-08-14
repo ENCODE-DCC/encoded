@@ -59,7 +59,7 @@ non_seq_assays = [
     'Switchgear',
     '5C',
     ]
-
+    
 
 @audit_checker('Experiment', frame=[
     'replicates.antibody',
@@ -122,7 +122,19 @@ def audit_experiment_entry_function(value, system):
         yield failure
     for failure in audit_experiment_antibody_characterized(value):
         yield failure
+    for failure in audit_experiment_replicated(value):
+        yield failure
+    '''for failure in (value):
+        yield failure
+    for failure in (value):
+        yield failure
 
+    for failure in (value):
+        yield failure'''
+
+
+def check_award_condition(experiment, awards):
+    return experiment.get('award') and experiment.get('award')['rfa'] in awards
 
 def audit_experiment_mixed_libraries(value):
     '''
@@ -500,6 +512,8 @@ def get_derived_from_files_set(list_of_files, file_format, object_flag):
                                     'original_files.analysis_step_version.analysis_step.pipelines'],
                condition=rfa('ENCODE3', 'ENCODE2-Mouse', 'ENCODE2', 'ENCODE', 'Roadmap'))
 def audit_experiment_standards_dispatcher(value, system):
+    if not check_award_condition(value, ['ENCODE3', 'ENCODE2-Mouse', 'ENCODE2', 'ENCODE', 'Roadmap']):
+        return
     '''
     Dispatcher function that will redirect to other functions that would
     deal with specific assay types standards
@@ -626,6 +640,8 @@ def audit_experiment_standards_dispatcher(value, system):
                                     'original_files.analysis_step_version.analysis_step.pipelines'],
                condition=rfa('modERN'))
 def audit_modERN_experiment_standards_dispatcher(value, system):
+    if not check_award_condition(value, ['modERN']):
+        return
     '''
     Dispatcher function that will redirect to other functions that would
     deal with specific assay types standards. This version is for the modERN project
@@ -2435,9 +2451,11 @@ def audit_experiment_replicate_with_no_files(value):
                 rep_dictionary[file_replicate['@id']].append(file_object['output_category'])
 
     audit_level = 'ERROR'
-    if value['award']['rfa'] in ["ENCODE2", "Roadmap",
-                                 "modENCODE", "MODENCODE", "ENCODE2-Mouse"]:
+
+    if check_award_condition(value, ["ENCODE2", "Roadmap",
+                                     "modENCODE", "MODENCODE", "ENCODE2-Mouse"]):
         audit_level = 'INTERNAL_ACTION'
+        
 
     for key in rep_dictionary.keys():
 
@@ -2462,14 +2480,11 @@ def audit_experiment_replicate_with_no_files(value):
     return
 
 
-@audit_checker('experiment',
-               frame=['replicates', 'award', 'target',
-                      'replicates.library',
-                      'replicates.library.biosample',
-                      'replicates.library.biosample.donor'],
-               condition=rfa("ENCODE3", "modERN", "GGR",
-                             "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
-def audit_experiment_replicated(value, system):
+def audit_experiment_replicated(value):
+
+    if not check_award_condition(value, [
+            'ENCODE3', 'GGR']):
+        return
     '''
     Experiments in ready for review state should be replicated. If not,
     wranglers should check with lab as to why before release.
@@ -2500,10 +2515,9 @@ def audit_experiment_replicated(value, system):
 
     if len(num_bio_reps) <= 1:
         # different levels of severity for different rfas
-        if value['award']['rfa'] in ['ENCODE3', 'GGR']:
-            detail = 'This experiment is expected to be replicated, but ' + \
-                     'contains only one listed biological replicate.'
-            raise AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
+        detail = 'This experiment is expected to be replicated, but ' + \
+                    'contains only one listed biological replicate.'
+        yield AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
 
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'])
@@ -2644,10 +2658,14 @@ def audit_experiment_replicates_biosample(value, system):
                                        detail, level='ERROR')
 
 
-@audit_checker('experiment', frame=['replicates', 'replicates.library'],
+@audit_checker('Experiment', frame=['replicates', 'replicates.library', 'award'],
                condition=rfa("ENCODE3", "modERN", "GGR",
                              "ENCODE", "ENCODE2-Mouse", "Roadmap"))
 def audit_experiment_documents(value, system):
+    if not check_award_condition(value, [
+            "ENCODE3", "modERN", "GGR",
+            "ENCODE", "ENCODE2-Mouse", "Roadmap"]):
+        return
     '''
     Experiments should have documents.  Protocol documents or some sort of document.
     '''
@@ -2771,6 +2789,11 @@ def audit_experiment_target(value, system):
                condition=rfa("ENCODE3", "modERN", "ENCODE2", "modENCODE",
                              "ENCODE", "ENCODE2-Mouse", "Roadmap"))
 def audit_experiment_control(value, system):
+    if not check_award_condition(value, [
+            "ENCODE3", "modERN", "ENCODE2", "modENCODE",
+            "ENCODE", "ENCODE2-Mouse", "Roadmap"]):
+        return
+
     '''
     Certain assay types (ChIP-seq, ...) require possible controls with a matching biosample.
     Of course, controls do not require controls.
@@ -2790,10 +2813,10 @@ def audit_experiment_control(value, system):
     audit_level = 'ERROR'
     if value.get('assay_term_name') in ['CAGE',
                                         'RAMPAGE'] or \
-       value['award']['rfa'] in ["ENCODE2",
-                                 "Roadmap",
-                                 "modENCODE",
-                                 "ENCODE2-Mouse"]:
+        check_award_condition(value, ["ENCODE2",
+                                      "Roadmap",
+                                      "modENCODE",
+                                      "ENCODE2-Mouse"]):
         audit_level = 'NOT_COMPLIANT'
     if value['possible_controls'] == []:
         detail = 'possible_controls is a list of experiment(s) that can ' + \
@@ -2880,7 +2903,7 @@ def get_platforms_used_in_experiment(experiment):
     return platforms
 
 
-@audit_checker('experiment', frame=['target',
+@audit_checker('experiment', frame=['award', 'target',
                                     'possible_controls',
                                     'replicates', 'replicates.antibody',
                                     'possible_controls.replicates',
@@ -2888,6 +2911,9 @@ def get_platforms_used_in_experiment(experiment):
                                     'possible_controls.target'],
                condition=rfa('ENCODE3', 'Roadmap'))
 def audit_experiment_ChIP_control(value, system):
+    if not check_award_condition(value, [
+           'ENCODE3', 'Roadmap']):
+        return
 
     if value['status'] in ['deleted', 'proposed', 'preliminary', 'replaced', 'revoked']:
         return
@@ -2927,13 +2953,20 @@ def audit_experiment_ChIP_control(value, system):
             raise AuditFailure('missing input control', detail, level='NOT_COMPLIANT')
 
 
-@audit_checker('experiment', frame=['replicates', 'replicates.library'],
+@audit_checker('experiment', frame=['award', 'replicates', 'replicates.library'],
                condition=rfa("ENCODE3",
                              "modERN",
                              "ENCODE",
                              "ENCODE2-Mouse",
                              "Roadmap"))
 def audit_experiment_spikeins(value, system):
+    if not check_award_condition(value, [
+            "ENCODE3",
+            "modERN",
+            "ENCODE",
+            "ENCODE2-Mouse",
+            "Roadmap"]):
+        return
     '''
     All ENCODE 3 long (>200) RNA-seq experiments should specify their spikeins.
     The spikeins specified should have datasets of type spikeins.
@@ -3044,9 +3077,9 @@ def audit_experiment_biosample_term(value, system):
 
 def audit_experiment_antibody_characterized(value):
     '''Check that biosample in the experiment has been characterized for the given antibody.'''
-    if not value.get('award') or \
-       not value.get('award')['rfa'] in ['ENCODE3', 'modERN']:
-       return
+    if not check_award_condition(value, [
+            'ENCODE3', 'modERN']):
+        return
 
     if value['status'] in ['deleted', 'proposed', 'preliminary']:
         return
