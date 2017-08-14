@@ -60,18 +60,21 @@ non_seq_assays = [
     '5C',
     ]
 
+                        
 
 @audit_checker('Experiment', frame=[
     'replicates.antibody',
     'replicates.antibody.targets',
     'replicates.antibody.characterizations',
     'replicates.antibody.lot_reviews',
-    'replicates',
-    'replicates.library',
-    'replicates.library.biosample',
     'original_files',
     'original_files.replicate',
     'original_files.platform',
+    'replicates',
+    'replicates.library',
+    'replicates.library.spikeins_used',
+    'replicates.library.spikeins_used.files',
+    'replicates.library.biosample',
     'replicates.library.biosample.organism',
     'replicates.library.biosample.constructs',
     'replicates.library.biosample.constructs.target',
@@ -79,10 +82,16 @@ non_seq_assays = [
     'replicates.library.biosample.model_organism_donor_constructs',
     'replicates.library.biosample.model_organism_donor_constructs.target',
     'original_files.derived_from',
+    'original_files.step_run',
     'original_files.derived_from.derived_from',
     'original_files.analysis_step_version',
     'original_files.analysis_step_version.analysis_step',
     'original_files.analysis_step_version.analysis_step.pipelines',
+    'original_files.quality_metrics',
+    'original_files.quality_metrics.quality_metric_of',
+    'original_files.quality_metrics.quality_metric_of.replicate',
+    'original_files.analysis_step_version.software_versions',
+    'original_files.analysis_step_version.software_versions.software',
     'possible_controls',
     'possible_controls.original_files',
     'possible_controls.original_files.platform',
@@ -133,7 +142,19 @@ def audit_experiment_entry_function(value, system):
         yield failure
     for failure in audit_experiment_control(value):
         yield failure
-    '''for failure in audit_experiment_control(value):
+    for failure in audit_experiment_assay(value):
+        yield failure
+    for failure in audit_experiment_target(value):
+        yield failure
+    for failure in audit_experiment_standards_dispatcher(value):
+        yield failure
+    for failure in audit_modERN_experiment_standards_dispatcher(value):
+        yield failure
+    for failure in audit_experiment_replicates_with_no_libraries(value):
+        yield failure
+    for failure in audit_experiment_isogeneity(value):
+        yield failure
+    '''for failure in audit_experiment_isogeneity(value):
         yield failure
     for failure in (value):
         yield failure
@@ -501,26 +522,7 @@ def get_derived_from_files_set(list_of_files, file_format, object_flag):
     return derived_from_set
 
 
-@audit_checker('Experiment', frame=['original_files',
-                                    'award',
-                                    'target',
-                                    'replicates',
-                                    'replicates.library',
-                                    'replicates.library.spikeins_used',
-                                    'replicates.library.spikeins_used.files',
-                                    'replicates.library.biosample',
-                                    'replicates.library.biosample.organism',
-                                    'original_files.quality_metrics',
-                                    'original_files.quality_metrics.quality_metric_of',
-                                    'original_files.quality_metrics.quality_metric_of.replicate',
-                                    'original_files.derived_from',
-                                    'original_files.analysis_step_version',
-                                    'original_files.analysis_step_version.software_versions',
-                                    'original_files.analysis_step_version.software_versions.software',
-                                    'original_files.analysis_step_version.analysis_step',
-                                    'original_files.analysis_step_version.analysis_step.pipelines'],
-               condition=rfa('ENCODE3', 'ENCODE2-Mouse', 'ENCODE2', 'ENCODE', 'Roadmap'))
-def audit_experiment_standards_dispatcher(value, system):
+def audit_experiment_standards_dispatcher(value):
     if not check_award_condition(value, ['ENCODE3', 'ENCODE2-Mouse', 'ENCODE2', 'ENCODE', 'Roadmap']):
         return
     '''
@@ -628,27 +630,7 @@ def audit_experiment_standards_dispatcher(value, system):
         return
 
 
-@audit_checker('Experiment', frame=['original_files',
-                                    'award',
-                                    'target',
-                                    'replicates',
-                                    'replicates.library',
-                                    'replicates.library.spikeins_used',
-                                    'replicates.library.spikeins_used.files',
-                                    'replicates.library.biosample',
-                                    'replicates.library.biosample.organism',
-                                    'original_files.quality_metrics',
-                                    'original_files.quality_metrics.quality_metric_of',
-                                    'original_files.quality_metrics.quality_metric_of.replicate',
-                                    'original_files.derived_from',
-                                    'original_files.step_run',
-                                    'original_files.analysis_step_version',
-                                    'original_files.analysis_step_version.software_versions',
-                                    'original_files.analysis_step_version.software_versions.software',
-                                    'original_files.analysis_step_version.analysis_step',
-                                    'original_files.analysis_step_version.analysis_step.pipelines'],
-               condition=rfa('modERN'))
-def audit_modERN_experiment_standards_dispatcher(value, system):
+def audit_modERN_experiment_standards_dispatcher(value):
     if not check_award_condition(value, ['modERN']):
         return
     '''
@@ -2529,8 +2511,8 @@ def audit_experiment_replicated(value):
         yield AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
 
 
-@audit_checker('experiment', frame=['replicates', 'replicates.library'])
-def audit_experiment_replicates_with_no_libraries(value, system):
+
+def audit_experiment_replicates_with_no_libraries(value):
     if value['status'] in ['deleted', 'replaced', 'revoked', 'proposed']:
         return
     if len(value['replicates']) == 0:
@@ -2544,10 +2526,7 @@ def audit_experiment_replicates_with_no_libraries(value, system):
     return
 
 
-@audit_checker('experiment', frame=['replicates',
-                                    'replicates.library',
-                                    'replicates.library.biosample'])
-def audit_experiment_isogeneity(value, system):
+def audit_experiment_isogeneity(value):
 
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
@@ -2571,7 +2550,7 @@ def audit_experiment_isogeneity(value, system):
                 biosample_dict[biosampleObject['accession']] = biosampleObject
                 biosample_age_set.add(biosampleObject.get('age_display'))
                 biosample_sex_set.add(biosampleObject.get('sex'))
-                biosample_donor_set.add(biosampleObject.get('donor'))
+                biosample_donor_set.add(biosampleObject.get('donor')['@id'])
                 biosample_species = biosampleObject.get('organism')
             else:
                 # If I have a library without a biosample,
@@ -2700,8 +2679,7 @@ def audit_experiment_documents(value, system):
         raise AuditFailure('missing documents', detail, level='NOT_COMPLIANT')
 
 
-@audit_checker('experiment', frame='object')
-def audit_experiment_assay(value, system):
+def audit_experiment_assay(value):
     '''
     Experiments should have assays with valid ontologies term ids and names that
     are a valid synonym.
@@ -2717,9 +2695,7 @@ def audit_experiment_assay(value, system):
         yield AuditFailure('NTR assay', detail, level='INTERNAL_ACTION')
 
 
-
-@audit_checker('experiment', frame=['replicates.antibody', 'target', 'replicates.antibody.targets'])
-def audit_experiment_target(value, system):
+def audit_experiment_target(value):
     '''
     Certain assay types (ChIP-seq, ...) require valid targets and the replicate's
     antibodies should match.
