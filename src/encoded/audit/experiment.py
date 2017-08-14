@@ -357,39 +357,8 @@ def is_single_replicate(replicates_string):
     return False
 
 
-def create_pipeline_structures(files_to_scan, structure_type):
-    structures_mapping = {
-        'modERN_control': modERN_TF_control,
-        'modERN_pooled': modERN_TF_pooled,
-        'modERN_replicate': modERN_TF_replicate
-    }
-    structures_to_return = {}
-    replicates_set = set()
-    for f in files_to_scan:
-        if f['status'] not in ['replaced', 'revoked', 'deleted', 'archived'] and \
-           f['output_category'] not in ['raw data', 'reference']:
-            bio_rep_num = str(f.get('biological_replicates'))
-            assembly = f.get('assembly')
-
-            if (bio_rep_num, assembly) not in replicates_set:
-                replicates_set.add((bio_rep_num, assembly))
-                if structure_type in ['modERN_control']:
-                    structures_to_return[(bio_rep_num, assembly)] = \
-                        structures_mapping[structure_type]()
-                else:
-                    if structure_type == 'modERN':
-                        if is_single_replicate(str(bio_rep_num)) is True:
-                            structures_to_return[(bio_rep_num, assembly)] = \
-                                structures_mapping['modERN_replicate']()
-                        else:
-                            structures_to_return[(bio_rep_num, assembly)] = \
-                                structures_mapping['modERN_pooled']()
-
-                structures_to_return[(bio_rep_num, assembly)].update_fields(f)
-            else:
-                structures_to_return[(bio_rep_num, assembly)].update_fields(f)
-    return structures_to_return
-
+# def create_pipeline_structures(files_to_scan, structure_type):
+# condensed under https://encodedcc.atlassian.net/browse/ENCD-3493
 
 def get_bio_replicates(experiment):
     bio_reps = set()
