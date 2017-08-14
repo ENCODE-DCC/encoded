@@ -60,14 +60,19 @@ non_seq_assays = [
     '5C',
     ]
 
-   
+
 @audit_checker('Experiment', frame=[
+    'replicates.antibody',
+    'replicates.antibody.targets',
+    'replicates.antibody.characterizations',
+    'replicates.antibody.lot_reviews',
     'replicates',
     'replicates.library',
     'replicates.library.biosample',
     'original_files',
     'original_files.replicate',
     'original_files.platform',
+    'replicates.library.biosample.organism',
     'replicates.library.biosample.constructs',
     'replicates.library.biosample.constructs.target',
     'replicates.library.biosample.donor',
@@ -114,6 +119,8 @@ def audit_experiment_entry_function(value, system):
     for failure in audit_experiment_biosample_term(value, system):
         yield failure
     for failure in audit_experiment_platforms_mismatches(value):
+        yield failure
+    for failure in audit_experiment_antibody_characterized(value):
         yield failure
 
 
@@ -3035,23 +3042,11 @@ def audit_experiment_biosample_term(value, system):
                 yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
 
 
-@audit_checker(
-    'experiment',
-    frame=[
-        'target',
-        'replicates',
-        'replicates.antibody',
-        'replicates.antibody.targets',
-        'replicates.antibody.characterizations',
-        'replicates.antibody.lot_reviews'
-        'replicates.antibody.lot_reviews.organisms',
-        'replicates.library',
-        'replicates.library.biosample',
-        'replicates.library.biosample.organism',
-    ],
-    condition=rfa('ENCODE3', 'modERN'))
-def audit_experiment_antibody_characterized(value, system):
+def audit_experiment_antibody_characterized(value):
     '''Check that biosample in the experiment has been characterized for the given antibody.'''
+    if not value.get('award') or \
+       not value.get('award')['rfa'] in ['ENCODE3', 'modERN']:
+       return
 
     if value['status'] in ['deleted', 'proposed', 'preliminary']:
         return
