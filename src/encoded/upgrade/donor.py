@@ -150,5 +150,5 @@ def fly_worm_donor_5_6_and_human_mouse_8_9(value, system):
 def human_donor_9_10(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3415
     if value.get('life_stage') == 'postnatal':
-        value['life_stage'] = 'embryonic'
+        value['life_stage'] = 'newborn'
     value.pop('children', None)
