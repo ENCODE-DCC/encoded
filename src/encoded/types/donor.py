@@ -116,3 +116,19 @@ class HumanDonor(Donor):
     item_type = 'human_donor'
     schema = load_schema('encoded:schemas/human_donor.json')
     embedded = Donor.embedded + ['references']
+    rev = {
+        'children': ('HumanDonor', 'parents'),
+    }
+
+    @calculated_property(schema={
+        "description": "Human donor(s) that have this human donor in their parent property.",
+        "comment": "Do not submit. Values in the list are reverse links of a human donors that have this biosample under their parents property.",
+        "title": "Children donors",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "HumanDonor.parents",
+        },
+    })
+    def children(self, request, parents):
+        return paths_filtered_by_status(request, parents)

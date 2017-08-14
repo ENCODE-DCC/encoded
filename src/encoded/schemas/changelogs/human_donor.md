@@ -3,6 +3,7 @@
 ### Schema version 10
 
 * *life_stage* value 'postnatal' was removed
+* *children* property is calculated property and should not be submitted anymore
 
 ### Schema version 9
 
