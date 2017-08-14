@@ -59,8 +59,7 @@ non_seq_assays = [
     'Switchgear',
     '5C',
     ]
-
-                        
+                       
 
 @audit_checker('Experiment', frame=[
     'replicates.antibody',
@@ -154,14 +153,21 @@ def audit_experiment_entry_function(value, system):
         yield failure
     for failure in audit_experiment_isogeneity(value):
         yield failure
-    '''for failure in audit_experiment_isogeneity(value):
+    for failure in audit_experiment_replicates_biosample(value):
         yield failure
-    for failure in (value):
+    for failure in audit_experiment_technical_replicates_same_library(value):
+        yield failure
+    for failure in audit_experiment_documents(value):
+        yield failure
+    '''for failure in audit_experiment_documents(value):
+        yield failure
+    for failure in audit_experiment_technical_replicates_same_library(value):
         yield failure
 
     for failure in (value):
         yield failure'''
 
+    
 
 def check_award_condition(experiment, awards):
     return experiment.get('award') and experiment.get('award')['rfa'] in awards
@@ -2550,8 +2556,9 @@ def audit_experiment_isogeneity(value):
                 biosample_dict[biosampleObject['accession']] = biosampleObject
                 biosample_age_set.add(biosampleObject.get('age_display'))
                 biosample_sex_set.add(biosampleObject.get('sex'))
-                biosample_donor_set.add(biosampleObject.get('donor')['@id'])
                 biosample_species = biosampleObject.get('organism')
+                if biosampleObject.get('donor'):
+                    biosample_donor_set.add(biosampleObject.get('donor')['@id'])
             else:
                 # If I have a library without a biosample,
                 # I cannot make a call about replicate structure
@@ -2588,8 +2595,7 @@ def audit_experiment_isogeneity(value):
     return
 
 
-@audit_checker('experiment', frame=['replicates', 'replicates.library'])
-def audit_experiment_technical_replicates_same_library(value, system):
+def audit_experiment_technical_replicates_same_library(value):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
     biological_replicates_dict = {}
@@ -2602,15 +2608,14 @@ def audit_experiment_technical_replicates_same_library(value, system):
             if library['accession'] in biological_replicates_dict[bio_rep_num]:
                 detail = 'Experiment {} has '.format(value['@id']) + \
                          'different technical replicates associated with the same library'
-                raise AuditFailure('sequencing runs labeled as technical replicates', detail,
+                yield AuditFailure('sequencing runs labeled as technical replicates', detail,
                                    level='INTERNAL_ACTION')
+                return
             else:
                 biological_replicates_dict[bio_rep_num].append(library['accession'])
 
 
-@audit_checker('experiment', frame=['replicates', 'award',
-                                    'replicates.library', 'replicates.library.biosample'])
-def audit_experiment_replicates_biosample(value, system):
+def audit_experiment_replicates_biosample(value):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
     biological_replicates_dict = {}
@@ -2631,8 +2636,9 @@ def audit_experiment_replicates_biosample(value, system):
                               associated with the same biosample {}'.format(
                         value['@id'],
                         biosample['@id'])
-                    raise AuditFailure('biological replicates with identical biosample',
+                    yield AuditFailure('biological replicates with identical biosample',
                                        detail, level='INTERNAL_ACTION')
+                    return
                 else:
                     biosamples_list.append(biosample['accession'])
 
@@ -2642,14 +2648,11 @@ def audit_experiment_replicates_biosample(value, system):
                     detail = 'Experiment {} has technical replicates \
                               associated with the different biosamples'.format(
                         value['@id'])
-                    raise AuditFailure('technical replicates with not identical biosample',
+                    yield AuditFailure('technical replicates with not identical biosample',
                                        detail, level='ERROR')
+                    return
 
-
-@audit_checker('Experiment', frame=['replicates', 'replicates.library', 'award'],
-               condition=rfa("ENCODE3", "modERN", "GGR",
-                             "ENCODE", "ENCODE2-Mouse", "Roadmap"))
-def audit_experiment_documents(value, system):
+def audit_experiment_documents(value):
     if not check_award_condition(value, [
             "ENCODE3", "modERN", "GGR",
             "ENCODE", "ENCODE2-Mouse", "Roadmap"]):
@@ -2676,7 +2679,7 @@ def audit_experiment_documents(value, system):
     # If there are no library documents anywhere, then we say something
     if lib_docs == 0:
         detail = 'Experiment {} has no attached documents'.format(value['@id'])
-        raise AuditFailure('missing documents', detail, level='NOT_COMPLIANT')
+        yield AuditFailure('missing documents', detail, level='NOT_COMPLIANT')
 
 
 def audit_experiment_assay(value):
