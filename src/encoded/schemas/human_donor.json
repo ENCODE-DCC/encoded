@@ -127,7 +127,7 @@
             "items": {
                 "title": "Parent",
                 "description": "A donor ID of a biological parent, if known.",
-                "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
+                "comment": "For human biosamples, see human_donor.json for available identifiers.",
                 "type": "string",
                 "linkTo": "HumanDonor"
             }
@@ -142,7 +142,7 @@
             "items": {
                 "title": "Child",
                 "description": "A donor that genetic material was supplied to.",
-                "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
+                "comment": "For human biosamples, see human_donor.json for available identifiers.",
                 "type": "string",
                 "linkTo": "HumanDonor"
             }
@@ -156,21 +156,21 @@
             "items": {
                 "title": "Sibling",
                 "description": "A donors that has at least one parent in common.",
-                "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
+                "comment": "For human biosamples, see human_donor.json for available identifiers.",
                 "type": "string",
                 "linkTo": "HumanDonor"
             }
         },
         "fraternal_twin": {
             "title": "Fraternal twin",
-            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
+            "comment": "For human biosamples, see human_donor.json for available identifiers.",
             "type": "string",
             "linkTo": "HumanDonor"
         },
         "identical_twin": {
             "title": "Identical twin",
             "description": "A donor that have identical genetic material.",
-            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
+            "comment": "For human biosamples, see human_donor.json for available identifiers.",
             "type": "string",
             "linkTo": "HumanDonor"
         },
