@@ -144,3 +144,10 @@ def fly_worm_donor_5_6_and_human_mouse_8_9(value, system):
     # http://redmine.encodedcc.org/issues/5041
     if value.get('status') in ['preliminary', 'proposed']:
         value['status'] = "in progress"
+
+
+@upgrade_step('human_donor', '9', '10')
+def human_donor_9_10(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3415
+    if value.get('life_stage') == 'postnatal':
+        value['life_stage'] = 'embryonic'

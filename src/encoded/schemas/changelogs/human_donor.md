@@ -1,5 +1,9 @@
 ## Changelog for human_donor.json
 
+### Schema version 10
+
+* *life_stage* value 'postnatal' was removed
+
 ### Schema version 9
 
 * *status* values "proposed" and "preliminary" were removed
