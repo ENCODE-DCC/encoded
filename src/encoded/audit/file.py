@@ -34,12 +34,13 @@ def audit_file_entry_function(value, system):
         yield failure
     for failure in audit_file_replicate_match(value):
         yield failure
-    for failure in audit_paired_with(value):
+    for failure in audit_paired_with(value, system):
         yield failure
     for failure in audit_file_format_specifications(value):
         yield failure
     for failure in audit_file_controlled_by(value):
         yield failure
+
 
 def audit_file_processed_derived_from(value):
     if value['output_category'] in ['raw data',
@@ -147,7 +148,7 @@ def check_presence(file_to_check, files_list):
     return False
 
 
-def audit_paired_with(value):
+def audit_paired_with(value, system):
     '''
     A file with a paired_end needs a paired_with.
     Should be handled in the schema.
