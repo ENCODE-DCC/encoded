@@ -59,7 +59,7 @@ non_seq_assays = [
     'Switchgear',
     '5C',
     ]
-                       
+
 
 @audit_checker('Experiment', frame=[
     'replicates.antibody',
@@ -159,14 +159,6 @@ def audit_experiment_entry_function(value, system):
         yield failure
     for failure in audit_experiment_documents(value):
         yield failure
-    '''for failure in audit_experiment_documents(value):
-        yield failure
-    for failure in audit_experiment_technical_replicates_same_library(value):
-        yield failure
-
-    for failure in (value):
-        yield failure'''
-
     
 
 def check_award_condition(experiment, awards):
@@ -667,7 +659,7 @@ def audit_modERN_experiment_standards_dispatcher(value):
                                                            alignment_files,
                                                            optimal_idr_peaks,
                                                            'modERN'):
-                yield failure
+            yield failure
 
 
 def check_experiment_dnase_seq_standards(experiment,
@@ -730,7 +722,7 @@ def check_experiment_dnase_seq_standards(experiment,
                         yield AuditFailure('extremely low read depth', detail, level='ERROR')
         elif alignment_files is not None and len(alignment_files) > 0 and \
                 (samtools_flagstat_metrics is None or
-                    len(samtools_flagstat_metrics) == 0):
+                 len(samtools_flagstat_metrics) == 0):
             files_list = []
             for f in alignment_files:
                 files_list.append(f['@id'])
@@ -1307,20 +1299,20 @@ def check_idr(metrics, rescue, self_consistency, pipeline):
                                    level='NOT_COMPLIANT')
             elif (rescue_r <= rescue and self_r > self_consistency) or \
                  (rescue_r > rescue and self_r <= self_consistency):
-                    file_names = []
-                    for f in m['quality_metric_of']:
-                        file_names.append(f['@id'])
-                    file_names_string = str(file_names).replace('\'', ' ')
-                    detail = 'Replicate concordance in ChIP-seq expriments is measured by ' + \
-                             'calculating IDR values (Irreproducible Discovery Rate). ' + \
-                             'ENCODE processed IDR thresholded peaks files {} '.format(file_names_string) + \
-                             'have a rescue ratio of {0:.2f} and a '.format(rescue_r) + \
-                             'self consistency ratio of {0:.2f}. '.format(self_r) + \
-                             'According to ENCODE standards, having both rescue ratio ' + \
-                             'and self consistency ratio values < 2 is recommended, but ' + \
-                             'having only one of the ratio values < 2 is acceptable.'
-                    yield AuditFailure('borderline replicate concordance', detail,
-                                       level='WARNING')
+                file_names = []
+                for f in m['quality_metric_of']:
+                    file_names.append(f['@id'])
+                file_names_string = str(file_names).replace('\'', ' ')
+                detail = 'Replicate concordance in ChIP-seq expriments is measured by ' + \
+                            'calculating IDR values (Irreproducible Discovery Rate). ' + \
+                            'ENCODE processed IDR thresholded peaks files {} '.format(file_names_string) + \
+                            'have a rescue ratio of {0:.2f} and a '.format(rescue_r) + \
+                            'self consistency ratio of {0:.2f}. '.format(self_r) + \
+                            'According to ENCODE standards, having both rescue ratio ' + \
+                            'and self consistency ratio values < 2 is recommended, but ' + \
+                            'having only one of the ratio values < 2 is acceptable.'
+                yield AuditFailure('borderline replicate concordance', detail,
+                                   level='WARNING')
 
 
 def check_mad(metrics, replication_type, mad_threshold, pipeline):
@@ -1390,10 +1382,11 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
                 some_spikein_present = True
                 if 'files' in s:
                     for f in s['files']:
-                        if (('ENCFF001RTP' == f['accession']) or
-                           ('ENCFF001RTO' == f['accession'] and
-                           experiment['assay_term_name'] ==
-                           'single cell isolation followed by RNA-seq')):
+                        if (
+                                ('ENCFF001RTP' == f['accession']) or
+                                ('ENCFF001RTO' == f['accession'] and
+                                 experiment['assay_term_name'] ==
+                                 'single cell isolation followed by RNA-seq')):
                             ercc_flag = True
 
         if ercc_flag is False:
@@ -1472,7 +1465,7 @@ def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
                'Number of reads mapped to multiple loci' in metric:
                 unique = metric['Uniquely mapped reads number']
                 multi = metric['Number of reads mapped to multiple loci']
-                return (unique + multi)
+                return unique + multi
 
     elif assay_name in ['ChIP-seq']:
 
@@ -1636,7 +1629,6 @@ def check_wgbs_coverage(samtools_metrics,
                                        detail,
                                        level='INTERNAL_ACTION')
     return
-
 
 def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title):
     for m in cpg_metrics:
@@ -1899,8 +1891,8 @@ def check_file_chip_seq_read_depth(file_to_check,
                     detail = 'Alignment file {} '.format(file_to_check['@id']) + \
                         'produced by {} '.format(pipeline_object['title']) + \
                         'pipeline ( {} ) using the {} assembly '.format(
-                        pipeline_object['@id'],
-                        file_to_check['assembly']) + \
+                            pipeline_object['@id'],
+                            file_to_check['assembly']) + \
                         'has {} '.format(read_depth) + \
                         'usable fragments. ' + \
                         'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
@@ -2145,12 +2137,12 @@ def get_biosamples(experiment):
     accessions_set = set()
     biosamples_list = []
     if 'replicates' in experiment:
-            for rep in experiment['replicates']:
-                if ('library' in rep) and ('biosample' in rep['library']):
-                    biosample = rep['library']['biosample']
-                    if biosample['accession'] not in accessions_set:
-                        accessions_set.add(biosample['accession'])
-                        biosamples_list.append(biosample)
+        for rep in experiment['replicates']:
+            if ('library' in rep) and ('biosample' in rep['library']):
+                biosample = rep['library']['biosample']
+                if biosample['accession'] not in accessions_set:
+                    accessions_set.add(biosample['accession'])
+                    biosamples_list.append(biosample)
     return biosamples_list
 
 
@@ -2312,9 +2304,9 @@ def audit_experiment_consistent_sequencing_runs(value):
         return
 
     if value.get('assay_term_name') not in [
-       'ChIP-seq',
-       'DNase-seq',
-       'genetic modification followed by DNase-seq']:
+            'ChIP-seq',
+            'DNase-seq',
+            'genetic modification followed by DNase-seq']:
         return
 
     replicate_pairing_statuses = {}
@@ -2345,7 +2337,7 @@ def audit_experiment_consistent_sequencing_runs(value):
         if len(replicate_read_lengths[key]) > 1:
             upper_value = max(list(replicate_read_lengths[key]))
             lower_value = min(list(replicate_read_lengths[key]))
-            if ((upper_value - lower_value) > length_threshold):
+            if (upper_value - lower_value) > length_threshold:
                 detail = 'Biological replicate {} '.format(key) + \
                          'in experiment {} '.format(value['@id']) + \
                          'has mixed sequencing read lengths {}.'.format(replicate_read_lengths[key])
@@ -2452,7 +2444,6 @@ def audit_experiment_replicate_with_no_files(value):
     if check_award_condition(value, ["ENCODE2", "Roadmap",
                                      "modENCODE", "MODENCODE", "ENCODE2-Mouse"]):
         audit_level = 'INTERNAL_ACTION'
-        
 
     for key in rep_dictionary.keys():
 
@@ -2634,8 +2625,8 @@ def audit_experiment_replicates_biosample(value):
                 if biosample['accession'] in biosamples_list:
                     detail = 'Experiment {} has multiple biological replicates \
                               associated with the same biosample {}'.format(
-                        value['@id'],
-                        biosample['@id'])
+                                  value['@id'],
+                                  biosample['@id'])
                     yield AuditFailure('biological replicates with identical biosample',
                                        detail, level='INTERNAL_ACTION')
                     return
@@ -2647,7 +2638,7 @@ def audit_experiment_replicates_biosample(value):
                    assay_name != 'single cell isolation followed by RNA-seq':
                     detail = 'Experiment {} has technical replicates \
                               associated with the different biosamples'.format(
-                        value['@id'])
+                                  value['@id'])
                     yield AuditFailure('technical replicates with not identical biosample',
                                        detail, level='ERROR')
                     return
@@ -2730,11 +2721,12 @@ def audit_experiment_target(value):
     # Check that target of experiment matches target of antibody
     for rep in value['replicates']:
         if 'antibody' not in rep:
-            detail = '{} assays require an antibody specification. '.format(value['assay_term_name']) + \
-                     'In replicate [{},{}] {}, the antibody needs to be specified.'.format(
-                rep['biological_replicate_number'],
-                rep['technical_replicate_number'],
-                rep['@id']
+            detail = '{} assays require an antibody specification. '.format(
+                value['assay_term_name']) + \
+                'In replicate [{},{}] {}, the antibody needs to be specified.'.format(
+                    rep['biological_replicate_number'],
+                    rep['technical_replicate_number'],
+                    rep['@id']
                 )
             yield AuditFailure('missing antibody', detail, level='ERROR')
         else:
@@ -2768,7 +2760,8 @@ def audit_experiment_target(value):
                 if not target_matches:
                     antibody_targets_string = str(antibody_targets).replace('\'', '')
                     detail = 'The target of the experiment is {}, '.format(target['name']) + \
-                             'but it is not present in the experiment\'s antibody {} '.format(antibody['@id']) + \
+                             'but it is not present in the experiment\'s antibody {} '.format(
+                                 antibody['@id']) + \
                              'target list {}.'.format(antibody_targets_string)
                     yield AuditFailure('inconsistent target', detail, level='ERROR')
 
