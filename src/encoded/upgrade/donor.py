@@ -151,3 +151,4 @@ def human_donor_9_10(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3415
     if value.get('life_stage') == 'postnatal':
         value['life_stage'] = 'embryonic'
+    value.pop('children', None)
