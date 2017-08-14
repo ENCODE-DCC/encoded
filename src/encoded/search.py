@@ -74,8 +74,11 @@ def get_filtered_query(term, search_fields, result_fields, principals, doc_types
                         'operator': 'and'
                     }
                 },
-                'must_not': [],
-                'filter': [
+                'must_not': []
+                }},
+        'post_filter': {
+            'bool': {
+                'must': [
                     {
                         'terms': {
                             'principals_allowed.view': principals
@@ -86,8 +89,9 @@ def get_filtered_query(term, search_fields, result_fields, principals, doc_types
                             'embedded.@type': doc_types
                         }
                     }
-                ]
-            },
+                ],
+                'must_not': []
+            }
         },
 
         '_source': list(result_fields),
@@ -124,6 +128,8 @@ def set_sort_order(request, search_term, types, doc_types, query, result):
     """
     sets sort order for elasticsearch results
     """
+    import pdb
+    # pdb.set_trace()
     sort = OrderedDict()
     result_sort = OrderedDict()
 
@@ -151,7 +157,7 @@ def set_sort_order(request, search_term, types, doc_types, query, result):
             if 'sort_by' in type_schema:
                 for k, v in type_schema['sort_by'].items():
                     # Should always sort on raw field rather than analyzed field
-                    sort['embedded.' + k] = result_sort[k] = v
+                    sort['embedded.' + k] = result_sort[k] = dict(v)
 
         # Default is most recent first, then alphabetical by label
         if not sort:
@@ -292,13 +298,13 @@ def build_terms_filter(query_filters, field, terms, query):
                     field: terms,
                 },
             }
-    query_filters['filter'].append(filter_condition)
+    query_filters['must'].append(filter_condition)
 
 def set_filters(request, query, result, static_items=None):
     """
     Sets filters in the query
     """
-    query_filters = query['query']['bool']
+    query_filters = query['post_filter']['bool']
     used_filters = {}
     if static_items is None:
         static_items = []
@@ -381,8 +387,20 @@ def build_aggregation(facet_name, facet_options, min_doc_count=0):
         agg = {
             'filters': {
                 'filters': {
-                    'yes': {'exists': {'field': field}},
-                    'no': {'missing': {'field': field}},
+                    'yes': {
+                        'bool': {
+                            'must': {
+                                'exists': {'field': field}
+                            }
+                        }
+                    },
+                    'no': {
+                        'bool': {
+                            'must_not': {
+                                'exists': {'field': field}
+                            }
+                        }
+                    },
                 },
             },
         }
@@ -737,7 +755,7 @@ def search(context, request, search_type=None, return_generator=False):
 
     # Builds filtered query which supports multiple facet selection
     query = get_filtered_query(search_term,
-                               search_fields,
+                               list(search_fields),
                                sorted(list_result_fields(request, doc_types)),
                                principals,
                                doc_types)
@@ -754,9 +772,9 @@ def search(context, request, search_type=None, return_generator=False):
         # query['query']['match_all'] = {}
         del query['query']['bool']['must']
     # If searching for more than one type, don't specify which fields to search
-    elif len(doc_types) != 1:
-        del query['query']['bool']['must']['multi_match']['fields']
-        query['query']['bool']['must']['multi_match']['fields'] = ['_all', '*.uuid', '*.md5sum', '*.submitted_file_name']
+    else:
+        # del query['query']['bool']['must']['multi_match']['fields']
+        query['query']['bool']['must']['multi_match']['fields'].extend(['_all', '*.uuid', '*.md5sum', '*.submitted_file_name'])
 
 
     # Set sort order
@@ -990,11 +1008,11 @@ def matrix(context, request):
     # Setting filters.
     # Rather than setting them at the top level of the query
     # we collect them for use in aggregations later.
-    query_filters = query['query'].pop('bool')
-    filter_collector = {'query': {'bool': query_filters}}
+    query_filters = query['post_filter'].pop('bool')
+    filter_collector = {'post_filter': {'bool': query_filters}}
     used_filters = set_filters(request, filter_collector, result)
-    filters = filter_collector['query']['bool']['filter']
-    negative_filters = filter_collector['query']['bool']['must_not']
+    filters = filter_collector['post_filter']['bool']['must']
+    negative_filters = filter_collector['post_filter']['bool']['must_not']
 
     # Adding facets to the query
     facets = [(field, facet) for field, facet in schema['facets'].items() if
