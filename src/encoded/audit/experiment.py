@@ -59,7 +59,7 @@ non_seq_assays = [
     'Switchgear',
     '5C',
     ]
-    
+
 
 @audit_checker('Experiment', frame=[
     'replicates.antibody',
@@ -88,6 +88,9 @@ non_seq_assays = [
     'possible_controls.original_files.platform',
     'award',
     'target',
+    'possible_controls.replicates',
+    'possible_controls.replicates.antibody',
+    'possible_controls.target'
     ])
 def audit_experiment_entry_function(value, system):
     for failure in audit_experiment_mixed_libraries(value):
@@ -124,7 +127,13 @@ def audit_experiment_entry_function(value, system):
         yield failure
     for failure in audit_experiment_replicated(value):
         yield failure
-    '''for failure in (value):
+    for failure in audit_experiment_spikeins(value):
+        yield failure
+    for failure in audit_experiment_ChIP_control(value):
+        yield failure
+    for failure in audit_experiment_control(value):
+        yield failure
+    '''for failure in audit_experiment_control(value):
         yield failure
     for failure in (value):
         yield failure
@@ -2785,10 +2794,8 @@ def audit_experiment_target(value, system):
                     yield AuditFailure('inconsistent target', detail, level='ERROR')
 
 
-@audit_checker('experiment', frame=['award', 'target', 'possible_controls'],
-               condition=rfa("ENCODE3", "modERN", "ENCODE2", "modENCODE",
-                             "ENCODE", "ENCODE2-Mouse", "Roadmap"))
-def audit_experiment_control(value, system):
+
+def audit_experiment_control(value):
     if not check_award_condition(value, [
             "ENCODE3", "modERN", "ENCODE2", "modENCODE",
             "ENCODE", "ENCODE2-Mouse", "Roadmap"]):
@@ -2825,7 +2832,8 @@ def audit_experiment_control(value, system):
                      value['assay_term_name']) + \
                  'This experiment should be associated with at least one control ' + \
                  'experiment, but has no specified values in the possible_controls list.'
-        raise AuditFailure('missing possible_controls', detail, level=audit_level)
+        yield AuditFailure('missing possible_controls', detail, level=audit_level)
+        return
 
     for control in value['possible_controls']:
         if control.get('biosample_term_id') != value.get('biosample_term_id'):
@@ -2833,7 +2841,8 @@ def audit_experiment_control(value, system):
                 control['@id'],
                 control.get('biosample_term_name')) + \
                 'but this experiment is done on {}.'.format(value['biosample_term_name'])
-            raise AuditFailure('inconsistent control', detail, level='ERROR')
+            yield AuditFailure('inconsistent control', detail, level='ERROR')
+            return
 
 
 def audit_experiment_platforms_mismatches(value):
@@ -2903,14 +2912,7 @@ def get_platforms_used_in_experiment(experiment):
     return platforms
 
 
-@audit_checker('experiment', frame=['award', 'target',
-                                    'possible_controls',
-                                    'replicates', 'replicates.antibody',
-                                    'possible_controls.replicates',
-                                    'possible_controls.replicates.antibody',
-                                    'possible_controls.target'],
-               condition=rfa('ENCODE3', 'Roadmap'))
-def audit_experiment_ChIP_control(value, system):
+def audit_experiment_ChIP_control(value):
     if not check_award_condition(value, [
            'ENCODE3', 'Roadmap']):
         return
@@ -2935,7 +2937,8 @@ def audit_experiment_ChIP_control(value, system):
             detail = 'Experiment {} is ChIP-seq but its control {} is not linked to a target with investigated.as = control'.format(
                 value['@id'],
                 control['@id'])
-            raise AuditFailure('invalid possible_control', detail, level='ERROR')
+            yield AuditFailure('invalid possible_control', detail, level='ERROR')
+            return
 
         if not control['replicates']:
             continue
@@ -2950,16 +2953,10 @@ def audit_experiment_ChIP_control(value, system):
             detail = 'Experiment {} is ChIP-seq and requires at least one input control, as agreed upon by the binding group. {} is not an input control'.format(
                 value['@id'],
                 control['@id'])
-            raise AuditFailure('missing input control', detail, level='NOT_COMPLIANT')
+            yield AuditFailure('missing input control', detail, level='NOT_COMPLIANT')
 
 
-@audit_checker('experiment', frame=['award', 'replicates', 'replicates.library'],
-               condition=rfa("ENCODE3",
-                             "modERN",
-                             "ENCODE",
-                             "ENCODE2-Mouse",
-                             "Roadmap"))
-def audit_experiment_spikeins(value, system):
+def audit_experiment_spikeins(value):
     if not check_award_condition(value, [
             "ENCODE3",
             "modERN",
