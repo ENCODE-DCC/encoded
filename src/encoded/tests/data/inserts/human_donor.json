@@ -38,10 +38,6 @@
         "_test": "has references",
         "accession": "ENCDO000HUM",
         "award": "U41HG006992",
-        "children": [
-            "ENCDO017AAA",
-            "ENCDO275AAA"
-        ],
         "documents": [
             "encode:PanIsletD_Crawford_protocol"
         ],
