@@ -39,7 +39,7 @@ class Donor(Item):
     ]
     name_key = 'accession'
     rev = {
-        'characterizations': ('DonorCharacterization', 'characterizes'),
+        'characterizations': ('DonorCharacterization', 'characterizes')
     }
 
     def unique_keys(self, properties):
@@ -54,7 +54,7 @@ class Donor(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "DonorCharacterization.characterizes",
+            "linkFrom": "DonorCharacterization.characterizes"
         },
     })
     def characterizations(self, request, characterizations):
@@ -67,7 +67,7 @@ class Donor(Item):
     acl=[],
     properties={
         'title': 'Mouse donors',
-        'description': 'Listing Biosample Donors',
+        'description': 'Listing Biosample Donors'
     })
 class MouseDonor(Donor):
     item_type = 'mouse_donor'
@@ -84,7 +84,7 @@ class MouseDonor(Donor):
     unique_key='accession',
     properties={
         'title': 'Fly donors',
-        'description': 'Listing Biosample Donors',
+        'description': 'Listing Biosample Donors'
     })
 class FlyDonor(Donor):
     item_type = 'fly_donor'
@@ -118,6 +118,7 @@ class HumanDonor(Donor):
     embedded = Donor.embedded + ['references']
     rev = {
         'children': ('HumanDonor', 'parents'),
+        'characterizations': ('DonorCharacterization', 'characterizes')
     }
 
     @calculated_property(schema={
@@ -127,8 +128,9 @@ class HumanDonor(Donor):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "HumanDonor.parents",
-        },
+            "linkFrom": "HumanDonor.parents"
+        }
     })
     def children(self, request, parents):
         return paths_filtered_by_status(request, parents)
+

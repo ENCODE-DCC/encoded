@@ -104,6 +104,8 @@
     "boost_values": {
         "internal_tags": 1.0,
         "external_ids": 1.0,
-        "aliases": 1.0
+        "aliases": 1.0,
+        "accession": 1.0,
+        "alternate_accessions": 1.0
     }
 }
