@@ -192,37 +192,37 @@ def audit_experiment_chipseq_control_read_depth(value):
         target_name = value['target']['name']
         target_investigated_as = value['target']['investigated_as']
 
-    if target_name not in ['Control-human', 'Control-mouse']:
-        alignment_files = scan_files_for_file_format_output_type(value['original_files'],
-                                                                 'bam', 'alignments')
-        for alignment_file in alignment_files:
-            # initially was for file award
-            if not alignment_file.get('award') or \
-                alignment_file.get('award')['rfa'] not in [
-                        'ENCODE3',
-                        'ENCODE2-Mouse',
-                        'ENCODE2',
-                        'ENCODE',
-                        'Roadmap']:
-                continue
-            if alignment_file.get('lab') not in ['/labs/encode-processing-pipeline/']:
-                continue
-            derived_from_files = alignment_file.get('derived_from')
-            if (derived_from_files is None) or (derived_from_files == []):
-                continue
-            control_bam = get_control_bam(value, 'ChIP-seq read mapping')
-            if control_bam is not False:
-                control_depth = get_chip_seq_bam_read_depth(control_bam)
-                control_target = get_target_name(control_bam)
-                if control_depth is not False and control_target is not False:
-                    for failure in check_control_read_depth_standards(
-                            control_bam,
-                            control_depth,
-                            control_target,
-                            True,
-                            target_name,
-                            target_investigated_as):
-                        yield failure
+        if target_name not in ['Control-human', 'Control-mouse']:
+            alignment_files = scan_files_for_file_format_output_type(value['original_files'],
+                                                                    'bam', 'alignments')
+            for alignment_file in alignment_files:
+                # initially was for file award
+                if not alignment_file.get('award') or \
+                    alignment_file.get('award')['rfa'] not in [
+                            'ENCODE3',
+                            'ENCODE2-Mouse',
+                            'ENCODE2',
+                            'ENCODE',
+                            'Roadmap']:
+                    continue
+                if alignment_file.get('lab') not in ['/labs/encode-processing-pipeline/']:
+                    continue
+                derived_from_files = alignment_file.get('derived_from')
+                if (derived_from_files is None) or (derived_from_files == []):
+                    continue
+                control_bam = get_control_bam(value, 'ChIP-seq read mapping')
+                if control_bam is not False:
+                    control_depth = get_chip_seq_bam_read_depth(control_bam)
+                    control_target = get_target_name(control_bam)
+                    if control_depth is not False and control_target is not False:
+                        for failure in check_control_read_depth_standards(
+                                control_bam,
+                                control_depth,
+                                control_target,
+                                True,
+                                target_name,
+                                target_investigated_as):
+                            yield failure
 
 
 def check_control_read_depth_standards(value,
