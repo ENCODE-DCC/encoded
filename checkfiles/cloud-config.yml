@@ -87,3 +87,8 @@ write_files:
     #!/bin/sh
     ulimit -n 60000
     exec goofys "$@"
+- path: /etc/rc.local
+  content: |
+   #!/bin/sh -e
+   cd /home/ubuntu; nohup /home/ubuntu/script %(ARGS)s 2> errors.log 1> output.log &
+   exit 0
