@@ -90,12 +90,5 @@ write_files:
 - path: /etc/rc.local
   content: |
     #!/bin/sh -e
-    cd /home/ubuntu; nohup /opt/script %(ARGS)s 2> errors.log 1> output.log &
+    cd /home/ubuntu; nohup /opt/encoded/checkfiles/script %(ARGS)s 2> errors.log 1> output.log &
     exit 0
-- path: /opt/script
-  content: |
-    #!/bin/bash
-    while :
-            do
-                now=$(date +"/%Y/%m/%d/%H/%M/%S")
-    done
