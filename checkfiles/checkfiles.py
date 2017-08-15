@@ -959,7 +959,7 @@ def patch_file(session, url, job):
                     'was {} and now is {}.'.format(job['item'].get('status', 'UNKNOWN'), etag_r.json()['status'])
     return
 
-def run(out, err, url, username, password, encValData, mirror, search_query, file_list=None,
+def run(out, err, url, username, password, encValData, mirror, search_query, file_list=None, bot_tocken=None,
         processes=None, include_unexpired_upload=False, dry_run=False, json_out=False):
     import functools
     import multiprocessing
@@ -990,16 +990,18 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
     except subprocess.CalledProcessError as e:
         ip = ''
 
-    sc = SlackClient('xoxb-216151022738-q0HoXLoixM5GokF4Iaqm08XX')
+    
     initiating_run = 'STARTING Checkfiles version ' + \
         '{} ({}) ({}): with {} processes {} on {} at {}'.format(
             version, url, search_query, nprocesses, dr, ip, datetime.datetime.now())
-    sc.api_call(
-        "chat.postMessage",
-        channel="#bot-reporting",
-        text=initiating_run,
-        as_user=True
-    )
+    if bot_tocken:
+        sc = SlackClient(bot_tocken)
+        sc.api_call(
+            "chat.postMessage",
+            channel="#bot-reporting",
+            text=initiating_run,
+            as_user=True
+        )
 
     out.write(initiating_run + '\n')
     if processes == 0:
@@ -1045,26 +1047,27 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
     error_filename = err.name
     err.close()
 
-    with open(output_filename, 'r') as output_file:
-        x = sc.api_call("files.upload",
-                        title=output_filename,
-                        channels='#bot-reporting',
-                        content=output_file.read(),
-                        as_user=True)
+    if bot_tocken:
+        with open(output_filename, 'r') as output_file:
+            x = sc.api_call("files.upload",
+                            title=output_filename,
+                            channels='#bot-reporting',
+                            content=output_file.read(),
+                            as_user=True)
 
-    with open(error_filename, 'r') as output_file:
-        x = sc.api_call("files.upload",
-                        title=error_filename,
-                        channels='#bot-reporting',
-                        content=output_file.read(),
-                        as_user=True)
+        with open(error_filename, 'r') as output_file:
+            x = sc.api_call("files.upload",
+                            title=error_filename,
+                            channels='#bot-reporting',
+                            content=output_file.read(),
+                            as_user=True)
 
-    sc.api_call(
-        "chat.postMessage",
-        channel="#bot-reporting",
-        text=finishing_run,
-        as_user=True
-    )
+        sc.api_call(
+            "chat.postMessage",
+            channel="#bot-reporting",
+            text=finishing_run,
+            as_user=True
+        )
 
 def main():
     import argparse
@@ -1077,6 +1080,8 @@ def main():
         '--encValData', default='/opt/encValData', help="encValData location")
     parser.add_argument(
         '--username', '-u', default='', help="HTTP username (access_key_id)")
+    parser.add_argument(
+        '--bot-tocken', '-u', default='', help="Slack bot tocken")
     parser.add_argument(
         '--password', '-p', default='',
         help="HTTP password (secret_access_key)")
