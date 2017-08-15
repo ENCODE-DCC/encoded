@@ -97,7 +97,5 @@ write_files:
     #!/bin/bash
     while :
             do
-                now=$(date +"%Y%m%d%H%M%S")
-                /opt/encoded/checkfiles/bin/python /opt/encoded/checkfiles/checkfiles.py --username %(ARGS)s --password --out $now-checkfiles.log --err $now-checkfiles-error.log --include-unexpired-upload 2> $now-errors.log 1> $now-output.log
-                sleep 480m
+                now=$(date +"/%Y/%m/%d/%H/%M/%S")
     done
