@@ -95,8 +95,9 @@ write_files:
 - path: /opt/script
   content: |
     #!/bin/bash
-    while; do
+    while :
+            do
                 now=$(date +"%Y%m%d%H%M%S")
-                /opt/encoded/checkfiles/bin/python /opt/encoded/checkfiles/checkfiles.py --username $1 --password $2 --bot-tocken $3 $4 --out $now-checkfiles.log --err $now-checkfiles-error.log --include-unexpired-upload 2> $now-errors.log 1> $now-output.log
+                /opt/encoded/checkfiles/bin/python /opt/encoded/checkfiles/checkfiles.py --username $1 --password $2 $3 --out $now-checkfiles.log --err $now-checkfiles-error.log --include-unexpired-upload 2> $now-errors.log 1> $now-output.log
                 sleep 480m
     done
