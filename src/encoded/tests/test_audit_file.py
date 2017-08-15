@@ -318,47 +318,6 @@ def test_audit_file_replicate_match(testapp, file1, file_rep2):
     assert any(error['category'] == 'inconsistent replicate' for error in errors_list)
 
 
-def test_audit_file_insufficient_control_read_depth_chip_seq_paired_end(
-        testapp, file_exp,
-        file_exp2, file6, file2, file7, file4,
-        chipseq_bam_quality_metric,
-        chipseq_bam_quality_metric_2,
-        analysis_step_run_bam,
-        analysis_step_version_bam,
-        analysis_step_bam,
-        target_H3K27ac,
-        target_control,
-        pipeline_bam):
-    testapp.patch_json(file_exp['@id'], {'target': target_H3K27ac['@id'],
-                                         'assay_term_name': 'ChIP-seq'})
-    testapp.patch_json(file_exp2['@id'], {'target': target_control['@id'],
-                                          'assay_term_name': 'ChIP-seq'})
-    testapp.patch_json(chipseq_bam_quality_metric['@id'], {'total': 1000})
-    testapp.patch_json(chipseq_bam_quality_metric_2['@id'], {'total': 1000})
-    testapp.patch_json(file2['@id'], {'dataset': file_exp2['@id']})
-    testapp.patch_json(file7['@id'], {'dataset': file_exp2['@id'],
-                                      'file_format': 'bam',
-                                      'output_type': 'alignments',
-                                      'assembly': 'hg19',
-                                      'derived_from': [file2['@id']]})
-
-    testapp.patch_json(file4['@id'], {'dataset': file_exp['@id'],
-                                      'controlled_by': [file2['@id']]})
-    testapp.patch_json(file6['@id'], {'dataset': file_exp['@id'],
-                                      'assembly': 'hg19',
-                                      'derived_from': [file4['@id']]})
-    testapp.patch_json(file4['@id'], {'run_type': 'paired-ended',
-                                      'paired_end': '1'})
-    testapp.patch_json(file2['@id'], {'run_type': 'paired-ended',
-                                      'paired_end': '1'})
-    testapp.patch_json(file7['@id'], {})
-    res = testapp.get(file6['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'control extremely low read depth' for error in errors_list)
-
 '''
 def test_audit_modERN_missing_step_run(testapp, file_exp, file3, award):
     testapp.patch_json(award['@id'], {'rfa': 'modERN'})
@@ -567,4 +526,4 @@ def test_audit_experiment_insufficient_control_read_depth_chip_seq_paired_end(
         #print (error_type)
         #for e in errors[error_type]:
         #    print (e)
-    assert any(error['detail'].startswith('XXX') for error in errors_list)
+    assert any(error['category'] == 'control extremely low read depth' for error in errors_list)
