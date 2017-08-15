@@ -236,7 +236,7 @@ export class FileTable extends React.Component {
                 </div>
             );
         }
-        return null;
+        return <p className="browser-error">No files to display.</p>;
     }
 }
 
@@ -826,10 +826,11 @@ DatasetFiles.propTypes = {
 export class FileGallery extends React.Component {
     render() {
         const { context, encodevers, anisogenic, hideGraph, altFilterDefault } = this.props;
+        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
 
         return (
             <FetchedData>
-                <Param name="data" url={globals.unreleasedFilesUrl(context, { addStatuses: ['revoked'] })} />
+                <Param name="data" url={globals.unreleasedFilesUrl(context, loggedIn, { addStatuses: ['revoked'] })} />
                 <Param name="schemas" url="/profiles/" />
                 <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
             </FetchedData>
@@ -1914,7 +1915,7 @@ class FileGraphComponent extends React.Component {
             }
             return <p className="browser-error">Graph not applicable for the selected assembly/annotation.</p>;
         }
-        return null;
+        return <p className="browser-error">Graph not applicable.</p>;
     }
 }
 
