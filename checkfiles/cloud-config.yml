@@ -50,6 +50,7 @@ runcmd:
 - chown build:build /opt/encoded
 - sudo -u build git clone --no-checkout https://github.com/ENCODE-DCC/encoded.git /opt/encoded
 - sudo -u build git -C /opt/encoded checkout %(COMMIT)s
+- chmod +x /opt/encoded/checkfiles/script
 
 - cd /opt/encoded/checkfiles
 - sudo -u build pyvenv .
