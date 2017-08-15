@@ -89,6 +89,15 @@ write_files:
     exec goofys "$@"
 - path: /etc/rc.local
   content: |
-   #!/bin/sh -e
-   cd /home/ubuntu; nohup /opt/script %(ARGS)s 2> errors.log 1> output.log &
-   exit 0
+    #!/bin/sh -e
+    cd /home/ubuntu; nohup /opt/script %(ARGS)s 2> errors.log 1> output.log &
+    exit 0
+- path: /opt/script
+  content: |
+    #!/bin/bash
+    while :
+            do
+                now=$(date +"%Y%m%d%H%M%S")
+                /opt/encoded/checkfiles/bin/python /opt/encoded/checkfiles/checkfiles.py --username $1 --password $2 --bot-tocken $3 $4 --out $now-checkfiles.log --err $now-checkfiles-error.log --include-unexpired-upload 2> $now-errors.log 1> $now-output.log
+                sleep 480m
+    done
