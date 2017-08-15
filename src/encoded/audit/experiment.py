@@ -233,7 +233,7 @@ def check_control_read_depth_standards(value,
             detail = 'Control alignment file {} '.format(value['@id']) + \
                      'has a target {} that is neither '.format(target_name) + \
                      'Control-human nor Control-mouse.'
-            yield AuditFailure('XXX inconsistent target of control experiment', detail, level='WARNING')
+            yield AuditFailure('inconsistent target of control experiment', detail, level='WARNING')
             return
 
         if control_to_target == 'empty':
@@ -241,7 +241,7 @@ def check_control_read_depth_standards(value,
 
         elif 'broad histone mark' in target_investigated_as: #  control_to_target in broad_peaks_targets:
             if 'assembly' in value:
-                detail = 'XXX Control alignment file {} mapped to {} assembly has {} '.format(
+                detail = 'Control alignment file {} mapped to {} assembly has {} '.format(
                     value['@id'],
                     value['assembly'],
                     read_depth) + \
@@ -251,7 +251,7 @@ def check_control_read_depth_standards(value,
                     'is 40 million usable fragments, the recommended number of usable ' + \
                     'fragments is > 45 million. (See /data-standards/chip-seq/ )'
             else:
-                detail = 'XXX Control alignment file {} has {} '.format(
+                detail = 'Control alignment file {} has {} '.format(
                     value['@id'],
                     read_depth) + \
                     'usable fragments. ' + \
@@ -267,7 +267,7 @@ def check_control_read_depth_standards(value,
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
         elif 'narrow histone mark' in target_investigated_as:  # else:
             if 'assembly' in value:
-                detail = 'XXX Control alignment file {} mapped to {} assembly has {} '.format(
+                detail = 'Control alignment file {} mapped to {} assembly has {} '.format(
                     value['@id'],
                     value['assembly'],
                     read_depth) + \
@@ -277,7 +277,7 @@ def check_control_read_depth_standards(value,
                     'is 10 million usable fragments, the recommended number of usable ' + \
                     'fragments is > 20 million. (See /data-standards/chip-seq/ )'
             else:
-                detail = 'XXX Control alignment file {} has {} '.format(
+                detail = 'Control alignment file {} has {} '.format(
                     value['@id'],
                     read_depth) + \
                     'usable fragments. ' + \
@@ -294,7 +294,7 @@ def check_control_read_depth_standards(value,
 
         else:
             if 'assembly' in value:
-                detail = 'XXX Control alignment file {} mapped to {} assembly has {} '.format(
+                detail = 'Control alignment file {} mapped to {} assembly has {} '.format(
                     value['@id'],
                     value['assembly'],
                     read_depth) + \
@@ -304,7 +304,7 @@ def check_control_read_depth_standards(value,
                     'is 10 million usable fragments, the recommended number of usable ' + \
                     'fragments is > 20 million. (See /data-standards/chip-seq/ )'
             else:
-                detail = 'XXX Control alignment file {} has {} '.format(
+                detail = 'Control alignment file {} has {} '.format(
                     value['@id'],
                     read_depth) + \
                     'usable fragments. ' + \
