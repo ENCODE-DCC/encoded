@@ -70,26 +70,6 @@ non_seq_assays = [
     'original_files.award',
     'original_files.replicate',
     'original_files.platform',
-
-    'original_files.controlled_by',
-    'original_files.controlled_by.dataset',
-    'original_files.controlled_by.dataset.original_files',
-    'original_files.controlled_by.dataset.original_files.derived_from',
-
-
-    'original_files.controlled_by.dataset.target',
-    #'original_files.controlled_by.dataset.original_files.award',
-    'original_files.controlled_by.dataset.original_files.quality_metrics',
-    'original_files.controlled_by.dataset.original_files.dataset',
-    #'original_files.controlled_by.dataset.original_files.dataset.target',
-
-    'original_files.controlled_by.dataset.original_files.analysis_step_version',
-    'original_files.controlled_by.dataset.original_files.analysis_step_version.analysis_step',
-    'original_files.controlled_by.dataset.original_files.analysis_step_version.analysis_step.pipelines',
-    'original_files.controlled_by.dataset.original_files.analysis_step_version.software_versions',
-    'original_files.controlled_by.dataset.original_files.analysis_step_version.software_versions.software'
-
-
     'replicates',
     'replicates.library',
     'replicates.library.spikeins_used',
@@ -104,6 +84,15 @@ non_seq_assays = [
     'original_files.derived_from',
     'original_files.step_run',
     'original_files.derived_from.derived_from',
+    'original_files.derived_from.controlled_by',
+    'original_files.derived_from.controlled_by.dataset',
+    'original_files.derived_from.controlled_by.dataset.original_files.dataset.target',
+    'original_files.derived_from.controlled_by.dataset.original_files',
+    'original_files.derived_from.controlled_by.dataset.original_files.quality_metrics',
+    'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version',
+    'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step',
+    'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step.pipelines',
+    'original_files.derived_from.controlled_by.dataset.original_files.derived_from',
     'original_files.analysis_step_version',
     'original_files.analysis_step_version.analysis_step',
     'original_files.analysis_step_version.analysis_step.pipelines',
@@ -184,15 +173,19 @@ def audit_experiment_entry_function(value, system):
         yield failure
 
 def audit_experiment_chipseq_control_read_depth(value):
+    
+    
     # relevant only for ChIP-seq
     if value['assay_term_id'] != 'OBI:0000716':
         return
     
     if value.get('target') and 'name' in value.get('target'):
+        
         target_name = value['target']['name']
         target_investigated_as = value['target']['investigated_as']
 
         if target_name not in ['Control-human', 'Control-mouse']:
+            
             alignment_files = scan_files_for_file_format_output_type(value['original_files'],
                                                                     'bam', 'alignments')
             for alignment_file in alignment_files:
@@ -210,7 +203,8 @@ def audit_experiment_chipseq_control_read_depth(value):
                 derived_from_files = alignment_file.get('derived_from')
                 if (derived_from_files is None) or (derived_from_files == []):
                     continue
-                control_bam = get_control_bam(value, 'ChIP-seq read mapping')
+                control_bam = get_control_bam(alignment_file, 'ChIP-seq read mapping')
+                
                 if control_bam is not False:
                     control_depth = get_chip_seq_bam_read_depth(control_bam)
                     control_target = get_target_name(control_bam)
@@ -331,29 +325,28 @@ def get_control_bam(experiment_bam, pipeline_name):
     #  get representative FASTQ file
     if 'derived_from' not in experiment_bam or len(experiment_bam['derived_from']) < 1:
         return False
-
+    
     derived_from_fastqs = experiment_bam['derived_from']
     control_fastq = False
     for entry in derived_from_fastqs:
         if 'controlled_by' in entry and len(entry['controlled_by']) > 0:
             control_fastq = entry['controlled_by'][0]  # getting representative FASTQ
             break
-
+    
     # get representative FASTQ from control
     if control_fastq is False:
         return False
     else:
+        
         if 'original_files' not in control_fastq['dataset']:
             return False
 
         control_bam = False
-        control_files = control_fastq['dataset']['original_files']
-        for control_file in control_files:
-            if control_file['status'] in ['deleted', 'replaced', 'revoked']:
-                continue
-            if control_file['file_format'] == 'bam' and \
-               control_file['output_type'] == 'alignments' and \
-               'assembly' in control_file and 'assembly' in experiment_bam and \
+        
+        control_alignments = scan_files_for_file_format_output_type(control_fastq['dataset']['original_files'],
+                                                                    'bam', 'alignments')
+        for control_file in control_alignments:
+            if 'assembly' in control_file and 'assembly' in experiment_bam and \
                control_file['assembly'] == experiment_bam['assembly']:
                 #  we have BAM file, now we have to make sure it was created by pipeline
                 #  with similar pipeline_name
