@@ -1603,7 +1603,6 @@ const milestonesTableColumns = {
         title: 'Proposed count',
     },
 
-
     deliverable_unit: {
         title: 'Biosample',
     },
@@ -1996,11 +1995,12 @@ AffiliatedLabs.propTypes = {
 };
 
 class Award extends React.Component {
-
     render() {
         // const { award } = this.props;
         const { context } = this.props;
         const statuses = [{ status: context.status, title: 'Status' }];
+        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
+
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
@@ -2072,11 +2072,11 @@ class Award extends React.Component {
                         </div>
                     </PanelBody>
                 </Panel>
-                {context.milestones ?
+
+                {context.milestones && loggedIn ?
                     <MilestonesTable award={context} />
-                :
-                null
-                }
+                : null}
+
                 <LineChart award={context} />
             </div>
         );
@@ -2085,6 +2085,10 @@ class Award extends React.Component {
 
 Award.propTypes = {
     context: PropTypes.object.isRequired, // Award object being rendered
+};
+
+Award.contextTypes = {
+    session: PropTypes.object, // Login information
 };
 
 globals.contentViews.register(Award, 'Award');
