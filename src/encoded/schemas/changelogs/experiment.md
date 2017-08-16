@@ -2,8 +2,9 @@
 
 ### Schema version 13
 
-* *biosample_type* is a required field
-* *biosample_term_id* is required for experiments with *biosample_type* != "in vitro sample"  * *biosample_type* and *biosample_term_id* consistency added to the list of schema dependencies
+* *biosample_type* property is required
+* *biosample_term_id* is required for all experiments except experiment with *biosample_type*  "in vitro sample", consistency between the biosample type and ontology term_id is validated by schema dependency
+
 
 ### Schema version 12
 
