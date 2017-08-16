@@ -57,8 +57,7 @@ runcmd:
 - sudo -u build bin/pip install -r requirements.txt
 
 - cd /home/ubuntu
-## - sudo -iu ubuntu /opt/encoded/checkfiles/bin/python /opt/encoded/checkfiles/checkfiles.py $(cat /opt/checkfiles_args.txt)
-- sudo reboot
+- nohup /opt/encoded/checkfiles/script $(cat /opt/checkfiles_args.txt) 2> errors.log 1> output.log &
 
 users:
 - default
