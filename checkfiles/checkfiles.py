@@ -799,7 +799,7 @@ def check_file(config, session, url, job):
     else:
         check_format(config['encValData'], job, local_path)
 
-    if item['file_format'] == 'fastq':
+    if item['file_format'] == 'fastq' and not errors.get('validateFiles'):
         try:
             process_fastq_file(job,
                                subprocess.Popen(['gunzip --stdout {}'.format(
