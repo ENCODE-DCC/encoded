@@ -35,7 +35,7 @@ describe('Experiment Page', () => {
         test('has proper release date', () => {
             const item = summary.at(0).find('[data-test="date-released"]');
             const desc = item.find('dd');
-            expect(desc.at(0).text()).toEqual('2011-10-29');
+            expect(desc.at(0).text()).toEqual('October 29, 2011');
         });
 
         test('has one experiment status element in header', () => {
