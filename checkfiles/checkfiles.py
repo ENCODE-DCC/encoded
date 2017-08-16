@@ -1081,7 +1081,7 @@ def main():
     parser.add_argument(
         '--username', '-u', default='', help="HTTP username (access_key_id)")
     parser.add_argument(
-        '--bot-tocken', '-u', default='', help="Slack bot tocken")
+        '--bot-tocken', default='', help="Slack bot tocken")
     parser.add_argument(
         '--password', '-p', default='',
         help="HTTP password (secret_access_key)")
