@@ -88,6 +88,7 @@ write_files:
     ulimit -n 60000
     exec goofys "$@"
 - path: /etc/rc.local
+  permissions: 0755
   content: |
     #!/bin/sh -e
     cd /home/ubuntu; nohup /opt/encoded/checkfiles/script %(ARGS)s 2> errors.log 1> output.log &
