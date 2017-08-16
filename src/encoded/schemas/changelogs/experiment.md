@@ -1,14 +1,21 @@
 ## Changelog for experiment.json
 
+### Schema version 13
+
+* *biosample_type* property is required
+* *biosample_term_id* is required for all experiments except experiment with *biosample_type*  "in vitro sample", consistency between the biosample type and ontology term_id is validated by schema dependency
+
+
 ### Schema version 12
 
 * *alternate_accessions* now must match accession format, "ENCSR..." or "TSTSR..."
 * *date_submitted* property was added to indicate when submission requirements were met. This value is assigned by the DCC.
 
 ### Schema version 11
-
+    
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
 * unsafe characters such as " # @ % ^ & | ~ ; ` [ ] { } and consecutive whitespaces will no longer be allowed in the alias
+
 
 ### Schema version 10
 

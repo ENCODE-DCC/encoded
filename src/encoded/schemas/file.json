@@ -128,7 +128,7 @@
                 {
                     "properties": {
                         "run_type": {
-                            "enum": ["single-ended", "unknown"]
+                            "enum": ["single-ended"]
                         }                        
                     }
                 },
@@ -624,8 +624,7 @@
             "type": "string",
             "enum": [
                 "single-ended",
-                "paired-ended",
-                "unknown"
+                "paired-ended"
             ]
         },
         "paired_end": {
@@ -661,8 +660,7 @@
             "type": "string",
             "enum": [
                 "single-ended",
-                "paired-ended",
-                "unknown"
+                "paired-ended"
             ]
         },
         "flowcell_details": {

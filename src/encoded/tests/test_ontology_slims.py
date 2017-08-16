@@ -5,6 +5,7 @@ def biosample(submitter, lab, award, source, human):
     return {
         'award': award['@id'],
         'biosample_term_id': 'UBERON:0000955',
+        'biosample_term_name': 'brain',
         'biosample_type': 'tissue',
         'lab': lab['@id'],
         'organism': human['@id'],

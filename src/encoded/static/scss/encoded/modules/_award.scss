@@ -62,9 +62,9 @@
 
         .chart-legend-chip {
             display: inline-block;
-            width: 32px;
+            width: auto;
             height: 12px;
-            margin-right: 5px;
+            margin-right: 10px;
             vertical-align: top;
         }
 
@@ -88,6 +88,7 @@
 
 // Provides the flex structure for a group of charts.
 .award-chart__group-wrapper {
+    padding: 5px;
 
     &:first-child {
     margin: 50px 0 0 0;
@@ -101,6 +102,20 @@
         font-weight: normal;
         text-align: center;
         border-bottom: 1px solid #a0a0a0;
+        float: center;
+    }
+
+    .reporttitle {
+        float: left;
+        position: absolute;
+        padding-top: 7px;
+        padding-bottom: 3px;
+        margin-left: 8px;
+    }
+
+    .reagentsreporttitle {
+        padding-top: 3px;
+        padding-bottom: 0px;
     }
 }
 
@@ -111,3 +126,15 @@
         display: flex;
     }
 }
+
+.description {
+    display: block;
+
+    @at-root #{&}__columnone {
+        display: block;
+        float: left;
+        width: 50%
+    }
+
+}
+

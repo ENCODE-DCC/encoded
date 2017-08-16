@@ -188,6 +188,7 @@ def ctrl_experiment(testapp, lab, award, control_target):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
+        'biosample_type': 'in vitro sample',
         'status': 'started',
         'assay_term_name': 'ChIP-seq'
     }
@@ -263,6 +264,7 @@ def biosample_1(testapp, lab, award, source, organism):
     item = {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
+        'biosample_term_name': 'heart',
         'biosample_type': 'tissue',
         'lab': lab['uuid'],
         'organism': organism['uuid'],
@@ -276,6 +278,7 @@ def biosample_2(testapp, lab, award, source, organism):
     item = {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
+        'biosample_term_name': 'heart',
         'biosample_type': 'tissue',
         'lab': lab['uuid'],
         'organism': organism['uuid'],
@@ -963,14 +966,6 @@ def test_audit_experiment_geo_submission(testapp, base_experiment):
                for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_biosample_type_missing(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': "EFO:0002067",
-                                                'biosample_term_name': 'K562'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(error['category'] == 'missing biosample_type'
-               for error in collect_audit_errors(res))
-
-
 def test_audit_experiment_biosample_match(testapp, base_experiment,
                                           base_biosample, base_replicate,
                                           base_library):
@@ -1121,28 +1116,6 @@ def test_audit_experiment_with_RNA_library_array_size_range(testapp, base_experi
                for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_biosample_term_id(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': 'CL:349829',
-                                                'biosample_type': 'tissue',
-                                                'status': 'released',
-                                                'date_released': '2016-01-01'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(error['category'] ==
-               'experiment with biosample term-type mismatch'
-               for error in collect_audit_errors(res))
-
-
-def test_audit_experiment_biosample_ntr_term_id(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': 'NTR:349829',
-                                                'biosample_type': 'tissue',
-                                                'status': 'released',
-                                                'date_released': '2016-01-01'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert all(error['category'] !=
-               'experiment with biosample term-type mismatch'
-               for error in collect_audit_errors(res))
-
-
 def test_audit_experiment_replicate_with_file(testapp, file_fastq,
                                               base_experiment,
                                               base_replicate,
@@ -1167,7 +1140,7 @@ def test_audit_experiment_pipeline_assay_term_name_consistency(
     testapp.patch_json(bam_file['@id'], {'step_run': analysis_step_run_bam['@id']})
     testapp.patch_json(pipeline_bam['@id'], {'title':
                                              'RNA-seq of long RNAs (single-end, unstranded)',
-                                             'assay_term_name': 'RNA-seq'})
+                                             'assay_term_names': ['RNA-seq', 'RAMPAGE']})
     testapp.patch_json(experiment['@id'], {'assay_term_name': 'ChIP-seq'})
     res = testapp.get(experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'inconsistent assay_term_name'
@@ -1207,41 +1180,9 @@ def test_audit_experiment_replicate_with_no_files_warning(testapp, file_bed_meth
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA-seq'})
     testapp.patch_json(base_experiment['@id'], {'status': 'started'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
     assert any(error['category'] ==
                'missing raw data in replicate' for
                error in collect_audit_errors(res, ['ERROR']))
-
-
-def test_audit_experiment_missing_biosample_term_id(testapp, base_experiment):
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(error['category'] ==
-               'experiment missing biosample_term_id'
-               for error in collect_audit_errors(res))
-
-
-def test_audit_experiment_bind_n_seq_missing_biosample_term_id(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'RNA Bind-n-Seq'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert all(error['category'] !=
-               'experiment missing biosample_term_id'
-               for error in collect_audit_errors(res))
-
-
-def test_audit_experiment_missing_biosample_type(testapp, base_experiment):
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(error['category'] ==
-               'experiment missing biosample_type'
-               for error in collect_audit_errors(res))
-
-
-def test_audit_experiment_with_biosample_type(testapp, base_experiment):
-    testapp.patch_json(base_experiment['@id'], {'biosample_type': 'immortalized cell line'})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert all(error['category'] !=
-               'experiment missing biosample_type'
-               for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_not_uploaded_files(testapp, file_bam,
@@ -2346,97 +2287,6 @@ def test_audit_experiment_no_out_of_date_analysis(testapp,
     assert all(error['category'] !=
                'out of date analysis' for error in collect_audit_errors(res))
 
-
-def test_audit_experiment_control_out_of_date_analysis_paired_fastqs(
-    testapp,
-    base_experiment,
-    replicate_1_1,
-    replicate_2_1,
-    file_fastq_3,
-    file_fastq_4,
-    file_bam_1_1,
-    file_bam_2_1,
-    control_target,
-    ctrl_experiment
-):
-
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
-    testapp.patch_json(ctrl_experiment['@id'], {'target': control_target['@id']})
-    testapp.patch_json(replicate_2_1['@id'], {'experiment': ctrl_experiment['@id']})
-
-    testapp.patch_json(file_bam_1_1['@id'], {'assembly': 'mm10',
-                                             'output_type': 'signal of unique reads',
-                                             'file_format': 'bigWig',
-                                             'output_type': 'signal p-value',
-                                             'derived_from': [file_bam_2_1['@id']]})
-    testapp.patch_json(file_fastq_3['@id'], {'dataset': ctrl_experiment['@id'],
-                                             'replicate': replicate_2_1['@id'],
-                                             'paired_end': '1'})
-    testapp.patch_json(file_fastq_4['@id'], {'dataset': ctrl_experiment['@id'],
-                                             'replicate': replicate_2_1['@id'],
-                                             'paired_end': '2',
-                                             'paired_with': file_fastq_3['@id']})
-    testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']],
-                                             'dataset': ctrl_experiment['@id']})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert all(error['category'] !=
-               'out of date analysis' for error in collect_audit_errors(res))
-
-
-def test_audit_experiment_control_out_of_date_analysis(testapp,
-                                                       base_experiment,
-                                                       replicate_1_1,
-                                                       replicate_2_1,
-                                                       file_fastq_3,
-                                                       file_fastq_4,
-                                                       file_bam_1_1,
-                                                       file_bam_2_1,
-                                                       control_target,
-                                                       ctrl_experiment
-                                                       ):
-
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
-    testapp.patch_json(ctrl_experiment['@id'], {'target': control_target['@id']})
-    testapp.patch_json(replicate_2_1['@id'], {'experiment': ctrl_experiment['@id']})
-
-    testapp.patch_json(file_bam_1_1['@id'], {'assembly': 'mm10',
-                                             'output_type': 'signal of unique reads',
-                                             'file_format': 'bigWig',
-                                             'output_type': 'signal p-value',
-                                             'derived_from': [file_bam_2_1['@id']]})
-    testapp.patch_json(file_fastq_3['@id'], {'dataset': ctrl_experiment['@id'],
-                                             'replicate': replicate_2_1['@id']})
-    testapp.patch_json(file_fastq_4['@id'], {'dataset': ctrl_experiment['@id'],
-                                             'replicate': replicate_2_1['@id']})
-    testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']],
-                                             'dataset': ctrl_experiment['@id']})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert any(error['category'] ==
-               'out of date analysis' for error in collect_audit_errors(res))
-
-
-def test_audit_experiment_control_out_of_date_analysis_no_signal_files(testapp,
-                                                                       base_experiment,
-                                                                       replicate_1_1,
-                                                                       replicate_2_1,
-                                                                       file_fastq_3,
-                                                                       file_fastq_4,
-                                                                       file_bam_2_1,
-                                                                       control_target,
-                                                                       ctrl_experiment
-                                                                       ):
-    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
-    testapp.patch_json(ctrl_experiment['@id'], {'target': control_target['@id']})
-    testapp.patch_json(replicate_2_1['@id'], {'experiment': ctrl_experiment['@id']})
-    testapp.patch_json(file_fastq_3['@id'], {'dataset': base_experiment['@id'],
-                                             'replicate': replicate_1_1['@id']})
-    testapp.patch_json(file_fastq_4['@id'], {'dataset': ctrl_experiment['@id'],
-                                             'replicate': replicate_2_1['@id']})
-    testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']],
-                                             'dataset': ctrl_experiment['@id']})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    assert all(error['category'] !=
-               'out of date analysis' for error in collect_audit_errors(res))
 
 # def test_audit_experiment_modERN_control_missing_files() removed from v54
 # def test_audit_experiment_modERN_experiment_missing_files() removed from v54

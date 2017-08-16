@@ -16,12 +16,16 @@
         { "$ref": "mixins.json#/notes"},
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/submitted"},
-        { "$ref": "mixins.json#/assay"},
         { "$ref": "mixins.json#/documents" }
     ],
+    "dependencies": {
+        "assay_term_names": {
+             "minItems": 1
+        }
+    },
     "properties": {
         "schema_version": {
-            "default": "7"
+            "default": "8"
         },
         "accession": {
             "accessionType": "PL"
@@ -40,6 +44,73 @@
                 "type": "string",
                 "format": "accession",
                 "pattern": "^(ENCPL\\d{3}[A-Z]{3})$|^(TSTPL\\d{6})$"
+            }
+        },
+         "assay_term_names": {
+            "title": "Assay term names",
+            "description": "Assay names the pipeline is compatible with.",
+            "comment": "A list of assay names that could be processed by the pipeline.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Assay name",
+                "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
+                "type": "string",
+                "enum": [
+                    "ChIP-seq",
+                    "RNA-seq",
+                    "DNase-seq",
+                    "eCLIP",
+                    "shRNA knockdown followed by RNA-seq",
+                    "RNA Bind-n-Seq",
+                    "transcription profiling by array assay",
+                    "DNA methylation profiling by array assay",
+                    "whole-genome shotgun bisulfite sequencing",
+                    "RRBS",
+                    "siRNA knockdown followed by RNA-seq",
+                    "RAMPAGE",
+                    "comparative genomic hybridization by array",
+                    "CAGE",
+                    "single cell isolation followed by RNA-seq",
+                    "Repli-seq",
+                    "microRNA-seq",
+                    "microRNA counts",
+                    "MRE-seq",
+                    "RIP-seq",
+                    "Repli-chip",
+                    "MeDIP-seq",
+                    "ChIA-PET",
+                    "FAIRE-seq",
+                    "ATAC-seq",
+                    "PAS-seq",
+                    "RIP-chip",
+                    "RNA-PET",
+                    "genotyping by high throughput sequencing assay",
+                    "CRISPR genome editing followed by RNA-seq",
+                    "protein sequencing by tandem mass spectrometry assay",
+                    "5C",
+                    "HiC",
+                    "TAB-seq",
+                    "iCLIP",
+                    "DNA-PET",
+                    "Switchgear",
+                    "5' RLM RACE",
+                    "MNase-seq",
+                    "5' RACE",
+                    "3' RACE",
+                    "small RNA-seq",
+                    "Bru-seq",
+                    "BruChase-seq",
+                    "genetic modification followed by DNase-seq",
+                    "CRISPRi followed by RNA-seq",
+                    "genotype phasing by HiC",
+                    "Circulome-seq",
+                    "whole genome sequencing assay",
+                    "BruUV-seq",
+                    "Mint-ChIP-seq",
+                    "single nuclei ATAC-seq",
+                    "icSHAPE"
+                ]
             }
         },
         "status": {
@@ -96,10 +167,17 @@
             "description": "An external resource to the code base.",
             "type": "string",
             "format": "uri"
+        },
+        "pipeline_version": {
+            "title": "Pipeline version",
+            "description": "The pipeline version.",
+            "comment": "Please increment as whole numbers starting from 1.",
+            "type": "integer",
+            "pattern": "^[1-9]\\d*$"
         }
     },
     "facets": {
-        "assay_term_name": {
+        "assay_term_names": {
             "title": "Assay"
         },
         "status": {
@@ -122,7 +200,7 @@
         "title": {
             "title": "Pipeline"
         },
-        "assay_term_name": {
+        "assay_term_names": {
             "title": "Assay type"
         },
         "version": {
@@ -165,8 +243,7 @@
         "analysis_steps.current_version.software_versions.software.purpose": 1.0,
         "analysis_steps.current_version.software_versions.software.used_by": 1.0,
         "analysis_steps.current_version.software_versions.software.references.title": 1.0,
-        "assay_term_name": 1.0,
-        "assay_term_id": 1.0,
+        "assay_term_names": 1.0,
         "title": 1.0
     },
     "changelog": "/profiles/changelogs/pipeline.md"
