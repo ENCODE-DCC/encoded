@@ -102,7 +102,10 @@ def genetic_modification_5_6(value, system):
                 else:
                     value['reagent_availability'].append(rep_obj)
                 has_source = False
-            if 'guide_rna_sequences' in technique.properties:
+            if 'guide_rna_sequences' in technique.properties and value['purpose'] != 'insertion':
+                # Those modification objects that are CRISPR tag insertions can't be upgraded
+                # this way since the dependencies require them to have tag info and that metadata
+                # sits in construct so they must be migrated manually with all constructs.
                 value['guide_rna_sequences'] = technique.properties['guide_rna_sequences']
                 value['modification_technique'] = 'CRISPR'
 
