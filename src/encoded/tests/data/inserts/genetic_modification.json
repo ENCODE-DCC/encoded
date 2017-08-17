@@ -111,6 +111,10 @@
         "modification_type": "replacement",
         "purpose": "validation",
         "zygosity": "heterozygous",
+        "reagent_availability": [{
+            "repository": "/sources/gregory-crawford/",
+            "identifier": "please-contact-lab"
+        }],
         "modification_technique": "TALE",
         "RVD_sequence_pairs": [
             {
