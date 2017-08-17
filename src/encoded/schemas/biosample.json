@@ -5,7 +5,7 @@
     "id": "/profiles/biosample.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
+    "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id", "biosample_term_name"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -817,6 +817,7 @@
                 "early embryonic",
                 "midembryonic",
                 "late embryonic",
+                "mixed stage",
                 "mixed stage (embryonic)",
                 "mixed stage (late embryonic and L1 larva)",
                 "L1 larva",

@@ -534,7 +534,9 @@ class Experiment(Dataset,
                 'organ_slims',
                 'award.project',
                 'assembly',
-                'internal_status'
+                'internal_status',
+                'audit_category', # Added for auditmatrix
+                'lab.title'
             ],
             'group_by': ['biosample_type', 'biosample_term_name'],
             'label': 'Biosample',

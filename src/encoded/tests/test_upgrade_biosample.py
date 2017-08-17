@@ -6,6 +6,7 @@ def biosample_0(submitter, lab, award, source, organism):
     return {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
+        'biosample_term_name': 'heart',
         'biosample_type': 'tissue',
         'lab': lab['uuid'],
         'organism': organism['uuid'],

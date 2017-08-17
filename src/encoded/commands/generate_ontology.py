@@ -130,7 +130,8 @@ assay_slims = {
     'OBI:0001916': 'Replication timing',
     'OBI:0000435': 'Genotyping',
     'OBI:0000615': 'Proteomics',
-    'OBI:0000626': 'DNA sequencing'
+    'OBI:0000626': 'DNA sequencing',
+    'OBI:0000845': 'RNA structure'
 }
 
 slim_shims = {
@@ -601,6 +602,32 @@ ntr_assays = {
         "objectives": [],
         "organs": [],
         "preferred_name": "Mint-ChIP",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000438": {
+        "assay": ['DNA accessibility'],
+        "category": [],
+        "developmental": [],
+        "name": "single nuclei ATAC-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "snATAC-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000433": {
+        "assay": ['RNA structure'],
+        "category": [],
+        "developmental": [],
+        "name": "icSHAPE",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "icSHAPE",
         "slims": [],
         "synonyms": [],
         "systems": [],
