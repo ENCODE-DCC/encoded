@@ -574,10 +574,11 @@ def audit_file_chip_seq_control_read_depth(value, system):
     # in accordance with the criteria
     award = value.get('award')
     if not award or award.get('rfa') not in ['ENCODE3',
-                                  'ENCODE2-Mouse',
-                                  'ENCODE2',
-                                  'ENCODE',
-                                  'Roadmap']:
+                                             'ENCODE4',
+                                             'ENCODE2-Mouse',
+                                             'ENCODE2',
+                                             'ENCODE',
+                                             'Roadmap']:
         return
 
     if value['status'] in ['deleted', 'replaced', 'revoked']:

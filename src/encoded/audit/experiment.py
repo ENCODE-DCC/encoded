@@ -448,7 +448,7 @@ def get_derived_from_files_set(list_of_files, file_format, object_flag):
                                     'original_files.analysis_step_version.software_versions.software',
                                     'original_files.analysis_step_version.analysis_step',
                                     'original_files.analysis_step_version.analysis_step.pipelines'],
-               condition=rfa('ENCODE3', 'ENCODE2-Mouse', 'ENCODE2', 'ENCODE', 'Roadmap'))
+               condition=rfa('ENCODE4', 'ENCODE3', 'ENCODE2-Mouse', 'ENCODE2', 'ENCODE', 'Roadmap'))
 def audit_experiment_standards_dispatcher(value, system):
     '''
     Dispatcher function that will redirect to other functions that would
@@ -2358,7 +2358,7 @@ def audit_experiment_consistent_sequencing_runs(value, system):
 
 @audit_checker('experiment',
                frame=['award', 'replicates', 'original_files', 'original_files.replicate'],
-               condition=rfa("ENCODE3", "modERN", "ENCODE2", "GGR", "Roadmap",
+               condition=rfa("ENCODE3", "ENCODE4", "modERN", "ENCODE2", "GGR", "Roadmap",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicate_with_no_files(value, system):
     if 'internal_tags' in value and 'DREAM' in value['internal_tags']:
@@ -2427,7 +2427,7 @@ def audit_experiment_replicate_with_no_files(value, system):
                       'replicates.library',
                       'replicates.library.biosample',
                       'replicates.library.biosample.donor'],
-               condition=rfa("ENCODE3", "modERN", "GGR",
+               condition=rfa("ENCODE3", "modERN", "GGR", "ENCODE4",
                              "ENCODE", "modENCODE", "MODENCODE", "ENCODE2-Mouse"))
 def audit_experiment_replicated(value, system):
     '''
@@ -2460,7 +2460,7 @@ def audit_experiment_replicated(value, system):
 
     if len(num_bio_reps) <= 1:
         # different levels of severity for different rfas
-        if value['award']['rfa'] in ['ENCODE3', 'GGR']:
+        if value['award']['rfa'] in ['ENCODE4', 'ENCODE3', 'GGR']:
             detail = 'This experiment is expected to be replicated, but ' + \
                      'contains only one listed biological replicate.'
             raise AuditFailure('unreplicated experiment', detail, level='NOT_COMPLIANT')
@@ -2605,7 +2605,7 @@ def audit_experiment_replicates_biosample(value, system):
 
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'],
-               condition=rfa("ENCODE3", "modERN", "GGR",
+               condition=rfa("ENCODE3", "modERN", "GGR", "ENCODE4",
                              "ENCODE", "ENCODE2-Mouse", "Roadmap"))
 def audit_experiment_documents(value, system):
     '''
@@ -2729,7 +2729,7 @@ def audit_experiment_target(value, system):
 
 @audit_checker('experiment', frame=['award', 'target', 'possible_controls'],
                condition=rfa("ENCODE3", "modERN", "ENCODE2", "modENCODE",
-                             "ENCODE", "ENCODE2-Mouse", "Roadmap"))
+                             "ENCODE", "ENCODE2-Mouse", "Roadmap", "ENCODE4"))
 def audit_experiment_control(value, system):
     '''
     Certain assay types (ChIP-seq, ...) require possible controls with a matching biosample.
@@ -2851,7 +2851,7 @@ def get_platforms_used_in_experiment(experiment):
                                     'possible_controls.replicates',
                                     'possible_controls.replicates.antibody',
                                     'possible_controls.target'],
-               condition=rfa('ENCODE3', 'Roadmap'))
+               condition=rfa('ENCODE3', 'ENCODE4', 'Roadmap'))
 def audit_experiment_ChIP_control(value, system):
 
     if value['status'] in ['deleted', 'proposed', 'preliminary', 'replaced', 'revoked']:
@@ -2894,6 +2894,7 @@ def audit_experiment_ChIP_control(value, system):
 
 @audit_checker('experiment', frame=['replicates', 'replicates.library'],
                condition=rfa("ENCODE3",
+                             "ENCODE4",
                              "modERN",
                              "ENCODE",
                              "ENCODE2-Mouse",
@@ -3024,7 +3025,7 @@ def audit_experiment_biosample_term(value, system):
         'replicates.library.biosample',
         'replicates.library.biosample.organism',
     ],
-    condition=rfa('ENCODE3', 'modERN'))
+    condition=rfa('ENCODE3', 'modERN', 'ENCODE4'))
 def audit_experiment_antibody_characterized(value, system):
     '''Check that biosample in the experiment has been characterized for the given antibody.'''
 
