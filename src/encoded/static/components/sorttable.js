@@ -278,12 +278,12 @@ export class SortTable extends React.Component {
         // Calculate the colspan for the table
         const colCount = columnIds.length - hiddenCount;
 
-        // Sort the list according to the requested sorting column. Only do this *after* this
-        // component has mounted (ENCD-3459).
-        const sortedList = this.state.mounted ? list.sort(this.sortColumn) : list;
-
         // Now display the table, but only if we were passed a non-empty list
         if (list && list.length) {
+            // Sort the list according to the requested sorting column. Only do this *after* this
+            // component has mounted (ENCD-3459).
+            const sortedList = this.state.mounted ? list.sort(this.sortColumn) : list;
+
             return (
                 <table className="table table-sortable">
 
