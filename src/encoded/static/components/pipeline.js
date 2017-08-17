@@ -270,7 +270,9 @@ class PipelineComponent extends React.Component {
                 }
 
                 // If the node has parents, render the edges to those parents or to those parents'
-                // output_file_types nodes.
+                // output_file_types nodes. `parentlessInputs` tracks input file types that *don't*
+                // overlap with the parents' output file types.
+                let parentlessInputs = step.input_file_types || [];
                 if (step.parents && step.parents.length) {
                     step.parents.forEach((parent) => {
                         // Get this step's parent object so we can look at its output_file_types array.
@@ -292,18 +294,29 @@ class PipelineComponent extends React.Component {
                                     // don't overlap. Just connect it directly to the parent.
                                     jsonGraph.addEdge(parentId, stepId);
                                 }
+
+                                // Remove the parent’s output file types from the array of this
+                                // step's input file types so that we know what parentless input
+                                // file types we have to draw later.
+                                parentlessInputs = _.difference(parentlessInputs, parentStep.output_file_types);
                             } else {
-                                // The parent step doesn't
+                                // The parent step doesn't have any output file types, so just
+                                // connect this step to the parent step directly.
                                 jsonGraph.addEdge(parentId, stepId);
                             }
                         }
                         // No parent step object when this step has parents means a data error.
                         // At least don't crash.
                     });
-                } else if (step.input_file_types && step.input_file_types.length) {
+                }
+
+                // Render input file types not shared by a parent step. `parentlessInputs` is an
+                // array holding all the input file types for the current step that aren't shared
+                // with a parent's output file types.
+                if (parentlessInputs.length) {
                     // The step doesn't have parents but it has input_file_types. Draw nodes for
                     // all its input_file_types.
-                    step.input_file_types.forEach((fileType) => {
+                    parentlessInputs.forEach((fileType) => {
                         // Most file-type nodes have IDs containing their parent step @id. These
                         // file-type nodes don't have a parent, so we take the child's and add "IO"
                         // to it to distinguish it from the odd case of a step having the same

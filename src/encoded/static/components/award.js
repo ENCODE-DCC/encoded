@@ -1603,7 +1603,6 @@ const milestonesTableColumns = {
         title: 'Proposed count',
     },
 
-
     deliverable_unit: {
         title: 'Biosample',
     },
@@ -1656,6 +1655,7 @@ const ExperimentDate = (props) => {
             const standardDate = moment(term.key, ['MMMM, YYYY', 'YYYY-MM']).format('YYYY-MM');
             return { key: standardDate, doc_count: term.doc_count };
         });
+
         // Sort arrays chronologically
         const sortedTerms = standardTerms.sort((termA, termB) => {
             if (termA.key < termB.key) {
@@ -1669,10 +1669,13 @@ const ExperimentDate = (props) => {
             sortedTerms
         );
     }
+
     function fillDates(sortedArray, fillArray, difference, deduplicated) {
         let monthdiff = difference;
+
         // Add an object with the award start date to both arrays
         sortedArray.unshift({ key: award.start_date, doc_count: 0 });
+
         // Add objects to the array with doc_count 0 for the missing months
         const sortedTermsLength = sortedArray.length;
         for (let j = 0; j < sortedTermsLength - 1; j += 1) {
@@ -1687,6 +1690,7 @@ const ExperimentDate = (props) => {
             }
         }
         fillArray.push(sortedArray[sortedArray - 1]);
+
         // Remove any objects with keys before the start date of the award
         const arrayLength = fillArray.length;
         const assayStart = award.start_date;
@@ -1710,6 +1714,7 @@ const ExperimentDate = (props) => {
         });
         return (deduplicated);
     }
+
     function createDataset(deduplicated, accumulatorType, cumulativeData) {
         let cumulativedataset = cumulativeData;
         let accumulator = accumulatorType;
@@ -1724,10 +1729,10 @@ const ExperimentDate = (props) => {
         return (accumulatedData);
     }
 
+    const sortedreleasedTerms = sortTerms(releasedDates);
+    const sortedsubmittedTerms = sortTerms(submittedDates);
 
-    const sortedsubmittedTerms = sortTerms(releasedDates);
-    const sortedreleasedTerms = sortTerms(submittedDates);
-    // Add an object with the most current date to one of the arrays
+    // Add an object with the most current date to one of the arrays.
     if ((releasedDates && releasedDates.length) && (submittedDates && submittedDates.length)) {
         if (moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isAfter(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
             sortedreleasedTerms.push({ key: sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key, doc_count: 0 });
@@ -1737,7 +1742,8 @@ const ExperimentDate = (props) => {
     }
     deduplicatedreleased = fillDates(sortedreleasedTerms, fillreleasedDates, monthreleaseddiff, deduplicatedreleased);
     deduplicatedsubmitted = fillDates(sortedsubmittedTerms, fillsubmittedDates, monthsubmitteddiff, deduplicatedsubmitted);
-    // Create an array of dates
+
+    // Create an array of dates.
     const date = Object.keys(deduplicatedreleased).map(term => term);
     const accumulatedDataReleased = createDataset(deduplicatedreleased, accumulatorreleased, cumulativedatasetReleased);
     const accumulatedDataSubmitted = createDataset(deduplicatedsubmitted, accumulatorsubmitted, cumulativedatasetSubmitted);
@@ -1746,16 +1752,14 @@ const ExperimentDate = (props) => {
         <div>
             {experiments && experiments.facets && experiments.facets.length ?
                 <Panel>
-                <PanelHeading>
-                    <h4>Cumulative Number of Experiments</h4>
-                </PanelHeading>
-                <PanelBody>
-                    <CumulativeGraph releaseddatavalue={accumulatedDataReleased} submitteddatavalue={accumulatedDataSubmitted} monthReleased={date} />
-                </PanelBody>
+                    <PanelHeading>
+                        <h4>Cumulative Number of Experiments</h4>
+                    </PanelHeading>
+                    <PanelBody>
+                        <CumulativeGraph releaseddatavalue={accumulatedDataReleased} submitteddatavalue={accumulatedDataSubmitted} monthReleased={date} />
+                    </PanelBody>
                 </Panel>
-            :
-                null
-            }
+            : null}
         </div>
     );
 };
@@ -1926,14 +1930,14 @@ class CumulativeGraph extends React.Component {
                 data: {
                     labels: monthReleased,
                     datasets: [{
-                        label: 'Date Submitted',
-                        data: submitteddatavalue,
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    },
-                    {
                         label: 'Date Released',
                         data: releaseddatavalue,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        backgroundColor: '#604a7b',
+                    },
+                    {
+                        label: 'Date Submitted',
+                        data: submitteddatavalue,
+                        backgroundColor: '#ccc1da',
                     }],
                 },
             });
@@ -1996,11 +2000,12 @@ AffiliatedLabs.propTypes = {
 };
 
 class Award extends React.Component {
-
     render() {
         // const { award } = this.props;
         const { context } = this.props;
         const statuses = [{ status: context.status, title: 'Status' }];
+        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
+
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
@@ -2072,11 +2077,11 @@ class Award extends React.Component {
                         </div>
                     </PanelBody>
                 </Panel>
-                {context.milestones ?
+
+                {context.milestones && loggedIn ?
                     <MilestonesTable award={context} />
-                :
-                null
-                }
+                : null}
+
                 <LineChart award={context} />
             </div>
         );
@@ -2085,6 +2090,10 @@ class Award extends React.Component {
 
 Award.propTypes = {
     context: PropTypes.object.isRequired, // Award object being rendered
+};
+
+Award.contextTypes = {
+    session: PropTypes.object, // Login information
 };
 
 globals.contentViews.register(Award, 'Award');
