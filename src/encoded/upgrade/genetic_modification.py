@@ -102,10 +102,7 @@ def genetic_modification_5_6(value, system):
                 else:
                     value['reagent_availability'].append(rep_obj)
                 has_source = False
-            if 'guide_rna_sequences' in technique.properties and value['purpose'] != 'tagging':
-                # Those modification objects that are CRISPR tag insertions can't be upgraded
-                # this way since the dependencies require them to have tag info and that metadata
-                # sits in construct so they must be migrated manually with all constructs.
+            if 'guide_rna_sequences' in technique.properties:
                 value['guide_rna_sequences'] = technique.properties['guide_rna_sequences']
                 value['modification_technique'] = 'CRISPR'
 
@@ -118,6 +115,12 @@ def genetic_modification_5_6(value, system):
                             value['aliases'].append(b)
                         else:
                             value['aliases'] = [b]
+                if value['purpose'] == 'tagging:
+                    # Those modification objects that are CRISPR tag insertions can't be upgraded
+                    # this way since the dependencies require them to have tag info and that metadata
+                    # sits in construct so they must be migrated manually with all constructs.
+                    value['epitope_tags'] = [{'name': 'eGFP', 'location': 'C-terminal'}]
+
             elif 'talen_platform' in technique.properties:
                 value['modification_technique'] = 'TALE'
                 # We think these should have purpose = repression if empty. For the purposes
@@ -139,9 +142,9 @@ def genetic_modification_5_6(value, system):
                 # This shouldn't happen as we currently don't have any other possible techniques
                 # so let's just set it to something we know we don't have yet annotated correctly
                 # in the data so we can identify special cases to deal with
-                value['modification_technique'] = 'mutagenesis'
+                value['modification_technique'] = 'mutagen treatment'
     else:
-        value['modification_technique'] = 'mutagenesis'
+        value['modification_technique'] = 'mutagen treatment
 
     if 'modification_techniques' in value:
         # These will no longer be linked out to the respective technique objects. The
