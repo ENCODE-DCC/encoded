@@ -115,7 +115,7 @@ def genetic_modification_5_6(value, system):
                             value['aliases'].append(b)
                         else:
                             value['aliases'] = [b]
-                if value['purpose'] == 'tagging:
+                if value['purpose'] == 'tagging':
                     # Those modification objects that are CRISPR tag insertions can't be upgraded
                     # this way since the dependencies require them to have tag info and that metadata
                     # sits in construct so they must be migrated manually with all constructs.
