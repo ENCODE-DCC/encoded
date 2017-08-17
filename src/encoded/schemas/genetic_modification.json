@@ -16,7 +16,263 @@
         { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" }
-    ],    
+    ],
+    "dependencies": {
+        "purpose": {
+            "comment": "Modifications for tagging purposes need to include the epitope_tag property in combination with a target. Modifications for other purposes also need either the site and/or target specified.",
+            "oneOf": [
+                {
+                    "required": ["modified_site_by_target_id", "epitope_tags"],
+                    "properties": {
+                    "purpose": {
+                            "enum": ["tagging"]
+                        }
+                    },
+                    "epitope_tags": {
+                        "minItems": 1
+                    }
+                },
+                {
+                    "required": ["modified_site_by_target_id"],
+                    "properties": {
+                    "purpose": {
+                            "enum": ["repression", "activation", "overexpression", "validation"]
+                        }
+                    }
+                },
+                {
+                    "required": ["modified_site_by_coordinates"],
+                    "properties": {
+                    "purpose": {
+                            "enum": ["repression", "activation", "overexpression", "validation"]
+                        }
+                    }
+                },
+                {
+                    "required": ["modified_site_by_sequence"],
+                    "properties": {
+                    "purpose": {
+                            "enum": ["repression", "activation", "overexpression", "validation"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "purpose": {
+                            "enum": ["analysis"]
+                        }
+                    }
+                }
+            ]
+        },
+        "modification_type": {
+            "oneOf": [
+                {
+                    "required": ["epitope_tags"],
+                    "properties": {
+                        "modification_type": {
+                            "enum": ["insertion"]
+                        }
+                    }
+                },
+                {
+                    "required": ["introduced_sequence"],
+                    "properties": {
+                        "modification_type": {
+                            "enum": ["insertion"]
+                        }
+                    }
+                },
+                {
+                    "required": ["introduced_sequence"],
+                    "properties": {
+                        "modification_type": {
+                            "enum": ["replacement"]
+                        }
+                    }
+                },
+                {
+                    "anyOf": [
+                        {
+                             "required": ["modified_site_by_coordinates"],
+                             "properties": {
+                                 "modification_type": {
+                                     "enum": ["deletion"]
+                                 }
+                             }
+                        },
+                        {
+                             "required": ["modified_site_by_target_id"],
+                             "properties": {
+                                  "modification_type": {
+                                      "enum": ["deletion"]
+                                  }
+                             }
+                        },
+                        {
+                             "required": ["modified_site_by_sequence"],
+                             "properties": {
+                                  "modification_type": {
+                                      "enum": ["deletion"]
+                                  }
+                             }
+                        }
+                    ]
+                },
+                {
+                    "required": ["modified_site_by_target_id"],
+                    "properties": {
+                        "modification_type": {
+                            "enum": ["interference"]
+                        }
+                    }
+                },
+                {
+                    
+                    "required": ["treatments"],
+                    "properties": {
+                        "modification_type": {
+                            "enum": ["mutagenesis"]
+                        }
+                    }
+                }
+            ]
+        },
+        "epitope_tags": {
+            "comment": "Specified epitope tags should include at least one entry.",
+            "properties":{
+                "epitope_tags": {
+                    "minItems": 1
+                }
+            }
+        },
+        "reagent_availability": {
+            "comment": "Specified reagent availablity details should include at least one entry.",
+            "properties": {
+                "reagent_availability": {
+                     "minItems": 1
+                }
+            }
+        },
+        "modification_technique": {
+            "oneOf": [
+                {
+                    "anyOf": [
+                        {
+                            "required": ["guide_rna_sequences"],
+                            "properties": {
+                                "modification_technique": {
+                                    "enum": ["CRISPR"]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["reagent_availability"],
+                            "properties": {
+                                "modification_technique": {
+                                    "enum": ["CRISPR"]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "anyOf": [
+                        {
+                            "required": ["rnai_sequences"],
+                            "properties":{
+                                "modification_technique": {
+                                    "enum": ["RNAi"]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["reagent_availability"],
+                            "properties":{
+                                "modification_technique": {
+                                    "enum": ["RNAi"]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "anyOf": [
+                        {
+                            "required": ["zygosity"],
+                            "comment": "Add back RVD_sequence_pairs to the required list after Jason gets metadata",
+                            "properties":{
+                                "modification_technique": {
+                                    "enum": ["TALE"]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["zygosity", "reagent_availability"],
+                            "properties":{
+                                "modification_technique": {
+                                    "enum": ["TALE"]
+                                }
+                            }
+                        }
+                    ]   
+                },
+                {
+                    "required": ["treatments"],
+                     "properties":{
+                        "modification_technique": {
+                            "enum": [
+                                "mutagen treatment"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "anyOf": [
+                        {
+                            "required": ["documents"],
+                            "properties":{
+                                "modification_technique": {
+                                    "enum": [
+                                        "stable transfection",
+                                        "transient transfection",
+                                        "transduction",
+                                        "microinjection",
+                                        "bombardment",
+                                        "phiC31 integrase"
+                                     ]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["reagent_availability"],
+                            "properties":{
+                                "modification_technique": {
+                                    "enum": [
+                                        "stable transfection",
+                                        "transient transfection",
+                                        "transduction",
+                                        "microinjection",
+                                        "bombardment",
+                                        "phiC31 integrase"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "RVD_sequence_pairs": {
+            "comment": "Specified RVD sequence pairs should include at least one entry but no more than two.",
+            "properties": {
+                "RVD_sequence_pairs": {
+                    "minItems": 1,
+                    "maxItems": 2
+                }
+             }
+         }
+    },    
     "properties": {
         "schema_version": {
             "default": "6"
@@ -243,7 +499,7 @@
                 "title": "gRNA sequence",
                 "description": "guide RNA sequence used in the experiment.",
                 "type": "string",
-                "pattern": "^[ACUNTG]+$"
+                "pattern": "^[ACUNTGacuntg]+$"
             }
         },
         "RVD_sequence_pairs": {
@@ -251,13 +507,12 @@
             "description": "The pair(s) of repeat variable diresidue sequences of the TAL effectors that recognize the left and right half sites at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
             "comment": "Each cut should be specified by a pair. No more than two pairs should be specified per genetic_modification.",
             "type": "array",
-            "maximum": 2,
-            "required": ["left_RVD_sequence", "right_RVD_sequence"],
             "additionalProperties": false,
             "items": {
                 "title": "RVD sequence pair",
                 "description": "The pair of repeat variable diresidue sequences of the TAL effectors that recognize the left and right half sites at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
                 "type": "object",
+                "required": ["left_RVD_sequence", "right_RVD_sequence"],
                 "properties": {
                     "left_RVD_sequence": {
                         "title": "Left RVD sequence",
@@ -279,7 +534,6 @@
             "description": "Repositories where reagents used to produce the described genetic modification can be obtained, if applicable.",
             "comment": "See source.json for identifiers (e.g. addgene, bacpac, rnai-consortium)",
             "type": "array",
-            "minItems": 1,
             "required": ["repository", "identifier"],
             "items": {
                 "title": "Reagent availability",
@@ -298,6 +552,14 @@
                         "description": "Repository identifier of the reagent used to produce the describe genetic modification, if applicable.",
                         "type": "string",
                         "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
+                    },
+                    "url": {
+                        "@type": "@id",
+                        "rdfs:subPropertyOf": "rdfs:seeAlso",
+                        "title": "URL",
+                        "description": "An external resource with additional information.",
+                        "type": "string",
+                        "format": "uri"
                     }
                 }
             }
@@ -332,8 +594,17 @@
         "modification_type": {
             "title": "Modification type"
         },
+        "purpose": {
+            "title": "Purpose"
+        },
+        "modification_technique": {
+            "title": "Modification technique"
+        },
         "modified_site_by_target_id.label": {
             "title": "Target"
+        },
+        "reagent_availability.repository": {
+            "title": "Reagent availability"
         },
         "status": {
             "title": "Genetic modification status"
