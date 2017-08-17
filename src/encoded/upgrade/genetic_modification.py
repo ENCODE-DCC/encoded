@@ -144,7 +144,7 @@ def genetic_modification_5_6(value, system):
                 # in the data so we can identify special cases to deal with
                 value['modification_technique'] = 'mutagen treatment'
     else:
-        value['modification_technique'] = 'mutagen treatment
+        value['modification_technique'] = 'mutagen treatment'
 
     if 'modification_techniques' in value:
         # These will no longer be linked out to the respective technique objects. The
