@@ -66,6 +66,7 @@
             ]
         },
         "modification_type": {
+            "comment": "Insertions need to specify epitope_tags or introduced_sequence. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified and mutagenesis needs treatment specified.",
             "oneOf": [
                 {
                     "required": ["epitope_tags"],
@@ -155,6 +156,7 @@
             }
         },
         "modification_technique": {
+            "comment": "CRISPR technique requires guide_rna_sequences and/or reagent_availability specified. RNAi requires rnai_sequences and/or reagent availability specified. TALEs require zygosity, RVD_sequence_pairs and/or reagent_availability specified. Mutagen treatment needs treatment to be specified. All other techniques need reagent_avialability and/or supporting documents to be specified.",
             "oneOf": [
                 {
                     "anyOf": [
@@ -396,16 +398,18 @@
                         "type": "string",
                         "enum": [
                             "eGFP",
+                            "GFP",
+                            "YFP",
+                            "mCherry",
+                            "3xFLAG",
+                            "FLAG",
+                            "6XHis",
                             "V5",
                             "HA",
                             "ER",
-                            "3xFLAG",
                             "DsRed",
                             "TRE",
-                            "T2A",
-                            "YFP",
-                            "FLAG",
-                            "mCherry"
+                            "T2A"
                         ]
                     },
                     "location": {
@@ -455,7 +459,6 @@
             "title": "Treatments",
             "description": "Relevant mutagenesis treatments applied to result in the modification.",
             "type": "array",
-            "default": [],
             "permission": "import_items",
             "uniqueItems": true,
             "items": {
