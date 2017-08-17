@@ -125,7 +125,7 @@ def audit_file_replicate_match(value):
         return
 
     rep_exp = value['replicate']['experiment']
-    file_exp = value['dataset']
+    file_exp = value['dataset']['@id']
 
     if rep_exp != file_exp:
         detail = 'File {} from experiment {} '.format(value['@id'], value['dataset']) + \

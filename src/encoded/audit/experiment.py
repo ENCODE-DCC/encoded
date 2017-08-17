@@ -193,6 +193,7 @@ def audit_experiment_chipseq_control_read_depth(value):
                 if not alignment_file.get('award') or \
                     alignment_file.get('award')['rfa'] not in [
                             'ENCODE3',
+                            'ENCODE4',
                             'ENCODE2-Mouse',
                             'ENCODE2',
                             'ENCODE',
@@ -751,7 +752,7 @@ def get_derived_from_files_set(list_of_files, file_format, object_flag):
 
 
 def audit_experiment_standards_dispatcher(value):
-    if not check_award_condition(value, ['ENCODE3', 'ENCODE2-Mouse', 'ENCODE2', 'ENCODE', 'Roadmap']):
+    if not check_award_condition(value, ['ENCODE4', 'ENCODE3', 'ENCODE2-Mouse', 'ENCODE2', 'ENCODE', 'Roadmap']):
         return
     '''
     Dispatcher function that will redirect to other functions that would
@@ -2701,7 +2702,7 @@ def audit_experiment_replicate_with_no_files(value):
 def audit_experiment_replicated(value):
 
     if not check_award_condition(value, [
-            'ENCODE3', 'GGR']):
+            'ENCODE4', 'ENCODE3', 'GGR']):
         return
     '''
     Experiments in ready for review state should be replicated. If not,
@@ -2875,7 +2876,7 @@ def audit_experiment_replicates_biosample(value):
 
 def audit_experiment_documents(value):
     if not check_award_condition(value, [
-            "ENCODE3", "modERN", "GGR",
+            "ENCODE3", "modERN", "GGR", "ENCODE4",
             "ENCODE", "ENCODE2-Mouse", "Roadmap"]):
         return
     '''
@@ -2999,7 +3000,7 @@ def audit_experiment_target(value):
 
 def audit_experiment_control(value):
     if not check_award_condition(value, [
-            "ENCODE3", "modERN", "ENCODE2", "modENCODE",
+            "ENCODE3", "ENCODE4", "modERN", "ENCODE2", "modENCODE",
             "ENCODE", "ENCODE2-Mouse", "Roadmap"]):
         return
 
@@ -3116,7 +3117,7 @@ def get_platforms_used_in_experiment(experiment):
 
 def audit_experiment_ChIP_control(value):
     if not check_award_condition(value, [
-           'ENCODE3', 'Roadmap']):
+            'ENCODE3', 'ENCODE4', 'Roadmap']):
         return
 
     if value['status'] in ['deleted', 'proposed', 'preliminary', 'replaced', 'revoked']:
@@ -3161,6 +3162,7 @@ def audit_experiment_ChIP_control(value):
 def audit_experiment_spikeins(value):
     if not check_award_condition(value, [
             "ENCODE3",
+            "ENCODE4",
             "modERN",
             "ENCODE",
             "ENCODE2-Mouse",
@@ -3277,7 +3279,7 @@ def audit_experiment_biosample_term(value, system):
 def audit_experiment_antibody_characterized(value):
     '''Check that biosample in the experiment has been characterized for the given antibody.'''
     if not check_award_condition(value, [
-            'ENCODE3', 'modERN']):
+            'ENCODE4', 'ENCODE3', 'modERN']):
         return
 
     if value['status'] in ['deleted', 'proposed', 'preliminary']:

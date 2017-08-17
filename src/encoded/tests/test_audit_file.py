@@ -308,7 +308,7 @@ def test_audit_file_read_length_controlled_by_exclusion(testapp, file1_2,
     assert any(error['category'] != 'inconsistent control read length' for error in errors_list)
 
 
-def test_audit_file_replicate_match(testapp, file1, file_rep2):
+def test_audit_file_replicate_match_inconsistent(testapp, file1, file_rep2):
     testapp.patch_json(file1['@id'], {'replicate': file_rep2['uuid']})
     res = testapp.get(file1['@id'] + '@@index-data')
     errors = res.json['audit']
@@ -317,6 +317,14 @@ def test_audit_file_replicate_match(testapp, file1, file_rep2):
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'inconsistent replicate' for error in errors_list)
 
+def test_audit_file_replicate_match_consistent(testapp, file1, file_rep2):
+    #testapp.patch_json(file1['@id'], {'replicate': file_rep2['uuid']})
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'inconsistent replicate' for error in errors_list)
 
 '''
 def test_audit_modERN_missing_step_run(testapp, file_exp, file3, award):
