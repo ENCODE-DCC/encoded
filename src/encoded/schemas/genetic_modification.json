@@ -196,26 +196,14 @@
                         }
                     ]
                 },
-                {
-                    "anyOf": [
-                        {
-                            "required": ["zygosity"],
-                            "comment": "Add back RVD_sequence_pairs to the required list after Jason gets metadata",
-                            "properties":{
-                                "modification_technique": {
-                                    "enum": ["TALE"]
-                                }
-                            }
-                        },
-                        {
-                            "required": ["zygosity", "reagent_availability"],
-                            "properties":{
-                                "modification_technique": {
-                                    "enum": ["TALE"]
-                                }
-                            }
+                {    
+                    "required": ["reagent_availability"],
+                    "comment": "Add back anyOf block with zygosity and RVD_sequence_pairs to the required list after Jason gets metadata",
+                    "properties":{
+                        "modification_technique": {
+                            "enum": ["TALE"]
                         }
-                    ]   
+                    }
                 },
                 {
                     "required": ["treatments"],
