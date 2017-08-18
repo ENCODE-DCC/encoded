@@ -8,18 +8,18 @@
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" },
         { "$ref": "donor.json#/properties" },
-        { "$ref": "mixins.json#/accession" },
-        { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/accessioned_status" },
-        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/genetic_modifications" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/genetic_modifications" }
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/accessioned_status" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/schema_version" }         
     ],
     "dependencies": {
         "age_units":  {
