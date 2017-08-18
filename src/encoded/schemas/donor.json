@@ -1,6 +1,7 @@
 {
     "title": "Donor",
-    "description": "Base schema for donors.",
+    "description": "Base schema for donors or strains.",
+    "comment": "Human donors and model organism strains derive from this base object.",
     "id": "/profiles/donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -60,7 +61,7 @@
             "default": [],
             "permission": "import_items",
             "items": {
-                "title": "Alternate Accession",
+                "title": "Alternate accession",
                 "description": "An accession previously assigned to an object that has been merged with this object.",
                 "comment": "Only accessions of objects that have status equal replaced will work here.",
                 "type": "string",
