@@ -363,12 +363,15 @@ class PipelineComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
 
-        const assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
-        const assayName = context[assayTerm];
-        const crumbs = [
-            { id: 'Pipelines' },
-            { id: assayName, query: `${assayTerm}=${assayName}`, tip: assayName },
-        ];
+        let crumbs;
+        const assayName = (context.assay_term_names && context.assay_term_names.length) ? context.assay_term_names.join(' + ') : null;
+        if (assayName) {
+            const query = context.assay_term_names.map(name => `assay_term_names=${name}`).join('&');
+            crumbs = [
+                { id: 'Pipelines' },
+                { id: assayName, query, tip: assayName },
+            ];
+        }
 
         const documents = {};
         if (context.documents) {
@@ -396,7 +399,7 @@ class PipelineComponent extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=pipeline" crumbs={crumbs} />
+                        {crumbs ? <Breadcrumbs root="/search/?type=Pipeline" crumbs={crumbs} /> : null}
                         <h2>{context.title}</h2>
                         <div className="characterization-status-labels">
                             <div className="characterization-status-labels">
@@ -415,10 +418,10 @@ class PipelineComponent extends React.Component {
                                 <dd>{context.title}</dd>
                             </div>
 
-                            {context.assay_term_name ?
+                            {context.assay_term_names && context.assay_term_names.length ?
                                 <div data-test="assay">
                                     <dt>Assay</dt>
-                                    <dd>{context.assay_term_name}</dd>
+                                    <dd>{context.assay_term_names.join(', ')}</dd>
                                 </div>
                             : null}
 
@@ -546,8 +549,8 @@ class ListingComponent extends React.Component {
                         <a href={result['@id']}>{result.title}</a>
                     </div>
                     <div className="data-row">
-                        {result.assay_term_name ?
-                            <div><strong>Assay: </strong>{result.assay_term_name}</div>
+                        {result.assay_term_names && result.assay_term_names.length ?
+                            <div><strong>Assays: </strong>{result.assay_term_names.join(', ')}</div>
                         : null}
 
                         {swTitle.length ?
