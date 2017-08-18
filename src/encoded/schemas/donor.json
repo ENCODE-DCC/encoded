@@ -93,8 +93,6 @@
             "items": {
                 "type": "string",
                 "enum": [
-                    "DREAM",
-                    "ENCORE",
                     "ENTEx",
                     "PGP",
                     "SESCC"]

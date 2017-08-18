@@ -1,6 +1,6 @@
 {
     "title": "Fly donor",
-    "description": "Schema for submitting a fly donor.",
+    "description": "Schema for submitting a fly strain.",
     "id": "/profiles/fly_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
