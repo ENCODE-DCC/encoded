@@ -447,6 +447,13 @@ class PipelineComponent extends React.Component {
                                     <dd><a href={context.source_url}>{context.source_url}</a></dd>
                                 </div>
                             : null}
+
+                            {context.standards_page ?
+                                <div data-test="standardspage">
+                                    <dt>Pipeline standards</dt>
+                                    <dd><a href={context.standards_page['@id']}>{context.standards_page.title}</a></dd>
+                                </div>
+                            : null}
                         </dl>
                     </PanelBody>
                 </Panel>
