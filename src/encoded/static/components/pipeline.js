@@ -420,7 +420,7 @@ class PipelineComponent extends React.Component {
 
                             {context.assay_term_names && context.assay_term_names.length ?
                                 <div data-test="assay">
-                                    <dt>Assay</dt>
+                                    <dt>Assays</dt>
                                     <dd>{context.assay_term_names.join(', ')}</dd>
                                 </div>
                             : null}
