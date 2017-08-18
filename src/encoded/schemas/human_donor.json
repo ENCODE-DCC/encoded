@@ -23,6 +23,7 @@
     ],
     "dependencies": {
         "age_units":  {
+            "comment":"Age units is required if age is specified as anything but unknown.",
             "required": ["age"],
             "not": {
                 "properties": {
@@ -120,13 +121,14 @@
         },
         "parents": {
             "title": "Parents",
-            "description": "Donor IDs of biological parents, if known.",
+            "description": "Biological parents of donor",
+            "comment":"This is a link for cases when families are all donors in our system.",
             "type":  "array",
             "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Parent",
-                "description": "A donor ID of a biological parent, if known.",
+                "description": "A donor ID of a biological parent",
                 "comment": "For human biosamples, see human_donor.json for available identifiers.",
                 "type": "string",
                 "linkTo": "HumanDonor"
@@ -149,13 +151,14 @@
         },
         "siblings": {
             "title": "Siblings",
-            "description": "Donors that have at least one parent in common.",
+            "description": "Donors that have at least one parent in common with this donor.",
+            "comment":"This is a link for cases when families are all donors in our system.",
             "type":  "array",
             "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Sibling",
-                "description": "A donors that has at least one parent in common.",
+                "description": "A donor that has at least one parent in common.",
                 "comment": "For human biosamples, see human_donor.json for available identifiers.",
                 "type": "string",
                 "linkTo": "HumanDonor"
