@@ -1,6 +1,7 @@
 {
     "title": "Human donor",
     "description": "Schema for submitting a human donor.",
+    "comment":"This object is meant to be one to one with an individual human.",
     "id": "/profiles/human_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
