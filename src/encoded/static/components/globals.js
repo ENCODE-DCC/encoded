@@ -105,7 +105,6 @@ export function unbindEvent(el, eventName, eventHandler) {
  */
 export function getBasicFileStatuses() {
     return [
-        '',
         'uploading',
         'content error',
         'in progress',
@@ -116,9 +115,32 @@ export function getBasicFileStatuses() {
 
 
 /**
+ * Returns all possible file statuses used with file searches that `unreleasedFilesUrl` uses.
+ * Useful if you just need the array of file statuses that `unreleasedFilesUri` returns as search
+ * URI. This list has to be kept in sync with the file.json schema.
+ *
+ * @return {array} Strings matching file schema statuses used in standard searches.
+ */
+export function getAllFileStatuses() {
+    return [
+        'uploading',
+        'content error',
+        'upload failed',
+        'in progress',
+        'deleted',
+        'released',
+        'replaced',
+        'revoked',
+        'archived',
+    ];
+}
+
+
+/**
  * Make a search query string for basic file statuses to load in search results.
  *
  * @param {object} context - Dataset object that relates the files we're searching for.
+ * @param (bool) loggedIn - True if logged in, in which case all possible file statuses get requested.
  * @param {object} modifiers - Additions and subtractions from basic statuses in the form of two
  *     arrays, one with the key `addStatuses` with the value of an array containing file statuses
  *     you'd like to search in addition to the basic ones. The other has the key `subtractStatuses`
@@ -126,26 +148,26 @@ export function getBasicFileStatuses() {
  *     the basic ones.
  * @return {string} - URI of file search string only including desired statuses.
  */
-export function unreleasedFilesUrl(context, modifiers) {
+export function unreleasedFilesUrl(context, loggedIn, modifiers) {
     const addStatuses = (modifiers && modifiers.addStatuses) || [];
     const subtractStatuses = (modifiers && modifiers.subtractStatuses) || [];
 
     // Start with the basic set of states, then add or subtract specific ones as needed.
-    let basicFileStatuses = getBasicFileStatuses();
+    let fileStatuses = loggedIn ? getAllFileStatuses() : getBasicFileStatuses();
 
     // Add requested additional statuses to the basic statuses; note `splice` mutates the given
     // array.
     if (addStatuses.length) {
-        basicFileStatuses.push(...addStatuses);
+        fileStatuses.push(...addStatuses);
     }
 
-    // Remove requested statuses from basic statuses.
-    basicFileStatuses = (subtractStatuses && subtractStatuses.length) ? _(basicFileStatuses).without(...subtractStatuses) : basicFileStatuses;
+    // Remove requested statuses from basic statuses, then dedupe them
+    fileStatuses = _.uniq((subtractStatuses && subtractStatuses.length) ? _(fileStatuses).without(...subtractStatuses) : fileStatuses);
 
     // Now that we have the statuses we need to search, convert and return the statuses as a search
     // URL.
-    const fileStatuses = basicFileStatuses.map(encodeURIComponent).join('&status=');
-    return `/search/?limit=all&type=File&dataset=${context['@id']}${fileStatuses}`;
+    const fileStatusQuery = fileStatuses.map(encodeURIComponent).join('&status=');
+    return `/search/?limit=all&type=File&dataset=${context['@id']}&status=${fileStatusQuery}`;
 }
 
 

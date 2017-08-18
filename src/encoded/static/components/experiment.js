@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
@@ -600,10 +601,17 @@ class ExperimentComponent extends React.Component {
                                         </div>
                                     : null}
 
+                                    {context.date_submitted ?
+                                        <div data-test="date-submitted">
+                                            <dt>Date submitted</dt>
+                                            <dd>{moment(context.date_submitted).format('MMMM D, YYYY')}</dd>
+                                        </div>
+                                    : null}
+
                                     {context.date_released ?
                                         <div data-test="date-released">
                                             <dt>Date released</dt>
-                                            <dd>{context.date_released}</dd>
+                                            <dd>{moment(context.date_released).format('MMMM D, YYYY')}</dd>
                                         </div>
                                     : null}
 

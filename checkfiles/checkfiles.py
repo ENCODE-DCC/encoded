@@ -799,7 +799,7 @@ def check_file(config, session, url, job):
     else:
         check_format(config['encValData'], job, local_path)
 
-    if item['file_format'] == 'fastq':
+    if item['file_format'] == 'fastq' and not errors.get('validateFiles'):
         try:
             process_fastq_file(job,
                                subprocess.Popen(['gunzip --stdout {}'.format(
@@ -981,7 +981,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.16'
+    version = '1.17'
 
     try:
         ip_output = subprocess.check_output(
