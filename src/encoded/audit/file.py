@@ -71,7 +71,7 @@ def audit_file_processed_derived_from(value):
                f['status'] == value['status']:
                 fastq_bam_counter += 1
 
-            if f['dataset'] != value['dataset']:
+            if f['dataset'] != value['dataset'].get('@id'):
                 detail = 'derived_from is a list of files that were used to create a given file; ' + \
                          'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
                          'Alignments file {} '.format(value['@id']) + \
