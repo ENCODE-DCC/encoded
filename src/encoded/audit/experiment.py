@@ -2794,7 +2794,7 @@ def audit_experiment_isogeneity(value):
     if len(biosample_dict.keys()) < 2:
             return  # unreplicated
 
-    if biosample_species == '/organisms/human/':
+    if biosample_species.get('@id') == '/organisms/human/':
         return  # humans are handled in the the replication_type
 
     if len(biosample_donor_set) > 1:
