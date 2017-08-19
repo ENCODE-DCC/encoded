@@ -177,7 +177,7 @@ def audit_paired_with(value, system):
     if value['replicate'].get('@id') != value['paired_with']['replicate']:
         detail = 'File {} has replicate {}. It is paired_with file {} with replicate {}'.format(
             value['@id'],
-            value.get['replicate'].get('@id'),
+            value['replicate'].get('@id'),
             value['paired_with']['@id'],
             value['paired_with'].get('replicate'))
         yield AuditFailure('inconsistent paired_with', detail, level='ERROR')
