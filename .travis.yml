@@ -1,5 +1,6 @@
 language: python
 sudo: required
+dist: precise
 cache:
   directories:
     - eggs
