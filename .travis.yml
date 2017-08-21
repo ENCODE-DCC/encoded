@@ -44,7 +44,7 @@ before_install:
   - npm config set python /usr/bin/python2.7
 install:
   - curl -O  ${ES_DOWNLOAD_URL}
-  - tar zxcf elasticsearch-${ES_VERSION}.tgz
+  - tar zxvf elasticsearch-${ES_VERSION}.tgz
   - python bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
 before_script:
