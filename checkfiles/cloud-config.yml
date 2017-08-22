@@ -43,7 +43,7 @@ runcmd:
 - chown build:build /opt/encValData
 - sudo -u build git clone --depth 1 https://github.com/ENCODE-DCC/encValData /opt/encValData
 
-- curl -sS -L -o /usr/local/bin/validateFiles https://github.com/ENCODE-DCC/kentUtils/raw/master/bin/linux.x86_64/validateFiles
+- curl -sS -L -o /usr/local/bin/validateFiles http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/validateFiles
 - chmod +x /usr/local/bin/validateFiles
 
 - mkdir /opt/encoded
