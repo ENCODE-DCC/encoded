@@ -628,8 +628,10 @@
         "accession": 1.0,
         "alternate_accessions": 1.0,
         "aliases": 1.0,
-        "modified_site_by_target_id.": 1.0,
-        "reagent_availability.repository.title": 1.0
+        "modified_site_by_target_id.label": 1.0,
+        "modified_site_by_target_id.gene_name": 1.0,
+        "modified_site_by_target_id.dbxref": 1.0,
+        "modified_site_by_target_id.aliases": 1.0
     },
     "changelog": "/profiles/changelogs/genetic_modification.md"
 }
