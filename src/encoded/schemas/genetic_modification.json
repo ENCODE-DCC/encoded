@@ -22,37 +22,38 @@
             "comment": "Modifications for tagging purposes need to include the epitope_tag property in combination with a target. Modifications for other purposes also need either the site and/or target specified.",
             "oneOf": [
                 {
-                    "required": ["modified_site_by_target_id", "epitope_tags"],
-                    "properties": {
-                    "purpose": {
-                            "enum": ["tagging"]
+                    "anyOf": [
+                        {
+                            "required": ["modified_site_by_target_id", "epitope_tags"]
+                        },
+                        {
+                            "required": ["modified_site_nonspecific", "epitope_tags"]
                         }
-                    },
-                    "epitope_tags": {
-                        "minItems": 1
-                    }
-                },
-                {
-                    "required": ["modified_site_by_target_id"],
+                    ],
                     "properties": {
-                    "purpose": {
-                            "enum": ["repression", "activation", "overexpression", "validation"]
+                        "purpose": {
+                                "enum": ["tagging"]
                         }
                     }
                 },
                 {
-                    "required": ["modified_site_by_coordinates"],
-                    "properties": {
-                    "purpose": {
-                            "enum": ["repression", "activation", "overexpression", "validation"]
+                    "anyOf": [
+                        {
+                            "required": ["modified_site_by_target_id"]
+                        },
+                        {
+                            "required": ["modified_site_by_coordinates"]
+                        },
+                        {
+                            "required": ["modified_site_by_sequence"]
+                        },
+                        {
+                            "required": ["modified_site_nonspecific"]
                         }
-                    }
-                },
-                {
-                    "required": ["modified_site_by_sequence"],
+                    ],
                     "properties": {
-                    "purpose": {
-                            "enum": ["repression", "activation", "overexpression", "validation"]
+                        "purpose": {
+                                "enum": ["repression", "activation", "overexpression", "validation"]
                         }
                     }
                 },
@@ -69,20 +70,24 @@
             "comment": "Insertions need to specify epitope_tags or introduced_sequence. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified and mutagenesis needs treatment specified.",
             "oneOf": [
                 {
-                    "required": ["epitope_tags"],
-                    "properties": {
-                        "modification_type": {
-                            "enum": ["insertion"]
+                    "anyOf": [
+                        {
+                            "required": ["epitope_tags"],
+                            "properties": {
+                                "modification_type": {
+                                    "enum": ["insertion"]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["introduced_sequence"],
+                            "properties": {
+                                "modification_type": {
+                                    "enum": ["insertion"]
+                                }
+                            }
                         }
-                    }
-                },
-                {
-                    "required": ["introduced_sequence"],
-                    "properties": {
-                        "modification_type": {
-                            "enum": ["insertion"]
-                        }
-                    }
+                    ]
                 },
                 {
                     "required": ["introduced_sequence"],
@@ -95,30 +100,20 @@
                 {
                     "anyOf": [
                         {
-                             "required": ["modified_site_by_coordinates"],
-                             "properties": {
-                                 "modification_type": {
-                                     "enum": ["deletion"]
-                                 }
-                             }
+                             "required": ["modified_site_by_coordinates"]
                         },
                         {
-                             "required": ["modified_site_by_target_id"],
-                             "properties": {
-                                  "modification_type": {
-                                      "enum": ["deletion"]
-                                  }
-                             }
+                             "required": ["modified_site_by_target_id"]
                         },
                         {
-                             "required": ["modified_site_by_sequence"],
-                             "properties": {
-                                  "modification_type": {
-                                      "enum": ["deletion"]
-                                  }
-                             }
+                             "required": ["modified_site_by_sequence"]
                         }
-                    ]
+                    ],
+                    "properties": {
+                        "modification_type": {
+                            "enum": ["deletion"]
+                        }
+                    }
                 },
                 {
                     "required": ["modified_site_by_target_id"],
@@ -129,13 +124,24 @@
                     }
                 },
                 {
-                    
-                    "required": ["treatments"],
-                    "properties": {
-                        "modification_type": {
-                            "enum": ["mutagenesis"]
+                    "anyOf": [
+                        {
+                            "required": ["treatments"],
+                            "properties": {
+                                "modification_type": {
+                                    "enum": ["mutagenesis", "site-specific recombination"]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["treatments", "modified_site_nonspecific"],
+                            "properties": {
+                                "modification_type": {
+                                    "enum": ["mutagenesis"]
+                                }
+                            }
                         }
-                    }
+                    ]
                 }
             ]
         },
@@ -212,7 +218,8 @@
                      "properties":{
                         "modification_technique": {
                             "enum": [
-                                "mutagen treatment"
+                                "mutagen treatment",
+                                "site-specific recombination"
                             ]
                         }
                     }
@@ -222,6 +229,9 @@
                         {
                             "required": ["documents"],
                             "properties":{
+                                "documents": {
+                                    "minItems": 1
+                                },
                                 "modification_technique": {
                                     "enum": [
                                         "stable transfection",
@@ -229,7 +239,7 @@
                                         "transduction",
                                         "microinjection",
                                         "bombardment",
-                                        "phiC31 integrase"
+                                        "site-specific recombination"
                                      ]
                                 }
                             }
@@ -244,7 +254,7 @@
                                         "transduction",
                                         "microinjection",
                                         "bombardment",
-                                        "phiC31 integrase"
+                                        "site-specific recombination"
                                     ]
                                 }
                             }
@@ -382,6 +392,15 @@
             "type": "string",
             "pattern": "^[ACTG]+$"
         },
+        "modified_site_nonspecific": {
+            "title": "Modified site (non-specific)",
+            "description": "Site of modification that is not known (i.e. is random, not targeted).",
+            "type": "string",
+            "comment": "May be expanded to include extrachromosomal arrays if need arises.",
+            "enum": [
+                "random integration"
+            ]
+        },
         "epitope_tags": {
             "title": "Protein epitope tags",
             "description": "Eptiope tags introduced in the modification.",
@@ -447,12 +466,12 @@
                 "TALE",
                 "stable transfection",
                 "transient transfection",
+                "site-specific recombination",
                 "transduction",
                 "RNAi",
                 "mutagen treatment",
                 "microinjection",
-                "bombardment",
-                "phiC31 integrase"
+                "bombardment"
             ]
         },
         "treatments": { 
@@ -571,11 +590,21 @@
         }
     },
     "columns": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
         "aliases": {
             "title": "Lab aliases"
         },
         "modification_type": {
             "title": "Modification type"
+        },
+        "purpose": {
+            "title": "Purpose"
+        },
+        "modification_technique": {
+            "title": "Modification technique"
         },
         "status": {
             "title": "Genetic modification status"
@@ -591,15 +620,16 @@
         "modification_technique": {
             "title": "Modification technique"
         },
-        "modified_site_by_target_id.label": {
-            "title": "Target"
-        },
-        "reagent_availability.repository": {
-            "title": "Reagent availability"
-        },
         "status": {
             "title": "Genetic modification status"
         }
+    },
+    "boost_values": {
+        "accession": 1.0,
+        "alternate_accessions": 1.0,
+        "aliases": 1.0,
+        "modified_site_by_target_id.": 1.0,
+        "reagent_availability.repository.title": 1.0
     },
     "changelog": "/profiles/changelogs/genetic_modification.md"
 }
