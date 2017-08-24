@@ -39,6 +39,9 @@ def genetic_modification_2_3(value, system):
 @upgrade_step('genetic_modification', '5', '6')
 def genetic_modification_5_6(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3088
+
+    conn = system['registry'][CONNECTION]
+
     if 'target' in value:
         value['modified_site_by_target_id'] = value['target']
         value.pop('target')
@@ -75,19 +78,27 @@ def genetic_modification_5_6(value, system):
             value['reagent_availability'].append(rep_obj)
         has_source = False
 
+    if not value['treatments']:
+        # Get rid of the empty default treatment arrays
+        value.pop('treatments')
+
+    if not value['modification_techniques']:
+        # Get rid of the empty default technique arrays
+        value.pop('modification_techniques')
+
     # New required properties modification_technique and purpose need to be handled somehow
     if value['modification_techniques']:
         alias_flag = False
         for t in value['modification_techniques']:
-            technique = t
-            if 'aliases' in technique:
+            technique = conn.get_by_uuid(t)
+            if 'aliases' in technique.properties:
                 alias_flag = True
             rep_obj = dict()
-            if 'source' in technique:
-                rep_obj.update({'repository': technique.get('source')})
+            if 'source' in technique.properties:
+                rep_obj.update({'repository': technique.properties['source']})
                 has_source = True
-            if 'product_id' in technique:
-                rep_obj.update({'identifier': technique.get('product_id')})
+            if 'product_id' in technique.properties:
+                rep_obj.update({'identifier': technique.properties['product_id']})
             else:
                 # If we have a source but no product id, it's likely from a lab. Backfill with this default.
                 if has_source:
@@ -96,17 +107,19 @@ def genetic_modification_5_6(value, system):
             if rep_obj:
                 if 'reagent_availability' not in value:
                     value['reagent_availability'] = [rep_obj]
-                else:
+                elif rep_obj not in value['reagent_availability']:
                     value['reagent_availability'].append(rep_obj)
+                else:
+                    pass
                 has_source = False
-            if 'guide_rna_sequences' in technique:
-                value['guide_rna_sequences'] = technique.get('guide_rna_sequences')
+            if 'guide_rna_sequences' in technique.properties:
+                value['guide_rna_sequences'] = technique.properties['guide_rna_sequences']
                 value['modification_technique'] = 'CRISPR'
 
-                if 'insert_sequence' in technique:
-                    value['introduced_sequence'] = technique.get('insert_sequence')
+                if 'insert_sequence' in technique.properties:
+                    value['introduced_sequence'] = technique.properties['insert_sequence']
                 if alias_flag:
-                    for a in technique.get('aliases'):
+                    for a in technique.properties['aliases']:
                         b = a + '-CRISPR'
                         if 'aliases' in value:
                             value['aliases'].append(b)
@@ -120,19 +133,19 @@ def genetic_modification_5_6(value, system):
                     # lines and those all have C-terminal eGFP tags.
                     value['epitope_tags'] = [{'name': 'eGFP', 'location': 'C-terminal'}]
                 
-            elif 'talen_platform' in technique:
+            elif 'talen_platform' in technique.properties:
                 value['modification_technique'] = 'TALE'
-                # We think these should have purpose = repression if empty. The Stam lab isn't
-                # doing any other types of TALE modifications right now. For the purposes
-                # of the upgrade, let's add that in for now.
-                if 'purpose' not in value:
-                    value['purpose'] = 'repression'
+                # We had patched these on production to have purpose = repression. However, they're
+                # actually more in line with a purpose of validating the region as DHS/regulatory, so
+                # let's upgrade it to that. Another option would be "analysis" but am unsure what it's
+                # supposed to be used for.
+                value.update({'purpose': 'validation'})
                 if 'notes' in value:
-                    value['notes'] = value['notes'] + '. TALEN platform: ' + technique.get('talen_platform')
+                    value['notes'] = value['notes'] + '. TALEN platform: ' + technique.properties['talen_platform']
                 else:
-                    value['notes'] = 'TALEN platform ' + technique.get('talen_platform')
+                    value['notes'] = 'TALEN platform ' + technique.properties['talen_platform']
                 if alias_flag:
-                    for a in technique.get('aliases'):
+                    for a in technique.properties['aliases']:
                         b = a + '-TALE'
                         if 'aliases' in value:
                             value['aliases'].append(b)
@@ -144,7 +157,7 @@ def genetic_modification_5_6(value, system):
                 # in the data so we can identify special cases to deal with
                 value['modification_technique'] = 'microinjection'
     else:
-        value['modification_technique'] = 'microinjection'
+        value['modification_technique'] = 'mutagen treatment'
 
     if 'modification_techniques' in value:
         # These will no longer be linked out to the respective technique objects. The
