@@ -91,7 +91,7 @@ Commented this test out because the linked technique objects are not embedded fo
 but are for the test so it fails when it's trying to resolve the linked object by UUID. In 
 the former case, it's a link, in the latter case it's the embedded object. I can make the test
 work but then the upgrade doesn't do what it should do.
-'''
+
 def test_genetic_modification_upgrade_5_6(upgrader, genetic_modification_5, crispr, registry):
     value = upgrader.upgrade('genetic_modification', genetic_modification_5, registry=registry,
                              current_version='5', target_version='6')
