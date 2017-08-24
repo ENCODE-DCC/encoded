@@ -39,9 +39,6 @@ def genetic_modification_2_3(value, system):
 @upgrade_step('genetic_modification', '5', '6')
 def genetic_modification_5_6(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3088
-
-    conn = system['registry'][CONNECTION]
-
     if 'target' in value:
         value['modified_site_by_target_id'] = value['target']
         value.pop('target')
@@ -82,15 +79,15 @@ def genetic_modification_5_6(value, system):
     if value['modification_techniques']:
         alias_flag = False
         for t in value['modification_techniques']:
-            technique = conn.get_by_uuid(t)
-            if 'aliases' in technique.properties:
+            technique = t
+            if 'aliases' in technique:
                 alias_flag = True
             rep_obj = dict()
-            if 'source' in technique.properties:
-                rep_obj.update({'repository': technique.properties['source']})
+            if 'source' in technique:
+                rep_obj.update({'repository': technique.get('source')})
                 has_source = True
-            if 'product_id' in technique.properties:
-                rep_obj.update({'identifier': technique.properties['product_id']})
+            if 'product_id' in technique:
+                rep_obj.update({'identifier': technique.get('product_id')})
             else:
                 # If we have a source but no product id, it's likely from a lab. Backfill with this default.
                 if has_source:
@@ -102,37 +99,40 @@ def genetic_modification_5_6(value, system):
                 else:
                     value['reagent_availability'].append(rep_obj)
                 has_source = False
-            if 'guide_rna_sequences' in technique.properties:
-                value['guide_rna_sequences'] = technique.properties['guide_rna_sequences']
+            if 'guide_rna_sequences' in technique:
+                value['guide_rna_sequences'] = technique.get('guide_rna_sequences')
                 value['modification_technique'] = 'CRISPR'
 
-                if 'insert_sequence' in technique.properties:
-                    value['introduced_sequence'] = technique.properties['insert_sequence']
+                if 'insert_sequence' in technique:
+                    value['introduced_sequence'] = technique.get('insert_sequence')
                 if alias_flag:
-                    for a in technique.properties['aliases']:
+                    for a in technique.get('aliases'):
                         b = a + '-CRISPR'
                         if 'aliases' in value:
                             value['aliases'].append(b)
                         else:
                             value['aliases'] = [b]
-                if value['purpose'] == 'tagging':
+                if 'purpose' in value and value['purpose'] == 'tagging':
                     # Those modification objects that are CRISPR tag insertions can't be upgraded
-                    # this way since the dependencies require them to have tag info and that metadata
-                    # sits in construct so they must be migrated manually with all constructs.
+                    # this way since the dependencies require them to have tag info and that 
+                    # metadata sits in construct so they must be migrated manually with all 
+                    # constructs. The only ones in this class right now are the Snyder CRISPR-tag
+                    # lines and those all have C-terminal eGFP tags.
                     value['epitope_tags'] = [{'name': 'eGFP', 'location': 'C-terminal'}]
-
-            elif 'talen_platform' in technique.properties:
+                
+            elif 'talen_platform' in technique:
                 value['modification_technique'] = 'TALE'
-                # We think these should have purpose = repression if empty. For the purposes
+                # We think these should have purpose = repression if empty. The Stam lab isn't
+                # doing any other types of TALE modifications right now. For the purposes
                 # of the upgrade, let's add that in for now.
                 if 'purpose' not in value:
                     value['purpose'] = 'repression'
                 if 'notes' in value:
-                    value['notes'] = value['notes'] + '. TALEN platform: ' + technique.properties['talen_platform']
+                    value['notes'] = value['notes'] + '. TALEN platform: ' + technique.get('talen_platform')
                 else:
-                    value['notes'] = 'TALEN platform ' + technique.properties['talen_platform']
+                    value['notes'] = 'TALEN platform ' + technique.get('talen_platform')
                 if alias_flag:
-                    for a in technique.properties['aliases']:
+                    for a in technique.get('aliases'):
                         b = a + '-TALE'
                         if 'aliases' in value:
                             value['aliases'].append(b)
@@ -142,9 +142,9 @@ def genetic_modification_5_6(value, system):
                 # This shouldn't happen as we currently don't have any other possible techniques
                 # so let's just set it to something we know we don't have yet annotated correctly
                 # in the data so we can identify special cases to deal with
-                value['modification_technique'] = 'mutagen treatment'
+                value['modification_technique'] = 'microinjection'
     else:
-        value['modification_technique'] = 'mutagen treatment'
+        value['modification_technique'] = 'microinjection'
 
     if 'modification_techniques' in value:
         # These will no longer be linked out to the respective technique objects. The

@@ -42,8 +42,8 @@ def crispr(lab, award, source):
         'insert_sequence': 'TCGA',
         'aliases': ['encode:crispr_technique1'],
         '@type': ['Crispr', 'ModificationTechnique', 'Item'],
-        '@id': '/crisprs/d16821e3-a8b6-40a5-835c-355c619a9011/',
-        'uuid': 'd16821e3-a8b6-40a5-835c-355c619a9011'
+        '@id': '/crisprs/79c1ec08-c878-4419-8dba-66aa4eca156b/',
+        'uuid': '79c1ec08-c878-4419-8dba-66aa4eca156b'
     }
 
 
@@ -86,10 +86,7 @@ def test_genetic_modification_upgrade_2_3(upgrader, genetic_modification_2):
     assert 'modification_treatments' not in value
 
 
-'''
-def test_genetic_modification_upgrade_5_6(upgrader, genetic_modification_5, crispr, registry):
-    from snovault import UPGRADER
-    upgrader = registry[UPGRADER]
+def test_genetic_modification_upgrade_5_6(upgrader, genetic_modification_5, crispr):
     value = upgrader.upgrade('genetic_modification', genetic_modification_5,
                              current_version='5', target_version='6')
     assert value['schema_version'] == '6'
@@ -103,6 +100,5 @@ def test_genetic_modification_upgrade_5_6(upgrader, genetic_modification_5, cris
     assert value['aliases'][0] == 'encode:crispr_technique1-CRISPR'
     assert value['introduced_sequence'] == 'TCGA'
     assert 'reagent_availability' in value
-    assert value['reagent_availability']['repository'] == 'sigma'
-    assert value['reagent_availability']['identifier'] == '12345'
-'''
+    assert value['reagent_availability'][0]['repository'] == 'sigma'
+    assert value['reagent_availability'][0]['identifier'] == '12345'
