@@ -35,8 +35,6 @@ matrix:
       env: BROWSER=Chrome
     - python: "3.5.1"
       env: BROWSER=
-services:
-    - elasticsearch
 before_install:
   - postgres --version
   - initdb --version
@@ -49,7 +47,7 @@ install:
   - python bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
 before_script:
-  - sleep 10
+  - sudo service elasticsearch stop
   - >
     if test -n "$BROWSER"; then
       CONNECT_URL=https://saucelabs.com/downloads/sc-4.4.4-linux.tar.gz 
