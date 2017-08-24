@@ -73,21 +73,17 @@ class FakeRequest(object):
 
 
 def test_set_filters():
-    from encoded.search import set_filters
+    from snowflakes.search import set_filters
 
     request = FakeRequest((
         ('field1', 'value1'),
     ))
     query = {
         'query': {
-            'bool': {}
-        },
-        'post_filter': {
             'bool': {
-                'must': [],
-                'must_not': []
-            }
-        }
+                'filter': [],
+            },
+        },
     }
     result = {'filters': []}
     used_filters = set_filters(request, query, result)
@@ -95,21 +91,17 @@ def test_set_filters():
     assert used_filters == {'field1': ['value1']}
     assert query == {
         'query': {
-            'bool': {}
-        },
-        'post_filter': {
             'bool': {
-                'must': [
+                'filter': [
                     {
                         'terms': {
                             'embedded.field1': ['value1'],
                         },
                     },
                 ],
-                'must_not': []
+            },
+        },
             }
-        }
-    }
     assert result == {
         'filters': [
             {
@@ -122,21 +114,17 @@ def test_set_filters():
 
 
 def test_set_filters_searchTerm():
-    from encoded.search import set_filters
+    from snowflakes.search import set_filters
 
     request = FakeRequest((
         ('searchTerm', 'value1'),
     ))
     query = {
         'query': {
-            'bool': {}
-        },
-        'post_filter': {
             'bool': {
-                'must': [],
-                'must_not': []
-            }
-        }
+                'filter': [],
+            },
+        },
     }
     result = {'filters': []}
     used_filters = set_filters(request, query, result)
@@ -144,14 +132,10 @@ def test_set_filters_searchTerm():
     assert used_filters == {}
     assert query == {
         'query': {
-            'bool': {}
-        },
-        'post_filter': {
             'bool': {
-                'must': [],
-                'must_not': []
-            }
-        }
+                'filter': [],
+            },
+        },
     }
     assert result == {
         'filters': [
@@ -168,21 +152,17 @@ def test_set_filters_searchTerm():
     'type', 'limit', 'mode',
     'format', 'frame', 'datastore', 'field', 'sort', 'from', 'referrer'])
 def test_set_filters_reserved_params(param):
-    from encoded.search import set_filters
+    from snowflakes.search import set_filters
 
     request = FakeRequest((
         (param, 'foo'),
     ))
     query = {
         'query': {
-            'bool': {}
-        },
-        'post_filter': {
             'bool': {
-                'must': [],
-                'must_not': []
-            }
-        }
+                'filter': [],
+            },
+        },
     }
     result = {'filters': []}
     used_filters = set_filters(request, query, result)
@@ -190,14 +170,10 @@ def test_set_filters_reserved_params(param):
     assert used_filters == {}
     assert query == {
         'query': {
-            'bool': {}
-        },
-        'post_filter': {
             'bool': {
-                'must': [],
-                'must_not': []
-            }
-        }
+                'filter': [],
+            },
+        },
     }
     assert result == {
         'filters': [],
@@ -205,7 +181,7 @@ def test_set_filters_reserved_params(param):
 
 
 def test_set_filters_multivalued():
-    from encoded.search import set_filters
+    from snowflakes.search import set_filters
 
     request = FakeRequest((
         ('field1', 'value1'),
@@ -213,14 +189,10 @@ def test_set_filters_multivalued():
     ))
     query = {
         'query': {
-            'bool': {}
-        },
-        'post_filter': {
             'bool': {
-                'must': [],
-                'must_not': []
-            }
-        }
+                'filter': [],
+            },
+        },
     }
     result = {'filters': []}
     used_filters = set_filters(request, query, result)
@@ -228,20 +200,16 @@ def test_set_filters_multivalued():
     assert used_filters == {'field1': ['value1', 'value2']}
     assert query == {
         'query': {
-            'bool': {}
-        },
-        'post_filter': {
             'bool': {
-                'must': [
+                'filter': [
                     {
                         'terms': {
-                            'embedded.field1': ['value1', 'value2']
-                        }
-                    }
+                            'embedded.field1': ['value1', 'value2'],
+                        },
+                    },
                 ],
-                'must_not': []
-            }
-        }
+            },
+        },
     }
     assert result == {
         'filters': [
@@ -260,21 +228,17 @@ def test_set_filters_multivalued():
 
 
 def test_set_filters_negated():
-    from encoded.search import set_filters
+    from snowflakes.search import set_filters
 
     request = FakeRequest((
         ('field1!', 'value1'),
     ))
     query = {
         'query': {
-            'bool': {}
-        },
-        'post_filter': {
             'bool': {
-                'must': [],
-                'must_not': []
-            }
-        }
+                'filter': [],
+            },
+        },
     }
     result = {'filters': []}
     used_filters = set_filters(request, query, result)
@@ -282,20 +246,18 @@ def test_set_filters_negated():
     assert used_filters == {'field1!': ['value1']}
     assert query == {
         'query': {
-            'bool': {}
-        },
-        'post_filter': {
             'bool': {
-                'must_not': [
+                'filter': [
                     {
-                        'terms': {
-                            'embedded.field1': ['value1']
-                        }
-                    }
+                        'not': {
+                            'term': {
+                                'embedded.field1': ['value1'],
+                            },
+                        },
+                    },
                 ],
-                'must': []
-            }
-        }
+            },
+        },
     }
     assert result == {
         'filters': [
@@ -309,21 +271,17 @@ def test_set_filters_negated():
 
 
 def test_set_filters_audit():
-    from encoded.search import set_filters
+    from snowflakes.search import set_filters
 
     request = FakeRequest((
         ('audit.foo', 'value1'),
     ))
     query = {
         'query': {
-            'bool': {}
-        },
-        'post_filter': {
             'bool': {
-                'must': [],
-                'must_not': []
-            }
-        }
+                'filter': [],
+            },
+        },
     }
     result = {'filters': []}
     used_filters = set_filters(request, query, result)
@@ -331,20 +289,16 @@ def test_set_filters_audit():
     assert used_filters == {'audit.foo': ['value1']}
     assert query == {
         'query': {
-            'bool': {}
-        },
-        'post_filter': {
             'bool': {
-                'must': [
+                'filter': [
                     {
                         'terms': {
-                            'audit.foo': ['value1']
+                            'audit.foo': ['value1'],
                         },
                     },
                 ],
-                'must_not': []
-            }
-        }
+            },
+        },
     }
     assert result == {
         'filters': [
@@ -358,7 +312,7 @@ def test_set_filters_audit():
 
 
 def test_set_filters_exists_missing():
-    from encoded.search import set_filters
+    from snowflakes.search import set_filters
 
     request = FakeRequest((
         ('field1', '*'),
@@ -366,14 +320,10 @@ def test_set_filters_exists_missing():
     ))
     query = {
         'query': {
-            'bool': {}
-        },
-        'post_filter': {
             'bool': {
-                'must': [],
-                'must_not': []
-            }
-        }
+                'filter': [],
+            },
+        },
     }
     result = {'filters': []}
     used_filters = set_filters(request, query, result)
@@ -382,30 +332,24 @@ def test_set_filters_exists_missing():
         'field1': ['*'],
         'field2!': ['*'],
     }
-
     assert query == {
         'query': {
-            'bool': {}
-        },
-        'post_filter': {
             'bool': {
-                'must': [
+                'filter': [
                     {
                         'exists': {
-                            'field': 'embedded.field1'
-                        }
+                            'field': 'embedded.field1',
+                        },
                     },
                     {
                         'missing': {
-                            'field': 'embedded.field2'
+                            'field': 'embedded.field2',
                         }
                     }
                 ],
-                'must_not': []
-            }
-        }
+            },
+        },
     }
-
     assert result == {
         'filters': [
             {
@@ -424,7 +368,7 @@ def test_set_filters_exists_missing():
 
 def test_set_facets():
     from collections import OrderedDict
-    from encoded.search import set_facets
+    from snowflakes.search import set_facets
     facets = [
         ('type', {'title': 'Type'}),
         ('audit.foo', {'title': 'Audit'}),
@@ -507,7 +451,7 @@ def test_set_facets():
 
 def test_set_facets_negated_filter():
     from collections import OrderedDict
-    from encoded.search import set_facets
+    from snowflakes.search import set_facets
     facets = [
         ('facet1', {'title': 'Facet 1'}),
     ]
@@ -544,7 +488,7 @@ def test_set_facets_negated_filter():
 
 def test_set_facets_type_exists():
     from collections import OrderedDict
-    from encoded.search import set_facets
+    from snowflakes.search import set_facets
     facets = [
         ('field1', {'title': 'Facet 1', 'type': 'exists'}),
         ('field2', {'title': 'Facet 2', 'type': 'exists'}),
@@ -612,7 +556,7 @@ def test_set_facets_type_exists():
 
 
 def test_format_facets():
-    from encoded.search import format_facets
+    from snowflakes.search import format_facets
     es_result = {
         'aggregations': {
             'field1': {
