@@ -700,7 +700,7 @@ def check_experiment_dnase_seq_standards(experiment,
         if hotspot_quality_metrics is not None and \
            len(hotspot_quality_metrics) > 0:
             for metric in hotspot_quality_metrics:
-                if "SPOT2 score" in metric:
+                if "SPOT1 score" in metric:
                     file_names = []
                     for f in metric['quality_metric_of']:
                         file_names.append(f['@id'].split('/')[2])
@@ -711,21 +711,19 @@ def check_experiment_dnase_seq_standards(experiment,
                              "produced by {} ".format(pipelines[0]['title']) + \
                              "( {} ) ".format(pipelines[0]['@id']) + \
                              assemblies_detail(extract_assemblies(hotspot_assemblies, file_names)) + \
-                             "have a SPOT2 score of {0:.2f}. ".format(metric["SPOT2 score"]) + \
+                             "have a SPOT1 score of {0:.2f}. ".format(metric["SPOT1 score"]) + \
                              "According to ENCODE standards, " + \
-                             "SPOT2 score of 0.4 or higher is considered a product of high quality " + \
+                             "SPOT1 score of 0.4 or higher is considered a product of high quality " + \
                              "data. " + \
-                             "Any sample with a SPOT2 score <0.3 should be targeted for replacement " + \
+                             "Any sample with a SPOT1 score <0.3 should be targeted for replacement " + \
                              "with a higher quality sample, and a " + \
-                             "SPOT2 score of 0.25 is considered minimally acceptable " + \
+                             "SPOT1 score of 0.25 is considered minimally acceptable " + \
                              "for rare and hard to find primary tissues. (See {} )".format(
                                  link_to_standards)
 
-                    if 0.3 <= metric["SPOT2 score"] < 0.4:
+                    if 0.25 <= metric["SPOT1 score"] < 0.4:
                         yield AuditFailure('low spot score', detail, level='WARNING')
-                    elif 0.25 <= metric["SPOT2 score"] < 0.3:
-                        yield AuditFailure('insufficient spot score', detail, level='NOT_COMPLIANT')
-                    elif metric["SPOT2 score"] < 0.25:
+                    elif metric["SPOT1 score"] < 0.25:
                         yield AuditFailure('extremely low spot score', detail, level='ERROR')
 
         if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
