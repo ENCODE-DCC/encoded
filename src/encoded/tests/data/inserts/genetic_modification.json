@@ -79,6 +79,11 @@
             {
                 "name": "eGFP",
                 "location": "C-terminal"
+            },
+            {
+                "name": "mCherry",
+                "location": "internal",
+                "promoter_used": "1fe12114-b9df-4626-a29f-78f3130eb5d2"
             }
         ],
         "modified_site_by_target_id": "/targets/FTO-human/",

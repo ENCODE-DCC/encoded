@@ -61,6 +61,184 @@ function geneticModificationTechniques(techniques) {
 }
 
 
+// Generate a <dt>/<dd> combination to render GeneticModification.epitope_tags into a <dl>. If no
+// epitope_tags exist in the given genetic modification object, nothing gets rendered.
+const EpitopeTags = (props) => {
+    const { geneticModification } = props;
+
+    if (geneticModification.epitope_tags && geneticModification.epitope_tags.length) {
+        // Generate an array of React components, each containing one epitope_tags display from
+        // the array of epitope_tags in the given genetic modification object. At least one
+        // property of each epitope tag element must be present, or else an empty <li></li> will
+        // get generated. Seems unlikely to have an empty epitope_tags element in the array, so
+        // this currently seems like a good assumption.
+        const elements = geneticModification.epitope_tags.map((tag, i) => {
+            const targetName = tag.promoter_used ? globals.atIdToAccession(tag.promoter_used) : '';
+            const name = tag.name ? <span>{tag.name}</span> : null;
+            const location = tag.location ? <span>{name ? <span> &mdash; </span> : null}{tag.location}</span> : null;
+            const promoterUsed = tag.promoter_used ? <span>{name || location ? <span> &mdash; </span> : null}<a href={tag.promoter_used} title={`View page for target ${targetName}`}>{targetName}</a></span> : null;
+            return <li key={i}>{name}{location}{promoterUsed}</li>;
+        });
+
+        // Return a <div> to get rendered within a <dl> being displayed for the given genetic
+        // modification.
+        return (
+            <div data-test="epitopetag">
+                <dt>Tags</dt>
+                <dd><ul className="multi-value">{elements}</ul></dd>
+            </div>
+        );
+    }
+    return null;
+};
+
+EpitopeTags.propTypes = {
+    geneticModification: PropTypes.object.isRequired, // GeneticModification object being displayed
+};
+
+
+// Display a section for the modification site data from the given genetic modification object. to
+// render into the GM summary panel as its own section;
+const ModificationSite = (props) => {
+    const { geneticModification } = props;
+    const itemClass = globals.itemClass(geneticModification, 'view-detail key-value');
+
+    const renderers = {
+        modified_site_by_target_id: (gm) => {
+            const targetName = gm.modified_site_by_target_id.name;
+            return (
+                <div data-test="mstarget">
+                    <dt>Target</dt>
+                    <dd><a href={gm.modified_site_by_target_id['@id']} title={`View page for target ${targetName}`}>{targetName}</a></dd>
+                </div>
+            );
+        },
+        modified_site_by_coordinates: (gm) => {
+            const { assembly, chromosome, start, end } = gm.modified_site_by_coordinates;
+            return (
+                <div data-test="mscoords">
+                    <dt>Coordinates</dt>
+                    <dd>{`${assembly} chr${chromosome}:${start}-${end}`}</dd>
+                </div>
+            );
+        },
+        modified_site_by_sequence: gm => (
+            <div data-test="msseq">
+                <dt>Sequence</dt>
+                <dd className="sequence">{gm.modified_site_by_sequence}</dd>
+            </div>
+        ),
+        modified_site_nonspecific: gm => (
+            <div data-test="msnonspec">
+                <dt>Non-specific</dt>
+                <dd>{gm.modified_site_nonspecific}</dd>
+            </div>
+        ),
+    };
+
+    const elements = ['modified_site_by_target_id', 'modified_site_by_coordinates', 'modified_site_by_sequence', 'modified_site_nonspecific'].map((siteType) => {
+        if (geneticModification[siteType]) {
+            return <div key={siteType}>{renderers[siteType](geneticModification)}</div>;
+        }
+        return null;
+    });
+
+    return (
+        <div>
+            <hr />
+            <h4>Modification site</h4>
+            <dl className={itemClass}>{elements}</dl>
+        </div>
+    );
+};
+
+ModificationSite.propTypes = {
+    geneticModification: PropTypes.object.isRequired, // GM object with modification site data to display
+};
+
+
+const ModificationTechnique = (props) => {
+    const { geneticModification } = props;
+    const itemClass = globals.itemClass(geneticModification, 'view-detail key-value');
+
+    // Make an array of treatment text summaries, and join them with a comma to make a single
+    // string we can display.
+    let treatments = [];
+    if (geneticModification.treatments && geneticModification.treatments.length) {
+        treatments = geneticModification.treatments.map(treatment => <li key={treatment.uuid}>{singleTreatment(treatment)}</li>);
+    }
+
+    return (
+        <div>
+            <hr />
+            <h4>Modification technique</h4>
+            <dl className={itemClass}>
+                <div data-test="technique">
+                    <dt>Technique</dt>
+                    <dd>{geneticModification.modification_technique}</dd>
+                </div>
+
+                {treatments.length ?
+                    <div data-test="treatments">
+                        <dt>Treatments</dt>
+                        <dd>
+                            <ul className="multi-value">
+                                {treatments}
+                            </ul>
+                        </dd>
+                    </div>
+                : null}
+
+                {geneticModification.guide_rna_sequences && geneticModification.guide_rna_sequences.length ?
+                    <div data-test="guiderna">
+                        <dt>Guide RNA</dt>
+                        <dd>
+                            <ul className="multi-value">
+                                {geneticModification.guide_rna_sequences.map((seq, i) => <li key={i}>{seq}</li>)}
+                            </ul>
+                        </dd>
+                    </div>
+                : null}
+
+                {geneticModification.RVD_sequence_pairs && geneticModification.RVD_sequence_pairs.length ?
+                    <div data-test="rvdseq">
+                        <dt>RVD sequence pairs</dt>
+                        <dd>
+                            <ul className="multi-value">
+                                {geneticModification.RVD_sequence_pairs.map((pair, i) => (
+                                    <li key={i}>{pair.left_RVD_sequence} : {pair.right_RVD_sequence}</li>
+                                ))}
+                            </ul>
+                        </dd>
+                    </div>
+                : null}
+
+                {geneticModification.reagent_availability && geneticModification.reagent_availability.length ?
+                    <div data-test="reagent">
+                        <dt>Reagent availability</dt>
+                        <dd>
+                            <ul className="multi-value">
+                                {geneticModification.reagent_availability.map((reagent, i) => {
+                                    const reagentId = <span>{globals.atIdToAccession(reagent.repository)}:{reagent.identifier}</span>;
+                                    if (reagent.url) {
+                                        return <a key={i} href={reagent.url}>{reagentId}</a>;
+                                    }
+                                    return <span key={i}>{reagentId}</span>;
+                                })}
+                            </ul>
+                        </dd>
+                    </div>
+                : null}
+            </dl>
+        </div>
+    );
+};
+
+ModificationTechnique.propTypes = {
+    geneticModification: PropTypes.object.isRequired, // GM object being rendered
+};
+
+
 export class GeneticModificationComponent extends React.Component {
     render() {
         const context = this.props.context;
@@ -121,7 +299,7 @@ export class GeneticModificationComponent extends React.Component {
                 <header className="row">
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=GeneticModification" crumbs={crumbs} />
-                        <h2>{context.modification_type}</h2>
+                        <h2>{context.accession}</h2>
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />
@@ -144,19 +322,22 @@ export class GeneticModificationComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    {context.purpose ?
-                                        <div data-test="purpose">
-                                            <dt>Modification purpose</dt>
-                                            <dd>{context.purpose}</dd>
-                                        </div>
-                                    : null}
+                                    <div data-test="type">
+                                        <dt>Type</dt>
+                                        <dd>
+                                            <ul>
+                                                <li>{context.modification_type}</li>
+                                                {context.introduced_sequence ? <li className="sequence">{context.introduced_sequence}</li> : null}
+                                            </ul>
+                                        </dd>
+                                    </div>
 
-                                    {context.zygosity ?
-                                        <div data-test="zygosity">
-                                            <dt>Modification zygosity</dt>
-                                            <dd>{context.zygosity}</dd>
-                                        </div>
-                                    : null}
+                                    <EpitopeTags geneticModification={context} />
+
+                                    <div data-test="purpose">
+                                        <dt>Purpose</dt>
+                                        <dd>{context.purpose}</dd>
+                                    </div>
 
                                     {context.url ?
                                         <div data-test="url">
@@ -187,27 +368,15 @@ export class GeneticModificationComponent extends React.Component {
                                     : null}
                                 </dl>
 
-                                {context.treatments && context.treatments.length ?
-                                    <section className="data-display-array">
-                                        <hr />
-                                        <h4>Treatment details</h4>
-                                        {context.treatments.map(treatment => treatmentDisplay(treatment))}
-                                    </section>
-                                : null}
+                                <ModificationSite geneticModification={context} />
 
-                                {context.modification_techniques && context.modification_techniques.length ?
-                                    <section className="data-display-array">
-                                        <hr />
-                                        <h4>Modification techniques</h4>
-                                        {geneticModificationTechniques(context.modification_techniques)}
-                                    </section>
-                                : null}
+                                <ModificationTechnique geneticModification={context} />
                             </div>
 
                             <div className="flexcol-sm-6">
                                 <div className="flexcol-heading experiment-heading">
                                     <h4>Attribution</h4>
-                                    <ProjectBadge award={context.award} addClasses="badge-heading" />
+                                    {/* <ProjectBadge award={context.award} addClasses="badge-heading" /> */}
                                 </div>
                                 <dl className="key-value">
                                     <div data-test="lab">
