@@ -159,9 +159,23 @@
                 }
             }
         },
-        "rnai_sequences": {
-            "comment": "RNAi sequences apply only to modification_technique = RNAi.",
+        "guide_rna_sequences": {
+            "comment": "Guide RNA sequences apply only to modification_technique = CRISPR.",
             "properties": {
+                "guide_rna_sequences": {
+                    "minItems": 1
+                },
+                "modification_technique": {
+                    "enum": ["CRISPR"]
+                }
+            }
+        },
+        "rnai_sequences": {
+            "comment": "RNAi sequences apply only to modification_technique = RNAi, for interference and the purposes of repression only.",
+            "properties": {
+                "rnais_sequences": {
+                    "minItems": 1
+                },
                 "modification_technique": {
                     "enum": ["RNAi"]
                 },
@@ -173,9 +187,13 @@
                 }
             }
         },
-        "RVD_sequence_pair": {
-            "comment": "RVD sequence pairs apply only to modification_technique = TALE.",
+        "RVD_sequence_pairs": {
+            "comment": "RVD sequence pairs apply only to modification_technique = TALE and should include at least one entry but no more than two.",
             "properties": {
+                "RVD_sequence_pairs": {
+                    "minItems": 1,
+                    "maxItems": 2
+                },
                 "modification_technique": {
                     "enum": ["TALE"]
                 }
@@ -194,6 +212,17 @@
             "properties": {
                 "reagent_availability": {
                      "minItems": 1
+                }
+            }
+        },
+        "treatments": {
+            "comment": "Only treatments for mutagenesis and site-specific recombination should be specified.",
+            "properties": {
+                "treatments": {
+                    "minItems": 1
+                },
+                "modification_technique": {
+                    "enum": ["mutagen treatment", "site-specific recombination"]
                 }
             }
         },
@@ -298,16 +327,7 @@
                     ]
                 }
             ]
-        },
-        "RVD_sequence_pairs": {
-            "comment": "Specified RVD sequence pairs should include at least one entry but no more than two.",
-            "properties": {
-                "RVD_sequence_pairs": {
-                    "minItems": 1,
-                    "maxItems": 2
-                }
-             }
-         }
+        }
     },    
     "properties": {
         "schema_version": {
