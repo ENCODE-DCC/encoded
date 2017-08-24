@@ -4,17 +4,18 @@ import _ from 'underscore';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import { auditDecor } from './audit';
-import { SortTable } from './sorttable';
+import { DbxrefList } from './dbxref';
+import { AttachmentPanel, DocumentsPanel } from './doc';
+import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
-import StatusLabel from './statuslabel';
 import { ProjectBadge, Attachment } from './image';
 import { RelatedItems } from './item';
-import { DbxrefList } from './dbxref';
 import { Breadcrumbs } from './navigation';
 import { treatmentDisplay, singleTreatment } from './objectutils';
-import { BiosampleTable } from './typeutils';
-import { AttachmentPanel, DocumentsPanel } from './doc';
 import { PickerActions } from './search';
+import { SortTable } from './sorttable';
+import StatusLabel from './statuslabel';
+import { BiosampleTable } from './typeutils';
 
 
 // Map GM techniques to a presentable string
@@ -239,6 +240,70 @@ ModificationTechnique.propTypes = {
 };
 
 
+const AttributionRenderer = (props) => {
+    const { geneticModification, award, lab, submittedBy } = props;
+
+    return (
+        <div>
+            <div className="flexcol-heading experiment-heading">
+                <h4>Attribution</h4>
+                <ProjectBadge award={award} addClasses="badge-heading" />
+            </div>
+            <dl className="key-value">
+                <div data-test="lab">
+                    <dt>Lab</dt>
+                    <dd>{lab.title}</dd>
+                </div>
+
+                {award.pi && award.pi.lab ?
+                    <div data-test="awardpi">
+                        <dt>Award PI</dt>
+                        <dd>{award.pi.lab.title}</dd>
+                    </div>
+                : null}
+
+                {submittedBy ?
+                    <div data-test="submittedby">
+                        <dt>Submitted by</dt>
+                        <dd>{submittedBy.title}</dd>
+                    </div>
+                : null}
+
+                <div data-test="project">
+                    <dt>Project</dt>
+                    <dd>{award.project}</dd>
+                </div>
+
+                {geneticModification.aliases && geneticModification.aliases.length ?
+                    <div data-test="aliases">
+                        <dt>Aliases</dt>
+                        <dd>{geneticModification.aliases.join(', ')}</dd>
+                    </div>
+                : null}
+            </dl>
+        </div>
+    );
+};
+
+
+const Attribution = (props) => {
+    const { geneticModification } = props;
+
+    return (
+        <FetchedData>
+            <Param name="award" url={geneticModification.award} />
+            <Param name="lab" url={geneticModification.lab} />
+            <Param name="submittedBy" url={geneticModification.submitted_by} />
+            <AttributionRenderer geneticModification={geneticModification} />
+        </FetchedData>
+    );
+};
+
+Attribution.propTypes = {
+    geneticModification: PropTypes.object, // Genetic modificastion object for which we're getting the attribution information
+};
+
+
 export class GeneticModificationComponent extends React.Component {
     render() {
         const context = this.props.context;
@@ -374,62 +439,7 @@ export class GeneticModificationComponent extends React.Component {
                             </div>
 
                             <div className="flexcol-sm-6">
-                                <div className="flexcol-heading experiment-heading">
-                                    <h4>Attribution</h4>
-                                    {/* <ProjectBadge award={context.award} addClasses="badge-heading" /> */}
-                                </div>
-                                <dl className="key-value">
-                                    <div data-test="lab">
-                                        <dt>Lab</dt>
-                                        <dd>{context.lab.title}</dd>
-                                    </div>
-
-                                    {context.award.pi && context.award.pi.lab ?
-                                        <div data-test="awardpi">
-                                            <dt>Award PI</dt>
-                                            <dd>{context.award.pi.lab.title}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.submitted_by ?
-                                        <div data-test="submittedby">
-                                            <dt>Submitted by</dt>
-                                            <dd>{context.submitted_by.title}</dd>
-                                        </div>
-                                    : null}
-
-                                    {context.source && context.source.title ?
-                                        <div data-test="sourcetitle">
-                                            <dt>Source</dt>
-                                            <dd>
-                                                {context.source.url ?
-                                                    <a href={context.source.url}>{context.source.title}</a>
-                                                :
-                                                    <span>{context.source.title}</span>
-                                                }
-                                            </dd>
-                                        </div>
-                                    : null}
-
-                                    <div data-test="project">
-                                        <dt>Project</dt>
-                                        <dd>{context.award.project}</dd>
-                                    </div>
-
-                                    {context.dbxrefs && context.dbxrefs.length ?
-                                        <div data-test="externalresources">
-                                            <dt>External resources</dt>
-                                            <dd><DbxrefList values={context.dbxrefs} /></dd>
-                                        </div>
-                                    : null}
-
-                                    {context.aliases && context.aliases.length ?
-                                        <div data-test="aliases">
-                                            <dt>Aliases</dt>
-                                            <dd>{context.aliases.join(', ')}</dd>
-                                        </div>
-                                    : null}
-                                </dl>
+                                <Attribution geneticModification={context} />
                             </div>
                         </div>
                     </PanelBody>
