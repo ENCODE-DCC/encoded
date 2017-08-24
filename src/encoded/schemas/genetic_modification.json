@@ -33,11 +33,14 @@
                     "properties": {
                         "purpose": {
                                 "enum": ["tagging"]
+                        },
+                        "modification_type": {
+                                "enum": ["insertion"]
                         }
                     }
                 },
                 {
-                    "anyOf": [
+                    "oneOf": [
                         {
                             "required": ["modified_site_by_target_id"]
                         },
@@ -76,6 +79,9 @@
                             "properties": {
                                 "modification_type": {
                                     "enum": ["insertion"]
+                                },
+                                "purpose": {
+                                    "enum": ["tagging"]
                                 }
                             }
                         },
@@ -98,7 +104,7 @@
                     }
                 },
                 {
-                    "anyOf": [
+                    "oneOf": [
                         {
                              "required": ["modified_site_by_coordinates"]
                         },
@@ -112,6 +118,9 @@
                     "properties": {
                         "modification_type": {
                             "enum": ["deletion"]
+                        },
+                        "purpose": {
+                            "enum": ["repression"]
                         }
                     }
                 },
@@ -120,36 +129,63 @@
                     "properties": {
                         "modification_type": {
                             "enum": ["interference"]
+                        },
+                        "purpose": {
+                            "enum": ["repression"]
                         }
                     }
                 },
                 {
-                    "anyOf": [
-                        {
-                            "required": ["treatments"],
-                            "properties": {
-                                "modification_type": {
-                                    "enum": ["mutagenesis", "site-specific recombination"]
-                                }
-                            }
-                        },
-                        {
-                            "required": ["treatments", "modified_site_nonspecific"],
-                            "properties": {
-                                "modification_type": {
-                                    "enum": ["mutagenesis"]
-                                }
-                            }
+                    "required": ["treatments", "modified_site_nonspecific"],
+                    "properties": {
+                        "modification_type": {
+                            "enum": ["mutagenesis", "site-specific recombinase"]
                         }
-                    ]
+                    }
                 }
             ]
         },
         "epitope_tags": {
-            "comment": "Specified epitope tags should include at least one entry.",
+            "comment": "Specified epitope tags should include at least one entry and apply only to tagging modifications.",
             "properties":{
                 "epitope_tags": {
                     "minItems": 1
+                },
+                "modification_type": {
+                    "enum": ["insertion"]
+                },
+                "purpose": {
+                    "enum": ["tagging"]
+                }
+            }
+        },
+        "rnai_sequences": {
+            "comment": "RNAi sequences apply only to modification_technique = RNAi.",
+            "properties": {
+                "modification_technique": {
+                    "enum": ["RNAi"]
+                },
+                "modification_type": {
+                    "enum": ["interference"]
+                },
+                "purpose": {
+                    "enum": ["repression"]
+                }
+            }
+        },
+        "RVD_sequence_pair": {
+            "comment": "RVD sequence pairs apply only to modification_technique = TALE.",
+            "properties": {
+                "modification_technique": {
+                    "enum": ["TALE"]
+                }
+            }
+        },
+        "introduced_sequence": {
+            "comment": "Introduced sequences apply only to modification_type = insertion and replacement.",
+            "properties": {
+                "modification_type": {
+                    "enum": ["insertion", "replacement"]
                 }
             }
         },
@@ -398,13 +434,14 @@
             "type": "string",
             "comment": "May be expanded to include extrachromosomal arrays if need arises.",
             "enum": [
-                "random integration"
+                "random location(s)"
             ]
         },
         "epitope_tags": {
             "title": "Protein epitope tags",
             "description": "Eptiope tags introduced in the modification.",
             "type": "array",
+            "uniqueItems": true,
             "items": {
                 "title": "Protein epitope tag",
                 "description": "Epitope tag introduced in the modification.",
@@ -517,6 +554,7 @@
             "description": "The pair(s) of repeat variable diresidue sequences of the TAL effectors that recognize the left and right half sites at a particular location. e.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
             "comment": "Each cut should be specified by a pair. No more than two pairs should be specified per genetic_modification.",
             "type": "array",
+            "uniqueItems": true,
             "additionalProperties": false,
             "items": {
                 "title": "RVD sequence pair",
@@ -544,6 +582,7 @@
             "description": "Repositories where reagents used to produce the described genetic modification can be obtained, if applicable.",
             "comment": "See source.json for identifiers (e.g. addgene, bacpac, rnai-consortium)",
             "type": "array",
+            "uniqueItems": true,
             "required": ["repository", "identifier"],
             "items": {
                 "title": "Reagent availability",
