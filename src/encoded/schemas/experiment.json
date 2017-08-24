@@ -345,6 +345,9 @@
         "month_released": {
             "title": "Date released"
         },
+        "date_submitted": {
+            "title": "Date Submitted"
+        },
         "lab.title": {
             "title": "Lab"
         },

@@ -11,11 +11,12 @@ from urllib.parse import (
 )
 from .search import iter_search_results
 from .search import list_visible_columns_for_schemas
-
 import csv
 import io
 import json
+import datetime
 
+currenttime = datetime.datetime.now()
 
 
 def includeme(config):
@@ -365,8 +366,15 @@ def report_download(context, request):
     # Make sure we get all results
     request.GET['limit'] = 'all'
 
-    schemas = [request.registry[TYPES][types[0]].schema]
+    type = types[0]
+    schemas = [request.registry[TYPES][type].schema]
     columns = list_visible_columns_for_schemas(request, schemas)
+    type = type.replace("'", '')
+
+    def format_header(seq):
+        newheader="%s\t%s%s?%s\r\n" % (currenttime, request.host_url, '/report/', request.query_string)
+        return(bytes(newheader, 'utf-8'))
+       
 
     # Work around Excel bug; can't open single column TSV with 'ID' header
     if len(columns) == 1 and '@id' in columns:
@@ -375,6 +383,7 @@ def report_download(context, request):
     header = [column.get('title') or field for field, column in columns.items()]
 
     def generate_rows():
+        yield format_header(header)
         yield format_row(header)
         for item in iter_search_results(context, request):
             values = [lookup_column_value(item, path) for path in columns]
@@ -382,6 +391,6 @@ def report_download(context, request):
 
     # Stream response using chunked encoding.
     request.response.content_type = 'text/tsv'
-    request.response.content_disposition = 'attachment;filename="%s"' % 'report.tsv'
+    request.response.content_disposition = 'attachment;filename="%s"' % '%(doctype)s Report %(yyyy)s/%(mm)s/%(dd)s.tsv' % {'yyyy': currenttime.year, 'mm': currenttime.month, 'dd': currenttime.day, 'doctype': type} #change file name
     request.response.app_iter = generate_rows()
     return request.response
