@@ -150,6 +150,8 @@ packages:
 - zlib1g-dev
 - libffi-dev
 - bsd-mailx
+- redis-server
+- redis
 
 power_state:
   mode: reboot
@@ -221,6 +223,18 @@ runcmd:
 - sudo mv /etc/mailname /etc/mailname.OLD
 - sudo echo "$PUBLIC_DNS_NAME" | sudo tee --append /etc/mailname
 - sudo service postfix restart
+# Local on mac:
+# brew install redis
+# redis-server etc/redis-encoded.conf
+# confirm: redis-cli ping
+# redis-cli shutdown
+- wget http://download.redis.io/redis-stable.tar.gz
+- tar xzf redis-stable.tar.gz
+- cd redis-stable
+- make
+- sudo make install
+- cd ..
+- redis-server /srv/encoded/etc/redis-encoded.conf
 # - sleep 10
 # - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 # - pg_ctlcluster 9.3 main reload

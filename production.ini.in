@@ -11,6 +11,9 @@ indexer.processes = ${indexer_processes}
 [composite:indexer]
 use = config:base.ini#indexer
 
+[composite:secondaryindexer]
+use = config:base.ini#secondaryindexer
+
 [composite:fileindexer]
 use = config:base.ini#fileindexer
 
