@@ -118,9 +118,6 @@
                     "properties": {
                         "modification_type": {
                             "enum": ["deletion"]
-                        },
-                        "purpose": {
-                            "enum": ["repression"]
                         }
                     }
                 },
