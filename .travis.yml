@@ -51,7 +51,8 @@ install:
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
 before_script:
   - sudo service elasticsearch stop
-  - sleep 10
+  - mv travis.logging.yml elasticsearch-{$ES_VERSION}/config
+  - mv travis.log4j2.properties elasticsearch-{$ES_VERSION}/config
   - >
     if test -n "$BROWSER"; then
       CONNECT_URL=https://saucelabs.com/downloads/sc-4.4.4-linux.tar.gz 
