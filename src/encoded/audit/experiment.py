@@ -618,8 +618,8 @@ def check_experiment_dnase_seq_standards(experiment,
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(
         alignment_files,
         ['GRCh38', 'mm10'],
-        ['DNase-HS pipeline (paired-end)',
-         'DNase-HS pipeline (single-end)'])
+        ['DNase-HS pipeline single-end - Version 2',
+         'DNase-HS pipeline single-end - Version 2'])
     if pipeline_title is False:
         return
     for f in fastq_files:
