@@ -349,7 +349,7 @@ export class GeneticModificationComponent extends React.Component {
             let charDocs = [];
             context.characterizations.forEach((characterization) => {
                 if (characterization.documents && characterization.documents.length) {
-                    charDocs = charDocs.concat(characterization.documents.map);
+                    charDocs = charDocs.concat(characterization.documents);
                 }
             });
 
