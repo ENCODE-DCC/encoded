@@ -28,6 +28,8 @@
             "title": "Class",
             "description": "The classification of the interfering RNA (e.g. shRNA or siRNA).",
             "type": "string",
+            "comment": "Locking down to prevent new rnais from being submitted.",
+            "permission": "import_items",
             "enum": [
                 "shRNA",
                 "siRNA"
