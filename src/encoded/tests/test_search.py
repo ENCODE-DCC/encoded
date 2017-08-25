@@ -458,6 +458,7 @@ def test_set_facets():
                         {'terms': {'embedded.facet1': ['value1']}},
                         {'terms': {'audit.foo': ['value2']}},
                     ],
+                    'must_not': []
                 },
             },
         },
@@ -478,6 +479,7 @@ def test_set_facets():
                         {'terms': {'embedded.@type': ['Snowball']}},
                         {'terms': {'embedded.facet1': ['value1']}},
                     ],
+                    'must_not': []
                 },
             },
         },
@@ -498,6 +500,7 @@ def test_set_facets():
                         {'terms': {'embedded.@type': ['Snowball']}},
                         {'terms': {'audit.foo': ['value2']}},
                     ],
+                    'must_not': []
                 },
             },
         }
@@ -533,8 +536,10 @@ def test_set_facets_negated_filter():
                 'bool': {
                     'must': [
                         {'terms': {'principals_allowed.view': ['group.admin']}},
-                        {'terms': {'embedded.@type': ['Snowball']}},
-                        {'not': {'terms': {'embedded.field2': ['value1']}}},
+                        {'terms': {'embedded.@type': ['Snowball']}}
+                    ],
+                    'must_not': [
+                        {'terms': {'embedded.field2': ['value1']}}
                     ],
                 },
             },
@@ -564,10 +569,18 @@ def test_set_facets_type_exists():
                     'filters': {
                         'filters': {
                             'yes': {
-                                'exists': {'field': 'embedded.field1'}
+                                'bool': {
+                                    'must': {
+                                        'exists': {'field': 'embedded.field1'}
+                                    }
+                                }
                             },
                             'no': {
-                                'missing': {'field': 'embedded.field1'}
+                                'bool': {
+                                    'must_not': {
+                                        'exists': {'field': 'embedded.field1'}
+                                    }
+                                }
                             }
                         },
                     },
@@ -580,6 +593,7 @@ def test_set_facets_type_exists():
                         {'terms': {'embedded.@type': ['Snowball']}},
                         {'missing': {'field': 'embedded.field2'}},
                     ],
+                    'must_not': []
                 },
             },
         },
@@ -589,10 +603,18 @@ def test_set_facets_type_exists():
                     'filters': {
                         'filters': {
                             'yes': {
-                                'exists': {'field': 'embedded.field2'}
+                                'bool': {
+                                    'must': {
+                                        'exists': {'field': 'embedded.field2'}
+                                    }
+                                }
                             },
                             'no': {
-                                'missing': {'field': 'embedded.field2'}
+                                'bool': {
+                                    'must_not': {
+                                        'exists': {'field': 'embedded.field2'}
+                                    }
+                                }
                             }
                         },
                     },
@@ -605,6 +627,7 @@ def test_set_facets_type_exists():
                         {'terms': {'embedded.@type': ['Snowball']}},
                         {'exists': {'field': 'embedded.field1'}},
                     ],
+                    'must_not': []
                 },
             },
         },
