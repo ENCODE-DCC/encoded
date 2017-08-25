@@ -49,19 +49,6 @@ GeneticModificationCharacterizations.propTypes = {
 };
 
 
-// Returns array of genetic modification technique components. The type of each technique can vary,
-// so we need to look up the display component based on the @type of each technique.
-function geneticModificationTechniques(techniques) {
-    if (techniques && techniques.length) {
-        return techniques.map((technique) => {
-            const ModificationTechniqueView = globals.panelViews.lookup(technique);
-            return <ModificationTechniqueView key={technique.uuid} context={technique} />;
-        });
-    }
-    return null;
-}
-
-
 // Generate a <dt>/<dd> combination to render GeneticModification.epitope_tags into a <dl>. If no
 // epitope_tags exist in the given genetic modification object, nothing gets rendered.
 const EpitopeTags = (props) => {
@@ -158,12 +145,14 @@ ModificationSite.propTypes = {
 };
 
 
+// Render data for the Modification Technique section of the GM summary panel, for the given
+// GeneticModification object.
 const ModificationTechnique = (props) => {
     const { geneticModification } = props;
     const itemClass = globals.itemClass(geneticModification, 'view-detail key-value');
 
-    // Make an array of treatment text summaries, and join them with a comma to make a single
-    // string we can display.
+    // Make an array of treatment text summaries within <li> elements that can get inserted
+    // directly into a <ul> element.
     let treatments = [];
     if (geneticModification.treatments && geneticModification.treatments.length) {
         treatments = geneticModification.treatments.map(treatment => <li key={treatment.uuid}>{singleTreatment(treatment)}</li>);
@@ -240,8 +229,11 @@ ModificationTechnique.propTypes = {
 };
 
 
+// Rendering component for the attribution pane of the summary panel. This gets called as a result
+// of a successful GET request for the GM's award and lab objects which are no longer embedded in
+// the GM object.
 const AttributionRenderer = (props) => {
-    const { geneticModification, award, lab, submittedBy } = props;
+    const { geneticModification, award, lab } = props;
 
     return (
         <div>
@@ -262,13 +254,6 @@ const AttributionRenderer = (props) => {
                     </div>
                 : null}
 
-                {submittedBy ?
-                    <div data-test="submittedby">
-                        <dt>Submitted by</dt>
-                        <dd>{submittedBy.title}</dd>
-                    </div>
-                : null}
-
                 <div data-test="project">
                     <dt>Project</dt>
                     <dd>{award.project}</dd>
@@ -285,7 +270,22 @@ const AttributionRenderer = (props) => {
     );
 };
 
+AttributionRenderer.propTypes = {
+    geneticModification: PropTypes.object.isRequired, // GeneticModification object being displayed
+    award: PropTypes.object, // Award object retreived from an individual GET request; don't make isRequired because React's static analysizer will ding it
+    lab: PropTypes.object, // Lab object retrieved from an individual GET request; don't make isRequired because React's static analysizer will ding it
+};
 
+AttributionRenderer.defaultProps = {
+    award: null, // Actually required, but React can't tell this property's coming from a GET request, so treat as optional
+    lab: null, // Actually required, but React can't tell this property's coming from a GET request, so treat as optional
+};
+
+
+// Display the contents of the attribution panel (currently the right-hand side of the summary
+// panel) for the given genetic modification object. Because the award and lab informatino isn't
+// embedded in the GM object, we have to retrieve it with a couple GET requests here, and have
+// <AttributionRenderer> actually render the panel contents after the GET request completes.
 const Attribution = (props) => {
     const { geneticModification } = props;
 
@@ -293,17 +293,37 @@ const Attribution = (props) => {
         <FetchedData>
             <Param name="award" url={geneticModification.award} />
             <Param name="lab" url={geneticModification.lab} />
-            <Param name="submittedBy" url={geneticModification.submitted_by} />
             <AttributionRenderer geneticModification={geneticModification} />
         </FetchedData>
     );
 };
 
 Attribution.propTypes = {
-    geneticModification: PropTypes.object, // Genetic modificastion object for which we're getting the attribution information
+    geneticModification: PropTypes.object.isRequired, // Genetic modificastion object for which we're getting the attribution information
 };
 
 
+const DocumentsRenderer = (props) => {
+    const modDocs = props.modDocs ? props.modDocs['@graph'] : [];
+    const charDocs = props.charDocs ? props.charDocs['@graph'] : [];
+    return (
+        <DocumentsPanel
+            documentSpecs={[
+                { label: 'Modification', documents: modDocs },
+                { label: 'Characterization', documents: charDocs },
+            ]}
+        />
+    );
+};
+
+DocumentsRenderer.propTypes = {
+    modDocs: PropTypes.object,
+    charDocs: PropTypes.object,
+};
+
+
+// Render the entire GeneticModification page. This is called by the back end as a result of an
+// attempt to render an object with an @type of GeneticModification.
 export class GeneticModificationComponent extends React.Component {
     render() {
         const context = this.props.context;
@@ -318,45 +338,24 @@ export class GeneticModificationComponent extends React.Component {
         ];
 
         // Collect and combine documents, including from genetic modification characterizations.
-        let modDocs = [];
-        let charDocs = [];
-        let techDocs = [];
-        let biosampleDocs = [];
+        let modDocsQuery;
+        let charDocsQuery;
         if (context.documents && context.documents.length) {
-            modDocs = context.documents;
+            // Take the array of document @ids and combine them into one query string for a search
+            // of the form "&@id=/documents/{uuid}&@id=/documents/{uuid}..."
+            modDocsQuery = context.documents.reduce((acc, document) => `${acc}&@id=${document}`, '');
         }
         if (context.characterizations && context.characterizations.length) {
+            let charDocs = [];
             context.characterizations.forEach((characterization) => {
                 if (characterization.documents && characterization.documents.length) {
-                    charDocs = charDocs.concat(characterization.documents);
+                    charDocs = charDocs.concat(characterization.documents.map);
                 }
             });
-        }
-        if (context.modification_techniques && context.modification_techniques.length) {
-            context.modification_techniques.forEach((technique) => {
-                if (technique.documents && technique.documents.length) {
-                    techDocs = techDocs.concat(technique.documents);
-                }
-            });
-        }
-        if (context.biosamples_modified && context.biosamples_modified) {
-            context.biosamples_modified.forEach((biosample) => {
-                if (biosample.documents && biosample.documents.length) {
-                    biosampleDocs = biosampleDocs.concat(biosample.documents);
-                }
-            });
-        }
-        if (modDocs.length) {
-            modDocs = globals.uniqueObjectsArray(modDocs);
-        }
-        if (charDocs.length) {
-            charDocs = globals.uniqueObjectsArray(charDocs);
-        }
-        if (techDocs.length) {
-            techDocs = globals.uniqueObjectsArray(techDocs);
-        }
-        if (biosampleDocs.length) {
-            biosampleDocs = globals.uniqueObjectsArray(biosampleDocs);
+
+            // Take the array of characgterization document @ids and combine them into one query
+            // string for a search of the form "&@id=/documents/{uuid}&@id=/documents/{uuid}..."
+            charDocsQuery = charDocs.reduce((acc, document) => `${acc}&@id=${document}`, '');
         }
 
         return (
@@ -449,14 +448,13 @@ export class GeneticModificationComponent extends React.Component {
                     <GeneticModificationCharacterizations characterizations={context.characterizations} />
                 : null}
 
-                <DocumentsPanel
-                    documentSpecs={[
-                        { label: 'Modification', documents: modDocs },
-                        { label: 'Characterization', documents: charDocs },
-                        { label: 'Techniques', documents: techDocs },
-                        { label: 'Biosample', documents: biosampleDocs },
-                    ]}
-                />
+                {modDocsQuery || charDocsQuery ?
+                    <FetchedData>
+                        {modDocsQuery ? <Param name="modDocs" url={`/search/?type=Document${modDocsQuery}`} /> : null}
+                        {charDocsQuery ? <Param name="charDocs" url={`/search/?type=Document${charDocsQuery}`} /> : null}
+                        <DocumentsRenderer />
+                    </FetchedData>
+                : null}
 
                 <RelatedItems
                     title="Biosamples using this genetic modification"
@@ -477,7 +475,6 @@ GeneticModificationComponent.propTypes = {
 GeneticModificationComponent.contextTypes = {
     session: PropTypes.object, // Login information from <App>
 };
-
 
 const GeneticModification = auditDecor(GeneticModificationComponent);
 
