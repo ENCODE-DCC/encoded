@@ -500,7 +500,7 @@ def audit_experiment_standards_dispatcher(value, system):
 
     if value['assay_term_name'] in ['DNase-seq', 'genetic modification followed by DNase-seq']:
         hotspots = scanFilesForOutputType(value['original_files'],
-                                          'hotspots')
+                                          'alignments')
         signal_files = scanFilesForOutputType(value['original_files'],
                                               'signal of unique reads')
         for failure in check_experiment_dnase_seq_standards(value,
