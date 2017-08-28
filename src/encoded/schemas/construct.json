@@ -50,6 +50,8 @@
             "title": "Type",
             "description": "The type of sequence expressed from the construct.",
             "type": "string",
+            "comment": "Locking down to prevent new constructs from being submitted.",
+            "permission": "import_items",
             "enum": [
                 "fusion protein"
             ]

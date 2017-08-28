@@ -78,6 +78,14 @@ def genetic_modification_5_6(value, system):
             value['reagent_availability'].append(rep_obj)
         has_source = False
 
+    if not value['treatments']:
+        # Get rid of the empty default treatment arrays
+        value.pop('treatments')
+
+    if not value['modification_techniques']:
+        # Get rid of the empty default technique arrays
+        value.pop('modification_techniques')
+
     # New required properties modification_technique and purpose need to be handled somehow
     if value['modification_techniques']:
         alias_flag = False
@@ -99,8 +107,10 @@ def genetic_modification_5_6(value, system):
             if rep_obj:
                 if 'reagent_availability' not in value:
                     value['reagent_availability'] = [rep_obj]
-                else:
+                elif rep_obj not in value['reagent_availability']:
                     value['reagent_availability'].append(rep_obj)
+                else:
+                    pass
                 has_source = False
             if 'guide_rna_sequences' in technique.properties:
                 value['guide_rna_sequences'] = technique.properties['guide_rna_sequences']
@@ -115,18 +125,21 @@ def genetic_modification_5_6(value, system):
                             value['aliases'].append(b)
                         else:
                             value['aliases'] = [b]
-                if value['purpose'] == 'tagging':
+                if 'purpose' in value and value['purpose'] == 'tagging':
                     # Those modification objects that are CRISPR tag insertions can't be upgraded
-                    # this way since the dependencies require them to have tag info and that metadata
-                    # sits in construct so they must be migrated manually with all constructs.
+                    # this way since the dependencies require them to have tag info and that 
+                    # metadata sits in construct so they must be migrated manually with all 
+                    # constructs. The only ones in this class right now are the Snyder CRISPR-tag
+                    # lines and those all have C-terminal eGFP tags.
                     value['epitope_tags'] = [{'name': 'eGFP', 'location': 'C-terminal'}]
-
+                
             elif 'talen_platform' in technique.properties:
                 value['modification_technique'] = 'TALE'
-                # We think these should have purpose = repression if empty. For the purposes
-                # of the upgrade, let's add that in for now.
-                if 'purpose' not in value:
-                    value['purpose'] = 'repression'
+                # We had patched these on production to have purpose = repression. However, they're
+                # actually more in line with a purpose of validating the region as DHS/regulatory, so
+                # let's upgrade it to that. Another option would be "analysis" but am unsure what it's
+                # supposed to be used for.
+                value.update({'purpose': 'validation'})
                 if 'notes' in value:
                     value['notes'] = value['notes'] + '. TALEN platform: ' + technique.properties['talen_platform']
                 else:
@@ -142,7 +155,7 @@ def genetic_modification_5_6(value, system):
                 # This shouldn't happen as we currently don't have any other possible techniques
                 # so let's just set it to something we know we don't have yet annotated correctly
                 # in the data so we can identify special cases to deal with
-                value['modification_technique'] = 'mutagen treatment'
+                value['modification_technique'] = 'microinjection'
     else:
         value['modification_technique'] = 'mutagen treatment'
 
