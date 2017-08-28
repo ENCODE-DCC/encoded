@@ -499,14 +499,11 @@ def audit_experiment_standards_dispatcher(value, system):
     standards_version = 'ENC3'
 
     if value['assay_term_name'] in ['DNase-seq', 'genetic modification followed by DNase-seq']:
-        hotspots = scanFilesForOutputType(value['original_files'],
-                                          'alignments')
         signal_files = scanFilesForOutputType(value['original_files'],
                                               'signal of unique reads')
         for failure in check_experiment_dnase_seq_standards(value,
                                                             fastq_files,
                                                             alignment_files,
-                                                            hotspots,
                                                             signal_files,
                                                             desired_assembly,
                                                             desired_annotation,
@@ -610,7 +607,6 @@ def audit_modERN_experiment_standards_dispatcher(value, system):
 def check_experiment_dnase_seq_standards(experiment,
                                          fastq_files,
                                          alignment_files,
-                                         hotspots_files,
                                          signal_files,
                                          desired_assembly,
                                          desired_annotation,
@@ -619,7 +615,7 @@ def check_experiment_dnase_seq_standards(experiment,
         alignment_files,
         ['GRCh38', 'mm10'],
         ['DNase-HS pipeline single-end - Version 2',
-         'DNase-HS pipeline single-end - Version 2'])
+         'DNase-HS pipeline paired-end - Version 2'])
     if pipeline_title is False:
         return
     for f in fastq_files:
@@ -684,17 +680,12 @@ def check_experiment_dnase_seq_standards(experiment,
 
         # duplication rate audit was removed from v54
 
-        hotspot_assemblies = {}
-        for hotspot_file in hotspots_files:
-            if 'assembly' in hotspot_file:
-                hotspot_assemblies[hotspot_file['accession']] = hotspot_file['assembly']
-
         signal_assemblies = {}
         for signal_file in signal_files:
             if 'assembly' in signal_file:
                 signal_assemblies[signal_file['accession']] = signal_file['assembly']
 
-        hotspot_quality_metrics = get_metrics(hotspots_files,
+        hotspot_quality_metrics = get_metrics(alignment_files,
                                               'HotspotQualityMetric',
                                               desired_assembly)
         if hotspot_quality_metrics is not None and \
@@ -710,7 +701,7 @@ def check_experiment_dnase_seq_standards(experiment,
                              "ENCODE processed hotspots files {} ".format(file_names_string) + \
                              "produced by {} ".format(pipelines[0]['title']) + \
                              "( {} ) ".format(pipelines[0]['@id']) + \
-                             assemblies_detail(extract_assemblies(hotspot_assemblies, file_names)) + \
+                             assemblies_detail(extract_assemblies(alignments_assemblies, file_names)) + \
                              "have a SPOT1 score of {0:.2f}. ".format(metric["SPOT1 score"]) + \
                              "According to ENCODE standards, " + \
                              "SPOT1 score of 0.4 or higher is considered a product of high quality " + \
