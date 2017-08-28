@@ -715,10 +715,8 @@ def check_file(config, session, url, job):
         unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
     try:
         file_stat = os.stat(local_path)
-    except FileNotFoundError:
-        errors['file_not_found'] = 'File has not been uploaded yet.'
-        if job['run'] < job['upload_expiration']:
-            job['skip'] = True
+    except OSError:
+        job['skip'] = True
         return job
 
     result["file_size"] = file_stat.st_size
@@ -920,10 +918,6 @@ def patch_file(session, url, job):
             data = {
                 'status': 'content error',
                 'content_error_detail': errors['content_error'].strip()
-                }
-        if 'file_not_found' in errors:
-            data = {
-                'status': 'upload failed'
                 }
     if 'file_size' in result:
         data['file_size'] = result['file_size']
