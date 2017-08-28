@@ -151,7 +151,7 @@ packages:
 - libffi-dev
 - bsd-mailx
 - redis-server
-- redis
+# - redis
 
 power_state:
   mode: reboot
