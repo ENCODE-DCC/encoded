@@ -173,6 +173,7 @@ def index_secondary(request):
 
         indexing_errors.extend(errors)  # ignore errors?
         result['errors'] = indexing_errors
+        result["cycles"] = result.get("cycles",0) + 1
 
         result['successful'] = state.finish_cycle(result)
         #if record:
