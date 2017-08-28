@@ -6,13 +6,7 @@ from elasticsearch.exceptions import (
 )
 from pyramid.view import view_config
 from sqlalchemy.exc import StatementError
-#from snovault import (
-#    COLLECTIONS,
-#    DBSESSION,
-#)
-#from snovault.storage import (
-#    TransactionRecord,
-#)
+
 from urllib3.exceptions import ReadTimeoutError
 from snovault.elasticsearch.interfaces import (
     ELASTIC_SEARCH,
@@ -47,7 +41,7 @@ class SecondState(IndexerState):
     def __init__(self, redis_client=None):
         super(SecondState, self).__init__(redis_client)
         self.persistent_key  = 'secondary-state'        # State of the current or last cycle
-        self.waiting_set     = 'secondary-waiting'      # one cycle of uuids, sent to the Secondary Indexer
+        self.todo_set        = 'secondary-todo'         # one cycle of uuids, sent to the Secondary Indexer
         self.in_progress_set = 'secondary-in-progress'
         self.failed_set      = 'secondary-failed'
         self.indexed_set     = 'secondary-done'         # Some uuids don't get indexed
@@ -58,7 +52,7 @@ class SecondState(IndexerState):
         #self.audited_set     = 'secondary-audited'
         self.viscached_set   = 'secondary-viscached'
         # DO NOT INHERIT! All keys that are cleaned up at the start and fully finished end of indexing
-        self.cleanup_keys      = [self.waiting_set,self.in_progress_set,self.failed_set,self.indexed_set]
+        self.cleanup_keys      = [self.todo_set,self.in_progress_set,self.failed_set,self.indexed_set]
         self.cleanup_last_keys = [self.last_set,self.viscached_set]  # ,self.audited_set] cleaned up only when new indexing occurs
 
     #def audited_uuid(self, uuid):
@@ -67,7 +61,8 @@ class SecondState(IndexerState):
     def viscached_uuid(self, uuid):
         self.redis_pipe.sadd(self.viscached_set, uuid).execute()
 
-    def indexed_this_cycle(self):
+    def successes_this_cycle(self):
+        # Overwritten: secondary_indexer counts a success as an actual object added to viscache!
         return self.redis_client.smembers(self.viscached_set)
 
     def get_one_cycle(self, xmin):
@@ -149,7 +144,7 @@ def index_secondary(request):
     while True:  # Cycles on xmin grouped indexer cycles
         (xmin, next_xmin, uuids) = state.get_one_cycle(xmin)
 
-        uuids = state.undone_uuids(uuids) # Adds undone from last cycle
+        uuids = state.add_undone_uuids(uuids) # Adds undone from last cycle
 
         if len(uuids) == 0:  # No more uuids in the queue
             break
@@ -163,20 +158,13 @@ def index_secondary(request):
             assert(xmin is not None)
 
         # Starts one cycle of uuids to secondarily index
-        state.start_cycle(uuids)
-
-        #doc = es.get(index=INDEX, doc_type='default', id=str(uuids[0]))
-        # log.info(json.dumps(doc,indent=4))
-
-
         result.update(
-            status='indexing',
             last_xmin=last_xmin,
             xmin=xmin,
             cycle_count=len(uuids),
             indexed=uuid_count,
         )
-        state.set(result)
+        state.start_cycle(uuids,result)
 
         snapshot_id = None  # Not sure why this will be needed.  The xmin should be all that is needed.
 
@@ -186,7 +174,7 @@ def index_secondary(request):
         indexing_errors.extend(errors)  # ignore errors?
         result['errors'] = indexing_errors
 
-        result['successful'] = state.finish_cycle()
+        result['successful'] = state.finish_cycle(result)
         #if record:
         #    result['lag'] = str(datetime.datetime.now(pytz.utc) - first_txn)
         #    try:
