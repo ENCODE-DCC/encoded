@@ -718,110 +718,110 @@ def check_file(config, session, url, job):
     except FileNotFoundError:
         if job['run'] > job['upload_expiration']:
             errors['file_not_found'] = 'File has not been uploaded yet.'
-            job['skip'] = True
-            return job
+        job['skip'] = True
+        return job
     except OSError:
         job['skip'] = True
         return job
-
-    result["file_size"] = file_stat.st_size
-    result["last_modified"] = datetime.datetime.utcfromtimestamp(
-        file_stat.st_mtime).isoformat() + 'Z'
-
-    # Faster than doing it in Python.
-    try:
-        output = subprocess.check_output(
-            ['md5sum', local_path], stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as e:
-        errors['md5sum'] = e.output.decode(errors='replace').rstrip('\n')
     else:
-        result['md5sum'] = output[:32].decode(errors='replace')
-        try:
-            int(result['md5sum'], 16)
-        except ValueError:
-            errors['md5sum'] = output.decode(errors='replace').rstrip('\n')
-        if result['md5sum'] != item['md5sum']:
-            errors['md5sum'] = \
-                'checked %s does not match item %s' % (result['md5sum'], item['md5sum'])
-            update_content_error(errors,
-                                 'File metadata-specified md5sum {} '.format(item['md5sum']) +
-                                 'does not match the calculated md5sum {}'.format(result['md5sum']))
-    is_gzipped = is_path_gzipped(local_path)
-    if item['file_format'] not in GZIP_TYPES:
-        if is_gzipped:
-            errors['gzip'] = 'Expected un-gzipped file'
-            update_content_error(errors, 'Expected un-gzipped file')
-    elif not is_gzipped:
-        errors['gzip'] = 'Expected gzipped file'
-        update_content_error(errors, 'Expected gzipped file')
-    else:
-        # May want to replace this with something like:
-        # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
-        # or http://stackoverflow.com/a/15343686/199100
+        result["file_size"] = file_stat.st_size
+        result["last_modified"] = datetime.datetime.utcfromtimestamp(
+            file_stat.st_mtime).isoformat() + 'Z'
+
+        # Faster than doing it in Python.
         try:
             output = subprocess.check_output(
-                'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
-                shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                ['md5sum', local_path], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as e:
-            errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
+            errors['md5sum'] = e.output.decode(errors='replace').rstrip('\n')
         else:
-            check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
-
-        if item['file_format'] == 'bed':
-            # try to count comment lines
+            result['md5sum'] = output[:32].decode(errors='replace')
+            try:
+                int(result['md5sum'], 16)
+            except ValueError:
+                errors['md5sum'] = output.decode(errors='replace').rstrip('\n')
+            if result['md5sum'] != item['md5sum']:
+                errors['md5sum'] = \
+                    'checked %s does not match item %s' % (result['md5sum'], item['md5sum'])
+                update_content_error(errors,
+                                     'File metadata-specified md5sum {} '.format(item['md5sum']) +
+                                     'does not match the calculated md5sum {}'.format(result['md5sum']))
+        is_gzipped = is_path_gzipped(local_path)
+        if item['file_format'] not in GZIP_TYPES:
+            if is_gzipped:
+                errors['gzip'] = 'Expected un-gzipped file'
+                update_content_error(errors, 'Expected un-gzipped file')
+        elif not is_gzipped:
+            errors['gzip'] = 'Expected gzipped file'
+            update_content_error(errors, 'Expected gzipped file')
+        else:
+            # May want to replace this with something like:
+            # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
+            # or http://stackoverflow.com/a/15343686/199100
             try:
                 output = subprocess.check_output(
-                    'set -o pipefail; gunzip --stdout {} | grep -c \'^#\''.format(local_path),
+                    'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
             except subprocess.CalledProcessError as e:
-                # empty file, or other type of error
-                if e.returncode > 1:
-                    errors['grep_bed_problem'] = e.output.decode(errors='replace').rstrip('\n')
-            # comments lines found, need to calculate content md5sum as usual
-            # remove the comments and create modified.bed to give validateFiles scritp
-            # not forget to remove the modified.bed after finishing
+                errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
             else:
+                check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
+
+            if item['file_format'] == 'bed':
+                # try to count comment lines
                 try:
-                    is_local_bed_present = True
-                    subprocess.check_output(
-                        'set -o pipefail; gunzip --stdout {} | grep -v \'^#\' > {}'.format(
-                            local_path,
-                            unzipped_modified_bed_path),
+                    output = subprocess.check_output(
+                        'set -o pipefail; gunzip --stdout {} | grep -c \'^#\''.format(local_path),
                         shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 except subprocess.CalledProcessError as e:
-                    # empty file
+                    # empty file, or other type of error
                     if e.returncode > 1:
                         errors['grep_bed_problem'] = e.output.decode(errors='replace').rstrip('\n')
-                    else:
-                        errors['bed_comments_remove_failure'] = e.output.decode(
-                            errors='replace').rstrip('\n')
+                # comments lines found, need to calculate content md5sum as usual
+                # remove the comments and create modified.bed to give validateFiles scritp
+                # not forget to remove the modified.bed after finishing
+                else:
+                    try:
+                        is_local_bed_present = True
+                        subprocess.check_output(
+                            'set -o pipefail; gunzip --stdout {} | grep -v \'^#\' > {}'.format(
+                                local_path,
+                                unzipped_modified_bed_path),
+                            shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                    except subprocess.CalledProcessError as e:
+                        # empty file
+                        if e.returncode > 1:
+                            errors['grep_bed_problem'] = e.output.decode(errors='replace').rstrip('\n')
+                        else:
+                            errors['bed_comments_remove_failure'] = e.output.decode(
+                                errors='replace').rstrip('\n')
 
-    if is_local_bed_present:
-        check_format(config['encValData'], job, unzipped_modified_bed_path)
-        remove_local_file(unzipped_modified_bed_path, errors)
-    else:
-        check_format(config['encValData'], job, local_path)
+        if is_local_bed_present:
+            check_format(config['encValData'], job, unzipped_modified_bed_path)
+            remove_local_file(unzipped_modified_bed_path, errors)
+        else:
+            check_format(config['encValData'], job, local_path)
 
-    if item['file_format'] == 'fastq' and not errors.get('validateFiles'):
-        try:
-            process_fastq_file(job,
-                               subprocess.Popen(['gunzip --stdout {}'.format(
-                                                local_path)],
-                                                shell=True,
-                                                executable='/bin/bash',
-                                                stdout=subprocess.PIPE),
-                               session, url)
-        except subprocess.CalledProcessError as e:
-            errors['fastq_information_extraction'] = 'Failed to extract information from ' + \
-                                                     local_path
-    if item['status'] != 'uploading':
-        errors['status_check'] = \
-            "status '{}' is not 'uploading'".format(item['status'])
-    if errors:
-        errors['gathered information'] = 'Gathered information about the file was: {}.'.format(
-            str(result))
+        if item['file_format'] == 'fastq' and not errors.get('validateFiles'):
+            try:
+                process_fastq_file(job,
+                                   subprocess.Popen(['gunzip --stdout {}'.format(
+                                                    local_path)],
+                                                    shell=True,
+                                                    executable='/bin/bash',
+                                                    stdout=subprocess.PIPE),
+                                   session, url)
+            except subprocess.CalledProcessError as e:
+                errors['fastq_information_extraction'] = 'Failed to extract information from ' + \
+                                                         local_path
+        if item['status'] != 'uploading':
+            errors['status_check'] = \
+                "status '{}' is not 'uploading'".format(item['status'])
+        if errors:
+            errors['gathered information'] = 'Gathered information about the file was: {}.'.format(
+                str(result))
 
-    return job
+        return job
 
 
 def remove_local_file(path_to_the_file, errors):
@@ -909,7 +909,7 @@ def patch_file(session, url, job):
     errors = job['errors']
     data = {}
 
-    if not errors:
+    if not errors and not job.get('skip'):
         data = {
             'status': 'in progress'
         }
@@ -1030,15 +1030,18 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
         if not dry_run:
             patch_file(session, url, job)
 
+        if not job.get('skip'):
+            errors_string = str(job.get('errors', {'errors': None}))
+        else:
+            errors_string = str({'errors': 'status have not been changed, the file check was skipped due to the file unavailability on S3'})
         tab_report = '\t'.join([
             job['item'].get('accession', 'UNKNOWN'),
             job['item'].get('lab', 'UNKNOWN'),
-            str(job.get('errors', {'errors': None})),
+            errors_string,
             str(job['item'].get('aliases', ['n/a'])),
             job.get('upload_url', ''),
             job.get('upload_expiration', ''),
             ])
-
         if json_out:
             out.write(json.dumps(job) + '\n')
             if job['errors']:
