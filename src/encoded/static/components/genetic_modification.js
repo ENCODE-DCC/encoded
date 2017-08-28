@@ -11,11 +11,11 @@ import * as globals from './globals';
 import { ProjectBadge, Attachment } from './image';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
-import { treatmentDisplay, singleTreatment } from './objectutils';
+import { singleTreatment } from './objectutils';
 import { PickerActions } from './search';
 import { SortTable } from './sorttable';
 import StatusLabel from './statuslabel';
-import { BiosampleTable } from './typeutils';
+import { BiosampleTable, DonorTable } from './typeutils';
 
 
 // Map GM techniques to a presentable string
@@ -455,6 +455,12 @@ export class GeneticModificationComponent extends React.Component {
                         <DocumentsRenderer />
                     </FetchedData>
                 : null}
+
+                <RelatedItems
+                    title="Donors using this genetic modification"
+                    url={`/search/?type=Donor&genetic_modifications.uuid=${context.uuid}`}
+                    Component={DonorTable}
+                />
 
                 <RelatedItems
                     title="Biosamples using this genetic modification"

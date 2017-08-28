@@ -217,6 +217,9 @@
         "sex": {
             "title": "Sex"
         },
+        "organism.scientific_name": {
+            "title": "Species"
+        },
         "status": {
             "title": "Status"
         }

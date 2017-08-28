@@ -79,6 +79,17 @@
             }
         }
     },
+    "columns": {
+        "accession": {
+            "title": "Accession"
+        },
+        "sex": {
+            "title": "Sex"
+        },
+        "organism.scientific_name": {
+            "title": "Species"
+        }
+    },
     "boost_values": {
         "internal_tags": 1.0,
         "external_ids": 1.0,
