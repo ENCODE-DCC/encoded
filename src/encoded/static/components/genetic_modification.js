@@ -675,12 +675,12 @@ class ListingComponent extends React.Component {
                     <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Genetic modifications</p>
+                        <p className="type">{` ${result.accession}`}</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
-                    <div className="accession"><a href={result['@id']}>{result.modification_type}</a></div>
+                    <div className="accession"><a href={result['@id']}>{result.modification_type} &mdash; {result.purpose} &mdash; {result.modification_technique}</a></div>
                     <div className="data-row">
-                        {techniques.length ? <div><strong>Modification techniques: </strong>{techniques.join(', ')}</div> : null}
                     </div>
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
