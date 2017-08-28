@@ -20,13 +20,6 @@ from snovault.elasticsearch.interfaces import (
 )
 import copy
 
-# NOTE: Trackhub caching is turned on and off with this global AND USE_CACHE in visualization.py
-TRACKHUB_CACHING = True
-
-# from .visualization import VISIBLE_DATASET_TYPES_LC
-VISIBLE_DATASET_TYPES_LC = ["experiment", "annotation"]
-
-
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
 log = logging.getLogger(__name__)
 
@@ -118,10 +111,6 @@ def all_bed_file_uuids(request):
     return [str(item[0]) for item in uuids]
 
 
-def all_visualizable_uuids(request):
-    return list(all_uuids(request.registry, types=VISIBLE_DATASET_TYPES_LC))
-
-
 def index_peaks(uuid, request):
     """
     Indexes bed files in elasticsearch index
@@ -201,26 +190,6 @@ def index_peaks(uuid, request):
             es.indices.put_mapping(index=key, doc_type=assembly, body=get_mapping(assembly))
 
         es.index(index=key, doc_type=assembly, body=doc, id=context['uuid'])
-
-# Temporary 'simple most efficient' solution, b4 separate index_trackhub process
-def object_indexer_done(registry,last_xmin):
-    es = registry[ELASTIC_SEARCH]
-    INDEX = registry.settings['snovault.elasticsearch.index']
-    try:
-        status = es.get(index=INDEX, doc_type='meta', id='indexing')
-    except NotFoundError:
-        return False
-    if '_source' in status:
-        if last_xmin is None:
-            return True
-        elif 'xmin' in status['_source'] and status['_source']['xmin'] >= last_xmin:
-            return True
-    return False
-
-
-def index_visualizable(request, invalidated):
-    regen_vis_uuids = list(set(invalidated).intersection(all_visualizable_uuids(request)))
-    request.registry.notify(AfterIndexedExperimentsAndDatasets(regen_vis_uuids, request))
 
 
 @view_config(route_name='index_file', request_method='POST', permission="index")
@@ -336,15 +305,6 @@ def index_file(request):
             files_indexed = 0
             for uuid in invalidated_files:
                 uuid_current = uuid
-                if TRACKHUB_CACHING and not th_indexer_run and files_indexed % 100 == 0:
-                    # Temporary 'simple most efficient' solution, b4 separate index_trackhub process
-                    try:
-                        if object_indexer_done(registry, last_xmin):
-                            index_visualizable(request, invalidated)
-                            th_indexer_run = True
-                    except Exception as e:
-                        log.error('Unhandled index_vis exception: ' + repr(e))
-
                 index_peaks(uuid, request)
                 files_indexed += 1
         except Exception as e:
@@ -364,16 +324,5 @@ def index_file(request):
                         log.error('Indexing error for {}, error message: {}'.format(item['uuid'], item['error']))
                         item['error'] = "Error occured during indexing, check the logs"
                 result['errors'] = error_messages
-        if TRACKHUB_CACHING and not th_indexer_run:
-            try:
-                index_visualizable(request, invalidated)
-            except Exception as e:
-                log.error('Unhandled index_vis exception (after files): ' + repr(e))
 
     return result
-
-
-class AfterIndexedExperimentsAndDatasets(object):
-    def __init__(self, object, request):
-        self.object = object
-        self.request = request

@@ -14,10 +14,6 @@ from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 import time
 from pkg_resources import resource_filename
 
-# Note: Required for Bek's cache priming solution.
-from pyramid.events import subscriber
-from .peak_indexer import AfterIndexedExperimentsAndDatasets
-
 import logging
 
 log = logging.getLogger(__name__)
@@ -2180,50 +2176,6 @@ def item_index_vis(context, request):
     uuid = str(context.uuid)
     # TODO: Is there a shortcut to recognizing this is not a visualizable uuid?
     return vis_vache_add(request, uuid)
-
-
-# Note: Required for Bek's cache priming solution.
-@subscriber(AfterIndexedExperimentsAndDatasets)
-def prime_vis_es_cache(event):
-    '''Priming occurs whenever es objects are invalidated but after _indexer is done with them.'''
-    global PROFILE_START_TIME
-    PROFILE_START_TIME = time.time()
-    # NOTE: should not be called unless peak_indexer.py::TRACKHUB_CACHING == True
-    request = event.request
-    uuids = event.object  # unordered set of unique ids that have been invalidated
-    if not uuids:
-        return
-
-    # logging is not at visualization.py module level.  The logger is the scubscribed to one.
-    log.setLevel(logging.INFO)  # NOTE: Change here to show debug messages
-    verbose_threshold = 100     # Only be verbose if this is a big set
-    raw_count = len(uuids)
-    if raw_count >= verbose_threshold:  # If enough, then want this framed
-        log.info("Starting prime_vis_es_cache: %d uuids" % (raw_count))
-    else:
-        log.debug("Starting prime_vis_es_cache: %d uuids" % (raw_count))
-
-    # NOTE: the request object coming from the peak indexer was not using elasticsearch!
-    request.datastore = 'elasticsearch'
-
-    visualizabe_types = set(VISIBLE_DATASET_TYPES)
-    count = 0
-    for uuid in uuids:
-        vis_blobs = vis_vache_add(request, uuid, start_time=PROFILE_START_TIME)
-        if vis_blobs is not None:
-            count += len(vis_blobs)
-            # Took 12h32m on initial
-            # else:
-            #    log.debug("prime_vis_es_cache for %s_%s unvisualizable '%s'" % \
-            #                                (acc,ucsc_assembly,get_vis_type(dataset)))
-    # if count == 0:
-    if raw_count >= verbose_threshold or count >= verbose_threshold/10:
-        log.info("prime_vis_es_cache made %d acc_composites  %s" %
-                 (count, readable_time(time.time() - PROFILE_START_TIME)))
-    else:
-        log.debug("prime_vis_es_cache made %d acc_composites  %s" %
-                  (count, readable_time(time.time() - PROFILE_START_TIME)))
-    log.setLevel(logging.NOTSET)  # Not sure if this is needed.
 
 
 def render(data):
