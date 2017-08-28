@@ -946,7 +946,8 @@ def patch_file(session, url, job):
             errors['lookup_for_etag'] = 'Network error occured, while looking for ' + \
                                                    'etag of the file object to be patched on the portal. ' + \
                                                    str(e)
-        elif etag_r.ok:
+        else:
+            if etag_r.ok:
                 if job['etag'] == etag_r.headers['etag']:
                     r = session.patch(
                         item_url,
