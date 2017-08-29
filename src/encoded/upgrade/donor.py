@@ -154,5 +154,5 @@ def human_donor_9_10(value, system):
     if value.get('life_stage') == 'postnatal':
         value['life_stage'] = 'newborn'
     value.pop('children', None)
-    if value.get('ethnicity') in ['NA', 'Unknown', 'unknown']:
+    if value.get('ethnicity') in ['NA', 'Unknown', 'unknown', '']:
         value.pop('ethnicity')
