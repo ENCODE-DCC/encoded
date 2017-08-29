@@ -172,22 +172,21 @@ def audit_experiment_entry_function(value, system):
     for failure in audit_experiment_chipseq_control_read_depth(value):
         yield failure
 
+
 def audit_experiment_chipseq_control_read_depth(value):
-    
-    
     # relevant only for ChIP-seq
     if value['assay_term_id'] != 'OBI:0000716':
         return
-    
+
     if value.get('target') and 'name' in value.get('target'):
-        
+
         target_name = value['target']['name']
         target_investigated_as = value['target']['investigated_as']
 
         if target_name not in ['Control-human', 'Control-mouse']:
-            
+  
             alignment_files = scan_files_for_file_format_output_type(value['original_files'],
-                                                                    'bam', 'alignments')
+                                                                     'bam', 'alignments')
             for alignment_file in alignment_files:
                 # initially was for file award
                 if not alignment_file.get('award') or \
@@ -226,10 +225,10 @@ def check_control_read_depth_standards(value,
                                        is_control_file,
                                        control_to_target,
                                        target_investigated_as):
-                                       
+                               
     marks = pipelines_with_read_depth['ChIP-seq read mapping']
     # treat this file as control_bam - raising insufficient control read depth
-    if is_control_file is True:        
+    if is_control_file is True:
         if target_name not in ['Control-human', 'Control-mouse']:
             detail = 'Control alignment file {} '.format(value['@id']) + \
                      'has a target {} that is neither '.format(target_name) + \
@@ -326,24 +325,22 @@ def get_control_bam(experiment_bam, pipeline_name):
     #  get representative FASTQ file
     if 'derived_from' not in experiment_bam or len(experiment_bam['derived_from']) < 1:
         return False
-    
+
     derived_from_fastqs = experiment_bam['derived_from']
     control_fastq = False
     for entry in derived_from_fastqs:
         if 'controlled_by' in entry and len(entry['controlled_by']) > 0:
             control_fastq = entry['controlled_by'][0]  # getting representative FASTQ
             break
-    
+
     # get representative FASTQ from control
     if control_fastq is False:
         return False
     else:
-        
         if 'original_files' not in control_fastq['dataset']:
             return False
 
         control_bam = False
-        
         control_alignments = scan_files_for_file_format_output_type(control_fastq['dataset']['original_files'],
                                                                     'bam', 'alignments')
         for control_file in control_alignments:
@@ -370,6 +367,7 @@ def get_control_bam(experiment_bam, pipeline_name):
                             break
         return control_bam
 
+
 def has_pipelines(bam_file):
     if 'analysis_step_version' not in bam_file:
         return False
@@ -379,12 +377,12 @@ def has_pipelines(bam_file):
         return False
     return True
 
+
 def get_target_name(bam_file):
     if 'dataset' in bam_file and 'target' in bam_file['dataset'] and \
        'name' in bam_file['dataset']['target']:
         return bam_file['dataset']['target']['name']
     return False
-
 
 
 def get_chip_seq_bam_read_depth(bam_file):
@@ -410,21 +408,23 @@ def get_chip_seq_bam_read_depth(bam_file):
 
     for metric in quality_metrics:
         if ('total' in metric and
-            (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
-             ('processing_stage' not in metric))):
-                if "read1" in metric and "read2" in metric:
-                    read_depth = int(metric['total']/2)
-                else:
-                    read_depth = metric['total']
-                break
+                (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
+                 ('processing_stage' not in metric))):
+            if "read1" in metric and "read2" in metric:
+                read_depth = int(metric['total']/2)
+            else:
+                read_depth = metric['total']
+            break
 
     if read_depth == 0:
         return False
 
     return read_depth
 
+
 def check_award_condition(experiment, awards):
     return experiment.get('award') and experiment.get('award')['rfa'] in awards
+
 
 def audit_experiment_mixed_libraries(value):
     '''
@@ -622,6 +622,7 @@ def is_single_replicate(replicates_string):
 # def create_pipeline_structures(files_to_scan, structure_type):
 # condensed under https://encodedcc.atlassian.net/browse/ENCD-3493
 
+
 def get_bio_replicates(experiment):
     bio_reps = set()
     for rep in experiment['replicates']:
@@ -636,7 +637,7 @@ def get_assemblies(list_of_files):
         if f['status'] not in ['replaced', 'revoked', 'deleted', 'archived'] and \
            f['output_category'] not in ['raw data', 'reference'] and \
            f.get('assembly') is not None:
-                assemblies.add(f['assembly'])
+            assemblies.add(f['assembly'])
     return assemblies
 
 #  def audit_experiment_control_out_of_date_analysis(value, system):
@@ -676,7 +677,7 @@ def is_outdated_bams_replicate(bam_file, original_files):
             paired_file_id = file_object.get('paired_with')
             if paired_file_id and \
                paired_file_id.split('/')[2] not in derived_from_fastq_accessions:
-                    return True
+                return True
             elif not paired_file_id:
                 return True
 
@@ -684,7 +685,6 @@ def is_outdated_bams_replicate(bam_file, original_files):
         if f_accession not in replicate_fastq_accessions:
             return True
     return False
-
 
 
 def audit_experiment_with_uploading_files(value):
@@ -696,7 +696,6 @@ def audit_experiment_with_uploading_files(value):
                      'contains a file {} '.format(f['@id']) + \
                      'with the status {}.'.format(f['status'])
             yield AuditFailure('file validation error', detail, level='INTERNAL_ACTION')
-
 
 
 def audit_experiment_out_of_date_analysis(value):
@@ -752,7 +751,12 @@ def get_derived_from_files_set(list_of_files, file_format, object_flag):
 
 
 def audit_experiment_standards_dispatcher(value):
-    if not check_award_condition(value, ['ENCODE4', 'ENCODE3', 'ENCODE2-Mouse', 'ENCODE2', 'ENCODE', 'Roadmap']):
+    if not check_award_condition(value, ['ENCODE4',
+                                         'ENCODE3',
+                                         'ENCODE2-Mouse',
+                                         'ENCODE2',
+                                         'ENCODE',
+                                         'Roadmap']):
         return
     '''
     Dispatcher function that will redirect to other functions that would
@@ -1721,7 +1725,7 @@ def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
             for metric in quality_metrics:
                 if ('total' in metric) and \
                    (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
-                   ('processing_stage' not in metric)):
+                    ('processing_stage' not in metric)):
                     if "read1" in metric and "read2" in metric:
                         return int(metric['total']/2)
                     else:
@@ -1860,6 +1864,7 @@ def check_wgbs_coverage(samtools_metrics,
                                        detail,
                                        level='INTERNAL_ACTION')
     return
+
 
 def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title):
     for m in cpg_metrics:
@@ -2792,7 +2797,7 @@ def audit_experiment_isogeneity(value):
             return
 
     if len(biosample_dict.keys()) < 2:
-            return  # unreplicated
+        return  # unreplicated
 
     if biosample_species.get('@id') == '/organisms/human/':
         return  # humans are handled in the the replication_type
@@ -3487,16 +3492,16 @@ def audit_missing_construct(value):
                 missing_construct.append(biosample)
             elif (biosample['biosample_type'] == 'whole organisms') and \
                     ('model_organism_donor_constructs' not in biosample):
-                    missing_construct.append(biosample)
+                missing_construct.append(biosample)
             elif (biosample['biosample_type'] != 'whole organisms') and biosample['constructs']:
                 for construct in biosample['constructs']:
                     if construct['target']['name'] != target['name']:
                         tag_mismatch.append(construct)
             elif (biosample['biosample_type'] == 'whole organisms') and \
                     ('model_organism_donor_constructs' in biosample):
-                        for construct in biosample['model_organism_donor_constructs']:
-                            if construct['target']['name'] != target['name']:
-                                tag_mismatch.append(construct)
+                for construct in biosample['model_organism_donor_constructs']:
+                    if construct['target']['name'] != target['name']:
+                        tag_mismatch.append(construct)
             else:
                 pass
 
