@@ -102,7 +102,6 @@
             "title": "Life stage",
             "type": "string",
             "enum": [
-                "fetal",
                 "newborn",
                 "child",
                 "adult",
