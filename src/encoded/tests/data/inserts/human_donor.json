@@ -41,7 +41,6 @@
         "documents": [
             "encode:PanIsletD_Crawford_protocol"
         ],
-        "ethnicity": "unknown",
         "health_status": "unknown",
         "lab": "j-michael-cherry",
         "life_stage": "unknown",
@@ -60,7 +59,6 @@
     {
         "accession": "ENCDO106AAA",
         "award": "U41HG006992",
-        "ethnicity": "unknown",
         "health_status": "unknown",
         "lab": "j-michael-cherry",
         "life_stage": "unknown",
@@ -71,7 +69,7 @@
     {
         "accession": "ENCDO275AAA",
         "award": "U41HG006992",
-        "ethnicity": "unknown",
+        "ethnicity": "Black",
         "health_status": "unknown",
         "lab": "j-michael-cherry",
         "life_stage": "unknown",
@@ -82,7 +80,7 @@
     {
         "accession": "ENCDO276AAA",
         "award": "U41HG006992",
-        "ethnicity": "unknown",
+        "ethnicity": "Asian",
         "health_status": "unknown",
         "lab": "j-michael-cherry",
         "life_stage": "unknown",
