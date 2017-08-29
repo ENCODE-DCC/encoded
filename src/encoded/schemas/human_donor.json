@@ -66,8 +66,11 @@
                     }
                 }
             ]
+        },
+        "twin_type": {
+            "comment": "Twin type could be specified only if twin sibling is specified.",
+            "required": ["twin"]
         }
-
     },
     "properties": {
         "schema_version": {
