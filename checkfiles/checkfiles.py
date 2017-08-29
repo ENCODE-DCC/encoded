@@ -1025,7 +1025,9 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
         headers = '\t'.join(['Accession', 'Lab', 'Errors', 'Aliases', 'Upload URL',
                              'Upload Expiration'])
         out.write(headers + '\n')
+        out.flush()
         err.write(headers + '\n')
+        err.flush()
     for job in imap(functools.partial(check_file, config, session, url), jobs):
         if not dry_run:
             patch_file(session, url, job)
@@ -1044,16 +1046,20 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
             ])
         if json_out:
             out.write(json.dumps(job) + '\n')
+            out.flush()
             if job['errors']:
                 err.write(json.dumps(job) + '\n')
+                err.flush()
         else:
             out.write(tab_report + '\n')
+            out.flush()
             if job['errors']:
                 err.write(tab_report + '\n')
+                err.flush()
 
     finishing_run = 'FINISHED Checkfiles at {}'.format(datetime.datetime.now())
     out.write(finishing_run + '\n')
-
+    out.flush()
     output_filename = out.name
     out.close()
     error_filename = err.name
