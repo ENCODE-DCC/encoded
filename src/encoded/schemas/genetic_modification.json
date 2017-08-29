@@ -360,6 +360,8 @@
             "title": "Modification type",
             "description": "The type of the genetic modification.",
             "type": "string",
+            "comment": "Locking down to temporarily prevent new genetic_modifications from being submitted.",
+            "permission": "import_items",
             "enum": [
                 "deletion",
                 "insertion",
@@ -399,7 +401,7 @@
         },
         "modified_site_by_coordinates": {
             "title": "Modified site by coordinates",
-            "description": "Genomic coordinates of the modification.",
+            "description": "Genomic coordinates specifying the location of the modification.",
             "type": "object",
             "additionalProperties": false,
             "required":["assembly", "chromosome", "start", "end"],
@@ -451,7 +453,7 @@
             "type": "string",
             "comment": "May be expanded to include extrachromosomal arrays if need arises.",
             "enum": [
-                "random location(s)"
+                "random"
             ]
         },
         "epitope_tags": {
