@@ -2,6 +2,7 @@
 
 ### Schema version 10
 
+* *ethnicity* values are no longer free text, and now have to be selected from enum list
 * *life_stage* values 'postnatal' and 'fetal' were removed
 * *children* property is calculated property and should not be submitted anymore
 
