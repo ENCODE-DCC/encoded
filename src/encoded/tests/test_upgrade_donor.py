@@ -107,7 +107,8 @@ def human_donor_9(root, donor_1):
     properties = item.properties.copy()
     properties.update({
         'schema_version': '9',
-        'life_stage': 'postnatal'
+        'life_stage': 'postnatal',
+        'ethnicity': 'caucasian'
     })
     return properties
 
@@ -172,3 +173,4 @@ def test_upgrade_human_donor_9_10(root, upgrader, human_donor_9):
     value = upgrader.upgrade('human_donor', human_donor_9, current_version='9', target_version='10')
     assert value['schema_version'] == '10'
     assert value['life_stage'] == 'newborn'
+    assert value['ethnicity'] == 'Caucasian'
