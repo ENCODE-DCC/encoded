@@ -48,13 +48,13 @@ def audit_file_processed_derived_from(value):
         return
     if 'derived_from' not in value or \
        'derived_from' in value and len(value['derived_from']) == 0:
-            detail = 'derived_from is a list of files that were used to create a given file; ' + \
-                     'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
-                     'Processed file {} '.format(value['@id']) + \
-                     'is missing the requisite file specification in its derived_from list.'
-            yield AuditFailure('missing derived_from',
-                               detail, level='INTERNAL_ACTION')
-            return
+        detail = 'derived_from is a list of files that were used to create a given file; ' + \
+                    'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
+                    'Processed file {} '.format(value['@id']) + \
+                    'is missing the requisite file specification in its derived_from list.'
+        yield AuditFailure('missing derived_from',
+                           detail, level='INTERNAL_ACTION')
+        return
 
     if value['file_format'] != 'bam':
         return
@@ -63,9 +63,10 @@ def audit_file_processed_derived_from(value):
     fastq_bam_counter = 0
     for f in derived_from_files:
         if (f['file_format'] == 'bam' or
-            f['file_format'] == 'fastq' or (f['file_format'] == 'fasta' and
-                                            f['output_type'] == 'reads' and
-                                            f['output_category'] == 'raw data')):
+                f['file_format'] == 'fastq' or
+                (f['file_format'] == 'fasta' and
+                 f['output_type'] == 'reads' and
+                 f['output_category'] == 'raw data')):
 
             if f['status'] not in ['deleted', 'replaced', 'revoked'] or \
                f['status'] == value['status']:
@@ -100,15 +101,15 @@ def audit_file_assembly(value):
     for f in value['derived_from']:
         if f.get('assembly') and value.get('assembly') and \
            f.get('assembly') != value.get('assembly'):
-                detail = 'Processed file {} '.format(value['@id']) + \
-                         'assembly {} '.format(value['assembly']) + \
-                         'does not match assembly {} of the file {} '.format(
-                         f['assembly'],
-                         f['@id']) + \
-                    'it was derived from.'
-                yield AuditFailure('inconsistent assembly',
-                                   detail, level='INTERNAL_ACTION')
-                return
+            detail = 'Processed file {} '.format(value['@id']) + \
+                        'assembly {} '.format(value['assembly']) + \
+                        'does not match assembly {} of the file {} '.format(
+                        f['assembly'],
+                        f['@id']) + \
+                'it was derived from.'
+            yield AuditFailure('inconsistent assembly',
+                                detail, level='INTERNAL_ACTION')
+            return
 
 
 # def audit_file_biological_replicate_number_match 
