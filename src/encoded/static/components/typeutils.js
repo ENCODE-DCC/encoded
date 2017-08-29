@@ -32,11 +32,11 @@ export function CollectBiosampleDocs(biosample) {
     // Collect up the various biosample documents
     let protocolDocuments = [];
     if (biosample.documents && biosample.documents.length) {
-        protocolDocuments = globals.uniqueObjectsArray(biosample.documents);
+        protocolDocuments = _.uniq(biosample.documents);
     }
     let characterizations = [];
     if (biosample.characterizations && biosample.characterizations.length) {
-        characterizations = globals.uniqueObjectsArray(biosample.characterizations);
+        characterizations = _.uniq(biosample.characterizations);
     }
     let constructDocuments = [];
     if (biosample.constructs && biosample.constructs.length) {
