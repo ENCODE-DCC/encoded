@@ -715,11 +715,13 @@ def check_file(config, session, url, job):
         unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
     try:
         file_stat = os.stat(local_path)
+    #  When file is not on S3 we are getting FileNotFoundError
     except FileNotFoundError:
         if job['run'] > job['upload_expiration']:
             errors['file_not_found'] = 'File has not been uploaded yet.'
         job['skip'] = True
         return job
+    #  Happens when there is S3 connectivity issue: "OSError: [Errno 107] Transport endpoint is not connected"
     except OSError:
         job['skip'] = True
         return job
