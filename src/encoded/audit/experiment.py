@@ -807,14 +807,11 @@ def audit_experiment_standards_dispatcher(value):
     standards_version = 'ENC3'
 
     if value['assay_term_name'] in ['DNase-seq', 'genetic modification followed by DNase-seq']:
-        hotspots = scanFilesForOutputType(value['original_files'],
-                                          'hotspots')
         signal_files = scanFilesForOutputType(value['original_files'],
                                               'signal of unique reads')
         for failure in check_experiment_dnase_seq_standards(value,
                                                             fastq_files,
                                                             alignment_files,
-                                                            hotspots,
                                                             signal_files,
                                                             desired_assembly,
                                                             desired_annotation,
@@ -900,7 +897,6 @@ def audit_modERN_experiment_standards_dispatcher(value):
 def check_experiment_dnase_seq_standards(experiment,
                                          fastq_files,
                                          alignment_files,
-                                         hotspots_files,
                                          signal_files,
                                          desired_assembly,
                                          desired_annotation,
@@ -908,8 +904,8 @@ def check_experiment_dnase_seq_standards(experiment,
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(
         alignment_files,
         ['GRCh38', 'mm10'],
-        ['DNase-HS pipeline (paired-end)',
-         'DNase-HS pipeline (single-end)'])
+        ['DNase-HS pipeline single-end - Version 2',
+         'DNase-HS pipeline paired-end - Version 2'])
     if pipeline_title is False:
         return
     for f in fastq_files:
@@ -974,23 +970,18 @@ def check_experiment_dnase_seq_standards(experiment,
 
         # duplication rate audit was removed from v54
 
-        hotspot_assemblies = {}
-        for hotspot_file in hotspots_files:
-            if 'assembly' in hotspot_file:
-                hotspot_assemblies[hotspot_file['accession']] = hotspot_file['assembly']
-
         signal_assemblies = {}
         for signal_file in signal_files:
             if 'assembly' in signal_file:
                 signal_assemblies[signal_file['accession']] = signal_file['assembly']
 
-        hotspot_quality_metrics = get_metrics(hotspots_files,
+        hotspot_quality_metrics = get_metrics(alignment_files,
                                               'HotspotQualityMetric',
                                               desired_assembly)
         if hotspot_quality_metrics is not None and \
            len(hotspot_quality_metrics) > 0:
             for metric in hotspot_quality_metrics:
-                if "SPOT2 score" in metric:
+                if "SPOT1 score" in metric:
                     file_names = []
                     for f in metric['quality_metric_of']:
                         file_names.append(f['@id'].split('/')[2])
@@ -1000,22 +991,20 @@ def check_experiment_dnase_seq_standards(experiment,
                              "ENCODE processed hotspots files {} ".format(file_names_string) + \
                              "produced by {} ".format(pipelines[0]['title']) + \
                              "( {} ) ".format(pipelines[0]['@id']) + \
-                             assemblies_detail(extract_assemblies(hotspot_assemblies, file_names)) + \
-                             "have a SPOT2 score of {0:.2f}. ".format(metric["SPOT2 score"]) + \
+                             assemblies_detail(extract_assemblies(alignments_assemblies, file_names)) + \
+                             "have a SPOT1 score of {0:.2f}. ".format(metric["SPOT1 score"]) + \
                              "According to ENCODE standards, " + \
-                             "SPOT2 score of 0.4 or higher is considered a product of high quality " + \
+                             "SPOT1 score of 0.4 or higher is considered a product of high quality " + \
                              "data. " + \
-                             "Any sample with a SPOT2 score <0.3 should be targeted for replacement " + \
+                             "Any sample with a SPOT1 score <0.3 should be targeted for replacement " + \
                              "with a higher quality sample, and a " + \
-                             "SPOT2 score of 0.25 is considered minimally acceptable " + \
+                             "SPOT1 score of 0.25 is considered minimally acceptable " + \
                              "for rare and hard to find primary tissues. (See {} )".format(
                                  link_to_standards)
 
-                    if 0.3 <= metric["SPOT2 score"] < 0.4:
+                    if 0.25 <= metric["SPOT1 score"] < 0.4:
                         yield AuditFailure('low spot score', detail, level='WARNING')
-                    elif 0.25 <= metric["SPOT2 score"] < 0.3:
-                        yield AuditFailure('insufficient spot score', detail, level='NOT_COMPLIANT')
-                    elif metric["SPOT2 score"] < 0.25:
+                    elif metric["SPOT1 score"] < 0.25:
                         yield AuditFailure('extremely low spot score', detail, level='ERROR')
 
         if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
