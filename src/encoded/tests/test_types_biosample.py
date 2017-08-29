@@ -82,10 +82,10 @@ def test_undefined_age_units_mouse_with_model_organism_age_field(testapp, biosam
 
 def test_defined_life_stage_human(testapp, biosample, human, human_donor):
     testapp.patch_json(biosample['@id'], {'organism': human['@id']})
-    testapp.patch_json(human_donor['@id'], {'life_stage': 'fetal'})
+    testapp.patch_json(human_donor['@id'], {'life_stage': 'embryonic'})
     testapp.patch_json(biosample['@id'], {'donor': human_donor['@id']})
     res = testapp.get(biosample['@id'] + '@@index-data')
-    assert res.json['object']['life_stage'] == 'fetal'
+    assert res.json['object']['life_stage'] == 'embryonic'
 
 
 def test_undefined_life_stage_human(testapp, biosample, human, human_donor):
