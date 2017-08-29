@@ -185,15 +185,18 @@
                 "linkTo": "HumanDonor"
             }
         },
-        "fraternal_twin": {
-            "title": "Fraternal twin",
-            "comment": "For human biosamples, see human_donor.json for available identifiers.",
+        "twin_type": {
+            "title": "Type of the twin sibling of this human donor.",
+            "comment": "The type of the twin sibling of this donor (dizygotic or monozygotic)",
             "type": "string",
-            "linkTo": "HumanDonor"
+            "enum": [
+                "dizygotic",
+                "monozygotic"
+            ]
         },
-        "identical_twin": {
-            "title": "Identical twin",
-            "description": "A donor that have identical genetic material.",
+        "twin": {
+            "title": "Twin",
+            "description": "A human donor that is a twin sibling of this human donor.",
             "comment": "For human biosamples, see human_donor.json for available identifiers.",
             "type": "string",
             "linkTo": "HumanDonor"

@@ -168,3 +168,11 @@ def human_donor_9_10(value, system):
         value['ethnicity'] = 'Arab Indian'
     if value.get('ethnicity') == 'Asian/Hawaiian/Eskimo':
         value['ethnicity'] = 'Asian Hawaiian Eskimo'
+    if value.get('fraternal_twin'):
+        value['twin'] = value.get('fraternal_twin')
+        value['twin_type'] = 'dizygotic'
+        value.pop('fraternal_twin', None)
+    if value.get('identical_twin'):
+        value['twin'] = value.get('identical_twin')
+        value['twin_type'] = 'monozygotic'
+        value.pop('identical_twin', None)
