@@ -75,7 +75,28 @@
         },
         "ethnicity": {
             "title": "Ethnicity",
-            "type": "string"
+            "comment": "We use http://bioportal.bioontology.org/ontologies/SNOMED-Ethnic-Group as a template for the enum list of ethnicities.",
+            "type": "string",
+            "enum": [
+                "African American",
+                "Arab",
+                "Arab Indian",
+                "Asian",
+                "Asian Hawaiian Eskimo",
+                "Black",
+                "Black African",
+                "Caucasian",
+                "Caucasian Hispanic",
+                "Chinese",
+                "Eskimo",
+                "Han Chinese",
+                "Hawaiian",
+                "Hispanic",
+                "Indian",
+                "Japanese",
+                "Yoruba"
+
+            ]
         },
         "age": {
             "title": "Donor age",

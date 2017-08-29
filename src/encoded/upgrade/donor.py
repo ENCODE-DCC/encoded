@@ -156,3 +156,15 @@ def human_donor_9_10(value, system):
     value.pop('children', None)
     if value.get('ethnicity') in ['NA', 'Unknown', 'unknown', '']:
         value.pop('ethnicity')
+    if value.get('ethnicity') == 'African-American':
+        value['ethnicity'] = 'African American'
+    if value.get('ethnicity') == 'African':
+        value['ethnicity'] = 'Black African'
+    if value.get('ethnicity') in ['caucasian', 'Caucasian/White']:
+        value['ethnicity'] = 'Caucasian'
+    if value.get('ethnicity') == 'Caucasian/Hispanic':
+        value['ethnicity'] = 'Caucasian Hispanic'
+    if value.get('ethnicity') == 'Indian/Arabian':
+        value['ethnicity'] = 'Arab Indian'
+    if value.get('ethnicity') == 'Asian/Hawaiian/Eskimo':
+        value['ethnicity'] = 'Asian Hawaiian Eskimo'
