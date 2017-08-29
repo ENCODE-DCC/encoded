@@ -469,6 +469,7 @@
                 "properties": {
                     "name": {
                         "type": "string",
+                        "default": "",
                         "enum": [
                             "eGFP",
                             "GFP",
@@ -487,6 +488,7 @@
                     },
                     "location": {
                         "type": "string",
+                        "default": "",
                         "enum": [
                             "N-terminal",
                             "C-terminal",
@@ -600,11 +602,11 @@
             "comment": "See source.json for identifiers (e.g. addgene, bacpac, rnai-consortium)",
             "type": "array",
             "uniqueItems": true,
-            "required": ["repository", "identifier"],
             "items": {
                 "title": "Reagent availability",
                 "description": "Repository where reagents used to produce the described genetic modification can be obtained, if applicable.",
                 "type": "object",
+                "required": ["repository", "identifier"],
                 "properties": {
                     "repository": {
                         "title": "Repository",
