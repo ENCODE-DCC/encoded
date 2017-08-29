@@ -715,110 +715,115 @@ def check_file(config, session, url, job):
         unzipped_modified_bed_path = local_path[-18:-7] + '_modified.bed'
     try:
         file_stat = os.stat(local_path)
+    #  When file is not on S3 we are getting FileNotFoundError
     except FileNotFoundError:
-        errors['file_not_found'] = 'File has not been uploaded yet.'
-        if job['run'] < job['upload_expiration']:
-            job['skip'] = True
+        if job['run'] > job['upload_expiration']:
+            errors['file_not_found'] = 'File has not been uploaded yet.'
+        job['skip'] = True
         return job
-
-    result["file_size"] = file_stat.st_size
-    result["last_modified"] = datetime.datetime.utcfromtimestamp(
-        file_stat.st_mtime).isoformat() + 'Z'
-
-    # Faster than doing it in Python.
-    try:
-        output = subprocess.check_output(
-            ['md5sum', local_path], stderr=subprocess.STDOUT)
-    except subprocess.CalledProcessError as e:
-        errors['md5sum'] = e.output.decode(errors='replace').rstrip('\n')
+    #  Happens when there is S3 connectivity issue: "OSError: [Errno 107] Transport endpoint is not connected"
+    except OSError:
+        job['skip'] = True
+        return job
     else:
-        result['md5sum'] = output[:32].decode(errors='replace')
-        try:
-            int(result['md5sum'], 16)
-        except ValueError:
-            errors['md5sum'] = output.decode(errors='replace').rstrip('\n')
-        if result['md5sum'] != item['md5sum']:
-            errors['md5sum'] = \
-                'checked %s does not match item %s' % (result['md5sum'], item['md5sum'])
-            update_content_error(errors,
-                                 'File metadata-specified md5sum {} '.format(item['md5sum']) +
-                                 'does not match the calculated md5sum {}'.format(result['md5sum']))
-    is_gzipped = is_path_gzipped(local_path)
-    if item['file_format'] not in GZIP_TYPES:
-        if is_gzipped:
-            errors['gzip'] = 'Expected un-gzipped file'
-            update_content_error(errors, 'Expected un-gzipped file')
-    elif not is_gzipped:
-        errors['gzip'] = 'Expected gzipped file'
-        update_content_error(errors, 'Expected gzipped file')
-    else:
-        # May want to replace this with something like:
-        # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
-        # or http://stackoverflow.com/a/15343686/199100
+        result["file_size"] = file_stat.st_size
+        result["last_modified"] = datetime.datetime.utcfromtimestamp(
+            file_stat.st_mtime).isoformat() + 'Z'
+
+        # Faster than doing it in Python.
         try:
             output = subprocess.check_output(
-                'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
-                shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                ['md5sum', local_path], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as e:
-            errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
+            errors['md5sum'] = e.output.decode(errors='replace').rstrip('\n')
         else:
-            check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
-
-        if item['file_format'] == 'bed':
-            # try to count comment lines
+            result['md5sum'] = output[:32].decode(errors='replace')
+            try:
+                int(result['md5sum'], 16)
+            except ValueError:
+                errors['md5sum'] = output.decode(errors='replace').rstrip('\n')
+            if result['md5sum'] != item['md5sum']:
+                errors['md5sum'] = \
+                    'checked %s does not match item %s' % (result['md5sum'], item['md5sum'])
+                update_content_error(errors,
+                                     'File metadata-specified md5sum {} '.format(item['md5sum']) +
+                                     'does not match the calculated md5sum {}'.format(result['md5sum']))
+        is_gzipped = is_path_gzipped(local_path)
+        if item['file_format'] not in GZIP_TYPES:
+            if is_gzipped:
+                errors['gzip'] = 'Expected un-gzipped file'
+                update_content_error(errors, 'Expected un-gzipped file')
+        elif not is_gzipped:
+            errors['gzip'] = 'Expected gzipped file'
+            update_content_error(errors, 'Expected gzipped file')
+        else:
+            # May want to replace this with something like:
+            # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
+            # or http://stackoverflow.com/a/15343686/199100
             try:
                 output = subprocess.check_output(
-                    'set -o pipefail; gunzip --stdout {} | grep -c \'^#\''.format(local_path),
+                    'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
                     shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
             except subprocess.CalledProcessError as e:
-                # empty file, or other type of error
-                if e.returncode > 1:
-                    errors['grep_bed_problem'] = e.output.decode(errors='replace').rstrip('\n')
-            # comments lines found, need to calculate content md5sum as usual
-            # remove the comments and create modified.bed to give validateFiles scritp
-            # not forget to remove the modified.bed after finishing
+                errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
             else:
+                check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
+
+            if item['file_format'] == 'bed':
+                # try to count comment lines
                 try:
-                    is_local_bed_present = True
-                    subprocess.check_output(
-                        'set -o pipefail; gunzip --stdout {} | grep -v \'^#\' > {}'.format(
-                            local_path,
-                            unzipped_modified_bed_path),
+                    output = subprocess.check_output(
+                        'set -o pipefail; gunzip --stdout {} | grep -c \'^#\''.format(local_path),
                         shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 except subprocess.CalledProcessError as e:
-                    # empty file
+                    # empty file, or other type of error
                     if e.returncode > 1:
                         errors['grep_bed_problem'] = e.output.decode(errors='replace').rstrip('\n')
-                    else:
-                        errors['bed_comments_remove_failure'] = e.output.decode(
-                            errors='replace').rstrip('\n')
+                # comments lines found, need to calculate content md5sum as usual
+                # remove the comments and create modified.bed to give validateFiles scritp
+                # not forget to remove the modified.bed after finishing
+                else:
+                    try:
+                        is_local_bed_present = True
+                        subprocess.check_output(
+                            'set -o pipefail; gunzip --stdout {} | grep -v \'^#\' > {}'.format(
+                                local_path,
+                                unzipped_modified_bed_path),
+                            shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                    except subprocess.CalledProcessError as e:
+                        # empty file
+                        if e.returncode > 1:
+                            errors['grep_bed_problem'] = e.output.decode(errors='replace').rstrip('\n')
+                        else:
+                            errors['bed_comments_remove_failure'] = e.output.decode(
+                                errors='replace').rstrip('\n')
 
-    if is_local_bed_present:
-        check_format(config['encValData'], job, unzipped_modified_bed_path)
-        remove_local_file(unzipped_modified_bed_path, errors)
-    else:
-        check_format(config['encValData'], job, local_path)
+        if is_local_bed_present:
+            check_format(config['encValData'], job, unzipped_modified_bed_path)
+            remove_local_file(unzipped_modified_bed_path, errors)
+        else:
+            check_format(config['encValData'], job, local_path)
 
-    if item['file_format'] == 'fastq' and not errors.get('validateFiles'):
-        try:
-            process_fastq_file(job,
-                               subprocess.Popen(['gunzip --stdout {}'.format(
-                                                local_path)],
-                                                shell=True,
-                                                executable='/bin/bash',
-                                                stdout=subprocess.PIPE),
-                               session, url)
-        except subprocess.CalledProcessError as e:
-            errors['fastq_information_extraction'] = 'Failed to extract information from ' + \
-                                                     local_path
-    if item['status'] != 'uploading':
-        errors['status_check'] = \
-            "status '{}' is not 'uploading'".format(item['status'])
-    if errors:
-        errors['gathered information'] = 'Gathered information about the file was: {}.'.format(
-            str(result))
+        if item['file_format'] == 'fastq' and not errors.get('validateFiles'):
+            try:
+                process_fastq_file(job,
+                                   subprocess.Popen(['gunzip --stdout {}'.format(
+                                                    local_path)],
+                                                    shell=True,
+                                                    executable='/bin/bash',
+                                                    stdout=subprocess.PIPE),
+                                   session, url)
+            except subprocess.CalledProcessError as e:
+                errors['fastq_information_extraction'] = 'Failed to extract information from ' + \
+                                                         local_path
+        if item['status'] != 'uploading':
+            errors['status_check'] = \
+                "status '{}' is not 'uploading'".format(item['status'])
+        if errors:
+            errors['gathered information'] = 'Gathered information about the file was: {}.'.format(
+                str(result))
 
-    return job
+        return job
 
 
 def remove_local_file(path_to_the_file, errors):
@@ -906,7 +911,7 @@ def patch_file(session, url, job):
     errors = job['errors']
     data = {}
 
-    if not errors:
+    if not errors and not job.get('skip'):
         data = {
             'status': 'in progress'
         }
@@ -937,29 +942,35 @@ def patch_file(session, url, job):
     if data:
         item_url = urljoin(url, job['@id'])
 
-        etag_r = session.get(item_url + '?frame=edit&datastore=database')
-        if etag_r.ok:
-            if job['etag'] == etag_r.headers['etag']:
-                r = session.patch(
-                    item_url,
-                    data=json.dumps(data),
-                    headers={
-                        'If-Match': job['etag'],
-                        'Content-Type': 'application/json',
-                    },
-                )
-                if not r.ok:
-                    errors['patch_file_request'] = \
-                        '{} {}\n{}'.format(r.status_code, r.reason, r.text)
+        try:
+            etag_r = session.get(item_url + '?frame=edit&datastore=database')
+        except requests.exceptions.RequestException as e:
+            errors['lookup_for_etag'] = 'Network error occured, while looking for ' + \
+                                                   'etag of the file object to be patched on the portal. ' + \
+                                                   str(e)
+        else:
+            if etag_r.ok:
+                if job['etag'] == etag_r.headers['etag']:
+                    r = session.patch(
+                        item_url,
+                        data=json.dumps(data),
+                        headers={
+                            'If-Match': job['etag'],
+                            'Content-Type': 'application/json',
+                        },
+                    )
+                    if not r.ok:
+                        errors['patch_file_request'] = \
+                            '{} {}\n{}'.format(r.status_code, r.reason, r.text)
+                    else:
+                        job['patched'] = True
                 else:
-                    job['patched'] = True
-            else:
-                errors['etag_does_not_match'] = 'Original etag was {}, but the current etag is {}.'.format(
-                    job['etag'], etag_r.headers['etag']) + ' File {} '.format(job['item'].get('accession', 'UNKNOWN')) + \
-                    'was {} and now is {}.'.format(job['item'].get('status', 'UNKNOWN'), etag_r.json()['status'])
+                    errors['etag_does_not_match'] = 'Original etag was {}, but the current etag is {}.'.format(
+                        job['etag'], etag_r.headers['etag']) + ' File {} '.format(job['item'].get('accession', 'UNKNOWN')) + \
+                        'was {} and now is {}.'.format(job['item'].get('status', 'UNKNOWN'), etag_r.json()['status'])
     return
 
-def run(out, err, url, username, password, encValData, mirror, search_query, file_list=None,
+def run(out, err, url, username, password, encValData, mirror, search_query, file_list=None, bot_token=None,
         processes=None, include_unexpired_upload=False, dry_run=False, json_out=False):
     import functools
     import multiprocessing
@@ -981,7 +992,7 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
     except multiprocessing.NotImplmentedError:
         nprocesses = 1
 
-    version = '1.17'
+    version = '1.18'
 
     try:
         ip_output = subprocess.check_output(
@@ -990,16 +1001,18 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
     except subprocess.CalledProcessError as e:
         ip = ''
 
-    sc = SlackClient('xoxb-216151022738-q0HoXLoixM5GokF4Iaqm08XX')
+    
     initiating_run = 'STARTING Checkfiles version ' + \
         '{} ({}) ({}): with {} processes {} on {} at {}'.format(
             version, url, search_query, nprocesses, dr, ip, datetime.datetime.now())
-    sc.api_call(
-        "chat.postMessage",
-        channel="#bot-reporting",
-        text=initiating_run,
-        as_user=True
-    )
+    if bot_token:
+        sc = SlackClient(bot_token)
+        sc.api_call(
+            "chat.postMessage",
+            channel="#bot-reporting",
+            text=initiating_run,
+            as_user=True
+        )
 
     out.write(initiating_run + '\n')
     if processes == 0:
@@ -1014,57 +1027,67 @@ def run(out, err, url, username, password, encValData, mirror, search_query, fil
         headers = '\t'.join(['Accession', 'Lab', 'Errors', 'Aliases', 'Upload URL',
                              'Upload Expiration'])
         out.write(headers + '\n')
+        out.flush()
         err.write(headers + '\n')
+        err.flush()
     for job in imap(functools.partial(check_file, config, session, url), jobs):
         if not dry_run:
             patch_file(session, url, job)
 
+        if not job.get('skip'):
+            errors_string = str(job.get('errors', {'errors': None}))
+        else:
+            errors_string = str({'errors': 'status have not been changed, the file check was skipped due to the file unavailability on S3'})
         tab_report = '\t'.join([
             job['item'].get('accession', 'UNKNOWN'),
             job['item'].get('lab', 'UNKNOWN'),
-            str(job.get('errors', {'errors': None})),
+            errors_string,
             str(job['item'].get('aliases', ['n/a'])),
             job.get('upload_url', ''),
             job.get('upload_expiration', ''),
             ])
-
         if json_out:
             out.write(json.dumps(job) + '\n')
+            out.flush()
             if job['errors']:
                 err.write(json.dumps(job) + '\n')
+                err.flush()
         else:
             out.write(tab_report + '\n')
+            out.flush()
             if job['errors']:
                 err.write(tab_report + '\n')
+                err.flush()
 
     finishing_run = 'FINISHED Checkfiles at {}'.format(datetime.datetime.now())
     out.write(finishing_run + '\n')
-
+    out.flush()
     output_filename = out.name
     out.close()
     error_filename = err.name
     err.close()
 
-    with open(output_filename, 'r') as output_file:
-        x = sc.api_call("files.upload",
-                        title=output_filename,
-                        channels='#bot-reporting',
-                        content=output_file.read(),
-                        as_user=True)
+    if bot_token:
+        with open(output_filename, 'r') as output_file:
+            x = sc.api_call("files.upload",
+                            title=output_filename,
+                            channels='#bot-reporting',
+                            content=output_file.read(),
+                            as_user=True)
 
-    with open(error_filename, 'r') as output_file:
-        x = sc.api_call("files.upload",
-                        title=error_filename,
-                        channels='#bot-reporting',
-                        content=output_file.read(),
-                        as_user=True)
+        with open(error_filename, 'r') as output_file:
+            x = sc.api_call("files.upload",
+                            title=error_filename,
+                            channels='#bot-reporting',
+                            content=output_file.read(),
+                            as_user=True)
 
-    sc.api_call(
-        "chat.postMessage",
-        channel="#bot-reporting",
-        text=finishing_run,
-        as_user=True
-    )
+        sc.api_call(
+            "chat.postMessage",
+            channel="#bot-reporting",
+            text=finishing_run,
+            as_user=True
+        )
 
 def main():
     import argparse
@@ -1077,6 +1100,8 @@ def main():
         '--encValData', default='/opt/encValData', help="encValData location")
     parser.add_argument(
         '--username', '-u', default='', help="HTTP username (access_key_id)")
+    parser.add_argument(
+        '--bot-token', default='', help="Slack bot token")
     parser.add_argument(
         '--password', '-p', default='',
         help="HTTP password (secret_access_key)")
