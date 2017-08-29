@@ -171,7 +171,7 @@ def test_tag_modifications_without_tag(testapp, crispr_tag, bombardment_tag, tra
 
     # No objects with purpose = tagging should be allowed without epitope_tags property
     bombardment_tag.update({'modified_site_by_target_id': target['@id'],
-                            'modified_site_nonspecific': 'random location(s)',
+                            'modified_site_nonspecific': 'random',
                             'modification_type': 'insertion',
                             'documents': [document['@id']]})
     res = testapp.post_json('/genetic_modification', bombardment_tag, expect_errors=True)
@@ -181,7 +181,7 @@ def test_tag_modifications_without_tag(testapp, crispr_tag, bombardment_tag, tra
     assert res.status_code == 201
 
     recomb_tag.update({'modified_site_by_target_id': target['@id'],
-                       'modified_site_nonspecific': 'random location(s)',
+                       'modified_site_nonspecific': 'random',
                        'modification_type': 'insertion',
                        'documents': [document['@id']]})
     res = testapp.post_json('/genetic_modification', recomb_tag, expect_errors=True)
@@ -293,7 +293,7 @@ def test_mutagen_properties(testapp, mutagen, target, treatment, document):
     res = testapp.post_json('/genetic_modification', mutagen, expect_errors=True)
     assert res.status_code == 422
     del mutagen['modified_site_by_coordinates']
-    mutagen.update({'modified_site_nonspecific': 'random location(s)', 'treatments': [treatment['@id']]})
+    mutagen.update({'modified_site_nonspecific': 'random', 'treatments': [treatment['@id']]})
     res = testapp.post_json('/genetic_modification', mutagen, expect_errors=True)
     assert res.status_code == 201
 
