@@ -50,6 +50,9 @@ export const DocumentsPanel = (props) => {
         allDocs = allDocs.concat(spec.documents);
     });
 
+    // Sort documents by attachment download name.
+    const sortedDocs = globals.sortDocs(allDocs);
+
     if (documentSpecsMapped.length) {
         return (
             <div>
@@ -59,7 +62,7 @@ export const DocumentsPanel = (props) => {
                     </PanelHeading>
                     <PanelBody addClasses="panel-body-doc doc-panel__outer">
                         <section className="doc-panel__inner">
-                            {allDocs.map((doc) => {
+                            {sortedDocs.map((doc) => {
                                 const PanelView = globals.panelViews.lookup(doc);
                                 return <PanelView key={doc['@id']} label={docLabelMap[doc.uuid]} context={doc} />;
                             })}
@@ -82,7 +85,7 @@ DocumentsPanel.defaultProps = {
 };
 
 
-// Called when a GET request for all the documents associated with an experiment returns with the
+// Called when a GET request for all the documents associated with a dataset returns with the
 // array of matching documents.
 const DocumentsPanelRenderer = (props) => {
     const documents = props.documentSearch['@graph'];
@@ -93,7 +96,7 @@ const DocumentsPanelRenderer = (props) => {
 };
 
 DocumentsPanelRenderer.propTypes = {
-    documentSearch: PropTypes.object, // Search result object; we use its @graph to get the documents,
+    documentSearch: PropTypes.object, // Search result object; this uses its @graph to get the documents,
 };
 
 DocumentsPanelRenderer.defaultProps = {
@@ -101,6 +104,8 @@ DocumentsPanelRenderer.defaultProps = {
 };
 
 
+// Perform a GET request on the array of document @ids passed in the `documents` property, and
+// display the resulting documents in a documents panel.
 export const DocumentsPanelReq = (props) => {
     const { documents } = props;
 
