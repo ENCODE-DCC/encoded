@@ -5,6 +5,7 @@ elasticsearch running as subprocesses.
 """
 
 import pytest
+import pdb
 
 pytestmark = [pytest.mark.indexing]
 
@@ -83,6 +84,7 @@ def listening_conn(dbapi_conn):
 
 @pytest.mark.slow
 def test_indexing_workbook(testapp, indexer_testapp):
+    pdb.set_trace()
     # First post a single item so that subsequent indexing is incremental
     testapp.post_json('/testing-post-put-patch/', {'required': ''})
     res = indexer_testapp.post_json('/index', {'record': True})
