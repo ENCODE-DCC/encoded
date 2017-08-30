@@ -133,6 +133,7 @@
         "submitted_by": "amet.fusce@est.fermentum",
         "modification_type": "mutagenesis",
         "purpose": "repression",
+        "documents": ["encode:MCF-7_Farnham_treatment_protocol"],
         "modification_technique": "mutagen treatment",
         "treatments": ["3280b708-0f05-40fa-bff2-54e2b6505c13"]
     }

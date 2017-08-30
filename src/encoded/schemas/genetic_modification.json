@@ -133,12 +133,24 @@
                     }
                 },
                 {
-                    "required": ["treatments", "modified_site_nonspecific"],
-                    "properties": {
-                        "modification_type": {
-                            "enum": ["mutagenesis", "site-specific recombinase"]
+                    "anyOf": [
+                        {
+                            "required": ["treatments", "modified_site_nonspecific"],
+                            "properties": {
+                                "modification_type": {
+                                    "enum": ["mutagenesis", "site-specific recombination"]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["treatments"],
+                            "properties": {
+                                "modification_type": {
+                                    "enum": ["mutagenesis"]
+                                }
+                            }
                         }
-                    }
+                    ]
                 }
             ]
         },
@@ -276,8 +288,15 @@
                     }
                 },
                 {
-                    "required": ["treatments"],
-                     "properties":{
+                    "anyOf": [
+                        {
+                            "required": ["treatments", "documents"]
+                        },
+                        {
+                            "required": ["treatments", "reagent_availability"]
+                        }
+                    ],
+                    "properties":{
                         "modification_technique": {
                             "enum": [
                                 "mutagen treatment",
@@ -300,8 +319,7 @@
                                         "transient transfection",
                                         "transduction",
                                         "microinjection",
-                                        "bombardment",
-                                        "site-specific recombination"
+                                        "bombardment"
                                      ]
                                 }
                             }
@@ -315,8 +333,7 @@
                                         "transient transfection",
                                         "transduction",
                                         "microinjection",
-                                        "bombardment",
-                                        "site-specific recombination"
+                                        "bombardment"
                                     ]
                                 }
                             }
@@ -534,7 +551,6 @@
             "title": "Treatments",
             "description": "Relevant mutagenesis treatments applied to result in the modification.",
             "type": "array",
-            "permission": "import_items",
             "uniqueItems": true,
             "items": {
                 "title": "Treatment",
@@ -558,11 +574,11 @@
         },
         "guide_rna_sequences": {
             "title": "Guide RNA sequences",
-            "description": "gRNA sequences used in CRISPR genetic modification",
+            "description": "gRNA sequences used in CRISPR genetic modification.",
             "type": "array",
             "uniqueItems": true,
             "items": {
-                "title": "gRNA sequence",
+                "title": "guide RNA sequence",
                 "description": "guide RNA sequence used in the experiment.",
                 "type": "string",
                 "pattern": "^[ACUNTGacuntg]+$"

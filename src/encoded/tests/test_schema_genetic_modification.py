@@ -148,7 +148,7 @@ def test_tale_deletion_no_RVD_sequence_or_reagent_availability(testapp, tale_del
 
 
 def test_tag_modifications_without_tag(testapp, crispr_tag, bombardment_tag, transfection_tag, 
-                                       recomb_tag, target, source, document):
+                                       recomb_tag, target, source, treatment, document):
     # We shouldn't allow purpose = tagging if modification_type != insertion
     crispr_tag.update({'modified_site_by_target_id': target['@id'],
                        'guide_rna_sequences': ['ATTAGGCAT'],
@@ -183,6 +183,7 @@ def test_tag_modifications_without_tag(testapp, crispr_tag, bombardment_tag, tra
     recomb_tag.update({'modified_site_by_target_id': target['@id'],
                        'modified_site_nonspecific': 'random',
                        'modification_type': 'insertion',
+                       'treatments': [treatment['@id']],
                        'documents': [document['@id']]})
     res = testapp.post_json('/genetic_modification', recomb_tag, expect_errors=True)
     assert res.status_code == 422
@@ -293,7 +294,8 @@ def test_mutagen_properties(testapp, mutagen, target, treatment, document):
     res = testapp.post_json('/genetic_modification', mutagen, expect_errors=True)
     assert res.status_code == 422
     del mutagen['modified_site_by_coordinates']
-    mutagen.update({'modified_site_nonspecific': 'random', 'treatments': [treatment['@id']]})
+    mutagen.update({'modified_site_nonspecific': 'random', 'treatments': [treatment['@id']],
+                    'documents': [document['@id']]})
     res = testapp.post_json('/genetic_modification', mutagen, expect_errors=True)
     assert res.status_code == 201
 
