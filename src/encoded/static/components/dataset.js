@@ -15,7 +15,7 @@ import { donorDiversity, publicDataset } from './objectutils';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
-import { DocumentsPanel } from './doc';
+import { DocumentsPanelReq } from './doc';
 import { FileGallery, DatasetFiles } from './filegallery';
 import { AwardRef } from './typeutils';
 
@@ -244,7 +244,7 @@ class AnnotationComponent extends React.Component {
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={encodevers} />
 
-                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
+                <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
     }
@@ -408,7 +408,7 @@ class PublicationDataComponent extends React.Component {
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
-                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
+                <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
     }
@@ -572,7 +572,7 @@ class ReferenceComponent extends React.Component {
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault />
 
-                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
+                <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
     }
@@ -760,7 +760,7 @@ class ProjectComponent extends React.Component {
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
-                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
+                <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
     }
@@ -934,7 +934,7 @@ class UcscBrowserCompositeComponent extends React.Component {
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
-                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
+                <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
     }
@@ -1443,7 +1443,7 @@ export class SeriesComponent extends React.Component {
                     session={this.context.session}
                 />
 
-                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
+                <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
     }

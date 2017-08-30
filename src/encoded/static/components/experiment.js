@@ -4,11 +4,11 @@ import moment from 'moment';
 import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
-import { DocumentsPanel } from './doc';
+import { DocumentsPanelReq } from './doc';
 import * as globals from './globals';
 import { DbxrefList } from './dbxref';
 import { ExperimentTable } from './dataset';
-import { FetchedData, Param, FetchedItems } from './fetched';
+import { FetchedItems } from './fetched';
 import { FileGallery } from './filegallery';
 import { GeneticModificationSummary } from './genetic_modification';
 import { ProjectBadge } from './image';
@@ -656,10 +656,7 @@ class ExperimentComponent extends React.Component {
                 <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
 
                 {combinedDocuments.length ?
-                    <FetchedData>
-                        <Param name="documentSearch" url={`/search/?type=Item&${combinedDocuments.map(docAtId => `@id=${docAtId}`).join('&')}`} />
-                        <DocumentsPanelRenderer />
-                    </FetchedData>
+                    <DocumentsPanelReq documents={combinedDocuments} />
                 : null}
             </div>
         );
@@ -682,25 +679,6 @@ const Experiment = auditDecor(ExperimentComponent);
 export default Experiment;
 
 globals.contentViews.register(Experiment, 'Experiment');
-
-
-// Called when a GET request for all the documents associated with an experiment returns with the
-// array of matching documents.
-const DocumentsPanelRenderer = (props) => {
-    const documents = props.documentSearch['@graph'];
-    if (documents && documents.length) {
-        return <DocumentsPanel documentSpecs={[{ documents }]} />;
-    }
-    return null;
-};
-
-DocumentsPanelRenderer.propTypes = {
-    documentSearch: PropTypes.object, // Search result object; we use its @graph to get the documents,
-};
-
-DocumentsPanelRenderer.defaultProps = {
-    documentSearch: null,
-};
 
 
 const replicateTableColumns = {

@@ -1741,6 +1741,28 @@ class FileGalleryRendererComponent extends React.Component {
         const meta = this.detailNodes(jsonGraph, this.state.infoNodeId, this.context.session, this.context.session_properties);
         const modalClass = meta ? `graph-modal-${modalTypeMap[meta.type]}` : '';
 
+        // Generate the file table first so we can render it the same way regardless of whether
+        // we have a file graph or not.
+        const fileTable = (
+            <FileTable
+                {...this.props}
+                items={graphFiles}
+                selectedFilterValue={this.state.selectedFilterValue}
+                filterOptions={filterOptions}
+                graphedFiles={allGraphedFiles}
+                handleFilterChange={this.handleFilterChange}
+                encodevers={globals.encodeVersion(context)}
+                session={this.context.session}
+                infoNodeId={this.state.infoNodeId}
+                setInfoNodeId={this.setInfoNodeId}
+                infoNodeVisible={this.state.infoNodeVisible}
+                setInfoNodeVisible={this.setInfoNodeVisible}
+                showFileCount
+                noDefaultClasses
+                adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
+            />
+        );
+
         return (
             <Panel>
                 <PanelHeading addClasses="file-gallery-heading">
@@ -1761,47 +1783,35 @@ class FileGalleryRendererComponent extends React.Component {
                     handleInclusionChange={this.handleInclusionChange}
                 />
 
-                <TabPanel tabs={{ graph: 'Association graph', tables: 'File details' }}>
-                    <TabPanelPane key="graph">
-                        {!hideGraph ?
-                            <FileGraph
-                                context={context}
-                                items={graphFiles}
-                                graph={jsonGraph}
-                                selectedAssembly={selectedAssembly}
-                                selectedAnnotation={selectedAnnotation}
-                                handleNodeClick={this.handleNodeClick}
-                                setInfoNodeId={this.setInfoNodeId}
-                                setInfoNodeVisible={this.setInfoNodeVisible}
-                                schemas={schemas}
-                                forceRedraw
-                            />
-                        : null}
-                    </TabPanelPane>
+                {!hideGraph ?
+                    <TabPanel tabs={{ graph: 'Association graph', tables: 'File details' }}>
+                        <TabPanelPane key="graph">
+                            {!hideGraph ?
+                                <FileGraph
+                                    context={context}
+                                    items={graphFiles}
+                                    graph={jsonGraph}
+                                    selectedAssembly={selectedAssembly}
+                                    selectedAnnotation={selectedAnnotation}
+                                    handleNodeClick={this.handleNodeClick}
+                                    setInfoNodeId={this.setInfoNodeId}
+                                    setInfoNodeVisible={this.setInfoNodeVisible}
+                                    schemas={schemas}
+                                    forceRedraw
+                                />
+                            : null}
+                        </TabPanelPane>
 
-                    <TabPanelPane key="tables">
-                        {/* If logged in and dataset is released, need to combine search of files that reference
-                            this dataset to get released and unreleased ones. If not logged in, then just get
-                            files from dataset.files */}
-                        <FileTable
-                            {...this.props}
-                            items={graphFiles}
-                            selectedFilterValue={this.state.selectedFilterValue}
-                            filterOptions={filterOptions}
-                            graphedFiles={allGraphedFiles}
-                            handleFilterChange={this.handleFilterChange}
-                            encodevers={globals.encodeVersion(context)}
-                            session={this.context.session}
-                            infoNodeId={this.state.infoNodeId}
-                            setInfoNodeId={this.setInfoNodeId}
-                            infoNodeVisible={this.state.infoNodeVisible}
-                            setInfoNodeVisible={this.setInfoNodeVisible}
-                            showFileCount
-                            noDefaultClasses
-                            adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
-                        />
-                    </TabPanelPane>
-                </TabPanel>
+                        <TabPanelPane key="tables">
+                            {/* If logged in and dataset is released, need to combine search of files that reference
+                                this dataset to get released and unreleased ones. If not logged in, then just get
+                                files from dataset.files */}
+                            {fileTable}
+                        </TabPanelPane>
+                    </TabPanel>
+                :
+                    <div>{fileTable}</div>
+                }
                 {meta && this.state.infoNodeVisible ?
                     <Modal closeModal={this.closeModal}>
                         <ModalHeader closeModal={this.closeModal} addCss={modalClass}>

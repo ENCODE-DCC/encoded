@@ -4,6 +4,7 @@ import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
+import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import { Attachment } from './image';
 
@@ -78,6 +79,44 @@ DocumentsPanel.propTypes = {
 
 DocumentsPanel.defaultProps = {
     title: '',
+};
+
+
+// Called when a GET request for all the documents associated with an experiment returns with the
+// array of matching documents.
+const DocumentsPanelRenderer = (props) => {
+    const documents = props.documentSearch['@graph'];
+    if (documents && documents.length) {
+        return <DocumentsPanel documentSpecs={[{ documents }]} />;
+    }
+    return null;
+};
+
+DocumentsPanelRenderer.propTypes = {
+    documentSearch: PropTypes.object, // Search result object; we use its @graph to get the documents,
+};
+
+DocumentsPanelRenderer.defaultProps = {
+    documentSearch: null,
+};
+
+
+export const DocumentsPanelReq = (props) => {
+    const { documents } = props;
+
+    if (documents && documents.length) {
+        return (
+            <FetchedData>
+                <Param name="documentSearch" url={`/search/?type=Item&${documents.map(docAtId => `@id=${docAtId}`).join('&')}`} />
+                <DocumentsPanelRenderer />
+            </FetchedData>
+        );
+    }
+    return null;
+};
+
+DocumentsPanelReq.propTypes = {
+    documents: PropTypes.array.isRequired, // Array of document @ids to request and render
 };
 
 
