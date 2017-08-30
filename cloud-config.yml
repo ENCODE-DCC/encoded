@@ -151,7 +151,6 @@ packages:
 - libffi-dev
 - bsd-mailx
 - redis-server
-# - redis
 
 power_state:
   mode: reboot
@@ -200,6 +199,7 @@ runcmd:
 - sudo -u encoded bin/index-annotations production.ini --app-name app
 - ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
 - ln -s /srv/encoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
+# TODO: - ln -s /srv/encoded/etc/redis-production.conf /etc/redis/redis.conf
 - a2enmod headers
 - a2enmod proxy_http
 - a2enmod rewrite
@@ -228,13 +228,13 @@ runcmd:
 # redis-server etc/redis-encoded.conf
 # confirm: redis-cli ping
 # redis-cli shutdown
-- wget http://download.redis.io/redis-stable.tar.gz
-- tar xzf redis-stable.tar.gz
-- cd redis-stable
-- make
-- sudo make install
-- cd ..
-- redis-server /srv/encoded/etc/redis-encoded.conf
+## - wget http://download.redis.io/redis-stable.tar.gz
+## - tar xzf redis-stable.tar.gz
+## - cd redis-stable
+## - make
+## - sudo make install
+## - cd ..
+- sudo service redis-server start
 # - sleep 10
 # - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 # - pg_ctlcluster 9.3 main reload
