@@ -44,7 +44,8 @@ class SecondState(IndexerState):
         self.todo_set        = 'secondary-todo'         # one cycle of uuids, sent to the Secondary Indexer
         self.in_progress_set = 'secondary-in-progress'
         self.failed_set      = 'secondary-failed'
-        self.indexed_set     = 'secondary-done'         # Some uuids don't get indexed
+        self.done_set        = 'secondary-done'         # Trying to get all uuids from 'todo' to this set
+        self.done_list       = 'secondary-done-list'    # Try lpushing to a list to speed things along
         self.troubled_set    = 'secondary-troubled'     # uuids that failed to index in any cycle
         self.last_set        = 'secondary-last-cycle'   # uuids in the most recent finished cycle
         self.followup_prep_list = None                  # No followup to secondary indexer
@@ -52,7 +53,7 @@ class SecondState(IndexerState):
         #self.audited_set     = 'secondary-audited'
         self.viscached_set   = 'secondary-viscached'
         # DO NOT INHERIT! All keys that are cleaned up at the start and fully finished end of indexing
-        self.cleanup_keys      = [self.todo_set,self.in_progress_set,self.failed_set,self.indexed_set]
+        self.cleanup_keys      = [self.todo_set,self.in_progress_set,self.failed_set,self.done_set]
         self.cleanup_last_keys = [self.last_set,self.viscached_set]  # ,self.audited_set] cleaned up only when new indexing occurs
 
     #def audited_uuid(self, uuid):
@@ -63,7 +64,7 @@ class SecondState(IndexerState):
 
     def successes_this_cycle(self):
         # Overwritten: secondary_indexer counts a success as an actual object added to viscache!
-        return self.redis_client.smembers(self.viscached_set)
+        return self.redis_client.scard(self.viscached_set)
 
     def get_one_cycle(self, xmin):
         uuids = set()
@@ -169,11 +170,10 @@ def index_secondary(request):
         snapshot_id = None  # Not sure why this will be needed.  The xmin should be all that is needed.
 
         # Make no effort to incrementally index... all in
-        errors = indexer.update_objects(request, uuids, xmin, snapshot_id)
+        errors = indexer.update_in_batches(request, uuids, xmin, snapshot_id)
 
         indexing_errors.extend(errors)  # ignore errors?
         result['errors'] = indexing_errors
-        result["cycles"] = result.get("cycles",0) + 1
 
         result['successful'] = state.finish_cycle(result)
         #if record:
@@ -218,10 +218,10 @@ def index_secondary(request):
             lag=str(datetime.datetime.now(pytz.utc) - first_txn)
         )
         state.set(result)
+        log.info("Secondary indexer handled %d uuids" % uuid_count)
     else:
         result['indexed'] = 0
 
-    log.info("Secondary indexer handled %d uuids" % uuid_count)
     return result
 
 
@@ -235,7 +235,7 @@ class SecondaryIndexer(Indexer):
         return None
 
     def update_object(self, request, uuid, xmin):
-        self.state.start_uuid(uuid)
+        #self.state.start_uuid(uuid)
 
         last_exc = None
         # First get the object currently in es
@@ -318,7 +318,7 @@ class SecondaryIndexer(Indexer):
             return {'error_message': last_exc, 'timestamp': timestamp, 'uuid': str(uuid)}
 
         #log.info("Secondary indexed %s", uuid)
-        self.state.indexed_uuid(uuid)
+        #self.state.indexed_uuid(uuid)
 
 
     def shutdown(self):
