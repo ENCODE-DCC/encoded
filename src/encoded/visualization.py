@@ -123,9 +123,11 @@ BIGWIG_FILE_TYPES = ['bigWig']
 BIGBED_FILE_TYPES = ['bigBed']
 
 VISIBLE_DATASET_STATUSES = ["released"]
+QUICKVIEW_STATUSES_BLOCKED = ["proposed", "started", "deleted", "revoked", "replaced"]
 VISIBLE_FILE_STATUSES = ["released"]
 VISIBLE_DATASET_TYPES = ["Experiment", "Annotation"]
 VISIBLE_DATASET_TYPES_LC = ["experiment", "annotation"]
+VISIBLE_ASSEMBLIES = ['hg19', 'GRCh38', 'mm10', 'mm10-minimal' ,'mm9','dm6','dm3','ce10','ce11']
 
 # ASSEMBLY_MAPPINGS is needed to ensure that mm10 and mm10-minimal will
 #                   get combined into the same trackHub.txt
@@ -2128,16 +2130,27 @@ def readable_time(secs_float):
 
     return result
 
-def object_is_visualizable(obj):
+def object_is_visualizable(obj,assembly=None,QuickView=False):
     '''Is this object visualizable.'''
+    if "Dataset" not in obj['@type']:
+        return False
     visualizabe_types = set(VISIBLE_DATASET_TYPES)
     if visualizabe_types.isdisjoint(obj['@type']):
         return False
-    if obj.get('status', 'none') not in VISIBLE_DATASET_STATUSES:
-        return False
+    status = obj.get('status')
+    if QuickView:
+        if status is None or status not in VISIBLE_DATASET_STATUSES:
+            return False
+    else:
+        if status is None or status in QUICKVIEW_STATUSES_BLOCKED:
+            return False
     if 'accession' not in obj:
         return False
-    if len(obj.get('assembly',[])) == 0:
+    if assembly is None:
+        assemblies = set(obj.get('assembly',[]))
+        if assemblies.isdisjoint(VISIBLE_ASSEMBLIES):
+            return False
+    elif assembly not in VISIBLE_ASSEMBLIES:
         return False
     return True
 
