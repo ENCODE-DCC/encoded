@@ -127,12 +127,11 @@ def genetic_modification_5_6(value, system):
                             value['aliases'] = [b]
                 if 'purpose' in value and value['purpose'] == 'tagging':
                     # Those modification objects that are CRISPR tag insertions can't be upgraded
-                    # this way since the dependencies require them to have tag info and that 
-                    # metadata sits in construct so they must be migrated manually with all 
+                    # this way since the dependencies require them to have tag info and that
+                    # metadata sits in construct so they must be migrated manually with all
                     # constructs. The only ones in this class right now are the Snyder CRISPR-tag
                     # lines and those all have C-terminal eGFP tags.
                     value['introduced_tags'] = [{'name': 'eGFP', 'location': 'C-terminal'}]
-                
             elif 'talen_platform' in technique.properties:
                 value['method'] = 'TALE'
                 # We had patched these on production to have purpose = repression. However, they're

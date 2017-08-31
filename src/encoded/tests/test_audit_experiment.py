@@ -494,11 +494,11 @@ def chip_seq_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, award,
 
 
 @pytest.fixture
-def hotspot_quality_metric(testapp, analysis_step_run_bam, file_tsv_1_1, award, encode_lab):
+def hotspot_quality_metric(testapp, analysis_step_run_bam, file_bam_1_1, award, encode_lab):
     item = {
-        'SPOT2 score': 0.3345,
+        'SPOT1 score': 0.3345,
         'step_run': analysis_step_run_bam['@id'],
-        'quality_metric_of': [file_tsv_1_1['@id']],
+        'quality_metric_of': [file_bam_1_1['@id']],
         'award': award['@id'],
         'lab': encode_lab['@id']
     }
@@ -2024,7 +2024,7 @@ def test_audit_experiment_dnase_low_spot_score(testapp,
                                              'output_type': 'alignments',
                                              'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'DNase-HS pipeline (single-end)'})
+                                             'DNase-HS pipeline single-end - Version 2'})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
@@ -2058,7 +2058,7 @@ def test_audit_experiment_dnase_seq_low_read_depth(testapp,
                                              'output_type': 'alignments',
                                              'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'DNase-HS pipeline (single-end)'})
+                                             'DNase-HS pipeline single-end - Version 2'})
     testapp.patch_json(chip_seq_quality_metric['@id'], {'mapped': 23})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
@@ -2093,7 +2093,7 @@ def test_audit_experiment_dnase_low_read_length(testapp,
                                              'output_type': 'alignments',
                                              'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'DNase-HS pipeline (single-end)'})
+                                             'DNase-HS pipeline single-end - Version 2'})
     testapp.patch_json(chip_seq_quality_metric['@id'], {'mapped': 23})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
@@ -2134,7 +2134,7 @@ def test_audit_experiment_dnase_low_correlation(testapp,
                                              'output_type': 'alignments',
                                              'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'DNase-HS pipeline (single-end)'})
+                                             'DNase-HS pipeline single-end - Version 2'})
     testapp.patch_json(chip_seq_quality_metric['@id'], {'mapped': 23})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
@@ -2172,7 +2172,7 @@ def test_audit_experiment_dnase_seq_missing_read_depth(testapp,
                                              'output_type': 'alignments',
                                              'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(pipeline_bam['@id'], {'title':
-                                             'DNase-HS pipeline (single-end)'})
+                                             'DNase-HS pipeline single-end - Version 2'})
     testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
     testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
     testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})

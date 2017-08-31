@@ -32,8 +32,8 @@ const portal = {
             title: 'Encyclopedia',
             children: [
                 { id: 'aboutannotations', title: 'About', url: '/data/annotations/' },
-                { id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation&encyclopedia_version=3' },
-                { id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=3' },
+                { id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation&encyclopedia_version=4' },
+                { id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=4' },
             ],
         },
         {

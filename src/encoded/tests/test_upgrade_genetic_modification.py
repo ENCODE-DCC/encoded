@@ -88,7 +88,7 @@ def test_genetic_modification_upgrade_2_3(upgrader, genetic_modification_2):
 
 '''
 Commented this test out because the linked technique objects are not embedded for the upgrade
-but are for the test so it fails when it's trying to resolve the linked object by UUID. In 
+but are for the test so it fails when it's trying to resolve the linked object by UUID. In
 the former case, it's a link, in the latter case it's the embedded object. I can make the test
 work but then the upgrade doesn't do what it should do.
 

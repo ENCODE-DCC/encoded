@@ -238,6 +238,7 @@ def base_experiment(testapp, lab, award):
         'lab': lab['uuid'],
         'assay_term_name': 'RNA-seq',
         'biosample_type': 'tissue',
+        'biosample_term_name': 'heart',
         'biosample_term_id': 'UBERON:349829',
         'status': 'started'
     }

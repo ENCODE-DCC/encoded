@@ -32,27 +32,19 @@ export function CollectBiosampleDocs(biosample) {
     // Collect up the various biosample documents
     let protocolDocuments = [];
     if (biosample.documents && biosample.documents.length) {
-        protocolDocuments = globals.uniqueObjectsArray(biosample.documents);
+        protocolDocuments = _.uniq(biosample.documents);
     }
     let characterizations = [];
     if (biosample.characterizations && biosample.characterizations.length) {
-        characterizations = globals.uniqueObjectsArray(biosample.characterizations);
+        characterizations = _.uniq(biosample.characterizations);
     }
     let constructDocuments = [];
     if (biosample.constructs && biosample.constructs.length) {
-        biosample.constructs.forEach((construct) => {
-            if (construct.documents && construct.documents.length) {
-                constructDocuments = constructDocuments.concat(construct.documents);
-            }
-        });
+        constructDocuments = biosample.constructs.reduce((allDocs, construct) => ((construct.documents && construct.documents.length) ? allDocs.concat(construct.documents) : allDocs), []);
     }
     let rnaiDocuments = [];
     if (biosample.rnais && biosample.rnais.length) {
-        biosample.rnais.forEach((rnai) => {
-            if (rnai.documents && rnai.documents.length) {
-                rnaiDocuments = rnaiDocuments.concat(rnai.documents);
-            }
-        });
+        rnaiDocuments = biosample.rnais.reduce((allDocs, rnai) => ((rnai.documents && rnai.documents.length) ? allDocs.concat(rnai.documents) : allDocs), []);
     }
     let donorDocuments = [];
     let donorCharacterizations = [];
@@ -66,28 +58,20 @@ export function CollectBiosampleDocs(biosample) {
     }
     let donorConstructs = [];
     if (biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length) {
-        biosample.model_organism_donor_constructs.forEach((construct) => {
-            if (construct.documents && construct.documents.length) {
-                donorConstructs = donorConstructs.concat(construct.documents);
-            }
-        });
+        donorConstructs = biosample.model_organism_donor_constructs.reduce((allDocs, construct) => ((construct.documents && construct.documents.length) ? allDocs.concat(construct.documents) : allDocs), []);
     }
     let talenDocuments = [];
     if (biosample.talens && biosample.talens.length) {
-        biosample.talens.forEach((talen) => {
-            talenDocuments = talenDocuments.concat(talen.documents);
-        });
+        talenDocuments = biosample.talens.reduce((allDocs, talen) => ((talen.documents && talen.documents.length) ? allDocs.concat(talen.documents) : allDocs), []);
     }
     let treatmentDocuments = [];
     if (biosample.treatments && biosample.treatments.length) {
-        biosample.treatments.forEach((treatment) => {
-            treatmentDocuments = treatmentDocuments.concat(treatment.protocols);
-        });
+        treatmentDocuments = biosample.treatments.reduce((allDocs, treatment) => ((treatment.documents && treatment.documents.length) ? allDocs.concat(treatment.documents) : allDocs), []);
     }
 
     // Put together the document list for rendering
     // Compile the document list
-    const combinedDocuments = _([].concat(
+    const combinedDocuments = _.uniq([].concat(
         protocolDocuments,
         characterizations,
         constructDocuments,
@@ -97,8 +81,7 @@ export function CollectBiosampleDocs(biosample) {
         donorConstructs,
         talenDocuments,
         treatmentDocuments,
-    )).chain().uniq(doc => (doc ? doc.uuid : null)).compact()
-    .value();
+    ));
 
     return combinedDocuments;
 }
