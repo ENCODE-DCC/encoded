@@ -24,8 +24,7 @@ class GeneticModification(Item):
     embedded = [
         'modified_site_by_target_id',
         'treatments',
-        'documents',
-        'characterizations.documents'
+        'lab'
     ]
 
     rev = {

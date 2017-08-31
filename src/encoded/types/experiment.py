@@ -235,7 +235,7 @@ class Experiment(Dataset,
                                 for gm in genetic_modifications:
                                     gm_object = request.embed(gm, '@@object')
                                     modifications_list.append(
-                                        (gm_object['modification_type'], gm_object))
+                                        (gm_object['category'], gm_object))
 
                             construct_objects_list = None
                             constructs = biosampleObject.get('constructs')
