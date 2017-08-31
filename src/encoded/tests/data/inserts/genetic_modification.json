@@ -7,16 +7,16 @@
         "status": "released",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
-        "modification_type": "insertion",
+        "category": "insertion",
         "purpose": "tagging",
-        "epitope_tags": [
+        "introduced_tags": [
             {
                 "name": "eGFP",
                 "location": "C-terminal"
             }
         ],
         "modified_site_by_target_id": "/targets/CTCF-human/",
-        "modification_technique": "CRISPR",
+        "method": "CRISPR",
         "guide_rna_sequences": [
             "GCGTAGCCAGTGACCAGCT",
             "TGGGCTAACATTAGCCAGA"
@@ -39,11 +39,11 @@
             "end": 21000
         },
         "purpose": "repression",
-        "modification_type": "deletion",
-        "modification_technique": "CRISPR",
-        "reagent_availability": [
+        "category": "deletion",
+        "method": "CRISPR",
+        "reagents": [
             { 
-                "repository": "atcc",
+                "source": "atcc",
                 "identifier": "CRL-2522"
             }
         ],
@@ -56,15 +56,15 @@
     },
     {
         "description": "shRNA targeting FTO",
-        "modification_technique": "RNAi",
-        "reagent_availability": [
+        "method": "RNAi",
+        "reagents": [
             {
-                "repository": "sigma",
+                "source": "sigma",
                 "identifier": "TRCN0000246247"
             }
         ],
         "modified_site_by_target_id": "/targets/FTO-human/",
-        "modification_type": "interference",
+        "category": "interference",
         "purpose": "repression",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
@@ -75,7 +75,7 @@
     {
         "submitted_by": "amet.fusce@est.fermentum",
         "status": "released",
-        "epitope_tags": [
+        "introduced_tags": [
             {
                 "name": "eGFP",
                 "location": "C-terminal"
@@ -83,12 +83,12 @@
         ],
         "modified_site_by_target_id": "/targets/FTO-human/",
         "lab": "/labs/robert-waterston/",
-        "modification_type": "insertion",
+        "category": "insertion",
         "purpose": "tagging",
-        "modification_technique": "stable transfection",
-        "reagent_availability": [
+        "method": "stable transfection",
+        "reagents": [
             {
-                "repository": "kevin-white",
+                "source": "kevin-white",
                 "identifier": "CH322-135D17"
             }
         ],
@@ -108,14 +108,14 @@
         "lab": "/labs/robert-waterston/",
         "uuid": "b9264c83-2222-4678-a82f-4915af941fa4",
         "submitted_by": "amet.fusce@est.fermentum",
-        "modification_type": "replacement",
+        "category": "replacement",
         "purpose": "validation",
         "zygosity": "heterozygous",
-        "reagent_availability": [{
-            "repository": "/sources/gregory-crawford/",
+        "reagents": [{
+            "source": "/sources/gregory-crawford/",
             "identifier": "please-contact-lab"
         }],
-        "modification_technique": "TALE",
+        "method": "TALE",
         "RVD_sequence_pairs": [
             {
                 "left_RVD_sequence": "NN,NG,HD,NI,NI,NN",
@@ -131,10 +131,10 @@
         "lab": "/labs/kevin-white/",
         "uuid": "10f82b48-4082-479d-8184-a1a73f9ff16d",
         "submitted_by": "amet.fusce@est.fermentum",
-        "modification_type": "mutagenesis",
+        "category": "mutagenesis",
         "purpose": "repression",
         "documents": ["encode:MCF-7_Farnham_treatment_protocol"],
-        "modification_technique": "mutagen treatment",
+        "method": "mutagen treatment",
         "treatments": ["3280b708-0f05-40fa-bff2-54e2b6505c13"]
     }
 ]

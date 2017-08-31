@@ -97,7 +97,7 @@ def test_genetic_modification_upgrade_5_6(upgrader, genetic_modification_5, cris
                              current_version='5', target_version='6')
     assert value['schema_version'] == '6'
     assert 'modification_techniques' not in value
-    assert value['modification_technique'] == 'CRISPR'
+    assert value['method'] == 'CRISPR'
     assert 'modified_site' not in value
     assert 'target' not in value
     assert 'purpose' in value
@@ -105,7 +105,7 @@ def test_genetic_modification_upgrade_5_6(upgrader, genetic_modification_5, cris
     assert len(value['guide_rna_sequences']) == 2
     assert value['aliases'][0] == 'encode:crispr_technique1-CRISPR'
     assert value['introduced_sequence'] == 'TCGA'
-    assert 'reagent_availability' in value
-    assert value['reagent_availability'][0]['repository'] == 'sigma'
-    assert value['reagent_availability'][0]['identifier'] == '12345'
+    assert 'reagents' in value
+    assert value['reagents'][0]['source'] == 'sigma'
+    assert value['reagents'][0]['identifier'] == '12345'
 '''
