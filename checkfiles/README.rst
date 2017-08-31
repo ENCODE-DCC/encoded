@@ -21,4 +21,4 @@ Deploy
 
 Supply arguments for checkfiles after a ``--`` separator::
 
-    bin/python deploy.py -- --username ACCESS_KEY_ID --password SECRET_ACCESS_KEY https://www.encodeproject.org
+    bin/python deploy.py -- --username ACCESS_KEY_ID --password SECRET_ACCESS_KEY --bot-token SLACK-BOT-TOKEN https://www.encodeproject.org
