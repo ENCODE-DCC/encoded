@@ -38,14 +38,13 @@ def includeme(config):
     registry['secondary'+INDEXER] = SecondaryIndexer(registry)
 
 class SecondState(IndexerState):
-    def __init__(self, redis_client=None):
-        super(SecondState, self).__init__(redis_client)
+    def __init__(self, redis_client=None,accounting=True):
+        super(SecondState, self).__init__(redis_client,accounting)
         self.persistent_key  = 'secondary-state'        # State of the current or last cycle
         self.todo_set        = 'secondary-todo'         # one cycle of uuids, sent to the Secondary Indexer
         self.in_progress_set = 'secondary-in-progress'
         self.failed_set      = 'secondary-failed'
         self.done_set        = 'secondary-done'         # Trying to get all uuids from 'todo' to this set
-        self.done_list       = 'secondary-done-list'    # Try lpushing to a list to speed things along
         self.troubled_set    = 'secondary-troubled'     # uuids that failed to index in any cycle
         self.last_set        = 'secondary-last-cycle'   # uuids in the most recent finished cycle
         self.followup_prep_list = None                  # No followup to secondary indexer
@@ -106,6 +105,7 @@ def index_secondary(request):
     recovery = request.json.get('recovery', False)
     es = request.registry[ELASTIC_SEARCH]
     indexer = request.registry['secondary'+INDEXER]
+    secondary_accounting = False
 
     # TODO: Do we need worker pool?  It solves memory overload issues
     # TODO: problem at startup when old list exists but elastcsearch is empty!
@@ -126,7 +126,7 @@ def index_secondary(request):
     # redis-cli flushall  # Deletes all keys!!!
 
     # keep track of state with redis
-    state = SecondState()
+    state = SecondState(accounting=secondary_accounting)
 
     last_xmin = None
     result = state.get()
@@ -145,7 +145,8 @@ def index_secondary(request):
     while True:  # Cycles on xmin grouped indexer cycles
         (xmin, next_xmin, uuids) = state.get_one_cycle(xmin)
 
-        uuids = state.add_undone_uuids(uuids) # Adds undone from last cycle
+        if secondary_accounting:
+            uuids = state.add_undone_uuids(uuids) # Adds undone from last cycle
 
         if len(uuids) == 0:  # No more uuids in the queue
             break
@@ -162,20 +163,22 @@ def index_secondary(request):
         result.update(
             last_xmin=last_xmin,
             xmin=xmin,
-            cycle_count=len(uuids),
-            indexed=uuid_count,
+            batch_size=indexer.batch_size,
         )
-        state.start_cycle(uuids,result)
+        result = state.start_cycle(uuids,result)
 
-        snapshot_id = None  # Not sure why this will be needed.  The xmin should be all that is needed.
+        #snapshot_id = None  # Not sure why this will be needed.  The xmin should be all that is needed.
 
         # Make no effort to incrementally index... all in
-        errors = indexer.update_in_batches(request, uuids, xmin, snapshot_id)
+        if secondary_accounting:
+            errors = indexer.update_in_batches(request, uuids, xmin)  # , snapshot_id)
+        else:
+            errors = indexer.update_objects(request, uuids, xmin)     # , snapshot_id)
 
         indexing_errors.extend(errors)  # ignore errors?
         result['errors'] = indexing_errors
 
-        result['successful'] = state.finish_cycle(result)
+        result = state.finish_cycle(result)
         #if record:
         #    result['lag'] = str(datetime.datetime.now(pytz.utc) - first_txn)
         #    try:
