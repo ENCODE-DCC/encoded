@@ -50,6 +50,10 @@ def genetic_modification_5_6(value, system):
         value['modified_site_by_coordinates'] = value['modified_site']
         value.pop('modified_site')
 
+    if 'modification_type' in value:
+        value['category'] = value['modification_type']
+        value.pop('modification_type')
+
     rep_obj = dict()
     has_source = False
     if 'source' in value:
