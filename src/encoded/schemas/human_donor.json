@@ -125,11 +125,11 @@
             "title": "Life stage",
             "type": "string",
             "enum": [
+                "embryonic",
                 "newborn",
                 "child",
                 "adult",
-                "unknown",
-                "embryonic"
+                "unknown"
             ]
         },
         "sex": {
