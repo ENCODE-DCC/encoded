@@ -145,14 +145,14 @@
         },
         "parents": {
             "title": "Parents",
-            "description": "Biological parents of donor",
-            "comment":"This is a link for cases when families are all donors in our system.",
+            "description": "Biological parents of this donor",
+            "comment":"This is a link for cases when families are all donors in our system. Children will be calculated from this link.",
             "type":  "array",
             "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Parent",
-                "description": "A donor ID of a biological parent",
+                "description": "Biological parent of this donor.",
                 "comment": "For human biosamples, see human_donor.json for available identifiers.",
                 "type": "string",
                 "linkTo": "HumanDonor"
@@ -160,14 +160,14 @@
         },
         "children": {
             "title": "Children",
-            "description": "Donors that genetic material was supplied to.",
+            "description": "Biological children of this donor.",
+            "comment": "Do not submit. This is calculated from the parents field.",
             "type":  "array",
             "default": [],
             "uniqueItems": true,
-            "XXXnote": "Can be removed since we have parents.",
             "items": {
                 "title": "Child",
-                "description": "A donor that genetic material was supplied to.",
+                "description": "Biological child of this donor.",
                 "comment": "For human biosamples, see human_donor.json for available identifiers.",
                 "type": "string",
                 "linkTo": "HumanDonor"
