@@ -325,6 +325,33 @@ export function parseAndLogError(cause, response) {
     return promise;
 }
 
+
+/**
+ * Sort an array of documents first by attachment download name, and then by @id.
+ *
+ * @param {array} docs - Array of document/characterization objects to be sorted.
+ * @return (array) - Array of the same documents/characterization as was passed in, but sorted.
+ */
+export function sortDocs(docs) {
+    return docs.sort((a, b) => {
+        // Generate sorting names based on the download file name followed by the @id of the
+        // document/characterization. If the document has no attachment, then this just uses the
+        // the @id.
+        const aLowerName = a.attachment && a.attachment.download ? a.attachment.download.toLowerCase() : '';
+        const bLowerName = b.attachment && b.attachment.download ? b.attachment.download.toLowerCase() : '';
+        const aAttachmentName = `${aLowerName}${a['@id']}`;
+        const bAttachmentName = `${bLowerName}${b['@id']}`;
+
+        // Perform the actual sort. Because we know the sorting name has a unique @id, we don't
+        // have to check for equivalent names.
+        if (aAttachmentName < bAttachmentName) {
+            return -1;
+        }
+        return 1;
+    });
+}
+
+
 export const dbxrefPrefixMap = {
     UniProtKB: 'http://www.uniprot.org/uniprot/',
     HGNC: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene=',

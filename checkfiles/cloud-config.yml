@@ -50,14 +50,14 @@ runcmd:
 - chown build:build /opt/encoded
 - sudo -u build git clone --no-checkout https://github.com/ENCODE-DCC/encoded.git /opt/encoded
 - sudo -u build git -C /opt/encoded checkout %(COMMIT)s
+- chmod +x /opt/encoded/checkfiles/script
 
 - cd /opt/encoded/checkfiles
 - sudo -u build pyvenv .
 - sudo -u build bin/pip install -r requirements.txt
 
 - cd /home/ubuntu
-- sudo -iu ubuntu /opt/encoded/checkfiles/bin/python /opt/encoded/checkfiles/checkfiles.py $(cat /opt/checkfiles_args.txt)
-
+- nohup /opt/encoded/checkfiles/script $(cat /opt/checkfiles_args.txt) 2> errors.log 1> output.log &
 
 users:
 - default
@@ -87,3 +87,9 @@ write_files:
     #!/bin/sh
     ulimit -n 60000
     exec goofys "$@"
+- path: /etc/rc.local
+  permissions: 0755
+  content: |
+    #!/bin/sh -e
+    cd /home/ubuntu; nohup /opt/encoded/checkfiles/script %(ARGS)s 2> errors.log 1> output.log &
+    exit 0

@@ -4,7 +4,7 @@
     "id": "/profiles/genetic_modification.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["lab", "award", "modification_type", "purpose", "modification_technique"],  
+    "required": ["lab", "award", "category", "purpose", "method"],  
     "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -19,22 +19,22 @@
     ],
     "dependencies": {
         "purpose": {
-            "comment": "Modifications for tagging purposes need to include the epitope_tag property in combination with a target. Modifications for other purposes also need either the site and/or target specified.",
+            "comment": "Modifications for tagging purposes need to include the introduced_tag property in combination with a target. Modifications for other purposes also need either the site and/or target specified.",
             "oneOf": [
                 {
                     "anyOf": [
                         {
-                            "required": ["modified_site_by_target_id", "epitope_tags"]
+                            "required": ["modified_site_by_target_id", "introduced_tags"]
                         },
                         {
-                            "required": ["modified_site_nonspecific", "epitope_tags"]
+                            "required": ["modified_site_nonspecific", "introduced_tags"]
                         }
                     ],
                     "properties": {
                         "purpose": {
                                 "enum": ["tagging"]
                         },
-                        "modification_type": {
+                        "category": {
                                 "enum": ["insertion"]
                         }
                     }
@@ -69,15 +69,15 @@
                 }
             ]
         },
-        "modification_type": {
-            "comment": "Insertions need to specify epitope_tags or introduced_sequence. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified and mutagenesis needs treatment specified.",
+        "category": {
+            "comment": "Insertions need to specify introduced_tags or introduced_sequence. Replacements need to specify introduced_sequence. Deletions need either target id, coordinates or deleted sequence specified. Interference needs target id specified and mutagenesis needs treatment specified.",
             "oneOf": [
                 {
                     "anyOf": [
                         {
-                            "required": ["epitope_tags"],
+                            "required": ["introduced_tags"],
                             "properties": {
-                                "modification_type": {
+                                "category": {
                                     "enum": ["insertion"]
                                 },
                                 "purpose": {
@@ -88,7 +88,7 @@
                         {
                             "required": ["introduced_sequence"],
                             "properties": {
-                                "modification_type": {
+                                "category": {
                                     "enum": ["insertion"]
                                 }
                             }
@@ -98,7 +98,7 @@
                 {
                     "required": ["introduced_sequence"],
                     "properties": {
-                        "modification_type": {
+                        "category": {
                             "enum": ["replacement"]
                         }
                     }
@@ -116,7 +116,7 @@
                         }
                     ],
                     "properties": {
-                        "modification_type": {
+                        "category": {
                             "enum": ["deletion"]
                         }
                     }
@@ -124,7 +124,7 @@
                 {
                     "required": ["modified_site_by_target_id"],
                     "properties": {
-                        "modification_type": {
+                        "category": {
                             "enum": ["interference"]
                         },
                         "purpose": {
@@ -133,22 +133,34 @@
                     }
                 },
                 {
-                    "required": ["treatments", "modified_site_nonspecific"],
-                    "properties": {
-                        "modification_type": {
-                            "enum": ["mutagenesis", "site-specific recombinase"]
+                    "anyOf": [
+                        {
+                            "required": ["treatments", "modified_site_nonspecific"],
+                            "properties": {
+                                "category": {
+                                    "enum": ["mutagenesis", "site-specific recombination"]
+                                }
+                            }
+                        },
+                        {
+                            "required": ["treatments"],
+                            "properties": {
+                                "category": {
+                                    "enum": ["mutagenesis"]
+                                }
+                            }
                         }
-                    }
+                    ]
                 }
             ]
         },
-        "epitope_tags": {
-            "comment": "Specified epitope tags should include at least one entry and apply only to tagging modifications.",
+        "introduced_tags": {
+            "comment": "Specified introduced protein tags should include at least one entry and apply only to tagging modifications.",
             "properties":{
-                "epitope_tags": {
+                "introduced_tags": {
                     "minItems": 1
                 },
-                "modification_type": {
+                "category": {
                     "enum": ["insertion"]
                 },
                 "purpose": {
@@ -162,7 +174,7 @@
                 "guide_rna_sequences": {
                     "minItems": 1
                 },
-                "modification_technique": {
+                "method": {
                     "enum": ["CRISPR"]
                 }
             }
@@ -173,10 +185,10 @@
                 "rnais_sequences": {
                     "minItems": 1
                 },
-                "modification_technique": {
+                "method": {
                     "enum": ["RNAi"]
                 },
-                "modification_type": {
+                "category": {
                     "enum": ["interference"]
                 },
                 "purpose": {
@@ -191,7 +203,7 @@
                     "minItems": 1,
                     "maxItems": 2
                 },
-                "modification_technique": {
+                "method": {
                     "enum": ["TALE"]
                 }
             }
@@ -199,15 +211,15 @@
         "introduced_sequence": {
             "comment": "Introduced sequences apply only to modification_type = insertion and replacement.",
             "properties": {
-                "modification_type": {
+                "category": {
                     "enum": ["insertion", "replacement"]
                 }
             }
         },
-        "reagent_availability": {
+        "reagents": {
             "comment": "Specified reagent availablity details should include at least one entry.",
             "properties": {
-                "reagent_availability": {
+                "reagents": {
                      "minItems": 1
                 }
             }
@@ -218,12 +230,12 @@
                 "treatments": {
                     "minItems": 1
                 },
-                "modification_technique": {
+                "method": {
                     "enum": ["mutagen treatment", "site-specific recombination"]
                 }
             }
         },
-        "modification_technique": {
+        "method": {
             "comment": "CRISPR technique requires guide_rna_sequences and/or reagent_availability specified. RNAi requires rnai_sequences and/or reagent availability specified. TALEs require zygosity, RVD_sequence_pairs and/or reagent_availability specified. Mutagen treatment needs treatment to be specified. All other techniques need reagent_avialability and/or supporting documents to be specified.",
             "oneOf": [
                 {
@@ -231,15 +243,15 @@
                         {
                             "required": ["guide_rna_sequences"],
                             "properties": {
-                                "modification_technique": {
+                                "method": {
                                     "enum": ["CRISPR"]
                                 }
                             }
                         },
                         {
-                            "required": ["reagent_availability"],
+                            "required": ["reagents"],
                             "properties": {
-                                "modification_technique": {
+                                "method": {
                                     "enum": ["CRISPR"]
                                 }
                             }
@@ -251,15 +263,15 @@
                         {
                             "required": ["rnai_sequences"],
                             "properties":{
-                                "modification_technique": {
+                                "method": {
                                     "enum": ["RNAi"]
                                 }
                             }
                         },
                         {
-                            "required": ["reagent_availability"],
+                            "required": ["reagents"],
                             "properties":{
-                                "modification_technique": {
+                                "method": {
                                     "enum": ["RNAi"]
                                 }
                             }
@@ -267,18 +279,25 @@
                     ]
                 },
                 {    
-                    "required": ["reagent_availability"],
+                    "required": ["reagents"],
                     "comment": "Add back anyOf block with zygosity and RVD_sequence_pairs to the required list after Jason gets metadata",
                     "properties":{
-                        "modification_technique": {
+                        "method": {
                             "enum": ["TALE"]
                         }
                     }
                 },
                 {
-                    "required": ["treatments"],
-                     "properties":{
-                        "modification_technique": {
+                    "anyOf": [
+                        {
+                            "required": ["treatments", "documents"]
+                        },
+                        {
+                            "required": ["treatments", "reagents"]
+                        }
+                    ],
+                    "properties":{
+                        "method": {
                             "enum": [
                                 "mutagen treatment",
                                 "site-specific recombination"
@@ -294,29 +313,27 @@
                                 "documents": {
                                     "minItems": 1
                                 },
-                                "modification_technique": {
+                                "method": {
                                     "enum": [
                                         "stable transfection",
                                         "transient transfection",
                                         "transduction",
                                         "microinjection",
-                                        "bombardment",
-                                        "site-specific recombination"
+                                        "bombardment"
                                      ]
                                 }
                             }
                         },
                         {
-                            "required": ["reagent_availability"],
+                            "required": ["reagents"],
                             "properties":{
-                                "modification_technique": {
+                                "method": {
                                     "enum": [
                                         "stable transfection",
                                         "transient transfection",
                                         "transduction",
                                         "microinjection",
-                                        "bombardment",
-                                        "site-specific recombination"
+                                        "bombardment"
                                     ]
                                 }
                             }
@@ -356,10 +373,12 @@
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
-        "modification_type": {
-            "title": "Modification type",
-            "description": "The type of the genetic modification.",
+        "category": {
+            "title": "Category",
+            "description": "The category/type of the genetic modification performed.",
             "type": "string",
+            "comment": "Locking down to temporarily prevent new genetic_modifications from being submitted.",
+            "permission": "import_items",
             "enum": [
                 "deletion",
                 "insertion",
@@ -399,7 +418,7 @@
         },
         "modified_site_by_coordinates": {
             "title": "Modified site by coordinates",
-            "description": "Genomic coordinates of the modification.",
+            "description": "Genomic coordinates specifying the location of the modification.",
             "type": "object",
             "additionalProperties": false,
             "required":["assembly", "chromosome", "start", "end"],
@@ -451,18 +470,18 @@
             "type": "string",
             "comment": "May be expanded to include extrachromosomal arrays if need arises.",
             "enum": [
-                "random location(s)"
+                "random"
             ]
         },
-        "epitope_tags": {
-            "title": "Protein epitope tags",
-            "description": "Eptiope tags introduced in the modification.",
+        "introduced_tags": {
+            "title": "Introduced protein tags",
+            "description": "Protein tags introduced in the modification.",
             "type": "array",
             "uniqueItems": true,
             "items": {
-                "title": "Protein epitope tag",
-                "description": "Epitope tag introduced in the modification.",
-                "comment": "Submit tag name and tag location. If the fusion protein is designed to be expressed with a non-native promoter, please indicate the promoter used.",
+                "title": "Introduced tag",
+                "description": "Protein tag introduced in the modification.",
+                "comment": "Submit tag name and tag location. If the fusion protein is designed to be expressed with a non-native promoter, please indicate the promoter used by its ENCODE target id.",
                 "type": "object",
                 "additionalProperties": false,
                 "required": ["name", "location"],
@@ -499,7 +518,7 @@
                     },
                     "promoter_used": {
                         "title": "Promoter used in construct",
-                        "description": "The name of the gene that the promoter regulates natively.",
+                        "description": "The name (ENCODE target id) of the gene that the promoter regulates natively.",
                         "comment": "See target.json for available identifiers.",
                         "type": "string",
                         "linkTo": "Target"
@@ -513,9 +532,9 @@
         	"type": "string",
             "pattern": "^[ACTG]+$"	
 		},
-        "modification_technique": {
-            "title": "Modification technique",
-            "description": "The modification technique used to produce the described genetic modification.",
+        "method": {
+            "title": "Method",
+            "description": "The method used to produce the described genetic modification.",
             "type": "string",
             "enum":[
                 "CRISPR",
@@ -534,7 +553,6 @@
             "title": "Treatments",
             "description": "Relevant mutagenesis treatments applied to result in the modification.",
             "type": "array",
-            "permission": "import_items",
             "uniqueItems": true,
             "items": {
                 "title": "Treatment",
@@ -558,11 +576,11 @@
         },
         "guide_rna_sequences": {
             "title": "Guide RNA sequences",
-            "description": "gRNA sequences used in CRISPR genetic modification",
+            "description": "gRNA sequences used in CRISPR genetic modification.",
             "type": "array",
             "uniqueItems": true,
             "items": {
-                "title": "gRNA sequence",
+                "title": "guide RNA sequence",
                 "description": "guide RNA sequence used in the experiment.",
                 "type": "string",
                 "pattern": "^[ACUNTGacuntg]+$"
@@ -596,28 +614,28 @@
                 }
             }
         },
-        "reagent_availability": {
-            "title": "Reagent availability",
-            "description": "Repositories where reagents used to produce the described genetic modification can be obtained, if applicable.",
+        "reagents": {
+            "title": "Reagents",
+            "description": "Details on where reagents (e.g. plasmids) used to produce the described genetic modification can be obtained, if applicable.",
             "comment": "See source.json for identifiers (e.g. addgene, bacpac, rnai-consortium)",
             "type": "array",
             "uniqueItems": true,
             "items": {
-                "title": "Reagent availability",
-                "description": "Repository where reagents used to produce the described genetic modification can be obtained, if applicable.",
+                "title": "Reagent",
+                "description": "Details for where a reagent used to produce the described genetic modification can be obtained, if applicable.",
                 "type": "object",
-                "required": ["repository", "identifier"],
+                "required": ["source", "identifier"],
                 "properties": {
-                    "repository": {
-                        "title": "Repository",
-                        "description": "Repository where reagent used to produce the described genetic modification can be obtained, if applicable.",
+                    "source": {
+                        "title": "Source",
+                        "description": "Source where reagent used to produce the described genetic modification can be obtained, if applicable.",
                         "comment": "See source.json for identifiers (e.g. addgene, bacpac, rnai-consortium)",
                         "type": "string",
                         "linkTo": "Source"
                     },
                     "identifier": {
                         "title": "Identifier",
-                        "description": "Repository identifier of the reagent used to produce the describe genetic modification, if applicable.",
+                        "description": "Identifier of the reagent (as assigned by the source) used to produce the describe genetic modification, if applicable.",
                         "type": "string",
                         "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
                     },
@@ -625,7 +643,7 @@
                         "@type": "@id",
                         "rdfs:subPropertyOf": "rdfs:seeAlso",
                         "title": "URL",
-                        "description": "An external resource with additional information.",
+                        "description": "An external link with additional information about the reagent.",
                         "type": "string",
                         "format": "uri"
                     }
@@ -655,28 +673,34 @@
         "aliases": {
             "title": "Lab aliases"
         },
-        "modification_type": {
-            "title": "Modification type"
+        "category": {
+            "title": "Category"
         },
         "purpose": {
             "title": "Purpose"
         },
-        "modification_technique": {
-            "title": "Modification technique"
+        "method": {
+            "title": "Method"
+        },
+        "lab.title": {
+            "title": "Lab"
         },
         "status": {
             "title": "Genetic modification status"
         }
     },
     "facets": {
-        "modification_type": {
-            "title": "Modification type"
+        "category": {
+            "title": "Category"
         },
         "purpose": {
             "title": "Purpose"
         },
-        "modification_technique": {
-            "title": "Modification technique"
+        "method": {
+            "title": "Method"
+        },
+        "lab.title": {
+            "title": "Lab"
         },
         "status": {
             "title": "Genetic modification status"
