@@ -99,7 +99,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'rnais.documents.lab',
         'organism',
         'references',
-        'genetic_modifications'
+        'genetic_modifications',
+        'genetic_modifications.treatments'
     ]
     audit_inherit = [
         'donor',
