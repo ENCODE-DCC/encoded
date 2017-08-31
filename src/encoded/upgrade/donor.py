@@ -147,13 +147,14 @@ def fly_worm_donor_5_6_and_human_mouse_8_9(value, system):
 
 
 @upgrade_step('human_donor', '9', '10')
+@upgrade_step('mouse_donor', '9', '10')
 def human_donor_9_10(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3415
     if value.get('life_stage') == 'fetal':
         value['life_stage'] = 'embryonic'
     if value.get('life_stage') == 'postnatal':
         value['life_stage'] = 'newborn'
-    value.pop('children', None)
+    
     if value.get('ethnicity') in ['NA', 'Unknown', 'unknown', '']:
         value.pop('ethnicity')
     if value.get('ethnicity') == 'African-American':
@@ -176,3 +177,5 @@ def human_donor_9_10(value, system):
         value['twin'] = value.get('identical_twin')
         value['twin_type'] = 'monozygotic'
         value.pop('identical_twin', None)
+    value.pop('children', None)
+    value.pop('littermates', None)

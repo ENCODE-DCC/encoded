@@ -1,5 +1,9 @@
 ## Changelog for mouse_donor.json
 
+### Schema version 10
+
+* *littermates* property was removed 
+
 ### Schema version 9
 
 * *status* values "proposed" and "preliminary" were removed

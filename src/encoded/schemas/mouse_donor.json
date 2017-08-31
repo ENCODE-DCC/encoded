@@ -26,21 +26,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "9"
-        },
-        "littermates": {
-            "title": "Littermates",
-            "description": "Donors comprising the same litter.",
-            "type":  "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Littermate",
-                "description": "A donor member of the same litter.",
-                "comment": "See mouse_donor.json for available identifiers.",
-                "type": "string",
-                "linkTo": "MouseDonor"
-            }
+            "default": "10"
         },
         "organism": {
             "comment": "Do not submit. DCC personnel is responsible for submission of this property.",
