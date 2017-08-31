@@ -2,11 +2,12 @@
 
 ### Schema version 10
 
-* *fraternal_twin* and *identical_twin* fields were replaced by *twin* field
-* *twin_type* property was added to allow specification of the twin type if it is known
-* *ethnicity* values are no longer free text, and now have to be selected from enum list
-* *life_stage* values 'postnatal' and 'fetal' were removed
-* *children* property is calculated property and should not be submitted anymore
+* *fraternal_twin* and *identical_twin* fields were collapsed into *twin* field
+* *twin_type* property was added to allow specification of the twin type if it is known, it requires *twin*
+* *ethnicity* values are no longer free text but are selected from an enumerated list
+* *life_stage* value 'postnatal' was removed and donors were collapsed into 'newborn'
+* *life_stage* value 'fetal' were removed and donors were collapsed into 'embryonic'
+* *children* property is now a calculated property using the parent fields of other objects. It should no longer be submitted
 
 ### Schema version 9
 
