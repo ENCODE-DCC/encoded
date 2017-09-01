@@ -1,0 +1,133 @@
+// note the position of the inner span isn't calculated correctly yet
+$rotated-th-height: 130px;
+$rotated-th-width: 20px;
+$rotated-th-angle: 30deg;
+
+.matrix-wrapper {
+    display: flex;
+    padding-left: 0;
+    overflow: scroll;
+}
+
+.matrix-group-heading {
+    flex: 0 1 auto;
+    width: 25px;
+    position: relative;
+
+    @at-root #{&}__content {
+        position: absolute;
+        transform: rotate(-90deg);
+        transform-origin: right bottom;
+        right: 2px;
+        font-weight: bold;
+    }
+}
+
+
+th.rotate30 {
+    height: $rotated-th-height;
+    width: $rotated-th-width;
+    min-width: $rotated-th-width;
+    max-width: $rotated-th-width;
+    position: relative;
+    vertical-align: bottom;
+    padding: 0 !important;
+    border: none !important;
+    > div {
+        position: relative;
+        z-index: 1;
+        top: 0;
+        left: ($rotated-th-height * tan($rotated-th-angle) / 2);
+        height: 100%;
+        -webkit-transform: skew(-$rotated-th-angle, 0deg);
+        transform: skew(-$rotated-th-angle, 0deg);
+        background-color: #ddd;
+        border-left: solid 1px #fff;
+        border-right: solid 1px #fff;
+        > a {
+            -webkit-transform: skew($rotated-th-angle, 0deg) rotate(270deg + $rotated-th-angle);
+            transform: skew($rotated-th-angle, 0deg) rotate(270deg + $rotated-th-angle);
+            position: absolute;
+            bottom: 59px;
+            left: -57px;
+            display: inline-block;
+            width: ($rotated-th-height / cos($rotated-th-angle) - $rotated-th-width * cos($rotated-th-angle));
+            text-align: left;
+            line-height: 1.2;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+    }
+}
+
+.rotate90 {
+    vertical-align: top;
+    > div {
+        position: relative;
+        > span {
+            position: absolute;
+            -webkit-transform: rotate(-90deg);
+            transform: rotate(-90deg);
+            -webkit-transform-origin: left bottom 0;
+            transform-origin: left bottom 0;
+            top: 80px;
+            left: 16px;        
+        }
+    }
+}
+
+table.matrix {
+    flex: 0 1 auto;
+    width: auto;
+    border-left: 1px solid #ddd;
+
+    th {
+        text-align: right;
+        padding: 0 .5em;
+        a {
+        	color: black;
+        }
+    }
+    td {
+        vertical-align: middle;
+        text-align: center;
+        padding: 0 !important;
+        border: solid 1px #f9f9f9;
+    }
+    tfoot {
+        background: transparent;
+    }
+}
+
+.hubs-controls {
+    margin-left: 28px;
+    padding: 10px 0 20px;
+}
+
+.hubs-controls-button {
+    display: inline-block;
+}
+
+.group-more-cell {
+    border: 1px solid #fff;
+}
+
+.group-more-cell__button {
+    border: none;
+    background-color: transparent;
+    font-weight: normal;
+    color: $std-href-color;
+}
+
+table.matrix th.group-all-groups-cell {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    text-align: center;
+    border-left: 1px solid #fff;
+    background-color: #f0f0f0;
+}
+
+.group-all-groups-cell__button {
+    @extend .group-more-cell__button;
+}

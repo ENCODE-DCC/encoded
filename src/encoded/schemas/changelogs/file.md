@@ -1,5 +1,9 @@
 ## Changelog for file.json
 
+### Schema version 12
+
+* *run_type* and *mapped_run_type* were limited to only "single-ended" and "paired-ended" types
+
 ### Schema version 11
 
 * *alternate_accessions* now must match accession format, "ENCFF..." or "TSTFF..."

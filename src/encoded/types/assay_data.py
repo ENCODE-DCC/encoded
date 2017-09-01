@@ -50,5 +50,7 @@ assay_terms = {
       'Circulome-seq': 'NTR:0005023',
       'whole genome sequencing assay': 'OBI:0002117',
       'BruUV-seq': 'NTR:0004739',
-      'Mint-ChIP-seq': 'NTR:0005141'
+      'Mint-ChIP-seq': 'NTR:0005141',
+      'single nuclei ATAC-seq': 'NTR:0000438',
+      'icSHAPE': 'NTR:0000433'
 }

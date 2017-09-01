@@ -107,7 +107,9 @@
                     "Circulome-seq",
                     "whole genome sequencing assay",
                     "BruUV-seq",
-                    "Mint-ChIP-seq"
+                    "Mint-ChIP-seq",
+                    "single nuclei ATAC-seq",
+                    "icSHAPE"
                 ]
             }
         },
@@ -165,6 +167,12 @@
             "description": "An external resource to the code base.",
             "type": "string",
             "format": "uri"
+        },
+        "standards_page": {
+            "title": "Standards page for this pipeline",
+            "description": "An link to a page describing the standards for this pipeline.",
+            "type": "string",
+            "linkTo": "Page"
         },
         "pipeline_version": {
             "title": "Pipeline version",

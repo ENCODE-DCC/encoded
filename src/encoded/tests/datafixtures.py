@@ -199,6 +199,7 @@ def organism(human):
 def biosample(testapp, source, lab, award, organism):
     item = {
         'biosample_term_id': 'UBERON:349829',
+        "biosample_term_name": "heart",
         'biosample_type': 'tissue',
         'source': source['@id'],
         'lab': lab['@id'],
@@ -237,6 +238,7 @@ def base_experiment(testapp, lab, award):
         'lab': lab['uuid'],
         'assay_term_name': 'RNA-seq',
         'biosample_type': 'tissue',
+        'biosample_term_name': 'heart',
         'biosample_term_id': 'UBERON:349829',
         'status': 'started'
     }
@@ -686,6 +688,7 @@ def base_biosample(testapp, lab, award, source, organism):
     item = {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
+        "biosample_term_name": "heart",
         'biosample_type': 'tissue',
         'lab': lab['uuid'],
         'organism': organism['uuid'],
@@ -699,6 +702,7 @@ def biosample_1(testapp, lab, award, source, organism):
     item = {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
+        "biosample_term_name": "liver",
         'biosample_type': 'tissue',
         'lab': lab['uuid'],
         'organism': organism['uuid'],
@@ -712,6 +716,7 @@ def biosample_2(testapp, lab, award, source, organism):
     item = {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
+        "biosample_term_name": "liver",
         'biosample_type': 'tissue',
         'lab': lab['uuid'],
         'organism': organism['uuid'],

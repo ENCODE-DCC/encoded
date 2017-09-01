@@ -6,6 +6,7 @@ def biosample(submitter, lab, award, source, organism):
     return {
         'award': award['uuid'],
         'biosample_term_id': 'UBERON:349829',
+        'biosample_term_name': 'heart',
         'biosample_type': 'tissue',
         'lab': lab['uuid'],
         'organism': organism['uuid'],
@@ -18,6 +19,7 @@ def biosample_depleted_in(mouse_biosample):
     item = mouse_biosample.copy()
     item.update({
         'depleted_in_term_name': ['head'],
+        'biosample_term_name': 'multicellular organism',
         "biosample_type": "whole organisms"
     })
     return item
