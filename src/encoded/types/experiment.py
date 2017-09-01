@@ -15,7 +15,8 @@ from .shared_calculated_properties import (
     CalculatedBiosampleSlims,
     CalculatedBiosampleSynonyms,
     CalculatedAssaySynonyms,
-    CalculatedAssayTermID
+    CalculatedAssayTermID,
+    CalculatedVisualize
 )
 
 # importing biosample function to allow calculation of experiment biosample property
@@ -38,7 +39,8 @@ class Experiment(Dataset,
                  CalculatedBiosampleSlims,
                  CalculatedBiosampleSynonyms,
                  CalculatedAssaySynonyms,
-                 CalculatedAssayTermID):
+                 CalculatedAssayTermID,
+                 CalculatedVisualize):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
     embedded = Dataset.embedded + [

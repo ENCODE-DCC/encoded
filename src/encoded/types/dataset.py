@@ -20,12 +20,12 @@ from .shared_calculated_properties import (
     CalculatedSeriesAssay,
     CalculatedSeriesBiosample,
     CalculatedSeriesTreatment,
-    CalculatedSeriesTarget
+    CalculatedSeriesTarget,
+    CalculatedVisualize
 )
 
 from itertools import chain
 import datetime
-from ..visualization import vis_format_external_url
 
 
 def item_is_revoked(request, path):
@@ -185,40 +185,6 @@ class Dataset(Item):
     def hub(self, request):
         return request.resource_path(self, '@@hub', 'hub.txt')
 
-    @calculated_property(condition='hub', category='page', schema={
-        "title": "Visualize Data",
-        "type": "string",
-    })
-    def visualize(self, request, hub, assembly, status):
-        hub_url = urljoin(request.resource_url(request.root), hub)
-        viz = {}
-        for assembly_name in assembly:
-            if assembly_name in viz:  # mm10 and mm10-minimal resolve to the same thing
-                continue
-            browser_urls = {}
-            if status == 'released':  # Non-biodalliance is for released experiments/files only
-                ucsc_url = vis_format_external_url("ucsc", hub_url, assembly_name)
-                if ucsc_url is not None:
-                    browser_urls['UCSC'] = ucsc_url
-                ensembl_url = vis_format_external_url("ensembl", hub_url, assembly_name)
-                if ensembl_url is not None:
-                    browser_urls['Ensembl'] = ensembl_url
-            # Now for biodalliance.  bb and bw already known?  How about non-deleted?
-            # TODO: define (in visualization.py?) supported assemblies list
-            if assembly_name in ['hg19', 'GRCh38', 'mm10', 'mm10-minimal' ,'mm9','dm6','dm3','ce10','ce11']:
-                if status not in ["proposed", "started", "deleted", "revoked", "replaced"]:
-                    file_formats = '&file_format=bigBed&file_format=bigWig'
-                    file_inclusions = '&status=released&status=in+progress'
-                    bd_path = ('/search/?type=File&assembly=%s&dataset=%s%s%s#browser' %
-                               (assembly_name,request.path,file_formats,file_inclusions))
-                    browser_urls['Quick View'] = bd_path  # no host to avoid 'test' problems
-            if browser_urls:
-                viz[assembly_name] = browser_urls
-        if viz:
-            return viz
-        else:
-            return None
-
     @calculated_property(condition='date_released', schema={
         "title": "Month released",
         "type": "string",
@@ -313,7 +279,7 @@ class FileSet(Dataset):
         'title': "Annotation file set",
         'description': 'A set of annotation files produced by ENCODE.',
     })
-class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
+class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms, CalculatedVisualize):
     item_type = 'annotation'
     schema = load_schema('encoded:schemas/annotation.json')
     embedded = FileSet.embedded + [
