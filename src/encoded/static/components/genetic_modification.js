@@ -25,6 +25,7 @@ const GM_TECHNIQUE_MAP = {
 };
 
 
+// Display a panel of characterizations associated with a genetic modification object.
 const GeneticModificationCharacterizations = (props) => {
     const { characterizations } = props;
 
@@ -402,34 +403,6 @@ export class GeneticModificationComponent extends React.Component {
                                         <dt>Purpose</dt>
                                         <dd>{context.purpose}</dd>
                                     </div>
-
-                                    {context.url ?
-                                        <div data-test="url">
-                                            <dt>Product ID</dt>
-                                            <dd><a href={context.url}>{context.product_id ? context.product_id : context.url}</a></dd>
-                                        </div>
-                                    : null}
-
-                                    {context.target ?
-                                        <div data-test="target">
-                                            <dt>Target</dt>
-                                            <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
-                                        </div>
-                                    : null}
-
-                                    {coords && coords.assembly ?
-                                        <div data-test="coordsassembly">
-                                            <dt>Mapping assembly</dt>
-                                            <dd>{context.modified_site.assembly}</dd>
-                                        </div>
-                                    : null}
-
-                                    {coords && coords.chromosome && coords.start && coords.end ?
-                                        <div data-test="coordssequence">
-                                            <dt>Genomic coordinates</dt>
-                                            <dd>chr{coords.chromosome}:{coords.start}-{coords.end}</dd>
-                                        </div>
-                                    : null}
                                 </dl>
 
                                 <ModificationSite geneticModification={context} />
@@ -681,6 +654,7 @@ class ListingComponent extends React.Component {
                     </div>
                     <div className="accession"><a href={result['@id']}>{result.modification_type} &mdash; {result.purpose} &mdash; {result.modification_technique}</a></div>
                     <div className="data-row">
+                        {result.modified_site_by_target_id ? <div><strong>Target: </strong>{result.modified_site_by_target_id.name}</div> : null}
                     </div>
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
@@ -726,85 +700,6 @@ function rGetGMTechniques(gm) {
 // If the GM object has no modification techniques, this function returns a zero-length array. This
 // function is exported so that Jest can test it.
 export const getGMTechniques = _.memoize(rGetGMTechniques, gm => gm.uuid);
-
-
-function rCalcGMSummarySentence(gm) {
-    let treatments = [];
-
-    // modification_type is required, so start the sentence with that.
-    let sentence = gm.modification_type;
-
-    // Add the target of the modification if there is one.
-    if (gm.target) {
-        sentence += ` of ${gm.target.label}`;
-    }
-
-    // Collect up an array of strings with techniques and treatments.
-    const techniques = getGMTechniques(gm);
-    if (gm.treatments && gm.treatments.length) {
-        treatments = gm.treatments.map(treatment => singleTreatment(treatment));
-    }
-    const techtreat = techniques.concat(treatments).join(', ');
-
-    // Add techniques and treatments string if any.
-    if (techtreat.length) {
-        sentence += ` using ${techtreat}`;
-    }
-
-    return sentence;
-}
-
-// Calculate a summary sentence for the GM passed in `gm`.
-export const calcGMSummarySentence = _.memoize(rCalcGMSummarySentence, gm => gm.uuid);
-
-
-// Display a summary of genetic modifications given in the geneticModifications prop. This
-// component assumes the `geneticModifications` array has at least one entry, so make sure of that
-// before calling this component.
-export const GeneticModificationSummary = (props) => {
-    const geneticModifications = props.geneticModifications;
-
-    // Group genetic modifications by a combination like this:
-    // modification_type;modification_technique,modification_technique,...;target.label
-    const gmGroups = _(geneticModifications).groupBy((gm) => {
-        let groupKey = gm.modification_type;
-
-        // Add any modification techniques to the group key.
-        const techniques = getGMTechniques(gm);
-        if (techniques.length) {
-            groupKey += `; ${techniques.join()}`;
-        }
-
-        // Add the target (if any) to the group key.
-        if (gm.target) {
-            groupKey += `; ${gm.target.label}`;
-        }
-
-        // Add the treatment UUIDs (if any) to the group key.
-        if (gm.modification_treatments && gm.modification_treatments.length) {
-            groupKey += `; ${gm.modification_treatments.map(treatment => treatment.uuid).sort().join()}`;
-        }
-
-        return groupKey;
-    });
-
-    return (
-        <Panel>
-            <PanelHeading>
-                <h4>Genetic modifications</h4>
-            </PanelHeading>
-            {Object.keys(gmGroups).map((groupKey) => {
-                const group = gmGroups[groupKey];
-                const sentence = calcGMSummarySentence(group[0]);
-                return <GeneticModificationGroup key={groupKey} groupSentence={sentence} gms={group} />;
-            })}
-        </Panel>
-    );
-};
-
-GeneticModificationSummary.propTypes = {
-    geneticModifications: PropTypes.array.isRequired, // Array of genetic modifications
-};
 
 
 // Display one GM group, which consists of all GMs that share the same type, technique, target, and

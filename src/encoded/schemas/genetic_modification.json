@@ -658,6 +658,9 @@
         "modification_type": {
             "title": "Modification type"
         },
+        "modified_site_by_target_id.name": {
+            "title": "Name"
+        },
         "purpose": {
             "title": "Purpose"
         },
