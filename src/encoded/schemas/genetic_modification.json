@@ -661,6 +661,9 @@
         "modified_site_by_target_id.name": {
             "title": "Name"
         },
+        "lab.title": {
+            "title": "Title"
+        },
         "purpose": {
             "title": "Purpose"
         },

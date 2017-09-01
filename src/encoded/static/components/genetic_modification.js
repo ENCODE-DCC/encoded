@@ -234,7 +234,7 @@ ModificationTechnique.propTypes = {
 // of a successful GET request for the GM's award and lab objects which are no longer embedded in
 // the GM object.
 const AttributionRenderer = (props) => {
-    const { geneticModification, award, lab } = props;
+    const { geneticModification, award } = props;
 
     return (
         <div>
@@ -245,7 +245,7 @@ const AttributionRenderer = (props) => {
             <dl className="key-value">
                 <div data-test="lab">
                     <dt>Lab</dt>
-                    <dd>{lab.title}</dd>
+                    <dd>{geneticModification.lab.title}</dd>
                 </div>
 
                 {award.pi && award.pi.lab ?
@@ -293,7 +293,6 @@ const Attribution = (props) => {
     return (
         <FetchedData>
             <Param name="award" url={geneticModification.award} />
-            <Param name="lab" url={geneticModification.lab} />
             <AttributionRenderer geneticModification={geneticModification} />
         </FetchedData>
     );
@@ -655,6 +654,7 @@ class ListingComponent extends React.Component {
                     <div className="accession"><a href={result['@id']}>{result.modification_type} &mdash; {result.purpose} &mdash; {result.modification_technique}</a></div>
                     <div className="data-row">
                         {result.modified_site_by_target_id ? <div><strong>Target: </strong>{result.modified_site_by_target_id.name}</div> : null}
+                        {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
                     </div>
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
