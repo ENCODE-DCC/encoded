@@ -274,12 +274,10 @@ const AttributionRenderer = (props) => {
 AttributionRenderer.propTypes = {
     geneticModification: PropTypes.object.isRequired, // GeneticModification object being displayed
     award: PropTypes.object, // Award object retreived from an individual GET request; don't make isRequired because React's static analysizer will ding it
-    lab: PropTypes.object, // Lab object retrieved from an individual GET request; don't make isRequired because React's static analysizer will ding it
 };
 
 AttributionRenderer.defaultProps = {
     award: null, // Actually required, but React can't tell this property's coming from a GET request, so treat as optional
-    lab: null, // Actually required, but React can't tell this property's coming from a GET request, so treat as optional
 };
 
 
@@ -328,7 +326,6 @@ export class GeneticModificationComponent extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-detail key-value');
-        const coords = context.modified_site;
 
         // Configure breadcrumbs for the page.
         const crumbs = [
@@ -395,6 +392,13 @@ export class GeneticModificationComponent extends React.Component {
                                             </ul>
                                         </dd>
                                     </div>
+
+                                    {context.zygosity ?
+                                        <div data-test="zygosity">
+                                            <dt>Zygosity</dt>
+                                            <dd>{context.zygosity}</dd>
+                                        </div>
+                                    : null}
 
                                     <EpitopeTags geneticModification={context} />
 
@@ -627,19 +631,6 @@ globals.panelViews.register(TechniqueTale, 'Tale');
 class ListingComponent extends React.Component {
     render() {
         const result = this.props.context;
-
-        let techniques = [];
-        if (result.modification_techniques && result.modification_techniques.length) {
-            techniques = _.uniq(result.modification_techniques.map((technique) => {
-                if (technique['@type'][0] === 'Crispr') {
-                    return 'CRISPR';
-                }
-                if (technique['@type'][0] === 'Tale') {
-                    return 'TALE';
-                }
-                return technique['@type'][0];
-            }));
-        }
 
         return (
             <li>
