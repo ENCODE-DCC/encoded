@@ -4,7 +4,7 @@ import moment from 'moment';
 import _ from 'underscore';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
-import { DocumentsPanel } from './doc';
+import { DocumentsPanelReq } from './doc';
 import * as globals from './globals';
 import { DbxrefList } from './dbxref';
 import { ExperimentTable } from './dataset';
@@ -219,7 +219,8 @@ class ExperimentComponent extends React.Component {
         // Collect all documents from the experiment itself.
         const documents = (context.documents && context.documents.length) ? context.documents : [];
 
-        // Make array of all replicate biosamples, not including biosample-less replicates. Also collect up library documents.
+        // Make array of all replicate biosamples, not including biosample-less replicates. Also
+        // collect up library documents.
         const libraryDocs = [];
         let biosamples = [];
         let geneticModifications = [];
@@ -241,7 +242,7 @@ class ExperimentComponent extends React.Component {
             }));
         }
 
-        // Create platforms array from file platforms; ignore duplicate platforms
+        // Create platforms array from file platforms; ignore duplicate platforms.
         const platforms = {};
         if (context.files && context.files.length) {
             context.files.forEach((file) => {
@@ -251,13 +252,16 @@ class ExperimentComponent extends React.Component {
             });
         }
 
-        // If we have replicates, handle what we used to call Assay Details -- display data about each of the replicates, breaking out details
+        // If we have replicates, handle what we used to call Assay Details -- display data about
+        // each of the replicates, breaking out details
         // if they differ between replicates.
         if (replicates && replicates.length) {
-            // Prepare to collect values from each replicate's library. Each key in this object refers to a property in the libraries.
-            // For any library properties that aren't simple values, put functions to process them into simple values in this object,
-            // keyed by their library property name. Returned JS undefined if no complex value exists so that we can reliably test it
-            // arily. We have a couple properties too complex even for this, so they'll get added separately at the end.
+            // Prepare to collect values from each replicate's library. Each key in this object
+            // refers to a property in the libraries. For any library properties that aren't simple
+            // values, put functions to process them into simple values in this object, keyed by
+            // their library property name. Returned JS undefined if no complex value exists so
+            // that we can reliably test it. We have a couple properties too complex even for this,
+            // so they'll get added separately at the end.
             librarySpecials = {
                 treatments: (library) => {
                     let treatments = []; // Array of treatment_term_name
@@ -294,7 +298,8 @@ class ExperimentComponent extends React.Component {
                 spikeins_used: (library) => {
                     const spikeins = library.spikeins_used;
 
-                    // Just track @id for deciding if all values are the same or not. Rendering handled in libraryComponents
+                    // Just track @id for deciding if all values are the same or not. Rendering
+                    // handled in libraryComponents
                     if (spikeins && spikeins.length) {
                         return spikeins.sort().join();
                     }
@@ -328,7 +333,7 @@ class ExperimentComponent extends React.Component {
             };
         }
 
-        // Collect biosample docs
+        // Collect biosample docs.
         let biosampleDocs = [];
         biosamples.forEach((biosample) => {
             biosampleDocs = biosampleDocs.concat(CollectBiosampleDocs(biosample));
@@ -337,7 +342,7 @@ class ExperimentComponent extends React.Component {
             }
         });
 
-        // Collect pipeline-related documents
+        // Collect pipeline-related documents.
         let analysisStepDocs = [];
         let pipelineDocs = [];
         if (context.files && context.files.length) {
@@ -363,44 +368,45 @@ class ExperimentComponent extends React.Component {
                 }
             });
         }
-        analysisStepDocs = analysisStepDocs.length ? globals.uniqueObjectsArray(analysisStepDocs) : [];
-        pipelineDocs = pipelineDocs.length ? globals.uniqueObjectsArray(pipelineDocs) : [];
+        analysisStepDocs = analysisStepDocs.length ? _.uniq(analysisStepDocs) : [];
+        pipelineDocs = pipelineDocs.length ? _.uniq(pipelineDocs) : [];
 
-        // Determine this experiment's ENCODE version
+        // Determine this experiment's ENCODE version.
         const encodevers = globals.encodeVersion(context);
 
-        // Make list of statuses
+        // Make list of statuses.
         const statuses = [{ status: context.status, title: 'Status' }];
         if (adminUser && context.internal_status) {
             statuses.push({ status: context.internal_status, title: 'Internal' });
         }
 
-        // Make string of alternate accessions
+        // Make string of alternate accessions.
         const altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
-        // Make array of superseded_by accessions
+        // Make array of superseded_by accessions.
         let supersededBys = [];
         if (context.superseded_by && context.superseded_by.length) {
             supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
         }
 
-        // Make array of supersedes accessions
+        // Make array of supersedes accessions.
         let supersedes = [];
         if (context.supersedes && context.supersedes.length) {
             supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
         }
 
-        // Determine whether the experiment is isogenic or anisogenic. No replication_type indicates isogenic.
+        // Determine whether the experiment is isogenic or anisogenic. No replication_type
+        // indicates isogenic.
         const anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
 
-        // Get a list of related datasets, possibly filtering on their status
+        // Get a list of related datasets, possibly filtering on their status.
         let seriesList = [];
         const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         if (context.related_series && context.related_series.length) {
             seriesList = _(context.related_series).filter(dataset => loggedIn || dataset.status === 'released');
         }
 
-        // Set up the breadcrumbs
+        // Set up the breadcrumbs.
         const assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
         const assayName = context[assayTerm];
         const assayQuery = `${assayTerm}=${assayName}`;
@@ -421,25 +427,20 @@ class ExperimentComponent extends React.Component {
             { id: biosampleTermName, query: biosampleTermQuery, tip: biosampleTermName },
         ];
 
-        // Compile the document list
-        const combinedDocuments = _(documents.concat(
+        // Compile the document list.
+        const combinedDocuments = _.uniq(documents.concat(
             biosampleDocs,
             libraryDocs,
-            biosampleDocs,
             pipelineDocs,
             analysisStepDocs
-        ))
-            .chain()
-            .uniq(doc => (doc ? doc.uuid : null))
-            .compact()
-            .value();
+        ));
 
         const experimentsUrl = `/search/?type=Experiment&possible_controls.accession=${context.accession}`;
 
-        // Make a list of reference links, if any
+        // Make a list of reference links, if any.
         const references = pubReferenceList(context.references);
 
-        // Render tags badges
+        // Render tags badges.
         let tagBadges;
         if (context.internal_tags && context.internal_tags.length) {
             tagBadges = context.internal_tags.map(tag => <img key={tag} src={`/static/img/tag-${tag}.png`} alt={`${tag} tag`} />);
@@ -654,7 +655,9 @@ class ExperimentComponent extends React.Component {
 
                 <FetchedItems {...this.props} url={experimentsUrl} Component={ControllingExperiments} />
 
-                {combinedDocuments.length ? <DocumentsPanel documentSpecs={[{ documents: combinedDocuments }]} /> : null}
+                {combinedDocuments.length ?
+                    <DocumentsPanelReq documents={combinedDocuments} />
+                : null}
             </div>
         );
     }

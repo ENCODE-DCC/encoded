@@ -4,6 +4,7 @@ import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
+import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import { Attachment } from './image';
 
@@ -49,6 +50,9 @@ export const DocumentsPanel = (props) => {
         allDocs = allDocs.concat(spec.documents);
     });
 
+    // Sort documents by attachment download name.
+    const sortedDocs = globals.sortDocs(allDocs);
+
     if (documentSpecsMapped.length) {
         return (
             <div>
@@ -58,7 +62,7 @@ export const DocumentsPanel = (props) => {
                     </PanelHeading>
                     <PanelBody addClasses="panel-body-doc doc-panel__outer">
                         <section className="doc-panel__inner">
-                            {allDocs.map((doc) => {
+                            {sortedDocs.map((doc) => {
                                 const PanelView = globals.panelViews.lookup(doc);
                                 return <PanelView key={doc['@id']} label={docLabelMap[doc.uuid]} context={doc} />;
                             })}
@@ -78,6 +82,46 @@ DocumentsPanel.propTypes = {
 
 DocumentsPanel.defaultProps = {
     title: '',
+};
+
+
+// Called when a GET request for all the documents associated with a dataset returns with the
+// array of matching documents.
+const DocumentsPanelRenderer = (props) => {
+    const documents = props.documentSearch['@graph'];
+    if (documents && documents.length) {
+        return <DocumentsPanel documentSpecs={[{ documents }]} />;
+    }
+    return null;
+};
+
+DocumentsPanelRenderer.propTypes = {
+    documentSearch: PropTypes.object, // Search result object; this uses its @graph to get the documents,
+};
+
+DocumentsPanelRenderer.defaultProps = {
+    documentSearch: null,
+};
+
+
+// Perform a GET request on the array of document @ids passed in the `documents` property, and
+// display the resulting documents in a documents panel.
+export const DocumentsPanelReq = (props) => {
+    const { documents } = props;
+
+    if (documents && documents.length) {
+        return (
+            <FetchedData>
+                <Param name="documentSearch" url={`/search/?type=Item&${documents.map(docAtId => `@id=${docAtId}`).join('&')}`} />
+                <DocumentsPanelRenderer />
+            </FetchedData>
+        );
+    }
+    return null;
+};
+
+DocumentsPanelReq.propTypes = {
+    documents: PropTypes.array.isRequired, // Array of document @ids to request and render
 };
 
 

@@ -99,7 +99,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'rnais.documents.lab',
         'organism',
         'references',
-        'genetic_modifications'
+        'genetic_modifications',
+        'genetic_modifications.treatments'
     ]
     audit_inherit = [
         'donor',
@@ -499,7 +500,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             modifications_list = []
             for gm in genetic_modifications:
                 gm_object = request.embed(gm, '@@object')
-                modifications_list.append((gm_object['modification_type'], gm_object))
+                modifications_list.append((gm_object['category'], gm_object))
 
         construct_objects_list = None
         if constructs is not None and len(constructs) > 0:

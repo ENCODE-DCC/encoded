@@ -6,9 +6,9 @@ def crispr_deletion(lab, award):
     return {
         'lab': lab['@id'],
         'award': award['@id'],
-        'modification_type': 'deletion',
+        'category': 'deletion',
         'purpose': 'repression',
-        'modification_technique': 'CRISPR'
+        'method': 'CRISPR'
     }
 
 
@@ -17,9 +17,9 @@ def tale_deletion(lab, award):
     return {
         'lab': lab['@id'],
         'award': award['@id'],
-        'modification_type': 'deletion',
+        'category': 'deletion',
         'purpose': 'repression',
-        'modification_technique': 'TALE'
+        'method': 'TALE'
     }
 
 
@@ -28,9 +28,9 @@ def crispr_tag(lab, award):
     return {
         'lab': lab['@id'],
         'award': award['@id'],
-        'modification_type': 'insertion',
+        'category': 'insertion',
         'purpose': 'tagging',
-        'modification_technique': 'CRISPR'
+        'method': 'CRISPR'
     }
 
 
@@ -39,9 +39,9 @@ def bombardment_tag(lab, award):
     return {
         'lab': lab['@id'],
         'award': award['@id'],
-        'modification_type': 'insertion',
+        'category': 'insertion',
         'purpose': 'tagging',
-        'modification_technique': 'bombardment'
+        'method': 'bombardment'
     }
 
 
@@ -50,9 +50,9 @@ def recomb_tag(lab, award):
     return {
         'lab': lab['@id'],
         'award': award['@id'],
-        'modification_type': 'insertion',
+        'category': 'insertion',
         'purpose': 'tagging',
-        'modification_technique': 'site-specific recombination'
+        'method': 'site-specific recombination'
     }
 
 
@@ -61,9 +61,9 @@ def transfection_tag(lab, award):
     return {
         'lab': lab['@id'],
         'award': award['@id'],
-        'modification_type': 'insertion',
+        'category': 'insertion',
         'purpose': 'tagging',
-        'modification_technique': 'stable transfection'
+        'method': 'stable transfection'
     }
 
 
@@ -72,9 +72,9 @@ def crispri(lab, award):
     return {
         'lab': lab['@id'],
         'award': award['@id'],
-        'modification_type': 'interference',
+        'category': 'interference',
         'purpose': 'repression',
-        'modification_technique': 'CRISPR'
+        'method': 'CRISPR'
     }
 
 
@@ -83,9 +83,9 @@ def rnai(lab, award):
     return {
         'lab': lab['@id'],
         'award': award['@id'],
-        'modification_type': 'interference',
+        'category': 'interference',
         'purpose': 'repression',
-        'modification_technique': 'RNAi'
+        'method': 'RNAi'
     }
 
 
@@ -94,9 +94,9 @@ def mutagen(lab, award):
     return {
         'lab': lab['@id'],
         'award': award['@id'],
-        'modification_type': 'mutagenesis',
+        'category': 'mutagenesis',
         'purpose': 'repression',
-        'modification_technique': 'mutagen treatment'
+        'method': 'mutagen treatment'
     }
 
 
@@ -105,9 +105,9 @@ def tale_replacement(lab, award):
     return {
         'lab': lab['@id'],
         'award': award['@id'],
-        'modification_type': 'replacement',
+        'category': 'replacement',
         'purpose': 'validation',
-        'modification_technique': 'TALE'
+        'method': 'TALE'
     }
 
 
@@ -142,67 +142,68 @@ def test_tale_deletion_no_RVD_sequence_or_reagent_availability(testapp, tale_del
                            [{'left_RVD_sequence': 'NH,NI,NG', 'right_RVD_sequence': 'NN,NG,NI'},
                             {'left_RVD_sequence': 'NN,NH,NH', 'right_RVD_sequence': 'NN,NI,NI'}]})
     '''
-    tale_deletion.update({'reagent_availability': [{'repository': source['@id'], 'identifier': '12345'}]})
+    tale_deletion.update({'reagents': [{'source': source['@id'], 'identifier': '12345'}]})
     res = testapp.post_json('/genetic_modification', tale_deletion, expect_errors=True)
     assert res.status_code == 201
 
 
 def test_tag_modifications_without_tag(testapp, crispr_tag, bombardment_tag, transfection_tag, 
-                                       recomb_tag, target, source, document):
+                                       recomb_tag, target, source, treatment, document):
     # We shouldn't allow purpose = tagging if modification_type != insertion
     crispr_tag.update({'modified_site_by_target_id': target['@id'],
                        'guide_rna_sequences': ['ATTAGGCAT'],
-                       'epitope_tags': [{'name': 'eGFP', 'location': 'C-terminal'}],
-                       'modification_type': 'deletion'})
+                       'introduced_tags': [{'name': 'eGFP', 'location': 'C-terminal'}],
+                       'category': 'deletion'})
     res = testapp.post_json('/genetic_modification', crispr_tag, expect_errors=True)
     assert res.status_code == 422
-    crispr_tag.update({'modification_type': 'replacement'})
+    crispr_tag.update({'category': 'replacement'})
     res = testapp.post_json('/genetic_modification', crispr_tag, expect_errors=True)
     assert res.status_code == 422
-    crispr_tag.update({'modification_type': 'mutagenesis'})
+    crispr_tag.update({'category': 'mutagenesis'})
     res = testapp.post_json('/genetic_modification', crispr_tag, expect_errors=True)
     assert res.status_code == 422
-    crispr_tag.update({'modification_type': 'interference'})
+    crispr_tag.update({'category': 'interference'})
     res = testapp.post_json('/genetic_modification', crispr_tag, expect_errors=True)
     assert res.status_code == 422
-    crispr_tag.update({'modification_type': 'insertion'})
+    crispr_tag.update({'category': 'insertion'})
     res = testapp.post_json('/genetic_modification', crispr_tag, expect_errors=True)
     assert res.status_code == 201
 
     # No objects with purpose = tagging should be allowed without epitope_tags property
     bombardment_tag.update({'modified_site_by_target_id': target['@id'],
-                            'modified_site_nonspecific': 'random location(s)',
-                            'modification_type': 'insertion',
+                            'modified_site_nonspecific': 'random',
+                            'category': 'insertion',
                             'documents': [document['@id']]})
     res = testapp.post_json('/genetic_modification', bombardment_tag, expect_errors=True)
     assert res.status_code == 422
-    bombardment_tag.update({'epitope_tags': [{'name': 'eGFP', 'location': 'C-terminal'}]})
+    bombardment_tag.update({'introduced_tags': [{'name': 'eGFP', 'location': 'C-terminal'}]})
     res = testapp.post_json('/genetic_modification', bombardment_tag, expect_errors=True)
     assert res.status_code == 201
 
     recomb_tag.update({'modified_site_by_target_id': target['@id'],
-                       'modified_site_nonspecific': 'random location(s)',
-                       'modification_type': 'insertion',
+                       'modified_site_nonspecific': 'random',
+                       'category': 'insertion',
+                       'treatments': [treatment['@id']],
                        'documents': [document['@id']]})
     res = testapp.post_json('/genetic_modification', recomb_tag, expect_errors=True)
     assert res.status_code == 422
-    recomb_tag.update({'epitope_tags': [{'name': 'eGFP', 'location': 'C-terminal'}]})
+    recomb_tag.update({'introduced_tags': [{'name': 'eGFP', 'location': 'C-terminal'}]})
     res = testapp.post_json('/genetic_modification', recomb_tag, expect_errors=True)
     assert res.status_code == 201
 
     # Additionally, documents and/or reagent_availability must be provided for transfection, 
     # bombardment etc.
     transfection_tag.update({'modified_site_by_target_id': target['@id'],
-                             'modification_type': 'insertion'})
+                             'category': 'insertion'})
     res = testapp.post_json('/genetic_modification', transfection_tag, expect_errors=True)
     assert res.status_code == 422
-    transfection_tag.update({'epitope_tags': [{'name': 'eGFP', 'location': 'C-terminal'}]})
+    transfection_tag.update({'introduced_tags': [{'name': 'eGFP', 'location': 'C-terminal'}]})
     res = testapp.post_json('/genetic_modification', transfection_tag, expect_errors=True)
     assert res.status_code == 422
     transfection_tag.update({'documents': [document['@id']]})
     res = testapp.post_json('/genetic_modification', transfection_tag, expect_errors=True)
     assert res.status_code == 201
-    transfection_tag.update({'reagent_availability': [{'repository': source['@id'], 
+    transfection_tag.update({'reagents': [{'source': source['@id'], 
                                                        'identifier': '12345'}]})
     res = testapp.post_json('/genetic_modification', transfection_tag, expect_errors=True)
     assert res.status_code == 201
@@ -225,7 +226,7 @@ def test_crispri_properties(testapp, crispri, target, source, document):
     # to a CRISPRi modification
     crispri = res.json['@graph'][0]
     res = testapp.patch_json(crispri['@id'],
-                             {'epitope_tags': [{'name': 'eGFP', 'location': 'C-terminal'}]}, expect_errors=True)
+                             {'introduced_tags': [{'name': 'eGFP', 'location': 'C-terminal'}]}, expect_errors=True)
     assert res.status_code == 422
     res = testapp.patch_json(crispri['@id'], {'rnai_sequences': ['ATTACTAG', 'TTGCACTATA']}, expect_errors=True)
     assert res.status_code == 422
@@ -236,28 +237,28 @@ def test_crispri_properties(testapp, crispri, target, source, document):
                                                                       expect_errors=True)
     assert res.status_code == 422
     # Adding reagent_availability on top of having guide_rna_sequences and documents should be allowed
-    res = testapp.patch_json(crispri['@id'], {'reagent_availability': 
-                                              [{'repository': source['@id'], 'identifier': '54321'}]}, 
+    res = testapp.patch_json(crispri['@id'], {'reagents': 
+                                              [{'source': source['@id'], 'identifier': '54321'}]}, 
                                               expect_errors=True)
     assert res.status_code == 200
 
 
 def test_rnai_properties(testapp, rnai, target, source, document):
     # RNAi modifications should have modification_type = interference and purpose = repression
-    rnai.update({'modification_type': 'deletion', 'rnai_sequences': ['ATTACG'], 
+    rnai.update({'category': 'deletion', 'rnai_sequences': ['ATTACG'], 
                  'modified_site_by_target_id': target['@id']})
     res = testapp.post_json('/genetic_modification', rnai, expect_errors=True)
     assert res.status_code == 422
-    rnai.update({'modification_type': 'replacement'})
+    rnai.update({'category': 'replacement'})
     res = testapp.post_json('/genetic_modification', rnai, expect_errors=True)
     assert res.status_code == 422
-    rnai.update({'modification_type': 'mutagenesis'})
+    rnai.update({'category': 'mutagenesis'})
     res = testapp.post_json('/genetic_modification', rnai, expect_errors=True)
     assert res.status_code == 422
-    rnai.update({'modification_type': 'insertion'})
+    rnai.update({'category': 'insertion'})
     res = testapp.post_json('/genetic_modification', rnai, expect_errors=True)
     assert res.status_code == 422
-    rnai.update({'modification_type': 'interference', 'purpose': 'activation'})
+    rnai.update({'category': 'interference', 'purpose': 'activation'})
     res = testapp.post_json('/genetic_modification', rnai, expect_errors=True)
     assert res.status_code == 422
     rnai.update({'purpose': 'overexpression'})
@@ -272,8 +273,8 @@ def test_rnai_properties(testapp, rnai, target, source, document):
     res = testapp.post_json('/genetic_modification', rnai, expect_errors=True)
     assert res.status_code == 201
     rnai = res.json['@graph'][0]
-    res = testapp.patch_json(rnai['@id'], {'reagent_availability': 
-                                           [{'repository': source['@id'], 'identifier': 'abc'}]})
+    res = testapp.patch_json(rnai['@id'], {'reagents': 
+                                           [{'source': source['@id'], 'identifier': 'abc'}]})
     assert res.status_code == 200
 
 
@@ -293,7 +294,8 @@ def test_mutagen_properties(testapp, mutagen, target, treatment, document):
     res = testapp.post_json('/genetic_modification', mutagen, expect_errors=True)
     assert res.status_code == 422
     del mutagen['modified_site_by_coordinates']
-    mutagen.update({'modified_site_nonspecific': 'random location(s)', 'treatments': [treatment['@id']]})
+    mutagen.update({'modified_site_nonspecific': 'random', 'treatments': [treatment['@id']],
+                    'documents': [document['@id']]})
     res = testapp.post_json('/genetic_modification', mutagen, expect_errors=True)
     assert res.status_code == 201
 
@@ -301,7 +303,7 @@ def test_mutagen_properties(testapp, mutagen, target, treatment, document):
 def test_tale_replacement_properties(testapp, tale_replacement, source):
     # Replacement modifications need to include introduced_sequence
     tale_replacement.update({'modified_site_by_sequence': 'ATTTTAGGCAGGTAGGATTACGAGGACCCAGGTACGATCAGGT',
-                             'reagent_availability': [{'repository': source['@id'], 'identifier': 'xyz'}]})
+                             'reagents': [{'source': source['@id'], 'identifier': 'xyz'}]})
     res = testapp.post_json('/genetic_modification', tale_replacement, expect_errors=True)
     assert res.status_code == 422
     tale_replacement.update({'introduced_sequence': 'TTATCGATCGATTTGAGCATAGAAATGGCCGATTTATATGCCCGA'})

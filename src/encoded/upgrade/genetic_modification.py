@@ -50,13 +50,17 @@ def genetic_modification_5_6(value, system):
         value['modified_site_by_coordinates'] = value['modified_site']
         value.pop('modified_site')
 
+    if 'modification_type' in value:
+        value['category'] = value['modification_type']
+        value.pop('modification_type')
+
     rep_obj = dict()
     has_source = False
     if 'source' in value:
         # If for some inexplicable reason, there is a source associated with the genetic_modification,
         # let's move it to reagent repository for now. If there is one in the technique, we'll overwrite it
         # and use that one instead.
-        rep_obj.update({'repository': value['source']})
+        rep_obj.update({'source': value['source']})
         has_source = True
         value.pop('source')
 
@@ -72,10 +76,10 @@ def genetic_modification_5_6(value, system):
             rep_obj.update({'identifier': 'please-contact-lab'})
 
     if rep_obj:
-        if 'reagent_availability' not in value:
-            value['reagent_availability'] = [rep_obj]
+        if 'reagents' not in value:
+            value['reagents'] = [rep_obj]
         else:
-            value['reagent_availability'].append(rep_obj)
+            value['reagents'].append(rep_obj)
         has_source = False
 
     if not value['treatments']:
@@ -95,7 +99,7 @@ def genetic_modification_5_6(value, system):
                 alias_flag = True
             rep_obj = dict()
             if 'source' in technique.properties:
-                rep_obj.update({'repository': technique.properties['source']})
+                rep_obj.update({'source': technique.properties['source']})
                 has_source = True
             if 'product_id' in technique.properties:
                 rep_obj.update({'identifier': technique.properties['product_id']})
@@ -105,16 +109,16 @@ def genetic_modification_5_6(value, system):
                     rep_obj.update({'identifier': 'please-contact-lab'})
 
             if rep_obj:
-                if 'reagent_availability' not in value:
-                    value['reagent_availability'] = [rep_obj]
-                elif rep_obj not in value['reagent_availability']:
-                    value['reagent_availability'].append(rep_obj)
+                if 'reagents' not in value:
+                    value['reagents'] = [rep_obj]
+                elif rep_obj not in value['reagents']:
+                    value['reagents'].append(rep_obj)
                 else:
                     pass
                 has_source = False
             if 'guide_rna_sequences' in technique.properties:
                 value['guide_rna_sequences'] = technique.properties['guide_rna_sequences']
-                value['modification_technique'] = 'CRISPR'
+                value['method'] = 'CRISPR'
 
                 if 'insert_sequence' in technique.properties:
                     value['introduced_sequence'] = technique.properties['insert_sequence']
@@ -127,14 +131,13 @@ def genetic_modification_5_6(value, system):
                             value['aliases'] = [b]
                 if 'purpose' in value and value['purpose'] == 'tagging':
                     # Those modification objects that are CRISPR tag insertions can't be upgraded
-                    # this way since the dependencies require them to have tag info and that 
-                    # metadata sits in construct so they must be migrated manually with all 
+                    # this way since the dependencies require them to have tag info and that
+                    # metadata sits in construct so they must be migrated manually with all
                     # constructs. The only ones in this class right now are the Snyder CRISPR-tag
                     # lines and those all have C-terminal eGFP tags.
-                    value['epitope_tags'] = [{'name': 'eGFP', 'location': 'C-terminal'}]
-                
+                    value['introduced_tags'] = [{'name': 'eGFP', 'location': 'C-terminal'}]
             elif 'talen_platform' in technique.properties:
-                value['modification_technique'] = 'TALE'
+                value['method'] = 'TALE'
                 # We had patched these on production to have purpose = repression. However, they're
                 # actually more in line with a purpose of validating the region as DHS/regulatory, so
                 # let's upgrade it to that. Another option would be "analysis" but am unsure what it's
@@ -155,9 +158,9 @@ def genetic_modification_5_6(value, system):
                 # This shouldn't happen as we currently don't have any other possible techniques
                 # so let's just set it to something we know we don't have yet annotated correctly
                 # in the data so we can identify special cases to deal with
-                value['modification_technique'] = 'microinjection'
+                value['method'] = 'microinjection'
     else:
-        value['modification_technique'] = 'mutagen treatment'
+        value['method'] = 'mutagen treatment'
 
     if 'modification_techniques' in value:
         # These will no longer be linked out to the respective technique objects. The

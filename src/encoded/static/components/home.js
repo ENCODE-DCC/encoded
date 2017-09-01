@@ -12,7 +12,7 @@ const newsUri = '/search/?type=Page&news=true&status=released';
 // Convert the selected organisms and assays into an encoded query.
 function generateQuery(selectedOrganisms, selectedAssayCategory) {
     // Make the base query.
-    let query = selectedAssayCategory === 'COMPPRED' ? '?type=Annotation&encyclopedia_version=3' : '?type=Experiment&status=released';
+    let query = selectedAssayCategory === 'COMPPRED' ? '?type=Annotation&encyclopedia_version=4' : '?type=Experiment&status=released';
 
     // Add the selected assay category, if any (doesn't apply to Computational Predictions).
     if (selectedAssayCategory && selectedAssayCategory !== 'COMPPRED') {

@@ -168,6 +168,12 @@
             "type": "string",
             "format": "uri"
         },
+        "standards_page": {
+            "title": "Standards page for this pipeline",
+            "description": "An link to a page describing the standards for this pipeline.",
+            "type": "string",
+            "linkTo": "Page"
+        },
         "pipeline_version": {
             "title": "Pipeline version",
             "description": "The pipeline version.",

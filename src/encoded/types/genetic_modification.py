@@ -24,7 +24,6 @@ class GeneticModification(Item):
     embedded = [
         'modified_site_by_target_id',
         'treatments',
-        'characterizations',
         'lab'
     ]
 
