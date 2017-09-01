@@ -684,6 +684,9 @@
         "modification_technique": {
             "title": "Modification technique"
         },
+        "lab.title": {
+            "title": "Lab"
+        },
         "status": {
             "title": "Genetic modification status"
         }

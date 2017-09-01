@@ -1,5 +1,6 @@
 [
     {
+        "accession": "ENCGM529DAG",
         "aliases": [
             "encode:modification-test-1"
         ],
@@ -24,6 +25,7 @@
         "submitted_by": "dignissim.euismod@amet.habitant"
     },
     {
+        "accession": "ENCGM442SCX",
         "aliases": [
             "encode:modification-test-2"
         ],
@@ -55,6 +57,7 @@
         "submitted_by": "amet.fusce@est.fermentum"
     },
     {
+        "accession": "ENCGM793CRR",
         "description": "shRNA targeting FTO",
         "modification_technique": "RNAi",
         "reagent_availability": [
@@ -73,6 +76,7 @@
         "submitted_by": "amet.fusce@est.fermentum"
     },
     {
+        "accession": "ENCGM089YBC",
         "submitted_by": "amet.fusce@est.fermentum",
         "status": "released",
         "epitope_tags": [
@@ -102,6 +106,7 @@
         "uuid": "2f33a486-e3d9-4633-8682-a363b48ba67d"
     },
     {
+        "accession": "ENCGM198AQA",
         "status": "released", 
         "modified_site_by_coordinates": {
             "chromosome": "X",
@@ -130,6 +135,7 @@
         "introduced_sequence": "TACGGAGCTAGCTGGAACTAGCCATGCATAAACGATAGCTTGCTC"
     },
     {
+        "accession": "ENCGM345ZQX",
         "status": "in progress",
         "modified_site_nonspecific": "random location(s)",
         "award": "/awards/U41HG007355/",
