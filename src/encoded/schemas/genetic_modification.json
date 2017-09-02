@@ -688,9 +688,6 @@
         "method": {
             "title": "Method"
         },
-        "lab.title": {
-            "title": "Lab"
-        },
         "status": {
             "title": "Genetic modification status"
         }
@@ -704,9 +701,6 @@
         },
         "method": {
             "title": "Method"
-        },
-        "lab.title": {
-            "title": "Lab"
         },
         "lab.title": {
             "title": "Lab"

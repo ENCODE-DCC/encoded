@@ -52,16 +52,16 @@ GeneticModificationCharacterizations.propTypes = {
 
 // Generate a <dt>/<dd> combination to render GeneticModification.epitope_tags into a <dl>. If no
 // epitope_tags exist in the given genetic modification object, nothing gets rendered.
-const EpitopeTags = (props) => {
+const IntroducedTags = (props) => {
     const { geneticModification } = props;
 
-    if (geneticModification.epitope_tags && geneticModification.epitope_tags.length) {
+    if (geneticModification.introduced_tags && geneticModification.introduced_tags.length) {
         // Generate an array of React components, each containing one epitope_tags display from
         // the array of epitope_tags in the given genetic modification object. At least one
         // property of each epitope tag element must be present, or else an empty <li></li> will
         // get generated. Seems unlikely to have an empty epitope_tags element in the array, so
         // this currently seems like a good assumption.
-        const elements = geneticModification.epitope_tags.map((tag, i) => {
+        const elements = geneticModification.introduced_tags.map((tag, i) => {
             const targetName = tag.promoter_used ? globals.atIdToAccession(tag.promoter_used) : '';
             const name = tag.name ? <span>{tag.name}</span> : null;
             const location = tag.location ? <span>{name ? <span> &mdash; </span> : null}{tag.location}</span> : null;
@@ -72,7 +72,7 @@ const EpitopeTags = (props) => {
         // Return a <div> to get rendered within a <dl> being displayed for the given genetic
         // modification.
         return (
-            <div data-test="epitopetag">
+            <div data-test="introducedtag">
                 <dt>Tags</dt>
                 <dd><ul className="multi-value">{elements}</ul></dd>
             </div>
@@ -81,7 +81,7 @@ const EpitopeTags = (props) => {
     return null;
 };
 
-EpitopeTags.propTypes = {
+IntroducedTags.propTypes = {
     geneticModification: PropTypes.object.isRequired, // GeneticModification object being displayed
 };
 
@@ -166,7 +166,7 @@ const ModificationTechnique = (props) => {
             <dl className={itemClass}>
                 <div data-test="technique">
                     <dt>Technique</dt>
-                    <dd>{geneticModification.modification_technique}</dd>
+                    <dd>{geneticModification.method}</dd>
                 </div>
 
                 {treatments.length ?
@@ -204,13 +204,13 @@ const ModificationTechnique = (props) => {
                     </div>
                 : null}
 
-                {geneticModification.reagent_availability && geneticModification.reagent_availability.length ?
+                {geneticModification.reagents && geneticModification.reagents.length ?
                     <div data-test="reagent">
-                        <dt>Reagent availability</dt>
+                        <dt>Reagents</dt>
                         <dd>
                             <ul className="multi-value">
-                                {geneticModification.reagent_availability.map((reagent, i) => {
-                                    const reagentId = <span>{globals.atIdToAccession(reagent.repository)}:{reagent.identifier}</span>;
+                                {geneticModification.reagents.map((reagent, i) => {
+                                    const reagentId = <span>{globals.atIdToAccession(reagent.source)}:{reagent.identifier}</span>;
                                     if (reagent.url) {
                                         return <a key={i} href={reagent.url}>{reagentId}</a>;
                                     }
@@ -387,7 +387,7 @@ export class GeneticModificationComponent extends React.Component {
                                         <dt>Type</dt>
                                         <dd>
                                             <ul>
-                                                <li>{context.modification_type}</li>
+                                                <li>{context.category}</li>
                                                 {context.introduced_sequence ? <li className="sequence">{context.introduced_sequence}</li> : null}
                                             </ul>
                                         </dd>
@@ -400,7 +400,7 @@ export class GeneticModificationComponent extends React.Component {
                                         </div>
                                     : null}
 
-                                    <EpitopeTags geneticModification={context} />
+                                    <IntroducedTags geneticModification={context} />
 
                                     <div data-test="purpose">
                                         <dt>Purpose</dt>
@@ -642,7 +642,7 @@ class ListingComponent extends React.Component {
                         <p className="type meta-status">{` ${result.status}`}</p>
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
-                    <div className="accession"><a href={result['@id']}>{result.modification_type} &mdash; {result.purpose} &mdash; {result.modification_technique}</a></div>
+                    <div className="accession"><a href={result['@id']}>{result.category} &mdash; {result.purpose} &mdash; {result.method}</a></div>
                     <div className="data-row">
                         {result.modified_site_by_target_id ? <div><strong>Target: </strong>{result.modified_site_by_target_id.name}</div> : null}
                         {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
