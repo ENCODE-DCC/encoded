@@ -2141,41 +2141,18 @@ def readable_time(secs_float):
 
     return result
 
-def object_is_visualizable(obj,assembly=None,QuickView=False):
-    '''Is this object visualizable.'''
-    if "Dataset" not in obj['@type']:
-        return False
-    visualizabe_types = set(VISIBLE_DATASET_TYPES)
-    if visualizabe_types.isdisjoint(obj['@type']):
-        return False
-    status = obj.get('status')
-    if QuickView:
-        if status is None or status not in VISIBLE_DATASET_STATUSES:
-            return False
-    else:
-        if status is None or status in QUICKVIEW_STATUSES_BLOCKED:
-            return False
-    if 'accession' not in obj:
-        return False
-    if assembly is None:
-        assemblies = set(obj.get('assembly',[]))
-        if assemblies.isdisjoint(VISIBLE_ASSEMBLIES):
-            return False
-    elif assembly not in VISIBLE_ASSEMBLIES:
-        return False
-    return True
 
-def vis_vache_add(request, uuid, start_time=None):
-    '''For a single uuid, builds and adds vis_blobs to es cache for each relevant assembly.'''
+def vis_cache_add(request, dataset, start_time=None):
+    '''For a single embedded dataset, builds and adds vis_blobs to es cache for each relevant assembly.'''
     if start_time is None:
         start_time = time.time()
 
-    dataset = request.embed(uuid)
     if not object_is_visualizable(dataset):
         return None
 
     acc = dataset['accession']
     assemblies = dataset['assembly']
+
     vis_blobs = []
     for assembly in assemblies:
         ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
@@ -2197,9 +2174,10 @@ def vis_vache_add(request, uuid, start_time=None):
 @view_config(context=Item, name='index-vis', permission='index', request_method='GET')
 def item_index_vis(context, request):
     '''Called during secondary indexing to add one uuid to vis cache.'''
+    start_time = time.time()
     uuid = str(context.uuid)
-    # TODO: Is there a shortcut to recognizing this is not a visualizable uuid?
-    return vis_vache_add(request, uuid)
+    dataset = request.embed(uuid)
+    return vis_cache_add(request, dataset, start_time)
 
 
 def render(data):
@@ -2288,13 +2266,13 @@ def object_is_visualizable(obj,assembly=None):
     '''Retrurns list of browsers this object visualizable on.'''
 
     if 'accession' not in obj:
-        return []
+        return False
     if assembly is not None:
         assemblies = [ assembly ]
     else:
         assemblies = obj.get('assembly',[])
 
-    return browsers_available(assemblies,obj.get('status'),obj.get('files'),obj['@type'])
+    return browsers_available(assemblies, obj.get('status','none'), obj.get('files'), obj.get('@type',[]))
 
 
 def vis_format_url(browser, path, assembly, position=None):

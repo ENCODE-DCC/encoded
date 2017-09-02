@@ -25,7 +25,10 @@ from snovault.elasticsearch.indexer import (
     Indexer
 )
 
-from .visualization import object_is_visualizable
+from .visualization import (
+    object_is_visualizable,
+    vis_cache_add
+)
 
 log = logging.getLogger(__name__)
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
@@ -163,7 +166,6 @@ def index_secondary(request):
         result.update(
             last_xmin=last_xmin,
             xmin=xmin,
-            batch_size=indexer.batch_size,
         )
         result = state.start_cycle(uuids,result)
 
@@ -171,6 +173,7 @@ def index_secondary(request):
 
         # Make no effort to incrementally index... all in
         if secondary_accounting:
+            result['batch_size'] = indexer.batch_size
             errors = indexer.update_in_batches(request, uuids, xmin)  # , snapshot_id)
         else:
             errors = indexer.update_objects(request, uuids, xmin)     # , snapshot_id)
@@ -238,15 +241,13 @@ class SecondaryIndexer(Indexer):
         return None
 
     def update_object(self, request, uuid, xmin):
-        #self.state.start_uuid(uuid)
 
         last_exc = None
         # First get the object currently in es
         try:
-            #result = es.get(index=self.index, doc_type=result['item_type'], id=str(uuid))  # FIXME: is doc_type needed?
-            doc = request.embed('/%s/@@index-data' % uuid, as_user='INDEXER')
-            #result = es.get(index=self.index, id=str(uuid))
-            #doc = result['_source']
+            result = self.es.get(index=self.index, id=str(uuid))
+            doc = result['_source']
+            #doc = request.embed('/%s/@@index-data' % uuid, as_user='INDEXER')  # No need to use this indirection
         except StatementError:
             self.state.failed_uuid(uuid)
             # Can't reconnect until invalid transaction is rolled back
@@ -305,24 +306,20 @@ class SecondaryIndexer(Indexer):
         ###             self.state.audited_uuid(uuid)
         ###             break
 
+        ### Now that the audits have been updated to es, the vis_cache can be updated
         if last_exc is None:
-                # Now that the audits have been updated to es, the vis_cache can be updated
-            if object_is_visualizable(doc['embedded']):
-                try:
-                    result = request.embed('/%s/@@index-vis' % uuid, as_user='INDEXER')
-                    if len(result):
-                        self.state.viscached_uuid(uuid)
-                except:
-                    pass  # It's only a vis_blob.
+            try:
+                result = vis_cache_add(request, doc['embedded'])  # result is empty if not visualizable
+                #result = request.embed('/%s/@@index-vis' % uuid, as_user='INDEXER')  # No need to use this sort of indirection
+                if len(result):
+                    self.state.viscached_uuid(uuid)
+            except:
+                pass  # It's only a vis_blob.
 
         if last_exc is not None:
             self.state.failed_uuid(uuid)
             timestamp = datetime.datetime.now().isoformat()
             return {'error_message': last_exc, 'timestamp': timestamp, 'uuid': str(uuid)}
-
-        #log.info("Secondary indexed %s", uuid)
-        #self.state.indexed_uuid(uuid)
-
 
     def shutdown(self):
         pass
