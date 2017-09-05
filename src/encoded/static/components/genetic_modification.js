@@ -25,53 +25,24 @@ const GM_TECHNIQUE_MAP = {
 };
 
 
-const GeneticModificationCharacterizationsRenderer = (props) => {
-    const { characterizationsSearch } = props;
-
-    if (characterizationsSearch['@graph'] && characterizationsSearch['@graph'].length) {
-        const characterizations = characterizationsSearch['@graph'];
-        return (
-            <Panel>
-                <PanelHeading>
-                    <h4>Characterization attachments</h4>
-                </PanelHeading>
-                <PanelBody addClasses="attachment-panel-outer">
-                    <section className="flexrow attachment-panel-inner">
-                        {characterizations.map(characterization =>
-                            <AttachmentPanel key={characterization.uuid} context={characterization} attachment={characterization.attachment} title={characterization.characterization_method} />,
-                        )}
-                    </section>
-                </PanelBody>
-            </Panel>
-        );
-    }
-    return null;
-};
-
-GeneticModificationCharacterizationsRenderer.propTypes = {
-    characterizationsSearch: PropTypes.array, // Array of characterizations to display
-};
-
-GeneticModificationCharacterizationsRenderer.defaultProps = {
-    characterizationsSearch: [],
-};
-
-
 // Display a panel of characterizations associated with a genetic modification object.
 const GeneticModificationCharacterizations = (props) => {
     const { characterizations } = props;
 
-    if (characterizations && characterizations.length) {
-        const characterizationQuery = characterizations.reduce((acc, characterization) => `${acc}&@id=${characterization}`, '');
-        const characterizationSearch = `/search/?type=GeneticModificationCharacterization${characterizationQuery}`;
-        return (
-            <FetchedData>
-                <Param name="characterizationsSearch" url={characterizationSearch} />
-                <GeneticModificationCharacterizationsRenderer />
-            </FetchedData>
-        );
-    }
-    return null;
+    return (
+        <Panel>
+            <PanelHeading>
+                <h4>Characterization attachments</h4>
+            </PanelHeading>
+            <PanelBody addClasses="attachment-panel-outer">
+                <section className="flexrow attachment-panel-inner">
+                    {characterizations.map(characterization =>
+                        <AttachmentPanel key={characterization.uuid} context={characterization} attachment={characterization.attachment} title={characterization.characterization_method} />,
+                    )}
+                </section>
+            </PanelBody>
+        </Panel>
+    );
 };
 
 GeneticModificationCharacterizations.propTypes = {
@@ -332,17 +303,26 @@ Attribution.propTypes = {
 
 const DocumentsRenderer = (props) => {
     const modDocs = props.modDocs ? props.modDocs['@graph'] : [];
+    const charDocs = props.charDocs ? props.charDocs['@graph'] : [];
+
     return (
         <DocumentsPanel
             documentSpecs={[
                 { label: 'Modification', documents: modDocs },
+                { label: 'Characterization', documents: charDocs },
             ]}
         />
     );
 };
 
 DocumentsRenderer.propTypes = {
-    modDocs: PropTypes.object,
+    modDocs: PropTypes.object, // GM document search results
+    charDocs: PropTypes.object, // GM characterization document search results
+};
+
+DocumentsRenderer.defaultProps = {
+    modDocs: null,
+    charDocs: null,
 };
 
 
@@ -362,10 +342,23 @@ export class GeneticModificationComponent extends React.Component {
 
         // Collect and combine documents, including from genetic modification characterizations.
         let modDocsQuery;
+        let charDocsQuery;
         if (context.documents && context.documents.length) {
             // Take the array of document @ids and combine them into one query string for a search
             // of the form "&@id=/documents/{uuid}&@id=/documents/{uuid}..."
             modDocsQuery = context.documents.reduce((acc, document) => `${acc}&@id=${document}`, '');
+        }
+        if (context.characterizations && context.characterizations.length) {
+            let charDocs = [];
+            context.characterizations.forEach((characterization) => {
+                if (characterization.documents && characterization.documents.length) {
+                    charDocs = charDocs.concat(characterization.documents);
+                }
+            });
+
+            // Take the array of characgterization document @ids and combine them into one query
+            // string for a search of the form "&@id=/documents/{uuid}&@id=/documents/{uuid}..."
+            charDocsQuery = charDocs.reduce((acc, document) => `${acc}&@id=${document}`, '');
         }
 
         return (
@@ -437,9 +430,10 @@ export class GeneticModificationComponent extends React.Component {
                     <GeneticModificationCharacterizations characterizations={context.characterizations} />
                 : null}
 
-                {modDocsQuery ?
+                {modDocsQuery || charDocsQuery ?
                     <FetchedData>
-                        <Param name="modDocs" url={`/search/?type=Document${modDocsQuery}`} />
+                        {modDocsQuery ? <Param name="modDocs" url={`/search/?type=Document${modDocsQuery}`} /> : null}
+                        {charDocsQuery ? <Param name="charDocs" url={`/search/?type=Document${charDocsQuery}`} /> : null}
                         <DocumentsRenderer />
                     </FetchedData>
                 : null}

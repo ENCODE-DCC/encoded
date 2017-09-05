@@ -22,6 +22,7 @@ class GeneticModification(Item):
     schema = load_schema('encoded:schemas/genetic_modification.json')
     name_key = 'accession'
     embedded = [
+        'characterizations',
         'modified_site_by_target_id',
         'treatments',
         'lab'
