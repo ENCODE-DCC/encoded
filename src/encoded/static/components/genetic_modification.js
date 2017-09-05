@@ -343,7 +343,6 @@ const DocumentsRenderer = (props) => {
 
 DocumentsRenderer.propTypes = {
     modDocs: PropTypes.object,
-    charDocs: PropTypes.object,
 };
 
 
