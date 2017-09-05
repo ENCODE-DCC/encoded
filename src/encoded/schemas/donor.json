@@ -75,13 +75,6 @@
             "type": "string",
             "linkTo": "Organism"
         },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the donor.",
-            "comment": "URL to an external resource with additional information about that particular donor or strain.",
-            "type": "string",
-            "format": "uri"
-        },
         "internal_tags": {
             "title": "Internal tags",
             "description": "Some donors are part of particular data collections",

@@ -145,7 +145,8 @@ def fly_worm_donor_5_6_and_human_mouse_8_9(value, system):
     if value.get('status') in ['preliminary', 'proposed']:
         value['status'] = "in progress"
 
-
+@upgrade_step('fly_donor', '6', '7')
+@upgrade_step('worm_donor', '6', '7')
 @upgrade_step('human_donor', '9', '10')
 @upgrade_step('mouse_donor', '9', '10')
 def human_donor_9_10(value, system):
@@ -179,3 +180,4 @@ def human_donor_9_10(value, system):
         value.pop('identical_twin', None)
     value.pop('children', None)
     value.pop('littermates', None)
+    value.pop('url', None)

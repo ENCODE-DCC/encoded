@@ -1,5 +1,9 @@
 ## Changelog for worm_donor.json
 
+### Schema version 7
+
+* *url* property was removed
+
 ### Schema version 6
 
 * *status* values "proposed" and "preliminary" were removed

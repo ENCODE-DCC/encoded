@@ -8,6 +8,7 @@
 * *life_stage* value 'postnatal' was removed and donors were collapsed into 'newborn'
 * *life_stage* value 'fetal' were removed and donors were collapsed into 'embryonic'
 * *children* property is now a calculated property using the parent fields of other objects. It should no longer be submitted
+* *url* property was removed
 
 ### Schema version 9
 

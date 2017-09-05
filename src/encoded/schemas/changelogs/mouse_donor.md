@@ -3,6 +3,7 @@
 ### Schema version 10
 
 * *littermates* property was removed 
+* *url* property was removed
 
 ### Schema version 9
 
