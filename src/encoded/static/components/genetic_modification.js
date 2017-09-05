@@ -4,7 +4,6 @@ import _ from 'underscore';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { collapseIcon } from '../libs/svg-icons';
 import { auditDecor } from './audit';
-import { DbxrefList } from './dbxref';
 import { AttachmentPanel, DocumentsPanel } from './doc';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
@@ -13,7 +12,7 @@ import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
 import { singleTreatment } from './objectutils';
 import { PickerActions } from './search';
-import { SortTable } from './sorttable';
+import { SortTablePanel, SortTable } from './sorttable';
 import StatusLabel from './statuslabel';
 import { BiosampleTable, DonorTable } from './typeutils';
 
@@ -86,19 +85,28 @@ IntroducedTags.propTypes = {
 };
 
 
-// Display a section for the modification site data from the given genetic modification object. to
-// render into the GM summary panel as its own section;
-const ModificationSite = (props) => {
-    const { geneticModification } = props;
-    const itemClass = globals.itemClass(geneticModification, 'view-detail key-value');
+// Render the modification site items into a definition list.
+const ModificationSiteItems = (props) => {
+    const { geneticModification, itemClass } = props;
 
     const renderers = {
         modified_site_by_target_id: (gm) => {
-            const targetName = gm.modified_site_by_target_id.name;
+            let targetName;
+            let targetLink;
+
+            if (typeof gm.modified_site_by_target_id === 'string') {
+                // Non-embedded target; get its name from its @id.
+                targetName = globals.atIdToAccession(gm.modified_site_by_target_id);
+                targetLink = gm.modified_site_by_target_id;
+            } else {
+                // Embedded target; get its name from the embedded object.
+                targetName = gm.modified_site_by_target_id.name;
+                targetLink = gm.modified_site_by_target_id['@id'];
+            }
             return (
                 <div data-test="mstarget">
                     <dt>Target</dt>
-                    <dd><a href={gm.modified_site_by_target_id['@id']} title={`View page for target ${targetName}`}>{targetName}</a></dd>
+                    <dd><a href={targetLink} title={`View page for target ${targetName}`}>{targetName}</a></dd>
                 </div>
             );
         },
@@ -133,10 +141,33 @@ const ModificationSite = (props) => {
     });
 
     return (
+        <dl className={itemClass}>
+            {elements}
+        </dl>
+    );
+};
+
+ModificationSiteItems.propTypes = {
+    geneticModification: PropTypes.object.isRequired, // Genetic modification object whose modification_site we're rendering here
+    itemClass: PropTypes.string, // CSS class string to add to <dl>
+};
+
+ModificationSiteItems.defaultProps = {
+    itemClass: '',
+};
+
+
+// Display a section for the modification site data from the given genetic modification object. to
+// render into the GM summary panel as its own section;
+const ModificationSite = (props) => {
+    const { geneticModification } = props;
+    const itemClass = globals.itemClass(geneticModification, 'view-detail key-value');
+
+    return (
         <div>
             <hr />
             <h4>Modification site</h4>
-            <dl className={itemClass}>{elements}</dl>
+            <ModificationSiteItems geneticModification={geneticModification} itemClass={itemClass} />
         </div>
     );
 };
@@ -672,5 +703,33 @@ GeneticModificationGroup.columns = {
             }
             return sortRes;
         },
+    },
+};
+
+
+export const GeneticModificationSummary = (props) => {
+    const { geneticModifications } = props;
+
+    return (
+        <SortTablePanel title="Genetic modifications">
+            <SortTable list={geneticModifications} columns={GeneticModificationSummary.columns} />
+        </SortTablePanel>
+    );
+};
+
+GeneticModificationSummary.propTypes = {
+    geneticModifications: PropTypes.array, // Array of genetic modifications to display
+};
+
+GeneticModificationSummary.columns = {
+    accession: {
+        title: 'Accession',
+        display: item => <a href={item['@id']}>{item.accession}</a>,
+    },
+    category: { title: 'Category' },
+    method: { title: 'Method' },
+    site: {
+        title: 'Site',
+        display: item => <ModificationSiteItems geneticModification={item} itemClass={'gm-table-modification-site'} />,
     },
 };
