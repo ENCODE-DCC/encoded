@@ -161,7 +161,8 @@ def human_donor_9_10(value, system):
         value['life_stage'] = 'embryonic'
     if value.get('life_stage') == 'postnatal':
         value['life_stage'] = 'newborn'
-    
+    if not value.get('internal_tags'):    
+        value.pop('internal_tags', None)
     if value.get('ethnicity') in ['NA', 'Unknown', 'unknown', '']:
         value.pop('ethnicity')
     if value.get('ethnicity') == 'African-American':
