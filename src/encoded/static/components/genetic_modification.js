@@ -25,6 +25,7 @@ const GM_TECHNIQUE_MAP = {
 };
 
 
+// Display a panel of characterizations associated with a genetic modification object.
 const GeneticModificationCharacterizations = (props) => {
     const { characterizations } = props;
 
@@ -51,16 +52,16 @@ GeneticModificationCharacterizations.propTypes = {
 
 // Generate a <dt>/<dd> combination to render GeneticModification.epitope_tags into a <dl>. If no
 // epitope_tags exist in the given genetic modification object, nothing gets rendered.
-const EpitopeTags = (props) => {
+const IntroducedTags = (props) => {
     const { geneticModification } = props;
 
-    if (geneticModification.epitope_tags && geneticModification.epitope_tags.length) {
+    if (geneticModification.introduced_tags && geneticModification.introduced_tags.length) {
         // Generate an array of React components, each containing one epitope_tags display from
         // the array of epitope_tags in the given genetic modification object. At least one
         // property of each epitope tag element must be present, or else an empty <li></li> will
         // get generated. Seems unlikely to have an empty epitope_tags element in the array, so
         // this currently seems like a good assumption.
-        const elements = geneticModification.epitope_tags.map((tag, i) => {
+        const elements = geneticModification.introduced_tags.map((tag, i) => {
             const targetName = tag.promoter_used ? globals.atIdToAccession(tag.promoter_used) : '';
             const name = tag.name ? <span>{tag.name}</span> : null;
             const location = tag.location ? <span>{name ? <span> &mdash; </span> : null}{tag.location}</span> : null;
@@ -71,7 +72,7 @@ const EpitopeTags = (props) => {
         // Return a <div> to get rendered within a <dl> being displayed for the given genetic
         // modification.
         return (
-            <div data-test="epitopetag">
+            <div data-test="introducedtag">
                 <dt>Tags</dt>
                 <dd><ul className="multi-value">{elements}</ul></dd>
             </div>
@@ -80,7 +81,7 @@ const EpitopeTags = (props) => {
     return null;
 };
 
-EpitopeTags.propTypes = {
+IntroducedTags.propTypes = {
     geneticModification: PropTypes.object.isRequired, // GeneticModification object being displayed
 };
 
@@ -165,7 +166,7 @@ const ModificationTechnique = (props) => {
             <dl className={itemClass}>
                 <div data-test="technique">
                     <dt>Technique</dt>
-                    <dd>{geneticModification.modification_technique}</dd>
+                    <dd>{geneticModification.method}</dd>
                 </div>
 
                 {treatments.length ?
@@ -203,13 +204,13 @@ const ModificationTechnique = (props) => {
                     </div>
                 : null}
 
-                {geneticModification.reagent_availability && geneticModification.reagent_availability.length ?
+                {geneticModification.reagents && geneticModification.reagents.length ?
                     <div data-test="reagent">
-                        <dt>Reagent availability</dt>
+                        <dt>Reagents</dt>
                         <dd>
                             <ul className="multi-value">
-                                {geneticModification.reagent_availability.map((reagent, i) => {
-                                    const reagentId = <span>{globals.atIdToAccession(reagent.repository)}:{reagent.identifier}</span>;
+                                {geneticModification.reagents.map((reagent, i) => {
+                                    const reagentId = <span>{globals.atIdToAccession(reagent.source)}:{reagent.identifier}</span>;
                                     if (reagent.url) {
                                         return <a key={i} href={reagent.url}>{reagentId}</a>;
                                     }
@@ -233,7 +234,7 @@ ModificationTechnique.propTypes = {
 // of a successful GET request for the GM's award and lab objects which are no longer embedded in
 // the GM object.
 const AttributionRenderer = (props) => {
-    const { geneticModification, award, lab } = props;
+    const { geneticModification, award } = props;
 
     return (
         <div>
@@ -244,7 +245,7 @@ const AttributionRenderer = (props) => {
             <dl className="key-value">
                 <div data-test="lab">
                     <dt>Lab</dt>
-                    <dd>{lab.title}</dd>
+                    <dd>{geneticModification.lab.title}</dd>
                 </div>
 
                 {award.pi && award.pi.lab ?
@@ -273,12 +274,10 @@ const AttributionRenderer = (props) => {
 AttributionRenderer.propTypes = {
     geneticModification: PropTypes.object.isRequired, // GeneticModification object being displayed
     award: PropTypes.object, // Award object retreived from an individual GET request; don't make isRequired because React's static analysizer will ding it
-    lab: PropTypes.object, // Lab object retrieved from an individual GET request; don't make isRequired because React's static analysizer will ding it
 };
 
 AttributionRenderer.defaultProps = {
     award: null, // Actually required, but React can't tell this property's coming from a GET request, so treat as optional
-    lab: null, // Actually required, but React can't tell this property's coming from a GET request, so treat as optional
 };
 
 
@@ -292,7 +291,6 @@ const Attribution = (props) => {
     return (
         <FetchedData>
             <Param name="award" url={geneticModification.award} />
-            <Param name="lab" url={geneticModification.lab} />
             <AttributionRenderer geneticModification={geneticModification} />
         </FetchedData>
     );
@@ -328,7 +326,6 @@ export class GeneticModificationComponent extends React.Component {
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-detail key-value');
-        const coords = context.modified_site;
 
         // Configure breadcrumbs for the page.
         const crumbs = [
@@ -390,46 +387,25 @@ export class GeneticModificationComponent extends React.Component {
                                         <dt>Type</dt>
                                         <dd>
                                             <ul>
-                                                <li>{context.modification_type}</li>
+                                                <li>{context.category}</li>
                                                 {context.introduced_sequence ? <li className="sequence">{context.introduced_sequence}</li> : null}
                                             </ul>
                                         </dd>
                                     </div>
 
-                                    <EpitopeTags geneticModification={context} />
+                                    {context.zygosity ?
+                                        <div data-test="zygosity">
+                                            <dt>Zygosity</dt>
+                                            <dd>{context.zygosity}</dd>
+                                        </div>
+                                    : null}
+
+                                    <IntroducedTags geneticModification={context} />
 
                                     <div data-test="purpose">
                                         <dt>Purpose</dt>
                                         <dd>{context.purpose}</dd>
                                     </div>
-
-                                    {context.url ?
-                                        <div data-test="url">
-                                            <dt>Product ID</dt>
-                                            <dd><a href={context.url}>{context.product_id ? context.product_id : context.url}</a></dd>
-                                        </div>
-                                    : null}
-
-                                    {context.target ?
-                                        <div data-test="target">
-                                            <dt>Target</dt>
-                                            <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
-                                        </div>
-                                    : null}
-
-                                    {coords && coords.assembly ?
-                                        <div data-test="coordsassembly">
-                                            <dt>Mapping assembly</dt>
-                                            <dd>{context.modified_site.assembly}</dd>
-                                        </div>
-                                    : null}
-
-                                    {coords && coords.chromosome && coords.start && coords.end ?
-                                        <div data-test="coordssequence">
-                                            <dt>Genomic coordinates</dt>
-                                            <dd>chr{coords.chromosome}:{coords.start}-{coords.end}</dd>
-                                        </div>
-                                    : null}
                                 </dl>
 
                                 <ModificationSite geneticModification={context} />
@@ -656,19 +632,6 @@ class ListingComponent extends React.Component {
     render() {
         const result = this.props.context;
 
-        let techniques = [];
-        if (result.modification_techniques && result.modification_techniques.length) {
-            techniques = _.uniq(result.modification_techniques.map((technique) => {
-                if (technique['@type'][0] === 'Crispr') {
-                    return 'CRISPR';
-                }
-                if (technique['@type'][0] === 'Tale') {
-                    return 'TALE';
-                }
-                return technique['@type'][0];
-            }));
-        }
-
         return (
             <li>
                 <div className="clearfix">
@@ -679,8 +642,10 @@ class ListingComponent extends React.Component {
                         <p className="type meta-status">{` ${result.status}`}</p>
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
-                    <div className="accession"><a href={result['@id']}>{result.modification_type} &mdash; {result.purpose} &mdash; {result.modification_technique}</a></div>
+                    <div className="accession"><a href={result['@id']}>{result.category} &mdash; {result.purpose} &mdash; {result.method}</a></div>
                     <div className="data-row">
+                        {result.modified_site_by_target_id ? <div><strong>Target: </strong>{result.modified_site_by_target_id.name}</div> : null}
+                        {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
                     </div>
                 </div>
                 {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
@@ -726,85 +691,6 @@ function rGetGMTechniques(gm) {
 // If the GM object has no modification techniques, this function returns a zero-length array. This
 // function is exported so that Jest can test it.
 export const getGMTechniques = _.memoize(rGetGMTechniques, gm => gm.uuid);
-
-
-function rCalcGMSummarySentence(gm) {
-    let treatments = [];
-
-    // modification_type is required, so start the sentence with that.
-    let sentence = gm.modification_type;
-
-    // Add the target of the modification if there is one.
-    if (gm.target) {
-        sentence += ` of ${gm.target.label}`;
-    }
-
-    // Collect up an array of strings with techniques and treatments.
-    const techniques = getGMTechniques(gm);
-    if (gm.treatments && gm.treatments.length) {
-        treatments = gm.treatments.map(treatment => singleTreatment(treatment));
-    }
-    const techtreat = techniques.concat(treatments).join(', ');
-
-    // Add techniques and treatments string if any.
-    if (techtreat.length) {
-        sentence += ` using ${techtreat}`;
-    }
-
-    return sentence;
-}
-
-// Calculate a summary sentence for the GM passed in `gm`.
-export const calcGMSummarySentence = _.memoize(rCalcGMSummarySentence, gm => gm.uuid);
-
-
-// Display a summary of genetic modifications given in the geneticModifications prop. This
-// component assumes the `geneticModifications` array has at least one entry, so make sure of that
-// before calling this component.
-export const GeneticModificationSummary = (props) => {
-    const geneticModifications = props.geneticModifications;
-
-    // Group genetic modifications by a combination like this:
-    // modification_type;modification_technique,modification_technique,...;target.label
-    const gmGroups = _(geneticModifications).groupBy((gm) => {
-        let groupKey = gm.modification_type;
-
-        // Add any modification techniques to the group key.
-        const techniques = getGMTechniques(gm);
-        if (techniques.length) {
-            groupKey += `; ${techniques.join()}`;
-        }
-
-        // Add the target (if any) to the group key.
-        if (gm.target) {
-            groupKey += `; ${gm.target.label}`;
-        }
-
-        // Add the treatment UUIDs (if any) to the group key.
-        if (gm.modification_treatments && gm.modification_treatments.length) {
-            groupKey += `; ${gm.modification_treatments.map(treatment => treatment.uuid).sort().join()}`;
-        }
-
-        return groupKey;
-    });
-
-    return (
-        <Panel>
-            <PanelHeading>
-                <h4>Genetic modifications</h4>
-            </PanelHeading>
-            {Object.keys(gmGroups).map((groupKey) => {
-                const group = gmGroups[groupKey];
-                const sentence = calcGMSummarySentence(group[0]);
-                return <GeneticModificationGroup key={groupKey} groupSentence={sentence} gms={group} />;
-            })}
-        </Panel>
-    );
-};
-
-GeneticModificationSummary.propTypes = {
-    geneticModifications: PropTypes.array.isRequired, // Array of genetic modifications
-};
 
 
 // Display one GM group, which consists of all GMs that share the same type, technique, target, and

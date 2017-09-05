@@ -676,14 +676,17 @@
         "category": {
             "title": "Category"
         },
+        "modified_site_by_target_id.name": {
+            "title": "Name"
+        },
+        "lab.title": {
+            "title": "Title"
+        },
         "purpose": {
             "title": "Purpose"
         },
         "method": {
             "title": "Method"
-        },
-        "lab.title": {
-            "title": "Lab"
         },
         "status": {
             "title": "Genetic modification status"
