@@ -1832,6 +1832,7 @@ class FileGalleryRendererComponent extends React.Component {
 FileGalleryRendererComponent.inclusionStatuses = [
     'archived',
     'revoked',
+    'deleted',
 ];
 
 FileGalleryRendererComponent.propTypes = {

@@ -167,7 +167,7 @@ export function unreleasedFilesUrl(context, loggedIn, modifiers) {
     // Now that we have the statuses we need to search, convert and return the statuses as a search
     // URL.
     const fileStatusQuery = fileStatuses.map(encodeURIComponent).join('&status=');
-    return `/search/?limit=all&type=File&dataset=${context['@id']}&status=${fileStatusQuery}`;
+    return `/search/?limit=all&type=File&dataset=${context['@id']}`;
 }
 
 
