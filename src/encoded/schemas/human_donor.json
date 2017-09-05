@@ -23,6 +23,14 @@
         { "$ref": "mixins.json#/schema_version" }         
     ],
     "dependencies": {
+        "internal_tags": {
+            "comment": "If internal_tags list is initiated, it must contain at least one value.",
+            "properties": {
+                "internal_tags": {
+                    "minItems": 1
+                }
+            }
+        },
         "age_units":  {
             "comment":"Age units is required if age is specified as anything but unknown.",
             "required": ["age", "life_stage"],
@@ -214,7 +222,7 @@
             "description": "Some human donors are part of particular data collections",
             "comment": "Do not submit. DCC personnel is responsible for submission of this property.",
             "type": "array",
-            "default": [],
+          
             "permission": "import_items",
             "uniqueItems": true,
             "items": {
