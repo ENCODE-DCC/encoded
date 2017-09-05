@@ -18,11 +18,11 @@ How to update the ontology versions
 	
 	* Uberon and CL: composite-metazoan.owl  from [Uberon download]
 	* EFO: EFO_inferred.owl from [EFO src tree]
-	* OBI: obi.owl [OBI releases], identify the most recent release at time of generating ```ontology.json```
+	* OBI: obi.owl [OBI download]
 
 2. Run generate-ontology, an example is: 
 
-	$ bin/generate-ontology --uberon-url=http://ontologies.berkeleybop.org/uberon/composite-metazoan.owl --efo-url=http://sourceforge.net/p/efo/code/HEAD/tree/trunk/src/efoinowl/InferredEFOOWLview/EFO_inferred.owl?format=raw --obi-url=http://svn.code.sf.net/p/obi/code/releases/<<<<USE THE MOST RECENT DATE HERE>>>>/obi.owl
+	$ bin/generate-ontology --uberon-url=http://ontologies.berkeleybop.org/uberon/composite-metazoan.owl --efo-url=http://sourceforge.net/p/efo/code/HEAD/tree/trunk/src/efoinowl/InferredEFOOWLview/EFO_inferred.owl?format=raw --obi-url=http://purl.obolibrary.org/obo/obi.owl
 
 3. Rename the ```ontology.json``` to one with the date that it was generated:
 
@@ -38,11 +38,11 @@ How to update the ontology versions
 
 6.  Update the following information
     
-    Site release version: 60   
-    ontology.json file: ontology-2017-08-04.json   
+    Site release version: 61   
+    ontology.json file: ontology-2017-09-01.json   
     [UBERON release date]: 2017-05-21   
-    [OBI release date]: 2016-10-11   
-    [EFO release date]: 2017-07-18
+    [OBI release date]: 2017-02-22   
+    [EFO release date]: 2017-08-15
 
 [Uber anatomy ontology (Uberon)]: http://uberon.org/
 [Cell Ontology (CL)]: http://cellontology.org/
@@ -50,7 +50,7 @@ How to update the ontology versions
 [Ontology for Biomedical Investigations (OBI)]: http://obi-ontology.org/
 [Uberon download]: http://uberon.github.io/downloads.html
 [EFO src tree]: https://sourceforge.net/p/efo/code/HEAD/tree/trunk/src/efoinowl/InferredEFOOWLview/
-[OBI releases]: http://svn.code.sf.net/p/obi/code/releases/
+[OBI download]: http://www.ontobee.org/ontology/OBI
 [buildout.cfg]: ../../../buildout.cfg
 [UBERON release date]: http://uberon.github.io/
 [OBI release date]: http://svn.code.sf.net/p/obi/code/releases/ 
