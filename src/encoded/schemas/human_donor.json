@@ -25,7 +25,7 @@
     "dependencies": {
         "age_units":  {
             "comment":"Age units is required if age is specified as anything but unknown.",
-            "required": ["age"],
+            "required": ["age", "life_stage"],
             "not": {
                 "properties": {
                     "age": {
@@ -44,7 +44,7 @@
                     }
                 },
                 {
-                    "required": ["age_units"],
+                    "required": ["age_units", "life_stage"],
                     "properties": {
                         "age_units": {
                             "enum": ["year"]
@@ -55,7 +55,7 @@
                     }
                 },
                 {
-                    "required": ["age_units"],
+                    "required": ["age_units", "life_stage"],
                     "properties": {
                         "age_units": {
                             "enum": ["day", "week","month"]
@@ -209,6 +209,22 @@
             "default": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
             "linkEnum": ["7745b647-ff15-4ff3-9ced-b897d4e2983c"]
         },
+        "internal_tags": {
+            "title": "Internal tags",
+            "description": "Some human donors are part of particular data collections",
+            "comment": "Do not submit. DCC personnel is responsible for submission of this property.",
+            "type": "array",
+            "default": [],
+            "permission": "import_items",
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "enum": [
+                    "ENTEx",
+                    "PGP",
+                    "SESCC"]
+            }
+        },
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
@@ -249,6 +265,9 @@
         "status": {
             "title": "Status"
         }
+    },
+    "boost_values": {
+        "internal_tags": 1.0
     },
     "changelog": "/profiles/changelogs/human_donor.md"
 }

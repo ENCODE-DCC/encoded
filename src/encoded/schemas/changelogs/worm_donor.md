@@ -2,7 +2,7 @@
 
 ### Schema version 7
 
-* *url* property was removed
+* *url* and *internal_tags* properties were removed
 
 ### Schema version 6
 

@@ -74,26 +74,9 @@
             "description": "Organism of the donor.",
             "type": "string",
             "linkTo": "Organism"
-        },
-        "internal_tags": {
-            "title": "Internal tags",
-            "description": "Some donors are part of particular data collections",
-            "comment": "Do not submit. DCC personnel is responsible for submission of this property.",
-            "type": "array",
-            "default": [],
-            "permission": "import_items",
-            "uniqueItems": true,
-            "items": {
-                "type": "string",
-                "enum": [
-                    "ENTEx",
-                    "PGP",
-                    "SESCC"]
-            }
         }
     },
     "boost_values": {
-        "internal_tags": 1.0,
         "external_ids": 1.0,
         "aliases": 1.0,
         "accession": 1.0,

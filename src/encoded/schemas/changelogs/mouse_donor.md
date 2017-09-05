@@ -2,8 +2,7 @@
 
 ### Schema version 10
 
-* *littermates* property was removed 
-* *url* property was removed
+* *url*, *littermates* and *internal_tags* properties were removed
 
 ### Schema version 9
 
