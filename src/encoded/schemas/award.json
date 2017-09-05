@@ -103,8 +103,9 @@
                             "whole genome sequencing assay",
                             "BruUV-seq",
                             "Mint-ChIP-seq",
-                            "single nuclei ATAC-seq",
-                            "icSHAPE"
+                            "single-nuclei ATAC-seq",
+                            "icSHAPE",
+                            "single-cell ATAC-seq"
                         ]
                     },
                     "proposed_count": {
