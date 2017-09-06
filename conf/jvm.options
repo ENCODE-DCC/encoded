@@ -1,5 +1,5 @@
--Xms1g
--Xmx1g
+-Xms2g
+-Xmx2g
 
 ## GC configuration
 -XX:+UseConcMarkSweepGC
