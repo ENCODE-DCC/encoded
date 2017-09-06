@@ -51,6 +51,7 @@ assay_terms = {
       'whole genome sequencing assay': 'OBI:0002117',
       'BruUV-seq': 'NTR:0004739',
       'Mint-ChIP-seq': 'NTR:0005141',
-      'single nuclei ATAC-seq': 'NTR:0000438',
-      'icSHAPE': 'NTR:0000433'
+      'single-nuclei ATAC-seq': 'NTR:0000438',
+      'icSHAPE': 'NTR:0000433',
+      'single-cell ATAC-seq': 'NTR:0000444'
 }

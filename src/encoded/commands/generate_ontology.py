@@ -611,7 +611,7 @@ ntr_assays = {
         "assay": ['DNA accessibility'],
         "category": [],
         "developmental": [],
-        "name": "single nuclei ATAC-seq",
+        "name": "single-nuclei ATAC-seq",
         "objectives": [],
         "organs": [],
         "preferred_name": "snATAC-seq",
@@ -632,7 +632,20 @@ ntr_assays = {
         "synonyms": [],
         "systems": [],
         "types": []
-    }
+    },
+    "NTR:0000444": {
+        "assay": ['DNA accessibility'],
+        "category": [],
+        "developmental": [],
+        "name": "single-cell ATAC-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "scATAC-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
 }
 
 
