@@ -594,15 +594,15 @@ class Donor extends React.Component {
                     <DonorTable title="Parents of this donor" donors={this.state.parentDonors} />
                 : null}
 
-                {context.genetic_modifications && context.genetic_modifications.length ?
-                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
-                : null}
-
                 <RelatedItems
                     title={`Experiments from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
                     url={`/search/?type=Experiment&replicates.library.biosample.donor.uuid=${context.uuid}`}
                     Component={ExperimentTable}
                 />
+
+                {context.genetic_modifications && context.genetic_modifications.length ?
+                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
+                : null}
 
                 {combinedDocuments.length ?
                     <DocumentsPanel documentSpecs={[{ documents: combinedDocuments }]} />
