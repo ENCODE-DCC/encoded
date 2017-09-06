@@ -19,7 +19,6 @@ import time
 import copy
 import json
 from pkg_resources import resource_filename
-from redis import Redis
 from snovault.elasticsearch.indexer import (
     IndexerState,
     Indexer
@@ -41,38 +40,42 @@ def includeme(config):
     registry['secondary'+INDEXER] = SecondaryIndexer(registry)
 
 class SecondState(IndexerState):
-    def __init__(self, redis_client=None,accounting=True):
-        super(SecondState, self).__init__(redis_client,accounting)
-        self.persistent_key  = 'secondary-state'        # State of the current or last cycle
-        self.todo_set        = 'secondary-todo'         # one cycle of uuids, sent to the Secondary Indexer
-        self.in_progress_set = 'secondary-in-progress'
-        self.failed_set      = 'secondary-failed'
-        self.done_set        = 'secondary-done'         # Trying to get all uuids from 'todo' to this set
-        self.troubled_set    = 'secondary-troubled'     # uuids that failed to index in any cycle
-        self.last_set        = 'secondary-last-cycle'   # uuids in the most recent finished cycle
+    def __init__(self, es):
+        super(SecondState, self).__init__(es)
+        self.state_key       = 'secondary_indexer'      # State of the current or last cycle
+        self.todo_set        = 'secondary_todo'         # one cycle of uuids, sent to the Secondary Indexer
+        self.in_progress_set = 'secondary_in_progress'
+        self.failed_set      = 'secondary_failed'
+        self.done_set        = 'secondary_done'         # Trying to get all uuids from 'todo' to this set
+        self.troubled_set    = 'secondary_troubled'     # uuids that failed to index in any cycle
+        self.last_set        = 'secondary_last_cycle'   # uuids in the most recent finished cycle
         self.followup_prep_list = None                  # No followup to secondary indexer
         self.staged_cycles_list = self.followup_ready_list  # inherited from primary IndexerState
-        #self.audited_set     = 'secondary-audited'
-        self.viscached_set   = 'secondary-viscached'
+        #self.audited_set     = 'secondary_audited'
+        self.viscached_set   = 'secondary_viscached'
         # DO NOT INHERIT! All keys that are cleaned up at the start and fully finished end of indexing
         self.cleanup_keys      = [self.todo_set,self.in_progress_set,self.failed_set,self.done_set]
         self.cleanup_last_keys = [self.last_set,self.viscached_set]  # ,self.audited_set] cleaned up only when new indexing occurs
 
     #def audited_uuid(self, uuid):
-    #    self.redis_pipe.sadd(self.audited_set, uuid).execute()
+    #    self.set_add(self.audited_set, set(uuid))  # Hopefully these are rare
 
     def viscached_uuid(self, uuid):
-        self.redis_pipe.sadd(self.viscached_set, uuid).execute()
+        self.set_add(self.viscached_set, set(uuid))  # Hopefully these are rare
 
     def successes_this_cycle(self):
         # Overwritten: secondary_indexer counts a success as an actual object added to viscache!
-        return self.redis_client.scard(self.viscached_set)
+        return self.get_count(self.viscached_set)
 
     def get_one_cycle(self, xmin):
         uuids = set()
         next_xmin = None
-        while True:
-            val = self.redis_client.lpop(self.staged_cycles_list)
+        staged_list = self.get_list(self.staged_cycles_list)
+        if not staged_list or len(staged_list) == 0:
+            return (xmin, None, [])
+        looking_at = 0
+        for val in staged_list:
+            looking_at += 1
             if val is None or len(val) == 0:
                 break
             if val.startswith("xmin:"):
@@ -80,17 +83,20 @@ class SecondState(IndexerState):
                     #assert(len(uuids) == 0)  # This is expected but is it assertable?  Shouldn't bet on it
                     xmin = val[5:]
                     #result['xmin'] = xmin
-                    #state.set(result)
+                    #state.put(result)
                     continue
                 else:
                     next_xmin = val[5:]
                     if next_xmin == xmin:
                         next_xmin = None
                         continue
-                    self.redis_pipe.lpush(self.staged_cycles_list,val).execute()  # Push back for start of next uuid cycle
+                    looking_at -= 1
                     break   # got all the uuids for the current xmin
             else:
                 uuids.add(val)
+
+            still_staged = staged_list[looking_at:]
+            self.put_list(self.staged_cycles_list,still_staged) # Push back for start of next uuid cycle
         return (xmin, next_xmin, uuids)
 
 
@@ -108,28 +114,13 @@ def index_secondary(request):
     recovery = request.json.get('recovery', False)
     es = request.registry[ELASTIC_SEARCH]
     indexer = request.registry['secondary'+INDEXER]
-    secondary_accounting = False
 
     # TODO: Do we need worker pool?  It solves memory overload issues
     # TODO: problem at startup when old list exists but elastcsearch is empty!
     # TODO: figure out if snovault base.ini, development.ini, cloud-config.yml need updating
 
-    # Consider using... (from https://pypi.python.org/pypi/redis find pubsub)
-    # p = r.pubsub()
-    # p.subscribe('secondary-indexer')
-    # In indexer.py r.publish('secondary-indexer', 'wake up!')
-    # for message in p.listen():
-    #     Now this process doesn't need to be woken by es_index_listener.py
-
-    # Useful redis commands:  https://redis-py.readthedocs.io/en/latest/index.html
-    # redis-cli keys '*'
-    # redis-cli lrange secondary-waiting 0 -1
-    # redis-cli smembers indexed
-    # redis-cli del primary-finished
-    # redis-cli flushall  # Deletes all keys!!!
-
-    # keep track of state with redis
-    state = SecondState(accounting=secondary_accounting)
+    # keep track of state
+    state = SecondState(es)
 
     last_xmin = None
     result = state.get()
@@ -147,9 +138,6 @@ def index_secondary(request):
 
     while True:  # Cycles on xmin grouped indexer cycles
         (xmin, next_xmin, uuids) = state.get_one_cycle(xmin)
-
-        if secondary_accounting:
-            uuids = state.add_undone_uuids(uuids) # Adds undone from last cycle
 
         if len(uuids) == 0:  # No more uuids in the queue
             break
@@ -172,11 +160,7 @@ def index_secondary(request):
         #snapshot_id = None  # Not sure why this will be needed.  The xmin should be all that is needed.
 
         # Make no effort to incrementally index... all in
-        if secondary_accounting:
-            result['batch_size'] = indexer.batch_size
-            errors = indexer.update_in_batches(request, uuids, xmin)  # , snapshot_id)
-        else:
-            errors = indexer.update_objects(request, uuids, xmin)     # , snapshot_id)
+        errors = indexer.update_objects(request, uuids, xmin)     # , snapshot_id)
 
         indexing_errors.extend(errors)  # ignore errors?
         result['errors'] = indexing_errors
@@ -214,7 +198,7 @@ def index_secondary(request):
             xmin = None  # already pushed next_xmin back onto queue
             next_xmin = None
             result['status'] = 'cycling'
-            state.set(result)
+            state.put(result)
         else:
             break
 
@@ -223,7 +207,7 @@ def index_secondary(request):
             status='done',
             lag=str(datetime.datetime.now(pytz.utc) - first_txn)
         )
-        state.set(result)
+        state.put(result)
         log.info("Secondary indexer handled %d uuids" % uuid_count)
     else:
         result['indexed'] = 0
@@ -234,7 +218,7 @@ def index_secondary(request):
 class SecondaryIndexer(Indexer):
     def __init__(self, registry):
         super(SecondaryIndexer, self).__init__(registry)
-        self.state = SecondState(self.redis_client)
+        self.state = SecondState(self.es)
 
     def get_from_es(request, comp_id):
         '''Returns composite json blob from elastic-search, or None if not found.'''
