@@ -809,7 +809,7 @@ def search_es(request, ids):
     if es and es.indices.exists(key):
         try:
             query = {"query": {"ids": {"values": ids}}}
-            res = es.search(body=query, index=key, doc_type='default', size=99999)  # size=200?
+            res = es.search(body=query, index=key, doc_type='default', size=10000)  # size=200?
             hits = res.get("hits", {}).get("hits", [])
             results = {}
             for hit in hits:
