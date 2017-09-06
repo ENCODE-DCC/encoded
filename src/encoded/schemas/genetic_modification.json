@@ -197,14 +197,14 @@
             }
         },
         "RVD_sequence_pairs": {
-            "comment": "RVD sequence pairs apply only to modification_technique = TALE and should include at least one entry but no more than two.",
+            "comment": "RVD sequence pairs apply only to modification_technique = TALEN and should include at least one entry but no more than two.",
             "properties": {
                 "RVD_sequence_pairs": {
                     "minItems": 1,
                     "maxItems": 2
                 },
                 "method": {
-                    "enum": ["TALE"]
+                    "enum": ["TALEN"]
                 }
             }
         },
@@ -283,7 +283,7 @@
                     "comment": "Add back anyOf block with zygosity and RVD_sequence_pairs to the required list after Jason gets metadata",
                     "properties":{
                         "method": {
-                            "enum": ["TALE"]
+                            "enum": ["TALEN"]
                         }
                     }
                 },
@@ -538,7 +538,7 @@
             "type": "string",
             "enum":[
                 "CRISPR",
-                "TALE",
+                "TALEN",
                 "stable transfection",
                 "transient transfection",
                 "site-specific recombination",

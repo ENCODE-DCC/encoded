@@ -125,7 +125,7 @@
             "source": "/sources/gregory-crawford/",
             "identifier": "please-contact-lab"
         }],
-        "method": "TALE",
+        "method": "TALEN",
         "RVD_sequence_pairs": [
             {
                 "left_RVD_sequence": "NN,NG,HD,NI,NI,NN",

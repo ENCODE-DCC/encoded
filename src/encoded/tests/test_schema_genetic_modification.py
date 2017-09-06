@@ -19,7 +19,7 @@ def tale_deletion(lab, award):
         'award': award['@id'],
         'category': 'deletion',
         'purpose': 'repression',
-        'method': 'TALE'
+        'method': 'TALEN'
     }
 
 
@@ -107,7 +107,7 @@ def tale_replacement(lab, award):
         'award': award['@id'],
         'category': 'replacement',
         'purpose': 'validation',
-        'method': 'TALE'
+        'method': 'TALEN'
     }
 
 
@@ -130,14 +130,14 @@ def test_crispr_deletion_two_sites(testapp, crispr_deletion, target):
     assert res.status_code == 422
 
 
-def test_tale_deletion_no_RVD_sequence_or_reagent_availability(testapp, tale_deletion, source):
-    # TALE modifications either need RVD sequence and/or reagent_availability properties specified
+def test_talen_deletion_no_RVD_sequence_or_reagent_availability(testapp, tale_deletion, source):
+    # TALEN modifications either need RVD sequence and/or reagent_availability properties specified
     tale_deletion.update({'modified_site_by_coordinates': 
                           {'assembly': 'hg19', 'start': 88943, 'end': 123829, 'chromosome': 'chr3'}})
     res = testapp.post_json('/genetic_modification', tale_deletion, expect_errors=True)
     assert res.status_code == 422
     '''
-    Once the TALE metadata is fixed, we can add the RVD_sequence_pairs dependency back into the schema
+    Once the TALEN metadata is fixed, we can add the RVD_sequence_pairs dependency back into the schema
     tale_deletion.update({'RVD_sequence_pairs': 
                            [{'left_RVD_sequence': 'NH,NI,NG', 'right_RVD_sequence': 'NN,NG,NI'},
                             {'left_RVD_sequence': 'NN,NH,NH', 'right_RVD_sequence': 'NN,NI,NI'}]})
