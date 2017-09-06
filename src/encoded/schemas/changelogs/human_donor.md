@@ -5,8 +5,8 @@
 * *fraternal_twin* and *identical_twin* fields were collapsed into *twin* field
 * *twin_type* property was added to allow specification of the twin type if it is known, it requires *twin*
 * *ethnicity* values are no longer free text but are selected from an enumerated list
-* *life_stage* value 'postnatal' was removed and donors were collapsed into 'newborn'
-* *life_stage* value 'fetal' were removed and donors were collapsed into 'embryonic'
+* *life_stage* values 'postnatal' and 'fetal' were removed and replaced by 'embryonic' and 'newborn' respectively
+* *life_stage* value is required when *age* value is specified
 * *children* property is now a calculated property using the parent fields of other objects. It should no longer be submitted
 * *url* property was removed
 

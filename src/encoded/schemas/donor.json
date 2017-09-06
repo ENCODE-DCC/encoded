@@ -76,6 +76,26 @@
             "linkTo": "Organism"
         }
     },
+     "facets": {
+        "organism.scientific_name": {
+            "title": "Organism"
+        },
+        "sex": {
+            "title": "Sex"
+        },
+        "status": {
+            "title": "Donor status"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "award.rfa": {
+            "title": "RFA"
+        }
+    },
     "boost_values": {
         "external_ids": 1.0,
         "aliases": 1.0,
