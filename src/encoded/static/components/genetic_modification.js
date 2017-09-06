@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'underscore';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
-import { collapseIcon } from '../libs/svg-icons';
 import { auditDecor } from './audit';
 import { AttachmentPanel, DocumentsPanel } from './doc';
 import { FetchedData, Param } from './fetched';
@@ -15,13 +13,6 @@ import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import StatusLabel from './statuslabel';
 import { BiosampleTable, DonorTable } from './typeutils';
-
-
-// Map GM techniques to a presentable string
-const GM_TECHNIQUE_MAP = {
-    Crispr: 'CRISPR',
-    Tale: 'TALE',
-};
 
 
 // Display a panel of characterizations associated with a genetic modification object.
@@ -179,7 +170,7 @@ ModificationSite.propTypes = {
 
 // Render data for the Modification Technique section of the GM summary panel, for the given
 // GeneticModification object.
-const ModificationTechnique = (props) => {
+const ModificationMethod = (props) => {
     const { geneticModification } = props;
     const itemClass = globals.itemClass(geneticModification, 'view-detail key-value');
 
@@ -193,7 +184,7 @@ const ModificationTechnique = (props) => {
     return (
         <div>
             <hr />
-            <h4>Modification technique</h4>
+            <h4>Modification method</h4>
             <dl className={itemClass}>
                 <div data-test="technique">
                     <dt>Technique</dt>
@@ -211,13 +202,22 @@ const ModificationTechnique = (props) => {
                     </div>
                 : null}
 
-                {geneticModification.guide_rna_sequences && geneticModification.guide_rna_sequences.length ?
-                    <div data-test="guiderna">
-                        <dt>Guide RNA</dt>
+                {geneticModification.rnai_sequences && geneticModification.rnai_sequences.length ?
+                    <div data-test="rnai">
+                        <dt>RNAi sequences</dt>
                         <dd>
                             <ul className="multi-value">
-                                {geneticModification.guide_rna_sequences.map((seq, i) => <li key={i}>{seq}</li>)}
+                                {geneticModification.rnai_sequences.join(', ')}
                             </ul>
+                        </dd>
+                    </div>
+                : null}
+
+                {geneticModification.guide_rna_sequences && geneticModification.guide_rna_sequences.length ?
+                    <div data-test="guiderna">
+                        <dt>Guide RNAs</dt>
+                        <dd>
+                            {geneticModification.guide_rna_sequences.join(', ')}
                         </dd>
                     </div>
                 : null}
@@ -241,7 +241,7 @@ const ModificationTechnique = (props) => {
                         <dd>
                             <ul className="multi-value">
                                 {geneticModification.reagents.map((reagent, i) => {
-                                    const reagentId = <span>{globals.atIdToAccession(reagent.source)}:{reagent.identifier}</span>;
+                                    const reagentId = <span>{globals.atIdToAccession(reagent.source)} &mdash; {reagent.identifier}</span>;
                                     if (reagent.url) {
                                         return <a key={i} href={reagent.url}>{reagentId}</a>;
                                     }
@@ -256,7 +256,7 @@ const ModificationTechnique = (props) => {
     );
 };
 
-ModificationTechnique.propTypes = {
+ModificationMethod.propTypes = {
     geneticModification: PropTypes.object.isRequired, // GM object being rendered
 };
 
@@ -447,7 +447,7 @@ export class GeneticModificationComponent extends React.Component {
 
                                 <ModificationSite geneticModification={context} />
 
-                                <ModificationTechnique geneticModification={context} />
+                                <ModificationMethod geneticModification={context} />
                             </div>
 
                             <div className="flexcol-sm-6">
@@ -602,6 +602,7 @@ GeneticModificationSummary.columns = {
         display: item => <a href={item['@id']}>{item.accession}</a>,
     },
     category: { title: 'Category' },
+    purpose: { title: 'Purpose' },
     method: { title: 'Method' },
     site: {
         title: 'Site',

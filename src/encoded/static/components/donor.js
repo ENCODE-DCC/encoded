@@ -6,6 +6,7 @@ import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
 import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, DocumentsSubpanels } from './doc';
+import { GeneticModificationSummary } from './genetic_modification';
 import * as globals from './globals';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
@@ -591,6 +592,10 @@ class Donor extends React.Component {
 
                 {context['@type'][0] === 'HumanDonor' && this.state.parentDonors && this.state.parentDonors.length ?
                     <DonorTable title="Parents of this donor" donors={this.state.parentDonors} />
+                : null}
+
+                {context.genetic_modifications && context.genetic_modifications.length ?
+                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
                 : null}
 
                 <RelatedItems
