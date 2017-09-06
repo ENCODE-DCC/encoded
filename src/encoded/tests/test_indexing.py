@@ -84,7 +84,6 @@ def listening_conn(dbapi_conn):
 
 @pytest.mark.slow
 def test_indexing_workbook(testapp, indexer_testapp):
-    pdb.set_trace()
     # First post a single item so that subsequent indexing is incremental
     testapp.post_json('/testing-post-put-patch/', {'required': ''})
     res = indexer_testapp.post_json('/index', {'record': True})
@@ -109,7 +108,6 @@ def test_indexing_simple(testapp, indexer_testapp):
     testapp.post_json('/testing-post-put-patch/', {'required': ''})
     res = indexer_testapp.post_json('/index', {'record': True})
     assert res.json['indexed'] == 1
-    assert 'txn_count' not in res.json
     res = testapp.post_json('/testing-post-put-patch/', {'required': ''})
     uuid = res.json['@graph'][0]['uuid']
     res = indexer_testapp.post_json('/index', {'record': True})
@@ -124,7 +122,7 @@ def test_indexing_simple(testapp, indexer_testapp):
         res = testapp.get('/search/?type=TestingPostPutPatch')
         uuids = [indv_res['uuid'] for indv_res in res.json['@graph'] if 'uuid' in indv_res]
         count += 1
-    assert res.json['total'] == 2
+    assert res.json['total'] == 3
 
 
 def test_listening(testapp, listening_conn):
