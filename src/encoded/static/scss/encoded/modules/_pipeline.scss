@@ -4,6 +4,29 @@ $pipeline-node-types:
     (quality-metric, #80ffc0),
     (file-type, #e0e0e0);
 
+$file-status:
+    ("uploading", #400080),
+    ("content-error", #800040),
+    ("upload-failed", #c04444),
+    ("in-progress", $brand-info),
+    ("deleted", #ff0000),
+    ("released", $brand-success),
+    ("replaced", #ffff00),
+    ("revoked", #ff8000),
+    ("archived", $gray-light);
+
+
+// FUnction to return black for light background colors passed in $color, and white for dark
+// backbground colors passed in $color.
+@function node-text-color($color) {
+    @if (lightness($color) > 50) {
+        @return #000000; // Lighter backgorund, return dark color
+    } @else {
+        @return #ffffff; // Darker background, return light color
+    }
+}
+      
+
 @each $node-type, $color in $pipeline-node-types {
     // Audit icons
     g.pipeline-node-#{$node-type} {
@@ -55,6 +78,18 @@ $pipeline-node-types:
 
 g.pipeline-node-file-type {
     pointer-events: none;
+}
+
+g.pipeline-node-file {
+    @each $status, $color in $file-status {
+        &.#{$status} {
+            fill: $color;
+
+            g.label {
+                fill: node-text-color($color);
+            }
+        }
+    }
 }
 
 g.label {
