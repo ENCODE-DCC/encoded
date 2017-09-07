@@ -18,6 +18,7 @@ addons:
       - graphviz
 env:
   global:
+    - BOTO_CONFIG=/bogus/value # see: https://github.com/boto/boto/issues/3263
     - secure: |-
         CMKR45ew7fJWfF/rvaFkV4gNhWRDdM4y8wlj5p1qrEzJ214SENg03fjHJr6B
         cvNf7vanTJKnVxpxUK9kH5Tn/uaJZtnbnJYehZ4YKwzbJQEAEJpWvCk4C54O
@@ -29,9 +30,9 @@ env:
     - PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
 matrix:
   include:
-    - python: "3.4"
+    - python: "3.4.3"
       env: BROWSER=Chrome
-    - python: "3.4"
+    - python: "3.4.3"
       env: BROWSER=
 before_install:
   - postgres --version
