@@ -96,38 +96,7 @@ def test_genomes(testapp, workbook, expected):
 
 
 @pytest.mark.parametrize('expected', [
-    "track chip",
-    "compositeTrack on",
-    "type bed 3",
-    "longLabel ENCSR727WCB Collection of ENCODE ChIP-seq experiments",
-    "shortLabel ENCODE ENCSR727WCB ChIP-seq",
-    "visibility full",
-    "pennantIcon https://www.encodeproject.org/static/img/pennant-encode.png https://www.encodeproject.org/ \"This trackhub was automatically generated from the ENCODE files and metadata found at the ENCODE portal\"",
-    "html ChIP",
-    "subGroup1 view Views aOIDR=Optimal_IDR_thresholded_peaks bCIDR=Conservative_IDR_thresholded_peaks cRPKS=Pseudoreplicated_IDR_thresholded_peaks dPKS=Peaks eFCOC=Fold_change_over_control fSPV=Signal_p-value gSIG=Signal",
-    "subGroup2 BS Biosample GM12878=GM12878",
-    "subGroup3 EXP Experiment ENCSR000DZQ=ENCSR000DZQ",
-    "subGroup4 REP Replicates pool=Pooled",
-    "subGroup5 TARG Targets EBF1=EBF1",
-    "sortOrder BS=+ TARG=+ REP=+ view=+ EXP=+",
-    "dimensions dimA=REP",
-    "dimensionAchecked pool",
-        "track chip_aOIDR_view",
-        "parent chip on",
-        "view aOIDR",
-        "type bigBed 6 +",
-        "visibility dense",
-        "scoreFilter 100:1000",
-        "spectrum on",
-            "track ENCFF003COS",
-            "parent chip_aOIDR_view on",
-            "bigDataUrl /files/ENCFF003COS/@@download/ENCFF003COS.bigBed?proxy=true",
-            "longLabel EBF1 ChIP-seq of GM12878 optimal idr thresholded peaks pool ENCSR000DZQ - ENCFF003COS",
-            "shortLabel pool oIDR pk",
-            "type bigBed 6 +",
-            "color 153,38,0",
-            "altColor 115,31,0",
-            "subGroups BS=GM12878 EXP=ENCSR000DZQ REP=pool TARG=EBF1 view=aOIDR"
+    ""
 ])
 def test_fileset_files_trackDb(testapp, workbook, expected):
     res = testapp.get("/publication-data/ENCSR727WCB/@@hub/hg19/trackDb.txt")
@@ -170,7 +139,7 @@ def test_hub_field(testapp, workbook, expected):
 def test_visualize(submitter_testapp, workbook):
     expected = {
         'GRCh38': {
-            'Ensembl': 'http://www.ensembl.org/Trackhub?url=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt;species=Homo_sapiens;redirect=no',
+            'Ensembl': 'http://www.ensembl.org/Trackhub?url=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt;species=Homo_sapiens',
             'Quick View': '/search/?type=File&assembly=GRCh38&dataset=/experiments/ENCSR000AEN/&file_format=bigBed&file_format=bigWig&status=released&status=in+progress#browser',
             'UCSC': 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear=http://localhost/experiments/ENCSR000AEN/@@hub/hub.txt&db=hg38'
         },
