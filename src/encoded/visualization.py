@@ -139,6 +139,7 @@ VISIBLE_DATASET_TYPES_LC = ["experiment", "annotation"]
 VISIBLE_ASSEMBLIES = ['hg19', 'GRCh38', 'mm10', 'mm10-minimal' ,'mm9','dm6','dm3','ce10','ce11']
 
 
+
 # ASSEMBLY_MAPPINGS is needed to ensure that mm10 and mm10-minimal will
 #                   get combined into the same trackHub.txt
 # This is necessary because mm10 and mm10-minimal are only mm10 at UCSC,
@@ -2271,8 +2272,9 @@ def object_is_visualizable(obj,assembly=None):
         assemblies = [ assembly ]
     else:
         assemblies = obj.get('assembly',[])
+    browsers = browsers_available(assemblies, obj.get('status','none'), obj.get('files'), obj.get('@type',[]))
 
-    return browsers_available(assemblies, obj.get('status','none'), obj.get('files'), obj.get('@type',[]))
+    return len(browsers) > 0
 
 
 def vis_format_url(browser, path, assembly, position=None):
