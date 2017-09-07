@@ -1705,6 +1705,7 @@ class FileGalleryRendererComponent extends React.Component {
         let selectedAnnotation = '';
         let jsonGraph;
         let allGraphedFiles;
+        let meta = null;
         const files = (data ? data['@graph'] : []).concat(this.state.relatedFiles); // Array of searched files arrives in data.@graph result
         if (files.length === 0) {
             return null;
@@ -1726,6 +1727,7 @@ class FileGalleryRendererComponent extends React.Component {
                 const { graph, graphedFiles } = assembleGraph(context, this.context.session, this.state.infoNodeId, graphFiles, selectedAssembly, selectedAnnotation);
                 jsonGraph = graph;
                 allGraphedFiles = (selectedAssembly || selectedAnnotation) ? graphedFiles : {};
+                meta = this.detailNodes(jsonGraph, this.state.infoNodeId, this.context.session, this.context.session_properties);
             } catch (e) {
                 jsonGraph = null;
                 allGraphedFiles = {};
@@ -1739,7 +1741,6 @@ class FileGalleryRendererComponent extends React.Component {
             Step: 'analysis-step',
             QualityMetric: 'quality-metric',
         };
-        const meta = this.detailNodes(jsonGraph, this.state.infoNodeId, this.context.session, this.context.session_properties);
         const modalClass = meta ? `graph-modal-${modalTypeMap[meta.type]}` : '';
 
         // Generate the file table first so we can render it the same way regardless of whether
