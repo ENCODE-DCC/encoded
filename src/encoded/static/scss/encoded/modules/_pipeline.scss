@@ -27,7 +27,7 @@ $pipeline-node-types:
             fill: #ffc0c0;
         }
 
-        &.revoked {
+        &.revoked, &.deleted {
             fill: #B24342;
 
             g.label {
@@ -35,7 +35,7 @@ $pipeline-node-types:
             }
         }
 
-        &.archived {
+        &.archived, &.replaced {
             fill: #c0c0c0;
         }
 

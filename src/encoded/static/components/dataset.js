@@ -1436,7 +1436,7 @@ export class SeriesComponent extends React.Component {
                 {/* Display list of released and unreleased files */}
                 <FetchedItems
                     {...this.props}
-                    url={globals.unreleasedFilesUrl(context)}
+                    url={`/search/?limit=all&type=File&dataset=${context['@id']}`}
                     Component={DatasetFiles}
                     filePanelHeader={<FilePanelHeader context={context} />}
                     encodevers={globals.encodeVersion(context)}
