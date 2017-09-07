@@ -44,7 +44,7 @@ class SecondState(IndexerState):
         super(SecondState, self).__init__(es)
         self.state_key       = 'secondary_indexer'      # State of the current or last cycle
         self.todo_set        = 'secondary_todo'         # one cycle of uuids, sent to the Secondary Indexer
-        self.in_progress_set = 'secondary_in_progress'
+        #self.in_progress_set = 'secondary_in_progress'
         self.failed_set      = 'secondary_failed'
         self.done_set        = 'secondary_done'         # Trying to get all uuids from 'todo' to this set
         self.troubled_set    = 'secondary_troubled'     # uuids that failed to index in any cycle
@@ -53,19 +53,16 @@ class SecondState(IndexerState):
         self.staged_cycles_list = self.followup_ready_list  # inherited from primary IndexerState
         #self.audited_set     = 'secondary_audited'
         self.viscached_set   = 'secondary_viscached'
+        self.success_set     = self.viscached_set
         # DO NOT INHERIT! All keys that are cleaned up at the start and fully finished end of indexing
-        self.cleanup_keys      = [self.todo_set,self.in_progress_set,self.failed_set,self.done_set]
+        self.cleanup_keys      = [self.todo_set,self.failed_set,self.done_set]  # ,self.in_progress_set
         self.cleanup_last_keys = [self.last_set,self.viscached_set]  # ,self.audited_set] cleaned up only when new indexing occurs
 
     #def audited_uuid(self, uuid):
-    #    self.set_add(self.audited_set, set(uuid))  # Hopefully these are rare
+    #    self.set_add(self.audited_set, [uuid])  # Hopefully these are rare
 
     def viscached_uuid(self, uuid):
-        self.set_add(self.viscached_set, set(uuid))  # Hopefully these are rare
-
-    def successes_this_cycle(self):
-        # Overwritten: secondary_indexer counts a success as an actual object added to viscache!
-        return self.get_count(self.viscached_set)
+        self.set_add(self.viscached_set, [uuid])  # Hopefully these are rare
 
     def get_one_cycle(self, xmin):
         uuids = set()
@@ -229,7 +226,7 @@ class SecondaryIndexer(Indexer):
         last_exc = None
         # First get the object currently in es
         try:
-            result = self.es.get(index=self.index, id=str(uuid))
+            result = self.es.get(index=self.index, id=str(uuid), version=xmin, version_type='external_gte')
             doc = result['_source']
             #doc = request.embed('/%s/@@index-data' % uuid, as_user='INDEXER')  # No need to use this indirection
         except StatementError:
