@@ -1,6 +1,11 @@
 from snovault import calculated_property
 from snovault.util import ensurelist
 from .assay_data import assay_terms
+from urllib.parse import urljoin
+from ..visualization import (
+    vis_format_url,
+    browsers_available
+    )
 
 
 class CalculatedBiosampleSlims:
@@ -267,3 +272,38 @@ class CalculatedAssayTermID:
         if assay_term_name in assay_terms:
             term_id = assay_terms.get(assay_term_name)
         return term_id
+
+class CalculatedVisualize:
+    @calculated_property(condition='hub', category='page', schema={
+        "title": "Visualize Data",
+        "type": "string",
+    })
+    def visualize(self, request, hub, assembly, status, files):
+        hub_url = urljoin(request.resource_url(request.root), hub)
+        viz = {}
+        browsers = browsers_available(assembly, status, files, self.base_types, self.item_type )
+        if len(browsers) == 0:
+            return None
+        for assembly_name in assembly:
+            if assembly_name in viz:
+                continue
+            browser_urls = {}
+            if 'ucsc' in browsers:
+                ucsc_url = vis_format_url("ucsc", hub_url, assembly_name)
+                if ucsc_url is not None:
+                    browser_urls['UCSC'] = ucsc_url
+            if 'ensembl' in browsers:
+                ensembl_url = vis_format_url("ensembl", hub_url, assembly_name)
+                if ensembl_url is not None:
+                    browser_urls['Ensembl'] = ensembl_url
+            if 'quickview' in browsers:
+                quickview_url = vis_format_url("quickview", request.path, assembly_name)
+                if quickview_url is not None:
+                    browser_urls['Quick View'] = quickview_url
+            if browser_urls:
+                viz[assembly_name] = browser_urls
+        if viz:
+            return viz
+        else:
+            return None
+

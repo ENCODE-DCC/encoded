@@ -1,6 +1,7 @@
 {
     "title": "Worm donor",
-    "description": "Schema for submitting a worm donor.",
+    "description": "Schema for submitting a worm strain.",
+    "comment": "The worm donor object is meant to represent a strain not an individual worm.",
     "id": "/profiles/worm_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -8,25 +9,26 @@
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" },
         { "$ref": "donor.json#/properties" },
-        { "$ref": "mixins.json#/accession" },
-        { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/accessioned_status" },
-        { "$ref": "mixins.json#/source" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/genomic_alterations"},
+        { "$ref": "mixins.json#/genetic_modifications" },
         { "$ref": "mixins.json#/strains"},
         { "$ref": "mixins.json#/url" },
+        { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
-        { "$ref": "mixins.json#/genomic_alterations"},
-        { "$ref": "mixins.json#/genetic_modifications" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/accessioned_status" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/schema_version" }
     ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "genotype": {
             "description": "The genotype of the strain according to accepted nomenclature conventions: http://www.wormbase.org/about/userguide/nomenclature#k89607hgcf24ea13jbid5--10."
@@ -45,6 +47,7 @@
             "linkTo": "WormDonor"
         },
         "organism":{ 
+            "comment": "Do not submit. DCC personnel is responsible for submission of this property.",
             "linkEnum": [
                 "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
                 "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
@@ -71,22 +74,6 @@
                 "pattern": "^(((CGC|WormBase|NBP):.+)|(GEO:SAMN\\d+))$"
             }
         }
-    },
-    "columns": {
-        "accession": {
-            "title": "Accession"
-        },
-        "sex": {
-            "title": "Sex"
-        },
-        "organism.scientific_name": {
-            "title": "Species"
-        }
-    },
-    "boost_values": {
-        "internal_tags": 1.0,
-        "external_ids": 1.0,
-        "aliases": 1.0
     },
     "changelog": "/profiles/changelogs/worm_donor.md"
 }
