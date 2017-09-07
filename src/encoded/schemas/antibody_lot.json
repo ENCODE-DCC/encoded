@@ -77,8 +77,8 @@
             "description": "The diversification of the immune cell lineage to make the antibody.",
             "type": "string",
             "enum": [
-                "polyclonal",
-                "monoclonal"
+                "monoclonal",
+                "polyclonal"
             ]
         },
         "dbxrefs": {
@@ -108,17 +108,16 @@
             "description": "The class of antibody ( e.g. IgA, IgD, IgE, IgG or IgM)",
             "type": "string",
             "enum": [
+                "IgA",
                 "IgA1",
                 "IgA2",
                 "IgD",
+                "IgE",
                 "IgG",
-                "IgGκ",
                 "IgG1",
                 "IgG1κ",
                 "IgG1λ",
                 "IgG2",
-                "IgG2κ",
-                "IgG2λ",
                 "IgG2a",
                 "IgG2aκ",
                 "IgG2aλ",
@@ -126,13 +125,14 @@
                 "IgG2bκ",
                 "IgG2bλ",
                 "IgG2c",
+                "IgG2κ",
+                "IgG2λ",
                 "IgG3",
                 "IgG3κ",
                 "IgG4",
-                "IgA",
+                "IgGκ",
                 "IgM",
                 "IgMκ",
-                "IgE",
                 "serum"
             ]
         },
@@ -148,17 +148,17 @@
                 "comment": "IMAC refers to Immobilized Metal Chelate Chromatography and IEC refers to Ion Exchange Chromatography",
                 "type": "string",
                 "enum": [
-                    "Protein A/G",
                     "affinity",
-                    "Protein A",
-                    "Protein G",
-                    "crude",
-                    "other",
-                    "IEC",
-                    "IMAC",
-                    "tissue culture supernatant",
                     "antiserum",
-                    "IgG fraction"
+                    "crude",
+                    "IEC",
+                    "IgG fraction",
+                    "IMAC",
+                    "other",
+                    "Protein A",
+                    "Protein A/G",
+                    "Protein G",
+                    "tissue culture supernatant"
                 ]
             }
         },

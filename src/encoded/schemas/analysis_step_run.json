@@ -69,10 +69,10 @@
                         "type": "string",
                         "default": "waiting",
                         "enum" : [
-                            "waiting",
-                            "running",
+                            "error",
                             "finished",
-                            "error"
+                            "running",
+                            "waiting"
                         ]
                     }
                 }
@@ -82,9 +82,9 @@
             "title": "Status",
             "type": "string",
             "enum" : [
+                "deleted",
                 "in progress",
                 "released",
-                "deleted",
                 "virtual"
             ]
         }

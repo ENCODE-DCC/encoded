@@ -40,13 +40,13 @@
                     "properties": {
                         "biosample_type": {
                             "enum": [                
-                                "primary cell",
                                 "immortalized cell line",
-                                "tissue",
                                 "in vitro differentiated cells",
                                 "induced pluripotent stem cell line",
-                                "whole organisms",
-                                "stem cell"
+                                "primary cell",
+                                "stem cell",
+                                "tissue",
+                                "whole organisms"
                             ]
                         }
                     }
@@ -187,14 +187,14 @@
             "description": "The categorization of the biosample.",
             "type": "string",
             "enum" : [
-                "primary cell",
                 "immortalized cell line",
-                "tissue",
                 "in vitro differentiated cells",
+                "in vitro sample",
                 "induced pluripotent stem cell line",
-                "whole organisms",
+                "primary cell",
                 "stem cell",
-                "in vitro sample"
+                "tissue",
+                "whole organisms"
             ]
         },
         "dbxrefs": {
@@ -262,15 +262,15 @@
             "permission": "import_items",
             "title": "Internal status",
             "enum": [
-                "unreviewed",
                 "no available pipeline",
-                "unrunnable",
+                "pipeline completed",
+                "pipeline error",
                 "pipeline ready",
                 "processing",
-                "pipeline completed",
-                "requires lab review",
                 "release ready",
-                "pipeline error"
+                "requires lab review",
+                "unreviewed",
+                "unrunnable"
             ]
         },
         "pipeline_error_detail": {

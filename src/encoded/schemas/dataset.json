@@ -95,15 +95,15 @@
             "items": {
                 "type": "string",
                 "enum": [
-                    "DREAM",
-                    "ENCORE",
-                    "ENTEx",
-                    "SESCC",
+                    "cre_inputv10",
+                    "cre_inputv11",
                     "dbGaP",
+                    "DREAM",
                     "ENCYCLOPEDIAv3",
                     "ENCYCLOPEDIAv4",
-                    "cre_inputv10",
-                    "cre_inputv11"
+                    "ENCORE",
+                    "ENTEx",
+                    "SESCC"
                 ]
             }
         },
@@ -112,15 +112,15 @@
             "type": "string",
             "default": "proposed",
             "enum" : [
-                "proposed",
-                "started",
-                "submitted",
-                "ready for review",
-                "deleted",
-                "released",
-                "revoked",
                 "archived",
-                "replaced"
+                "deleted",
+                "proposed",
+                "ready for review",
+                "released",
+                "replaced",
+                "revoked",
+                "started",
+                "submitted"
             ]
         }
     },
