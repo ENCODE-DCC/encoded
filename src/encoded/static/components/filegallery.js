@@ -1525,6 +1525,7 @@ class FileGalleryRendererComponent extends React.Component {
             infoModalOpen: false, // True if info modal is open
             relatedFiles: [],
             inclusionOn: false, // True to exclude files with certain statuses
+            contributingFiles: [], // Cache for contributing files retrieved from the DB
         };
 
         // Bind `this` to non-React methods.
