@@ -132,8 +132,7 @@ def test_undefined_health_status_mouse(testapp, biosample, mouse):
 def test_biosample_summary(testapp,
                            donor_1,
                            biosample_1, treatment):
-    testapp.patch_json(donor_1['@id'], {'age_units': 'day', 'age': '10'})
-    testapp.patch_json(donor_1['@id'], {'sex': 'male'})
+    testapp.patch_json(donor_1['@id'], {'age_units': 'day', 'age': '10', 'sex': 'male', 'life_stage': 'child'})
     testapp.patch_json(biosample_1['@id'], {'donor': donor_1['@id'],
                                             "biosample_term_id": "UBERON:0002784",
                                             "biosample_term_name": "liver",
@@ -141,7 +140,7 @@ def test_biosample_summary(testapp,
                                             'treatments': [treatment['@id']]})
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == \
-        'Homo sapiens liver tissue male (10 days) treated with ethanol'
+        'Homo sapiens liver tissue male child (10 days) treated with ethanol'
 
 
 def test_biosample_summary_construct(testapp,
