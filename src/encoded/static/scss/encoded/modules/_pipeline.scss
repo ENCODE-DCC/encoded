@@ -5,14 +5,14 @@ $pipeline-node-types:
     (file-type, #e0e0e0);
 
 $file-status:
-    ("uploading", #400080),
-    ("content-error", #800040),
-    ("upload-failed", #c04444),
+    ("uploading", $gray-light),
+    ("content-error", $gray-light),
+    ("upload-failed", $gray-light),
     ("in-progress", $brand-info),
-    ("deleted", #ff0000),
+    ("deleted", $brand-warning),
     ("released", $brand-success),
-    ("replaced", #ffff00),
-    ("revoked", #ff8000),
+    ("replaced", $gray-light),
+    ("revoked", $brand-danger),
     ("archived", $gray-light);
 
 
