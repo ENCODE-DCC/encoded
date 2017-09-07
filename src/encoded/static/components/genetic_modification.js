@@ -422,13 +422,15 @@ export class GeneticModificationComponent extends React.Component {
 
                                     <div data-test="type">
                                         <dt>Type</dt>
-                                        <dd>
-                                            <ul>
-                                                <li>{context.category}</li>
-                                                {context.introduced_sequence ? <li className="sequence">{context.introduced_sequence}</li> : null}
-                                            </ul>
-                                        </dd>
+                                        <dd>{context.category}</dd>
                                     </div>
+
+                                    {context.introduced_sequence ?
+                                        <div data-test="type">
+                                            <dt>Introduced sequence</dt>
+                                            <dd>{context.introduced_sequence ? <span>{context.introduced_sequence}</span> : null}</dd>
+                                        </div>
+                                    : null}
 
                                     {context.zygosity ?
                                         <div data-test="zygosity">
