@@ -166,21 +166,6 @@
                 "linkTo": "HumanDonor"
             }
         },
-        "children": {
-            "title": "Children",
-            "description": "Biological children of this donor.",
-            "comment": "Do not submit. This is calculated from the parents field.",
-            "type":  "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Child",
-                "description": "Biological child of this donor.",
-                "comment": "For human biosamples, see human_donor.json for available identifiers.",
-                "type": "string",
-                "linkTo": "HumanDonor"
-            }
-        },
         "siblings": {
             "title": "Siblings",
             "description": "Donors that have at least one parent in common with this donor.",
