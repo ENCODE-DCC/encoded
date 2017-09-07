@@ -1,6 +1,7 @@
 {
     "title": "Mouse donor",
-    "description": "Schema for submitting a mouse donor.",
+    "description": "Schema for submitting a mouse strain.",
+    "comment": "The mouse donor object is meant to represent a strain not an individual mouse.",
     "id": "/profiles/mouse_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -8,40 +9,27 @@
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" },
         { "$ref": "donor.json#/properties" },
-        { "$ref": "mixins.json#/accession" },
-        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/genetic_modifications" },
+        { "$ref": "mixins.json#/strains"},
+        { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/references" },
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/accessioned_status" },
-        { "$ref": "mixins.json#/source" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/documents" },
-        { "$ref": "mixins.json#/strains"},
-        { "$ref": "mixins.json#/genetic_modifications" }
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/schema_version" }
     ],
     "properties": {
         "schema_version": {
-            "default": "9"
-        },
-        "littermates": {
-            "title": "Littermates",
-            "description": "Donors comprising the same litter.",
-            "type":  "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Littermate",
-                "description": "A donor member of the same litter.",
-                "comment": "See mouse_donor.json for available identifiers.",
-                "type": "string",
-                "linkTo": "MouseDonor"
-            }
+            "default": "10"
         },
         "organism": {
+            "comment": "Do not submit. DCC personnel is responsible for submission of this property.",
             "default": "3413218c-3d86-498b-a0a2-9a406638e786",
             "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"],
             "permission": "import_items"
@@ -77,11 +65,6 @@
                 "pattern": "^((GEO:SAMN\\d+)|(MGI.D:[A-Z0-9]+))$"
             }
         }
-    },
-    "boost_values": {
-        "internal_tags": 1.0,
-        "external_ids": 1.0,
-        "aliases": 1.0
     },
     "changelog": "/profiles/changelogs/mouse_donor.md"
 }

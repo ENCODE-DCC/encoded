@@ -562,7 +562,7 @@ PHASE1_PIPELINES = {
         remove_keys('outcrossed_strain'),
     ],
     'human_donor': [
-        remove_keys('parents', 'children', 'siblings', 'fraternal_twin', 'identical_twin'),
+        remove_keys('parents', 'children', 'siblings', 'twin'),
     ],
     'publication': [
         remove_keys('datasets'),
@@ -634,7 +634,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes'),
     ],
     'human_donor': [
-        skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'fraternal_twin', 'identical_twin'),
+        skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'twin'),
     ],
     'mouse_donor': [
         skip_rows_missing_all_keys('parent_strains'),

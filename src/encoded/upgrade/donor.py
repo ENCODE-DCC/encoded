@@ -144,3 +144,46 @@ def fly_worm_donor_5_6_and_human_mouse_8_9(value, system):
     # http://redmine.encodedcc.org/issues/5041
     if value.get('status') in ['preliminary', 'proposed']:
         value['status'] = "in progress"
+
+@upgrade_step('fly_donor', '6', '7')
+@upgrade_step('worm_donor', '6', '7')
+@upgrade_step('mouse_donor', '9', '10')
+def model_organism_donor_9_10(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3415
+    value.pop('internal_tags', None)
+    value.pop('littermates', None)
+    value.pop('url', None)
+
+@upgrade_step('human_donor', '9', '10')
+def human_donor_9_10(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3415
+    if value.get('life_stage') == 'fetal':
+        value['life_stage'] = 'embryonic'
+    if value.get('life_stage') == 'postnatal':
+        value['life_stage'] = 'newborn'
+    if not value.get('internal_tags'):    
+        value.pop('internal_tags', None)
+    if value.get('ethnicity') in ['NA', 'Unknown', 'unknown', '']:
+        value.pop('ethnicity')
+    if value.get('ethnicity') == 'African-American':
+        value['ethnicity'] = 'African American'
+    if value.get('ethnicity') == 'African':
+        value['ethnicity'] = 'Black African'
+    if value.get('ethnicity') in ['caucasian', 'Caucasian/White']:
+        value['ethnicity'] = 'Caucasian'
+    if value.get('ethnicity') == 'Caucasian/Hispanic':
+        value['ethnicity'] = 'Caucasian Hispanic'
+    if value.get('ethnicity') == 'Indian/Arabian':
+        value['ethnicity'] = 'Arab Indian'
+    if value.get('ethnicity') == 'Asian/Hawaiian/Eskimo':
+        value['ethnicity'] = 'Asian Hawaiian Eskimo'
+    if value.get('fraternal_twin'):
+        value['twin'] = value.get('fraternal_twin')
+        value['twin_type'] = 'dizygotic'
+        value.pop('fraternal_twin', None)
+    if value.get('identical_twin'):
+        value['twin'] = value.get('identical_twin')
+        value['twin_type'] = 'monozygotic'
+        value.pop('identical_twin', None)
+    value.pop('children', None)
+    value.pop('url', None)
