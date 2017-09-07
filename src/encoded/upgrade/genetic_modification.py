@@ -137,7 +137,7 @@ def genetic_modification_5_6(value, system):
                     # lines and those all have C-terminal eGFP tags.
                     value['introduced_tags'] = [{'name': 'eGFP', 'location': 'C-terminal'}]
             elif 'talen_platform' in technique.properties:
-                value['method'] = 'TALE'
+                value['method'] = 'TALEN'
                 # We had patched these on production to have purpose = repression. However, they're
                 # actually more in line with a purpose of validating the region as DHS/regulatory, so
                 # let's upgrade it to that. Another option would be "analysis" but am unsure what it's
@@ -149,7 +149,7 @@ def genetic_modification_5_6(value, system):
                     value['notes'] = 'TALEN platform ' + technique.properties['talen_platform']
                 if alias_flag:
                     for a in technique.properties['aliases']:
-                        b = a + '-TALE'
+                        b = a + '-TALEN'
                         if 'aliases' in value:
                             value['aliases'].append(b)
                         else:
