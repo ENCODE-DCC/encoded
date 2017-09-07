@@ -551,7 +551,7 @@ class ListingComponent extends React.Component {
                 <div className="clearfix">
                     <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
-                        <p className="type meta-title">Genetic modifications</p>
+                        <p className="type meta-title">Genetic modification</p>
                         <p className="type">{` ${result.accession}`}</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
