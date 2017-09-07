@@ -50,7 +50,7 @@ $file-status:
             fill: #ffc0c0;
         }
 
-        &.revoked {
+        &.revoked, &.deleted {
             fill: #B24342;
 
             g.label {
@@ -58,7 +58,7 @@ $file-status:
             }
         }
 
-        &.archived {
+        &.archived, &.replaced {
             fill: #c0c0c0;
         }
 
