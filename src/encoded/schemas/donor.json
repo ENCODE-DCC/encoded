@@ -76,12 +76,9 @@
             "linkTo": "Organism"
         }
     },
-     "facets": {
+    "facets": {
         "organism.scientific_name": {
             "title": "Organism"
-        },
-        "sex": {
-            "title": "Sex"
         },
         "status": {
             "title": "Donor status"
