@@ -84,28 +84,31 @@
         "schema_version": {
             "default": "10"
         },
-        "ethnicity": {
-            "title": "Ethnicity",
-            "comment": "We use http://bioportal.bioontology.org/ontologies/SNOMED-Ethnic-Group as a template for the enum list of ethnicities.",
+        "organism": {
+            "comment": "Do not submit, value is assigned by the object.",
+            "default": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
+            "linkEnum": ["7745b647-ff15-4ff3-9ced-b897d4e2983c"]
+        },
+        "sex": {
+            "title": "Sex",
+            "type": "string",
+            "default": "unknown",
+            "enum": [
+                "male",
+                "female",
+                "unknown",
+                "mixed"
+            ]
+        },
+        "life_stage": {
+            "title": "Life stage",
             "type": "string",
             "enum": [
-                "African American",
-                "Arab",
-                "Arab Indian",
-                "Asian",
-                "Asian Hawaiian Eskimo",
-                "Black",
-                "Black African",
-                "Caucasian",
-                "Caucasian Hispanic",
-                "Chinese",
-                "Eskimo",
-                "Han Chinese",
-                "Hawaiian",
-                "Hispanic",
-                "Indian",
-                "Japanese",
-                "Yoruba"
+                "embryonic",
+                "newborn",
+                "child",
+                "adult",
+                "unknown"
             ]
         },
         "age": {
@@ -129,26 +132,28 @@
             "title": "Donor health status",
             "type": "string"
         },
-        "life_stage": {
-            "title": "Life stage",
+        "ethnicity": {
+            "title": "Ethnicity",
+            "comment": "We use http://bioportal.bioontology.org/ontologies/SNOMED-Ethnic-Group as a template for the enum list of ethnicities.",
             "type": "string",
             "enum": [
-                "embryonic",
-                "newborn",
-                "child",
-                "adult",
-                "unknown"
-            ]
-        },
-        "sex": {
-            "title": "Sex",
-            "type": "string",
-            "default": "unknown",
-            "enum": [
-                "male",
-                "female",
-                "unknown",
-                "mixed"
+                "African American",
+                "Arab",
+                "Arab Indian",
+                "Asian",
+                "Asian Hawaiian Eskimo",
+                "Black",
+                "Black African",
+                "Caucasian",
+                "Caucasian Hispanic",
+                "Chinese",
+                "Eskimo",
+                "Han Chinese",
+                "Hawaiian",
+                "Hispanic",
+                "Indian",
+                "Japanese",
+                "Yoruba"
             ]
         },
         "parents": {
@@ -181,6 +186,13 @@
                 "linkTo": "HumanDonor"
             }
         },
+        "twin": {
+            "title": "Twin",
+            "description": "A human donor that is a twin sibling of this human donor.",
+            "comment": "For human biosamples, see human_donor.json for available identifiers.",
+            "type": "string",
+            "linkTo": "HumanDonor"
+        },
         "twin_type": {
             "title": "Type of the twin sibling of this human donor.",
             "comment": "The type of the twin sibling of this donor (dizygotic or monozygotic)",
@@ -189,18 +201,6 @@
                 "dizygotic",
                 "monozygotic"
             ]
-        },
-        "twin": {
-            "title": "Twin",
-            "description": "A human donor that is a twin sibling of this human donor.",
-            "comment": "For human biosamples, see human_donor.json for available identifiers.",
-            "type": "string",
-            "linkTo": "HumanDonor"
-        },
-        "organism": {
-            "comment": "Do not submit, value is assigned by the object.",
-            "default": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
-            "linkEnum": ["7745b647-ff15-4ff3-9ced-b897d4e2983c"]
         },
         "internal_tags": {
             "title": "Internal tags",
