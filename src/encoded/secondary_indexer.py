@@ -20,11 +20,14 @@ import copy
 import json
 from pkg_resources import resource_filename
 from snovault.elasticsearch.indexer import (
+    SEARCH_MAX,
     IndexerState,
-    Indexer
+    Indexer,
+    all_uuids
 )
 
 from .visualization import (
+    VISIBLE_DATASET_TYPES_LC,
     object_is_visualizable,
     vis_cache_add
 )
@@ -53,8 +56,9 @@ class SecondState(IndexerState):
         self.staged_cycles_list = self.followup_ready_list  # inherited from primary IndexerState
         #self.audited_set     = 'secondary_audited'
         self.viscached_set   = 'secondary_viscached'
-        self.success_set     = self.viscached_set
+        self.override        = 'reindex-secondary'            # Reindex all
         # DO NOT INHERIT! All keys that are cleaned up at the start and fully finished end of indexing
+        self.success_set       = self.viscached_set
         self.cleanup_keys      = [self.todo_set,self.failed_set,self.done_set]  # ,self.in_progress_set
         self.cleanup_last_keys = [self.last_set,self.viscached_set]  # ,self.audited_set] cleaned up only when new indexing occurs
 
@@ -64,23 +68,30 @@ class SecondState(IndexerState):
     def viscached_uuid(self, uuid):
         self.set_add(self.viscached_set, [uuid])  # Hopefully these are rare
 
-    def get_one_cycle(self, xmin):
-        uuids = set()
+    def get_one_cycle(self, xmin, registry):
+        uuids = []
         next_xmin = None
+
+        # Rare call for indexing all...
+        override = self.get_obj(self.override)
+        if override:
+            self.delete_objs([self.override,self.staged_cycles_list])
+            xmin = self.get_obj('primary_indexer').get('xmin')  # TODO: get 'primary_indexer' from indexer.py?
+            if xmin:
+                uuids = all_visualizable_uuids(registry)  # TODO: Expand when secondary indexer is doing audits
+            log.warn('secondary_indexer override doing all: %d' % len(uuids))
+            return (xmin, next_xmin, uuids)
+
         staged_list = self.get_list(self.staged_cycles_list)
         if not staged_list or len(staged_list) == 0:
             return (xmin, None, [])
         looking_at = 0
         for val in staged_list:
             looking_at += 1
-            if val is None or len(val) == 0:
-                break
             if val.startswith("xmin:"):
                 if xmin is None:
                     #assert(len(uuids) == 0)  # This is expected but is it assertable?  Shouldn't bet on it
                     xmin = val[5:]
-                    #result['xmin'] = xmin
-                    #state.put(result)
                     continue
                 else:
                     next_xmin = val[5:]
@@ -90,10 +101,10 @@ class SecondState(IndexerState):
                     looking_at -= 1
                     break   # got all the uuids for the current xmin
             else:
-                uuids.add(val)
+                uuids.append(val)
 
-            still_staged = staged_list[looking_at:]
-            self.put_list(self.staged_cycles_list,still_staged) # Push back for start of next uuid cycle
+        if len(uuids) > 0:
+            self.put_list(self.staged_cycles_list,staged_list[looking_at:]) # Push back for start of next uuid cycle
         return (xmin, next_xmin, uuids)
 
 
@@ -101,8 +112,6 @@ class SecondState(IndexerState):
 @view_config(route_name='index_secondary', request_method='POST', permission="index")
 def index_secondary(request):
     INDEX = request.registry.settings['snovault.elasticsearch.index']
-    # Setting request.datastore here only works because routed views are not traversed.
-    #request.datastore = 'database'
     # Secondary_indexer works off of already indexed elasticsearch objects!
     request.datastore = 'elasticsearch'
 
@@ -112,11 +121,9 @@ def index_secondary(request):
     es = request.registry[ELASTIC_SEARCH]
     indexer = request.registry['secondary'+INDEXER]
 
-    # TODO: Do we need worker pool?  It solves memory overload issues
-    # TODO: problem at startup when old list exists but elastcsearch is empty!
-    # TODO: figure out if snovault base.ini, development.ini, cloud-config.yml need updating
+    # Do we need worker pool? Don't think so
 
-    # keep track of state
+    # keeping track of state
     state = SecondState(es)
 
     last_xmin = None
@@ -131,15 +138,23 @@ def index_secondary(request):
 
     uuid_count = 0
     indexing_errors = []
-    first_txn = datetime.datetime.now(pytz.utc)
 
     while True:  # Cycles on xmin grouped indexer cycles
-        (xmin, next_xmin, uuids) = state.get_one_cycle(xmin)
+        first_txn = datetime.datetime.now(pytz.utc)
 
-        if len(uuids) == 0:  # No more uuids in the queue
+        (xmin, next_xmin, uuids) = state.get_one_cycle(xmin,request.registry)
+
+        uuids_len = len(uuids)
+
+        # TODO: Only valid when secondary_indexer is ONLY doing vis.
+        if uuids_len > SEARCH_MAX:
+            uuids = list(set(all_visualizable_uuids(request.registry)).intersection(uuids))
+            uuids_len = len(uuids)
+
+        if uuids_len == 0:  # No more uuids in the queue
             break
 
-        log.info("Secondary indexing begins...")
+        #log.info("Secondary indexing begins...")
         uuid_count += len(uuids)
 
         if xmin is None:  # could happen if first cycle did not start with xmin
@@ -163,6 +178,8 @@ def index_secondary(request):
         result['errors'] = indexing_errors
 
         result = state.finish_cycle(result)
+
+        # TODO I don't think this is needed at all!
         #if record:
         #    result['lag'] = str(datetime.datetime.now(pytz.utc) - first_txn)
         #    try:
@@ -183,18 +200,21 @@ def index_secondary(request):
         #
         #es.indices.refresh(index=INDEX)
         #
+        # TODO Is flush needed ???
         #if flush:
         #    try:
         #        es.indices.flush_synced(index=INDEX)  # Faster recovery on ES restart
         #    except ConflictError:
         #        pass
 
-
         if next_xmin is not None:
             last_xmin = xmin
             xmin = None  # already pushed next_xmin back onto queue
             next_xmin = None
-            result['status'] = 'cycling'
+            result.update(
+                status='cycling',
+                lag=str(datetime.datetime.now(pytz.utc) - first_txn)
+            )
             state.put(result)
         else:
             break
@@ -205,11 +225,15 @@ def index_secondary(request):
             lag=str(datetime.datetime.now(pytz.utc) - first_txn)
         )
         state.put(result)
-        log.info("Secondary indexer handled %d uuids" % uuid_count)
+        log.warn("Secondary indexer handled %d uuids" % uuid_count)
     else:
         result['indexed'] = 0
 
     return result
+
+
+def all_visualizable_uuids(registry):
+    return list(all_uuids(registry, types=VISIBLE_DATASET_TYPES_LC))
 
 
 class SecondaryIndexer(Indexer):
@@ -221,7 +245,7 @@ class SecondaryIndexer(Indexer):
         '''Returns composite json blob from elastic-search, or None if not found.'''
         return None
 
-    def update_object(self, request, uuid, xmin):
+    def update_object(self, request, uuid, xmin, restart=False):
 
         last_exc = None
         # First get the object currently in es
