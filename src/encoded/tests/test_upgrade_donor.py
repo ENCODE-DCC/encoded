@@ -101,6 +101,17 @@ def human_donor_6(root, donor_1):
     })
     return properties
 
+@pytest.fixture
+def human_donor_9(root, donor_1):
+    item = root.get_by_uuid(donor_1['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '9',
+        'life_stage': 'postnatal',
+        'ethnicity': 'caucasian'
+    })
+    return properties
+
 
 def test_human_donor_upgrade(upgrader, human_donor_1):
     value = upgrader.upgrade('human_donor', human_donor_1, target_version='2')
@@ -156,3 +167,10 @@ def test_bad_fly_donor_alias_upgrade_3_4(root, upgrader, fly_donor_3):
     assert '!' not in value['aliases']
     for alias in value['aliases']:
         assert len(alias.split(':')) == 2
+
+
+def test_upgrade_human_donor_9_10(root, upgrader, human_donor_9):
+    value = upgrader.upgrade('human_donor', human_donor_9, current_version='9', target_version='10')
+    assert value['schema_version'] == '10'
+    assert value['life_stage'] == 'newborn'
+    assert value['ethnicity'] == 'Caucasian'

@@ -140,6 +140,7 @@ VISIBLE_ASSEMBLIES = ['hg19', 'GRCh38', 'mm10', 'mm10-minimal' ,'mm9','dm6','dm3
 
 
 
+
 # ASSEMBLY_MAPPINGS is needed to ensure that mm10 and mm10-minimal will
 #                   get combined into the same trackHub.txt
 # This is necessary because mm10 and mm10-minimal are only mm10 at UCSC,
