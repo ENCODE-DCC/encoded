@@ -194,7 +194,7 @@
             "linkTo": "HumanDonor"
         },
         "twin_type": {
-            "title": "Type of the twin sibling of this human donor.",
+            "title": "Twin type",
             "comment": "The type of the twin sibling of this donor (dizygotic or monozygotic)",
             "type": "string",
             "enum": [
