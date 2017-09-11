@@ -698,7 +698,7 @@ def check_experiment_dnase_seq_standards(experiment,
                     file_names_string = str(file_names).replace('\'', ' ')
                     detail = "Signal Portion of Tags (SPOT) is a measure of enrichment, " + \
                              "analogous to the commonly used fraction of reads in peaks metric. " + \
-                             "ENCODE processed hotspots files {} ".format(file_names_string) + \
+                             "ENCODE processed alignment files {} ".format(file_names_string) + \
                              "produced by {} ".format(pipelines[0]['title']) + \
                              "( {} ) ".format(pipelines[0]['@id']) + \
                              assemblies_detail(extract_assemblies(alignments_assemblies, file_names)) + \
