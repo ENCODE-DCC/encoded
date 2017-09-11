@@ -108,8 +108,9 @@
                     "whole genome sequencing assay",
                     "BruUV-seq",
                     "Mint-ChIP-seq",
-                    "single nuclei ATAC-seq",
-                    "icSHAPE"
+                    "single-nuclei ATAC-seq",
+                    "icSHAPE",
+                    "single-cell ATAC-seq"
                 ]
             }
         },
@@ -167,6 +168,12 @@
             "description": "An external resource to the code base.",
             "type": "string",
             "format": "uri"
+        },
+        "standards_page": {
+            "title": "Standards page for this pipeline",
+            "description": "An link to a page describing the standards for this pipeline.",
+            "type": "string",
+            "linkTo": "Page"
         },
         "pipeline_version": {
             "title": "Pipeline version",

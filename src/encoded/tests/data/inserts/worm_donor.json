@@ -9,7 +9,6 @@
         "genotype": "unc-119(tm4063) III; wgIs493.",
         "mutagen": "bombardment",
         "mutated_gene": "mes-4-celegans",
-        "url": "http://www.cgc.cbs.umn.edu/search.php?st=OP493",
         "documents": [
             "encode:sample_strain_generation_protocol"
         ],
@@ -43,7 +42,6 @@
         "lab": "/labs/j-michael-cherry/",
         "status": "in progress",
         "notes": "Description: C25A1.2. Homozygous. Outer Left Sequence: ATTGAACCCCCTGAATTTCC. Outer Right Sequence: CAGGGCATCAAAAACTGACA. Inner Left Sequence: ATCTGTGTGCAGATGCTTGC. Inner Right Sequence: GGGAAAATGTTTTCAGCCAA. Inner primer WT PCR product: 2131. This strain was provided by the C. elegans Gene Knockout Project at OMRF, which is part of the International C. elegans Gene Knockout Consortium, which should be acknowledged in any publications resulting from its use. URL: http:www.celeganskoconsortium.omrf.org. Made by:OMRF Knockout Group Received:030603 from Barstead R, Oklahoma Med Research Foundation, Oklahoma City, OK",
-        "url": "http://www.cgc.cbs.umn.edu/search.php?st=RB884&field=all&exst=&exfield=all",
         "strain_name": "RB884",
         "dbxrefs": ["CGC:RB884", "WormBase:RB884"]
     }
