@@ -90,7 +90,6 @@
                 "description": "A file type used as input for the analysis.",
                 "type": "string",
                 "enum": [
-                    
                     "alignments",
                     "bed",
                     "blacklisted regions",
@@ -199,7 +198,6 @@
                 "description": "A file type generated as output for the analysis.",
                 "type": "string",
                 "enum": [
-                    
                     "alignments",
                     "bigBed",
                     "blacklisted regions",
