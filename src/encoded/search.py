@@ -11,7 +11,7 @@ from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
-from .visualization import vis_format_external_url
+from .visualization import vis_format_url
 import copy
 
 
@@ -509,10 +509,10 @@ def search_result_actions(request, doc_types, es_results, position=None):
                     pos = None
                     if 'region-search' in request.url and position is not None:
                         pos = position
-                    ucsc_url = vis_format_external_url("ucsc", hub_url, assembly, pos)
+                    ucsc_url = vis_format_url("ucsc", hub_url, assembly, pos)
                     if ucsc_url is not None:
                         browser_urls['UCSC'] = ucsc_url
-                    ensembl_url = vis_format_external_url("ensembl", hub_url, assembly, pos)
+                    ensembl_url = vis_format_url("ensembl", hub_url, assembly, pos)
                     if ensembl_url is not None:
                         browser_urls['Ensembl'] = ensembl_url
                     if browser_urls:
@@ -995,7 +995,7 @@ def matrix(context, request):
     aggregations = es_results['aggregations']
     result['matrix']['doc_count'] = total = aggregations['matrix']['doc_count']
     result['matrix']['max_cell_doc_count'] = 0
-    
+
     # Format facets for results
     result['facets'] = format_facets(
         es_results, facets, used_filters, (schema,), total, principals)
@@ -1135,7 +1135,7 @@ def audit(context, request):
         'notification': '',
     }
     search_audit = request.has_permission('search_audit')
-    
+
     doc_types = request.params.getall('type')
     if len(doc_types) != 1:
         msg = 'Search result matrix currently requires specifying a single type.'
@@ -1155,7 +1155,7 @@ def audit(context, request):
     else:
         result['title'] = type_info.name + ' Matrix'
 
-    # Because the formatting of the query edits the sub-objects of the matrix, we need to 
+    # Because the formatting of the query edits the sub-objects of the matrix, we need to
     # deepcopy the matrix so the original type_info.factory.matrix is not modified, allowing
     # /matrix to get the correct data and to not be able to access the /audit data.
     temp_matrix = copy.deepcopy(type_info.factory.matrix)
@@ -1253,7 +1253,7 @@ def audit(context, request):
             'terms': {
                 'field': 'audit.ERROR.category', 'size': 0
             }
-        }, 
+        },
         'audit.WARNING.category': {
             'aggs': {
                 x_grouping: x_agg
@@ -1261,7 +1261,7 @@ def audit(context, request):
             'terms': {
                 'field': 'audit.WARNING.category', 'size': 0
             }
-        }, 
+        },
         'audit.NOT_COMPLIANT.category': {
             'aggs': {
                 x_grouping: x_agg
@@ -1270,8 +1270,8 @@ def audit(context, request):
                 'field': 'audit.NOT_COMPLIANT.category', 'size': 0
             }
         }
-    
-    } 
+
+    }
 
     # This is a nested query with error as the top most level and warning as the innermost level.
     # It allows for there to be multiple missing fields in the query.
@@ -1289,7 +1289,7 @@ def audit(context, request):
             },
         }
         # If not the last element in no_audits_groupings then add the inner query
-        # inside the next category query. Therefore, as temp is updated, it sets the old temp, 
+        # inside the next category query. Therefore, as temp is updated, it sets the old temp,
         # which is now temp_copy, within itself. This creates the nested structure.
         if (no_audits_groupings.index(group)+1) < len(no_audits_groupings):
             temp["aggs"][no_audits_groupings[(no_audits_groupings.index(group)+1)]] = temp_copy
@@ -1302,8 +1302,8 @@ def audit(context, request):
     # Aggs query gets updated with no audits queries.
     aggs.update(update_temp)
 
-    # If internal action data is able to be seen in facets (if logged in) then add it to aggs for 
-    # both: 1) an audit category row for Internal Action and 2) the no audits row as innermost 
+    # If internal action data is able to be seen in facets (if logged in) then add it to aggs for
+    # both: 1) an audit category row for Internal Action and 2) the no audits row as innermost
     # level of nested query to create a no audits at all row within no audits.
     # Additionally, add it to the no_audits_groupings list to be used in summarize_no_audits later.
     if "audit.INTERNAL_ACTION.category" in facets[len(facets)-1]:
@@ -1349,7 +1349,7 @@ def audit(context, request):
 
     # For each audit category row.
     # Convert Elasticsearch returned matrix search data to a form usable by the front end matrix
-    # code, using only the 'matrix' object within the search data. It contains matrix search 
+    # code, using only the 'matrix' object within the search data. It contains matrix search
     # results in 'bucket' arrays, with the exact terms being defined in the .py file for the object
     # we're querying in the object's 'matrix' property.
     #
@@ -1361,7 +1361,7 @@ def audit(context, request):
     #        we don't currently use on the front end.
     # outer_bucket (list): search result bucket containing the term from which to group by.
     # grouping_fields (list): List of audit categories that is hard coded above.
-    
+
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
         # Loop through each audit category and get proper search result data and format it
         for category in grouping_fields: # for each audit category
@@ -1387,10 +1387,10 @@ def audit(context, request):
                 for xbucket in x_buckets:
                     summary.append(counts.get(xbucket['key'], 0))
                 bucket['assay_title'] = summary
-    
+
     # For the no audits row.
     # Convert Elasticsearch returned matrix search data to a form usable by the front end matrix
-    # code, using only the 'matrix' object within the search data. It contains matrix search 
+    # code, using only the 'matrix' object within the search data. It contains matrix search
     # results in 'bucket' arrays, with the exact terms being defined in the .py file for the object
     # we're querying in the object's 'matrix' property.
     #
@@ -1403,7 +1403,7 @@ def audit(context, request):
     # outer_bucket (list): search result bucket containing the term from which to group by.
     # grouping_fields (list): List of no audit labels in order that is hard coded above. Allows
     #        for recursion through the nested query.
-    # aggregations (list): same as outer_bucket. Allows for aggregations to be modified so that 
+    # aggregations (list): same as outer_bucket. Allows for aggregations to be modified so that
     #        the nested query that allows for each level of no audits can become separate rows
     #        under the overall no audits row.
 
@@ -1451,14 +1451,14 @@ def audit(context, request):
         aggregations[group_by].pop("buckets", None)
         aggregations[group_by].pop("sum_other_doc_count", None)
         aggregations[group_by].pop("doc_count_error_upper_bound", None)
-        
+
 
     summarize_buckets(
         result['matrix'],
         aggregations['matrix']['x']['buckets'],
         aggregations['matrix'],
         y_groupings)
-    
+
     summarize_no_audits(
         result['matrix'],
         aggregations['matrix']['x']['buckets'],
@@ -1473,7 +1473,7 @@ def audit(context, request):
     aggregations['matrix']['no.audit.warning']['key'] = 'no errors, compliant, and no warnings'
     if "no.audit.internal_action" in no_audits_groupings:
         aggregations['matrix']['no.audit.internal_action']['key'] = "no audits"
-    
+
     # We need to format the no audits entries as subcategories in an overal 'no_audits' row.
     # To do this, we need to make it the same format as the audit category entries so the JS
     # file will read them and treat them equally.
@@ -1520,5 +1520,5 @@ def audit(context, request):
         # http://googlewebmastercentral.blogspot.com/2014/02/faceted-navigation-best-and-5-of-worst.html
         request.response.status_code = 404
         result['notification'] = 'No results found'
-    
+
     return result

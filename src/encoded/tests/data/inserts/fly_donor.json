@@ -25,7 +25,6 @@
         "aliases": ["bloomington:38626"],
         "strain_background": "VK00033",
         "genotype": "w[1118]; PBac{y[+mDint2] w[+mC]=ab-GFP.FLAG}VK00033",
-        "url": "http://flystocks.bio.indiana.edu/Reports/38626.html",
         "documents": [
             "encode:sample_strain_generation_protocol"
         ],

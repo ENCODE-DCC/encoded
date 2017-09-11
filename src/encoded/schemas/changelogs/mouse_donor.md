@@ -1,5 +1,9 @@
 ## Changelog for mouse_donor.json
 
+### Schema version 10
+
+* *url*, *littermates* and *internal_tags* properties were removed
+
 ### Schema version 9
 
 * *status* values "proposed" and "preliminary" were removed
