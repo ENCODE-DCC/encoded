@@ -467,12 +467,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             'synchronization',
             'modifications_list',
             'originated_from',
-            'transfection_type',
-            'rnais',
             'treatments_phrase',
-            'depleted_in',
-            'constructs',
-            'model_organism_constructs'
+            'depleted_in'
         ]
         organismObject = None
         donorObject = None
@@ -502,7 +498,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 gm_object = request.embed(gm, '@@object')
                 modifications_list.append((gm_object['category'], gm_object))
 
-        construct_objects_list = None
+        '''construct_objects_list = None
         if constructs is not None and len(constructs) > 0:
             construct_objects_list = []
             for c in constructs:
@@ -546,7 +542,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 target_object = request.embed(rnai_object['target'], '@@object')
                 rnai_info = {'rnai_type': rnai_object['rnai_type'],
                              'target': target_object['label']}
-                rnai_objects.append(rnai_info)
+                rnai_objects.append(rnai_info)'''
 
         biosample_dictionary = generate_summary_dictionary(
             organismObject,
@@ -567,14 +563,10 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             post_synchronization_time_units,
             post_treatment_time,
             post_treatment_time_units,
-            transfection_type,
             treatment_objects_list,
             part_of_object,
             originated_from_object,
-            modifications_list,
-            construct_objects_list,
-            model_construct_objects_list,
-            rnai_objects)
+            modifications_list)
 
         return construct_biosample_summary([biosample_dictionary],
                                            sentence_parts)
@@ -599,16 +591,11 @@ def generate_summary_dictionary(
     post_synchronization_time_units=None,
     post_treatment_time=None,
     post_treatment_time_units=None,
-    transfection_type=None,
     treatment_objects_list=None,
     part_of_object=None,
     originated_from_object=None,
     modifications_list=None,
-    construct_objects_list=None,
-    model_construct_objects_list=None,
-    rnai_objects=None,
-    experiment_flag=False
-):
+    experiment_flag=False):
         dict_of_phrases = {
             'organism_name': '',
             'genotype_strain': '',
@@ -618,13 +605,9 @@ def generate_summary_dictionary(
             'sex_stage_age': '',
             'synchronization': '',
             'originated_from': '',
-            'transfection_type': '',
-            'rnais': '',
             'treatments_phrase': '',
             'depleted_in': '',
             'modifications_list': '',
-            'constructs': '',
-            'model_organism_constructs': '',
             'strain_background': '',
             'experiment_term_phrase': ''
         }
@@ -832,11 +815,89 @@ def generate_summary_dictionary(
                 dict_of_phrases['originated_from'] = ('originated from ' +
                                                       originated_from_object['biosample_term_name'])
 
-        if transfection_type is not None:  # stable/transient
+        '''if transfection_type is not None:  # stable/transient
             if transfection_type == 'stable':
                 dict_of_phrases['transfection_type'] = 'stably'
             else:
-                dict_of_phrases['transfection_type'] = transfection_type + 'ly'
+                dict_of_phrases['transfection_type'] = transfection_type + 'ly''''
+
+        ''' modification .method               
+                "CRISPR", V
+                "TALEN", V
+                "stable transfection", V
+                "transient transfection", V
+                "site-specific recombination",
+                "transduction",
+                "RNAi", V
+                "mutagen treatment",
+                "microinjection",
+                "bombardment"
+                
+        modification.category
+                        "deletion",
+                "insertion",
+                "replacement",
+                "mutagenesis",
+                "interference"        
+                
+                for biosample:
+                    for CRISPR and TALEN:
+
+                        'genetically modified (' + modification.category + ') using ' + modification.method + ' '
+
+                    for RNAi:
+
+                        if modified_site_by_target_id is present then:
+                            'expressing RNAi targeting ' + modification.modified_site_by_target_id.label
+                        otherwise:
+                            'expressing RNAi'
+                    
+                    for constructs:
+                        stably/transiently expressing 
+
+                            if introdiced_tags then:
+                                for tag in cons['tags']:
+                                    
+> for every tag we have : name, location, promoter_used (name and location are required)
+
+                                    if tag['location'] in ['N-terminal', 'C-terminal']:
+                                        addition += tag['location'] + ' '
+                                    
+                                    if promoter is not None:
+                                        addition += tar['label'] + ' ' + \
+                                            cons['construct_type'] + \
+                                            ' under ' + promoter['label'] + \
+                                            ' promoter'
+                                    else:
+                                        addition += tar['label'] + ' ' + \
+                                            cons['construct_type']
+
+                            else:
+                                    construct_object,
+                                   request.embed(target_name, '@@object'),
+                                   request.embed(promo, '@@object')
+
+
+
+
+            FOR ALL THE REST:
+             "site-specific recombination",
+                "transduction",
+                "mutagen treatment",
+                "microinjection",
+                "bombardment"
+
+    do modification.method ' targeting' target if present!!
+
+                for experiment:
+
+                    >to all:
+
+                    genetically modified using 'method'
+
+                    
+
+                '''
 
         if modifications_list is not None and len(modifications_list) > 0:
             result_set = set()
@@ -856,7 +917,7 @@ def generate_summary_dictionary(
                     dict_of_phrases['modifications_list'] = 'genetically modified (' + \
                                                             tale_string[:-2] + ') using TALEs '
 
-        if construct_objects_list is not None and len(construct_objects_list) > 0:
+        '''if construct_objects_list is not None and len(construct_objects_list) > 0:
             constructs_list = []
             construct_types = set()
             for construct_data in construct_objects_list:
@@ -941,7 +1002,7 @@ def generate_summary_dictionary(
                 for rnaiObject in rnai_objects:
                     rnais_list.append('expressing ' + rnaiObject['rnai_type'] +
                                       ' targeting ' + rnaiObject['target'])
-                dict_of_phrases['rnais'] = ', '.join(map(str, list(set(rnais_list))))
+                dict_of_phrases['rnais'] = ', '.join(map(str, list(set(rnais_list))))'''
 
         return dict_of_phrases
 
@@ -968,13 +1029,9 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
         'phase': 'unspecified phase',
         'fractionated': 'unspecified fraction',
         'synchronization': 'not synchronized',
-        'transfection_type': 'not transfected',
-        'rnais': 'no RNAis',
         'treatments_phrase': 'not treated',
         'depleted_in': 'not depleted',
-        'genetic_modifications': 'not modified',
-        'constructs': 'no constructs',
-        'model_organism_constructs': 'no constructs',
+        'genetic_modifications': 'not modified'
     }
     if len(phrases_dictionarys) > 1:
         index = 0
