@@ -841,8 +841,8 @@ def generate_summary_dictionary(
         if modifications_list is not None and len(modifications_list) > 0:
             result_set = set()
             talen_flag = False
-            for (gm_type, gm_technique) in modifications_list:
-                if 'Tale' in gm_technique['@type']:
+            for (gm_type, gm_object) in modifications_list:
+                if gm_object['method'] == 'TALEN':
                     result_set.add(gm_type)
                     talen_flag = True
             if experiment_flag is True:
