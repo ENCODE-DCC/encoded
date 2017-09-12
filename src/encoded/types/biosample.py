@@ -496,18 +496,19 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             modifications_list = []
             for gm in genetic_modifications:
                 gm_object = request.embed(gm, '@@object')
+                modification_dict = {'category': gm_object.get('category')}
                 if gm_object.get('modified_site_by_target_id'):
-                    modification_dict['target'] = 
-                        request.embed(gm_object.get('modified_site_by_target_id'),
-                                                    '@@object')
+                    modification_dict['target'] = request.embed(
+                        gm_object.get('modified_site_by_target_id'),
+                                      '@@object')['label']
                 if gm_object.get('introdiced_tags_array'):
                     modification_dict['tags'] = []
                     for tag in gm_object.get('introdiced_tags_array'):
                         tag_dict = {'location': tag['location']}
                         if tag.get('promoter_used'):
-                            tag_dict['promoter'] = 
-                                request.embed(tag.get('promoter_used'),
-                                                      '@@object').get['label']
+                            tag_dict['promoter'] = request.embed(
+                                tag.get('promoter_used'),
+                                        '@@object').get['label']
                         modification_dict['tags'].append(tag_dict)
 
                 modifications_list.append((gm_object['method'], modification_dict))
@@ -833,9 +834,9 @@ def generate_summary_dictionary(
             if transfection_type == 'stable':
                 dict_of_phrases['transfection_type'] = 'stably'
             else:
-                dict_of_phrases['transfection_type'] = transfection_type + 'ly''''
+                dict_of_phrases['transfection_type'] = transfection_type + 'ly'
 
-        ''' modification .method               
+        modification .method               
                 "CRISPR", V
                 "TALEN", V
                 "stable transfection", V
@@ -921,7 +922,7 @@ def generate_summary_dictionary(
                 gm_summaries.append(generate_modification_summary(gm_method, gm_object))
                 
             if experiment_flag is True:
-                dict_of_phrases['modifications_list'] = 'genetically modified using ' + 
+                dict_of_phrases['modifications_list'] = 'genetically modified using ' + \
                     ', '.join(map(str, list(gm_methods)))
             else:
                 dict_of_phrases['modifications_list'] = ', '.join(sorted(gm_summaries))
@@ -1036,30 +1037,34 @@ def generate_modification_summary(method, modification):
 
     modification_summary = ''
     if method in ['stable transfection', 'transient transfection'] and modification.get('target'):
-        sentence = 'stably'
+        modification_summary = 'stably'
         if method == 'transient transfection':
-            sentence = 'transiently'
-        sentence += ' expressing'
+            modification_summary = 'transiently'
+        modification_summary += ' expressing'
         
-        tags_list = []
-        for tag in modification.get('tags'):
-            addition = ''
-            if tag.get('location') in ['N-terminal', 'C-terminal']:
-                addition += ' ' + tag.get('location')
-            addition += ' ' + modification.get('target')
-            if tag.get('promoter'):
-                addition += ' under ' + tag.get('promoter') + ' promoter'
-            tags_list.append(addition)
-        modification_summary += ' ' + ', '.join(map(str, list(set(tags_list)).strip()    
+        if modification.get('tags'):
+            tags_list = []
+            
+            for tag in modification.get('tags'):
+                addition = ''
+                if tag.get('location') in ['N-terminal', 'C-terminal']:
+                    addition += ' ' + tag.get('location')
+                addition += ' ' + modification.get('target')
+                if tag.get('promoter'):
+                    addition += ' under ' + tag.get('promoter') + ' promoter'
+                tags_list.append(addition)
+            modification_summary += ' ' + ', '.join(map(str, list(set(tags_list)))).strip()    
+        else:
+            modification_summary += ' ' + modification.get('target')
     else:
-        modification_summary = 'genetically modified (' + modification['category'] + ') using ' + method
+        modification_summary = 'genetically modified (' + modification.get('category') + ') using ' + method
         if method == 'RNAi':
             modification_summary = 'expressing RNAi'
 
         if modification.get('target'):
             modification_summary += ' targeting ' + modification.get('target')
         
-    return modification_summaryntence.strip()
+    return modification_summary.strip()
 
 
 def generate_sentence(phrases_dict, values_list):
