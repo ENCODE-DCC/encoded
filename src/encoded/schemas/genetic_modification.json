@@ -410,14 +410,14 @@
             ]
         },
         "modified_site_by_target_id": {
-            "title": "Modified site by target ID",
+            "title": "Modification site",
             "description": "The name (ENCODE target ID) of the gene whose expression or product is modified by the genetic modification.",
             "comment": "See target.json for available identifiers.",
             "type": "string",
             "linkTo": "Target"
         },
         "modified_site_by_coordinates": {
-            "title": "Modified site by coordinates",
+            "title": "Modification site",
             "description": "Genomic coordinates specifying the location of the modification.",
             "type": "object",
             "additionalProperties": false,
@@ -459,13 +459,13 @@
             }
         },
         "modified_site_by_sequence" : {
-            "title": "Modified site by sequence",
+            "title": "Modification site",
             "description": "Genomic sequence specifying location of the modification.",
             "type": "string",
             "pattern": "^[ACTG]+$"
         },
         "modified_site_nonspecific": {
-            "title": "Modified site (non-specific)",
+            "title": "Modification site",
             "description": "Site of modification that is not known (i.e. is random, not targeted).",
             "type": "string",
             "comment": "May be expanded to include extrachromosomal arrays if need arises.",
