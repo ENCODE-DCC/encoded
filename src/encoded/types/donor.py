@@ -119,7 +119,7 @@ class HumanDonor(Donor):
     @calculated_property(schema={
         "description": "Human donor(s) that have this human donor in their parent property.",
         "comment": "Do not submit. Values in the list are reverse links of a human donors that have this biosample under their parents property.",
-        "title": "Children donors",
+        "title": "Children",
         "type": "array",
         "items": {
             "type": ['string', 'object'],

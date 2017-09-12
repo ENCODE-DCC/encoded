@@ -580,6 +580,10 @@ class Donor extends React.Component {
 
                 <PanelView key={context.uuid} {...this.props} />
 
+                {context.genetic_modifications && context.genetic_modifications.length ?
+                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
+                : null}
+
                 <RelatedItems
                     title={`Biosamples from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
                     url={`/search/?type=biosample&donor.uuid=${context.uuid}`}
@@ -599,10 +603,6 @@ class Donor extends React.Component {
                     url={`/search/?type=Experiment&replicates.library.biosample.donor.uuid=${context.uuid}`}
                     Component={ExperimentTable}
                 />
-
-                {context.genetic_modifications && context.genetic_modifications.length ?
-                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
-                : null}
 
                 {combinedDocuments.length ?
                     <DocumentsPanel documentSpecs={[{ documents: combinedDocuments }]} />
