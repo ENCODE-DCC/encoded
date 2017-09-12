@@ -924,7 +924,7 @@ def generate_summary_dictionary(
                 dict_of_phrases['modifications_list'] = 'genetically modified using ' + 
                     ', '.join(map(str, list(gm_methods)))
             else:
-                dict_of_phrases['modifications_list'] = ', '.join(map(str, list(gm_summaries)))
+                dict_of_phrases['modifications_list'] = ', '.join(sorted(gm_summaries))
         '''    result_set = set()
             talen_flag = False
             for (gm_type, gm_technique) in modifications_list:
@@ -1033,12 +1033,8 @@ def generate_summary_dictionary(
 
 
 def generate_modification_summary(method, modification):
-    
-    # modification_object
-    # modified_site_by_target_id_object
-    # introdiced_tags_array
-    # introduced_tags_promoter_object   tags list and target
 
+    modification_summary = ''
     if method in ['stable transfection', 'transient transfection'] and modification.get('target'):
         sentence = 'stably'
         if method == 'transient transfection':
@@ -1054,15 +1050,16 @@ def generate_modification_summary(method, modification):
             if tag.get('promoter'):
                 addition += ' under ' + tag.get('promoter') + ' promoter'
             tags_list.append(addition)
-        return (sentence + ', '.join(map(str, list(set(tags_list)).strip()    
+        modification_summary += ' ' + ', '.join(map(str, list(set(tags_list)).strip()    
     else:
-        sentence = 'genetically modified (' + modification['category'] + ') using ' + method
+        modification_summary = 'genetically modified (' + modification['category'] + ') using ' + method
         if method == 'RNAi':
-            sentence = 'expressing RNAi'
+            modification_summary = 'expressing RNAi'
 
         if modification.get('target'):
-            sentence += ' targeting ' + modification.get('target')
-        return sentence.strip()
+            modification_summary += ' targeting ' + modification.get('target')
+        
+    return modification_summaryntence.strip()
 
 
 def generate_sentence(phrases_dict, values_list):
