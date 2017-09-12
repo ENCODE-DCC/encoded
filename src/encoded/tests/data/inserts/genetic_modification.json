@@ -147,5 +147,39 @@
         "documents": ["encode:MCF-7_Farnham_treatment_protocol"],
         "method": "mutagen treatment",
         "treatments": ["3280b708-0f05-40fa-bff2-54e2b6505c13"]
+    },
+    {
+        "uuid": "1d6eae38-f1dc-458c-9a08-984c953eaff4",
+        "accession": "ENCGM162RDA",
+        "aliases": [
+            "kevin-white:AV001_eGFP-ab"
+        ],
+        "alternate_accessions": [],
+        "award": "/awards/U41HG007355/",
+        "category": "insertion",
+        "characterizations": [],
+        "description": "This construct was made using the P[acman] Drosophila Melanogaster Library and contains a GFP (AV001) tag at the C-terminal of the protein of interest. The 50 bases preceding the tag are as follows: ACTCCGATGCCGAGGAGAACTACTCGGAGGATGAGGGAGTGCACAACACA",
+        "documents": [],
+        "introduced_tags": [
+            {
+                "name": "eGFP",
+                "location": "C-terminal"
+            }
+        ],
+        "lab": "/labs/kevin-white/",
+        "method": "site-specific recombination",
+        "modified_site_by_target_id": "/targets/eGFP-ab-dmelanogaster/",
+        "purpose": "tagging",
+        "reagents": [
+            {
+                "source": "/sources/atcc/",
+                "identifier": "CH321-73P09"
+            }
+        ],
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "treatments": [
+            "/treatments/a7ab9449-73ea-4693-be2d-a726a9e82056/"
+        ]
     }
 ]

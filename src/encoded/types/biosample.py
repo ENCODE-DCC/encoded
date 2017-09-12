@@ -306,20 +306,20 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         "description": "All genetic modifications made in either the donor and/or biosample.",
         "type": "array",
         "items": {
-            "title": "Applied modification",
+            "title": "All applied modification",
             "description": "Genetic modification made in either the donor and/or biosample.",
             "coment": "See genetic_modification.json for available identifiers.",
             "type": "string",
             "linkTo": "GeneticModification",
         }
-    }, define=True)
-    def all_applied_modifications(self, request, donor=None, genetic_modifications=None, model_organism_donor_modifications=None):
+    })
+    def all_applied_modifications(self, request, genetic_modifications=None, model_organism_donor_modifications=None):
         if genetic_modifications is not None and model_organism_donor_modifications is not None:
-            return genetic_modifications.extend(model_organism_donor_modifications)
+            return list(set(genetic_modifications + model_organism_donor_modifications))
         elif genetic_modifications is not None and model_organism_donor_modifications is None:
             return genetic_modifications
         elif genetic_modifications is None and model_organism_donor_modifications is not None:
-            return model_organism_donor_modifications is None
+            return model_organism_donor_modifications
         else:
             return []
 
