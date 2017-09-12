@@ -496,7 +496,21 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             modifications_list = []
             for gm in genetic_modifications:
                 gm_object = request.embed(gm, '@@object')
-                modifications_list.append((gm_object['category'], gm_object))
+                if gm_object.get('modified_site_by_target_id'):
+                    modification_dict['target'] = 
+                        request.embed(gm_object.get('modified_site_by_target_id'),
+                                                    '@@object')
+                if gm_object.get('introdiced_tags_array'):
+                    modification_dict['tags'] = []
+                    for tag in gm_object.get('introdiced_tags_array'):
+                        tag_dict = {'location': tag['location']}
+                        if tag.get('promoter_used'):
+                            tag_dict['promoter'] = 
+                                request.embed(tag.get('promoter_used'),
+                                                      '@@object').get['label']
+                        modification_dict['tags'].append(tag_dict)
+
+                modifications_list.append((gm_object['method'], modification_dict))
 
         '''construct_objects_list = None
         if constructs is not None and len(constructs) > 0:
@@ -900,7 +914,18 @@ def generate_summary_dictionary(
                 '''
 
         if modifications_list is not None and len(modifications_list) > 0:
-            result_set = set()
+            gm_methods = set()
+            gm_summaries = []
+            for (gm_method, gm_object) in modifications_list:
+                gm_methods.add(gm_method)
+                gm_summaries.append(generate_modification_summary(gm_method, gm_object))
+                
+            if experiment_flag is True:
+                dict_of_phrases['modifications_list'] = 'genetically modified using ' + 
+                    ', '.join(map(str, list(gm_methods)))
+            else:
+                dict_of_phrases['modifications_list'] = ', '.join(map(str, list(gm_summaries)))
+        '''    result_set = set()
             talen_flag = False
             for (gm_type, gm_technique) in modifications_list:
                 if 'Tale' in gm_technique['@type']:
@@ -917,7 +942,7 @@ def generate_summary_dictionary(
                     dict_of_phrases['modifications_list'] = 'genetically modified (' + \
                                                             tale_string[:-2] + ') using TALEs '
 
-        '''if construct_objects_list is not None and len(construct_objects_list) > 0:
+        if construct_objects_list is not None and len(construct_objects_list) > 0:
             constructs_list = []
             construct_types = set()
             for construct_data in construct_objects_list:
@@ -1005,6 +1030,39 @@ def generate_summary_dictionary(
                 dict_of_phrases['rnais'] = ', '.join(map(str, list(set(rnais_list))))'''
 
         return dict_of_phrases
+
+
+def generate_modification_summary(method, modification):
+    
+    # modification_object
+    # modified_site_by_target_id_object
+    # introdiced_tags_array
+    # introduced_tags_promoter_object   tags list and target
+
+    if method in ['stable transfection', 'transient transfection'] and modification.get('target'):
+        sentence = 'stably'
+        if method == 'transient transfection':
+            sentence = 'transiently'
+        sentence += ' expressing'
+        
+        tags_list = []
+        for tag in modification.get('tags'):
+            addition = ''
+            if tag.get('location') in ['N-terminal', 'C-terminal']:
+                addition += ' ' + tag.get('location')
+            addition += ' ' + modification.get('target')
+            if tag.get('promoter'):
+                addition += ' under ' + tag.get('promoter') + ' promoter'
+            tags_list.append(addition)
+        return (sentence + ', '.join(map(str, list(set(tags_list)).strip()    
+    else:
+        sentence = 'genetically modified (' + modification['category'] + ') using ' + method
+        if method == 'RNAi':
+            sentence = 'expressing RNAi'
+
+        if modification.get('target'):
+            sentence += ' targeting ' + modification.get('target')
+        return sentence.strip()
 
 
 def generate_sentence(phrases_dict, values_list):
