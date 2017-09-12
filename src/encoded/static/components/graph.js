@@ -247,7 +247,7 @@ export function assembleGraph(files, dataset, options) {
         return `pipeline-node-file${active ? ' active' : ''}${colorizeNode ? ` ${statusClass}` : ''}${addClasses ? ` ${addClasses}` : ''}`;
     }
 
-    const { infoNodeId, filterAssembly, filterAnnotation, colorize } = options;
+    const { infoNodeId, selectedAssembly, selectedAnnotation, colorize } = options;
     const derivedFileIds = _.memoize(rDerivedFileIds, file => file['@id']);
     const genQcId = _.memoize(rGenQcId, (metric, file) => metric['@id'] + file['@id']);
 
@@ -264,7 +264,7 @@ export function assembleGraph(files, dataset, options) {
         // matchingFiles gets just the files matching the given filtering assembly/annotation.
         // Note that if all assemblies and annotations are selected, this function isn't called
         // because no graph gets displayed in that case.
-        if ((file.assembly === filterAssembly) && ((!file.genome_annotation && !filterAnnotation) || (file.genome_annotation === filterAnnotation))) {
+        if ((file.assembly === selectedAssembly) && ((!file.genome_annotation && !selectedAnnotation) || (file.genome_annotation === selectedAnnotation))) {
             // Note whether any files have an analysis step
             const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
             if (!fileAnalysisStep || (file.derived_from && file.derived_from.length)) {
@@ -708,54 +708,57 @@ export class Graph extends React.Component {
     }
 
     componentDidMount() {
-        if (BrowserFeat.getBrowserCaps('svg')) {
-            // Delay loading dagre for Jest testing compatibility;
-            // Both D3 and Jest have their own conflicting JSDOM instances
-            require.ensure(['dagre-d3', 'd3'], (require) => {
-                if (this.refs.graphdisplay) {
-                    this.d3 = require('d3');
-                    this.dagreD3 = require('dagre-d3');
+        if (this.cv.graph) {
+            if (BrowserFeat.getBrowserCaps('svg')) {
+                // Delay loading dagre for Jest testing compatibility;
+                // Both D3 and Jest have their own conflicting JSDOM instances
+                require.ensure(['dagre-d3', 'd3'], (require) => {
+                    if (this.refs.graphdisplay) {
+                        this.d3 = require('d3');
+                        this.dagreD3 = require('dagre-d3');
 
-                    const el = this.refs.graphdisplay;
+                        const el = this.refs.graphdisplay;
 
-                    // Add SVG element to the graph component, and assign it classes, sizes, and a group
-                    const svg = this.d3.select(el).insert('svg', '#graph-node-info')
-                        .attr('id', 'pipeline-graph')
-                        .attr('preserveAspectRatio', 'none')
-                        .attr('version', '1.1');
-                    this.cv.savedSvg = svg;
+                        // Add SVG element to the graph component, and assign it classes, sizes, and a group
+                        const svg = this.d3.select(el).insert('svg', '#graph-node-info')
+                            .attr('id', 'pipeline-graph')
+                            .attr('preserveAspectRatio', 'none')
+                            .attr('version', '1.1');
+                        this.cv.savedSvg = svg;
 
-                    // Draw the graph into the panel; get the graph's view box and save it for
-                    // comparisons later
-                    const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el);
-                    this.cv.viewBoxWidth = viewBoxWidth;
-                    this.cv.viewBoxHeight = viewBoxHeight;
+                        // Draw the graph into the panel; get the graph's view box and save it for
+                        // comparisons later
+                        console.log('DRAWGRPAH');
+                        const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el);
+                        this.cv.viewBoxWidth = viewBoxWidth;
+                        this.cv.viewBoxHeight = viewBoxHeight;
 
-                    // Based on the size of the graph and view box, set the initial zoom level to
-                    // something that fits well.
-                    const initialZoomLevel = this.setInitialZoomLevel(el, svg);
-                    this.setState({ zoomLevel: initialZoomLevel });
+                        // Based on the size of the graph and view box, set the initial zoom level to
+                        // something that fits well.
+                        const initialZoomLevel = this.setInitialZoomLevel(el, svg);
+                        this.setState({ zoomLevel: initialZoomLevel });
 
-                    // Bind node/subnode click handlers to parent component handlers
-                    this.bindClickHandlers(this.d3, el);
-                }
-            });
-        } else {
-            // Output text indicating that graphs aren't supported.
-            let el = this.refs.graphdisplay;
-            const para = document.createElement('p');
-            para.className = 'browser-error';
-            para.innerHTML = 'Graphs not supported in your browser. You need a more modern browser to view it.';
-            el.appendChild(para);
+                        // Bind node/subnode click handlers to parent component handlers
+                        this.bindClickHandlers(this.d3, el);
+                    }
+                });
+            } else {
+                // Output text indicating that graphs aren't supported.
+                let el = this.refs.graphdisplay;
+                const para = document.createElement('p');
+                para.className = 'browser-error';
+                para.innerHTML = 'Graphs not supported in your browser. You need a more modern browser to view it.';
+                el.appendChild(para);
 
-            // Disable the download button
-            el = this.refs.dlButton;
-            el.setAttribute('disabled', 'disabled');
-        }
+                // Disable the download button
+                el = this.refs.dlButton;
+                el.setAttribute('disabled', 'disabled');
+            }
 
-        // Disable download button if running on Trident (IE non-Spartan) browsers
-        if (BrowserFeat.getBrowserCaps('uaTrident') || BrowserFeat.getBrowserCaps('uaEdge')) {
-            this.setState({ dlDisabled: true });
+            // Disable download button if running on Trident (IE non-Spartan) browsers
+            if (BrowserFeat.getBrowserCaps('uaTrident') || BrowserFeat.getBrowserCaps('uaEdge')) {
+                this.setState({ dlDisabled: true });
+            }
         }
     }
 
@@ -1004,9 +1007,10 @@ export class Graph extends React.Component {
         // Build node graph of the files and analysis steps with this experiment
         if (files.length) {
             try {
+                console.log('assembleGraph');
                 this.cv.graph = assembleGraph(
-                    dataset,
                     files,
+                    dataset,
                     {
                         infoNodeId: this.state.infoNodeId,
                         selectedAssembly,
@@ -1061,7 +1065,7 @@ Graph.defaultProps = {
 };
 
 
-class FileGraph extends React.Component {
+export class FileGraph extends React.Component {
     constructor() {
         super();
 
@@ -1078,7 +1082,7 @@ class FileGraph extends React.Component {
 
         // Build node graph of the files and analysis steps with this experiment
         if (files && files.length && (selectedAssembly || selectedAnnotation)) {
-            return <Graph files={files} dataset={dataset} nodeClickHandler={handleNodeClick} />;
+            return <Graph files={files} dataset={dataset} nodeClickHandler={handleNodeClick} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} />;
         }
         return <p className="browser-error">Graph not applicable.</p>;
     }
