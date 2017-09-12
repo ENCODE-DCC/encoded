@@ -488,7 +488,6 @@
                 "properties": {
                     "name": {
                         "type": "string",
-                        "default": "",
                         "enum": [
                             "eGFP",
                             "GFP",
