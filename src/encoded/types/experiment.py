@@ -177,9 +177,25 @@ class Experiment(Dataset,
                             if genetic_modifications is not None and len(genetic_modifications) > 0:
                                 modifications_list = []
                                 for gm in genetic_modifications:
+
                                     gm_object = request.embed(gm, '@@object')
-                                    modifications_list.append(
-                                        (gm_object['category'], gm_object))
+                                    modification_dict = {'category': gm_object.get('category')}
+                                    if gm_object.get('modified_site_by_target_id'):
+                                        modification_dict['target'] = request.embed(
+                                            gm_object.get('modified_site_by_target_id'),
+                                                          '@@object')['label']
+                                    if gm_object.get('introdiced_tags_array'):
+                                        modification_dict['tags'] = []
+                                        for tag in gm_object.get('introdiced_tags_array'):
+                                            tag_dict = {'location': tag['location']}
+                                            if tag.get('promoter_used'):
+                                                tag_dict['promoter'] = request.embed(
+                                                    tag.get('promoter_used'),
+                                                            '@@object').get['label']
+                                            modification_dict['tags'].append(tag_dict)
+
+                                    modifications_list.append((gm_object['method'], modification_dict))
+
 
                             dictionary_to_add = generate_summary_dictionary(
                                 organismObject,
