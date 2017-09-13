@@ -100,6 +100,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'organism',
         'references',
         'genetic_modifications',
+        'genetic_modifications.modified_site_by_target_id',
         'genetic_modifications.treatments'
     ]
     audit_inherit = [
