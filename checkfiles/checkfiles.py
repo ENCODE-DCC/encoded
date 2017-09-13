@@ -461,7 +461,9 @@ def process_fastq_file(job, fastq_data_stream, session, url):
     except IOError:
         errors['unzipped_fastq_streaming'] = 'Error occured, while streaming unzipped fastq.'
     else:
-
+        if fastq_data_stream.communicate()[1]:
+            errors['fastq_gunzip_problem'] = 'Error occured, while streaming unzipped fastq.' + \
+                str(fastq_data_stream.communicate()[1])
         # read_count update
         result['read_count'] = read_count
 
@@ -761,20 +763,40 @@ def check_file(config, session, url, job):
             # $ cat $local_path | tee >(md5sum >&2) | gunzip | md5sum
             # or http://stackoverflow.com/a/15343686/199100
             try:
-                output = subprocess.check_output(
-                    'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
-                    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+
+                process = subprocess.Popen(
+                        'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
+                        shell=True, executable='/bin/bash',
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.STDOUT
+                    )
+                output, gzip_error = process.communicate()
+                #output = subprocess.check_output(
+                #    'set -o pipefail; gunzip --stdout %s | md5sum' % quote(local_path),
+                #    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
             except subprocess.CalledProcessError as e:
                 errors['content_md5sum'] = e.output.decode(errors='replace').rstrip('\n')
             else:
-                check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
+                if gzip_error:
+                    errors['gunzip_problem'] = gzip_error.decode(errors='replace').rstrip('\n')
+                else:
+                    check_for_contentmd5sum_conflicts(item, result, output, errors, session, url)
 
             if item['file_format'] == 'bed':
                 # try to count comment lines
                 try:
-                    output = subprocess.check_output(
+
+                    process = subprocess.Popen(
                         'set -o pipefail; gunzip --stdout {} | grep -c \'^#\''.format(local_path),
-                        shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                        shell=True, executable='/bin/bash',
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.STDOUT
+                    )
+                    output, gzip_error = process.communicate()
+
+                    #output = subprocess.check_output(
+                    #    'set -o pipefail; gunzip --stdout {} | grep -c \'^#\''.format(local_path),
+                    #    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
                 except subprocess.CalledProcessError as e:
                     # empty file, or other type of error
                     if e.returncode > 1:
@@ -783,20 +805,36 @@ def check_file(config, session, url, job):
                 # remove the comments and create modified.bed to give validateFiles scritp
                 # not forget to remove the modified.bed after finishing
                 else:
-                    try:
-                        is_local_bed_present = True
-                        subprocess.check_output(
-                            'set -o pipefail; gunzip --stdout {} | grep -v \'^#\' > {}'.format(
-                                local_path,
-                                unzipped_modified_bed_path),
-                            shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
-                    except subprocess.CalledProcessError as e:
-                        # empty file
-                        if e.returncode > 1:
-                            errors['grep_bed_problem'] = e.output.decode(errors='replace').rstrip('\n')
+                    if gzip_error:
+                        errors['gunzip_problem'] = gzip_error.decode(errors='replace').rstrip('\n')
+                    else:
+                        try:
+                            is_local_bed_present = True
+                            process = subprocess.Popen(
+                                'set -o pipefail; gunzip --stdout {} | grep -v \'^#\' > {}'.format(
+                                    local_path,
+                                    unzipped_modified_bed_path),
+                                shell=True, executable='/bin/bash',
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT
+                            )
+                            output, gzip_error = process.communicate()
+                            #subprocess.check_output(
+                            #    'set -o pipefail; gunzip --stdout {} | grep -v \'^#\' > {}'.format(
+                            #        local_path,
+                            #        unzipped_modified_bed_path),
+                            #    shell=True, executable='/bin/bash', stderr=subprocess.STDOUT)
+                        except subprocess.CalledProcessError as e:
+                            # empty file
+                            if e.returncode > 1:
+                                errors['grep_bed_problem'] = e.output.decode(errors='replace').rstrip('\n')
+                            else:
+                                errors['bed_comments_remove_failure'] = e.output.decode(
+                                    errors='replace').rstrip('\n')
                         else:
-                            errors['bed_comments_remove_failure'] = e.output.decode(
-                                errors='replace').rstrip('\n')
+                            if gzip_error:
+                                errors['gunzip_problem'] = gzip_error.decode(errors='replace').rstrip('\n')
+                    else:
 
         if is_local_bed_present:
             check_format(config['encValData'], job, unzipped_modified_bed_path)
