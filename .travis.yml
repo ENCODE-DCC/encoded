@@ -12,7 +12,6 @@ addons:
     packages:
       - oracle-java8-set-default
       - bsdtar
-      - elasticsearch
       - graphviz
 env:
   global:
@@ -41,13 +40,11 @@ before_install:
   - nvm install 6
   - node --version
   - npm config set python /usr/bin/python2.7
+  - curl -O  ${ES_DOWNLOAD_URL} && sudo dpkg -i --force-confnew elasticsearch-${ES_VERSION}.deb && sudo service elasticsearch stop
 install:
-  - curl -O  ${ES_DOWNLOAD_URL}
-  - sudo dpkg -i --force-confnew elasticsearch-${ES_VERSION}.deb
   - python bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
 before_script:
-  - sudo service elasticsearch stop
   - >
     if test -n "$BROWSER"; then
       CONNECT_URL=https://saucelabs.com/downloads/sc-4.4.4-linux.tar.gz 
