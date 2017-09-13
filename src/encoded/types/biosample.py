@@ -303,18 +303,18 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             return request.embed(donor, '@@object').get('genetic_modifications')
 
     @calculated_property(schema={
-        "title": "All applied modifications",
+        "title": "applied modifications",
         "description": "All genetic modifications made in either the donor and/or biosample.",
         "type": "array",
         "items": {
-            "title": "All applied modification",
+            "title": "applied modification",
             "description": "Genetic modification made in either the donor and/or biosample.",
             "coment": "See genetic_modification.json for available identifiers.",
             "type": "string",
             "linkTo": "GeneticModification",
         }
     })
-    def all_applied_modifications(self, request, genetic_modifications=None, model_organism_donor_modifications=None):
+    def applied_modifications(self, request, genetic_modifications=None, model_organism_donor_modifications=None):
         if genetic_modifications is not None and model_organism_donor_modifications is not None:
             return list(set(genetic_modifications + model_organism_donor_modifications))
         elif genetic_modifications is not None and model_organism_donor_modifications is None:
