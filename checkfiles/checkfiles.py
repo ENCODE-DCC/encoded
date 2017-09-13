@@ -834,7 +834,6 @@ def check_file(config, session, url, job):
                         else:
                             if gzip_error:
                                 errors['gunzip_problem'] = gzip_error.decode(errors='replace').rstrip('\n')
-                    else:
 
         if is_local_bed_present:
             check_format(config['encValData'], job, unzipped_modified_bed_path)
