@@ -14,6 +14,8 @@
         { "$ref": "mixins.json#/strains"},
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/references" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/submitted" },

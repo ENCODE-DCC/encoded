@@ -237,8 +237,9 @@
         "biosample_term_id": "EFO:0002067",
         "biosample_term_name": "K562",
         "biosample_type": "immortalized cell line",
-        "constructs": [
-            "893d806f-3a88-43eb-afdf-dcc16c79ee45"
+        "genetic_modifications": [
+            "8163d8c9-15c5-4583-8b43-0e21422297a0",
+            "ef12855f-5d3e-4da5-8684-3a594c60505a"
         ],
         "culture_harvest_date": "2012-12-19",
         "originated_from": "ENCBS039ENC",
@@ -251,9 +252,6 @@
         "organism": "human",
         "source": "kevin-white",
         "submitted_by": "eni.lectus@nullam.sed",
-        "rnais": [
-            "d2dc22ba-5e7c-4626-87ac-257c6fff090c"
-        ],
         "transfection_type": "stable",
         "transfection_method": "chemical",
         "uuid": "bfb3dbb0-57e0-4190-90a6-b9150204f893"
@@ -332,9 +330,7 @@
         "documents": [
             "encode:MCF-7_Crawford_growth_protocol"
         ],
-        "rnais": [
-            "d2dc22ba-5e7c-4626-87ac-257c6fff090c"
-        ],
+        "genetic_modifications": ["ef12855f-5d3e-4da5-8684-3a594c60505a"],
         "source": "ecacc",
         "submitted_by": "metus.donec@nisl.montes",
         "transfection_type": "stable",
@@ -349,8 +345,8 @@
         "biosample_term_id": "EFO:0001203",
         "biosample_term_name": "MCF-7",
         "biosample_type": "immortalized cell line",
-        "constructs": [
-            "b31106bc-8535-4448-903e-854af460b21d"
+        "genetic_modifications": [
+            "2f33a486-e3d9-4633-8682-a363b48ba67d"
         ],
         "description": "mammary gland, adenocarcinoma. (PMID: 4357757), newly promoted to tier 2: not in 2011 analysis",
         "dbxrefs": [

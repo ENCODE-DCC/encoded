@@ -100,11 +100,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'organism',
         'references',
         'genetic_modifications',
-        'genetic_modifications.award',
-        'genetic_modifications.lab',
-        'genetic_modifications.modification_techniques',
-        'genetic_modifications.treatments',
-        'genetic_modifications.target'
+        'genetic_modifications.modified_site_by_target_id',
+        'genetic_modifications.treatments'
     ]
     audit_inherit = [
         'donor',
@@ -131,10 +128,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'rnais.source',
         'organism',
         'references',
-        'genetic_modifications',
-        'genetic_modifications.modification_techniques',
-        'genetic_modifications.treatments',
-        'genetic_modifications.target'
+        'genetic_modifications'
     ]
 
     @calculated_property(define=True,
@@ -273,13 +267,13 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             return request.embed(donor, '@@object').get('synchronization')
 
     @calculated_property(schema={
-        "title": "DNA constructs",
+        "title": "Model organism donor constructs",
         "description":
             "Expression or targeting vectors stably or transiently transfected "
             "(not RNAi) into a donor organism.",
         "type": "array",
         "items": {
-            "title": "DNA Constructs",
+            "title": "Model organism donor construct",
             "description": "An expression or targeting vector stably or transiently transfected "
             "(not RNAi) into a donor organism.",
             "comment": "See contstruct.json for available identifiers.",
@@ -290,6 +284,45 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
     def model_organism_donor_constructs(self, request, donor=None):
         if donor is not None:
             return request.embed(donor, '@@object').get('constructs')
+
+    @calculated_property(schema={
+        "title": "Model organism genetic modifications",
+        "description":
+            "Genetic modifications made in the donor organism of the biosample.",
+        "type": "array",
+        "items": {
+            "title": "Model organism genetic modification",
+            "description": "Genetic modification made in the donor organism of the biosample.",
+            "comment": "See genetic_modification.json for available identifiers.",
+            "type": "string",
+            "linkTo": "GeneticModification",
+        },
+    }, define=True)
+    def model_organism_donor_modifications(self, request, donor=None):
+        if donor is not None:
+            return request.embed(donor, '@@object').get('genetic_modifications')
+
+    @calculated_property(schema={
+        "title": "applied modifications",
+        "description": "All genetic modifications made in either the donor and/or biosample.",
+        "type": "array",
+        "items": {
+            "title": "applied modification",
+            "description": "Genetic modification made in either the donor and/or biosample.",
+            "coment": "See genetic_modification.json for available identifiers.",
+            "type": "string",
+            "linkTo": "GeneticModification",
+        }
+    })
+    def applied_modifications(self, request, genetic_modifications=None, model_organism_donor_modifications=None):
+        if genetic_modifications is not None and model_organism_donor_modifications is not None:
+            return list(set(genetic_modifications + model_organism_donor_modifications))
+        elif genetic_modifications is not None and model_organism_donor_modifications is None:
+            return genetic_modifications
+        elif genetic_modifications is None and model_organism_donor_modifications is not None:
+            return model_organism_donor_modifications
+        else:
+            return []
 
     @calculated_property(schema={
         "title": "Characterizations",
@@ -468,11 +501,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             modifications_list = []
             for gm in genetic_modifications:
                 gm_object = request.embed(gm, '@@object')
-                if 'modification_techniques' in gm_object and \
-                   len(gm_object['modification_techniques']) > 0:
-                    for gmt in gm_object['modification_techniques']:
-                        modifications_list.append((gm_object['modification_type'],
-                                                  request.embed(gmt, '@@object')))
+                modifications_list.append((gm_object['category'], gm_object))
 
         construct_objects_list = None
         if constructs is not None and len(constructs) > 0:
@@ -813,8 +842,8 @@ def generate_summary_dictionary(
         if modifications_list is not None and len(modifications_list) > 0:
             result_set = set()
             talen_flag = False
-            for (gm_type, gm_technique) in modifications_list:
-                if 'Tale' in gm_technique['@type']:
+            for (gm_type, gm_object) in modifications_list:
+                if gm_object['method'] == 'TALEN':
                     result_set.add(gm_type)
                     talen_flag = True
             if experiment_flag is True:

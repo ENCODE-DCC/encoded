@@ -31,11 +31,8 @@ class Donor(Item):
         'documents.lab',
         'documents.submitted_by',
         'genetic_modifications',
-        'genetic_modifications.award',
-        'genetic_modifications.lab',
-        'genetic_modifications.modification_techniques',
-        'genetic_modifications.treatments',
-        'genetic_modifications.target'
+        'genetic_modifications.modified_site_by_target_id',
+        'genetic_modifications.treatments'
     ]
     name_key = 'accession'
     rev = {

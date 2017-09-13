@@ -13,6 +13,7 @@
         { "$ref": "mixins.json#/genetic_modifications" },
         { "$ref": "mixins.json#/genomic_alterations"},
         { "$ref": "mixins.json#/strains"},
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
@@ -62,6 +63,12 @@
                 "pattern": "^(((BDSC|DSSC|Kyoto|VDRC|Harvard|NIG-FLY):.+)|(FlyBase:FBst\\d+)|(GEO:SAMN\\d+))$"
             }
         }
+    },
+    "boost_values": {
+        "genetic_modifications.modified_site_by_target_id.label": 1.0,
+        "genetic_modifications.modified_site_by_target_id.gene_name": 1.0,
+        "genetic_modifications.modified_site_by_target_id.dbxref": 1.0,
+        "genetic_modifications.modified_site_by_target_id.aliases": 1.0
     },
     "changelog": "/profiles/changelogs/fly_donor.md"
 }

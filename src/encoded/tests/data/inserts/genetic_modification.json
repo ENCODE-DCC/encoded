@@ -1,5 +1,6 @@
 [
     {
+        "accession": "ENCGM529DAG",
         "aliases": [
             "encode:modification-test-1"
         ],
@@ -7,19 +8,24 @@
         "status": "released",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
-        "documents": [
-            "encode:Antibody_characterization_standards_February_2014"
+        "category": "insertion",
+        "purpose": "tagging",
+        "introduced_tags": [
+            {
+                "name": "eGFP",
+                "location": "C-terminal"
+            }
         ],
-        "source":"gregory-crawford",
-        "modification_type": "replacement",
-        "modification_techniques": [
-        	"encode:crispr-test-1"
+        "modified_site_by_target_id": "/targets/CTCF-human/",
+        "method": "CRISPR",
+        "guide_rna_sequences": [
+            "GCGTAGCCAGTGACCAGCT",
+            "TGGGCTAACATTAGCCAGA"
         ],
-        "submitted_by": "dignissim.euismod@amet.habitant",
-        "target": "/targets/H3K4me3-human",
-        "treatments": []
+        "submitted_by": "dignissim.euismod@amet.habitant"
     },
     {
+        "accession": "ENCGM442SCX",
         "aliases": [
             "encode:modification-test-2"
         ],
@@ -27,74 +33,82 @@
         "status": "released",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
-        "source":"gregory-crawford",
         "description": "Scientists in India have delayed the ripening of tomatoes by silencing two genes encoding N-glycoprotein modifying enzymes, α-mannosidase and β-D-N-acetylhexosaminidase.",
-        "modified_site": {
+        "modified_site_by_coordinates": {
             "assembly": "GRCh38",
             "chromosome": "11",
             "start": 20000,
             "end": 21000
         },
         "purpose": "repression",
-        "modification_type": "deletion",
-        "modification_techniques": [
-            "encode:tale-test-1",
-        	"encode:crispr-test-1"
+        "category": "deletion",
+        "method": "CRISPR",
+        "reagents": [
+            { 
+                "source": "atcc",
+                "identifier": "CRL-2522"
+            }
         ],
-        "treatments": [
-            "2e33a097-412c-4646-87f9-858dfaaa7c06",
-            "3280b708-0f05-40fa-bff2-54e2b6505c13"
+        "guide_rna_sequences": [
+            "CAGTTAGCAGTACATGGAACACAGT",
+            "ATTAGCGGCTATAATTGCCGGTATT"
         ],
         "zygosity": "homozygous",
-        "product_id": "CRL-2522",
-        "submitted_by": "amet.fusce@est.fermentum",
-        "target": "/targets/H3K4me3-human",
-        "url": "http://www.atcc.org/ATCCAdvancedCatalogSearch/ProductDetails/tabid/452/Default.aspx?ATCCNum=CRL-2522&Template=cellBiology"
+        "submitted_by": "amet.fusce@est.fermentum"
     },
     {
-        "modified_site": {
-            "chromosome": "X",
-            "end": 48658983,
-            "assembly": "hg19",
-            "start": 48658969
-        },
-        "modification_techniques": [
-            "2f1feb18-c724-4cdf-8434-c5126ca78a9e"
+        "accession": "ENCGM793CRR",
+        "description": "shRNA targeting FTO",
+        "method": "RNAi",
+        "reagents": [
+            {
+                "source": "sigma",
+                "identifier": "TRCN0000246247"
+            }
         ],
-        "submitted_by": "amet.fusce@est.fermentum",
-        "modification_type": "deletion",
-        "source":"gregory-crawford",
+        "modified_site_by_target_id": "/targets/FTO-human/",
+        "category": "interference",
+        "purpose": "repression",
         "lab": "/labs/robert-waterston/",
         "award": "/awards/U41HG007355/",
         "uuid": "ef12855f-5d3e-4da5-8684-3a594c60505a",
         "status": "released",
-        "description": "Also aligns to the following location in the hg19 build:chr3:139375066-139375080, chr6:20406320-2040",
-        "notes": "TL1595   /tales/2f1feb18-c724-4cdf-8434-c5126ca78a9e/"
+        "submitted_by": "amet.fusce@est.fermentum"
     },
     {
+        "accession": "ENCGM089YBC",
         "submitted_by": "amet.fusce@est.fermentum",
         "status": "released",
-        "source":"gregory-crawford",
-        "modification_techniques": [
-            "0e23048f-4cbc-416f-9238-e63ef4fd7d17"
+        "introduced_tags": [
+            {
+                "name": "eGFP",
+                "location": "C-terminal"
+            },
+            {
+                "name": "mCherry",
+                "location": "internal",
+                "promoter_used": "1fe12114-b9df-4626-a29f-78f3130eb5d2"
+            }
         ],
-        "notes": "TL1596   /tales/0e23048f-4cbc-416f-9238-e63ef4fd7d17/",
+        "modified_site_by_target_id": "/targets/FTO-human/",
         "lab": "/labs/robert-waterston/",
-        "modification_type": "deletion",
+        "category": "insertion",
+        "purpose": "tagging",
+        "method": "stable transfection",
+        "reagents": [
+            {
+                "source": "kevin-white",
+                "identifier": "CH322-135D17"
+            }
+        ],
+        "documents": ["kevin-white:K562_BAC_transfection_White_protocol"],
         "award": "/awards/U41HG007355/",
-        "modified_site": {
-            "start": 48658999,
-            "assembly": "hg19",
-            "chromosome": "X",
-            "end": 48659017
-        },
         "uuid": "2f33a486-e3d9-4633-8682-a363b48ba67d"
     },
     {
-        "status": "released",
-        "treatments": [],
-        "notes": "TL1597   /tales/69790723-e4de-41d3-ab89-6e06a67d84d6/",
-        "modified_site": {
+        "accession": "ENCGM198AQA",
+        "status": "released", 
+        "modified_site_by_coordinates": {
             "chromosome": "X",
             "assembly": "hg19",
             "start": 48560532,
@@ -104,9 +118,68 @@
         "lab": "/labs/robert-waterston/",
         "uuid": "b9264c83-2222-4678-a82f-4915af941fa4",
         "submitted_by": "amet.fusce@est.fermentum",
-        "modification_type": "deletion",
-        "modification_techniques": [
-            "69790723-e4de-41d3-ab89-6e06a67d84d6"
+        "category": "replacement",
+        "purpose": "validation",
+        "zygosity": "heterozygous",
+        "reagents": [{
+            "source": "/sources/gregory-crawford/",
+            "identifier": "please-contact-lab"
+        }],
+        "method": "TALEN",
+        "RVD_sequence_pairs": [
+            {
+                "left_RVD_sequence": "NN,NG,HD,NI,NI,NN",
+                "right_RVD_sequence": "NI,NN,ND,NG,NG,ND"
+            }
+        ],
+        "introduced_sequence": "TACGGAGCTAGCTGGAACTAGCCATGCATAAACGATAGCTTGCTC"
+    },
+    {
+        "accession": "ENCGM345ZQX",
+        "status": "in progress",
+        "modified_site_nonspecific": "random",
+        "award": "/awards/U41HG007355/",
+        "lab": "/labs/kevin-white/",
+        "uuid": "10f82b48-4082-479d-8184-a1a73f9ff16d",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "category": "mutagenesis",
+        "purpose": "repression",
+        "documents": ["encode:MCF-7_Farnham_treatment_protocol"],
+        "method": "mutagen treatment",
+        "treatments": ["3280b708-0f05-40fa-bff2-54e2b6505c13"]
+    },
+    {
+        "uuid": "1d6eae38-f1dc-458c-9a08-984c953eaff4",
+        "accession": "ENCGM162RDA",
+        "aliases": [
+            "kevin-white:AV001_eGFP-ab"
+        ],
+        "alternate_accessions": [],
+        "award": "/awards/U41HG007355/",
+        "category": "insertion",
+        "characterizations": [],
+        "description": "This construct was made using the P[acman] Drosophila Melanogaster Library and contains a GFP (AV001) tag at the C-terminal of the protein of interest. The 50 bases preceding the tag are as follows: ACTCCGATGCCGAGGAGAACTACTCGGAGGATGAGGGAGTGCACAACACA",
+        "documents": [],
+        "introduced_tags": [
+            {
+                "name": "eGFP",
+                "location": "C-terminal"
+            }
+        ],
+        "lab": "/labs/kevin-white/",
+        "method": "site-specific recombination",
+        "modified_site_by_target_id": "/targets/eGFP-ab-dmelanogaster/",
+        "purpose": "tagging",
+        "reagents": [
+            {
+                "source": "/sources/atcc/",
+                "identifier": "CH321-73P09"
+            }
+        ],
+        "status": "released",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "treatments": [
+            "/treatments/a7ab9449-73ea-4693-be2d-a726a9e82056/"
         ]
     }
 ]

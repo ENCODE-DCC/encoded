@@ -126,8 +126,8 @@ class EditForm extends React.Component {
                     <button onClick={this.save} className="btn btn-success" disabled={this.communicating || this.state.editor_error}>Save</button>
                 </div>
                 <ul style={{ clear: 'both' }}>
-                    {error && error.code === 422 ? error.errors.map(err => (
-                        <li className="alert alert-error"><b>{`/${(err.name || []).join('/')}: `}</b><span>{err.description}</span></li>
+                    {error && error.code === 422 ? error.errors.map((err, i) => (
+                        <li key={i} className="alert alert-error"><b>{`/${(err.name || []).join('/')}: `}</b><span>{err.description}</span></li>
                     )) : error ? <li className="alert alert-error">{JSON.stringify(error)}</li> : null}
                 </ul>
             </div>

@@ -13,6 +13,7 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/attribution" }
@@ -67,12 +68,6 @@
         "source_url": {
             "title": "Source URL",
             "description": "An external resource to the code base.",
-            "type": "string",
-            "format": "uri"
-        },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the software.",
             "type": "string",
             "format": "uri"
         },
