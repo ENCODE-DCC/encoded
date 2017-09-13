@@ -1,6 +1,7 @@
 {
     "title": "Human donor",
     "description": "Schema for submitting a human donor.",
+    "comment":"This object is meant to be one to one with an individual human.",
     "id": "/profiles/human_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
@@ -8,22 +9,31 @@
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" },
         { "$ref": "donor.json#/properties" },
-        { "$ref": "mixins.json#/accession" },
-        { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/accessioned_status" },
-        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/genetic_modifications" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/genetic_modifications" }
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/accessioned_status" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/schema_version" }         
     ],
     "dependencies": {
+        "internal_tags": {
+            "comment": "If internal_tags list is initiated, it must contain at least one value.",
+            "properties": {
+                "internal_tags": {
+                    "minItems": 1
+                }
+            }
+        },
         "age_units":  {
-            "required": ["age"],
+            "comment":"Age units is required if age is specified as anything but unknown.",
+            "required": ["age", "life_stage"],
             "not": {
                 "properties": {
                     "age": {
@@ -42,7 +52,7 @@
                     }
                 },
                 {
-                    "required": ["age_units"],
+                    "required": ["age_units", "life_stage"],
                     "properties": {
                         "age_units": {
                             "enum": ["year"]
@@ -53,7 +63,7 @@
                     }
                 },
                 {
-                    "required": ["age_units"],
+                    "required": ["age_units", "life_stage"],
                     "properties": {
                         "age_units": {
                             "enum": ["day", "week","month"]
@@ -64,20 +74,47 @@
                     }
                 }
             ]
+        },
+        "twin_type": {
+            "comment": "Twin type could be specified only if twin sibling is specified.",
+            "required": ["twin"]
         }
-
     },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
-        "ethnicity": {
-            "title": "Ethnicity",
-            "type": "string"
+        "organism": {
+            "comment": "Do not submit, value is assigned by the object.",
+            "default": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
+            "linkEnum": ["7745b647-ff15-4ff3-9ced-b897d4e2983c"]
+        },
+        "sex": {
+            "title": "Sex",
+            "type": "string",
+            "default": "unknown",
+            "enum": [
+                "male",
+                "female",
+                "unknown",
+                "mixed"
+            ]
+        },
+        "life_stage": {
+            "title": "Life stage",
+            "type": "string",
+            "enum": [
+                "embryonic",
+                "newborn",
+                "child",
+                "adult",
+                "unknown"
+            ]
         },
         "age": {
             "title": "Donor age",
-            "description": " The age or age range of the donor when biological material was sampled.",
+            "description": "The age or age range of the donor when biological material was sampled.",
+            "comment": "This is gestational time for fetal and embryonic samples. We allow a generic over 90 for privacy purposes.",
             "type": "string",
             "pattern": "^((\\d+(\\.[1-9])?(\\-\\d+(\\.[1-9])?)?)|(unknown)|([1-8]?\\d)|(90 or above))$"
         },
@@ -95,89 +132,91 @@
             "title": "Donor health status",
             "type": "string"
         },
-        "life_stage": {
-            "title": "Life stage",
+        "ethnicity": {
+            "title": "Ethnicity",
+            "comment": "We use http://bioportal.bioontology.org/ontologies/SNOMED-Ethnic-Group as a template for the enum list of ethnicities.",
             "type": "string",
             "enum": [
-                "fetal",
-                "newborn",
-                "child",
-                "adult",
-                "unknown",
-                "embryonic",
-                "postnatal"
-            ]
-        },
-        "sex": {
-            "title": "Sex",
-            "type": "string",
-            "default": "unknown",
-            "enum": [
-                "male",
-                "female",
-                "unknown",
-                "mixed"
+                "African American",
+                "Arab",
+                "Arab Indian",
+                "Asian",
+                "Asian Hawaiian Eskimo",
+                "Black",
+                "Black African",
+                "Caucasian",
+                "Caucasian Hispanic",
+                "Chinese",
+                "Eskimo",
+                "Han Chinese",
+                "Hawaiian",
+                "Hispanic",
+                "Indian",
+                "Japanese",
+                "Yoruba"
             ]
         },
         "parents": {
             "title": "Parents",
-            "description": "Donor IDs of biological parents, if known.",
+            "description": "Biological parents of this donor",
+            "comment":"This is a link for cases when families are all donors in our system. Children will be calculated from this link.",
             "type":  "array",
             "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Parent",
-                "description": "A donor ID of a biological parent, if known.",
-                "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
-                "type": "string",
-                "linkTo": "HumanDonor"
-            }
-        },
-        "children": {
-            "title": "Children",
-            "description": "Donors that genetic material was supplied to.",
-            "type":  "array",
-            "default": [],
-            "uniqueItems": true,
-            "XXXnote": "Can be removed since we have parents.",
-            "items": {
-                "title": "Child",
-                "description": "A donor that genetic material was supplied to.",
-                "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
+                "description": "Biological parent of this donor.",
+                "comment": "For human biosamples, see human_donor.json for available identifiers.",
                 "type": "string",
                 "linkTo": "HumanDonor"
             }
         },
         "siblings": {
             "title": "Siblings",
-            "description": "Donors that have at least one parent in common.",
+            "description": "Donors that have at least one parent in common with this donor.",
+            "comment":"This is a link for cases when families are all donors in our system.",
             "type":  "array",
             "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Sibling",
-                "description": "A donors that has at least one parent in common.",
-                "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
+                "description": "A donor that has at least one parent in common.",
+                "comment": "For human biosamples, see human_donor.json for available identifiers.",
                 "type": "string",
                 "linkTo": "HumanDonor"
             }
         },
-        "fraternal_twin": {
-            "title": "Fraternal twin",
-            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
+        "twin": {
+            "title": "Twin",
+            "description": "A human donor that is a twin sibling of this human donor.",
+            "comment": "For human biosamples, see human_donor.json for available identifiers.",
             "type": "string",
             "linkTo": "HumanDonor"
         },
-        "identical_twin": {
-            "title": "Identical twin",
-            "description": "A donor that have identical genetic material.",
-            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
+        "twin_type": {
+            "title": "Twin type",
+            "comment": "The type of the twin sibling of this donor (dizygotic or monozygotic)",
             "type": "string",
-            "linkTo": "HumanDonor"
+            "enum": [
+                "dizygotic",
+                "monozygotic"
+            ]
         },
-        "organism": {
-            "default": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
-            "linkEnum": ["7745b647-ff15-4ff3-9ced-b897d4e2983c"]
+        "internal_tags": {
+            "title": "Internal tags",
+            "description": "Some human donors are part of particular data collections",
+            "comment": "Do not submit. DCC personnel is responsible for submission of this property.",
+            "type": "array",
+          
+            "permission": "import_items",
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "enum": [
+                    "ENTEx",
+                    "PGP",
+                    "SESCC"]
+            }
         },
         "dbxrefs": {
             "@type": "@id",
@@ -221,9 +260,7 @@
         }
     },
     "boost_values": {
-        "internal_tags": 1.0,
-        "external_ids": 1.0,
-        "aliases": 1.0
+        "internal_tags": 1.0
     },
     "changelog": "/profiles/changelogs/human_donor.md"
 }
