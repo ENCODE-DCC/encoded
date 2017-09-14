@@ -81,9 +81,9 @@
             "type": "string",
             "description": "IDR reproducibility test result for this experiment",
             "enum": [
-                "pass",
                 "borderline",
-                "fail"
+                "fail",
+                "pass"
             ]
         },
         "N_optimal": {

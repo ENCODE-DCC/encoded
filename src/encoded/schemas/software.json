@@ -31,17 +31,17 @@
                 "type": "string",
                 "enum": [
                     "aligner",
-                    "quality metric",
-                    "peak caller",
-                    "filtering",
-                    "file format conversion",
                     "database",
-                    "variant annotation",
+                    "file format conversion",
+                    "filtering",
                     "genome segmentation",
+                    "other",
+                    "peak caller",
                     "qualification",
+                    "quality metric",
                     "transcript identification",
                     "transcriptome assembly",
-                    "other"
+                    "variant annotation"
                 ]
             }
         },
@@ -85,21 +85,21 @@
                 "title": "Purpose",
                 "type": "string",
                 "enum": [
-                    "ChIP-seq",
-                    "DNase-seq",
-                    "RNA-seq",
-                    "data QC",
-                    "RAMPAGE",
-                    "iClip-seq",
-                    "FAIRE-seq",
-                    "RIP-seq", 
+                    "ATAC-seq",
                     "CAGE",
                     "ChIA-PET",
-                    "ATAC-seq",
+                    "ChIP-seq",
+                    "community resource",
+                    "data QC",
+                    "DNase-seq",
                     "eCLIP-seq",
+                    "FAIRE-seq",
+                    "iClip-seq",
                     "integrative analysis",
-                    "variant analysis",
-                    "community resource"
+                    "RAMPAGE",
+                    "RIP-seq", 
+                    "RNA-seq",
+                    "variant analysis"
                 ]
             }
         },
@@ -111,11 +111,11 @@
                 "title": "Used by",
                 "type": "string",
                 "enum": [
-                    "modERN",
+                    "community",
                     "ENCODE",
-                    "mouseENCODE",
                     "modENCODE",
-                    "community"
+                    "modERN",
+                    "mouseENCODE"
                 ]
             }
         },

@@ -61,21 +61,21 @@
             "title": "Amount units",
             "type": "string",
             "enum": [
-                "pM",
-                "nM",
-                "μM",
-                "μg/mL",
-                "mM",
-                "mg/mL",
-                "ng/mL",
                 "M",
+                "mg",
+                "mg/mL",
+                "mM",
+                "ng/mL",
+                "nM",
                 "percent",
-                "units",
-                "U/mL",
                 "pfu",
+                "pM",
                 "rad",
+                "U/mL",
+                "units",
                 "μg",
-                "mg"
+                "μg/mL",
+                "μM"
             ]
         },
         "duration": {

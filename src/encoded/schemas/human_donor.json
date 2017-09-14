@@ -95,9 +95,9 @@
             "default": "unknown",
             "enum": [
                 "male",
+                "mixed",
                 "female",
-                "unknown",
-                "mixed"
+                "unknown"
             ]
         },
         "life_stage": {

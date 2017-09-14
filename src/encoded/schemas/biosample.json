@@ -435,8 +435,8 @@
                 "default": "analyzed",
                 "enum": [
                     "analyzed",
-                    "not_analyzed",
-                    "no"
+                    "no",
+                    "not_analyzed"
                 ]
             },
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
@@ -638,13 +638,13 @@
                 "G1",
                 "G1b",
                 "G2",
-                "S",
+                "S",,
+                "early S",
+                "late S"
                 "S1",
                 "S2",
                 "S3",
-                "S4",
-                "early S",
-                "late S"
+                "S4"
             ]
         },
         "transfection_type": {
@@ -747,15 +747,15 @@
             "description": "Fly development stage of the animals used to prepare the biosample.",
             "comment": "fly_life_stage is valid only for fly biosamples.",
             "enum": [
-                "adult",
                 "embryonic",
-                "first instar larva",
                 "larva",
-                "prepupa",
-                "pupa",
+                "first instar larva",
                 "second instar larva",
                 "third instar larva",
-                "wandering third instar larva"
+                "wandering third instar larva",
+                "prepupa",
+                "pupa",
+                "adult"
             ]
         },
         "fly_synchronization_stage": {
@@ -764,8 +764,8 @@
             "comment": "Stage at which flies were synchronized. If available use in conjunction with time and time units post-synchronization.",
             "type": "string",
             "enum": [
-                "fertilization",
                 "egg laying",
+                "fertilization",
                 "first larval molt",
                 "second larval molt",
                 "puff stage: PS (1-2), dark blue gut",
@@ -826,18 +826,18 @@
                 "early embryonic",
                 "midembryonic",
                 "late embryonic",
-                "mixed stage",
-                "mixed stage (embryonic)",
-                "mixed stage (late embryonic and L1 larva)",
                 "L1 larva",
                 "L2 larva",
                 "L2d larva",
                 "L3 larva",
                 "L4 larva",
-                "dauer",
                 "L4/young adult",
                 "young adult",
-                "adult"
+                "dauer",
+                "adult",
+                "mixed stage",
+                "mixed stage (embryonic)",
+                "mixed stage (late embryonic and L1 larva)"
             ]    
         },
         "worm_synchronization_stage": {
@@ -846,9 +846,9 @@
             "comment": "Stage at which worms were synchronized. Use in conjunction with time and time units post-synchronization.  worm_life_stage is valid only for worm biosamples.",
             "type": "string",
             "enum": [
-                "fertilization",
                 "egg laying",
                 "egg bleaching",
+                "fertilization",
                 "4 cell",
                 "L1 larva starved after bleaching",
                 "dauer exit"
