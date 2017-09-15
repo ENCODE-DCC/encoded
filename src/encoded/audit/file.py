@@ -2,9 +2,6 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
-from .conditions import (
-    rfa, assay_term_name
-)
 
 
 def audit_file_processed_derived_from(value, system):
@@ -180,11 +177,9 @@ def audit_file_controlled_by(value, system):
        'control' in value['dataset']['target'].get('investigated_as', []):
         return
 
-    if 'controlled_by' not in value:
-        value['controlled_by'] = []
-
-    if value['controlled_by'] == []:
-        detail = 'controlled_by is a list of files that are used as controls for a given experimental file. ' + \
+    if not value.get('controlled_by'):
+        detail = 'controlled_by is a list of files that are used as ' + \
+                 'controls for a given experimental file. ' + \
                  'Fastq files generated in a {} assay require the '.format(
                      value['dataset']['assay_term_name']) + \
                  'specification of control fastq file(s) in the controlled_by list. ' + \
@@ -275,7 +270,6 @@ def audit_file_controlled_by(value, system):
                                    detail, level='WARNING')
                 return
 
-# utility functions
 
 function_dispatcher = {
     'audit_derived_from': audit_file_processed_derived_from,
@@ -285,6 +279,7 @@ function_dispatcher = {
     'audit_specifications': audit_file_format_specifications,
     'audit_controlled_by': audit_file_controlled_by
 }
+
 
 @audit_checker('File',
                frame=['derived_from',
