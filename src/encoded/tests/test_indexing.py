@@ -95,6 +95,10 @@ def test_indexing_workbook(testapp, indexer_testapp):
     assert res.json['updated']
     assert res.json['indexed']
 
+    res = indexer_testapp.post_json('/index_secondary', {'record': True})
+    assert res.json['cycle_lag']
+    assert res.json['title'] == 'secondary_indexer'
+
     res = testapp.get('/search/?type=Biosample')
     assert res.json['total'] > 5
 
