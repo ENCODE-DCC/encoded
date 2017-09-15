@@ -333,6 +333,7 @@ def get_control_bam(experiment_bam, pipeline_name):
             control_fastq = entry['controlled_by'][0]  # getting representative FASTQ
             break
 
+
     # get representative FASTQ from control
     if control_fastq is False:
         return False
@@ -340,9 +341,11 @@ def get_control_bam(experiment_bam, pipeline_name):
         if 'original_files' not in control_fastq['dataset']:
             return False
 
+
         control_bam = False
         control_alignments = scan_files_for_file_format_output_type(control_fastq['dataset']['original_files'],
                                                                     'bam', 'alignments')
+
         for control_file in control_alignments:
             if 'assembly' in control_file and 'assembly' in experiment_bam and \
                control_file['assembly'] == experiment_bam['assembly']:
