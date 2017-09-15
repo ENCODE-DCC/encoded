@@ -11,6 +11,7 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/shared_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" }
@@ -48,12 +49,6 @@
                 "type":  "string",
                 "pattern": "^(GEO:GPL\\d+|UCSC-ENCODE-cv:\\S+)$"
             }
-        },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the measurement device.",
-            "type": "string",
-            "format": "uri"
         }
     },
     "boost_values": {

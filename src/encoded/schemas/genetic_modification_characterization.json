@@ -88,5 +88,10 @@
             }
         }
     },
+    "columns": {
+        "attachment": {
+            "title": "Attachment"
+        }
+    },
     "changelog": "/profiles/changelogs/genetic_modification_characterization.md"
 }

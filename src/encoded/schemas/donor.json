@@ -10,6 +10,7 @@
         { "$ref": "mixins.json#/genetic_modifications" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/attribution" },
@@ -42,7 +43,7 @@
             "accessionType": "DO"
         },
         "external_ids": {
-            "title": "Unique external identifier(s) of strain or donor",
+            "title": "Unique external identifiers",
             "description": "External identifiers that uniquely identify the donor of the sample, e.g. for strains it might be a strain identifier at a repository or a de-identified donor ID for a person.",
             "comment": "List of identifiers that are used by external resources that can be used to identify samples from that particular donor or strain.",
             "type": "array",

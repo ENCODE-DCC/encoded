@@ -16,6 +16,7 @@
         { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/notes" }
 
@@ -172,12 +173,6 @@
                 "type": "string",
                 "linkTo": "Target"
             }
-        },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the antibody.",
-            "type": "string",
-            "format": "uri"
         }
    },
    "facets": {

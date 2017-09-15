@@ -1,5 +1,9 @@
 ## Changelog for treatment.json
 
+### Schema version 9
+
+* The regex for *treatment_term_name* will now accept the namespace "UniProtKB" rather than "UniprotKB".
+
 ### Schema version 8
 
 * *status* property was restricted to one of  
