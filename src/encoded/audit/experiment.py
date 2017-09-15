@@ -2,7 +2,6 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
-from .conditions import rfa
 from .gtex_data import gtexDonorsList
 from .standards_data import pipelines_with_read_depth
 
@@ -48,129 +47,8 @@ seq_assays = [
     'RIP-seq',
     ]
 
-non_seq_assays = [
-    'RNA profiling by array assay',
-    'DNA methylation profiling by array assay',
-    'Genotype',
-    'comparative genomic hybridization by array',
-    'RIP-chip',
-    'protein sequencing by tandem mass spectrometry assay',
-    'microRNA profiling by array assay',
-    'Switchgear',
-    '5C',
-    ]
 
 
-@audit_checker('Experiment', frame=[
-    'replicates.antibody',
-    'replicates.antibody.targets',
-    'replicates.antibody.characterizations',
-    'replicates.antibody.lot_reviews',
-    'original_files',
-    'original_files.award',
-    'original_files.replicate',
-    'original_files.platform',
-    'replicates',
-    'replicates.library',
-    'replicates.library.spikeins_used',
-    'replicates.library.spikeins_used.files',
-    'replicates.library.biosample',
-    'replicates.library.biosample.organism',
-    'replicates.library.biosample.constructs',
-    'replicates.library.biosample.constructs.target',
-    'replicates.library.biosample.donor',
-    'replicates.library.biosample.model_organism_donor_constructs',
-    'replicates.library.biosample.model_organism_donor_constructs.target',
-    'original_files.derived_from',
-    'original_files.step_run',
-    'original_files.derived_from.derived_from',
-    'original_files.derived_from.controlled_by',
-    'original_files.derived_from.controlled_by.dataset',
-    'original_files.derived_from.controlled_by.dataset.original_files.dataset.target',
-    'original_files.derived_from.controlled_by.dataset.original_files',
-    'original_files.derived_from.controlled_by.dataset.original_files.quality_metrics',
-    'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version',
-    'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step',
-    'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step.pipelines',
-    'original_files.derived_from.controlled_by.dataset.original_files.derived_from',
-    'original_files.analysis_step_version',
-    'original_files.analysis_step_version.analysis_step',
-    'original_files.analysis_step_version.analysis_step.pipelines',
-    'original_files.quality_metrics',
-    'original_files.quality_metrics.quality_metric_of',
-    'original_files.quality_metrics.quality_metric_of.replicate',
-    'original_files.analysis_step_version.software_versions',
-    'original_files.analysis_step_version.software_versions.software',
-    'possible_controls',
-    'possible_controls.original_files',
-    'possible_controls.original_files.platform',
-    'award',
-    'target',
-    'possible_controls.replicates',
-    'possible_controls.replicates.antibody',
-    'possible_controls.target'
-    ])
-def audit_experiment_entry_function(value, system):
-    for failure in audit_experiment_mixed_libraries(value):
-        yield failure
-    for failure in audit_experiment_pipeline_assay_details(value):
-        yield failure
-    for failure in audit_experiment_missing_unfiltered_bams(value):
-        yield failure
-    for failure in audit_experiment_with_uploading_files(value):
-        yield failure
-    for failure in audit_experiment_out_of_date_analysis(value):
-        yield failure
-    for failure in audit_experiment_internal_tag(value):
-        yield failure
-    for failure in audit_experiment_geo_submission(value):
-        yield failure
-    for failure in audit_experiment_consistent_sequencing_runs(value):
-        yield failure
-    for failure in audit_experiment_replicate_with_no_files(value):
-        yield failure
-    for failure in audit_experiment_mapped_read_length(value):
-        yield failure
-    for failure in audit_missing_construct(value):
-        yield failure
-    for failure in audit_library_RNA_size_range(value):
-        yield failure
-    for failure in audit_experiment_library_biosample(value):
-        yield failure
-    for failure in audit_experiment_biosample_term(value, system):
-        yield failure
-    for failure in audit_experiment_platforms_mismatches(value):
-        yield failure
-    for failure in audit_experiment_antibody_characterized(value):
-        yield failure
-    for failure in audit_experiment_replicated(value):
-        yield failure
-    for failure in audit_experiment_spikeins(value):
-        yield failure
-    for failure in audit_experiment_ChIP_control(value):
-        yield failure
-    for failure in audit_experiment_control(value):
-        yield failure
-    for failure in audit_experiment_assay(value):
-        yield failure
-    for failure in audit_experiment_target(value):
-        yield failure
-    for failure in audit_experiment_standards_dispatcher(value):
-        yield failure
-    for failure in audit_modERN_experiment_standards_dispatcher(value):
-        yield failure
-    for failure in audit_experiment_replicates_with_no_libraries(value):
-        yield failure
-    for failure in audit_experiment_isogeneity(value):
-        yield failure
-    for failure in audit_experiment_replicates_biosample(value):
-        yield failure
-    for failure in audit_experiment_technical_replicates_same_library(value):
-        yield failure
-    for failure in audit_experiment_documents(value):
-        yield failure
-    for failure in audit_experiment_chipseq_control_read_depth(value):
-        yield failure
 
 
 def audit_experiment_chipseq_control_read_depth(value):
@@ -321,114 +199,6 @@ def check_control_read_depth_standards(value,
         return
 
 
-def get_control_bam(experiment_bam, pipeline_name):
-    #  get representative FASTQ file
-    if 'derived_from' not in experiment_bam or len(experiment_bam['derived_from']) < 1:
-        return False
-
-    derived_from_fastqs = experiment_bam['derived_from']
-    control_fastq = False
-    for entry in derived_from_fastqs:
-        if 'controlled_by' in entry and len(entry['controlled_by']) > 0:
-            control_fastq = entry['controlled_by'][0]  # getting representative FASTQ
-            break
-
-
-    # get representative FASTQ from control
-    if control_fastq is False:
-        return False
-    else:
-        if 'original_files' not in control_fastq['dataset']:
-            return False
-
-
-        control_bam = False
-        control_alignments = scan_files_for_file_format_output_type(control_fastq['dataset']['original_files'],
-                                                                    'bam', 'alignments')
-
-        for control_file in control_alignments:
-            if 'assembly' in control_file and 'assembly' in experiment_bam and \
-               control_file['assembly'] == experiment_bam['assembly']:
-                #  we have BAM file, now we have to make sure it was created by pipeline
-                #  with similar pipeline_name
-
-                is_same_pipeline = False
-                if has_pipelines(control_file) is True:
-                    for pipeline in \
-                            control_file['analysis_step_version']['analysis_step']['pipelines']:
-                        if pipeline['title'] == pipeline_name:
-                            is_same_pipeline = True
-                            break
-
-                if is_same_pipeline is True and \
-                   'derived_from' in control_file and \
-                   len(control_file['derived_from']) > 0:
-                    derived_list = control_file['derived_from']
-                    for entry in derived_list:
-                        if entry['accession'] == control_fastq['accession']:
-                            control_bam = control_file
-                            break
-        return control_bam
-
-
-def has_pipelines(bam_file):
-    if 'analysis_step_version' not in bam_file:
-        return False
-    if 'analysis_step' not in bam_file['analysis_step_version']:
-        return False
-    if 'pipelines' not in bam_file['analysis_step_version']['analysis_step']:
-        return False
-    return True
-
-
-def get_target_name(bam_file):
-    if 'dataset' in bam_file and 'target' in bam_file['dataset'] and \
-       'name' in bam_file['dataset']['target']:
-        return bam_file['dataset']['target']['name']
-    return False
-
-
-def get_chip_seq_bam_read_depth(bam_file):
-    if bam_file['status'] in ['deleted', 'replaced', 'revoked']:
-        return False
-
-    if bam_file['file_format'] != 'bam' or bam_file['output_type'] != 'alignments':
-        return False
-
-    # Check to see if bam is from ENCODE or modERN pipelines
-    if bam_file['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
-        return False
-
-    if has_pipelines(bam_file) is False:
-        return False
-
-    quality_metrics = bam_file.get('quality_metrics')
-
-    if (quality_metrics is None) or (quality_metrics == []):
-        return False
-
-    read_depth = 0
-
-    for metric in quality_metrics:
-        if ('total' in metric and
-                (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
-                 ('processing_stage' not in metric))):
-            if "read1" in metric and "read2" in metric:
-                read_depth = int(metric['total']/2)
-            else:
-                read_depth = metric['total']
-            break
-
-    if read_depth == 0:
-        return False
-
-    return read_depth
-
-
-def check_award_condition(experiment, awards):
-    return experiment.get('award') and experiment.get('award')['rfa'] in awards
-
-
 def audit_experiment_mixed_libraries(value):
     '''
     Experiments should not have mixed libraries nucleic acids
@@ -510,184 +280,7 @@ def audit_experiment_missing_unfiltered_bams(value):
                 yield AuditFailure('missing unfiltered alignments', detail, level='INTERNAL_ACTION')
 
 
-def has_only_raw_files_in_derived_from(bam_file):
-    if 'derived_from' in bam_file:
-        if bam_file['derived_from'] == []:
-            return False
-        for f in bam_file['derived_from']:
-            if f['file_format'] not in ['fastq', 'tar', 'fasta']:
-                return False
-        return True
-    else:
-        return False
 
-
-def has_no_unfiltered(filtered_bam, unfiltered_bams):
-    if 'assembly' in filtered_bam:
-        for f in unfiltered_bams:
-            if 'assembly' in f:
-                if f['assembly'] == filtered_bam['assembly'] and \
-                   f['biological_replicates'] == filtered_bam['biological_replicates']:
-                    derived_candidate = set()
-                    derived_filtered = set()
-                    if 'derived_from' in f:
-                        for entry in f['derived_from']:
-                            derived_candidate.add(entry['uuid'])
-                    if 'derived_from' in filtered_bam:
-                        for entry in filtered_bam['derived_from']:
-                            derived_filtered.add(entry['uuid'])
-                    if derived_candidate == derived_filtered:
-                        return False
-        return True
-    return False
-
-
-def check_structures(replicate_structures, control_flag, experiment):
-    bio_reps = get_bio_replicates(experiment)
-    assemblies = get_assemblies(experiment['original_files'])
-    present_assemblies = []
-    replicates_dict = {}
-    for bio_rep in bio_reps:
-        for assembly in assemblies:
-            replicates_dict[(bio_rep, assembly)] = 0
-    pooled_quantity = 0
-
-    for (bio_rep_num, assembly) in replicate_structures.keys():
-        replicates_string = bio_rep_num[1:-1]
-        if len(replicates_string) > 0 and \
-           is_single_replicate(replicates_string) is True:
-            replicates_dict[(replicates_string, assembly)] = 1
-        elif len(replicates_string) > 0 and is_single_replicate(replicates_string) is False:
-            pooled_quantity += 1
-            present_assemblies.append(assembly)
-
-        if replicate_structures[(bio_rep_num, assembly)].has_orphan_files() is True:
-            detail = 'Experiment {} contains '.format(experiment['@id']) + \
-                     '{} '.format(replicate_structures[(bio_rep_num, assembly)].get_orphan_files()) + \
-                     'files, genomic assembly {} '.format(assembly) + \
-                     ' that are not associated with any replicate'
-            yield AuditFailure('orphan pipeline files', detail, level='INTERNAL_ACTION')
-        else:
-            if replicate_structures[(bio_rep_num, assembly)].has_unexpected_files() is True:
-                for unexpected_file in \
-                        replicate_structures[(bio_rep_num, assembly)].get_unexpected_files():
-                    detail = 'Experiment {} contains '.format(experiment['@id']) + \
-                             'unexpected file {} '.format(unexpected_file) + \
-                             'that is associated with ' + \
-                             'biological replicates {}.'.format(bio_rep_num)
-                    yield AuditFailure('unexpected pipeline files', detail, level='INTERNAL_ACTION')
-
-            if replicate_structures[(bio_rep_num, assembly)].is_complete() is False:
-                for missing_tuple in \
-                        replicate_structures[(bio_rep_num, assembly)].get_missing_fields_tuples():
-                    if is_single_replicate(bio_rep_num[1:-1]) is True:
-                        detail = 'In experiment {}, '.format(experiment['@id']) + \
-                                 'biological replicate {}, '.format(bio_rep_num[1:-1]) + \
-                                 'genomic assembly {} '.format(assembly) + \
-                                 'the file {} is missing.'.format(missing_tuple)
-                        yield AuditFailure('missing pipeline files', detail, level='INTERNAL_ACTION')
-                    else:
-                        detail = 'In experiment {}, '.format(experiment['@id']) + \
-                                 'biological replicates {}, '.format(bio_rep_num) + \
-                                 'genomic assembly {}, '.format(assembly) + \
-                                 'the file {} is missing.'.format(missing_tuple)
-                        yield AuditFailure('missing pipeline files', detail, level='INTERNAL_ACTION')
-
-            if replicate_structures[(bio_rep_num, assembly)].is_analyzed_more_than_once() is True:
-                detail = 'In experiment {}, '.format(experiment['@id']) + \
-                         'biological replicate {} contains '.format(bio_rep_num) + \
-                         'multiple processed files associated with the same fastq ' + \
-                         'files for {} assembly.'.format(assembly)
-                yield AuditFailure('inconsistent pipeline files', detail, level='INTERNAL_ACTION')
-
-    if pooled_quantity < (len(assemblies)) and control_flag is False:
-        detail = 'Experiment {} '.format(experiment['@id']) + \
-                 'does not contain all of the inter-replicate comparison anlaysis files. ' + \
-                 'Analysis was performed using {} assemblies, '.format(assemblies) + \
-                 'while inter-replicate comparison anlaysis was performed only using ' + \
-                 '{} assemblies.'.format(present_assemblies)
-        yield AuditFailure('missing pipeline files', detail, level='INTERNAL_ACTION')
-    for (rep_num, assembly) in replicates_dict:
-        if replicates_dict[(rep_num, assembly)] == 0:
-            detail = 'Experiment {} '.format(experiment['@id']) + \
-                     'contains biological replicate {}, '.format(rep_num) + \
-                     'without any processed files associated with {} assembly.'.format(assembly)
-            yield AuditFailure('missing pipeline files', detail, level='INTERNAL_ACTION')
-    return
-
-
-def is_single_replicate(replicates_string):
-    if ',' not in replicates_string:
-        return True
-    return False
-
-
-# def create_pipeline_structures(files_to_scan, structure_type):
-# condensed under https://encodedcc.atlassian.net/browse/ENCD-3493
-
-
-def get_bio_replicates(experiment):
-    bio_reps = set()
-    for rep in experiment['replicates']:
-        if rep['status'] not in ['deleted']:
-            bio_reps.add(str(rep['biological_replicate_number']))
-    return bio_reps
-
-
-def get_assemblies(list_of_files):
-    assemblies = set()
-    for f in list_of_files:
-        if f['status'] not in ['replaced', 'revoked', 'deleted', 'archived'] and \
-           f['output_category'] not in ['raw data', 'reference'] and \
-           f.get('assembly') is not None:
-            assemblies.add(f['assembly'])
-    return assemblies
-
-#  def audit_experiment_control_out_of_date_analysis(value, system):
-#  removed due to https://encodedcc.atlassian.net/browse/ENCD-3460
-
-def is_outdated_bams_replicate(bam_file, original_files):
-    if 'lab' not in bam_file or bam_file['lab'] != '/labs/encode-processing-pipeline/':
-        return False
-    derived_from_fastqs = get_derived_from_files_set([bam_file], 'fastq', True)
-    if len(derived_from_fastqs) == 0:
-        return False
-
-    derived_from_fastq_accessions = get_file_accessions(derived_from_fastqs)
-
-    bio_rep = []
-    for fastq_file in derived_from_fastqs:
-        if 'biological_replicates' in fastq_file and \
-           len(fastq_file['biological_replicates']) != 0:
-            for entry in fastq_file['biological_replicates']:
-                bio_rep.append(entry)
-            break
-    fastq_files = scan_files_for_file_format_output_type(
-        original_files,
-        'fastq', 'reads')
-    bio_rep_fastqs = []
-    for fastq_file in fastq_files:
-        if 'biological_replicates' in fastq_file:
-            for entry in fastq_file['biological_replicates']:
-                if entry in bio_rep:
-                    bio_rep_fastqs.append(fastq_file)
-                    break
-
-    replicate_fastq_accessions = get_file_accessions(bio_rep_fastqs)
-    for file_object in bio_rep_fastqs:
-        file_acc = file_object['accession']
-        if file_acc not in derived_from_fastq_accessions:
-            paired_file_id = file_object.get('paired_with')
-            if paired_file_id and \
-               paired_file_id.split('/')[2] not in derived_from_fastq_accessions:
-                return True
-            elif not paired_file_id:
-                return True
-
-    for f_accession in derived_from_fastq_accessions:
-        if f_accession not in replicate_fastq_accessions:
-            return True
-    return False
 
 
 def audit_experiment_with_uploading_files(value):
@@ -730,27 +323,7 @@ def audit_experiment_out_of_date_analysis(value):
                 yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
 
 
-def get_file_accessions(list_of_files):
-    accessions_set = set()
-    for f in list_of_files:
-        accessions_set.add(f['accession'])
-    return accessions_set
 
-
-def get_derived_from_files_set(list_of_files, file_format, object_flag):
-    derived_from_set = set()
-    derived_from_objects_list = []
-    for f in list_of_files:
-        if 'derived_from' in f:
-            for d_f in f['derived_from']:
-                if 'file_format' in d_f and d_f['file_format'] == file_format and \
-                   d_f['accession'] not in derived_from_set:
-                    derived_from_set.add(d_f['accession'])
-                    if object_flag:
-                        derived_from_objects_list.append(d_f)
-    if object_flag:
-        return derived_from_objects_list
-    return derived_from_set
 
 
 def audit_experiment_standards_dispatcher(value):
@@ -1045,26 +618,6 @@ def check_experiment_dnase_seq_standards(experiment,
                                            detail, level='NOT_COMPLIANT')
 
 
-def extract_assemblies(assemblies, file_names):
-    to_return = set()
-    for f_name in file_names:
-        if f_name in assemblies:
-            to_return.add(assemblies[f_name])
-    return sorted(list(to_return))
-
-
-def assemblies_detail(assemblies):
-    assemblies_detail = ''
-    if assemblies:
-        if len(assemblies) > 1:
-            assemblies_detail = "for {} assemblies ".format(
-                str(assemblies).replace('\'', ' '))
-        else:
-            assemblies_detail = "for {} assembly ".format(
-                assemblies[0])
-    return assemblies_detail
-
-
 def check_experiment_rna_seq_standards(value,
                                        fastq_files,
                                        alignment_files,
@@ -1219,14 +772,6 @@ def check_experiment_wgbs_encode3_standards(experiment,
     return
 
 
-def get_read_lengths_wgbs(fastq_files):
-    list_of_lengths = []
-    for f in fastq_files:
-        if 'read_length' in f:
-            list_of_lengths.append(f['read_length'])
-    return list_of_lengths
-
-
 def check_wgbs_read_lengths(fastq_files,
                             organism_name,
                             human_threshold,
@@ -1250,39 +795,7 @@ def check_wgbs_read_lengths(fastq_files,
                                    detail, level='NOT_COMPLIANT')
 
 
-def get_non_tophat_alignment_files(files_list):
-    list_to_return = []
-    for f in files_list:
-        tophat_flag = False
-        if 'analysis_step_version' in f and \
-           'software_versions' in f['analysis_step_version']:
-            for soft_version in f['analysis_step_version']['software_versions']:
-                #  removing TopHat files
-                if 'software' in soft_version and \
-                   soft_version['software']['uuid'] == '7868f960-50ac-11e4-916c-0800200c9a66':
-                    tophat_flag = True
-        if tophat_flag is False and \
-           f['lab'] == '/labs/encode-processing-pipeline/':
-            list_to_return.append(f)
-    return list_to_return
 
-
-def get_metrics(files_list, metric_type, desired_assembly=None, desired_annotation=None):
-    metrics_dict = {}
-    for f in files_list:
-        if (desired_assembly is None or ('assembly' in f and
-                                         f['assembly'] == desired_assembly)) and \
-            (desired_annotation is None or ('genome_annotation' in f and
-                                            f['genome_annotation'] == desired_annotation)):
-            if 'quality_metrics' in f and len(f['quality_metrics']) > 0:
-                for qm in f['quality_metrics']:
-                    if metric_type in qm['@type']:
-                        if qm['uuid'] not in metrics_dict:
-                            metrics_dict[qm['uuid']] = qm
-    metrics = []
-    for k in metrics_dict:
-        metrics.append(metrics_dict[k])
-    return metrics
 
 
 def check_experiment_chip_seq_standards(experiment,
@@ -1633,10 +1146,7 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
                                    detail, level='NOT_COMPLIANT')
 
 
-def get_target(experiment):
-    if 'target' in experiment:
-        return experiment['target']
-    return False
+
 
 
 def check_spearman(metrics, replication_type, isogenic_threshold,
@@ -1670,59 +1180,6 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
                                    level='WARNING')
 
 
-def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
-
-    if alignment_file['output_type'] in ['transcriptome alignments',
-                                         'unfiltered alignments']:
-        return False
-
-    if alignment_file['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
-        return False
-
-    quality_metrics = alignment_file.get('quality_metrics')
-
-    if (quality_metrics is None) or (quality_metrics == []):
-        return False
-
-    if assay_name in ['RAMPAGE', 'CAGE',
-                      'small RNA',
-                      'long RNA']:
-        for metric in quality_metrics:
-            if 'Uniquely mapped reads number' in metric and \
-               'Number of reads mapped to multiple loci' in metric:
-                unique = metric['Uniquely mapped reads number']
-                multi = metric['Number of reads mapped to multiple loci']
-                return unique + multi
-
-    elif assay_name in ['ChIP-seq']:
-
-        derived_from_files = alignment_file.get('derived_from')
-
-        if (derived_from_files is None) or (derived_from_files == []):
-            return False
-
-        if target is not False and \
-           'name' in target and target['name'] in ['H3K9me3-human', 'H3K9me3-mouse']:
-            # exception (mapped)
-            for metric in quality_metrics:
-                if 'processing_stage' in metric and \
-                    metric['processing_stage'] == 'unfiltered' and \
-                        'mapped' in metric:
-                    if "read1" in metric and "read2" in metric:
-                        return int(metric['mapped']/2)
-                    else:
-                        return int(metric['mapped'])
-        else:
-            # not exception (useful fragments)
-            for metric in quality_metrics:
-                if ('total' in metric) and \
-                   (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
-                    ('processing_stage' not in metric)):
-                    if "read1" in metric and "read2" in metric:
-                        return int(metric['total']/2)
-                    else:
-                        return int(metric['total'])
-    return False
 
 
 def check_file_chip_seq_library_complexity(alignment_file):
@@ -2246,133 +1703,6 @@ def check_file_read_length_rna(file_to_check, threshold_length, pipeline_title, 
                            level='NOT_COMPLIANT')
     return
 
-def get_organism_name(reps):
-    for rep in reps:
-        if rep['status'] not in ['replaced', 'revoked', 'deleted'] and \
-           'library' in rep and \
-           rep['library']['status'] not in ['replaced', 'revoked', 'deleted'] and \
-           'biosample' in rep['library'] and \
-           rep['library']['biosample']['status'] not in ['replaced', 'revoked', 'deleted']:
-            if 'organism' in rep['library']['biosample']:
-                return rep['library']['biosample']['organism']['name']
-    return False
-
-
-def scan_files_for_file_format_output_type(files_to_scan, f_format, f_output_type):
-    files_to_return = []
-    for f in files_to_scan:
-        if 'file_format' in f and f['file_format'] == f_format and \
-           'output_type' in f and f['output_type'] == f_output_type and \
-           f['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
-            files_to_return.append(f)
-    return files_to_return
-
-
-def scanFilesForOutputType(files_to_scan, o_type):
-    files_to_return = []
-    for f in files_to_scan:
-        if 'output_type' in f and f['output_type'] == o_type and \
-           f['status'] not in ['replaced', 'revoked', 'deleted']:
-            files_to_return.append(f)
-    return files_to_return
-
-
-def scanFilesForPipelineTitle_yes_chipseq(alignment_files, pipeline_titles):
-    for f in alignment_files:
-        if 'file_format' in f and f['file_format'] == 'bam' and \
-           f['status'] not in ['replaced', 'revoked', 'deleted'] and \
-           f['lab'] in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/'] and \
-           'analysis_step_version' in f and \
-           'analysis_step' in f['analysis_step_version'] and \
-           'pipelines' in f['analysis_step_version']['analysis_step']:
-            pipelines = f['analysis_step_version']['analysis_step']['pipelines']
-            for p in pipelines:
-                if p['title'] in pipeline_titles:
-                    return p['title']
-    return False
-
-
-def scanFilesForPipelineTitle_not_chipseq(files_to_scan, assemblies, pipeline_titles):
-    for f in files_to_scan:
-        if 'file_format' in f and f['file_format'] == 'bam' and \
-           f['status'] not in ['replaced', 'revoked', 'deleted'] and \
-           'assembly' in f and f['assembly'] in assemblies and \
-           f['lab'] == '/labs/encode-processing-pipeline/' and \
-           'analysis_step_version' in f and \
-           'analysis_step' in f['analysis_step_version'] and \
-           'pipelines' in f['analysis_step_version']['analysis_step']:
-            pipelines = f['analysis_step_version']['analysis_step']['pipelines']
-            for p in pipelines:
-                if p['title'] in pipeline_titles:
-                    return p['title']
-    return False
-
-
-def get_pipeline_objects(files):
-    added_pipelines = []
-    pipelines_to_return = []
-    for inspected_file in files:
-        if 'analysis_step_version' in inspected_file and \
-           'analysis_step' in inspected_file['analysis_step_version'] and \
-           'pipelines' in inspected_file['analysis_step_version']['analysis_step']:
-            for p in inspected_file['analysis_step_version']['analysis_step']['pipelines']:
-                if p['title'] not in added_pipelines:
-                    added_pipelines.append(p['title'])
-                    pipelines_to_return.append(p)
-    return pipelines_to_return
-
-
-def get_pipeline_by_name(pipeline_objects, pipeline_title):
-    for pipe in pipeline_objects:
-        if pipe['title'] == pipeline_title:
-            return pipe
-    return None
-
-
-def getPipelines(alignment_files):
-    pipelines = set()
-    for alignment_file in alignment_files:
-        if 'analysis_step_version' in alignment_file and \
-           'analysis_step' in alignment_file['analysis_step_version'] and \
-           'pipelines' in alignment_file['analysis_step_version']['analysis_step']:
-            for p in alignment_file['analysis_step_version']['analysis_step']['pipelines']:
-                pipelines.add(p['title'])
-    return pipelines
-
-# def audit_experiment_needs_pipeline(value, system): removed in release 56
-# http://redmine.encodedcc.org/issues/4990
-
-
-def scanFilesForPipeline(files_to_scan, pipeline_title_list):
-    for f in files_to_scan:
-        if 'analysis_step_version' not in f:
-            continue
-        else:
-            if 'analysis_step' not in f['analysis_step_version']:
-                continue
-            else:
-                if 'pipelines' not in f['analysis_step_version']['analysis_step']:
-                    continue
-                else:
-                    pipelines = f['analysis_step_version']['analysis_step']['pipelines']
-                    for p in pipelines:
-                        if p['title'] in pipeline_title_list:
-                            return True
-    return False
-
-
-def get_biosamples(experiment):
-    accessions_set = set()
-    biosamples_list = []
-    if 'replicates' in experiment:
-        for rep in experiment['replicates']:
-            if ('library' in rep) and ('biosample' in rep['library']):
-                biosample = rep['library']['biosample']
-                if biosample['accession'] not in accessions_set:
-                    accessions_set.add(biosample['accession'])
-                    biosamples_list.append(biosample)
-    return biosamples_list
-
 
 def audit_experiment_internal_tag(value):
 
@@ -2443,58 +1773,7 @@ def audit_experiment_internal_tag(value):
                                        detail, level='INTERNAL_ACTION')
 
 
-def is_gtex_experiment(experiment_to_check):
-    for rep in experiment_to_check['replicates']:
-        if ('library' in rep) and ('biosample' in rep['library']) and \
-           ('donor' in rep['library']['biosample']):
-            if rep['library']['biosample']['donor']['accession'] in gtexDonorsList:
-                return True
-    return False
 
-'''
-@audit_checker('experiment', frame=['replicates',
-                                    'replicates.library',
-                                    'replicates.library.biosample',
-                                    'replicates.library.biosample.donor'])
-def audit_experiment_gtex_biosample(value, system):
-
-    #GTEx experiments should include biosample(s) from the same tissue and same donor
-    #The number of biosamples could be > 1.
-
-    if value['status'] in ['deleted', 'replaced']:
-        return
-
-    if len(value['replicates']) < 2:
-        return
-
-    if is_gtex_experiment(value) is False:
-        return
-
-    donors_set = set()
-    tissues_set = set()
-
-    for rep in value['replicates']:
-        if ('library' in rep) and ('biosample' in rep['library']):
-            biosampleObject = rep['library']['biosample']
-            if ('donor' in biosampleObject):
-                donors_set.add(biosampleObject['donor']['accession'])
-                tissues_set.add(biosampleObject['biosample_term_name'])
-
-    if len(donors_set) > 1:
-        detail = 'GTEx experiment {} '.format(value['@id']) + \
-                 'contains {} '.format(len(donors_set)) + \
-                 'donors, while according to HRWG decision it should have a single donor.'
-        yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='INTERNAL_ACTION')
-
-    if len(tissues_set) > 1:
-        detail = 'GTEx experiment {} '.format(value['@id']) + \
-                 'was performed using  {} '.format(len(tissues_set)) + \
-                 'tissue types, while according to HRWG decision it should have ' + \
-                 'been perfomed using a single tissue type.'
-        yield AuditFailure('invalid modelling of GTEx experiment ', detail, level='INTERNAL_ACTION')
-
-    return
-'''
 
 def audit_experiment_geo_submission(value):
     if value['status'] not in ['released']:
@@ -2517,8 +1796,7 @@ def audit_experiment_geo_submission(value):
         yield AuditFailure('experiment not submitted to GEO', detail, level='INTERNAL_ACTION')
     return
 
-# def audit_experiment_biosample_term_id(value, system): removed release 56
-# http://redmine.encodedcc.org/issues/4900
+
 
 
 def audit_experiment_consistent_sequencing_runs(value):
@@ -3090,26 +2368,7 @@ def audit_experiment_platforms_mismatches(value):
     return
 
 
-def get_platforms_used_in_experiment(experiment):
-    platforms = set()
-    if 'original_files' not in experiment or \
-       experiment['original_files'] == []:
-        return platforms
 
-    for f in experiment['original_files']:
-        if f['output_category'] == 'raw data' and \
-           'platform' in f and \
-           f['status'] not in ['deleted', 'archived', 'replaced']:
-            # collapsing interchangable platforms
-            if f['platform']['term_name'] in ['HiSeq 2000', 'HiSeq 2500']:
-                platforms.add('HiSeq 2000/2500')
-            elif f['platform']['term_name'] in ['Illumina Genome Analyzer IIx',
-                                                'Illumina Genome Analyzer IIe',
-                                                'Illumina Genome Analyzer II']:
-                platforms.add('Illumina Genome Analyzer II/e/x')
-            else:
-                platforms.add(f['platform']['term_name'])
-    return platforms
 
 
 def audit_experiment_ChIP_control(value):
@@ -3519,16 +2778,7 @@ def audit_missing_construct(value):
                 yield AuditFailure('mismatched construct target', detail, level='ERROR')
 
 
-def get_mapped_length(bam_file):
-    mapped_length = bam_file.get('mapped_read_length')
-    if mapped_length:
-        return mapped_length
-    derived_from_fastqs = get_derived_from_files_set([bam_file], 'fastq', True)
-    for f in derived_from_fastqs:
-        length = f.get('read_length')
-        if length:
-            return length
-    return None
+
 
 def audit_experiment_mapped_read_length(value):
     assay_term_id = value.get('assay_term_id')
@@ -3559,3 +2809,668 @@ def audit_experiment_mapped_read_length(value):
                              'reads lengths {}.'.format(sorted(list(read_lengths_set)))
                     yield AuditFailure('inconsistent mapped reads lengths',
                                        detail, level='INTERNAL_ACTION')
+
+
+
+# standards checking functions
+
+
+# utility functions
+
+def extract_assemblies(assemblies, file_names):
+    to_return = set()
+    for f_name in file_names:
+        if f_name in assemblies:
+            to_return.add(assemblies[f_name])
+    return sorted(list(to_return))
+
+
+def assemblies_detail(assemblies):
+    assemblies_detail = ''
+    if assemblies:
+        if len(assemblies) > 1:
+            assemblies_detail = "for {} assemblies ".format(
+                str(assemblies).replace('\'', ' '))
+        else:
+            assemblies_detail = "for {} assembly ".format(
+                assemblies[0])
+    return assemblies_detail
+
+
+
+
+def is_single_replicate(replicates_string):
+    if ',' not in replicates_string:
+        return True
+    return False
+
+
+
+def get_bio_replicates(experiment):
+    bio_reps = set()
+    for rep in experiment['replicates']:
+        if rep['status'] not in ['deleted']:
+            bio_reps.add(str(rep['biological_replicate_number']))
+    return bio_reps
+
+
+def get_assemblies(list_of_files):
+    assemblies = set()
+    for f in list_of_files:
+        if f['status'] not in ['replaced', 'revoked', 'deleted', 'archived'] and \
+           f['output_category'] not in ['raw data', 'reference'] and \
+           f.get('assembly') is not None:
+            assemblies.add(f['assembly'])
+    return assemblies
+
+
+def is_outdated_bams_replicate(bam_file, original_files):
+    if 'lab' not in bam_file or bam_file['lab'] != '/labs/encode-processing-pipeline/':
+        return False
+    derived_from_fastqs = get_derived_from_files_set([bam_file], 'fastq', True)
+    if len(derived_from_fastqs) == 0:
+        return False
+
+    derived_from_fastq_accessions = get_file_accessions(derived_from_fastqs)
+
+    bio_rep = []
+    for fastq_file in derived_from_fastqs:
+        if 'biological_replicates' in fastq_file and \
+           len(fastq_file['biological_replicates']) != 0:
+            for entry in fastq_file['biological_replicates']:
+                bio_rep.append(entry)
+            break
+    fastq_files = scan_files_for_file_format_output_type(
+        original_files,
+        'fastq', 'reads')
+    bio_rep_fastqs = []
+    for fastq_file in fastq_files:
+        if 'biological_replicates' in fastq_file:
+            for entry in fastq_file['biological_replicates']:
+                if entry in bio_rep:
+                    bio_rep_fastqs.append(fastq_file)
+                    break
+
+    replicate_fastq_accessions = get_file_accessions(bio_rep_fastqs)
+    for file_object in bio_rep_fastqs:
+        file_acc = file_object['accession']
+        if file_acc not in derived_from_fastq_accessions:
+            paired_file_id = file_object.get('paired_with')
+            if paired_file_id and \
+               paired_file_id.split('/')[2] not in derived_from_fastq_accessions:
+                return True
+            elif not paired_file_id:
+                return True
+
+    for f_accession in derived_from_fastq_accessions:
+        if f_accession not in replicate_fastq_accessions:
+            return True
+    return False
+
+def has_only_raw_files_in_derived_from(bam_file):
+    if 'derived_from' in bam_file:
+        if bam_file['derived_from'] == []:
+            return False
+        for f in bam_file['derived_from']:
+            if f['file_format'] not in ['fastq', 'tar', 'fasta']:
+                return False
+        return True
+    else:
+        return False
+
+
+def get_file_accessions(list_of_files):
+    accessions_set = set()
+    for f in list_of_files:
+        accessions_set.add(f['accession'])
+    return accessions_set
+
+
+def get_derived_from_files_set(list_of_files, file_format, object_flag):
+    derived_from_set = set()
+    derived_from_objects_list = []
+    for f in list_of_files:
+        if 'derived_from' in f:
+            for d_f in f['derived_from']:
+                if 'file_format' in d_f and d_f['file_format'] == file_format and \
+                   d_f['accession'] not in derived_from_set:
+                    derived_from_set.add(d_f['accession'])
+                    if object_flag:
+                        derived_from_objects_list.append(d_f)
+    if object_flag:
+        return derived_from_objects_list
+    return derived_from_set
+
+def has_no_unfiltered(filtered_bam, unfiltered_bams):
+    if 'assembly' in filtered_bam:
+        for f in unfiltered_bams:
+            if 'assembly' in f:
+                if f['assembly'] == filtered_bam['assembly'] and \
+                   f['biological_replicates'] == filtered_bam['biological_replicates']:
+                    derived_candidate = set()
+                    derived_filtered = set()
+                    if 'derived_from' in f:
+                        for entry in f['derived_from']:
+                            derived_candidate.add(entry['uuid'])
+                    if 'derived_from' in filtered_bam:
+                        for entry in filtered_bam['derived_from']:
+                            derived_filtered.add(entry['uuid'])
+                    if derived_candidate == derived_filtered:
+                        return False
+        return True
+    return False
+
+def is_gtex_experiment(experiment_to_check):
+    for rep in experiment_to_check['replicates']:
+        if ('library' in rep) and ('biosample' in rep['library']) and \
+           ('donor' in rep['library']['biosample']):
+            if rep['library']['biosample']['donor']['accession'] in gtexDonorsList:
+                return True
+    return False
+
+def get_platforms_used_in_experiment(experiment):
+    platforms = set()
+    if 'original_files' not in experiment or \
+       experiment['original_files'] == []:
+        return platforms
+
+    for f in experiment['original_files']:
+        if f['output_category'] == 'raw data' and \
+           'platform' in f and \
+           f['status'] not in ['deleted', 'archived', 'replaced']:
+            # collapsing interchangable platforms
+            if f['platform']['term_name'] in ['HiSeq 2000', 'HiSeq 2500']:
+                platforms.add('HiSeq 2000/2500')
+            elif f['platform']['term_name'] in ['Illumina Genome Analyzer IIx',
+                                                'Illumina Genome Analyzer IIe',
+                                                'Illumina Genome Analyzer II']:
+                platforms.add('Illumina Genome Analyzer II/e/x')
+            else:
+                platforms.add(f['platform']['term_name'])
+    return platforms
+
+
+def get_mapped_length(bam_file):
+    mapped_length = bam_file.get('mapped_read_length')
+    if mapped_length:
+        return mapped_length
+    derived_from_fastqs = get_derived_from_files_set([bam_file], 'fastq', True)
+    for f in derived_from_fastqs:
+        length = f.get('read_length')
+        if length:
+            return length
+    return None
+
+def get_control_bam(experiment_bam, pipeline_name):
+    #  get representative FASTQ file
+    if 'derived_from' not in experiment_bam or len(experiment_bam['derived_from']) < 1:
+        return False
+
+    derived_from_fastqs = experiment_bam['derived_from']
+    control_fastq = False
+    for entry in derived_from_fastqs:
+        if 'controlled_by' in entry and len(entry['controlled_by']) > 0:
+            control_fastq = entry['controlled_by'][0]  # getting representative FASTQ
+            break
+
+
+    # get representative FASTQ from control
+    if control_fastq is False:
+        return False
+    else:
+        if 'original_files' not in control_fastq['dataset']:
+            return False
+
+
+        control_bam = False
+        control_alignments = scan_files_for_file_format_output_type(control_fastq['dataset']['original_files'],
+                                                                    'bam', 'alignments')
+
+        for control_file in control_alignments:
+            if 'assembly' in control_file and 'assembly' in experiment_bam and \
+               control_file['assembly'] == experiment_bam['assembly']:
+                #  we have BAM file, now we have to make sure it was created by pipeline
+                #  with similar pipeline_name
+
+                is_same_pipeline = False
+                if has_pipelines(control_file) is True:
+                    for pipeline in \
+                            control_file['analysis_step_version']['analysis_step']['pipelines']:
+                        if pipeline['title'] == pipeline_name:
+                            is_same_pipeline = True
+                            break
+
+                if is_same_pipeline is True and \
+                   'derived_from' in control_file and \
+                   len(control_file['derived_from']) > 0:
+                    derived_list = control_file['derived_from']
+                    for entry in derived_list:
+                        if entry['accession'] == control_fastq['accession']:
+                            control_bam = control_file
+                            break
+        return control_bam
+
+
+def has_pipelines(bam_file):
+    if 'analysis_step_version' not in bam_file:
+        return False
+    if 'analysis_step' not in bam_file['analysis_step_version']:
+        return False
+    if 'pipelines' not in bam_file['analysis_step_version']['analysis_step']:
+        return False
+    return True
+
+def get_biosamples(experiment):
+    accessions_set = set()
+    biosamples_list = []
+    if 'replicates' in experiment:
+        for rep in experiment['replicates']:
+            if ('library' in rep) and ('biosample' in rep['library']):
+                biosample = rep['library']['biosample']
+                if biosample['accession'] not in accessions_set:
+                    accessions_set.add(biosample['accession'])
+                    biosamples_list.append(biosample)
+    return biosamples_list
+
+def get_target_name(bam_file):
+    if 'dataset' in bam_file and 'target' in bam_file['dataset'] and \
+       'name' in bam_file['dataset']['target']:
+        return bam_file['dataset']['target']['name']
+    return False
+
+def get_target(experiment):
+    if 'target' in experiment:
+        return experiment['target']
+    return False
+
+def get_organism_name(reps):
+    for rep in reps:
+        if rep['status'] not in ['replaced', 'revoked', 'deleted'] and \
+           'library' in rep and \
+           rep['library']['status'] not in ['replaced', 'revoked', 'deleted'] and \
+           'biosample' in rep['library'] and \
+           rep['library']['biosample']['status'] not in ['replaced', 'revoked', 'deleted']:
+            if 'organism' in rep['library']['biosample']:
+                return rep['library']['biosample']['organism']['name']
+    return False
+
+
+def scan_files_for_file_format_output_type(files_to_scan, f_format, f_output_type):
+    files_to_return = []
+    for f in files_to_scan:
+        if 'file_format' in f and f['file_format'] == f_format and \
+           'output_type' in f and f['output_type'] == f_output_type and \
+           f['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
+            files_to_return.append(f)
+    return files_to_return
+
+
+def scanFilesForOutputType(files_to_scan, o_type):
+    files_to_return = []
+    for f in files_to_scan:
+        if 'output_type' in f and f['output_type'] == o_type and \
+           f['status'] not in ['replaced', 'revoked', 'deleted']:
+            files_to_return.append(f)
+    return files_to_return
+
+
+def scanFilesForPipelineTitle_yes_chipseq(alignment_files, pipeline_titles):
+    for f in alignment_files:
+        if 'file_format' in f and f['file_format'] == 'bam' and \
+           f['status'] not in ['replaced', 'revoked', 'deleted'] and \
+           f['lab'] in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/'] and \
+           'analysis_step_version' in f and \
+           'analysis_step' in f['analysis_step_version'] and \
+           'pipelines' in f['analysis_step_version']['analysis_step']:
+            pipelines = f['analysis_step_version']['analysis_step']['pipelines']
+            for p in pipelines:
+                if p['title'] in pipeline_titles:
+                    return p['title']
+    return False
+
+
+def scanFilesForPipelineTitle_not_chipseq(files_to_scan, assemblies, pipeline_titles):
+    for f in files_to_scan:
+        if 'file_format' in f and f['file_format'] == 'bam' and \
+           f['status'] not in ['replaced', 'revoked', 'deleted'] and \
+           'assembly' in f and f['assembly'] in assemblies and \
+           f['lab'] == '/labs/encode-processing-pipeline/' and \
+           'analysis_step_version' in f and \
+           'analysis_step' in f['analysis_step_version'] and \
+           'pipelines' in f['analysis_step_version']['analysis_step']:
+            pipelines = f['analysis_step_version']['analysis_step']['pipelines']
+            for p in pipelines:
+                if p['title'] in pipeline_titles:
+                    return p['title']
+    return False
+
+
+def get_pipeline_objects(files):
+    added_pipelines = []
+    pipelines_to_return = []
+    for inspected_file in files:
+        if 'analysis_step_version' in inspected_file and \
+           'analysis_step' in inspected_file['analysis_step_version'] and \
+           'pipelines' in inspected_file['analysis_step_version']['analysis_step']:
+            for p in inspected_file['analysis_step_version']['analysis_step']['pipelines']:
+                if p['title'] not in added_pipelines:
+                    added_pipelines.append(p['title'])
+                    pipelines_to_return.append(p)
+    return pipelines_to_return
+
+
+def get_pipeline_by_name(pipeline_objects, pipeline_title):
+    for pipe in pipeline_objects:
+        if pipe['title'] == pipeline_title:
+            return pipe
+    return None
+
+
+def getPipelines(alignment_files):
+    pipelines = set()
+    for alignment_file in alignment_files:
+        if 'analysis_step_version' in alignment_file and \
+           'analysis_step' in alignment_file['analysis_step_version'] and \
+           'pipelines' in alignment_file['analysis_step_version']['analysis_step']:
+            for p in alignment_file['analysis_step_version']['analysis_step']['pipelines']:
+                pipelines.add(p['title'])
+    return pipelines
+
+
+
+
+def scanFilesForPipeline(files_to_scan, pipeline_title_list):
+    for f in files_to_scan:
+        if 'analysis_step_version' not in f:
+            continue
+        else:
+            if 'analysis_step' not in f['analysis_step_version']:
+                continue
+            else:
+                if 'pipelines' not in f['analysis_step_version']['analysis_step']:
+                    continue
+                else:
+                    pipelines = f['analysis_step_version']['analysis_step']['pipelines']
+                    for p in pipelines:
+                        if p['title'] in pipeline_title_list:
+                            return True
+    return False
+
+
+def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
+
+    if alignment_file['output_type'] in ['transcriptome alignments',
+                                         'unfiltered alignments']:
+        return False
+
+    if alignment_file['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
+        return False
+
+    quality_metrics = alignment_file.get('quality_metrics')
+
+    if (quality_metrics is None) or (quality_metrics == []):
+        return False
+
+    if assay_name in ['RAMPAGE', 'CAGE',
+                      'small RNA',
+                      'long RNA']:
+        for metric in quality_metrics:
+            if 'Uniquely mapped reads number' in metric and \
+               'Number of reads mapped to multiple loci' in metric:
+                unique = metric['Uniquely mapped reads number']
+                multi = metric['Number of reads mapped to multiple loci']
+                return unique + multi
+
+    elif assay_name in ['ChIP-seq']:
+
+        derived_from_files = alignment_file.get('derived_from')
+
+        if (derived_from_files is None) or (derived_from_files == []):
+            return False
+
+        if target is not False and \
+           'name' in target and target['name'] in ['H3K9me3-human', 'H3K9me3-mouse']:
+            # exception (mapped)
+            for metric in quality_metrics:
+                if 'processing_stage' in metric and \
+                    metric['processing_stage'] == 'unfiltered' and \
+                        'mapped' in metric:
+                    if "read1" in metric and "read2" in metric:
+                        return int(metric['mapped']/2)
+                    else:
+                        return int(metric['mapped'])
+        else:
+            # not exception (useful fragments)
+            for metric in quality_metrics:
+                if ('total' in metric) and \
+                   (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
+                    ('processing_stage' not in metric)):
+                    if "read1" in metric and "read2" in metric:
+                        return int(metric['total']/2)
+                    else:
+                        return int(metric['total'])
+    return False
+
+def get_non_tophat_alignment_files(files_list):
+    list_to_return = []
+    for f in files_list:
+        tophat_flag = False
+        if 'analysis_step_version' in f and \
+           'software_versions' in f['analysis_step_version']:
+            for soft_version in f['analysis_step_version']['software_versions']:
+                #  removing TopHat files
+                if 'software' in soft_version and \
+                   soft_version['software']['uuid'] == '7868f960-50ac-11e4-916c-0800200c9a66':
+                    tophat_flag = True
+        if tophat_flag is False and \
+           f['lab'] == '/labs/encode-processing-pipeline/':
+            list_to_return.append(f)
+    return list_to_return
+
+def get_read_lengths_wgbs(fastq_files):
+    list_of_lengths = []
+    for f in fastq_files:
+        if 'read_length' in f:
+            list_of_lengths.append(f['read_length'])
+    return list_of_lengths
+
+def get_metrics(files_list, metric_type, desired_assembly=None, desired_annotation=None):
+    metrics_dict = {}
+    for f in files_list:
+        if (desired_assembly is None or ('assembly' in f and
+                                         f['assembly'] == desired_assembly)) and \
+            (desired_annotation is None or ('genome_annotation' in f and
+                                            f['genome_annotation'] == desired_annotation)):
+            if 'quality_metrics' in f and len(f['quality_metrics']) > 0:
+                for qm in f['quality_metrics']:
+                    if metric_type in qm['@type']:
+                        if qm['uuid'] not in metrics_dict:
+                            metrics_dict[qm['uuid']] = qm
+    metrics = []
+    for k in metrics_dict:
+        metrics.append(metrics_dict[k])
+    return metrics
+
+def get_chip_seq_bam_read_depth(bam_file):
+    if bam_file['status'] in ['deleted', 'replaced', 'revoked']:
+        return False
+
+    if bam_file['file_format'] != 'bam' or bam_file['output_type'] != 'alignments':
+        return False
+
+    # Check to see if bam is from ENCODE or modERN pipelines
+    if bam_file['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
+        return False
+
+    if has_pipelines(bam_file) is False:
+        return False
+
+    quality_metrics = bam_file.get('quality_metrics')
+
+    if (quality_metrics is None) or (quality_metrics == []):
+        return False
+
+    read_depth = 0
+
+    for metric in quality_metrics:
+        if ('total' in metric and
+                (('processing_stage' in metric and metric['processing_stage'] == 'filtered') or
+                 ('processing_stage' not in metric))):
+            if "read1" in metric and "read2" in metric:
+                read_depth = int(metric['total']/2)
+            else:
+                read_depth = metric['total']
+            break
+
+    if read_depth == 0:
+        return False
+
+    return read_depth
+
+
+def check_award_condition(experiment, awards):
+    return experiment.get('award') and experiment.get('award')['rfa'] in awards
+
+function_dispatcher = {
+    'audit_X': audit_experiment,
+}
+
+@audit_checker('Experiment',
+               frame=[])
+def audit_experiment(value, system):
+    for function_name in function_dispatcher.keys():
+        for failure in function_dispatcher[function_name](value, system):
+            yield failure
+
+
+@audit_checker('Experiment', frame=[
+    'replicates.antibody',
+    'replicates.antibody.targets',
+    'replicates.antibody.characterizations',
+    'replicates.antibody.lot_reviews',
+    'original_files',
+    'original_files.award',
+    'original_files.replicate',
+    'original_files.platform',
+    'replicates',
+    'replicates.library',
+    'replicates.library.spikeins_used',
+    'replicates.library.spikeins_used.files',
+    'replicates.library.biosample',
+    'replicates.library.biosample.organism',
+    'replicates.library.biosample.constructs',
+    'replicates.library.biosample.constructs.target',
+    'replicates.library.biosample.donor',
+    'replicates.library.biosample.model_organism_donor_constructs',
+    'replicates.library.biosample.model_organism_donor_constructs.target',
+    'original_files.derived_from',
+    'original_files.step_run',
+    'original_files.derived_from.derived_from',
+    'original_files.derived_from.controlled_by',
+    'original_files.derived_from.controlled_by.dataset',
+    'original_files.derived_from.controlled_by.dataset.original_files.dataset.target',
+    'original_files.derived_from.controlled_by.dataset.original_files',
+    'original_files.derived_from.controlled_by.dataset.original_files.quality_metrics',
+    'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version',
+    'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step',
+    'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step.pipelines',
+    'original_files.derived_from.controlled_by.dataset.original_files.derived_from',
+    'original_files.analysis_step_version',
+    'original_files.analysis_step_version.analysis_step',
+    'original_files.analysis_step_version.analysis_step.pipelines',
+    'original_files.quality_metrics',
+    'original_files.quality_metrics.quality_metric_of',
+    'original_files.quality_metrics.quality_metric_of.replicate',
+    'original_files.analysis_step_version.software_versions',
+    'original_files.analysis_step_version.software_versions.software',
+    'possible_controls',
+    'possible_controls.original_files',
+    'possible_controls.original_files.platform',
+    'award',
+    'target',
+    'possible_controls.replicates',
+    'possible_controls.replicates.antibody',
+    'possible_controls.target'
+    ])
+def audit_experiment_entry_function(value, system):
+    for failure in audit_experiment_mixed_libraries(value):
+        yield failure
+    for failure in audit_experiment_pipeline_assay_details(value):
+        yield failure
+    for failure in audit_experiment_missing_unfiltered_bams(value):
+        yield failure
+    for failure in audit_experiment_with_uploading_files(value):
+        yield failure
+    for failure in audit_experiment_out_of_date_analysis(value):
+        yield failure
+    for failure in audit_experiment_internal_tag(value):
+        yield failure
+    for failure in audit_experiment_geo_submission(value):
+        yield failure
+    for failure in audit_experiment_consistent_sequencing_runs(value):
+        yield failure
+    for failure in audit_experiment_replicate_with_no_files(value):
+        yield failure
+    for failure in audit_experiment_mapped_read_length(value):
+        yield failure
+    for failure in audit_missing_construct(value):
+        yield failure
+    for failure in audit_library_RNA_size_range(value):
+        yield failure
+    for failure in audit_experiment_library_biosample(value):
+        yield failure
+    for failure in audit_experiment_biosample_term(value, system):
+        yield failure
+    for failure in audit_experiment_platforms_mismatches(value):
+        yield failure
+    for failure in audit_experiment_antibody_characterized(value):
+        yield failure
+    for failure in audit_experiment_replicated(value):
+        yield failure
+    for failure in audit_experiment_spikeins(value):
+        yield failure
+    for failure in audit_experiment_ChIP_control(value):
+        yield failure
+    for failure in audit_experiment_control(value):
+        yield failure
+    for failure in audit_experiment_assay(value):
+        yield failure
+    for failure in audit_experiment_target(value):
+        yield failure
+    for failure in audit_experiment_standards_dispatcher(value):
+        yield failure
+    for failure in audit_modERN_experiment_standards_dispatcher(value):
+        yield failure
+    for failure in audit_experiment_replicates_with_no_libraries(value):
+        yield failure
+    for failure in audit_experiment_isogeneity(value):
+        yield failure
+    for failure in audit_experiment_replicates_biosample(value):
+        yield failure
+    for failure in audit_experiment_technical_replicates_same_library(value):
+        yield failure
+    for failure in audit_experiment_documents(value):
+        yield failure
+    for failure in audit_experiment_chipseq_control_read_depth(value):
+        yield failure
+
+
+#  def audit_experiment_control_out_of_date_analysis(value, system):
+#  removed due to https://encodedcc.atlassian.net/browse/ENCD-3460
+
+
+# def create_pipeline_structures(files_to_scan, structure_type):
+# condensed under https://encodedcc.atlassian.net/browse/ENCD-3493
+
+# def check_structures(replicate_structures, control_flag, experiment):
+# https://encodedcc.atlassian.net/browse/ENCD-3538
+
+
+# def audit_experiment_gtex_biosample(value, system):
+# https://encodedcc.atlassian.net/browse/ENCD-3538
+
+# def audit_experiment_biosample_term_id(value, system): removed release 56
+# http://redmine.encodedcc.org/issues/4900
+
+# def audit_experiment_needs_pipeline(value, system): removed in release 56
+# http://redmine.encodedcc.org/issues/4990
