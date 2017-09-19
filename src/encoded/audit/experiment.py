@@ -2015,7 +2015,7 @@ def audit_experiment_replicated(value):
 
 
 
-def audit_experiment_replicates_with_no_libraries(value):
+def audit_experiment_replicates_with_no_libraries(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked', 'proposed']:
         return
     if len(value['replicates']) == 0:
@@ -2145,8 +2145,8 @@ def audit_experiment_replicates_biosample(value, system):
                     yield AuditFailure('technical replicates with not identical biosample',
                                        detail, level='ERROR')
                     return
-
-def audit_experiment_documents(value):
+# replicates.library
+def audit_experiment_documents(value, system):
     if not check_award_condition(value, [
             "ENCODE3", "modERN", "GGR", "ENCODE4",
             "ENCODE", "ENCODE2-Mouse", "Roadmap"]):
@@ -3332,6 +3332,8 @@ function_dispatcher = {
     'audit_isogeneity': audit_experiment_isogeneity,
     'audit_replicate_biosample': audit_experiment_replicates_biosample,
     'audit_replicate_library': audit_experiment_technical_replicates_same_library,
+    'audit_documents': audit_experiment_documents,
+    'audit_replicate_without_libraries': audit_experiment_replicates_with_no_libraries,
 }
 
 
@@ -3443,16 +3445,16 @@ def audit_experiment_entry_function(value, system):
         yield failure
     for failure in audit_modERN_experiment_standards_dispatcher(value):
         yield failure
-    for failure in audit_experiment_replicates_with_no_libraries(value):
-        yield failure
+    #for failure in audit_experiment_replicates_with_no_libraries(value):
+    #    yield failure
     #for failure in audit_experiment_isogeneity(value):
     #    yield failure
     #for failure in audit_experiment_replicates_biosample(value):
     #    yield failure
     #for failure in audit_experiment_technical_replicates_same_library(value):
     #    yield failure
-    for failure in audit_experiment_documents(value):
-        yield failure
+    #for failure in audit_experiment_documents(value):
+    #    yield failure
     for failure in audit_experiment_chipseq_control_read_depth(value):
         yield failure
 
