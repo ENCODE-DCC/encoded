@@ -283,7 +283,7 @@ def audit_experiment_missing_unfiltered_bams(value):
 
 
 
-def audit_experiment_with_uploading_files(value):
+def audit_experiment_with_uploading_files(value, system):
     if 'original_files' not in value:
         return
     for f in value['original_files']:
@@ -3085,25 +3085,6 @@ def get_organism_name(reps):
     return False
 
 
-def scan_files_for_file_format_output_type(files_to_scan, f_format, f_output_type):
-    files_to_return = []
-    for f in files_to_scan:
-        if 'file_format' in f and f['file_format'] == f_format and \
-           'output_type' in f and f['output_type'] == f_output_type and \
-           f['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
-            files_to_return.append(f)
-    return files_to_return
-
-
-def scanFilesForOutputType(files_to_scan, o_type):
-    files_to_return = []
-    for f in files_to_scan:
-        if 'output_type' in f and f['output_type'] == o_type and \
-           f['status'] not in ['replaced', 'revoked', 'deleted']:
-            files_to_return.append(f)
-    return files_to_return
-
-
 def scanFilesForPipelineTitle_yes_chipseq(alignment_files, pipeline_titles):
     for f in alignment_files:
         if 'file_format' in f and f['file_format'] == 'bam' and \
@@ -3315,6 +3296,71 @@ def get_chip_seq_bam_read_depth(bam_file):
 
     return read_depth
 
+
+
+# global valriables calculation
+
+files_structure = {}
+
+def process_files(experiment):
+    original_files = experiment.get('original_files')
+    if original_files:
+        files_structure = create_files_mapping(original_files)
+
+def create_files_mapping(files_list):
+    to_return = {'original_files':{},
+                 'fastq_files':{},
+                 'alignments':{},
+                 'unfiltered_alignments':{},
+                 'transcriptome_alignments':{},
+                 'peaks_files':{},
+                 'gene_quantifications_files':{},
+                 'signal_files':{},
+                 'optimal_idr_peaks':{},
+                 'cpg_quantifications':{}}
+    for file_object in files_list:
+        if file_object['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
+            to_return['original_files'][file_object['accession']] = file_object
+        file_format = file_object.get('file_format')
+        file_output = file_object.get('output_type')
+
+        if file_format and file_format == 'fastq' and \
+           file_output and file_output == 'reads':
+            to_return['fastq_files'][file_object['accession']] = file_object
+
+        if file_format and file_format == 'bam' and \
+           file_output and file_output == 'alignments':
+            to_return['alignments'][file_object['accession']] = file_object
+
+        if file_format and file_format == 'bam' and \
+           file_output and file_output == 'unfiltered alignments':
+            to_return['unfiltered_alignments'][file_object['accession']] = file_object
+
+        if file_format and file_format == 'bam' and \
+           file_output and file_output == 'transcriptome alignments':
+            to_return['transcriptome_alignments'][file_object['accession']] = file_object
+       
+        if file_format and file_format == 'bed' and \
+           file_output and file_output == 'peaks':
+            to_return['peaks_files'][file_object['accession']] = file_object
+        
+        if file_output and file_output == 'gene quantifications':
+            to_return['gene_quantifications_files'][file_object['accession']] = file_object
+
+        if file_output and file_output == 'signal of unique reads':
+            to_return['signal_files'][file_object['accession']] = file_object
+        
+        if file_output and file_output == 'optimal idr thresholded peaks':
+            to_return['optimal_idr_peaks'][file_object['accession']] = file_object
+
+        if file_output and file_output == 'methylation state at CpG':
+            to_return['cpg_quantifications'][file_object['accession']] = file_object
+
+    return to_return 
+
+# approved utilities:
+
+
 def get_biosamples(experiment):
     accessions_set = set()
     biosamples_list = []
@@ -3341,8 +3387,12 @@ function_dispatcher = {
     'audit_target': audit_experiment_target,
     'audit_mixed_libraries': audit_experiment_mixed_libraries,
     'audit_internal_tags': audit_experiment_internal_tag,
+    'audit_geo_submission': audit_experiment_geo_submission,
+    'audit_uploading_files': audit_experiment_with_uploading_files,
 
 }
+
+# global variables useful for the audits (preventing repetitive calculation)
 
 
 @audit_checker('Experiment',
@@ -3354,8 +3404,10 @@ function_dispatcher = {
                       'replicates.library.biosample.donor',
                       'replicates.antibody',
                       'replicates.antibody.targets',
+                      'original_files'
                       ])
 def audit_experiment(value, system):
+    
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):
             yield failure
@@ -3415,14 +3467,14 @@ def audit_experiment_entry_function(value, system):
         yield failure
     for failure in audit_experiment_missing_unfiltered_bams(value):
         yield failure
-    for failure in audit_experiment_with_uploading_files(value):
-        yield failure
+    #for failure in audit_experiment_with_uploading_files(value):
+    #    yield failure
     for failure in audit_experiment_out_of_date_analysis(value):
         yield failure
     #for failure in audit_experiment_internal_tag(value):
     #    yield failure
-    for failure in audit_experiment_geo_submission(value):
-        yield failure
+    #for failure in audit_experiment_geo_submission(value):
+    #    yield failure
     for failure in audit_experiment_consistent_sequencing_runs(value):
         yield failure
     for failure in audit_experiment_replicate_with_no_files(value):
