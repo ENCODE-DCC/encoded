@@ -199,7 +199,7 @@ def check_control_read_depth_standards(value,
         return
 
 
-def audit_experiment_mixed_libraries(value):
+def audit_experiment_mixed_libraries(value, system):
     '''
     Experiments should not have mixed libraries nucleic acids
     '''
@@ -1704,7 +1704,7 @@ def check_file_read_length_rna(file_to_check, threshold_length, pipeline_title, 
     return
 
 
-def audit_experiment_internal_tag(value):
+def audit_experiment_internal_tag(value, system):
 
     if value['status'] in ['deleted', 'replaced']:
         return
@@ -1775,7 +1775,7 @@ def audit_experiment_internal_tag(value):
 
 
 
-def audit_experiment_geo_submission(value):
+def audit_experiment_geo_submission(value, system):
     if value['status'] not in ['released']:
         return
     if 'assay_term_id' in value and \
@@ -2191,8 +2191,9 @@ def audit_experiment_assay(value):
         detail = 'Assay_term_id is a New Term Request ({} - {})'.format(term_id, term_name)
         yield AuditFailure('NTR assay', detail, level='INTERNAL_ACTION')
 
-
-def audit_experiment_target(value):
+# replicates.antibody.target
+# target
+def audit_experiment_target(value, system):
     '''
     Certain assay types (ChIP-seq, ...) require valid targets and the replicate's
     antibodies should match.
@@ -2660,7 +2661,7 @@ def audit_experiment_antibody_characterized(value):
 
 
 
-def audit_experiment_library_biosample(value):
+def audit_experiment_library_biosample(value, system):
     if value['status'] in ['deleted', 'replaced']:
         return
 
@@ -3059,17 +3060,7 @@ def has_pipelines(bam_file):
         return False
     return True
 
-def get_biosamples(experiment):
-    accessions_set = set()
-    biosamples_list = []
-    if 'replicates' in experiment:
-        for rep in experiment['replicates']:
-            if ('library' in rep) and ('biosample' in rep['library']):
-                biosample = rep['library']['biosample']
-                if biosample['accession'] not in accessions_set:
-                    accessions_set.add(biosample['accession'])
-                    biosamples_list.append(biosample)
-    return biosamples_list
+
 
 def get_target_name(bam_file):
     if 'dataset' in bam_file and 'target' in bam_file['dataset'] and \
@@ -3324,6 +3315,17 @@ def get_chip_seq_bam_read_depth(bam_file):
 
     return read_depth
 
+def get_biosamples(experiment):
+    accessions_set = set()
+    biosamples_list = []
+    if 'replicates' in experiment:
+        for rep in experiment['replicates']:
+            if ('library' in rep) and ('biosample' in rep['library']):
+                biosample = rep['library']['biosample']
+                if biosample['accession'] not in accessions_set:
+                    accessions_set.add(biosample['accession'])
+                    biosamples_list.append(biosample)
+    return biosamples_list
 
 def check_award_condition(experiment, awards):
     return experiment.get('award') and experiment.get('award')['rfa'] in awards
@@ -3334,14 +3336,25 @@ function_dispatcher = {
     'audit_replicate_library': audit_experiment_technical_replicates_same_library,
     'audit_documents': audit_experiment_documents,
     'audit_replicate_without_libraries': audit_experiment_replicates_with_no_libraries,
+    'audit_experiment_biosample': audit_experiment_biosample_term,
+    'audit_library_biosample': audit_experiment_library_biosample,
+    'audit_target': audit_experiment_target,
+    'audit_mixed_libraries': audit_experiment_mixed_libraries,
+    'audit_internal_tags': audit_experiment_internal_tag,
+
 }
 
 
 @audit_checker('Experiment',
-               frame=['replicates',
+               frame=['award',
+                      'target',
+                      'replicates',
                       'replicates.library',
                       'replicates.library.biosample',
-                      'replicates.library.biosample.donor'])
+                      'replicates.library.biosample.donor',
+                      'replicates.antibody',
+                      'replicates.antibody.targets',
+                      ])
 def audit_experiment(value, system):
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):
@@ -3349,8 +3362,7 @@ def audit_experiment(value, system):
 
 
 @audit_checker('Experiment', frame=[
-    'replicates.antibody',
-    'replicates.antibody.targets',
+
     'replicates.antibody.characterizations',
     'replicates.antibody.lot_reviews',
     'original_files',
@@ -3391,14 +3403,14 @@ def audit_experiment(value, system):
     'possible_controls.original_files',
     'possible_controls.original_files.platform',
     'award',
-    'target',
+ 
     'possible_controls.replicates',
     'possible_controls.replicates.antibody',
     'possible_controls.target'
     ])
 def audit_experiment_entry_function(value, system):
-    for failure in audit_experiment_mixed_libraries(value):
-        yield failure
+    #for failure in audit_experiment_mixed_libraries(value):
+    #    yield failure
     for failure in audit_experiment_pipeline_assay_details(value):
         yield failure
     for failure in audit_experiment_missing_unfiltered_bams(value):
@@ -3407,8 +3419,8 @@ def audit_experiment_entry_function(value, system):
         yield failure
     for failure in audit_experiment_out_of_date_analysis(value):
         yield failure
-    for failure in audit_experiment_internal_tag(value):
-        yield failure
+    #for failure in audit_experiment_internal_tag(value):
+    #    yield failure
     for failure in audit_experiment_geo_submission(value):
         yield failure
     for failure in audit_experiment_consistent_sequencing_runs(value):
@@ -3421,10 +3433,10 @@ def audit_experiment_entry_function(value, system):
         yield failure
     for failure in audit_library_RNA_size_range(value):
         yield failure
-    for failure in audit_experiment_library_biosample(value):
-        yield failure
-    for failure in audit_experiment_biosample_term(value, system):
-        yield failure
+    #for failure in audit_experiment_library_biosample(value):
+    #    yield failure
+    #for failure in audit_experiment_biosample_term(value, system):
+    #    yield failure
     for failure in audit_experiment_platforms_mismatches(value):
         yield failure
     for failure in audit_experiment_antibody_characterized(value):
@@ -3439,8 +3451,8 @@ def audit_experiment_entry_function(value, system):
         yield failure
     for failure in audit_experiment_assay(value):
         yield failure
-    for failure in audit_experiment_target(value):
-        yield failure
+    #for failure in audit_experiment_target(value):
+    #    yield failure
     for failure in audit_experiment_standards_dispatcher(value):
         yield failure
     for failure in audit_modERN_experiment_standards_dispatcher(value):
