@@ -223,7 +223,6 @@ class ExperimentComponent extends React.Component {
         // collect up library documents.
         const libraryDocs = [];
         let biosamples = [];
-        let geneticModifications = [];
         if (replicates) {
             biosamples = _.compact(replicates.map((replicate) => {
                 if (replicate.library) {
@@ -231,17 +230,11 @@ class ExperimentComponent extends React.Component {
                         Array.prototype.push.apply(libraryDocs, replicate.library.documents);
                     }
 
-                    // Collect biosample genetic modifications
-                    if (replicate.library.biosample && replicate.library.biosample.applied_modifications && replicate.library.biosample.applied_modifications.length) {
-                        geneticModifications = geneticModifications.concat(replicate.library.biosample.applied_modifications);
-                    }
-
                     return replicate.library.biosample;
                 }
                 return null;
             }));
         }
-        geneticModifications = _(geneticModifications).uniq(gm => gm['@id']);
 
         // Create platforms array from file platforms; ignore duplicate platforms.
         const platforms = {};
@@ -643,10 +636,6 @@ class ExperimentComponent extends React.Component {
                     </PanelBody>
                 </Panel>
 
-                {geneticModifications.length ?
-                    <GeneticModificationSummary geneticModifications={geneticModifications} />
-                : null}
-
                 {Object.keys(condensedReplicates).length ?
                     <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
@@ -764,6 +753,27 @@ const replicateTableColumns = {
     library: {
         title: 'Library',
         getValue: condensedReplicate => (condensedReplicate[0].library ? condensedReplicate[0].library.accession : ''),
+    },
+
+    genetic_modification: {
+        title: 'Modifications',
+        display: (condensedReplicate) => {
+            const replicate = condensedReplicate[0];
+            const gms = replicate.library && replicate.library.biosample && replicate.library.biosample.applied_modifications;
+            if (gms && gms.length) {
+                return (
+                    <span>
+                        {gms.map((gm, i) => (
+                            <span>
+                                {i > 0 ? <span>, </span> : null}
+                                <a href={gm['@id']} title={`View genetic modification ${gm.accession}`}>{gm.accession}</a>
+                            </span>
+                        ))}
+                    </span>
+                );
+            }
+            return null;
+        },
     },
 };
 
