@@ -130,4 +130,3 @@ class HumanDonor(Donor):
     })
     def children(self, request, parents):
         return paths_filtered_by_status(request, parents)
-
