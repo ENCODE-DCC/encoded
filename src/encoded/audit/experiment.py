@@ -1973,7 +1973,7 @@ def audit_experiment_replicate_with_no_files(value):
     return
 
 
-def audit_experiment_replicated(value):
+def audit_experiment_replicated(value, system):
 
     if not check_award_condition(value, [
             'ENCODE4', 'ENCODE3', 'GGR']):
@@ -2320,7 +2320,7 @@ def audit_experiment_control(value):
             return
 
 
-def audit_experiment_platforms_mismatches(value):
+def audit_experiment_platforms_mismatches(value, system):
     if value['status'] in ['deleted', 'replaced']:
         return
 
@@ -2328,10 +2328,10 @@ def audit_experiment_platforms_mismatches(value):
     if value.get("assay_term_id") in ["OBI:0001853", "NTR:0004774"]:
         return
 
-    if 'original_files' not in value or \
-       value['original_files'] == []:
+    if not files_structure.get('original_files'):
         return
-    platforms = get_platforms_used_in_experiment(value)
+
+    platforms = get_platforms_used_in_experiment(files_structure)
     if len(platforms) > 1:
         platforms_string = str(list(platforms)).replace('\'', '')
         detail = 'This experiment ' + \
@@ -2343,29 +2343,27 @@ def audit_experiment_platforms_mismatches(value):
         if 'possible_controls' in value and \
            value['possible_controls'] != []:
             for control in value['possible_controls']:
-                control_platforms = get_platforms_used_in_experiment(control)
-                if len(control_platforms) > 1:
-                    control_platforms_string = str(list(control_platforms)).replace('\'', '')
-                    detail = 'possible_controls is a list of experiment(s) that can serve ' + \
-                             'as analytical controls for a given experiment. ' + \
-                             'Experiment {} found in possible_controls list of this experiment '.format(control['@id']) + \
-                             'contains data produced on platform(s) {} '.format(control_platforms_string) + \
-                             'which are not compatible with platform {} '.format(platform_term_name) + \
-                             'used in this experiment.'
-                    yield AuditFailure('inconsistent platforms', detail, level='WARNING')
-                elif len(control_platforms) == 1 and \
-                        list(control_platforms)[0] != platform_term_name:
-                    detail = 'possible_controls is a list of experiment(s) that can serve ' + \
-                             'as analytical controls for a given experiment. ' + \
-                             'Experiment {} found in possible_controls list of this experiment '.format(control['@id']) + \
-                             'contains data produced on platform {} '.format(list(control_platforms)[0]) + \
-                             'which is not compatible with platform {} '.format(platform_term_name) + \
-                             'used in this experiment.'
-                    yield AuditFailure('inconsistent platforms', detail, level='WARNING')
-    return
-
-
-
+                if control.get('original_files'):
+                    control_platforms = get_platforms_used_in_experiment(
+                        create_files_mapping(control.get('original_files')))
+                    if len(control_platforms) > 1:
+                        control_platforms_string = str(list(control_platforms)).replace('\'', '')
+                        detail = 'possible_controls is a list of experiment(s) that can serve ' + \
+                                'as analytical controls for a given experiment. ' + \
+                                'Experiment {} found in possible_controls list of this experiment '.format(control['@id']) + \
+                                'contains data produced on platform(s) {} '.format(control_platforms_string) + \
+                                'which are not compatible with platform {} '.format(platform_term_name) + \
+                                'used in this experiment.'
+                        yield AuditFailure('inconsistent platforms', detail, level='WARNING')
+                    elif len(control_platforms) == 1 and \
+                            list(control_platforms)[0] != platform_term_name:
+                        detail = 'possible_controls is a list of experiment(s) that can serve ' + \
+                                'as analytical controls for a given experiment. ' + \
+                                'Experiment {} found in possible_controls list of this experiment '.format(control['@id']) + \
+                                'contains data produced on platform {} '.format(list(control_platforms)[0]) + \
+                                'which is not compatible with platform {} '.format(platform_term_name) + \
+                                'used in this experiment.'
+                        yield AuditFailure('inconsistent platforms', detail, level='WARNING')
 
 
 def audit_experiment_ChIP_control(value):
@@ -2701,8 +2699,8 @@ def audit_library_RNA_size_range(value, system):
                      'the size range of fragments used to construct the library.'
             yield AuditFailure('missing RNA fragment size', detail, level='NOT_COMPLIANT')
 
-
-def audit_missing_construct(value):
+# value.replicate.libraries.biosample.constructs or model_organism_constructs . target
+def audit_missing_construct(value, system):
 
     if value['status'] in ['deleted', 'replaced', 'proposed', 'revoked']:
         return
@@ -2956,34 +2954,9 @@ def has_no_unfiltered(filtered_bam, unfiltered_bams):
         return True
     return False
 
-def is_gtex_experiment(experiment_to_check):
-    for rep in experiment_to_check['replicates']:
-        if ('library' in rep) and ('biosample' in rep['library']) and \
-           ('donor' in rep['library']['biosample']):
-            if rep['library']['biosample']['donor']['accession'] in gtexDonorsList:
-                return True
-    return False
 
-def get_platforms_used_in_experiment(experiment):
-    platforms = set()
-    if 'original_files' not in experiment or \
-       experiment['original_files'] == []:
-        return platforms
 
-    for f in experiment['original_files']:
-        if f['output_category'] == 'raw data' and \
-           'platform' in f and \
-           f['status'] not in ['deleted', 'archived', 'replaced']:
-            # collapsing interchangable platforms
-            if f['platform']['term_name'] in ['HiSeq 2000', 'HiSeq 2500']:
-                platforms.add('HiSeq 2000/2500')
-            elif f['platform']['term_name'] in ['Illumina Genome Analyzer IIx',
-                                                'Illumina Genome Analyzer IIe',
-                                                'Illumina Genome Analyzer II']:
-                platforms.add('Illumina Genome Analyzer II/e/x')
-            else:
-                platforms.add(f['platform']['term_name'])
-    return platforms
+
 
 
 def get_mapped_length(bam_file):
@@ -3356,6 +3329,24 @@ def create_files_mapping(files_list):
 
 # approved utilities:
 
+def get_platforms_used_in_experiment(files_structure_to_check):
+    platforms = set()
+    for file_object in files_structure_to_check.get('original_files').values():
+        if file_object['output_category'] == 'raw data' and \
+            'platform' in file_object:            
+            # collapsing interchangable platforms
+            if f['platform']['term_name'] in ['HiSeq 2000', 'HiSeq 2500']:
+                platforms.add('HiSeq 2000/2500')
+            elif f['platform']['term_name'] in ['Illumina Genome Analyzer IIx',
+                                                'Illumina Genome Analyzer IIe',
+                                                'Illumina Genome Analyzer II']:
+                platforms.add('Illumina Genome Analyzer II/e/x')
+            else:
+                platforms.add(f['platform']['term_name'])
+    return platforms
+
+
+   
 
 def get_biosamples(experiment):
     accessions_set = set()
@@ -3368,6 +3359,15 @@ def get_biosamples(experiment):
                     accessions_set.add(biosample['accession'])
                     biosamples_list.append(biosample)
     return biosamples_list
+
+
+def is_gtex_experiment(experiment_to_check):
+    for rep in experiment_to_check['replicates']:
+        if ('library' in rep) and ('biosample' in rep['library']) and \
+           ('donor' in rep['library']['biosample']):
+            if rep['library']['biosample']['donor']['accession'] in gtexDonorsList:
+                return True
+    return False
 
 def check_award_condition(experiment, awards):
     return experiment.get('award') and experiment.get('award')['rfa'] in awards
@@ -3384,9 +3384,13 @@ function_dispatcher = {
     'audit_mixed_libraries': audit_experiment_mixed_libraries,
     'audit_internal_tags': audit_experiment_internal_tag,
     'audit_geo_submission': audit_experiment_geo_submission,
-    'audit_uploading_files': audit_experiment_with_uploading_files,
+    'audit_replication': audit_experiment_replicated,
     'audit_RNA_size': audit_library_RNA_size_range,
+    'audit_missing_construct': audit_missing_construct,
 
+
+    'audit_platforms': audit_experiment_platforms_mismatches,
+    'audit_uploading_files': audit_experiment_with_uploading_files,
 }
 
 # global variables useful for the audits (preventing repetitive calculation)
@@ -3399,9 +3403,22 @@ function_dispatcher = {
                       'replicates.library',
                       'replicates.library.biosample',
                       'replicates.library.biosample.donor',
+                      'replicates.library.biosample.constructs',
+                      'replicates.library.biosample.constructs.target',
+                      'replicates.library.biosample.model_organism_donor_constructs',
+                      'replicates.library.biosample.model_organism_donor_constructs.target',
+
+
                       'replicates.antibody',
                       'replicates.antibody.targets',
-                      'original_files'
+
+                      'possible_controls',
+                      'possible_controls.original_files',
+                      'possible_controls.original_files.platform',
+
+                      'original_files',
+                      'original_files.platform',
+
                       ])
 def audit_experiment(value, system):
     process_files(value)
@@ -3415,20 +3432,18 @@ def audit_experiment(value, system):
 
     'replicates.antibody.characterizations',
     'replicates.antibody.lot_reviews',
-    'original_files',
+
     'original_files.award',
     'original_files.replicate',
-    'original_files.platform',
+    
     
     'replicates.library.spikeins_used',
     'replicates.library.spikeins_used.files',
 
     'replicates.library.biosample.organism',
-    'replicates.library.biosample.constructs',
-    'replicates.library.biosample.constructs.target',
 
-    'replicates.library.biosample.model_organism_donor_constructs',
-    'replicates.library.biosample.model_organism_donor_constructs.target',
+
+
     'original_files.derived_from',
     'original_files.step_run',
     'original_files.derived_from.derived_from',
@@ -3449,10 +3464,8 @@ def audit_experiment(value, system):
     'original_files.quality_metrics.quality_metric_of.replicate',
     'original_files.analysis_step_version.software_versions',
     'original_files.analysis_step_version.software_versions.software',
-    'possible_controls',
-    'possible_controls.original_files',
-    'possible_controls.original_files.platform',
-    'award',
+
+
  
     'possible_controls.replicates',
     'possible_controls.replicates.antibody',
@@ -3479,20 +3492,20 @@ def audit_experiment_entry_function(value, system):
         yield failure
     for failure in audit_experiment_mapped_read_length(value):
         yield failure
-    for failure in audit_missing_construct(value):
-        yield failure
+    #for failure in audit_missing_construct(value):
+    #    yield failure
     #for failure in audit_library_RNA_size_range(value):
     #    yield failure
     #for failure in audit_experiment_library_biosample(value):
     #    yield failure
     #for failure in audit_experiment_biosample_term(value, system):
     #    yield failure
-    for failure in audit_experiment_platforms_mismatches(value):
-        yield failure
+    #for failure in audit_experiment_platforms_mismatches(value):
+    #    yield failure
     for failure in audit_experiment_antibody_characterized(value):
         yield failure
-    for failure in audit_experiment_replicated(value):
-        yield failure
+    #for failure in audit_experiment_replicated(value):
+    #    yield failure
     for failure in audit_experiment_spikeins(value):
         yield failure
     for failure in audit_experiment_ChIP_control(value):
