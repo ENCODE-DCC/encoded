@@ -2028,15 +2028,12 @@ def audit_experiment_replicates_with_no_libraries(value):
             yield AuditFailure('replicate with no library', detail, level='ERROR')
     return
 
-
-def audit_experiment_isogeneity(value):
-
+# replicate.library.biosample.donor
+def audit_experiment_isogeneity(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
-
     if len(value['replicates']) < 2:
         return
-
     if value.get('replication_type') is None:
         detail = 'In experiment {} the replication_type cannot be determined'.format(value['@id'])
         yield AuditFailure('undetermined replication_type', detail, level='INTERNAL_ACTION')
@@ -2091,8 +2088,8 @@ def audit_experiment_isogeneity(value):
         yield AuditFailure('inconsistent sex', detail, level='NOT_COMPLIANT')
     return
 
-
-def audit_experiment_technical_replicates_same_library(value):
+# replicate.library
+def audit_experiment_technical_replicates_same_library(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
     biological_replicates_dict = {}
@@ -2111,8 +2108,8 @@ def audit_experiment_technical_replicates_same_library(value):
             else:
                 biological_replicates_dict[bio_rep_num].append(library['accession'])
 
-
-def audit_experiment_replicates_biosample(value):
+# replicate.library.biosample
+def audit_experiment_replicates_biosample(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
     biological_replicates_dict = {}
@@ -2815,6 +2812,8 @@ def audit_experiment_mapped_read_length(value):
 # standards checking functions
 
 
+
+
 # utility functions
 
 def extract_assemblies(assemblies, file_names):
@@ -3177,8 +3176,6 @@ def getPipelines(alignment_files):
     return pipelines
 
 
-
-
 def scanFilesForPipeline(files_to_scan, pipeline_title_list):
     for f in files_to_scan:
         if 'analysis_step_version' not in f:
@@ -3332,11 +3329,17 @@ def check_award_condition(experiment, awards):
     return experiment.get('award') and experiment.get('award')['rfa'] in awards
 
 function_dispatcher = {
-    'audit_X': audit_experiment,
+    'audit_isogeneity': audit_experiment_isogeneity,
+    'audit_replicate_biosample': audit_experiment_replicates_biosample,
+    'audit_replicate_library': audit_experiment_technical_replicates_same_library,
 }
 
+
 @audit_checker('Experiment',
-               frame=[])
+               frame=['replicates',
+                      'replicates.library',
+                      'replicates.library.biosample',
+                      'replicates.library.biosample.donor'])
 def audit_experiment(value, system):
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):
@@ -3352,15 +3355,14 @@ def audit_experiment(value, system):
     'original_files.award',
     'original_files.replicate',
     'original_files.platform',
-    'replicates',
-    'replicates.library',
+    
     'replicates.library.spikeins_used',
     'replicates.library.spikeins_used.files',
-    'replicates.library.biosample',
+
     'replicates.library.biosample.organism',
     'replicates.library.biosample.constructs',
     'replicates.library.biosample.constructs.target',
-    'replicates.library.biosample.donor',
+
     'replicates.library.biosample.model_organism_donor_constructs',
     'replicates.library.biosample.model_organism_donor_constructs.target',
     'original_files.derived_from',
@@ -3443,12 +3445,12 @@ def audit_experiment_entry_function(value, system):
         yield failure
     for failure in audit_experiment_replicates_with_no_libraries(value):
         yield failure
-    for failure in audit_experiment_isogeneity(value):
-        yield failure
-    for failure in audit_experiment_replicates_biosample(value):
-        yield failure
-    for failure in audit_experiment_technical_replicates_same_library(value):
-        yield failure
+    #for failure in audit_experiment_isogeneity(value):
+    #    yield failure
+    #for failure in audit_experiment_replicates_biosample(value):
+    #    yield failure
+    #for failure in audit_experiment_technical_replicates_same_library(value):
+    #    yield failure
     for failure in audit_experiment_documents(value):
         yield failure
     for failure in audit_experiment_chipseq_control_read_depth(value):
