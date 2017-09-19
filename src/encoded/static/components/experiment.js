@@ -739,7 +739,7 @@ const replicateTableColumns = {
                 return (
                     <span>
                         {gms.map((gm, i) => (
-                            <span>
+                            <span key={gm.uuid}>
                                 {i > 0 ? <span>, </span> : null}
                                 <a href={gm['@id']} title={`View genetic modification ${gm.accession}`}>{gm.accession}</a>
                             </span>
@@ -749,6 +749,10 @@ const replicateTableColumns = {
             }
             return null;
         },
+        hide: list => _(list).all((condensedReplicate) => {
+            const replicate = condensedReplicate[0];
+            return !(replicate.library && replicate.library.biosample && replicate.library.biosample.applied_modifications && replicate.library.biosample.applied_modifications.length);
+        }),
     },
 
     antibody_accession: {
