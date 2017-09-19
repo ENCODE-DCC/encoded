@@ -232,8 +232,8 @@ class ExperimentComponent extends React.Component {
                     }
 
                     // Collect biosample genetic modifications
-                    if (replicate.library.biosample && replicate.library.biosample.genetic_modifications && replicate.library.biosample.genetic_modifications.length) {
-                        geneticModifications = geneticModifications.concat(replicate.library.biosample.genetic_modifications);
+                    if (replicate.library.biosample && replicate.library.biosample.applied_modifications && replicate.library.biosample.applied_modifications.length) {
+                        geneticModifications = geneticModifications.concat(replicate.library.biosample.applied_modifications);
                     }
 
                     return replicate.library.biosample;
