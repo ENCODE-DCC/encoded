@@ -284,14 +284,13 @@ def audit_experiment_missing_unfiltered_bams(value):
 
 
 def audit_experiment_with_uploading_files(value, system):
-    if 'original_files' not in value:
-        return
-    for f in value['original_files']:
-        if f['status'] in ['uploading', 'upload failed', 'content error']:
-            detail = 'Experiment {} '.format(value['@id']) + \
-                     'contains a file {} '.format(f['@id']) + \
-                     'with the status {}.'.format(f['status'])
-            yield AuditFailure('file validation error', detail, level='INTERNAL_ACTION')
+    if files_structure.get('original_files'):
+        for file_object in files_structure.get('original_files').values():
+            if file_object['status'] in ['uploading', 'upload failed', 'content error']:
+                detail = 'Experiment {} '.format(value['@id']) + \
+                        'contains a file {} '.format(file_object['@id']) + \
+                        'with the status {}.'.format(file_object['status'])
+                yield AuditFailure('file validation error', detail, level='INTERNAL_ACTION')
 
 
 def audit_experiment_out_of_date_analysis(value):
@@ -2678,7 +2677,7 @@ def audit_experiment_library_biosample(value, system):
             yield AuditFailure('missing biosample', detail, level='ERROR')
 
 
-def audit_library_RNA_size_range(value):
+def audit_library_RNA_size_range(value, system):
     '''
     An RNA library should have a size_range specified.
     This needs to accomodate the rfa
@@ -2687,9 +2686,6 @@ def audit_library_RNA_size_range(value):
         return
 
     if value.get('assay_term_name') == 'transcription profiling by array assay':
-        return
-
-    if value['status'] in ['deleted']:
         return
 
     RNAs = ['RNA',
@@ -3320,41 +3316,41 @@ def create_files_mapping(files_list):
                  'cpg_quantifications':{}}
     for file_object in files_list:
         if file_object['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
-            to_return['original_files'][file_object['accession']] = file_object
+            to_return['original_files'][file_object['@id']] = file_object
         file_format = file_object.get('file_format')
         file_output = file_object.get('output_type')
 
         if file_format and file_format == 'fastq' and \
            file_output and file_output == 'reads':
-            to_return['fastq_files'][file_object['accession']] = file_object
+            to_return['fastq_files'][file_object['@id']] = file_object
 
         if file_format and file_format == 'bam' and \
            file_output and file_output == 'alignments':
-            to_return['alignments'][file_object['accession']] = file_object
+            to_return['alignments'][file_object['@id']] = file_object
 
         if file_format and file_format == 'bam' and \
            file_output and file_output == 'unfiltered alignments':
-            to_return['unfiltered_alignments'][file_object['accession']] = file_object
+            to_return['unfiltered_alignments'][file_object['@id']] = file_object
 
         if file_format and file_format == 'bam' and \
            file_output and file_output == 'transcriptome alignments':
-            to_return['transcriptome_alignments'][file_object['accession']] = file_object
+            to_return['transcriptome_alignments'][file_object['@id']] = file_object
        
         if file_format and file_format == 'bed' and \
            file_output and file_output == 'peaks':
-            to_return['peaks_files'][file_object['accession']] = file_object
+            to_return['peaks_files'][file_object['@id']] = file_object
         
         if file_output and file_output == 'gene quantifications':
-            to_return['gene_quantifications_files'][file_object['accession']] = file_object
+            to_return['gene_quantifications_files'][file_object['@id']] = file_object
 
         if file_output and file_output == 'signal of unique reads':
-            to_return['signal_files'][file_object['accession']] = file_object
+            to_return['signal_files'][file_object['@id']] = file_object
         
         if file_output and file_output == 'optimal idr thresholded peaks':
-            to_return['optimal_idr_peaks'][file_object['accession']] = file_object
+            to_return['optimal_idr_peaks'][file_object['@id']] = file_object
 
         if file_output and file_output == 'methylation state at CpG':
-            to_return['cpg_quantifications'][file_object['accession']] = file_object
+            to_return['cpg_quantifications'][file_object['@id']] = file_object
 
     return to_return 
 
@@ -3389,6 +3385,7 @@ function_dispatcher = {
     'audit_internal_tags': audit_experiment_internal_tag,
     'audit_geo_submission': audit_experiment_geo_submission,
     'audit_uploading_files': audit_experiment_with_uploading_files,
+    'audit_RNA_size': audit_library_RNA_size_range,
 
 }
 
@@ -3407,6 +3404,7 @@ function_dispatcher = {
                       'original_files'
                       ])
 def audit_experiment(value, system):
+    process_files(value)
     
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):
@@ -3483,8 +3481,8 @@ def audit_experiment_entry_function(value, system):
         yield failure
     for failure in audit_missing_construct(value):
         yield failure
-    for failure in audit_library_RNA_size_range(value):
-        yield failure
+    #for failure in audit_library_RNA_size_range(value):
+    #    yield failure
     #for failure in audit_experiment_library_biosample(value):
     #    yield failure
     #for failure in audit_experiment_biosample_term(value, system):
