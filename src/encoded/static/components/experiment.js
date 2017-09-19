@@ -730,6 +730,27 @@ const replicateTableColumns = {
         },
     },
 
+    genetic_modification: {
+        title: 'Modifications',
+        display: (condensedReplicate) => {
+            const replicate = condensedReplicate[0];
+            const gms = replicate.library && replicate.library.biosample && replicate.library.biosample.applied_modifications;
+            if (gms && gms.length) {
+                return (
+                    <span>
+                        {gms.map((gm, i) => (
+                            <span>
+                                {i > 0 ? <span>, </span> : null}
+                                <a href={gm['@id']} title={`View genetic modification ${gm.accession}`}>{gm.accession}</a>
+                            </span>
+                        ))}
+                    </span>
+                );
+            }
+            return null;
+        },
+    },
+
     antibody_accession: {
         title: 'Antibody',
         display: (condensedReplicate) => {
@@ -753,27 +774,6 @@ const replicateTableColumns = {
     library: {
         title: 'Library',
         getValue: condensedReplicate => (condensedReplicate[0].library ? condensedReplicate[0].library.accession : ''),
-    },
-
-    genetic_modification: {
-        title: 'Modifications',
-        display: (condensedReplicate) => {
-            const replicate = condensedReplicate[0];
-            const gms = replicate.library && replicate.library.biosample && replicate.library.biosample.applied_modifications;
-            if (gms && gms.length) {
-                return (
-                    <span>
-                        {gms.map((gm, i) => (
-                            <span>
-                                {i > 0 ? <span>, </span> : null}
-                                <a href={gm['@id']} title={`View genetic modification ${gm.accession}`}>{gm.accession}</a>
-                            </span>
-                        ))}
-                    </span>
-                );
-            }
-            return null;
-        },
     },
 };
 
