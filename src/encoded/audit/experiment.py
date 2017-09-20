@@ -2175,7 +2175,7 @@ def audit_experiment_documents(value, system):
         yield AuditFailure('missing documents', detail, level='NOT_COMPLIANT')
 
 
-def audit_experiment_assay(value):
+def audit_experiment_assay(value, system):
     '''
     Experiments should have assays with valid ontologies term ids and names that
     are a valid synonym.
@@ -2270,7 +2270,7 @@ def audit_experiment_target(value, system):
 
 
 
-def audit_experiment_control(value):
+def audit_experiment_control(value, system):
     if not check_award_condition(value, [
             "ENCODE3", "ENCODE4", "modERN", "ENCODE2", "modENCODE",
             "ENCODE", "ENCODE2-Mouse", "Roadmap"]):
@@ -2317,7 +2317,6 @@ def audit_experiment_control(value):
                 control.get('biosample_term_name')) + \
                 'but this experiment is done on {}.'.format(value['biosample_term_name'])
             yield AuditFailure('inconsistent control', detail, level='ERROR')
-            return
 
 
 def audit_experiment_platforms_mismatches(value, system):
@@ -3387,8 +3386,9 @@ function_dispatcher = {
     'audit_replication': audit_experiment_replicated,
     'audit_RNA_size': audit_library_RNA_size_range,
     'audit_missing_construct': audit_missing_construct,
+    'audit_NTR': audit_experiment_assay,
 
-
+    'audit_control', audit_experiment_control,
     'audit_platforms': audit_experiment_platforms_mismatches,
     'audit_uploading_files': audit_experiment_with_uploading_files,
 }
@@ -3510,10 +3510,10 @@ def audit_experiment_entry_function(value, system):
         yield failure
     for failure in audit_experiment_ChIP_control(value):
         yield failure
-    for failure in audit_experiment_control(value):
-        yield failure
-    for failure in audit_experiment_assay(value):
-        yield failure
+    #for failure in audit_experiment_control(value):
+    #    yield failure
+    #for failure in audit_experiment_assay(value):
+    #    yield failure
     #for failure in audit_experiment_target(value):
     #    yield failure
     for failure in audit_experiment_standards_dispatcher(value):
