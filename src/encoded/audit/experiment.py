@@ -225,20 +225,12 @@ def audit_experiment_mixed_libraries(value, system):
     return
 
 
-def audit_experiment_pipeline_assay_details(value):
-    if 'original_files' not in value or len(value['original_files']) == 0:
-        return
-    files_to_check = []
-    for f in value['original_files']:
-        if f['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
-            files_to_check.append(f)
-    pipelines = get_pipeline_objects(files_to_check)
-
-    for p in pipelines:
-        if value.get('assay_term_name') not in p['assay_term_names']:
+def audit_experiment_pipeline_assay_details(value, system):
+    for pipeline in experiment_pipelines:
+        if value.get('assay_term_name') not in pipeline['assay_term_names']:
             detail = 'This experiment ' + \
                         'contains file(s) associated with ' + \
-                        'pipeline {} '.format(p['@id']) + \
+                        'pipeline {} '.format(pipeline['@id']) + \
                         'which assay_term_names list does not include experiments\'s asssay_term_name.'
             yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
 
@@ -3078,18 +3070,7 @@ def scanFilesForPipelineTitle_not_chipseq(files_to_scan, assemblies, pipeline_ti
     return False
 
 
-def get_pipeline_objects(files):
-    added_pipelines = []
-    pipelines_to_return = []
-    for inspected_file in files:
-        if 'analysis_step_version' in inspected_file and \
-           'analysis_step' in inspected_file['analysis_step_version'] and \
-           'pipelines' in inspected_file['analysis_step_version']['analysis_step']:
-            for p in inspected_file['analysis_step_version']['analysis_step']['pipelines']:
-                if p['title'] not in added_pipelines:
-                    added_pipelines.append(p['title'])
-                    pipelines_to_return.append(p)
-    return pipelines_to_return
+
 
 
 def get_pipeline_by_name(pipeline_objects, pipeline_title):
@@ -3263,11 +3244,13 @@ def get_chip_seq_bam_read_depth(bam_file):
 # global valriables calculation
 
 files_structure = {}
+experiment_pipelines = []
 
 def process_files(experiment):
     original_files = experiment.get('original_files')
     if original_files:
         files_structure = create_files_mapping(original_files)
+        experiment_pipelines = get_pipeline_objects(files_structure.get('original_files').values())
 
 def create_files_mapping(files_list):
     to_return = {'original_files':{},
@@ -3283,40 +3266,41 @@ def create_files_mapping(files_list):
     for file_object in files_list:
         if file_object['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
             to_return['original_files'][file_object['@id']] = file_object
-        file_format = file_object.get('file_format')
-        file_output = file_object.get('output_type')
 
-        if file_format and file_format == 'fastq' and \
-           file_output and file_output == 'reads':
-            to_return['fastq_files'][file_object['@id']] = file_object
+            file_format = file_object.get('file_format')
+            file_output = file_object.get('output_type')
 
-        if file_format and file_format == 'bam' and \
-           file_output and file_output == 'alignments':
-            to_return['alignments'][file_object['@id']] = file_object
+            if file_format and file_format == 'fastq' and \
+            file_output and file_output == 'reads':
+                to_return['fastq_files'][file_object['@id']] = file_object
 
-        if file_format and file_format == 'bam' and \
-           file_output and file_output == 'unfiltered alignments':
-            to_return['unfiltered_alignments'][file_object['@id']] = file_object
+            if file_format and file_format == 'bam' and \
+            file_output and file_output == 'alignments':
+                to_return['alignments'][file_object['@id']] = file_object
 
-        if file_format and file_format == 'bam' and \
-           file_output and file_output == 'transcriptome alignments':
-            to_return['transcriptome_alignments'][file_object['@id']] = file_object
-       
-        if file_format and file_format == 'bed' and \
-           file_output and file_output == 'peaks':
-            to_return['peaks_files'][file_object['@id']] = file_object
+            if file_format and file_format == 'bam' and \
+            file_output and file_output == 'unfiltered alignments':
+                to_return['unfiltered_alignments'][file_object['@id']] = file_object
+
+            if file_format and file_format == 'bam' and \
+            file_output and file_output == 'transcriptome alignments':
+                to_return['transcriptome_alignments'][file_object['@id']] = file_object
         
-        if file_output and file_output == 'gene quantifications':
-            to_return['gene_quantifications_files'][file_object['@id']] = file_object
+            if file_format and file_format == 'bed' and \
+            file_output and file_output == 'peaks':
+                to_return['peaks_files'][file_object['@id']] = file_object
+            
+            if file_output and file_output == 'gene quantifications':
+                to_return['gene_quantifications_files'][file_object['@id']] = file_object
 
-        if file_output and file_output == 'signal of unique reads':
-            to_return['signal_files'][file_object['@id']] = file_object
-        
-        if file_output and file_output == 'optimal idr thresholded peaks':
-            to_return['optimal_idr_peaks'][file_object['@id']] = file_object
+            if file_output and file_output == 'signal of unique reads':
+                to_return['signal_files'][file_object['@id']] = file_object
+            
+            if file_output and file_output == 'optimal idr thresholded peaks':
+                to_return['optimal_idr_peaks'][file_object['@id']] = file_object
 
-        if file_output and file_output == 'methylation state at CpG':
-            to_return['cpg_quantifications'][file_object['@id']] = file_object
+            if file_output and file_output == 'methylation state at CpG':
+                to_return['cpg_quantifications'][file_object['@id']] = file_object
 
     return to_return 
 
@@ -3326,7 +3310,7 @@ def get_platforms_used_in_experiment(files_structure_to_check):
     platforms = set()
     for file_object in files_structure_to_check.get('original_files').values():
         if file_object['output_category'] == 'raw data' and \
-            'platform' in file_object:            
+            'platform' in file_object:
             # collapsing interchangable platforms
             if f['platform']['term_name'] in ['HiSeq 2000', 'HiSeq 2500']:
                 platforms.add('HiSeq 2000/2500')
@@ -3339,6 +3323,18 @@ def get_platforms_used_in_experiment(files_structure_to_check):
     return platforms
 
 
+def get_pipeline_objects(files):
+    added_pipelines = []
+    pipelines_to_return = []
+    for inspected_file in files:
+        if 'analysis_step_version' in inspected_file and \
+           'analysis_step' in inspected_file['analysis_step_version'] and \
+           'pipelines' in inspected_file['analysis_step_version']['analysis_step']:
+            for p in inspected_file['analysis_step_version']['analysis_step']['pipelines']:
+                if p['title'] not in added_pipelines:
+                    added_pipelines.append(p['title'])
+                    pipelines_to_return.append(p)
+    return pipelines_to_return
    
 
 def get_biosamples(experiment):
@@ -3383,11 +3379,12 @@ function_dispatcher = {
     'audit_NTR': audit_experiment_assay,
     'audit_AB_characterization': audit_experiment_antibody_characterized,
 
+
     'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
     'audit_control': audit_experiment_control,
     'audit_platforms': audit_experiment_platforms_mismatches,
     'audit_uploading_files': audit_experiment_with_uploading_files,
-
+    'audit_pipeline_assay': audit_experiment_pipeline_assay_details,
 }
 
 # global variables useful for the audits (preventing repetitive calculation)
@@ -3419,6 +3416,10 @@ function_dispatcher = {
                       'original_files',
                       'original_files.platform',
                       'original_files.replicate',
+
+                      'original_files.analysis_step_version',
+                      'original_files.analysis_step_version.analysis_step',
+                      'original_files.analysis_step_version.analysis_step.pipelines',
                       ])
 def audit_experiment(value, system):
     process_files(value)
@@ -3456,9 +3457,7 @@ def audit_experiment(value, system):
     'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step',
     'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step.pipelines',
     'original_files.derived_from.controlled_by.dataset.original_files.derived_from',
-    'original_files.analysis_step_version',
-    'original_files.analysis_step_version.analysis_step',
-    'original_files.analysis_step_version.analysis_step.pipelines',
+    
     'original_files.quality_metrics',
     'original_files.quality_metrics.quality_metric_of',
     'original_files.quality_metrics.quality_metric_of.replicate',
@@ -3474,8 +3473,8 @@ def audit_experiment(value, system):
 def audit_experiment_entry_function(value, system):
     #for failure in audit_experiment_mixed_libraries(value):
     #    yield failure
-    for failure in audit_experiment_pipeline_assay_details(value):
-        yield failure
+    #for failure in audit_experiment_pipeline_assay_details(value):
+    #    yield failure
     for failure in audit_experiment_missing_unfiltered_bams(value):
         yield failure
     #for failure in audit_experiment_with_uploading_files(value):
