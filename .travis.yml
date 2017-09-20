@@ -46,7 +46,7 @@ install:
   - python bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
   - sudo chown -R travis /etc/elasticsearch
-  - sudo cp -R conf/ /etc/elasticsearch
+  - sudo cp -R /home/travis/build/ENCODE-DCC/encoded/conf/ /etc/elasticsearch
 before_script:
   - >
     if test -n "$BROWSER"; then
