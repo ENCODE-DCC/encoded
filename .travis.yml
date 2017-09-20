@@ -47,7 +47,11 @@ install:
   - python bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
   - sudo chown -R travis /etc/elasticsearch
+  - sudo cp -R /home/travis/build/ENCODE-DCC/encoded/conf/ /etc/elasticsearch
 before_script:
+  - sudo chown -R travis /etc/elasticsearch
+  - sudo cp -R /home/travis/build/ENCODE-DCC/encoded/conf/ /etc/elasticsearch
+
   - >
     if test -n "$BROWSER"; then
       CONNECT_URL=https://saucelabs.com/downloads/sc-4.4.4-linux.tar.gz 
@@ -66,6 +70,8 @@ before_script:
       while test -f "$SC_PIDFILE" && test ! -f "$SC_READYFILE"; do sleep .5; done
     fi
 script:
+  - sudo chown -R travis /etc/elasticsearch
+  - sudo cp -R /home/travis/build/ENCODE-DCC/encoded/conf/ /etc/elasticsearch
   - if test -z "$BROWSER"; then npm test; fi
   - if test -z "$BROWSER"; then bin/test -v -v --timeout=400 -m "not bdd" -k test_indexing -s; fi
   - >
