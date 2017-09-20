@@ -144,9 +144,15 @@ def genetic_modification_5_6(value, system):
                 # supposed to be used for.
                 value.update({'purpose': 'validation'})
                 if 'notes' in value:
-                    value['notes'] = value['notes'] + '. TALEN platform: ' + technique.properties['talen_platform']
+                    if technique.properties['notes']:
+                        value['notes'] = value['notes'] + '. ' + technique.properties['notes'] + '. TALEN platform: ' + technique.properties['talen_platform']
+                    else:
+                        value['notes'] = value['notes'] + '. TALEN platform: ' + technique.properties['talen_platform']
                 else:
-                    value['notes'] = 'TALEN platform ' + technique.properties['talen_platform']
+                    if technique.properties['notes']:
+                        value['notes'] = technique.properties['notes'] + '. TALEN platform: ' + technique.properties['talen_platform']
+                    else:
+                        value['notes'] = 'TALEN platform: ' + technique.properties['talen_platform']
                 if alias_flag:
                     for a in technique.properties['aliases']:
                         b = a + '-TALEN'
