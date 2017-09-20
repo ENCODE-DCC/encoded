@@ -29,7 +29,6 @@ env:
     - ES_VERSION=5.4.0
     - ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.deb
     - PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
-    - ES_JAVA_OPTS="-Xms2g -Xmx2g"
 matrix:
   include:
     - python: "3.5.1"
