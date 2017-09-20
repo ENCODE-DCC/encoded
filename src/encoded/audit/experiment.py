@@ -1766,16 +1766,11 @@ def audit_experiment_geo_submission(value, system):
     return
 
 
-
-
-def audit_experiment_consistent_sequencing_runs(value):
+def audit_experiment_consistent_sequencing_runs(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
-    if 'replicates' not in value:
-        return
-    if len(value['replicates']) == 0:
-        return
-    if 'assay_term_name' not in value:  # checked in audit_experiment_assay
+
+    if not value.get('replicates'):
         return
 
     if value.get('assay_term_name') not in [
@@ -1787,22 +1782,19 @@ def audit_experiment_consistent_sequencing_runs(value):
     replicate_pairing_statuses = {}
     replicate_read_lengths = {}
 
-    for file_object in value['original_files']:
-        if file_object['status'] in ['deleted', 'replaced', 'revoked', 'archived']:
-            continue
-        if file_object['file_format'] == 'fastq':
-            if 'replicate' in file_object:
-                bio_rep_number = file_object['replicate']['biological_replicate_number']
+    for file_object in files_structure.get('fastq_files').values():
+        if 'replicate' in file_object:
+            bio_rep_number = file_object['replicate']['biological_replicate_number']
 
-                if 'read_length' in file_object:
-                    if bio_rep_number not in replicate_read_lengths:
-                        replicate_read_lengths[bio_rep_number] = set()
-                    replicate_read_lengths[bio_rep_number].add(file_object['read_length'])
+            if 'read_length' in file_object:
+                if bio_rep_number not in replicate_read_lengths:
+                    replicate_read_lengths[bio_rep_number] = set()
+                replicate_read_lengths[bio_rep_number].add(file_object['read_length'])
 
-                if 'run_type' in file_object:
-                    if bio_rep_number not in replicate_pairing_statuses:
-                        replicate_pairing_statuses[bio_rep_number] = set()
-                    replicate_pairing_statuses[bio_rep_number].add(file_object['run_type'])
+            if 'run_type' in file_object:
+                if bio_rep_number not in replicate_pairing_statuses:
+                    replicate_pairing_statuses[bio_rep_number] = set()
+                replicate_pairing_statuses[bio_rep_number].add(file_object['run_type'])
 
     length_threshold = 2
     # different length threshold for DNase-seq and genetic modification followed by DNase-seq
@@ -3366,14 +3358,14 @@ function_dispatcher = {
     'audit_missing_construct': audit_missing_construct,
     'audit_NTR': audit_experiment_assay,
     'audit_AB_characterization': audit_experiment_antibody_characterized,
-
+    'audit_consistent_sequencing_runs': audit_experiment_consistent_sequencing_runs,
     'audit_experiment_out_of_date': audit_experiment_out_of_date_analysis,
     'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
     'audit_control': audit_experiment_control,
     'audit_platforms': audit_experiment_platforms_mismatches,
     'audit_uploading_files': audit_experiment_with_uploading_files,
     'audit_pipeline_assay': audit_experiment_pipeline_assay_details,
-    'audit_missing_unfiltered_bams': audit_experiment_missing_unfiltered_bams,
+    'audit_missing_unfiltered_bams': audit_experiment_missing_unfiltered_bams
 }
 
 # global variables useful for the audits (preventing repetitive calculation)
@@ -3418,21 +3410,12 @@ def audit_experiment(value, system):
 
 
 @audit_checker('Experiment', frame=[
-
     'replicates.antibody.characterizations',
- 
-
     'original_files.award',
     'original_files.replicate',
-    
-    
     'replicates.library.spikeins_used',
     'replicates.library.spikeins_used.files',
-
     'replicates.library.biosample.organism',
-
-
-
     'original_files.derived_from',
     'original_files.step_run',
     'original_files.derived_from.derived_from',
@@ -3445,15 +3428,11 @@ def audit_experiment(value, system):
     'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step',
     'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step.pipelines',
     'original_files.derived_from.controlled_by.dataset.original_files.derived_from',
-    
     'original_files.quality_metrics',
     'original_files.quality_metrics.quality_metric_of',
     'original_files.quality_metrics.quality_metric_of.replicate',
     'original_files.analysis_step_version.software_versions',
     'original_files.analysis_step_version.software_versions.software',
-
-
- 
     'possible_controls.replicates',
     'possible_controls.replicates.antibody',
     'possible_controls.target'
@@ -3473,8 +3452,8 @@ def audit_experiment_entry_function(value, system):
     #    yield failure
     #for failure in audit_experiment_geo_submission(value):
     #    yield failure
-    for failure in audit_experiment_consistent_sequencing_runs(value):
-        yield failure
+    #for failure in audit_experiment_consistent_sequencing_runs(value):
+    #    yield failure
     #for failure in audit_experiment_replicate_with_no_files(value):
     #    yield failure
     for failure in audit_experiment_mapped_read_length(value):
