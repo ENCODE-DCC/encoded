@@ -38,7 +38,7 @@ data = {
     "output_type": "reads",
     "read_length": 101,
     "run_type": "single-ended",
-    "platform": "ENCODE:HiSeq2000",
+    "platform": "encode:HiSeq2000",
     "submitted_file_name": path,
     "lab": my_lab,
     "award": my_award
