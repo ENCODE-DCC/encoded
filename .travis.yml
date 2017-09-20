@@ -67,7 +67,7 @@ before_script:
     fi
 script:
   - if test -z "$BROWSER"; then npm test; fi
-  - if test -z "$BROWSER"; then bin/test -v -v --timeout=400 -m "not bdd" -k test_indexing -s; fi
+  - if test -z "$BROWSER"; then bin/test -v -v --timeout=400 -m "not bdd"; fi
   - >
     if test -n "$BROWSER"; then
       test -f "$SC_PIDFILE" && bin/test -v -v --timeout=400 -m "bdd" --tb=short \
