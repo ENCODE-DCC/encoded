@@ -238,31 +238,18 @@ def audit_experiment_pipeline_assay_details(value, system):
 # def audit_experiment_missing_processed_files(value, system): removed from v54
 
 
-def audit_experiment_missing_unfiltered_bams(value):
-    if 'assay_term_id' not in value:  # unknown assay
-        return
-    if value['assay_term_id'] != 'OBI:0000716':  # not a ChIP-seq
+def audit_experiment_missing_unfiltered_bams(value, system):
+    if value.get('assay_term_id') != 'OBI:0000716':  # not a ChIP-seq
         return
 
-    alignment_files = scan_files_for_file_format_output_type(value['original_files'],
-                                                             'bam', 'alignments')
-
-    unfiltered_alignment_files = scan_files_for_file_format_output_type(value['original_files'],
-                                                                        'bam',
-                                                                        'unfiltered alignments')
     # if there are no bam files - we don't know what pipeline, exit
-    if len(alignment_files) == 0:
-        return
-    # find out the pipeline
-    pipelines = getPipelines(alignment_files)
-
-    if len(pipelines) == 0:  # no pipelines detected
+    if len(files_structure.get('alignments').values()) == 0:
         return
 
-    if 'ChIP-seq read mapping' in pipelines:
-        for filtered_file in alignment_files:
+    if 'ChIP-seq read mapping' in get_pipeline_titles(experiment_alignment_pipelines):
+        for filtered_file in files_structure.get('alignments').values():
             if has_only_raw_files_in_derived_from(filtered_file) and \
-               has_no_unfiltered(filtered_file, unfiltered_alignment_files):
+               has_no_unfiltered(filtered_file, files_structure.get('unfiltered_alignments').values()):
 
                 detail = 'Experiment {} contains biological replicate '.format(value['@id']) + \
                          '{} '.format(filtered_file['biological_replicates']) + \
@@ -2886,16 +2873,6 @@ def is_outdated_bams_replicate(bam_file, original_files):
             return True
     return False
 
-def has_only_raw_files_in_derived_from(bam_file):
-    if 'derived_from' in bam_file:
-        if bam_file['derived_from'] == []:
-            return False
-        for f in bam_file['derived_from']:
-            if f['file_format'] not in ['fastq', 'tar', 'fasta']:
-                return False
-        return True
-    else:
-        return False
 
 
 def get_file_accessions(list_of_files):
@@ -2919,29 +2896,6 @@ def get_derived_from_files_set(list_of_files, file_format, object_flag):
     if object_flag:
         return derived_from_objects_list
     return derived_from_set
-
-def has_no_unfiltered(filtered_bam, unfiltered_bams):
-    if 'assembly' in filtered_bam:
-        for f in unfiltered_bams:
-            if 'assembly' in f:
-                if f['assembly'] == filtered_bam['assembly'] and \
-                   f['biological_replicates'] == filtered_bam['biological_replicates']:
-                    derived_candidate = set()
-                    derived_filtered = set()
-                    if 'derived_from' in f:
-                        for entry in f['derived_from']:
-                            derived_candidate.add(entry['uuid'])
-                    if 'derived_from' in filtered_bam:
-                        for entry in filtered_bam['derived_from']:
-                            derived_filtered.add(entry['uuid'])
-                    if derived_candidate == derived_filtered:
-                        return False
-        return True
-    return False
-
-
-
-
 
 
 def get_mapped_length(bam_file):
@@ -3080,15 +3034,7 @@ def get_pipeline_by_name(pipeline_objects, pipeline_title):
     return None
 
 
-def getPipelines(alignment_files):
-    pipelines = set()
-    for alignment_file in alignment_files:
-        if 'analysis_step_version' in alignment_file and \
-           'analysis_step' in alignment_file['analysis_step_version'] and \
-           'pipelines' in alignment_file['analysis_step_version']['analysis_step']:
-            for p in alignment_file['analysis_step_version']['analysis_step']['pipelines']:
-                pipelines.add(p['title'])
-    return pipelines
+
 
 
 def scanFilesForPipeline(files_to_scan, pipeline_title_list):
@@ -3245,12 +3191,16 @@ def get_chip_seq_bam_read_depth(bam_file):
 
 files_structure = {}
 experiment_pipelines = []
+experiment_alignment_pipelines = []
 
 def process_files(experiment):
     original_files = experiment.get('original_files')
     if original_files:
         files_structure = create_files_mapping(original_files)
-        experiment_pipelines = get_pipeline_objects(files_structure.get('original_files').values())
+        experiment_pipelines = \
+            get_pipeline_objects(files_structure.get('original_files').values())
+        experiment_alignment_pipelines = \
+            get_pipeline_objects(files_structure.get('alignments').values())
 
 def create_files_mapping(files_list):
     to_return = {'original_files':{},
@@ -3306,6 +3256,43 @@ def create_files_mapping(files_list):
 
 # approved utilities:
 
+#################
+>>>>>
+FINISH WITH THE TWO FUNCTIONS BELOW, and audit_experiment_missing_unfiltered_bams above!!!
+>>>>
+def has_only_raw_files_in_derived_from(bam_file):
+    if 'derived_from' in bam_file:
+        if bam_file['derived_from'] == []:
+            return False
+        for f in bam_file['derived_from']:
+            if f['file_format'] not in ['fastq', 'tar', 'fasta']:
+                return False
+        return True
+    else:
+        return False
+
+def has_no_unfiltered(filtered_bam, unfiltered_bams):
+    if 'assembly' in filtered_bam:
+        for f in unfiltered_bams:
+            if 'assembly' in f:
+                if f['assembly'] == filtered_bam['assembly'] and \
+                   f['biological_replicates'] == filtered_bam['biological_replicates']:
+                    derived_candidate = set()
+                    derived_filtered = set()
+                    if 'derived_from' in f:
+                        for entry in f['derived_from']:
+                            derived_candidate.add(entry['uuid'])
+                    if 'derived_from' in filtered_bam:
+                        for entry in filtered_bam['derived_from']:
+                            derived_filtered.add(entry['uuid'])
+                    if derived_candidate == derived_filtered:
+                        return False
+        return True
+    return False
+<<<<<
+<<<<<
+##############
+
 def get_platforms_used_in_experiment(files_structure_to_check):
     platforms = set()
     for file_object in files_structure_to_check.get('original_files').values():
@@ -3322,6 +3309,12 @@ def get_platforms_used_in_experiment(files_structure_to_check):
                 platforms.add(f['platform']['term_name'])
     return platforms
 
+def get_pipeline_titles(pipeline_objects):
+    to_return = set()
+    for pipeline in pipeline_objects:
+        to_return.add(pipeline.get('title'))
+    return list(to_return)
+        
 
 def get_pipeline_objects(files):
     added_pipelines = []
@@ -3385,6 +3378,7 @@ function_dispatcher = {
     'audit_platforms': audit_experiment_platforms_mismatches,
     'audit_uploading_files': audit_experiment_with_uploading_files,
     'audit_pipeline_assay': audit_experiment_pipeline_assay_details,
+    'audit_missing_unfiltered_bams': audit_experiment_missing_unfiltered_bams,
 }
 
 # global variables useful for the audits (preventing repetitive calculation)
@@ -3475,8 +3469,8 @@ def audit_experiment_entry_function(value, system):
     #    yield failure
     #for failure in audit_experiment_pipeline_assay_details(value):
     #    yield failure
-    for failure in audit_experiment_missing_unfiltered_bams(value):
-        yield failure
+    #for failure in audit_experiment_missing_unfiltered_bams(value):
+    #    yield failure
     #for failure in audit_experiment_with_uploading_files(value):
     #    yield failure
     for failure in audit_experiment_out_of_date_analysis(value):
