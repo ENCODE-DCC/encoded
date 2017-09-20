@@ -259,9 +259,6 @@ def audit_experiment_missing_unfiltered_bams(value, system):
                 yield AuditFailure('missing unfiltered alignments', detail, level='INTERNAL_ACTION')
 
 
-
-
-
 def audit_experiment_with_uploading_files(value, system):
     if files_structure.get('original_files'):
         for file_object in files_structure.get('original_files').values():
@@ -272,25 +269,22 @@ def audit_experiment_with_uploading_files(value, system):
                 yield AuditFailure('file validation error', detail, level='INTERNAL_ACTION')
 
 
-def audit_experiment_out_of_date_analysis(value):
+def audit_experiment_out_of_date_analysis(value, system):
     if value['assay_term_name'] not in ['ChIP-seq', 'DNase-seq']:
         return
-    alignment_files = scan_files_for_file_format_output_type(value['original_files'],
-                                                             'bam', 'alignments')
-    not_filtered_alignments = scan_files_for_file_format_output_type(
-        value['original_files'],
-        'bam', 'unfiltered alignments')
-    transcriptome_alignments = scan_files_for_file_format_output_type(value['original_files'],
-                                                                      'bam',
-                                                                      'transcriptome alignments')
-    if len(alignment_files) == 0 and len(transcriptome_alignments) == 0 and \
-       len(not_filtered_alignments) == 0:
+
+    if len(files_structure.get('alignments').values()) == 0 and \
+       len(files_structure.get('unfiltered_alignments').values()) == 0 and \
+       len(files_structure.get('transcriptome_alignments').values()) == 0:
         return  # probably needs pipeline, since there are no processed files
 
-    for bam_file in (alignment_files + transcriptome_alignments + not_filtered_alignments):
+    for bam_file in (files_structure.get('alignments').values() +
+                     files_structure.get('unfiltered_alignments').values() +
+                     files_structure.get('transcriptome_alignments').values()):
 
-        if bam_file['lab'] == '/labs/encode-processing-pipeline/':
-            if is_outdated_bams_replicate(bam_file, value['original_files']):
+        if bam_file.get('lab') == '/labs/encode-processing-pipeline/' and \
+           bam_file.get('derived_from'):
+            if is_outdated_bams_replicate(bam_file, files_structure):
                 assembly_detail = ''
                 if bam_file.get('assembly'):
                     assembly_detail = ' for {} assembly '.format(bam_file['assembly'])
@@ -299,9 +293,6 @@ def audit_experiment_out_of_date_analysis(value):
                              bam_file['@id']) + assembly_detail + \
                          'is out of date.'
                 yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
-
-
-
 
 
 def audit_experiment_standards_dispatcher(value):
@@ -2830,72 +2821,14 @@ def get_assemblies(list_of_files):
     return assemblies
 
 
-def is_outdated_bams_replicate(bam_file, original_files):
-    if 'lab' not in bam_file or bam_file['lab'] != '/labs/encode-processing-pipeline/':
-        return False
-    derived_from_fastqs = get_derived_from_files_set([bam_file], 'fastq', True)
-    if len(derived_from_fastqs) == 0:
-        return False
-
-    derived_from_fastq_accessions = get_file_accessions(derived_from_fastqs)
-
-    bio_rep = []
-    for fastq_file in derived_from_fastqs:
-        if 'biological_replicates' in fastq_file and \
-           len(fastq_file['biological_replicates']) != 0:
-            for entry in fastq_file['biological_replicates']:
-                bio_rep.append(entry)
-            break
-    fastq_files = scan_files_for_file_format_output_type(
-        original_files,
-        'fastq', 'reads')
-    bio_rep_fastqs = []
-    for fastq_file in fastq_files:
-        if 'biological_replicates' in fastq_file:
-            for entry in fastq_file['biological_replicates']:
-                if entry in bio_rep:
-                    bio_rep_fastqs.append(fastq_file)
-                    break
-
-    replicate_fastq_accessions = get_file_accessions(bio_rep_fastqs)
-    for file_object in bio_rep_fastqs:
-        file_acc = file_object['accession']
-        if file_acc not in derived_from_fastq_accessions:
-            paired_file_id = file_object.get('paired_with')
-            if paired_file_id and \
-               paired_file_id.split('/')[2] not in derived_from_fastq_accessions:
-                return True
-            elif not paired_file_id:
-                return True
-
-    for f_accession in derived_from_fastq_accessions:
-        if f_accession not in replicate_fastq_accessions:
-            return True
-    return False
 
 
 
-def get_file_accessions(list_of_files):
-    accessions_set = set()
-    for f in list_of_files:
-        accessions_set.add(f['accession'])
-    return accessions_set
 
 
-def get_derived_from_files_set(list_of_files, file_format, object_flag):
-    derived_from_set = set()
-    derived_from_objects_list = []
-    for f in list_of_files:
-        if 'derived_from' in f:
-            for d_f in f['derived_from']:
-                if 'file_format' in d_f and d_f['file_format'] == file_format and \
-                   d_f['accession'] not in derived_from_set:
-                    derived_from_set.add(d_f['accession'])
-                    if object_flag:
-                        derived_from_objects_list.append(d_f)
-    if object_flag:
-        return derived_from_objects_list
-    return derived_from_set
+
+
+
 
 
 def get_mapped_length(bam_file):
@@ -3257,6 +3190,69 @@ def create_files_mapping(files_list):
 
 # approved utilities:
 
+def get_derived_from_files_set(list_of_files, files_structure, file_format, object_flag):
+    derived_from_set = set()
+    derived_from_objects_list = []
+    for file_object in list_of_files:
+        if 'derived_from' in file_object:
+            for derived_id in file_object['derived_from']:
+                derived_object = files_structure.get('original_files').get('derived_id')
+                if derived_object and \
+                   derived_object.get('file_format') == file_format and \
+                   derived_object.get('accession') not in derived_from_set:
+                    derived_from_set.add(derived_object.get('accession'))
+                    if object_flag:
+                        derived_from_objects_list.append(derived_object)
+    if object_flag:
+        return derived_from_objects_list
+    return derived_from_set
+
+def get_file_accessions(list_of_files):
+    accessions_set = set()
+    for file_object in list_of_files:
+        accessions_set.add(file_object.get('accession'))
+    return accessions_set
+
+
+def is_outdated_bams_replicate(bam_file, files_structure):
+
+    derived_from_fastqs = get_derived_from_files_set([bam_file], files_structure, 'fastq', True)
+    if len(derived_from_fastqs) == 0:
+        return False
+
+    derived_from_fastq_accessions = get_file_accessions(derived_from_fastqs)
+
+    bio_rep = []
+    for fastq_file in derived_from_fastqs:
+        if 'biological_replicates' in fastq_file and \
+           len(fastq_file['biological_replicates']) != 0:
+            for entry in fastq_file['biological_replicates']:
+                bio_rep.append(entry)
+            break
+
+    bio_rep_fastqs = []
+    for fastq_file in files_structure.get('fastq_files').values():
+        if 'biological_replicates' in fastq_file:
+            for entry in fastq_file['biological_replicates']:
+                if entry in bio_rep:
+                    bio_rep_fastqs.append(fastq_file)
+                    break
+
+    replicate_fastq_accessions = get_file_accessions(bio_rep_fastqs)
+    for file_object in bio_rep_fastqs:
+        file_acc = file_object.get('accession')
+        if file_acc not in derived_from_fastq_accessions:
+            paired_file_id = file_object.get('paired_with')
+            if paired_file_id and \
+               paired_file_id.split('/')[2] not in derived_from_fastq_accessions:
+                return True
+            elif not paired_file_id:
+                return True
+
+    for f_accession in derived_from_fastq_accessions:
+        if f_accession not in replicate_fastq_accessions:
+            return True
+    return False
 
 def has_only_raw_files_in_derived_from(bam_file, files_structure):
     if 'derived_from' in bam_file:
@@ -3371,7 +3367,7 @@ function_dispatcher = {
     'audit_NTR': audit_experiment_assay,
     'audit_AB_characterization': audit_experiment_antibody_characterized,
 
-
+    'audit_experiment_out_of_date': audit_experiment_out_of_date_analysis,
     'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
     'audit_control': audit_experiment_control,
     'audit_platforms': audit_experiment_platforms_mismatches,
@@ -3471,8 +3467,8 @@ def audit_experiment_entry_function(value, system):
     #    yield failure
     #for failure in audit_experiment_with_uploading_files(value):
     #    yield failure
-    for failure in audit_experiment_out_of_date_analysis(value):
-        yield failure
+    #for failure in audit_experiment_out_of_date_analysis(value):
+    #    yield failure
     #for failure in audit_experiment_internal_tag(value):
     #    yield failure
     #for failure in audit_experiment_geo_submission(value):
