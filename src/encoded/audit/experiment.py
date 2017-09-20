@@ -248,7 +248,7 @@ def audit_experiment_missing_unfiltered_bams(value, system):
 
     if 'ChIP-seq read mapping' in get_pipeline_titles(experiment_alignment_pipelines):
         for filtered_file in files_structure.get('alignments').values():
-            if has_only_raw_files_in_derived_from(filtered_file) and \
+            if has_only_raw_files_in_derived_from(filtered_file, files_structure) and \
                has_no_unfiltered(filtered_file, files_structure.get('unfiltered_alignments').values()):
 
                 detail = 'Experiment {} contains biological replicate '.format(value['@id']) + \
@@ -3235,63 +3235,62 @@ def create_files_mapping(files_list):
             if file_format and file_format == 'bam' and \
             file_output and file_output == 'transcriptome alignments':
                 to_return['transcriptome_alignments'][file_object['@id']] = file_object
-        
+
             if file_format and file_format == 'bed' and \
             file_output and file_output == 'peaks':
                 to_return['peaks_files'][file_object['@id']] = file_object
-            
+
             if file_output and file_output == 'gene quantifications':
                 to_return['gene_quantifications_files'][file_object['@id']] = file_object
 
             if file_output and file_output == 'signal of unique reads':
                 to_return['signal_files'][file_object['@id']] = file_object
-            
+
             if file_output and file_output == 'optimal idr thresholded peaks':
                 to_return['optimal_idr_peaks'][file_object['@id']] = file_object
 
             if file_output and file_output == 'methylation state at CpG':
                 to_return['cpg_quantifications'][file_object['@id']] = file_object
 
-    return to_return 
+    return to_return
+
 
 # approved utilities:
 
-#################
->>>>>
-FINISH WITH THE TWO FUNCTIONS BELOW, and audit_experiment_missing_unfiltered_bams above!!!
->>>>
-def has_only_raw_files_in_derived_from(bam_file):
+
+def has_only_raw_files_in_derived_from(bam_file, files_structure):
     if 'derived_from' in bam_file:
         if bam_file['derived_from'] == []:
             return False
-        for f in bam_file['derived_from']:
-            if f['file_format'] not in ['fastq', 'tar', 'fasta']:
+        for file_id in bam_file['derived_from']:
+            file_object = files_structure.get('original_files').get('file_id')
+            if file_object and \
+               file_object['file_format'] not in ['fastq', 'tar', 'fasta']:
                 return False
         return True
     else:
         return False
 
+
 def has_no_unfiltered(filtered_bam, unfiltered_bams):
     if 'assembly' in filtered_bam:
-        for f in unfiltered_bams:
-            if 'assembly' in f:
-                if f['assembly'] == filtered_bam['assembly'] and \
-                   f['biological_replicates'] == filtered_bam['biological_replicates']:
+        for file_object in unfiltered_bams:
+            if 'assembly' in file_object:
+                if file_object['assembly'] == filtered_bam['assembly'] and \
+                   file_object['biological_replicates'] == filtered_bam['biological_replicates']:
                     derived_candidate = set()
                     derived_filtered = set()
-                    if 'derived_from' in f:
-                        for entry in f['derived_from']:
-                            derived_candidate.add(entry['uuid'])
+                    if 'derived_from' in file_object:
+                        for file_id in file_object['derived_from']:
+                            derived_candidate.add(file_id)
                     if 'derived_from' in filtered_bam:
-                        for entry in filtered_bam['derived_from']:
-                            derived_filtered.add(entry['uuid'])
+                        for file_id in filtered_bam['derived_from']:
+                            derived_filtered.add(file_id)
                     if derived_candidate == derived_filtered:
                         return False
         return True
     return False
-<<<<<
-<<<<<
-##############
+
 
 def get_platforms_used_in_experiment(files_structure_to_check):
     platforms = set()
@@ -3410,7 +3409,6 @@ function_dispatcher = {
                       'original_files',
                       'original_files.platform',
                       'original_files.replicate',
-
                       'original_files.analysis_step_version',
                       'original_files.analysis_step_version.analysis_step',
                       'original_files.analysis_step_version.analysis_step.pipelines',
