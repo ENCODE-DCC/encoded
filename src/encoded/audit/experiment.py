@@ -1910,17 +1910,13 @@ def audit_experiment_consistent_sequencing_runs(value):
     return
 
 
-def audit_experiment_replicate_with_no_files(value):
+def audit_experiment_replicate_with_no_files(value, system):
     if 'internal_tags' in value and 'DREAM' in value['internal_tags']:
         return
 
     if value['status'] in ['deleted', 'replaced', 'revoked', 'proposed', 'preliminary']:
         return
-    if 'replicates' not in value:
-        return
-    if len(value['replicates']) == 0:
-        return
-    if 'assay_term_name' not in value:  # checked in audit_experiment_assay
+    if not value.get('replicates'):
         return
 
     seq_assay_flag = False
@@ -1929,18 +1925,16 @@ def audit_experiment_replicate_with_no_files(value):
 
     rep_dictionary = {}
     rep_numbers = {}
-    for rep in value['replicates']:
+    for rep in value.get('replicates'):
         if rep['status'] in ['deleted', 'replaced', 'revoked']:
             continue
         rep_dictionary[rep['@id']] = []
         rep_numbers[rep['@id']] = (rep['biological_replicate_number'],
                                    rep['technical_replicate_number'])
 
-    for file_object in value['original_files']:
-        if file_object['status'] in ['deleted', 'replaced', 'revoked']:
-            continue
-        if 'replicate' in file_object:
-            file_replicate = file_object['replicate']
+    for file_object in files_structure.get('original_files').values():
+        file_replicate = file_object.get('replicate')
+        if file_replicate:
             if file_replicate['@id'] in rep_dictionary:
                 rep_dictionary[file_replicate['@id']].append(file_object['output_category'])
 
@@ -2526,7 +2520,7 @@ def audit_experiment_biosample_term(value, system):
                 yield AuditFailure('inconsistent library biosample', detail, level='ERROR')
 
 
-def audit_experiment_antibody_characterized(value):
+def audit_experiment_antibody_characterized(value, system):
     '''Check that biosample in the experiment has been characterized for the given antibody.'''
     if not check_award_condition(value, [
             'ENCODE4', 'ENCODE3', 'modERN']):
@@ -2538,30 +2532,30 @@ def audit_experiment_antibody_characterized(value):
     if value.get('assay_term_name') not in targetBasedAssayList:
         return
 
-    if 'target' not in value:
+    target = value.get('target')
+    if not target:
         return
 
-    target = value['target']
     if 'control' in target['investigated_as']:
         return
 
-    if value['assay_term_name'] in ['RNA Bind-n-Seq', 'shRNA knockdown followed by RNA-seq',
-                                    'siRNA knockdown followed by RNA-seq', 'CRISPRi followed by RNA-seq']:
+    if value['assay_term_name'] in ['RNA Bind-n-Seq',
+                                    'shRNA knockdown followed by RNA-seq',
+                                    'siRNA knockdown followed by RNA-seq',
+                                    'CRISPRi followed by RNA-seq']:
         return
 
     for rep in value['replicates']:
-        if 'antibody' not in rep:
-            continue
-        if 'library' not in rep:
-            continue
+        antibody = rep.get('antibody')
+        lib = rep.get('library')
 
-        antibody = rep['antibody']
-        lib = rep['library']
-
-        if 'biosample' not in lib:
+        if not antibody or not lib:
             continue
 
-        biosample = lib['biosample']
+        biosample = lib.get('biosample')
+        if not biosample:
+            continue
+
         organism = biosample['organism']['@id']
         antibody_targets = antibody['targets']
         ab_targets_investigated_as = set()
@@ -3387,10 +3381,13 @@ function_dispatcher = {
     'audit_RNA_size': audit_library_RNA_size_range,
     'audit_missing_construct': audit_missing_construct,
     'audit_NTR': audit_experiment_assay,
+    'audit_AB_characterization': audit_experiment_antibody_characterized,
 
-    'audit_control', audit_experiment_control,
+    'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
+    'audit_control': audit_experiment_control,
     'audit_platforms': audit_experiment_platforms_mismatches,
     'audit_uploading_files': audit_experiment_with_uploading_files,
+
 }
 
 # global variables useful for the audits (preventing repetitive calculation)
@@ -3402,6 +3399,7 @@ function_dispatcher = {
                       'replicates',
                       'replicates.library',
                       'replicates.library.biosample',
+                      'replicates.library.biosample,organism',
                       'replicates.library.biosample.donor',
                       'replicates.library.biosample.constructs',
                       'replicates.library.biosample.constructs.target',
@@ -3411,6 +3409,8 @@ function_dispatcher = {
 
                       'replicates.antibody',
                       'replicates.antibody.targets',
+                      'replicates.antibody.lot_reviews',
+
 
                       'possible_controls',
                       'possible_controls.original_files',
@@ -3418,7 +3418,7 @@ function_dispatcher = {
 
                       'original_files',
                       'original_files.platform',
-
+                      'original_files.replicate',
                       ])
 def audit_experiment(value, system):
     process_files(value)
@@ -3431,7 +3431,7 @@ def audit_experiment(value, system):
 @audit_checker('Experiment', frame=[
 
     'replicates.antibody.characterizations',
-    'replicates.antibody.lot_reviews',
+ 
 
     'original_files.award',
     'original_files.replicate',
@@ -3488,8 +3488,8 @@ def audit_experiment_entry_function(value, system):
     #    yield failure
     for failure in audit_experiment_consistent_sequencing_runs(value):
         yield failure
-    for failure in audit_experiment_replicate_with_no_files(value):
-        yield failure
+    #for failure in audit_experiment_replicate_with_no_files(value):
+    #    yield failure
     for failure in audit_experiment_mapped_read_length(value):
         yield failure
     #for failure in audit_missing_construct(value):
@@ -3502,8 +3502,8 @@ def audit_experiment_entry_function(value, system):
     #    yield failure
     #for failure in audit_experiment_platforms_mismatches(value):
     #    yield failure
-    for failure in audit_experiment_antibody_characterized(value):
-        yield failure
+    #for failure in audit_experiment_antibody_characterized(value):
+    #    yield failure
     #for failure in audit_experiment_replicated(value):
     #    yield failure
     for failure in audit_experiment_spikeins(value):
