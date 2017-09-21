@@ -3177,6 +3177,12 @@ def create_files_mapping(files_list):
                 to_return['cpg_quantifications'][file_object['@id']] = file_object
     return to_return
 
+def get_contributing_files(files_list):
+    to_return = {}
+    for file_object in files_list:
+        if file_object['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
+            to_return[file_object['@id']] = file_object
+    return to_return
 
 # approved utilities:
 
@@ -3203,15 +3209,19 @@ def get_file_accessions(list_of_files):
         accessions_set.add(file_object.get('accession'))
     return accessions_set
 
-#>>>>>>> Unfortunately I don't see any way to do it without embedding original_files.derived_from
-#>>>>>>> Unfortunately I don't see any way to do it without embedding original_files.derived_from
-#>>>>>>> Unfortunately I don't see any way to do it without embedding original_files.derived_from
-#>>>>>>> Unfortunately I don't see any way to do it without embedding original_files.derived_from
-#>>>>>>> Unfortunately I don't see any way to do it without embedding original_files.derived_from
-#>>>>>>> Unfortunately I don't see any way to do it without embedding original_files.derived_from
+
 def is_outdated_bams_replicate(bam_file, files_structure):
+
+    for file_id in bam_file.get('derived_from'):
+        if file_id not in files_structure.get('original_files') and \
+           file_id not in files_structure.get('contributing_files'):
+            return True
+
+    # if derived_from contains accessions that were not in
+    # original_files and not in contributing files - it is outdated!
     derived_from_fastqs = get_derived_from_files_set([bam_file], files_structure, 'fastq', True)
 
+    # if there are no FASTQs we can not find our the replicate
     if len(derived_from_fastqs) == 0:
         return False
 
@@ -3410,6 +3420,7 @@ function_dispatcher_with_files = {
 def audit_experiment(value, system):
     #process_files(value)
     files_structure = create_files_mapping(value.get('original_files'))
+    files_structure['contributing_files']= get_contributing_files(value.get('contributing_files'))
     for function_name in function_dispatcher_with_files.keys():
         for failure in function_dispatcher_with_files[function_name](value, system, files_structure):
             yield failure
