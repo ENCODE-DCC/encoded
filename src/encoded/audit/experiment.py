@@ -269,7 +269,7 @@ def audit_experiment_with_uploading_files(value, system):
                 yield AuditFailure('file validation error', detail, level='INTERNAL_ACTION')
 
 
-def audit_experiment_out_of_date_analysis(value, system):
+def audit_experiment_out_of_date_analysis(value, system, files_structure):
     if value['assay_term_name'] not in ['ChIP-seq', 'DNase-seq']:
         return
 
@@ -278,21 +278,20 @@ def audit_experiment_out_of_date_analysis(value, system):
        len(files_structure.get('transcriptome_alignments').values()) == 0:
         return  # probably needs pipeline, since there are no processed files
 
-    for bam_file in (files_structure.get('alignments').values() +
-                     files_structure.get('unfiltered_alignments').values() +
-                     files_structure.get('transcriptome_alignments').values()):
-
-        if bam_file.get('lab') == '/labs/encode-processing-pipeline/' and \
-           bam_file.get('derived_from'):
-            if is_outdated_bams_replicate(bam_file, files_structure):
-                assembly_detail = ''
-                if bam_file.get('assembly'):
-                    assembly_detail = ' for {} assembly '.format(bam_file['assembly'])
-                detail = 'Experiment {} '.format(value['@id']) + \
-                         'alignment file {} '.format(
-                             bam_file['@id']) + assembly_detail + \
-                         'is out of date.'
-                yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
+    file_types = ['alignments', 'unfiltered_alignments', 'transcriptome_alignments']
+    for file_type in file_types:
+        for bam_file in files_structure.get(file_type).values():
+            if bam_file.get('lab') == '/labs/encode-processing-pipeline/' and \
+                bam_file.get('derived_from'):
+                if is_outdated_bams_replicate(bam_file, files_structure):
+                    assembly_detail = ''
+                    if bam_file.get('assembly'):
+                        assembly_detail = ' for {} assembly '.format(bam_file['assembly'])
+                        detail = 'Experiment {} '.format(value['@id']) + \
+                                'alignment file {} '.format(
+                                    bam_file['@id']) + assembly_detail + \
+                                'is out of date.'
+                        yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
 
 
 def audit_experiment_standards_dispatcher(value):
@@ -1766,7 +1765,7 @@ def audit_experiment_geo_submission(value, system):
     return
 
 
-def audit_experiment_consistent_sequencing_runs(value, system):
+def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
@@ -2021,7 +2020,7 @@ def audit_experiment_isogeneity(value, system):
     if len(biosample_dict.keys()) < 2:
         return  # unreplicated
 
-    if biosample_species.get('@id') == '/organisms/human/':
+    if biosample_species == '/organisms/human/':
         return  # humans are handled in the the replication_type
 
     if len(biosample_donor_set) > 1:
@@ -2043,7 +2042,7 @@ def audit_experiment_isogeneity(value, system):
         yield AuditFailure('inconsistent sex', detail, level='NOT_COMPLIANT')
     return
 
-# replicate.library
+
 def audit_experiment_technical_replicates_same_library(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
@@ -2275,7 +2274,7 @@ def audit_experiment_control(value, system):
             yield AuditFailure('inconsistent control', detail, level='ERROR')
 
 
-def audit_experiment_platforms_mismatches(value, system):
+def audit_experiment_platforms_mismatches(value, system, files_structure):
     if value['status'] in ['deleted', 'replaced']:
         return
 
@@ -2518,7 +2517,7 @@ def audit_experiment_antibody_characterized(value, system):
         if not biosample:
             continue
 
-        organism = biosample['organism']['@id']
+        organism = biosample.get('organism')
         antibody_targets = antibody['targets']
         ab_targets_investigated_as = set()
         sample_match = False
@@ -3114,11 +3113,11 @@ def get_chip_seq_bam_read_depth(bam_file):
 
 # global valriables calculation
 
-files_structure = {}
+#files_structure = {}
 experiment_pipelines = []
 experiment_alignment_pipelines = []
 
-def process_files(experiment):
+'''def process_files(experiment):
     original_files = experiment.get('original_files')
     if original_files:
         files_structure = create_files_mapping(original_files)
@@ -3126,7 +3125,7 @@ def process_files(experiment):
             get_pipeline_objects(files_structure.get('original_files').values())
         experiment_alignment_pipelines = \
             get_pipeline_objects(files_structure.get('alignments').values())
-
+'''
 def create_files_mapping(files_list):
     to_return = {'original_files':{},
                  'fastq_files':{},
@@ -3176,7 +3175,6 @@ def create_files_mapping(files_list):
 
             if file_output and file_output == 'methylation state at CpG':
                 to_return['cpg_quantifications'][file_object['@id']] = file_object
-
     return to_return
 
 
@@ -3188,7 +3186,7 @@ def get_derived_from_files_set(list_of_files, files_structure, file_format, obje
     for file_object in list_of_files:
         if 'derived_from' in file_object:
             for derived_id in file_object['derived_from']:
-                derived_object = files_structure.get('original_files').get('derived_id')
+                derived_object = files_structure.get('original_files').get(derived_id)
                 if derived_object and \
                    derived_object.get('file_format') == file_format and \
                    derived_object.get('accession') not in derived_from_set:
@@ -3205,10 +3203,15 @@ def get_file_accessions(list_of_files):
         accessions_set.add(file_object.get('accession'))
     return accessions_set
 
-
+#>>>>>>> Unfortunately I don't see any way to do it without embedding original_files.derived_from
+#>>>>>>> Unfortunately I don't see any way to do it without embedding original_files.derived_from
+#>>>>>>> Unfortunately I don't see any way to do it without embedding original_files.derived_from
+#>>>>>>> Unfortunately I don't see any way to do it without embedding original_files.derived_from
+#>>>>>>> Unfortunately I don't see any way to do it without embedding original_files.derived_from
+#>>>>>>> Unfortunately I don't see any way to do it without embedding original_files.derived_from
 def is_outdated_bams_replicate(bam_file, files_structure):
-
     derived_from_fastqs = get_derived_from_files_set([bam_file], files_structure, 'fastq', True)
+
     if len(derived_from_fastqs) == 0:
         return False
 
@@ -3286,14 +3289,14 @@ def get_platforms_used_in_experiment(files_structure_to_check):
         if file_object['output_category'] == 'raw data' and \
             'platform' in file_object:
             # collapsing interchangable platforms
-            if f['platform']['term_name'] in ['HiSeq 2000', 'HiSeq 2500']:
+            if file_object['platform']['term_name'] in ['HiSeq 2000', 'HiSeq 2500']:
                 platforms.add('HiSeq 2000/2500')
-            elif f['platform']['term_name'] in ['Illumina Genome Analyzer IIx',
-                                                'Illumina Genome Analyzer IIe',
-                                                'Illumina Genome Analyzer II']:
+            elif file_object['platform']['term_name'] in ['Illumina Genome Analyzer IIx',
+                                                          'Illumina Genome Analyzer IIe',
+                                                          'Illumina Genome Analyzer II']:
                 platforms.add('Illumina Genome Analyzer II/e/x')
             else:
-                platforms.add(f['platform']['term_name'])
+                platforms.add(file_object['platform']['term_name'])
     return platforms
 
 def get_pipeline_titles(pipeline_objects):
@@ -3341,7 +3344,7 @@ def is_gtex_experiment(experiment_to_check):
 def check_award_condition(experiment, awards):
     return experiment.get('award') and experiment.get('award')['rfa'] in awards
 
-function_dispatcher = {
+function_dispatcher_without_files = {
     'audit_isogeneity': audit_experiment_isogeneity,
     'audit_replicate_biosample': audit_experiment_replicates_biosample,
     'audit_replicate_library': audit_experiment_technical_replicates_same_library,
@@ -3358,14 +3361,17 @@ function_dispatcher = {
     'audit_missing_construct': audit_missing_construct,
     'audit_NTR': audit_experiment_assay,
     'audit_AB_characterization': audit_experiment_antibody_characterized,
+}
+function_dispatcher_with_files = {
+
     'audit_consistent_sequencing_runs': audit_experiment_consistent_sequencing_runs,
     'audit_experiment_out_of_date': audit_experiment_out_of_date_analysis,
-    'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
-    'audit_control': audit_experiment_control,
+    #'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
+    #'audit_control': audit_experiment_control,
     'audit_platforms': audit_experiment_platforms_mismatches,
-    'audit_uploading_files': audit_experiment_with_uploading_files,
-    'audit_pipeline_assay': audit_experiment_pipeline_assay_details,
-    'audit_missing_unfiltered_bams': audit_experiment_missing_unfiltered_bams
+    #'audit_uploading_files': audit_experiment_with_uploading_files,
+    #'audit_pipeline_assay': audit_experiment_pipeline_assay_details,
+    #'audit_missing_unfiltered_bams': audit_experiment_missing_unfiltered_bams
 }
 
 # global variables useful for the audits (preventing repetitive calculation)
@@ -3377,7 +3383,7 @@ function_dispatcher = {
                       'replicates',
                       'replicates.library',
                       'replicates.library.biosample',
-                      'replicates.library.biosample,organism',
+                      
                       'replicates.library.biosample.donor',
                       'replicates.library.biosample.constructs',
                       'replicates.library.biosample.constructs.target',
@@ -3402,20 +3408,35 @@ function_dispatcher = {
                       'original_files.analysis_step_version.analysis_step.pipelines',
                       ])
 def audit_experiment(value, system):
-    process_files(value)
-    
-    for function_name in function_dispatcher.keys():
-        for failure in function_dispatcher[function_name](value, system):
+    #process_files(value)
+    files_structure = create_files_mapping(value.get('original_files'))
+    for function_name in function_dispatcher_with_files.keys():
+        for failure in function_dispatcher_with_files[function_name](value, system, files_structure):
+            yield failure
+    for function_name in function_dispatcher_without_files.keys():
+        for failure in function_dispatcher_without_files[function_name](value, system):
             yield failure
 
-
-@audit_checker('Experiment', frame=[
+'''@audit_checker('Experiment', frame=[
+    'replicates.antibody',
+    'replicates.antibody.targets',
     'replicates.antibody.characterizations',
+    'replicates.antibody.lot_reviews',
+    'original_files',
     'original_files.award',
     'original_files.replicate',
+    'original_files.platform',
+    'replicates',
+    'replicates.library',
     'replicates.library.spikeins_used',
     'replicates.library.spikeins_used.files',
+    'replicates.library.biosample',
     'replicates.library.biosample.organism',
+    'replicates.library.biosample.constructs',
+    'replicates.library.biosample.constructs.target',
+    'replicates.library.biosample.donor',
+    'replicates.library.biosample.model_organism_donor_constructs',
+    'replicates.library.biosample.model_organism_donor_constructs.target',
     'original_files.derived_from',
     'original_files.step_run',
     'original_files.derived_from.derived_from',
@@ -3428,11 +3449,19 @@ def audit_experiment(value, system):
     'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step',
     'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step.pipelines',
     'original_files.derived_from.controlled_by.dataset.original_files.derived_from',
+    'original_files.analysis_step_version',
+    'original_files.analysis_step_version.analysis_step',
+    'original_files.analysis_step_version.analysis_step.pipelines',
     'original_files.quality_metrics',
     'original_files.quality_metrics.quality_metric_of',
     'original_files.quality_metrics.quality_metric_of.replicate',
     'original_files.analysis_step_version.software_versions',
     'original_files.analysis_step_version.software_versions.software',
+    'possible_controls',
+    'possible_controls.original_files',
+    'possible_controls.original_files.platform',
+    'award',
+    'target',
     'possible_controls.replicates',
     'possible_controls.replicates.antibody',
     'possible_controls.target'
@@ -3519,3 +3548,5 @@ def audit_experiment_entry_function(value, system):
 
 # def audit_experiment_needs_pipeline(value, system): removed in release 56
 # http://redmine.encodedcc.org/issues/4990
+
+'''
