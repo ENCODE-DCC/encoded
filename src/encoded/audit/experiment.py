@@ -225,8 +225,8 @@ def audit_experiment_mixed_libraries(value, system):
     return
 
 
-def audit_experiment_pipeline_assay_details(value, system):
-    for pipeline in experiment_pipelines:
+def audit_experiment_pipeline_assay_details(value, system, files_structure):
+    for pipeline in get_pipeline_objects(files_structure.get('original_files').values()):
         if value.get('assay_term_name') not in pipeline['assay_term_names']:
             detail = 'This experiment ' + \
                         'contains file(s) associated with ' + \
@@ -238,7 +238,7 @@ def audit_experiment_pipeline_assay_details(value, system):
 # def audit_experiment_missing_processed_files(value, system): removed from v54
 
 
-def audit_experiment_missing_unfiltered_bams(value, system):
+def audit_experiment_missing_unfiltered_bams(value, system, files_structure):
     if value.get('assay_term_id') != 'OBI:0000716':  # not a ChIP-seq
         return
 
@@ -246,20 +246,23 @@ def audit_experiment_missing_unfiltered_bams(value, system):
     if len(files_structure.get('alignments').values()) == 0:
         return
 
-    if 'ChIP-seq read mapping' in get_pipeline_titles(experiment_alignment_pipelines):
+    if 'ChIP-seq read mapping' in get_pipeline_titles(
+            get_pipeline_objects(files_structure.get('alignments').values())):
         for filtered_file in files_structure.get('alignments').values():
             if has_only_raw_files_in_derived_from(filtered_file, files_structure) and \
-               has_no_unfiltered(filtered_file, files_structure.get('unfiltered_alignments').values()):
+               has_no_unfiltered(filtered_file,
+                                 files_structure.get('unfiltered_alignments').values()):
 
                 detail = 'Experiment {} contains biological replicate '.format(value['@id']) + \
                          '{} '.format(filtered_file['biological_replicates']) + \
-                         'with a filtered alignments file {}, mapped to '.format(filtered_file['@id']) + \
+                         'with a filtered alignments file {}, mapped to '.format(
+                             filtered_file['@id']) + \
                          'a {} assembly, '.format(filtered_file['assembly']) + \
                          'but has no unfiltered alignments file.'
                 yield AuditFailure('missing unfiltered alignments', detail, level='INTERNAL_ACTION')
 
 
-def audit_experiment_with_uploading_files(value, system):
+def audit_experiment_with_uploading_files(value, system, files_structure):
     if files_structure.get('original_files'):
         for file_object in files_structure.get('original_files').values():
             if file_object['status'] in ['uploading', 'upload failed', 'content error']:
@@ -404,7 +407,7 @@ def audit_experiment_standards_dispatcher(value):
         return
 
 
-def audit_modERN_experiment_standards_dispatcher(value):
+def audit_modERN_experiment_standards_dispatcher(value, system, files_structure):
     if not check_award_condition(value, ['modERN']):
         return
     '''
@@ -414,28 +417,22 @@ def audit_modERN_experiment_standards_dispatcher(value):
 
     if value['status'] in ['revoked', 'deleted', 'replaced']:
         return
-    if 'assay_term_name' not in value or value['assay_term_name'] not in ['ChIP-seq']:
+    if value.get('assay_term_name') != 'ChIP-seq':
         return
-    if 'original_files' not in value or len(value['original_files']) == 0:
+    if not files_structure.get('original_files').values():
         return
     if 'replicates' not in value:
         return
 
-    alignment_files = scan_files_for_file_format_output_type(value['original_files'],
-                                                             'bam', 'alignments')
-
-    fastq_files = scan_files_for_file_format_output_type(value['original_files'],
-                                                         'fastq', 'reads')
-
-    if value['assay_term_name'] == 'ChIP-seq':
-        optimal_idr_peaks = scanFilesForOutputType(value['original_files'],
-                                                   'optimal idr thresholded peaks')
-        for failure in check_experiment_chip_seq_standards(value,
-                                                           fastq_files,
-                                                           alignment_files,
-                                                           optimal_idr_peaks,
-                                                           'modERN'):
-            yield failure
+    for failure in check_experiment_chip_seq_standards(value,
+                                                       files_structure.get(
+                                                           'fastq_files').values(),
+                                                       files_structure.get(
+                                                           'alignments').values(),
+                                                       files_structure.get(
+                                                           'optimal_idr_peaks').values(),
+                                                       'modERN'):
+        yield failure
 
 
 def check_experiment_dnase_seq_standards(experiment,
@@ -771,7 +768,6 @@ def check_experiment_chip_seq_standards(experiment,
                                         alignment_files,
                                         idr_peaks_files,
                                         standards_version):
-
     upper_limit_read_length = 50
     medium_limit_read_length = 36
     lower_limit_read_length = 26
@@ -806,7 +802,7 @@ def check_experiment_chip_seq_standards(experiment,
 
     idr_metrics = get_metrics(idr_peaks_files, 'IDRQualityMetric')
 
-    for failure in check_idr(idr_metrics, 2, 2, pipeline_title):
+    for failure in check_idr(idr_metrics, 2, 2):
         yield failure
 
 
@@ -985,7 +981,7 @@ def check_experiment_cage_rampage_standards(experiment,
     return
 
 
-def check_idr(metrics, rescue, self_consistency, pipeline):
+def check_idr(metrics, rescue, self_consistency):
     for m in metrics:
         if 'rescue_ratio' in m and 'self_consistency_ratio' in m:
             rescue_r = m['rescue_ratio']
@@ -1629,8 +1625,9 @@ def check_file_platform(file_to_check, excluded_platforms):
                  'platform (SOLiD) {}.'.format(file_to_check['platform'])
         yield AuditFailure('not compliant platform', detail, level='WARNING')
 
-
-def check_file_read_length_chip(file_to_check, upper_threshold_length,
+# valid!!!
+def check_file_read_length_chip(file_to_check,
+                                upper_threshold_length,
                                 medium_threshold_length,
                                 lower_threshold_length):
     if 'read_length' not in file_to_check:
@@ -1871,7 +1868,7 @@ def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
     return
 
 
-def audit_experiment_replicate_with_no_files(value, system):
+def audit_experiment_replicate_with_no_files(value, system, files_structure):
     if 'internal_tags' in value and 'DREAM' in value['internal_tags']:
         return
 
@@ -2917,19 +2914,7 @@ def get_organism_name(reps):
     return False
 
 
-def scanFilesForPipelineTitle_yes_chipseq(alignment_files, pipeline_titles):
-    for f in alignment_files:
-        if 'file_format' in f and f['file_format'] == 'bam' and \
-           f['status'] not in ['replaced', 'revoked', 'deleted'] and \
-           f['lab'] in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/'] and \
-           'analysis_step_version' in f and \
-           'analysis_step' in f['analysis_step_version'] and \
-           'pipelines' in f['analysis_step_version']['analysis_step']:
-            pipelines = f['analysis_step_version']['analysis_step']['pipelines']
-            for p in pipelines:
-                if p['title'] in pipeline_titles:
-                    return p['title']
-    return False
+
 
 
 def scanFilesForPipelineTitle_not_chipseq(files_to_scan, assemblies, pipeline_titles):
@@ -2981,16 +2966,16 @@ def scanFilesForPipeline(files_to_scan, pipeline_title_list):
 
 def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
 
-    if alignment_file['output_type'] in ['transcriptome alignments',
+    if alignment_file.get('output_type') in ['transcriptome alignments',
                                          'unfiltered alignments']:
         return False
 
-    if alignment_file['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
+    if alignment_file.get('lab') not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
         return False
 
     quality_metrics = alignment_file.get('quality_metrics')
 
-    if (quality_metrics is None) or (quality_metrics == []):
+    if not quality_metrics:
         return False
 
     if assay_name in ['RAMPAGE', 'CAGE',
@@ -3004,12 +2989,6 @@ def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
                 return unique + multi
 
     elif assay_name in ['ChIP-seq']:
-
-        derived_from_files = alignment_file.get('derived_from')
-
-        if (derived_from_files is None) or (derived_from_files == []):
-            return False
-
         if target is not False and \
            'name' in target and target['name'] in ['H3K9me3-human', 'H3K9me3-mouse']:
             # exception (mapped)
@@ -3111,21 +3090,6 @@ def get_chip_seq_bam_read_depth(bam_file):
 
 
 
-# global valriables calculation
-
-#files_structure = {}
-experiment_pipelines = []
-experiment_alignment_pipelines = []
-
-'''def process_files(experiment):
-    original_files = experiment.get('original_files')
-    if original_files:
-        files_structure = create_files_mapping(original_files)
-        experiment_pipelines = \
-            get_pipeline_objects(files_structure.get('original_files').values())
-        experiment_alignment_pipelines = \
-            get_pipeline_objects(files_structure.get('alignments').values())
-'''
 def create_files_mapping(files_list):
     to_return = {'original_files':{},
                  'fastq_files':{},
@@ -3185,6 +3149,20 @@ def get_contributing_files(files_list):
     return to_return
 
 # approved utilities:
+
+# valid!!!
+def scanFilesForPipelineTitle_yes_chipseq(alignment_files, pipeline_titles):
+    for f in alignment_files:
+        if f.get('lab') in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/'] and \
+           'analysis_step_version' in f and \
+           'analysis_step' in f['analysis_step_version'] and \
+           'pipelines' in f['analysis_step_version']['analysis_step']:
+            pipelines = f['analysis_step_version']['analysis_step']['pipelines']
+            for p in pipelines:
+                if p['title'] in pipeline_titles:
+                    return p['title']
+    return False
+
 
 def get_derived_from_files_set(list_of_files, files_structure, file_format, object_flag):
     derived_from_set = set()
@@ -3371,17 +3349,18 @@ function_dispatcher_without_files = {
     'audit_missing_construct': audit_missing_construct,
     'audit_NTR': audit_experiment_assay,
     'audit_AB_characterization': audit_experiment_antibody_characterized,
+    'audit_control': audit_experiment_control,
 }
 function_dispatcher_with_files = {
 
     'audit_consistent_sequencing_runs': audit_experiment_consistent_sequencing_runs,
     'audit_experiment_out_of_date': audit_experiment_out_of_date_analysis,
-    #'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
-    #'audit_control': audit_experiment_control,
+    'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
     'audit_platforms': audit_experiment_platforms_mismatches,
-    #'audit_uploading_files': audit_experiment_with_uploading_files,
-    #'audit_pipeline_assay': audit_experiment_pipeline_assay_details,
-    #'audit_missing_unfiltered_bams': audit_experiment_missing_unfiltered_bams
+    'audit_uploading_files': audit_experiment_with_uploading_files,
+    'audit_pipeline_assay': audit_experiment_pipeline_assay_details,
+    'audit_missing_unfiltered_bams': audit_experiment_missing_unfiltered_bams,
+    'audit_modERN': audit_modERN_experiment_standards_dispatcher,
 }
 
 # global variables useful for the audits (preventing repetitive calculation)
@@ -3411,6 +3390,7 @@ function_dispatcher_with_files = {
                       'possible_controls.original_files.platform',
 
                       'original_files',
+                      'original_files.quality_metrics',
                       'original_files.platform',
                       'original_files.replicate',
                       'original_files.analysis_step_version',
@@ -3418,7 +3398,6 @@ function_dispatcher_with_files = {
                       'original_files.analysis_step_version.analysis_step.pipelines',
                       ])
 def audit_experiment(value, system):
-    #process_files(value)
     files_structure = create_files_mapping(value.get('original_files'))
     files_structure['contributing_files']= get_contributing_files(value.get('contributing_files'))
     for function_name in function_dispatcher_with_files.keys():
@@ -3428,7 +3407,7 @@ def audit_experiment(value, system):
         for failure in function_dispatcher_without_files[function_name](value, system):
             yield failure
 
-'''@audit_checker('Experiment', frame=[
+@audit_checker('Experiment', frame=[
     'replicates.antibody',
     'replicates.antibody.targets',
     'replicates.antibody.characterizations',
@@ -3524,8 +3503,8 @@ def audit_experiment_entry_function(value, system):
     #    yield failure
     for failure in audit_experiment_standards_dispatcher(value):
         yield failure
-    for failure in audit_modERN_experiment_standards_dispatcher(value):
-        yield failure
+    #for failure in audit_modERN_experiment_standards_dispatcher(value):
+    #    yield failure
     #for failure in audit_experiment_replicates_with_no_libraries(value):
     #    yield failure
     #for failure in audit_experiment_isogeneity(value):
@@ -3560,4 +3539,3 @@ def audit_experiment_entry_function(value, system):
 # def audit_experiment_needs_pipeline(value, system): removed in release 56
 # http://redmine.encodedcc.org/issues/4990
 
-'''
