@@ -13,7 +13,7 @@ from urllib.parse import urlencode
 from collections import OrderedDict
 from .visualization import vis_format_external_url
 
-from pprint import pprint as pp
+# from pprint import pprint as pp
 
 
 CHAR_COUNT = 32
