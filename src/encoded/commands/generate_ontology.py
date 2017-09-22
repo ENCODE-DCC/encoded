@@ -438,19 +438,6 @@ type_slims = {
 
 # Note this also shows the final datastructure for ontology.json
 ntr_assays = {
-    "NTR:0003660": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "microRNA counts",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
     "NTR:0000612": {
         "assay": ['RNA binding'],
         "category": [],
@@ -568,40 +555,14 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
-    "NTR:0004739": {
-        "assay": ['Transcription'],
-        "category": [],
-        "developmental": [],
-        "name": "BruUV-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "BruUV-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
     "NTR:0005023": {
         "assay": ['DNA sequencing'],
         "category": [],
         "developmental": [],
-        "name": "Circulome-seq",
+        "name": "extrachromosomal circular DNA sequencing assay",
         "objectives": [],
         "organs": [],
         "preferred_name": "Circulome-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
-    "NTR:0005141": {
-        "assay": ['DNA binding'],
-        "category": [],
-        "developmental": [],
-        "name": "Mint-ChIP-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "Mint-ChIP",
         "slims": [],
         "synonyms": [],
         "systems": [],
@@ -624,7 +585,7 @@ ntr_assays = {
         "assay": ['RNA structure'],
         "category": [],
         "developmental": [],
-        "name": "icSHAPE",
+        "name": "in vivo click selective 2-hydroxyl acylation and profiling experiment",
         "objectives": [],
         "organs": [],
         "preferred_name": "icSHAPE",
@@ -646,6 +607,19 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
+    "NTR:0000445": {
+        "assay": ['Transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "isoform sequencing",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "ISO-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    }
 }
 
 
