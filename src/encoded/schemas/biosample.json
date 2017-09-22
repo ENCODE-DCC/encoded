@@ -700,13 +700,13 @@
             "description": "The units used to quantify the amount of cells or tissue obtained.",
             "type": "string",
             "enum": [
-                "cells", 
+                "cells",
                 "cells/ml",
                 "g",
-                "items", 
+                "items",
                 "mg",
                 "whole animals",
-                "whole embryos", 
+                "whole embryos",
                 "μg"
             ]
         },
