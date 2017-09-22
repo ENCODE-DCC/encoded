@@ -223,17 +223,11 @@ class ExperimentComponent extends React.Component {
         // collect up library documents.
         const libraryDocs = [];
         let biosamples = [];
-        let geneticModifications = [];
         if (replicates) {
             biosamples = _.compact(replicates.map((replicate) => {
                 if (replicate.library) {
                     if (replicate.library.documents && replicate.library.documents.length) {
                         Array.prototype.push.apply(libraryDocs, replicate.library.documents);
-                    }
-
-                    // Collect biosample genetic modifications
-                    if (replicate.library.biosample && replicate.library.biosample.genetic_modifications && replicate.library.biosample.genetic_modifications.length) {
-                        geneticModifications = geneticModifications.concat(replicate.library.biosample.genetic_modifications);
                     }
 
                     return replicate.library.biosample;
@@ -643,10 +637,6 @@ class ExperimentComponent extends React.Component {
                     </PanelBody>
                 </Panel>
 
-                {geneticModifications.length ?
-                    <GeneticModificationSummary geneticModifications={geneticModifications} />
-                : null}
-
                 {Object.keys(condensedReplicates).length ?
                     <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
                 : null}
@@ -739,6 +729,31 @@ const replicateTableColumns = {
             }
             return (aReplicate.library && aReplicate.library.biosample) ? -1 : ((bReplicate.library && bReplicate.library.biosample) ? 1 : 0);
         },
+    },
+
+    genetic_modification: {
+        title: 'Modifications',
+        display: (condensedReplicate) => {
+            const replicate = condensedReplicate[0];
+            const gms = replicate.library && replicate.library.biosample && replicate.library.biosample.applied_modifications;
+            if (gms && gms.length) {
+                return (
+                    <span>
+                        {gms.map((gm, i) => (
+                            <span key={gm.uuid}>
+                                {i > 0 ? <span>, </span> : null}
+                                <a href={gm['@id']} title={`View genetic modification ${gm.accession}`}>{gm.accession}</a>
+                            </span>
+                        ))}
+                    </span>
+                );
+            }
+            return null;
+        },
+        hide: list => _(list).all((condensedReplicate) => {
+            const replicate = condensedReplicate[0];
+            return !(replicate.library && replicate.library.biosample && replicate.library.biosample.applied_modifications && replicate.library.biosample.applied_modifications.length);
+        }),
     },
 
     antibody_accession: {

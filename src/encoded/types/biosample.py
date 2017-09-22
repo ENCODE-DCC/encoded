@@ -100,7 +100,14 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'organism',
         'references',
         'genetic_modifications',
-        'genetic_modifications.treatments'
+        'genetic_modifications.modified_site_by_target_id',
+        'genetic_modifications.treatments',
+        'model_organism_donor_modifications',
+        'model_organism_donor_modifications.modified_site_by_target_id',
+        'model_organism_donor_modifications.treatments',
+        'applied_modifications',
+        'applied_modifications.modified_site_by_target_id',
+        'applied_modifications.treatments'
     ]
     audit_inherit = [
         'donor',
@@ -127,7 +134,9 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'rnais.source',
         'organism',
         'references',
-        'genetic_modifications'
+        'genetic_modifications',
+        'model_organism_donor_modifications',
+        'applied_modifications'
     ]
 
     @calculated_property(define=True,
@@ -302,18 +311,18 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             return request.embed(donor, '@@object').get('genetic_modifications')
 
     @calculated_property(schema={
-        "title": "All applied modifications",
+        "title": "applied modifications",
         "description": "All genetic modifications made in either the donor and/or biosample.",
         "type": "array",
         "items": {
-            "title": "All applied modification",
+            "title": "applied modification",
             "description": "Genetic modification made in either the donor and/or biosample.",
             "coment": "See genetic_modification.json for available identifiers.",
             "type": "string",
             "linkTo": "GeneticModification",
         }
     })
-    def all_applied_modifications(self, request, genetic_modifications=None, model_organism_donor_modifications=None):
+    def applied_modifications(self, request, genetic_modifications=None, model_organism_donor_modifications=None):
         if genetic_modifications is not None and model_organism_donor_modifications is not None:
             return list(set(genetic_modifications + model_organism_donor_modifications))
         elif genetic_modifications is not None and model_organism_donor_modifications is None:

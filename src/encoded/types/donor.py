@@ -30,7 +30,9 @@ class Donor(Item):
         'documents.award',
         'documents.lab',
         'documents.submitted_by',
-        'genetic_modifications'
+        'genetic_modifications',
+        'genetic_modifications.modified_site_by_target_id',
+        'genetic_modifications.treatments'
     ]
     name_key = 'accession'
     rev = {
@@ -128,4 +130,3 @@ class HumanDonor(Donor):
     })
     def children(self, request, parents):
         return paths_filtered_by_status(request, parents)
-
