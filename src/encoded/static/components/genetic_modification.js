@@ -118,7 +118,7 @@ const ModificationSiteItems = (props) => {
         ),
         modified_site_nonspecific: gm => (
             <div data-test="msnonspec">
-                <dt>Non-specific</dt>
+                <dt>Integration site</dt>
                 <dd>{gm.modified_site_nonspecific}</dd>
             </div>
         ),

@@ -379,8 +379,8 @@ class BiosampleComponent extends React.Component {
                     </PanelBody>
                 </Panel>
 
-                {context.genetic_modifications && context.genetic_modifications.length ?
-                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
+                {context.applied_modifications && context.applied_modifications.length ?
+                    <GeneticModificationSummary geneticModifications={context.applied_modifications} />
                 : null}
 
                 {context.donor ?
