@@ -50,7 +50,7 @@ install:
 before_script:
   - >
     if test -n "$BROWSER"; then
-      CONNECT_URL=https://saucelabs.com/downloads/sc-4.4.4-linux.tar.gz 
+      CONNECT_URL=https://saucelabs.com/downloads/sc-4.4.9-linux.tar.gz 
       CONNECT_DOWNLOAD=sc.tar.gz
       SC_READYFILE=sauce-connect-ready-$RANDOM
       SC_LOGFILE=$HOME/sauce-connect.log
