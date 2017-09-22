@@ -6,6 +6,7 @@ import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
 import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, DocumentsSubpanels } from './doc';
+import { GeneticModificationSummary } from './genetic_modification';
 import * as globals from './globals';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
@@ -578,6 +579,10 @@ class Donor extends React.Component {
                 </header>
 
                 <PanelView key={context.uuid} {...this.props} />
+
+                {context.genetic_modifications && context.genetic_modifications.length ?
+                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
+                : null}
 
                 <RelatedItems
                     title={`Biosamples from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}

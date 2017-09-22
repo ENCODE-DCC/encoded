@@ -24,6 +24,15 @@
         "schema_version": {
             "default": "3"
         },
+        "source": {
+            "title": "Source",
+    	    "description": "The originating lab or vendor.",
+    	    "comment": "See source.json for available identifiers.",
+            "type": "string",
+            "comment": "Locking down to prevent new criprs from being submitted.",
+            "permission": "import_items",
+	        "linkTo": "Source"
+        },
         "guide_rna_sequences": {
             "title": "Guide RNA sequences",
         	"description": "gRNA sequences used in CRISPR genetic modification",
