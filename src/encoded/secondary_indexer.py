@@ -50,22 +50,11 @@ class SecondState(IndexerState):
         self.viscached_set      = self.title + '_viscached'
         self.success_set        = self.viscached_set
         self.cleanup_last_cycle.append(self.viscached_set)  # Clean up at beginning of next cycle
-        ### OPTIONAL: secodary_indexer does audits
-        ### self.audited_set        = self.title + '_audited'
-        ### self.cleanup_last_cycle = [self.last_set,self.viscached_set,self.audited_set]  # Clean up at beginning of next cycle
-        ### OPTIONAL: secodary_indexer does audits
         # DO NOT INHERIT! These keys are for passing on to other indexers
         self.followup_prep_list = None                        # No followup to a following indexer
         self.staged_cycles_list = self.followup_ready_list    # inherited from primary IndexerState
 
-    ### OPTIONAL: secodary_indexer does audits
-    ### def audited_all(self, uuids):
-    ###    # Avoid individual uuid-level accounting (SLOW) and do this at end of cycle
-    ###    self.list_extend(self.audited_set, uuids)
-    ### OPTIONAL: secodary_indexer does audits
-
     def viscached_uuid(self, uuid):
-        #self.set_add(self.viscached_set, [uuid])  # Too slow when list is long
         self.list_extend(self.viscached_set, [uuid])
 
     def get_one_cycle(self, xmin, registry):
@@ -73,6 +62,7 @@ class SecondState(IndexerState):
         next_xmin = None
 
         (undone_xmin, uuids, cycle_interrupted) = self.priority_cycle(registry)
+        # NOTE: unlike with primary_indexer priority_cycle() can be called after get_initial_state()
         if len(uuids) > 0:
             if not cycle_interrupted:  # AKA reindex signal
                 return (-1, next_xmin, uuids)  # -1 ensures using the latest xmin
@@ -101,7 +91,7 @@ class SecondState(IndexerState):
                 uuids.append(val)
 
         if xmin is None:  # could happen if first and only cycle did not start with xmin
-            xmin = self.get(self.state_id).get('last_xmin',-1)
+            xmin = self.get().get('last_xmin',-1)
 
         uuid_count = len(uuids)
         if len(uuids) > 0:
@@ -124,16 +114,14 @@ def index_secondary(request):
     es = request.registry[ELASTIC_SEARCH]
     indexer = request.registry['secondary'+INDEXER]
 
-    # Do we need worker pool? Only if we do audits
-
     # keeping track of state
     state = SecondState(es,INDEX)
 
     last_xmin = None
-    result = state.get()
+    result = state.get_initial_state()
     last_xmin = result.get('xmin')
     next_xmin = None
-    xmin = None  # Should be at the beginning of the queue
+    xmin = None  # will be at the beginning of the queue
     result.update(
         last_xmin=last_xmin,
         xmin=xmin
@@ -152,12 +140,11 @@ def index_secondary(request):
         if cycle_uuid_count > 0 and (xmin is None or int(xmin) <= 0):  # Happens when the a reindex all signal occurs.
             xmin = get_current_xmin(request)
 
-        ### OPTIONAL: secodary_indexer does audits
-        #   These lines are not appropriate when audits are involved, unless there is a set of auditable obj types.
+        ### NOTE: These lines may not be appropriate when work other than vis_caching is being done.
         if cycle_uuid_count > 100:  # some arbitrary cutoff.
             uuids = list(set(all_visualizable_uuids(request.registry)).intersection(uuids))
             cycle_uuid_count = len(uuids)
-        ### OPTIONAL: secodary_indexer does audits
+        ### END OF NOTE
 
         if cycle_uuid_count == 0:  # No more uuids in the queue
             break
@@ -172,30 +159,15 @@ def index_secondary(request):
             )
             result = state.start_cycle(uuids, result)
 
-            #snapshot_id = None  # Not sure why this will be needed.  The xmin should be all that is needed.
-
             # Make no effort to incrementally index... all in
             errors = indexer.update_objects(request, uuids, xmin)     # , snapshot_id)
 
             indexing_errors.extend(errors)  # ignore errors?
             result['errors'] = indexing_errors
 
-            ### OPTIONAL: secodary_indexer does audits
-            ### state.audited_all(uuids)
-            ### OPTIONAL: secodary_indexer does audits
             result = state.finish_cycle(result,indexing_errors)
 
             uuid_count += cycle_uuid_count
-
-            ### OPTIONAL: secodary_indexer does audits
-            ### # Flush is probably needed for audits.  Is not needed for viscache
-            ### es.indices.refresh(index=INDEX)
-            ### if flush:
-            ###     try:
-            ###         es.indices.flush_synced(index=INDEX)  # Faster recovery on ES restart
-            ###     except ConflictError:
-            ###         pass
-            ### OPTIONAL: secodary_indexer does audits
 
             if next_xmin is not None:
                 last_xmin = xmin
@@ -213,7 +185,7 @@ def index_secondary(request):
         if cycles > 1:
             result['lag'] = str(datetime.datetime.now(pytz.utc) - first_txn)
     else:
-        result['indexed'] = 0
+        result.pop('indexed',None)
 
     return result
 
@@ -236,7 +208,7 @@ class SecondaryIndexer(Indexer):
         last_exc = None
         # First get the object currently in es
         try:
-            result = self.es.get(index=self.index, id=str(uuid))  # No reason to restrict by version and that would interfere with reindex all signal.
+            result = self.es.get(index=self.index, id=str(uuid))  # No reason to restrict by version and that could interfere with reindex all signal.
             #result = self.es.get(index=self.index, id=str(uuid), version=xmin, version_type='external_gte')
             doc = result['_source']
         except StatementError:
@@ -246,59 +218,8 @@ class SecondaryIndexer(Indexer):
             log.error("Error can't find %s in %s", uuid, ELASTIC_SEARCH)
             last_exc = repr(e)
 
-        ### OPTIONAL: secodary_indexer does audits
-        ### # Handle audits:
-        ###index_audit = False
-        ###if last_exc is None:
-        ###    # It might be possible to assert that the audit is either empty or stale
-        ###    # TODO assert('audit_stale' is in doc or doc.get('audit') is None)
-        ###
-        ###    try:
-        ###        result = request.embed('/%s/@@index-audits' % uuid, as_user='INDEXER')
-        ###        # Should have document with audit only
-        ###        assert(result['uuid'] == doc['uuid'])
-        ###        if doc.get('audit',{}) != result.get('audit',{}) or doc.get('audit_stale',False):
-        ###            doc['audit'] = result['audit']
-        ###            doc['audit_stale'] = False
-        ###            index_audit = True
-        ###    except StatementError:
-        ###        # Can't reconnect until invalid transaction is rolled back
-        ###        raise
-        ###    except Exception as e:
-        ###        log.error('Error rendering /%s/@@index-audits', uuid, exc_info=True)
-        ###        last_exc = repr(e)
-        ###
-        ###if index_audit:
-        ###    if last_exc is None:
-        ###        for backoff in [0, 10, 20, 40, 80]:
-        ###            time.sleep(backoff)
-        ###            try:
-        ###                self.es.index(
-        ###                    index=self.index, doc_type=doc['item_type'], body=doc,
-        ###                    id=str(uuid), version=xmin, version_type='external_gte',
-        ###                    request_timeout=30,
-        ###                )
-        ###            except StatementError:
-        ###                # Can't reconnect until invalid transaction is rolled back
-        ###                raise
-        ###            except ConflictError:
-        ###                #log.warning('Conflict indexing %s at version %d', uuid, xmin)
-        ###                # This case occurs when the primary indexer is cycles ahead of the secondary indexer
-        ###                # And this uuid will be secondarily indexed again on a second round
-        ###                # So no error, pretend it has indexed and move on.
-        ###                return  # No use doing any further secondary indexing
-        ###            except (ConnectionError, ReadTimeoutError, TransportError) as e:
-        ###                log.warning('Retryable error indexing %s: %r', uuid, e)
-        ###                last_exc = repr(e)
-        ###            except Exception as e:
-        ###                log.error('Error indexing %s', uuid, exc_info=True)
-        ###                last_exc = repr(e)
-        ###                break
-        ###            else:
-        ###                break
-        ### OPTIONAL: secodary_indexer does audits
+        ### NOTE: if other work is to be done by the secondary indexer, it can be added here.
 
-        ### Now that the audits have been updated to es, the vis_cache can be updated
         if last_exc is None:
             try:
                 result = vis_cache_add(request, doc['embedded'])  # result is empty if not visualizable

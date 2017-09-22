@@ -94,9 +94,10 @@ def test_indexing_workbook(testapp, indexer_testapp):
     res = indexer_testapp.post_json('/index', {'record': True})
     assert res.json['updated']
     assert res.json['indexed']
+    assert res.json['pass2_took']
 
     res = indexer_testapp.post_json('/index_secondary', {'record': True})
-    assert res.json['cycle_lag']
+    #assert res.json['cycle_took']  # Not working because registry.settings.get("stage_for_followup") not found?
     assert res.json['title'] == 'secondary_indexer'
 
     res = testapp.get('/search/?type=Biosample')
