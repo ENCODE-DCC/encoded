@@ -235,7 +235,6 @@ class ExperimentComponent extends React.Component {
                 return null;
             }));
         }
-        geneticModifications = _(geneticModifications).uniq(gm => gm['@id']);
 
         // Create platforms array from file platforms; ignore duplicate platforms.
         const platforms = {};
