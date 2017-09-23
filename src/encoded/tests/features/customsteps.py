@@ -51,8 +51,8 @@ def click_element(browser, css):
 
 @when('I wait for the table to fully load')
 def wait_for_table(browser):
-    assert browser.is_element_present_by_css("table.collection-table")
-    assert browser.is_element_not_present_by_css("table.collection-table.communicating")
+    assert browser.is_element_present_by_css("table.collection-table", wait_time=5)
+    assert browser.is_element_not_present_by_css("table.collection-table.communicating", wait_time=5)
 
 
 @when('I wait for deferred content to fully load')
