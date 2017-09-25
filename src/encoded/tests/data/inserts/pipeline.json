@@ -142,5 +142,29 @@
         "award": "U54HG007005",
         "title": "ENCODE File Validation",
         "uuid": "f96f9810-a5a3-11e4-bcd8-0800200c9a66"
+    },
+    {
+        "accession": "ENCPL001ISO",
+        "assay_term_names": ["ISO-seq"],
+        "analysis_steps": [
+            "fastqc-step-v-1"
+        ],
+        "status": "active",
+        "lab": "brenton-graveley",
+        "award": "U54HG007005",
+        "title": "Test ISO-seq pipeline",
+        "uuid": "f96f9810-a5a3-11e4-bcd8-0800200c9a61"
+    },
+    {
+        "accession": "ENCPL001STR",
+        "assay_term_names": ["STARR-seq"],
+        "analysis_steps": [
+            "fastqc-step-v-1"
+        ],
+        "status": "active",
+        "lab": "brenton-graveley",
+        "award": "U54HG007005",
+        "title": "Test STARR-seq pipeline",
+        "uuid": "f96f9810-a5a3-11e4-bcd8-0800200c9a62"
     }
 ]
