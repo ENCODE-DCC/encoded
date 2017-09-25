@@ -58,42 +58,109 @@ import * as globals from './globals';
 //
 
 export const dbxrefPrefixMap = {
-    UniProtKB: { pattern: 'http://www.uniprot.org/uniprot/{0}' },
-    HGNC: { pattern: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene={0}' },
-    ENSEMBL: { pattern: 'http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={0}' },
-    GeneID: { pattern: 'https://www.ncbi.nlm.nih.gov/gene/{0}' },
-    GEO: { pattern: 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc={0}' },
-    GEOSAMN: { pattern: 'https://www.ncbi.nlm.nih.gov/biosample/{0}' },
-    IHEC: { pattern: 'http://www.ebi.ac.uk/vg/epirr/view/{0}' },
-    Cellosaurus: { pattern: 'http://web.expasy.org/cellosaurus/{0}' },
-    FlyBase: { pattern: 'http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context={0}' },
-    FlyBaseStock: { pattern: 'http://flybase.org/reports/{0}.html' },
-    BDSC: { pattern: 'http://flystocks.bio.indiana.edu/Reports/{0}' },
-    WormBase: { pattern: 'http://www.wormbase.org/species/c_elegans/gene/{0}' },
-    WormBaseStock: { pattern: 'http://www.wormbase.org/species/c_elegans/strain/{0}' },
-    NBP: { pattern: 'http://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq={0}' },
-    CGC: { pattern: 'https://cgc.umn.edu/strain/{0}' },
-    DSSC: { pattern: 'https://stockcenter.ucsd.edu/index.php?action=view&q={0}&table=Species&submit=Search' },
-    'MGI.D': { pattern: 'http://www.informatics.jax.org/inbred_strains/mouse/docs/{0}.shtml' },
-    RBPImage: { pattern: 'http://rnabiology.ircm.qc.ca/RBPImage/gene.php?cells={1}&targets={0}' },
-    RefSeq: { pattern: 'https://www.ncbi.nlm.nih.gov/gene/?term={0}' },
-    JAX: { pattern: 'https://www.jax.org/strain/{0}' },
-    NBRP: { pattern: 'https://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq={0}' },
-    'UCSC-ENCODE-mm9': { pattern: 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=mm9&hgt_mdbVal1={0}' },
-    'UCSC-ENCODE-hg19': { pattern: 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1={0}' },
-    'UCSC-ENCODE-cv': { pattern: 'http://genome.cse.ucsc.edu/cgi-bin/hgEncodeVocab?ra=encode%2Fcv.ra&term=%22{0}%22' },
-    'UCSC-GB-mm9': { pattern: 'http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=mm9&g={0}' },
-    'UCSC-GB-hg19': { pattern: 'http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g={0}' },
-    PMID: { pattern: 'https://www.ncbi.nlm.nih.gov/pubmed/?term={0}' },
-    PMCID: { pattern: 'https://www.ncbi.nlm.nih.gov/pmc/articles/{0}' },
-    doi: { pattern: 'http://dx.doi.org/doi:{0}' },
-    AR: { pattern: 'http://antibodyregistry.org/search.php?q={0}' },
-    NIH: { pattern: 'https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=grants.nih.gov&query={0}' },
+    UniProtKB: {
+        pattern: 'http://www.uniprot.org/uniprot/{0}',
+    },
+    HGNC: {
+        pattern: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene={0}',
+    },
+    ENSEMBL: {
+        pattern: 'http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={0}',
+    },
+    GeneID: {
+        pattern: 'https://www.ncbi.nlm.nih.gov/gene/{0}',
+    },
+    GEO: {
+        pattern: 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc={0}',
+    },
+    GEOSAMN: {
+        pattern: 'https://www.ncbi.nlm.nih.gov/biosample/{0}',
+    },
+    IHEC: {
+        pattern: 'http://www.ebi.ac.uk/vg/epirr/view/{0}',
+    },
+    Cellosaurus: {
+        pattern: 'http://web.expasy.org/cellosaurus/{0}',
+    },
+    FlyBase: {
+        pattern: 'http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context={0}',
+    },
+    FlyBaseStock: {
+        pattern: 'http://flybase.org/reports/{0}.html',
+    },
+    BDSC: {
+        pattern: 'http://flystocks.bio.indiana.edu/Reports/{0}',
+    },
+    WormBase: {
+        pattern: 'http://www.wormbase.org/species/c_elegans/gene/{0}',
+    },
+    WormBaseStock: {
+        pattern: 'http://www.wormbase.org/species/c_elegans/strain/{0}',
+    },
+    NBP: {
+        pattern: 'http://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq={0}',
+    },
+    CGC: {
+        pattern: 'https://cgc.umn.edu/strain/{0}',
+    },
+    DSSC: {
+        pattern: 'https://stockcenter.ucsd.edu/index.php?action=view&q={0}&table=Species&submit=Search',
+    },
+    'MGI.D': {
+        pattern: 'http://www.informatics.jax.org/inbred_strains/mouse/docs/{0}.shtml',
+    },
+    RBPImage: {
+        pattern: 'http://rnabiology.ircm.qc.ca/RBPImage/gene.php?cells={1}&targets={0}',
+        postprocessor: (context, dbxref, urlPattern) => (
+            // Experiments with RBPImage need to replace one urlPattern element with
+            // biosample_term_name.
+            (context['@type'][0] === 'Experiment' ? urlPattern.replace(/\{1\}/g, context.biosample_term_name) : urlPattern)
+        ),
+    },
+    RefSeq: {
+        pattern: 'https://www.ncbi.nlm.nih.gov/gene/?term={0}',
+    },
+    JAX: {
+        pattern: 'https://www.jax.org/strain/{0}',
+    },
+    NBRP: {
+        pattern: 'https://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq={0}',
+    },
+    'UCSC-ENCODE-mm9': {
+        pattern: 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=mm9&hgt_mdbVal1={0}',
+    },
+    'UCSC-ENCODE-hg19': {
+        pattern: 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1={0}',
+    },
+    'UCSC-ENCODE-cv': {
+        pattern: 'http://genome.cse.ucsc.edu/cgi-bin/hgEncodeVocab?ra=encode%2Fcv.ra&term=%22{0}%22',
+    },
+    'UCSC-GB-mm9': {
+        pattern: 'http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=mm9&g={0}',
+    },
+    'UCSC-GB-hg19': {
+        pattern: 'http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g={0}',
+    },
+    PMID: {
+        pattern: 'https://www.ncbi.nlm.nih.gov/pubmed/?term={0}',
+    },
+    PMCID: {
+        pattern: 'https://www.ncbi.nlm.nih.gov/pmc/articles/{0}',
+    },
+    doi: {
+        pattern: 'http://dx.doi.org/doi:{0}',
+    },
+    AR: {
+        pattern: 'http://antibodyregistry.org/search.php?q={0}',
+    },
+    NIH: {
+        pattern: 'https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=grants.nih.gov&query={0}',
+    },
 };
 
 
 const DbxrefUrl = (props) => {
-    const { dbxref, preprocessor, postprocessor } = props;
+    const { dbxref, preprocessor, context } = props;
 
     // Standard dbxref pattern: {prefix}:{value}. If the dbxref has more than one colon, only the
     // first colon splits the dbxref into `prefix` and `value`. The other colons get included as
@@ -111,7 +178,8 @@ const DbxrefUrl = (props) => {
     }
 
     // Using the prefix, find the corresponding URL pattern.
-    const urlPattern = dbxrefPrefixMap[prefix].pattern;
+    const urlProcessor = dbxrefPrefixMap[prefix];
+    const urlPattern = urlProcessor.pattern;
 
     // Now replace the {0} in the URL pattern with the value we extracted to form the final URL,
     // then display that as a link.
@@ -120,8 +188,8 @@ const DbxrefUrl = (props) => {
 
         // If, after replacing the {0} with the value, the URL needs further modification, call the
         // caller-provided post-processor with the given dbxref and the generated URL.
-        if (postprocessor) {
-            url = postprocessor(dbxref, url);
+        if (urlProcessor.postprocessor) {
+            url = urlProcessor.postprocessor(context, dbxref, url);
         }
 
         // Return the final dbxref as a link.
@@ -136,22 +204,23 @@ const DbxrefUrl = (props) => {
 DbxrefUrl.propTypes = {
     dbxref: PropTypes.string.isRequired, // dbxref string
     preprocessor: PropTypes.func, // Callback to process dbxref before this does
-    postprocessor: PropTypes.func, // Callback to process URL pattern after value substitution
+    context: PropTypes.func, // Object that contains the dbxref
 };
 
 DbxrefUrl.defaultProps = {
     preprocessor: null,
     postprocessor: null,
+    context: null,
 };
 
 
 export const DbxrefListNew = (props) => {
-    const { dbxrefs, preprocessor, postprocessor, addClasses } = props;
+    const { dbxrefs, preprocessor, context, addClasses } = props;
 
     return (
         <ul className={addClasses}>
             {dbxrefs.map((dbxref, i) =>
-                <li key={i}><DbxrefUrl dbxref={dbxref} preprocessor={preprocessor} postprocessor={postprocessor} /></li>
+                <li key={i}><DbxrefUrl dbxref={dbxref} preprocessor={preprocessor} context={context} /></li>
             )}
         </ul>
     );
@@ -160,13 +229,14 @@ export const DbxrefListNew = (props) => {
 DbxrefListNew.propTypes = {
     dbxrefs: PropTypes.array.isRequired, // Array of dbxref values to display
     preprocessor: PropTypes.func, // Preprocessor callback
-    postprocessor: PropTypes.func, // Postprocessor callback
+    context: PropTypes.object, // Object containing the dbxref
     addClasses: PropTypes.string, // CSS class to apply to dbxref list
 };
 
 DbxrefListNew.defaultProps = {
     preprocessor: null,
     postprocessor: null,
+    context: null,
     addClasses: '',
 };
 

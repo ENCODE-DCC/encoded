@@ -306,13 +306,11 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
-            const context = { biosample_term_name: 'HepG2' };
+            const context = { '@type': ['Experiment'], biosample_term_name: 'HepG2' };
             const wrapper = mount(
                 <DbxrefListNew
                     dbxrefs={['RBPImage:DNAJC2', 'RBPImage:SRSF9']}
-                    postprocessor={(dbxref, urlPattern) => (
-                        urlPattern.replace(/\{1\}/g, context.biosample_term_name)
-                    )}
+                    context={context}
                 />
             );
 
