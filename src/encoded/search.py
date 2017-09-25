@@ -148,7 +148,7 @@ def set_sort_order(request, search_term, types, doc_types, query, result):
             'unmapped_type': 'keyword',
         }
 
-    # Otherwise we use a default sort only when there's no text search to be ranked
+    # Otherwise we use a default sort only when there's no text search to be  ranked
     if not sort and search_term == '*':
 
         # If searching for a single type, look for sort options in its schema
