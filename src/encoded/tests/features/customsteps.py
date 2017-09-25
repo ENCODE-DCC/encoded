@@ -52,10 +52,13 @@ def click_element(browser, css):
 
 @when('I wait for the table to fully load')
 def wait_for_table(browser):
-    for second in range(10):
-        time.sleep(1)
-        print("table.sticky-area.collection-table.table status {}".format(browser.is_element_present_by_css("table.sticky-area.collection-table.table")))
-        print("table.sticky-area.collection-table.communicating {}".format(browser.is_element_not_present_by_css("table.sticky-area.collection-table.communicating")))
+    for second in range(3):
+        page_stopped_fetching = browser.is_element_not_present_by_css("table.sticky-area.collection-table.communicating")
+        page_loaded = browser.is_element_present_by_css("table.sticky-area.collection-table.table")
+        if page_stopped_fetching and page_loaded:
+            break
+        else:
+            time.sleep(1)
     assert browser.is_element_present_by_css("table.sticky-area.collection-table.table")
     assert browser.is_element_not_present_by_css("table.sticky-area.collection-table.communicating")
 
