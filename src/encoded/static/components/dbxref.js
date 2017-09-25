@@ -63,18 +63,27 @@ export const dbxrefPrefixMap = {
     },
     HGNC: {
         pattern: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene={0}',
-    },
-    ENSEMBL: {
-        pattern: 'http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={0}',
+        preprocessor: (context) => {
+            if (context['@type'][0] === 'Target' && context.gene_name) {
+                return { altValue: context.gene_name };
+            }
+            return {};
+        },
     },
     GeneID: {
         pattern: 'https://www.ncbi.nlm.nih.gov/gene/{0}',
     },
     GEO: {
         pattern: 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc={0}',
-    },
-    GEOSAMN: {
-        pattern: 'https://www.ncbi.nlm.nih.gov/biosample/{0}',
+        preprocessor: (context, dbxref) => {
+            // If the first four characters of the GEO value is "SAMN" then we need
+            // to use a different URL pattern.
+            const value = dbxref.split(':');
+            if (value[1] && value[1].substr(0, 4) === 'SAMN') {
+                return { altUrlPattern: 'https://www.ncbi.nlm.nih.gov/biosample/{0}' };
+            }
+            return {};
+        },
     },
     IHEC: {
         pattern: 'http://www.ebi.ac.uk/vg/epirr/view/{0}',
@@ -84,15 +93,26 @@ export const dbxrefPrefixMap = {
     },
     FlyBase: {
         pattern: 'http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context={0}',
-    },
-    FlyBaseStock: {
-        pattern: 'http://flybase.org/reports/{0}.html',
+        preprocessor: (context) => {
+            // If a target displays its dbxrefs, use the fly stock URL.
+            if (context['@type'][0] !== 'Target') {
+                return { altUrlPattern: 'http://flybase.org/reports/{0}.html' };
+            }
+            return {};
+        },
     },
     BDSC: {
         pattern: 'http://flystocks.bio.indiana.edu/Reports/{0}',
     },
     WormBase: {
         pattern: 'http://www.wormbase.org/species/c_elegans/gene/{0}',
+        preprocessor: (context) => {
+            // If a target displays its dbxrefs, use the fly stock URL.
+            if (context['@type'][0] !== 'Target') {
+                return { altUrlPattern: 'http://www.wormbase.org/species/c_elegans/strain/{0}' };
+            }
+            return {};
+        },
     },
     WormBaseStock: {
         pattern: 'http://www.wormbase.org/species/c_elegans/strain/{0}',
@@ -116,9 +136,6 @@ export const dbxrefPrefixMap = {
             // biosample_term_name.
             (context['@type'][0] === 'Experiment' ? urlPattern.replace(/\{1\}/g, context.biosample_term_name) : urlPattern)
         ),
-    },
-    RefSeq: {
-        pattern: 'https://www.ncbi.nlm.nih.gov/gene/?term={0}',
     },
     JAX: {
         pattern: 'https://www.jax.org/strain/{0}',
@@ -160,26 +177,29 @@ export const dbxrefPrefixMap = {
 
 
 const DbxrefUrl = (props) => {
-    const { dbxref, preprocessor, context } = props;
+    const { dbxref, context } = props;
 
     // Standard dbxref pattern: {prefix}:{value}. If the dbxref has more than one colon, only the
     // first colon splits the dbxref into `prefix` and `value`. The other colons get included as
     // part of the value. If the dbxref has no colons at all, prefix gets the whole dbxref string
     // and `value` gets the empty string.
-    let prefix = dbxref.split(':', 1)[0];
+    const prefix = dbxref.split(':', 1)[0];
     let value = dbxref.slice(prefix.length + 1);
-
-    // If the caller provided a preprocessor, call it to override the prefix and/or value we
-    // extracted above.
-    if (preprocessor) {
-        const { altPrefix, altValue } = preprocessor(dbxref);
-        prefix = altPrefix || prefix;
-        value = altValue || value;
-    }
 
     // Using the prefix, find the corresponding URL pattern.
     const urlProcessor = dbxrefPrefixMap[prefix];
-    const urlPattern = urlProcessor.pattern;
+
+    // Get the urlPattern for the dbxref prefix. This pattern can be replaced by the preprocessor
+    // during the next step.
+    let urlPattern = urlProcessor.pattern;
+
+    // Call the preprocessor if it exists to replace either the URL pattern, the value, or both.
+    // Normally, the contents of the context object determines if a URL or value should change.
+    if (urlProcessor.preprocessor) {
+        const { altUrlPattern, altValue } = urlProcessor.preprocessor(context, dbxref);
+        urlPattern = altUrlPattern || urlPattern;
+        value = altValue || value;
+    }
 
     // Now replace the {0} in the URL pattern with the value we extracted to form the final URL,
     // then display that as a link.
@@ -203,14 +223,7 @@ const DbxrefUrl = (props) => {
 
 DbxrefUrl.propTypes = {
     dbxref: PropTypes.string.isRequired, // dbxref string
-    preprocessor: PropTypes.func, // Callback to process dbxref before this does
-    context: PropTypes.func, // Object that contains the dbxref
-};
-
-DbxrefUrl.defaultProps = {
-    preprocessor: null,
-    postprocessor: null,
-    context: null,
+    context: PropTypes.object.isRequired, // Object that contains the dbxref
 };
 
 
@@ -229,14 +242,13 @@ export const DbxrefListNew = (props) => {
 DbxrefListNew.propTypes = {
     dbxrefs: PropTypes.array.isRequired, // Array of dbxref values to display
     preprocessor: PropTypes.func, // Preprocessor callback
-    context: PropTypes.object, // Object containing the dbxref
+    context: PropTypes.object.isRequired, // Object containing the dbxref
     addClasses: PropTypes.string, // CSS class to apply to dbxref list
 };
 
 DbxrefListNew.defaultProps = {
     preprocessor: null,
     postprocessor: null,
-    context: null,
     addClasses: '',
 };
 

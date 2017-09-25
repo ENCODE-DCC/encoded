@@ -10,8 +10,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': ['Treatment'] };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['UniProtKB:1234', 'UniProtKB:5678']} />
+                <DbxrefListNew context={context} dbxrefs={['UniProtKB:1234', 'UniProtKB:5678']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -28,10 +29,11 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': ['Target'], gene_name: 'CXXC1' };
             const wrapper = mount(
                 <DbxrefListNew
                     dbxrefs={['HGNC:hCGBP', 'HGNC:ZCGPC1']}
-                    preprocessor={() => ({ altValue: 'CXXC1' })}
+                    context={context}
                 />
             );
 
@@ -45,30 +47,13 @@ describe('Test individual dbxref types', () => {
         });
     });
 
-    describe('Test ENSEMBLE', () => {
-        let dbxLinks;
-
-        beforeAll(() => {
-            const wrapper = mount(
-                <DbxrefListNew dbxrefs={['ENSEMBL:ENSG00000101126', 'ENSEMBL:ENSG00000154832']} />
-            );
-
-            dbxLinks = wrapper.find('a');
-        });
-
-        it('has the correct links', () => {
-            expect(dbxLinks.length).toBe(2);
-            expect(dbxLinks.at(0).prop('href')).toEqual('http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000101126');
-            expect(dbxLinks.at(1).prop('href')).toEqual('http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000154832');
-        });
-    });
-
     describe('Test GeneID', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': ['Target'] };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['GeneID:23394', 'GeneID:10664']} />
+                <DbxrefListNew context={context} dbxrefs={['GeneID:23394', 'GeneID:10664']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -85,20 +70,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': 'UcscBrowserComposite' };
             const wrapper = mount(
-                <DbxrefListNew
-                    dbxrefs={['GEO:GSM1002657', 'GEO:GPL9442', 'GEO:SAMN00003235']}
-                    preprocessor={(dbxref) => {
-                        // If the first four characters of the GEO value is "SAMN" then we need
-                        // to use a different URL, and we select that URL with the fake prefix
-                        // "GEOSAMN".
-                        const value = dbxref.split(':');
-                        if (value[1] && value[1].substr(0, 4) === 'SAMN') {
-                            return { altPrefix: 'GEOSAMN' };
-                        }
-                        return {};
-                    }}
-                />
+                <DbxrefListNew context={context} dbxrefs={['GEO:GSM1002657', 'GEO:GPL9442', 'GEO:SAMN00003235']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -116,8 +90,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': 'ReferenceEpigenome' };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['IHEC:IHECRE00000004.3', 'IHEC:IHECRE00000129.3']} />
+                <DbxrefListNew context={context} dbxrefs={['IHEC:IHECRE00000004.3', 'IHEC:IHECRE00000129.3']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -134,8 +109,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': 'Biosample' };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['Cellosaurus:CVCL_0395', 'Cellosaurus:CVCL_5486']} />
+                <DbxrefListNew context={context} dbxrefs={['Cellosaurus:CVCL_0395', 'Cellosaurus:CVCL_5486']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -153,14 +129,19 @@ describe('Test individual dbxref types', () => {
         let dbxLinksTarget;
 
         beforeAll(() => {
+            const contextFly = { '@type': ['FlyDonor'] };
+            const contextTarget = { '@type': ['Target'] };
             const wrapperFlyDonor = mount(
                 <DbxrefListNew
+                    context={contextFly}
                     dbxrefs={['FlyBase:FBst0038626', 'FlyBase:FBst0000005']}
-                    preprocessor={() => ({ altPrefix: 'FlyBaseStock' })}
                 />
             );
             const wrapperTarget = mount(
-                <DbxrefListNew dbxrefs={['FlyBase:CG43860', 'FlyBase:FBtr0332562']} />
+                <DbxrefListNew
+                    context={contextTarget}
+                    dbxrefs={['FlyBase:CG43860', 'FlyBase:FBtr0332562']}
+                />
             );
 
             dbxLinksFlyDonor = wrapperFlyDonor.find('a');
@@ -184,8 +165,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': 'Biosample' };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['BDSC:38626', 'BDSC:5']} />
+                <DbxrefListNew context={context} dbxrefs={['BDSC:38626', 'BDSC:5']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -203,14 +185,19 @@ describe('Test individual dbxref types', () => {
         let dbxLinksTarget;
 
         beforeAll(() => {
+            const contextWorm = { '@type': ['WormDonor'] };
+            const contextTarget = { '@type': ['Target'] };
             const wrapperWormDonor = mount(
                 <DbxrefListNew
+                    context={contextWorm}
                     dbxrefs={['WormBase:RB884', 'WormBase:RB885']}
-                    preprocessor={() => ({ altPrefix: 'WormBaseStock' })}
                 />
             );
             const wrapperTarget = mount(
-                <DbxrefListNew dbxrefs={['WormBase:WBGene00003222', 'WormBase:Y2H9A.1']} />
+                <DbxrefListNew
+                    context={contextTarget}
+                    dbxrefs={['WormBase:WBGene00003222', 'WormBase:Y2H9A.1']}
+                />
             );
 
             dbxLinksWormDonor = wrapperWormDonor.find('a');
@@ -234,8 +221,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': 'WormDonor' };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['NBP:292', 'NBP:300']} />
+                <DbxrefListNew context={context} dbxrefs={['NBP:292', 'NBP:300']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -252,8 +240,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': 'WormDonor' };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['CGC:RB884', 'CGC:N5']} />
+                <DbxrefListNew context={context} dbxrefs={['CGC:RB884', 'CGC:N5']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -270,8 +259,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': 'FlyDonor' };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['DSSC:15181-2171.01', 'DSSC:14012-0141.05']} />
+                <DbxrefListNew context={context} dbxrefs={['DSSC:15181-2171.01', 'DSSC:14012-0141.05']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -288,8 +278,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': 'MouseDonor' };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['MGI.D:RIII', 'MGI.D:NOD']} />
+                <DbxrefListNew context={context} dbxrefs={['MGI.D:RIII', 'MGI.D:NOD']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -324,30 +315,13 @@ describe('Test individual dbxref types', () => {
         });
     });
 
-    describe('Test RefSeq', () => {
-        let dbxLinks;
-
-        beforeAll(() => {
-            const wrapper = mount(
-                <DbxrefListNew dbxrefs={['RefSeq:NM_168927', 'RefSeq:NM_141079']} />
-            );
-
-            dbxLinks = wrapper.find('a');
-        });
-
-        it('has the correct links', () => {
-            expect(dbxLinks.length).toBe(2);
-            expect(dbxLinks.at(0).prop('href')).toEqual('https://www.ncbi.nlm.nih.gov/gene/?term=NM_168927');
-            expect(dbxLinks.at(1).prop('href')).toEqual('https://www.ncbi.nlm.nih.gov/gene/?term=NM_141079');
-        });
-    });
-
     describe('Test JAX', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': ['MouseDonor'] };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['JAX:002448', 'JAX:000646']} />
+                <DbxrefListNew context={context} dbxrefs={['JAX:002448', 'JAX:000646']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -364,8 +338,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': ['MouseDonor'] };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['NBRP:233', 'NBRP:292']} />
+                <DbxrefListNew context={context} dbxrefs={['NBRP:233', 'NBRP:292']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -382,8 +357,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': ['Experiment'] };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['UCSC-ENCODE-mm9:wgEncodeEM002001', 'UCSC-ENCODE-mm9:wgEncodeEM002004']} />
+                <DbxrefListNew context={context} dbxrefs={['UCSC-ENCODE-mm9:wgEncodeEM002001', 'UCSC-ENCODE-mm9:wgEncodeEM002004']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -400,8 +376,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': ['Experiment'] };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['UCSC-ENCODE-hg19:wgEncodeEH003317', 'UCSC-ENCODE-hg19:wgEncodeEH002546']} />
+                <DbxrefListNew context={context} dbxrefs={['UCSC-ENCODE-hg19:wgEncodeEH003317', 'UCSC-ENCODE-hg19:wgEncodeEH002546']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -418,8 +395,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': ['Experiment'] };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['UCSC-ENCODE-cv:IgG-Yale', 'UCSC-ENCODE-cv:Illumina_GA2e']} />
+                <DbxrefListNew context={context} dbxrefs={['UCSC-ENCODE-cv:IgG-Yale', 'UCSC-ENCODE-cv:Illumina_GA2e']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -436,8 +414,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': ['Experiment'] };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['UCSC-GB-mm9:wgEncodeSydhHist', 'UCSC-GB-mm9:wgEncodePsuRnaSeq']} />
+                <DbxrefListNew context={context} dbxrefs={['UCSC-GB-mm9:wgEncodeSydhHist', 'UCSC-GB-mm9:wgEncodePsuRnaSeq']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -472,8 +451,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': ['Publication'] };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['PMID:22064851', 'PMID:19966280']} />
+                <DbxrefListNew context={context} dbxrefs={['PMID:22064851', 'PMID:19966280']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -490,8 +470,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': ['Publication'] };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['PMCID:PMC3530905', 'PMCID:PMC2832824']} />
+                <DbxrefListNew context={context} dbxrefs={['PMCID:PMC3530905', 'PMCID:PMC2832824']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -508,8 +489,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': ['Publication'] };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['doi:10.1038/nphys1170', 'doi:10.1006/geno.1998.5693']} />
+                <DbxrefListNew context={context} dbxrefs={['doi:10.1038/nphys1170', 'doi:10.1006/geno.1998.5693']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -526,8 +508,9 @@ describe('Test individual dbxref types', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': ['AntibodyLot'] };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['AR:AB_2615158', 'AR:AB_2614941']} />
+                <DbxrefListNew context={context} dbxrefs={['AR:AB_2615158', 'AR:AB_2614941']} />
             );
 
             dbxLinks = wrapper.find('a');
@@ -540,12 +523,13 @@ describe('Test individual dbxref types', () => {
         });
     });
 
-    describe('Test AR', () => {
+    describe('Test NIH', () => {
         let dbxLinks;
 
         beforeAll(() => {
+            const context = { '@type': ['HumanDonor'] };
             const wrapper = mount(
-                <DbxrefListNew dbxrefs={['NIH:NIHhESC-10-0062', 'NIH:NIHhESC-10-0063']} />
+                <DbxrefListNew context={context} dbxrefs={['NIH:NIHhESC-10-0062', 'NIH:NIHhESC-10-0063']} />
             );
 
             dbxLinks = wrapper.find('a');
