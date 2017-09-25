@@ -58,37 +58,37 @@ import * as globals from './globals';
 //
 
 export const dbxrefPrefixMap = {
-    UniProtKB: 'http://www.uniprot.org/uniprot/{0}',
-    HGNC: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene={0}',
-    ENSEMBL: 'http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={0}',
-    GeneID: 'https://www.ncbi.nlm.nih.gov/gene/{0}',
-    GEO: 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc={0}',
-    GEOSAMN: 'https://www.ncbi.nlm.nih.gov/biosample/{0}',
-    IHEC: 'http://www.ebi.ac.uk/vg/epirr/view/{0}',
-    Cellosaurus: 'http://web.expasy.org/cellosaurus/{0}',
-    FlyBase: 'http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context={0}',
-    FlyBaseStock: 'http://flybase.org/reports/{0}.html',
-    BDSC: 'http://flystocks.bio.indiana.edu/Reports/{0}',
-    WormBase: 'http://www.wormbase.org/species/c_elegans/gene/{0}',
-    WormBaseStock: 'http://www.wormbase.org/species/c_elegans/strain/{0}',
-    NBP: 'http://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq={0}',
-    CGC: 'https://cgc.umn.edu/strain/{0}',
-    DSSC: 'https://stockcenter.ucsd.edu/index.php?action=view&q={0}&table=Species&submit=Search',
-    'MGI.D': 'http://www.informatics.jax.org/inbred_strains/mouse/docs/{0}.shtml',
-    RBPImage: 'http://rnabiology.ircm.qc.ca/RBPImage/gene.php?cells={1}&targets={0}',
-    RefSeq: 'https://www.ncbi.nlm.nih.gov/gene/?term={0}',
-    JAX: 'https://www.jax.org/strain/{0}',
-    NBRP: 'https://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq={0}',
-    'UCSC-ENCODE-mm9': 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=mm9&hgt_mdbVal1={0}',
-    'UCSC-ENCODE-hg19': 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1={0}',
-    'UCSC-ENCODE-cv': 'http://genome.cse.ucsc.edu/cgi-bin/hgEncodeVocab?ra=encode%2Fcv.ra&term=%22{0}%22',
-    'UCSC-GB-mm9': 'http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=mm9&g={0}',
-    'UCSC-GB-hg19': 'http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g={0}',
-    PMID: 'https://www.ncbi.nlm.nih.gov/pubmed/?term={0}',
-    PMCID: 'https://www.ncbi.nlm.nih.gov/pmc/articles/{0}',
-    doi: 'http://dx.doi.org/doi:{0}',
-    AR: 'http://antibodyregistry.org/search.php?q={0}',
-    NIH: 'https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=grants.nih.gov&query={0}',
+    UniProtKB: { pattern: 'http://www.uniprot.org/uniprot/{0}' },
+    HGNC: { pattern: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene={0}' },
+    ENSEMBL: { pattern: 'http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={0}' },
+    GeneID: { pattern: 'https://www.ncbi.nlm.nih.gov/gene/{0}' },
+    GEO: { pattern: 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc={0}' },
+    GEOSAMN: { pattern: 'https://www.ncbi.nlm.nih.gov/biosample/{0}' },
+    IHEC: { pattern: 'http://www.ebi.ac.uk/vg/epirr/view/{0}' },
+    Cellosaurus: { pattern: 'http://web.expasy.org/cellosaurus/{0}' },
+    FlyBase: { pattern: 'http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context={0}' },
+    FlyBaseStock: { pattern: 'http://flybase.org/reports/{0}.html' },
+    BDSC: { pattern: 'http://flystocks.bio.indiana.edu/Reports/{0}' },
+    WormBase: { pattern: 'http://www.wormbase.org/species/c_elegans/gene/{0}' },
+    WormBaseStock: { pattern: 'http://www.wormbase.org/species/c_elegans/strain/{0}' },
+    NBP: { pattern: 'http://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq={0}' },
+    CGC: { pattern: 'https://cgc.umn.edu/strain/{0}' },
+    DSSC: { pattern: 'https://stockcenter.ucsd.edu/index.php?action=view&q={0}&table=Species&submit=Search' },
+    'MGI.D': { pattern: 'http://www.informatics.jax.org/inbred_strains/mouse/docs/{0}.shtml' },
+    RBPImage: { pattern: 'http://rnabiology.ircm.qc.ca/RBPImage/gene.php?cells={1}&targets={0}' },
+    RefSeq: { pattern: 'https://www.ncbi.nlm.nih.gov/gene/?term={0}' },
+    JAX: { pattern: 'https://www.jax.org/strain/{0}' },
+    NBRP: { pattern: 'https://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq={0}' },
+    'UCSC-ENCODE-mm9': { pattern: 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=mm9&hgt_mdbVal1={0}' },
+    'UCSC-ENCODE-hg19': { pattern: 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1={0}' },
+    'UCSC-ENCODE-cv': { pattern: 'http://genome.cse.ucsc.edu/cgi-bin/hgEncodeVocab?ra=encode%2Fcv.ra&term=%22{0}%22' },
+    'UCSC-GB-mm9': { pattern: 'http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=mm9&g={0}' },
+    'UCSC-GB-hg19': { pattern: 'http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g={0}' },
+    PMID: { pattern: 'https://www.ncbi.nlm.nih.gov/pubmed/?term={0}' },
+    PMCID: { pattern: 'https://www.ncbi.nlm.nih.gov/pmc/articles/{0}' },
+    doi: { pattern: 'http://dx.doi.org/doi:{0}' },
+    AR: { pattern: 'http://antibodyregistry.org/search.php?q={0}' },
+    NIH: { pattern: 'https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=grants.nih.gov&query={0}' },
 };
 
 
@@ -111,7 +111,7 @@ const DbxrefUrl = (props) => {
     }
 
     // Using the prefix, find the corresponding URL pattern.
-    const urlPattern = dbxrefPrefixMap[prefix];
+    const urlPattern = dbxrefPrefixMap[prefix].pattern;
 
     // Now replace the {0} in the URL pattern with the value we extracted to form the final URL,
     // then display that as a link.
