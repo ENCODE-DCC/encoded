@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as globals from './globals';
 
 
 // DbxrefList
@@ -69,6 +68,9 @@ export const dbxrefPrefixMap = {
             }
             return {};
         },
+    },
+    ENSEMBL: {
+        pattern: 'http://www.ensembl.org/Homo_sapiens/Gene/Summary?g={0}',
     },
     GeneID: {
         pattern: 'https://www.ncbi.nlm.nih.gov/gene/{0}',
@@ -206,14 +208,14 @@ const DbxrefUrl = (props) => {
     if (urlPattern) {
         let url = urlPattern.replace(/\{0\}/g, encodeURIComponent(value));
 
-        // If, after replacing the {0} with the value, the URL needs further modification, call the
+        // If, after replacing the {0} withx the value, the URL needs further modification, call the
         // caller-provided post-processor with the given dbxref and the generated URL.
         if (urlProcessor.postprocessor) {
             url = urlProcessor.postprocessor(context, dbxref, url);
         }
 
         // Return the final dbxref as a link.
-        return <a href={url}>{value}</a>;
+        return <a href={url}>{dbxref}</a>;
     }
 
     // The dbxref prefix didn't map to anything we know about, so just display the dbxref as
@@ -227,7 +229,7 @@ DbxrefUrl.propTypes = {
 };
 
 
-export const DbxrefListNew = (props) => {
+export const DbxrefList = (props) => {
     const { dbxrefs, preprocessor, context, addClasses } = props;
 
     return (
@@ -239,92 +241,15 @@ export const DbxrefListNew = (props) => {
     );
 };
 
-DbxrefListNew.propTypes = {
+DbxrefList.propTypes = {
     dbxrefs: PropTypes.array.isRequired, // Array of dbxref values to display
     preprocessor: PropTypes.func, // Preprocessor callback
     context: PropTypes.object.isRequired, // Object containing the dbxref
     addClasses: PropTypes.string, // CSS class to apply to dbxref list
 };
 
-DbxrefListNew.defaultProps = {
+DbxrefList.defaultProps = {
     preprocessor: null,
     postprocessor: null,
     addClasses: '',
-};
-
-
-export function dbxrefold(attributes) {
-    const value = attributes.value || '';
-    const sep = value.indexOf(':');
-    let prefix = attributes.prefix;
-    let local;
-    let id;
-
-    if (prefix) {
-        local = value;
-    } else if (sep !== -1) {
-        prefix = value.slice(0, sep);
-        local = globals.encodedURIComponent(value.slice(sep + 1), '_');
-    }
-
-    // Handle two different kinds of GEO -- GSM/GSE vs SAMN
-    if (prefix === 'GEO' && local.substr(0, 4) === 'SAMN') {
-        prefix = 'GEOSAMN';
-    }
-
-    // Handle two different kinds of WormBase IDs -- Target vs Strain
-    if (prefix === 'WormBase' && attributes.target_ref) {
-        prefix = 'WormBaseTargets';
-    }
-
-    // Handle two different kinds of FlyBase IDs -- Target vs Stock
-    if (prefix === 'FlyBase' && !attributes.target_ref) {
-        prefix = 'FlyBaseStock';
-    }
-
-    const base = prefix && globals.dbxrefPrefixMap[prefix];
-    if (!base) {
-        return <span>{value}</span>;
-    }
-    if (prefix === 'HGNC') {
-        local = attributes.target_gene;
-
-    // deal with UCSC links
-    } else if (prefix === 'UCSC-ENCODE-cv') {
-        local = `"${local}"`;
-    } else if (prefix === 'MGI') {
-        local = value;
-    } else if (prefix === 'MGI.D') {
-        id = value.substr(sep + 1);
-        local = `${id}.shtml`;
-    } else if (prefix === 'DSSC') {
-        id = value.substr(sep + 1);
-        local = `${id}&table=Species&submit=Search`;
-    } else if (prefix === 'RBPImage') {
-        if (attributes.cell_line) {
-            local = `${attributes.cell_line}&targets=${local}`;
-        } else {
-            return <span>{value}</span>;
-        }
-    }
-
-    return <a href={base + local}>{value}</a>;
-}
-
-export const DbxrefList = props => (
-    <ul className={props.className}>
-        {props.values.map((value, index) =>
-            <li key={index}>{dbxrefold({ value, prefix: props.prefix, target_gene: props.target_gene, target_ref: props.target_ref, cell_line: props.cell_line })}</li>
-        )}
-    </ul>
-);
-
-DbxrefList.propTypes = {
-    values: PropTypes.array.isRequired, // Array of dbxref values to display
-    className: PropTypes.string, // CSS class to apply to dbxref list
-    cell_line: PropTypes.string,
-};
-
-DbxrefList.defaultProps = {
-    className: '',
 };

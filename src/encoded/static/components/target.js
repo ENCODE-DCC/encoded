@@ -76,7 +76,7 @@ class Target extends React.Component {
                             <dt>External resources</dt>
                             <dd>
                                 {context.dbxref.length ?
-                                    <DbxrefList values={context.dbxref} target_gene={context.gene_name} target_ref />
+                                    <DbxrefList context={context} dbxrefs={context.dbxref} />
                                 : <em>None submitted</em> }
                             </dd>
                         </div>

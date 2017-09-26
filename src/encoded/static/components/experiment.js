@@ -578,7 +578,7 @@ class ExperimentComponent extends React.Component {
                                     {context.dbxrefs.length ?
                                         <div data-test="external-resources">
                                             <dt>External resources</dt>
-                                            <dd><DbxrefList values={context.dbxrefs} cell_line={context.biosample_term_name} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
                                         </div>
                                     : null}
 
