@@ -55,5 +55,10 @@ assay_terms = {
       'icSHAPE': 'NTR:0000433',
       'single-cell ATAC-seq': 'NTR:0000444',
       'ISO-seq': 'NTR:0000445',
-      'STARR-seq': 'OBI:0002041'
+      'STARR-seq': 'OBI:0002041',
+      'direct RNA-seq': 'NTR:0000444',
+      'PRO-seq': 'NTR:0000455',
+      '4C': 'NTR:0000456',
+      'CETCH-seq': 'NTR:0000457',
+      'Clone-seq': 'NTR:0000458'
 }

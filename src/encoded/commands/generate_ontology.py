@@ -619,6 +619,71 @@ ntr_assays = {
         "synonyms": [],
         "systems": [],
         "types": []
+    },
+    "NTR:0000454": {
+        "assay": ['Transcription'],
+        "category": [],
+        "developmental": [],
+        "name": "direct RNA sequencing",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "direct RNA-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000455": {
+        "assay": ['RNA binding'],
+        "category": [],
+        "developmental": [],
+        "name": "Precision nuclear run-on sequencing",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "PRO-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000456": {
+        "assay": ['3D chromatin structure'],
+        "category": [],
+        "developmental": [],
+        "name": "Chromosome conformation capture-on-chip",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "4C",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000457": {
+        "assay": ['DNA binding'],
+        "category": [],
+        "developmental": [],
+        "name": "CRISPR epitope tagging ChIP-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "CETCh-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
+    },
+    "NTR:0000458": {
+        "assay": ['DNA sequencing'],
+        "category": [],
+        "developmental": [],
+        "name": "Clone-seq",
+        "objectives": [],
+        "organs": [],
+        "preferred_name": "Clone-seq",
+        "slims": [],
+        "synonyms": [],
+        "systems": [],
+        "types": []
     }
 }
 
