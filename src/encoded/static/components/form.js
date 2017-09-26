@@ -9,6 +9,8 @@ import { FetchedData, Param } from './fetched';
 import { parseAndLogError } from './globals';
 import { FileInput, ItemPreview, ObjectPicker } from './inputs';
 import Layout from './layout';
+import DropdownButton from '../libs/bootstrap/button';
+import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
 
 const validator = new jsonschema.Validator();
 
@@ -40,26 +42,40 @@ validator.attributes.linkFrom = function validateLinkFrom(instance, schema, opti
     let result;
     if (instance !== undefined && instance instanceof Object) {
         const linkFrom = parseLinkFrom(schema.linkFrom);
-        const subschema = options.schemas[linkFrom.type];
+        const types = instance['@type'];
+        if (!_.contains(types, linkFrom.type)) {
+            result = `expected object of type ${linkFrom.type}`;
+        }
+        const subschema = options.schemas[types[0]];
         result = this.attributes.properties.call(this, instance, subschema, options, ctx);
     }
     return result;
 };
 
-// Recursively filter an object to remove `schema_version`.
+// Recursively filter an object to remove calculated properties
+// (`schema_version`).
 // This is used before sending the value to the server.
 const filterValue = function filterValue(value) {
+    let result;
     if (Array.isArray(value)) {
-        value.map(filterValue);
+        result = value.map(filterValue);
     } else if (typeof value === 'object') {
+        result = {};
         _.each(value, (v, k) => {
-            if (k === 'schema_version') {
-                delete value[k];
-            } else {
-                filterValue(v);
+            if (k === '@type') {
+                // We're not allowed to change an existing item's @type
+                // but the server needs to know it for new items.
+                if (!value['@id']) {
+                    result['@type'] = v;
+                }
+            } else if (k !== 'schema_version') {
+                result[k] = filterValue(v);
             }
         });
+    } else {
+        result = value;
     }
+    return result;
 };
 
 // Given a schema, construct a default object.
@@ -231,23 +247,27 @@ class RepeatingFieldset extends UpdateChildMixin(React.Component) {
         this.props.updateChild(this.props.name, value);
     }
 
-    handleAdd() {
+    handleAdd(e) {
         // Called when the add button is clicked.
-
-        // Construct a new subitem from schema defaults.
-        let subschema = this.props.schema.items;
+        e.preventDefault();
+        const schema = this.props.schema;
+        const subtype = e.target.getAttribute('data-type');
         let newValue;
-        if (subschema.linkFrom !== undefined) {
-            // This is an array of backreferences from separate objects of a different type.
-            // We need to construct the default value for that type,
-            // and also add a reference to the object being edited.
-            const linkFrom = parseLinkFrom(subschema.linkFrom);
-            subschema = this.context.schemas[linkFrom.type];
+        if (subtype) {
+            // Construct a child object.
+            // It needs a reference back to the parent object.
+            const subschema = this.context.schemas[subtype];
             newValue = defaultValue(subschema);
-            newValue[linkFrom.prop] = this.context.id;
+            newValue['@type'] = [subtype];
+            const linkFrom = parseLinkFrom(schema.items.linkFrom);
+            if (subschema.properties[linkFrom.prop].type === 'array') {
+                newValue[linkFrom.prop] = [this.context.id];
+            } else {
+                newValue[linkFrom.prop] = this.context.id;
+            }
         } else {
-            // Simple subitem; construct default value from schema.
-            newValue = defaultValue(subschema);
+            // Simple subitem; construct default value from schema;
+            newValue = defaultValue(schema.items);
         }
 
         // Add the new subitem to the end of the array.
@@ -259,6 +279,35 @@ class RepeatingFieldset extends UpdateChildMixin(React.Component) {
 
     render() {
         const { path, value, schema } = this.props;
+        const schemas = this.context.schemas;
+        const linkFrom = schema.items.linkFrom;
+        const subtypes = linkFrom ? schemas._subtypes[parseLinkFrom(linkFrom).type] : [];
+        let button = null;
+        if (!this.context.readonly) {
+            if (subtypes.length > 1) {
+                button = (
+                    <DropdownButton title="Add">
+                        <DropdownMenu>
+                            {subtypes.map(subtype =>
+                                <a
+                                    href="#" key={subtype}
+                                    data-type={subtype}
+                                    onClick={this.handleAdd}
+                                >{schemas[subtype].title}</a>)}
+                        </DropdownMenu>
+                    </DropdownButton>
+                );
+            } else {
+                button = (
+                    <button
+                        type="button"
+                        onClick={this.handleAdd}
+                        data-subtype={subtypes.length === 1 ? subtypes[0] : null}
+                        className="rf-RepeatingFieldset__add"
+                    >Add</button>
+                );
+            }
+        }
         return (
             <div>
                 <div className="rf-RepeatingFieldset__items">
@@ -275,13 +324,7 @@ class RepeatingFieldset extends UpdateChildMixin(React.Component) {
                         return <RepeatingItem {...props} />;
                     }) : ''}
                 </div>
-                {!this.context.readonly &&
-                    <button
-                        type="button"
-                        onClick={this.handleAdd}
-                        className="rf-RepeatingFieldset__add"
-                    >Add</button>
-                }
+                {button}
             </div>
         );
     }
@@ -303,39 +346,45 @@ RepeatingFieldset.contextTypes = {
 };
 
 
-class FetchedFieldset extends React.Component {
+class ObjectField extends React.Component {
+    // Wrapper to determine which schema to use for an object,
+    // then render a Field with that schema. Used after ChildObject
+    // fetches a child object from the server.
+
+    render() {
+        const type = this.props.value['@type'][0];
+        const schema = this.context.schemas[type];
+        return <Field {...this.props} schema={schema} />;
+    }
+}
+
+ObjectField.propTypes = {
+    value: PropTypes.any,
+};
+
+ObjectField.defaultProps = {
+    value: null,
+};
+
+ObjectField.contextTypes = {
+    schemas: PropTypes.object,
+};
+
+
+class ChildObject extends React.Component {
     // A form field for editing a child object
     // (a subitem of an array property using linkFrom).
     // Initially the value is a URI and we render a preview of the object.
-    // If the user expands the item we fetch its edit frame and render form fields.
+    // If the user expands the item we fetch its form frame and render form fields.
     // If the user updates any fields the new value is the updated object
     // rather than just the URI.
     constructor(props, context) {
         super(props);
 
-        const schema = this.props.schema;
-
-        // We need to construct a modified schema for the child type,
-        // to avoid showing the field that links back to the main object being edited.
-
-        const linkFrom = parseLinkFrom(schema.linkFrom);
-        let subschema = context.schemas[linkFrom.type];
-        // FIXME Handle linkFrom abstract type.
-        if (subschema !== undefined) {
-            // The linkProp is the one that refers to the parent object.
-            // This should not be shown when accessed from the parent's form.
-            // Let's immutably clone the schema and delete it:
-            subschema = Object.assign({}, subschema, {
-                properties: Object.assign({}, subschema.properties),
-            });
-            delete subschema.properties[linkFrom.prop];
-        }
-
         const value = this.props.value;
         const error = context.errors[this.props.path];
         const url = typeof value === 'string' ? value : null;
         this.state = {
-            schema: subschema,
             url,
             // Start collapsed for existing children,
             // expanded when adding a new one or if there are errors
@@ -361,7 +410,6 @@ class FetchedFieldset extends React.Component {
     }
 
     render() {
-        const schema = this.state.schema;
         const { path, value } = this.props;
         let preview;
         let fieldset;
@@ -376,20 +424,21 @@ class FetchedFieldset extends React.Component {
                     <ItemPreview />
                 </FetchedData>
             );
-            // When expanded, fetch the edit frame and render form fields.
+            // When expanded, fetch the form frame and render form fields.
             if (typeof value === 'string') {
                 fieldset = (
                     <FetchedData>
-                        <Param name="value" url={`${this.state.url}?frame=edit`} />
-                        <Field path={path} schema={schema} updateChild={this.updateChild} />
+                        <Param name="value" url={`${this.state.url}?frame=form`} />
+                        <ObjectField path={path} updateChild={this.updateChild} />
                     </FetchedData>
                 );
             } else {
-                fieldset = <Field path={path} schema={schema} value={value} updateChild={this.updateChild} />;
+                fieldset = <ObjectField path={path} value={value} updateChild={this.updateChild} />;
             }
         } else {
             // We don't have a URI yet (it's a new object).
             // When collapsed, render a placeholder.
+            const schema = this.context.schemas[value['@type'][0]];
             preview = (
                 <ul className="nav result-table">
                   <li>
@@ -397,10 +446,9 @@ class FetchedFieldset extends React.Component {
                   </li>
                 </ul>
             );
-            // When expanded, render form fields (but there's no edit frame to fetch)
-            fieldset = (<Field
-                path={path} value={value} schema={schema}
-                updateChild={this.updateChild}
+            // When expanded, render form fields (but there's no form frame to fetch)
+            fieldset = (<ObjectField
+                path={path} value={value} updateChild={this.updateChild}
             />);
         }
 
@@ -417,27 +465,25 @@ class FetchedFieldset extends React.Component {
 
 }
 
-FetchedFieldset.propTypes = {
-    schema: PropTypes.object,
+ChildObject.propTypes = {
     name: PropTypes.any,
     path: PropTypes.string,
     value: PropTypes.any,
     updateChild: PropTypes.func.isRequired,
 };
 
-FetchedFieldset.defaultProps = {
-    schema: {},
+ChildObject.defaultProps = {
     name: null,
     path: '',
     value: null,
 };
 
-FetchedFieldset.contextTypes = {
+ChildObject.contextTypes = {
     schemas: PropTypes.object,
     errors: PropTypes.object,
 };
 
-FetchedFieldset.childContextTypes = {
+ChildObject.childContextTypes = {
     id: PropTypes.string,
 };
 
@@ -461,7 +507,7 @@ export class Field extends UpdateChildMixin(React.Component) {
     // - `type: 'integer' or 'number'`: Renders an HTML number `input` elemtn.
     // - schema with `enum`: Renders an HTML `select` element.
     // - schema with `linkTo`: Renders an `ObjectPicker` for searching and selecting other objects.
-    // - schema with `linkFrom`: Renders using `FetchedFieldset`.
+    // - schema with `linkFrom`: Renders using `ChildObject`.
     // - schema with `formInput: 'file'`: Renders a `FileInput` to handle file uploads.
     // - schema with `formInput: 'textarea`: Renders an HTML `textarea` element.
     // - schema with `formInput: 'layout'`: Renders a `Layout` for drag-and-drop placement of content blocks.
@@ -566,7 +612,7 @@ export class Field extends UpdateChildMixin(React.Component) {
                 input = React.cloneElement(input, inputProps);
             }
         } else if (schema.linkFrom) {
-            input = (<FetchedFieldset
+            input = (<ChildObject
                 name={this.props.name} path={path} schema={schema}
                 value={value} updateChild={this.props.updateChild}
             />);
@@ -823,8 +869,7 @@ export class Form extends React.Component {
         e.stopPropagation();
 
         // Filter out `schema_version` property
-        const value = this.state.value;
-        filterValue(value);
+        const value = filterValue(this.state.value);
 
         // Make the request
         const { method, action, etag } = this.props;
