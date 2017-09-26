@@ -821,6 +821,8 @@
                 "early embryonic",
                 "midembryonic",
                 "late embryonic",
+                "mixed stage (embryonic)",
+                "mixed stage (late embryonic and L1 larva)",
                 "L1 larva",
                 "L2 larva",
                 "L2d larva",
@@ -830,9 +832,7 @@
                 "young adult",
                 "dauer",
                 "adult",
-                "mixed stage",
-                "mixed stage (embryonic)",
-                "mixed stage (late embryonic and L1 larva)"
+                "mixed stage"
             ]    
         },
         "worm_synchronization_stage": {
