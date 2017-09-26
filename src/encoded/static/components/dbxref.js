@@ -232,6 +232,15 @@ DbxrefUrl.propTypes = {
 };
 
 
+/**
+ * Display a list of dbxrefs as links to external sites.
+ * 
+ * @prop {array} dbxrefs - Array of dbxref strings. You normally pass the dbxref, external_id,
+ *     etc. property here directly.
+ * @prop (object) context - Object (Experiment, HumanDonor, etc.) being display that contains the
+ *     array of dbxrefs. Some dbxref links rely on information in this object, so for consistency
+ *     this property is always required.
+ */
 export const DbxrefList = (props) => {
     const { dbxrefs, context, addClasses } = props;
 
