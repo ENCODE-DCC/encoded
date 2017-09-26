@@ -175,6 +175,9 @@ export const dbxrefPrefixMap = {
     NIH: {
         pattern: 'https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=grants.nih.gov&query={0}',
     },
+    PGP: {
+        pattern: 'https://my.pgp-hms.org/profile_public?hex={0}',
+    },
 };
 
 
@@ -230,12 +233,12 @@ DbxrefUrl.propTypes = {
 
 
 export const DbxrefList = (props) => {
-    const { dbxrefs, preprocessor, context, addClasses } = props;
+    const { dbxrefs, context, addClasses } = props;
 
     return (
         <ul className={addClasses}>
             {dbxrefs.map((dbxref, i) =>
-                <li key={i}><DbxrefUrl dbxref={dbxref} preprocessor={preprocessor} context={context} /></li>
+                <li key={i}><DbxrefUrl dbxref={dbxref} context={context} /></li>
             )}
         </ul>
     );
@@ -243,13 +246,10 @@ export const DbxrefList = (props) => {
 
 DbxrefList.propTypes = {
     dbxrefs: PropTypes.array.isRequired, // Array of dbxref values to display
-    preprocessor: PropTypes.func, // Preprocessor callback
     context: PropTypes.object.isRequired, // Object containing the dbxref
     addClasses: PropTypes.string, // CSS class to apply to dbxref list
 };
 
 DbxrefList.defaultProps = {
-    preprocessor: null,
-    postprocessor: null,
     addClasses: '',
 };
