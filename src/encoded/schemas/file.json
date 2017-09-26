@@ -950,15 +950,15 @@
             "description": "The status of the file object.",
             "comment": "Do not submit.  This is set by admins along the process of file submission.",
             "enum" : [
-                "archived",
-                "content error",
-                "deleted",
+                "uploading",
+                "upload failed",
                 "in progress",
                 "released",
+                "archived",
+                "deleted",
                 "replaced",
                 "revoked",
-                "upload failed",
-                "uploading"    
+                "content error"
                 ]
         },
         "dbxrefs": {

@@ -112,15 +112,15 @@
             "type": "string",
             "default": "proposed",
             "enum" : [
-                "archived",
-                "deleted",
                 "proposed",
+                "started",
+                "submitted",
                 "ready for review",
                 "released",
+                "archived",
+                "deleted",
                 "replaced",
-                "revoked",
-                "started",
-                "submitted"
+                "revoked"
             ]
         }
     },

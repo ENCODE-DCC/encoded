@@ -77,9 +77,9 @@
             "description": "The status of the metadata object.",
             "comment": "Do not submit.  This is set by admins along the process of metadata submission.",
             "enum": [
-                "deleted",
                 "in progress",
                 "released",
+                "deleted",
                 "replaced",
                 "revoked"
             ]

@@ -82,10 +82,10 @@
             "title": "Status",
             "type": "string",
             "enum" : [
-                "deleted",
                 "in progress",
                 "released",
-                "virtual"
+                "virtual",
+                "deleted"
             ]
         }
     },

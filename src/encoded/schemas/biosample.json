@@ -718,9 +718,9 @@
             "comment": "model_organism_sex is not valid for a human biosample.",
             "enum": [
                 "female",
-                "hermaphrodite",
                 "male",
                 "mixed",
+                "hermaphrodite",
                 "unknown"
             ]
         },

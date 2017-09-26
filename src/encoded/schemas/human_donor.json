@@ -95,9 +95,9 @@
             "type": "string",
             "default": "unknown",
             "enum": [
+                "female",
                 "male",
                 "mixed",
-                "female",
                 "unknown"
             ]
         },

@@ -262,14 +262,14 @@
             "permission": "import_items",
             "title": "Internal status",
             "enum": [
-                "no available pipeline",
-                "pipeline completed",
-                "pipeline error",
+                "unreviewed",
                 "pipeline ready",
                 "processing",
+                "pipeline completed",
                 "release ready",
                 "requires lab review",
-                "unreviewed",
+                "no available pipeline",
+                "pipeline error",
                 "unrunnable"
             ]
         },
