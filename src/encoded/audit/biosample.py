@@ -22,6 +22,8 @@ model_organism_terms = ['model_organism_mating_status',
                         'model_organism_health_status',
                         'model_organism_donor_constructs']
 
+'''
+No longer needed as constructs have been deprecated
 
 @audit_checker('biosample', frame=['constructs', 'model_organism_donor_constructs'])
 def audit_biosample_constructs(value, system):
@@ -59,6 +61,7 @@ def audit_biosample_constructs(value, system):
                     yield AuditFailure('mismatched constructs', detail,
                                        level='INTERNAL_ACTION')
                     return
+'''
 
 '''
 @audit_checker('biosample', frame=['source', 'part_of', 'donor'])
