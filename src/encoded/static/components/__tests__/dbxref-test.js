@@ -560,4 +560,26 @@ describe('Test individual dbxref types', () => {
             expect(dbxLinks.at(1).prop('href')).toEqual('https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=grants.nih.gov&query=NIHhESC-10-0063');
         });
     });
+
+
+    describe('Test no matching dbxref prefix', () => {
+        let dbxLinks;
+        let dbxSpans;
+
+        beforeAll(() => {
+            const context = { '@type': ['HumanDonor'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['OK:NOT-REAL']} />
+            );
+
+            dbxLinks = wrapper.find('a');
+            dbxSpans = wrapper.find('span');
+        });
+
+        it('has the correct span contents', () => {
+            expect(dbxLinks.length).toBe(0);
+            expect(dbxSpans.length).toBe(1);
+            expect(dbxSpans.at(0).text()).toEqual('OK:NOT-REAL');
+        });
+    });
 });
