@@ -11,7 +11,6 @@
     "mixinProperties": [
         { "$ref": "donor.json#/properties" },
         { "$ref": "mixins.json#/genetic_modifications" },
-        { "$ref": "mixins.json#/genomic_alterations"},
         { "$ref": "mixins.json#/strains"},
         { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/source" },
@@ -28,7 +27,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "7"
+            "default": "8"
         },
         "genotype": {
             "description": "The genotype of the strain according to accepted nomenclature conventions: http://flybase.org/wiki/FlyBase:Nomenclature"
@@ -62,6 +61,49 @@
                 "type":  "string",
                 "pattern": "^(((BDSC|DSSC|Kyoto|VDRC|Harvard|NIG-FLY):.+)|(FlyBase:FBst\\d+)|(GEO:SAMN\\d+))$"
             }
+        }
+    },
+    "facets": {
+        "organism.name": {
+            "title": "Organism"
+        },
+        "status": {
+            "title": "Status"
+        },
+        "lab.title": {
+            "title": "Lab"
+        }
+    },
+    "columns": {
+        "accession" : {
+            "title": "Accession"
+        },
+        "aliases": {
+            "title": "Aliases"
+        },
+        "status": {
+            "title": "Status"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "strain_name": {
+            "title": "Strain name"
+        },
+        "genotype": {
+            "title": "Strain genotype"
+        },
+        "strain_background": {
+            "title": "Strain background"
+        },
+        "genetic_modifications.accession": {
+            "title": "Genetic modifications"
+        },
+        "external_ids": {
+            "title": "Unique external identifier(s) of strain or donor"
+        },
+        "organism.name": {
+            "title": "Organism"
         }
     },
     "boost_values": {

@@ -68,5 +68,39 @@
             }
         }
     },
+    "facets": {
+        "status": {
+            "title": "Status"
+        },
+        "lab.title": {
+            "title": "Lab"
+        }
+    },
+    "columns": {
+        "accession" : {
+            "title": "Accession"
+        },
+        "aliases": {
+            "title": "Aliases"
+        },
+        "status": {
+            "title": "Status"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "strain_name": {
+            "title": "Strain name"
+        },
+        "strain_background": {
+            "title": "Strain background"
+        },
+        "genetic_modifications.accession": {
+            "title": "Genetic modifications"
+        },
+        "external_ids": {
+            "title": "Unique external identifier(s) of strain or donor"
+        }
+    },
     "changelog": "/profiles/changelogs/mouse_donor.md"
 }
