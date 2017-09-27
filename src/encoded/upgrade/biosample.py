@@ -305,3 +305,17 @@ def biosample_16_17(value, system):
 def biosample_17_18(value, system):
     # http://redmine.encodedcc.org/issues/4925
     return
+
+
+@upgrade_step('biosample', '18', '19')
+def biosample_18_19(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3507
+    # https://encodedcc.atlassian.net/browse/ENCD-3536
+    if 'constructs' in value:
+        del value['constructs']
+    if 'rnais' in value:
+        del value['rnais']
+    if 'transfection_type' in value:
+        del value['transfection_type']
+    if 'transfection_method' in value:
+        del value['transfection_method']
