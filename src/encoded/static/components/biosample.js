@@ -50,10 +50,6 @@ class BiosampleComponent extends React.Component {
         }
         combinedDocs = globals.uniqueObjectsArray(combinedDocs);
 
-        // Collect up biosample and model organism donor constructs
-        const constructs = ((context.constructs && context.constructs.length) ? context.constructs : [])
-            .concat((context.model_organism_donor_constructs && context.model_organism_donor_constructs.length) ? context.model_organism_donor_constructs : []);
-
         // Make string of alternate accessions
         const altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
@@ -352,28 +348,6 @@ class BiosampleComponent extends React.Component {
                                 <hr />
                                 <h4>Treatment details</h4>
                                 {context.treatments.map(treatment => treatmentDisplay(treatment))}
-                            </section>
-                        : null}
-
-                        {constructs.length ?
-                            <section>
-                                <hr />
-                                <h4>Construct details</h4>
-                                <div>
-                                    {constructs.map(construct =>
-                                        <div key={construct.uuid} className="subpanel">
-                                            {PanelLookup(construct)}
-                                        </div>
-                                    )}
-                                </div>
-                            </section>
-                        : null}
-
-                        {context.rnais.length ?
-                            <section>
-                                <hr />
-                                <h4>RNAi details</h4>
-                                {context.rnais.map(PanelLookup)}
                             </section>
                         : null}
                     </PanelBody>
