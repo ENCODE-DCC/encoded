@@ -2723,19 +2723,17 @@ def audit_missing_construct(value, system):
 
 
 
-def audit_experiment_mapped_read_length(value):
-    assay_term_id = value.get('assay_term_id')
-    if not assay_term_id or assay_term_id != 'OBI:0000716':  # not a ChIP-seq
+def audit_experiment_mapped_read_length(value, system, files_structure):
+    if value.get('assay_term_id') != 'OBI:0000716':  # not a ChIP-seq
         return
-    peaks_files = scan_files_for_file_format_output_type(value['original_files'],
-                                                         'bed', 'peaks')
-    for peaks_file in peaks_files:
-        if peaks_file['lab'] == '/labs/encode-processing-pipeline/':
-            derived_from_bams = get_derived_from_files_set([peaks_file], 'bam', True)
+    for peaks_file in files_structure.get('peaks_files').values():
+        if peaks_file.get('lab') == '/labs/encode-processing-pipeline/':
+            derived_from_bams = get_derived_from_files_set([peaks_file], files_structure, 'bam', True)
+            #derived_from_bams = get_derived_from_files_set([peaks_file], 'bam', True)
             read_lengths_set = set()
             for bam_file in derived_from_bams:
-                if bam_file['lab'] == '/labs/encode-processing-pipeline/':
-                    mapped_read_length = get_mapped_length(bam_file)
+                if bam_file.get('lab') == '/labs/encode-processing-pipeline/':
+                    mapped_read_length = get_mapped_length(bam_file, files_structure)
                     if mapped_read_length:
                         read_lengths_set.add(mapped_read_length)
                     else:
@@ -2819,11 +2817,11 @@ def get_assemblies(list_of_files):
 
 
 
-def get_mapped_length(bam_file):
+def get_mapped_length(bam_file, files_structure):
     mapped_length = bam_file.get('mapped_read_length')
     if mapped_length:
         return mapped_length
-    derived_from_fastqs = get_derived_from_files_set([bam_file], 'fastq', True)
+    derived_from_fastqs = get_derived_from_files_set([bam_file], files_structure, 'fastq', True)
     for f in derived_from_fastqs:
         length = f.get('read_length')
         if length:
@@ -3361,6 +3359,7 @@ function_dispatcher_with_files = {
     'audit_pipeline_assay': audit_experiment_pipeline_assay_details,
     'audit_missing_unfiltered_bams': audit_experiment_missing_unfiltered_bams,
     'audit_modERN': audit_modERN_experiment_standards_dispatcher,
+    'audit_read_length': audit_experiment_mapped_read_length,
 }
 
 # global variables useful for the audits (preventing repetitive calculation)
@@ -3475,8 +3474,8 @@ def audit_experiment_entry_function(value, system):
     #    yield failure
     #for failure in audit_experiment_replicate_with_no_files(value):
     #    yield failure
-    for failure in audit_experiment_mapped_read_length(value):
-        yield failure
+    #for failure in audit_experiment_mapped_read_length(value):
+    #    yield failure
     #for failure in audit_missing_construct(value):
     #    yield failure
     #for failure in audit_library_RNA_size_range(value):
