@@ -185,6 +185,24 @@ export const dbxrefPrefixMap = {
 
 
 /**
+ * Convert a dbxref prefix and value to a URL using the same URL patterns as the <DbxrefList>
+ * component below. This function does no pre- nor post-processing, so the given prefix and value
+ * have to map to a real URL by themselves.
+ *
+ * @param {string} prefix - dbxref prefix string, like 'HGNC'
+ * @param {string} value - String value you'd normally see after the colon in a dbxref
+ * @return {string} - URL that the given prefix and value map to, or null if the mapping table doesn't include the given prefix.
+ */
+export function dbxrefHref(prefix, value) {
+    const urlProcessor = dbxrefPrefixMap[prefix];
+    if (urlProcessor) {
+        return urlProcessor.pattern.replace(/\{0\}/g, encodeURIComponent(value));
+    }
+    return null;
+}
+
+
+/**
  * Internal component to display one dbxref as a string. It handles calling the pre- and post-
  * processor from `dbxrefPrefixMap` above, and looking up the URL for the given dbxref. It
  * generates either a link with the generated URL for the given dbxref and the dbxref itself as the
