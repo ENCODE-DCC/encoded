@@ -659,19 +659,6 @@ ntr_assays = {
         "systems": [],
         "types": []
     },
-    "NTR:0000457": {
-        "assay": ['DNA binding'],
-        "category": [],
-        "developmental": [],
-        "name": "CRISPR epitope tagging ChIP-seq",
-        "objectives": [],
-        "organs": [],
-        "preferred_name": "CETCh-seq",
-        "slims": [],
-        "synonyms": [],
-        "systems": [],
-        "types": []
-    },
     "NTR:0000458": {
         "assay": ['DNA sequencing'],
         "category": [],
