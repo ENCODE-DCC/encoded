@@ -2361,7 +2361,7 @@ def audit_experiment_ChIP_control(value):
             yield AuditFailure('missing input control', detail, level='NOT_COMPLIANT')
 
 
-def audit_experiment_spikeins(value):
+def audit_experiment_spikeins(value, system):
     if not check_award_condition(value, [
             "ENCODE3",
             "ENCODE4",
@@ -3348,6 +3348,7 @@ function_dispatcher_without_files = {
     'audit_NTR': audit_experiment_assay,
     'audit_AB_characterization': audit_experiment_antibody_characterized,
     'audit_control': audit_experiment_control,
+    'audit_spikeins': audit_experiment_spikeins,
 }
 function_dispatcher_with_files = {
 
@@ -3490,8 +3491,8 @@ def audit_experiment_entry_function(value, system):
     #    yield failure
     #for failure in audit_experiment_replicated(value):
     #    yield failure
-    for failure in audit_experiment_spikeins(value):
-        yield failure
+    #for failure in audit_experiment_spikeins(value):
+    #    yield failure
     for failure in audit_experiment_ChIP_control(value):
         yield failure
     #for failure in audit_experiment_control(value):
