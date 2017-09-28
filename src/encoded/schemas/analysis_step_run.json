@@ -69,10 +69,10 @@
                         "type": "string",
                         "default": "waiting",
                         "enum" : [
-                            "waiting",
-                            "running",
+                            "error",
                             "finished",
-                            "error"
+                            "running",
+                            "waiting"
                         ]
                     }
                 }
@@ -84,8 +84,8 @@
             "enum" : [
                 "in progress",
                 "released",
-                "deleted",
-                "virtual"
+                "virtual",
+                "deleted"
             ]
         }
     },
