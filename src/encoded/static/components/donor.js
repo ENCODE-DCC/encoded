@@ -50,7 +50,7 @@ const HumanDonor = (props) => {
                         {context.external_ids && context.external_ids.length ?
                             <div data-test="externalid">
                                 <dt>Donor external identifiers</dt>
-                                <dd><DbxrefList values={context.external_ids} /></dd>
+                                <dd><DbxrefList context={context} dbxrefs={context.external_ids} /></dd>
                             </div>
                         : null}
 
@@ -99,7 +99,7 @@ const HumanDonor = (props) => {
                         {context.dbxrefs && context.dbxrefs.length ?
                             <div data-test="external-resources">
                                 <dt>External resources</dt>
-                                <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
                             </div>
                         : null}
 
@@ -227,7 +227,7 @@ const MouseDonor = (props) => {
                         {context.external_ids && context.external_ids.length ?
                             <div data-test="externalid">
                                 <dt>Donor external identifiers</dt>
-                                <dd><DbxrefList values={context.external_ids} /></dd>
+                                <dd><DbxrefList context={context} dbxrefs={context.external_ids} /></dd>
                             </div>
                         : null}
 
@@ -290,7 +290,7 @@ const MouseDonor = (props) => {
                         {context.dbxrefs && context.dbxrefs.length ?
                             <div data-test="external-resources">
                                 <dt>External resources</dt>
-                                <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
                             </div>
                         : null}
 
@@ -365,7 +365,7 @@ const FlyWormDonor = (props) => {
                         {context.external_ids && context.external_ids.length ?
                             <div data-test="externalid">
                                 <dt>Donor external identifiers</dt>
-                                <dd><DbxrefList values={context.external_ids} /></dd>
+                                <dd><DbxrefList context={context} dbxrefs={context.external_ids} /></dd>
                             </div>
                         : null}
 
@@ -428,7 +428,7 @@ const FlyWormDonor = (props) => {
                         {context.dbxrefs && context.dbxrefs.length ?
                             <div data-test="external-resources">
                                 <dt>External resources</dt>
-                                <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
                             </div>
                         : null}
 
