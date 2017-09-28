@@ -95,24 +95,24 @@
                     "name": {
                         "type": "string",
                         "enum": [
-                            "eGFP",
-                            "V5",
-                            "HA",
-                            "ER",
                             "3xFLAG",
                             "DsRed",
-                            "TRE",
-                            "T2A",
-                            "YFP",
+                            "eGFP",
+                            "ER",
                             "FLAG",
-                            "mCherry"
+                            "HA",
+                            "mCherry",
+                            "T2A",
+                            "TRE",
+                            "V5",
+                            "YFP"
                         ]
                     },
                     "location": {
                         "type": "string",
                         "enum": [
-                            "N-terminal",
                             "C-terminal",
+                            "N-terminal",
                             "internal",
                             "other",
                             "unknown"
