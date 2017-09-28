@@ -286,7 +286,7 @@ class RepeatingFieldset extends UpdateChildMixin(React.Component) {
         if (!this.context.readonly) {
             if (subtypes.length > 1) {
                 button = (
-                    <DropdownButton title="Add">
+                    <DropdownButton title="Add" buttonClasses="rf-RepeatingFieldset__add">
                         <DropdownMenu>
                             {subtypes.map(subtype =>
                                 <a
