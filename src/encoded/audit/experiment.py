@@ -48,12 +48,9 @@ seq_assays = [
     ]
 
 
-
-
-
-def audit_experiment_chipseq_control_read_depth(value):
+def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
     # relevant only for ChIP-seq
-    if value['assay_term_id'] != 'OBI:0000716':
+    if value.get('assay_term_id') != 'OBI:0000716':
         return
 
     if value.get('target') and 'name' in value.get('target'):
@@ -63,9 +60,9 @@ def audit_experiment_chipseq_control_read_depth(value):
 
         if target_name not in ['Control-human', 'Control-mouse']:
   
-            alignment_files = scan_files_for_file_format_output_type(value['original_files'],
-                                                                     'bam', 'alignments')
-            for alignment_file in alignment_files:
+            #alignment_files = scan_files_for_file_format_output_type(value['original_files'],
+            #                                                         'bam', 'alignments')
+            for alignment_file in files_structure.get('alignments').values():
                 # initially was for file award
                 if not alignment_file.get('award') or \
                     alignment_file.get('award')['rfa'] not in [
@@ -78,13 +75,17 @@ def audit_experiment_chipseq_control_read_depth(value):
                     continue
                 if alignment_file.get('lab') not in ['/labs/encode-processing-pipeline/']:
                     continue
-                derived_from_files = alignment_file.get('derived_from')
-                if (derived_from_files is None) or (derived_from_files == []):
+                derived_from_files = list(
+                    get_derived_from_files_set([alignment_file], files_structure, 'fastq', True))
+                #alignment_file.get('derived_from')
+
+                if not derived_from_files:
                     continue
-                control_bam = get_control_bam(alignment_file, 'ChIP-seq read mapping')
+                control_bam = get_control_bam(alignment_file, 'ChIP-seq read mapping', derived_from_files, files_structure)
                 
                 if control_bam is not False:
                     control_depth = get_chip_seq_bam_read_depth(control_bam)
+                    #???
                     control_target = get_target_name(control_bam)
                     if control_depth is not False and control_target is not False:
                         for failure in check_control_read_depth_standards(
@@ -297,7 +298,7 @@ def audit_experiment_out_of_date_analysis(value, system, files_structure):
                         yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
 
 
-def audit_experiment_standards_dispatcher(value):
+def audit_experiment_standards_dispatcher(value, system, files_structure):
     if not check_award_condition(value, ['ENCODE4',
                                          'ENCODE3',
                                          'ENCODE2-Mouse',
@@ -310,19 +311,18 @@ def audit_experiment_standards_dispatcher(value):
     deal with specific assay types standards
     '''
     #if value['status'] not in ['released', 'release ready']:
-    if value['status'] in ['revoked', 'deleted', 'replaced']:
+    if value.get('status') in ['revoked', 'deleted', 'replaced']:
         return
-    if 'assay_term_name' not in value or \
-       value['assay_term_name'] not in ['DNase-seq', 'RAMPAGE', 'RNA-seq', 'ChIP-seq', 'CAGE',
-                                        'shRNA knockdown followed by RNA-seq',
-                                        'siRNA knockdown followed by RNA-seq',
-                                        'CRISPRi followed by RNA-seq',
-                                        'CRISPR genome editing followed by RNA-seq',
-                                        'single cell isolation followed by RNA-seq',
-                                        'whole-genome shotgun bisulfite sequencing',
-                                        'genetic modification followed by DNase-seq']:
+    if value.get('assay_term_name') not in ['DNase-seq', 'RAMPAGE', 'RNA-seq', 'ChIP-seq', 'CAGE',
+                                            'shRNA knockdown followed by RNA-seq',
+                                            'siRNA knockdown followed by RNA-seq',
+                                            'CRISPRi followed by RNA-seq',
+                                            'CRISPR genome editing followed by RNA-seq',
+                                            'single cell isolation followed by RNA-seq',
+                                            'whole-genome shotgun bisulfite sequencing',
+                                            'genetic modification followed by DNase-seq']:
         return
-    if 'original_files' not in value or len(value['original_files']) == 0:
+    if not value.get('original_files'):
         return
     if 'replicates' not in value:
         return
@@ -345,24 +345,23 @@ def audit_experiment_standards_dispatcher(value):
         else:
             return
 
-    alignment_files = scan_files_for_file_format_output_type(value['original_files'],
-                                                             'bam', 'alignments')
+    #alignment_files = scan_files_for_file_format_output_type(value['original_files'],
+    #                                                         'bam', 'alignments')
 
-    fastq_files = scan_files_for_file_format_output_type(value['original_files'],
-                                                         'fastq', 'reads')
+    #fastq_files = scan_files_for_file_format_output_type(value['original_files'],
+    #                                                     'fastq', 'reads')
 
     standards_version = 'ENC3'
 
     if value['assay_term_name'] in ['DNase-seq', 'genetic modification followed by DNase-seq']:
-        signal_files = scanFilesForOutputType(value['original_files'],
-                                              'signal of unique reads')
-        for failure in check_experiment_dnase_seq_standards(value,
-                                                            fastq_files,
-                                                            alignment_files,
-                                                            signal_files,
-                                                            desired_assembly,
-                                                            desired_annotation,
-                                                            ' /data-standards/dnase-seq/ '):
+        #signal_files = scanFilesForOutputType(value['original_files'],
+        #                                      'signal of unique reads')
+        for failure in check_experiment_dnase_seq_standards(
+                value,
+                files_structure,
+                desired_assembly,
+                desired_annotation,
+                ' /data-standards/dnase-seq/ '):
             yield failure
         return
     if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq', 'CAGE',
@@ -371,37 +370,39 @@ def audit_experiment_standards_dispatcher(value):
                                     'CRISPRi followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq',
                                     'single cell isolation followed by RNA-seq']:
-        gene_quantifications = scanFilesForOutputType(value['original_files'],
-                                                      'gene quantifications')
-        for failure in check_experiment_rna_seq_standards(value,
-                                                          fastq_files,
-                                                          alignment_files,
-                                                          gene_quantifications,
-                                                          desired_assembly,
-                                                          desired_annotation,
-                                                          standards_version):
+        #gene_quantifications = scanFilesForOutputType(value['original_files'],
+        #                                              'gene quantifications')
+        for failure in check_experiment_rna_seq_standards(
+                value,
+                files_structure.get('fastq_files').values(),
+                files_structure.get('alignments').values(),
+                files_structure.get('gene_quantifications_files').values(),
+                desired_assembly,
+                desired_annotation,
+                standards_version):
             yield failure
         return
     if value['assay_term_name'] == 'ChIP-seq':
-        optimal_idr_peaks = scanFilesForOutputType(value['original_files'],
-                                                   'optimal idr thresholded peaks')
-        for failure in check_experiment_chip_seq_standards(value,
-                                                           fastq_files,
-                                                           alignment_files,
-                                                           optimal_idr_peaks,
-                                                           standards_version):
+        #optimal_idr_peaks = scanFilesForOutputType(value['original_files'],
+        #                                           'optimal idr thresholded peaks')
+        for failure in check_experiment_chip_seq_standards(
+                value,
+                files_structure.get('fastq_files').values(),
+                files_structure.get('alignments').values(),
+                files_structure.get('optimal_idr_peaks').values(),
+                standards_version):
             yield failure
         return
     if standards_version == 'ENC3' and \
             value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
-        cpg_quantifications = scanFilesForOutputType(value['original_files'],
-                                                     'methylation state at CpG')
+        #cpg_quantifications = scanFilesForOutputType(value['original_files'],
+        #                                             'methylation state at CpG')
 
         for failure in check_experiment_wgbs_encode3_standards(value,
-                                                               alignment_files,
+                                                               files_structure.get('alignments').values(),
                                                                organism_name,
-                                                               fastq_files,
-                                                               cpg_quantifications,
+                                                               files_structure.get('fastq_files').values(),
+                                                               files_structure.get('cpg_quantifications').values(),
                                                                desired_assembly):
             yield failure
         return
@@ -436,12 +437,15 @@ def audit_modERN_experiment_standards_dispatcher(value, system, files_structure)
 
 
 def check_experiment_dnase_seq_standards(experiment,
-                                         fastq_files,
-                                         alignment_files,
-                                         signal_files,
+                                         files_structure,
                                          desired_assembly,
                                          desired_annotation,
                                          link_to_standards):
+
+    fastq_files = files_structure.get('fastq_files').values()
+    alignment_files = files_structure.get('alignments').values()
+    signal_files = files_structure.get('signal_files').values()
+
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(
         alignment_files,
         ['GRCh38', 'mm10'],
@@ -456,15 +460,17 @@ def check_experiment_dnase_seq_standards(experiment,
             yield failure
 
     pipelines = get_pipeline_objects(alignment_files)
+
     if pipelines is not None and len(pipelines) > 0:
         samtools_flagstat_metrics = get_metrics(alignment_files,
                                                 'SamtoolsFlagstatsQualityMetric',
                                                 desired_assembly)
+
         if samtools_flagstat_metrics is not None and \
                 len(samtools_flagstat_metrics) > 0:
             for metric in samtools_flagstat_metrics:
                 if 'mapped' in metric and 'quality_metric_of' in metric:
-                    alignment_file = metric['quality_metric_of'][0]
+                    alignment_file = files_structure.get('alignments')[metric['quality_metric_of'][0]]
                     suffix = 'According to ENCODE standards, conventional ' + \
                              'DNase-seq profile requires a minimum of 20 million uniquely mapped ' + \
                              'reads to generate a reliable ' + \
@@ -525,7 +531,7 @@ def check_experiment_dnase_seq_standards(experiment,
                 if "SPOT1 score" in metric:
                     file_names = []
                     for f in metric['quality_metric_of']:
-                        file_names.append(f['@id'].split('/')[2])
+                        file_names.append(f.split('/')[2])
                     file_names_string = str(file_names).replace('\'', ' ')
                     detail = "Signal Portion of Tags (SPOT) is a measure of enrichment, " + \
                              "analogous to the commonly used fraction of reads in peaks metric. " + \
@@ -563,7 +569,7 @@ def check_experiment_dnase_seq_standards(experiment,
                 if 'Pearson correlation' in metric:
                     file_names = []
                     for f in metric['quality_metric_of']:
-                        file_names.append(f['@id'].split('/')[2])
+                        file_names.append(f.split('/')[2])
                     file_names_string = str(file_names).replace('\'', ' ')
                     detail = 'Replicate concordance in DNase-seq expriments is measured by ' + \
                         'calculating the Pearson correlation between signal quantification ' + \
@@ -2828,12 +2834,11 @@ def get_mapped_length(bam_file, files_structure):
             return length
     return None
 
-def get_control_bam(experiment_bam, pipeline_name):
+def get_control_bam(experiment_bam, pipeline_name, derived_from_fastqs, files_structure):
     #  get representative FASTQ file
-    if 'derived_from' not in experiment_bam or len(experiment_bam['derived_from']) < 1:
+    if not derived_from_fastqs:
         return False
 
-    derived_from_fastqs = experiment_bam['derived_from']
     control_fastq = False
     for entry in derived_from_fastqs:
         if 'controlled_by' in entry and len(entry['controlled_by']) > 0:
@@ -2850,10 +2855,13 @@ def get_control_bam(experiment_bam, pipeline_name):
 
 
         control_bam = False
-        control_alignments = scan_files_for_file_format_output_type(control_fastq['dataset']['original_files'],
-                                                                    'bam', 'alignments')
+        #>>>>>>>>>>>>>>
+        control_files_structure = create_files_mapping(control_fastq['dataset'].get('original_files'))
 
-        for control_file in control_alignments:
+        #control_alignments = scan_files_for_file_format_output_type(control_fastq['dataset']['original_files'],
+        #                                                            'bam', 'alignments')
+
+        for control_file in control_files_structure.get('alignments').values():
             if 'assembly' in control_file and 'assembly' in experiment_bam and \
                control_file['assembly'] == experiment_bam['assembly']:
                 #  we have BAM file, now we have to make sure it was created by pipeline
@@ -2870,7 +2878,10 @@ def get_control_bam(experiment_bam, pipeline_name):
                 if is_same_pipeline is True and \
                    'derived_from' in control_file and \
                    len(control_file['derived_from']) > 0:
-                    derived_list = control_file['derived_from']
+                    #derived_list = control_file['derived_from']
+                    derived_list = list(
+                        get_derived_from_files_set([control_file], control_files_structure, 'fastq', True))
+
                     for entry in derived_list:
                         if entry['accession'] == control_fastq['accession']:
                             control_bam = control_file
@@ -2908,7 +2919,7 @@ def get_organism_name(reps):
            'biosample' in rep['library'] and \
            rep['library']['biosample']['status'] not in ['replaced', 'revoked', 'deleted']:
             if 'organism' in rep['library']['biosample']:
-                return rep['library']['biosample']['organism']['name']
+                return rep['library']['biosample']['organism'].split('/')[2]
     return False
 
 
@@ -3362,6 +3373,8 @@ function_dispatcher_with_files = {
     'audit_modERN': audit_modERN_experiment_standards_dispatcher,
     'audit_read_length': audit_experiment_mapped_read_length,
     'audit_chip_control': audit_experiment_ChIP_control,
+    'audit_read_depth_chip_control': audit_experiment_chipseq_control_read_depth,
+    'audit_experiment_standards': audit_experiment_standards_dispatcher
 }
 
 # global variables useful for the audits (preventing repetitive calculation)
@@ -3373,19 +3386,14 @@ function_dispatcher_with_files = {
                       'replicates',
                       'replicates.library',
                       'replicates.library.biosample',
-                      
                       'replicates.library.biosample.donor',
                       'replicates.library.biosample.constructs',
                       'replicates.library.biosample.constructs.target',
                       'replicates.library.biosample.model_organism_donor_constructs',
                       'replicates.library.biosample.model_organism_donor_constructs.target',
-
-
                       'replicates.antibody',
                       'replicates.antibody.targets',
                       'replicates.antibody.lot_reviews',
-
-
                       'possible_controls',
                       'possible_controls.original_files',
                       'possible_controls.original_files.platform',
@@ -3393,12 +3401,24 @@ function_dispatcher_with_files = {
                       'possible_controls.replicates',
                       'possible_controls.replicates.antibody',
                       'original_files',
+                      'original_files.award',
                       'original_files.quality_metrics',
                       'original_files.platform',
                       'original_files.replicate',
                       'original_files.analysis_step_version',
                       'original_files.analysis_step_version.analysis_step',
                       'original_files.analysis_step_version.analysis_step.pipelines',
+
+                      'original_files.analysis_step_version.software_versions',
+                      'original_files.analysis_step_version.software_versions.software',
+
+                      'original_files.controlled_by',
+                      'original_files.controlled_by.dataset',
+                      'original_files.controlled_by.dataset.original_files',
+                      'original_files.controlled_by.dataset.original_files.quality_metrics',
+                      'original_files.controlled_by.dataset.original_files.analysis_step_version',
+                      'original_files.controlled_by.dataset.original_files.analysis_step_version.analysis_step',
+                      'original_files.controlled_by.dataset.original_files.analysis_step_version.analysis_step.pipelines',
                       ])
 def audit_experiment(value, system):
     files_structure = create_files_mapping(value.get('original_files'))
@@ -3409,7 +3429,7 @@ def audit_experiment(value, system):
     for function_name in function_dispatcher_without_files.keys():
         for failure in function_dispatcher_without_files[function_name](value, system):
             yield failure
-
+'''
 @audit_checker('Experiment', frame=[
     'replicates.antibody',
     'replicates.antibody.targets',
@@ -3504,8 +3524,8 @@ def audit_experiment_entry_function(value, system):
     #    yield failure
     #for failure in audit_experiment_target(value):
     #    yield failure
-    for failure in audit_experiment_standards_dispatcher(value):
-        yield failure
+    #for failure in audit_experiment_standards_dispatcher(value):
+    #    yield failure
     #for failure in audit_modERN_experiment_standards_dispatcher(value):
     #    yield failure
     #for failure in audit_experiment_replicates_with_no_libraries(value):
@@ -3518,9 +3538,9 @@ def audit_experiment_entry_function(value, system):
     #    yield failure
     #for failure in audit_experiment_documents(value):
     #    yield failure
-    for failure in audit_experiment_chipseq_control_read_depth(value):
-        yield failure
-
+    #for failure in audit_experiment_chipseq_control_read_depth(value):
+    #    yield failure
+'''
 
 #  def audit_experiment_control_out_of_date_analysis(value, system):
 #  removed due to https://encodedcc.atlassian.net/browse/ENCD-3460
