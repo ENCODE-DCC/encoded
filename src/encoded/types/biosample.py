@@ -99,6 +99,12 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'rnais.documents.lab',
         'organism',
         'references',
+        'genetic_modifications',
+        'genetic_modifications.modified_site_by_target_id',
+        'genetic_modifications.treatments',
+        'model_organism_donor_modifications',
+        'model_organism_donor_modifications.modified_site_by_target_id',
+        'model_organism_donor_modifications.treatments',
         'applied_modifications',
         'applied_modifications.modified_site_by_target_id',
         'applied_modifications.treatments'
@@ -128,6 +134,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'rnais.source',
         'organism',
         'references',
+        'genetic_modifications',
+        'model_organism_donor_modifications',
         'applied_modifications'
     ]
 
@@ -502,7 +510,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 if gm_object.get('modified_site_by_target_id'):
                     modification_dict['target'] = request.embed(
                         gm_object.get('modified_site_by_target_id'),
-                                      '@@object')['label']
+                                      '@@object').get('label')
                 if gm_object.get('introduced_tags'):
                     modification_dict['tags'] = []
                     for tag in gm_object.get('introduced_tags'):
@@ -510,7 +518,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                         if tag.get('promoter_used'):
                             tag_dict['promoter'] = request.embed(
                                 tag.get('promoter_used'),
-                                        '@@object').get['label']
+                                        '@@object').get('label')
                         modification_dict['tags'].append(tag_dict)
 
                 modifications_list.append((gm_object['method'], modification_dict))
