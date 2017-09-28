@@ -1137,7 +1137,7 @@ def check_spearman(metrics, replication_type, isogenic_threshold,
             if spearman_correlation < threshold:
                 file_names = []
                 for f in m['quality_metric_of']:
-                    file_names.append(f['@id'])
+                    file_names.append(f)
                 file_names_string = str(file_names).replace('\'', ' ')
                 detail = 'Replicate concordance in RNA-seq expriments is measured by ' + \
                          'calculating the Spearman correlation between gene quantifications ' + \
