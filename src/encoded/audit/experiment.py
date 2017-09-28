@@ -2917,9 +2917,6 @@ def get_organism_name(reps):
     return False
 
 
-
-
-
 def scanFilesForPipelineTitle_not_chipseq(files_to_scan, assemblies, pipeline_titles):
     for f in files_to_scan:
         if 'file_format' in f and f['file_format'] == 'bam' and \
@@ -2936,17 +2933,11 @@ def scanFilesForPipelineTitle_not_chipseq(files_to_scan, assemblies, pipeline_ti
     return False
 
 
-
-
-
 def get_pipeline_by_name(pipeline_objects, pipeline_title):
     for pipe in pipeline_objects:
         if pipe['title'] == pipeline_title:
             return pipe
     return None
-
-
-
 
 
 def scanFilesForPipeline(files_to_scan, pipeline_title_list):
@@ -2970,7 +2961,7 @@ def scanFilesForPipeline(files_to_scan, pipeline_title_list):
 def get_file_read_depth_from_alignment(alignment_file, target, assay_name):
 
     if alignment_file.get('output_type') in ['transcriptome alignments',
-                                         'unfiltered alignments']:
+                                             'unfiltered alignments']:
         return False
 
     if alignment_file.get('lab') not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
@@ -3092,7 +3083,6 @@ def get_chip_seq_bam_read_depth(bam_file):
     return read_depth
 
 
-
 def create_files_mapping(files_list):
     to_return = {'original_files':{},
                  'fastq_files':{},
@@ -3151,9 +3141,7 @@ def get_contributing_files(files_list):
             to_return[file_object['@id']] = file_object
     return to_return
 
-# approved utilities:
 
-# valid!!!
 def scanFilesForPipelineTitle_yes_chipseq(alignment_files, pipeline_titles):
     for f in alignment_files:
         if f.get('lab') in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/'] and \
@@ -3309,7 +3297,7 @@ def get_pipeline_objects(files):
                     added_pipelines.append(p['title'])
                     pipelines_to_return.append(p)
     return pipelines_to_return
-   
+
 
 def get_biosamples(experiment):
     accessions_set = set()
@@ -3353,10 +3341,10 @@ function_dispatcher_without_files = {
     'audit_NTR': audit_experiment_assay,
     'audit_AB_characterization': audit_experiment_antibody_characterized,
     'audit_control': audit_experiment_control,
-    'audit_spikeins': audit_experiment_spikeins,
+    'audit_spikeins': audit_experiment_spikeins
 }
-function_dispatcher_with_files = {
 
+function_dispatcher_with_files = {
     'audit_consistent_sequencing_runs': audit_experiment_consistent_sequencing_runs,
     'audit_experiment_out_of_date': audit_experiment_out_of_date_analysis,
     'audit_replicate_no_files': audit_experiment_replicate_with_no_files,
@@ -3371,50 +3359,47 @@ function_dispatcher_with_files = {
     'audit_experiment_standards': audit_experiment_standards_dispatcher
 }
 
-# global variables useful for the audits (preventing repetitive calculation)
-
-
-@audit_checker('Experiment',
-               frame=['award',
-                      'target',
-                      'replicates',
-                      'replicates.library',
-                      'replicates.library.biosample',
-                      'replicates.library.biosample.donor',
-                      'replicates.library.biosample.constructs',
-                      'replicates.library.biosample.constructs.target',
-                      'replicates.library.biosample.model_organism_donor_constructs',
-                      'replicates.library.biosample.model_organism_donor_constructs.target',
-                      'replicates.antibody',
-                      'replicates.antibody.targets',
-                      'replicates.antibody.lot_reviews',
-                      'possible_controls',
-                      'possible_controls.original_files',
-                      'possible_controls.original_files.platform',
-                      'possible_controls.target',
-                      'possible_controls.replicates',
-                      'possible_controls.replicates.antibody',
-                      'original_files',
-                      'original_files.award',
-                      'original_files.quality_metrics',
-                      'original_files.platform',
-                      'original_files.replicate',
-                      'original_files.analysis_step_version',
-                      'original_files.analysis_step_version.analysis_step',
-                      'original_files.analysis_step_version.analysis_step.pipelines',
-
-                      'original_files.analysis_step_version.software_versions',
-                      'original_files.analysis_step_version.software_versions.software',
-
-                      'original_files.controlled_by',
-                      'original_files.controlled_by.dataset',
-                      'original_files.controlled_by.dataset.target',
-                      'original_files.controlled_by.dataset.original_files',
-                      'original_files.controlled_by.dataset.original_files.quality_metrics',
-                      'original_files.controlled_by.dataset.original_files.analysis_step_version',
-                      'original_files.controlled_by.dataset.original_files.analysis_step_version.analysis_step',
-                      'original_files.controlled_by.dataset.original_files.analysis_step_version.analysis_step.pipelines',
-                      ])
+@audit_checker(
+    'Experiment',
+    frame=[
+        'award',
+        'target',
+        'replicates',
+        'replicates.library',
+        'replicates.library.biosample',
+        'replicates.library.biosample.donor',
+        'replicates.library.biosample.constructs',
+        'replicates.library.biosample.constructs.target',
+        'replicates.library.biosample.model_organism_donor_constructs',
+        'replicates.library.biosample.model_organism_donor_constructs.target',
+        'replicates.antibody',
+        'replicates.antibody.targets',
+        'replicates.antibody.lot_reviews',
+        'possible_controls',
+        'possible_controls.original_files',
+        'possible_controls.original_files.platform',
+        'possible_controls.target',
+        'possible_controls.replicates',
+        'possible_controls.replicates.antibody',
+        'original_files',
+        'original_files.award',
+        'original_files.quality_metrics',
+        'original_files.platform',
+        'original_files.replicate',
+        'original_files.analysis_step_version',
+        'original_files.analysis_step_version.analysis_step',
+        'original_files.analysis_step_version.analysis_step.pipelines',
+        'original_files.analysis_step_version.software_versions',
+        'original_files.analysis_step_version.software_versions.software',
+        'original_files.controlled_by',
+        'original_files.controlled_by.dataset',
+        'original_files.controlled_by.dataset.target',
+        'original_files.controlled_by.dataset.original_files',
+        'original_files.controlled_by.dataset.original_files.quality_metrics',
+        'original_files.controlled_by.dataset.original_files.analysis_step_version',
+        'original_files.controlled_by.dataset.original_files.analysis_step_version.analysis_step',
+        'original_files.controlled_by.dataset.original_files.analysis_step_version.analysis_step.pipelines',
+        ])
 def audit_experiment(value, system):
     files_structure = create_files_mapping(value.get('original_files'))
     files_structure['contributing_files']= get_contributing_files(value.get('contributing_files'))
@@ -3424,118 +3409,6 @@ def audit_experiment(value, system):
     for function_name in function_dispatcher_without_files.keys():
         for failure in function_dispatcher_without_files[function_name](value, system):
             yield failure
-'''
-@audit_checker('Experiment', frame=[
-    'replicates.antibody',
-    'replicates.antibody.targets',
-    'replicates.antibody.characterizations',
-    'replicates.antibody.lot_reviews',
-    'original_files',
-    'original_files.award',
-    'original_files.replicate',
-    'original_files.platform',
-    'replicates',
-    'replicates.library',
-    'replicates.library.spikeins_used',
-    'replicates.library.spikeins_used.files',
-    'replicates.library.biosample',
-    'replicates.library.biosample.organism',
-    'replicates.library.biosample.constructs',
-    'replicates.library.biosample.constructs.target',
-    'replicates.library.biosample.donor',
-    'replicates.library.biosample.model_organism_donor_constructs',
-    'replicates.library.biosample.model_organism_donor_constructs.target',
-    'original_files.derived_from',
-    'original_files.step_run',
-    'original_files.derived_from.derived_from',
-    'original_files.derived_from.controlled_by',
-    'original_files.derived_from.controlled_by.dataset',
-    'original_files.derived_from.controlled_by.dataset.original_files.dataset.target',
-    'original_files.derived_from.controlled_by.dataset.original_files',
-    'original_files.derived_from.controlled_by.dataset.original_files.quality_metrics',
-    'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version',
-    'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step',
-    'original_files.derived_from.controlled_by.dataset.original_files.analysis_step_version.analysis_step.pipelines',
-    'original_files.derived_from.controlled_by.dataset.original_files.derived_from',
-    'original_files.analysis_step_version',
-    'original_files.analysis_step_version.analysis_step',
-    'original_files.analysis_step_version.analysis_step.pipelines',
-    'original_files.quality_metrics',
-    'original_files.quality_metrics.quality_metric_of',
-    'original_files.quality_metrics.quality_metric_of.replicate',
-    'original_files.analysis_step_version.software_versions',
-    'original_files.analysis_step_version.software_versions.software',
-    'possible_controls',
-    'possible_controls.original_files',
-    'possible_controls.original_files.platform',
-    'award',
-    'target',
-    'possible_controls.replicates',
-    'possible_controls.replicates.antibody',
-    'possible_controls.target'
-    ])
-def audit_experiment_entry_function(value, system):
-    #for failure in audit_experiment_mixed_libraries(value):
-    #    yield failure
-    #for failure in audit_experiment_pipeline_assay_details(value):
-    #    yield failure
-    #for failure in audit_experiment_missing_unfiltered_bams(value):
-    #    yield failure
-    #for failure in audit_experiment_with_uploading_files(value):
-    #    yield failure
-    #for failure in audit_experiment_out_of_date_analysis(value):
-    #    yield failure
-    #for failure in audit_experiment_internal_tag(value):
-    #    yield failure
-    #for failure in audit_experiment_geo_submission(value):
-    #    yield failure
-    #for failure in audit_experiment_consistent_sequencing_runs(value):
-    #    yield failure
-    #for failure in audit_experiment_replicate_with_no_files(value):
-    #    yield failure
-    #for failure in audit_experiment_mapped_read_length(value):
-    #    yield failure
-    #for failure in audit_missing_construct(value):
-    #    yield failure
-    #for failure in audit_library_RNA_size_range(value):
-    #    yield failure
-    #for failure in audit_experiment_library_biosample(value):
-    #    yield failure
-    #for failure in audit_experiment_biosample_term(value, system):
-    #    yield failure
-    #for failure in audit_experiment_platforms_mismatches(value):
-    #    yield failure
-    #for failure in audit_experiment_antibody_characterized(value):
-    #    yield failure
-    #for failure in audit_experiment_replicated(value):
-    #    yield failure
-    #for failure in audit_experiment_spikeins(value):
-    #    yield failure
-    #for failure in audit_experiment_ChIP_control(value):
-    #    yield failure
-    #for failure in audit_experiment_control(value):
-    #    yield failure
-    #for failure in audit_experiment_assay(value):
-    #    yield failure
-    #for failure in audit_experiment_target(value):
-    #    yield failure
-    #for failure in audit_experiment_standards_dispatcher(value):
-    #    yield failure
-    #for failure in audit_modERN_experiment_standards_dispatcher(value):
-    #    yield failure
-    #for failure in audit_experiment_replicates_with_no_libraries(value):
-    #    yield failure
-    #for failure in audit_experiment_isogeneity(value):
-    #    yield failure
-    #for failure in audit_experiment_replicates_biosample(value):
-    #    yield failure
-    #for failure in audit_experiment_technical_replicates_same_library(value):
-    #    yield failure
-    #for failure in audit_experiment_documents(value):
-    #    yield failure
-    #for failure in audit_experiment_chipseq_control_read_depth(value):
-    #    yield failure
-'''
 
 #  def audit_experiment_control_out_of_date_analysis(value, system):
 #  removed due to https://encodedcc.atlassian.net/browse/ENCD-3460
