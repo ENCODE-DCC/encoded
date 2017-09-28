@@ -77,16 +77,18 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                     continue
                 derived_from_files = list(
                     get_derived_from_files_set([alignment_file], files_structure, 'fastq', True))
-                #alignment_file.get('derived_from')
 
                 if not derived_from_files:
                     continue
-                control_bam = get_control_bam(alignment_file, 'ChIP-seq read mapping', derived_from_files, files_structure)
-                
+                control_bam = get_control_bam(
+                    alignment_file,
+                    'ChIP-seq read mapping',
+                    derived_from_files,
+                    files_structure)
+
                 if control_bam is not False:
                     control_depth = get_chip_seq_bam_read_depth(control_bam)
-                    #???
-                    control_target = get_target_name(control_bam)
+                    control_target = get_target_name(derived_from_files)
                     if control_depth is not False and control_target is not False:
                         for failure in check_control_read_depth_standards(
                                 control_bam,
@@ -2900,10 +2902,18 @@ def has_pipelines(bam_file):
 
 
 
-def get_target_name(bam_file):
-    if 'dataset' in bam_file and 'target' in bam_file['dataset'] and \
-       'name' in bam_file['dataset']['target']:
-        return bam_file['dataset']['target']['name']
+def get_target_name(derived_from_fastqs):
+    if not derived_from_fastqs:
+        return False
+
+    control_fastq = False
+    for entry in derived_from_fastqs:
+        if 'controlled_by' in entry and len(entry['controlled_by']) > 0:
+            control_fastq = entry['controlled_by'][0]  # getting representative FASTQ
+            break
+    if control_fastq and 'target' in control_fastq['dataset'] and \
+       'name' in control_fastq['dataset']['target']:
+        return control_fastq['dataset']['target']['name']
     return False
 
 def get_target(experiment):
@@ -3414,6 +3424,7 @@ function_dispatcher_with_files = {
 
                       'original_files.controlled_by',
                       'original_files.controlled_by.dataset',
+                      'original_files.controlled_by.dataset.target',
                       'original_files.controlled_by.dataset.original_files',
                       'original_files.controlled_by.dataset.original_files.quality_metrics',
                       'original_files.controlled_by.dataset.original_files.analysis_step_version',
