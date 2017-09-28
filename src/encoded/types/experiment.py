@@ -148,8 +148,8 @@ class Experiment(Dataset,
                             biosample_accessions.add(biosampleObject['accession'])
 
                             if biosampleObject.get('biosample_type') in [
-                               'stem cell',
-                               'in vitro differentiated cells']:
+                                    'stem cell',
+                                    'in vitro differentiated cells']:
                                 drop_age_sex_flag = True
 
                             organismObject = None
@@ -177,11 +177,10 @@ class Experiment(Dataset,
                                                                        '@@object')
 
                             modifications_list = None
-                            genetic_modifications = biosampleObject.get('genetic_modifications')
-                            if genetic_modifications is not None and len(genetic_modifications) > 0:
+                            genetic_modifications = biosampleObject.get('applied_modifications')
+                            if genetic_modifications:
                                 modifications_list = []
                                 for gm in genetic_modifications:
-
                                     gm_object = request.embed(gm, '@@object')
                                     modification_dict = {'category': gm_object.get('category')}
                                     if gm_object.get('modified_site_by_target_id'):
