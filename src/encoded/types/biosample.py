@@ -99,12 +99,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'rnais.documents.lab',
         'organism',
         'references',
-        'genetic_modifications',
-        'genetic_modifications.modified_site_by_target_id',
-        'genetic_modifications.treatments',
-        'model_organism_donor_modifications',
-        'model_organism_donor_modifications.modified_site_by_target_id',
-        'model_organism_donor_modifications.treatments',
         'applied_modifications',
         'applied_modifications.modified_site_by_target_id',
         'applied_modifications.treatments'
@@ -134,8 +128,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'rnais.source',
         'organism',
         'references',
-        'genetic_modifications',
-        'model_organism_donor_modifications',
         'applied_modifications'
     ]
 
