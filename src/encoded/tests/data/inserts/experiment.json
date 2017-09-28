@@ -792,7 +792,7 @@
         "date_released": "2015-08-31",
         "biosample_term_id": "UBERON:0001891",
         "accession": "ENCSR751ISO",
-        "uuid": "c62d6a59-a444-49d1-b9f8-c4502c7cc4b0"
+        "uuid": "6dde71b6-555c-4bed-9bb7-7bec3771893b"
     },
     {
         "_test": "STARR-seq test",
@@ -807,6 +807,6 @@
         "date_released": "2015-08-31",
         "biosample_term_id": "UBERON:0001891",
         "accession": "ENCSR751STR",
-        "uuid": "c62d6a59-a444-49d1-b9f8-c4502c7cc4b1"
+        "uuid": "a4460c54-aece-43d2-bf52-dbaaa9298aaa"
     }
 ]

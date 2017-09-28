@@ -153,7 +153,7 @@
         "lab": "brenton-graveley",
         "award": "U54HG007005",
         "title": "Test ISO-seq pipeline",
-        "uuid": "f96f9810-a5a3-11e4-bcd8-0800200c9a61"
+        "uuid": "fd603a65-7641-4e4d-b7df-fadbc4f38da6"
     },
     {
         "accession": "ENCPL001STR",
@@ -165,6 +165,6 @@
         "lab": "brenton-graveley",
         "award": "U54HG007005",
         "title": "Test STARR-seq pipeline",
-        "uuid": "f96f9810-a5a3-11e4-bcd8-0800200c9a62"
+        "uuid": "5fe3fdf6-5b1a-4aca-8116-ded7acf13037"
     }
 ]
