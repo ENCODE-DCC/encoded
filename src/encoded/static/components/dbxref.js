@@ -119,9 +119,6 @@ export const dbxrefPrefixMap = {
             return {};
         },
     },
-    WormBaseStock: {
-        pattern: 'http://www.wormbase.org/species/c_elegans/strain/{0}',
-    },
     NBP: {
         pattern: 'http://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq={0}',
     },

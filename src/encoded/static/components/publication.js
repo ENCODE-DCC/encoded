@@ -257,7 +257,7 @@ const ListingComponent = (props, context) => {
                 <div className="data-row">
                     {authors ? <p className="list-author">{authors}.</p> : null}
                     <p className="list-citation"><Citation {...props} /></p>
-                    {result.identifiers && result.identifiers.length ? <DbxrefList context={result} dbxRefs={result.identifiers} addClasses="list-reference" /> : '' }
+                    {result.identifiers && result.identifiers.length ? <DbxrefList context={result} dbxrefs={result.identifiers} addClasses="list-reference" /> : '' }
                     {result.supplementary_data && result.supplementary_data.length ?
                         <div>
                             {result.supplementary_data.map((data, i) =>
