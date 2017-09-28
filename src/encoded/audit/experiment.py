@@ -347,17 +347,9 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
         else:
             return
 
-    #alignment_files = scan_files_for_file_format_output_type(value['original_files'],
-    #                                                         'bam', 'alignments')
-
-    #fastq_files = scan_files_for_file_format_output_type(value['original_files'],
-    #                                                     'fastq', 'reads')
-
     standards_version = 'ENC3'
 
     if value['assay_term_name'] in ['DNase-seq', 'genetic modification followed by DNase-seq']:
-        #signal_files = scanFilesForOutputType(value['original_files'],
-        #                                      'signal of unique reads')
         for failure in check_experiment_dnase_seq_standards(
                 value,
                 files_structure,
@@ -372,40 +364,29 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
                                     'CRISPRi followed by RNA-seq',
                                     'CRISPR genome editing followed by RNA-seq',
                                     'single cell isolation followed by RNA-seq']:
-        #gene_quantifications = scanFilesForOutputType(value['original_files'],
-        #                                              'gene quantifications')
         for failure in check_experiment_rna_seq_standards(
                 value,
-                files_structure.get('fastq_files').values(),
-                files_structure.get('alignments').values(),
-                files_structure.get('gene_quantifications_files').values(),
+                files_structure,
                 desired_assembly,
                 desired_annotation,
                 standards_version):
             yield failure
         return
     if value['assay_term_name'] == 'ChIP-seq':
-        #optimal_idr_peaks = scanFilesForOutputType(value['original_files'],
-        #                                           'optimal idr thresholded peaks')
         for failure in check_experiment_chip_seq_standards(
                 value,
-                files_structure.get('fastq_files').values(),
-                files_structure.get('alignments').values(),
-                files_structure.get('optimal_idr_peaks').values(),
+                files_structure,
                 standards_version):
             yield failure
         return
     if standards_version == 'ENC3' and \
             value['assay_term_name'] == 'whole-genome shotgun bisulfite sequencing':
-        #cpg_quantifications = scanFilesForOutputType(value['original_files'],
-        #                                             'methylation state at CpG')
 
-        for failure in check_experiment_wgbs_encode3_standards(value,
-                                                               files_structure.get('alignments').values(),
-                                                               organism_name,
-                                                               files_structure.get('fastq_files').values(),
-                                                               files_structure.get('cpg_quantifications').values(),
-                                                               desired_assembly):
+        for failure in check_experiment_wgbs_encode3_standards(
+                value,
+                files_structure,
+                organism_name,
+                desired_assembly):
             yield failure
         return
 
@@ -428,12 +409,7 @@ def audit_modERN_experiment_standards_dispatcher(value, system, files_structure)
         return
 
     for failure in check_experiment_chip_seq_standards(value,
-                                                       files_structure.get(
-                                                           'fastq_files').values(),
-                                                       files_structure.get(
-                                                           'alignments').values(),
-                                                       files_structure.get(
-                                                           'optimal_idr_peaks').values(),
+                                                       files_structure,
                                                        'modERN'):
         yield failure
 
@@ -592,12 +568,14 @@ def check_experiment_dnase_seq_standards(experiment,
 
 
 def check_experiment_rna_seq_standards(value,
-                                       fastq_files,
-                                       alignment_files,
-                                       gene_quantifications,
+                                       files_structure,
                                        desired_assembly,
                                        desired_annotation,
                                        standards_version):
+
+    fastq_files = files_structure.get('fastq_files').values()
+    alignment_files = files_structure.get('alignments').values()
+    gene_quantifications = files_structure.get('gene_quantifications_files').values()
 
     pipeline_title = scanFilesForPipelineTitle_not_chipseq(
         alignment_files,
@@ -697,11 +675,14 @@ def check_experiment_rna_seq_standards(value,
 
 
 def check_experiment_wgbs_encode3_standards(experiment,
-                                            alignment_files,
+                                            files_structure,
                                             organism_name,
-                                            fastq_files,
-                                            cpg_quantifications,
                                             desired_assembly):
+    
+    alignment_files = files_structure.get('alignments').values()
+    fastq_files = files_structure.get('fastq_files').values()
+    cpg_quantifications =files_structure.get('cpg_quantifications').values()
+    
     if fastq_files == []:
         return
 
@@ -772,10 +753,13 @@ def check_wgbs_read_lengths(fastq_files,
 
 
 def check_experiment_chip_seq_standards(experiment,
-                                        fastq_files,
-                                        alignment_files,
-                                        idr_peaks_files,
+                                        files_structure,    
                                         standards_version):
+
+    fastq_files = files_structure.get('fastq_files').values()
+    alignment_files = files_structure.get('alignments').values()
+    idr_peaks_files = files_structure.get('optimal_idr_peaks').values()
+
     upper_limit_read_length = 50
     medium_limit_read_length = 36
     lower_limit_read_length = 26
