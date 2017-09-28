@@ -2317,7 +2317,7 @@ def audit_experiment_platforms_mismatches(value, system, files_structure):
                         yield AuditFailure('inconsistent platforms', detail, level='WARNING')
 
 
-def audit_experiment_ChIP_control(value):
+def audit_experiment_ChIP_control(value, system, files_structure):
     if not check_award_condition(value, [
             'ENCODE3', 'ENCODE4', 'Roadmap']):
         return
@@ -3361,6 +3361,7 @@ function_dispatcher_with_files = {
     'audit_missing_unfiltered_bams': audit_experiment_missing_unfiltered_bams,
     'audit_modERN': audit_modERN_experiment_standards_dispatcher,
     'audit_read_length': audit_experiment_mapped_read_length,
+    'audit_chip_control': audit_experiment_ChIP_control,
 }
 
 # global variables useful for the audits (preventing repetitive calculation)
@@ -3388,7 +3389,9 @@ function_dispatcher_with_files = {
                       'possible_controls',
                       'possible_controls.original_files',
                       'possible_controls.original_files.platform',
-
+                      'possible_controls.target',
+                      'possible_controls.replicates',
+                      'possible_controls.replicates.antibody',
                       'original_files',
                       'original_files.quality_metrics',
                       'original_files.platform',
@@ -3493,8 +3496,8 @@ def audit_experiment_entry_function(value, system):
     #    yield failure
     #for failure in audit_experiment_spikeins(value):
     #    yield failure
-    for failure in audit_experiment_ChIP_control(value):
-        yield failure
+    #for failure in audit_experiment_ChIP_control(value):
+    #    yield failure
     #for failure in audit_experiment_control(value):
     #    yield failure
     #for failure in audit_experiment_assay(value):
