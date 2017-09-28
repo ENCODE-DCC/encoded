@@ -310,6 +310,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         if donor is not None:
             return request.embed(donor, '@@object').get('genetic_modifications')
 
+
     @calculated_property(schema={
         "title": "applied modifications",
         "description": "All genetic modifications made in either the donor and/or biosample.",
@@ -323,14 +324,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         }
     })
     def applied_modifications(self, request, genetic_modifications=None, model_organism_donor_modifications=None):
-        if genetic_modifications is not None and model_organism_donor_modifications is not None:
-            return list(set(genetic_modifications + model_organism_donor_modifications))
-        elif genetic_modifications is not None and model_organism_donor_modifications is None:
-            return genetic_modifications
-        elif genetic_modifications is None and model_organism_donor_modifications is not None:
-            return model_organism_donor_modifications
-        else:
-            return []
+        return get_applied_modifications(genetic_modifications, model_organism_donor_modifications)
+
 
     @calculated_property(schema={
         "title": "Characterizations",
@@ -461,7 +456,8 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 originated_from=None,
                 transfection_method=None,
                 transfection_type=None,
-                applied_modifications=None,
+                genetic_modifications=None,
+                model_organism_donor_modifications=None,
                 constructs=None,
                 model_organism_donor_constructs=None,
                 rnais=None):
@@ -501,18 +497,23 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             originated_from_object = request.embed(originated_from, '@@object')
 
         modifications_list = None
+
+
+        applied_modifications = get_applied_modifications(
+            genetic_modifications, model_organism_donor_modifications)
+
         if applied_modifications:
             modifications_list = []
-            for gm in genetic_modifications:
+            for gm in applied_modifications:
                 gm_object = request.embed(gm, '@@object')
                 modification_dict = {'category': gm_object.get('category')}
                 if gm_object.get('modified_site_by_target_id'):
                     modification_dict['target'] = request.embed(
                         gm_object.get('modified_site_by_target_id'),
                                       '@@object')['label']
-                if gm_object.get('introdiced_tags_array'):
+                if gm_object.get('introduced_tags'):
                     modification_dict['tags'] = []
-                    for tag in gm_object.get('introdiced_tags_array'):
+                    for tag in gm_object.get('introduced_tags'):
                         tag_dict = {'location': tag['location']}
                         if tag.get('promoter_used'):
                             tag_dict['promoter'] = request.embed(
@@ -860,8 +861,17 @@ def is_identical(list_of_dicts, key):
     return True
 
 
-def construct_biosample_summary(phrases_dictionarys, sentence_parts):
+def get_applied_modifications(genetic_modifications=None, model_organism_donor_modifications=None):
+    if genetic_modifications is not None and model_organism_donor_modifications is not None:
+        return list(set(genetic_modifications + model_organism_donor_modifications))
+    elif genetic_modifications is not None and model_organism_donor_modifications is None:
+        return genetic_modifications
+    elif genetic_modifications is None and model_organism_donor_modifications is not None:
+        return model_organism_donor_modifications
+    else:
+        return []
 
+def construct_biosample_summary(phrases_dictionarys, sentence_parts):
     negations_dict = {
         'phase': 'unspecified phase',
         'fractionated': 'unspecified fraction',
