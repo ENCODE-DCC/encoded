@@ -25,11 +25,7 @@ ORDER = [
     'treatment',
     'construct',
     'construct_characterization',
-    'rnai',
-    'rnai_characterization',
     'talen',
-    'tale',
-    'crispr',
     'genetic_modification',
     'genetic_modification_characterization',
     'mouse_donor',
@@ -330,6 +326,7 @@ def request_url(item_type, method):
             yield row
 
     return component
+
 
 def make_request(testapp, item_type, method):
     json_method = getattr(testapp, method.lower() + '_json')

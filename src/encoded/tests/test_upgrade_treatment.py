@@ -54,6 +54,17 @@ def treatment_4(treatment, document, antibody_lot):
     return item
 
 
+@pytest.fixture
+def treatment_8(treatment, document):
+    item = treatment.copy()
+    item.update({
+        'schema_version': '8',
+        'treatment_type': 'protein'
+    })
+    item['treatment_term_id'] = 'UniprotKB:P03823'
+    return item
+
+
 def test_treatment_upgrade(upgrader, treatment_1):
     value = upgrader.upgrade('treatment', treatment_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -95,3 +106,8 @@ def test_treatment_upgrade_4_to_5(upgrader, treatment_4):
     assert 'concentation_units' not in value
     assert 'amount_units' in value
 
+
+def test_treatment_upgrade_8_to_9(upgrader, treatment_8):
+    value = upgrader.upgrade('treatment', treatment_8, current_version='8', target_version='9')
+    assert value['schema_version'] == '9'
+    assert value['treatment_term_id'] == 'UniProtKB:P03823'

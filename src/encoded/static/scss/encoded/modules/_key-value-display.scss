@@ -22,6 +22,7 @@ dl.key-value, dl.key-value-doc {
         text-align: left;
         width: auto;
         word-wrap: break-word;
+        word-break: break-word;
     }
 
     dt {
@@ -32,18 +33,16 @@ dl.key-value, dl.key-value-doc {
         }
     }
 
-    dd {
-        // For things like gene sequences that are multi-line sequences with no spaces
-        &.sequence {
-            overflow-wrap: break-word;
-            word-break: break-all;
-        }
-    }
-
     [data-test] {
         clear: both;
         margin: 8px 0;
     }
+}
+
+// For displahing nucleotide sequences so that they’ll wrap without needing spaces.
+.sequence {
+    overflow-wrap: break-word;
+    word-break: break-all;
 }
 
 @media screen and (min-width: $screen-xs-min) {

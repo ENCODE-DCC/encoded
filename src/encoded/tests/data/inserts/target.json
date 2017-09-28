@@ -405,5 +405,55 @@
         "dbxref": [
             "UniProtKB:Q71DI3"
         ]
+    },
+    {
+        "uuid": "e6d8b23f-f6ca-4d77-adab-03ba81b7742a",
+        "gene_name": "FTO",
+        "investigated_as": [
+            "RNA binding protein"
+        ],
+        "label": "FTO",
+        "organism": "human",
+        "dbxref": [
+            "ENSEMBL:ENSG00000140718",
+            "HGNC:24678",
+            "HGNC:ALKBH9",
+            "HGNC:KIAA1752",
+            "HGNC:MGC5149",
+            "GeneID:79068",
+            "UniProtKB:Q9C0B1"
+        ],
+        "status": "current"
+    },
+    {
+        "uuid": "670a9892-e1b6-4c31-a79f-7db1919b07f9",
+        "aliases": [],
+        "dbxref": [
+            "FlyBase:CG43860",
+            "FlyBase:FBtr0332562",
+            "FlyBase:FBtr0332558",
+            "FlyBase:CG43860-RA",
+            "FlyBase:FBtr0332557",
+            "UniProtKB:Q9W1P8",
+            "FlyBase:CG43860-RB",
+            "FlyBase:FBtr0332560",
+            "FlyBase:CG43860-RF",
+            "FlyBase:ab-RA",
+            "FlyBase:ab-RD",
+            "RefSeq:NM_079098",
+            "FlyBase:ab-RF",
+            "FlyBase:abrupt",
+            "FlyBase:FBgn0264442",
+            "FlyBase:ab-RB",
+            "FlyBase:CG43860-RD"
+        ],
+        "gene_name": "ab",
+        "investigated_as": [
+            "recombinant protein",
+            "transcription factor"
+        ],
+        "label": "eGFP-ab",
+        "organism": "/organisms/dmelanogaster/",
+        "status": "current"
     }
 ]

@@ -38,7 +38,6 @@ Feature: Generics
         | Platform                      | Illumina HiSeq 2000                   |
         | Publication                   | integrated encyclopedia               |
         | Replicate                     | 2bf12e3c-1d00-4e9f-bbc6-0cced1414f7f  |
-        | RNAi                          | d2dc22ba-5e7c-4626-87ac-257c6fff090c  |
         | Source                        | Abcam                                 |
         | Target                        | ADNP                                  |
         | Treatment                     | 2e33a097-412c-4646-87f9-858dfaaa7c06  |

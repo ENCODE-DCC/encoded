@@ -31,11 +31,8 @@ class Donor(Item):
         'documents.lab',
         'documents.submitted_by',
         'genetic_modifications',
-        'genetic_modifications.award',
-        'genetic_modifications.lab',
-        'genetic_modifications.modification_techniques',
-        'genetic_modifications.treatments',
-        'genetic_modifications.target'
+        'genetic_modifications.modified_site_by_target_id',
+        'genetic_modifications.treatments'
     ]
     name_key = 'accession'
     rev = {
@@ -124,7 +121,7 @@ class HumanDonor(Donor):
     @calculated_property(schema={
         "description": "Human donor(s) that have this human donor in their parent property.",
         "comment": "Do not submit. Values in the list are reverse links of a human donors that have this biosample under their parents property.",
-        "title": "Children donors",
+        "title": "Children",
         "type": "array",
         "items": {
             "type": ['string', 'object'],
@@ -133,4 +130,3 @@ class HumanDonor(Donor):
     })
     def children(self, request, parents):
         return paths_filtered_by_status(request, parents)
-

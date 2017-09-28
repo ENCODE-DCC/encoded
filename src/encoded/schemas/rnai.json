@@ -15,6 +15,7 @@
         { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/product_id" },
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/documents" }
@@ -27,16 +28,12 @@
             "title": "Class",
             "description": "The classification of the interfering RNA (e.g. shRNA or siRNA).",
             "type": "string",
+            "comment": "Locking down to prevent new rnais from being submitted.",
+            "permission": "import_items",
             "enum": [
                 "shRNA",
                 "siRNA"
             ]
-        },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the RNAi construct.",
-            "type": "string",
-            "format": "uri"
         },
         "target": {
             "title": "Target",
