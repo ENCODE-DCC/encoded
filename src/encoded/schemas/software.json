@@ -32,17 +32,17 @@
                 "type": "string",
                 "enum": [
                     "aligner",
-                    "quality metric",
-                    "peak caller",
-                    "filtering",
-                    "file format conversion",
                     "database",
-                    "variant annotation",
+                    "file format conversion",
+                    "filtering",
                     "genome segmentation",
+                    "other",
+                    "peak caller",
+                    "quality metric",
                     "quantification",
                     "transcript identification",
                     "transcriptome assembly",
-                    "other"
+                    "variant annotation"
                 ]
             }
         },
