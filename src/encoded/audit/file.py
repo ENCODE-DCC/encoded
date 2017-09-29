@@ -87,7 +87,7 @@ def audit_file_replicate_match(value, system):
     file_exp = value['dataset']['@id']
 
     if rep_exp != file_exp:
-        detail = 'File {} from experiment {} '.format(value['@id'], value['dataset']) + \
+        detail = 'File {} from experiment {} '.format(value['@id'], value['dataset']['@id']) + \
                  'is associated with replicate [{},{}] '.format(
                      value['replicate']['biological_replicate_number'],
                      value['replicate']['technical_replicate_number']) + \

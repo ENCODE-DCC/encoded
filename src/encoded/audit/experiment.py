@@ -392,6 +392,7 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
 
 
 def audit_modERN_experiment_standards_dispatcher(value, system, files_structure):
+    
     if not check_award_condition(value, ['modERN']):
         return
     '''
@@ -752,9 +753,10 @@ def check_wgbs_read_lengths(fastq_files,
 
 
 
-def check_experiment_chip_seq_standards(experiment,
-                                        files_structure,    
-                                        standards_version):
+def check_experiment_chip_seq_standards(
+        experiment,
+        files_structure,    
+        standards_version):
 
     fastq_files = files_structure.get('fastq_files').values()
     alignment_files = files_structure.get('alignments').values()
@@ -786,9 +788,9 @@ def check_experiment_chip_seq_standards(experiment,
 
         for failure in check_file_chip_seq_read_depth(f, target, read_depth, standards_version):
             yield failure
+
         for failure in check_file_chip_seq_library_complexity(f):
             yield failure
-
     if 'replication_type' not in experiment or experiment['replication_type'] == 'unreplicated':
         return
 
@@ -981,7 +983,7 @@ def check_idr(metrics, rescue, self_consistency):
             if rescue_r > rescue and self_r > self_consistency:
                 file_names = []
                 for f in m['quality_metric_of']:
-                    file_names.append(f['@id'])
+                    file_names.append(f)
                 file_names_string = str(file_names).replace('\'', ' ')
                 detail = 'Replicate concordance in ChIP-seq expriments is measured by ' + \
                          'calculating IDR values (Irreproducible Discovery Rate). ' + \
@@ -997,7 +999,7 @@ def check_idr(metrics, rescue, self_consistency):
                  (rescue_r > rescue and self_r <= self_consistency):
                 file_names = []
                 for f in m['quality_metric_of']:
-                    file_names.append(f['@id'])
+                    file_names.append(f)
                 file_names_string = str(file_names).replace('\'', ' ')
                 detail = 'Replicate concordance in ChIP-seq expriments is measured by ' + \
                             'calculating IDR values (Irreproducible Discovery Rate). ' + \
@@ -1302,6 +1304,7 @@ def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title):
                                level='WARNING')
 
 
+
 def check_file_chip_seq_read_depth(file_to_check,
                                    target,
                                    read_depth,
@@ -1313,9 +1316,11 @@ def check_file_chip_seq_read_depth(file_to_check,
         [file_to_check],
         ['ChIP-seq read mapping',
          'Transcription factor ChIP-seq pipeline (modERN)'])
-    pipeline_objects = get_pipeline_objects([file_to_check])
+
     if pipeline_title is False:
+        yield
         return
+    pipeline_objects = get_pipeline_objects([file_to_check])
 
     marks = pipelines_with_read_depth['ChIP-seq read mapping']
     modERN_cutoff = pipelines_with_read_depth['Transcription factor ChIP-seq pipeline (modERN)']
@@ -1328,24 +1333,26 @@ def check_file_chip_seq_read_depth(file_to_check,
     if target is not False and 'name' in target:
         target_name = target['name']
     else:
+        yield
         return
 
     if target is not False and 'investigated_as' in target:
         target_investigated_as = target['investigated_as']
     else:
+        yield
         return
 
     if target_name in ['Control-human', 'Control-mouse'] and 'control' in target_investigated_as:
         if pipeline_title == 'Transcription factor ChIP-seq pipeline (modERN)':
             if read_depth < modERN_cutoff:
                 detail = 'modERN processed alignment file {} has {} '.format(file_to_check['@id'],
-                                                                             read_depth) + \
+                                                                                read_depth) + \
                     'usable fragments. It cannot be used as a control ' + \
                     'in experiments studying transcription factors, which ' + \
                     'require {} usable fragments, according to '.format(modERN_cutoff) + \
                     'the standards defined by the modERN project.'
                 yield AuditFailure('insufficient read depth',
-                                   detail, level='NOT_COMPLIANT')
+                                    detail, level='NOT_COMPLIANT')
         else:
             if read_depth >= marks['narrow'] and read_depth < marks['broad']:
                 if 'assembly' in file_to_check:
@@ -1398,12 +1405,12 @@ def check_file_chip_seq_read_depth(file_to_check,
                     yield AuditFailure('low read depth', detail, level='WARNING')
                 elif read_depth >= 3000000 and read_depth < 10000000:
                     yield AuditFailure('insufficient read depth',
-                                       detail, level='NOT_COMPLIANT')
+                                        detail, level='NOT_COMPLIANT')
                 else:
                     yield AuditFailure('extremely low read depth',
-                                       detail, level='ERROR')
+                                        detail, level='ERROR')
     elif 'broad histone mark' in target_investigated_as and \
-         standards_version != 'modERN':  # target_name in broad_peaks_targets:
+            standards_version != 'modERN':  # target_name in broad_peaks_targets:
         pipeline_object = get_pipeline_by_name(pipeline_objects, 'ChIP-seq read mapping')
         if pipeline_object:
             if target_name in ['H3K9me3-human', 'H3K9me3-mouse']:
@@ -1434,13 +1441,13 @@ def check_file_chip_seq_read_depth(file_to_check,
                             'acceptable. (See /data-standards/chip-seq/ )'
                     if read_depth >= 40000000:
                         yield AuditFailure('low read depth',
-                                           detail, level='WARNING')
+                                            detail, level='WARNING')
                     elif read_depth >= 5000000 and read_depth < 40000000:
                         yield AuditFailure('insufficient read depth',
-                                           detail, level='NOT_COMPLIANT')
+                                            detail, level='NOT_COMPLIANT')
                     elif read_depth < 5000000:
                         yield AuditFailure('extremely low read depth',
-                                           detail, level='WARNING')
+                                            detail, level='WARNING')
             else:
                 if 'assembly' in file_to_check:
                     detail = 'Alignment file {} '.format(file_to_check['@id']) + \
@@ -1469,13 +1476,13 @@ def check_file_chip_seq_read_depth(file_to_check,
 
                 if read_depth >= 40000000 and read_depth < marks['broad']:
                     yield AuditFailure('low read depth',
-                                       detail, level='WARNING')
+                                        detail, level='WARNING')
                 elif read_depth < 40000000 and read_depth >= 5000000:
                     yield AuditFailure('insufficient read depth',
-                                       detail, level='NOT_COMPLIANT')
+                                        detail, level='NOT_COMPLIANT')
                 elif read_depth < 5000000:
                     yield AuditFailure('extremely low read depth',
-                                       detail, level='ERROR')
+                                        detail, level='ERROR')
     elif 'narrow histone mark' in target_investigated_as and \
             standards_version != 'modERN':
         pipeline_object = get_pipeline_by_name(pipeline_objects, 'ChIP-seq read mapping')
@@ -1508,25 +1515,25 @@ def check_file_chip_seq_read_depth(file_to_check,
                 yield AuditFailure('low read depth', detail, level='WARNING')
             elif read_depth < 10000000 and read_depth >= 5000000:
                 yield AuditFailure('insufficient read depth',
-                                   detail, level='NOT_COMPLIANT')
+                                    detail, level='NOT_COMPLIANT')
             elif read_depth < 5000000:
                 yield AuditFailure('extremely low read depth',
-                                   detail, level='ERROR')
+                                    detail, level='ERROR')
     else:
         if pipeline_title == 'Transcription factor ChIP-seq pipeline (modERN)':
             if read_depth < modERN_cutoff:
                 detail = 'modERN processed alignment file {} has {} '.format(file_to_check['@id'],
-                                                                             read_depth) + \
+                                                                                read_depth) + \
                     'usable fragments. Replicates for ChIP-seq ' + \
                     'assays and target {} '.format(target_name) + \
                     'investigated as transcription factor require ' + \
                     '{} usable fragments, according to '.format(modERN_cutoff) + \
                     'the standards defined by the modERN project.'
                 yield AuditFailure('insufficient read depth',
-                                   detail, level='NOT_COMPLIANT')
+                                    detail, level='NOT_COMPLIANT')
         else:
             pipeline_object = get_pipeline_by_name(pipeline_objects,
-                                                   'ChIP-seq read mapping')
+                                                    'ChIP-seq read mapping')
             if pipeline_object:
                 if 'assembly' in file_to_check:
                     detail = 'Alignment file {} '.format(file_to_check['@id']) + \
@@ -1556,10 +1563,10 @@ def check_file_chip_seq_read_depth(file_to_check,
                     yield AuditFailure('low read depth', detail, level='WARNING')
                 elif read_depth < 10000000 and read_depth >= 3000000:
                     yield AuditFailure('insufficient read depth',
-                                       detail, level='NOT_COMPLIANT')
+                                        detail, level='NOT_COMPLIANT')
                 elif read_depth < 3000000:
                     yield AuditFailure('extremely low read depth',
-                                       detail, level='ERROR')
+                                        detail, level='ERROR')
 
 
 def check_file_read_depth(file_to_check,
@@ -3094,64 +3101,68 @@ def create_files_mapping(files_list):
                  'signal_files':{},
                  'optimal_idr_peaks':{},
                  'cpg_quantifications':{}}
-    for file_object in files_list:
-        if file_object['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
-            to_return['original_files'][file_object['@id']] = file_object
+    if files_list:
+        for file_object in files_list:
+            if file_object['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
+                to_return['original_files'][file_object['@id']] = file_object
 
-            file_format = file_object.get('file_format')
-            file_output = file_object.get('output_type')
+                file_format = file_object.get('file_format')
+                file_output = file_object.get('output_type')
 
-            if file_format and file_format == 'fastq' and \
-            file_output and file_output == 'reads':
-                to_return['fastq_files'][file_object['@id']] = file_object
+                if file_format and file_format == 'fastq' and \
+                file_output and file_output == 'reads':
+                    to_return['fastq_files'][file_object['@id']] = file_object
 
-            if file_format and file_format == 'bam' and \
-            file_output and file_output == 'alignments':
-                to_return['alignments'][file_object['@id']] = file_object
+                if file_format and file_format == 'bam' and \
+                file_output and file_output == 'alignments':
+                    to_return['alignments'][file_object['@id']] = file_object
 
-            if file_format and file_format == 'bam' and \
-            file_output and file_output == 'unfiltered alignments':
-                to_return['unfiltered_alignments'][file_object['@id']] = file_object
+                if file_format and file_format == 'bam' and \
+                file_output and file_output == 'unfiltered alignments':
+                    to_return['unfiltered_alignments'][file_object['@id']] = file_object
 
-            if file_format and file_format == 'bam' and \
-            file_output and file_output == 'transcriptome alignments':
-                to_return['transcriptome_alignments'][file_object['@id']] = file_object
+                if file_format and file_format == 'bam' and \
+                file_output and file_output == 'transcriptome alignments':
+                    to_return['transcriptome_alignments'][file_object['@id']] = file_object
 
-            if file_format and file_format == 'bed' and \
-            file_output and file_output == 'peaks':
-                to_return['peaks_files'][file_object['@id']] = file_object
+                if file_format and file_format == 'bed' and \
+                file_output and file_output == 'peaks':
+                    to_return['peaks_files'][file_object['@id']] = file_object
 
-            if file_output and file_output == 'gene quantifications':
-                to_return['gene_quantifications_files'][file_object['@id']] = file_object
+                if file_output and file_output == 'gene quantifications':
+                    to_return['gene_quantifications_files'][file_object['@id']] = file_object
 
-            if file_output and file_output == 'signal of unique reads':
-                to_return['signal_files'][file_object['@id']] = file_object
+                if file_output and file_output == 'signal of unique reads':
+                    to_return['signal_files'][file_object['@id']] = file_object
 
-            if file_output and file_output == 'optimal idr thresholded peaks':
-                to_return['optimal_idr_peaks'][file_object['@id']] = file_object
+                if file_output and file_output == 'optimal idr thresholded peaks':
+                    to_return['optimal_idr_peaks'][file_object['@id']] = file_object
 
-            if file_output and file_output == 'methylation state at CpG':
-                to_return['cpg_quantifications'][file_object['@id']] = file_object
+                if file_output and file_output == 'methylation state at CpG':
+                    to_return['cpg_quantifications'][file_object['@id']] = file_object
     return to_return
 
 def get_contributing_files(files_list):
     to_return = {}
-    for file_object in files_list:
-        if file_object['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
-            to_return[file_object['@id']] = file_object
+    if files_list:
+        for file_object in files_list:
+            if file_object['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
+                to_return[file_object['@id']] = file_object
     return to_return
 
 
 def scanFilesForPipelineTitle_yes_chipseq(alignment_files, pipeline_titles):
-    for f in alignment_files:
-        if f.get('lab') in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/'] and \
-           'analysis_step_version' in f and \
-           'analysis_step' in f['analysis_step_version'] and \
-           'pipelines' in f['analysis_step_version']['analysis_step']:
-            pipelines = f['analysis_step_version']['analysis_step']['pipelines']
-            for p in pipelines:
-                if p['title'] in pipeline_titles:
-                    return p['title']
+    
+    if alignment_files:
+        for f in alignment_files:
+            if f.get('lab') in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/'] and \
+            'analysis_step_version' in f and \
+            'analysis_step' in f['analysis_step_version'] and \
+            'pipelines' in f['analysis_step_version']['analysis_step']:
+                pipelines = f['analysis_step_version']['analysis_step']['pipelines']
+                for p in pipelines:
+                    if p['title'] in pipeline_titles:
+                        return p['title']
     return False
 
 
@@ -3381,6 +3392,7 @@ function_dispatcher_with_files = {
         'possible_controls.target',
         'possible_controls.replicates',
         'possible_controls.replicates.antibody',
+        'contributing_files',
         'original_files',
         'original_files.award',
         'original_files.quality_metrics',
@@ -3402,24 +3414,25 @@ function_dispatcher_with_files = {
         ])
 def audit_experiment(value, system):
     files_structure = create_files_mapping(value.get('original_files'))
-    files_structure['contributing_files']= get_contributing_files(value.get('contributing_files'))
+    files_structure['contributing_files'] = get_contributing_files(value.get('contributing_files'))
+    
     for function_name in function_dispatcher_with_files.keys():
         for failure in function_dispatcher_with_files[function_name](value, system, files_structure):
             yield failure
+
     for function_name in function_dispatcher_without_files.keys():
         for failure in function_dispatcher_without_files[function_name](value, system):
             yield failure
 
+
 #  def audit_experiment_control_out_of_date_analysis(value, system):
 #  removed due to https://encodedcc.atlassian.net/browse/ENCD-3460
-
 
 # def create_pipeline_structures(files_to_scan, structure_type):
 # condensed under https://encodedcc.atlassian.net/browse/ENCD-3493
 
 # def check_structures(replicate_structures, control_flag, experiment):
 # https://encodedcc.atlassian.net/browse/ENCD-3538
-
 
 # def audit_experiment_gtex_biosample(value, system):
 # https://encodedcc.atlassian.net/browse/ENCD-3538
@@ -3429,4 +3442,3 @@ def audit_experiment(value, system):
 
 # def audit_experiment_needs_pipeline(value, system): removed in release 56
 # http://redmine.encodedcc.org/issues/4990
-
