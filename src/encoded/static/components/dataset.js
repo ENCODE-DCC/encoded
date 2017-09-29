@@ -209,7 +209,7 @@ class AnnotationComponent extends React.Component {
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
-                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
                                         </div>
                                     : null}
 
@@ -217,7 +217,7 @@ class AnnotationComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>
@@ -381,7 +381,7 @@ class PublicationDataComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>
@@ -537,7 +537,7 @@ class ReferenceComponent extends React.Component {
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
-                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
                                         </div>
                                     : null}
 
@@ -545,7 +545,7 @@ class ReferenceComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>
@@ -725,7 +725,7 @@ class ProjectComponent extends React.Component {
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
-                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
                                         </div>
                                     : null}
 
@@ -733,7 +733,7 @@ class ProjectComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>
@@ -899,7 +899,7 @@ class UcscBrowserCompositeComponent extends React.Component {
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
-                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
                                         </div>
                                     : null}
 
@@ -907,7 +907,7 @@ class UcscBrowserCompositeComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>
@@ -1390,7 +1390,7 @@ export class SeriesComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>

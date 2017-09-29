@@ -58,8 +58,8 @@
                     "title": "MIME type",
                     "type": "string",
                     "enum": [
-                        "text/plain",
-                        "image/png"
+                        "image/png",
+                        "text/plain"
                     ]
                 },
                 "size": {

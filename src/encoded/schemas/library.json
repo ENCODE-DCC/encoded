@@ -91,10 +91,10 @@
             "type": "string",
             "enum": [
                 "DNA",
-                "RNA",
-                "polyadenylated mRNA",
                 "miRNA",
-                "protein"
+                "polyadenylated mRNA",
+                "protein",
+                "RNA"
             ]
         },
         "dbxrefs": {
@@ -123,12 +123,12 @@
             "description": "The units used for starting amount of nucleic acid.",
             "type": "string",
             "enum": [
-                "cells",
                 "cell-equivalent",
-                "µg",
+                "cells",
+                "mg",
                 "ng",
                 "pg",
-                "mg"
+                "µg"
             ]
         },
         "extraction_method": {
@@ -136,13 +136,13 @@
             "description": "A short description or reference of the nucleic acid extraction protocol used in library preparation, if applicable.",
             "type": "string",
             "XXXenum": [
-                "miRNeasy Mini kit (QIAGEN cat#:217004)",
-                "Trizol (LifeTech cat#: 15596-018)",
                 "Ambion mirVana",
+                "miRNeasy Mini kit (QIAGEN cat#:217004)",
+                "n/a",
                 "Qiagen #74204",
                 "QIAGEN DNeasy Blood & Tissue Kit",
                 "see document",
-                "n/a"
+                "Trizol (LifeTech cat#: 15596-018)"
             ],
             "format": "semi-controlled"
         },
@@ -151,34 +151,34 @@
             "description": "A short description or reference of the nucleic acid fragmentation protocol used in library preparation, if applicable.",
             "type": "string",
             "enum": [
-                "chemical (generic)",
                 "chemical (DNaseI)",
-                "chemical (RNase III)",
-                "chemical (HindIII restriction)",
-                "chemical (MboI restriction)",
-                "chemical (NcoI restriction)",
                 "chemical (DpnII restriction)",
+                "chemical (generic)",
+                "chemical (HindIII restriction)",
                 "chemical (HindIII/DpnII restriction)",
-                "chemical (Tn5 transposase)",
-                "chemical (micrococcal nuclease)",
                 "chemical (Illumina TruSeq)",
+                "chemical (MboI restriction)",
+                "chemical (micrococcal nuclease)",
+                "chemical (NcoI restriction)",
                 "chemical (Nextera tagmentation)",
-                "shearing (generic)",
+                "chemical (RNase III)",
+                "chemical (Tn5 transposase)",
+                "n/a",
+                "none",
+                "see document",
                 "shearing (Covaris generic)",
+                "shearing (Covaris LE Series)",
                 "shearing (Covaris S2)",
-                "sonication (generic)",
+                "shearing (generic)",
                 "sonication (Bioruptor generic)",
                 "sonication (Bioruptor Pico)",
                 "sonication (Bioruptor Plus)",
                 "sonication (Bioruptor Twin)",
-                "sonication (generic microtip)",
                 "sonication (Branson Sonifier 250)",
                 "sonication (Branson Sonifier 450)",
-                "sonication (Sonics VCX130)",
-                "shearing (Covaris LE Series)",
-                "see document",
-                "none",
-                "n/a"
+                "sonication (generic microtip)",
+                "sonication (generic)",
+                "sonication (Sonics VCX130)"
             ]
         },
         "fragmentation_date":{
@@ -196,11 +196,11 @@
             "description": "A short description or reference of the size selection protocol used in library preparation, if applicable.",
             "type": "string",
             "XXXenum": [
+                "Agencourt AMPure XP",
+                "BluePippin",
                 "gel",
                 "see document",
-                "SPRI beads",
-                "BluePippin",
-                "Agencourt AMPure XP"
+                "SPRI beads"
             ],
             "format": "semi-controlled"
         },
@@ -209,13 +209,13 @@
             "description": "A short description or reference of the cell lysis protocol used in library preparation, if applicable",
             "type": "string",
             "XXXenum": [
-                "miRNeasy Mini kit (QIAGEN cat#:217004)",
-                "Trizol (LifeTech cat#: 15596-018)",
                 "Ambion mirVana",
+                "miRNeasy Mini kit (QIAGEN cat#:217004)",
+                "n/a",
                 "Qiagen #74204",
                 "QIAGEN DNeasy Blood & Tissue Kit",
                 "see document",
-                "n/a"
+                "Trizol (LifeTech cat#: 15596-018)"
             ],
             "format": "semi-controlled"
         },
@@ -224,8 +224,8 @@
             "description": "A short description or reference of the crosslinking protocol used in library preparation, if applicable.",
             "type": "string",
             "enum": [
-                "formaldehyde",
                 "EGS and formaldehyde",
+                "formaldehyde",
                 "ultraviolet irradiation"
             ]
         },
@@ -261,9 +261,9 @@
             "items": {
                 "type": "string",
                 "enum": [
-                    "rRNA",
+                    "capped mRNA",
                     "polyadenylated mRNA",
-                    "capped mRNA"
+                    "rRNA"
                 ]
             }
         }

@@ -74,12 +74,12 @@
         },
         "status": {
             "enum" : [
-                "in progress",
-                "deleted",
-                "released",
                 "preliminary",
                 "proposed",
+                "in progress",
+                "released",
                 "archived",
+                "deleted",
                 "revoked"
             ]
         }
