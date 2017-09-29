@@ -26,4 +26,4 @@ def test_report_download(testapp, workbook):
     #     b'', b'', b'', b'', b'', b'', b'', b'', b'',
     #     b'', b'', b'', b'', b'', b'', b''
     # ]
-    assert len(lines) == 45
+    assert len(lines) == 47

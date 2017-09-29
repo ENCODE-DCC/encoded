@@ -52,8 +52,8 @@
                 "default": "analyzed",
                 "enum": [
                     "analyzed",
-                    "not_analyzed",
-                    "no"
+                    "no",
+                    "not_analyzed"
                 ]
             },
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
@@ -136,9 +136,9 @@
                         "description": "The type of genomic modification for this pair.  E.g. insertion, deletion, edit",
                         "type": "string",
                         "enum": [
-                            "insertion",
                             "deletion",
-                            "edit"
+                            "edit",
+                            "insertion"
                         ]
                     },
                     "edited_genomic_coordinates": {
