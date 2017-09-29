@@ -344,12 +344,13 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
     standards_version = 'ENC3'
 
     if value['assay_term_name'] in ['DNase-seq', 'genetic modification followed by DNase-seq']:
+        
         yield from check_experiment_dnase_seq_standards(
-                value,
-                files_structure,
-                desired_assembly,
-                desired_annotation,
-                ' /data-standards/dnase-seq/ ')
+            value,
+            files_structure,
+            desired_assembly,
+            desired_annotation,
+            ' /data-standards/dnase-seq/ ')
         return
 
     if value['assay_term_name'] in ['RAMPAGE', 'RNA-seq', 'CAGE',
@@ -359,11 +360,11 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
                                     'CRISPR genome editing followed by RNA-seq',
                                     'single cell isolation followed by RNA-seq']:
         yield from check_experiment_rna_seq_standards(
-                value,
-                files_structure,
-                desired_assembly,
-                desired_annotation,
-                standards_version)
+            value,
+            files_structure,
+            desired_assembly,
+            desired_annotation,
+            standards_version)
         return
 
     if value['assay_term_name'] == 'ChIP-seq':
@@ -412,7 +413,6 @@ def check_experiment_dnase_seq_standards(experiment,
                                          desired_assembly,
                                          desired_annotation,
                                          link_to_standards):
-
     fastq_files = files_structure.get('fastq_files').values()
     alignment_files = files_structure.get('alignments').values()
     signal_files = files_structure.get('signal_files').values()
@@ -425,10 +425,10 @@ def check_experiment_dnase_seq_standards(experiment,
     if pipeline_title is False:
         return
     for f in fastq_files:
-        yield from check_file_read_length_rna(f, 36,
-                                              pipeline_title,
-                                              link_to_standards)
-        return
+        yield from check_file_read_length_rna(
+            f, 36,
+            pipeline_title,
+            link_to_standards)
 
     pipelines = get_pipeline_objects(alignment_files)
 
@@ -1634,10 +1634,9 @@ def check_file_read_length_rna(file_to_check, threshold_length, pipeline_title, 
         detail = 'Reads file {} missing read_length'.format(file_to_check['@id'])
         yield AuditFailure('missing read_length', detail, level='NOT_COMPLIANT')
         return
-    read_length = file_to_check['read_length']
-    if read_length < threshold_length:
+    if file_to_check.get('read_length') < threshold_length:
         detail = 'Fastq file {} '.format(file_to_check['@id']) + \
-                 'has read length of {}bp. '.format(read_length) + \
+                 'has read length of {}bp. '.format(file_to_check.get('read_length')) + \
                  'ENCODE uniform processing pipelines ({}) '.format(pipeline_title) + \
                  'require sequencing reads to be at least {}bp long. (See {} )'.format(
                      threshold_length,
