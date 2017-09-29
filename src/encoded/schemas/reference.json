@@ -54,9 +54,9 @@
             "type": "string",
             "enum": [
                 "index",
-                "spike-in",
+                "genome",
                 "mappability",
-                "genome"
+                "spike-in"
             ]
         },
         "organism": {

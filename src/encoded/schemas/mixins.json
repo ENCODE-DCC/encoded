@@ -78,9 +78,9 @@
             "comment": "Do not submit.  This is set by admins along the process of metadata submission.",
             "enum": [
                 "in progress",
+                "released",
                 "deleted",
                 "replaced",
-                "released",
                 "revoked"
             ]
         }
@@ -91,8 +91,8 @@
             "type": "string",
             "default": "in progress",
             "enum" : [
-                "in progress",
                 "deleted",
+                "in progress",
                 "released"
             ]
         }
@@ -186,15 +186,15 @@
                     "type": "string",
                     "enum": [
                         "application/pdf",
-                        "text/plain",
-                        "text/tab-separated-values",
-                        "image/jpeg",
-                        "image/tiff",
                         "image/gif",
-                        "text/html",
+                        "image/jpeg",
                         "image/png",
                         "image/svs",
-                        "text/autosql"
+                        "image/tiff",
+                        "text/autosql",
+                        "text/html",
+                        "text/plain",
+                        "text/tab-separated-values"
                     ]
                 },
                 "md5sum": {
@@ -238,13 +238,13 @@
             "comment": "Required property. The specified category should match the type of ontology used to describe the biosample.",
             "type": "string",
             "enum" : [
-                "primary cell",
                 "immortalized cell line",
-                "tissue",
                 "in vitro differentiated cells",
                 "induced pluripotent stem cell line",
-                "whole organisms",
-                "stem cell"
+                "primary cell",
+                "stem cell",
+                "tissue",
+                "whole organisms"
             ]
         }
     },
@@ -347,12 +347,12 @@
             "enum": [
                 "bombardment",
                 "gamma radiation",
-                "X-ray radiation",
-                "UV radiation",
                 "PTT",
-                "transposon",
                 "TMP/UV",
-                "unknown"
+                "transposon",
+                "unknown",
+                "UV radiation",
+                "X-ray radiation"
             ]
         },
         "constructs": {
@@ -453,14 +453,14 @@
             "type": "string",
             "default": "chemical",
             "enum": [
-                "protein",
+                "antibody",
                 "chemical",
                 "exposure",
                 "infection",
-                "antibody",
-                "transplantation",
                 "injection",
-                "irradiation"
+                "irradiation",
+                "protein",
+                "transplantation"
             ]
         },
         "treatment_term_id": {
