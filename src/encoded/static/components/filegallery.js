@@ -1878,7 +1878,7 @@ const FilterMenu = (props) => {
     const { filterOptions, handleFilterChange, selectedFilterValue } = props;
 
     return (
-        <select className="form-control" value={selectedFilterValue} onChange={handleFilterChange}>
+        <select className="form-control--select" value={selectedFilterValue} onChange={handleFilterChange}>
             <option value="default">All Assemblies and Annotations</option>
             <option disabled="disabled" />
             {filterOptions.map((option, i) =>
