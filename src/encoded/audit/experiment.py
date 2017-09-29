@@ -51,6 +51,7 @@ seq_assays = [
 def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
     # relevant only for ChIP-seq
     if value.get('assay_term_id') != 'OBI:0000716':
+        yield
         return
 
     if value.get('target') and 'name' in value.get('target'):
