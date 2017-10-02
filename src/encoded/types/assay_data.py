@@ -17,7 +17,7 @@ assay_terms = {
       'single cell isolation followed by RNA-seq': 'NTR:0003082',
       'Repli-seq': 'OBI:0001920',
       'microRNA-seq': 'OBI:0001922',
-      'microRNA counts': 'NTR:0003660',
+      'microRNA counts': 'OBI:0002142',
       'MRE-seq': 'OBI:0001861',
       'RIP-seq': 'OBI:0001857',
       'Repli-chip': 'OBI:0001915',
@@ -49,9 +49,15 @@ assay_terms = {
       'genotype phasing by HiC': 'NTR:0004875',
       'Circulome-seq': 'NTR:0005023',
       'whole genome sequencing assay': 'OBI:0002117',
-      'BruUV-seq': 'NTR:0004739',
-      'Mint-ChIP-seq': 'NTR:0005141',
+      'BruUV-seq': 'OBI:0002143',
+      'Mint-ChIP-seq': 'OBI:0002160',
       'single-nuclei ATAC-seq': 'NTR:0000438',
       'icSHAPE': 'NTR:0000433',
-      'single-cell ATAC-seq': 'NTR:0000444'
+      'single-cell ATAC-seq': 'NTR:0000444',
+      'ISO-seq': 'NTR:0000445',
+      'STARR-seq': 'OBI:0002041',
+      'direct RNA-seq': 'NTR:0000444',
+      'PRO-seq': 'NTR:0000455',
+      '4C': 'NTR:0000456',
+      'Clone-seq': 'NTR:0000458'
 }

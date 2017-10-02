@@ -223,17 +223,11 @@ class ExperimentComponent extends React.Component {
         // collect up library documents.
         const libraryDocs = [];
         let biosamples = [];
-        let geneticModifications = [];
         if (replicates) {
             biosamples = _.compact(replicates.map((replicate) => {
                 if (replicate.library) {
                     if (replicate.library.documents && replicate.library.documents.length) {
                         Array.prototype.push.apply(libraryDocs, replicate.library.documents);
-                    }
-
-                    // Collect biosample genetic modifications
-                    if (replicate.library.biosample && replicate.library.biosample.genetic_modifications && replicate.library.biosample.genetic_modifications.length) {
-                        geneticModifications = geneticModifications.concat(replicate.library.biosample.genetic_modifications);
                     }
 
                     return replicate.library.biosample;
@@ -308,14 +302,14 @@ class ExperimentComponent extends React.Component {
             };
             libraryComponents = {
                 nucleic_acid_starting_quantity: (library) => {
-                    if (library.nucleic_acid_starting_quantity && library.nucleic_acid_starting_quantity_units) {
+                    if (library && library.nucleic_acid_starting_quantity && library.nucleic_acid_starting_quantity_units) {
                         return <span>{library.nucleic_acid_starting_quantity}<span className="unit">{library.nucleic_acid_starting_quantity_units}</span></span>;
                     }
                     return null;
                 },
-                strand_specificity: library => <span>{library.strand_specificity ? 'Strand-specific' : 'Non-strand-specific'}</span>,
+                strand_specificity: library => (library ? <span>{library.strand_specificity ? 'Strand-specific' : 'Non-strand-specific'}</span> : null),
                 spikeins_used: (library) => {
-                    const spikeins = library.spikeins_used;
+                    const spikeins = library && library.spikeins_used;
                     if (spikeins && spikeins.length) {
                         return (
                             <span>
@@ -584,7 +578,7 @@ class ExperimentComponent extends React.Component {
                                     {context.dbxrefs.length ?
                                         <div data-test="external-resources">
                                             <dt>External resources</dt>
-                                            <dd><DbxrefList values={context.dbxrefs} cell_line={context.biosample_term_name} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
                                         </div>
                                     : null}
 
@@ -641,10 +635,6 @@ class ExperimentComponent extends React.Component {
                         </div>
                     </PanelBody>
                 </Panel>
-
-                {geneticModifications.length ?
-                    <GeneticModificationSummary geneticModifications={geneticModifications} />
-                : null}
 
                 {Object.keys(condensedReplicates).length ?
                     <ReplicateTable condensedReplicates={condensedReplicates} replicationType={context.replication_type} />
@@ -738,6 +728,31 @@ const replicateTableColumns = {
             }
             return (aReplicate.library && aReplicate.library.biosample) ? -1 : ((bReplicate.library && bReplicate.library.biosample) ? 1 : 0);
         },
+    },
+
+    genetic_modification: {
+        title: 'Modifications',
+        display: (condensedReplicate) => {
+            const replicate = condensedReplicate[0];
+            const gms = replicate.library && replicate.library.biosample && replicate.library.biosample.applied_modifications;
+            if (gms && gms.length) {
+                return (
+                    <span>
+                        {gms.map((gm, i) => (
+                            <span key={gm.uuid}>
+                                {i > 0 ? <span>, </span> : null}
+                                <a href={gm['@id']} title={`View genetic modification ${gm.accession}`}>{gm.accession}</a>
+                            </span>
+                        ))}
+                    </span>
+                );
+            }
+            return null;
+        },
+        hide: list => _(list).all((condensedReplicate) => {
+            const replicate = condensedReplicate[0];
+            return !(replicate.library && replicate.library.biosample && replicate.library.biosample.applied_modifications && replicate.library.biosample.applied_modifications.length);
+        }),
     },
 
     antibody_accession: {

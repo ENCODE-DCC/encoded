@@ -13,6 +13,7 @@
         { "$ref": "mixins.json#/genetic_modifications" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/attribution" },
@@ -94,10 +95,10 @@
             "type": "string",
             "default": "unknown",
             "enum": [
-                "male",
                 "female",
-                "unknown",
-                "mixed"
+                "male",
+                "mixed",
+                "unknown"
             ]
         },
         "life_stage": {
@@ -194,7 +195,7 @@
             "linkTo": "HumanDonor"
         },
         "twin_type": {
-            "title": "Type of the twin sibling of this human donor.",
+            "title": "Twin type",
             "comment": "The type of the twin sibling of this donor (dizygotic or monozygotic)",
             "type": "string",
             "enum": [
@@ -254,6 +255,9 @@
         },
         "sex": {
             "title": "Sex"
+        },
+        "organism.scientific_name": {
+            "title": "Species"
         },
         "status": {
             "title": "Status"

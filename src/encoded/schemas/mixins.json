@@ -64,7 +64,7 @@
                 "description": "A lab specific identifier to reference an object.",
                 "comment": "Current convention is colon separated lab name and lab identifier. (e.g. john-doe:42).",
                 "type":  "string",
-                "pattern": "^(?:alexander-hoffmann|alexander-rudensky|alexander-urban|ali-mortazavi|alkes-price|andrew-fire|anshul-kundaje|anton-valouev|barbara-wold|bill-noble|bin-yu|bing-ren|bradley-bernstein|brenton-graveley|chris-burge|christina-leslie|colin-dewey|david-gifford|david-gilbert|douglas-black|elliott-margulies|emery-bresnick|encode-awg|encode-consortium|encode-processing-pipeline|erez-lieberman|eric-lecuyer|eric-mendehall|ewan-birney|feng-yue|gene-yeo|george-stamatoyannopoulos|greg-cooper|gregory-crawford|guo-cheng-yuan|haiyan-huang|howard-chang|j-michael-cherry|jason-ernst|jason-lieb|jennifer-harrow|jeremy-luban|job-dekker|joe-ecker|john-lis|john-rinn|john-stamatoyannopoulos|jonathan-pritchard|joseph-costello|kenneth-offit|kevin-struhl|kevin-white|ladeana-hillier|laura-elnitski|len-pennacchio|leonard-lipovich|manolis-kellis|manuel-garber|mark-gerstein|mats-ljungman|matteo-pellegrini|michael-beer|michael-hoffman|michael-snyder|morgan-giddings|nadav-ahituv|paul-khavari|peggy-farnham|peter-bickel|peter-park|piero-carninci|rafael-irizarry|richard-myers|roadmap-epigenomics|robert-klein|robert-waterston|roderic-guigo|ross-hardison|scott-tenenbaum|sherman-weissman|souma-raychaudhuri|stephen-smale|sunduz-keles|susan-celniker|thomas-gingeras|thomas-tullius|tim-reddy|timothy-hubbard|ting-wang|tommi-jaakkola|unknown|valerie-reinke|vishwanath-iyer|w-james-kent|wei-wang|will-greenleaf|xiang-dong-fu|xiaole-shirley|xinshu-xiao|yi-xing|yijun-ruan|yin-shen|yoav-gilad|zhiping-weng|brian-oliver|david-macalpine|hugo-bellen|peter-cherbas|terry-orr-weaver|abby-dernburg|anthony-hyman|arshad-desai|david-miller|eric-lai|fabio-piano|frank-slack|gary-karpen|gregory-hannon|james-posakony|john-kim|julie-ahringer|kamran-ahmad|kris-gunsalus|lincoln-stein|michael-brent|michael-maccoss|mitzi-kuroda|nikolaus-rajewsky|norbert-perrimon|philip-green|sarah-elgin|steven-henikoff|steven-russell|susan-strome|vincenzo-pirrotta|MitaniLab|UofC-HGAC|wesley-hung|encode|modern|dnanexus|modencode|gencode|ggr|cgc|bloomington|dssc|kyoto|gtex|pgp|biochain|promocell|nichd):[a-zA-Z\\d_$.+!*,()'-]+(?:\\s[a-zA-Z\\d_$.+!*,()'-]+)*$"
+                "pattern": "^(?:alexander-hoffmann|alexander-rudensky|alexander-urban|ali-mortazavi|alkes-price|andrew-fire|anshul-kundaje|anton-valouev|barbara-wold|bill-noble|bin-yu|bing-ren|bradley-bernstein|brenton-graveley|chris-burge|christina-leslie|colin-dewey|david-gifford|david-gilbert|douglas-black|elliott-margulies|emery-bresnick|encode-awg|encode-consortium|encode-processing-pipeline|erez-lieberman|eric-lecuyer|eric-mendehall|ewan-birney|feng-yue|gene-yeo|george-stamatoyannopoulos|greg-cooper|gregory-crawford|guo-cheng-yuan|haiyan-huang|howard-chang|j-michael-cherry|jason-ernst|jason-lieb|jennifer-harrow|jeremy-luban|job-dekker|joe-ecker|john-lis|john-rinn|john-stamatoyannopoulos|jonathan-pritchard|joseph-costello|kenneth-offit|kevin-struhl|kevin-white|ladeana-hillier|laura-elnitski|len-pennacchio|leonard-lipovich|manolis-kellis|manuel-garber|mark-gerstein|mats-ljungman|matteo-pellegrini|michael-beer|michael-hoffman|michael-snyder|morgan-giddings|nadav-ahituv|paul-khavari|peggy-farnham|peter-bickel|peter-park|piero-carninci|rafael-irizarry|richard-myers|roadmap-epigenomics|rob-spitale|robert-klein|robert-waterston|roderic-guigo|ross-hardison|scott-tenenbaum|sherman-weissman|souma-raychaudhuri|stephen-smale|sunduz-keles|susan-celniker|thomas-gingeras|thomas-tullius|tim-reddy|timothy-hubbard|ting-wang|tommi-jaakkola|unknown|valerie-reinke|vishwanath-iyer|w-james-kent|wei-wang|will-greenleaf|xiang-dong-fu|xiaole-shirley|xinshu-xiao|yi-xing|yijun-ruan|yin-shen|yoav-gilad|zhiping-weng|brian-oliver|david-macalpine|hugo-bellen|peter-cherbas|terry-orr-weaver|abby-dernburg|anthony-hyman|arshad-desai|david-miller|eric-lai|fabio-piano|frank-slack|gary-karpen|gregory-hannon|james-posakony|john-kim|julie-ahringer|kamran-ahmad|kris-gunsalus|lincoln-stein|michael-brent|michael-maccoss|mitzi-kuroda|nikolaus-rajewsky|norbert-perrimon|philip-green|sarah-elgin|steven-henikoff|steven-russell|susan-strome|vincenzo-pirrotta|MitaniLab|UofC-HGAC|wesley-hung|encode|modern|dnanexus|modencode|gencode|ggr|cgc|bloomington|dssc|kyoto|gtex|pgp|biochain|promocell|nichd):[a-zA-Z\\d_$.+!*,()'-]+(?:\\s[a-zA-Z\\d_$.+!*,()'-]+)*$"
             }
         }
     },
@@ -78,9 +78,9 @@
             "comment": "Do not submit.  This is set by admins along the process of metadata submission.",
             "enum": [
                 "in progress",
+                "released",
                 "deleted",
                 "replaced",
-                "released",
                 "revoked"
             ]
         }
@@ -91,8 +91,8 @@
             "type": "string",
             "default": "in progress",
             "enum" : [
-                "in progress",
                 "deleted",
+                "in progress",
                 "released"
             ]
         }
@@ -186,15 +186,15 @@
                     "type": "string",
                     "enum": [
                         "application/pdf",
-                        "text/plain",
-                        "text/tab-separated-values",
-                        "image/jpeg",
-                        "image/tiff",
                         "image/gif",
-                        "text/html",
+                        "image/jpeg",
                         "image/png",
                         "image/svs",
-                        "text/autosql"
+                        "image/tiff",
+                        "text/autosql",
+                        "text/html",
+                        "text/plain",
+                        "text/tab-separated-values"
                     ]
                 },
                 "md5sum": {
@@ -238,13 +238,13 @@
             "comment": "Required property. The specified category should match the type of ontology used to describe the biosample.",
             "type": "string",
             "enum" : [
-                "primary cell",
                 "immortalized cell line",
-                "tissue",
                 "in vitro differentiated cells",
                 "induced pluripotent stem cell line",
-                "whole organisms",
-                "stem cell"
+                "primary cell",
+                "stem cell",
+                "tissue",
+                "whole organisms"
             ]
         }
     },
@@ -347,12 +347,12 @@
             "enum": [
                 "bombardment",
                 "gamma radiation",
-                "X-ray radiation",
-                "UV radiation",
                 "PTT",
-                "transposon",
                 "TMP/UV",
-                "unknown"
+                "transposon",
+                "unknown",
+                "UV radiation",
+                "X-ray radiation"
             ]
         },
         "constructs": {
@@ -383,60 +383,66 @@
             "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
             "type": "string",
             "enum": [
-                "ChIP-seq",
-                "RNA-seq",
-                "DNase-seq",
-                "eCLIP",
-                "shRNA knockdown followed by RNA-seq",
-                "RNA Bind-n-Seq",
-                "transcription profiling by array assay",
-                "DNA methylation profiling by array assay",
-                "whole-genome shotgun bisulfite sequencing",
-                "RRBS",
-                "siRNA knockdown followed by RNA-seq",
-                "RAMPAGE",
-                "comparative genomic hybridization by array",
-                "CAGE",
-                "single cell isolation followed by RNA-seq",
-                "Repli-seq",
-                "microRNA-seq",
-                "microRNA counts",
-                "MRE-seq",
-                "RIP-seq",
-                "Repli-chip",
-                "MeDIP-seq",
-                "ChIA-PET",
-                "FAIRE-seq",
-                "ATAC-seq",
-                "PAS-seq",
-                "RIP-chip",
-                "RNA-PET",
-                "genotyping by high throughput sequencing assay",
-                "CRISPR genome editing followed by RNA-seq",
-                "protein sequencing by tandem mass spectrometry assay",
-                "5C",
-                "HiC",
-                "TAB-seq",
-                "iCLIP",
-                "DNA-PET",
-                "Switchgear",
-                "5' RLM RACE",
-                "MNase-seq",
-                "5' RACE",
                 "3' RACE",
-                "small RNA-seq",
+                "4C",
+                "5' RACE",
+                "5' RLM RACE",
+                "5C",
+                "ATAC-seq",
                 "Bru-seq",
                 "BruChase-seq",
-                "genetic modification followed by DNase-seq",
-                "CRISPRi followed by RNA-seq",
-                "genotype phasing by HiC",
-                "Circulome-seq",
-                "whole genome sequencing assay",
                 "BruUV-seq",
-                "Mint-ChIP-seq",
-                "single-nuclei ATAC-seq",
+                "CAGE",
+                "ChIA-PET",
+                "ChIP-seq",
+                "Circulome-seq",
+                "Clone-seq",
+                "comparative genomic hybridization by array",
+                "CRISPR genome editing followed by RNA-seq",
+                "CRISPRi followed by RNA-seq",
+                "direct RNA-seq",
+                "DNA methylation profiling by array assay",
+                "DNA-PET",
+                "DNase-seq",
+                "eCLIP",
+                "FAIRE-seq",
+                "genetic modification followed by DNase-seq",
+                "genotype phasing by HiC",
+                "genotyping by high throughput sequencing assay",
+                "HiC",
+                "iCLIP",
                 "icSHAPE",
-                "single-cell ATAC-seq"
+                "ISO-seq",
+                "MeDIP-seq",
+                "microRNA counts",
+                "microRNA-seq",
+                "Mint-ChIP-seq",
+                "MNase-seq",
+                "MRE-seq",
+                "PAS-seq",
+                "PRO-seq",
+                "protein sequencing by tandem mass spectrometry assay",
+                "RAMPAGE",
+                "Repli-chip",
+                "Repli-seq",
+                "RIP-chip",
+                "RIP-seq",
+                "RNA Bind-n-Seq",
+                "RNA-PET",
+                "RNA-seq",
+                "RRBS",
+                "shRNA knockdown followed by RNA-seq",
+                "single cell isolation followed by RNA-seq",
+                "single-cell ATAC-seq",
+                "single-nuclei ATAC-seq",
+                "siRNA knockdown followed by RNA-seq",
+                "small RNA-seq",
+                "STARR-seq",
+                "Switchgear",
+                "TAB-seq",
+                "transcription profiling by array assay",
+                "whole genome sequencing assay",
+                "whole-genome shotgun bisulfite sequencing"
             ]
         }
     },
@@ -447,14 +453,14 @@
             "type": "string",
             "default": "chemical",
             "enum": [
-                "protein",
+                "antibody",
                 "chemical",
                 "exposure",
                 "infection",
-                "antibody",
-                "transplantation",
                 "injection",
-                "irradiation"
+                "irradiation",
+                "protein",
+                "transplantation"
             ]
         },
         "treatment_term_id": {
@@ -462,12 +468,22 @@
             "title": "Term ID",
             "description": "Ontology identifier describing a component in the treatment.",
             "type": "string",
-            "pattern": "^(CHEBI:[0-9]{1,7})|(UniprotKB:P[0-9]{5})|(Taxon:[0-9]{2,7})|(NTR:[0-9]{2,8})|(CL:[0-9]{2,8})$"
+            "pattern": "^(CHEBI:[0-9]{1,7})|(UniProtKB:[A-Z0-9]{6})|(Taxon:[0-9]{2,7})|(NTR:[0-9]{2,8})|(CL:[0-9]{2,8})|(XCO:[0-9]{7})$"
         },
         "treatment_term_name": {
             "title": "Term name",
             "description": "Ontology term describing a component in the treatment.",
             "type":  "string"
+        }
+    },
+    "url": {
+        "url": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
+            "title": "URL",
+            "description": "An external resource with additional information.",
+            "type": "string",
+            "format": "uri"
         }
     },
     "documents": {
