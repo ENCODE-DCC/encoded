@@ -6,7 +6,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "organism"],
-    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "identifyingProperties": ["uuid", "accession", "aliases", "external_ids"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "donor.json#/properties" },
@@ -221,7 +221,7 @@
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External identifiers",
+            "title": "Database external identifiers",
             "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
             "comment": "Do not submit. DCC personnel is responsible for submission of donor external resource identifiers.",
             "permission": "import_items",
@@ -229,7 +229,7 @@
             "default": [],
             "uniqueItems": true,
             "items": {
-                "title": "External identifier",
+                "title": "Database external identifier",
                 "description": "Identifier an from external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
                 "pattern": "^((PGP:hu[\\S\\s\\d]+)|(GTEx:[a-zA-Z0-9\\-_]+)|(NIH:NIHhESC-[\\d]{2}-[\\d]{4})|(GEO:SAMN\\d+))$"
