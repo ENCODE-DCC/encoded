@@ -119,9 +119,6 @@ export const dbxrefPrefixMap = {
             return {};
         },
     },
-    NBP: {
-        pattern: 'http://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq={0}',
-    },
     CGC: {
         pattern: 'https://cgc.umn.edu/strain/{0}',
     },
