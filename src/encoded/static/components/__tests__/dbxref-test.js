@@ -236,25 +236,6 @@ describe('Test individual dbxref types', () => {
         });
     });
 
-    describe('Test NBP', () => {
-        let dbxLinks;
-
-        beforeAll(() => {
-            const context = { '@type': 'WormDonor' };
-            const wrapper = mount(
-                <DbxrefList context={context} dbxrefs={['NBP:292', 'NBP:300']} />
-            );
-
-            dbxLinks = wrapper.find('a');
-        });
-
-        it('has the correct links', () => {
-            expect(dbxLinks.length).toBe(2);
-            expect(dbxLinks.at(0).prop('href')).toEqual('http://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq=292');
-            expect(dbxLinks.at(1).prop('href')).toEqual('http://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq=300');
-        });
-    });
-
     describe('Test CGC', () => {
         let dbxLinks;
 
@@ -560,7 +541,6 @@ describe('Test individual dbxref types', () => {
             expect(dbxLinks.at(1).prop('href')).toEqual('https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=grants.nih.gov&query=NIHhESC-10-0063');
         });
     });
-
 
     describe('Test no matching dbxref prefix', () => {
         let dbxLinks;
