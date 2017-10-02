@@ -2277,7 +2277,7 @@ def audit_experiment_platforms_mismatches(value, system, files_structure):
             for control in value['possible_controls']:
                 if control.get('original_files'):
                     control_platforms = get_platforms_used_in_experiment(
-                        create_files_mapping(control.get('original_files')))
+                        create_files_mapping(control.get('original_files'), []))
                     if len(control_platforms) > 1:
                         control_platforms_string = str(list(control_platforms)).replace('\'', '')
                         detail = 'possible_controls is a list of experiment(s) that can serve ' + \
@@ -2794,7 +2794,7 @@ def get_control_bam(experiment_bam, pipeline_name, derived_from_fastqs, files_st
             return False
 
         control_bam = False
-        control_files_structure = create_files_mapping(control_fastq['dataset'].get('original_files'))
+        control_files_structure = create_files_mapping(control_fastq['dataset'].get('original_files'), [])
 
         for control_file in control_files_structure.get('alignments').values():
             if 'assembly' in control_file and 'assembly' in experiment_bam and \
@@ -3031,7 +3031,7 @@ def get_chip_seq_bam_read_depth(bam_file):
     return read_depth
 
 
-def create_files_mapping(files_list):
+def create_files_mapping(files_list, excluded):
     to_return = {'original_files':{},
                  'fastq_files':{},
                  'alignments':{},
@@ -3045,7 +3045,7 @@ def create_files_mapping(files_list):
                  'contributing_files':{}}
     if files_list:
         for file_object in files_list:
-            if file_object['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
+            if file_object['status'] not in excluded:
                 to_return['original_files'][file_object['@id']] = file_object
 
                 file_format = file_object.get('file_format')
@@ -3358,7 +3358,12 @@ function_dispatcher_with_files = {
         'original_files.controlled_by.dataset.original_files.analysis_step_version.analysis_step.pipelines',
         ])
 def audit_experiment(value, system):
-    files_structure = create_files_mapping(value.get('original_files'))
+    excluded_files = ['revoked', 'archived']
+    if value.get('status') == 'revoked':
+        excluded_files = []
+    if value.get('status') == 'archived':
+        excluded_files = ['revoked']
+    files_structure = create_files_mapping(value.get('original_files'), excluded_files)
     files_structure['contributing_files'] = get_contributing_files(value.get('contributing_files'))
 
     for function_name in function_dispatcher_with_files.keys():
