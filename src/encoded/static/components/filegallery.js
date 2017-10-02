@@ -898,87 +898,6 @@ function collectAssembliesAnnotations(files) {
 }
 
 
-export function qcDetailsView(metrics, schemas) {
-    const qc = metrics.ref;
-
-    // Extract the GenericQualityMetric schema. We don't display properties that exist in this
-    // schema because they're generic properties, not interesting QC proeprties.
-    const genericQCSchema = schemas.GenericQualityMetric;
-
-    // Extract the schema specific for the given quality metric.
-    const qcSchema = schemas[qc['@type'][0]];
-
-    if (metrics && genericQCSchema && qcSchema && qcSchema.properties) {
-        const file = metrics.parent;
-
-        return qcModalContent(qc, file, qcSchema, genericQCSchema);
-    }
-    return { header: null, body: null };
-}
-
-
-function coalescedDetailsView(node) {
-    let header;
-    let body;
-
-    if (node.metadata.coalescedFiles && node.metadata.coalescedFiles.length) {
-        // Configuration for reference file table
-        const coalescedFileColumns = {
-            accession: {
-                title: 'Accession',
-                display: item =>
-                    <span>
-                        {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf('/') + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                    </span>,
-            },
-            file_type: { title: 'File type' },
-            output_type: { title: 'Output type' },
-            assembly: { title: 'Mapping assembly' },
-            genome_annotation: {
-                title: 'Genome annotation',
-                hide: list => _(list).all(item => !item.genome_annotation),
-            },
-            title: {
-                title: 'Lab',
-                getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
-            },
-            date_created: {
-                title: 'Date added',
-                getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-                sorter: (a, b) => {
-                    if (a && b) {
-                        return Date.parse(a) - Date.parse(b);
-                    }
-                    const bTest = b ? 1 : 0;
-                    return a ? -1 : bTest;
-                },
-            },
-        };
-
-        header = (
-            <h4>Selected contributing files</h4>
-        );
-        body = (
-            <div className="coalesced-table">
-                <SortTable
-                    list={node.metadata.coalescedFiles}
-                    columns={coalescedFileColumns}
-                    sortColumn="accession"
-                />
-            </div>
-        );
-    } else {
-        header = (
-            <div className="details-view-info">
-                <h4>Unknown files</h4>
-            </div>
-        );
-        body = <p className="browser-error">No information available</p>;
-    }
-    return { header, body };
-}
-
-
 // Displays the file filtering controls for the file association graph and file tables.
 
 class FilterControls extends React.Component {
@@ -1047,7 +966,7 @@ class FileGalleryRendererComponent extends React.Component {
         // Initialize React state variables.
         this.state = {
             selectedFilterValue: 'default', // <select> value of selected filter
-            infoNodeId: '', // @id of node whose info panel is open
+            meta: null, // @id of node whose info panel is open
             infoModalOpen: false, // True if info modal is open
             relatedFiles: [],
             inclusionOn: false, // True to exclude files with certain statuses
@@ -1097,8 +1016,8 @@ class FileGalleryRendererComponent extends React.Component {
     }
 
     // Called from child components when the selected node changes.
-    setInfoNodeId(nodeId) {
-        this.setState({ infoNodeId: nodeId });
+    setInfoNodeId(meta) {
+        this.setState({ meta });
     }
 
     setInfoNodeVisible(visible) {
@@ -1139,90 +1058,9 @@ class FileGalleryRendererComponent extends React.Component {
 
     // Handle a click in a graph node. This also handles clicks on the info button of files in the
     // file table.
-    handleNodeClick(nodeId) {
-        this.setInfoNodeId(nodeId);
+    handleNodeClick(meta) {
+        this.setInfoNodeId(meta);
         this.setInfoNodeVisible(true);
-    }
-
-    // Render metadata if a graph node is selected.
-    // jsonGraph: JSON graph data.
-    // infoNodeId: ID of the selected node
-    detailNodes(jsonGraph, infoNodeId, session, sessionProperties) {
-        let meta;
-
-        // Find data matching selected node, if any
-        if (infoNodeId) {
-            if (infoNodeId.indexOf('qc:') >= 0) {
-                // QC subnode.
-                const subnode = jsonGraph.getSubnode(infoNodeId);
-                if (subnode) {
-                    meta = qcDetailsView(subnode, this.props.schemas);
-                    meta.type = subnode['@type'][0];
-                }
-            } else if (infoNodeId.indexOf('coalesced:') >= 0) {
-                // Coalesced contributing files.
-                const node = jsonGraph.getNode(infoNodeId);
-                if (node) {
-                    const currCoalescedFiles = this.state.coalescedFiles;
-                    if (currCoalescedFiles[node.metadata.contributing]) {
-                        // We have the requested coalesced files in the cache, so just display
-                        // them.
-                        node.metadata.coalescedFiles = currCoalescedFiles[node.metadata.contributing];
-                        meta = coalescedDetailsView(node);
-                        meta.type = 'File';
-                    } else if (!this.contributingRequestOutstanding) {
-                        // We don't have the requested coalesced files in the cache, so we have to
-                        // request them from the DB.
-                        this.contributingRequestOutstanding = true;
-                        requestFiles(node.metadata.ref).then((contributingFiles) => {
-                            this.contributingRequestOutstanding = false;
-                            currCoalescedFiles[node.metadata.contributing] = contributingFiles;
-                            this.setState({ coalescedFiles: currCoalescedFiles });
-                        }).catch(() => {
-                            this.contributingRequestOutstanding = false;
-                            currCoalescedFiles[node.metadata.contributing] = [];
-                            this.setState({ coalescedFiles: currCoalescedFiles });
-                        });
-                    }
-                }
-            } else {
-                // A regular or contributing file.
-                const node = jsonGraph.getNode(infoNodeId);
-                if (node) {
-                    if (node.metadata.contributing) {
-                        // This is a contributing file, and its @id is in
-                        // node.metadata.contributing. See if the file is in the cache.
-                        const currContributing = this.state.contributingFiles;
-                        if (currContributing[node.metadata.contributing]) {
-                            // We have this file's object in the cache, so just display it.
-                            node.metadata.ref = currContributing[node.metadata.contributing];
-                            meta = globals.graphDetail.lookup(node)(node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, session, sessionProperties);
-                            meta.type = node['@type'][0];
-                        } else if (!this.contributingRequestOutstanding) {
-                            // We don't have this file's object in the cache, so request it from
-                            // the DB.
-                            this.contributingRequestOutstanding = true;
-                            requestFiles([node.metadata.contributing]).then((contributingFile) => {
-                                this.contributingRequestOutstanding = false;
-                                currContributing[node.metadata.contributing] = contributingFile[0];
-                                this.setState({ contributingFiles: currContributing });
-                            }).catch(() => {
-                                this.contributingRequestOutstanding = false;
-                                currContributing[node.metadata.contributing] = {};
-                                this.setState({ contributingFiles: currContributing });
-                            });
-                        }
-                    } else {
-                        // Regular File data in the node from when we generated the graph. Just
-                        // display the file data from there.
-                        meta = globals.graphDetail.lookup(node)(node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, session, sessionProperties);
-                        meta.type = node['@type'][0];
-                    }
-                }
-            }
-        }
-
-        return meta;
     }
 
     closeModal() {
@@ -1249,14 +1087,6 @@ class FileGalleryRendererComponent extends React.Component {
 
         // Get a list of files for the graph (filters out excluded files if requested by the user).
         const includedFiles = this.filterForInclusion(files);
-
-        // Prepare to display the file information modal.
-        // const modalTypeMap = {
-        //     File: 'file',
-        //     Step: 'analysis-step',
-        //     QualityMetric: 'quality-metric',
-        // };
-        // const modalClass = meta ? `graph-modal-${modalTypeMap[meta.type]}` : '';
 
         const fileTable = (
             <FileTable
@@ -1307,6 +1137,10 @@ class FileGalleryRendererComponent extends React.Component {
                                     files={includedFiles}
                                     selectedAssembly={selectedAssembly}
                                     selectedAnnotation={selectedAnnotation}
+                                    schemas={schemas}
+                                    handleNodeClick={this.handleNodeClick}
+                                    auditIndicators={this.props.auditIndicators}
+                                    auditDetail={this.props.auditDetail}
                                     handleNodeClick={this.handleNodeClick}
                                 />
                             : null}
@@ -1322,17 +1156,18 @@ class FileGalleryRendererComponent extends React.Component {
                 :
                     <div>{fileTable}</div>
                 }
-                {/* {meta && this.state.infoNodeVisible ?
+
+                {this.state.meta && this.state.infoNodeVisible ?
                     <Modal closeModal={this.closeModal}>
                         <ModalHeader closeModal={this.closeModal}>
-                            {meta ? meta.header : null}
+                            {this.state.meta.header}
                         </ModalHeader>
                         <ModalBody>
-                            {meta ? meta.body : null}
+                            {this.state.meta.body}
                         </ModalBody>
                         <ModalFooter closeModal={<button className="btn btn-info" onClick={this.closeModal}>Close</button>} />
                     </Modal>
-                : null} */}
+                : null}
             </Panel>
         );
     }

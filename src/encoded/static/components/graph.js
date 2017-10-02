@@ -5,6 +5,7 @@ import { Panel } from '../libs/bootstrap/panel';
 import { svgIcon } from '../libs/svg-icons';
 import { BrowserFeat } from './browserfeat';
 import * as globals from './globals';
+import { requestFiles } from './objectutils';
 
 
 // Zoom slider constants
@@ -634,6 +635,87 @@ export function assembleGraph(files, dataset, options) {
 }
 
 
+function qcDetailsView(metrics, schemas) {
+    const qc = metrics.ref;
+
+    // Extract the GenericQualityMetric schema. We don't display properties that exist in this
+    // schema because they're generic properties, not interesting QC proeprties.
+    const genericQCSchema = schemas.GenericQualityMetric;
+
+    // Extract the schema specific for the given quality metric.
+    const qcSchema = schemas[qc['@type'][0]];
+
+    if (metrics && genericQCSchema && qcSchema && qcSchema.properties) {
+        const file = metrics.parent;
+
+        return qcModalContent(qc, file, qcSchema, genericQCSchema);
+    }
+    return { header: null, body: null };
+}
+
+
+function coalescedDetailsView(node) {
+    let header;
+    let body;
+
+    if (node.metadata.coalescedFiles && node.metadata.coalescedFiles.length) {
+        // Configuration for reference file table
+        const coalescedFileColumns = {
+            accession: {
+                title: 'Accession',
+                display: item =>
+                    <span>
+                        {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf('/') + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                    </span>,
+            },
+            file_type: { title: 'File type' },
+            output_type: { title: 'Output type' },
+            assembly: { title: 'Mapping assembly' },
+            genome_annotation: {
+                title: 'Genome annotation',
+                hide: list => _(list).all(item => !item.genome_annotation),
+            },
+            title: {
+                title: 'Lab',
+                getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+            },
+            date_created: {
+                title: 'Date added',
+                getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+                sorter: (a, b) => {
+                    if (a && b) {
+                        return Date.parse(a) - Date.parse(b);
+                    }
+                    const bTest = b ? 1 : 0;
+                    return a ? -1 : bTest;
+                },
+            },
+        };
+
+        header = (
+            <h4>Selected contributing files</h4>
+        );
+        body = (
+            <div className="coalesced-table">
+                <SortTable
+                    list={node.metadata.coalescedFiles}
+                    columns={coalescedFileColumns}
+                    sortColumn="accession"
+                />
+            </div>
+        );
+    } else {
+        header = (
+            <div className="details-view-info">
+                <h4>Unknown files</h4>
+            </div>
+        );
+        body = <p className="browser-error">No information available</p>;
+    }
+    return { header, body };
+}
+
+
 export class Graph extends React.Component {
     // Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
     // jsonGraph: JsonGraph object containing nodes and edges.
@@ -682,6 +764,7 @@ export class Graph extends React.Component {
             dlDisabled: false, // Download button disabled because of IE
             verticalGraph: false, // True for vertically oriented graph, false for horizontal
             zoomLevel: null, // Graph zoom level; null to indicate not set
+            coalescedFiles: [],
         };
 
         // Component state variables we don't want to cause a rerender.
@@ -701,6 +784,7 @@ export class Graph extends React.Component {
         this.bindClickHandlers = this.bindClickHandlers.bind(this);
         this.handleOrientationClick = this.handleOrientationClick.bind(this);
         this.handleDlClick = this.handleDlClick.bind(this);
+        this.nodeIdClick = this.nodeIdClick.bind(this);
         this.rangeChange = this.rangeChange.bind(this);
         this.rangeMouseDown = this.rangeMouseDown.bind(this);
         this.rangeMouseUp = this.rangeMouseUp.bind(this);
@@ -868,6 +952,84 @@ export class Graph extends React.Component {
         return { viewBoxWidth, viewBoxHeight };
     }
 
+    nodeIdClick(nodeId) {
+        let meta;
+
+        // Find data matching selected node, if any
+        if (nodeId) {
+            if (nodeId.indexOf('qc:') >= 0) {
+                // QC subnode.
+                const subnode = this.cv.graph.getSubnode(nodeId);
+                if (subnode) {
+                    meta = qcDetailsView(subnode, this.props.schemas);
+                    meta.type = subnode['@type'][0];
+                }
+            } else if (nodeId.indexOf('coalesced:') >= 0) {
+                // Coalesced contributing files.
+                const node = this.cv.graph.getNode(nodeId);
+                if (node) {
+                    const currCoalescedFiles = this.state.coalescedFiles;
+                    if (currCoalescedFiles[node.metadata.contributing]) {
+                        // We have the requested coalesced files in the cache, so just display
+                        // them.
+                        node.metadata.coalescedFiles = currCoalescedFiles[node.metadata.contributing];
+                        meta = coalescedDetailsView(node);
+                        meta.type = 'File';
+                    } else if (!this.contributingRequestOutstanding) {
+                        // We don't have the requested coalesced files in the cache, so we have to
+                        // request them from the DB.
+                        this.contributingRequestOutstanding = true;
+                        requestFiles(node.metadata.ref).then((contributingFiles) => {
+                            this.contributingRequestOutstanding = false;
+                            currCoalescedFiles[node.metadata.contributing] = contributingFiles;
+                            this.setState({ coalescedFiles: currCoalescedFiles });
+                        }).catch(() => {
+                            this.contributingRequestOutstanding = false;
+                            currCoalescedFiles[node.metadata.contributing] = [];
+                            this.setState({ coalescedFiles: currCoalescedFiles });
+                        });
+                    }
+                }
+            } else {
+                // A regular or contributing file.
+                const node = this.cv.graph.getNode(nodeId);
+                if (node) {
+                    if (node.metadata.contributing) {
+                        // This is a contributing file, and its @id is in
+                        // node.metadata.contributing. See if the file is in the cache.
+                        const currContributing = this.state.contributingFiles;
+                        if (currContributing[node.metadata.contributing]) {
+                            // We have this file's object in the cache, so just display it.
+                            node.metadata.ref = currContributing[node.metadata.contributing];
+                            meta = globals.graphDetail.lookup(node)(node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, session, sessionProperties);
+                            meta.type = node['@type'][0];
+                        } else if (!this.contributingRequestOutstanding) {
+                            // We don't have this file's object in the cache, so request it from
+                            // the DB.
+                            this.contributingRequestOutstanding = true;
+                            requestFiles([node.metadata.contributing]).then((contributingFile) => {
+                                this.contributingRequestOutstanding = false;
+                                currContributing[node.metadata.contributing] = contributingFile[0];
+                                this.setState({ contributingFiles: currContributing });
+                            }).catch(() => {
+                                this.contributingRequestOutstanding = false;
+                                currContributing[node.metadata.contributing] = {};
+                                this.setState({ contributingFiles: currContributing });
+                            });
+                        }
+                    } else {
+                        // Regular File data in the node from when we generated the graph. Just
+                        // display the file data from there.
+                        meta = globals.graphDetail.lookup(node)(node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, this.context.session, this.context.sessionProperties);
+                        meta.type = node['@type'][0];
+                    }
+                }
+            }
+        }
+
+        this.props.nodeClickHandler(meta);
+    }
+
     bindClickHandlers(d3, el) {
         // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
         const svg = d3.select(el);
@@ -875,11 +1037,11 @@ export class Graph extends React.Component {
         const subnodes = svg.selectAll('g.subnode circle');
 
         nodes.on('click', (nodeId) => {
-            this.props.nodeClickHandler(nodeId);
+            this.nodeIdClick(nodeId);
         });
         subnodes.on('click', (subnode) => {
             d3.event.stopPropagation();
-            this.props.nodeClickHandler(subnode.id);
+            this.nodeIdClick(subnode.id);
         });
     }
 
@@ -1007,7 +1169,6 @@ export class Graph extends React.Component {
         // Build node graph of the files and analysis steps with this experiment
         if (files.length) {
             try {
-                console.log('assembleGraph');
                 this.cv.graph = assembleGraph(
                     files,
                     dataset,
@@ -1054,14 +1215,25 @@ Graph.propTypes = {
     selectedAnnotation: PropTypes.string, // Selected annotation to display
     nodeClickHandler: PropTypes.func.isRequired, // Function to call to handle clicks in a node
     noDefaultClasses: PropTypes.bool, // True to supress default CSS classes on <Panel> components
+    schemas: PropTypes.object, // Schemas for QC metrics
+    auditIndicators: PropTypes.func, // Inherited from auditDecor HOC
+    auditDetail: PropTypes.func, // Inherited from auditDecor HOC
     children: PropTypes.node,
 };
 
 Graph.defaultProps = {
     selectedAssembly: '',
     selectedAnnotation: '',
-    children: null,
     noDefaultClasses: false,
+    schemas: null,
+    auditIndicators: null,
+    auditDetail: null,
+    children: null,
+};
+
+Graph.contextTypes = {
+    session: PropTypes.object,
+    session_properties: PropTypes.object,
 };
 
 
@@ -1078,11 +1250,22 @@ export class FileGraph extends React.Component {
     }
 
     render() {
-        const { files, dataset, selectedAssembly, selectedAnnotation, handleNodeClick } = this.props;
+        const { files, dataset, selectedAssembly, selectedAnnotation, handleNodeClick, schemas } = this.props;
 
         // Build node graph of the files and analysis steps with this experiment
         if (files && files.length && (selectedAssembly || selectedAnnotation)) {
-            return <Graph files={files} dataset={dataset} nodeClickHandler={handleNodeClick} selectedAssembly={selectedAssembly} selectedAnnotation={selectedAnnotation} />;
+            return (
+                <Graph
+                    files={files}
+                    dataset={dataset}
+                    nodeClickHandler={handleNodeClick}
+                    selectedAssembly={selectedAssembly}
+                    selectedAnnotation={selectedAnnotation}
+                    schemas={schemas}
+                    auditIndicators={this.props.auditIndicators}
+                    auditDetail={this.props.auditDetail}
+                />
+            );;
         }
         return <p className="browser-error">Graph not applicable.</p>;
     }
@@ -1093,10 +1276,16 @@ FileGraph.propTypes = {
     dataset: PropTypes.object.isRequired, // dataset these files are being rendered into
     selectedAssembly: PropTypes.string, // Currently selected assembly
     selectedAnnotation: PropTypes.string, // Currently selected annotation
+    schemas: PropTypes.object, // Schemas for QC metrics
     handleNodeClick: PropTypes.func.isRequired, // Parent function to call when a graph node is clicked
+    auditIndicators: PropTypes.func, // Inherited from auditDecor HOC
+    auditDetail: PropTypes.func, // Inherited from auditDecor HOC
 };
 
 FileGraph.defaultProps = {
     selectedAssembly: '',
     selectedAnnotation: '',
+    schemas: null,
+    auditIndicators: null,
+    auditDetail: null,
 };
