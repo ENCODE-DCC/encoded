@@ -33,11 +33,11 @@
             "description": "Experimental method of the characterization.",
             "type": "string",
             "enum": [
-                "PCR analysis",
-                "Sanger sequencing",
                 "high-throughput sequencing",
+                "immunoblot",
+                "PCR analysis",
                 "restriction digest",
-                "immunoblot"
+                "Sanger sequencing"
             ]
         },
         "attachment": {
@@ -60,12 +60,12 @@
                     "type": "string",
                     "enum": [
                         "application/pdf",
-                        "text/plain",
-                        "text/tab-separated-values",
+                        "image/gif",
                         "image/jpeg",
                         "image/png",
                         "image/tiff",
-                        "image/gif"                  
+                        "text/plain",
+                        "text/tab-separated-values"               
                      ]
                 },
                 "size": {

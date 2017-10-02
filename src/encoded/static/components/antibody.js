@@ -201,7 +201,7 @@ const LotComponent = (props, reactContext) => {
                         {context.dbxrefs && context.dbxrefs.length ?
                             <div data-test="dbxrefs">
                                 <dt>External resources</dt>
-                                <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
                             </div>
                         : null}
                     </dl>

@@ -59,19 +59,19 @@
             "items": {
                 "type": "string",
                 "enum": [
-                    "histone modification",
                     "broad histone mark",
-                    "narrow histone mark",
-                    "transcription factor",
-                    "RNA binding protein",
                     "chromatin remodeller",
-                    "histone",
                     "control",
-                    "tag",
-                    "recombinant protein",
+                    "histone modification",
+                    "histone",
+                    "narrow histone mark",
                     "nucleotide modification",
+                    "other context",
                     "other post-translational modification",
-                    "other context"
+                    "recombinant protein",
+                    "RNA binding protein",
+                    "tag",
+                    "transcription factor"
                 ]
             }
         },
@@ -80,9 +80,9 @@
             "type": "string",
             "default": "current",
             "enum": [
-                "proposed",
                 "current",
                 "deleted",
+                "proposed",
                 "replaced"
             ]
         }
