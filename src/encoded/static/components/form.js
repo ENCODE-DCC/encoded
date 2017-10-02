@@ -251,7 +251,7 @@ class RepeatingFieldset extends UpdateChildMixin(React.Component) {
         // Called when the add button is clicked.
         e.preventDefault();
         const schema = this.props.schema;
-        const subtype = e.target.getAttribute('data-type');
+        const subtype = e.target.getAttribute('data-subtype');
         let newValue;
         if (subtype) {
             // Construct a child object.
@@ -291,7 +291,7 @@ class RepeatingFieldset extends UpdateChildMixin(React.Component) {
                             {subtypes.map(subtype =>
                                 <a
                                     href="#" key={subtype}
-                                    data-type={subtype}
+                                    data-subtype={subtype}
                                     onClick={this.handleAdd}
                                 >{schemas[subtype].title}</a>)}
                         </DropdownMenu>
