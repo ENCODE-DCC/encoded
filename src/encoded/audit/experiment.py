@@ -1060,11 +1060,11 @@ def check_experiment_ERCC_spikeins(experiment, pipeline):
         if (spikes is not None) and (len(spikes) > 0):
             for s in spikes:
                 some_spikein_present = True
-                if 'files' in s:
-                    for f in s['files']:
+                if s.get('files'):
+                    for f in s.get('files'):
                         if (
-                                ('ENCFF001RTP' == f['accession']) or
-                                ('ENCFF001RTO' == f['accession'] and
+                                ('/files/ENCFF001RTP/' == f) or
+                                ('/files/ENCFF001RTO/' == f and
                                  experiment['assay_term_name'] ==
                                  'single cell isolation followed by RNA-seq')):
                             ercc_flag = True
@@ -3041,7 +3041,8 @@ def create_files_mapping(files_list):
                  'gene_quantifications_files':{},
                  'signal_files':{},
                  'optimal_idr_peaks':{},
-                 'cpg_quantifications':{}}
+                 'cpg_quantifications':{},
+                 'contributing_files':{}}
     if files_list:
         for file_object in files_list:
             if file_object['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
@@ -3114,6 +3115,8 @@ def get_derived_from_files_set(list_of_files, files_structure, file_format, obje
         if 'derived_from' in file_object:
             for derived_id in file_object['derived_from']:
                 derived_object = files_structure.get('original_files').get(derived_id)
+                if not derived_object:
+                    derived_object = files_structure.get('contributing_files').get(derived_id)
                 if derived_object and \
                    derived_object.get('file_format') == file_format and \
                    derived_object.get('accession') not in derived_from_set:
@@ -3318,6 +3321,7 @@ function_dispatcher_with_files = {
         'target',
         'replicates',
         'replicates.library',
+        'replicates.library.spikeins_used',
         'replicates.library.biosample',
         'replicates.library.biosample.donor',
         'replicates.library.biosample.constructs',
@@ -3356,7 +3360,7 @@ function_dispatcher_with_files = {
 def audit_experiment(value, system):
     files_structure = create_files_mapping(value.get('original_files'))
     files_structure['contributing_files'] = get_contributing_files(value.get('contributing_files'))
-    
+
     for function_name in function_dispatcher_with_files.keys():
         yield from function_dispatcher_with_files[function_name](value, system, files_structure)
 
