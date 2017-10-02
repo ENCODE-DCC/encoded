@@ -1472,24 +1472,22 @@ class FilterControls extends React.Component {
     render() {
         const { filterOptions, selectedFilterValue, inclusionOn } = this.props;
 
-        if (filterOptions.length) {
-            return (
-                <div className="file-gallery-controls">
-                    <div className="file-gallery-controls__assembly-selector">
+        return (
+            <div className="file-gallery-controls">
+                <div className="file-gallery-controls__assembly-selector">
+                    {filterOptions.length ?
                         <FilterMenu selectedFilterValue={selectedFilterValue} filterOptions={filterOptions} handleFilterChange={this.handleAssemblyAnnotationChange} />
-                    </div>
-                    <div className="file-gallery-controls__inclusion-selector">
-                        <div className="checkbox--right">
-                            <label htmlFor="filterIncArchive">Include revoked / archived files
-                                <input name="filterIncArchive" type="checkbox" checked={inclusionOn} onChange={this.handleInclusionChange} />
-                            </label>
-                        </div>
+                    : null}
+                </div>
+                <div className="file-gallery-controls__inclusion-selector">
+                    <div className="checkbox--right">
+                        <label htmlFor="filterIncArchive">Include revoked / archived files
+                            <input name="filterIncArchive" type="checkbox" checked={inclusionOn} onChange={this.handleInclusionChange} />
+                        </label>
                     </div>
                 </div>
-            );
-        }
-
-        return null;
+            </div>
+        );
     }
 }
 
@@ -1880,7 +1878,7 @@ const FilterMenu = (props) => {
     const { filterOptions, handleFilterChange, selectedFilterValue } = props;
 
     return (
-        <select className="form-control" value={selectedFilterValue} onChange={handleFilterChange}>
+        <select className="form-control--select" value={selectedFilterValue} onChange={handleFilterChange}>
             <option value="default">All Assemblies and Annotations</option>
             <option disabled="disabled" />
             {filterOptions.map((option, i) =>
