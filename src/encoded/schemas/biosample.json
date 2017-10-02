@@ -382,7 +382,7 @@
         },
         "description": {
             "title": "Description",
-            "description": "A plain text description of the biosample. Do not include experiment details, constructs or treatments.",
+            "description": "A plain text description of the biosample. Do not include experiment details, genetic modifications or treatments.",
             "comment": "Free text description of the biosample, do not mix with biosample summary that is calculated and controlled.",
             "type": "string",
             "elasticsearch_mapping_index_type": {
@@ -392,8 +392,8 @@
                 "default": "analyzed",
                 "enum": [
                     "analyzed",
-                    "not_analyzed",
-                    "no"
+                    "no",
+                    "not_analyzed"
                 ]
             },
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
@@ -460,18 +460,18 @@
             "items": {
                 "type": "string",
                 "enum": [
+                    "adult maxillary segment",
+                    "antenna",
+                    "arthropod fat body",
+                    "digestive system",
+                    "female gonad",
+                    "female reproductive system",
                     "head",
                     "limb",
-                    "salivary gland",
                     "male accessory sex gland",
-                    "testis",
-                    "female gonad",
-                    "digestive system",
-                    "arthropod fat body",
-                    "antenna",
-                    "adult maxillary segment",
-                    "female reproductive system",
-                    "male reproductive system"
+                    "male reproductive system",
+                    "salivary gland",
+                    "testis"
                 ]
             }
         },
@@ -482,9 +482,9 @@
             "type": "string",
             "enum": [
                 "mated",
-                "virgin",
+                "mixed",
                 "sterile",
-                "mixed"
+                "virgin"
             ]
         },
         "internal_tags": {
@@ -501,7 +501,8 @@
                     "DREAM",
                     "ENCORE",
                     "ENTEx",
-                    "SESCC"]
+                    "SESCC"
+                ]
             }
         },
         "originated_from": {
@@ -565,12 +566,12 @@
                 "G1b",
                 "G2",
                 "S",
+                "early S",
+                "late S",
                 "S1",
                 "S2",
                 "S3",
-                "S4",
-                "early S",
-                "late S"
+                "S4"
             ]
         },
         "culture_harvest_date": {
@@ -605,14 +606,14 @@
             "description": "The units used to quantify the amount of cells or tissue obtained.",
             "type": "string",
             "enum": [
-                "g",
-                "mg",
+                "cells",
                 "cells/ml",
-                "cells", 
-                "whole embryos", 
-                "items", 
-                "μg",
-                "whole animals"
+                "g",
+                "items",
+                "mg",
+                "whole animals",
+                "whole embryos",
+                "μg"
             ]
         },
         "model_organism_sex": {
@@ -621,11 +622,11 @@
             "description": "The sex of the organism the biosample comes from.",
             "comment": "model_organism_sex is not valid for a human biosample.",
             "enum": [
-                "male",
                 "female",
-                "unknown",
+                "male",
                 "mixed",
-                "hermaphrodite"
+                "hermaphrodite",
+                "unknown"
             ]
         },
         "mouse_life_stage": {
@@ -634,10 +635,10 @@
             "description": "The life stage of the mouse biosample.",
             "comment": "mouse_life_stage is not valid for a human biosample.",
             "enum": [
-                "adult",
-                "unknown",
                 "embryonic",
-                "postnatal"
+                "postnatal",
+                "adult",
+                "unknown"
             ]
         },
         "fly_life_stage": {
@@ -663,8 +664,8 @@
             "comment": "Stage at which flies were synchronized. If available use in conjunction with time and time units post-synchronization.",
             "type": "string",
             "enum": [
-                "fertilization",
                 "egg laying",
+                "fertilization",
                 "first larval molt",
                 "second larval molt",
                 "puff stage: PS (1-2), dark blue gut",
@@ -725,7 +726,6 @@
                 "early embryonic",
                 "midembryonic",
                 "late embryonic",
-                "mixed stage",
                 "mixed stage (embryonic)",
                 "mixed stage (late embryonic and L1 larva)",
                 "L1 larva",
@@ -733,10 +733,11 @@
                 "L2d larva",
                 "L3 larva",
                 "L4 larva",
-                "dauer",
                 "L4/young adult",
                 "young adult",
-                "adult"
+                "dauer",
+                "adult",
+                "mixed stage"
             ]    
         },
         "worm_synchronization_stage": {
@@ -745,9 +746,9 @@
             "comment": "Stage at which worms were synchronized. Use in conjunction with time and time units post-synchronization.  worm_life_stage is valid only for worm biosamples.",
             "type": "string",
             "enum": [
-                "fertilization",
                 "egg laying",
                 "egg bleaching",
+                "fertilization",
                 "4 cell",
                 "L1 larva starved after bleaching",
                 "dauer exit"

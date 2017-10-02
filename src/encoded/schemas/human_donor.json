@@ -94,10 +94,10 @@
             "type": "string",
             "default": "unknown",
             "enum": [
-                "male",
                 "female",
-                "unknown",
-                "mixed"
+                "male",
+                "mixed",
+                "unknown"
             ]
         },
         "life_stage": {

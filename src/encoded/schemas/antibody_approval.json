@@ -52,11 +52,11 @@
             "default": "awaiting lab characterization",
             "enum" : [
                 "awaiting lab characterization",
-                "pending dcc review",
+                "deleted",
                 "eligible for new data",
                 "not eligible for new data",
                 "not pursued",
-                "deleted"
+                "pending dcc review"
             ]
         }
     }
