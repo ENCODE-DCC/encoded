@@ -268,7 +268,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     position: relative;
 }
 
-.file-gallery-controls {
+.file-gallery-visualize {
     margin-top: 5px;
 
     @media screen and (min-width: $screen-sm-min) {
@@ -277,6 +277,26 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
         right: 5px;
         bottom: 5px;
         margin-top: 0;
+    }
+}
+
+.file-gallery-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    background-color: #c0c0c0;
+    border-top: 1px solid #a0a0a0;
+    border-bottom: 1px solid #a0a0a0;
+
+    @at-root #{&}__assembly-selector {
+        flex: 0 1 auto;
+        vertical-align: bottom;
+        margin-right: 5px;
+    }
+
+    @at-root #{&}__inclusion-selector {
+        flex: 0 1 auto;
     }
 }
 
@@ -326,8 +346,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
     text-align: center;
     font-size: 0.9rem;
     color: #606060;
-    background-color: #d8d8d8;
-    border-top: 1px solid #a0a0a0;
+    background-color: #fff;
     border-bottom: 1px solid #a0a0a0;
 }
 
@@ -459,16 +478,18 @@ $nav-tab-border-style: 1px solid $nav-tab-border-color;
 $nav-tab-border-radius: 4px;
 
 .tab-nav {
-    position: relative;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #a0a0a0;
 }
 
 .nav.nav-tabs {
     display: flex;
     align-items: flex-end;
     position: relative;
-    border-bottom: 0;
+    padding: 5px 5px 0;
     z-index: 1;
     top: 1px;
+    border: none;
 
     > li {
         flex: 0 1 auto;
@@ -476,29 +497,29 @@ $nav-tab-border-radius: 4px;
         a, a:focus {
             margin: 0;
             padding: 5px 20px;
-            background-color: #e0e0e0;
-            border-top: $nav-tab-border-style;
-            border-right: $nav-tab-border-style;
-            border-bottom: $nav-tab-border-style;
-            border-left: $nav-tab-border-style;
+            border-top: 3px solid transparent;
+            border-right: 1px solid transparent;
+            border-left: 1px solid transparent;
+            border-bottom: 1px solid transparent;
             border-radius: 0;
+            color: #606060;
 
             &:hover {
-                background-color: #c0c0c0;
                 color: #000;
             }
         }
 
         &.active {
             a {
-                padding-top: 7px;
                 border-top: 3px solid #00cc00;
+                border-right: $nav-tab-border-style;
+                border-left: $nav-tab-border-style;
+                border-bottom: 1px solid #fff;
                 pointer-events: none;
                 background-color: #fff;
-                border-bottom: 1px solid #fff;
+                color: #000;
             }
         }
-
     }
 }
 

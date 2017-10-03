@@ -152,7 +152,7 @@ export class FetchedData extends React.Component {
         // Collect <Param> and non-<Param> child components into appropriate arrays
         if (this.props.children) {
             React.Children.forEach(this.props.children, (child) => {
-                if (child.type === Param) {
+                if (child && child.type === Param) {
                     // <Param> child component; add to array of <Param> child components with this.props.key of its name and calling `handleFetch`
                     params.push(React.cloneElement(child, {
                         key: child.props.name,
@@ -163,7 +163,7 @@ export class FetchedData extends React.Component {
                     if (this.state[child.props.name] === undefined) {
                         communicating = true;
                     }
-                } else {
+                } else if (child) {
                     // Some non-<Param> child; just push it unmodified onto `children` array
                     children.push(child);
                 }

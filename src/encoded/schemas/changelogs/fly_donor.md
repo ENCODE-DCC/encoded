@@ -1,5 +1,16 @@
 ## Changelog for fly_donor.json
 
+### Schema version 7
+
+* *url* property was removed
+* *internal_tags* property was removed
+
+### Schema version 6
+
+* *status* values "proposed" and "preliminary" were removed
+* *status* and *dbxrefs* values are restricted to DCC access only
+
+
 ### Schema version 5
 
 * *alternate_accessions* now must match accession format, "ENCDO..." or "TSTDO..."

@@ -6,6 +6,7 @@ import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
 import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, DocumentsSubpanels } from './doc';
+import { GeneticModificationSummary } from './genetic_modification';
 import * as globals from './globals';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
@@ -43,6 +44,13 @@ const HumanDonor = (props) => {
                             <div data-test="aliases">
                                 <dt>Aliases</dt>
                                 <dd>{context.aliases.join(', ')}</dd>
+                            </div>
+                        : null}
+
+                        {context.external_ids && context.external_ids.length ?
+                            <div data-test="externalid">
+                                <dt>Donor external identifiers</dt>
+                                <dd><DbxrefList context={context} dbxrefs={context.external_ids} /></dd>
                             </div>
                         : null}
 
@@ -91,7 +99,7 @@ const HumanDonor = (props) => {
                         {context.dbxrefs && context.dbxrefs.length ?
                             <div data-test="external-resources">
                                 <dt>External resources</dt>
-                                <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
                             </div>
                         : null}
 
@@ -216,6 +224,13 @@ const MouseDonor = (props) => {
                             </div>
                         : null}
 
+                        {context.external_ids && context.external_ids.length ?
+                            <div data-test="externalid">
+                                <dt>Donor external identifiers</dt>
+                                <dd><DbxrefList context={context} dbxrefs={context.external_ids} /></dd>
+                            </div>
+                        : null}
+
                         {context.organism.scientific_name ?
                             <div data-test="organism">
                                 <dt>Species</dt>
@@ -275,7 +290,7 @@ const MouseDonor = (props) => {
                         {context.dbxrefs && context.dbxrefs.length ?
                             <div data-test="external-resources">
                                 <dt>External resources</dt>
-                                <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
                             </div>
                         : null}
 
@@ -347,6 +362,13 @@ const FlyWormDonor = (props) => {
                             </div>
                         : null}
 
+                        {context.external_ids && context.external_ids.length ?
+                            <div data-test="externalid">
+                                <dt>Donor external identifiers</dt>
+                                <dd><DbxrefList context={context} dbxrefs={context.external_ids} /></dd>
+                            </div>
+                        : null}
+
                         {context.organism.scientific_name ?
                             <div data-test="species">
                                 <dt>Species</dt>
@@ -406,7 +428,7 @@ const FlyWormDonor = (props) => {
                         {context.dbxrefs && context.dbxrefs.length ?
                             <div data-test="external-resources">
                                 <dt>External resources</dt>
-                                <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
                             </div>
                         : null}
 
@@ -557,6 +579,10 @@ class Donor extends React.Component {
                 </header>
 
                 <PanelView key={context.uuid} {...this.props} />
+
+                {context.genetic_modifications && context.genetic_modifications.length ?
+                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
+                : null}
 
                 <RelatedItems
                     title={`Biosamples from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}

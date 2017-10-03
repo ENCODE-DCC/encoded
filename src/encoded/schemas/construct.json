@@ -16,6 +16,7 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/documents" }
     ],
@@ -43,12 +44,14 @@
     },
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "construct_type": {
             "title": "Type",
             "description": "The type of sequence expressed from the construct.",
             "type": "string",
+            "comment": "Locking down to prevent new constructs from being submitted.",
+            "permission": "import_items",
             "enum": [
                 "fusion protein"
             ]
@@ -69,12 +72,6 @@
                 ]
             },
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
-        },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the construct.",
-            "type": "string",
-            "format": "uri"
         },
         "target": {
             "title": "Target",
@@ -98,24 +95,24 @@
                     "name": {
                         "type": "string",
                         "enum": [
-                            "eGFP",
-                            "V5",
-                            "HA",
-                            "ER",
                             "3xFLAG",
                             "DsRed",
-                            "TRE",
-                            "T2A",
-                            "YFP",
+                            "eGFP",
+                            "ER",
                             "FLAG",
-                            "mCherry"
+                            "HA",
+                            "mCherry",
+                            "T2A",
+                            "TRE",
+                            "V5",
+                            "YFP"
                         ]
                     },
                     "location": {
                         "type": "string",
                         "enum": [
-                            "N-terminal",
                             "C-terminal",
+                            "N-terminal",
                             "internal",
                             "other",
                             "unknown"

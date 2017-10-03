@@ -8,12 +8,13 @@
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/shared_status" }
     ],
     "type": "object",
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "title": {
             "rdfs:subPropertyOf": "dc:title",
@@ -35,6 +36,112 @@
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
+        "milestones": {
+            "title": "Milestones",
+            "description": "A set of grant milestone deliverables agreed upon by the awardee and NIH.",
+            "type": "array",
+            "uniqueItems": true,
+            "permission": "import_items",
+            "items": {
+                "title": "Milestone",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {             
+                    "assay_term_name": {
+                        "title": "Assay name",
+                        "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
+                        "type": "string",
+                        "enum": [
+                            "3' RACE",
+                            "4C",
+                            "5' RACE",
+                            "5' RLM RACE",
+                            "5C",
+                            "ATAC-seq",
+                            "Bru-seq",
+                            "BruChase-seq",
+                            "BruUV-seq",
+                            "CAGE",
+                            "ChIA-PET",
+                            "ChIP-seq",
+                            "Circulome-seq",
+                            "Clone-seq",
+                            "comparative genomic hybridization by array",
+                            "CRISPR genome editing followed by RNA-seq",
+                            "CRISPRi followed by RNA-seq",
+                            "direct RNA-seq",
+                            "DNA methylation profiling by array assay",
+                            "DNA-PET",
+                            "DNase-seq",
+                            "eCLIP",
+                            "FAIRE-seq",
+                            "genetic modification followed by DNase-seq",
+                            "genotype phasing by HiC",
+                            "genotyping by high throughput sequencing assay",
+                            "HiC",
+                            "iCLIP",
+                            "icSHAPE",
+                            "ISO-seq",
+                            "MeDIP-seq",
+                            "microRNA counts",
+                            "microRNA-seq",
+                            "Mint-ChIP-seq",
+                            "MNase-seq",
+                            "MRE-seq",
+                            "PAS-seq",
+                            "PRO-seq",
+                            "protein sequencing by tandem mass spectrometry assay",
+                            "RAMPAGE",
+                            "Repli-chip",
+                            "Repli-seq",
+                            "RIP-chip",
+                            "RIP-seq",
+                            "RNA Bind-n-Seq",
+                            "RNA-PET",
+                            "RNA-seq",
+                            "RRBS",
+                            "shRNA knockdown followed by RNA-seq",
+                            "single cell isolation followed by RNA-seq",
+                            "single-cell ATAC-seq",
+                            "single-nuclei ATAC-seq",
+                            "siRNA knockdown followed by RNA-seq",
+                            "small RNA-seq",
+                            "STARR-seq",
+                            "Switchgear",
+                            "TAB-seq",
+                            "transcription profiling by array assay",
+                            "whole genome sequencing assay",
+                            "whole-genome shotgun bisulfite sequencing"
+                        ]
+                    },
+                    "proposed_count": {
+                        "title": "Proposed count",
+                        "description": "Count (in number of units) of the deliverable proposed.",
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "deliverable_unit": {
+                        "title": "Deliverable unit",
+                        "description": "Unit of the proposed milestone deliverable.",
+                        "type": "string",
+                        "enum": [
+                            "control experiments",
+                            "libraries",
+                            "replicated experiments",
+                            "replicates",
+                            "single cell experiments",
+                            "unreplicated experiments"
+                        ]
+                    },
+                    "contract_date": {
+                        "title": "Contract date",
+                        "description": "Date on which the milestone was agreed upon.",
+                        "type": "string",
+                        "format": "date"
+                    }
+                }
+            }
+        },
         "start_date": {
             "title": "Start date",
             "comment": "Date can be submitted as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
@@ -53,14 +160,6 @@
                 {"format": "date"}
             ]
         },
-        "url": {
-            "@type": "@id",
-            "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "URL",
-            "description": "An external resource with additional information about the grant.",
-            "type": "string",
-            "format": "uri"
-        },
         "pi": {
             "title": "P.I.",
             "description": "Principle Investigator of the grant.",
@@ -73,16 +172,16 @@
             "description": "The name of the bioproject phase.",
             "type": "string",
             "enum": [
+                "community",
                 "ENCODE",
-                "ENCODE2",
                 "ENCODE2-Mouse",
+                "ENCODE2",
                 "ENCODE3",
                 "ENCODE4",
                 "GGR",
-                "Roadmap",
                 "modENCODE",
                 "modERN",
-                "community"
+                "Roadmap"
             ]
         },
         "project": {
@@ -90,12 +189,12 @@
             "description": "The collection of biological data related to a single initiative, originating from a consortium.",
             "type": "string",
             "enum": [
+                "community",
                 "ENCODE",
                 "GGR",
-                "Roadmap",
                 "modENCODE",
                 "modERN",
-                "community"
+                "Roadmap"
             ]
         },
         "viewing_group": {
@@ -103,11 +202,11 @@
             "description": "The group that determines which set of data the user has permission to view.",
             "type": "string",
             "enum": [
+                "community",
                 "ENCODE3",
                 "ENCODE4",
                 "GGR",
-                "REMC",
-                "community"
+                "REMC"
             ]
         }
     },

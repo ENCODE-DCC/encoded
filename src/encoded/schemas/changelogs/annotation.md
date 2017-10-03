@@ -1,5 +1,9 @@
 ## Changelog for annotation.json
 
+### Schema version 14
+
+* *biosample_type* and *biosample_term_id* consistency added to the list of schema dependencies
+
 ### Schema version 13
 
 * *annotation_type* 'candidate regulatory regions' was changed into 'candidate regulatory elements'

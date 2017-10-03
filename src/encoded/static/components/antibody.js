@@ -201,7 +201,7 @@ const LotComponent = (props, reactContext) => {
                         {context.dbxrefs && context.dbxrefs.length ?
                             <div data-test="dbxrefs">
                                 <dt>External resources</dt>
-                                <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
                             </div>
                         : null}
                     </dl>
@@ -242,17 +242,20 @@ const Documents = (props) => {
     return (
         <dd>
             {docs.map((doc, i) => {
-                const attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
-                const docName = (doc.aliases && doc.aliases.length) ? doc.aliases[0] :
-                    ((doc.attachment && doc.attachment.download) ? doc.attachment.download : '');
-                return (
-                    <div className="multi-dd dl-link" key={doc.uuid}>
-                        <i className="icon icon-download" />&nbsp;
-                        <a data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
-                            {docName}
-                        </a>
-                    </div>
-                );
+                if (doc.attachment) {
+                    const attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
+                    const docName = (doc.aliases && doc.aliases.length) ? doc.aliases[0] :
+                        ((doc.attachment && doc.attachment.download) ? doc.attachment.download : '');
+                    return (
+                        <div className="multi-dd dl-link" key={doc.uuid}>
+                            <i className="icon icon-download" />&nbsp;
+                            <a data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
+                                {docName}
+                            </a>
+                        </div>
+                    );
+                }
+                return <div className="multi-dd dl-link" key={doc.uuid} />;
             })}
         </dd>
     );

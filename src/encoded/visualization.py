@@ -45,6 +45,7 @@ _ASSEMBLY_MAPPER_FULL = {
                         'common_name':      'human',
                         'ucsc_assembly':    'hg38',
                         'ensembl_host':     'www.ensembl.org',
+                        'quickview':        True,
                         'comment':          'Ensembl works'
     },
     'GRCh38-minimal': { 'species':          'Homo sapiens',     'assembly_reference': 'GRCh38',
@@ -56,47 +57,55 @@ _ASSEMBLY_MAPPER_FULL = {
                         'common_name':      'human',
                         'ucsc_assembly':    'hg19',
                         'NA_ensembl_host':  'grch37.ensembl.org',
+                        'quickview':        True,
                         'comment':          'Ensembl DOES NOT WORK'
     },
     'mm10': {           'species':          'Mus musculus',     'assembly_reference': 'GRCm38',
                         'common_name':      'mouse',
                         'ucsc_assembly':    'mm10',
                         'ensembl_host':     'www.ensembl.org',
+                        'quickview':        True,
                         'comment':          'Ensembl works'
     },
     'mm10-minimal': {   'species':          'Mus musculus',     'assembly_reference': 'GRCm38',
                         'common_name':      'mouse',
                         'ucsc_assembly':    'mm10',
                         'ensembl_host':     'www.ensembl.org',
+                        'quickview':        True,
                         'comment':          'Should this be removed?'
     },
     'mm9': {            'species':          'Mus musculus',     'assembly_reference': 'NCBI37',
                         'common_name':      'mouse',
                         'ucsc_assembly':    'mm9',
                         'NA_ensembl_host':  'may2012.archive.ensembl.org',
+                        'quickview':        True,
                         'comment':          'Ensembl DOES NOT WORK'
     },
     'dm6': {    'species':          'Drosophila melanogaster',  'assembly_reference': 'BDGP6',
                 'common_name':      'fruit fly',
                 'ucsc_assembly':    'dm6',
                 'NA_ensembl_host':  'www.ensembl.org',
+                'quickview':        True,
                 'comment':          'Ensembl DOES NOT WORK'
     },
     'dm3': {    'species':          'Drosophila melanogaster',  'assembly_reference': 'BDGP5',
                 'common_name':      'fruit fly',
                 'ucsc_assembly':    'dm3',
                 'NA_ensembl_host':  'dec2014.archive.ensembl.org',
+                'quickview':        True,
                 'comment':          'Ensembl DOES NOT WORK'
     },
     'ce11': {   'species':          'Caenorhabditis elegans',   'assembly_reference': 'WBcel235',
                 'common_name':      'worm',
                 'ucsc_assembly':    'ce11',
                 'NA_ensembl_host':  'www.ensembl.org',
+                'quickview':        True,
                 'comment':          'Ensembl DOES NOT WORK'
     },
     'ce10': {   'species':          'Caenorhabditis elegans',   'assembly_reference': 'WS220',
                 'common_name':      'worm',
                 'ucsc_assembly':    'ce10',
+                'quickview':        True,
                 'comment':          'Never Ensembl'
     },
     'ce6': {    'species':          'Caenorhabditis elegans',   'assembly_reference': 'WS190',
@@ -127,9 +136,11 @@ BIGWIG_FILE_TYPES = ['bigWig']
 BIGBED_FILE_TYPES = ['bigBed']
 
 VISIBLE_DATASET_STATUSES = ["released"]
+QUICKVIEW_STATUSES_BLOCKED = ["proposed", "started", "deleted", "revoked", "replaced"]
 VISIBLE_FILE_STATUSES = ["released"]
 VISIBLE_DATASET_TYPES = ["Experiment", "Annotation"]
 VISIBLE_DATASET_TYPES_LC = ["experiment", "annotation"]
+
 
 # ASSEMBLY_MAPPINGS is needed to ensure that mm10 and mm10-minimal will
 #                   get combined into the same trackHub.txt
@@ -1899,7 +1910,8 @@ def generate_set_trackDb(request, acc, dataset, ucsc_assembly, hide=False, regen
     sub_accessions = []
     if 'FileSet' in dataset['@type'] and 'files' in dataset:
         files = dataset['files']
-        sub_accessions = [ file['dataset']['accession'] for file in files ]
+        if len(files) > 0 and not isinstance(files[0],str):
+            sub_accessions = [ file['dataset']['accession'] for file in files ]
     elif 'Series' in dataset['@type'] and 'related_datasets' in dataset:
         # Note that 'Series' don't actually reach here yet because they are rejected higher up for having no files.
         related_datasets = dataset['related_datasets']
@@ -2238,7 +2250,54 @@ def get_hub(label, comment=None, name=None):
     return render(hub)
 
 
-def vis_format_external_url(browser, hub_url, assembly, position=None):
+def browsers_available(assemblies, status, files, types, item_type=None):
+    '''Retrurns list of browsers this object visualizable on.'''
+    if "Dataset" not in types:
+        return []
+    if item_type is None:
+        visualizabe_types = set(VISIBLE_DATASET_TYPES)
+        if visualizabe_types.isdisjoint(types):
+            return []
+    elif item_type not in VISIBLE_DATASET_TYPES_LC:
+            return []
+
+    if not files:
+        return []
+
+    browsers = set()
+    for assembly in assemblies:
+        mapped_assembly = _ASSEMBLY_MAPPER_FULL[assembly]
+        if not mapped_assembly:
+            continue
+        if 'ucsc_assembly' in mapped_assembly:
+            browsers.add('ucsc')
+        if 'ensembl_host' in mapped_assembly:
+            browsers.add('ensembl')
+        if 'quickview' in mapped_assembly:
+            browsers.add('quickview')
+
+    if status not in VISIBLE_DATASET_STATUSES:
+        if status not in QUICKVIEW_STATUSES_BLOCKED:
+            return ["quickview"]
+        return []
+
+    return list(browsers)
+
+
+def object_is_visualizable(obj,assembly=None):
+    '''Retrurns list of browsers this object visualizable on.'''
+
+    if 'accession' not in obj:
+        return []
+    if assembly is not None:
+        assemblies = [ assembly ]
+    else:
+        assemblies = obj.get('assembly',[])
+
+    return browsers_available(assemblies,obj.get('status'),obj.get('files'),obj['@type'])
+
+
+def vis_format_url(browser, path, assembly, position=None):
     '''Given a url to hub.txt, returns the url to an external browser or None.'''
     mapped_assembly = _ASSEMBLY_MAPPER_FULL[assembly]
     if not mapped_assembly:
@@ -2247,7 +2306,7 @@ def vis_format_external_url(browser, hub_url, assembly, position=None):
         ucsc_assembly = mapped_assembly.get('ucsc_assembly')
         if ucsc_assembly is not None:
             external_url = 'http://genome.ucsc.edu/cgi-bin/hgTracks?hubClear='
-            external_url += hub_url + '&db=' + ucsc_assembly
+            external_url += path + '&db=' + ucsc_assembly
             if position is not None:
                 external_url += '&position={}'.format(position)
             return external_url
@@ -2255,9 +2314,9 @@ def vis_format_external_url(browser, hub_url, assembly, position=None):
         ensembl_host = mapped_assembly.get('ensembl_host')
         if ensembl_host is not None:
             external_url = 'http://' + ensembl_host + '/Trackhub?url='
-            external_url += hub_url + ';species=' + mapped_assembly.get('species').replace(' ','_')
+            external_url += path + ';species=' + mapped_assembly.get('species').replace(' ','_')
             ### TODO: remove redirect=no when Ensembl fixes their mirrors
-            external_url += ';redirect=no'
+            #external_url += ';redirect=no'
             ### TODO: remove redirect=no when Ensembl fixes their mirrors
 
             if position is not None:
@@ -2273,6 +2332,10 @@ def vis_format_external_url(browser, hub_url, assembly, position=None):
             # BDGP5:    http://dec2014.archive.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR040UNE@@hub/hub.txt;species=Drosophila_melanogaster
             # ce11/WBcel235: http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR475TDY@@hub/hub.txt;species=Caenorhabditis_elegans
             return external_url
+    elif browser == "quickview":
+        file_formats = '&file_format=bigBed&file_format=bigWig'
+        file_inclusions = '&status=released&status=in+progress'
+        return ('/search/?type=File&assembly=%s&dataset=%s%s%s#browser' % (assembly,path,file_formats,file_inclusions))
     #else:
         # ERROR: not supported at this time
     return None

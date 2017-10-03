@@ -6,9 +6,9 @@ def test_report_download(testapp, workbook):
     res = testapp.get('/report.tsv?type=Experiment&sort=accession')
     assert res.headers['content-type'] == 'text/tsv; charset=UTF-8'
     disposition = res.headers['content-disposition']
-    assert disposition == 'attachment;filename="report.tsv"'
+    assert disposition.startswith('attachment;filename="Experiment Report') and disposition.endswith('.tsv"')
     lines = res.body.splitlines()
-    assert lines[0].split(b'\t') == [
+    assert lines[1].split(b'\t') == [
         b'ID', b'Accession', b'Assay Type', b'Assay Nickname', b'Target label',
         b'Target gene', b'Biosample summary', b'Biosample', b'Description', b'Lab',
         b'Project', b'Status', b'Biological replicate', b'Technical replicate',
@@ -26,4 +26,4 @@ def test_report_download(testapp, workbook):
     #     b'', b'', b'', b'', b'', b'', b'', b'', b'',
     #     b'', b'', b'', b'', b'', b'', b''
     # ]
-    assert len(lines) == 44
+    assert len(lines) == 47

@@ -1,24 +1,40 @@
 {
     "title": "Donor",
-    "description": "Base schema for donors.",
+    "description": "Base schema for donors or strains.",
+    "comment": "Human donors and model organism strains derive from this base object.",
     "id": "/profiles/donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "organism"],
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/accession" },
-        { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/accessioned_status" },
-        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/genetic_modifications" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/genetic_modifications" }
-
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/accessioned_status" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/schema_version" }
     ],
+    "dependencies": {
+        "mutagen": {
+            "comment": "Mutagen could be specified only for model organism strains.",
+            "not": {
+                "properties": {
+                    "organism": {
+                        "linkTo": "Organism",
+                        "linkEnum": [
+                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+                        ]
+                    }
+                }
+            }
+        }
+    },
     "properties": {
         "schema_version": {
             "hidden comment": "Bump the default in the subclasses."
@@ -27,14 +43,15 @@
             "accessionType": "DO"
         },
         "external_ids": {
-            "title": "Unique external identifier(s) of strain or donor",
+            "title": "Unique external identifiers",
             "description": "External identifiers that uniquely identify the donor of the sample, e.g. for strains it might be a strain identifier at a repository or a de-identified donor ID for a person.",
+            "comment": "List of identifiers that are used by external resources that can be used to identify samples from that particular donor or strain.",
             "type": "array",
             "uniqueItems": true,
             "items": {
                 "type": "string",
                 "description": "External identifier that uniquely identify the donor of the sample, e.g. for strains it might be a strain identifier at a repository or a de-identified donor ID for a person.",
-                "pattern": "^(BDSC:\\d+)$|^(NICHD:\\d+)$|^(CGC:[A-Z]{2,3}[0-9]+)$|^(PGP:hu[A-Z0-9]+)$|^(PromoCell:\\d+)$|^(BioChain:[A-Z0-9-]+)$|^(DSSC:[0-9.-]+)$|^(DGGR:\\d+)$|^(GEO:SAMN\\d+)$|^(MGI.D:[A-Za-z0-9]+)$|^(GTEx:[A-Z0-9-]+)$|^(FlyBase:FBst\\d+)$"
+                "pattern": "^(BDSC:\\d+)$|^(NICHD:\\d+)$|^(CGC:[A-Z]{2,3}[0-9]+)$|^(PGP:hu[A-Z0-9]+)$|^(PromoCell:\\d+)$|^(BioChain:[A-Z0-9-]+)$|^(DSSC:[0-9.-]+)$|^(DGGR:\\d+)$|^(GEO:SAMN\\d+)$|^(MGI.D:[A-Za-z0-9]+)$|^(GTEx:[A-Z0-9-]+)$|^(FlyBase:FBst\\d+)$|^(JAX:\\d{6})$|^(NBRP:\\d+)$"
             }
         },
         "alternate_accessions": {
@@ -45,7 +62,7 @@
             "default": [],
             "permission": "import_items",
             "items": {
-                "title": "Alternate Accession",
+                "title": "Alternate accession",
                 "description": "An accession previously assigned to an object that has been merged with this object.",
                 "comment": "Only accessions of objects that have status equal replaced will work here.",
                 "type": "string",
@@ -56,35 +73,14 @@
         "organism": {
             "title": "Organism",
             "description": "Organism of the donor.",
-            "comment": "Do not submit, value is assigned by the object.",
             "type": "string",
             "linkTo": "Organism"
-        },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the donor.",
-            "type": "string",
-            "format": "uri"
-        },
-        "internal_tags": {
-            "title": "Internal tags",
-            "description": "Some donors are part of particular data collections",
-            "type": "array",
-            "default": [],
-            "permission": "import_items",
-            "uniqueItems": true,
-            "items": {
-                "type": "string",
-                "enum": [
-                    "DREAM",
-                    "ENCORE",
-                    "ENTEx",
-                    "SESCC"]
-            }
         }
     },
     "boost_values": {
-        "internal_tags": 1.0,
-        "external_ids": 1.0
+        "external_ids": 1.0,
+        "aliases": 1.0,
+        "accession": 1.0,
+        "alternate_accessions": 1.0
     }
 }

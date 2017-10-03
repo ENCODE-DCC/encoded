@@ -144,5 +144,20 @@
         "amount": 60,
         "amount_units": "nM",
         "aliases": ["robert-waterston:60mM_dex_8hr"]
+    },
+    {
+        "uuid": "a7ab9449-73ea-4693-be2d-a726a9e82056",
+        "aliases": [
+            "encode:PhiC31-integrase-treatment"
+        ],
+        "antibodies_used": [],
+        "biosamples_used": [],
+        "dbxrefs": [],
+        "documents": [],
+        "status": "current",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "treatment_term_id": "UniProtKB:Q9T221",
+        "treatment_term_name": "Integrase",
+        "treatment_type": "protein"
     }
 ]

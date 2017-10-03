@@ -15,7 +15,8 @@ from .shared_calculated_properties import (
     CalculatedBiosampleSlims,
     CalculatedBiosampleSynonyms,
     CalculatedAssaySynonyms,
-    CalculatedAssayTermID
+    CalculatedAssayTermID,
+    CalculatedVisualize
 )
 
 # importing biosample function to allow calculation of experiment biosample property
@@ -38,92 +39,36 @@ class Experiment(Dataset,
                  CalculatedBiosampleSlims,
                  CalculatedBiosampleSynonyms,
                  CalculatedAssaySynonyms,
-                 CalculatedAssayTermID):
+                 CalculatedAssayTermID,
+                 CalculatedVisualize):
     item_type = 'experiment'
     schema = load_schema('encoded:schemas/experiment.json')
     embedded = Dataset.embedded + [
         'files.platform',
         'files.analysis_step_version.analysis_step',
-        'files.analysis_step_version.analysis_step.documents',
-        'files.analysis_step_version.analysis_step.documents.award',
-        'files.analysis_step_version.analysis_step.documents.lab',
-        'files.analysis_step_version.analysis_step.documents.submitted_by',
         'files.analysis_step_version.analysis_step.pipelines',
-        'files.analysis_step_version.analysis_step.pipelines.documents',
-        'files.analysis_step_version.analysis_step.pipelines.documents.award',
-        'files.analysis_step_version.analysis_step.pipelines.documents.lab',
-        'files.analysis_step_version.analysis_step.pipelines.documents.submitted_by',
         'related_series',
         'replicates.antibody',
         'replicates.library',
-        'replicates.library.documents.lab',
-        'replicates.library.documents.submitted_by',
-        'replicates.library.documents.award',
         'replicates.library.biosample.submitted_by',
         'replicates.library.biosample.source',
-        'replicates.library.biosample.characterizations',
-        'replicates.library.biosample.characterizations.award',
-        'replicates.library.biosample.characterizations.lab',
-        'replicates.library.biosample.characterizations.submitted_by',
-        'replicates.library.biosample.constructs.documents',
-        'replicates.library.biosample.constructs.documents.award',
-        'replicates.library.biosample.constructs.documents.lab',
-        'replicates.library.biosample.constructs.documents.submitted_by',
-        'replicates.library.biosample.documents',
-        'replicates.library.biosample.documents.award',
-        'replicates.library.biosample.documents.lab',
-        'replicates.library.biosample.documents.submitted_by',
+        'replicates.library.biosample.constructs',
         'replicates.library.biosample.organism',
-        'replicates.library.biosample.rnais.documents',
-        'replicates.library.biosample.rnais.documents.award',
-        'replicates.library.biosample.rnais.documents.lab',
-        'replicates.library.biosample.rnais.documents.submitted_by',
+        'replicates.library.biosample.rnais',
         'replicates.library.biosample.donor',
-        'replicates.library.biosample.donor.documents',
-        'replicates.library.biosample.donor.documents.award',
-        'replicates.library.biosample.donor.documents.lab',
-        'replicates.library.biosample.donor.documents.submitted_by',
-        'replicates.library.biosample.donor.characterizations',
-        'replicates.library.biosample.donor.characterizations.award',
-        'replicates.library.biosample.donor.characterizations.lab',
-        'replicates.library.biosample.donor.characterizations.submitted_by',
         'replicates.library.biosample.donor.organism',
         'replicates.library.biosample.genetic_modifications',
-        'replicates.library.biosample.genetic_modifications.target',
-        'replicates.library.biosample.genetic_modifications.modification_techniques',
         'replicates.library.biosample.genetic_modifications.treatments',
-        'replicates.library.biosample.part_of.characterizations',
-        'replicates.library.biosample.part_of.characterizations.award',
-        'replicates.library.biosample.part_of.characterizations.lab',
-        'replicates.library.biosample.part_of.characterizations.submitted_by',
-        'replicates.library.biosample.part_of.constructs.documents',
-        'replicates.library.biosample.part_of.constructs.documents.award',
-        'replicates.library.biosample.part_of.constructs.documents.lab',
-        'replicates.library.biosample.part_of.constructs.documents.submitted_by',
-        'replicates.library.biosample.part_of.documents',
-        'replicates.library.biosample.part_of.documents.award',
-        'replicates.library.biosample.part_of.documents.lab',
-        'replicates.library.biosample.part_of.documents.submitted_by',
-        'replicates.library.biosample.part_of.rnais.documents',
-        'replicates.library.biosample.part_of.rnais.documents.award',
-        'replicates.library.biosample.part_of.rnais.documents.lab',
-        'replicates.library.biosample.part_of.rnais.documents.submitted_by',
-        'replicates.library.biosample.part_of.donor.documents',
-        'replicates.library.biosample.part_of.donor.documents.award',
-        'replicates.library.biosample.part_of.donor.documents.lab',
-        'replicates.library.biosample.part_of.donor.documents.submitted_by',
-        'replicates.library.biosample.part_of.donor.characterizations',
-        'replicates.library.biosample.part_of.donor.characterizations.award',
-        'replicates.library.biosample.part_of.donor.characterizations.lab',
-        'replicates.library.biosample.part_of.donor.characterizations.submitted_by',
-        'replicates.library.biosample.part_of.treatments.documents',
-        'replicates.library.biosample.part_of.treatments.documents.award',
-        'replicates.library.biosample.part_of.treatments.documents.lab',
-        'replicates.library.biosample.part_of.treatments.documents.submitted_by',
-        'replicates.library.biosample.treatments.documents',
-        'replicates.library.biosample.treatments.documents.award',
-        'replicates.library.biosample.treatments.documents.lab',
-        'replicates.library.biosample.treatments.documents.submitted_by',
+        'replicates.library.biosample.model_organism_donor_modifications',
+        'replicates.library.biosample.model_organism_donor_modifications.treatments',
+        'replicates.library.biosample.applied_modifications',
+        'replicates.library.biosample.applied_modifications.treatments',
+        'replicates.library.biosample.part_of',
+        'replicates.library.biosample.part_of.constructs',
+        'replicates.library.biosample.part_of.donor',
+        'replicates.library.biosample.part_of.rnais',
+        'replicates.library.biosample.part_of.treatments',
+        'replicates.library.biosample.treatments',
         'replicates.library.treatments',
         'possible_controls',
         'target.organism',
@@ -229,7 +174,7 @@ class Experiment(Dataset,
                             originated_from_object = None
                             if 'originated_from' in biosampleObject:
                                 originated_from_object = request.embed(biosampleObject['originated_from'],
-                                                                    '@@object')
+                                                                       '@@object')
 
                             modifications_list = None
                             genetic_modifications = biosampleObject.get('genetic_modifications')
@@ -237,12 +182,8 @@ class Experiment(Dataset,
                                 modifications_list = []
                                 for gm in genetic_modifications:
                                     gm_object = request.embed(gm, '@@object')
-                                    if 'modification_techniques' in gm_object and \
-                                       len(gm_object['modification_techniques']) > 0:
-                                        for gmt in gm_object['modification_techniques']:
-                                            modifications_list.append(
-                                                (gm_object['modification_type'],
-                                                 request.embed(gmt, '@@object')))
+                                    modifications_list.append(
+                                        (gm_object['category'], gm_object))
 
                             construct_objects_list = None
                             constructs = biosampleObject.get('constructs')
@@ -541,7 +482,9 @@ class Experiment(Dataset,
                 'organ_slims',
                 'award.project',
                 'assembly',
-                'internal_status'
+                'internal_status',
+                'audit_category', # Added for auditmatrix
+                'lab.title'
             ],
             'group_by': ['biosample_type', 'biosample_term_name'],
             'label': 'Biosample',

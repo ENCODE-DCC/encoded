@@ -7,6 +7,7 @@ def experiment_pipeline_error(testapp, lab, award):
         'lab': lab['@id'],
         'award': award['@id'],
         'assay_term_name': 'ChIP-seq',
+        'biosample_type': 'in vitro sample',
         'internal_status': 'pipeline error'
     }
     return item
@@ -18,6 +19,7 @@ def experiment_no_error(testapp, lab, award):
         'lab': lab['@id'],
         'award': award['@id'],
         'assay_term_name': 'ChIP-seq',
+        'biosample_type': 'in vitro sample',
         'internal_status': 'release ready'
     }
     return item
@@ -60,4 +62,9 @@ def test_alt_accession_ENCSR_regex(testapp, experiment_no_error):
     res = testapp.patch_json(expt['@id'], {'status': 'replaced', 'alternate_accessions': ['ENCAB123ABC']}, expect_errors=True)
     assert res.status_code == 422
     res = testapp.patch_json(expt['@id'], {'status': 'replaced', 'alternate_accessions': ['ENCSR123ABC']})
+    assert res.status_code == 200
+
+def test_submission_date(testapp, experiment_no_error):
+    expt = testapp.post_json('/experiment', experiment_no_error).json['@graph'][0]
+    res = testapp.patch_json(expt['@id'], {'date_submitted': '2000-10-10'}, expect_errors=True)
     assert res.status_code == 200

@@ -69,7 +69,7 @@ export function truncateString(str, len) {
         localStr = localStr.substr(0, len - 1); // Truncate to length ignoring word boundary
         localStr = `${!isOneWord ? localStr.substr(0, localStr.lastIndexOf(' ')) : localStr}…`; // Back up to word boundary
     }
-    return str;
+    return localStr;
 }
 
 // Given an array of objects with @id properties, this returns the same array but with any
@@ -94,21 +94,6 @@ export function unbindEvent(el, eventName, eventHandler) {
         // IE8 specific
         el.detachEvent(`on${eventName}`, eventHandler);
     }
-}
-
-export function unreleasedFilesUrl(context) {
-    const fileStates = [
-        '',
-        'uploading',
-        'uploaded',
-        'upload failed',
-        'format check failed',
-        'in progress',
-        'released',
-        'archived',
-        'content error',
-    ].map(encodeURIComponent).join('&status=');
-    return `/search/?limit=all&type=File&dataset=${context['@id']}${fileStates}`;
 }
 
 
@@ -191,6 +176,7 @@ export const encodeVersionMap = {
 // Order that assemblies should appear in lists
 export const assemblyPriority = [
     'GRCh38',
+    'GRCh38-minimal',
     'hg19',
     'mm10',
     'mm10-minimal',
@@ -265,6 +251,33 @@ export function parseAndLogError(cause, response) {
     return promise;
 }
 
+
+/**
+ * Sort an array of documents first by attachment download name, and then by @id.
+ *
+ * @param {array} docs - Array of document/characterization objects to be sorted.
+ * @return (array) - Array of the same documents/characterization as was passed in, but sorted.
+ */
+export function sortDocs(docs) {
+    return docs.sort((a, b) => {
+        // Generate sorting names based on the download file name followed by the @id of the
+        // document/characterization. If the document has no attachment, then this just uses the
+        // the @id.
+        const aLowerName = a.attachment && a.attachment.download ? a.attachment.download.toLowerCase() : '';
+        const bLowerName = b.attachment && b.attachment.download ? b.attachment.download.toLowerCase() : '';
+        const aAttachmentName = `${aLowerName}${a['@id']}`;
+        const bAttachmentName = `${bLowerName}${b['@id']}`;
+
+        // Perform the actual sort. Because we know the sorting name has a unique @id, we don't
+        // have to check for equivalent names.
+        if (aAttachmentName < bAttachmentName) {
+            return -1;
+        }
+        return 1;
+    });
+}
+
+
 export const dbxrefPrefixMap = {
     UniProtKB: 'http://www.uniprot.org/uniprot/',
     HGNC: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene=',
@@ -284,12 +297,14 @@ export const dbxrefPrefixMap = {
     // This WormBase link is strictly for C. elegans strains
     WormBase: 'http://www.wormbase.org/species/c_elegans/strain/',
     NBP: 'http://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq=',
-    CGC: 'http://www.cgc.cbs.umn.edu/search.php?st=',
+    CGC: 'https://cgc.umn.edu/strain/',
     DSSC: 'https://stockcenter.ucsd.edu/index.php?action=view&q=',
     MGI: 'http://www.informatics.jax.org/marker/',
     MGID: 'http://www.informatics.jax.org/external/festing/mouse/docs/',
     RBPImage: 'http://rnabiology.ircm.qc.ca/RBPImage/gene.php?cells=',
     RefSeq: 'https://www.ncbi.nlm.nih.gov/gene/?term=',
+    JAX: 'https://www.jax.org/strain/',
+    NBRP: 'https://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq=',
     // UCSC links need assembly (&db=) and accession (&hgt_mdbVal1=) added to url
     'UCSC-ENCODE-mm9': 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=mm9&hgt_mdbVal1=',
     'UCSC-ENCODE-hg19': 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1=',

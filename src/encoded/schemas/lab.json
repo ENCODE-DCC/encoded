@@ -9,11 +9,12 @@
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/shared_status" }
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "name": {
             "title": "Name",
@@ -119,12 +120,6 @@
             "type": "string",
             "default": "",
             "format": "phone"
-        },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the lab.",
-            "type": "string",
-            "format": "uri"
         }
     },
     "boost_values": {

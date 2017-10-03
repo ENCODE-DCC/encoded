@@ -33,11 +33,11 @@ function AnalysisStep(step, node) {
             swVersions = node.metadata.stepVersion.software_versions;
         } else {
             // Get the analysis_step_version array from the step for pipeline graph display.
-            stepVersions = step.versions && _(step.versions).sortBy(version => version.version);
+            stepVersions = step.versions && _(step.versions).sortBy(version => version.minor_version);
             swStepVersions = _.compact(stepVersions.map((version) => {
                 if (version.software_versions && version.software_versions.length) {
                     return (
-                        <span className="sw-step-versions" key={version.uuid}><strong>Version {version.version}</strong>: {softwareVersionList(version.software_versions)}<br /></span>
+                        <span className="sw-step-versions" key={version.uuid}><strong>Version {step.major_version}.{version.minor_version}</strong>: {softwareVersionList(version.software_versions)}<br /></span>
                     );
                 }
                 return { header: null, body: null };
@@ -48,9 +48,9 @@ function AnalysisStep(step, node) {
             <div className="details-view-info">
                 <h4>
                     {swVersions ?
-                        <span>{`${step.title} — Version ${node.metadata.stepVersion.version}`}</span>
+                        <span>{`${step.title} — Version ${node.metadata.ref.major_version}.${node.metadata.stepVersion.minor_version}`}</span>
                     :
-                        <span>{step.title}</span>
+                        <span>{step.title} — Version {node.metadata.ref.major_version}</span>
                     }
                 </h4>
             </div>
@@ -270,7 +270,9 @@ class PipelineComponent extends React.Component {
                 }
 
                 // If the node has parents, render the edges to those parents or to those parents'
-                // output_file_types nodes.
+                // output_file_types nodes. `parentlessInputs` tracks input file types that *don't*
+                // overlap with the parents' output file types.
+                let parentlessInputs = step.input_file_types || [];
                 if (step.parents && step.parents.length) {
                     step.parents.forEach((parent) => {
                         // Get this step's parent object so we can look at its output_file_types array.
@@ -292,18 +294,29 @@ class PipelineComponent extends React.Component {
                                     // don't overlap. Just connect it directly to the parent.
                                     jsonGraph.addEdge(parentId, stepId);
                                 }
+
+                                // Remove the parent’s output file types from the array of this
+                                // step's input file types so that we know what parentless input
+                                // file types we have to draw later.
+                                parentlessInputs = _.difference(parentlessInputs, parentStep.output_file_types);
                             } else {
-                                // The parent step doesn't
+                                // The parent step doesn't have any output file types, so just
+                                // connect this step to the parent step directly.
                                 jsonGraph.addEdge(parentId, stepId);
                             }
                         }
                         // No parent step object when this step has parents means a data error.
                         // At least don't crash.
                     });
-                } else if (step.input_file_types && step.input_file_types.length) {
+                }
+
+                // Render input file types not shared by a parent step. `parentlessInputs` is an
+                // array holding all the input file types for the current step that aren't shared
+                // with a parent's output file types.
+                if (parentlessInputs.length) {
                     // The step doesn't have parents but it has input_file_types. Draw nodes for
                     // all its input_file_types.
-                    step.input_file_types.forEach((fileType) => {
+                    parentlessInputs.forEach((fileType) => {
                         // Most file-type nodes have IDs containing their parent step @id. These
                         // file-type nodes don't have a parent, so we take the child's and add "IO"
                         // to it to distinguish it from the odd case of a step having the same
@@ -350,12 +363,15 @@ class PipelineComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
 
-        const assayTerm = context.assay_term_name ? 'assay_term_name' : 'assay_term_id';
-        const assayName = context[assayTerm];
-        const crumbs = [
-            { id: 'Pipelines' },
-            { id: assayName, query: `${assayTerm}=${assayName}`, tip: assayName },
-        ];
+        let crumbs;
+        const assayName = (context.assay_term_names && context.assay_term_names.length) ? context.assay_term_names.join(' + ') : null;
+        if (assayName) {
+            const query = context.assay_term_names.map(name => `assay_term_names=${name}`).join('&');
+            crumbs = [
+                { id: 'Pipelines' },
+                { id: assayName, query, tip: assayName },
+            ];
+        }
 
         const documents = {};
         if (context.documents) {
@@ -383,7 +399,7 @@ class PipelineComponent extends React.Component {
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=pipeline" crumbs={crumbs} />
+                        {crumbs ? <Breadcrumbs root="/search/?type=Pipeline" crumbs={crumbs} /> : null}
                         <h2>{context.title}</h2>
                         <div className="characterization-status-labels">
                             <div className="characterization-status-labels">
@@ -402,10 +418,10 @@ class PipelineComponent extends React.Component {
                                 <dd>{context.title}</dd>
                             </div>
 
-                            {context.assay_term_name ?
+                            {context.assay_term_names && context.assay_term_names.length ?
                                 <div data-test="assay">
-                                    <dt>Assay</dt>
-                                    <dd>{context.assay_term_name}</dd>
+                                    <dt>Assays</dt>
+                                    <dd>{context.assay_term_names.join(', ')}</dd>
                                 </div>
                             : null}
 
@@ -432,6 +448,13 @@ class PipelineComponent extends React.Component {
                                 <div data-test="sourceurl">
                                     <dt>Source</dt>
                                     <dd><a href={context.source_url}>{context.source_url}</a></dd>
+                                </div>
+                            : null}
+
+                            {context.standards_page ?
+                                <div data-test="standardspage">
+                                    <dt>Pipeline standards</dt>
+                                    <dd><a href={context.standards_page['@id']}>{context.standards_page.title}</a></dd>
                                 </div>
                             : null}
                         </dl>
@@ -533,8 +556,8 @@ class ListingComponent extends React.Component {
                         <a href={result['@id']}>{result.title}</a>
                     </div>
                     <div className="data-row">
-                        {result.assay_term_name ?
-                            <div><strong>Assay: </strong>{result.assay_term_name}</div>
+                        {result.assay_term_names && result.assay_term_names.length ?
+                            <div><strong>Assays: </strong>{result.assay_term_names.join(', ')}</div>
                         : null}
 
                         {swTitle.length ?

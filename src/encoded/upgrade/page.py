@@ -16,6 +16,8 @@ def page_0_2(value, system):
         "Proteomics",
         "Conferences",
         "Encyclopedia",
+        "Replication Timing",
+        "DNA sequencing"
     ]
     if 'news_keywords' in value:
         value['news_keywords'] = [kw for kw in value['news_keywords'] if kw in allowedKeywords]

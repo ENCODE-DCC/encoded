@@ -19,7 +19,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "Fp": {
             "title": "FRiP score from pooled pseudoreplicate peaks",
@@ -81,9 +81,9 @@
             "type": "string",
             "description": "IDR reproducibility test result for this experiment",
             "enum": [
-                "pass",
                 "borderline",
-                "fail"
+                "fail",
+                "pass"
             ]
         },
         "N_optimal": {

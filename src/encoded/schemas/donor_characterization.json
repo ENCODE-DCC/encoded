@@ -20,9 +20,20 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/documents" }
     ],
+    "columns": {
+        "characterization_method": {
+            "title": "Method"
+        },
+        "caption": {
+            "title": "Caption"
+        },
+        "description": {
+            "title": "Description"
+        }
+    },
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "characterizes": {
             "title": "Model organism donor (strain) characterized",
@@ -38,5 +49,6 @@
                 "immunofluorescence"
             ]
         }
-    }
+    },
+    "changelog": "/profiles/changelogs/donor_characterization.md"
 }

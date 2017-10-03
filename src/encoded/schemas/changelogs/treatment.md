@@ -1,5 +1,18 @@
 ## Changelog for treatment.json
 
+### Schema version 9
+
+* The regex for *treatment_term_name* will now accept the namespace "UniProtKB" rather than "UniprotKB".
+
+### Schema version 8
+
+* *status* property was restricted to one of  
+    "enum" : [
+        "current",
+        "deleted",
+        "disabled"
+    ]
+
 ### Schema version 7
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces

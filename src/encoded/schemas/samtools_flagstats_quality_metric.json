@@ -19,15 +19,15 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "processing_stage": {
             "title": "Processing stage",
             "type": "string",
             "description": "The degree of post-mapping processing to which the statistics apply",
             "enum": [
-                "unfiltered",
-                "filtered"
+                "filtered",
+                "unfiltered"
             ]
         },
         "diff_chroms": {

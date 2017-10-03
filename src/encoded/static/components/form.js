@@ -68,7 +68,7 @@ const filterValue = function filterValue(value) {
 // with the exception of read-only and calculated properties.
 const defaultValue = function defaultValue(schema) {
     if (schema.default !== undefined) {
-        return schema.default || undefined;
+        return schema.default !== undefined ? schema.default : undefined;
     } else if (schema.properties !== undefined) {
         const value = {};
         _.each(schema.properties, (property, name) => {

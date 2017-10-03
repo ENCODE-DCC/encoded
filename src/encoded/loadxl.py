@@ -25,11 +25,7 @@ ORDER = [
     'treatment',
     'construct',
     'construct_characterization',
-    'rnai',
-    'rnai_characterization',
     'talen',
-    'tale',
-    'crispr',
     'genetic_modification',
     'genetic_modification_characterization',
     'mouse_donor',
@@ -331,6 +327,7 @@ def request_url(item_type, method):
 
     return component
 
+
 def make_request(testapp, item_type, method):
     json_method = getattr(testapp, method.lower() + '_json')
 
@@ -547,16 +544,22 @@ PHASE1_PIPELINES = {
         remove_keys('lab', 'submits_for'),
     ],
     'biosample': [
-        remove_keys('originated_from', 'pooled_from', 'part_of'),
+        remove_keys('derived_from', 'pooled_from', 'part_of', 'host'),
     ],
     'library': [
         remove_keys('spikeins_used'),
     ],
     'experiment': [
-        remove_keys('possible_controls', 'related_files'),
+        remove_keys('possible_controls', 'related_files', 'supersedes'),
+    ],
+    'mouse_donor': [
+        remove_keys('parent_strains'),
+    ],
+    'worm_donor': [
+        remove_keys('outcrossed_strain'),
     ],
     'human_donor': [
-        remove_keys('parents', 'children', 'siblings', 'fraternal_twin', 'identical_twin'),
+        remove_keys('parents', 'children', 'siblings', 'twin'),
     ],
     'publication': [
         remove_keys('datasets'),
@@ -595,11 +598,15 @@ PHASE1_PIPELINES = {
         remove_keys('related_datasets'),
     ],
     'file': [
-        remove_keys('derived_from', 'controlled_by')
+        remove_keys('derived_from', 'controlled_by', 'supersedes')
     ],
     'analysis_step': [
         remove_keys('parents')
+    ],
+    'treatment': [
+        remove_keys('biosamples_used')
     ]
+
 }
 
 
@@ -615,16 +622,22 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('lab', 'submits_for'),
     ],
     'biosample': [
-        skip_rows_missing_all_keys('originated_from', 'pooled_from', 'part_of'),
+        skip_rows_missing_all_keys('derived_from', 'pooled_from', 'part_of', 'host'),
     ],
     'library': [
         skip_rows_missing_all_keys('spikeins_used'),
     ],
     'experiment': [
-        skip_rows_missing_all_keys('related_files', 'possible_controls'),
+        skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes'),
     ],
     'human_donor': [
-        skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'fraternal_twin', 'identical_twin'),
+        skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'twin'),
+    ],
+    'mouse_donor': [
+        skip_rows_missing_all_keys('parent_strains'),
+    ],
+    'worm_donor': [
+        skip_rows_missing_all_keys('outcrossed_strain'),
     ],
     'annotation': [
         skip_rows_missing_all_keys('related_files', 'software_used'),
@@ -663,10 +676,13 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('datasets'),
     ],
     'file': [
-        skip_rows_missing_all_keys('derived_from', 'controlled_by')
+        skip_rows_missing_all_keys('derived_from', 'controlled_by', 'supersedes')
     ],
     'analysis_step': [
         skip_rows_missing_all_keys('parents')
+    ],
+    'treatment': [
+        skip_rows_missing_all_keys('biosamples_used')
     ]
 }
 

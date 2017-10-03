@@ -13,13 +13,14 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/attribution" }
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "software_type": {
             "title": "Types",
@@ -31,17 +32,17 @@
                 "type": "string",
                 "enum": [
                     "aligner",
-                    "quality metric",
-                    "peak caller",
-                    "filtering",
-                    "file format conversion",
                     "database",
-                    "variant annotation",
+                    "file format conversion",
+                    "filtering",
                     "genome segmentation",
-                    "qualification",
+                    "other",
+                    "peak caller",
+                    "quality metric",
+                    "quantification",
                     "transcript identification",
                     "transcriptome assembly",
-                    "other"
+                    "variant annotation"
                 ]
             }
         },
@@ -70,12 +71,6 @@
             "type": "string",
             "format": "uri"
         },
-        "url": {
-            "title": "URL",
-            "description": "An external resource with additional information about the software.",
-            "type": "string",
-            "format": "uri"
-        },
         "purpose": {
             "title": "Purpose in project",
             "description": "The purpose that the software was used for in the project.",
@@ -85,21 +80,21 @@
                 "title": "Purpose",
                 "type": "string",
                 "enum": [
-                    "ChIP-seq",
-                    "DNase-seq",
-                    "RNA-seq",
-                    "data QC",
-                    "RAMPAGE",
-                    "iClip-seq",
-                    "FAIRE-seq",
-                    "RIP-seq", 
+                    "ATAC-seq",
                     "CAGE",
                     "ChIA-PET",
-                    "ATAC-seq",
+                    "ChIP-seq",
+                    "community resource",
+                    "data QC",
+                    "DNase-seq",
                     "eCLIP-seq",
+                    "FAIRE-seq",
+                    "iClip-seq",
                     "integrative analysis",
-                    "variant analysis",
-                    "community resource"
+                    "RAMPAGE",
+                    "RIP-seq",
+                    "RNA-seq",
+                    "variant analysis"
                 ]
             }
         },
@@ -111,11 +106,11 @@
                 "title": "Used by",
                 "type": "string",
                 "enum": [
-                    "modERN",
+                    "community",
                     "ENCODE",
-                    "mouseENCODE",
                     "modENCODE",
-                    "community"
+                    "modERN",
+                    "mouseENCODE"
                 ]
             }
         },

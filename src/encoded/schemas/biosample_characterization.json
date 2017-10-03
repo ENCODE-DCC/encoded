@@ -22,7 +22,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "9"
+            "default": "10"
         },
         "characterizes": {
             "title": "Biosample characterized",
@@ -34,11 +34,11 @@
             "description": "Experimental method of the characterization.",
             "type": "string",
             "enum": [
+                "FACs analysis",
                 "immunoblot",
+                "immunofluorescence",
                 "immunoprecipitation",
                 "immunoprecipitation followed by mass spectrometry",
-                "immunofluorescence",
-                "FACs analysis",
                 "PCR",
                 "Sanger sequencing"
             ]

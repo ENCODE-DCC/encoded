@@ -15,7 +15,7 @@ import { donorDiversity, publicDataset } from './objectutils';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
-import { DocumentsPanel } from './doc';
+import { DocumentsPanelReq } from './doc';
 import { FileGallery, DatasetFiles } from './filegallery';
 import { AwardRef } from './typeutils';
 
@@ -209,7 +209,7 @@ class AnnotationComponent extends React.Component {
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
-                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
                                         </div>
                                     : null}
 
@@ -217,7 +217,7 @@ class AnnotationComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>
@@ -244,7 +244,7 @@ class AnnotationComponent extends React.Component {
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={encodevers} />
 
-                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
+                <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
     }
@@ -381,7 +381,7 @@ class PublicationDataComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>
@@ -408,7 +408,7 @@ class PublicationDataComponent extends React.Component {
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
-                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
+                <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
     }
@@ -537,7 +537,7 @@ class ReferenceComponent extends React.Component {
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
-                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
                                         </div>
                                     : null}
 
@@ -545,7 +545,7 @@ class ReferenceComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>
@@ -572,7 +572,7 @@ class ReferenceComponent extends React.Component {
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph altFilterDefault />
 
-                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
+                <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
     }
@@ -725,7 +725,7 @@ class ProjectComponent extends React.Component {
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
-                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
                                         </div>
                                     : null}
 
@@ -733,7 +733,7 @@ class ProjectComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>
@@ -760,7 +760,7 @@ class ProjectComponent extends React.Component {
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
-                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
+                <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
     }
@@ -899,7 +899,7 @@ class UcscBrowserCompositeComponent extends React.Component {
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
-                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
                                         </div>
                                     : null}
 
@@ -907,7 +907,7 @@ class UcscBrowserCompositeComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>
@@ -934,7 +934,7 @@ class UcscBrowserCompositeComponent extends React.Component {
                 {/* Display the file widget with the facet, graph, and tables */}
                 <FileGallery context={context} encodevers={globals.encodeVersion(context)} hideGraph />
 
-                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
+                <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
     }
@@ -1390,7 +1390,7 @@ export class SeriesComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>
@@ -1436,14 +1436,14 @@ export class SeriesComponent extends React.Component {
                 {/* Display list of released and unreleased files */}
                 <FetchedItems
                     {...this.props}
-                    url={globals.unreleasedFilesUrl(context)}
+                    url={`/search/?limit=all&type=File&dataset=${context['@id']}`}
                     Component={DatasetFiles}
                     filePanelHeader={<FilePanelHeader context={context} />}
                     encodevers={globals.encodeVersion(context)}
                     session={this.context.session}
                 />
 
-                <DocumentsPanel documentSpecs={[{ documents: datasetDocuments }]} />
+                <DocumentsPanelReq documents={datasetDocuments} />
             </div>
         );
     }

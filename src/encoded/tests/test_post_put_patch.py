@@ -130,7 +130,6 @@ def test_patch(content, testapp):
     assert res.json['@graph'][0]['simple2'] == 'supplied simple2'
 
 
-
 def test_admin_put_protected_link(link_targets, testapp):
     res = testapp.post_json(COLLECTION_URL, item_with_link[0], status=201)
     url = res.location

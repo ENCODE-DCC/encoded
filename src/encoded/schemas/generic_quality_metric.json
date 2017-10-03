@@ -19,7 +19,7 @@
    ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "name": {
             "title": "Name",
@@ -45,12 +45,12 @@
                     "title": "MIME type",
                     "type": "string",
                     "enum": [
-                        "application/x-tar",
                         "application/pdf",
+                        "application/x-tar",
+                        "image/gif",
                         "image/jpeg",
                         "image/png",
                         "image/tiff",
-                        "image/gif",
                         "text/html",
                         "text/plain",
                         "text/tab-separated-values"

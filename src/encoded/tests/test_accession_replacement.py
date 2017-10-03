@@ -6,8 +6,7 @@ def human_donor(lab, award, organism):
     return {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'organism': organism['uuid'],
-        'url': 'http://www.test.org',
+        'organism': organism['uuid']        
     }
 
 

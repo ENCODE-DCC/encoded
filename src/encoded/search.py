@@ -11,7 +11,8 @@ from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
-from .visualization import vis_format_external_url
+from .visualization import vis_format_url
+import copy
 
 from pprint import pprint as pp
 
@@ -24,6 +25,7 @@ def includeme(config):
     config.add_route('report', '/report{slash:/?}')
     config.add_route('matrix', '/matrix{slash:/?}')
     config.add_route('news', '/news/')
+    config.add_route('audit', '/audit/')
     config.scan(__name__)
 
 
@@ -488,7 +490,7 @@ def format_results(request, hits, result=None):
 
     if frame in ['embedded', 'object']:
         for hit in hits:
-            if not any_released and hit['_source'][frame].get('status','released') == 'released':
+            if not any_released and hit['_source'][frame].get('status', 'released') == 'released':
                 any_released = True
             yield hit['_source'][frame]
     else:
@@ -535,10 +537,10 @@ def search_result_actions(request, doc_types, es_results, position=None):
                     pos = None
                     if 'region-search' in request.url and position is not None:
                         pos = position
-                    ucsc_url = vis_format_external_url("ucsc", hub_url, assembly, pos)
+                    ucsc_url = vis_format_url("ucsc", hub_url, assembly, pos)
                     if ucsc_url is not None:
                         browser_urls['UCSC'] = ucsc_url
-                    ensembl_url = vis_format_external_url("ensembl", hub_url, assembly, pos)
+                    ensembl_url = vis_format_url("ensembl", hub_url, assembly, pos)
                     if ensembl_url is not None:
                         browser_urls['Ensembl'] = ensembl_url
                     if browser_urls:
@@ -1007,6 +1009,10 @@ def matrix(context, request):
     if search_term == '*':
         # query['query']['match_all'] = {}
         del query['query']['bool']['must']
+    # If searching for more than one type, don't specify which fields to search
+    else:
+        # del query['query']['bool']['must']['multi_match']['fields']
+        query['query']['bool']['must']['multi_match']['fields'].extend(['_all', '*.uuid', '*.md5sum', '*.submitted_file_name'])
 
     # Setting filters.
     # Rather than setting them at the top level of the query
@@ -1190,5 +1196,413 @@ def news(context, request):
     types = request.registry[TYPES]
     schemas = [types[doc_type].schema for doc_type in doc_types]
     result['facets'] = format_facets(es_results, facets, used_filters, schemas, total, principals)
+
+    return result
+
+@view_config(route_name='audit', request_method='GET', permission='search')
+def audit(context, request):
+    """
+    Return search results aggregated by x and y buckets for building a matrix display.
+    """
+    search_base = normalize_query(request)
+    result = {
+        '@context': request.route_path('jsonld_context'),
+        '@id': request.route_path('audit', slash='/') + search_base,
+        '@type': ['AuditMatrix'],
+        'filters': [],
+        'notification': '',
+    }
+    search_audit = request.has_permission('search_audit')
+
+    doc_types = request.params.getall('type')
+    if len(doc_types) != 1:
+        msg = 'Search result matrix currently requires specifying a single type.'
+        raise HTTPBadRequest(explanation=msg)
+    item_type = doc_types[0]
+    types = request.registry[TYPES]
+    if item_type not in types:
+        msg = 'Invalid type: {}'.format(item_type)
+        raise HTTPBadRequest(explanation=msg)
+    type_info = types[item_type]
+    if not hasattr(type_info.factory, 'matrix'):
+        msg = 'No matrix configured for type: {}'.format(item_type)
+        raise HTTPBadRequest(explanation=msg)
+    schema = type_info.schema
+    if type_info.name is 'Annotation':
+        result['title'] = 'Encyclopedia'
+    else:
+        result['title'] = type_info.name + ' Matrix'
+
+    # Because the formatting of the query edits the sub-objects of the matrix, we need to
+    # deepcopy the matrix so the original type_info.factory.matrix is not modified, allowing
+    # /matrix to get the correct data and to not be able to access the /audit data.
+    temp_matrix = copy.deepcopy(type_info.factory.matrix)
+    matrix = result['matrix'] = temp_matrix
+    matrix['x']['limit'] = request.params.get('x.limit', 20)
+    matrix['y']['limit'] = request.params.get('y.limit', 5)
+    matrix['search_base'] = request.route_path('search', slash='/') + search_base
+    matrix['clear_matrix'] = request.route_path('audit', slash='/') + '?type=' + item_type
+
+    result['views'] = [
+        {
+            'href': request.route_path('search', slash='/') + search_base,
+            'title': 'View results as list',
+            'icon': 'list-alt',
+        },
+        {
+            'href': request.route_path('report', slash='/') + search_base,
+            'title': 'View tabular report',
+            'icon': 'table',
+        }
+    ]
+
+    principals = effective_principals(request)
+    es = request.registry[ELASTIC_SEARCH]
+    es_index = request.registry.settings['snovault.elasticsearch.index']
+
+    search_term = prepare_search_term(request)
+
+    search_fields, highlights = get_search_fields(request, doc_types)
+
+    # Builds filtered query which supports multiple facet selection
+    query = get_filtered_query(search_term,
+                               search_fields,
+                               [],
+                               principals,
+                               doc_types)
+
+    if search_term == '*':
+        # query['query']['match_all'] = {}
+        del query['query']['bool']['must']
+    # If searching for more than one type, don't specify which fields to search
+    else:
+        # del query['query']['bool']['must']['multi_match']['fields']
+        query['query']['bool']['must']['multi_match']['fields'].extend(['_all', '*.uuid', '*.md5sum', '*.submitted_file_name'])
+
+    # Setting filters.
+    # Rather than setting them at the top level of the query
+    # we collect them for use in aggregations later.
+    query_filters = query['post_filter'].pop('bool')
+    filter_collector = {'post_filter': {'bool': query_filters}}
+    used_filters = set_filters(request, filter_collector, result)
+    filters = filter_collector['post_filter']['bool']['must']
+    negative_filters = filter_collector['post_filter']['bool']['must_not']
+
+    # Adding facets to the query
+    facets = [(field, facet) for field, facet in schema['facets'].items() if
+              field in matrix['x']['facets'] or field in matrix['y']['facets']]
+
+    # Display all audits if logged in, or all but INTERNAL_ACTION if logged out
+    for audit_facet in audit_facets:
+        if search_audit and 'group.submitter' in principals or 'INTERNAL_ACTION' not in audit_facet[0]:
+            facets.append(audit_facet)
+
+    # To get list of audit categories from facets
+    audit_field_list_copy = []
+    audit_field_list = []
+    for item in facets:
+        if item[0].rfind('audit.') > -1:
+            audit_field_list.append(item)
+
+    audit_field_list_copy = audit_field_list.copy()
+
+    # Gets just the fields from the tuples from facet data
+    for item in audit_field_list_copy: # for each audit label
+        temp = item[0]
+        audit_field_list[audit_field_list.index(item)] = temp #replaces list with just audit field
+
+    query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
+
+    # Group results in 2 dimensions
+    x_grouping = matrix['x']['group_by']
+    y_groupings = audit_field_list
+
+    # Creates a list of fields used in no audit row
+    no_audits_groupings = ['no.audit.error', 'no.audit.not_compliant', 'no.audit.warning']
+
+    x_agg = {
+        "terms": {
+            "field": 'embedded.' + x_grouping,
+            "size": 0,  # no limit
+        },
+    }
+
+    # aggs query for audit category rows
+    aggs = {
+        'audit.ERROR.category': {
+            'aggs': {
+                x_grouping: x_agg
+            },
+            'terms': {
+                'field': 'audit.ERROR.category', 'size': 0
+            }
+        },
+        'audit.WARNING.category': {
+            'aggs': {
+                x_grouping: x_agg
+            },
+            'terms': {
+                'field': 'audit.WARNING.category', 'size': 0
+            }
+        },
+        'audit.NOT_COMPLIANT.category': {
+            'aggs': {
+                x_grouping: x_agg
+            },
+            'terms': {
+                'field': 'audit.NOT_COMPLIANT.category', 'size': 0
+            }
+        }
+
+    }
+
+    # This is a nested query with error as the top most level and warning as the innermost level.
+    # It allows for there to be multiple missing fields in the query.
+    # To construct this we go through the no_audits_groupings backwards and construct the query
+    # from the inside out.
+    temp = {}
+    temp_copy = {}
+    for group in reversed(no_audits_groupings):
+        temp = {
+            "missing": {
+                "field": audit_field_list[no_audits_groupings.index(group)]
+            },
+            "aggs": {
+                x_grouping: x_agg
+            },
+        }
+        # If not the last element in no_audits_groupings then add the inner query
+        # inside the next category query. Therefore, as temp is updated, it sets the old temp,
+        # which is now temp_copy, within itself. This creates the nested structure.
+        if (no_audits_groupings.index(group)+1) < len(no_audits_groupings):
+            temp["aggs"][no_audits_groupings[(no_audits_groupings.index(group)+1)]] = temp_copy
+        temp_copy = copy.deepcopy(temp)
+
+    # This adds the outermost grouping label to temp.
+    update_temp = {}
+    update_temp[no_audits_groupings[0]] = temp
+
+    # Aggs query gets updated with no audits queries.
+    aggs.update(update_temp)
+
+    # If internal action data is able to be seen in facets (if logged in) then add it to aggs for
+    # both: 1) an audit category row for Internal Action and 2) the no audits row as innermost
+    # level of nested query to create a no audits at all row within no audits.
+    # Additionally, add it to the no_audits_groupings list to be used in summarize_no_audits later.
+    if "audit.INTERNAL_ACTION.category" in facets[len(facets)-1]:
+        aggs['audit.INTERNAL_ACTION.category'] = {
+            'aggs': {
+                x_grouping: x_agg
+            },
+            'terms': {
+                'field': 'audit.INTERNAL_ACTION.category', 'size': 0
+            }
+        }
+        aggs['no.audit.error']['aggs']['no.audit.not_compliant']['aggs']['no.audit.warning']['aggs']['no.audit.internal_action'] = {
+                            "missing": {
+                                "field": "audit.INTERNAL_ACTION.category"
+                            },
+                            "aggs": {
+                                x_grouping: x_agg
+                            }
+        }
+        no_audits_groupings.append("no.audit.internal_action")
+
+    aggs['x'] = x_agg
+    query['aggs']['matrix'] = {
+        "filter": {
+            "bool": {
+                "must": filters,
+                "must_not": negative_filters
+            }
+        },
+        "aggs": aggs,
+    }
+
+    # Execute the query
+    es_results = es.search(body=query, index=es_index, search_type='count')
+
+    # Format matrix for results
+    aggregations = es_results['aggregations']
+    result['matrix']['doc_count'] = total = aggregations['matrix']['doc_count']
+    result['matrix']['max_cell_doc_count'] = 0
+
+    # Format facets for results
+    result['facets'] = format_facets(
+        es_results, facets, used_filters, (schema,), total, principals)
+
+    # For each audit category row.
+    # Convert Elasticsearch returned matrix search data to a form usable by the front end matrix
+    # code, using only the 'matrix' object within the search data. It contains matrix search
+    # results in 'bucket' arrays, with the exact terms being defined in the .py file for the object
+    # we're querying in the object's 'matrix' property.
+    #
+    # matrix (dictionary): 'matrix' object within the Elasticsearch matrix search results,
+    #        containing all the data to render the matrix and its headers, but not the facets that
+    #        appear along the top and bottom.
+    # x_buckets (dictionary): 'x' object within the Elasticsearch matrix search results, containing
+    #        the headers that give titles to each column of the chart, as well as summary counts
+    #        we don't currently use on the front end.
+    # outer_bucket (list): search result bucket containing the term from which to group by.
+    # grouping_fields (list): List of audit categories that is hard coded above.
+
+    def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
+        # Loop through each audit category and get proper search result data and format it
+        for category in grouping_fields: # for each audit category
+            counts = {}
+            # Go through each bucket
+            for bucket in outer_bucket[category]['buckets']:
+                counts = {}
+                # Go through each assay for a key/row and get count and add to counts dictionary
+                # that keeps track of counts for each key/row.
+                for assay in bucket['assay_title']['buckets']:
+                    doc_count = assay['doc_count']
+                    if doc_count > matrix['max_cell_doc_count']:
+                        matrix['max_cell_doc_count'] = doc_count
+                    if 'key' in assay:
+                        counts[assay['key']] = doc_count
+
+                # We now have `counts` containing each displayed key and the corresponding count for a
+                # row of the matrix. Convert that to a list of counts (cell values for a row of the
+                # matrix) to replace the existing bucket for the given grouping_fields term with a
+                # simple list of counts without their keys -- the position within the list corresponds
+                # to the keys within 'x'.
+                summary = []
+                for xbucket in x_buckets:
+                    summary.append(counts.get(xbucket['key'], 0))
+                bucket['assay_title'] = summary
+
+    # For the no audits row.
+    # Convert Elasticsearch returned matrix search data to a form usable by the front end matrix
+    # code, using only the 'matrix' object within the search data. It contains matrix search
+    # results in 'bucket' arrays, with the exact terms being defined in the .py file for the object
+    # we're querying in the object's 'matrix' property.
+    #
+    # matrix (dictionary): 'matrix' object within the Elasticsearch matrix search results,
+    #        containing all the data to render the matrix and its headers, but not the facets that
+    #        appear along the top and bottom.
+    # x_buckets (dictionary): 'x' object within the Elasticsearch matrix search results, containing
+    #        the headers that give titles to each column of the chart, as well as summary counts
+    #        we don't currently use on the front end.
+    # outer_bucket (list): search result bucket containing the term from which to group by.
+    # grouping_fields (list): List of no audit labels in order that is hard coded above. Allows
+    #        for recursion through the nested query.
+    # aggregations (list): same as outer_bucket. Allows for aggregations to be modified so that
+    #        the nested query that allows for each level of no audits can become separate rows
+    #        under the overall no audits row.
+
+    def summarize_no_audits(matrix, x_buckets, outer_bucket, grouping_fields, aggregations):
+        # Loop by recursion through grouping_fields until we get the terminal no audit field. So
+        # get the initial no audit field in the list and save the rest for the recursive call.
+        group_by = grouping_fields[0]
+        grouping_fields = grouping_fields[1:]
+
+        # If there are still items in grouping_fields, then loop by recursion until there is
+        # nothing left in grouping_fields.
+        if grouping_fields:
+            summarize_no_audits(matrix, x_buckets, outer_bucket[group_by], grouping_fields, aggregations)
+
+        counts = {}
+        # We have recursed through to the last grouping_field in the array given in the top-
+        # level summarize_buckets call. Now we can get down to actually converting the search
+        # result data. First loop through each element in the term's 'buckets' which contain
+        # displayable key and a count.
+        for assay in outer_bucket[group_by]['assay_title']['buckets']:
+            # Grab the count for the row, and keep track of the maximum count we find by
+            # mutating the max_cell_doc_count property of the matrix for the front end to use
+            # to color the cells. Then we add to a counts dictionary that keeps track of each
+            # displayed term and the corresponding count.
+            doc_count = assay['doc_count']
+            if doc_count > matrix['max_cell_doc_count']:
+                matrix['max_cell_doc_count'] = doc_count
+            if 'key' in assay:
+                counts[assay['key']] = doc_count
+
+        # We now have `counts` containing each displayed key and the corresponding count for a
+        # row of the matrix. Convert that to a list of counts (cell values for a row of the
+        # matrix) to replace the existing bucket for the given grouping_fields term with a
+        # simple list of counts without their keys -- the position within the list corresponds
+        # to the keys within 'x'.
+        summary = []
+        for xbucket in x_buckets:
+            summary.append(counts.get(xbucket['key'], 0))
+        # Set proper results in aggregations. Instead of keeping the nested structure from the
+        # query, set each no audit category as a separate item. Delete the other information
+        # from the nested queries. *Not really sure if this information is necessary so I just
+        # took it out.*
+        aggregations[group_by] = outer_bucket[group_by]['assay_title']
+        aggregations[group_by]['assay_title'] = summary
+        aggregations[group_by].pop("buckets", None)
+        aggregations[group_by].pop("sum_other_doc_count", None)
+        aggregations[group_by].pop("doc_count_error_upper_bound", None)
+
+
+    summarize_buckets(
+        result['matrix'],
+        aggregations['matrix']['x']['buckets'],
+        aggregations['matrix'],
+        y_groupings)
+
+    summarize_no_audits(
+        result['matrix'],
+        aggregations['matrix']['x']['buckets'],
+        aggregations['matrix'],
+        no_audits_groupings,
+        aggregations['matrix'])
+
+    # There is no generated key for the no audit categories, so we need to manually add them so
+    # that they will be able to be read in the JS file.
+    aggregations['matrix']['no.audit.error']['key'] = 'no errors'
+    aggregations['matrix']['no.audit.not_compliant']['key'] = 'no errors and compliant'
+    aggregations['matrix']['no.audit.warning']['key'] = 'no errors, compliant, and no warnings'
+    if "no.audit.internal_action" in no_audits_groupings:
+        aggregations['matrix']['no.audit.internal_action']['key'] = "no audits"
+
+    # We need to format the no audits entries as subcategories in an overal 'no_audits' row.
+    # To do this, we need to make it the same format as the audit category entries so the JS
+    # file will read them and treat them equally.
+    aggregations['matrix']['no_audits'] = {}
+    aggregations['matrix']['no_audits']['buckets'] = []
+
+    # Add the no audit categories into the overall no_audits entry.
+    for category in aggregations['matrix']:
+        if "no.audit" in category:
+            aggregations['matrix']['no_audits']['buckets'].append(aggregations['matrix'][category])
+
+    # Remove the no audit categories now that they have been added to the overall no_audits row.
+    for audit in no_audits_groupings:
+        aggregations['matrix'].pop(audit)
+
+    result['matrix']['y']['label'] = "Audit Category"
+    result['matrix']['y']['group_by'][0] = "audit_category"
+    result['matrix']['y']['group_by'][1] = "audit_label"
+
+    # Formats all audit categories into readable/usable format for auditmatrix.js
+    bucket_audit_category_list = []
+    for audit in aggregations['matrix']:
+        if "audit" in audit:
+            audit_category_dict = {}
+            audit_category_dict['audit_label'] = aggregations['matrix'][audit]
+            audit_category_dict['key'] = audit
+            bucket_audit_category_list.append(audit_category_dict)
+
+    bucket_audit_category_dict = {}
+    bucket_audit_category_dict['buckets'] = bucket_audit_category_list
+
+    # Add correctly formatted data to results
+    result['matrix']['y']['audit_category'] = bucket_audit_category_dict
+    result['matrix']['x'].update(aggregations['matrix']['x'])
+
+    # Add batch actions
+    result.update(search_result_actions(request, doc_types, es_results))
+
+    # Adding total
+    result['total'] = es_results['hits']['total']
+    if result['total']:
+        result['notification'] = 'Success'
+    else:
+        # http://googlewebmastercentral.blogspot.com/2014/02/faceted-navigation-best-and-5-of-worst.html
+        request.response.status_code = 404
+        result['notification'] = 'No results found'
 
     return result

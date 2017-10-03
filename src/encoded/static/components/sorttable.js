@@ -199,11 +199,20 @@ export class SortTable extends React.Component {
         this.state = {
             sortColumn, // ID of currently sorting column
             reversed: false, // True if sorting of current sort column is reversed
+            mounted: false, // True if this component has mounted (ENCD-3459)
         };
+
+        // Initialize object data members.
+        this.mounted = false; // `true` if this React component has mounted
 
         // Bind this to non-React methods.
         this.sortDir = this.sortDir.bind(this);
         this.sortColumn = this.sortColumn.bind(this);
+    }
+
+    componentDidMount() {
+        // Record that this component has mounted, and sorting can be enabled (ENCD-3459).
+        this.setState({ mounted: true });
     }
 
     // Handle clicks in the column headers for sorting columns
@@ -271,9 +280,12 @@ export class SortTable extends React.Component {
 
         // Now display the table, but only if we were passed a non-empty list
         if (list && list.length) {
+            // Sort the list according to the requested sorting column. Only do this *after* this
+            // component has mounted (ENCD-3459).
+            const sortedList = this.state.mounted ? list.sort(this.sortColumn) : list;
+
             return (
                 <table className="table table-sortable">
-
                     <thead>
                         {this.props.title ? <tr className="table-section" key="title"><th colSpan={colCount}>{this.props.title}</th></tr> : null}
 
@@ -303,7 +315,7 @@ export class SortTable extends React.Component {
 
                     {!this.props.collapsed ?
                         <tbody>
-                            {list.sort(this.sortColumn).map((item, i) => {
+                            {sortedList.map((item, i) => {
                                 const rowClassStr = rowClasses ? rowClasses(item, i) : '';
                                 return (
                                     <tr key={i} className={rowClassStr}>

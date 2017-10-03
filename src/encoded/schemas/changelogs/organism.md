@@ -1,5 +1,14 @@
 ## Changelog for organism.json
 
+### Schema version 4
+
+* *status* property was restricted to one of  
+    "enum" : [
+        "current",
+        "deleted",
+        "disabled"
+    ]
+
 ### Schema version 3
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces
