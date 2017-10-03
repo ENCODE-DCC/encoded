@@ -187,9 +187,9 @@ class Experiment(Dataset,
                                         modification_dict['target'] = request.embed(
                                             gm_object.get('modified_site_by_target_id'),
                                                           '@@object')['label']
-                                    if gm_object.get('introdiced_tags_array'):
+                                    if gm_object.get('introduced_tags_array'):
                                         modification_dict['tags'] = []
-                                        for tag in gm_object.get('introdiced_tags_array'):
+                                        for tag in gm_object.get('introduced_tags_array'):
                                             tag_dict = {'location': tag['location']}
                                             if tag.get('promoter_used'):
                                                 tag_dict['promoter'] = request.embed(
