@@ -17,8 +17,8 @@ from pkg_resources import resource_filename
 import logging
 
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
-#log.setLevel(logging.INFO)
+#log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)
 
 # NOTE: Caching is turned on and off with this global AND TRACKHUB_CACHING in peak_indexer.py
 USE_CACHE = True  # Use elasticsearch caching of individual acc_composite blobs

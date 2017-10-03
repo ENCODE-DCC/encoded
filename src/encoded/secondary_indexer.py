@@ -165,7 +165,7 @@ def index_secondary(request):
             indexing_errors.extend(errors)  # ignore errors?
             result['errors'] = indexing_errors
 
-            result = state.finish_cycle(result,indexing_errors)
+            result = state.finish_cycle(result, indexing_errors)
 
             uuid_count += cycle_uuid_count
 
@@ -197,7 +197,7 @@ def all_visualizable_uuids(registry):
 class SecondaryIndexer(Indexer):
     def __init__(self, registry):
         super(SecondaryIndexer, self).__init__(registry)
-        self.state = SecondState(self.es,registry.settings['snovault.elasticsearch.index'])  # WARNING, reace condition is avoided because there is only one worker
+        self.state = SecondState(self.es, self.index)  # WARNING, race condition is avoided because there is only one worker
 
     def get_from_es(request, comp_id):
         '''Returns composite json blob from elastic-search, or None if not found.'''
@@ -232,6 +232,3 @@ class SecondaryIndexer(Indexer):
         if last_exc is not None:
             timestamp = datetime.datetime.now().isoformat()
             return {'error_message': last_exc, 'timestamp': timestamp, 'uuid': str(uuid)}
-
-    def shutdown(self):
-        pass
