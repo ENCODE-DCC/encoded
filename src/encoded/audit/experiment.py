@@ -3010,6 +3010,11 @@ def audit_experiment_control(value):
     if value.get('assay_term_name') not in controlRequiredAssayList:
         return
 
+    # single cell RNA-seq in E4 do not require controls (ticket WOLD-6)
+    if value.get('assay_term_name') == 'single cell isolation followed by RNA-seq' and \
+        check_award_condition(value, ["ENCODE4"]):
+        return
+
     # We do not want controls
     if 'target' in value and 'control' in value['target']['investigated_as']:
         return
