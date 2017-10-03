@@ -73,11 +73,11 @@
             "items": {
                 "type": "string",
                 "enum": [
+                    "community",
                     "ENCODE3",
                     "ENCODE4",
                     "GGR",
-                    "REMC",
-                    "community"
+                    "REMC"
                 ]
             }
         },

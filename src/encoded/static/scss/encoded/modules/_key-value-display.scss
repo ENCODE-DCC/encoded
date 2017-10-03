@@ -128,6 +128,22 @@ dd ul, .multi-value {
     }
 }
 
+dd ul, .multi-value-line {
+    display: block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+        display: block;
+        margin-right: 5px;
+
+        span {
+            font-weight: normal;
+        }
+    }
+}
+
 .multi-comma {
     margin-right: 0;
 
