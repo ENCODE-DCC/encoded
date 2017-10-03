@@ -1903,7 +1903,6 @@ def audit_experiment_replicate_with_no_files(value, system, files_structure):
 
 
 def audit_experiment_replicated(value, system):
-
     if not check_award_condition(value, [
             'ENCODE4', 'ENCODE3', 'GGR']):
         return
@@ -2779,13 +2778,12 @@ def get_control_bam(experiment_bam, pipeline_name, derived_from_fastqs, files_st
     #  get representative FASTQ file
     if not derived_from_fastqs:
         return False
-
     control_fastq = False
     for entry in derived_from_fastqs:
-        if 'controlled_by' in entry and len(entry['controlled_by']) > 0:
+        if entry.get('dataset') == experiment_bam.get('dataset') and \
+           'controlled_by' in entry and len(entry['controlled_by']) > 0:
             control_fastq = entry['controlled_by'][0]  # getting representative FASTQ
             break
-
     # get representative FASTQ from control
     if control_fastq is False:
         return False

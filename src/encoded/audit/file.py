@@ -41,7 +41,7 @@ def audit_file_processed_derived_from(value, system):
                          'derived_from list of an ' + \
                          'alignments file. ' + \
                          'Alignments file {} '.format(value['@id']) + \
-                         'from experiment {} '.format(value['dataset']) + \
+                         'from experiment {} '.format(value['dataset']['@id']) + \
                          'specifies a file {} '.format(f['@id']) + \
                          'from a different experiment {} '.format(f['dataset']) + \
                          'in its derived_from list.'
