@@ -124,37 +124,16 @@ def test_audit_biosample_donor_organism(testapp, base_biosample, base_human_dono
     assert any(error['category'] == 'inconsistent organism' for error in errors_list)
 
 
-def test_audit_biosample_status(testapp, base_biosample, construct):
-    testapp.patch_json(base_biosample['@id'], {'status': 'released',
-                                               'transfection_method': 'chemical',
-                                               'transfection_type': 'stable',
-                                               'constructs': [construct['@id']]})
+def test_audit_biosample_status(testapp, base_biosample, construct_genetic_modification):
+    testapp.patch_json(base_biosample['@id'], {
+        'status': 'released',
+        'genetic_modifications': [construct_genetic_modification['@id']]})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert any(error['category'] == 'mismatched status' for error in errors_list)
-
-
-'''def test_audit_biosample_term_id(testapp, base_biosample):
-    testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'CL:349829'})
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'biosample term-type mismatch' for error in errors_list)
-
-
-def test_audit_biosample_tissue_term_id(testapp, base_biosample):
-    testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'EFO:349829'})
-    res = testapp.get(base_biosample['@id'] + '@@index-data')
-    errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'biosample term-type mismatch' for error in errors_list)'''
 
 
 def test_audit_biosample_ntr_term_id(testapp, base_biosample):
