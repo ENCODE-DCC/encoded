@@ -4,6 +4,21 @@ from snovault import (
 )
 
 
+######
+item = {
+        'award': award['@id'],
+        'documents': [document['@id']],
+        'lab': lab['@id'],
+        'category': 'insertion',
+        'purpose': 'tagging',
+        'method': 'stable transfection',
+        'introduced_tags': [{'name':'eGFP', 'location': 'C-terminal'}],
+        'modified_site_by_target_id': target['@id']
+    }
+    #######
+
+# flag biosamples that contain GM that is different from the GM in donor. It could be legitimate case, but we would like to see it.
+# flag biosamples that have a GM that was specified in donor detecting redundant GM
 def audit_biosample_constructs(value, system):
     if value['biosample_type'] == 'whole organisms':
         model_constructs_present = True
