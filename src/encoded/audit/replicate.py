@@ -34,6 +34,9 @@ def audit_status_replicate(value, system):
     return
 
 
+# check that chip-seq experiments have antibody target matching the GM insert 
+# target of the biosample in the replicate (it could match on target name level 
+# or tags level
 @audit_checker(
     'Replicate',
     frame=[
@@ -74,10 +77,10 @@ def audit_inconsistent_construct_tag(value, system):
                     value['technical_replicate_number'],
                     value['experiment']['@id']) + \
                     'specifies antibody {} that is inconsistent '.format(
-                    value['antibody']['@id']) + \
-                    'with biosample {} constructs tags {}.'.format(
-                    value['library']['biosample']['@id'],
-                    tags_names)
+                        value['antibody']['@id']) + \
+                        'with biosample {} constructs tags {}.'.format(
+                            value['library']['biosample']['@id'],
+                            tags_names)
                 yield AuditFailure('inconsistent construct tag', detail, level='INTERNAL_ACTION')
     return
 
@@ -107,20 +110,5 @@ def get_biosample_constructs_tags(replicate):
                        modification.get('purpose') == 'tagging' and \
                        modification.get('introduced_tags'):
                         for tag in modification.get('introduced_tags'):
-                    
-                    
-                        
-            if 'constructs' in biosample:
-                for construct in biosample['constructs']:
-                    if construct['status'] not in ['deleted', 'replaced', 'revoked'] and \
-                       'tags' in construct:
-                        for t in construct['tags']:
-                            tags_names.add(t['name'])
-            elif 'model_organism_donor_constructs' in biosample:
-                        for construct in biosample['model_organism_donor_constructs']:
-                            if construct['status'] not in ['deleted', 'replaced', 'revoked'] and \
-                               'tags' in construct:
-                                for t in construct['tags']:
-                                    tags_names.add(t['name'])
-
+                            tags_names.add(tag.get('name'))
     return tags_names
