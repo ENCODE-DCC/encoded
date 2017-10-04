@@ -101,6 +101,15 @@ def get_biosample_constructs_tags(replicate):
        replicate['library']['status'] not in ['deleted', 'replaced', 'revoked']:
         biosample = replicate['library']['biosample']
         if biosample['status'] not in ['deleted', 'replaced', 'revoked']:
+            if biosample.get('applied_modifications'):
+                for modification in biosample.get('applied_modifications'):
+                    if modification.get('status') not in ['deleted', 'replaced', 'revoked'] and \
+                       modification.get('purpose') == 'tagging' and \
+                       modification.get('introduced_tags'):
+                        for tag in modification.get('introduced_tags'):
+                    
+                    
+                        
             if 'constructs' in biosample:
                 for construct in biosample['constructs']:
                     if construct['status'] not in ['deleted', 'replaced', 'revoked'] and \
