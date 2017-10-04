@@ -14,11 +14,11 @@ In ``~/.boto`` configure your default region::
 
 To deploy your currently checked out branch, run::
 
-    $ bin/deploy   --instance-type m4.xlarge
+    $ bin/deploy   --instance-type c4.8xlarge
 
 After a few moments, it will return the domain name of your instance::
 
-For faster indexing you can use c4.4xlarge, but after indexing stop instance at console and restart it with an m4.xlarge or t2.large
+Initial indexing currently requires c4.8xlarge, but after indexing stop instance at console and restart it with an m4.xlarge if you are not doing any major patches or indexing tests.
 
     branchname-789abc-username.instance.encodedcc.org
 
@@ -30,11 +30,11 @@ Once the demo is indexed ratchet down the instance size
   * Select Action - Instance State - Stop
   * Select Action - Instance Settings - Change Instance Type
 
-To login to a demo machine, we first need to `sign your ssh public key`_ (the one uploaded to github, normally ~/.ssh/id_rsa.pub) with the demo_users_ca private key. This creates an id_rsa-cert.pub which you should place in your ~/.ssh/ alongside your keypair::
+To login to a demo machine, DCC devops team first needs to `sign your ssh public key`_ (the one uploaded to github, normally ~/.ssh/id_rsa.pub) with the demo_users_ca private key. This creates an id_rsa-cert.pub which you should place in your ~/.ssh/ alongside your keypair::
 
     $ ssh-keygen -s demo_users_ca -I user_myusername -n ubuntu -V +520w myusername.pub 
 
-Note that you need a fairly recent version of OpenSSH for this to work, Mac OS 10.6 and CentOS 6.4 are known not to work (though you can install a newer openssh with homebrew) but Ubuntu 14.04 and Mac OS 10.9 do work.
+Note that you need a fairly recent version of OpenSSH for this to work, Mac OS 10.6 and CentOS 6.4 are known not to work (though you can install a newer openssh with homebrew) but Ubuntu 14.04 and Mac OS 10.9 do work.   The key needs to be named "parallel" to your private key usually id_rsa-cert.pub (to go with id_rsa).
 
 You can then ssh into the demo machine::
 
