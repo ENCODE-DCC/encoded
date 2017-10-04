@@ -27,7 +27,7 @@ def audit_biosample_modifications(value, system):
                      'contains genetic modifications {} that '.format(modification_difference) + \
                      'are not present in the list of genetic modifications {} '.format(
                          model_modifications_ids) + \
-                     'of the corresponding strain.'            
+                     'of the corresponding strain.'
             yield AuditFailure('mismatched genetic modifications', detail,
                                level='INTERNAL_ACTION')
         modification_duplicates = model_modifications_ids & modifications_ids
@@ -36,7 +36,7 @@ def audit_biosample_modifications(value, system):
                      'contains genetic modifications {} that '.format(modification_duplicates) + \
                      'are duplicates of genetic modifications {} '.format(
                          model_modifications_ids) + \
-                     'of the corresponding strain.'            
+                     'of the corresponding strain.'
             yield AuditFailure('duplicated genetic modifications', detail,
                                level='INTERNAL_ACTION')
     return
