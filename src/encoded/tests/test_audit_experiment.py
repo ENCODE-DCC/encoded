@@ -2471,17 +2471,18 @@ def test_audit_experiment_modern_chip_seq_standards(testapp,
                'insufficient read depth' for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_missing_construct(testapp,
-                                            base_experiment,
-                                            recombinant_target,
-                                            replicate_1_1,
-                                            replicate_2_1,
-                                            library_1,
-                                            library_2,
-                                            biosample_1,
-                                            biosample_2,
-                                            donor_1,
-                                            donor_2):
+def test_audit_experiment_missing_genetic_modification(
+        testapp,
+        base_experiment,
+        recombinant_target,
+        replicate_1_1,
+        replicate_2_1,
+        library_1,
+        library_2,
+        biosample_1,
+        biosample_2,
+        donor_1,
+        donor_2):
 
     testapp.patch_json(biosample_1['@id'], {'biosample_term_name': 'K562',
                                             'biosample_term_id': 'EFO:0002067',
@@ -2524,22 +2525,24 @@ def test_audit_experiment_missing_unfiltered_bams(testapp,
                'missing unfiltered alignments' for error in collect_audit_errors(res))
 
 
-def test_audit_experiment_wrong_construct(testapp,
-                                          base_experiment,
-                                          base_target,
-                                          recombinant_target,
-                                          replicate_1_1,
-                                          replicate_2_1,
-                                          library_1,
-                                          library_2,
-                                          biosample_1,
-                                          biosample_2,
-                                          donor_1,
-                                          donor_2,
-                                          construct):
+def test_audit_experiment_wrong_modification(
+        testapp,
+        base_experiment,
+        base_target,
+        recombinant_target,
+        replicate_1_1,
+        replicate_2_1,
+        library_1,
+        library_2,
+        biosample_1,
+        biosample_2,
+        donor_1,
+        donor_2,
+        construct_genetic_modification):
 
-    testapp.patch_json(construct['@id'], {'target': base_target['@id'],
-                                          'tags': [{'name': 'FLAG', 'location': 'internal'}]})
+    testapp.patch_json(construct_genetic_modification['@id'],
+                       {'modified_site_by_target_id': base_target['@id'],
+                        'introduced_tags': [{'name': 'FLAG', 'location': 'internal'}]})
     testapp.patch_json(biosample_1['@id'], {'biosample_term_name': 'K562',
                                             'biosample_term_id': 'EFO:0002067',
                                             'biosample_type': 'immortalized cell line',
@@ -2552,17 +2555,13 @@ def test_audit_experiment_wrong_construct(testapp,
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
     testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
     testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
-    testapp.patch_json(biosample_1['@id'], {'constructs': [construct['@id']],
-                                            'transfection_method': 'chemical',
-                                            'transfection_type': 'stable'})
-    testapp.patch_json(biosample_2['@id'], {'constructs': [construct['@id']],
-                                            'transfection_method': 'chemical',
-                                            'transfection_type': 'stable'})
+    testapp.patch_json(biosample_1['@id'], {'genetic_modifications': [construct_genetic_modification['@id']]})
+    testapp.patch_json(biosample_2['@id'], {'genetic_modifications': [construct_genetic_modification['@id']]})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
                                                 'target': recombinant_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] ==
-               'mismatched construct target' for error in collect_audit_errors(res))
+               'missing tag construct' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_chip_seq_mapped_read_length(testapp,
