@@ -270,7 +270,7 @@ class FileInfoButton extends React.Component {
     }
 
     onClick() {
-        this.props.clickHandler(`file:${this.props.file['@id']}`);
+        this.props.clickHandler(this.props.file);
     }
 
     render() {
@@ -422,11 +422,11 @@ RestrictedDownloadButton.propTypes = {
 
 
 export const DownloadableAccession = (props) => {
-    const { file, buttonEnabled, clickHandler, loggedIn, adminUser } = props;
+    const { file, clickHandler, loggedIn, adminUser } = props;
     return (
         <span className="file-table-accession">
-            <FileAccessionButton file={file} clickHandler={clickHandler} />
-            {buttonEnabled ? <FileInfoButton file={file} clickHandler={clickHandler} /> : null}
+            <FileAccessionButton file={file} />
+            {clickHandler ? <FileInfoButton file={file} clickHandler={clickHandler} /> : null}
             <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
         </span>
     );

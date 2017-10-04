@@ -78,9 +78,17 @@ export class FileTable extends React.Component {
         this.hoverDL = this.hoverDL.bind(this);
     }
 
-    fileClick(nodeId) {
-        // Called when the user clicks a file in the table to bring up a file modal in the graph.
-        this.props.setInfoNodeId(nodeId);
+    fileClick(file) {
+        const node = {
+            metadata: {
+                ref: file,
+            },
+        };
+        const meta = FileDetailView(node, null, null, null, this.context.session, this.context.sessionProperties);
+//            meta = globals.graphDetail.lookup(node)(node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, this.context.session, this.context.sessionProperties);
+//        meta.type = node['@type'][0];
+// Called when the user clicks a file in the table to bring up a file modal in the graph.
+        this.props.setInfoNodeId(meta);
         this.props.setInfoNodeVisible(true);
     }
 
@@ -252,6 +260,12 @@ FileTable.propTypes = {
     adminUser: PropTypes.bool, // True if user is an admin user
     noDefaultClasses: PropTypes.bool, // True to strip SortTable panel of default CSS classes
 };
+
+FileTable.contextTypes = {
+    session: PropTypes.object,
+    session_properties: PropTypes.object,
+};
+
 
 // Configuration for process file table
 FileTable.procTableColumns = {
@@ -553,7 +567,7 @@ class RawSequencingTable extends React.Component {
                                                 <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right + table-raw-merged`}>{(groupFiles[0].replicate && groupFiles[0].replicate.library) ? groupFiles[0].replicate.library.accession : null}</td>
                                             : null}
                                             <td className={pairClass}>
-                                                <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
+                                                <DownloadableAccession file={file} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                             </td>
                                             <td className={pairClass}>{file.file_type}</td>
                                             <td className={pairClass}>{runType}{file.read_length ? <span>{runType ? <span /> : null}{file.read_length + file.read_length_units}</span> : null}</td>
@@ -1396,8 +1410,8 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                     <div className="row graph-modal-audits">
                         <div className="col-xs-12">
                             <h5>File audits:</h5>
-                            {auditIndicators(selectedFile.audit, 'file-audit', { session })}
-                            {auditDetail(selectedFile.audit, 'file-audit', { session, except: selectedFile['@id'] })}
+                            {auditIndicators ? auditIndicators(selectedFile.audit, 'file-audit', { session }) : null}
+                            {auditDetail ? auditDetail(selectedFile.audit, 'file-audit', { session, except: selectedFile['@id'] }) : null}
                         </div>
                     </div>
                 : null}
