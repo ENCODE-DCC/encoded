@@ -2674,9 +2674,9 @@ def audit_missing_construct(value, system):
 
         if missing_construct:
             for b in missing_construct:
-                    detail = 'Recombinant protein target {} requires '.format(target['@id']) + \
-                        'a genetic modification associated with the biosample {} '.format(b['@id']) + \
-                        'to specify the relevant tagging details.'
+                detail = 'Recombinant protein target {} requires '.format(target['@id']) + \
+                    'a genetic modification associated with the biosample {} '.format(b['@id']) + \
+                    'to specify the relevant tagging details.'
                 yield AuditFailure('missing tag construct', detail, level='ERROR')
     return
 

@@ -211,7 +211,7 @@ def is_part_of(term_id, part_of_term_id, ontology):
 
 
 function_dispatcher = {
-    'audit_constructs': audit_biosample_constructs,
+    'audit_constructs': audit_biosample_modifications,
     'audit_bio_term': audit_biosample_term,
     'audit_culture_date': audit_biosample_culture_date,
     'audit_donor': audit_biosample_donor,
