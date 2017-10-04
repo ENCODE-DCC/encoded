@@ -1143,19 +1143,16 @@ class FileGalleryRendererComponent extends React.Component {
                 {!hideGraph ?
                     <TabPanel tabs={{ graph: 'Association graph', tables: 'File details' }}>
                         <TabPanelPane key="graph">
-                            {!hideGraph ?
-                                <FileGraph
-                                    dataset={context}
-                                    files={includedFiles}
-                                    selectedAssembly={selectedAssembly}
-                                    selectedAnnotation={selectedAnnotation}
-                                    schemas={schemas}
-                                    handleNodeClick={this.handleNodeClick}
-                                    auditIndicators={this.props.auditIndicators}
-                                    auditDetail={this.props.auditDetail}
-                                    handleNodeClick={this.handleNodeClick}
-                                />
-                            : null}
+                            <FileGraph
+                                dataset={context}
+                                files={includedFiles}
+                                selectedAssembly={selectedAssembly}
+                                selectedAnnotation={selectedAnnotation}
+                                schemas={schemas}
+                                handleNodeClick={this.handleNodeClick}
+                                auditIndicators={this.props.auditIndicators}
+                                auditDetail={this.props.auditDetail}
+                            />
                         </TabPanelPane>
 
                         <TabPanelPane key="tables">

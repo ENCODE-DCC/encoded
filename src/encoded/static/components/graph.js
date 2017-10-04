@@ -1184,27 +1184,31 @@ export class Graph extends React.Component {
             }
         }
 
-        return (
-            <Panel noDefaultClasses={noDefaultClasses}>
-                <div className="zoom-control-area">
-                    <table className="zoom-control">
-                        <tbody>
-                            <tr>
-                                <td className="zoom-indicator"><i className="icon icon-minus" /></td>
-                                <td className="zomm-controller"><input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel === null ? 0 : this.state.zoomLevel} onChange={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
-                                <td className="zoom-indicator"><i className="icon icon-plus" /></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler} />
-                <div className="graph-dl clearfix">
-                    <button className="btn btn-info btn-sm btn-orient" title={orientBtnAlt} onClick={this.handleOrientationClick}>{svgIcon(currOrientKey)}<span className="sr-only">{orientBtnAlt}</span></button>
-                    <button ref="dlButton" className="btn btn-info btn-sm" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
-                </div>
-                {this.props.children}
-            </Panel>
-        );
+        if (this.cv.graph) {
+            return (
+                <Panel noDefaultClasses={noDefaultClasses}>
+                    <div className="zoom-control-area">
+                        <table className="zoom-control">
+                            <tbody>
+                                <tr>
+                                    <td className="zoom-indicator"><i className="icon icon-minus" /></td>
+                                    <td className="zomm-controller"><input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel === null ? 0 : this.state.zoomLevel} onChange={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
+                                    <td className="zoom-indicator"><i className="icon icon-plus" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler} />
+                    <div className="graph-dl clearfix">
+                        <button className="btn btn-info btn-sm btn-orient" title={orientBtnAlt} onClick={this.handleOrientationClick}>{svgIcon(currOrientKey)}<span className="sr-only">{orientBtnAlt}</span></button>
+                        <button ref="dlButton" className="btn btn-info btn-sm" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
+                    </div>
+                    {this.props.children}
+                </Panel>
+            );
+        }
+
+        return <p className="browser-error">Graph not applicable.</p>;
     }
 }
 
@@ -1265,7 +1269,7 @@ export class FileGraph extends React.Component {
                     auditIndicators={this.props.auditIndicators}
                     auditDetail={this.props.auditDetail}
                 />
-            );;
+            );
         }
         return <p className="browser-error">Graph not applicable.</p>;
     }
