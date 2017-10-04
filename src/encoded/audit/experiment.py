@@ -2276,7 +2276,7 @@ def audit_experiment_platforms_mismatches(value, system, files_structure):
             for control in value['possible_controls']:
                 if control.get('original_files'):
                     control_platforms = get_platforms_used_in_experiment(
-                        create_files_mapping(control.get('original_files'), []))
+                        create_files_mapping(control.get('original_files'), files_structure.get('excluded_types')))
                     if len(control_platforms) > 1:
                         control_platforms_string = str(list(control_platforms)).replace('\'', '')
                         detail = 'possible_controls is a list of experiment(s) that can serve ' + \
@@ -2792,7 +2792,8 @@ def get_control_bam(experiment_bam, pipeline_name, derived_from_fastqs, files_st
             return False
 
         control_bam = False
-        control_files_structure = create_files_mapping(control_fastq['dataset'].get('original_files'), [])
+        control_files_structure = create_files_mapping(control_fastq['dataset'].get('original_files'),
+                                                       files_structure.get('excluded_types'))
 
         for control_file in control_files_structure.get('alignments').values():
             if 'assembly' in control_file and 'assembly' in experiment_bam and \
@@ -3040,7 +3041,8 @@ def create_files_mapping(files_list, excluded):
                  'signal_files':{},
                  'optimal_idr_peaks':{},
                  'cpg_quantifications':{},
-                 'contributing_files':{}}
+                 'contributing_files':{},
+                 'excluded_types': excluded}
     if files_list:
         for file_object in files_list:
             if file_object['status'] not in excluded:
