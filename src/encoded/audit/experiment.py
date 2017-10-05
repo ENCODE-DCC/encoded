@@ -2329,10 +2329,10 @@ def audit_experiment_ChIP_control(value, system, files_structure):
             yield AuditFailure('invalid possible_control', detail, level='ERROR')
             return
 
-        if not control['replicates']:
+        if not control.get('replicates'):
             continue
 
-        if 'antibody' in control['replicates'][0]:
+        if 'antibody' in control.get('replicates')[0]:
             num_IgG_controls += 1
 
     # If all of the possible_control experiments are mock IP control experiments
