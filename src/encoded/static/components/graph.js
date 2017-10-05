@@ -647,7 +647,6 @@ function qcDetailsView(metrics, schemas) {
 
     if (metrics && genericQCSchema && qcSchema && qcSchema.properties) {
         const file = metrics.parent;
-
         return qcModalContent(qc, file, qcSchema, genericQCSchema);
     }
     return { header: null, body: null };
@@ -960,11 +959,8 @@ export class Graph extends React.Component {
         if (nodeId) {
             if (nodeId.indexOf('qc:') >= 0) {
                 // QC subnode.
-                const subnode = this.cv.graph.getSubnode(nodeId);
-                if (subnode) {
-                    meta = qcDetailsView(subnode, this.props.schemas);
-                    meta.type = subnode['@type'][0];
-                }
+                node = this.cv.graph.getSubnode(nodeId);
+                node.schemas = this.props.schemas;
             } else if (nodeId.indexOf('coalesced:') >= 0) {
                 // Coalesced contributing files.
                 node = this.cv.graph.getNode(nodeId);
@@ -995,6 +991,7 @@ export class Graph extends React.Component {
                 // A regular or contributing file.
                 node = this.cv.graph.getNode(nodeId);
                 if (node) {
+                    node.schemas = this.props.schemas;
                     if (node.metadata.contributing) {
                         // This is a contributing file, and its @id is in
                         // node.metadata.contributing. See if the file is in the cache.

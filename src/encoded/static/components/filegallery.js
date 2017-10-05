@@ -1261,8 +1261,13 @@ class FileQCButton extends React.Component {
     }
 
     handleClick() {
-        const qcId = `qc:${this.props.qc['@id']}${this.props.file['@id']}`;
-        this.props.handleClick(qcId);
+        const node = {
+            '@type': ['QualityMetric'],
+            parent: this.props.file,
+            ref: this.props.qc,
+            schemas: this.props.schemas,
+        };
+        this.props.handleClick(node);
     }
 
     render() {
@@ -1277,6 +1282,7 @@ class FileQCButton extends React.Component {
 FileQCButton.propTypes = {
     qc: PropTypes.object.isRequired, // QC object we're directing to
     file: PropTypes.object.isRequired, // File this QC object is attached to
+    schemas: PropTypes.object.isRequired, // All schemas from /profiles
     handleClick: PropTypes.func.isRequired, // Function to open a modal to the given object
 };
 
@@ -1397,7 +1403,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                             <dt>File quality metrics</dt>
                             <dd className="file-qc-buttons">
                                 {selectedFile.quality_metrics.map(qc =>
-                                    <FileQCButton key={qc['@id']} qc={qc} file={selectedFile} handleClick={qcClick} />,
+                                    <FileQCButton key={qc['@id']} qc={qc} file={selectedFile} schemas={node.schemas} handleClick={qcClick} />,
                                 )}
                             </dd>
                         </div>
