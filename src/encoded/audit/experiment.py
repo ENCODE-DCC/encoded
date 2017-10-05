@@ -1860,8 +1860,11 @@ def audit_experiment_replicate_with_no_files(value, system, files_structure):
 
     rep_dictionary = {}
     rep_numbers = {}
+    excluded_statuses = files_structure.get('excluded_types')
+    excluded_statuses += ['deleted', 'replaced']
+
     for rep in value.get('replicates'):
-        if rep['status'] in ['deleted', 'replaced', 'revoked']:
+        if rep['status'] in excluded_statuses:
             continue
         rep_dictionary[rep['@id']] = []
         rep_numbers[rep['@id']] = (rep['biological_replicate_number'],
