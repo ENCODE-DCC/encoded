@@ -2638,7 +2638,7 @@ def audit_library_RNA_size_range(value, system):
 # if experiment target is recombinant protein, the biosamples should have at 
 # least one GM in the applied_modifications that is an insert with tagging purpose
 # and a target that matches experiment target
-def audit_missing_construct(value, system):
+def audit_missing_modification(value, system):
 
     if value['status'] in ['deleted', 'replaced', 'proposed', 'revoked']:
         return
@@ -3264,7 +3264,7 @@ function_dispatcher_without_files = {
     'audit_geo_submission': audit_experiment_geo_submission,
     'audit_replication': audit_experiment_replicated,
     'audit_RNA_size': audit_library_RNA_size_range,
-    'audit_missing_construct': audit_missing_construct,
+    'audit_missing_modifiction': audit_missing_modification,
     'audit_NTR': audit_experiment_assay,
     'audit_AB_characterization': audit_experiment_antibody_characterized,
     'audit_control': audit_experiment_control,
