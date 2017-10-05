@@ -463,24 +463,12 @@ def rnai(testapp, lab, award, target):
 
 
 @pytest.fixture
-def construct(testapp, lab, award, target, source, target_control):
-    item = {
-        'target': target['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'source': source['@id'],
-        'construct_type': 'fusion protein',
-        'tags': [{'name': 'eGFP', 'location': 'C-terminal'}],
-    }
-    return testapp.post_json('/construct', item).json['@graph'][0]
-
-
-@pytest.fixture
-def construct_genetic_modification(testapp,
-                                   lab,
-                                   award,
-                                   document,
-                                   target):
+def construct_genetic_modification(
+        testapp,
+        lab,
+        award,
+        document,
+        target):
     item = {
         'award': award['@id'],
         'documents': [document['@id']],
@@ -494,11 +482,12 @@ def construct_genetic_modification(testapp,
     return testapp.post_json('/genetic_modification', item).json['@graph'][0]
 
 @pytest.fixture
-def construct_genetic_modification_N(testapp,
-                                   lab,
-                                   award,
-                                   document,
-                                   target):
+def construct_genetic_modification_N(
+        testapp,
+        lab,
+        award,
+        document,
+        target):
     item = {
         'award': award['@id'],
         'documents': [document['@id']],
