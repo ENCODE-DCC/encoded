@@ -148,8 +148,8 @@ class Experiment(Dataset,
                             biosample_accessions.add(biosampleObject['accession'])
 
                             if biosampleObject.get('biosample_type') in [
-                               'stem cell',
-                               'in vitro differentiated cells']:
+                                    'stem cell',
+                                    'in vitro differentiated cells']:
                                 drop_age_sex_flag = True
 
                             organismObject = None
@@ -177,64 +177,28 @@ class Experiment(Dataset,
                                                                        '@@object')
 
                             modifications_list = None
-                            genetic_modifications = biosampleObject.get('genetic_modifications')
-                            if genetic_modifications is not None and len(genetic_modifications) > 0:
+                            genetic_modifications = biosampleObject.get('applied_modifications')
+                            if genetic_modifications:
                                 modifications_list = []
                                 for gm in genetic_modifications:
                                     gm_object = request.embed(gm, '@@object')
-                                    modifications_list.append(
-                                        (gm_object['category'], gm_object))
+                                    modification_dict = {'category': gm_object.get('category')}
+                                    if gm_object.get('modified_site_by_target_id'):
+                                        modification_dict['target'] = request.embed(
+                                            gm_object.get('modified_site_by_target_id'),
+                                                          '@@object')['label']
+                                    if gm_object.get('introduced_tags_array'):
+                                        modification_dict['tags'] = []
+                                        for tag in gm_object.get('introduced_tags_array'):
+                                            tag_dict = {'location': tag['location']}
+                                            if tag.get('promoter_used'):
+                                                tag_dict['promoter'] = request.embed(
+                                                    tag.get('promoter_used'),
+                                                            '@@object').get['label']
+                                            modification_dict['tags'].append(tag_dict)
 
-                            construct_objects_list = None
-                            constructs = biosampleObject.get('constructs')
-                            if constructs is not None and len(constructs) > 0:
-                                construct_objects_list = []
-                                for c in constructs:
-                                    construct_object = request.embed(c, '@@object')
-                                    target_name = construct_object['target']
-                                    if 'promoter_used' in construct_object and \
-                                       construct_object['promoter_used'] is not None:
-                                        promo = construct_object['promoter_used']
-                                        item_to_add = (construct_object,
-                                                       request.embed(target_name, '@@object'),
-                                                       request.embed(promo, '@@object'))
-                                    else:
-                                        item_to_add = (construct_object,
-                                                       request.embed(target_name, '@@object'),
-                                                       None)
-                                    construct_objects_list.append(item_to_add)
+                                    modifications_list.append((gm_object['method'], modification_dict))
 
-                            model_construct_objects_list = None
-                            model_organism_donor_constructs = biosampleObject.get(
-                                'model_organism_donor_constructs')
-                            if model_organism_donor_constructs is not None and \
-                               len(model_organism_donor_constructs) > 0:
-                                model_construct_objects_list = []
-                                for c in model_organism_donor_constructs:
-                                    construct_object = request.embed(c, '@@object')
-                                    target_name = construct_object['target']
-                                    if 'promoter_used' in construct_object and \
-                                       construct_object['promoter_used'] is not None:
-                                        promo = construct_object['promoter_used']
-                                        item_to_add = (construct_object,
-                                                       request.embed(target_name, '@@object'),
-                                                       request.embed(promo, '@@object'))
-                                    else:
-                                        item_to_add = (construct_object,
-                                                       request.embed(target_name, '@@object'),
-                                                       None)
-                                    model_construct_objects_list.append(item_to_add)
-
-                            rnai_objects = None
-                            rnais = biosampleObject.get('rnais')
-                            if rnais is not None and len(rnais) > 0:
-                                rnai_objects = []
-                                for r in rnais:
-                                    rnai_object = request.embed(r, '@@object')
-                                    target_object = request.embed(rnai_object['target'], '@@object')
-                                    rnai_info = {'rnai_type': rnai_object['rnai_type'],
-                                                 'target': target_object['label']}
-                                    rnai_objects.append(rnai_info)
 
                             dictionary_to_add = generate_summary_dictionary(
                                 organismObject,
@@ -255,14 +219,10 @@ class Experiment(Dataset,
                                 biosampleObject.get('post_synchronization_time_units'),
                                 biosampleObject.get('post_treatment_time'),
                                 biosampleObject.get('post_treatment_time_units'),
-                                biosampleObject.get('transfection_type'),
                                 treatment_objects_list,
                                 part_of_object,
                                 originated_from_object,
                                 modifications_list,
-                                construct_objects_list,
-                                model_construct_objects_list,
-                                rnai_objects,
                                 True)
 
                             dictionaries_of_phrases.append(dictionary_to_add)
@@ -276,12 +236,8 @@ class Experiment(Dataset,
                 'synchronization',
                 'modifications_list',
                 'originated_from',
-                'transfection_type',
-                'rnais',
                 'treatments_phrase',
-                'depleted_in',
-                'constructs',
-                'model_organism_constructs'
+                'depleted_in'
             ]
         else:
             sentence_parts = [
@@ -293,12 +249,8 @@ class Experiment(Dataset,
                 'synchronization',
                 'modifications_list',
                 'originated_from',
-                'transfection_type',
-                'rnais',
                 'treatments_phrase',
-                'depleted_in',
-                'constructs',
-                'model_organism_constructs'
+                'depleted_in'
             ]
         if len(dictionaries_of_phrases) > 0:
             return construct_biosample_summary(dictionaries_of_phrases, sentence_parts)

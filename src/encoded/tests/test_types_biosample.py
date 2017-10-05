@@ -147,24 +147,19 @@ def test_biosample_summary_construct(testapp,
                                      fly,
                                      fly_donor,
                                      biosample_1,
-                                     construct,
-                                     target_promoter):
+                                     construct_genetic_modification):
 
-    testapp.patch_json(construct['@id'],
-                       {'promoter_used': target_promoter['@id']})
-    testapp.patch_json(biosample_1['@id'], {'donor': fly_donor['@id'],
-                                            'biosample_term_id': 'UBERON:0002784',
-                                            'biosample_term_name': 'liver',
-                                            'biosample_type': 'tissue',
-                                            'constructs': [construct['@id']],
-                                            'transfection_method': 'chemical',
-                                            'transfection_type': 'stable',
-                                            'model_organism_age': '10',
-                                            'model_organism_age_units': 'day',
-                                            'model_organism_sex': 'female',
-                                            'organism': fly['@id']})
-
+    testapp.patch_json(biosample_1['@id'], {
+        'donor': fly_donor['@id'],
+        'biosample_term_id': 'UBERON:0002784',
+        'biosample_term_name': 'liver',
+        'biosample_type': 'tissue',
+        'genetic_modifications': [construct_genetic_modification['@id']],
+        'model_organism_age': '10',
+        'model_organism_age_units': 'day',
+        'model_organism_sex': 'female',
+        'organism': fly['@id']})
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == \
         'Drosophila melanogaster liver tissue ' + \
-        'female (10 days) stably expressing C-terminal ATF4 fusion protein under daf-2 promoter'
+        'female (10 days) stably expressing C-terminal ATF4'
