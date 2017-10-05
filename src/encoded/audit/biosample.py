@@ -21,7 +21,8 @@ def audit_biosample_modifications(value, system):
             for modification in value['genetic_modifications']:
                 modifications_ids.add(modification)
 
-        modification_difference = model_modifications_ids - modifications_ids
+        modification_difference = modifications_ids - model_modifications_ids
+
         if modification_difference and model_modifications_present:
             detail = 'Biosample {} '.format(value['@id']) + \
                      'contains genetic modifications {} that '.format(modification_difference) + \
