@@ -954,6 +954,7 @@ export class Graph extends React.Component {
 
     nodeIdClick(nodeId) {
         let meta;
+        let node;
 
         // Find data matching selected node, if any
         if (nodeId) {
@@ -966,7 +967,7 @@ export class Graph extends React.Component {
                 }
             } else if (nodeId.indexOf('coalesced:') >= 0) {
                 // Coalesced contributing files.
-                const node = this.cv.graph.getNode(nodeId);
+                node = this.cv.graph.getNode(nodeId);
                 if (node) {
                     const currCoalescedFiles = this.state.coalescedFiles;
                     if (currCoalescedFiles[node.metadata.contributing]) {
@@ -992,7 +993,7 @@ export class Graph extends React.Component {
                 }
             } else {
                 // A regular or contributing file.
-                const node = this.cv.graph.getNode(nodeId);
+                node = this.cv.graph.getNode(nodeId);
                 if (node) {
                     if (node.metadata.contributing) {
                         // This is a contributing file, and its @id is in
@@ -1001,8 +1002,6 @@ export class Graph extends React.Component {
                         if (currContributing[node.metadata.contributing]) {
                             // We have this file's object in the cache, so just display it.
                             node.metadata.ref = currContributing[node.metadata.contributing];
-                            meta = globals.graphDetail.lookup(node)(node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, session, sessionProperties);
-                            meta.type = node['@type'][0];
                         } else if (!this.contributingRequestOutstanding) {
                             // We don't have this file's object in the cache, so request it from
                             // the DB.
@@ -1017,17 +1016,12 @@ export class Graph extends React.Component {
                                 this.setState({ contributingFiles: currContributing });
                             });
                         }
-                    } else {
-                        // Regular File data in the node from when we generated the graph. Just
-                        // display the file data from there.
-                        meta = globals.graphDetail.lookup(node)(node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, this.context.session, this.context.sessionProperties);
-                        meta.type = node['@type'][0];
                     }
                 }
             }
         }
 
-        this.props.nodeClickHandler(meta);
+        this.props.nodeClickHandler(node);
     }
 
     bindClickHandlers(d3, el) {

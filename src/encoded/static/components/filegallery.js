@@ -84,11 +84,7 @@ export class FileTable extends React.Component {
                 ref: file,
             },
         };
-        const meta = FileDetailView(node, null, null, null, this.context.session, this.context.sessionProperties);
-//            meta = globals.graphDetail.lookup(node)(node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, this.context.session, this.context.sessionProperties);
-//        meta.type = node['@type'][0];
-// Called when the user clicks a file in the table to bring up a file modal in the graph.
-        this.props.setInfoNodeId(meta);
+        this.props.setInfoNodeId(node);
         this.props.setInfoNodeVisible(true);
     }
 
@@ -1028,8 +1024,8 @@ class FileGalleryRendererComponent extends React.Component {
     }
 
     // Called from child components when the selected node changes.
-    setInfoNodeId(meta) {
-        this.setState({ meta });
+    setInfoNodeId(node) {
+        this.setState({ node });
     }
 
     setInfoNodeVisible(visible) {
@@ -1085,6 +1081,7 @@ class FileGalleryRendererComponent extends React.Component {
         let selectedAssembly = '';
         let selectedAnnotation = '';
         let allGraphedFiles;
+        let meta;
         const files = (data ? data['@graph'] : []).concat(this.state.relatedFiles); // Array of searched files arrives in data.@graph result
         if (files.length === 0) {
             return null;
@@ -1119,6 +1116,10 @@ class FileGalleryRendererComponent extends React.Component {
                 adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
             />
         );
+
+        if (this.state.node) {
+            meta = globals.graphDetail.lookup(this.state.node)(this.state.node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, this.context.session, this.context.sessionProperties);
+        }
 
         return (
             <Panel>
@@ -1166,13 +1167,13 @@ class FileGalleryRendererComponent extends React.Component {
                     <div>{fileTable}</div>
                 }
 
-                {this.state.meta && this.state.infoNodeVisible ?
+                {meta && this.state.infoNodeVisible ?
                     <Modal closeModal={this.closeModal}>
                         <ModalHeader closeModal={this.closeModal}>
-                            {this.state.meta.header}
+                            {meta.header}
                         </ModalHeader>
                         <ModalBody>
-                            {this.state.meta.body}
+                            {meta.body}
                         </ModalBody>
                         <ModalFooter closeModal={<button className="btn btn-info" onClick={this.closeModal}>Close</button>} />
                     </Modal>
