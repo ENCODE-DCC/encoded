@@ -193,7 +193,7 @@ def check_control_read_depth_standards(value,
     return
 
 
-def audit_experiment_mixed_libraries(value, system):
+def audit_experiment_mixed_libraries(value, system, excluded_types):
     '''
     Experiments should not have mixed libraries nucleic acids
     '''
@@ -206,9 +206,8 @@ def audit_experiment_mixed_libraries(value, system):
     nucleic_acids = set()
 
     for rep in value['replicates']:
-        if 'library' in rep and rep['library']['status'] not in ['deleted',
-                                                                 'replaced',
-                                                                 'revoked']:
+        if rep.get('status') not in excluded_types and \
+           'library' in rep and rep['library'].get('status') not in excluded_types:
             if 'nucleic_acid_term_name' in rep['library']:
                 nucleic_acids.add(rep['library']['nucleic_acid_term_name'])
 
@@ -330,7 +329,7 @@ def audit_experiment_standards_dispatcher(value, system, files_structure):
     if len(num_bio_reps) < 1:
         return
 
-    organism_name = get_organism_name(value['replicates'])  # human/mouse
+    organism_name = get_organism_name(value['replicates'], files_structure.get('excluded_types'))  # human/mouse
     if organism_name == 'human':
         desired_assembly = 'GRCh38'
         desired_annotation = 'V24'
@@ -1647,7 +1646,7 @@ def check_file_read_length_rna(file_to_check, threshold_length, pipeline_title, 
     return
 
 
-def audit_experiment_internal_tag(value, system):
+def audit_experiment_internal_tag(value, system, excluded_types):
 
     if value['status'] in ['deleted', 'replaced']:
         return
@@ -1717,7 +1716,7 @@ def audit_experiment_internal_tag(value, system):
     return
 
 
-def audit_experiment_geo_submission(value, system):
+def audit_experiment_geo_submission(value, system, excluded_types):
     if value['status'] not in ['released']:
         return
     if 'assay_term_id' in value and \
@@ -1905,7 +1904,7 @@ def audit_experiment_replicate_with_no_files(value, system, files_structure):
     return
 
 
-def audit_experiment_replicated(value, system):
+def audit_experiment_replicated(value, system, excluded_types):
     if not check_award_condition(value, [
             'ENCODE4', 'ENCODE3', 'GGR']):
         return
@@ -1945,13 +1944,13 @@ def audit_experiment_replicated(value, system):
     return
 
 
-def audit_experiment_replicates_with_no_libraries(value, system):
+def audit_experiment_replicates_with_no_libraries(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced', 'revoked', 'proposed']:
         return
     if len(value['replicates']) == 0:
         return
     for rep in value['replicates']:
-        if 'library' not in rep:
+        if rep.get('status') not in excluded_types and library' not in rep:
             detail = 'Experiment {} has a replicate {}, that has no library associated with'.format(
                 value['@id'],
                 rep['@id'])
@@ -1959,7 +1958,7 @@ def audit_experiment_replicates_with_no_libraries(value, system):
     return
 
 
-def audit_experiment_isogeneity(value, system):
+def audit_experiment_isogeneity(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
     if len(value['replicates']) < 2:
@@ -2019,7 +2018,7 @@ def audit_experiment_isogeneity(value, system):
     return
 
 
-def audit_experiment_technical_replicates_same_library(value, system):
+def audit_experiment_technical_replicates_same_library(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
     biological_replicates_dict = {}
@@ -2040,7 +2039,7 @@ def audit_experiment_technical_replicates_same_library(value, system):
     return
 
 
-def audit_experiment_replicates_biosample(value, system):
+def audit_experiment_replicates_biosample(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
     biological_replicates_dict = {}
@@ -2079,7 +2078,7 @@ def audit_experiment_replicates_biosample(value, system):
     return
 
 
-def audit_experiment_documents(value, system):
+def audit_experiment_documents(value, system, excluded_types):
     if not check_award_condition(value, [
             "ENCODE3", "modERN", "GGR", "ENCODE4",
             "ENCODE", "ENCODE2-Mouse", "Roadmap"]):
@@ -2109,7 +2108,7 @@ def audit_experiment_documents(value, system):
         yield AuditFailure('missing documents', detail, level='NOT_COMPLIANT')
     return
 
-def audit_experiment_assay(value, system):
+def audit_experiment_assay(value, system, excluded_types):
     '''
     Experiments should have assays with valid ontologies term ids and names that
     are a valid synonym.
@@ -2126,7 +2125,7 @@ def audit_experiment_assay(value, system):
     return
 
 
-def audit_experiment_target(value, system):
+def audit_experiment_target(value, system, excluded_types):
     '''
     Certain assay types (ChIP-seq, ...) require valid targets and the replicate's
     antibodies should match.
@@ -2204,7 +2203,7 @@ def audit_experiment_target(value, system):
     return
 
 
-def audit_experiment_control(value, system):
+def audit_experiment_control(value, system, excluded_types):
     if not check_award_condition(value, [
             "ENCODE3", "ENCODE4", "modERN", "ENCODE2", "modENCODE",
             "ENCODE", "ENCODE2-Mouse", "Roadmap"]):
@@ -2345,7 +2344,7 @@ def audit_experiment_ChIP_control(value, system, files_structure):
             yield AuditFailure('missing input control', detail, level='NOT_COMPLIANT')
     return
 
-def audit_experiment_spikeins(value, system):
+def audit_experiment_spikeins(value, system, excluded_types):
     if not check_award_condition(value, [
             "ENCODE3",
             "ENCODE4",
@@ -2386,7 +2385,7 @@ def audit_experiment_spikeins(value, system):
     return
 
 
-def audit_experiment_biosample_term(value, system):
+def audit_experiment_biosample_term(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced']:
         return
 
@@ -2464,7 +2463,7 @@ def audit_experiment_biosample_term(value, system):
     return
 
 
-def audit_experiment_antibody_characterized(value, system):
+def audit_experiment_antibody_characterized(value, system, excluded_types):
     '''Check that biosample in the experiment has been characterized for the given antibody.'''
     if not check_award_condition(value, [
             'ENCODE4', 'ENCODE3', 'modERN']):
@@ -2595,7 +2594,7 @@ def audit_experiment_antibody_characterized(value, system):
     return
 
 
-def audit_experiment_library_biosample(value, system):
+def audit_experiment_library_biosample(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced']:
         return
 
@@ -2613,7 +2612,7 @@ def audit_experiment_library_biosample(value, system):
     return
 
 
-def audit_library_RNA_size_range(value, system):
+def audit_library_RNA_size_range(value, system, excluded_types):
     '''
     An RNA library should have a size_range specified.
     This needs to accomodate the rfa
@@ -2639,7 +2638,7 @@ def audit_library_RNA_size_range(value, system):
     return
 
 
-def audit_missing_construct(value, system):
+def audit_missing_construct(value, system, excluded_types):
 
     if value['status'] in ['deleted', 'replaced', 'proposed', 'revoked']:
         return
@@ -2855,13 +2854,14 @@ def get_target(experiment):
     return False
 
 
-def get_organism_name(reps):
+def get_organism_name(reps, excluded_types):
+    excluded_types += ['deleted', 'replaced']
     for rep in reps:
-        if rep['status'] not in ['replaced', 'revoked', 'deleted'] and \
+        if rep['status'] not in excluded_types and \
            'library' in rep and \
-           rep['library']['status'] not in ['replaced', 'revoked', 'deleted'] and \
+           rep['library']['status'] not in excluded_types and \
            'biosample' in rep['library'] and \
-           rep['library']['biosample']['status'] not in ['replaced', 'revoked', 'deleted']:
+           rep['library']['biosample']['status'] not in excluded_types:
             if 'organism' in rep['library']['biosample']:
                 return rep['library']['biosample']['organism'].split('/')[2]
     return False
@@ -2870,7 +2870,7 @@ def get_organism_name(reps):
 def scanFilesForPipelineTitle_not_chipseq(files_to_scan, assemblies, pipeline_titles):
     for f in files_to_scan:
         if 'file_format' in f and f['file_format'] == 'bam' and \
-           f['status'] not in ['replaced', 'revoked', 'deleted'] and \
+           f['status'] not in ['replaced', 'deleted'] and \
            'assembly' in f and f['assembly'] in assemblies and \
            f['lab'] == '/labs/encode-processing-pipeline/' and \
            'analysis_step_version' in f and \
@@ -2997,7 +2997,7 @@ def get_metrics(files_list, metric_type, desired_assembly=None, desired_annotati
     return metrics
 
 def get_chip_seq_bam_read_depth(bam_file):
-    if bam_file['status'] in ['deleted', 'replaced', 'revoked']:
+    if bam_file['status'] in ['deleted', 'replaced']:
         return False
 
     if bam_file['file_format'] != 'bam' or bam_file['output_type'] != 'alignments':
@@ -3087,11 +3087,11 @@ def create_files_mapping(files_list, excluded):
                     to_return['cpg_quantifications'][file_object['@id']] = file_object
     return to_return
 
-def get_contributing_files(files_list):
+def get_contributing_files(files_list, excluded_types):
     to_return = {}
     if files_list:
         for file_object in files_list:
-            if file_object['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
+            if file_object['status'] not in excluded_types:
                 to_return[file_object['@id']] = file_object
     return to_return
 
@@ -3367,13 +3367,14 @@ def audit_experiment(value, system):
     if value.get('status') == 'archived':
         excluded_files = ['revoked']
     files_structure = create_files_mapping(value.get('original_files'), excluded_files)
-    files_structure['contributing_files'] = get_contributing_files(value.get('contributing_files'))
+    files_structure['contributing_files'] = get_contributing_files(value.get('contributing_files'), excluded_files)
 
     for function_name in function_dispatcher_with_files.keys():
         yield from function_dispatcher_with_files[function_name](value, system, files_structure)
 
+    excluded_types = excluded_files + ['deleted', 'replaced']
     for function_name in function_dispatcher_without_files.keys():
-        yield from function_dispatcher_without_files[function_name](value, system)
+        yield from function_dispatcher_without_files[function_name](value, system, excluded_types)
 
     return
 
