@@ -1950,7 +1950,7 @@ def audit_experiment_replicates_with_no_libraries(value, system, excluded_types)
     if len(value['replicates']) == 0:
         return
     for rep in value['replicates']:
-        if rep.get('status') not in excluded_types and library' not in rep:
+        if rep.get('status') not in excluded_types and 'library' not in rep:
             detail = 'Experiment {} has a replicate {}, that has no library associated with'.format(
                 value['@id'],
                 rep['@id'])
