@@ -38,9 +38,8 @@ def run(app):
 
     mapping = {
         'properties': {
-            'name_suggest': {
+            'suggest': {
                 'type': 'completion',
-                'analyzer': 'standard',
             }
         }
     }

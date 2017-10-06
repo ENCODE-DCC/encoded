@@ -68,14 +68,15 @@ def human_single_annotation(r):
 
         # Assumption: payload.id and id should always be same
         doc = {'annotations': []}
-        doc['name_suggest'] = {
+        doc['suggest'] = {
             'input': [r['Approved Name'] + species,
                       r['Approved Symbol'] + species,
                       r['HGNC ID'],
-                      r['Entrez Gene ID'] + ' (Gene ID)'],
-            'payload': {'id': r['HGNC ID'],
-                        'species': species_for_payload}
-        }
+                      r['Entrez Gene ID'] + ' (Gene ID)']
+            }
+        doc['payload'] = {'id': r['HGNC ID'],
+                        'species': species_for_payload
+            }
         doc['id'] = r['HGNC ID']
 
         if r['Entrez Gene ID'].isdigit():
@@ -84,7 +85,7 @@ def human_single_annotation(r):
         # Adding gene synonyms to autocomplete
         if r['Synonyms'] is not None and r['Synonyms'] != '':
             synonyms = [x.strip(' ') + species for x in r['Synonyms'].split(',')]
-            doc['name_suggest']['input'] = doc['name_suggest']['input'] + synonyms
+            doc['suggest']['input'] = doc['suggest']['input'] + synonyms
 
         url = '{ensembl}lookup/id/{id}?content-type=application/json'.format(
             ensembl=_ENSEMBL_URL,
@@ -136,18 +137,19 @@ def mouse_single_annotation(r):
     doc = {'annotations': []}
     species = ' (mus musculus)'
     species_for_payload = re.split('[(|)]', species)[1]
-    doc['name_suggest'] = {
-        'input': [],
-        'payload': {'id': r['Ensembl Gene ID'],
-                    'species': species_for_payload}
-    }
+    doc['suggest'] = {
+        'input': []
+        }
+    doc['payload'] = {'id': r['Ensembl Gene ID'],
+                    'species': species_for_payload
+        }
     doc['id'] = r['Ensembl Gene ID']
 
     if 'MGI symbol' in r and r['MGI symbol'] is not None:
-        doc['name_suggest']['input'].append(r['MGI symbol'] + species)
+        doc['suggest']['input'].append(r['MGI symbol'] + species)
 
     if 'MGI ID' in r and r['MGI ID'] is not None:
-        doc['name_suggest']['input'].append(r['MGI ID'] + species)
+        doc['suggest']['input'].append(r['MGI ID'] + species)
 
     doc['annotations'].append({
         'assembly_name': 'GRCm38',
@@ -244,11 +246,12 @@ def other_annotations(file, species, assembly):
         doc = {'annotations': []}
         annotation = get_annotation()
 
-        doc['name_suggest'] = {
-            'input': [r['Associated Gene Name'] + species],
-            'payload': {'id': r['Ensembl Gene ID'],
-                        'species': species_for_payload}
-        }
+        doc['suggest'] = {
+            'input': [r['Associated Gene Name'] + species]
+            }
+        doc['payload'] = {'id': r['Ensembl Gene ID'],
+                        'species': species_for_payload
+            }
         doc['id'] = r['Ensembl Gene ID']
         annotation['assembly_name'] = assembly
         annotation['chromosome'] = r['Chromosome Name']
