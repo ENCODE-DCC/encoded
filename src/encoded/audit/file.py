@@ -2,55 +2,19 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
-from .conditions import (
-    rfa, assay_term_name
-)
-
-# def audit_file_pipeline_status(value, system): removed at release 56
-# http://redmine.encodedcc.org/issues/5017
-
-# def audit_file_md5sum_integrity(value, system): # removed release 55
 
 
-@audit_checker('File', frame=[
-    'derived_from',
-    'replicate',
-    'paired_with',
-    'file_format_specifications',
-    'dataset',
-    'dataset.target',
-    'platform',
-    'controlled_by',
-    'controlled_by.replicate',
-    'controlled_by.dataset',
-    'controlled_by.paired_with',
-    'controlled_by.platform'
-    ])
-def audit_file_entry_function(value, system):
-    for failure in audit_file_processed_derived_from(value):
-        yield failure
-    for failure in audit_file_assembly(value):
-        yield failure
-    for failure in audit_file_replicate_match(value):
-        yield failure
-    for failure in audit_paired_with(value, system):
-        yield failure
-    for failure in audit_file_format_specifications(value):
-        yield failure
-    for failure in audit_file_controlled_by(value):
-        yield failure
-
-
-def audit_file_processed_derived_from(value):
+def audit_file_processed_derived_from(value, system):
     if value['output_category'] in ['raw data',
                                     'reference']:
         return
     if 'derived_from' not in value or \
        'derived_from' in value and len(value['derived_from']) == 0:
         detail = 'derived_from is a list of files that were used to create a given file; ' + \
-                    'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
-                    'Processed file {} '.format(value['@id']) + \
-                    'is missing the requisite file specification in its derived_from list.'
+                 'for example, fastq file(s) will appear in the derived_from list of an ' + \
+                 'alignments file. ' + \
+                 'Processed file {} '.format(value['@id']) + \
+                 'is missing the requisite file specification in its derived_from list.'
         yield AuditFailure('missing derived_from',
                            detail, level='INTERNAL_ACTION')
         return
@@ -58,9 +22,8 @@ def audit_file_processed_derived_from(value):
     if value['file_format'] != 'bam':
         return
 
-    derived_from_files = value.get('derived_from')
     fastq_bam_counter = 0
-    for f in derived_from_files:
+    for f in value.get('derived_from'):
         if (f['file_format'] == 'bam' or
                 f['file_format'] == 'fastq' or
                 (f['file_format'] == 'fasta' and
@@ -72,10 +35,13 @@ def audit_file_processed_derived_from(value):
                 fastq_bam_counter += 1
 
             if f['dataset'] != value['dataset'].get('@id'):
-                detail = 'derived_from is a list of files that were used to create a given file; ' + \
-                         'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
+                detail = 'derived_from is a list of files that were used ' + \
+                         'to create a given file; ' + \
+                         'for example, fastq file(s) will appear in the ' + \
+                         'derived_from list of an ' + \
+                         'alignments file. ' + \
                          'Alignments file {} '.format(value['@id']) + \
-                         'from experiment {} '.format(value['dataset']) + \
+                         'from experiment {} '.format(value['dataset']['@id']) + \
                          'specifies a file {} '.format(f['@id']) + \
                          'from a different experiment {} '.format(f['dataset']) + \
                          'in its derived_from list.'
@@ -83,18 +49,15 @@ def audit_file_processed_derived_from(value):
                                    detail, level='INTERNAL_ACTION')
     if fastq_bam_counter == 0:
         detail = 'derived_from is a list of files that were used to create a given file; ' + \
-                 'for example, fastq file(s) will appear in the derived_from list of an alignments file. ' + \
+                 'for example, fastq file(s) will appear in the derived_from list of an ' + \
+                 'alignments file. ' + \
                  'Alignments file {} '.format(value['@id']) + \
                  'is missing the requisite file specification in its derived_from list.'
         yield AuditFailure('missing derived_from',
                            detail, level='INTERNAL_ACTION')
 
 
-# def audit_file_derived_from_revoked(value, system): removed at release 56
-# http://redmine.encodedcc.org/issues/5018
-
-
-def audit_file_assembly(value):
+def audit_file_assembly(value, system):
     if 'derived_from' not in value:
         return
     for f in value['derived_from']:
@@ -103,19 +66,15 @@ def audit_file_assembly(value):
             detail = 'Processed file {} '.format(value['@id']) + \
                         'assembly {} '.format(value['assembly']) + \
                         'does not match assembly {} of the file {} '.format(
-                        f['assembly'],
-                        f['@id']) + \
-                'it was derived from.'
+                            f['assembly'],
+                            f['@id']) + \
+                        'it was derived from.'
             yield AuditFailure('inconsistent assembly',
-                                detail, level='INTERNAL_ACTION')
+                               detail, level='INTERNAL_ACTION')
             return
 
 
-# def audit_file_biological_replicate_number_match 
-# https://encodedcc.atlassian.net/browse/ENCD-3493
-
-
-def audit_file_replicate_match(value):
+def audit_file_replicate_match(value, system):
     '''
     A file's replicate should belong to the same experiment that the file
     does.  These tend to get confused when replacing objects.
@@ -128,7 +87,7 @@ def audit_file_replicate_match(value):
     file_exp = value['dataset']['@id']
 
     if rep_exp != file_exp:
-        detail = 'File {} from experiment {} '.format(value['@id'], value['dataset']) + \
+        detail = 'File {} from experiment {} '.format(value['@id'], value['dataset']['@id']) + \
                  'is associated with replicate [{},{}] '.format(
                      value['replicate']['biological_replicate_number'],
                      value['replicate']['technical_replicate_number']) + \
@@ -137,15 +96,6 @@ def audit_file_replicate_match(value):
                  'experiment {}.'.format(value['replicate']['experiment'])
         yield AuditFailure('inconsistent replicate', detail, level='ERROR')
         return
-
-# def audit_file_platform(value, system): removed from release v56
-
-
-def check_presence(file_to_check, files_list):
-    for f in files_list:
-        if f['accession'] == file_to_check['accession']:
-            return True
-    return False
 
 
 def audit_paired_with(value, system):
@@ -189,13 +139,13 @@ def audit_paired_with(value, system):
         if len(paired_with) > 1:
             detail = 'Paired end 1 file {} paired_with by multiple paired end 2 files: {!r}'.format(
                 value['@id'],
-                paired_with,
+                paired_with
             )
             yield AuditFailure('multiple paired_with', detail, level='ERROR')
             return
 
 
-def audit_file_format_specifications(value):
+def audit_file_format_specifications(value, system):
     for doc in value.get('file_format_specifications', []):
         if doc['document_type'] != "file format specification":
             detail = 'File {} has document {} not of type file format specification'.format(
@@ -206,7 +156,7 @@ def audit_file_format_specifications(value):
             return
 
 
-def audit_file_controlled_by(value):
+def audit_file_controlled_by(value, system):
     '''
     A fastq in a ChIP-seq experiment should have a controlled_by
     '''
@@ -227,11 +177,9 @@ def audit_file_controlled_by(value):
        'control' in value['dataset']['target'].get('investigated_as', []):
         return
 
-    if 'controlled_by' not in value:
-        value['controlled_by'] = []
-
-    if value['controlled_by'] == []:
-        detail = 'controlled_by is a list of files that are used as controls for a given experimental file. ' + \
+    if not value.get('controlled_by'):
+        detail = 'controlled_by is a list of files that are used as ' + \
+                 'controls for a given experimental file. ' + \
                  'Fastq files generated in a {} assay require the '.format(
                      value['dataset']['assay_term_name']) + \
                  'specification of control fastq file(s) in the controlled_by list. ' + \
@@ -322,13 +270,53 @@ def audit_file_controlled_by(value):
                                    detail, level='WARNING')
                 return
 
+
+function_dispatcher = {
+    'audit_derived_from': audit_file_processed_derived_from,
+    'audit_assembly': audit_file_assembly,
+    'audit_replicate_match': audit_file_replicate_match,
+    'audit_paired_with': audit_paired_with,
+    'audit_specifications': audit_file_format_specifications,
+    'audit_controlled_by': audit_file_controlled_by
+}
+
+
+@audit_checker('File',
+               frame=['derived_from',
+                      'replicate',
+                      'paired_with',
+                      'file_format_specifications',
+                      'dataset',
+                      'dataset.target',
+                      'platform',
+                      'controlled_by',
+                      'controlled_by.replicate',
+                      'controlled_by.dataset',
+                      'controlled_by.paired_with',
+                      'controlled_by.platform'])
+def audit_file(value, system):
+    for function_name in function_dispatcher.keys():
+        for failure in function_dispatcher[function_name](value, system):
+            yield failure
+
 # def audit_file_chip_seq_control_read_depth(value, system):
 # migrated to experiment https://encodedcc.atlassian.net/browse/ENCD-3493
 
 # def audit_file_flowcells(value, system): # removed in version 56
 # http://redmine.encodedcc.org/issues/5060
 
-
-
 # def audit_modERN_ChIP_pipeline_steps(value, system):
 # removed https://encodedcc.atlassian.net/browse/ENCD-3493
+
+# def audit_file_pipeline_status(value, system): removed at release 56
+# http://redmine.encodedcc.org/issues/5017
+
+# def audit_file_md5sum_integrity(value, system): # removed release 55
+
+# def audit_file_derived_from_revoked(value, system): removed at release 56
+# http://redmine.encodedcc.org/issues/5018
+
+# def audit_file_biological_replicate_number_match 
+# https://encodedcc.atlassian.net/browse/ENCD-3493
+
+# def audit_file_platform(value, system): removed from release v56
