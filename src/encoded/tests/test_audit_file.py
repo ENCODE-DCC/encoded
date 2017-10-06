@@ -561,8 +561,7 @@ def test_audit_file_missing_derived_from_ignores_replaced_bams(testapp, file4, f
                                       'status': 'replaced',
                                       'file_format': 'bam',
                                       'assembly': 'hg19'})
-    testapp.patch_json(file4['@id'], {'file_format': 'fastq',
-                                      'status': 'deleted'})
+    testapp.patch_json(file4['@id'], {'status': 'deleted'})
     res = testapp.get('/{}/@@index-data'.format(file6['uuid']))
     errors = res.json['audit']
     errors_list = []

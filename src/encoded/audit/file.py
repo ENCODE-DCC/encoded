@@ -3,6 +3,8 @@ from snovault import (
     audit_checker,
 )
 
+from .item import STATUS_LEVEL
+
 
 def audit_file_processed_derived_from(value, system):
     if value['output_category'] in ['raw data',
@@ -34,8 +36,7 @@ def audit_file_processed_derived_from(value, system):
                 and f['output_type'] == 'reads'
                 and f['output_category'] == 'raw data')):
 
-            if f['status'] not in ['deleted', 'replaced', 'revoked'] or \
-               f['status'] == value['status']:
+            if STATUS_LEVEL[f['status']] >= STATUS_LEVEL[value['status']]:
                 fastq_bam_counter += 1
 
             if f['dataset'] != value['dataset'].get('@id'):
