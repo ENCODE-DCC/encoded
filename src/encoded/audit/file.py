@@ -21,6 +21,10 @@ def audit_file_processed_derived_from(value, system):
 
     if value['file_format'] != 'bam':
         return
+    # Ignore replaced BAMs because missing derived_from logic should be applied to their
+    # replacements instead (ENCD-3595).
+    if value['status'] == 'replaced':
+        return
 
     fastq_bam_counter = 0
     for f in value.get('derived_from'):
