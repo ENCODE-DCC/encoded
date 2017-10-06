@@ -24,11 +24,11 @@ def audit_file_processed_derived_from(value, system):
 
     fastq_bam_counter = 0
     for f in value.get('derived_from'):
-        if (f['file_format'] == 'bam' or
-                f['file_format'] == 'fastq' or
-                (f['file_format'] == 'fasta' and
-                 f['output_type'] == 'reads' and
-                 f['output_category'] == 'raw data')):
+        if (f['file_format'] == 'bam'
+            or f['file_format'] == 'fastq'
+            or (f['file_format'] in ['fasta', 'csfasta', 'csqual']
+                and f['output_type'] == 'reads'
+                and f['output_category'] == 'raw data')):
 
             if f['status'] not in ['deleted', 'replaced', 'revoked'] or \
                f['status'] == value['status']:
@@ -64,11 +64,11 @@ def audit_file_assembly(value, system):
         if f.get('assembly') and value.get('assembly') and \
            f.get('assembly') != value.get('assembly'):
             detail = 'Processed file {} '.format(value['@id']) + \
-                        'assembly {} '.format(value['assembly']) + \
-                        'does not match assembly {} of the file {} '.format(
-                            f['assembly'],
-                            f['@id']) + \
-                        'it was derived from.'
+                'assembly {} '.format(value['assembly']) + \
+                'does not match assembly {} of the file {} '.format(
+                f['assembly'],
+                f['@id']) + \
+                'it was derived from.'
             yield AuditFailure('inconsistent assembly',
                                detail, level='INTERNAL_ACTION')
             return
@@ -151,7 +151,7 @@ def audit_file_format_specifications(value, system):
             detail = 'File {} has document {} not of type file format specification'.format(
                 value['@id'],
                 doc['@id']
-                )
+            )
             yield AuditFailure('inconsistent document_type', detail, level='ERROR')
             return
 
@@ -249,7 +249,7 @@ def audit_file_controlled_by(value, system):
                     run_type,
                     ff['@id'],
                     control_run
-                    )
+                )
                 yield AuditFailure('inconsistent control run_type',
                                    detail, level='WARNING')
 
@@ -265,7 +265,7 @@ def audit_file_controlled_by(value, system):
                     value['read_length'],
                     ff['@id'],
                     ff['read_length']
-                    )
+                )
                 yield AuditFailure('inconsistent control read length',
                                    detail, level='WARNING')
                 return
@@ -316,7 +316,7 @@ def audit_file(value, system):
 # def audit_file_derived_from_revoked(value, system): removed at release 56
 # http://redmine.encodedcc.org/issues/5018
 
-# def audit_file_biological_replicate_number_match 
+# def audit_file_biological_replicate_number_match
 # https://encodedcc.atlassian.net/browse/ENCD-3493
 
 # def audit_file_platform(value, system): removed from release v56
