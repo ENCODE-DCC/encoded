@@ -70,7 +70,7 @@
                 "title": "Database external identifier",
                 "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
-                "pattern": "^(((CGC|WormBase|NBP):.+)|(GEO:SAMN\\d+))$"
+                "pattern": "^(((CGC|WormBase):.+)|(GEO:SAMN\\d+))$"
             }
         }
     },
