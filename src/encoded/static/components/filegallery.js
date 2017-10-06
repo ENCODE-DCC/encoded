@@ -10,7 +10,7 @@ import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import { FileGraph } from './graph';
 import { requestFiles, DownloadableAccession, BrowserSelector } from './objectutils';
-import { qcModalContent, qcIdToDisplay } from './quality_metric';
+import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import StatusLabel from './statuslabel';

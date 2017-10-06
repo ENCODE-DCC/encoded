@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import _ from 'underscore';
 import { Panel } from '../libs/bootstrap/panel';
 import { svgIcon } from '../libs/svg-icons';
 import { BrowserFeat } from './browserfeat';
 import * as globals from './globals';
 import { requestFiles } from './objectutils';
+import { SortTable } from './sorttable';
 
 
 // Zoom slider constants
@@ -632,24 +634,6 @@ export function assembleGraph(files, dataset, options) {
     });
 
     return jsonGraph;
-}
-
-
-function qcDetailsView(metrics, schemas) {
-    const qc = metrics.ref;
-
-    // Extract the GenericQualityMetric schema. We don't display properties that exist in this
-    // schema because they're generic properties, not interesting QC proeprties.
-    const genericQCSchema = schemas.GenericQualityMetric;
-
-    // Extract the schema specific for the given quality metric.
-    const qcSchema = schemas[qc['@type'][0]];
-
-    if (metrics && genericQCSchema && qcSchema && qcSchema.properties) {
-        const file = metrics.parent;
-        return qcModalContent(qc, file, qcSchema, genericQCSchema);
-    }
-    return { header: null, body: null };
 }
 
 
