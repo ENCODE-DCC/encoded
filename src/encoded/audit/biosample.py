@@ -4,39 +4,43 @@ from snovault import (
 )
 
 
-def audit_biosample_constructs(value, system):
+# flag biosamples that contain GM that is different from the GM in donor. It could be legitimate case, but we would like to see it.
+# flag biosamples that have a GM that was specified in donor detecting redundant GM
+def audit_biosample_modifications(value, system):
+    
     if value['biosample_type'] == 'whole organisms':
-        model_constructs_present = True
-        model_constructs_ids = set()
-        constructs_ids = set()
-        if 'model_organism_donor_constructs' in value:
-            for model_construct in value['model_organism_donor_constructs']:
-                model_constructs_ids.add(model_construct)
+        model_modifications_present = True
+        model_modifications_ids = set()
+        modifications_ids = set()
+        if 'model_organism_donor_modifications' in value:
+            for model_modification in value['model_organism_donor_modifications']:
+                model_modifications_ids.add(model_modification)
         else:
-            model_constructs_present = False
-        if 'constructs' in value:
-            for construct in value['constructs']:
-                constructs_ids.add(construct)
+            model_modifications_present = False
+        if 'genetic_modifications' in value:
+            for modification in value['genetic_modifications']:
+                modifications_ids.add(modification)
 
-        if len(model_constructs_ids) != len(constructs_ids) and \
-            model_constructs_present is False:
+        modification_difference = modifications_ids - model_modifications_ids
+
+        if modification_difference and model_modifications_present:
             detail = 'Biosample {} '.format(value['@id']) + \
-                        'contains constructs {} and '.format(constructs_ids) + \
-                        'does not contain any model_organism_donor_constructs.'
-            yield AuditFailure('mismatched constructs', detail,
+                     'contains genetic modifications {} that '.format(modification_difference) + \
+                     'are not present in the list of genetic modifications {} '.format(
+                         model_modifications_ids) + \
+                     'of the corresponding strain.'
+            yield AuditFailure('mismatched genetic modifications', detail,
                                level='INTERNAL_ACTION')
-            return
-
-        if len(constructs_ids) > 0:
-            for c in constructs_ids:
-                if c not in model_constructs_ids:
-                    detail = 'Biosample {} '.format(value['@id']) + \
-                        'contains mismatched constructs {} and '.format(constructs_ids) + \
-                        'model_organism_donor_constructs {}.'.format(
-                            model_constructs_ids)
-                    yield AuditFailure('mismatched constructs', detail,
-                                       level='INTERNAL_ACTION')
-                    return
+        modification_duplicates = model_modifications_ids & modifications_ids
+        if modification_duplicates:
+            detail = 'Biosample {} '.format(value['@id']) + \
+                     'contains genetic modifications {} that '.format(modification_duplicates) + \
+                     'are duplicates of genetic modifications {} '.format(
+                         model_modifications_ids) + \
+                     'of the corresponding strain.'
+            yield AuditFailure('duplicated genetic modifications', detail,
+                               level='INTERNAL_ACTION')
+    return
 
 # def audit_biosample_gtex_children(value, system):
 # https://encodedcc.atlassian.net/browse/ENCD-3538
@@ -208,7 +212,7 @@ def is_part_of(term_id, part_of_term_id, ontology):
 
 
 function_dispatcher = {
-    'audit_constructs': audit_biosample_constructs,
+    'audit_constructs': audit_biosample_modifications,
     'audit_bio_term': audit_biosample_term,
     'audit_culture_date': audit_biosample_culture_date,
     'audit_donor': audit_biosample_donor,

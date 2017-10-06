@@ -2638,8 +2638,10 @@ def audit_library_RNA_size_range(value, system, excluded_types):
     return
 
 
-def audit_missing_construct(value, system, excluded_types):
-
+# if experiment target is recombinant protein, the biosamples should have at 
+# least one GM in the applied_modifications that is an insert with tagging purpose
+# and a target that matches experiment target
+def audit_missing_modification(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced', 'proposed', 'revoked']:
         return
 
@@ -2647,12 +2649,7 @@ def audit_missing_construct(value, system, excluded_types):
         return
 
     '''
-    Note that this audit only deals with tagged constructs for now and does not check
-    genetic_modifications where tagging information could also be specified. Constructs
-    should get absorbed by genetic_modifications in the future and this audit would need
-    to be re-written.
-
-    Also, the audit does not cover whether or not the biosamples in possible_controls also
+    The audit does not cover whether or not the biosamples in possible_controls also
     have the same construct. In some cases, they legitimately don't, e.g. HEK-ZNFs
     '''
     target = value['target']
@@ -2661,51 +2658,27 @@ def audit_missing_construct(value, system, excluded_types):
     else:
         biosamples = get_biosamples(value)
         missing_construct = list()
-        tag_mismatch = list()
-
-        if 'biosample_type' not in value:
-            detail = '{} is missing biosample_type'.format(value['@id'])
-            yield AuditFailure('missing biosample_type', detail, level='ERROR')
-
+        
         for biosample in biosamples:
-            if (biosample['biosample_type'] != 'whole organisms') and \
-               (not biosample['constructs']):
-                missing_construct.append(biosample)
-            elif (biosample['biosample_type'] == 'whole organisms') and \
-                    ('model_organism_donor_constructs' not in biosample):
-                missing_construct.append(biosample)
-            elif (biosample['biosample_type'] != 'whole organisms') and biosample['constructs']:
-                for construct in biosample['constructs']:
-                    if construct['target']['name'] != target['name']:
-                        tag_mismatch.append(construct)
-            elif (biosample['biosample_type'] == 'whole organisms') and \
-                    ('model_organism_donor_constructs' in biosample):
-                for construct in biosample['model_organism_donor_constructs']:
-                    if construct['target']['name'] != target['name']:
-                        tag_mismatch.append(construct)
+            if biosample.get('applied_modifications'):
+                match_flag = False
+                for modification in biosample.get('applied_modifications'):
+                    if modification.get('modified_site_by_target_id'):
+                        gm_target = modification.get('modified_site_by_target_id')
+                        if modification.get('purpose') == 'tagging' and \
+                           gm_target['@id'] == target['@id']:
+                            match_flag = True
+                if not match_flag:
+                    missing_construct.append(biosample)
             else:
-                pass
+                missing_construct.append(biosample)
 
         if missing_construct:
             for b in missing_construct:
-                if 'donor' in b:
-                    detail = 'Recombinant protein target {} requires '.format(value['target']['@id']) + \
-                        'a fusion protein construct associated with the biosample {} '.format(b['@id']) + \
-                        'or donor {} (for whole organism biosamples) to specify '.format(b['donor']['@id']) + \
-                        'the relevant tagging details.'
-                else:
-                    detail = 'Recombinant protein target {} requires '.format(value['target']['@id']) + \
-                        'a fusion protein construct associated with the biosample {} '.format(b['@id']) + \
-                        'to specify the relevant tagging details.'
-                yield AuditFailure('missing tag construct', detail, level='WARNING')
-
-        # Continue audit because only some linked biosamples may have missing constructs, not all.
-        if tag_mismatch:
-            for c in tag_mismatch:
-                detail = 'The target of this assay {} does not'.format(value['target']['@id']) + \
-                    ' match that of the linked construct {}, {}.'.format(c['@id'],
-                                                                         c['target']['@id'])
-                yield AuditFailure('mismatched construct target', detail, level='ERROR')
+                detail = 'Recombinant protein target {} requires '.format(target['@id']) + \
+                    'a genetic modification associated with the biosample {} '.format(b['@id']) + \
+                    'to specify the relevant tagging details.'
+                yield AuditFailure('missing tag construct', detail, level='ERROR')
     return
 
 
@@ -3295,7 +3268,7 @@ function_dispatcher_without_files = {
     'audit_geo_submission': audit_experiment_geo_submission,
     'audit_replication': audit_experiment_replicated,
     'audit_RNA_size': audit_library_RNA_size_range,
-    'audit_missing_construct': audit_missing_construct,
+    'audit_missing_modifiction': audit_missing_modification,
     'audit_NTR': audit_experiment_assay,
     'audit_AB_characterization': audit_experiment_antibody_characterized,
     'audit_control': audit_experiment_control,
@@ -3326,6 +3299,8 @@ function_dispatcher_with_files = {
         'replicates.library',
         'replicates.library.spikeins_used',
         'replicates.library.biosample',
+        'replicates.library.biosample.applied_modifications',
+        'replicates.library.biosample.applied_modifications.modified_site_by_target_id',
         'replicates.library.biosample.donor',
         'replicates.library.biosample.constructs',
         'replicates.library.biosample.constructs.target',
