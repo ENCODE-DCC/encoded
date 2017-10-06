@@ -855,6 +855,18 @@
         "organism.scientific_name": {
             "title": "Species"
         },
+        "applied_modifications.modified_site_by_target_id.name": {
+            "title": "Target name"
+        },
+        "applied_modifications.purpose": {
+            "title": "Purpose"
+        },
+        "applied_modifications.method": {
+            "title": "Method"
+        },
+        "applied_modifications.category": {
+            "title": "Category"
+        },
         "source.title": {
             "title": "Source"
         },
