@@ -492,6 +492,70 @@ def test_audit_file_released_bam_derived_from_revoked_fastq(testapp, file4, file
                for error in errors_list)
 
 
+def test_audit_file_deleted_bam_derived_from_revoked_fastq(testapp, file4, file6):
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']],
+                                      'status': 'deleted',
+                                      'file_format': 'bam',
+                                      'assembly': 'hg19'})
+
+    testapp.patch_json(file4['@id'], {'status': 'revoked'})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'missing derived_from'
+               for error in errors_list)
+
+
+def test_audit_file_released_bam_derived_from_deleted_fastq(testapp, file4, file6):
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']],
+                                      'status': 'released',
+                                      'file_format': 'bam',
+                                      'assembly': 'hg19'})
+
+    testapp.patch_json(file4['@id'], {'status': 'deleted'})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing derived_from'
+               for error in errors_list)
+
+
+def test_audit_file_deleted_bam_derived_from_deleted_fastq(testapp, file4, file6):
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']],
+                                      'status': 'deleted',
+                                      'file_format': 'bam',
+                                      'assembly': 'hg19'})
+
+    testapp.patch_json(file4['@id'], {'status': 'deleted'})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'missing derived_from'
+               for error in errors_list)
+
+
+def test_audit_file_deleted_bam_derived_from_released_fastq(testapp, file4, file6):
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']],
+                                      'status': 'deleted',
+                                      'file_format': 'bam',
+                                      'assembly': 'hg19'})
+
+    testapp.patch_json(file4['@id'], {'status': 'released'})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] != 'missing derived_from'
+               for error in errors_list)
+
+
 def test_audit_file_missing_derived_from_ignores_replaced_bams(testapp, file4, file6):
     testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']],
                                       'status': 'replaced',
