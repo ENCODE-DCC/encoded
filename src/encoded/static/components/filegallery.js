@@ -80,9 +80,11 @@ export class FileTable extends React.Component {
 
     fileClick(file) {
         const node = {
+            '@type': ['File'],
             metadata: {
                 ref: file,
             },
+            schemas: this.props.schemas,
         };
         this.props.setInfoNodeId(node);
         this.props.setInfoNodeVisible(true);
@@ -254,6 +256,7 @@ FileTable.propTypes = {
     setInfoNodeVisible: PropTypes.func, // Function to call to set the visibility of the node's modal
     session: PropTypes.object, // Persona user session
     adminUser: PropTypes.bool, // True if user is an admin user
+    schemas: PropTypes.object, // Object from /profiles/ containing all schemas
     noDefaultClasses: PropTypes.bool, // True to strip SortTable panel of default CSS classes
 };
 
@@ -550,9 +553,6 @@ class RawSequencingTable extends React.Component {
                                     } else if (file.run_type === 'paired-ended') {
                                         runType = 'PE';
                                     }
-
-                                    // Determine if accession should be a button or not
-                                    const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
 
                                     return (
                                         <tr key={file['@id']} className={file.restricted ? 'file-restricted' : ''}>
