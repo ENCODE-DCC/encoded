@@ -123,6 +123,22 @@ def test_indexing_simple(testapp, indexer_testapp):
     assert res.json['total'] == 2
 
 
+def test_indexer_state(dummy_request):
+    from encoded.secondary_indexer import SecondState
+    INDEX = dummy_request.registry.settings['snovault.elasticsearch.index']
+    es = dummy_request.registry['elasticsearch']
+    state = SecondState(es,INDEX)
+    result = state.get_initial_state()
+    assert result['title'] == 'secondary_indexer'
+    result = state.start_cycle(['1','2','3'], result)
+    assert result['cycle_count'] == 3
+    assert result['status'] == 'indexing'
+    cycles = result.get('cycles',0)
+    result = state.finish_cycle(result, [])
+    assert result['cycles'] == (cycles + 1)
+    assert result['status'] == 'done'
+
+
 def test_listening(testapp, listening_conn):
     import time
     testapp.post_json('/testing-post-put-patch/', {'required': ''})
