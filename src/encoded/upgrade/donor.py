@@ -201,3 +201,10 @@ def fly_worm_donor_7_8(value, system):
         value.pop('mutagen', None)
     if 'mutated_gene' in value:
         value.pop('mutated_gene', None)
+
+
+@upgrade_step('human_donor', '10', '11')
+def human_donor_10_11(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3536
+    if 'genetic_modifications' in value:
+        value.pop('genetic_modificaitons', None)
