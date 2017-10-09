@@ -86,7 +86,7 @@
         "status": {
             "title": "Status"
         },
-        "lab.title": {
+        "lab": {
             "title": "Lab"
         },
         "strain_name": {
@@ -95,7 +95,7 @@
         "strain_background": {
             "title": "Strain background"
         },
-        "genetic_modifications.accession": {
+        "genetic_modifications": {
             "title": "Genetic modifications"
         },
         "external_ids": {

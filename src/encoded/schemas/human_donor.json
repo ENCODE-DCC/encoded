@@ -272,7 +272,7 @@
         "external_ids": {
             "title": "Unique external identifier(s) of strain or donor"
         },
-        "lab.title": {
+        "lab": {
             "title": "Lab"
         },
         "status": {
