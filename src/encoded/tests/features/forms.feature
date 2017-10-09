@@ -13,15 +13,15 @@ Feature: Edit forms
         And I wait for an element with the css selector ".view-item.type-AntibodyLot" to load
         Then I should see "It's not a very nice antigen"
 
-#    Scenario: Edit a child object
-#        When I visit "/antibodies/ENCAB728YTO/#!edit"
-#        And I wait for an element with the css selector ".collapsible-trigger" to load
-#        And I click the element with the css selector ".collapsible-trigger"
-#        And I wait for an element with the css selector "input[name=caption]" to load
-#        And I fill in "caption" with "This is the new caption"
-#        And I press "Save"
-#        And I wait for an element with the css selector ".view-item.type-AntibodyLot" to load
-#        Then I should see "This is the new caption" within 1 seconds
+    Scenario: Edit a child object
+        When I visit "/antibodies/ENCAB728YTO/#!edit"
+        And I wait for an element with the css selector ".collapsible-trigger" to load
+        And I click the element with the css selector ".collapsible-trigger"
+        And I wait for an element with the css selector "input[name=antigen_description]" to load
+        And I fill in "antigen_description" with "This is the new description"
+        And I press "Save"
+        And I wait for an element with the css selector ".view-item.type-AntibodyLot" to load
+        Then I should see "This is the new description" within 1 seconds
 
     Scenario: Leaving a dirty form without saving asks for confirmation
         When I visit "/antibodies/ENCAB728YTO/#!edit"
