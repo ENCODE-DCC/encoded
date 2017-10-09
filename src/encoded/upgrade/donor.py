@@ -207,4 +207,4 @@ def fly_worm_donor_7_8(value, system):
 def human_donor_10_11(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3536
     if 'genetic_modifications' in value:
-        value.pop('genetic_modificaitons', None)
+        value.pop('genetic_modifications', None)

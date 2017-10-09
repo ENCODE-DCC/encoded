@@ -126,6 +126,17 @@ def fly_donor_7(root, fly, construct, target_promoter):
     return item
 
 
+@pytest.fixture
+def human_donor_10(root, donor_1):
+    item = root.get_by_uuid(donor_1['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '10',
+        'genetic_modifications': []
+    })
+    return properties
+
+
 def test_human_donor_upgrade(upgrader, human_donor_1):
     value = upgrader.upgrade('human_donor', human_donor_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -195,3 +206,8 @@ def test_upgrade_fly_worm_donor_7_8(root, upgrader, fly_donor_7):
     assert 'mutated_gene' not in value
     assert 'mutagen' not in value
     assert value['schema_version'] == '8'
+
+
+def test_upgrade_human_donor_10_11(root, upgrader, human_donor_10):
+    value = upgrader.upgrade('human_donor', human_donor_10, current_version='10', target_version='11')
+    assert 'genetic_modifications' not in value
