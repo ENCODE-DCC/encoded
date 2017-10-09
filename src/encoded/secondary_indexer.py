@@ -52,7 +52,7 @@ class SecondState(IndexerState):
         self.cleanup_last_cycle.append(self.viscached_set)  # Clean up at beginning of next cycle
         # DO NOT INHERIT! These keys are for passing on to other indexers
         self.followup_prep_list = None                        # No followup to a following indexer
-        self.staged_cycles_list = self.followup_ready_list    # inherited from primary IndexerState
+        self.staged_cycles_list = self.title + '_staged'      # Will take from  primary self.followup_ready_list
 
     def viscached_uuid(self, uuid):
         self.list_extend(self.viscached_set, [uuid])
@@ -68,6 +68,12 @@ class SecondState(IndexerState):
                 return (-1, next_xmin, uuids)  # -1 ensures using the latest xmin
             if xmin is None or int(xmin) > undone_xmin:
                 return (undone_xmin, next_xmin, uuids)
+
+        # To avoid race conditions, move ready_list to end of staged. Then work on staged.
+        latest = self.get_list(self.followup_ready_list)
+        if latest != []:
+            self.delete_objs([self.followup_ready_list])  # TODO: tighten this by adding a locking semaphore
+            self.list_extend(self.staged_cycles_list, latest) # Push back for start of next uuid cycle
 
         staged_list = self.get_list(self.staged_cycles_list)
         if not staged_list or len(staged_list) == 0:
@@ -132,59 +138,37 @@ def index_secondary(request):
     first_txn = datetime.datetime.now(pytz.utc)
     cycles = 0
 
-    while True:  # Cycles on xmin grouped indexer cycles
+    (xmin, next_xmin, uuids) = state.get_one_cycle(xmin,request.registry)
 
-        (xmin, next_xmin, uuids) = state.get_one_cycle(xmin,request.registry)
+    uuid_count = len(uuids)
+    if uuid_count > 0 and (xmin is None or int(xmin) <= 0):  # Happens when the a reindex all signal occurs.
+        xmin = get_current_xmin(request)
 
-        cycle_uuid_count = len(uuids)
-        if cycle_uuid_count > 0 and (xmin is None or int(xmin) <= 0):  # Happens when the a reindex all signal occurs.
-            xmin = get_current_xmin(request)
+    ### NOTE: These lines may not be appropriate when work other than vis_caching is being done.
+    if uuid_count > 500:  # some arbitrary cutoff.
+        # There is an efficiency trade off examining many non-visualizable uuids
+        # # vs. the cost of eliminating those uuids from the list ahead of time.
+        uuids = list(set(all_visualizable_uuids(request.registry)).intersection(uuids))
+        uuid_count = len(uuids)
+    ### END OF NOTE
 
-        ### NOTE: These lines may not be appropriate when work other than vis_caching is being done.
-        if cycle_uuid_count > 100:  # some arbitrary cutoff.
-            uuids = list(set(all_visualizable_uuids(request.registry)).intersection(uuids))
-            cycle_uuid_count = len(uuids)
-        ### END OF NOTE
+    if uuid_count and not dry_run:
+        # Starts one cycle of uuids to secondarily index
+        result.update(
+            last_xmin=last_xmin,
+            xmin=xmin,
+        )
+        result = state.start_cycle(uuids, result)
 
-        if cycle_uuid_count == 0:  # No more uuids in the queue
-            break
+        # Make no effort to incrementally index... all in
+        errors = indexer.update_objects(request, uuids, xmin)     # , snapshot_id)
 
-        cycles += 1
+        indexing_errors.extend(errors)  # ignore errors?
+        result['errors'] = indexing_errors
 
-        if not dry_run:
-            # Starts one cycle of uuids to secondarily index
-            result.update(
-                last_xmin=last_xmin,
-                xmin=xmin,
-            )
-            result = state.start_cycle(uuids, result)
+        result = state.finish_cycle(result, indexing_errors)
 
-            # Make no effort to incrementally index... all in
-            errors = indexer.update_objects(request, uuids, xmin)     # , snapshot_id)
-
-            indexing_errors.extend(errors)  # ignore errors?
-            result['errors'] = indexing_errors
-
-            result = state.finish_cycle(result, indexing_errors)
-
-            uuid_count += cycle_uuid_count
-
-            if next_xmin is not None:
-                last_xmin = xmin
-                xmin = None  # already pushed next_xmin back onto queue
-                next_xmin = None
-                result['status'] = 'cycling'
-                state.put(result)
-            else:
-                break
-
-    if uuid_count > 0:
-        result['status'] = 'done'
-        state.put(result)
-        log.warn("Secondary indexer handled %d uuids" % uuid_count)
-        if cycles > 1:
-            result['lag'] = str(datetime.datetime.now(pytz.utc) - first_txn)
-    else:
+    if uuid_count == 0:
         result.pop('indexed',None)
 
     return result

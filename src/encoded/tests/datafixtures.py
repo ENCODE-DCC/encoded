@@ -461,7 +461,6 @@ def rnai(testapp, lab, award, target):
     }
     return testapp.post_json('/rnai', item).json['@graph'][0]
 
-
 @pytest.fixture
 def construct(testapp, lab, award, target, source, target_control):
     item = {
@@ -474,6 +473,43 @@ def construct(testapp, lab, award, target, source, target_control):
     }
     return testapp.post_json('/construct', item).json['@graph'][0]
 
+@pytest.fixture
+def construct_genetic_modification(
+        testapp,
+        lab,
+        award,
+        document,
+        target):
+    item = {
+        'award': award['@id'],
+        'documents': [document['@id']],
+        'lab': lab['@id'],
+        'category': 'insertion',
+        'purpose': 'tagging',
+        'method': 'stable transfection',
+        'introduced_tags': [{'name':'eGFP', 'location': 'C-terminal'}],
+        'modified_site_by_target_id': target['@id']
+    }
+    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
+
+@pytest.fixture
+def construct_genetic_modification_N(
+        testapp,
+        lab,
+        award,
+        document,
+        target):
+    item = {
+        'award': award['@id'],
+        'documents': [document['@id']],
+        'lab': lab['@id'],
+        'category': 'insertion',
+        'purpose': 'tagging',
+        'method': 'stable transfection',
+        'introduced_tags': [{'name':'eGFP', 'location': 'N-terminal'}],
+        'modified_site_by_target_id': target['@id']
+    }
+    return testapp.post_json('/genetic_modification', item).json['@graph'][0]
 
 @pytest.fixture
 def ucsc_browser_composite(testapp, lab, award):
