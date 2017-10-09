@@ -479,8 +479,12 @@ def construct_genetic_modification(
         lab,
         award,
         document,
+<<<<<<< HEAD
         target,
         target_promoter):
+=======
+        target):
+>>>>>>> master
     item = {
         'award': award['@id'],
         'documents': [document['@id']],

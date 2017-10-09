@@ -2660,7 +2660,6 @@ def audit_missing_modification(value, system, excluded_types):
         missing_construct = list()
         
         for biosample in biosamples:
-            
             if biosample.get('applied_modifications'):
                 match_flag = False
                 for modification in biosample.get('applied_modifications'):
