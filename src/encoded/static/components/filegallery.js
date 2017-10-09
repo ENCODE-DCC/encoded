@@ -1433,3 +1433,67 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
 };
 
 globals.graphDetail.register(FileDetailView, 'File');
+
+
+export const CoalescedDetailsView = function CoalescedDetailsView(node) {
+    let header;
+    let body;
+
+    if (node.metadata.coalescedFiles && node.metadata.coalescedFiles.length) {
+        // Configuration for reference file table
+        const coalescedFileColumns = {
+            accession: {
+                title: 'Accession',
+                display: item =>
+                    <span>
+                        {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf('/') + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
+                    </span>,
+            },
+            file_type: { title: 'File type' },
+            output_type: { title: 'Output type' },
+            assembly: { title: 'Mapping assembly' },
+            genome_annotation: {
+                title: 'Genome annotation',
+                hide: list => _(list).all(item => !item.genome_annotation),
+            },
+            title: {
+                title: 'Lab',
+                getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
+            },
+            date_created: {
+                title: 'Date added',
+                getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
+                sorter: (a, b) => {
+                    if (a && b) {
+                        return Date.parse(a) - Date.parse(b);
+                    }
+                    const bTest = b ? 1 : 0;
+                    return a ? -1 : bTest;
+                },
+            },
+        };
+
+        header = (
+            <h4>Selected contributing files</h4>
+        );
+        body = (
+            <div className="coalesced-table">
+                <SortTable
+                    list={node.metadata.coalescedFiles}
+                    columns={coalescedFileColumns}
+                    sortColumn="accession"
+                />
+            </div>
+        );
+    } else {
+        header = (
+            <div className="details-view-info">
+                <h4>Unknown files</h4>
+            </div>
+        );
+        body = <p className="browser-error">No information available</p>;
+    }
+    return { header, body };
+};
+
+globals.graphDetail.register(CoalescedDetailsView, 'Coalesced');

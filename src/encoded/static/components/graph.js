@@ -609,7 +609,7 @@ export function assembleGraph(files, dataset, options) {
             const fileCssClass = `pipeline-node-file contributing${infoNodeId === fileNodeId ? ' active' : ''}`;
             jsonGraph.addNode(fileNodeId, `${coalescingGroup.length} contributing files`, {
                 cssClass: fileCssClass,
-                type: 'File',
+                type: 'Coalesced',
                 shape: 'stack',
                 cornerRadius: 16,
                 contributing: groupHash,
@@ -634,68 +634,6 @@ export function assembleGraph(files, dataset, options) {
     });
 
     return jsonGraph;
-}
-
-
-function coalescedDetailsView(node) {
-    let header;
-    let body;
-
-    if (node.metadata.coalescedFiles && node.metadata.coalescedFiles.length) {
-        // Configuration for reference file table
-        const coalescedFileColumns = {
-            accession: {
-                title: 'Accession',
-                display: item =>
-                    <span>
-                        {item.title}&nbsp;<a href={item.href} download={item.href.substr(item.href.lastIndexOf('/') + 1)} data-bypass="true"><i className="icon icon-download"><span className="sr-only">Download</span></i></a>
-                    </span>,
-            },
-            file_type: { title: 'File type' },
-            output_type: { title: 'Output type' },
-            assembly: { title: 'Mapping assembly' },
-            genome_annotation: {
-                title: 'Genome annotation',
-                hide: list => _(list).all(item => !item.genome_annotation),
-            },
-            title: {
-                title: 'Lab',
-                getValue: item => (item.lab && item.lab.title ? item.lab.title : null),
-            },
-            date_created: {
-                title: 'Date added',
-                getValue: item => moment.utc(item.date_created).format('YYYY-MM-DD'),
-                sorter: (a, b) => {
-                    if (a && b) {
-                        return Date.parse(a) - Date.parse(b);
-                    }
-                    const bTest = b ? 1 : 0;
-                    return a ? -1 : bTest;
-                },
-            },
-        };
-
-        header = (
-            <h4>Selected contributing files</h4>
-        );
-        body = (
-            <div className="coalesced-table">
-                <SortTable
-                    list={node.metadata.coalescedFiles}
-                    columns={coalescedFileColumns}
-                    sortColumn="accession"
-                />
-            </div>
-        );
-    } else {
-        header = (
-            <div className="details-view-info">
-                <h4>Unknown files</h4>
-            </div>
-        );
-        body = <p className="browser-error">No information available</p>;
-    }
-    return { header, body };
 }
 
 
@@ -747,6 +685,7 @@ export class Graph extends React.Component {
             dlDisabled: false, // Download button disabled because of IE
             verticalGraph: false, // True for vertically oriented graph, false for horizontal
             zoomLevel: null, // Graph zoom level; null to indicate not set
+            contributingFiles: {}, // List of contributing file objects we've requested; acts as a cache too
             coalescedFiles: [],
         };
 
@@ -795,7 +734,6 @@ export class Graph extends React.Component {
 
                         // Draw the graph into the panel; get the graph's view box and save it for
                         // comparisons later
-                        console.log('DRAWGRPAH');
                         const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el);
                         this.cv.viewBoxWidth = viewBoxWidth;
                         this.cv.viewBoxHeight = viewBoxHeight;
@@ -936,7 +874,6 @@ export class Graph extends React.Component {
     }
 
     nodeIdClick(nodeId) {
-        let meta;
         let node;
 
         // Find data matching selected node, if any
@@ -947,27 +884,28 @@ export class Graph extends React.Component {
                 node.schemas = this.props.schemas;
             } else if (nodeId.indexOf('coalesced:') >= 0) {
                 // Coalesced contributing files.
-                node = this.cv.graph.getNode(nodeId);
-                if (node) {
+                const coalescedNode = this.cv.graph.getNode(nodeId);
+                if (coalescedNode) {
                     const currCoalescedFiles = this.state.coalescedFiles;
-                    if (currCoalescedFiles[node.metadata.contributing]) {
+                    if (currCoalescedFiles[coalescedNode.metadata.contributing]) {
                         // We have the requested coalesced files in the cache, so just display
                         // them.
-                        node.metadata.coalescedFiles = currCoalescedFiles[node.metadata.contributing];
-                        meta = coalescedDetailsView(node);
-                        meta.type = 'File';
+                        coalescedNode.metadata.coalescedFiles = currCoalescedFiles[coalescedNode.metadata.contributing];
+                        node = coalescedNode;
                     } else if (!this.contributingRequestOutstanding) {
                         // We don't have the requested coalesced files in the cache, so we have to
                         // request them from the DB.
                         this.contributingRequestOutstanding = true;
-                        requestFiles(node.metadata.ref).then((contributingFiles) => {
+                        requestFiles(coalescedNode.metadata.ref).then((contributingFiles) => {
                             this.contributingRequestOutstanding = false;
-                            currCoalescedFiles[node.metadata.contributing] = contributingFiles;
-                            this.setState({ coalescedFiles: currCoalescedFiles });
+                            currCoalescedFiles[coalescedNode.metadata.contributing] = contributingFiles;
+                            coalescedNode.metadata.coalescedFiles = contributingFiles;
+                            this.props.nodeClickHandler(coalescedNode);
+                            node = null;
                         }).catch(() => {
                             this.contributingRequestOutstanding = false;
-                            currCoalescedFiles[node.metadata.contributing] = [];
-                            this.setState({ coalescedFiles: currCoalescedFiles });
+                            currCoalescedFiles[coalescedNode.metadata.contributing] = [];
+                            node = null;
                         });
                     }
                 }
@@ -990,11 +928,13 @@ export class Graph extends React.Component {
                             requestFiles([node.metadata.contributing]).then((contributingFile) => {
                                 this.contributingRequestOutstanding = false;
                                 currContributing[node.metadata.contributing] = contributingFile[0];
-                                this.setState({ contributingFiles: currContributing });
+                                node.metadata.ref = contributingFile[0];
+                                this.props.nodeClickHandler(node);
+                                node = null;
                             }).catch(() => {
                                 this.contributingRequestOutstanding = false;
                                 currContributing[node.metadata.contributing] = {};
-                                this.setState({ contributingFiles: currContributing });
+                                node = null;
                             });
                         }
                     }
@@ -1002,7 +942,10 @@ export class Graph extends React.Component {
             }
         }
 
-        this.props.nodeClickHandler(node);
+        // Tell the upper-level rendering component to render the node information.
+        if (node) {
+            this.props.nodeClickHandler(node);
+        }
     }
 
     bindClickHandlers(d3, el) {
@@ -1222,7 +1165,6 @@ export class FileGraph extends React.Component {
 
         // Initialize React state variables.
         this.state = {
-            contributingFiles: {}, // List of contributing file objects we've requested; acts as a cache too
             coalescedFiles: {}, // List of coalesced files we've requested; acts as a cache too
             infoModalOpen: false, // Graph information modal open
         };
