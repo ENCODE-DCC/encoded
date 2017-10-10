@@ -110,9 +110,8 @@
         "status": {
             "title": "Status",
             "type": "string",
-            "default": "proposed",
+            "default": "started",
             "enum" : [
-                "proposed",
                 "started",
                 "submitted",
                 "ready for review",
