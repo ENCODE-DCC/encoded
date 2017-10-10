@@ -2,7 +2,7 @@ import _ from 'underscore';
 
 
 // Import test component and data.
-import { assembleGraph } from '../graph';
+import { assembleGraph } from '../filegallery';
 import context from '../testdata/experiment';
 
 
