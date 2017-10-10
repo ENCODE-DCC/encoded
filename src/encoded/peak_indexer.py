@@ -73,8 +73,7 @@ def get_mapping(assembly_name='hg19'):
             },
             'properties': {
                 'uuid': {
-                    'type': 'string',
-                    'index': 'not_analyzed'
+                    'type': 'keyword',
                 },
                 'positions': {
                     'type': 'nested',

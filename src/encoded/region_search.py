@@ -18,6 +18,8 @@ from urllib.parse import urlencode
 import logging
 import re
 
+from pprint import pprint as pp
+
 
 log = logging.getLogger(__name__)
 
@@ -377,6 +379,7 @@ def region_search(context, request):
 
 @view_config(route_name='suggest', request_method='GET', permission='search')
 def suggest(context, request):
+    pp('suggest called')
     text = ''
     requested_genome = ''
     if 'q' in request.params:
@@ -392,23 +395,27 @@ def suggest(context, request):
     }
     es = request.registry[ELASTIC_SEARCH]
     query = {
-        "suggester": {
-            "text": text,
-            "completion": {
-                "field": "name_suggest",
-                "size": 100
+        "suggest": {
+            "default-suggest": {
+                "text": text,
+                "completion": {
+                    "field": "suggest",
+                    "size": 100
+                }
             }
         }
     }
     try:
-        results = es.suggest(index='annotations', body=query)
+        results = es.search(index='annotations', body=query)
+        pp(query)
+        pp(results)
     except:
         return result
     else:
         result['@id'] = '/suggest/?' + urlencode({'genome': requested_genome, 'q': text}, ['q','genome'])
         result['@graph'] = []
-        for item in results['suggester'][0]['options']:
-            if _GENOME_TO_SPECIES[requested_genome].replace('_', ' ') == item['payload']['species']:
+        for item in results['suggest']['default-suggest'][0]['options']:
+            if _GENOME_TO_SPECIES[requested_genome].replace('_', ' ') == item['_source']['payload']['species']:
                 result['@graph'].append(item)
         result['@graph'] = result['@graph'][:10]
         return result
