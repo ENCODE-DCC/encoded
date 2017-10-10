@@ -14,8 +14,9 @@ from snovault import DBSESSION, COLLECTIONS
 #    TransactionRecord,
 #)
 from snovault.elasticsearch.indexer import (
+    SEARCH_MAX,
     IndexerState,
-    Indexer
+    Indexer,
 )
 
 from snovault.elasticsearch.interfaces import (
@@ -25,7 +26,6 @@ from snovault.elasticsearch.interfaces import (
 )
 #import copy
 
-SEARCH_MAX = 99999  # OutOfMemoryError if too high
 log = logging.getLogger(__name__)
 
 
@@ -128,6 +128,7 @@ class RegionsState(IndexerState):
         # DO NOT INHERIT! These keys are for passing on to other indexers
         self.followup_prep_list = None                        # No followup to a following indexer
         self.staged_cycles_list = None                        # Nothing is passed from another indexer
+        self.force_uuids        = self.title + "_force_dataset_uuids" # uuids to force a reindex on.
 
     def file_added(self, uuid):
         self.list_extend(self.files_added_set, [uuid])
@@ -161,6 +162,40 @@ class RegionsState(IndexerState):
 
         return state
 
+    def okay_to_start(self):
+        '''Make sure that it is okay to start indexing.'''
+        # Has first round of primary indexing finished?
+        if not self.get_obj("indexing"):  # http://localhost:9200/snovault/meta/indexing
+            return False
+
+        # Is a full indexing underway
+        primary_state = self.get_obj("primary_indexer"):
+        if primary_state.get('cycle_count',0) > SEARCH_MAX:
+            return False
+        return True
+
+    def force_reindex(self):
+        '''Request to override existing index and reindex all files.'''
+        # Rare call for indexing all...
+        override = self.get_obj(self.override)
+        if override:
+            self.delete_objs([self.override])
+            log.warn('%s will now reindex all files.' % (self.state_id, len(uuids)))
+            return True
+        return False
+
+    def force_dataset_uuids(self):
+        '''Request to reindex the files of the these datasets with force.'''
+        # Rare call for indexing a set of one or more uuids
+        force_uuids = self.get_list(self.force_uuids)
+        if len(force_uuids) > 0:
+            self.delete_objs([self.force_uuids])
+            log.warn('%s will now reindex %d files with force.' % (self.state_id, len(self.force_uuids)))
+            return self.force_uuids
+        return []
+
+
+
 
 def encoded_experiment_uuids(request, restrict_to_assays=[]):
     query = "select distinct(resources.rid) from resources, propsheets where resources.rid = propsheets.rid and resources.item_type='experiment'"  # ?? 'dataset' ??
@@ -185,20 +220,40 @@ def index_regions(request):
     #request.datastore = 'database'
     dry_run = request.json.get('dry_run', False)
     indexer = request.registry['region'+INDEXER]
+    uuids = []
+
 
     # keeping track of state
     state = RegionsState(encoded_es,encoded_INDEX)  # Consider putting this in regions es instead of encoded es
     result = state.get_initial_state()
 
-    assays = list(ENCODED_REGION_REQUIREMENTS.keys())
-    #log.debug("Regions indexer has begun...")
+    # Don't bother doing anything if primary indexer hasn't finished one pass.
+    if not state.okay_to_start():
+        return result
 
-    uuids = encoded_experiment_uuids(request,assays)
+    special_requests = {}
+    force = state.force_reindex()  # Full reindexing requested
+    if force:
+        special_requests = {'force': True}
+    else:
+        uuids = state.force_dataset_uuids()
+        if len(uuids) > 0:
+            special_requests = {'force': True}
+
+    if len(uuids) == 0:
+        assays = list(ENCODED_REGION_REQUIREMENTS.keys())
+        try:
+            uuids = encoded_experiment_uuids(request, assays)
+        except:
+            # TODO: mention error?
+            uuids = []
+
     uuid_count = len(uuids)
     if uuid_count > 0 and not dry_run:
+        log.info("Regions indexer started on %d datasets(s)" % uuid_count)
 
         result = state.start_cycle(uuids, result)
-        errors = indexer.update_objects(request, uuids)
+        errors = indexer.update_objects(request, uuids, special_requests)
         result = state.finish_cycle(result, errors)
         if result['indexed'] > 0:
             log.warn("Regions indexer added %d file(s)" % result['indexed']) # TODO: change to info
@@ -219,18 +274,12 @@ class RegionIndexer(Indexer):
         '''Returns composite json blob from elastic-search, or None if not found.'''
         return None
 
-    def update_objects(self, request, uuids):
-        errors = []
-        for i, uuid in enumerate(uuids):
-            error = self.update_object(request, uuid)
-            if error is not None:
-                errors.append(error)
-            if (i + 1) % 50 == 0:
-                log.info('Indexing %d', i + 1)
+    def update_object(self, request, dataset_uuid, special_requests):
+        # Ignores restart.
 
-        return errors
+        force = special_requests.get('force', False)  # force reindexing, even if the file has been indexed.
+        # TODO: if force then drop current index contents?
 
-    def update_object(self, request, dataset_uuid):
         try:
             dataset_obj = self.encoded_es.get(index=self.encoded_INDEX, id=str(dataset_uuid)).get('_source',{}).get('embedded')
         except:
@@ -257,18 +306,19 @@ class RegionIndexer(Indexer):
             file_uuid = file_obj['uuid']
 
             if self.encoded_candidate_file(file_obj, assay_term_name):
-                #log.warn("file is not candidate: %s",file_obj['@id'])
+
+                if force:
+                    self.remove_from_regions_es(file_uuid)  # remove all regions first
+
                 if self.in_regions_es(file_uuid):
                     continue
                 if self.add_encoded_file_to_regions_es(request, file_obj):
-                    log.warn("added file: %s %s" % (dataset_obj['accession'],file_obj['href']))  # warn to see on demo
+                    log.info("added file: %s %s" % (dataset_obj['accession'],file_obj['href']))
                     self.state.file_added(file_uuid)
 
             else:
-                if not self.in_regions_es(file_uuid):
-                    continue
                 if self.remove_from_regions_es(file_uuid):
-                    log.warn("dropped file: %s %s" % (dataset_obj['accession'],file_obj['@id']))  # warn to see on demo
+                    log.info("dropped file: %s %s" % (dataset_obj['accession'],file_obj['@id']))
                     self.state.file_dropped(file_uuid)
 
         # TODO: gather and return errors
