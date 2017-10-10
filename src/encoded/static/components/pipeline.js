@@ -182,8 +182,8 @@ class PipelineComponent extends React.Component {
     }
 
     // Given a graph node ID, return the prefix portion that identifies what kind of node this is.
-    static getNodeIdPrefix(nodeId) {
-        return nodeId.split(':')[0];
+    static getNodeIdPrefix(node) {
+        return node.id.split(':')[0];
     }
 
     constructor() {
@@ -388,7 +388,7 @@ class PipelineComponent extends React.Component {
         let selectedNode;
         let meta;
         if (this.state.infoNodeId) {
-            selectedNode = this.jsonGraph.getNode(this.state.infoNodeId);
+            selectedNode = this.jsonGraph.getNode(this.state.infoNodeId.id);
             if (selectedNode) {
                 selectedStep = selectedNode.metadata.ref;
                 meta = AnalysisStep(selectedStep, selectedNode);
@@ -463,7 +463,7 @@ class PipelineComponent extends React.Component {
                 {this.jsonGraph ?
                     <div>
                         <h3>Pipeline schematic</h3>
-                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} forceRedraw />
+                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} />
                         {meta && this.state.infoModalOpen ?
                             <Modal closeModal={this.closeModal}>
                                 <ModalHeader closeModal={this.closeModal}>
