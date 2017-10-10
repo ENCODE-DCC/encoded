@@ -327,7 +327,6 @@
             "comment": "Work in progress. Constructs, TALENs and RNAi objects are being migrated to objects that would be linked via genetic_modifications objects to the biosamples/donors.",
             "type": "array",
             "default": [],
-            "permission": "import_items",
             "uniqueItems": true,
             "items": {
                 "title": "Genetic modification",
