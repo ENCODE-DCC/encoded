@@ -377,8 +377,6 @@
             "title": "Category",
             "description": "The category/type of the genetic modification performed.",
             "type": "string",
-            "comment": "Locking down to temporarily prevent new genetic_modifications from being submitted.",
-            "permission": "import_items",
             "enum": [
                 "deletion",
                 "interference",
