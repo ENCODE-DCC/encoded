@@ -2678,7 +2678,7 @@ def audit_missing_modification(value, system, excluded_types):
                 detail = 'Recombinant protein target {} requires '.format(target['@id']) + \
                     'a genetic modification associated with the biosample {} '.format(b['@id']) + \
                     'to specify the relevant tagging details.'
-                yield AuditFailure('missing tag construct', detail, level='ERROR')
+                yield AuditFailure('inconsistent genetic modification tags', detail, level='ERROR')
     return
 
 
