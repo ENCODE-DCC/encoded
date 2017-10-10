@@ -642,7 +642,7 @@ export class Graph extends React.Component {
 }
 
 Graph.propTypes = {
-    graph: PropTypes.object, // JsonGraph object representing the graph being rendered.
+    graph: PropTypes.object.isRequired, // JsonGraph object representing the graph being rendered.
     nodeClickHandler: PropTypes.func.isRequired, // Function to call to handle clicks in a node
     noDefaultClasses: PropTypes.bool, // True to supress default CSS classes on <Panel> components
     schemas: PropTypes.object, // Schemas for QC metrics
