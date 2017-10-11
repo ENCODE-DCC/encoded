@@ -100,11 +100,9 @@ def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
     """
     query = {
         'query': {
-            'filtered': {
-                'filter': {
                     'nested': {
                         'path': 'positions',
-                        'filter': {
+                        'query': {
                             'bool': {
                                 'should': []
                             }
@@ -112,8 +110,6 @@ def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
                     }
                 },
                 '_cache': True,
-            }
-        },
         '_source': False,
     }
     search_ranges = {
@@ -135,9 +131,9 @@ def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
         }
     }
     for key, value in search_ranges.items():
-        query['query']['filtered']['filter']['nested']['filter']['bool']['should'].append(get_bool_query(value['start'], value['end']))
+        query['query']['nested']['query']['bool']['should'].append(get_bool_query(value['start'], value['end']))
     if with_inner_hits:
-        query['query']['filtered']['filter']['nested']['inner_hits'] = {'size': 99999}
+        query['query']['nested']['inner_hits'] = {'size': 99999}
     return query
 
 

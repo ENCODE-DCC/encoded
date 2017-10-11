@@ -19,6 +19,7 @@ from snovault.elasticsearch.interfaces import (
     SNP_SEARCH_ES,
 )
 import copy
+from pprint import pprint as pp
 
 # NOTE: Trackhub caching is turned on and off with this global AND USE_CACHE in visualization.py
 TRACKHUB_CACHING = True
@@ -225,6 +226,7 @@ def index_visualizable(request, invalidated):
 @view_config(route_name='index_file', request_method='POST', permission="index")
 def index_file(request):
     registry = request.registry
+    print('index_file')
     INDEX = registry.settings['snovault.elasticsearch.index']
     request.datastore = 'database'
     dry_run = request.json.get('dry_run', False)
@@ -263,7 +265,7 @@ def index_file(request):
         'xmin': xmin,
         'last_xmin': last_xmin,
     }
-
+    pp(result)
     if last_xmin is None:
         result['types'] = request.json.get('types', None)
         invalidated = list(all_uuids(registry))
@@ -332,20 +334,12 @@ def index_file(request):
         err = None
         uuid_current = None
         th_indexer_run = False
+        pp('length of invalidated {}'.format(len(invalidated)))
         invalidated_files = list(set(invalidated).intersection(set(all_bed_file_uuids(request))))
         try:
             files_indexed = 0
             for uuid in invalidated_files:
                 uuid_current = uuid
-                if TRACKHUB_CACHING and not th_indexer_run and files_indexed % 100 == 0:
-                    # Temporary 'simple most efficient' solution, b4 separate index_trackhub process
-                    try:
-                        if object_indexer_done(registry, last_xmin):
-                            index_visualizable(request, invalidated)
-                            th_indexer_run = True
-                    except Exception as e:
-                        log.error('Unhandled index_vis exception: ' + repr(e))
-
                 index_peaks(uuid, request)
                 files_indexed += 1
         except Exception as e:
@@ -365,11 +359,6 @@ def index_file(request):
                         log.error('Indexing error for {}, error message: {}'.format(item['uuid'], item['error']))
                         item['error'] = "Error occured during indexing, check the logs"
                 result['errors'] = error_messages
-        if TRACKHUB_CACHING and not th_indexer_run:
-            try:
-                index_visualizable(request, invalidated)
-            except Exception as e:
-                log.error('Unhandled index_vis exception (after files): ' + repr(e))
 
     return result
 
