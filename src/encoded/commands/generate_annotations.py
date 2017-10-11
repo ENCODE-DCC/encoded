@@ -175,8 +175,6 @@ def mouse_single_annotation(r):
     try:
         response = requests.get(mm9_url).json()
         pp(mm9_url)
-        pp(response.json())
-        pp(response.headers)
     except:
         pp("BAD STUFF HAPPENED WITH MOUSE")
         return

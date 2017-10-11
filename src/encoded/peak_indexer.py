@@ -291,25 +291,27 @@ def index_file(request):
         if txn_count == 0:
             return result
 
-        es.indices.refresh(index=INDEX)
-        res = es.search(index=INDEX, size=SEARCH_MAX, body={
-            'filter': {
-                'or': [
-                    {
-                        'terms': {
-                            'embedded_uuids': updated,
-                            '_cache': False,
+        es.indices.refresh(index='_all')
+        res = es.search(index='_all', size=SEARCH_MAX, body={
+            'query': {
+                'bool': {
+                    'must': [
+                        {
+                            'terms': {
+                                'embedded_uuids': updated,
+                                '_cache': False,
+                            },
                         },
-                    },
-                    {
-                        'terms': {
-                            'linked_uuids': renamed,
-                            '_cache': False,
+                        {
+                            'terms': {
+                                'linked_uuids': renamed,
+                                '_cache': False,
+                            },
                         },
-                    },
-                ],
-            },
+                    ],
+                },
             '_source': False,
+            }
         })
         if res['hits']['total'] > SEARCH_MAX:
             invalidated = list(all_uuids(request.registry))
