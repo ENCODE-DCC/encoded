@@ -74,8 +74,6 @@
         },
         "status": {
             "enum" : [
-                "preliminary",
-                "proposed",
                 "in progress",
                 "released",
                 "archived",
