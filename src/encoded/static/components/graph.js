@@ -610,7 +610,6 @@ export class Graph extends React.Component {
         const { graph } = this.props;
         const orientBtnAlt = `Orient graph ${this.state.verticalGraph ? 'horizontally' : 'vertically'}`;
         const currOrientKey = this.state.verticalGraph ? 'orientH' : 'orientV';
-        const noDefaultClasses = this.props.noDefaultClasses;
 
         if (graph) {
             return (
@@ -643,7 +642,6 @@ export class Graph extends React.Component {
 Graph.propTypes = {
     graph: PropTypes.object.isRequired, // JsonGraph object representing the graph being rendered.
     nodeClickHandler: PropTypes.func.isRequired, // Function to call to handle clicks in a node
-    noDefaultClasses: PropTypes.bool, // True to supress default CSS classes on <Panel> components
     schemas: PropTypes.object, // Schemas for QC metrics
     children: PropTypes.node,
 };
@@ -651,7 +649,6 @@ Graph.propTypes = {
 Graph.defaultProps = {
     selectedAssembly: '',
     selectedAnnotation: '',
-    noDefaultClasses: false,
     schemas: null,
     auditIndicators: null,
     auditDetail: null,

@@ -1034,7 +1034,7 @@ export function assembleGraph(files, dataset, options) {
         return `pipeline-node-file${active ? ' active' : ''}${colorizeNode ? ` ${statusClass}` : ''}${addClasses ? ` ${addClasses}` : ''}`;
     }
 
-    const { infoNodeId, selectedAssembly, selectedAnnotation, colorize } = options;
+    const { infoNode, selectedAssembly, selectedAnnotation, colorize } = options;
     const derivedFileIds = _.memoize(rDerivedFileIds, file => file['@id']);
     const genQcId = _.memoize(rGenQcId, (metric, file) => metric['@id'] + file['@id']);
 
@@ -1243,7 +1243,7 @@ export function assembleGraph(files, dataset, options) {
         const file = matchingFiles[fileId];
         const fileNodeId = `file:${file['@id']}`;
         const fileNodeLabel = `${file.title} (${file.output_type})`;
-        const fileCssClass = fileCssClassGen(file, infoNodeId === fileNodeId, colorize);
+        const fileCssClass = fileCssClassGen(file, !!(infoNode && infoNode.id === fileNodeId), colorize);
         const fileRef = file;
         const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
         let metricsInfo;
@@ -1257,7 +1257,7 @@ export function assembleGraph(files, dataset, options) {
                     id: qcId,
                     label: qcAbbr(metric),
                     '@type': ['QualityMetric'],
-                    class: `pipeline-node-qc-metric${infoNodeId === qcId ? ' active' : ''}`,
+                    class: `pipeline-node-qc-metric${infoNode && infoNode.id === qcId ? ' active' : ''}`,
                     tooltip: true,
                     ref: metric,
                     parent: file,
@@ -1304,7 +1304,7 @@ export function assembleGraph(files, dataset, options) {
             // Add the step to the graph only if we haven't for this derived-from set already
             if (!jsonGraph.getNode(stepId)) {
                 jsonGraph.addNode(stepId, label, {
-                    cssClass: `pipeline-node-analysis-step${(infoNodeId === stepId ? ' active' : '') + (error ? ' error' : '')}`,
+                    cssClass: `pipeline-node-analysis-step${(infoNode && infoNode.id === stepId ? ' active' : '') + (error ? ' error' : '')}`,
                     type: 'Step',
                     shape: 'rect',
                     cornerRadius: 4,
@@ -1354,7 +1354,7 @@ export function assembleGraph(files, dataset, options) {
         if (file && !matchingFiles[fileId]) {
             const fileNodeId = `file:${file['@id']}`;
             const fileNodeLabel = `${file.title} (${file.output_type})`;
-            const fileCssClass = fileCssClassGen(file, infoNodeId === fileNodeId, colorize);
+            const fileCssClass = fileCssClassGen(file, infoNode === fileNodeId, colorize);
             const fileRef = file;
             const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
 
@@ -1373,7 +1373,7 @@ export function assembleGraph(files, dataset, options) {
     Object.keys(usedContributingFiles).forEach((fileAtId) => {
         const fileNodeId = `file:${fileAtId}`;
         const fileNodeLabel = `${globals.atIdToAccession(fileAtId)}`;
-        const fileCssClass = `pipeline-node-file contributing${infoNodeId === fileNodeId ? ' active' : ''}`;
+        const fileCssClass = `pipeline-node-file contributing${infoNode === fileNodeId ? ' active' : ''}`;
 
         jsonGraph.addNode(fileNodeId, fileNodeLabel, {
             cssClass: fileCssClass,
@@ -1390,7 +1390,7 @@ export function assembleGraph(files, dataset, options) {
         const coalescingGroup = coalescingGroups[groupHash];
         if (coalescingGroup.length) {
             const fileNodeId = `coalesced:${groupHash}`;
-            const fileCssClass = `pipeline-node-file contributing${infoNodeId === fileNodeId ? ' active' : ''}`;
+            const fileCssClass = `pipeline-node-file contributing${infoNode === fileNodeId ? ' active' : ''}`;
             jsonGraph.addNode(fileNodeId, `${coalescingGroup.length} contributing files`, {
                 cssClass: fileCssClass,
                 type: 'Coalesced',
@@ -1421,62 +1421,52 @@ export function assembleGraph(files, dataset, options) {
 }
 
 
-class FileGraph extends React.Component {
-    constructor() {
-        super();
+const FileGraph = (props) => {
+    const { files, dataset, infoNode, selectedAssembly, selectedAnnotation, colorize, handleNodeClick, schemas } = props;
 
-        // Initialize React state variables.
-        this.state = {
-            coalescedFiles: {}, // List of coalesced files we've requested; acts as a cache too
-            infoModalOpen: false, // Graph information modal open
-        };
-    }
-
-    render() {
-        const { files, dataset, selectedAssembly, selectedAnnotation, handleNodeClick, schemas } = this.props;
-
-        // Build node graph of the files and analysis steps with this experiment
-        let graph;
-        if (files.length) {
-            try {
-                graph = assembleGraph(
-                    files,
-                    dataset,
-                    {
-                        infoNodeId: this.state.infoNodeId,
-                        selectedAssembly,
-                        selectedAnnotation,
-                        colorize: this.state.colorize,
-                    }
-                );
-            } catch (e) {
-                console.warn(e.message + (e.file0 ? ` -- file0:${e.file0}` : '') + (e.file1 ? ` -- file1:${e.file1}` : ''));
-            }
-        }
-
-        // Build node graph of the files and analysis steps with this experiment
-        if (graph) {
-            return (
-                <Graph
-                    graph={graph}
-                    nodeClickHandler={handleNodeClick}
-                    schemas={schemas}
-                    auditIndicators={this.props.auditIndicators}
-                    auditDetail={this.props.auditDetail}
-                />
+    // Build node graph of the files and analysis steps with this experiment
+    let graph;
+    if (files.length) {
+        try {
+            graph = assembleGraph(
+                files,
+                dataset,
+                {
+                    infoNode,
+                    selectedAssembly,
+                    selectedAnnotation,
+                    colorize,
+                }
             );
+        } catch (e) {
+            console.warn(e.message + (e.file0 ? ` -- file0:${e.file0}` : '') + (e.file1 ? ` -- file1:${e.file1}` : ''));
         }
-        return <p className="browser-error">Graph not applicable.</p>;
     }
-}
+
+    // Build node graph of the files and analysis steps with this experiment
+    if (graph) {
+        return (
+            <Graph
+                graph={graph}
+                nodeClickHandler={handleNodeClick}
+                schemas={schemas}
+                auditIndicators={props.auditIndicators}
+                auditDetail={props.auditDetail}
+            />
+        );
+    }
+    return <p className="browser-error">Graph not applicable.</p>;
+};
 
 FileGraph.propTypes = {
     files: PropTypes.array.isRequired, // Array of files we're graphing
     dataset: PropTypes.object.isRequired, // dataset these files are being rendered into
     selectedAssembly: PropTypes.string, // Currently selected assembly
     selectedAnnotation: PropTypes.string, // Currently selected annotation
+    infoNode: PropTypes.object, // Currently highlighted node
     schemas: PropTypes.object, // Schemas for QC metrics
     handleNodeClick: PropTypes.func.isRequired, // Parent function to call when a graph node is clicked
+    colorize: PropTypes.bool, // True to enable node colorization based on status
     auditIndicators: PropTypes.func, // Inherited from auditDecor HOC
     auditDetail: PropTypes.func, // Inherited from auditDecor HOC
 };
@@ -1484,7 +1474,9 @@ FileGraph.propTypes = {
 FileGraph.defaultProps = {
     selectedAssembly: '',
     selectedAnnotation: '',
+    infoNode: null,
     schemas: null,
+    colorize: false,
     auditIndicators: null,
     auditDetail: null,
 };
@@ -1551,7 +1543,7 @@ class FileGalleryRendererComponent extends React.Component {
 
     // Called from child components when the selected node changes.
     setInfoNodeId(node) {
-        this.setState({ node });
+        this.setState({ infoNode: node });
     }
 
     setInfoNodeVisible(visible) {
@@ -1633,7 +1625,7 @@ class FileGalleryRendererComponent extends React.Component {
                 handleFilterChange={this.handleFilterChange}
                 encodevers={globals.encodeVersion(context)}
                 session={this.context.session}
-                infoNodeId={this.state.infoNodeId}
+                infoNodeId={this.state.infoNode}
                 setInfoNodeId={this.setInfoNodeId}
                 infoNodeVisible={this.state.infoNodeVisible}
                 setInfoNodeVisible={this.setInfoNodeVisible}
@@ -1643,8 +1635,8 @@ class FileGalleryRendererComponent extends React.Component {
             />
         );
 
-        if (this.state.node) {
-            meta = globals.graphDetail.lookup(this.state.node)(this.state.node, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, this.context.session, this.context.sessionProperties);
+        if (this.state.infoNode) {
+            meta = globals.graphDetail.lookup(this.state.infoNode)(this.state.infoNode, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, this.context.session, this.context.sessionProperties);
         }
 
         return (
@@ -1673,6 +1665,7 @@ class FileGalleryRendererComponent extends React.Component {
                             <FileGraph
                                 dataset={context}
                                 files={includedFiles}
+                                infoNode={this.state.infoNode}
                                 selectedAssembly={selectedAssembly}
                                 selectedAnnotation={selectedAnnotation}
                                 schemas={schemas}

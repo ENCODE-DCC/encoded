@@ -147,20 +147,6 @@ function AnalysisStep(step, node) {
 
 
 class PipelineComponent extends React.Component {
-    static detailNodes(jsonGraph, infoNodeId) {
-        let meta;
-
-        // Find data matching selected node, if any
-        if (infoNodeId) {
-            const node = jsonGraph.getNode(infoNodeId);
-            if (node) {
-                meta = globals.graphDetail.lookup(node)(node);
-            }
-        }
-
-        return meta;
-    }
-
     // For the given step, calculate its unique ID for the graph nodes. You can pass an
     // analysis_step object in `step`, or just its @id string to get the same result.
     static genStepId(step) {
@@ -191,7 +177,7 @@ class PipelineComponent extends React.Component {
 
         // Set initial React component state.
         this.state = {
-            infoNodeId: '', // ID of node whose info panel is open
+            infoNode: null, // ID of node whose info panel is open
             infoModalOpen: false, // Graph information modal open
         };
 
@@ -240,7 +226,7 @@ class PipelineComponent extends React.Component {
 
                 // Assemble a single analysis step node.
                 jsonGraph.addNode(stepId, label, {
-                    cssClass: `pipeline-node-analysis-step${this.state.infoNodeId === stepId ? ' active' : ''}`,
+                    cssClass: `pipeline-node-analysis-step${this.state.infoNode && this.state.infoNode.id === stepId ? ' active' : ''}`,
                     type: 'Step',
                     shape: 'rect',
                     cornerRadius: 4,
@@ -348,7 +334,7 @@ class PipelineComponent extends React.Component {
         if (nodePrefix === stepNodePrefix) {
             // Click was in a step node. Set a new state so that a modal for the step node appears.
             this.setState({
-                infoNodeId: nodeId,
+                infoNode: nodeId,
                 infoModalOpen: true,
             });
         }
@@ -387,8 +373,8 @@ class PipelineComponent extends React.Component {
         let selectedStep;
         let selectedNode;
         let meta;
-        if (this.state.infoNodeId) {
-            selectedNode = this.jsonGraph.getNode(this.state.infoNodeId.id);
+        if (this.state.infoNode) {
+            selectedNode = this.jsonGraph.getNode(this.state.infoNode && this.state.infoNode.id);
             if (selectedNode) {
                 selectedStep = selectedNode.metadata.ref;
                 meta = AnalysisStep(selectedStep, selectedNode);
