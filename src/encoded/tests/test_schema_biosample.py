@@ -72,18 +72,6 @@ def test_biosample_starting_amount_dep(testapp, biosample_starting_amount):
     testapp.post_json('/biosample', biosample_starting_amount)
 
 
-def test_biosample_transfection_method_fail(testapp, biosample):
-    # no dependency
-    biosample['transfection_method'] = 'transduction'
-    testapp.post_json('/biosample', biosample, status=422)
-
-
-def test_biosample_transfection_method(testapp, biosample):
-    biosample['transfection_method'] = 'transduction'
-    biosample['transfection_type'] = 'stable'
-    testapp.post_json('/biosample', biosample)
-
-
 def test_biosample_mouse_life_stage(testapp, mouse_biosample):
     mouse_biosample['mouse_life_stage'] = 'adult'
     testapp.post_json('/biosample', mouse_biosample)

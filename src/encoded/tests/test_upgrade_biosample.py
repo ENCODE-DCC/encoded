@@ -168,6 +168,21 @@ def biosample_15(biosample_0, biosample):
     return item
 
 
+@pytest.fixture
+def biosample_18(biosample_0, biosample, construct, rnai):
+    item = biosample_0.copy()
+    item.update({
+        'biosample_term_id': 'EFO:0002067',
+        'biosample_term_name': 'K562',
+        'biosample_type': 'immortalized cell line',
+        'constructs': list(construct),
+        'rnais': list(rnai),
+        'transfection_type': 'stable',
+        'transfection_method': 'electroporation'
+    })
+    return item
+
+
 def test_biosample_upgrade(upgrader, biosample_1):
     value = upgrader.upgrade('biosample', biosample_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -459,10 +474,18 @@ def test_upgrade_biosample_13_to_14(root, upgrader, biosample, biosample_13, dum
     assert value['lot_id'] == ' leading and trailing whitespace '.strip()
 
 
-def test_file_upgrade_15_to_16(upgrader, biosample_15, biosample):
+def test_upgrade_biosample_15_to_16(upgrader, biosample_15, biosample):
     value = upgrader.upgrade('biosample', biosample_15, current_version='15', target_version='16')
     assert value['originated_from'] == biosample['uuid']
     assert 'derived_from' not in value
     assert value['schema_version'] == '16'
     assert value['date_obtained'] == '2017-06-06'
     assert 'talens' not in value
+
+
+def test_upgrade_biosample_18_to_19(upgrader, biosample_18, biosample):
+    value = upgrader.upgrade('biosample', biosample_18, current_version='18', target_version='19')
+    assert 'constructs' not in value
+    assert 'rnais' not in value
+    assert 'transfection_type' not in value
+    assert 'transfection_method' not in value
