@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import { Panel } from '../libs/bootstrap/panel';
 import { svgIcon } from '../libs/svg-icons';
 import { BrowserFeat } from './browserfeat';
 import { requestFiles } from './objectutils';
@@ -615,7 +614,7 @@ export class Graph extends React.Component {
 
         if (graph) {
             return (
-                <Panel noDefaultClasses={noDefaultClasses}>
+                <div>
                     <div className="zoom-control-area">
                         <table className="zoom-control">
                             <tbody>
@@ -633,7 +632,7 @@ export class Graph extends React.Component {
                         <button ref="dlButton" className="btn btn-info btn-sm" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
                     </div>
                     {this.props.children}
-                </Panel>
+                </div>
             );
         }
 

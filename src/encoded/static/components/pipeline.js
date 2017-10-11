@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
+import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
 import { DocumentsPanel } from './doc';
 import * as globals from './globals';
@@ -460,25 +460,30 @@ class PipelineComponent extends React.Component {
                         </dl>
                     </PanelBody>
                 </Panel>
+
                 {this.jsonGraph ?
-                    <div>
-                        <h3>Pipeline schematic</h3>
+                    <Panel>
+                        <PanelHeading>
+                            <h3>Pipeline schematic</h3>
+                        </PanelHeading>
                         <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} />
-                        {meta && this.state.infoModalOpen ?
-                            <Modal closeModal={this.closeModal}>
-                                <ModalHeader closeModal={this.closeModal}>
-                                    {meta ? meta.header : null}
-                                </ModalHeader>
-                                <ModalBody>
-                                    {meta ? meta.body : null}
-                                </ModalBody>
-                                <ModalFooter closeModal={<button className="btn btn-info" onClick={this.closeModal}>Close</button>} />
-                            </Modal>
-                        : null}
-                    </div>
+                    </Panel>
                 : null}
+
                 {context.documents && context.documents.length ?
                     <DocumentsPanel documentSpecs={[{ documents: context.documents }]} />
+                : null}
+
+                {meta && this.state.infoModalOpen ?
+                    <Modal closeModal={this.closeModal}>
+                        <ModalHeader closeModal={this.closeModal}>
+                            {meta ? meta.header : null}
+                        </ModalHeader>
+                        <ModalBody>
+                            {meta ? meta.body : null}
+                        </ModalBody>
+                        <ModalFooter closeModal={<button className="btn btn-info" onClick={this.closeModal}>Close</button>} />
+                    </Modal>
                 : null}
             </div>
         );
