@@ -73,6 +73,9 @@
             ]
         },
         "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "in progress",
             "enum" : [
                 "in progress",
                 "released",
