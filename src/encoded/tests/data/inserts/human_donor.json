@@ -38,14 +38,9 @@
         "_test": "has references",
         "accession": "ENCDO000HUM",
         "award": "U41HG006992",
-        "children": [
-            "ENCDO017AAA",
-            "ENCDO275AAA"
-        ],
         "documents": [
             "encode:PanIsletD_Crawford_protocol"
         ],
-        "ethnicity": "unknown",
         "health_status": "unknown",
         "lab": "j-michael-cherry",
         "life_stage": "unknown",
@@ -64,7 +59,6 @@
     {
         "accession": "ENCDO106AAA",
         "award": "U41HG006992",
-        "ethnicity": "unknown",
         "health_status": "unknown",
         "lab": "j-michael-cherry",
         "life_stage": "unknown",
@@ -75,7 +69,7 @@
     {
         "accession": "ENCDO275AAA",
         "award": "U41HG006992",
-        "ethnicity": "unknown",
+        "ethnicity": "Black",
         "health_status": "unknown",
         "lab": "j-michael-cherry",
         "life_stage": "unknown",
@@ -86,7 +80,7 @@
     {
         "accession": "ENCDO276AAA",
         "award": "U41HG006992",
-        "ethnicity": "unknown",
+        "ethnicity": "Asian",
         "health_status": "unknown",
         "lab": "j-michael-cherry",
         "life_stage": "unknown",
@@ -120,7 +114,6 @@
         "organism": "human",
         "sex": "female",
         "status": "released",
-        "url": "http://ccr.coriell.org/Sections/BrowseCatalog/FamilyTypeSubDetail.aspx?PgId=402&fam=1463&coll=GM",
         "uuid": "44d24e3f-bc5b-469a-8500-7ebd728f8ed5"
     },
     {
@@ -128,11 +121,6 @@
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "organism": "human",
-        "uuid": "ba1e3e4f-7ca1-4546-86c3-42df0134d627",
-        "genetic_modifications": [
-            "encode:modification-test-1",
-            "ef12855f-5d3e-4da5-8684-3a594c60505a",
-            "2f33a486-e3d9-4633-8682-a363b48ba67d"
-        ]
+        "uuid": "ba1e3e4f-7ca1-4546-86c3-42df0134d627"
     }
 ]

@@ -291,32 +291,8 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
     @at-root #{&}__assembly-selector {
         flex: 0 1 auto;
-        position: relative;
         vertical-align: bottom;
         margin-right: 5px;
-
-        select {
-            height: 30px;
-            padding-right: 30px;
-            font-size: 0.9rem;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-        }
-
-        &:after {
-            content: '\f0dc';
-            font-family: FontAwesome;
-            padding: 8px;
-            position: absolute;
-            right: 10px;
-            top: 5px;
-            z-index: 1;
-            width: 10px;
-            line-height: 50%;
-            font-size: 0.86rem;
-            color: #428bca;
-            pointer-events: none;
-        }
     }
 
     @at-root #{&}__inclusion-selector {

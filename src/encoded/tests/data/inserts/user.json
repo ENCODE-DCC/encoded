@@ -805,14 +805,14 @@
         "uuid": "986b362f-4eb6-4a9c-8173-3ab267307e3b"
     },
     {
-        "email": "kd@karend.net",
-        "first_name": "Karen",
+        "email": "tdreszer@stanford.edu",
+        "first_name": "Tim",
         "groups": [
             "admin"
         ],
         "job_title": "Software Engineer",
         "lab": "/labs/j-michael-cherry/",
-        "last_name": "Dalton",
+        "last_name": "Dreszer",
         "status": "current",
         "submits_for": [
             "/labs/j-michael-cherry/"

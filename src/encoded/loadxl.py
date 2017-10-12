@@ -25,11 +25,7 @@ ORDER = [
     'treatment',
     'construct',
     'construct_characterization',
-    'rnai',
-    'rnai_characterization',
     'talen',
-    'tale',
-    'crispr',
     'genetic_modification',
     'genetic_modification_characterization',
     'mouse_donor',
@@ -331,6 +327,7 @@ def request_url(item_type, method):
 
     return component
 
+
 def make_request(testapp, item_type, method):
     json_method = getattr(testapp, method.lower() + '_json')
 
@@ -562,7 +559,7 @@ PHASE1_PIPELINES = {
         remove_keys('outcrossed_strain'),
     ],
     'human_donor': [
-        remove_keys('parents', 'children', 'siblings', 'fraternal_twin', 'identical_twin'),
+        remove_keys('parents', 'children', 'siblings', 'twin'),
     ],
     'publication': [
         remove_keys('datasets'),
@@ -634,7 +631,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_files', 'possible_controls', 'supersedes'),
     ],
     'human_donor': [
-        skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'fraternal_twin', 'identical_twin'),
+        skip_rows_missing_all_keys('parents', 'children ', 'siblings', 'twin'),
     ],
     'mouse_donor': [
         skip_rows_missing_all_keys('parent_strains'),

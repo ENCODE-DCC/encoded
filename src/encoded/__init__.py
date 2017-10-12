@@ -225,6 +225,7 @@ def main(global_config, **local_config):
     if 'elasticsearch.server' in config.registry.settings:
         config.include('snovault.elasticsearch')
         config.include('.search')
+        config.include('.secondary_indexer')
 
     if 'snp_search.server' in config.registry.settings:
         addresses = aslist(config.registry.settings['snp_search.server'])

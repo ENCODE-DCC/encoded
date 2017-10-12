@@ -286,7 +286,6 @@ export class SortTable extends React.Component {
 
             return (
                 <table className="table table-sortable">
-
                     <thead>
                         {this.props.title ? <tr className="table-section" key="title"><th colSpan={colCount}>{this.props.title}</th></tr> : null}
 

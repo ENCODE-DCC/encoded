@@ -13,8 +13,6 @@
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "organism": "dmelanogaster",
-        "constructs": ["893d806f-3a88-43eb-afdf-dcc16c79ee45"],
-        "mutated_gene": "cad-dmelanogaster",
         "uuid": "c9a34c9e-a19a-4bf5-8b50-5d7c39d190b1"
     },
     {
@@ -24,8 +22,8 @@
         "organism": "dmelanogaster",
         "aliases": ["bloomington:38626"],
         "strain_background": "VK00033",
+        "genetic_modifications": ["ENCGM162RDA"],
         "genotype": "w[1118]; PBac{y[+mDint2] w[+mC]=ab-GFP.FLAG}VK00033",
-        "url": "http://flystocks.bio.indiana.edu/Reports/38626.html",
         "documents": [
             "encode:sample_strain_generation_protocol"
         ],

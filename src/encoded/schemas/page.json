@@ -109,15 +109,17 @@
                 "type": "string",
                 "enum": [
                     "3D chromatin structure",
+                    "Conferences",
                     "DNA accessibility",
                     "DNA binding",
                     "DNA methylation",
-                    "Transcription",
-                    "RNA binding",
+                    "DNA sequencing",
+                    "Encyclopedia",
                     "Genotyping",
                     "Proteomics",
-                    "Conferences",
-                    "Encyclopedia"
+                    "Replication timing",
+                    "RNA binding",
+                    "Transcription"
                 ]
             }
         },
@@ -151,8 +153,8 @@
                                     "default": "analyzed",
                                     "enum": [
                                         "analyzed",
-                                        "not_analyzed",
-                                        "no"
+                                        "no",
+                                        "not_analyzed"
                                     ]
                                 }
                             },

@@ -1,5 +1,11 @@
 ## Changelog for biosample.json
 
+### Schema version 19
+
+* Links to *constructs* and *rnais* via those properties of the same name have been removed.
+* *transfection_method* and *transfection_type* have also been removed.
+* *genetic_modifications* and *model_organism_donor_modifications* are no longer embedded, only *applied_modifications* (the combination of both those property values) will remain embedded
+
 ### Schema version 18
 
 * *biosample_type*, *biosample_term_id* and *biosample_term_name* properties are required, consistency between the type and ontology term_id is validated by schema dependency

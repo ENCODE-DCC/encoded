@@ -29,17 +29,11 @@ class Donor(Item):
         'documents',
         'documents.award',
         'documents.lab',
-        'documents.submitted_by',
-        'genetic_modifications',
-        'genetic_modifications.award',
-        'genetic_modifications.lab',
-        'genetic_modifications.modification_techniques',
-        'genetic_modifications.treatments',
-        'genetic_modifications.target'
+        'documents.submitted_by'
     ]
     name_key = 'accession'
     rev = {
-        'characterizations': ('DonorCharacterization', 'characterizes'),
+        'characterizations': ('DonorCharacterization', 'characterizes')
     }
 
     def unique_keys(self, properties):
@@ -54,7 +48,7 @@ class Donor(Item):
         "type": "array",
         "items": {
             "type": ['string', 'object'],
-            "linkFrom": "DonorCharacterization.characterizes",
+            "linkFrom": "DonorCharacterization.characterizes"
         },
     })
     def characterizations(self, request, characterizations):
@@ -67,7 +61,7 @@ class Donor(Item):
     acl=[],
     properties={
         'title': 'Mouse donors',
-        'description': 'Listing Biosample Donors',
+        'description': 'Listing Biosample Donors'
     })
 class MouseDonor(Donor):
     item_type = 'mouse_donor'
@@ -84,12 +78,16 @@ class MouseDonor(Donor):
     unique_key='accession',
     properties={
         'title': 'Fly donors',
-        'description': 'Listing Biosample Donors',
+        'description': 'Listing Biosample Donors'
     })
 class FlyDonor(Donor):
     item_type = 'fly_donor'
     schema = load_schema('encoded:schemas/fly_donor.json')
-    embedded = Donor.embedded + ['organism', 'constructs', 'constructs.target', 'characterizations']
+    embedded = Donor.embedded + ['organism', 
+                                 'genetic_modifications',
+                                 'genetic_modifications.modified_site_by_target_id',
+                                 'genetic_modifications.treatments', 
+                                 'characterizations']
 
 
 @collection(
@@ -102,7 +100,10 @@ class FlyDonor(Donor):
 class WormDonor(Donor):
     item_type = 'worm_donor'
     schema = load_schema('encoded:schemas/worm_donor.json')
-    embedded = Donor.embedded + ['organism', 'constructs', 'constructs.target']
+    embedded = Donor.embedded + ['organism',
+                                 'genetic_modifications',
+                                 'genetic_modifications.modified_site_by_target_id',
+                                 'genetic_modifications.treatments']
 
 
 @collection(
@@ -116,3 +117,20 @@ class HumanDonor(Donor):
     item_type = 'human_donor'
     schema = load_schema('encoded:schemas/human_donor.json')
     embedded = Donor.embedded + ['references']
+    rev = {
+        'children': ('HumanDonor', 'parents'),
+        'characterizations': ('DonorCharacterization', 'characterizes')
+    }
+
+    @calculated_property(schema={
+        "description": "Human donor(s) that have this human donor in their parent property.",
+        "comment": "Do not submit. Values in the list are reverse links of a human donors that have this biosample under their parents property.",
+        "title": "Children",
+        "type": "array",
+        "items": {
+            "type": ['string', 'object'],
+            "linkFrom": "HumanDonor.parents"
+        }
+    })
+    def children(self, request, parents):
+        return paths_filtered_by_status(request, parents)

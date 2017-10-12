@@ -32,27 +32,19 @@ export function CollectBiosampleDocs(biosample) {
     // Collect up the various biosample documents
     let protocolDocuments = [];
     if (biosample.documents && biosample.documents.length) {
-        protocolDocuments = globals.uniqueObjectsArray(biosample.documents);
+        protocolDocuments = _.uniq(biosample.documents);
     }
     let characterizations = [];
     if (biosample.characterizations && biosample.characterizations.length) {
-        characterizations = globals.uniqueObjectsArray(biosample.characterizations);
+        characterizations = _.uniq(biosample.characterizations);
     }
     let constructDocuments = [];
     if (biosample.constructs && biosample.constructs.length) {
-        biosample.constructs.forEach((construct) => {
-            if (construct.documents && construct.documents.length) {
-                constructDocuments = constructDocuments.concat(construct.documents);
-            }
-        });
+        constructDocuments = biosample.constructs.reduce((allDocs, construct) => ((construct.documents && construct.documents.length) ? allDocs.concat(construct.documents) : allDocs), []);
     }
     let rnaiDocuments = [];
     if (biosample.rnais && biosample.rnais.length) {
-        biosample.rnais.forEach((rnai) => {
-            if (rnai.documents && rnai.documents.length) {
-                rnaiDocuments = rnaiDocuments.concat(rnai.documents);
-            }
-        });
+        rnaiDocuments = biosample.rnais.reduce((allDocs, rnai) => ((rnai.documents && rnai.documents.length) ? allDocs.concat(rnai.documents) : allDocs), []);
     }
     let donorDocuments = [];
     let donorCharacterizations = [];
@@ -66,28 +58,20 @@ export function CollectBiosampleDocs(biosample) {
     }
     let donorConstructs = [];
     if (biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length) {
-        biosample.model_organism_donor_constructs.forEach((construct) => {
-            if (construct.documents && construct.documents.length) {
-                donorConstructs = donorConstructs.concat(construct.documents);
-            }
-        });
+        donorConstructs = biosample.model_organism_donor_constructs.reduce((allDocs, construct) => ((construct.documents && construct.documents.length) ? allDocs.concat(construct.documents) : allDocs), []);
     }
     let talenDocuments = [];
     if (biosample.talens && biosample.talens.length) {
-        biosample.talens.forEach((talen) => {
-            talenDocuments = talenDocuments.concat(talen.documents);
-        });
+        talenDocuments = biosample.talens.reduce((allDocs, talen) => ((talen.documents && talen.documents.length) ? allDocs.concat(talen.documents) : allDocs), []);
     }
     let treatmentDocuments = [];
     if (biosample.treatments && biosample.treatments.length) {
-        biosample.treatments.forEach((treatment) => {
-            treatmentDocuments = treatmentDocuments.concat(treatment.protocols);
-        });
+        treatmentDocuments = biosample.treatments.reduce((allDocs, treatment) => ((treatment.documents && treatment.documents.length) ? allDocs.concat(treatment.documents) : allDocs), []);
     }
 
     // Put together the document list for rendering
     // Compile the document list
-    const combinedDocuments = _([].concat(
+    const combinedDocuments = _.uniq([].concat(
         protocolDocuments,
         characterizations,
         constructDocuments,
@@ -97,8 +81,7 @@ export function CollectBiosampleDocs(biosample) {
         donorConstructs,
         talenDocuments,
         treatmentDocuments,
-    )).chain().uniq(doc => (doc ? doc.uuid : null)).compact()
-    .value();
+    ));
 
     return combinedDocuments;
 }
@@ -161,6 +144,84 @@ BiosampleTableFooter.propTypes = {
     items: PropTypes.array, // List of biosamples in the table
     total: PropTypes.number, // Total number of biosamples matching search criteria
     url: PropTypes.string, // URI to get full search results
+};
+
+
+// Display a table of donors retrieved from a GET request.
+export const DonorTable = (props) => {
+    const { items, limit, total, url, title } = props;
+    let donors;
+
+    // If there's a limit on entries to display and the array is greater than that limit, then
+    // clone the array with just that specified number of elements
+    if (limit && (limit < items.length)) {
+        // Limit the donor list by cloning first {limit} elements
+        donors = items.slice(0, limit);
+    } else {
+        // No limiting; just reference the original array
+        donors = items;
+    }
+
+    return (
+        <SortTablePanel title={title}>
+            <SortTable list={items} columns={DonorTable.columns} footer={<DonorTableFooter items={donors} total={total} url={url} />} />
+        </SortTablePanel>
+    );
+};
+
+DonorTable.propTypes = {
+    items: PropTypes.array.isRequired, // List of donors as an array of search results
+    limit: PropTypes.number, // Maximum number of donors to display in the table
+    total: PropTypes.number, // Total number of donors in the search results; might be more than we display in the table
+    url: PropTypes.string, // URL to use for the complete donor search reuslts
+    title: PropTypes.string, // Title to use for the table of donors
+};
+
+DonorTable.defaultProps = {
+    limit: 0,
+    total: 0,
+    url: '',
+    title: '',
+};
+
+// <SortTable> column specificiation for the table of donors.
+DonorTable.columns = {
+    accession: {
+        title: 'Accession',
+        display: donor => <a href={donor['@id']}>{donor.accession}</a>,
+    },
+    species: {
+        title: 'Species',
+        display: donor => (donor.organism && donor.organism.scientific_name ? <i>{donor.organism.scientific_name}</i> : null),
+    },
+    sex: {
+        title: 'Sex',
+    },
+};
+
+
+// Display a count of donors in the footer, with a link to the corresponding search if needed
+const DonorTableFooter = (props) => {
+    const { items, total, url } = props;
+
+    return (
+        <div>
+            <span>Displaying {items.length} of {total} </span>
+            {items.length < total ? <a className="btn btn-info btn-xs pull-right" href={url}>View all</a> : null}
+        </div>
+    );
+};
+
+DonorTableFooter.propTypes = {
+    items: PropTypes.array, // List of biosamples in the table
+    total: PropTypes.number, // Total number of biosamples matching search criteria
+    url: PropTypes.string, // URI to get full search results
+};
+
+DonorTableFooter.defaultProps = {
+    items: [],
+    total: 0,
+    url: '',
 };
 
 

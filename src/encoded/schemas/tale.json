@@ -32,6 +32,8 @@
             "title": "RVD sequence",
             "description": "The repeat variable diresidue sequence. E.g. NI,NG,NI,HD,NG,NN,NG,NG,NN,HD,NI,NI,NI,NI,NM,HD,HD,NG",
             "type": "string",
+            "comment": "Locking down to prevent new tales from being submitted.",
+            "permission": "import_items",
             "pattern": "^([ARNDCQEGHILKMFPSTWYV]{2})($|(,\\1))*"
         },
         "talen_platform": {

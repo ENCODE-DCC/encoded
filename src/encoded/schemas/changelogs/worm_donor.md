@@ -1,5 +1,14 @@
 ## Changelog for worm_donor.json
 
+### Schema version 8
+
+* *constructs*, *mutated_gene* and *mutagen* properties were removed
+
+### Schema version 7
+
+* *url* property was removed
+* *internal_tags* property was removed
+
 ### Schema version 6
 
 * *status* values "proposed" and "preliminary" were removed
