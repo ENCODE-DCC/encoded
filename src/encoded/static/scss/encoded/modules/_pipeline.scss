@@ -4,16 +4,16 @@ $pipeline-node-types:
     (quality-metric, #80ffc0),
     (file-type, #e0e0e0);
 
-$file-status:
-    ("uploading", $gray-light),
-    ("content-error", $gray-light),
-    ("upload-failed", $gray-light),
+$file-statuses:
+    ("uploading", #c0c0c0),
+    ("content-error", #ee4444),
+    ("upload-failed", #ee4444),
     ("in-progress", $brand-info),
     ("deleted", $brand-warning),
     ("released", $brand-success),
-    ("replaced", $gray-light),
+    ("replaced", #c0c0c0),
     ("revoked", $brand-danger),
-    ("archived", $gray-light);
+    ("archived", #c0c0c0);
 
 
 // FUnction to return black for light background colors passed in $color, and white for dark
@@ -81,7 +81,7 @@ g.pipeline-node-file-type {
 }
 
 g.pipeline-node-file {
-    @each $status, $color in $file-status {
+    @each $status, $color in $file-statuses {
         &.#{$status} {
             fill: $color;
 
@@ -328,4 +328,29 @@ g.qc-tooltip {
         font-size: 0.8rem;
         font-weight: normal;
     }
+}
+
+.file-status-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+// File status legend styles.
+.file-status-legend__item {
+    flex: 1 1 auto;
+    padding: 5px 20px;
+    margin-right: 1px;
+    margin-bottom: 1px;
+    text-align: center;
+    background-color: #f0f0f0;
+
+    @each $status, $color in $file-statuses {
+        &.file-status-legend__item--status-#{$status} {
+            & .file-status-legend__icon {
+                margin-right: 5px;
+                color: $color;
+            }
+        }
+    }        
 }

@@ -943,7 +943,7 @@ class FilterControls extends React.Component {
                 </div>
                 <div className="file-gallery-controls__inclusion-selector">
                     <div className="checkbox--right">
-                        <label htmlFor="filterIncArchive">Include revoked / archived files
+                        <label htmlFor="filterIncArchive">Include deprecated files
                             <input name="filterIncArchive" type="checkbox" checked={inclusionOn} onChange={this.handleInclusionChange} />
                         </label>
                     </div>
@@ -1450,6 +1450,7 @@ const FileGraph = (props) => {
                 graph={graph}
                 nodeClickHandler={handleNodeClick}
                 schemas={schemas}
+                colorize={colorize}
                 auditIndicators={props.auditIndicators}
                 auditDetail={props.auditDetail}
             />
@@ -1669,6 +1670,7 @@ class FileGalleryRendererComponent extends React.Component {
                                 selectedAssembly={selectedAssembly}
                                 selectedAnnotation={selectedAnnotation}
                                 schemas={schemas}
+                                colorize={this.state.inclusionOn}
                                 handleNodeClick={this.handleNodeClick}
                                 auditIndicators={this.props.auditIndicators}
                                 auditDetail={this.props.auditDetail}

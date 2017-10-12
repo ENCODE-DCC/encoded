@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { svgIcon } from '../libs/svg-icons';
 import { BrowserFeat } from './browserfeat';
+import * as globals from './globals';
 import { requestFiles } from './objectutils';
+import { fileStatusList } from './typeutils';
 
 
 // Zoom slider constants
@@ -163,6 +165,35 @@ export function GraphException(message, file0, file1) {
         this.file1 = file1;
     }
 }
+
+
+// Display the file status legend for the file graph.
+const GraphLegend = (props, context) => {
+    // Get array of all possible file status strings given the current login state, i.e. logged
+    // out, logged in, and logged in as admin.
+    const statusList = fileStatusList(context.session, context.session_properties);
+
+    return (
+        <div className="file-status-legend">
+            {statusList.map((status) => {
+                // Get a CSS class for the current status to render.
+                const statusClass = globals.statusClass(status, 'file-status-legend__item file-status-legend__item--', true);
+
+                return (
+                    <div className={statusClass}>
+                        <i className="icon icon-circle file-status-legend__icon" />
+                        {status}
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
+
+GraphLegend.contextTypes = {
+    session: PropTypes.object,
+    session_properties: PropTypes.object,
+};
 
 
 export class Graph extends React.Component {
@@ -607,7 +638,7 @@ export class Graph extends React.Component {
     }
 
     render() {
-        const { graph } = this.props;
+        const { graph, colorize } = this.props;
         const orientBtnAlt = `Orient graph ${this.state.verticalGraph ? 'horizontally' : 'vertically'}`;
         const currOrientKey = this.state.verticalGraph ? 'orientH' : 'orientV';
 
@@ -626,6 +657,7 @@ export class Graph extends React.Component {
                         </table>
                     </div>
                     <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler} />
+                    {colorize ? <GraphLegend /> : null}
                     <div className="graph-dl clearfix">
                         <button className="btn btn-info btn-sm btn-orient" title={orientBtnAlt} onClick={this.handleOrientationClick}>{svgIcon(currOrientKey)}<span className="sr-only">{orientBtnAlt}</span></button>
                         <button ref="dlButton" className="btn btn-info btn-sm" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
@@ -643,6 +675,7 @@ Graph.propTypes = {
     graph: PropTypes.object.isRequired, // JsonGraph object representing the graph being rendered.
     nodeClickHandler: PropTypes.func.isRequired, // Function to call to handle clicks in a node
     schemas: PropTypes.object, // Schemas for QC metrics
+    colorize: PropTypes.bool, // True if file graph status colorization is turned on, and a legend is needed
     children: PropTypes.node,
 };
 
@@ -650,8 +683,7 @@ Graph.defaultProps = {
     selectedAssembly: '',
     selectedAnnotation: '',
     schemas: null,
-    auditIndicators: null,
-    auditDetail: null,
+    colorize: false,
     children: null,
 };
 
