@@ -1487,8 +1487,13 @@ FileGraph.defaultProps = {
 // the displayed experiment) return.
 
 class FileGalleryRendererComponent extends React.Component {
-    constructor() {
-        super();
+    constructor(props, context) {
+        super(props, context);
+
+        // Determine if the user's logged in as admin.
+        const loggedIn = !!(context.session && context.session['auth.userid']);
+        const adminUser = loggedIn && !!(context.session_properties && context.session_properties.admin);
+    
 
         // Initialize React state variables.
         this.state = {
@@ -1496,7 +1501,7 @@ class FileGalleryRendererComponent extends React.Component {
             meta: null, // @id of node whose info panel is open
             infoModalOpen: false, // True if info modal is open
             relatedFiles: [],
-            inclusionOn: false, // True to exclude files with certain statuses
+            inclusionOn: adminUser, // True to exclude files with certain statuses
             contributingFiles: [], // Cache for contributing files retrieved from the DB
         };
 

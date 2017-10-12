@@ -180,7 +180,7 @@ const GraphLegend = (props, context) => {
                 const statusClass = globals.statusClass(status, 'file-status-legend__item file-status-legend__item--', true);
 
                 return (
-                    <div className={statusClass}>
+                    <div key={status} className={statusClass}>
                         <i className="icon icon-circle file-status-legend__icon" />
                         {status}
                     </div>
