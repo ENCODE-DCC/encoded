@@ -13,7 +13,8 @@
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "organism": "dmelanogaster",
-        "uuid": "c9a34c9e-a19a-4bf5-8b50-5d7c39d190b1"
+        "uuid": "c9a34c9e-a19a-4bf5-8b50-5d7c39d190b1",
+        "external_ids": ["TRiP:HMC03503", "BDSC:53287"]
     },
     {
         "accession": "ENCDO101XXX",
