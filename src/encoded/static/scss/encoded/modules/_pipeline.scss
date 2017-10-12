@@ -354,3 +354,24 @@ g.qc-tooltip {
         }
     }        
 }
+
+
+.status-indicator {
+    display: flex;
+    line-height: 1;
+
+    @each $status, $color in $file-statuses {
+        &.status-indicator--status-#{$status} {
+            & .status-indicator__icon {
+                flex: 0 1 auto;
+                margin-right: 3px;
+                color: $color;
+            }
+        }
+    }
+
+    .status-indicator__label {
+        flex: 0 1 auto;
+        white-space: nowrap;
+    }
+}

@@ -13,7 +13,6 @@ import { requestFiles, DownloadableAccession, BrowserSelector } from './objectut
 import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
-import StatusLabel from './statuslabel';
 
 
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
@@ -51,7 +50,7 @@ function fileAccessionSort(a, b) {
 
 export class FileTable extends React.Component {
     static rowClasses() {
-        return file => (file.restricted ? 'file-restricted' : '');
+        return '';
     }
 
     constructor() {
@@ -320,7 +319,7 @@ FileTable.procTableColumns = {
     },
     status: {
         title: 'File status',
-        display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
+        display: item => <div className="characterization-meta-data"><FileStatusLabel file={item} /></div>,
     },
 };
 
@@ -371,7 +370,7 @@ FileTable.refTableColumns = {
     },
     status: {
         title: 'File status',
-        display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
+        display: item => <div className="characterization-meta-data"><FileStatusLabel file={item} /></div>,
     },
 };
 
@@ -405,6 +404,25 @@ function sortBioReps(a, b) {
     }
     return result;
 }
+
+
+const FileStatusLabel = (props) => {
+    const { file } = props;
+    const status = file.status;
+    const statusClass = globals.statusClass(status, 'status-indicator status-indicator--', true);
+
+    // Display simple string and optional title in badge
+    return (
+        <div key={status} className={statusClass}>
+            <i className="icon icon-circle status-indicator__icon" />
+            <div className="status-indicator__label">{status}</div>
+        </div>
+    );
+};
+
+FileStatusLabel.propTypes = {
+    file: PropTypes.object.isRequired, // File whose status we're displaying
+};
 
 
 class RawSequencingTable extends React.Component {
@@ -558,7 +576,7 @@ class RawSequencingTable extends React.Component {
                                     }
 
                                     return (
-                                        <tr key={file['@id']} className={file.restricted ? 'file-restricted' : ''}>
+                                        <tr key={file['@id']}>
                                             {i === 0 ?
                                                 <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>{groupFiles[0].biological_replicates[0]}</td>
                                             : null}
@@ -575,7 +593,7 @@ class RawSequencingTable extends React.Component {
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
-                                            <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td>
+                                            <td className={`${pairClass} characterization-meta-data`}><FileStatusLabel file={file} /></td>
                                         </tr>
                                     );
                                 });
@@ -590,7 +608,6 @@ class RawSequencingTable extends React.Component {
                                 }
                                 const rowClasses = [
                                     pairedRepKeys.length && i === 0 ? 'table-raw-separator' : null,
-                                    file.restricted ? 'file-restricted' : null,
                                 ];
 
                                 // Determine if accession should be a button or not.
@@ -610,7 +627,7 @@ class RawSequencingTable extends React.Component {
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
-                                        <td className="characterization-meta-data"><StatusLabel status={file.status} /></td>
+                                        <td className="characterization-meta-data"><FileStatusLabel file={file} /></td>
                                     </tr>
                                 );
                             })}
@@ -735,7 +752,7 @@ class RawFileTable extends React.Component {
 
                                     // Prepare for run_type display
                                     return (
-                                        <tr key={file['@id']} className={file.restricted ? 'file-restricted' : ''}>
+                                        <tr key={file['@id']}>
                                             {i === 0 ?
                                                 <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
                                                     {groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
@@ -756,7 +773,7 @@ class RawFileTable extends React.Component {
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
-                                            <td className={`${pairClass} characterization-meta-data`}><StatusLabel status={file.status} /></td>
+                                            <td className={`${pairClass} characterization-meta-data`}><FileStatusLabel file={file} /></td>
                                         </tr>
                                     );
                                 });
@@ -765,7 +782,6 @@ class RawFileTable extends React.Component {
                                 // Prepare for run_type display
                                 const rowClasses = [
                                     pairedKeys.length && i === 0 ? 'table-raw-separator' : null,
-                                    file.restricted ? 'file-restricted' : null,
                                 ];
 
                                 // Determine if accession should be a button or not.
@@ -785,7 +801,7 @@ class RawFileTable extends React.Component {
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
-                                        <td className="characterization-meta-data"><StatusLabel status={file.status} /></td>
+                                        <td className="characterization-meta-data"><FileStatusLabel file={file} /></td>
                                     </tr>
                                 );
                             })}
@@ -1493,7 +1509,6 @@ class FileGalleryRendererComponent extends React.Component {
         // Determine if the user's logged in as admin.
         const loggedIn = !!(context.session && context.session['auth.userid']);
         const adminUser = loggedIn && !!(context.session_properties && context.session_properties.admin);
-    
 
         // Initialize React state variables.
         this.state = {
