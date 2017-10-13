@@ -70,6 +70,84 @@
             "title": "C methylated in CpG context",
             "type": "string",
             "description": "Bismark mapping efficiency for WGBS vs. reference genome"
+        },
+        "M_bias_plot": {
+            "title": "M bias plot",
+            "description": "Methylation bias plot showing the methylation proportion across each possible position in the read",
+            "comment": "One plot is expected per biological replicate. Two plots (in the same file) are expected for paired end data vs. single end.",
+            "type": "object",
+            "additionalProperties": false,
+            "attachment": true,
+            "formInput": "file",
+            "properties": {
+                "download": {
+                    "title": "File Name",
+                    "type": "string"
+                },
+                "href": {
+                    "comment": "Internal webapp URL for document file",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "MIME type",
+                    "type": "string",
+                    "enum": [
+                        "image/png"
+                    ]
+                },
+                "size": {
+                    "title": "File size",
+                    "type": "integer"
+                },
+                "md5sum": {
+                    "format": "md5sum",
+                    "type": "string",
+                    "title": "MD5sum"
+                },
+                "width": {
+                    "title": "Image width",
+                    "type": "integer"
+                },
+                "height": {
+                    "title": "Image height",
+                    "type": "integer"
+                }
+            }
+        },
+        "M_bias_data": {
+            "title": "M bias data",
+            "description": "Text file with read positions by methylation state data used to make M-bias plots.",
+            "type": "object",
+            "comment": "One file is expected per bio replicate.",
+            "additionalProperties": false,
+            "attachment": true,
+            "formInput": "file",
+            "properties": {
+                "download": {
+                    "title": "File Name",
+                    "type": "string"
+                },
+                "href": {
+                    "comment": "Internal webapp URL for document file",
+                    "type": "string"
+                },
+                "type": {
+                    "title": "MIME type",
+                    "type": "string",
+                    "enum": [
+                        "text/plain"
+                    ]
+                },
+                "size": {
+                    "title": "File size",
+                    "type": "integer"
+                },
+                "md5sum": {
+                    "format": "md5sum",
+                    "type": "string",
+                    "title": "MD5sum"
+                }
+            }
         }
     },
     "changelog": "/profiles/changelogs/bismark_quality_metric.md"
