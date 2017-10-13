@@ -39,7 +39,6 @@
             "comment": "Parent strains list can contain up to two entries, of strains of the same organism.",
             "properties":{
                 "parent_strains": {
-                    "minItems": 1,
                     "maxItems": 2
                 }
             }
