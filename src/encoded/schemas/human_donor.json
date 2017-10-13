@@ -281,7 +281,11 @@
         }
     },
     "boost_values": {
-        "internal_tags": 1.0
+        "internal_tags": 1.0,
+        "genetic_modifications.modified_site_by_target_id.label": 1.0,
+        "genetic_modifications.modified_site_by_target_id.gene_name": 1.0,
+        "genetic_modifications.modified_site_by_target_id.dbxref": 1.0,
+        "genetic_modifications.modified_site_by_target_id.aliases": 1.0
     },
     "changelog": "/profiles/changelogs/human_donor.md"
 }
