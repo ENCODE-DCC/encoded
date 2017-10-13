@@ -286,11 +286,11 @@ def audit_experiment_out_of_date_analysis(value, system, files_structure):
                     assembly_detail = ''
                     if bam_file.get('assembly'):
                         assembly_detail = ' for {} assembly '.format(bam_file['assembly'])
-                        detail = 'Experiment {} '.format(value['@id']) + \
-                                'alignment file {} '.format(
-                                    bam_file['@id']) + assembly_detail + \
-                                'is out of date.'
-                        yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
+                    detail = 'Experiment {} '.format(value['@id']) + \
+                            'alignment file {} '.format(
+                                bam_file['@id']) + assembly_detail + \
+                            'is out of date.'
+                    yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
     return
 
 
