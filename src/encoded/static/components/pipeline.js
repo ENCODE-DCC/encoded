@@ -142,7 +142,7 @@ function AnalysisStep(step, node) {
             </div>
         );
     }
-    return { header, body };
+    return { header, body, type: 'Step' };
 }
 
 
@@ -504,6 +504,7 @@ const StepDetailView = function StepDetailView(node) {
     return {
         header: <h4>Software unknown</h4>,
         body: <p className="browser-error">Missing step_run derivation information for {node.metadata.fileAccession}</p>,
+        type: 'Step',
     };
 };
 

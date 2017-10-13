@@ -371,6 +371,7 @@ const QCDetailView = function QCDetailView(node, qcClick, auditIndicators, audit
         const genericQCSchema = schemas.GenericQualityMetric;
         const qcSchema = schemas[selectedQc['@type'][0]];
         modalContent = qcModalContent(selectedQc, node.parent, qcSchema, genericQCSchema);
+        modalContent.type = 'QualityMetric';
     }
 
     return modalContent;

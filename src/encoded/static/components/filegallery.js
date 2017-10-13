@@ -1660,6 +1660,14 @@ class FileGalleryRendererComponent extends React.Component {
             meta = globals.graphDetail.lookup(this.state.infoNode)(this.state.infoNode, this.handleNodeClick, this.props.auditIndicators, this.props.auditDetail, this.context.session, this.context.sessionProperties);
         }
 
+        // Prepare to display the file information modal.
+        const modalTypeMap = {
+            File: 'file',
+            Step: 'analysis-step',
+            QualityMetric: 'quality-metric',
+        };
+        const modalClass = meta ? `graph-modal-${modalTypeMap[meta.type]}` : '';
+
         return (
             <Panel>
                 <PanelHeading addClasses="file-gallery-heading">
@@ -1710,7 +1718,7 @@ class FileGalleryRendererComponent extends React.Component {
 
                 {meta && this.state.infoNodeVisible ?
                     <Modal closeModal={this.closeModal}>
-                        <ModalHeader closeModal={this.closeModal}>
+                        <ModalHeader closeModal={this.closeModal} addCss={modalClass}>
                             {meta.header}
                         </ModalHeader>
                         <ModalBody>
@@ -1999,7 +2007,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
         );
         body = <p className="browser-error">No information available</p>;
     }
-    return { header, body };
+    return { header, body, type: 'File' };
 };
 
 globals.graphDetail.register(FileDetailView, 'File');
@@ -2063,7 +2071,7 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
         );
         body = <p className="browser-error">No information available</p>;
     }
-    return { header, body };
+    return { header, body, type: 'File' };
 };
 
 globals.graphDetail.register(CoalescedDetailsView, 'Coalesced');
