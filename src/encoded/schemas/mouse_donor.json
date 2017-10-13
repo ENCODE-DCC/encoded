@@ -29,8 +29,16 @@
     ],
     "properties": {
         "parent_strains": {
+            "title": "Parent strains",
+            "description": "Donor IDs of parent strains, if known.",
             "comment": "List of strains crossed to produce this mice strain.",
+            "type":  "array",
+            "default": [],
+            "uniqueItems": true,
             "items": {
+                "title": "Parent strain",
+                "description": "A donor ID of a parent strain, if known.",
+                "type": "string",
                 "comment": "See MouseDonor.json for available identifiers.",
                 "linkTo": "MouseDonor"
             }

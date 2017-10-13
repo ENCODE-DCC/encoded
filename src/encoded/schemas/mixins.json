@@ -318,18 +318,6 @@
             "description": "The genotype of the strain according to accepted nomenclature conventions.",
             "comment": "Genotype of fly/worm/mouse strains.",
             "type": "string"
-        },
-        "parent_strains": {
-            "title": "Parent strains",
-            "description": "Donor IDs of parent strains, if known.",
-            "type":  "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Parent strain",
-                "description": "A donor ID of a parent strain, if known.",
-                "type": "string"
-            }
         }
     },
     "genetic_modifications": {
