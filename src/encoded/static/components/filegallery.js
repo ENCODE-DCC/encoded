@@ -1855,6 +1855,11 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
         body = (
             <div>
                 <dl className="key-value">
+                    <div data-test="status">
+                        <dt>Status</dt>
+                        <dd><FileStatusLabel file={selectedFile} /></dd>
+                    </div>
+
                     {selectedFile.output_type ?
                         <div data-test="output">
                             <dt>Output</dt>
@@ -1929,6 +1934,30 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                         <div data-test="contributedfrom">
                             <dt>Contributed from</dt>
                             <dd><a href={selectedFile.dataset}>{contributingAccession}</a></dd>
+                        </div>
+                    : null}
+
+                    {selectedFile.file_size ?
+                        <div data-test="filesize">
+                            <dt>File size</dt>
+                            <dd>{globals.humanFileSize(selectedFile.file_size)}</dd>
+                        </div>
+                    : null}
+
+                    {selectedFile.run_type ?
+                        <div data-test="runtype">
+                            <dt>Run type</dt>
+                            <dd>
+                                {selectedFile.run_type}
+                                {selectedFile.read_length ? <span>{` ${selectedFile.read_length + selectedFile.read_length_units}`}</span> : null}
+                            </dd>
+                        </div>
+                    : null}
+
+                    {selectedFile.replicate && selectedFile.replicate.library ?
+                        <div data-test="library">
+                            <dt>Library</dt>
+                            <dd>{selectedFile.replicate.library.accession}</dd>
                         </div>
                     : null}
 
