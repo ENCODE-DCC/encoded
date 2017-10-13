@@ -18,7 +18,8 @@
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/documents" }
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/submitter_comment" }
     ],
     "properties": {
         "schema_version": {
