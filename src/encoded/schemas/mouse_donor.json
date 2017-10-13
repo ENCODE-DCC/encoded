@@ -104,5 +104,8 @@
             "title": "Unique external identifier(s) of strain or donor"
         }
     },
+    "boost_values": {
+        "parent_strains": 1.0
+    },
     "changelog": "/profiles/changelogs/mouse_donor.md"
 }
