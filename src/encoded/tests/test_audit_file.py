@@ -710,3 +710,22 @@ def test_audit_file_status_level_dict_contains_file_status_enum():
     # If this assertion fails update STATUS_LEVEL dict with new statuses in file schema.
     assert not schema_dict_diff, '{} in file schema but not in STATUS_LEVEL dict.'.format(
         schema_dict_diff)
+
+
+def test_audit_file_missing_derived_from_audit_with_made_up_status(testapp, file4, file6):
+    # This tests that a status that's not in STATUS_LEVEL dict won't break missing derived_from
+    # audit.
+    testapp.patch_json(file6['@id'], {'derived_from': [file4['@id']],
+                                      'status': 'released',
+                                      'file_format': 'bam',
+                                      'assembly': 'hg19'})
+
+    testapp.patch_json(file4['@id'] + '?validate=false',
+                       {'status': 'new made up status'})
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'missing derived_from'
+               for error in errors_list)
