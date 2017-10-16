@@ -136,6 +136,16 @@ def human_donor_10(root, donor_1):
     })
     return properties
 
+@pytest.fixture
+def mouse_donor_11(root, mouse_donor):
+    item = root.get_by_uuid(mouse_donor['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '11',
+        'parent_strains': []
+    })
+    return properties
+
 
 def test_human_donor_upgrade(upgrader, human_donor_1):
     value = upgrader.upgrade('human_donor', human_donor_1, target_version='2')
@@ -209,5 +219,12 @@ def test_upgrade_fly_worm_donor_7_8(root, upgrader, fly_donor_7):
 
 
 def test_upgrade_human_donor_10_11(root, upgrader, human_donor_10):
-    value = upgrader.upgrade('human_donor', human_donor_10, current_version='10', target_version='11')
+    value = upgrader.upgrade(
+        'human_donor', human_donor_10, current_version='10', target_version='11')
     assert 'genetic_modifications' not in value
+
+
+def test_upgrade_mouse_donor_11_12(root, upgrader, mouse_donor_11):
+    value = upgrader.upgrade(
+        'mouse_donor', mouse_donor_11, current_version='11', target_version='12')
+    assert 'parent_strains' not in value

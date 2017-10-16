@@ -214,4 +214,6 @@ upgrade_step('fly_donor', '8', '9')
 @upgrade_step('mouse_donor', '11', '12')
 def fly_worm_donor_8_9(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3616
+    if value.get('parent_strains') == []:
+        value.pop('parent_strains', None)
     return

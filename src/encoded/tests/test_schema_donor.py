@@ -9,6 +9,12 @@ def mouse_donor_to_test(testapp, lab, award, mouse):
         'organism': mouse['@id'],
     }
 
+def test_donor_with_no_parents(
+        testapp,
+        mouse_donor_to_test):
+    mouse_donor_to_test['parent_strains'] = []
+    testapp.post_json('/mouse_donor', mouse_donor_to_test, status=422)
+
 
 def test_donor_with_three_parents(
         testapp,
