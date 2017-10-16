@@ -60,6 +60,7 @@ STATUS_LEVEL = {
     'eligible for new data': 100,
     'not eligible for new data': 100,
     'not pursued': 100,
+    'virtual': 100,
 
     # 'discouraged for use' public statuses
     'archived': 40,
