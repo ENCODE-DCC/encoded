@@ -18,6 +18,7 @@ import pytz
 import time
 import copy
 import json
+from pyramid.response import Response
 from pkg_resources import resource_filename
 from snovault.elasticsearch.indexer import (
     SEARCH_MAX,
@@ -32,6 +33,7 @@ from .visualization import (
     object_is_visualizable,
     vis_cache_add
 )
+from pyramid.request import Request
 
 log = logging.getLogger(__name__)
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
@@ -39,6 +41,7 @@ SEARCH_MAX = 99999  # OutOfMemoryError if too high
 
 def includeme(config):
     config.add_route('index_secondary', '/index_secondary')
+    config.add_route('_secondaryindexer_state', '/_secondaryindexer_state')
     config.scan(__name__)
     registry = config.registry
     registry['secondary'+INDEXER] = SecondaryIndexer(registry)
@@ -52,7 +55,7 @@ class SecondState(IndexerState):
         self.cleanup_last_cycle.append(self.viscached_set)  # Clean up at beginning of next cycle
         # DO NOT INHERIT! These keys are for passing on to other indexers
         self.followup_prep_list = None                        # No followup to a following indexer
-        self.staged_cycles_list = self.title + '_staged'      # Will take from  primary self.followup_ready_list
+        self.staged_cycles_list = self.title + '_staged'      # Will take from  primary self.staged_for_secondary_list
 
     def viscached_uuid(self, uuid):
         self.list_extend(self.viscached_set, [uuid])
@@ -70,9 +73,9 @@ class SecondState(IndexerState):
                 return (undone_xmin, next_xmin, uuids)
 
         # To avoid race conditions, move ready_list to end of staged. Then work on staged.
-        latest = self.get_list(self.followup_ready_list)
+        latest = self.get_list(self.staged_for_secondary_list)
         if latest != []:
-            self.delete_objs([self.followup_ready_list])  # TODO: tighten this by adding a locking semaphore
+            self.delete_objs([self.staged_for_secondary_list])  # TODO: tighten this by adding a locking semaphore
             self.list_extend(self.staged_cycles_list, latest) # Push back for start of next uuid cycle
 
         staged_list = self.get_list(self.staged_cycles_list)
@@ -107,6 +110,48 @@ class SecondState(IndexerState):
                 self.put_list(self.staged_cycles_list,staged_list[looking_at:]) # Push back for start of next uuid cycle
         return (xmin, next_xmin, uuids)
 
+    def display(self):
+        display = super(SecondState, self).display()
+        display['staged to process'] = self.get_count(self.staged_cycles_list)
+        display['datasets vis cached current cycle'] = self.get_count(self.success_set)
+        return display
+
+
+@view_config(route_name='_secondaryindexer_state', request_method='GET', permission="index")
+def secondary_indexer_show_state(request):
+    es = request.registry[ELASTIC_SEARCH]
+    INDEX = request.registry.settings['snovault.elasticsearch.index']
+    state = SecondState(es,INDEX)
+
+    if request.params.get("reindex","false") == 'all':
+        state.request_reindex()
+        request.query_string = ''
+
+    display = state.display()
+    try:
+        count = es.count(index='vis_composite', doc_type='default').get('count',0)  # TODO: 'vis_composite' should be obtained from visualization.py
+        if count:
+            display['vis_blobs in index'] = count
+    except:
+        display['vis_blobs in index'] = 'Not Found'
+        pass
+
+    try:
+        import requests
+        r = requests.get(request.host_url + '/_secondaryindexer')
+        #subreq = Request.blank('/_secondaryindexer')
+        #result = request.invoke_subrequest(subreq)
+        result = json.loads(r.text)
+        #result = request.embed('_secondaryindexer')
+        result['current'] = display
+    except:
+        result = display
+    # always return raw json
+    if len(request.query_string) > 0:
+        request.query_string = "&format=json"
+    else:
+        request.query_string = "format=json"
+    return result
 
 
 @view_config(route_name='index_secondary', request_method='POST', permission="index")
