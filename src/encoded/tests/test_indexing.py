@@ -94,17 +94,13 @@ def test_indexing_workbook(testapp, indexer_testapp):
     res = indexer_testapp.post_json('/index', {'record': True})
     assert res.json['updated']
     assert res.json['indexed']
-<<<<<<< HEAD
-    assert res.json['pass2_took']
-=======
     ### OPTIONAL: audit via 2-pass is coming...
     #assert res.json['pass2_took']
     ### OPTIONAL: audit via 2-pass is coming...
->>>>>>> master
 
-    res = indexer_testapp.post_json('/index_secondary', {'record': True})
+    res = indexer_testapp.post_json('/index_vis', {'record': True})
     assert res.json['cycle_took']
-    assert res.json['title'] == 'secondary_indexer'
+    assert res.json['title'] == 'secondary_vis'
 
     res = testapp.get('/search/?type=Biosample')
     assert res.json['total'] > 5
@@ -127,13 +123,13 @@ def test_indexing_simple(testapp, indexer_testapp):
     assert res.json['total'] == 2
 
 
-def test_indexer_state(dummy_request):
-    from encoded.secondary_indexer import SecondState
+def test_vis_indexer_state(dummy_request):
+    from encoded.secondary_indexer import VisIndexerState
     INDEX = dummy_request.registry.settings['snovault.elasticsearch.index']
     es = dummy_request.registry['elasticsearch']
-    state = SecondState(es,INDEX)
+    state = VisIndexerState(es,INDEX)
     result = state.get_initial_state()
-    assert result['title'] == 'secondary_indexer'
+    assert result['title'] == 'vis_indexer'
     result = state.start_cycle(['1','2','3'], result)
     assert result['cycle_count'] == 3
     assert result['status'] == 'indexing'
@@ -141,6 +137,17 @@ def test_indexer_state(dummy_request):
     result = state.finish_cycle(result, [])
     assert result['cycles'] == (cycles + 1)
     assert result['status'] == 'done'
+
+
+def test_region_indexer_state(dummy_request):
+    from encoded.region_indexer import RegionIndexerState
+    INDEX = dummy_request.registry.settings['snovault.elasticsearch.index']
+    es = dummy_request.registry['elasticsearch']
+    state = RegionIndexerState(es,INDEX)
+    display = state.display()
+    assert 'files added' in display
+    assert 'files dropped' in display
+    assert display['state']['title'] == 'region_indexer'
 
 
 def test_listening(testapp, listening_conn):

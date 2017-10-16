@@ -40,22 +40,22 @@ SEARCH_MAX = 99999  # OutOfMemoryError if too high
 
 
 def includeme(config):
-    config.add_route('index_secondary', '/index_secondary')
-    config.add_route('_secondaryindexer_state', '/_secondaryindexer_state')
+    config.add_route('index_vis', '/index_vis')
+    config.add_route('_visindexer_state', '/_visindexer_state')
     config.scan(__name__)
     registry = config.registry
-    registry['secondary'+INDEXER] = SecondaryIndexer(registry)
+    registry['vis'+INDEXER] = VisIndexer(registry)
 
-class SecondState(IndexerState):
-    # Accepts handoff of uuids from primary indexer. Keeps track of uuids and secondary_indexer state by cycle.
+class VisIndexerState(IndexerState):
+    # Accepts handoff of uuids from primary indexer. Keeps track of uuids and vis_indexer state by cycle.
     def __init__(self, es, key):
-        super(SecondState, self).__init__(es,key, title='secondary')
+        super(VisIndexerState, self).__init__(es,key, title='vis')
         self.viscached_set      = self.title + '_viscached'
         self.success_set        = self.viscached_set
         self.cleanup_last_cycle.append(self.viscached_set)  # Clean up at beginning of next cycle
         # DO NOT INHERIT! These keys are for passing on to other indexers
         self.followup_prep_list = None                        # No followup to a following indexer
-        self.staged_cycles_list = self.title + '_staged'      # Will take from  primary self.staged_for_secondary_list
+        self.staged_cycles_list = self.title + '_staged'      # Will take from  primary self.staged_for_vis_list
 
     def viscached_uuid(self, uuid):
         self.list_extend(self.viscached_set, [uuid])
@@ -73,9 +73,9 @@ class SecondState(IndexerState):
                 return (undone_xmin, next_xmin, uuids)
 
         # To avoid race conditions, move ready_list to end of staged. Then work on staged.
-        latest = self.get_list(self.staged_for_secondary_list)
+        latest = self.get_list(self.staged_for_vis_list)
         if latest != []:
-            self.delete_objs([self.staged_for_secondary_list])  # TODO: tighten this by adding a locking semaphore
+            self.delete_objs([self.staged_for_vis_list])  # TODO: tighten this by adding a locking semaphore
             self.list_extend(self.staged_cycles_list, latest) # Push back for start of next uuid cycle
 
         staged_list = self.get_list(self.staged_cycles_list)
@@ -111,17 +111,17 @@ class SecondState(IndexerState):
         return (xmin, next_xmin, uuids)
 
     def display(self):
-        display = super(SecondState, self).display()
+        display = super(VisIndexerState, self).display()
         display['staged to process'] = self.get_count(self.staged_cycles_list)
         display['datasets vis cached current cycle'] = self.get_count(self.success_set)
         return display
 
 
-@view_config(route_name='_secondaryindexer_state', request_method='GET', permission="index")
-def secondary_indexer_show_state(request):
+@view_config(route_name='_visindexer_state', request_method='GET', permission="index")
+def vis_indexer_show_state(request):
     es = request.registry[ELASTIC_SEARCH]
     INDEX = request.registry.settings['snovault.elasticsearch.index']
-    state = SecondState(es,INDEX)
+    state = VisIndexerState(es,INDEX)
 
     if request.params.get("reindex","false") == 'all':
         state.request_reindex()
@@ -138,11 +138,11 @@ def secondary_indexer_show_state(request):
 
     try:
         import requests
-        r = requests.get(request.host_url + '/_secondaryindexer')
-        #subreq = Request.blank('/_secondaryindexer')
+        r = requests.get(request.host_url + '/_visindexer')
+        #subreq = Request.blank('/_visindexer')
         #result = request.invoke_subrequest(subreq)
         result = json.loads(r.text)
-        #result = request.embed('_secondaryindexer')
+        #result = request.embed('_visindexer')
         result['current'] = display
     except:
         result = display
@@ -154,19 +154,19 @@ def secondary_indexer_show_state(request):
     return result
 
 
-@view_config(route_name='index_secondary', request_method='POST', permission="index")
-def index_secondary(request):
+@view_config(route_name='index_vis', request_method='POST', permission="index")
+def index_vis(request):
     INDEX = request.registry.settings['snovault.elasticsearch.index']
-    # Secondary_indexer works off of already indexed elasticsearch objects!
+    # vis_indexer works off of already indexed elasticsearch objects!
     request.datastore = 'elasticsearch'
 
     record = request.json.get('record', False)
     dry_run = request.json.get('dry_run', False)
     es = request.registry[ELASTIC_SEARCH]
-    indexer = request.registry['secondary'+INDEXER]
+    indexer = request.registry['vis'+INDEXER]
 
     # keeping track of state
-    state = SecondState(es,INDEX)
+    state = VisIndexerState(es,INDEX)
 
     last_xmin = None
     result = state.get_initial_state()
@@ -198,7 +198,7 @@ def index_secondary(request):
     ### END OF NOTE
 
     if uuid_count and not dry_run:
-        # Starts one cycle of uuids to secondarily index
+        # Starts one cycle of uuids to followup index
         result.update(
             last_xmin=last_xmin,
             xmin=xmin,
@@ -223,10 +223,10 @@ def all_visualizable_uuids(registry):
     return list(all_uuids(registry, types=VISIBLE_DATASET_TYPES_LC))
 
 
-class SecondaryIndexer(Indexer):
+class VisIndexer(Indexer):
     def __init__(self, registry):
-        super(SecondaryIndexer, self).__init__(registry)
-        self.state = SecondState(self.es, self.index)  # WARNING, race condition is avoided because there is only one worker
+        super(VisIndexer, self).__init__(registry)
+        self.state = VisIndexerState(self.es, self.index)  # WARNING, race condition is avoided because there is only one worker
 
     def get_from_es(request, comp_id):
         '''Returns composite json blob from elastic-search, or None if not found.'''
@@ -247,7 +247,7 @@ class SecondaryIndexer(Indexer):
             log.error("Error can't find %s in %s", uuid, ELASTIC_SEARCH)
             last_exc = repr(e)
 
-        ### NOTE: if other work is to be done by the secondary indexer, it can be added here.
+        ### NOTE: if other work is to be done, this can be renamed "secondary indexer", and work can be added here
 
         if last_exc is None:
             try:

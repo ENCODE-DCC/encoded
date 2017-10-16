@@ -12,11 +12,11 @@ indexer.chunk_size = ${indexer_chunk_size}
 [composite:indexer]
 use = config:base.ini#indexer
 
-[composite:secondaryindexer]
-use = config:base.ini#secondaryindexer
+[composite:visindexer]
+use = config:base.ini#visindexer
 
-[composite:fileindexer]
-use = config:base.ini#fileindexer
+[composite:regionindexer]
+use = config:base.ini#regionindexer
 
 [pipeline:main]
 pipeline =

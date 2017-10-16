@@ -74,10 +74,9 @@ ENCODED_REGION_REQUIREMENTS = {
 
 
 def includeme(config):
-    config.add_route('index_file', '/index_file')
-    #config.add_route('index_regions', '/index_regions')  # should rename to index_regions
+    config.add_route('index_region', '/index_region')
     config.scan(__name__)
-    config.add_route('_regionsindexer_state', '/_regionsindexer_state')
+    config.add_route('_regionindexer_state', '/_regionindexer_state')
     registry = config.registry
     registry['region'+INDEXER] = RegionIndexer(registry)
 
@@ -201,10 +200,10 @@ def encoded_regionable_datasets(request, restrict_to_assays=[]):
     return list(uuids)  # Ensures all get returned from generator
 
 
-class RegionsState(IndexerState):
+class RegionIndexerState(IndexerState):
     # Accepts handoff of uuids from primary indexer. Keeps track of uuids and secondary_indexer state by cycle.
     def __init__(self, es, key):
-        super(RegionsState, self).__init__(es,key, title='regions')
+        super(RegionIndexerState, self).__init__(es,key, title='regions')
         self.files_added_set    = self.title + '_files_added'
         self.files_dropped_set  = self.title + '_files_dropped'
         self.success_set        = self.files_added_set
@@ -334,7 +333,7 @@ class RegionsState(IndexerState):
         return (list(set(uuids)),False)  # Only unique uuids
 
     def display(self):
-        display = super(RegionsState, self).display()
+        display = super(RegionIndexerState, self).display()
         display['staged to process'] = self.get_count(self.staged_cycles_list)
         display['files added'] = self.get_count(self.files_added_set)
         display['files dropped'] = self.get_count(self.files_dropped_set)
@@ -345,12 +344,12 @@ class RegionsState(IndexerState):
         return display
 
 
-@view_config(route_name='_regionsindexer_state', request_method='GET', permission="index")
+@view_config(route_name='_regionindexer_state', request_method='GET', permission="index")
 def regions_indexer_show_state(request):
     encoded_es = request.registry[ELASTIC_SEARCH]
     encoded_INDEX = request.registry.settings['snovault.elasticsearch.index']
     regions_es    = request.registry[SNP_SEARCH_ES]
-    state = RegionsState(encoded_es,encoded_INDEX)  # Consider putting this in regions es instead of encoded es
+    state = RegionIndexerState(encoded_es,encoded_INDEX)  # Consider putting this in regions es instead of encoded es
 
     if request.params.get("reindex","false") == 'all':
         state.request_reindex()
@@ -385,8 +384,7 @@ def regions_indexer_show_state(request):
     return display
 
 
-#@view_config(route_name='index_regions', request_method='POST', permission="index")  # Should rename to index_regions
-@view_config(route_name='index_file', request_method='POST', permission="index")
+@view_config(route_name='index_region', request_method='POST', permission="index")
 def index_regions(request):
     encoded_es = request.registry[ELASTIC_SEARCH]
     encoded_INDEX = request.registry.settings['snovault.elasticsearch.index']
@@ -397,19 +395,19 @@ def index_regions(request):
 
 
     # keeping track of state
-    state = RegionsState(encoded_es,encoded_INDEX)  # Consider putting this in regions es instead of encoded es
+    state = RegionIndexerState(encoded_es,encoded_INDEX)
     result = state.get_initial_state()
 
     (uuids, force) = state.get_one_cycle(request)
 
     uuid_count = len(uuids)
     if uuid_count > 0 and not dry_run:
-        log.warn("Regions indexer started on %d datasets(s)" % uuid_count) # DEBUG set back to info when done
+        log.warn("Region indexer started on %d datasets(s)" % uuid_count) # DEBUG set back to info when done
 
         result = state.start_cycle(uuids, result)
         errors = indexer.update_objects(request, uuids, force)
         result = state.finish_cycle(result, errors)
-        log.info("Regions indexer added %d file(s)" % result['indexed']) # TODO: change to info
+        log.info("Region indexer added %d file(s)" % result['indexed']) # TODO: change to info
         # cycle_took: "2:31:55.543311" reindex all with force
 
     return result
@@ -422,7 +420,7 @@ class RegionIndexer(Indexer):
         self.encoded_INDEX = registry.settings['snovault.elasticsearch.index']  # yes this is self.index, but clarity
         self.regions_es    = registry[SNP_SEARCH_ES]
         self.residents_index = RESIDENT_DATASETS_KEY
-        self.state = RegionsState(self.encoded_es,self.encoded_INDEX)  # WARNING, race condition is avoided because there is only one worker
+        self.state = RegionIndexerState(self.encoded_es,self.encoded_INDEX)  # WARNING, race condition is avoided because there is only one worker
 
     def get_from_es(request, comp_id):
         '''Returns composite json blob from elastic-search, or None if not found.'''
