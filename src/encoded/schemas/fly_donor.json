@@ -9,7 +9,7 @@
     "identifyingProperties": ["uuid", "accession", "aliases", "external_ids"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "donor.json#/properties" },
+        { "$ref": "donor.json#/properties" },        
         { "$ref": "mixins.json#/genetic_modifications" },
         { "$ref": "mixins.json#/strains"},
         { "$ref": "mixins.json#/url" },
@@ -26,6 +26,16 @@
         { "$ref": "mixins.json#/submitter_comment" },
         { "$ref": "mixins.json#/schema_version" }
     ],
+    "dependencies": {
+        "parent_strains": {
+            "comment": "Parent strains list can contain up to two entries, of strains of the same organism.",
+            "properties":{
+                "parent_strains": {
+                    "maxItems": 2
+                }
+            }
+        }
+    },
     "properties": {
         "parent_strains": {
             "title": "Parent strains",
