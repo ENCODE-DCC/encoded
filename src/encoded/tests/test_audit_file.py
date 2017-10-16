@@ -694,24 +694,6 @@ def test_audit_experiment_insufficient_control_read_depth_chip_seq_paired_end(
                'control extremely low read depth' for error in errors_list)
 
 
-def test_audit_file_status_level_dict_contains_file_status_enum():
-    # Missing derived_from audit relies on STATUS_LEVEL dict from audit/item.py.
-    # This dict should not get out of sync with allowable statuses in file schema.
-    from snovault.schema_utils import load_schema
-    from ..audit.item import STATUS_LEVEL
-    status_level_keys = STATUS_LEVEL.keys()
-    file_status_enum = load_schema('encoded:schemas/file.json').get('properties',
-                                                                    {}).get('status',
-                                                                            {}).get('enum')
-    # If this assertion fails update schema path to statuses above.
-    assert file_status_enum is not None, 'File status enum not found.'
-    # Statuses that are in schema but not in STATUS_LEVEL.
-    schema_dict_diff = set(file_status_enum) - set(status_level_keys)
-    # If this assertion fails update STATUS_LEVEL dict with new statuses in file schema.
-    assert not schema_dict_diff, '{} in file schema but not in STATUS_LEVEL dict.'.format(
-        schema_dict_diff)
-
-
 def test_audit_file_missing_derived_from_audit_with_made_up_status(testapp, file4, file6):
     # This tests that a status that's not in STATUS_LEVEL dict won't break missing derived_from
     # audit.
