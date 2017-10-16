@@ -269,7 +269,7 @@ def audit_experiment_with_uploading_files(value, system, files_structure):
 
 
 def audit_experiment_out_of_date_analysis(value, system, files_structure):
-    if value['assay_term_name'] not in ['ChIP-seq', 'DNase-seq']:
+    if value['assay_term_name'] not in ['ChIP-seq', 'DNase-seq', 'genetic modification followed by DNase-seq']:
         return
 
     if len(files_structure.get('alignments').values()) == 0 and \
@@ -282,7 +282,7 @@ def audit_experiment_out_of_date_analysis(value, system, files_structure):
         for bam_file in files_structure.get(file_type).values():
             if bam_file.get('lab') == '/labs/encode-processing-pipeline/' and \
                 bam_file.get('derived_from'):
-                if is_outdated_bams_replicate(bam_file, files_structure):
+                if is_outdated_bams_replicate(bam_file, files_structure, value['assay_term_name']):
                     assembly_detail = ''
                     if bam_file.get('assembly'):
                         assembly_detail = ' for {} assembly '.format(bam_file['assembly'])
@@ -3110,8 +3110,8 @@ def get_file_accessions(list_of_files):
     return accessions_set
 
 
-def is_outdated_bams_replicate(bam_file, files_structure):
-
+def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
+       
     for file_id in bam_file.get('derived_from'):
         if file_id not in files_structure.get('original_files') and \
            file_id not in files_structure.get('contributing_files'):
@@ -3128,35 +3128,58 @@ def is_outdated_bams_replicate(bam_file, files_structure):
     derived_from_fastq_accessions = get_file_accessions(derived_from_fastqs)
 
     bio_rep = []
+    tech_rep = []
     for fastq_file in derived_from_fastqs:
         if 'biological_replicates' in fastq_file and \
            len(fastq_file['biological_replicates']) != 0:
             for entry in fastq_file['biological_replicates']:
                 bio_rep.append(entry)
-            break
+        if 'technical_replicates' in fastq_file and \
+           len(fastq_file['technical_replicates']) != 0:
+            for entry in fastq_file['technical_replicates']:
+                tech_rep.append(entry)
 
     bio_rep_fastqs = []
+    tech_rep_fastqs = []
     for fastq_file in files_structure.get('fastq_files').values():
         if 'biological_replicates' in fastq_file:
             for entry in fastq_file['biological_replicates']:
                 if entry in bio_rep:
                     bio_rep_fastqs.append(fastq_file)
                     break
+        if 'technical_replicates' in fastq_file:
+            for entry in fastq_file['technical_replicates']:
+                if entry in tech_rep:
+                    tech_rep_fastqs.append(fastq_file)
+                    break
 
-    replicate_fastq_accessions = get_file_accessions(bio_rep_fastqs)
-    for file_object in bio_rep_fastqs:
-        file_acc = file_object.get('accession')
-        if file_acc not in derived_from_fastq_accessions:
-            paired_file_id = file_object.get('paired_with')
-            if paired_file_id and \
-               paired_file_id.split('/')[2] not in derived_from_fastq_accessions:
-                return True
-            elif not paired_file_id:
-                return True
+    bio_replicate_fastq_accessions = get_file_accessions(bio_rep_fastqs)
+    tech_replicate_fastq_accessions = get_file_accessions(tech_rep_fastqs)
 
-    for f_accession in derived_from_fastq_accessions:
-        if f_accession not in replicate_fastq_accessions:
-            return True
+    if assay_name == 'ChIP-seq':
+        for file_object in bio_rep_fastqs:
+            file_acc = file_object.get('accession')
+            if file_acc not in derived_from_fastq_accessions:
+                paired_file_id = file_object.get('paired_with')
+                if paired_file_id and paired_file_id.split('/')[2] not in derived_from_fastq_accessions:
+                    return True
+                elif not paired_file_id:
+                    return True
+        for f_accession in derived_from_fastq_accessions:
+            if f_accession not in bio_replicate_fastq_accessions:
+                return True
+    else:
+        for file_object in tech_rep_fastqs:
+            file_acc = file_object.get('accession')
+            if file_acc not in derived_from_fastq_accessions:
+                paired_file_id = file_object.get('paired_with')
+                if paired_file_id and paired_file_id.split('/')[2] not in derived_from_fastq_accessions:
+                    return True
+                elif not paired_file_id:
+                    return True
+        for f_accession in derived_from_fastq_accessions:
+            if f_accession not in tech_replicate_fastq_accessions:
+                return True
     return False
 
 def has_only_raw_files_in_derived_from(bam_file, files_structure):
