@@ -704,7 +704,7 @@ def test_audit_file_status_level_dict_contains_file_status_enum():
                                                                     {}).get('status',
                                                                             {}).get('enum')
     # If this assertion fails update schema path to statuses above.
-    assert (file_status_enum is not None), 'File status enum not found.'
+    assert file_status_enum is not None, 'File status enum not found.'
     # Statuses that are in schema but not in STATUS_LEVEL.
     schema_dict_diff = set(file_status_enum) - set(status_level_keys)
     # If this assertion fails update STATUS_LEVEL dict with new statuses in file schema.
@@ -727,5 +727,5 @@ def test_audit_file_missing_derived_from_audit_with_made_up_status(testapp, file
     errors_list = []
     for error_type in errors:
         errors_list.extend(errors[error_type])
-    assert any(error['category'] == 'missing derived_from'
+    assert all(error['category'] != 'missing derived_from'
                for error in errors_list)
