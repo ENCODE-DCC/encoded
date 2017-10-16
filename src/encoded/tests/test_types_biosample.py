@@ -162,4 +162,4 @@ def test_biosample_summary_construct(testapp,
     res = testapp.get(biosample_1['@id']+'@@index-data')
     assert res.json['object']['summary'] == \
         'Drosophila melanogaster liver tissue ' + \
-        'female (10 days) stably expressing C-terminal ATF4'
+        'female (10 days) stably expressing C-terminal eGFP-tagged ATF4 under daf-2 promoter'

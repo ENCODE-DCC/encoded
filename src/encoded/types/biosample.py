@@ -31,7 +31,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
     }
     embedded = [
         'donor',
-        'donor.mutated_gene',
         'donor.organism',
         'donor.characterizations',
         'donor.characterizations.award',
@@ -42,14 +41,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'donor.documents.lab',
         'donor.documents.submitted_by',
         'donor.references',
-        'model_organism_donor_constructs',
-        'model_organism_donor_constructs.submitted_by',
-        'model_organism_donor_constructs.promoter_used',
-        'model_organism_donor_constructs.target',
-        'model_organism_donor_constructs.documents',
-        'model_organism_donor_constructs.documents.award',
-        'model_organism_donor_constructs.documents.lab',
-        'model_organism_donor_constructs.documents.submitted_by',
         'submitted_by',
         'lab',
         'award',
@@ -59,11 +50,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'treatments.documents.submitted_by',
         'treatments.documents.lab',
         'treatments.documents.award',
-        'constructs',
-        'constructs.documents.submitted_by',
-        'constructs.documents.award',
-        'constructs.documents.lab',
-        'constructs.target',
         'documents.lab',
         'documents.award',
         'documents.submitted_by',
@@ -77,34 +63,14 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'part_of.characterizations.documents.award',
         'part_of.characterizations.documents.lab',
         'part_of.characterizations.documents.submitted_by',
-        'part_of.constructs.documents',
-        'part_of.constructs.documents.award',
-        'part_of.constructs.documents.lab',
-        'part_of.constructs.documents.submitted_by',
-        'part_of.rnais.documents.award',
-        'part_of.rnais.documents.lab',
-        'part_of.rnais.documents.submitted_by',
         'part_of.treatments.documents',
         'parent_of',
         'pooled_from',
         'characterizations.submitted_by',
         'characterizations.award',
         'characterizations.lab',
-        'rnais',
-        'rnais.target',
-        'rnais.target.organism',
-        'rnais.source',
-        'rnais.documents.submitted_by',
-        'rnais.documents.award',
-        'rnais.documents.lab',
         'organism',
         'references',
-        'genetic_modifications',
-        'genetic_modifications.modified_site_by_target_id',
-        'genetic_modifications.treatments',
-        'model_organism_donor_modifications',
-        'model_organism_donor_modifications.modified_site_by_target_id',
-        'model_organism_donor_modifications.treatments',
         'applied_modifications',
         'applied_modifications.modified_site_by_target_id',
         'applied_modifications.treatments'
@@ -116,27 +82,17 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'donor.characterizations',
         'donor.donor_documents',
         'donor.references',
-        'model_organism_donor_constructs',
-        'model_organism_donor_constructs.target',
-        'model_organism_donor_constructs.documents',
         'submitted_by',
         'lab',
         'award',
         'source',
         'treatments',
-        'constructs',
-        'constructs.target',
         'originated_from',
         'pooled_from',
-        'rnais',
-        'rnais.target',
-        'rnais.target.organism',
-        'rnais.source',
         'organism',
         'references',
-        'genetic_modifications',
-        'model_organism_donor_modifications',
-        'applied_modifications'
+        'applied_modifications',
+        'applied_modifications.modified_site_by_target_id'
     ]
 
     @calculated_property(define=True,
@@ -273,25 +229,6 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             return worm_synchronization_stage
         if donor is not None:
             return request.embed(donor, '@@object').get('synchronization')
-
-    @calculated_property(schema={
-        "title": "Model organism donor constructs",
-        "description":
-            "Expression or targeting vectors stably or transiently transfected "
-            "(not RNAi) into a donor organism.",
-        "type": "array",
-        "items": {
-            "title": "Model organism donor construct",
-            "description": "An expression or targeting vector stably or transiently transfected "
-            "(not RNAi) into a donor organism.",
-            "comment": "See contstruct.json for available identifiers.",
-            "type": "string",
-            "linkTo": "Construct",
-        },
-    }, define=True)
-    def model_organism_donor_constructs(self, request, donor=None):
-        if donor is not None:
-            return request.embed(donor, '@@object').get('constructs')
 
     @calculated_property(schema={
         "title": "Model organism genetic modifications",
@@ -514,7 +451,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 if gm_object.get('introduced_tags'):
                     modification_dict['tags'] = []
                     for tag in gm_object.get('introduced_tags'):
-                        tag_dict = {'location': tag['location']}
+                        tag_dict = {'location': tag['location'], 'name': tag['name']}
                         if tag.get('promoter_used'):
                             tag_dict['promoter'] = request.embed(
                                 tag.get('promoter_used'),
@@ -824,8 +761,8 @@ def generate_modification_summary(method, modification):
 
             for tag in modification.get('tags'):
                 addition = ''
-                if tag.get('location') in ['N-terminal', 'C-terminal']:
-                    addition += ' ' + tag.get('location')
+                if tag.get('location') in ['N-terminal', 'C-terminal', 'internal']:
+                    addition += ' ' + tag.get('location') + ' ' + tag.get('name') + '-tagged'
                 addition += ' ' + modification.get('target')
                 if tag.get('promoter'):
                     addition += ' under ' + tag.get('promoter') + ' promoter'

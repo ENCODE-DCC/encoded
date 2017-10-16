@@ -136,6 +136,9 @@ export const dbxrefPrefixMap = {
             (context['@type'][0] === 'Experiment' ? urlPattern.replace(/\{1\}/g, context.biosample_term_name) : urlPattern)
         ),
     },
+    RefSeq: {
+        pattern: 'https://www.ncbi.nlm.nih.gov/gene/?term={0}',
+    },
     JAX: {
         pattern: 'https://www.jax.org/strain/{0}',
     },

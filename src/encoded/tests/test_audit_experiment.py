@@ -2500,7 +2500,7 @@ def test_audit_experiment_missing_genetic_modification(
                                                 'target': recombinant_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] ==
-               'missing tag construct' for error in collect_audit_errors(res))
+               'inconsistent genetic modification tags' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_missing_unfiltered_bams(testapp,
@@ -2561,7 +2561,7 @@ def test_audit_experiment_wrong_modification(
                                                 'target': recombinant_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] ==
-               'missing tag construct' for error in collect_audit_errors(res))
+               'inconsistent genetic modification tags' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_chip_seq_mapped_read_length(testapp,

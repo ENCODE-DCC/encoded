@@ -1,5 +1,9 @@
 ## Changelog for human_donor.json
 
+### Schema version 11
+
+* *genetic_modifications* was removed, it was accidentally added in the previous release.
+
 ### Schema version 10
 
 * *fraternal_twin* and *identical_twin* fields were collapsed into *twin* field

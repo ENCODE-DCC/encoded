@@ -68,6 +68,9 @@ const filterValue = function filterValue(value) {
                 if (!value['@id']) {
                     result['@type'] = v;
                 }
+            } else if (k === 'layout') {
+                // Avoid filtering out @type from layout blocks
+                result[k] = v;
             } else if (k !== 'schema_version') {
                 result[k] = filterValue(v);
             }
