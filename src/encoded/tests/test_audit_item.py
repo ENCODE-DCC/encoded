@@ -86,7 +86,6 @@ def test_audit_item_status_level_dict_contains_all_statuses_in_schema(testapp):
             # If this assertion fails update file schema path to statuses above.
             assert schema_statuses is not None, 'File status enum not found.'
         if schema_statuses is not None:
-            print(title)
             # Statuses that are in schema but not in STATUS_LEVEL.
             schema_dict_diff = set(schema_statuses) - set(status_level_keys)
             # If this assertion fails update STATUS_LEVEL dict with new statuses in schema.
