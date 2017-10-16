@@ -79,6 +79,7 @@ STATUS_LEVEL = {
     'pending dcc review': 50,
     'awaiting lab characterization': 50,
     'in preparation': 50,
+    'preliminary': 50,
 
     # invisible statuses (visible for admins only)
     'deleted': 0,
