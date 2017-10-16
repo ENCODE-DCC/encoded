@@ -82,6 +82,7 @@ brew tap garrow/homebrew-elasticsearch17
 brew install elasticsearch@1.7
 ```
 >:star: _Note_: Elasticsearch 1.7 does not work with Java 9
+
 >:star: _Note_: This additional step is required for new macOS Sierra installations
 >- `brew cask install Caskroom/cask/xquartz`
 
