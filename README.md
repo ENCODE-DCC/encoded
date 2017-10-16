@@ -77,11 +77,16 @@ brew install postgresql@9.3
 brew link --force postgresql@9.3
 brew install --force node@6
 brew link node@6 --force
-brew cask install java
+brew cask install java8
 brew tap garrow/homebrew-elasticsearch17
 brew install elasticsearch@1.7
 ```
 >:star: _Note_: Elasticsearch 1.7 does not work with Java 9
+
+>:star: _Note_: Brew cannot find java8
+>- `brew tap caskroom/versions # lookup more versions`
+>- `brew cask search java # java8 now in list`
+>- `brew cask install java8`
 
 >:star: _Note_: This additional step is required for new macOS Sierra installations
 >- `brew cask install Caskroom/cask/xquartz`
