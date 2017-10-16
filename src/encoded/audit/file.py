@@ -36,6 +36,10 @@ def audit_file_processed_derived_from(value, system):
                 and f['output_type'] == 'reads'
                 and f['output_category'] == 'raw data')):
 
+            # Audit shouldn't trigger if status isn't registered in STATUS_LEVEL dict.
+            if f['status'] not in STATUS_LEVEL or value['status'] not in STATUS_LEVEL:
+                return
+
             if STATUS_LEVEL[f['status']] >= STATUS_LEVEL[value['status']]:
                 fastq_bam_counter += 1
 
