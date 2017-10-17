@@ -98,9 +98,16 @@ def test_indexing_workbook(testapp, indexer_testapp):
     #assert res.json['pass2_took']
     ### OPTIONAL: audit via 2-pass is coming...
 
+    # NOTE: Both vis and region indexers are "followup" or secondary indexers
+    #       and must be staged by the primary indexer
     res = indexer_testapp.post_json('/index_vis', {'record': True})
     assert res.json['cycle_took']
-    assert res.json['title'] == 'secondary_vis'
+    assert res.json['title'] == 'vis_indexer'
+
+    #res = indexer_testapp.post_json('/index_region', {'record': True})
+    #assert res.json['cycle_took']
+    #assert res.json['title'] == 'region_indexer'
+    #assert res.json['indexed'] > 0
 
     res = testapp.get('/search/?type=Biosample')
     assert res.json['total'] > 5
@@ -123,7 +130,7 @@ def test_indexing_simple(testapp, indexer_testapp):
     assert res.json['total'] == 2
 
 
-def test_vis_indexer_state(dummy_request):
+def test_indexer_vis_state(dummy_request):
     from encoded.secondary_indexer import VisIndexerState
     INDEX = dummy_request.registry.settings['snovault.elasticsearch.index']
     es = dummy_request.registry['elasticsearch']
@@ -139,15 +146,17 @@ def test_vis_indexer_state(dummy_request):
     assert result['status'] == 'done'
 
 
-def test_region_indexer_state(dummy_request):
+def test_indexer_region_state(dummy_request):
     from encoded.region_indexer import RegionIndexerState
     INDEX = dummy_request.registry.settings['snovault.elasticsearch.index']
     es = dummy_request.registry['elasticsearch']
     state = RegionIndexerState(es,INDEX)
+    result = state.get_initial_state()
+    assert result['title'] == 'region_indexer'
+    assert result['status'] == 'idle'
     display = state.display()
     assert 'files added' in display
     assert 'files dropped' in display
-    assert display['state']['title'] == 'region_indexer'
 
 
 def test_listening(testapp, listening_conn):

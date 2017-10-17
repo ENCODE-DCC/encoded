@@ -118,7 +118,6 @@ _ASSEMBLY_MAPPER_FULL = {
 def includeme(config):
     config.add_route('batch_hub', '/batch_hub/{search_params}/{txt}')
     config.add_route('batch_hub:trackdb', '/batch_hub/{search_params}/{assembly}/{txt}')
-    config.add_route('index-vis', '/index-vis')
     config.scan(__name__)
 
 
@@ -2173,13 +2172,14 @@ def vis_cache_add(request, dataset, start_time=None):
     return vis_blobs
 
 
-@view_config(context=Item, name='index-vis', permission='index', request_method='GET')
-def item_index_vis(context, request):
-    '''Called during secondary indexing to add one uuid to vis cache.'''
-    start_time = time.time()
-    uuid = str(context.uuid)
-    dataset = request.embed(uuid)
-    return vis_cache_add(request, dataset, start_time)
+# The vis_indexer calls vis_cache_add directly, saving cycles.
+#@view_config(context=Item, name='index-vis', permission='index', request_method='GET')
+#def item_index_vis(context, request):
+#    '''Called during secondary indexing to add one uuid to vis cache.'''
+#    start_time = time.time()
+#    uuid = str(context.uuid)
+#    dataset = request.embed(uuid)
+#    return vis_cache_add(request, dataset, start_time)
 
 
 def render(data):

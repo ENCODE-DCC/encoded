@@ -104,6 +104,7 @@ setup(
         [paste.composite_factory]
         indexer = snovault.elasticsearch.es_index_listener:composite
         visindexer = snovault.elasticsearch.es_index_listener:composite
+        regionindexer = snovault.elasticsearch.es_index_listener:composite
 
         [paste.filter_app_factory]
         memlimit = encoded.memlimit:filter_app

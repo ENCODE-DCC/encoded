@@ -4,6 +4,7 @@ import gzip
 import csv
 import logging
 import collections
+import requests
 from pyramid.view import view_config
 from sqlalchemy.sql import text
 from elasticsearch.exceptions import (
@@ -57,6 +58,7 @@ RESIDENT_DATASETS_KEY = 'resident_datasets'  # in regions_es, keep track of what
 #        released: 'bed narrowPeaks', analysis_step_version.name=dnase-call-hotspots-pe-step-v-2-0 240, se: 1157;
 # expect to index: 2852+666+240+1157=4915 so approx: 4900.
 # curl http://region-search-test-v5.instance.encodedcc.org:9200/resident_datasets/_count/?pretty 4964
+
 ENCODED_REGION_REQUIREMENTS = {
     'ChIP-seq': {
         'output_type': ['optimal idr thresholded peaks'],
@@ -71,6 +73,11 @@ ENCODED_REGION_REQUIREMENTS = {
         'file_format': ['bed']
     }
 }
+
+# One local instance, these are the only files that can be downloaded and regionalizable.  Currently only one is!
+TESTABLE_FILES = ['/static/test/peak_indexer/ENCFF002COS.bed.gz',
+                  '/static/test/peak_indexer/ENCFF296FFD.tsv',     # tsv's some day?
+                  '/static/test/peak_indexer/ENCFF000PAR.bed.gz']
 
 
 def includeme(config):
@@ -203,7 +210,7 @@ def encoded_regionable_datasets(request, restrict_to_assays=[]):
 class RegionIndexerState(IndexerState):
     # Accepts handoff of uuids from primary indexer. Keeps track of uuids and secondary_indexer state by cycle.
     def __init__(self, es, key):
-        super(RegionIndexerState, self).__init__(es,key, title='regions')
+        super(RegionIndexerState, self).__init__(es,key, title='region')
         self.files_added_set    = self.title + '_files_added'
         self.files_dropped_set  = self.title + '_files_dropped'
         self.success_set        = self.files_added_set
@@ -287,7 +294,7 @@ class RegionIndexerState(IndexerState):
 
         if self.get().get('status', '') == 'indexing':
             uuids = self.get_list(self.todo_set)
-            log.warn('%s restarting on %d datasets' % (self.state_id, len(uuids)))
+            log.info('%s restarting on %d datasets' % (self.state_id, len(uuids)))
             return ("restart", uuids)
 
         return ("normal", [])
@@ -304,9 +311,12 @@ class RegionIndexerState(IndexerState):
             if status == "reindex":
                 return (uuids, True)
             if status == "restart":  # Restart is fine... just do the uuids over again
-                #return (uuids, False)
-                log.warn('%s skipping this restart' % (self.state_id))
-                return ([], False)
+                return (uuids, False)
+                #log.info('%s skipping this restart' % (self.state_id))
+                #state = self.get()
+                #state['status'] = "interrupted"
+                #self.put(state)
+                #return ([], False)
         assert(uuids == [])
 
         # Normal case, look for uuids staged by primary indexer
@@ -323,7 +333,7 @@ class RegionIndexerState(IndexerState):
             else:
                 uuids.append(val)
 
-        if len(uuids) > 0: #500:  # some arbitrary cutoff.
+        if len(uuids) > 500:  # some arbitrary cutoff.
             # There is an efficiency trade off examining many non-dataset uuids
             # # vs. the cost of eliminating those uuids from the list ahead of time.
             assays = list(ENCODED_REGION_REQUIREMENTS.keys())
@@ -366,12 +376,12 @@ def regions_indexer_show_state(request):
         pass
 
     try:
-        import requests
-        r = requests.get(request.host_url + '/_fileindexer')
-        #subreq = Request.blank('/_fileindexer')
-        #result = request.invoke_subrequest(subreq)
+        r = requests.get(request.host_url + '/_regionindexer')
         result = json.loads(r.text)
-        #result = request.embed('_fileindexer')
+        # Doesn't work. Probably because /_regionindexer (es_index_listener.py) is not a configured pyramid view
+        #subreq = Request.blank('/_regionindexer')
+        #result = request.invoke_subrequest(subreq)
+        #result = request.embed('_regionindexer')
         result['current'] = display
     except:
         result = display
@@ -421,6 +431,7 @@ class RegionIndexer(Indexer):
         self.regions_es    = registry[SNP_SEARCH_ES]
         self.residents_index = RESIDENT_DATASETS_KEY
         self.state = RegionIndexerState(self.encoded_es,self.encoded_INDEX)  # WARNING, race condition is avoided because there is only one worker
+        self.test_instance = registry.settings.get('testing',False)
 
     def get_from_es(request, comp_id):
         '''Returns composite json blob from elastic-search, or None if not found.'''
@@ -440,9 +451,8 @@ class RegionIndexer(Indexer):
 
         # TODO: add case where files are never dropped (when demos share test server this might be necessary)
         if not self.encoded_candidate_dataset(dataset):
-            #log.debug("dataset is not candidate: %s",dataset_uuid)
             return  # Note that if a dataset is no longer a candidate but it had files in regions es, they won't get removed.
-        log.debug("dataset is a candidate: %s", dataset['accession'])
+        #log.debug("dataset is a candidate: %s", dataset['accession'])
 
         assay_term_name = dataset.get('assay_term_name')
         if assay_term_name is None:
@@ -500,6 +510,10 @@ class RegionIndexer(Indexer):
             if val is None:
                 return False
             if val not in required[prop]:
+                return False
+
+        if self.test_instance:
+            if afile.get('submitted_file_name','') not in TESTABLE_FILES:
                 return False
 
         return True
@@ -603,31 +617,53 @@ class RegionIndexer(Indexer):
         if assembly not in SUPPORTED_ASSEMBLIES:
             return False
 
-        urllib3.disable_warnings()
-        http = urllib3.PoolManager()
-        r = http.request('GET', request.host_url + afile['href'])
-        if r.status != 200:
+        # Special case local instace so that tests can work...
+        if self.test_instance:
+            #if request.host_url == 'http://localhost':
+            # assume we are running in dev-servers
+            href = request.host_url + ':8000' + afile['href']
+        else:
+            href = request.host_url + afile['href']
+        log.warn(href)
+
+        # NOTE: Using requests instead of http.request which works locally and doesn't require gzip.open
+        r = requests.get(href)
+        if not r or r.status_code != 200:
+            log.warn("File (%s or %s) not found" % (afile.get('accession', id), href))
             return False
-        file_in_mem = io.BytesIO()
-        file_in_mem.write(r.data)
+        file_in_mem = io.StringIO()
+        file_in_mem.write(r.text)
         file_in_mem.seek(0)
-        r.release_conn()
+
+        # Worked in demo
+        #urllib3.disable_warnings()
+        #http = urllib3.PoolManager()
+        #r = http.request('GET', href)
+        #if r.status != 200:
+        #    log.warn("File (%s or %s) not found" % (afile.get('accession', id), href))
+        #    return False
+        #file_in_mem = io.BytesIO()
+        #file_in_mem.write(r.data)
+        #file_in_mem.seek(0)
+        #r.release_conn()
 
         file_data = {}
         if afile['file_format'] == 'bed':
-            with gzip.open(file_in_mem, mode='rt') as file:
-                for row in tsvreader(file):
-                    chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
-                    if isinstance(start, int) and isinstance(end, int):
-                        if chrom in file_data:
-                            file_data[chrom].append({
-                                'start': start + 1,
-                                'end': end + 1
-                            })
-                        else:
-                            file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
+            # NOTE: requests doesn't require gzip but http.request does.
+            #with gzip.open(file_in_mem, mode='rt') as file:
+            #    for row in tsvreader(file):
+            for row in tsvreader(file_in_mem):
+                chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
+                if isinstance(start, int) and isinstance(end, int):
+                    if chrom in file_data:
+                        file_data[chrom].append({
+                            'start': start + 1,
+                            'end': end + 1
+                        })
                     else:
-                        log.warn('positions are not integers, will not index file')
+                        file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
+                else:
+                    log.warn('positions are not integers, will not index file')
         ### else:  Other file types?
 
         if file_data:

@@ -1433,7 +1433,7 @@
         "assembly": "hg19",
         "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
         "submitted_by": "amet.fusce@est.fermentum",
-        "submitted_file_name": "../../wgEncodeAwg/wgEncodeAwgTfbsSydhGm12878Ebf1sc137065UniPk.narrowPeak",
+        "submitted_file_name": "/static/test/peak_indexer/ENCFF002COS.bed.gz",
         "uuid": "956cba28-ccff-4cbd-b1c8-39db4e3de572"
     },
     {
@@ -1474,9 +1474,9 @@
         "alternate_accessions": [],
         "dbxrefs": [],
         "notes": "{\"dx-createdBy\": {\"job\": \"job-BX3pPz00F1G03f7Zx1JZF143\", \"executable\": \"applet-BX3jXk00F1G79Gbb68P630vj\", \"user\": \"user-tdreszer\"}, \"software_versions\": [{\"version\": \"v1.2.19\", \"software\": \"RSEM\"}], \"dx-id\": \"file-BX3zzv80jFJX2bJYQJpf7b76\"}",
-        "accession": "ENCFF946MFS",
+        "accession": "ENCFF296FFD",
         "schema_version": "4",
-        "submitted_file_name": "/lrna/hg19/ENCSR000AEV/rep2_1/ENCFF001ROX-ENCFF001ROW_star_anno_rsem.genes.results",
+        "submitted_file_name": "/static/test/peak_indexer/ENCFF296FFD.tsv",
         "submitted_by": "amet.fusce@est.fermentum",
         "file_format": "tsv",
         "dataset": "ENCSR000AEM"
@@ -1619,7 +1619,7 @@
     },
     {
         "_test": "original file for matched set",
-        "submitted_file_name": "test_matched_set_original_file.bed",
+        "submitted_file_name": "/static/test/peak_indexer/ENCFF000PAR.bed.gz",
         "file_format": "bed",
         "file_format_type": "bed9",
         "assembly": "hg19",
@@ -2256,6 +2256,6 @@
         "submitted_by": "/users/f5b7857d-208e-4acc-ac4d-4c2520814fe1/",
         "run_type": "single-ended",
         "uuid": "d9277859-a3b7-44d2-bbd7-070071a753d5",
-        "no_file_available": true        
+        "no_file_available": true
     }
 ]

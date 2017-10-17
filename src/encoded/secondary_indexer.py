@@ -18,7 +18,6 @@ import pytz
 import time
 import copy
 import json
-from pyramid.response import Response
 from pkg_resources import resource_filename
 from snovault.elasticsearch.indexer import (
     SEARCH_MAX,
@@ -33,7 +32,6 @@ from .visualization import (
     object_is_visualizable,
     vis_cache_add
 )
-from pyramid.request import Request
 
 log = logging.getLogger(__name__)
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
