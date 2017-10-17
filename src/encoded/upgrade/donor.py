@@ -209,7 +209,7 @@ def human_donor_10_11(value, system):
     if 'genetic_modifications' in value:
         value.pop('genetic_modifications', None)
 
-upgrade_step('fly_donor', '8', '9')
+@upgrade_step('fly_donor', '8', '9')
 @upgrade_step('worm_donor', '8', '9')
 @upgrade_step('mouse_donor', '11', '12')
 def fly_worm_donor_8_9(value, system):
