@@ -3172,11 +3172,7 @@ def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
         for file_object in tech_rep_fastqs:
             file_acc = file_object.get('accession')
             if file_acc not in derived_from_fastq_accessions:
-                paired_file_id = file_object.get('paired_with')
-                if paired_file_id and paired_file_id.split('/')[2] not in derived_from_fastq_accessions:
-                    return True
-                elif not paired_file_id:
-                    return True
+                return True
         for f_accession in derived_from_fastq_accessions:
             if f_accession not in tech_replicate_fastq_accessions:
                 return True
