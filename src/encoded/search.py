@@ -174,7 +174,8 @@ def get_search_fields(request, doc_types):
     """
     Returns set of columns that are being searched and highlights
     """
-    fields = {'uuid'}
+
+    fields = {'uuid', 'unique_keys.*'}
     highlights = {}
     types = request.registry[TYPES]
     for doc_type in doc_types:
