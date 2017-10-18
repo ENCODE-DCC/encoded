@@ -621,7 +621,7 @@ class RegionIndexer(Indexer):
         if self.test_instance:
             #if request.host_url == 'http://localhost':
             # assume we are running in dev-servers
-            href = request.host_url + ':8000' + afile['href']
+            href = request.host_url + ':8000' + afile['submitted_file_name']
         else:
             href = request.host_url + afile['href']
         log.warn(href)
