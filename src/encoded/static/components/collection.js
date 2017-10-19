@@ -29,43 +29,34 @@ class FacetChart extends React.Component {
         const Chart = this.props.chartModule;
 
         // Before rendering anything into the chart, check whether we have a the chart.js module
-        // loaded yet. If it hasn't loaded yet, we have nothing to do yet.
-        if (Chart) {
-            // Extract the arrays of labels from the facet keys, and the arrays of corresponding
-            // counts from the facet doc_counts. Only use non-zero facet terms in the charts.
-            const values = [];
-            const labels = [];
-            facet.terms.forEach((term) => {
-                if (term.doc_count) {
-                    values.push(term.doc_count);
-                    labels.push(term.key);
-                }
-            });
-
+        // loaded yet. If it hasn't loaded yet, we have nothing to do yet. Also see if we have any
+        // values to render at all, and skip this if not.
+        if (Chart && this.values.length) {
             // In case we don't have enough colors defined for all the values, make an array of
             // colors with enough entries to fill out the labels and values.
-            const colors = labels.map((label, i) => collectionColorList[i % collectionColorList.length]);
+            const colors = this.labels.map((label, i) => collectionColorList[i % collectionColorList.length]);
 
             if (this.chartInstance) {
                 // We've already created a chart instance, so just update it with new data.
-                this.chartInstance.data.datasets[0].data = values;
+                this.chartInstance.data.datasets[0].data = this.values;
                 this.chartInstance.data.datasets[0].backgroundColor = colors;
-                this.chartInstance.data.labels = labels;
+                this.chartInstance.data.labels = this.labels;
                 this.chartInstance.update();
                 document.getElementById(`${chartId}-legend`).innerHTML = this.chartInstance.generateLegend();
             } else {
                 // We've not yet created a chart instance, so make a new one with the initial set
                 // of data. First extract the data in a way suitable for the chart API.
                 const canvas = document.getElementById(chartId);
+
                 const ctx = canvas.getContext('2d');
 
                 // Create and render the chart.
                 this.chartInstance = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels,
+                        labels: this.labels,
                         datasets: [{
-                            data: values,
+                            data: this.values,
                             backgroundColor: colors,
                         }],
                     },
@@ -118,15 +109,34 @@ class FacetChart extends React.Component {
 
     render() {
         const { chartId, facet } = this.props;
-        return (
-            <div className="collection-charts__chart">
-                <div className="collection-charts__title">{facet.title}</div>
-                <div className="collection-charts__canvas">
-                    <canvas id={chartId} />
+
+        // Extract the arrays of labels from the facet keys, and the arrays of corresponding counts
+        // from the facet doc_counts. Only use non-zero facet terms in the charts. IF we have no
+        // usable data, both these arrays have no entries. componentDidMount assumes these arrays
+        // have been populated.
+        this.values = [];
+        this.labels = [];
+        facet.terms.forEach((term) => {
+            if (term.doc_count) {
+                this.values.push(term.doc_count);
+                this.labels.push(term.key);
+            }
+        });
+
+        // Check whether we have usable values in one array or the other we just collected (we'll
+        // just use `this;values` here) to see if we need to render a chart or not.
+        if (this.values.length) {
+            return (
+                <div className="collection-charts__chart">
+                    <div className="collection-charts__title">{facet.title}</div>
+                    <div className="collection-charts__canvas">
+                        <canvas id={chartId} />
+                    </div>
+                    <div id={`${chartId}-legend`} className="collection-charts__legend" />
                 </div>
-                <div id={`${chartId}-legend`} className="collection-charts__legend" />
-            </div>
-        );
+            );
+        }
+        return null;
     }
 }
 
