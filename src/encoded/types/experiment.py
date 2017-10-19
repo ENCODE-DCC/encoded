@@ -184,8 +184,7 @@ class Experiment(Dataset,
                                             tag_dict = {'location': tag['location']}
                                             if tag.get('promoter_used'):
                                                 tag_dict['promoter'] = request.embed(
-                                                    tag.get('promoter_used'),
-                                                            '@@object').get['label']
+                                                    tag.get('promoter_used'), '@@object').get['label']
                                             modification_dict['tags'].append(tag_dict)
 
                                     modifications_list.append((gm_object['method'], modification_dict))

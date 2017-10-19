@@ -685,25 +685,20 @@ def generate_summary_dictionary(
         treatments_list = []
         for treatmentObject in treatment_objects_list:
             to_add = ''
-
-            if experiment_flag is True:
-                if 'treatment_term_name' in treatmentObject:
-                    to_add = treatmentObject['treatment_term_name'] + ' '
-            else:
-                if 'amount' in treatmentObject and \
-                    'amount_units' in treatmentObject:
-                    to_add += str(treatmentObject['amount']) + ' ' + \
-                        treatmentObject['amount_units'] + ' '
-                if 'treatment_term_name' in treatmentObject:
-                    to_add += treatmentObject['treatment_term_name'] + ' '
-                if 'duration' in treatmentObject and \
-                    'duration_units' in treatmentObject:
-                    if treatmentObject['duration_units'][-1] == 's':
-                        to_add += 'for ' + str(treatmentObject['duration']) + ' ' + \
-                            treatmentObject['duration_units']
-                    else:
-                        to_add += 'for ' + str(treatmentObject['duration']) + ' ' + \
-                            treatmentObject['duration_units'] + 's'
+            if 'amount' in treatmentObject and \
+                'amount_units' in treatmentObject:
+                to_add += str(treatmentObject['amount']) + ' ' + \
+                    treatmentObject['amount_units'] + ' '
+            if 'treatment_term_name' in treatmentObject:
+                to_add += treatmentObject['treatment_term_name'] + ' '
+            if 'duration' in treatmentObject and \
+                'duration_units' in treatmentObject:
+                if treatmentObject['duration_units'][-1] == 's':
+                    to_add += 'for ' + str(treatmentObject['duration']) + ' ' + \
+                        treatmentObject['duration_units']
+                else:
+                    to_add += 'for ' + str(treatmentObject['duration']) + ' ' + \
+                        treatmentObject['duration_units'] + 's'
             if to_add != '':
                 treatments_list.append(to_add)
 
@@ -729,7 +724,7 @@ def generate_summary_dictionary(
     if originated_from_object is not None:
         if 'biosample_term_name' in originated_from_object:
             dict_of_phrases['originated_from'] = ('originated from ' +
-                                                    originated_from_object['biosample_term_name'])
+                                                  originated_from_object['biosample_term_name'])
 
     if modifications_list is not None and len(modifications_list) > 0:
         gm_methods = set()
@@ -737,7 +732,7 @@ def generate_summary_dictionary(
         for (gm_method, gm_object) in modifications_list:
             gm_methods.add(gm_method)
             gm_summaries.add(generate_modification_summary(gm_method, gm_object))
-            
+        
         if experiment_flag is True:
             dict_of_phrases['modifications_list'] = 'genetically modified using ' + \
                 ', '.join(map(str, list(gm_methods)))
@@ -778,7 +773,7 @@ def generate_modification_summary(method, modification):
 
         if modification.get('target'):
             modification_summary += ' targeting ' + modification.get('target')
- 
+
     return modification_summary.strip()
 
 
@@ -813,7 +808,8 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
         'phase': 'unspecified phase',
         'fractionated': 'unspecified fraction',
         'synchronization': 'not synchronized',
-        'treatments_phrase': 'not treated',
+        'ENCD-3631-summary-treatments
+        ': 'not treated',
         'depleted_in': 'not depleted',
         'genetic_modifications': 'not modified'
     }
