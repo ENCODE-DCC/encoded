@@ -11,7 +11,7 @@ def audit_references_for_publication(value, system):
     do not should be earmarked so they can be added once the publication
     has been accepted
     '''
-    if value['status'] in ['deleted', 'replaced', 'revoked', 'preliminary']:
+    if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
 
     if not value['references']:

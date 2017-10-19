@@ -18,6 +18,7 @@ def target_1(target):
     })
     return item
 
+
 @pytest.fixture
 def target_2(target):
     item = target.copy()
@@ -25,6 +26,17 @@ def target_2(target):
         'schema_version': '2',
     })
     return item
+
+
+@pytest.fixture
+def target_5(target):
+    item = target.copy()
+    item.update({
+        'schema_version': '5',
+        'status': 'proposed'
+    })
+    return item
+
 
 def test_target_upgrade(upgrader, target_1):
     value = upgrader.upgrade('target', target_1, target_version='2')
@@ -44,8 +56,17 @@ def test_target_investigated_as_upgrade_tag(upgrader, target_2):
     assert value['schema_version'] == '3'
     assert value['investigated_as'] == ['tag']
 
+
 def test_target_investigated_as_upgrade_recombinant(upgrader, target_2):
     target_2['label'] = 'eGFP-test'
     value = upgrader.upgrade('target', target_2, target_version='3')
     assert value['schema_version'] == '3'
-    assert value['investigated_as'] == ['recombinant protein', 'transcription factor']
+    assert value['investigated_as'] == [
+        'recombinant protein', 'transcription factor']
+
+
+def test_target_upgrade_status_5_6(upgrader, target_5):
+    value = upgrader.upgrade(
+        'target', target_5, current_version='5', target_version='6')
+    assert value['schema_version'] == '6'
+    assert value['status'] == 'current'
