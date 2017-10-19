@@ -42,20 +42,22 @@ class FacetChart extends React.Component {
                 }
             });
 
+            // In case we don't have enough colors defined for all the values, make an array of
+            // colors with enough entries to fill out the labels and values.
+            const colors = labels.map((label, i) => collectionColorList[i % collectionColorList.length]);
+
             if (this.chartInstance) {
                 // We've already created a chart instance, so just update it with new data.
                 this.chartInstance.data.datasets[0].data = values;
+                this.chartInstance.data.datasets[0].backgroundColor = colors;
                 this.chartInstance.data.labels = labels;
                 this.chartInstance.update();
+                document.getElementById(`${chartId}-legend`).innerHTML = this.chartInstance.generateLegend();
             } else {
                 // We've not yet created a chart instance, so make a new one with the initial set
                 // of data. First extract the data in a way suitable for the chart API.
                 const canvas = document.getElementById(chartId);
                 const ctx = canvas.getContext('2d');
-
-                // In case we don't have enough colors defined for all the values, make an array of
-                // colors with enough entries to fill out the labels and values.
-                const colors = labels.map((label, i) => collectionColorList[i % collectionColorList.length]);
 
                 // Create and render the chart.
                 this.chartInstance = new Chart(ctx, {
@@ -76,22 +78,33 @@ class FacetChart extends React.Component {
                         animation: {
                             duration: 200,
                         },
-                        legendCallback: (chartInstance) => {
-                            const chartData = chartInstance.data.datasets[0].data;
-                            const chartLabels = chartInstance.data.labels;
+                        legendCallback: (chart) => {
+                            const chartData = chart.data.datasets[0].data;
+                            const chartColors = chart.data.datasets[0].backgroundColor;
+                            const chartLabels = chart.data.labels;
                             const text = [];
                             text.push('<ul>');
                             for (let i = 0; i < chartData.length; i += 1) {
                                 const searchUri = `${baseSearchUri}&${facet.field}=${encodeURIComponent(chartLabels[i]).replace(/%20/g, '+')}`;
                                 if (chartData[i]) {
                                     text.push(`<li><a href="${searchUri}">`);
-                                    text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${colors[i]}"></i>`);
+                                    text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${chartColors[i]}"></i>`);
                                     text.push(`<span class="chart-legend-label">${chartLabels[i]}</span>`);
                                     text.push('</a></li>');
                                 }
                             }
                             text.push('</ul>');
                             return text.join('');
+                        },
+                        onClick: (e) => {
+                            // React to clicks on pie sections
+                            const activePoints = this.chartInstance.getElementAtEvent(e);
+                            if (activePoints[0]) {
+                                const clickedElementIndex = activePoints[0]._index;
+                                const chartLabels = this.chartInstance.data.labels;
+                                const searchUri = `${baseSearchUri}&${facet.field}=${encodeURIComponent(chartLabels[clickedElementIndex]).replace(/%20/g, '+')}`;
+                                this.context.navigate(searchUri);
+                            }
                         },
                     },
                 });
@@ -126,6 +139,10 @@ FacetChart.propTypes = {
 
 FacetChart.defaultProps = {
     chartModule: null,
+};
+
+FacetChart.contextTypes = {
+    navigate: PropTypes.func,
 };
 
 
