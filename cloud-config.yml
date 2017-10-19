@@ -136,8 +136,6 @@ packages:
 - lzop
 - nodejs
 - ntp
-- oracle-java8-installer
-- oracle-java8-set-default
 - postgresql-9.3
 - pv
 - python2.7-dev
@@ -161,6 +159,12 @@ runcmd:
 # Ideally this would build as a different user so encoded only has read
 # permissions
 - set -ex
+- sudo mkdir -p /usr/lib/jvm
+- sudo chmod 777 /usr/lib/jvm
+- [ wget, --no-cookies, --no-check-certificate, --header, "Cookie: oraclelicense=accept-securebackup-cookie", "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.tar.gz", -O , /usr/lib/jvm/jdk-8-151-linux-x64.tar.gz ]
+- sudo tar -xzvf /usr/lib/jvm/jdk-8-151-linux-x64.tar.gz --directory /usr/lib/jvm/
+- sudo chmod 755 /usr/lib/jvm
+- sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk1.8.0_151/bin/java 100
 - update-rc.d elasticsearch defaults
 - service elasticsearch start
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf
