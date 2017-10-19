@@ -5,6 +5,13 @@
         flex: 0 1 33.33%;
     }
 
+    @at-root #{&}__title {
+        text-align: center;
+        color: gray;
+        font-size: 1.2rem;
+        font-weight: 400;
+    }
+
     @at-root #{&}__canvas {
         height: 180px;
     }
@@ -18,12 +25,20 @@
             list-style: none;
         }
 
+        li {
+            margin-left: 0;
+            padding-left: 18px;
+            text-indent: -18px;
+        }
+
         .chart-legend-chip {
+            display: inline;
             width: auto;
             line-height: 18px;
         }
 
         .chart-legend-label {
+            display: inline;
             top: 0;
             line-height: 18px;
         }
@@ -32,7 +47,6 @@
             display: block;
             margin: 3px 0;
             padding: 0 3px;
-            height: 18px;
             color: black;
             text-decoration: none;
 
@@ -41,4 +55,22 @@
             }
         }
     }
+}
+
+
+.collection-sub-header {
+    margin: -5px 0 15px;
+    font-size: 1rem;
+    font-weight: normal;
+    color: #808080;
+}
+
+
+.collection-no-chart {
+    width: 100%;
+    margin: 10px 0;
+    text-align: center;
+    color: gray;
+    font-size: 1.1rem;
+    font-style: italic;
 }

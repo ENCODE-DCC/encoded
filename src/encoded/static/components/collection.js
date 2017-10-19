@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
+import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import * as globals from './globals';
 import DataColors from './datacolors';
 
@@ -104,9 +104,10 @@ class FacetChart extends React.Component {
     }
 
     render() {
-        const { chartId } = this.props;
+        const { chartId, facet } = this.props;
         return (
             <div className="collection-charts__chart">
+                <div className="collection-charts__title">{facet.title}</div>
                 <div className="collection-charts__canvas">
                     <canvas id={chartId} />
                 </div>
@@ -162,21 +163,29 @@ class Collection extends React.Component {
                 <header className="row">
                     <div className="col-sm-12">
                         <h2>{context.title}</h2>
+                        {context.schema_description ? <h4 className="collection-sub-header">{context.schema_description}</h4> : null}
                     </div>
                 </header>
                 <Panel>
+                    <PanelHeading>
+                        <h4>{context.total} total {context.title}</h4>
+                    </PanelHeading>
                     <PanelBody>
-                        <div className="collection-charts">
-                            {chartFacets.map(facet =>
-                                <FacetChart
-                                    key={facet.field}
-                                    facet={facet}
-                                    chartId={`${facet.field}-chart`}
-                                    chartModule={this.state.chartModule}
-                                    baseSearchUri={context.clear_filters}
-                                />
-                            )}
-                        </div>
+                        {chartFacets.length ?
+                            <div className="collection-charts">
+                                {chartFacets.map(facet =>
+                                    <FacetChart
+                                        key={facet.field}
+                                        facet={facet}
+                                        chartId={`${facet.field}-chart`}
+                                        chartModule={this.state.chartModule}
+                                        baseSearchUri={context.clear_filters}
+                                    />
+                                )}
+                            </div>
+                        :
+                            <p className="collection-no-chart">No facets defined in the &ldquo;{context.title}&rdquo; schema.</p>
+                        }
                     </PanelBody>
                 </Panel>
             </div>
