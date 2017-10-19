@@ -356,6 +356,13 @@ g.qc-tooltip {
 }
 
 
+@each $status, $color in $file-statuses {
+    .label.file-status-#{$status} {
+        background-color: $color;
+    }
+}
+
+
 .status-indicator {
     display: flex;
     line-height: 1;

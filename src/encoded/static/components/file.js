@@ -37,7 +37,7 @@ const derivingCols = {
     assembly: { title: 'Mapping assembly' },
     status: {
         title: 'File status',
-        display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
+        display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} fileStatus /></div>,
     },
 };
 
@@ -366,7 +366,7 @@ class FileComponent extends React.Component {
                         <div className="status-line">
                             {context.status ?
                                 <div className="characterization-status-labels">
-                                    <StatusLabel title="Status" status={context.status} />
+                                    <StatusLabel title="Status" status={context.status} fileStatus />
                                 </div>
                             : null}
                             {this.props.auditIndicators(context.audit, 'file-audit', { session: this.context.session })}
