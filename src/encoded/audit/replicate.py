@@ -9,7 +9,7 @@ def audit_status_replicate(value, system):
     '''
     As the experiment-replicate relationship is reverse calculated, the status checker for item
     is not sufficient to catch all cases of status mismatch between replicates and experiments.
-    * in-progress replicate can't have experiment in [proposed, released, deleted, revoked]
+    * in-progress replicate can't have experiment in [released, deleted, revoked]
     * released or revoked replicate must be in [released or revoked]
     * if experiment is deleted, replicate must be deleted
     '''
@@ -18,24 +18,22 @@ def audit_status_replicate(value, system):
     exp_status = value['experiment']['status']
 
     if ((rep_status in ['in progress'] and exp_status in ['released',
-                                                          'revoked',
-                                                          'proposed',
-                                                          'preliminary']) or
+                                                          'revoked']) or
         (rep_status in ['released', 'revoked'] and
             exp_status not in ['released', 'revoked']) or
-       (exp_status in ['deleted'] and rep_status not in ['deleted'])):
+            (exp_status in ['deleted'] and rep_status not in ['deleted'])):
         #  If any of the three cases exist, there is an error
         detail = '{} replicate {} is in {} experiment'.format(
             rep_status,
             value['@id'],
             exp_status
-            )
+        )
         yield AuditFailure('mismatched status', detail, level='INTERNAL_ACTION')
     return
 
 
-# check that chip-seq experiments have antibody target matching the GM insert 
-# target of the biosample in the replicate (it could match on target name level 
+# check that chip-seq experiments have antibody target matching the GM insert
+# target of the biosample in the replicate (it could match on target name level
 # or tags level
 @audit_checker(
     'Replicate',
@@ -77,9 +75,9 @@ def audit_inconsistent_modifications_tag(value, system):
                     value['experiment']['@id']) + \
                     'specifies antibody {} that is inconsistent '.format(
                         value['antibody']['@id']) + \
-                        'with biosample {} modification tags {}.'.format(
-                            value['library']['biosample']['@id'],
-                            tags_names)
+                    'with biosample {} modification tags {}.'.format(
+                    value['library']['biosample']['@id'],
+                    tags_names)
                 yield AuditFailure('inconsistent modification tag', detail, level='INTERNAL_ACTION')
     return
 
