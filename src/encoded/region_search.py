@@ -100,6 +100,8 @@ def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
     """
     query = {
         'query': {
+            'bool': {
+                'filter': {
                     'nested': {
                         'path': 'positions',
                         'query': {
@@ -108,8 +110,9 @@ def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
                             }
                         }
                     }
-                },
-                '_cache': True,
+                }
+             }
+         },
         '_source': False,
     }
     search_ranges = {
@@ -131,9 +134,9 @@ def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
         }
     }
     for key, value in search_ranges.items():
-        query['query']['nested']['query']['bool']['should'].append(get_bool_query(value['start'], value['end']))
+        query['query']['bool']['filter']['nested']['query']['bool']['should'].append(get_bool_query(value['start'], value['end']))
     if with_inner_hits:
-        query['query']['nested']['inner_hits'] = {'size': 99999}
+        query['query']['bool']['filter']['nested']['inner_hits'] = {'size': 99999}
     return query
 
 
@@ -309,7 +312,7 @@ def region_search(context, request):
             chromosome, start, end = sanitize_coordinates(region)
     else:
         chromosome, start, end = ('', '', '')
-
+    pp('{} {} {}'.format(chromosome, start, end))
     # Check if there are valid coordinates
     if not chromosome or not start or not end:
         result['notification'] = 'No annotations found'
@@ -327,12 +330,14 @@ def region_search(context, request):
             peak_query = get_peak_query(start, end, with_inner_hits=True, within_peaks=region_inside_peak_status)
         else:
             peak_query = get_peak_query(start, end, within_peaks=region_inside_peak_status)
-
+        pp('PEAK_QUERY')
+        pp(peak_query)
         peak_results = snp_es.search(body=peak_query,
                                      index=chromosome.lower(),
                                      doc_type=_GENOME_TO_ALIAS[assembly],
-                                     size=99999)
-    except Exception:
+                                     size=10000)
+    except Exception as e:
+        pp(e)
         result['notification'] = 'Error during search'
         return result
     file_uuids = []
@@ -347,7 +352,7 @@ def region_search(context, request):
     if len(file_uuids):
         query = get_filtered_query('', [], set(), principals, ['Experiment'])
         del query['query']
-        query['filter']['and']['filters'].append({
+        query['post_filter']['bool']['must'].append({
             'terms': {
                 'embedded.files.uuid': file_uuids
             }
@@ -357,9 +362,8 @@ def region_search(context, request):
         query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Experiment'])
         schemas = (types[item_type].schema for item_type in ['Experiment'])
         es_results = es.search(
-            body=query, index='snovault', doc_type='experiment', size=size
+            body=query, index='experiment', doc_type='experiment', size=size
         )
-
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
         result['total'] = total = es_results['hits']['total']
         result['facets'] = format_facets(es_results, _FACETS, used_filters, schemas, total, principals)
@@ -375,7 +379,6 @@ def region_search(context, request):
 
 @view_config(route_name='suggest', request_method='GET', permission='search')
 def suggest(context, request):
-    pp('suggest called')
     text = ''
     requested_genome = ''
     if 'q' in request.params:
@@ -403,8 +406,6 @@ def suggest(context, request):
     }
     try:
         results = es.search(index='annotations', body=query)
-        pp(query)
-        pp(results)
     except:
         return result
     else:

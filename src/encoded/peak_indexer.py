@@ -127,7 +127,6 @@ def index_peaks(uuid, request):
     Indexes bed files in elasticsearch index
     """
     context = request.embed('/', str(uuid), '@@object')
-
     if 'assembly' not in context:
         return
 
