@@ -1,5 +1,9 @@
 ## Changelog for target.json
 
+### Schema version 6
+
+* Remove *proposed* from status enum.
+
 ### Schema version 5
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces

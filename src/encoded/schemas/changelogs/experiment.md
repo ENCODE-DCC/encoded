@@ -1,5 +1,9 @@
 ## Changelog for experiment.json
 
+### Schema version 14
+
+* Remove *proposed* from status enum (dataset mixin).
+
 ### Schema version 13
 
 * *biosample_type* property is required
