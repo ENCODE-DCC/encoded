@@ -137,11 +137,11 @@ def human_donor_10(root, donor_1):
     return properties
 
 @pytest.fixture
-def mouse_donor_11(root, mouse_donor):
+def mouse_donor_10(root, mouse_donor):
     item = root.get_by_uuid(mouse_donor['uuid'])
     properties = item.properties.copy()
     properties.update({
-        'schema_version': '11',
+        'schema_version': '10',
         'parent_strains': []
     })
     return properties
@@ -224,7 +224,7 @@ def test_upgrade_human_donor_10_11(root, upgrader, human_donor_10):
     assert 'genetic_modifications' not in value
 
 
-def test_upgrade_mouse_donor_11_12(root, upgrader, mouse_donor_11):
+def test_upgrade_mouse_donor_10_11(root, upgrader, mouse_donor_10):
     value = upgrader.upgrade(
-        'mouse_donor', mouse_donor_11, current_version='11', target_version='12')
+        'mouse_donor', mouse_donor_10, current_version='10', target_version='11')
     assert 'parent_strains' not in value
