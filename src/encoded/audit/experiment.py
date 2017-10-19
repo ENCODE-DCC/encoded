@@ -3111,7 +3111,7 @@ def get_file_accessions(list_of_files):
 
 
 def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
-       
+    
     for file_id in bam_file.get('derived_from'):
         if file_id not in files_structure.get('original_files') and \
            file_id not in files_structure.get('contributing_files'):
@@ -3121,30 +3121,32 @@ def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
     # original_files and not in contributing files - it is outdated!
     derived_from_fastqs = get_derived_from_files_set([bam_file], files_structure, 'fastq', True)
 
+
     # if there are no FASTQs we can not find our the replicate
     if len(derived_from_fastqs) == 0:
         return False
 
     derived_from_fastq_accessions = get_file_accessions(derived_from_fastqs)
 
-    bio_rep = bam_file.get('biological_replicates')
-    tech_rep = bam_file.get('technical_replicates')
+    #print ('privet')
+    #print (derived_from_fastq_accessions)
 
     rep_fastqs = []
     replicate_type = 'biological_replicates'
-
+    rep = bam_file.get('biological_replicates')
     # for DNase we should consider technial relicates
     if assay_name != 'ChIP-seq':
         replicate_type = 'technical_replicates'
+        rep = bam_file.get('technical_replicates')
+    
     for fastq_file in files_structure.get('fastq_files').values():
         if replicate_type in fastq_file:
-            for entry in fastq_file[replicate_type]:
-                if entry in bio_rep:
+            for entry in fastq_file.get(replicate_type):
+                print(entry)
+                if entry in rep:
                     rep_fastqs.append(fastq_file)
                     break
-
     replicate_fastq_accessions = get_file_accessions(rep_fastqs)
-    
     for file_object in rep_fastqs:
         file_acc = file_object.get('accession')
         # for ChIP even one file out of pair is considerd uptodate
