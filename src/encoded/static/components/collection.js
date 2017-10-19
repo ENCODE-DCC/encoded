@@ -211,7 +211,7 @@ class Collection extends React.Component {
                                 )}
                             </div>
                         :
-                            <p className="collection-no-chart">No facets defined in the &ldquo;{context.title}&rdquo; schema.</p>
+                            <p className="collection-no-chart">No facets defined in the &ldquo;{context.title}&rdquo; schema, or no data available.</p>
                         }
                     </PanelBody>
                 </Panel>
