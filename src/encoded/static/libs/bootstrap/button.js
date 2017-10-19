@@ -53,7 +53,7 @@ export default class DropdownButton extends React.Component {
     }
 
     render() {
-        const { title, label, disabled, wrapperClasses } = this.props;
+        const { title, label, disabled, wrapperClasses, buttonClasses } = this.props;
 
         // Add the `label` property to any <DropdownMenu> child components
         const children = React.Children.map(this.props.children, (child) => {
@@ -63,11 +63,19 @@ export default class DropdownButton extends React.Component {
             return child;
         });
 
+        // Process the button CSS classes.
+        let usedButtonClasses = 'btn dropdown-toggle';
+        if (buttonClasses === null) {
+            usedButtonClasses = usedButtonClasses.concat(' btn-info btn-sm');
+        } else {
+            usedButtonClasses = usedButtonClasses.concat(` ${buttonClasses}`);
+        }
+
         return (
             <div className={`dropdown${this.state.open ? ' open' : ''}${wrapperClasses ? ` ${wrapperClasses}` : ''}`}>
                 <button
                     disabled={disabled}
-                    className="btn btn-info btn-sm dropdown-toggle"
+                    className={usedButtonClasses}
                     type="button"
                     id={label}
                     data-toggle="dropdown"
@@ -88,6 +96,7 @@ DropdownButton.propTypes = {
     label: PropTypes.string, // id (unique in doc) for this button
     disabled: PropTypes.bool, // True to disable button
     wrapperClasses: PropTypes.string, // Classes to add to wrapper div
+    buttonClasses: PropTypes.string, // Classes to add to button triggering the drop-down
     children: PropTypes.node, // Components rendered inside DropdownButton, usually drop-down items
 };
 
@@ -96,5 +105,6 @@ DropdownButton.defaultProps = {
     label: '',
     disabled: false,
     wrapperClasses: '',
+    buttonClasses: null,
     children: null,
 };

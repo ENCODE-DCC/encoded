@@ -335,16 +335,30 @@ class BiosampleComponent extends React.Component {
         const age = (result.age && result.age !== 'unknown') ? ` ${result.age}` : '';
         const ageUnits = (result.age_units && result.age_units !== 'unknown' && age) ? ` ${result.age_units}` : '';
         const separator = (lifeStage || age) ? ',' : '';
-        const rnais = (result.rnais[0] && result.rnais[0].target && result.rnais[0].target.label) ? result.rnais[0].target.label : '';
-        let constructs;
-
-        if (result.model_organism_donor_constructs && result.model_organism_donor_constructs.length) {
-            constructs = result.model_organism_donor_constructs[0].target.label;
-        } else {
-            constructs = result.constructs[0] ? result.constructs[0].target.label : '';
-        }
         const treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
-        const mutatedGenes = result.donor && result.donor.mutated_gene && result.donor.mutated_gene.label;
+
+        // Calculate genetic modification properties for display.
+        const rnais = [];
+        const constructs = [];
+        const mutatedGenes = [];
+        if (result.applied_modifications && result.applied_modifications.length) {
+            result.applied_modifications.forEach((am) => {
+                // Collect RNAi GM methods.
+                if (am.method === 'RNAi' && am.modified_site_by_target_id && am.modified_site_by_target_id.name) {
+                    rnais.push(am.modified_site_by_target_id.name);
+                }
+
+                // Collect construct GM methods.
+                if (am.purpose === 'tagging' && am.modified_site_by_target_id && am.modified_site_by_target_id.name) {
+                    constructs.push(am.modified_site_by_target_id.name);
+                }
+
+                // Collect mutated gene GM methods.
+                if ((am.category === 'deletion' || am.category === 'mutagenesis') && am.modified_site_by_target_id && am.modified_site_by_target_id.name) {
+                    mutatedGenes.push(am.modified_site_by_target_id.name);
+                }
+            });
+        }
 
         // Build the text of the synchronization string
         let synchText;
@@ -375,10 +389,10 @@ class BiosampleComponent extends React.Component {
                     <div className="data-row">
                         <div><strong>Type: </strong>{result.biosample_type}</div>
                         {result.summary ? <div><strong>Summary: </strong>{BiosampleSummaryString(result)}</div> : null}
-                        {rnais ? <div><strong>RNAi target: </strong>{rnais}</div> : null}
-                        {constructs ? <div><strong>Construct: </strong>{constructs}</div> : null}
+                        {rnais.length ? <div><strong>RNAi targets: </strong>{rnais.join(', ')}</div> : null}
+                        {constructs.length ? <div><strong>Constructs: </strong>{constructs.join(', ')}</div> : null}
                         {treatment ? <div><strong>Treatment: </strong>{treatment}</div> : null}
-                        {mutatedGenes ? <div><strong>Mutated gene: </strong>{mutatedGenes}</div> : null}
+                        {mutatedGenes.length ? <div><strong>Mutated genes: </strong>{mutatedGenes.join(', ')}</div> : null}
                         {result.culture_harvest_date ? <div><strong>Culture harvest date: </strong>{result.culture_harvest_date}</div> : null}
                         {result.date_obtained ? <div><strong>Date obtained: </strong>{result.date_obtained}</div> : null}
                         {synchText ? <div><strong>Synchronization timepoint: </strong>{synchText}</div> : null}
@@ -1460,15 +1474,18 @@ const ResultBrowser = (props) => {
         console.log('found region %s', region);
     }
     if (datasetCount === 1) {
-        // /datasets/{ENCSR000AEI}/@@hub/{hg19}/jsonout/trackDb.txt
-        visUrl = `${props.datasets[0]}/@@hub/${props.assembly}/jsonout/trackDb.txt`;
+        // /datasets/{ENCSR000AEI}/@@hub/{hg19}/trackDb.json
+        visUrl = `${props.datasets[0]}/@@hub/${props.assembly}/trackDb.json`;
     } else if (datasetCount > 1) {
-        // /batch_hub/type%3DExperiment%2C%2Caccession%3D{ENCSR000AAA}%2C%2Caccession%3D{ENCSR000AEI}%2C%2Caccjson/{hg19}/trackDb.txt
+        // /batch_hub/type%3DExperiment%2C%2Caccession%3D{ENCSR000AAA}%2C%2Caccession%3D{ENCSR000AEI}/{hg19}/vis_blob.json
         for (let ix = 0; ix < datasetCount; ix += 1) {
             const accession = props.datasets[ix].split('/')[2];
-            visUrl += `accession=${accession}%2C%2C`;
+            if (visUrl !== '') {
+                visUrl += '%2C%2C';
+            }
+            visUrl += `accession=${accession}`;
         }
-        visUrl = `batch_hub/type=Experiment/${visUrl}&accjson/${props.assembly}/trackDb.txt`;
+        visUrl = `batch_hub/type=Experiment/${visUrl}/${props.assembly}/vis_blob.json`;
     }
     if (datasetCount > 0) {
         return (

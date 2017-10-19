@@ -36,50 +36,6 @@
                 }
             }
         },
-        "rnais": {
-            "comment": "RNAi transfected biosamples require specification of the transfection_type.",
-            "oneOf": [
-                {
-                   "required": ["transfection_type"],
-                    "properties": {
-                        "rnais": {
-                            "minItems": 1
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "rnais": {
-                            "maxItems": 0
-                        }
-                    }
-                }
-            ]
-        },
-        "constructs": {
-            "comment": "Transfected biosamples require specification of the transfection_type.",
-            "oneOf": [
-                {
-                   "required": ["transfection_type"],
-                    "properties": {
-                        "constructs": {
-                            "minItems": 1
-                        }
-                    }
-                },
-                {
-                    "properties": {
-                        "constructs": {
-                            "maxItems": 0
-                        }
-                    }
-                }
-            ]
-        },
-        "transfection_method": {
-            "required": ["transfection_type"],
-            "comment": "Transfected biosamples require specification of the transfection_type."
-        },
         "biosample_term_id":{
             "oneOf": [
                 { 
@@ -403,7 +359,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "18"
+            "default": "19"
         },
         "accession": {
             "accessionType": "BS"
@@ -426,7 +382,7 @@
         },
         "description": {
             "title": "Description",
-            "description": "A plain text description of the biosample. Do not include experiment details, constructs or treatments.",
+            "description": "A plain text description of the biosample. Do not include experiment details, genetic modifications or treatments.",
             "comment": "Free text description of the biosample, do not mix with biosample summary that is calculated and controlled.",
             "type": "string",
             "elasticsearch_mapping_index_type": {
@@ -441,36 +397,6 @@
                 ]
             },
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$|^$"
-        },
-        "constructs": {
-            "title": "DNA constructs",
-            "description": "Expression or targeting vectors stably or transiently transfected (not RNAi).",
-            "comment": "A list of constructs used to transfect the biosample, it will require transfection_type specification.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "DNA Constructs",
-                "description": "An expression or targeting vector stably or transiently transfected (not RNAi).",
-                "comment": "See construct.json for available identifiers.",
-                "type":  "string",
-                "linkTo": "Construct"
-            }
-        },
-        "rnais": {
-            "title": "RNAi vectors",
-            "description": "RNAi vectors stably or transiently transfected.",
-            "comment": "A list of RNAi object identifiers used to transfect the biosample, it will require transfection_type specification.",
-            "type": "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "RNAi Vector",
-                "description": "RNAi vector stably or transiently transfected.",
-                "comment": "See rnai.json for available identifiers.",
-                "type":  "string",
-                "linkTo": "RNAi"
-            }
         },
         "treatments": {
             "title": "Treatments",
@@ -646,27 +572,6 @@
                 "S2",
                 "S3",
                 "S4"
-            ]
-        },
-        "transfection_type": {
-            "title": "Transfection type",
-            "description": "The persistence of the transfection construct.",
-            "comment": "transfection_type requires specification of transfection_method.",
-            "type": "string",
-            "enum": [
-                "stable",
-                "transient"
-            ]
-        },
-        "transfection_method": {
-            "title": "Transfection method",
-            "description": "How the transfection was performed on the biosample to introduce the contruct or RNAi.",
-            "comment": "transfection_method requires specification of transfection_type.",
-            "type": "string",
-            "enum": [
-                "chemical",
-                "electroporation",
-                "transduction"
             ]
         },
         "culture_harvest_date": {
@@ -906,12 +811,6 @@
         "treatments.treatment_term_name": {
             "title": "Biosample treatment"
         },
-        "transfection_type": {
-            "title": "Transfection type"
-        },
-        "transfection_method": {
-            "title": "Transfection method"
-        },
         "source.title": {
             "title": "Source"
         },
@@ -956,6 +855,18 @@
         "organism.scientific_name": {
             "title": "Species"
         },
+        "applied_modifications.modified_site_by_target_id.name": {
+            "title": "Target name"
+        },
+        "applied_modifications.purpose": {
+            "title": "Purpose"
+        },
+        "applied_modifications.method": {
+            "title": "Method"
+        },
+        "applied_modifications.category": {
+            "title": "Category"
+        },
         "source.title": {
             "title": "Source"
         },
@@ -968,14 +879,8 @@
         "status": {
             "title": "Status"
         },
-        "rnais.target.label": {
-            "title": "RNAi target"
-        },
         "treatments.treatment_term_name": {
             "title": "Treatment"
-        },
-        "constructs.target.label": {
-            "title": "Construct"
         },
         "culture_harvest_date": {
             "title": "Culture harvest date"
@@ -983,17 +888,11 @@
         "date_obtained": {
             "title": "Date obtained"
         },
-        "model_organism_donor_constructs.target.label": {
-            "title": "Constructs"
-        },
         "donor.mutated_gene.label": {
             "title": "Mutated gene"
         },
         "treatments.length": {
             "title": "Treatments length"
-        },
-        "constructs.length": {
-            "title": "Constructs"
         },
         "summary": {
             "title": "Summary"
@@ -1036,20 +935,10 @@
         "treatments.treatment_term_name": 1.0,
         "treatments.dbxrefs": 1.0,
         "treatments.aliases": 1.0,
-        "genetic_modifications.modified_site_by_target_id.label": 1.0,
-        "genetic_modifications.modified_site_by_target_id.gene_name": 1.0,
-        "genetic_modifications.modified_site_by_target_id.dbxref": 1.0,
-        "genetic_modifications.modified_site_by_target_id.aliases": 1.0,
-        "model_organism_donor_modifications.modified_site_by_target_id.label": 1.0,
-        "model_organism_donor_modifications.modified_site_by_target_id.gene_name": 1.0,
-        "model_organism_donor_modifications.modified_site_by_target_id.dbxref": 1.0,
-        "model_organism_donor_modifications.modified_site_by_target_id.aliases": 1.0,
-        "constructs.construct_type": 1.0,
-        "constructs.vector_backbone_name": 1.0,
-        "constructs.target.gene_name": 1.0,
-        "constructs.target.label": 1.0,
-        "constructs.target.dbxref": 1.0,
-        "constructs.target.aliases": 1.0,
+        "applied_modifications.modified_site_by_target_id.label": 1.0,
+        "applied_modifications.modified_site_by_target_id.gene_name": 1.0,
+        "applied_modifications.modified_site_by_target_id.dbxref": 1.0,
+        "applied_modifications.modified_site_by_target_id.aliases": 1.0,
         "originated_from.accession": 1.0,
         "originated_from.alternate_accessions": 1.0,
         "originated_from.biosample_term_id": 1.0,
@@ -1059,19 +948,10 @@
         "pooled_from.biosample_term_id": 1.0,
         "pooled_from.biosample_term_name": 1.0,
         "characterizations.characterization_method": 1.0,
-        "rnais.rnai_type": 1.0,
-        "rnais.vector_backbone_name": 1.0,
-        "rnais.target.organism.name": 1.0,
-        "rnais.target.organism.scientific_name": 1.0,
-        "rnais.target.organism.taxon_id": 1.0,
-        "rnais.source.title": 1.0,
         "organism.name": 1.0,
         "organism.scientific_name": 1.0,
         "organism.taxon_id": 1.0,
         "references.title": 1.0,
-        "rnais.product_id": 1.0,
-        "rnais.target.label": 1.0,
-        "rnais.target.aliases": 1.0,
         "award.pi.title": 1.0,
         "notes": 1.0,
         "internal_tags": 1.0
