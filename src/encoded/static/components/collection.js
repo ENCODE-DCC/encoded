@@ -183,7 +183,7 @@ class Collection extends React.Component {
         // Collect the three facets that will be included in the charts. This comprises the first
         // MAX_FACET_CHARTS facets, not counting any facets with "type" for the field which we never
         // chart, nor audit facets.
-        const chartFacets = facets.filter(facet => facet.field !== 'type' && facet.field.substring(0, 6) !== 'audit.').slice(0, MAX_FACET_CHARTS);
+        const chartFacets = facets ? facets.filter(facet => facet.field !== 'type' && facet.field.substring(0, 6) !== 'audit.').slice(0, MAX_FACET_CHARTS) : [];
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
