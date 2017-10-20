@@ -1,10 +1,19 @@
 .collection-charts {
-    display: flex;
+    display: block;
 
-    @at-root #{&}__chart {
-        flex: 0 1 33.33%;
+    @media screen and (min-width: $screen-sm-min) {
+        display: flex;
     }
 
+    // Each chart section within the panel
+    @at-root #{&}__chart {
+        @media screen and (min-width: $screen-sm-min) {            
+            flex: 0 0 33.33%;
+            width: 33.33%;
+        }
+    }
+
+    // The title above each chart
     @at-root #{&}__title {
         text-align: center;
         color: gray;
@@ -12,10 +21,12 @@
         font-weight: 400;
     }
 
+    // The chart canvas for chart.js to draw into.
     @at-root #{&}__canvas {
         height: 180px;
     }
 
+    // Styles for the custom legend.
     @at-root #{&}__legend {
         margin: 20px auto;
         width: 80%;
@@ -65,6 +76,7 @@
 }
 
 
+// For messages when no chart can be drawn.
 .collection-no-chart {
     width: 100%;
     margin: 10px 0;
