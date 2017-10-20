@@ -276,3 +276,9 @@ export function sortDocs(docs) {
         return 1;
     });
 }
+
+
+export const dbxrefPrefixMap = {
+    FlyBase: 'http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context=',
+    WormBase: 'http://www.wormbase.org/species/c_elegans/strain/',
+};
