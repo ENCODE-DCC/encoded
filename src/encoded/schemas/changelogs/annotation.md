@@ -1,5 +1,9 @@
 ## Changelog for annotation.json
 
+### Schema version 15
+
+* Remove *proposed* from status enum (dataset mixin).
+
 ### Schema version 14
 
 * *biosample_type* and *biosample_term_id* consistency added to the list of schema dependencies

@@ -53,3 +53,10 @@ def replicate_5_6(value, system):
     # http://redmine.encodedcc.org/issues/3063
     if 'aliases' in value:
         value['aliases'] = list(set(value['aliases']))
+
+
+@upgrade_step('replicate', '8', '9')
+def replicate_8_9(value, system):
+    # http://redmine.encodedcc.org/issues/3063
+    if value['status'] in ['proposed', 'preliminary']:
+        value['status'] = 'in progress'
