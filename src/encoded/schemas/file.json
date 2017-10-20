@@ -223,7 +223,7 @@
                     "required": ["read_length"],
                     "properties": {
                         "file_format": {
-                            "enum": ["fastq", "fasta", "csfasta", "csqual","sra"]
+                            "enum": ["fastq", "fasta", "csfasta", "csqual", "sra"]
                         },
                         "output_type": {
                              "enum": ["reads"]
@@ -240,6 +240,34 @@
                     }
                 }
             ]
+        },
+        "assembly": {
+             "allOf": [
+                 {
+                    "not": {
+                        "properties": {
+                            "file_format": {
+                                "enum": ["fasta"]
+                            },
+                            "output_type": {
+                                "enum": ["reads"]
+                            }
+                        }
+                    }
+                 },
+                 {
+                    "not": {
+                        "properties": {
+                            "file_format": {
+                                "enum": ["fasta"]
+                            },
+                            "output_type": {
+                                "enum": ["rejected reads"]
+                            }
+                        }
+                    }
+                 }
+             ]
         },
         "file_format":{
             "comment": "Fastq and sra files require run_type and replicate but should not have assembly. Raw data files require platform to be specified. Processed files require assembly to be specified.",
@@ -259,9 +287,9 @@
                                 "required": ["assembly"],
                                 "properties": {
                                     "file_format": {
-                                        "enum": ["fastq","sra"]
+                                        "enum": ["fastq", "sra", "csfasta", "csqual"]
                                     }
-                                }
+                                }                    
                             }
                         },
                         {
