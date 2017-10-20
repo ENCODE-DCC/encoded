@@ -30,7 +30,6 @@ def rate_limited_request(url):
     pp(response.json())
     pp(response.headers)
     if int(response.headers.get('X-RateLimit-Remaining')) < 2:
-    # if int(response.headers.get('X-RateLimit-Remaining')) < mp.cpu_count():
         print('spleeping for about {} seconds'.format(response.headers.get('X-RateLimit-Reset')))
         time.sleep(int(float(response.headers.get('X-RateLimit-Reset'))) + 1)
     return response.json()
@@ -57,7 +56,6 @@ def assembly_mapper(location, species, input_assembly, output_assembly):
 
 
 def human_single_annotation(r):
-        pp('#####################################################')
         annotations = []
         species = ' (homo sapiens)'
         species_for_payload = re.split('[(|)]', species)[1]
@@ -221,6 +219,7 @@ def human_annotations(human_file):
     Generates JSON from TSV files
     """
     zipped_rows = get_rows_from_file(human_file, '\r')
+    # Too many processes causes the http requests causes the remote to respond with error
     pool = mp.Pool(processes=1)
     annotations = pool.map(human_single_annotation, zipped_rows)
     return prepare_for_bulk_indexing(annotations)
@@ -232,6 +231,7 @@ def mouse_annotations(mouse_file):
     Updates and get JSON file for mouse annotations
     """
     zipped_rows = get_rows_from_file(mouse_file, '\n')
+    # Too many processes causes the http requests causes the remote to respond with error
     pool = mp.Pool(processes=1)
     annotations = pool.map(mouse_single_annotation, zipped_rows)
     return prepare_for_bulk_indexing(annotations)

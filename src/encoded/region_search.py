@@ -18,7 +18,6 @@ from urllib.parse import urlencode
 import logging
 import re
 
-from pprint import pprint as pp
 
 
 log = logging.getLogger(__name__)
@@ -312,7 +311,6 @@ def region_search(context, request):
             chromosome, start, end = sanitize_coordinates(region)
     else:
         chromosome, start, end = ('', '', '')
-    pp('{} {} {}'.format(chromosome, start, end))
     # Check if there are valid coordinates
     if not chromosome or not start or not end:
         result['notification'] = 'No annotations found'
@@ -330,14 +328,11 @@ def region_search(context, request):
             peak_query = get_peak_query(start, end, with_inner_hits=True, within_peaks=region_inside_peak_status)
         else:
             peak_query = get_peak_query(start, end, within_peaks=region_inside_peak_status)
-        pp('PEAK_QUERY')
-        pp(peak_query)
         peak_results = snp_es.search(body=peak_query,
                                      index=chromosome.lower(),
                                      doc_type=_GENOME_TO_ALIAS[assembly],
                                      size=10000)
     except Exception as e:
-        pp(e)
         result['notification'] = 'Error during search'
         return result
     file_uuids = []
