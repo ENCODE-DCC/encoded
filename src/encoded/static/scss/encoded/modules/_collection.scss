@@ -33,7 +33,6 @@
 
         .chart-legend-chip {
             display: inline;
-            width: auto;
             line-height: 18px;
         }
 
@@ -73,4 +72,20 @@
     color: gray;
     font-size: 1.1rem;
     font-style: italic;
+}
+
+
+// Heading for the collection panel
+.collection-heading {
+    display: flex;
+    justify-content: space-between;
+
+    h4 {
+        flex: 0 1 auto;
+    }
+
+    @at-root #{&}__controls {
+        margin: -5px;
+        flex: 0 1 auto;
+    }
 }

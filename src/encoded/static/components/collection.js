@@ -194,8 +194,15 @@ class Collection extends React.Component {
                     </div>
                 </header>
                 <Panel>
-                    <PanelHeading>
+                    <PanelHeading addClasses="collection-heading">
                         <h4>{context.total} total {context.title}</h4>
+                        <div className="collection-heading__controls">
+                            {(context.actions || []).map(action =>
+                                <a href={action.href} className="btn btn-info">
+                                    {action.title}
+                                </a>
+                            )}
+                        </div>
                     </PanelHeading>
                     <PanelBody>
                         {chartFacets.length ?
