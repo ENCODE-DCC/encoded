@@ -18,6 +18,7 @@ import pytz
 import time
 import copy
 import json
+import requests
 from pkg_resources import resource_filename
 from snovault.elasticsearch.indexer import (
     SEARCH_MAX,
@@ -55,14 +56,18 @@ class VisIndexerState(IndexerState):
         self.followup_prep_list = None                        # No followup to a following indexer
         self.staged_cycles_list = self.title + '_staged'      # Will take from  primary self.staged_for_vis_list
 
+    def all_indexable_uuids(self, request):
+        '''returns list of uuids pertinant to this indexer.'''
+        return all_visualizable_uuids(request.registry)
+
     def viscached_uuid(self, uuid):
         self.list_extend(self.viscached_set, [uuid])
 
-    def get_one_cycle(self, xmin, registry):
+    def get_one_cycle(self, xmin, request):
         uuids = []
         next_xmin = None
 
-        (undone_xmin, uuids, cycle_interrupted) = self.priority_cycle(registry)
+        (undone_xmin, uuids, cycle_interrupted) = self.priority_cycle(request)
         # NOTE: unlike with primary_indexer priority_cycle() can be called after get_initial_state()
         if len(uuids) > 0:
             if not cycle_interrupted:  # AKA reindex signal
@@ -116,14 +121,23 @@ class VisIndexerState(IndexerState):
 
 
 @view_config(route_name='_visindexer_state', request_method='GET', permission="index")
-def vis_indexer_show_state(request):
+def visindexer_state_show(request):
     es = request.registry[ELASTIC_SEARCH]
     INDEX = request.registry.settings['snovault.elasticsearch.index']
     state = VisIndexerState(es,INDEX)
 
-    if request.params.get("reindex","false") == 'all':
-        state.request_reindex()
-        request.query_string = ''
+    # requesting reindex
+    reindex = request.params.get("reindex")
+    if reindex is not None:
+        state.request_reindex(reindex)
+
+    # Requested notification
+    who = request.params.get("notify")
+    bot_token = request.params.get("bot_token")
+    if who is not None or bot_token is not None:
+        notices = state.set_notices(request.host_url, who, bot_token, request.params.get("indexers"))
+        if isinstance(notices,str):
+            return notices
 
     display = state.display()
     try:
@@ -134,22 +148,23 @@ def vis_indexer_show_state(request):
         display['vis_blobs in index'] = 'Not Found'
         pass
 
-    try:
-        import requests
-        r = requests.get(request.host_url + '/_visindexer')
-        #subreq = Request.blank('/_visindexer')
-        #result = request.invoke_subrequest(subreq)
-        result = json.loads(r.text)
-        #result = request.embed('_visindexer')
-        result['current'] = display
-    except:
-        result = display
+    if not request.registry.settings.get('testing',False):  # NOTE: _indexer not working on local instances
+        try:
+            r = requests.get(request.host_url + '/_visindexer')
+            display['listener'] = json.loads(r.text)
+            display['status'] = display['listener']['status']
+            #subreq = Request.blank('/_visindexer')
+            #result = request.invoke_subrequest(subreq)
+            #result = request.embed('_visindexer')
+        except:
+            log.error('Error getting /_visindexer', exc_info=True)
+
     # always return raw json
     if len(request.query_string) > 0:
         request.query_string = "&format=json"
     else:
         request.query_string = "format=json"
-    return result
+    return display
 
 
 @view_config(route_name='index_vis', request_method='POST', permission="index")
@@ -181,7 +196,7 @@ def index_vis(request):
     first_txn = datetime.datetime.now(pytz.utc)
     cycles = 0
 
-    (xmin, next_xmin, uuids) = state.get_one_cycle(xmin,request.registry)
+    (xmin, next_xmin, uuids) = state.get_one_cycle(xmin, request)
 
     uuid_count = len(uuids)
     if uuid_count > 0 and (xmin is None or int(xmin) <= 0):  # Happens when the a reindex all signal occurs.
@@ -214,6 +229,7 @@ def index_vis(request):
     if uuid_count == 0:
         result.pop('indexed',None)
 
+    state.send_notices()
     return result
 
 

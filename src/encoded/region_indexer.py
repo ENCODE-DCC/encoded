@@ -4,6 +4,7 @@ import gzip
 import csv
 import logging
 import collections
+import json
 import requests
 from pyramid.view import view_config
 from sqlalchemy.sql import text
@@ -226,34 +227,19 @@ class RegionIndexerState(IndexerState):
     def file_dropped(self, uuid):
         self.list_extend(self.files_added_set, [uuid])
 
-    def finish_cycle(self, state, errors=None):
-        '''Every indexing cycle must be properly closed.'''
-
-        if errors:  # By handling here, we avoid overhead and concurrency issues of uuid-level accounting
-            self.add_errors(errors)
-
-        # cycle-level accounting so todo => done => last in this function
-        #self.rename_objs(self.todo_set, self.done_set)
-        #done_count = self.get_count(self.todo_set)
-        cycle_count = state.pop('cycle_count', None)
-        self.rename_objs(self.todo_set, self.last_set)
-
-        added = self.get_count(self.files_added_set)
-        dropped = self.get_count(self.files_dropped_set)
-        state['indexed'] = added + dropped
-
-        #self.rename_objs(self.done_set, self.last_set)   # cycle-level accounting so todo => done => last in this function
-        self.delete_objs(self.cleanup_this_cycle)
-        state['status'] = 'done'
-        state['cycles'] = state.get('cycles', 0) + 1
-        state['cycle_took'] = self.elapsed('cycle')
-
-        self.put(state)
-
-        return state
+    def all_indexable_uuids(self, request):
+        '''returns list of uuids pertinant to this indexer.'''
+        assays = list(ENCODED_REGION_REQUIREMENTS.keys())
+        uuids = []
+        try:
+            uuids = encoded_regionable_datasets(request, assays)  # Uses elasticsearch query
+        except:
+            # TODO: mention error?
+            uuids = list(all_regionable_dataset_uuids(request.registry))  #### This requires postgres!!!
+        return uuids
 
     def priority_cycle(self, request):
-        '''Initial startup, override, or interupted prior cycle can all lead to a priority cycle.
+        '''Initial startup, reindex, or interupted prior cycle can all lead to a priority cycle.
            returns (priority_type, uuids).'''
         # Not yet started?
         initialized = self.get_obj("indexing")  # http://localhost:9200/snovault/meta/indexing
@@ -269,21 +255,12 @@ class RegionIndexerState(IndexerState):
         if primary_state.get('cycle_count',0) > SEARCH_MAX:
             return ("uninitialized", [])
 
-        # Rare call for indexing all...
-        override = self.get_obj(self.override)
-        if override:
-            self.delete_objs([self.override,self.force_uuids])
-            # So we want all the appropriate dataset uuids, but from es, not postgres
-            # TODO: make this work
-            assays = list(ENCODED_REGION_REQUIREMENTS.keys())
-            uuids = []
-            try:
-                uuids = encoded_regionable_datasets(request, assays)
-            except:
-                # TODO: mention error?
-                uuids = list(all_regionable_dataset_uuids(request.registry))  #### query all uuids
-            log.warn('%s override doing all %d with force' % (self.state_id, len(uuids)))
-            return ("reindex", uuids)
+        # Rare call for reindexing...
+        reindex_uuids = self.reindex_requested(request)
+        if reindex_uuids is not None and reindex_uuids != []:
+            uuids_count = len(reindex_uuids)
+            log.warn('%s reindex of %d uuids requested with force' % (self.state_id, uuids_count))
+            return ("reindex", reindex_uuids)
 
         # Rarer call to force reindexing specific set
         uuids = self.get_list(self.force_uuids)
@@ -342,6 +319,32 @@ class RegionIndexerState(IndexerState):
 
         return (list(set(uuids)),False)  # Only unique uuids
 
+    def finish_cycle(self, state, errors=None):
+        '''Every indexing cycle must be properly closed.'''
+
+        if errors:  # By handling here, we avoid overhead and concurrency issues of uuid-level accounting
+            self.add_errors(errors)
+
+        # cycle-level accounting so todo => done => last in this function
+        #self.rename_objs(self.todo_set, self.done_set)
+        #done_count = self.get_count(self.todo_set)
+        cycle_count = state.pop('cycle_count', None)
+        self.rename_objs(self.todo_set, self.last_set)
+
+        added = self.get_count(self.files_added_set)
+        dropped = self.get_count(self.files_dropped_set)
+        state['indexed'] = added + dropped
+
+        #self.rename_objs(self.done_set, self.last_set)   # cycle-level accounting so todo => done => last in this function
+        self.delete_objs(self.cleanup_this_cycle)
+        state['status'] = 'done'
+        state['cycles'] = state.get('cycles', 0) + 1
+        state['cycle_took'] = self.elapsed('cycle')
+
+        self.put(state)
+
+        return state
+
     def display(self):
         display = super(RegionIndexerState, self).display()
         display['staged to process'] = self.get_count(self.staged_cycles_list)
@@ -355,15 +358,24 @@ class RegionIndexerState(IndexerState):
 
 
 @view_config(route_name='_regionindexer_state', request_method='GET', permission="index")
-def regions_indexer_show_state(request):
+def regionindexer_state_show(request):
     encoded_es = request.registry[ELASTIC_SEARCH]
     encoded_INDEX = request.registry.settings['snovault.elasticsearch.index']
     regions_es    = request.registry[SNP_SEARCH_ES]
     state = RegionIndexerState(encoded_es,encoded_INDEX)  # Consider putting this in regions es instead of encoded es
 
-    if request.params.get("reindex","false") == 'all':
-        state.request_reindex()
-        request.query_string = ''
+    # requesting reindex
+    reindex = request.params.get("reindex")
+    if reindex is not None:
+        state.request_reindex(reindex)
+
+    # Requested notification
+    who = request.params.get("notify")
+    bot_token = request.params.get("bot_token")
+    if who is not None or bot_token is not None:
+        notices = state.set_notices(request.host_url, who, bot_token, request.params.get("indexers"))
+        if isinstance(notices,str):
+            return notices
 
     display = state.display()
 
@@ -375,16 +387,13 @@ def regions_indexer_show_state(request):
         display['files in index'] = 'Not Found'
         pass
 
-    try:
-        r = requests.get(request.host_url + '/_regionindexer')
-        result = json.loads(r.text)
-        # Doesn't work. Probably because /_regionindexer (es_index_listener.py) is not a configured pyramid view
-        #subreq = Request.blank('/_regionindexer')
-        #result = request.invoke_subrequest(subreq)
-        #result = request.embed('_regionindexer')
-        result['current'] = display
-    except:
-        result = display
+    if not request.registry.settings.get('testing',False):  # NOTE: _indexer not working on local instances
+        try:
+            r = requests.get(request.host_url + '/_regionindexer')
+            display['listener'] = json.loads(r.text)
+            display['status'] = display['listener']['status']
+        except:
+            log.error('Error getting /_regionindexer', exc_info=True)
 
     # always return raw json
     if len(request.query_string) > 0:
@@ -412,14 +421,15 @@ def index_regions(request):
 
     uuid_count = len(uuids)
     if uuid_count > 0 and not dry_run:
-        log.warn("Region indexer started on %d datasets(s)" % uuid_count) # DEBUG set back to info when done
+        log.warn("Region indexer started on %d datasets(s)" % uuid_count) # TODO: DEBUG set back to info when done
 
         result = state.start_cycle(uuids, result)
         errors = indexer.update_objects(request, uuids, force)
         result = state.finish_cycle(result, errors)
-        log.info("Region indexer added %d file(s)" % result['indexed']) # TODO: change to info
-        # cycle_took: "2:31:55.543311" reindex all with force
+        log.info("Region indexer added %d file(s)" % result['indexed'])
+        # cycle_took: "2:31:55.543311" reindex all with force (2017-10-16ish)
 
+    state.send_notices()
     return result
 
 
@@ -622,6 +632,7 @@ class RegionIndexer(Indexer):
             #if request.host_url == 'http://localhost':
             # assume we are running in dev-servers
             href = request.host_url + ':8000' + afile['submitted_file_name']
+            #href = 'http://www.encodeproject.org' + afile['href']
         else:
             href = request.host_url + afile['href']
         log.warn(href)
