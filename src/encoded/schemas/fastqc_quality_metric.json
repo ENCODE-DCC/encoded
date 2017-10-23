@@ -11,6 +11,7 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "quality_metric.json#/properties" },
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/submitted"},
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/assay" },
