@@ -2049,6 +2049,10 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
                     return a ? -1 : bTest;
                 },
             },
+            status: {
+                title: 'Status',
+                display: item => <div className="characterization-meta-data"><FileStatusLabel file={item} /></div>,
+            },
         };
 
         header = (
