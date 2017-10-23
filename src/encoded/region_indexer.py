@@ -219,7 +219,6 @@ class RegionIndexerState(IndexerState):
         # DO NOT INHERIT! These keys are for passing on to other indexers
         self.followup_prep_list = None                        # No followup to a following indexer
         self.staged_cycles_list = None                        # Will take all of primary self.staged_for_regions_list
-        self.force_uuids        = self.title + "_force_dataset_uuids" # uuids to force a reindex on.
 
     def file_added(self, uuid):
         self.list_extend(self.files_added_set, [uuid])
@@ -261,13 +260,6 @@ class RegionIndexerState(IndexerState):
             uuids_count = len(reindex_uuids)
             log.warn('%s reindex of %d uuids requested with force' % (self.state_id, uuids_count))
             return ("reindex", reindex_uuids)
-
-        # Rarer call to force reindexing specific set
-        uuids = self.get_list(self.force_uuids)
-        if len(uuids) > 0:
-            self.delete_objs([self.force_uuids])
-            log.warn('%s override doing selected %d with force' % (self.state_id, len(uuids)))
-            return ("reindex", uuids)
 
         if self.get().get('status', '') == 'indexing':
             uuids = self.get_list(self.todo_set)
@@ -350,10 +342,6 @@ class RegionIndexerState(IndexerState):
         display['staged to process'] = self.get_count(self.staged_cycles_list)
         display['files added'] = self.get_count(self.files_added_set)
         display['files dropped'] = self.get_count(self.files_dropped_set)
-        # very rare
-        count = self.get_count(self.force_uuids)
-        if count > 0:
-            display['reqested datasets to force'] = count
         return display
 
 
@@ -631,51 +619,67 @@ class RegionIndexer(Indexer):
         if self.test_instance:
             #if request.host_url == 'http://localhost':
             # assume we are running in dev-servers
-            href = request.host_url + ':8000' + afile['submitted_file_name']
-            #href = 'http://www.encodeproject.org' + afile['href']
+            #href = request.host_url + ':8000' + afile['submitted_file_name']
+            href = 'http://www.encodeproject.org' + afile['href']
         else:
             href = request.host_url + afile['href']
         log.warn(href)
 
+        ### Works with localhost:8000
         # NOTE: Using requests instead of http.request which works locally and doesn't require gzip.open
-        r = requests.get(href)
-        if not r or r.status_code != 200:
-            log.warn("File (%s or %s) not found" % (afile.get('accession', id), href))
-            return False
-        file_in_mem = io.StringIO()
-        file_in_mem.write(r.text)
-        file_in_mem.seek(0)
-
-        # Worked in demo
-        #urllib3.disable_warnings()
-        #http = urllib3.PoolManager()
-        #r = http.request('GET', href)
-        #if r.status != 200:
+        #r = requests.get(href)
+        #if not r or r.status_code != 200:
         #    log.warn("File (%s or %s) not found" % (afile.get('accession', id), href))
         #    return False
-        #file_in_mem = io.BytesIO()
-        #file_in_mem.write(r.data)
+        #file_in_mem = io.StringIO()
+        #file_in_mem.write(r.text)
         #file_in_mem.seek(0)
-        #r.release_conn()
+        #
+        #file_data = {}
+        #if afile['file_format'] == 'bed':
+        #    for row in tsvreader(file_in_mem):
+        #        chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
+        #        if isinstance(start, int) and isinstance(end, int):
+        #            if chrom in file_data:
+        #                file_data[chrom].append({
+        #                    'start': start + 1,
+        #                    'end': end + 1
+        #                })
+        #            else:
+        #                file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
+        #        else:
+        #            log.warn('positions are not integers, will not index file')
+        ##else:  Other file types?
+
+        ### Works with http://www.encodeproject.org
+        urllib3.disable_warnings()
+        http = urllib3.PoolManager()
+        r = http.request('GET', href)
+        if r.status != 200:
+            log.warn("File (%s or %s) not found" % (afile.get('accession', id), href))
+            return False
+        file_in_mem = io.BytesIO()
+        file_in_mem.write(r.data)
+        file_in_mem.seek(0)
+        r.release_conn()
 
         file_data = {}
         if afile['file_format'] == 'bed':
             # NOTE: requests doesn't require gzip but http.request does.
-            #with gzip.open(file_in_mem, mode='rt') as file:
-            #    for row in tsvreader(file):
-            for row in tsvreader(file_in_mem):
-                chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
-                if isinstance(start, int) and isinstance(end, int):
-                    if chrom in file_data:
-                        file_data[chrom].append({
-                            'start': start + 1,
-                            'end': end + 1
-                        })
+            with gzip.open(file_in_mem, mode='rt') as file:  # localhost:8000 would not require localhost
+                for row in tsvreader(file):
+                    chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
+                    if isinstance(start, int) and isinstance(end, int):
+                        if chrom in file_data:
+                            file_data[chrom].append({
+                                'start': start + 1,
+                                'end': end + 1
+                            })
+                        else:
+                            file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
                     else:
-                        file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
-                else:
-                    log.warn('positions are not integers, will not index file')
-        ### else:  Other file types?
+                        log.warn('positions are not integers, will not index file')
+        #else:  Other file types?
 
         if file_data:
             return self.add_to_regions_es(afile['uuid'], assembly, file_data)

@@ -16,6 +16,7 @@ def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
     settings['create_tables'] = True
     settings['persona.audiences'] = 'http://%s:%s' % wsgi_server_host_port
     settings['elasticsearch.server'] = elasticsearch_server
+    settings['snp_search.server'] = elasticsearch_server  # NOTE: tfrom snovault/serverfixtures.py  Need a region_es version?
     settings['sqlalchemy.url'] = postgresql_server
     settings['collection_datastore'] = 'elasticsearch'
     settings['item_datastore'] = 'elasticsearch'
@@ -104,10 +105,10 @@ def test_indexing_workbook(testapp, indexer_testapp):
     assert res.json['cycle_took']
     assert res.json['title'] == 'vis_indexer'
 
-    #res = indexer_testapp.post_json('/index_region', {'record': True})
-    #assert res.json['cycle_took']
-    #assert res.json['title'] == 'region_indexer'
-    #assert res.json['indexed'] > 0
+    res = indexer_testapp.post_json('/index_region', {'record': True})
+    assert res.json['cycle_took']
+    assert res.json['title'] == 'region_indexer'
+    assert res.json['indexed'] > 0
 
     res = testapp.get('/search/?type=Biosample')
     assert res.json['total'] > 5
