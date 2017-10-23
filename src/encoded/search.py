@@ -1150,6 +1150,10 @@ def news(context, request):
                                sorted(list_result_fields(request, doc_types)),
                                principals,
                                doc_types)
+    
+    # Keyword search on news items is not implemented yet
+    del query['query']['bool']['must']
+    # If searching for more than one type, don't specify which fields to search
 
     # Set sort order to sort by date_created.
     sort = OrderedDict()
@@ -1172,7 +1176,7 @@ def news(context, request):
 
     # Perform the search of news items.
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
-    es_results = es.search(body=query, index=es_index, from_=0, size=25)
+    es_results = es.search(body=query, index=es_index, doc_type=es_index, from_=0, size=25)
     total = es_results['hits']['total']
 
     # Return 404 if no results found.
