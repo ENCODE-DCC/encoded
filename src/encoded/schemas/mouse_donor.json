@@ -72,6 +72,9 @@
         "status": {
             "title": "Status"
         },
+        "strain_background": {
+            "title": "Strain background"
+        },
         "lab.title": {
             "title": "Lab"
         }
