@@ -1125,7 +1125,7 @@ def news(context, request):
     """
     types = request.registry[TYPES]
     es = request.registry[ELASTIC_SEARCH]
-    es_index = request.registry.settings['snovault.elasticsearch.index']
+    es_index = 'page'
     search_base = normalize_query(request)
     principals = effective_principals(request)
 
@@ -1257,7 +1257,7 @@ def audit(context, request):
 
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    es_index = request.registry.settings['snovault.elasticsearch.index']
+    es_index = '_all'
 
     search_term = prepare_search_term(request)
 
