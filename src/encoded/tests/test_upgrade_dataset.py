@@ -329,3 +329,18 @@ def test_anotation_upgrade_status_14_15(root, upgrader, annotation_14):
                              current_version='14', target_version='15')
     assert value['schema_version'] == '15'
     assert value['status'] == 'started'
+
+
+def test_upgrade_annotation_15_16(upgrader, annotation_dataset):
+    annotation_dataset['annotation_type'] = 'enhancer-like regions'
+    value = upgrader.upgrade('annotation', annotation_dataset,
+                             current_version='15', target_version='16')
+    assert annotation_dataset['annotation_type'] == 'candidate regulatory elements'
+    annotation_dataset['annotation_type'] = 'promoter-like regions'
+    value = upgrader.upgrade('annotation', annotation_dataset,
+                             current_version='15', target_version='16')
+    assert annotation_dataset['annotation_type'] == 'candidate regulatory elements'
+    annotation_dataset['annotation_type'] = 'DNase master peaks'
+    value = upgrader.upgrade('annotation', annotation_dataset,
+                             current_version='15', target_version='16')
+    assert annotation_dataset['annotation_type'] == 'representative DNase hypersensitivity sites'
