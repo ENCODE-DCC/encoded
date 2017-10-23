@@ -5,13 +5,13 @@ $pipeline-node-types:
     (file-type, #e0e0e0);
 
 $file-statuses:
-    ("uploading", #c0c0c0),
+    ("uploading", #5880e0),
     ("content-error", #ee4444),
     ("upload-failed", #ee4444),
     ("in-progress", $brand-info),
     ("deleted", $brand-warning),
     ("released", $brand-success),
-    ("replaced", #c0c0c0),
+    ("replaced", #909090),
     ("revoked", $brand-danger),
     ("archived", #c0c0c0);
 
@@ -19,7 +19,7 @@ $file-statuses:
 // FUnction to return black for light background colors passed in $color, and white for dark
 // backbground colors passed in $color.
 @function node-text-color($color) {
-    @if (lightness($color) > 50) {
+    @if (lightness($color) > 65) {
         @return #000000; // Lighter backgorund, return dark color
     } @else {
         @return #ffffff; // Darker background, return light color
@@ -359,6 +359,7 @@ g.qc-tooltip {
 @each $status, $color in $file-statuses {
     .label.file-status-#{$status} {
         background-color: $color;
+        color: node-text-color($color);
     }
 }
 
