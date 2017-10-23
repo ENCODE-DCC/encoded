@@ -312,3 +312,11 @@ def dataset_13_14(value, system):
 def dataset_14_15(value, system):
     if value['status'] == "proposed":
         value['status'] = "started"
+
+
+@upgrade_step('annotation', '15', '16')
+def annotation_15_16(value, system):
+    if value['annotation_type'] in ['enhancer-like regions', 'promoter-like regions']:
+        value['annotation_type'] = 'candidate regulatory elements'
+    if value['annotation_type'] == 'DNase master peaks':
+        value['annotation_type'] = 'representative DNase hypersensitivity sites'

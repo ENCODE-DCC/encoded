@@ -138,8 +138,8 @@ describe('Test individual dbxref types', () => {
 
         it('has the correct links', () => {
             expect(dbxLinks.length).toBe(2);
-            expect(dbxLinks.at(0).prop('href')).toEqual('http://web.expasy.org/cellosaurus/CVCL_0395');
-            expect(dbxLinks.at(1).prop('href')).toEqual('http://web.expasy.org/cellosaurus/CVCL_5486');
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://web.expasy.org/cellosaurus/CVCL_0395');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://web.expasy.org/cellosaurus/CVCL_5486');
         });
     });
 
