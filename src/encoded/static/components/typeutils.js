@@ -292,5 +292,5 @@ export function fileStatusList(session, sessionProperties) {
         ]);
     }
 
-    return statuses;
+    return statuses.concat(['status unknown']);
 }

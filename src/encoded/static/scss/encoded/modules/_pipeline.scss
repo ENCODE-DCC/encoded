@@ -13,8 +13,9 @@ $file-statuses:
     ("released", $brand-success),
     ("replaced", #909090),
     ("revoked", $brand-danger),
-    ("archived", #c0c0c0);
-
+    ("archived", #c0c0c0),
+    ("status-unknown", #ffc0c0);
+    
 
 // FUnction to return black for light background colors passed in $color, and white for dark
 // backbground colors passed in $color.
@@ -339,7 +340,7 @@ g.qc-tooltip {
 // File status legend styles.
 .file-status-legend__item {
     flex: 1 1 auto;
-    padding: 5px 20px;
+    padding: 5px 10px;
     margin-right: 1px;
     margin-bottom: 1px;
     text-align: center;
