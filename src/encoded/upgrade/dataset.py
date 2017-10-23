@@ -54,13 +54,17 @@ def dataset_2_3(value, system):
     if 'aliases' in value:
         for alias in value['aliases']:
             if re.match('ucsc_encode_db:hg19-', alias):
-                new_dbxref = alias.replace('ucsc_encode_db:hg19-', 'UCSC-GB-hg19:')
+                new_dbxref = alias.replace(
+                    'ucsc_encode_db:hg19-', 'UCSC-GB-hg19:')
             elif re.match('ucsc_encode_db:mm9-', alias):
-                new_dbxref = alias.replace('ucsc_encode_db:mm9-', 'UCSC-GB-mm9:')
+                new_dbxref = alias.replace(
+                    'ucsc_encode_db:mm9-', 'UCSC-GB-mm9:')
             elif re.match('.*wgEncodeEH.*', alias):
-                new_dbxref = alias.replace('ucsc_encode_db:', 'UCSC-ENCODE-hg19:')
+                new_dbxref = alias.replace(
+                    'ucsc_encode_db:', 'UCSC-ENCODE-hg19:')
             elif re.match('.*wgEncodeEM.*', alias):
-                new_dbxref = alias.replace('ucsc_encode_db:', 'UCSC-ENCODE-mm9:')
+                new_dbxref = alias.replace(
+                    'ucsc_encode_db:', 'UCSC-ENCODE-mm9:')
             else:
                 continue
             value['dbxrefs'].append(new_dbxref)
@@ -291,3 +295,20 @@ def dataset_13_14(value, system):
     # http://redmine.encodedcc.org/issues/4925
     # http://redmine.encodedcc.org/issues/4900
     return
+
+
+@upgrade_step('experiment', '13', '14')
+@upgrade_step('annotation', '14', '15')
+@upgrade_step('reference', '12', '13')
+@upgrade_step('project', '12', '13')
+@upgrade_step('matched_set', '12', '13')
+@upgrade_step('publication_data', '12', '13')
+@upgrade_step('ucsc_browser_composite', '12', '13')
+@upgrade_step('organism_development_series', '12', '13')
+@upgrade_step('reference_epigenome', '12', '13')
+@upgrade_step('replication_timing_series', '12', '13')
+@upgrade_step('treatment_time_series', '12', '13')
+@upgrade_step('treatment_concentration_series', '12', '13')
+def dataset_14_15(value, system):
+    if value['status'] == "proposed":
+        value['status'] = "started"
