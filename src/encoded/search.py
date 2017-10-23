@@ -193,7 +193,7 @@ def get_search_fields(request, doc_types):
         for value in type_info.schema.get('boost_values', ()):
             fields.add('embedded.' + value)
             highlights['embedded.' + value] = {}
-    return fields, highlights
+    return list(fields), highlights
 
 
 def list_visible_columns_for_schemas(request, schemas):
@@ -760,7 +760,7 @@ def search(context, request, search_type=None, return_generator=False):
 
     # Builds filtered query which supports multiple facet selection
     query = get_filtered_query(search_term,
-                               list(search_fields),
+                               search_fields,
                                sorted(list_result_fields(request, doc_types)),
                                principals,
                                doc_types)
@@ -806,7 +806,6 @@ def search(context, request, search_type=None, return_generator=False):
     do_scan = size is None or size > 1000
     # Execute the query
     if do_scan:
-
         es_results = es.search(body=query, index=es_index, search_type='query_then_fetch')
     else:
         es_results = es.search(body=query, index=es_index, from_=from_, size=size)
@@ -1067,7 +1066,7 @@ def matrix(context, request):
     # pdb.set_trace()
 
     # Execute the query
-    es_results = es.search(body=query, index=es_index, search_type='query_then_fetch')
+    es_results = es.search(body=query, index=es_index)
 
     # Format matrix for results
     aggregations = es_results['aggregations']
@@ -1323,7 +1322,7 @@ def audit(context, request):
     x_agg = {
         "terms": {
             "field": 'embedded.' + x_grouping,
-            "size": 0,  # no limit
+            "size": 999999,  # no limit
         },
     }
 
@@ -1334,7 +1333,7 @@ def audit(context, request):
                 x_grouping: x_agg
             },
             'terms': {
-                'field': 'audit.ERROR.category', 'size': 0
+                'field': 'audit.ERROR.category', 'size': 999999
             }
         },
         'audit.WARNING.category': {
@@ -1342,7 +1341,7 @@ def audit(context, request):
                 x_grouping: x_agg
             },
             'terms': {
-                'field': 'audit.WARNING.category', 'size': 0
+                'field': 'audit.WARNING.category', 'size': 999999
             }
         },
         'audit.NOT_COMPLIANT.category': {
@@ -1350,7 +1349,7 @@ def audit(context, request):
                 x_grouping: x_agg
             },
             'terms': {
-                'field': 'audit.NOT_COMPLIANT.category', 'size': 0
+                'field': 'audit.NOT_COMPLIANT.category', 'size': 999999
             }
         }
 
@@ -1395,7 +1394,7 @@ def audit(context, request):
                 x_grouping: x_agg
             },
             'terms': {
-                'field': 'audit.INTERNAL_ACTION.category', 'size': 0
+                'field': 'audit.INTERNAL_ACTION.category', 'size': 999999
             }
         }
         aggs['no.audit.error']['aggs']['no.audit.not_compliant']['aggs']['no.audit.warning']['aggs']['no.audit.internal_action'] = {
@@ -1420,7 +1419,7 @@ def audit(context, request):
     }
 
     # Execute the query
-    es_results = es.search(body=query, index=es_index, search_type='count')
+    es_results = es.search(body=query, index=es_index)
 
     # Format matrix for results
     aggregations = es_results['aggregations']
