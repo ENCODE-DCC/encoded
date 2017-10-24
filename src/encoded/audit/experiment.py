@@ -262,15 +262,13 @@ def audit_experiment_missing_unfiltered_bams(value, system, files_structure):
 def audit_experiment_with_uploading_files(value, system, files_structure):
     if files_structure.get('original_files'):
         for file_object in files_structure.get('original_files').values():
+            detail = ('Experiment {} contains a file {} '
+                      'with the status {}.'.format(value['@id'],
+                                                   file_object['@id'],
+                                                   file_object['status']))
             if file_object['status'] in ['upload failed', 'content error']:
-                detail = 'Experiment {} '.format(value['@id']) + \
-                    'contains a file {} '.format(file_object['@id']) + \
-                    'with the status {}.'.format(file_object['status'])
                 yield AuditFailure('file validation error', detail, level='INTERNAL_ACTION')
             elif file_object['status'] == 'uploading':
-                detail = 'Experiment {} '.format(value['@id']) + \
-                    'contains a file {} '.format(file_object['@id']) + \
-                    'with the status {}.'.format(file_object['status'])
                 yield AuditFailure('file in uploading state', detail, level='INTERNAL_ACTION')
     return
 
