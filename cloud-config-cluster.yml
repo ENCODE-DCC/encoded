@@ -99,18 +99,21 @@ bootcmd:
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
-# - MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
-# - if [ "$MEMGIGS" -gt 32 ]
-# - then
-# -    echo "ES_HEAP_SIZE=8g" > /etc/default/elasticsearch
-# - elif [ "$MEMGIGS" -gt 12 ]
-# - then
-# -    echo "ES_HEAP_SIZE=4g" > /etc/default/elasticsearch
-# - else
-# -    echo "ES_HEAP_SIZE=2g" > /etc/default/elasticsearch
-# -    sysctl "vm.swappiness=1"
-# -    swapon /swapfile
-# - fi
+- MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
+- if [ "$MEMGIGS" -gt 32 ]
+- then
+-    echo "-Xms16g" > /etc/elasticsearch/jvm.options
+-    echo "-Xmx16g" > /etc/elasticsearch/jvm.options
+- elif [ "$MEMGIGS" -gt 12 ]
+- then
+-    echo "-Xms8g" > /etc/elasticsearch/jvm.options
+-    echo "-Xmx8g" > /etc/elasticsearch/jvm.options
+- else
+-    echo "-Xms4g" > /etc/elasticsearch/jvm.options
+-    echo "-Xmx4g" > /etc/elasticsearch/jvm.options
+-    sysctl "vm.swappiness=1"
+-    swapon /swapfile
+- fi
 
 package_upgrade: true
 
@@ -163,8 +166,8 @@ runcmd:
 - set -ex
 - update-rc.d elasticsearch defaults
 - sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
-- sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-cloud-aws/2.7.1
-- service elasticsearch start
+- sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install discovery-ec2
+- service elasticsearch restart
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf
 - echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 - if test "%(ROLE)s" = "demo"
@@ -274,6 +277,7 @@ write_files:
 
     node.master: true
     node.data: false
+    node.ingest: false
 
     discovery:
         type: ec2
@@ -296,10 +300,6 @@ write_files:
 
 - path: /etc/elasticsearch/jvm.options
   content: |
-
-    -Xms8g
-    -Xmx8g
-
     ## GC configuration
     -XX:+UseConcMarkSweepGC
     -XX:CMSInitiatingOccupancyFraction=75

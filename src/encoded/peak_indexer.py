@@ -225,7 +225,6 @@ def index_visualizable(request, invalidated):
 @view_config(route_name='index_file', request_method='POST', permission="index")
 def index_file(request):
     registry = request.registry
-    print('index_file')
     INDEX = registry.settings['snovault.elasticsearch.index']
     request.datastore = 'database'
     dry_run = request.json.get('dry_run', False)
@@ -264,7 +263,6 @@ def index_file(request):
         'xmin': xmin,
         'last_xmin': last_xmin,
     }
-    pp(result)
     if last_xmin is None:
         result['types'] = request.json.get('types', None)
         invalidated = list(all_uuids(registry))
