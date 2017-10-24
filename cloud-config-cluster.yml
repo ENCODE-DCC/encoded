@@ -102,15 +102,15 @@ bootcmd:
 - MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
 - if [ "$MEMGIGS" -gt 32 ]
 - then
--    echo "-Xms16g" > /etc/elasticsearch/jvm.options
--    echo "-Xmx16g" > /etc/elasticsearch/jvm.options
+-    echo "-Xms16g" >> /etc/elasticsearch/jvm.options
+-    echo "-Xmx16g" >> /etc/elasticsearch/jvm.options
 - elif [ "$MEMGIGS" -gt 12 ]
 - then
--    echo "-Xms8g" > /etc/elasticsearch/jvm.options
--    echo "-Xmx8g" > /etc/elasticsearch/jvm.options
+-    echo "-Xms8g" >> /etc/elasticsearch/jvm.options
+-    echo "-Xmx8g" >> /etc/elasticsearch/jvm.options
 - else
--    echo "-Xms4g" > /etc/elasticsearch/jvm.options
--    echo "-Xmx4g" > /etc/elasticsearch/jvm.options
+-    echo "-Xms4g" >> /etc/elasticsearch/jvm.options
+-    echo "-Xmx4g" >> /etc/elasticsearch/jvm.options
 -    sysctl "vm.swappiness=1"
 -    swapon /swapfile
 - fi
@@ -270,9 +270,6 @@ write_files:
 
 - path: /etc/elasticsearch/elasticsearch.yml
   content: |
-    index.search.slowlog.threshold.query.warn: 8s
-    index.search.slowlog.threshold.fetch.warn: 1s
-    index.indexing.slowlog.threshold.index.warn: 25s
     network.host: 0.0.0.0
 
     node.master: true
