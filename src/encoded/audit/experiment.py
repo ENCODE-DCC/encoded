@@ -267,10 +267,10 @@ def audit_experiment_with_uploading_files(value, system, files_structure):
                     'contains a file {} '.format(file_object['@id']) + \
                     'with the status {}.'.format(file_object['status'])
                 yield AuditFailure('file validation error', detail, level='INTERNAL_ACTION')
-            if file_object['status'] in ['uploading']:
+            elif file_object['status'] == 'uploading':
                 detail = 'Experiment {} '.format(value['@id']) + \
-                        'contains a file {} '.format(file_object['@id']) + \
-                        'with the status {}.'.format(file_object['status'])
+                    'contains a file {} '.format(file_object['@id']) + \
+                    'with the status {}.'.format(file_object['status'])
                 yield AuditFailure('file in uploading state', detail, level='INTERNAL_ACTION')
     return
 
@@ -2268,7 +2268,7 @@ def audit_experiment_control(value, system, excluded_types):
 
     # single cell RNA-seq in E4 do not require controls (ticket WOLD-6)
     if value.get('assay_term_name') == 'single cell isolation followed by RNA-seq' and \
-        check_award_condition(value, ["ENCODE4"]):
+            check_award_condition(value, ["ENCODE4"]):
         return
 
     # We do not want controls
