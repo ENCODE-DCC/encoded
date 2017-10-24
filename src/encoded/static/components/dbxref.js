@@ -175,6 +175,9 @@ export const dbxrefPrefixMap = {
     PGP: {
         pattern: 'https://my.pgp-hms.org/profile_public?hex={0}',
     },
+    TRiP: {
+        pattern: 'http://www.flyrnai.org/cgi-bin/DRSC_gene_lookup.pl?gname={0}',
+    },
 };
 
 
