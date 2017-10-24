@@ -623,7 +623,7 @@ class RegionIndexer(Indexer):
             href = 'http://www.encodeproject.org' + afile['href']
         else:
             href = request.host_url + afile['href']
-        log.warn(href)
+        #log.warn(href)
 
         ### Works with localhost:8000
         # NOTE: Using requests instead of http.request which works locally and doesn't require gzip.open

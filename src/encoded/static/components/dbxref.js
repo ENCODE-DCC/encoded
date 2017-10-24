@@ -94,7 +94,7 @@ export const dbxrefPrefixMap = {
         pattern: 'http://www.ebi.ac.uk/vg/epirr/view/{0}',
     },
     Cellosaurus: {
-        pattern: 'http://web.expasy.org/cellosaurus/{0}',
+        pattern: 'https://web.expasy.org/cellosaurus/{0}',
     },
     FlyBase: {
         pattern: 'http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context={0}',
