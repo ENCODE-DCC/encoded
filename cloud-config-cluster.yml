@@ -195,7 +195,7 @@ runcmd:
 - sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
 - /etc/init.d/postgresql start
 - sudo -u encoded python3.4 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.1
-- sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg production-ini:region_search_instance=localhost:9200
+- sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg production-ini:region_search_instance=localhost:9201
 - sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
 - sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
