@@ -99,21 +99,6 @@ bootcmd:
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
-- MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
-- if [ "$MEMGIGS" -gt 32 ]
-- then
--    echo "-Xms16g" >> /etc/elasticsearch/jvm.options
--    echo "-Xmx16g" >> /etc/elasticsearch/jvm.options
-- elif [ "$MEMGIGS" -gt 12 ]
-- then
--    echo "-Xms8g" >> /etc/elasticsearch/jvm.options
--    echo "-Xmx8g" >> /etc/elasticsearch/jvm.options
-- else
--    echo "-Xms4g" >> /etc/elasticsearch/jvm.options
--    echo "-Xmx4g" >> /etc/elasticsearch/jvm.options
--    sysctl "vm.swappiness=1"
--    swapon /swapfile
-- fi
 
 package_upgrade: true
 
@@ -163,6 +148,21 @@ output:
 runcmd:
 # Ideally this would build as a different user so encoded only has read
 # permissions
+- MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
+- if [ "$MEMGIGS" -gt 32 ]
+- then
+-    echo "-Xms16g" >> /etc/elasticsearch/jvm.options
+-    echo "-Xmx16g" >> /etc/elasticsearch/jvm.options
+- elif [ "$MEMGIGS" -gt 12 ]
+- then
+-    echo "-Xms8g" >> /etc/elasticsearch/jvm.options
+-    echo "-Xmx8g" >> /etc/elasticsearch/jvm.options
+- else
+-    echo "-Xms4g" >> /etc/elasticsearch/jvm.options
+-    echo "-Xmx4g" >> /etc/elasticsearch/jvm.options
+-    sysctl "vm.swappiness=1"
+-    swapon /swapfile
+- fi
 - set -ex
 - update-rc.d elasticsearch defaults
 - sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
