@@ -142,8 +142,8 @@ write_files:
     network.host: 0.0.0.0
     http.port: 9201
     transport.tcp.port: 9299
-    node.master: true
-    node.data: false
+    node.master: false
+    node.data: true
     discovery.zen.minimum_master_nodes: 1
     discovery.type: ec2
 
