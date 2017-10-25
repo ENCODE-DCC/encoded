@@ -140,17 +140,16 @@ write_files:
 - path: /etc/elasticsearch/elasticsearch.yml
   content: |
     network.host: 0.0.0.0
-
-    node.master: false
-    node.data: true
-
-    discovery:
-        type: ec2
+    http.port: 9201
+    transport.tcp.port: 9299
+    node.master: true
+    node.data: false
+    discovery.zen.minimum_master_nodes: 1
+    discovery.type: ec2
 
     cloud.aws.region: us-west-2
 
     discovery.ec2.groups: elasticsearch-https, ssh-http-https
-
 
 - path: /etc/elasticsearch/cluster.sh
   content: |

@@ -271,13 +271,12 @@ write_files:
 - path: /etc/elasticsearch/elasticsearch.yml
   content: |
     network.host: 0.0.0.0
-
+    http.port: 9201
+    transport.tcp.port: 9299
     node.master: true
     node.data: false
-    node.ingest: false
-
-    discovery:
-        type: ec2
+    discovery.zen.minimum_master_nodes: 1
+    discovery.type: ec2
 
     cloud.aws.region: us-west-2
 
