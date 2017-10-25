@@ -278,9 +278,9 @@ export function fileStatusList(session, sessionProperties) {
     if (loggedIn) {
         statuses = statuses.concat([
             'uploading',
+            'in progress',
             'content error',
             'upload failed',
-            'in progress',
         ]);
     }
 
