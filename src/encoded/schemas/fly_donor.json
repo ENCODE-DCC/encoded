@@ -9,7 +9,7 @@
     "identifyingProperties": ["uuid", "accession", "aliases", "external_ids"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "donor.json#/properties" },        
+        { "$ref": "donor.json#/properties" },
         { "$ref": "mixins.json#/genetic_modifications" },
         { "$ref": "mixins.json#/strains"},
         { "$ref": "mixins.json#/url" },
