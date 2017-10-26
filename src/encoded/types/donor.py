@@ -69,7 +69,7 @@ class MouseDonor(Donor):
     embedded = Donor.embedded + ['references',
                                  'genetic_modifications',
                                  'genetic_modifications.modified_site_by_target_id',
-                                 'genetic_modifications.treatments', ]
+                                 'genetic_modifications.treatments']
 
     def __ac_local_roles__(self):
         # Disallow lab submitter edits
