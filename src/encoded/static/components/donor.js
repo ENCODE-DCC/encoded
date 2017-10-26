@@ -3,15 +3,18 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
+import { auditDecor } from './audit';
 import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, DocumentsSubpanels } from './doc';
+import { FetchedData, Param } from './fetched';
 import { GeneticModificationSummary } from './genetic_modification';
 import * as globals from './globals';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
 import { requestObjects } from './objectutils';
 import pubReferenceList from './reference';
+import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import StatusLabel from './statuslabel';
 import { BiosampleTable } from './typeutils';
@@ -454,6 +457,30 @@ globals.panelViews.register(FlyWormDonor, 'FlyDonor');
 globals.panelViews.register(FlyWormDonor, 'WormDonor');
 
 
+// Gets called once a GET request for a donor's genetic modifcations completes. It calls the basic
+// component to render a table of genetic modfications.
+const GeneticModificationsRenderer = (props) => {
+    const { geneticModifications } = props;
+
+    if (geneticModifications['@graph'].length) {
+        return <GeneticModificationSummary geneticModifications={geneticModifications['@graph']} />;
+    }
+
+    // Search of Genetic modifications returned none, so don't render a table. This should normally
+    // not happen because this component only gets called if the donor lists at least one genetic
+    // modification it's related to, but could happen if the site is indexing.
+    return null;
+};
+
+GeneticModificationsRenderer.propTypes = {
+    geneticModifications: PropTypes.object, // Array of genetic modification objects from a GET request
+};
+
+GeneticModificationsRenderer.defaultProps = {
+    geneticModifications: null, // Actually required, but since it's from a GET request, it looks not required to the linter
+};
+
+
 // This component activates for any donors that aren't any of the above registered types.
 class Donor extends React.Component {
     constructor() {
@@ -557,11 +584,17 @@ class Donor extends React.Component {
         // Combine characterization and donor documents.
         const combinedDocuments = [].concat(characterizationDocuments, donorDocuments);
 
-        // Set up breadcrumbs
+        // Set up breadcrumbs.
         const crumbs = [
             { id: 'Donors' },
             { id: <i>{context.organism.scientific_name}</i> },
         ];
+
+        // Calculate a search string for GMs refering to this donor
+        let gmSearchUri = '';
+        if (context.genetic_modifications && context.genetic_modifications.length) {
+            gmSearchUri = `/search/?type=GeneticModification&donors_modified=${context['@id']}`;
+        }
 
         return (
             <div className={itemClass}>
@@ -580,8 +613,11 @@ class Donor extends React.Component {
 
                 <PanelView key={context.uuid} {...this.props} />
 
-                {context.genetic_modifications && context.genetic_modifications.length ?
-                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
+                {gmSearchUri ?
+                    <FetchedData>
+                        <Param name="geneticModifications" url={gmSearchUri} />
+                        <GeneticModificationsRenderer />
+                    </FetchedData>
                 : null}
 
                 <RelatedItems
@@ -621,3 +657,85 @@ Donor.contextTypes = {
 };
 
 globals.contentViews.register(Donor, 'Donor');
+
+
+const DonorListingComponent = (props, reactContext) => {
+    const { organismTitle } = props;
+    const result = props.context;
+
+    // Make array of extra info for display in the search results link with a join. The `Boolean`
+    // constructor in the filter cleverly filters out falsy values from the array. See:
+    // https://stackoverflow.com/questions/32906887/remove-all-falsy-values-from-an-array#answer-32906951
+    const details = [
+        result.strain_name,
+        result.strain_background && result.strain_background !== 'unknown' ? result.strain_background : null,
+        result.sex && result.sex !== 'unknown' ? result.sex : null,
+        result.life_stage && result.life_stage !== 'unknown' ? result.life_stage : null,
+        result.age ? `${result.age} ${result.age_units}` : null,
+    ].filter(Boolean);
+
+    return (
+        <li>
+            <div className="clearfix">
+                <PickerActions {...props} />
+                <div className="pull-right search-meta">
+                    <p className="type meta-title">{organismTitle}</p>
+                    <p className="type">{` ${result.accession}`}</p>
+                    <p className="type meta-status">{` ${result.status}`}</p>
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                </div>
+                <div className="accession">
+                    <a href={result['@id']}>
+                        <i>{result.organism.scientific_name}</i>
+                        {details.length ? ` (${details.join(', ')})` : null}
+                    </a>
+                </div>
+                <div className="data-row">
+                    {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
+                    {result.external_ids && result.external_ids.length ?
+                        <div>
+                            <strong>External resources: </strong>
+                            <DbxrefList context={result} dbxrefs={result.external_ids} />
+                        </div>
+                    : null}
+                </div>
+            </div>
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+        </li>
+    );
+};
+
+DonorListingComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Search results object
+    organismTitle: PropTypes.string.isRequired, // Title to display on the right for each kind of organism
+    auditDetail: PropTypes.func.isRequired, // Audit HOC function to show audit details
+    auditIndicators: PropTypes.func.isRequired, // Audit HOC function to display audit indicators
+};
+
+DonorListingComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const DonorListing = auditDecor(DonorListingComponent);
+
+
+const HumanListing = (props) => (
+    <DonorListing {...props} organismTitle="Human donor" />
+);
+
+const MouseListing = (props) => (
+    <DonorListing {...props} organismTitle="Mouse donor" />
+);
+
+const WormListing = (props) => (
+    <DonorListing {...props} organismTitle="Worm donor" />
+);
+
+const FlyListing = (props) => (
+    <DonorListing {...props} organismTitle="Fly donor" />
+);
+
+globals.listingViews.register(HumanListing, 'HumanDonor');
+globals.listingViews.register(MouseListing, 'MouseDonor');
+globals.listingViews.register(WormListing, 'WormDonor');
+globals.listingViews.register(FlyListing, 'FlyDonor');

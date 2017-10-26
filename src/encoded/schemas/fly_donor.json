@@ -87,8 +87,8 @@
         "status": {
             "title": "Status"
         },
-        "lab": {
-            "title": "Lab"
+        "lab.title": {
+            "title": "Title"
         },
         "strain_name": {
             "title": "Strain name"

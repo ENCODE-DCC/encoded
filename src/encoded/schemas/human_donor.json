@@ -266,14 +266,17 @@
         "sex": {
             "title": "Sex"
         },
+        "organism.scientific_name": {
+            "title": "Binomial name"
+        },
         "ethnicity": {
             "title": "Ethnicity"
         },
         "external_ids": {
             "title": "Unique external identifier(s) of strain or donor"
         },
-        "lab": {
-            "title": "Lab"
+        "lab.title": {
+            "title": "Title"
         },
         "status": {
             "title": "Status"
