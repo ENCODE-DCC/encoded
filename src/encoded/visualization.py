@@ -2230,8 +2230,10 @@ def get_hub(label, comment=None, name=None):
     return render(hub)
 
 
-def browsers_available(assemblies, status, files, types, item_type=None):
-    '''Retrurns list of browsers this object visualizable on.'''
+def browsers_available(status, assemblies, types, item_type=None, files=None, accession=None, request=None):
+    '''Returns list of browsers based upon vis_blobs or else files list.'''
+    # NOTES: When called by visualize calculated property vis_blob should be in vis_cache, but if not files are used.
+    #        When called by visindexer, neither vis_cache or files are used (could be called 'browsers_might_work').
     if "Dataset" not in types:
         return []
     if item_type is None:
@@ -2241,31 +2243,47 @@ def browsers_available(assemblies, status, files, types, item_type=None):
     elif item_type not in VISIBLE_DATASET_TYPES_LC:
             return []
 
-    if not files:
-        return []
-
     browsers = set()
     for assembly in assemblies:
-        mapped_assembly = _ASSEMBLY_MAPPER_FULL[assembly]
+        mapped_assembly = _ASSEMBLY_MAPPER_FULL.get(assembly)
         if not mapped_assembly:
             continue
-        if 'ucsc_assembly' in mapped_assembly:
-            browsers.add('ucsc')
-        if 'ensembl_host' in mapped_assembly:
-            browsers.add('ensembl')
-        if 'quickview' in mapped_assembly:
-            browsers.add('quickview')
+        es_key = accession + "_" + assembly
+        vis_blob = None
+        if request is not None and accession is not None:
+            vis_blob = get_from_es(request, es_key)  # use of find_or_make_acc_composite() will recurse!
+        if 'ucsc' not in browsers and 'ucsc_assembly' in mapped_assembly.keys():
+            if vis_blob is not None:
+                browsers.add('ucsc')
+            elif files is not None:
+                for file in files:
+                    if file.get('assembly','') == assembly and file['status'] == 'released' \
+                        and file.get('file_format','') in ['bigBed', 'bigWig']:
+                        browsers.add('ucsc')
+                        break
 
-    if status not in VISIBLE_DATASET_STATUSES:
-        if status not in QUICKVIEW_STATUSES_BLOCKED:
-            return ["quickview"]
-        return []
-
+        if 'ensembl' not in browsers and 'ensembl_host' in mapped_assembly.keys():
+            if vis_blob is not None:
+                browsers.add('ensembl')
+            elif files is not None:
+                for file in files:
+                    if file.get('assembly','') == assembly and file['status'] == 'released' \
+                        and file.get('file_format','') in ['bigBed', 'bigWig']:
+                        browsers.add('ensembl')
+                        break
+        if 'quickview' not in browsers and 'quickview' in mapped_assembly.keys():
+            # NOTE: quickview may not have vis_blob as 'in progress' files can also be displayed
+            #       Ideally we would also look at files' statuses and formats.  However, the (calculated)files
+            #       property only contains 'released' files so it doesn't really help for quickview!
+            if vis_blob is not None or (status not in QUICKVIEW_STATUSES_BLOCKED and files is not None):
+                browsers.add('quickview')
+        if len(browsers) == 3:  # No use continuing
+            break
     return list(browsers)
 
 
-def object_is_visualizable(obj,assembly=None):
-    '''Retrurns list of browsers this object visualizable on.'''
+def object_is_visualizable(obj, assembly=None, check_files=False):
+    '''Returns true if it is likely that this object can be visualized.'''
 
     if 'accession' not in obj:
         return False
@@ -2273,7 +2291,7 @@ def object_is_visualizable(obj,assembly=None):
         assemblies = [ assembly ]
     else:
         assemblies = obj.get('assembly',[])
-    browsers = browsers_available(assemblies, obj.get('status','none'), obj.get('files'), obj.get('@type',[]))
+    browsers = browsers_available(obj.get('status','none'), assemblies, obj.get('@type',[]))
 
     return len(browsers) > 0
 

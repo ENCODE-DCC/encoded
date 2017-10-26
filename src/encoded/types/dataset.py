@@ -41,9 +41,7 @@ def calculate_assembly(request, files_list, status):
                              'bedRnaElements',
                              'bedMethyl',
                              'bedLogR']
-    viewable_file_status = ['released']
-    if status not in ['released']:
-        viewable_file_status.extend(['in progress'])
+    viewable_file_status = ['released','in progress']
 
     for path in files_list:
         properties = request.embed(path, '@@object')
