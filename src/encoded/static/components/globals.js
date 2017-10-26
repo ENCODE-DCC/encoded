@@ -45,10 +45,10 @@ documentViews.detail = new Registry();
 // Report-page cell components
 export const reportCell = new Registry();
 
-export function statusClass(status, htmlClass) {
+export function statusClass(status, htmlClass, supressSpace) {
     let localHtmlClass = htmlClass || '';
     if (typeof status === 'string') {
-        localHtmlClass += ` status-${status.toLowerCase().replace(/ /g, '-').replace(/\(|\)/g, '')}`;
+        localHtmlClass += `${supressSpace ? '' : ' '}status-${status.toLowerCase().replace(/ /g, '-').replace(/\(|\)/g, '')}`;
     }
     return localHtmlClass;
 }
