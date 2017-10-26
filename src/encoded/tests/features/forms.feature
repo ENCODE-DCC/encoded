@@ -34,6 +34,7 @@ Feature: Edit forms
         # Make sure we don't leave a dirty form that will interfere with subsequent tests
         When I click the link with text "ENCODE"
         And I accept the alert
+        And I wait for 5 seconds
 
     Scenario: Validation errors are shown in context
         When I visit "/antibodies/ENCAB728YTO/#!edit"
