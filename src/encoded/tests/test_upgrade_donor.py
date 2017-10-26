@@ -220,8 +220,8 @@ def test_upgrade_fly_worm_donor_7_8(root, upgrader, fly_donor_7):
 
 
 def test_upgrade_human_donor_10_11(root, upgrader, human_donor_10):
-    value = upgrader.upgrade(
-        'human_donor', human_donor_10, current_version='10', target_version='11')
+    value = upgrader.upgrade('human_donor', human_donor_10,
+        current_version='10', target_version='11')
     assert 'genetic_modifications' not in value
 
 
