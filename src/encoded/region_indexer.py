@@ -33,32 +33,21 @@ log = logging.getLogger(__name__)
 
 
 # Region indexer 2.0
-# Desired:  Cycle every 1 hour
 # Plan:
-# 1) get list of uuids of primary indexer of ALLOWED_FILE_FORMATS
+# 1) get list of uuids of primary indexer and filter down to datasets covered
 # 2) walk through uuid list querying encoded for each doc[embedded]
 #    3) Walk through embedded files
 #       4) If file passes required tests (e.g. bed, released, DNase narrowpeak) AND not in regions_es, put in regions_es
 #       5) If file does not pass tests                                          AND     IN regions_es, remove from regions_es
-# Needed:
-# regulomeDb versions of ENCODED_ALLOWED_FILE_FORMATS, ENCODED_ALLOWED_STATUSES, add_encoded_to_regions_es()
-#
-# TODO: Change the name to regions_indexer.py and spread through the ini's
+# TODO:
+# - regulomeDb versions of ENCODED_ALLOWED_FILE_FORMATS, ENCODED_ALLOWED_STATUSES, add_encoded_to_regions_es()
 
 # Species and references being indexed
 SUPPORTED_ASSEMBLIES = ['hg19', 'mm10', 'mm9', 'GRCh38']
 
-ENCODED_ALLOWED_FILE_FORMATS = [ 'bed']
-ENCODED_ALLOWED_STATUSES = [ 'released' ]
-RESIDENT_DATASETS_KEY = 'resident_datasets'  # in regions_es, keep track of what datsets are resident in one place
-
-# assay_term_name: file_property: allowed list
-# datasets: 12283 datasets: ChIP-seq, DNase, eCLIP  Release only 8775  &files.file_type=bed+narrowPeak 5969
-# files: released: 'optimal idr thresholded peaks' 'GRCh38', 'hg19', 'mm10' 2852
-#        released: 'bed narrowPeak', lab.name=gene-yeo                       666
-#        released: 'bed narrowPeaks', analysis_step_version.name=dnase-call-hotspots-pe-step-v-2-0 240, se: 1157;
-# expect to index: 2852+666+240+1157=4915 so approx: 4900.
-# curl http://region-search-test-v5.instance.encodedcc.org:9200/resident_datasets/_count/?pretty 4964
+ENCODED_ALLOWED_FILE_FORMATS = ['bed']
+ENCODED_ALLOWED_STATUSES = ['released']
+RESIDENT_DATASETS_KEY = 'resident_datasets'  # in regions_es, keeps track of what datsets are resident in one place
 
 ENCODED_REGION_REQUIREMENTS = {
     'ChIP-seq': {
@@ -75,10 +64,10 @@ ENCODED_REGION_REQUIREMENTS = {
     }
 }
 
-# One local instance, these are the only files that can be downloaded and regionalizable.  Currently only one is!
-TESTABLE_FILES = ['/static/test/peak_indexer/ENCFF002COS.bed.gz',
-                  '/static/test/peak_indexer/ENCFF296FFD.tsv',     # tsv's some day?
-                  '/static/test/peak_indexer/ENCFF000PAR.bed.gz']
+# On local instance, these are the only files that can be downloaded and regionalizable.  Currently only one is!
+TESTABLE_FILES = ['ENCFF002COS']  # '/static/test/peak_indexer/ENCFF002COS.bed.gz']
+                                  # '/static/test/peak_indexer/ENCFF296FFD.tsv',     # tsv's some day?
+                                  # '/static/test/peak_indexer/ENCFF000PAR.bed.gz']
 
 
 def includeme(config):
@@ -146,25 +135,9 @@ def gather_uuids(hits):
         yield hit['_id']
 
 
-#def encoded_regionable_datasets(request, restrict_to_assays=[]):
-#    # TODO: reduce by not released?
-#   query = "select distinct(resources.rid) from resources, propsheets where resources.rid = propsheets.rid and resources.item_type='experiment'"  # ?? 'dataset' ??
-#   if len(restrict_to_assays) == 1:
-#       query += " and propsheets.properties->>'assay_term_name' = '%s'" % restrict_to_assays[0]
-#   elif len(restrict_to_assays) > 1:
-#       assays = "('%s'" % (restrict_to_assays[0])
-#       for assay in restrict_to_assays[1:]:
-#           assays += ", '%s'" % assay
-#       assays += ")"
-#       query += " and propsheets.properties->>'assay_term_name' IN %s" % assays
-#   stmt = text(query + ";")
-#   connection = request.registry[DBSESSION].connection()
-#   uuids = connection.execute(stmt)
-#   return [str(item[0]) for item in uuids]
-
 def encoded_regionable_datasets(request, restrict_to_assays=[]):
     '''return list of all dataset uuids eligible for regions'''
-    # reverse engineered search.py to get this boied down version.
+    # reverse engineered search.py to get this boiled down version.
     #{
     #"filter":
     #    {
@@ -409,12 +382,14 @@ def index_regions(request):
 
     uuid_count = len(uuids)
     if uuid_count > 0 and not dry_run:
-        log.warn("Region indexer started on %d datasets(s)" % uuid_count) # TODO: DEBUG set back to info when done
+        log.warn("Region indexer started on %d uuid(s)" % uuid_count) # TODO: DEBUG set back to info when done
 
         result = state.start_cycle(uuids, result)
         errors = indexer.update_objects(request, uuids, force)
         result = state.finish_cycle(result, errors)
-        log.info("Region indexer added %d file(s)" % result['indexed'])
+        if result['indexed'] == 0:
+            log.warn("Region indexer added %d file(s)" % result['indexed'])    # TODO: DEBUG set back to info when done
+
         # cycle_took: "2:31:55.543311" reindex all with force (2017-10-16ish)
 
     state.send_notices()
@@ -511,7 +486,7 @@ class RegionIndexer(Indexer):
                 return False
 
         if self.test_instance:
-            if afile.get('submitted_file_name','') not in TESTABLE_FILES:
+            if afile['accession'] not in TESTABLE_FILES:
                 return False
 
         return True
@@ -623,7 +598,6 @@ class RegionIndexer(Indexer):
             href = 'http://www.encodeproject.org' + afile['href']
         else:
             href = request.host_url + afile['href']
-        #log.warn(href)
 
         ### Works with localhost:8000
         # NOTE: Using requests instead of http.request which works locally and doesn't require gzip.open

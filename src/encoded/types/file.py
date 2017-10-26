@@ -461,15 +461,7 @@ def download(context, request):
                 'response-content-disposition': "attachment; filename=" + filename,
             })
     else:
-        # could be a local file
-        if not external:
-            local = context.properties.get('submitted_file_name', '')
-            if local:
-                raise HTTPTemporaryRedirect(location=local)
-            else:
-                raise HTTPNotFound()
-        else:
-            raise ValueError(external.get('service'))
+        raise ValueError(external.get('service'))
 
     if asbool(request.params.get('soft')):
         expires = int(parse_qs(urlparse(location).query)['Expires'][0])
