@@ -2232,8 +2232,8 @@ def get_hub(label, comment=None, name=None):
 
 def browsers_available(status, assemblies, types, item_type=None, files=None, accession=None, request=None):
     '''Returns list of browsers based upon vis_blobs or else files list.'''
-    # NOTES: When called by visualize calculated property vis_blob should be in vis_cache, but if not files are used.
-    #        When called by visindexer, neither vis_cache or files are used (could be called 'browsers_might_work').
+    # NOTES: When called by visualize calculated property, vis_blob should be in vis_cache, but if not files are used.
+    #        When called by visindexer, neither vis_cache nor files are used (could be called 'browsers_might_work').
     if "Dataset" not in types:
         return []
     if item_type is None:
@@ -2291,7 +2291,10 @@ def object_is_visualizable(obj, assembly=None, check_files=False):
         assemblies = [ assembly ]
     else:
         assemblies = obj.get('assembly',[])
-    browsers = browsers_available(obj.get('status','none'), assemblies, obj.get('@type',[]))
+    files = None
+    if check_files:
+        files = obj.get('files',[])
+    browsers = browsers_available(obj.get('status','none'), assemblies, files, obj.get('@type',[]))
 
     return len(browsers) > 0
 
