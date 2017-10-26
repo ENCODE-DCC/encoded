@@ -22,7 +22,8 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/accession" },
-        { "$ref": "mixins.json#/uuid" }
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitter_comment" }
     ],
     "facets": {
         "status": {

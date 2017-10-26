@@ -204,3 +204,22 @@ def characterization_7_8(value, system):
             value['submitter_comment'] = value['submitter_comment'].strip()
         else:
             del value['submitter_comment']
+
+
+@upgrade_step('antibody_characterization', '9', '10')
+def antibody_characterization_9_10(value, system):
+    # http://redmine.encodedcc.org/issues/4925
+    return
+
+
+@upgrade_step('antibody_characterization', '10', '11')
+@upgrade_step('biosample_characterization', '10', '11')
+@upgrade_step('donor_characterization', '10', '11')
+@upgrade_step('rnai_characterization', '10', '11')
+@upgrade_step('construct_characterization', '10', '11')
+@upgrade_step('genetic_modification_characterization', '3', '4')
+def characterization_10_11(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3584
+    if 'comment' in value:
+        value['submitter_comment'] = value['comment']
+        del value['comment']
