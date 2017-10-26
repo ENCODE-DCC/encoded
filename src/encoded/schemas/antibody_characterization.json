@@ -17,7 +17,8 @@
         { "$ref": "characterization.json#/properties" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/documents" }
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
         "characterization_reviews": ["primary_characterization_method"],
@@ -74,7 +75,7 @@
                     }
                 },
                 {
-                    "required": ["comment", "notes", "reviewed_by", "documents"],
+                    "required": ["submitter_comment", "notes", "reviewed_by", "documents"],
                     "properties": {
                         "status": {
                             "enum": ["exempt from standards"]
@@ -95,7 +96,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "10"
+            "default": "11"
         },
         "reviewed_by": {
             "title": "Reviewed by",

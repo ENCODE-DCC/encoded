@@ -1,5 +1,9 @@
 ## Change log for antibody_characterization.json
 
+### Schema version 11
+
+* *comment* has been replaced with *submitter_comment*
+
 ### Schema version 10
     
 * *biosample_type* and *biosample_term_id* consistency added to the list of schema dependencies
