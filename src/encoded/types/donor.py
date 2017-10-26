@@ -67,7 +67,8 @@ class Donor(Item):
 class MouseDonor(Donor):
     item_type = 'mouse_donor'
     schema = load_schema('encoded:schemas/mouse_donor.json')
-    embedded = Donor.embedded + ['references']
+    embedded = Donor.embedded + ['references',
+                                 'genetic_modifications']
 
     def __ac_local_roles__(self):
         # Disallow lab submitter edits

@@ -590,13 +590,6 @@ class Donor extends React.Component {
             { id: <i>{context.organism.scientific_name}</i> },
         ];
 
-        // Calculate a search string for GMs refering to this donor
-        let gmSearchUri = '';
-        if (context.genetic_modifications && context.genetic_modifications.length) {
-            const gmIds = context.genetic_modifications.reduce((acc, gm) => `${acc}&%40id=${encodeURIComponent(gm)}`, '');
-            gmSearchUri = `/search/?type=GeneticModification${gmIds}`;
-        }
-
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -614,11 +607,8 @@ class Donor extends React.Component {
 
                 <PanelView key={context.uuid} {...this.props} />
 
-                {gmSearchUri ?
-                    <FetchedData>
-                        <Param name="geneticModifications" url={gmSearchUri} />
-                        <GeneticModificationsRenderer />
-                    </FetchedData>
+                {context.genetic_modifications && context.genetic_modifications.length ?
+                    <GeneticModificationSummary geneticModifications={context.genetic_modifications} />
                 : null}
 
                 <RelatedItems
