@@ -593,7 +593,8 @@ class Donor extends React.Component {
         // Calculate a search string for GMs refering to this donor
         let gmSearchUri = '';
         if (context.genetic_modifications && context.genetic_modifications.length) {
-            gmSearchUri = `/search/?type=GeneticModification&donors_modified=${context['@id']}`;
+            const gmIds = context.genetic_modifications.reduce((acc, gm) => `${acc}&%40id=${encodeURIComponent(gm)}`, '');
+            gmSearchUri = `/search/?type=GeneticModification${gmIds}`;
         }
 
         return (
@@ -622,7 +623,7 @@ class Donor extends React.Component {
 
                 <RelatedItems
                     title={`Biosamples from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
-                    url={`/search/?type=biosample&donor.uuid=${context.uuid}`}
+                    url={`/search/?type=Biosample&donor.uuid=${context.uuid}`}
                     Component={BiosampleTable}
                 />
 
@@ -719,19 +720,19 @@ DonorListingComponent.contextTypes = {
 const DonorListing = auditDecor(DonorListingComponent);
 
 
-const HumanListing = (props) => (
+const HumanListing = props => (
     <DonorListing {...props} organismTitle="Human donor" />
 );
 
-const MouseListing = (props) => (
+const MouseListing = props => (
     <DonorListing {...props} organismTitle="Mouse donor" />
 );
 
-const WormListing = (props) => (
+const WormListing = props => (
     <DonorListing {...props} organismTitle="Worm donor" />
 );
 
-const FlyListing = (props) => (
+const FlyListing = props => (
     <DonorListing {...props} organismTitle="Fly donor" />
 );
 

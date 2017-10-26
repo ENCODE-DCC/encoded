@@ -105,8 +105,8 @@
         "external_ids": {
             "title": "Unique external identifier(s) of strain or donor"
         },
-        "organism.name": {
-            "title": "Organism"
+        "organism.scientific_name": {
+            "title": "Binomial name"
         }
     },
     "boost_values": {

@@ -98,6 +98,9 @@
         "strain_background": {
             "title": "Strain background"
         },
+        "organism.scientific_name": {
+            "title": "Binomial name"
+        },
         "genetic_modifications": {
             "title": "Genetic modifications"
         },
