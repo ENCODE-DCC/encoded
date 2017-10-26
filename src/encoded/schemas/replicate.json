@@ -12,7 +12,6 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" }
     ],
@@ -22,7 +21,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "8"
+            "default": "9"
         },
         "antibody": {
             "title": "Antibody",
@@ -73,9 +72,10 @@
             ]
         },
         "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "in progress",
             "enum" : [
-                "preliminary",
-                "proposed",
                 "in progress",
                 "released",
                 "archived",

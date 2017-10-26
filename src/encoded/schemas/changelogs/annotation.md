@@ -1,5 +1,14 @@
 ## Changelog for annotation.json
 
+### Schema version 16
+
+* Remove enhancer- and promoter-like regions from annotation_type (now candidate regulatory elements)
+* Remove DNase master peaks from annotation_type (now representative DNase hypersensitivity sites)
+
+### Schema version 15
+
+* Remove *proposed* from status enum (dataset mixin)
+
 ### Schema version 14
 
 * *biosample_type* and *biosample_term_id* consistency added to the list of schema dependencies
