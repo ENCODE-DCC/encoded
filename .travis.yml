@@ -45,7 +45,7 @@ before_install:
   - npm config set python /usr/bin/python2.7
   - curl -O  ${ES_DOWNLOAD_URL} && sudo dpkg -i --force-confnew elasticsearch-${ES_VERSION}.deb && sudo service elasticsearch stop
 install:
-  - python bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5
+  - python bootstrap.py --buildout-version 2.9.5 --setuptools-version 18.5
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
   - sudo chown -R travis /etc/elasticsearch
 before_script:
