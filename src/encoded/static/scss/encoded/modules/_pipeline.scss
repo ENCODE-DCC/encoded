@@ -4,6 +4,30 @@ $pipeline-node-types:
     (quality-metric, #80ffc0),
     (file-type, #e0e0e0);
 
+$file-statuses:
+    ("uploading", #5880e0),
+    ("content-error", #ee4444),
+    ("upload-failed", #ee4444),
+    ("in-progress", $brand-info),
+    ("deleted", $brand-warning),
+    ("released", $brand-success),
+    ("replaced", #909090),
+    ("revoked", $brand-danger),
+    ("archived", #c0c0c0),
+    ("status-unknown", #ffc0c0);
+    
+
+// FUnction to return black for light background colors passed in $color, and white for dark
+// backbground colors passed in $color.
+@function node-text-color($color) {
+    @if (lightness($color) > 65) {
+        @return #000000; // Lighter backgorund, return dark color
+    } @else {
+        @return #ffffff; // Darker background, return light color
+    }
+}
+      
+
 @each $node-type, $color in $pipeline-node-types {
     // Audit icons
     g.pipeline-node-#{$node-type} {
@@ -55,6 +79,18 @@ $pipeline-node-types:
 
 g.pipeline-node-file-type {
     pointer-events: none;
+}
+
+g.pipeline-node-file {
+    @each $status, $color in $file-statuses {
+        &.#{$status} {
+            fill: $color;
+
+            g.label {
+                fill: node-text-color($color);
+            }
+        }
+    }
 }
 
 g.label {
@@ -292,5 +328,59 @@ g.qc-tooltip {
         fill: #fff;
         font-size: 0.8rem;
         font-weight: normal;
+    }
+}
+
+.file-status-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+// File status legend styles.
+.file-status-legend__item {
+    flex: 1 1 auto;
+    padding: 5px 10px;
+    margin-right: 1px;
+    margin-bottom: 1px;
+    text-align: center;
+    background-color: #f0f0f0;
+
+    @each $status, $color in $file-statuses {
+        &.file-status-legend__item--status-#{$status} {
+            & .file-status-legend__icon {
+                margin-right: 5px;
+                color: $color;
+            }
+        }
+    }        
+}
+
+
+@each $status, $color in $file-statuses {
+    .label.file-status-#{$status} {
+        background-color: $color;
+        color: node-text-color($color);
+    }
+}
+
+
+.status-indicator {
+    display: flex;
+    line-height: 1;
+
+    @each $status, $color in $file-statuses {
+        &.status-indicator--status-#{$status} {
+            & .status-indicator__icon {
+                flex: 0 1 auto;
+                margin-right: 3px;
+                color: $color;
+            }
+        }
+    }
+
+    .status-indicator__label {
+        flex: 0 1 auto;
+        white-space: nowrap;
     }
 }

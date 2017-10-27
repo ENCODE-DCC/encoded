@@ -23,6 +23,7 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitter_comment" },
         { "$ref": "mixins.json#/schema_version" }
     ],
     "properties": {

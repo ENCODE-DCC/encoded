@@ -43,7 +43,7 @@
         "submitted_by": "sit.nascetur@accumsan.quis",
         "target": "H3K4me3-human",
         "uuid": "072cbc4e-075e-46b7-df05-58c5092ebd36",
-        "comment": "We couldn't characterize the antibody in mouse before we ran out of the lot, sorry!",
+        "submitter_comment": "We couldn't characterize the antibody in mouse before we ran out of the lot, sorry!",
         "notes": "Lab ran out of the lot, so I guess we'll have to let it slide?",
         "characterization_reviews": [
             {
@@ -128,7 +128,7 @@
         "caption": "Western blot analysis of lysates from HeLa cells using rabbit polyclonal to HNRNPA1",
         "primary_characterization_method": "immunoblot",
         "characterizes": "81d1f148-323c-4420-a05e-62427394fd6b",
-        "comment": "The expected bands are not visible.",
+        "submitter_comment": "The expected bands are not visible.",
         "date": "2013-11-21",
         "lab": "xiang-dong-fu",
         "status": "not submitted for review by lab",
@@ -429,7 +429,7 @@
         "uuid": "c105221e-2c2f-449d-9942-4f4b5f2f36fe",
         "documents": ["encode:Antibody_characterization_standards_February_2014"],
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham-1_1.jpg",
-        "comment": "The TF was ranked #21, can you just let this one slide?",
+        "submitter_comment": "The TF was ranked #21, can you just let this one slide?",
         "notes": "The lab baked me a delicious pie, so I turned a blind eye."
     },
     {
