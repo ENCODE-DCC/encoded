@@ -555,8 +555,11 @@ PHASE1_PIPELINES = {
     'mouse_donor': [
         remove_keys('parent_strains'),
     ],
+    'fly_donor': [
+        remove_keys('parent_strains'),
+    ],
     'worm_donor': [
-        remove_keys('outcrossed_strain'),
+        remove_keys('outcrossed_strain', 'parent_strains'),
     ],
     'human_donor': [
         remove_keys('parents', 'children', 'siblings', 'twin'),
@@ -637,7 +640,10 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('parent_strains'),
     ],
     'worm_donor': [
-        skip_rows_missing_all_keys('outcrossed_strain'),
+        skip_rows_missing_all_keys('outcrossed_strain', 'parent_strains'),
+    ],
+    'fly_donor': [
+        skip_rows_missing_all_keys('parent_strains'),
     ],
     'annotation': [
         skip_rows_missing_all_keys('related_files', 'software_used'),
