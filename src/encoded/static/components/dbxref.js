@@ -94,7 +94,7 @@ export const dbxrefPrefixMap = {
         pattern: 'http://www.ebi.ac.uk/vg/epirr/view/{0}',
     },
     Cellosaurus: {
-        pattern: 'http://web.expasy.org/cellosaurus/{0}',
+        pattern: 'https://web.expasy.org/cellosaurus/{0}',
     },
     FlyBase: {
         pattern: 'http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context={0}',
@@ -135,6 +135,9 @@ export const dbxrefPrefixMap = {
             // biosample_term_name.
             (context['@type'][0] === 'Experiment' ? urlPattern.replace(/\{1\}/g, context.biosample_term_name) : urlPattern)
         ),
+    },
+    RefSeq: {
+        pattern: 'https://www.ncbi.nlm.nih.gov/gene/?term={0}',
     },
     JAX: {
         pattern: 'https://www.jax.org/strain/{0}',

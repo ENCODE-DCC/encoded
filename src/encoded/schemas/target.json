@@ -15,7 +15,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "dbxref": {
             "title": "External identifiers",
@@ -82,7 +82,6 @@
             "enum": [
                 "current",
                 "deleted",
-                "proposed",
                 "replaced"
             ]
         }

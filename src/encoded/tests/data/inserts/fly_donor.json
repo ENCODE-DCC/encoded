@@ -13,8 +13,6 @@
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "organism": "dmelanogaster",
-        "constructs": ["893d806f-3a88-43eb-afdf-dcc16c79ee45"],
-        "mutated_gene": "cad-dmelanogaster",
         "uuid": "c9a34c9e-a19a-4bf5-8b50-5d7c39d190b1"
     },
     {
@@ -29,6 +27,7 @@
         "documents": [
             "encode:sample_strain_generation_protocol"
         ],
+        "parent_strains": ["ENCDO180XXX", "ENCDO242AAA"],
         "uuid": "094a484e-817c-4cb3-a8dd-9ea2c3c1067b",
         "dbxrefs": ["FlyBase:FBst0038626", "BDSC:38626"]
     }

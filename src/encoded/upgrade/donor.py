@@ -2,7 +2,6 @@ from snovault import upgrade_step
 from .shared import ENCODE2_AWARDS, REFERENCES_UUID
 import re
 from pyramid.traversal import find_root
-from uuid import UUID
 
 
 @upgrade_step('human_donor', '', '2')
@@ -145,6 +144,7 @@ def fly_worm_donor_5_6_and_human_mouse_8_9(value, system):
     if value.get('status') in ['preliminary', 'proposed']:
         value['status'] = "in progress"
 
+
 @upgrade_step('fly_donor', '6', '7')
 @upgrade_step('worm_donor', '6', '7')
 @upgrade_step('mouse_donor', '9', '10')
@@ -154,6 +154,7 @@ def model_organism_donor_9_10(value, system):
     value.pop('littermates', None)
     value.pop('url', None)
 
+
 @upgrade_step('human_donor', '9', '10')
 def human_donor_9_10(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3415
@@ -161,7 +162,7 @@ def human_donor_9_10(value, system):
         value['life_stage'] = 'embryonic'
     if value.get('life_stage') == 'postnatal':
         value['life_stage'] = 'newborn'
-    if not value.get('internal_tags'):    
+    if not value.get('internal_tags'):
         value.pop('internal_tags', None)
     if value.get('ethnicity') in ['NA', 'Unknown', 'unknown', '']:
         value.pop('ethnicity')
@@ -187,3 +188,32 @@ def human_donor_9_10(value, system):
         value.pop('identical_twin', None)
     value.pop('children', None)
     value.pop('url', None)
+
+
+@upgrade_step('fly_donor', '7', '8')
+@upgrade_step('worm_donor', '7', '8')
+def fly_worm_donor_7_8(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3507
+    # https://encodedcc.atlassian.net/browse/ENCD-3536
+    if 'constructs' in value:
+        value.pop('constructs', None)
+    if 'mutagen' in value:
+        value.pop('mutagen', None)
+    if 'mutated_gene' in value:
+        value.pop('mutated_gene', None)
+
+
+@upgrade_step('human_donor', '10', '11')
+def human_donor_10_11(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3536
+    if 'genetic_modifications' in value:
+        value.pop('genetic_modifications', None)
+
+
+@upgrade_step('fly_donor', '8', '9')
+@upgrade_step('worm_donor', '8', '9')
+@upgrade_step('mouse_donor', '10', '11')
+def fly_worm_donor_8_9(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3616
+    if value.get('parent_strains') == []:
+        value.pop('parent_strains', None)

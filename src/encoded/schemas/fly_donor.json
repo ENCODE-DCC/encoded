@@ -6,12 +6,11 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "organism"],
-    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "identifyingProperties": ["uuid", "accession", "aliases", "external_ids"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "donor.json#/properties" },
         { "$ref": "mixins.json#/genetic_modifications" },
-        { "$ref": "mixins.json#/genomic_alterations"},
         { "$ref": "mixins.json#/strains"},
         { "$ref": "mixins.json#/url" },
         { "$ref": "mixins.json#/source" },
@@ -24,11 +23,37 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitter_comment" },
         { "$ref": "mixins.json#/schema_version" }
     ],
+    "dependencies": {
+        "parent_strains": {
+            "comment": "Parent strains list can contain up to two entries, of strains of the same organism.",
+            "properties":{
+                "parent_strains": {
+                    "minItems": 1,
+                    "maxItems": 2
+                }
+            }
+        }
+    },
     "properties": {
+        "parent_strains": {
+            "title": "Parent strains",
+            "description": "Donor IDs of parent strains, if known.",
+            "comment": "List of strains crossed to produce this fly strain.",
+            "type":  "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Parent strain",
+                "description": "A donor ID of a parent strain, if known.",
+                "type": "string",
+                "comment": "See FlyDonor.json for available identifiers.",
+                "linkTo": "FlyDonor"
+            }
+        },
         "schema_version": {
-            "default": "7"
+            "default": "9"
         },
         "genotype": {
             "description": "The genotype of the strain according to accepted nomenclature conventions: http://flybase.org/wiki/FlyBase:Nomenclature"
@@ -49,7 +74,7 @@
         "dbxrefs": {
             "@type": "@id",
             "rdfs:subPropertyOf": "rdfs:seeAlso",
-            "title": "External identifiers",
+            "title": "Database external identifiers",
             "description": "Identifiers from external resources that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
             "comment": "Do not submit. DCC personnel is responsible for submission of donor external resource identifiers.",
             "permission": "import_items",
@@ -57,18 +82,62 @@
             "default": [],
             "uniqueItems": true,
             "items": {
-                "title": "External identifier",
+                "title": "Database external identifier",
                 "description": "Identifier from an external resource that may have 1-to-1 or 1-to-many relationships with ENCODE objects.",
                 "type":  "string",
                 "pattern": "^(((BDSC|DSSC|Kyoto|VDRC|Harvard|NIG-FLY):.+)|(FlyBase:FBst\\d+)|(GEO:SAMN\\d+))$"
             }
         }
     },
+    "facets": {
+        "organism.name": {
+            "title": "Organism"
+        },
+        "status": {
+            "title": "Status"
+        },
+        "lab.title": {
+            "title": "Lab"
+        }
+    },
+    "columns": {
+        "accession" : {
+            "title": "Accession"
+        },
+        "aliases": {
+            "title": "Aliases"
+        },
+        "status": {
+            "title": "Status"
+        },
+        "lab": {
+            "title": "Lab"
+        },
+        "strain_name": {
+            "title": "Strain name"
+        },
+        "genotype": {
+            "title": "Strain genotype"
+        },
+        "strain_background": {
+            "title": "Strain background"
+        },
+        "genetic_modifications": {
+            "title": "Genetic modifications"
+        },
+        "external_ids": {
+            "title": "Unique external identifier(s) of strain or donor"
+        },
+        "organism.name": {
+            "title": "Organism"
+        }
+    },
     "boost_values": {
         "genetic_modifications.modified_site_by_target_id.label": 1.0,
         "genetic_modifications.modified_site_by_target_id.gene_name": 1.0,
         "genetic_modifications.modified_site_by_target_id.dbxref": 1.0,
-        "genetic_modifications.modified_site_by_target_id.aliases": 1.0
+        "genetic_modifications.modified_site_by_target_id.aliases": 1.0,
+        "parent_strains": 1.0
     },
     "changelog": "/profiles/changelogs/fly_donor.md"
 }

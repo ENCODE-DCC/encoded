@@ -15,7 +15,8 @@
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
         "purpose": {
@@ -377,8 +378,6 @@
             "title": "Category",
             "description": "The category/type of the genetic modification performed.",
             "type": "string",
-            "comment": "Locking down to temporarily prevent new genetic_modifications from being submitted.",
-            "permission": "import_items",
             "enum": [
                 "deletion",
                 "interference",

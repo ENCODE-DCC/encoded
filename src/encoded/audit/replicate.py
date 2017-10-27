@@ -9,7 +9,7 @@ def audit_status_replicate(value, system):
     '''
     As the experiment-replicate relationship is reverse calculated, the status checker for item
     is not sufficient to catch all cases of status mismatch between replicates and experiments.
-    * in-progress replicate can't have experiment in [proposed, released, deleted, revoked]
+    * in-progress replicate can't have experiment in [released, deleted, revoked]
     * released or revoked replicate must be in [released or revoked]
     * if experiment is deleted, replicate must be deleted
     '''
@@ -18,22 +18,23 @@ def audit_status_replicate(value, system):
     exp_status = value['experiment']['status']
 
     if ((rep_status in ['in progress'] and exp_status in ['released',
-                                                          'revoked',
-                                                          'proposed',
-                                                          'preliminary']) or
+                                                          'revoked']) or
         (rep_status in ['released', 'revoked'] and
             exp_status not in ['released', 'revoked']) or
-       (exp_status in ['deleted'] and rep_status not in ['deleted'])):
+            (exp_status in ['deleted'] and rep_status not in ['deleted'])):
         #  If any of the three cases exist, there is an error
         detail = '{} replicate {} is in {} experiment'.format(
             rep_status,
             value['@id'],
             exp_status
-            )
+        )
         yield AuditFailure('mismatched status', detail, level='INTERNAL_ACTION')
     return
 
 
+# check that chip-seq experiments have antibody target matching the GM insert
+# target of the biosample in the replicate (it could match on target name level
+# or tags level
 @audit_checker(
     'Replicate',
     frame=[
@@ -41,11 +42,10 @@ def audit_status_replicate(value, system):
         'experiment.target',
         'library',
         'library.biosample',
-        'library.biosample.constructs',
-        'library.biosample.model_organism_donor_constructs',
+        'library.biosample.applied_modifications',
         'antibody',
         'antibody.targets'])
-def audit_inconsistent_construct_tag(value, system):
+def audit_inconsistent_modifications_tag(value, system):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
     if 'target' not in value['experiment']:
@@ -56,7 +56,7 @@ def audit_inconsistent_construct_tag(value, system):
     exp_target = value['experiment']['target']
     if 'library' in value and 'biosample' in value['library']:
         matching_flag = False
-        tags_names = get_biosample_constructs_tags(value)
+        tags_names = get_biosample_modifications_tags(value)
         if len(tags_names) > 0:
             antibody_targets = get_ab_targets(value)
             for ab_target in antibody_targets:
@@ -74,11 +74,11 @@ def audit_inconsistent_construct_tag(value, system):
                     value['technical_replicate_number'],
                     value['experiment']['@id']) + \
                     'specifies antibody {} that is inconsistent '.format(
-                    value['antibody']['@id']) + \
-                    'with biosample {} constructs tags {}.'.format(
+                        value['antibody']['@id']) + \
+                    'with biosample {} modification tags {}.'.format(
                     value['library']['biosample']['@id'],
                     tags_names)
-                yield AuditFailure('inconsistent construct tag', detail, level='INTERNAL_ACTION')
+                yield AuditFailure('inconsistent modification tag', detail, level='INTERNAL_ACTION')
     return
 
 
@@ -95,23 +95,17 @@ def get_ab_targets(replicate):
     return targtes_to_return
 
 
-def get_biosample_constructs_tags(replicate):
+def get_biosample_modifications_tags(replicate):
     tags_names = set()
     if 'library' in replicate and 'biosample' in replicate['library'] and \
        replicate['library']['status'] not in ['deleted', 'replaced', 'revoked']:
         biosample = replicate['library']['biosample']
         if biosample['status'] not in ['deleted', 'replaced', 'revoked']:
-            if 'constructs' in biosample:
-                for construct in biosample['constructs']:
-                    if construct['status'] not in ['deleted', 'replaced', 'revoked'] and \
-                       'tags' in construct:
-                        for t in construct['tags']:
-                            tags_names.add(t['name'])
-            elif 'model_organism_donor_constructs' in biosample:
-                        for construct in biosample['model_organism_donor_constructs']:
-                            if construct['status'] not in ['deleted', 'replaced', 'revoked'] and \
-                               'tags' in construct:
-                                for t in construct['tags']:
-                                    tags_names.add(t['name'])
-
+            if biosample.get('applied_modifications'):
+                for modification in biosample.get('applied_modifications'):
+                    if modification.get('status') not in ['deleted', 'replaced', 'revoked'] and \
+                       modification.get('purpose') == 'tagging' and \
+                       modification.get('introduced_tags'):
+                        for tag in modification.get('introduced_tags'):
+                            tags_names.add(tag.get('name'))
     return tags_names

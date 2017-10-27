@@ -10,7 +10,7 @@
         "sortOrder": [ "Biosample", "Targets", "Replicates", "Views" ],
         "Views":  {
             "tag": "view",
-            "group_order": [ "Replicated peaks", "Stable peaks", "Peaks",
+            "group_order": [ "Optimal IDR thresholded peaks", "Replicated peaks", "Stable peaks", "Peaks",
                             "Fold change over control", "Signal p-value", "Signal" ],
             "groups": {
                 "Optimal IDR thresholded peaks": {

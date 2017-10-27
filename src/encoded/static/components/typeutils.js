@@ -254,3 +254,43 @@ AwardRef.propTypes = {
     context: PropTypes.object.isRequired, // Object containing the award property
     adminUser: PropTypes.bool.isRequired, // True if current user is a logged-in admin
 };
+
+
+/**
+ * Return an array of all possible file statuses, given the current logged-in status. Note that if
+ * the file.json schema changes the file statuses, this has to change too.
+ *
+ * @param {object} session - encoded login information from <App> context.
+ * @param (object) sessionProperties - encoded login session properties from <App> context.
+ */
+export function fileStatusList(session, sessionProperties) {
+    const loggedIn = !!(session && session['auth.userid']);
+    const adminUser = !!(sessionProperties && sessionProperties.admin);
+
+    // These statuses are the only ones logged-out users can see.
+    let statuses = [
+        'released',
+        'revoked',
+        'archived',
+    ];
+
+    // If the user's logged in, add in more statuses.
+    if (loggedIn) {
+        statuses = statuses.concat([
+            'uploading',
+            'in progress',
+            'content error',
+            'upload failed',
+        ]);
+    }
+
+    // If the user's logged in as an admin, add in the last statuses.
+    if (adminUser) {
+        statuses = statuses.concat([
+            'deleted',
+            'replaced',
+        ]);
+    }
+
+    return statuses.concat(['status unknown']);
+}

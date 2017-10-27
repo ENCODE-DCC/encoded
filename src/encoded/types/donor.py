@@ -29,10 +29,7 @@ class Donor(Item):
         'documents',
         'documents.award',
         'documents.lab',
-        'documents.submitted_by',
-        'genetic_modifications',
-        'genetic_modifications.modified_site_by_target_id',
-        'genetic_modifications.treatments'
+        'documents.submitted_by'
     ]
     name_key = 'accession'
     rev = {
@@ -69,7 +66,10 @@ class Donor(Item):
 class MouseDonor(Donor):
     item_type = 'mouse_donor'
     schema = load_schema('encoded:schemas/mouse_donor.json')
-    embedded = Donor.embedded + ['references']
+    embedded = Donor.embedded + ['references',
+                                 'genetic_modifications',
+                                 'genetic_modifications.modified_site_by_target_id',
+                                 'genetic_modifications.treatments']
 
     def __ac_local_roles__(self):
         # Disallow lab submitter edits
@@ -86,7 +86,11 @@ class MouseDonor(Donor):
 class FlyDonor(Donor):
     item_type = 'fly_donor'
     schema = load_schema('encoded:schemas/fly_donor.json')
-    embedded = Donor.embedded + ['organism', 'constructs', 'constructs.target', 'characterizations']
+    embedded = Donor.embedded + ['organism', 
+                                 'genetic_modifications',
+                                 'genetic_modifications.modified_site_by_target_id',
+                                 'genetic_modifications.treatments', 
+                                 'characterizations']
 
 
 @collection(
@@ -99,7 +103,10 @@ class FlyDonor(Donor):
 class WormDonor(Donor):
     item_type = 'worm_donor'
     schema = load_schema('encoded:schemas/worm_donor.json')
-    embedded = Donor.embedded + ['organism', 'constructs', 'constructs.target']
+    embedded = Donor.embedded + ['organism',
+                                 'genetic_modifications',
+                                 'genetic_modifications.modified_site_by_target_id',
+                                 'genetic_modifications.treatments']
 
 
 @collection(

@@ -18,23 +18,9 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitter_comment" },
         { "$ref": "mixins.json#/schema_version" }
     ],
-    "dependencies": {
-        "mutagen": {
-            "comment": "Mutagen could be specified only for model organism strains.",
-            "not": {
-                "properties": {
-                    "organism": {
-                        "linkTo": "Organism",
-                        "linkEnum": [
-                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                        ]
-                    }
-                }
-            }
-        }
-    },
     "properties": {
         "schema_version": {
             "hidden comment": "Bump the default in the subclasses."

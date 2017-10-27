@@ -165,7 +165,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "13"
+            "default": "14"
         },
         "date_submitted": {
             "title": "Date submitted" ,
@@ -509,7 +509,6 @@
         "target.organism.name": 1.0,
         "target.organism.scientific_name": 1.0,
         "references.title": 1.0,
-        "replicates.library.biosample.rnais.product_id": 1.0,
         "notes": 1.0,
         "internal_tags": 1.0
     },
