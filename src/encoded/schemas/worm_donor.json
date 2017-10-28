@@ -26,9 +26,34 @@
         { "$ref": "mixins.json#/submitter_comment" },
         { "$ref": "mixins.json#/schema_version" }
     ],
+    "dependencies": {
+        "parent_strains": {
+            "comment": "Parent strains list can contain up to two entries, of strains of the same organism.",
+            "properties":{
+                "parent_strains": {
+                    "minItems": 1,
+                    "maxItems": 2
+                }
+            }
+        }
+    },
     "properties": {
+        "parent_strains": {
+            "title": "Parent strains",
+            "description": "Donor IDs of parent strains, if known.",
+            "comment": "List of strains crossed to produce this worm strain.",
+            "type":  "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Parent strain",
+                "description": "A donor ID of a parent strain, if known.",
+                "type": "string",
+                "comment": "See WormDonor.json for available identifiers.",
+                "linkTo": "WormDonor"
+            }
+        },
         "schema_version": {
-            "default": "8"
+            "default": "9"
         },
         "genotype": {
             "description": "The genotype of the strain according to accepted nomenclature conventions: http://www.wormbase.org/about/userguide/nomenclature#k89607hgcf24ea13jbid5--10."
@@ -122,7 +147,8 @@
         "genetic_modifications.modified_site_by_target_id.label": 1.0,
         "genetic_modifications.modified_site_by_target_id.gene_name": 1.0,
         "genetic_modifications.modified_site_by_target_id.dbxref": 1.0,
-        "genetic_modifications.modified_site_by_target_id.aliases": 1.0
+        "genetic_modifications.modified_site_by_target_id.aliases": 1.0,
+        "parent_strains": 1.0
     },
     "changelog": "/profiles/changelogs/worm_donor.md"
 }
