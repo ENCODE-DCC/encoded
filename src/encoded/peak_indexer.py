@@ -263,7 +263,7 @@ def index_file(request):
         res = es.search(index='_all', size=SEARCH_MAX, body={
             'query': {
                 'bool': {
-                    'must': [
+                    'should': [
                         {
                             'terms': {
                                 'embedded_uuids': updated,

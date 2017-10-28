@@ -7,6 +7,7 @@ blob_store_profile_name = encoded-files-upload
 accession_factory = ${accession_factory}
 snp_search.server = ${region_search_instance}
 indexer.processes = ${indexer_processes}
+indexer.chunk_size = ${indexer_chunk_size}
 
 [composite:indexer]
 use = config:base.ini#indexer

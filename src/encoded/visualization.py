@@ -786,7 +786,6 @@ def add_to_es(request, comp_id, composite):
     es = request.registry.get(ELASTIC_SEARCH, None)
     if not es:
         return
-    print(key)
     if not es.indices.exists(key):
         es.indices.create(index=key, body={'index': {'number_of_shards': 1, 'mapping.total_fields.limit': 5000}}, wait_for_active_shards=1)
         mapping = {'default': {"_all":    {"enabled": False},
