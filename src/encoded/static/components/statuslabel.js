@@ -3,8 +3,21 @@ import PropTypes from 'prop-types';
 import * as globals from './globals';
 
 const StatusLabel = (props) => {
-    const { status, title, buttonLabel } = props;
+    const { status, title, buttonLabel, fileStatus } = props;
 
+    // Handle file statuses speficially.
+    if (fileStatus) {
+        return (
+            <ul className="status-list">
+                <li className={`label file-status-${status.replace(/ /g, '-')}`}>
+                    {title ? <span className="status-list-title">{`${title}: `}</span> : null}
+                    {buttonLabel || status}
+                </li>
+            </ul>
+        );
+    }
+
+    // Handle any other kind of status.
     if (typeof status === 'string') {
         // Display simple string and optional title in badge
         return (
@@ -38,11 +51,13 @@ StatusLabel.propTypes = {
     ]).isRequired, // Array of status objects with status and badge title
     title: PropTypes.string,
     buttonLabel: PropTypes.string,
+    fileStatus: PropTypes.bool,
 };
 
 StatusLabel.defaultProps = {
     title: '',
     buttonLabel: '',
+    fileStatus: false,
 };
 
 export default StatusLabel;

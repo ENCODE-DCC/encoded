@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
-import { Panel, PanelBody } from '../libs/bootstrap/panel';
+import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
 import { DocumentsPanel } from './doc';
 import * as globals from './globals';
@@ -142,25 +142,11 @@ function AnalysisStep(step, node) {
             </div>
         );
     }
-    return { header, body };
+    return { header, body, type: 'Step' };
 }
 
 
 class PipelineComponent extends React.Component {
-    static detailNodes(jsonGraph, infoNodeId) {
-        let meta;
-
-        // Find data matching selected node, if any
-        if (infoNodeId) {
-            const node = jsonGraph.getNode(infoNodeId);
-            if (node) {
-                meta = globals.graphDetail.lookup(node)(node);
-            }
-        }
-
-        return meta;
-    }
-
     // For the given step, calculate its unique ID for the graph nodes. You can pass an
     // analysis_step object in `step`, or just its @id string to get the same result.
     static genStepId(step) {
@@ -182,8 +168,8 @@ class PipelineComponent extends React.Component {
     }
 
     // Given a graph node ID, return the prefix portion that identifies what kind of node this is.
-    static getNodeIdPrefix(nodeId) {
-        return nodeId.split(':')[0];
+    static getNodeIdPrefix(node) {
+        return node.id.split(':')[0];
     }
 
     constructor() {
@@ -191,7 +177,7 @@ class PipelineComponent extends React.Component {
 
         // Set initial React component state.
         this.state = {
-            infoNodeId: '', // ID of node whose info panel is open
+            infoNode: null, // ID of node whose info panel is open
             infoModalOpen: false, // Graph information modal open
         };
 
@@ -240,7 +226,7 @@ class PipelineComponent extends React.Component {
 
                 // Assemble a single analysis step node.
                 jsonGraph.addNode(stepId, label, {
-                    cssClass: `pipeline-node-analysis-step${this.state.infoNodeId === stepId ? ' active' : ''}`,
+                    cssClass: `pipeline-node-analysis-step${this.state.infoNode && this.state.infoNode.id === stepId ? ' active' : ''}`,
                     type: 'Step',
                     shape: 'rect',
                     cornerRadius: 4,
@@ -348,7 +334,7 @@ class PipelineComponent extends React.Component {
         if (nodePrefix === stepNodePrefix) {
             // Click was in a step node. Set a new state so that a modal for the step node appears.
             this.setState({
-                infoNodeId: nodeId,
+                infoNode: nodeId,
                 infoModalOpen: true,
             });
         }
@@ -387,8 +373,8 @@ class PipelineComponent extends React.Component {
         let selectedStep;
         let selectedNode;
         let meta;
-        if (this.state.infoNodeId) {
-            selectedNode = this.jsonGraph.getNode(this.state.infoNodeId);
+        if (this.state.infoNode) {
+            selectedNode = this.jsonGraph.getNode(this.state.infoNode && this.state.infoNode.id);
             if (selectedNode) {
                 selectedStep = selectedNode.metadata.ref;
                 meta = AnalysisStep(selectedStep, selectedNode);
@@ -460,25 +446,30 @@ class PipelineComponent extends React.Component {
                         </dl>
                     </PanelBody>
                 </Panel>
+
                 {this.jsonGraph ?
-                    <div>
-                        <h3>Pipeline schematic</h3>
-                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} forceRedraw />
-                        {meta && this.state.infoModalOpen ?
-                            <Modal closeModal={this.closeModal}>
-                                <ModalHeader closeModal={this.closeModal}>
-                                    {meta ? meta.header : null}
-                                </ModalHeader>
-                                <ModalBody>
-                                    {meta ? meta.body : null}
-                                </ModalBody>
-                                <ModalFooter closeModal={<button className="btn btn-info" onClick={this.closeModal}>Close</button>} />
-                            </Modal>
-                        : null}
-                    </div>
+                    <Panel>
+                        <PanelHeading>
+                            <h3>Pipeline schematic</h3>
+                        </PanelHeading>
+                        <Graph graph={this.jsonGraph} nodeClickHandler={this.handleNodeClick} />
+                    </Panel>
                 : null}
+
                 {context.documents && context.documents.length ?
                     <DocumentsPanel documentSpecs={[{ documents: context.documents }]} />
+                : null}
+
+                {meta && this.state.infoModalOpen ?
+                    <Modal closeModal={this.closeModal}>
+                        <ModalHeader closeModal={this.closeModal}>
+                            {meta ? meta.header : null}
+                        </ModalHeader>
+                        <ModalBody>
+                            {meta ? meta.body : null}
+                        </ModalBody>
+                        <ModalFooter closeModal={<button className="btn btn-info" onClick={this.closeModal}>Close</button>} />
+                    </Modal>
                 : null}
             </div>
         );
@@ -513,6 +504,7 @@ const StepDetailView = function StepDetailView(node) {
     return {
         header: <h4>Software unknown</h4>,
         body: <p className="browser-error">Missing step_run derivation information for {node.metadata.fileAccession}</p>,
+        type: 'Step',
     };
 };
 

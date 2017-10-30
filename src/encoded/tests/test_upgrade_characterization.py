@@ -151,6 +151,18 @@ def biosample_characterization_4(root, biosample_characterization, publication):
     return properties
 
 
+@pytest.fixture
+def antibody_characterization_10(antibody_characterization_1):
+    item = antibody_characterization_1.copy()
+    item.update({
+        'status': 'pending dcc review',
+        'characterization_method': 'immunoprecipitation followed by mass spectrometry',
+        'comment': 'We tried really hard to characterize this antibody.',
+        'notes': 'Your plea has been noted.'
+    })
+    return item
+
+
 def test_antibody_characterization_upgrade(upgrader, antibody_characterization_1):
     value = upgrader.upgrade('antibody_characterization', antibody_characterization_1, target_version='3')
     assert value['schema_version'] == '3'
@@ -267,3 +279,10 @@ def test_antibody_characterization_upgrade_inline(testapp, registry, antibody_ch
     # The stored properties are now upgraded.
     res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']
+
+
+def test_antibody_characterization_comment_to_submitter_comment_upgrade(upgrader, antibody_characterization_10, antibody_characterization):
+    value = upgrader.upgrade('antibody_characterization', antibody_characterization_10, current_version='10', target_version='11')
+    assert value['schema_version'] == '11'
+    assert 'comment' not in value
+    assert value['submitter_comment'] == 'We tried really hard to characterize this antibody.'
