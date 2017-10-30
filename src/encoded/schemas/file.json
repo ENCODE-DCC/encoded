@@ -329,7 +329,21 @@
                     "not": {
                         "properties": {
                             "file_format": {
-                                "enum": ["fastq", "gff", "gtf", "bed", "bigBed", "bam", "sam", "sra", "bigWig"]
+                                "enum": [
+                                    "rcc",
+                                    "idat",
+                                    "CEL",
+                                    "fastq",
+                                    "gff",
+                                    "gtf",
+                                    "bed",
+                                    "bigBed",
+                                    "bam",
+                                    "sam",
+                                    "sra",
+                                    "bigWig",
+                                    "csfasta",
+                                    "csqual"]
                             }
                         }
                     }
