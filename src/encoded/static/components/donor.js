@@ -659,10 +659,10 @@ const DonorListingComponent = (props, reactContext) => {
     // https://stackoverflow.com/questions/32906887/remove-all-falsy-values-from-an-array#answer-32906951
     const details = [
         result.strain_name,
-        result.strain_background && result.strain_background !== 'unknown' ? result.strain_background : null,
-        result.sex && result.sex !== 'unknown' ? result.sex : null,
-        result.life_stage && result.life_stage !== 'unknown' ? result.life_stage : null,
-        result.age ? `${result.age} ${result.age_units}` : null,
+        result.strain_background ? (result.strain_background !== 'unknown' ? result.strain_background : 'unknown strain background') : null,
+        result.sex ? (result.sex !== 'unknown' ? result.sex : 'unknown sex') : null,
+        result.life_stage ? (result.life_stage !== 'unknown' ? result.life_stage : 'unknown life stage') : null,
+        result.age ? (result.age !== 'unknown' ? `${result.age} ${result.age_units}` : 'unknown age') : null,
     ].filter(Boolean);
 
     return (

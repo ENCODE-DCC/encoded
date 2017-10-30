@@ -238,6 +238,9 @@
         }
     },
     "facets": {
+        "life_stage": {
+            "title": "Life stage"
+        },
         "lab.title": {
             "title": "Lab"
         },
