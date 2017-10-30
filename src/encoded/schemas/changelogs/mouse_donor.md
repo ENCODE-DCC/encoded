@@ -1,5 +1,9 @@
 ## Changelog for mouse_donor.json
 
+### Schema version 11
+
+* *parent_strains* list was limited to maximum 2 entries of strains of the same organism
+
 ### Schema version 10
 
 * *url*, *littermates* and *internal_tags* properties were removed
