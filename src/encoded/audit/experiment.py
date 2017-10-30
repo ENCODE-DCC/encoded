@@ -292,6 +292,7 @@ def audit_experiment_out_of_date_analysis(value, system, files_structure):
         for bam_file in files_structure.get(file_type).values():
             if bam_file.get('lab') == '/labs/encode-processing-pipeline/' and \
                 bam_file.get('derived_from'):
+                
                 if is_outdated_bams_replicate(bam_file, files_structure, value['assay_term_name']):
                     assembly_detail = ''
                     if bam_file.get('assembly'):
@@ -3195,14 +3196,13 @@ def get_file_accessions(list_of_files):
 
 
 def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
-    
+    # if derived_from contains accessions that were not in
+    # original_files and not in contributing files - it is outdated!    
     for file_id in bam_file.get('derived_from'):
         if file_id not in files_structure.get('original_files') and \
            file_id not in files_structure.get('contributing_files'):
             return True
 
-    # if derived_from contains accessions that were not in
-    # original_files and not in contributing files - it is outdated!
     derived_from_fastqs = get_derived_from_files_set(
         [bam_file], files_structure, 'fastq', True)
 
@@ -3221,6 +3221,12 @@ def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
         replicate_type = 'technical_replicates'
         rep = bam_file.get('technical_replicates')
     
+    # number of replicates BAM file should belong to have to be one
+    # in cases where it is more than one, there probably was replicates 
+    # reorganization, that invalidates the analysis    
+    if rep and len(rep) > 1:
+        return True
+
     for fastq_file in files_structure.get('fastq_files').values():
         if replicate_type in fastq_file:
             for entry in fastq_file.get(replicate_type):
