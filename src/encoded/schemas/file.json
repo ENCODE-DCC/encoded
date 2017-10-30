@@ -274,9 +274,45 @@
             "comment": "Fastq and sra files require run_type and replicate but should not have assembly. Raw data files require platform to be specified. Processed files require assembly to be specified.",
             "oneOf": [
                 {
+                    "required": [ "platform"],
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "rcc",
+                                "idat",
+                                "CEL"]
+                        }
+                    }
+                },
+                {
                     "allOf": [
                         {
-                            "required": ["replicate", "run_type"],
+                            "required": ["platform"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["csfasta", "csqual"]
+                                }
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["assembly"],
+                                "properties": {
+                                    "file_format": {
+                                        "enum": ["csfasta", "csqual"]
+                                    }
+                                }                    
+                            }
+                        }
+                    ]
+                },
+                {
+                    "allOf": [
+                        {
+                            "required": [
+                                "replicate",
+                                "run_type",
+                                "platform"],
                             "properties": {
                                 "file_format": {
                                     "enum": ["fastq","sra"]
@@ -288,23 +324,9 @@
                                 "required": ["assembly"],
                                 "properties": {
                                     "file_format": {
-                                        "enum": ["fastq", "sra", "csfasta", "csqual"]
+                                        "enum": ["fastq", "sra"]
                                     }
                                 }                    
-                            }
-                        },
-                        {
-                            "required": ["platform"],
-                            "properties": {
-                                "file_format": {
-                                    "enum": ["sra",
-                                             "fastq",
-                                             "csfasta",
-                                             "csqual",
-                                             "rcc",
-                                             "idat",
-                                             "CEL"]
-                                }
                             }
                         }
                     ]
