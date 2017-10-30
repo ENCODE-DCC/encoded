@@ -3213,9 +3213,6 @@ def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
 
     derived_from_fastq_accessions = get_file_accessions(derived_from_fastqs)
 
-    #print ('privet')
-    #print (derived_from_fastq_accessions)
-
     rep_fastqs = []
     replicate_type = 'biological_replicates'
     rep = bam_file.get('biological_replicates')
