@@ -114,7 +114,7 @@ brew install elasticsearch@1.7
 
 ### **4. Run buildout:**
 
-- `python3 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5`
+- `python3 bootstrap.py --buildout-version 2.9.5 --setuptools-version 18.5`
 - `bin/buildout`
 
 > :star: _Note_: If you have issues with postgres or the python interface to it (psycogpg2) you probably need to install postgresql via homebrew (as above)  

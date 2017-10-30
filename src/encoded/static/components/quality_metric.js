@@ -358,3 +358,23 @@ QualityMetricsPanelRenderer.propTypes = {
 QualityMetricsPanelRenderer.defaultProps = {
     schemas: null,
 };
+
+
+// Display the metadata of the selected file in the graph
+const QCDetailView = function QCDetailView(node, qcClick, auditIndicators, auditDetail, session, sessionProperties) {
+    // The node is for a file
+    const selectedQc = node.ref;
+    let modalContent = {};
+
+    if (selectedQc && Object.keys(selectedQc).length) {
+        const schemas = node.schemas;
+        const genericQCSchema = schemas.GenericQualityMetric;
+        const qcSchema = schemas[selectedQc['@type'][0]];
+        modalContent = qcModalContent(selectedQc, node.parent, qcSchema, genericQCSchema);
+        modalContent.type = 'QualityMetric';
+    }
+
+    return modalContent;
+};
+
+globals.graphDetail.register(QCDetailView, 'QualityMetric');
