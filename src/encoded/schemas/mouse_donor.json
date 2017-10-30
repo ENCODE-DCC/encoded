@@ -27,29 +27,40 @@
         { "$ref": "mixins.json#/submitter_comment" },
         { "$ref": "mixins.json#/schema_version" }
     ],
+    "dependencies": {
+        "parent_strains": {
+            "comment": "Parent strains list can contain up to two entries, of strains of the same organism.",
+            "properties":{
+                "parent_strains": {
+                    "minItems": 1,
+                    "maxItems": 2
+                }
+            }
+        }
+    },
     "properties": {
+        "parent_strains": {
+            "title": "Parent strains",
+            "description": "Donor IDs of parent strains, if known.",
+            "comment": "List of strains crossed to produce this mice strain.",
+            "type":  "array",
+            "uniqueItems": true,
+            "items": {
+                "title": "Parent strain",
+                "description": "A donor ID of a parent strain, if known.",
+                "type": "string",
+                "comment": "See MouseDonor.json for available identifiers.",
+                "linkTo": "MouseDonor"
+            }
+        },
         "schema_version": {
-            "default": "10"
+            "default": "11"
         },
         "organism": {
             "comment": "Do not submit. DCC personnel is responsible for submission of this property.",
             "default": "3413218c-3d86-498b-a0a2-9a406638e786",
             "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"],
             "permission": "import_items"
-        },
-        "parent_strains": {
-            "title": "Parent strains",
-            "description": "Donor IDs of parent strains, if known.",
-            "type":  "array",
-            "default": [],
-            "uniqueItems": true,
-            "items": {
-                "title": "Parent strain",
-                "description": "A donor ID of a parent strain, if known.",
-                "comment": "For mouse biosamples, see mouse_donor.json for available identifiers.",
-                "type": "string",
-                "linkTo": "MouseDonor"
-            }
         },
         "dbxrefs": {
             "@type": "@id",
@@ -108,6 +119,13 @@
         "external_ids": {
             "title": "Unique external identifier(s) of strain or donor"
         }
+    },
+    "boost_values": {
+        "genetic_modifications.modified_site_by_target_id.label": 1.0,
+        "genetic_modifications.modified_site_by_target_id.gene_name": 1.0,
+        "genetic_modifications.modified_site_by_target_id.dbxref": 1.0,
+        "genetic_modifications.modified_site_by_target_id.aliases": 1.0,
+        "parent_strains": 1.0
     },
     "changelog": "/profiles/changelogs/mouse_donor.md"
 }
