@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import { Panel } from '../libs/bootstrap/panel';
-import { BrowserFeat } from './browserfeat';
 import { svgIcon } from '../libs/svg-icons';
+import { BrowserFeat } from './browserfeat';
+import * as globals from './globals';
+import { requestFiles } from './objectutils';
+import { fileStatusList } from './typeutils';
 
 
 // Zoom slider constants
@@ -153,6 +155,47 @@ export class JsonGraph {
 }
 
 
+// Handle graphing throws. Exported for Jest tests.
+export function GraphException(message, file0, file1) {
+    this.message = message;
+    if (file0) {
+        this.file0 = file0;
+    }
+    if (file1) {
+        this.file1 = file1;
+    }
+}
+
+
+// Display the file status legend for the file graph.
+const GraphLegend = (props, context) => {
+    // Get array of all possible file status strings given the current login state, i.e. logged
+    // out, logged in, and logged in as admin.
+    const statusList = fileStatusList(context.session, context.session_properties);
+
+    return (
+        <div className="file-status-legend">
+            {statusList.map((status) => {
+                // Get a CSS class for the current status to render.
+                const statusClass = globals.statusClass(status, 'file-status-legend__item file-status-legend__item--', true);
+
+                return (
+                    <div key={status} className={statusClass}>
+                        <i className="icon icon-circle file-status-legend__icon" />
+                        {status}
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
+
+GraphLegend.contextTypes = {
+    session: PropTypes.object,
+    session_properties: PropTypes.object,
+};
+
+
 export class Graph extends React.Component {
     // Take a JsonGraph object and convert it to an SVG graph with the Dagre-D3 library.
     // jsonGraph: JsonGraph object containing nodes and edges.
@@ -201,10 +244,13 @@ export class Graph extends React.Component {
             dlDisabled: false, // Download button disabled because of IE
             verticalGraph: false, // True for vertically oriented graph, false for horizontal
             zoomLevel: null, // Graph zoom level; null to indicate not set
+            contributingFiles: {}, // List of contributing file objects we've requested; acts as a cache too
+            coalescedFiles: [],
         };
 
-        // Component state variables we don't want to cause a rerender
+        // Component state variables we don't want to cause a rerender.
         this.cv = {
+            graph: null, // Currently rendered JSON graph object
             viewBoxWidth: 0, // Width of the SVG's viewBox
             viewBoxHeight: 0, // Height of the SVG's viewBox
             aspectRatio: 0, // Aspect ratio of graph -- width:height
@@ -219,6 +265,7 @@ export class Graph extends React.Component {
         this.bindClickHandlers = this.bindClickHandlers.bind(this);
         this.handleOrientationClick = this.handleOrientationClick.bind(this);
         this.handleDlClick = this.handleDlClick.bind(this);
+        this.nodeIdClick = this.nodeIdClick.bind(this);
         this.rangeChange = this.rangeChange.bind(this);
         this.rangeMouseDown = this.rangeMouseDown.bind(this);
         this.rangeMouseUp = this.rangeMouseUp.bind(this);
@@ -226,54 +273,56 @@ export class Graph extends React.Component {
     }
 
     componentDidMount() {
-        if (BrowserFeat.getBrowserCaps('svg')) {
-            // Delay loading dagre for Jest testing compatibility;
-            // Both D3 and Jest have their own conflicting JSDOM instances
-            require.ensure(['dagre-d3', 'd3'], (require) => {
-                if (this.refs.graphdisplay) {
-                    this.d3 = require('d3');
-                    this.dagreD3 = require('dagre-d3');
+        if (this.props.graph) {
+            if (BrowserFeat.getBrowserCaps('svg')) {
+                // Delay loading dagre for Jest testing compatibility;
+                // Both D3 and Jest have their own conflicting JSDOM instances
+                require.ensure(['dagre-d3', 'd3'], (require) => {
+                    if (this.refs.graphdisplay) {
+                        this.d3 = require('d3');
+                        this.dagreD3 = require('dagre-d3');
 
-                    const el = this.refs.graphdisplay;
+                        const el = this.refs.graphdisplay;
 
-                    // Add SVG element to the graph component, and assign it classes, sizes, and a group
-                    const svg = this.d3.select(el).insert('svg', '#graph-node-info')
-                        .attr('id', 'pipeline-graph')
-                        .attr('preserveAspectRatio', 'none')
-                        .attr('version', '1.1');
-                    this.cv.savedSvg = svg;
+                        // Add SVG element to the graph component, and assign it classes, sizes, and a group
+                        const svg = this.d3.select(el).insert('svg', '#graph-node-info')
+                            .attr('id', 'pipeline-graph')
+                            .attr('preserveAspectRatio', 'none')
+                            .attr('version', '1.1');
+                        this.cv.savedSvg = svg;
 
-                    // Draw the graph into the panel; get the graph's view box and save it for
-                    // comparisons later
-                    const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el);
-                    this.cv.viewBoxWidth = viewBoxWidth;
-                    this.cv.viewBoxHeight = viewBoxHeight;
+                        // Draw the graph into the panel; get the graph's view box and save it for
+                        // comparisons later
+                        const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el);
+                        this.cv.viewBoxWidth = viewBoxWidth;
+                        this.cv.viewBoxHeight = viewBoxHeight;
 
-                    // Based on the size of the graph and view box, set the initial zoom level to
-                    // something that fits well.
-                    const initialZoomLevel = this.setInitialZoomLevel(el, svg);
-                    this.setState({ zoomLevel: initialZoomLevel });
+                        // Based on the size of the graph and view box, set the initial zoom level to
+                        // something that fits well.
+                        const initialZoomLevel = this.setInitialZoomLevel(el, svg);
+                        this.setState({ zoomLevel: initialZoomLevel });
 
-                    // Bind node/subnode click handlers to parent component handlers
-                    this.bindClickHandlers(this.d3, el);
-                }
-            });
-        } else {
-            // Output text indicating that graphs aren't supported.
-            let el = this.refs.graphdisplay;
-            const para = document.createElement('p');
-            para.className = 'browser-error';
-            para.innerHTML = 'Graphs not supported in your browser. You need a more modern browser to view it.';
-            el.appendChild(para);
+                        // Bind node/subnode click handlers to parent component handlers
+                        this.bindClickHandlers(this.d3, el);
+                    }
+                });
+            } else {
+                // Output text indicating that graphs aren't supported.
+                let el = this.refs.graphdisplay;
+                const para = document.createElement('p');
+                para.className = 'browser-error';
+                para.innerHTML = 'Graphs not supported in your browser. You need a more modern browser to view it.';
+                el.appendChild(para);
 
-            // Disable the download button
-            el = this.refs.dlButton;
-            el.setAttribute('disabled', 'disabled');
-        }
+                // Disable the download button
+                el = this.refs.dlButton;
+                el.setAttribute('disabled', 'disabled');
+            }
 
-        // Disable download button if running on Trident (IE non-Spartan) browsers
-        if (BrowserFeat.getBrowserCaps('uaTrident') || BrowserFeat.getBrowserCaps('uaEdge')) {
-            this.setState({ dlDisabled: true });
+            // Disable download button if running on Trident (IE non-Spartan) browsers
+            if (BrowserFeat.getBrowserCaps('uaTrident') || BrowserFeat.getBrowserCaps('uaEdge')) {
+                this.setState({ dlDisabled: true });
+            }
         }
     }
 
@@ -383,6 +432,81 @@ export class Graph extends React.Component {
         return { viewBoxWidth, viewBoxHeight };
     }
 
+    nodeIdClick(nodeId) {
+        let node;
+
+        // Find data matching selected node, if any
+        if (nodeId) {
+            if (nodeId.indexOf('qc:') >= 0) {
+                // QC subnode.
+                node = this.props.graph.getSubnode(nodeId);
+                node.schemas = this.props.schemas;
+            } else if (nodeId.indexOf('coalesced:') >= 0) {
+                // Coalesced contributing files.
+                const coalescedNode = this.props.graph.getNode(nodeId);
+                if (coalescedNode) {
+                    const currCoalescedFiles = this.state.coalescedFiles;
+                    if (currCoalescedFiles[coalescedNode.metadata.contributing]) {
+                        // We have the requested coalesced files in the cache, so just display
+                        // them.
+                        coalescedNode.metadata.coalescedFiles = currCoalescedFiles[coalescedNode.metadata.contributing];
+                        node = coalescedNode;
+                    } else if (!this.contributingRequestOutstanding) {
+                        // We don't have the requested coalesced files in the cache, so we have to
+                        // request them from the DB.
+                        this.contributingRequestOutstanding = true;
+                        requestFiles(coalescedNode.metadata.ref).then((contributingFiles) => {
+                            this.contributingRequestOutstanding = false;
+                            currCoalescedFiles[coalescedNode.metadata.contributing] = contributingFiles;
+                            coalescedNode.metadata.coalescedFiles = contributingFiles;
+                            this.props.nodeClickHandler(coalescedNode);
+                            node = null;
+                        }).catch(() => {
+                            this.contributingRequestOutstanding = false;
+                            currCoalescedFiles[coalescedNode.metadata.contributing] = [];
+                            node = null;
+                        });
+                    }
+                }
+            } else {
+                // A regular or contributing file.
+                node = this.props.graph.getNode(nodeId);
+                if (node) {
+                    node.schemas = this.props.schemas;
+                    if (node.metadata.contributing) {
+                        // This is a contributing file, and its @id is in
+                        // node.metadata.contributing. See if the file is in the cache.
+                        const currContributing = this.state.contributingFiles;
+                        if (currContributing[node.metadata.contributing]) {
+                            // We have this file's object in the cache, so just display it.
+                            node.metadata.ref = currContributing[node.metadata.contributing];
+                        } else if (!this.contributingRequestOutstanding) {
+                            // We don't have this file's object in the cache, so request it from
+                            // the DB.
+                            this.contributingRequestOutstanding = true;
+                            requestFiles([node.metadata.contributing]).then((contributingFile) => {
+                                this.contributingRequestOutstanding = false;
+                                currContributing[node.metadata.contributing] = contributingFile[0];
+                                node.metadata.ref = contributingFile[0];
+                                this.props.nodeClickHandler(node);
+                                node = null;
+                            }).catch(() => {
+                                this.contributingRequestOutstanding = false;
+                                currContributing[node.metadata.contributing] = {};
+                                node = null;
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        // Tell the upper-level rendering component to render the node information.
+        if (node) {
+            this.props.nodeClickHandler(node);
+        }
+    }
+
     bindClickHandlers(d3, el) {
         // Add click event listeners to each node rendering. Node's ID is its ENCODE object ID
         const svg = d3.select(el);
@@ -390,11 +514,11 @@ export class Graph extends React.Component {
         const subnodes = svg.selectAll('g.subnode circle');
 
         nodes.on('click', (nodeId) => {
-            this.props.nodeClickHandler(nodeId);
+            this.nodeIdClick(nodeId);
         });
         subnodes.on('click', (subnode) => {
             d3.event.stopPropagation();
-            this.props.nodeClickHandler(subnode.id);
+            this.nodeIdClick(subnode.id);
         });
     }
 
@@ -514,42 +638,56 @@ export class Graph extends React.Component {
     }
 
     render() {
+        const { graph, colorize } = this.props;
         const orientBtnAlt = `Orient graph ${this.state.verticalGraph ? 'horizontally' : 'vertically'}`;
         const currOrientKey = this.state.verticalGraph ? 'orientH' : 'orientV';
-        const noDefaultClasses = this.props.noDefaultClasses;
 
-        return (
-            <Panel noDefaultClasses={noDefaultClasses}>
-                <div className="zoom-control-area">
-                    <table className="zoom-control">
-                        <tbody>
-                            <tr>
-                                <td className="zoom-indicator"><i className="icon icon-minus" /></td>
-                                <td className="zomm-controller"><input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel === null ? 0 : this.state.zoomLevel} onChange={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
-                                <td className="zoom-indicator"><i className="icon icon-plus" /></td>
-                            </tr>
-                        </tbody>
-                    </table>
+        if (graph) {
+            return (
+                <div>
+                    <div className="zoom-control-area">
+                        <table className="zoom-control">
+                            <tbody>
+                                <tr>
+                                    <td className="zoom-indicator"><i className="icon icon-minus" /></td>
+                                    <td className="zomm-controller"><input type="range" className="zoom-slider" min={minZoom} max={maxZoom} value={this.state.zoomLevel === null ? 0 : this.state.zoomLevel} onChange={this.rangeChange} onDoubleClick={this.rangeDoubleClick} onMouseUp={this.rangeMouseUp} onMouseDown={this.rangeMouseDown} /></td>
+                                    <td className="zoom-indicator"><i className="icon icon-plus" /></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler} />
+                    {colorize ? <GraphLegend /> : null}
+                    <div className="graph-dl clearfix">
+                        <button className="btn btn-info btn-sm btn-orient" title={orientBtnAlt} onClick={this.handleOrientationClick}>{svgIcon(currOrientKey)}<span className="sr-only">{orientBtnAlt}</span></button>
+                        <button ref="dlButton" className="btn btn-info btn-sm" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
+                    </div>
+                    {this.props.children}
                 </div>
-                <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler} />
-                <div className="graph-dl clearfix">
-                    <button className="btn btn-info btn-sm btn-orient" title={orientBtnAlt} onClick={this.handleOrientationClick}>{svgIcon(currOrientKey)}<span className="sr-only">{orientBtnAlt}</span></button>
-                    <button ref="dlButton" className="btn btn-info btn-sm" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
-                </div>
-                {this.props.children}
-            </Panel>
-        );
+            );
+        }
+
+        return <p className="browser-error">Graph not applicable.</p>;
     }
 }
 
 Graph.propTypes = {
-    graph: PropTypes.object.isRequired, // JSON graph object to render
+    graph: PropTypes.object.isRequired, // JsonGraph object representing the graph being rendered.
     nodeClickHandler: PropTypes.func.isRequired, // Function to call to handle clicks in a node
-    noDefaultClasses: PropTypes.bool, // True to supress default CSS classes on <Panel> components
+    schemas: PropTypes.object, // Schemas for QC metrics
+    colorize: PropTypes.bool, // True if file graph status colorization is turned on, and a legend is needed
     children: PropTypes.node,
 };
 
 Graph.defaultProps = {
+    selectedAssembly: '',
+    selectedAnnotation: '',
+    schemas: null,
+    colorize: false,
     children: null,
-    noDefaultClasses: false,
+};
+
+Graph.contextTypes = {
+    session: PropTypes.object,
+    session_properties: PropTypes.object,
 };

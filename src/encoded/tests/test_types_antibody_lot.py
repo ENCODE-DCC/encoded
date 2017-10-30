@@ -222,7 +222,7 @@ def test_multiple_secondary_one_primary(testapp,
     testapp.patch_json(sec_char2['@id'], {'status': 'exempt from standards',
                                           'reviewed_by': wrangler['@id'],
                                           'documents': [document['@id']],
-                                          'comment': 'Required plea for exemption',
+                                          'submitter_comment': 'Required plea for exemption',
                                           'notes': 'Required reviewer note'})
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']
@@ -286,7 +286,7 @@ def test_histone_mod_characterizations(testapp,
                                                 'characterization_reviews': [
                                                     characterization_review_mouse]})
     testapp.patch_json(sec_char['@id'], {'status': 'exempt from standards',
-                                         'comment': 'Please exempt this.',
+                                         'submitter_comment': 'Please exempt this.',
                                          'notes': 'OK.',
                                          'reviewed_by': wrangler['@id'],
                                          'documents': [document['@id']],
@@ -315,7 +315,7 @@ def test_histone_mod_characterizations(testapp,
 
     testapp.patch_json(prim_char_mouse2['@id'], {'status': 'exempt from standards',
                                                  'reviewed_by': wrangler['@id'],
-                                                 'comment': 'Please exempt this.',
+                                                 'submitter_comment': 'Please exempt this.',
                                                  'notes': 'OK',
                                                  'documents': [document['@id']],
                                                  'target': mouse_target_H3K9me3['@id'],
@@ -371,7 +371,7 @@ def test_multi_lane_primary(testapp,
     testapp.patch_json(prim_char['@id'], {'status': 'compliant',
                                           'reviewed_by': wrangler['@id'],
                                           'documents': [document['@id']],
-                                          'comment': 'Please exempt this.',
+                                          'submitter_comment': 'Please exempt this.',
                                           'notes': 'OK.',
                                           'target': target['@id'],
                                           'characterization_reviews': [characterization_review,
@@ -468,7 +468,7 @@ def test_bonus_char_reviews_in_primary(testapp,
                                          'target': target['@id'],
                                          'reviewed_by': wrangler['@id'],
                                          'documents': [document['@id']],
-                                         'comment': 'Please exempt this.',
+                                         'submitter_comment': 'Please exempt this.',
                                          'notes': 'OK.'})
     res = testapp.get(antibody_lot['@id'] + '@@index-data')
     ab = res.json['object']

@@ -262,11 +262,18 @@ def audit_experiment_missing_unfiltered_bams(value, system, files_structure):
 def audit_experiment_with_uploading_files(value, system, files_structure):
     if files_structure.get('original_files'):
         for file_object in files_structure.get('original_files').values():
-            if file_object['status'] in ['uploading', 'upload failed', 'content error']:
-                detail = 'Experiment {} '.format(value['@id']) + \
-                    'contains a file {} '.format(file_object['@id']) + \
-                    'with the status {}.'.format(file_object['status'])
-                yield AuditFailure('file validation error', detail, level='INTERNAL_ACTION')
+            category = None
+            if file_object['status'] in ['upload failed', 'content error']:
+                category = 'file validation error'
+            elif file_object['status'] == 'uploading':
+                category = 'file in uploading state'
+            if category:
+                detail = ('Experiment {} contains a file {} '
+                          'with the status {}.'.format(value['@id'],
+                                                       file_object['@id'],
+                                                       file_object['status']))
+                yield AuditFailure(category, detail, level='INTERNAL_ACTION')
+
     return
 
 
@@ -2258,6 +2265,11 @@ def audit_experiment_control(value, system, excluded_types):
 
     # Currently controls are only be required for ChIP-seq
     if value.get('assay_term_name') not in controlRequiredAssayList:
+        return
+
+    # single cell RNA-seq in E4 do not require controls (ticket WOLD-6)
+    if value.get('assay_term_name') == 'single cell isolation followed by RNA-seq' and \
+            check_award_condition(value, ["ENCODE4"]):
         return
 
     # We do not want controls

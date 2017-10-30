@@ -15,7 +15,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "title": {
             "title": "Title",
@@ -72,11 +72,7 @@
             "enum" : [
                 "deleted",
                 "in preparation",
-                "in press",
-                "in revision",
-                "planned",
                 "published",
-                "replaced",
                 "submitted"
             ]
         },
