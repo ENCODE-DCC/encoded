@@ -732,7 +732,7 @@ def generate_summary_dictionary(
         for (gm_method, gm_object) in modifications_list:
             gm_methods.add(gm_method)
             gm_summaries.add(generate_modification_summary(gm_method, gm_object))
-        
+
         if experiment_flag is True:
             dict_of_phrases['modifications_list'] = 'genetically modified using ' + \
                 ', '.join(map(str, list(gm_methods)))
@@ -808,8 +808,7 @@ def construct_biosample_summary(phrases_dictionarys, sentence_parts):
         'phase': 'unspecified phase',
         'fractionated': 'unspecified fraction',
         'synchronization': 'not synchronized',
-        'ENCD-3631-summary-treatments
-        ': 'not treated',
+        'treatments_phrase': 'not treated',
         'depleted_in': 'not depleted',
         'genetic_modifications': 'not modified'
     }
