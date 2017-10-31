@@ -21,7 +21,7 @@ from snovault.elasticsearch.interfaces import (
 import copy
 from pprint import pprint as pp
 
-SEARCH_MAX = 99999  # OutOfMemoryError if too high
+SEARCH_MAX = 10000  # OutOfMemoryError if too high
 log = logging.getLogger(__name__)
 
 
@@ -277,9 +277,10 @@ def index_file(request):
                             },
                         },
                     ],
-                },
+                }
+            },
             '_source': False,
-            }
+            
         })
         if res['hits']['total'] > SEARCH_MAX:
             invalidated = list(all_uuids(request.registry))

@@ -193,9 +193,9 @@ class SecondaryIndexer(Indexer):
         last_exc = None
         # First get the object currently in es
         try:
-            result = self.es.get(index=self.index, id=str(uuid))  # No reason to restrict by version and that could interfere with reindex all signal.
+            result = self.esstorage.get_by_uuid(uuid)  # No reason to restrict by version and that could interfere with reindex all signal.
             #result = self.es.get(index=self.index, id=str(uuid), version=xmin, version_type='external_gte')
-            doc = result['_source']
+            doc = result.source
         except StatementError:
             # Can't reconnect until invalid transaction is rolled back
             raise
