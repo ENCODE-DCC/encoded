@@ -45,8 +45,8 @@ def includeme(config):
 
 class SecondState(IndexerState):
     # Accepts handoff of uuids from primary indexer. Keeps track of uuids and secondary_indexer state by cycle.
-    def __init__(self, es, key):
-        super(SecondState, self).__init__(es,key, title='secondary')
+    def __init__(self, es, index):
+        super(SecondState, self).__init__(es, index, title='secondary')
         self.viscached_set      = self.title + '_viscached'
         self.success_set        = self.viscached_set
         self.cleanup_last_cycle.append(self.viscached_set)  # Clean up at beginning of next cycle
@@ -122,7 +122,7 @@ def index_secondary(request):
     indexer = request.registry['secondary'+INDEXER]
 
     # keeping track of state
-    state = SecondState(es,INDEX)
+    state = SecondState(es, INDEX)
 
     last_xmin = None
     result = state.get_initial_state()
