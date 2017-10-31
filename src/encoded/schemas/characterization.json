@@ -45,12 +45,6 @@
         },
         "status": {
             "description": "The current state of the characterization."
-        },
-        "comment": {
-            "title": "Comment",
-            "description": "Additional information pertaining to the characterization that the submitter wishes to disclose.",
-            "type": "string",
-            "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         }
     }
 }
