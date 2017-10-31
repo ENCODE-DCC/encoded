@@ -35,12 +35,7 @@ def item_is_revoked(request, path):
 def calculate_assembly(request, files_list, status):
     assembly = set()
     viewable_file_formats = ['bigWig',
-                             'bigBed',
-                             'narrowPeak',
-                             'broadPeak',
-                             'bedRnaElements',
-                             'bedMethyl',
-                             'bedLogR']
+                             'bigBed']
     viewable_file_status = ['released','in progress']
 
     for path in files_list:
