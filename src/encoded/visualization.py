@@ -2461,7 +2461,7 @@ def generate_batch_hubs(context, request):
             if g_text == '':
                 log.debug('Requesting %s.%s#%s NO ASSEMBLY !!!' % (page,suffix,cmd))
                 g_text = json.dumps(results,indent=4)
-                assemblies = [result['assemblies'] for result in results['@graph']]
+                assemblies = [result.get('assemblies',[]) for result in results['@graph']]
                 assembly_set = set(assemblies)
                 assemblies = list(assembly_set)
                 log.debug('Found %d ASSEMBLY !!!' % len(assemblies))
