@@ -278,7 +278,7 @@ def audit_experiment_with_uploading_files(value, system, files_structure):
 
 
 def audit_experiment_out_of_date_analysis(value, system, files_structure):
-    valid_assay_names = [
+    valid_assay_term_names = [
         'ChIP-seq',
         'DNase-seq',
         'genetic modification followed by DNase-seq',
