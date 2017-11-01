@@ -70,7 +70,7 @@ class BiosampleComponent extends React.Component {
                         <h2>
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
                         </h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        {altacc ? <h4 className="repl-acc">Alternate accessions: {altacc}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />

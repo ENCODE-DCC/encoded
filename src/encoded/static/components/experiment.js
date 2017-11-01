@@ -445,7 +445,7 @@ class ExperimentComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=Experiment" crumbs={crumbs} />
                         <h2>Experiment summary for {context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        {altacc ? <h4 className="repl-acc">Alternate accessions: {altacc}</h4> : null}
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
                         {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
                         <div className="status-line">

@@ -50,7 +50,7 @@ const Item = (props) => {
             <header className="row">
                 <div className="col-sm-12">
                     <h2>{title}</h2>
-                    {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                    {altacc ? <h4 className="repl-acc">Alternate accessions: {altacc}</h4> : null}
                 </div>
             </header>
             <div className="row item-row">

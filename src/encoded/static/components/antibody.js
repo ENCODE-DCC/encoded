@@ -83,7 +83,7 @@ const LotComponent = (props, reactContext) => {
                 <div className="col-sm-12">
                     <Breadcrumbs root="/search/?type=antibody_lot" crumbs={crumbs} />
                     <h2>{context.accession}</h2>
-                    {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                    {altacc ? <h4 className="repl-acc">Alternate accessions: {altacc}</h4> : null}
                     <h3>
                         {targetKeys.length ?
                             <span>Antibody against {Object.keys(targets).map((target, i) => {

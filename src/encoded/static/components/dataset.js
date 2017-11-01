@@ -106,7 +106,7 @@ class AnnotationComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for annotation file set {context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        {altacc ? <h4 className="repl-acc">Alternate accessions: {altacc}</h4> : null}
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
                         {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
                         <div className="status-line">
@@ -304,7 +304,7 @@ class PublicationDataComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for publication file set {context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        {altacc ? <h4 className="repl-acc">Alternate accessions: {altacc}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -468,7 +468,7 @@ class ReferenceComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for reference file set {context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        {altacc ? <h4 className="repl-acc">Alternate accessions: {altacc}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -635,7 +635,7 @@ class ProjectComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for project file set {context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        {altacc ? <h4 className="repl-acc">Alternate accessions: {altacc}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -823,7 +823,7 @@ class UcscBrowserCompositeComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for UCSC browser composite file set {context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        {altacc ? <h4 className="repl-acc">Alternate accessions: {altacc}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -1314,7 +1314,7 @@ export class SeriesComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for {seriesTitle} {context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        {altacc ? <h4 className="repl-acc">Alternate accessions: {altacc}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />

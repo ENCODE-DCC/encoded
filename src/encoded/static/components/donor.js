@@ -569,7 +569,7 @@ class Donor extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>{context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        {altacc ? <h4 className="repl-acc">Alternate accessions: {altacc}</h4> : null}
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />
