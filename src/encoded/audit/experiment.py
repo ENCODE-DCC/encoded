@@ -3217,10 +3217,9 @@ def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
 
     derived_from_fastq_accessions = get_file_accessions(derived_from_fastqs)
 
-    rep_fastqs = []
     replicate_type = 'biological_replicates'
     rep = bam_file.get('biological_replicates')
-    # for DNase we should consider technial relicates
+    # for DNase we should consider technial replicates
     if assay_name != 'ChIP-seq':
         replicate_type = 'technical_replicates'
         rep = bam_file.get('technical_replicates')
@@ -3228,15 +3227,20 @@ def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
     # number of replicates BAM file should belong to have to be one
     # in cases where it is more than one, there probably was replicates 
     # reorganization, that invalidates the analysis    
-    if rep and len(rep) > 1:
+    if isinstance(rep, list) and len(rep) > 1:
         return True
 
-    for fastq_file in files_structure.get('fastq_files').values():
-        if replicate_type in fastq_file:
-            for entry in fastq_file.get(replicate_type):
-                if entry in rep:
-                    rep_fastqs.append(fastq_file)
-                    break
+
+    rep_type_fastqs = [
+        f for f in files_structure.get('fastq_files').values()
+        if replicate_type in f
+    ]
+    rep_set = set(rep)
+    rep_fastqs = [
+        f for f in rep_type_fastqs
+        if any(e in rep_set for e in set(f[replicate_type]))
+    ]
+
     replicate_fastq_accessions = get_file_accessions(rep_fastqs)
     for file_object in rep_fastqs:
         file_acc = file_object.get('accession')
