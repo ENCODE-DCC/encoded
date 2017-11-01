@@ -278,7 +278,13 @@ def audit_experiment_with_uploading_files(value, system, files_structure):
 
 
 def audit_experiment_out_of_date_analysis(value, system, files_structure):
-    if value['assay_term_name'] not in ['ChIP-seq', 'DNase-seq', 'genetic modification followed by DNase-seq']:
+    valid_assay_names = [
+        'ChIP-seq',
+        'DNase-seq',
+        'genetic modification followed by DNase-seq',
+    ]
+    assay_name = value['assay_term_name']
+    if assay_name not in valid_assay_term_names:
         return
 
     if len(files_structure.get('alignments').values()) == 0 and \
@@ -290,16 +296,15 @@ def audit_experiment_out_of_date_analysis(value, system, files_structure):
                   'transcriptome_alignments']
     for file_type in file_types:
         for bam_file in files_structure.get(file_type).values():
-            if bam_file.get('lab') == '/labs/encode-processing-pipeline/' and \
-                bam_file.get('derived_from'):
-                
-                if is_outdated_bams_replicate(bam_file, files_structure, value['assay_term_name']):
+            if bam_file.get('lab') == '/labs/encode-processing-pipeline/' and bam_file.get('derived_from'):  
+                if is_outdated_bams_replicate(bam_file, files_structure, assay_name):
                     assembly_detail = ''
                     if bam_file.get('assembly'):
-                        assembly_detail = ' for {} assembly '.format(bam_file['assembly'])
+                        assembly_detail = ' for {} assembly '.format(
+                            bam_file['assembly'])
                     detail = 'Experiment {} '.format(value['@id']) + \
                             'alignment file {} '.format(
-                                bam_file['@id']) + assembly_detail + \
+                            bam_file['@id']) + assembly_detail + \
                             'is out of date.'
                     yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
     return
@@ -3206,7 +3211,6 @@ def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
     derived_from_fastqs = get_derived_from_files_set(
         [bam_file], files_structure, 'fastq', True)
 
-
     # if there are no FASTQs we can not find our the replicate
     if len(derived_from_fastqs) == 0:
         return False
@@ -3230,7 +3234,6 @@ def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
     for fastq_file in files_structure.get('fastq_files').values():
         if replicate_type in fastq_file:
             for entry in fastq_file.get(replicate_type):
-                print(entry)
                 if entry in rep:
                     rep_fastqs.append(fastq_file)
                     break
