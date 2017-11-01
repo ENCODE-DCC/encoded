@@ -457,30 +457,6 @@ globals.panelViews.register(FlyWormDonor, 'FlyDonor');
 globals.panelViews.register(FlyWormDonor, 'WormDonor');
 
 
-// Gets called once a GET request for a donor's genetic modifcations completes. It calls the basic
-// component to render a table of genetic modfications.
-const GeneticModificationsRenderer = (props) => {
-    const { geneticModifications } = props;
-
-    if (geneticModifications['@graph'].length) {
-        return <GeneticModificationSummary geneticModifications={geneticModifications['@graph']} />;
-    }
-
-    // Search of Genetic modifications returned none, so don't render a table. This should normally
-    // not happen because this component only gets called if the donor lists at least one genetic
-    // modification it's related to, but could happen if the site is indexing.
-    return null;
-};
-
-GeneticModificationsRenderer.propTypes = {
-    geneticModifications: PropTypes.object, // Array of genetic modification objects from a GET request
-};
-
-GeneticModificationsRenderer.defaultProps = {
-    geneticModifications: null, // Actually required, but since it's from a GET request, it looks not required to the linter
-};
-
-
 // This component activates for any donors that aren't any of the above registered types.
 class Donor extends React.Component {
     constructor() {
