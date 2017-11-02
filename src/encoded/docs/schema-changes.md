@@ -213,10 +213,20 @@ There are 2 categories when we talk about updating an existing schema:
             value = migrator.upgrade('{metadata_object}', {metadata_object}_2, target_version='3')
             assert value['schema_version'] == '3'
             assert value['property_1'] == 'value 1'
+            
+5. You must check the results of your upgrade on the current database:
+   ** note ** it is possible to write a "bad" upgrade that does not prevent your objects from loading or being shown.
+   
+   You can check using the following methods:
+   * Checking for errors in the /var/log/cloud-init-output.log (search for "batchupgrade" a few times) in any demo with your upgrade.
+   * Looking at the JSON for an object that should be upgraded by checking it's schema_version property.
+   * Updating and object and looking in the /var/log/apache2/error.log for stack traces.
+   
+   It is also possible that an upgrade can be clean under a current database but new objects POSTed before release are broken, so it will be checked again during release.
 
-5. If applicable you may need to update audits on the metadata. Please refer to [making_audits]
+6. If applicable you may need to update audits on the metadata. Please refer to [making_audits]
 
-6. To document all the schema changes that occurred between increments of the ```schema_version``` update the object changelogs the **schemas/changelogs** directory. Below is an example of the changelog for above upgrade:
+7. To document all the schema changes that occurred between increments of the ```schema_version``` update the object changelogs the **schemas/changelogs** directory. Below is an example of the changelog for above upgrade:
 
     Schema version 2
     ----------------
