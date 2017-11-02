@@ -215,7 +215,8 @@ There are 2 categories when we talk about updating an existing schema:
             assert value['property_1'] == 'value 1'
             
 5. You must check the results of your upgrade on the current database:
-   ** note ** it is possible to write a "bad" upgrade that does not prevent your objects from loading or being shown.
+   
+   **note** it is possible to write a "bad" upgrade that does not prevent your objects from loading or being shown.
    
    You can check using the following methods:
    * Checking for errors in the /var/log/cloud-init-output.log (search for "batchupgrade" a few times) in any demo with your upgrade.
