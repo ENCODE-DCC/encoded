@@ -298,13 +298,13 @@ def audit_experiment_out_of_date_analysis(value, system, files_structure):
         for bam_file in files_structure.get(file_type).values():
             if bam_file.get('lab') == '/labs/encode-processing-pipeline/' and bam_file.get('derived_from'):  
                 if is_outdated_bams_replicate(bam_file, files_structure, assay_name):
-                    assembly_detail = ''
+                    assembly_detail = ' '
                     if bam_file.get('assembly'):
                         assembly_detail = ' for {} assembly '.format(
                             bam_file['assembly'])
                     detail = 'Experiment {} '.format(value['@id']) + \
-                            'alignment file {} '.format(
-                            bam_file['@id']) + assembly_detail + \
+                            'alignment file {}{}'.format(
+                            bam_file['@id'], assembly_detail) + \
                             'is out of date.'
                     yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
     return
@@ -3217,12 +3217,13 @@ def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
 
     derived_from_fastq_accessions = get_file_accessions(derived_from_fastqs)
 
-    replicate_type = 'biological_replicates'
-    rep = bam_file.get('biological_replicates')
+    # for ChIP-seq we should consider biological replicates
     # for DNase we should consider technial replicates
     if assay_name != 'ChIP-seq':
         replicate_type = 'technical_replicates'
-        rep = bam_file.get('technical_replicates')
+    else:
+        replicate_type = 'biological_replicates'
+    rep = bam_file.get(replicate_type)
     
     # number of replicates BAM file should belong to have to be one
     # in cases where it is more than one, there probably was replicates 
