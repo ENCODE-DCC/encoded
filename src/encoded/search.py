@@ -805,6 +805,13 @@ def search(context, request, search_type=None, return_generator=False):
     # pp(query)
     # Decide whether to use scan for results.
     do_scan = size is None or size > 1000
+
+    # When type is known, route search request to relevant index
+    if not request.params.get('type') or 'Item' in doc_types:
+        es_index = '_all'
+    else:
+        es_index = [types[type_name].item_type for type_name in doc_types if hasattr(types[type_name], 'item_type')]
+
     # Execute the query
     if do_scan:
         es_results = es.search(body=query, index=es_index, search_type='query_then_fetch')
