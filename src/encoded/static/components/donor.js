@@ -7,7 +7,6 @@ import { auditDecor } from './audit';
 import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, DocumentsSubpanels } from './doc';
-import { FetchedData, Param } from './fetched';
 import { GeneticModificationSummary } from './genetic_modification';
 import * as globals from './globals';
 import { RelatedItems } from './item';
