@@ -49,7 +49,7 @@ const Item = (props) => {
                 <div className="col-sm-12">
                     <h2>{title}</h2>
                     <AlternateAccession altAcc={context.alternate_accessions} />
-                    </div>
+                </div>
             </header>
             <div className="row item-row">
                 <div className="col-sm-12">
