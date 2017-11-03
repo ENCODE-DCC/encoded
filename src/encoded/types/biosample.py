@@ -683,7 +683,7 @@ def generate_summary_dictionary(
 
     if treatment_objects_list is not None and len(treatment_objects_list) > 0:
         treatments_list = []
-        for treatmentObject in treatment_objects_list:
+        for treatment_object in treatment_objects_list:
             to_add = ''
             amt = str(treatment_object.get('amount', ''))
             amt_units = treatment_object.get('amount_units', '')
