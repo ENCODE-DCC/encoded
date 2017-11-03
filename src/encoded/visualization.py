@@ -2248,12 +2248,11 @@ def browsers_available(status, assemblies, types, item_type=None, files=None, ac
         mapped_assembly = _ASSEMBLY_MAPPER_FULL.get(assembly)
         if not mapped_assembly:
             continue
-        es_key = accession + "_" + assembly
         vis_blob = None
         if request is not None and accession is not None:
-            vis_blob = get_from_es(request, es_key)  # use of find_or_make_acc_composite() will recurse!
+            vis_blob = get_from_es(request, accession + "_" + assembly)  # use of find_or_make_acc_composite() will recurse!
         if 'ucsc' not in browsers and 'ucsc_assembly' in mapped_assembly.keys():
-            if vis_blob is not None:
+            if vis_blob is not None or files is None:  # If not checking files, be lenient
                 browsers.add('ucsc')
             elif files is not None:
                 for file in files:
@@ -2263,7 +2262,7 @@ def browsers_available(status, assemblies, types, item_type=None, files=None, ac
                         break
 
         if 'ensembl' not in browsers and 'ensembl_host' in mapped_assembly.keys():
-            if vis_blob is not None:
+            if vis_blob is not None or files is None:
                 browsers.add('ensembl')
             elif files is not None:
                 for file in files:
@@ -2275,7 +2274,7 @@ def browsers_available(status, assemblies, types, item_type=None, files=None, ac
             # NOTE: quickview may not have vis_blob as 'in progress' files can also be displayed
             #       Ideally we would also look at files' statuses and formats.  However, the (calculated)files
             #       property only contains 'released' files so it doesn't really help for quickview!
-            if vis_blob is not None or (status not in QUICKVIEW_STATUSES_BLOCKED and files is not None):
+            if vis_blob is not None or (status not in QUICKVIEW_STATUSES_BLOCKED):
                 browsers.add('quickview')
         if len(browsers) == 3:  # No use continuing
             break
@@ -2294,7 +2293,7 @@ def object_is_visualizable(obj, assembly=None, check_files=False):
     files = None
     if check_files:
         files = obj.get('files',[])
-    browsers = browsers_available(obj.get('status','none'), assemblies, files, obj.get('@type',[]))
+    browsers = browsers_available(obj.get('status','none'), assemblies, obj.get('@type',[]), files=files)
 
     return len(browsers) > 0
 
