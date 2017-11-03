@@ -8,7 +8,7 @@ import { auditDecor } from './audit';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel } from './doc';
 import * as globals from './globals';
-import { requestFiles, requestObjects, requestSearch, RestrictedDownloadButton } from './objectutils';
+import { requestFiles, requestObjects, requestSearch, RestrictedDownloadButton, AlternateAccession } from './objectutils';
 import { ProjectBadge } from './image';
 import { QualityMetricsPanel } from './quality_metric';
 import { SortTablePanel, SortTable } from './sorttable';
@@ -332,7 +332,6 @@ class FileComponent extends React.Component {
     render() {
         const { context } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
-        const altacc = (context.alternate_accessions && context.alternate_accessions.length) ? context.alternate_accessions.join(', ') : null;
         const aliasList = (context.aliases && context.aliases.length) ? context.aliases.join(', ') : '';
         const datasetAccession = globals.atIdToAccession(context.dataset);
         const adminUser = !!this.context.session_properties.admin;
@@ -360,7 +359,7 @@ class FileComponent extends React.Component {
                 <header className="row">
                     <div className="col-sm-12">
                         <h2>File summary for {context.title} (<span className="sentence-case">{context.file_format}</span>)</h2>
-                        {altacc ? <h4 className="repl-acc">Alternate accessions: {altacc}</h4> : null}
+                        <AlternateAccession altAcc={context.alternate_accessions} />
                         {context.restricted ? <h4 className="superseded-acc">Restricted file</h4> : null}
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
                         {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
