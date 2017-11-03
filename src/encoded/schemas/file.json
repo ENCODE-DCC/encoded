@@ -255,11 +255,11 @@
                     {
                         "properties": {
                             "output_type": {
-                            "enum": ["rejected reads"]
+                                "enum": ["rejected reads"]
                             }
                         }
                     }
-                ]                        
+                ]
             }
         },
         "file_format":{
@@ -340,7 +340,8 @@
                                     "sra",
                                     "bigWig",
                                     "csfasta",
-                                    "csqual"]
+                                    "csqual"
+                                ]
                             }
                         }
                     }
