@@ -1,3 +1,4 @@
+import copy
 import re
 from pyramid.view import view_config
 from snovault import (
@@ -12,7 +13,7 @@ from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
 from .visualization import vis_format_url
-import copy
+from collections import OrderedDict
 
 from pprint import pprint as pp
 
@@ -50,6 +51,15 @@ DEFAULT_DOC_TYPES = [
     'Target',
 ]
 
+
+def sort_query(unsorted_query):
+    sorted_query = OrderedDict()
+    for field, value in sorted(unsorted_query.items()):
+        if isinstance(value, dict):
+            sorted_query[field] = sort_query(value)
+        else:
+            sorted_query[field] = value
+    return sorted_query
 
 def get_pagination(request):
     from_ = request.params.get('from') or 0
@@ -802,6 +812,10 @@ def search(context, request, search_type=None, return_generator=False):
             facets.append(audit_facet)
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
+
+    # Search caching uses JSON as cache key, hence sorting the query
+    query = sort_query(query)
+
     # pp(query)
     # Decide whether to use scan for results.
     do_scan = size is None or size > 1000
@@ -816,7 +830,7 @@ def search(context, request, search_type=None, return_generator=False):
     if do_scan:
         es_results = es.search(body=query, index=es_index, search_type='query_then_fetch')
     else:
-        es_results = es.search(body=query, index=es_index, from_=from_, size=size)
+        es_results = es.search(body=query, index=es_index, from_=from_, size=size, request_cache=True)
 
     # pp('QUERY')
     # pp(query)
