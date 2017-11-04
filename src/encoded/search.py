@@ -830,7 +830,7 @@ def search(context, request, search_type=None, return_generator=False):
     if do_scan:
         es_results = es.search(body=query, index=es_index, search_type='query_then_fetch')
     else:
-        es_results = es.search(body=query, index=es_index, from_=from_, size=size, request_cache=True)
+        es_results = es.search(body=query, index=es_index, from_=from_, size=size, request_cache=True, profile=True)
 
     # pp('QUERY')
     # pp(query)
