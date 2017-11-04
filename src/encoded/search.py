@@ -15,6 +15,7 @@ from .visualization import vis_format_url
 import copy
 
 from pprint import pprint as pp
+import pdb
 
 
 CHAR_COUNT = 32
@@ -459,7 +460,7 @@ def set_facets(facets, used_filters, principals, doc_types):
         agg_name, agg = build_aggregation(facet_name, facet_options)
         aggs[agg_name] = {
             'aggs': {
-                agg_name: agg
+                agg_name: agg,
             },
             'filter': {
                 'bool': {
@@ -468,7 +469,6 @@ def set_facets(facets, used_filters, principals, doc_types):
                 },
             },
         }
-
     return aggs
 
 
@@ -517,7 +517,7 @@ def format_results(request, hits, result=None):
 
 def search_result_actions(request, doc_types, es_results, position=None):
     actions = {}
-    aggregations = es_results['aggregations']
+    aggregations = es_results['aggregations']['global_aggs']
 
     # generate batch hub URL for experiments
     # TODO we could enable them for Datasets as well here, but not sure how well it will work
@@ -572,7 +572,7 @@ def format_facets(es_results, facets, used_filters, schemas, total, principals):
     if 'aggregations' not in es_results:
         return result
 
-    aggregations = es_results['aggregations']
+    aggregations = es_results['aggregations']['global_aggs']
     used_facets = set()
     exists_facets = set()
     for field, options in facets:
@@ -800,11 +800,16 @@ def search(context, request, search_type=None, return_generator=False):
     for audit_facet in audit_facets:
         if search_audit and 'group.submitter' in principals or 'INTERNAL_ACTION' not in audit_facet[0]:
             facets.append(audit_facet)
-
-    query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
+    query['aggs'] = {'global_aggs': {'global': {}}}
+    query['aggs']['global_aggs']['aggs'] = set_facets(facets, used_filters, principals, doc_types)
+    # pdb.set_trace()
+    # query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
     # pp(query)
     # Decide whether to use scan for results.
     do_scan = size is None or size > 1000
+
+    filters_ = copy.deepcopy(query['post_filter'])
+    query['query']['bool']['filter'] = filters_
 
     # When type is known, route search request to relevant index
     if not request.params.get('type') or 'Item' in doc_types:
@@ -813,6 +818,7 @@ def search(context, request, search_type=None, return_generator=False):
         es_index = [types[type_name].item_type for type_name in doc_types if hasattr(types[type_name], 'item_type')]
 
     # Execute the query
+    del query['post_filter']
     if do_scan:
         es_results = es.search(body=query, index=es_index, search_type='query_then_fetch')
     else:
