@@ -156,6 +156,9 @@ slim_shims = {
         'OBI:0002086': 'DNA methylation'  # TAB-seq
     },
     'organ': {
+        'NTR:0001407': 'brain',
+        'UBERON:0001871': 'brain',
+        'UBERON:0002686': 'brain',
         'EFO:0002782': 'brain',
         'EFO:0002246': 'blood',
         'EFO:0002034': 'blood',
