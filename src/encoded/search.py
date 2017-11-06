@@ -287,18 +287,18 @@ def build_terms_filter(query_filters, field, terms, query):
             field = 'embedded.' + field
         # Setting not filter instead of terms filter
         if terms == ['*']:
-            filter_condition = {
-                'missing': {
+            negative_filter_condition = {
+                'exists': {
                     'field': field,
                 }
             }
         else:
-            query_filters['must_not'].append({
+            negative_filter_condition = {
                 'terms': {
                     field: terms
                 }
-            })
-            return
+            }
+        query_filters['must_not'].append(negative_filter_condition)
     else:
         if not field.startswith('audit'):
             field = 'embedded.' + field
@@ -314,7 +314,7 @@ def build_terms_filter(query_filters, field, terms, query):
                     field: terms,
                 },
             }
-    query_filters['must'].append(filter_condition)
+        query_filters['must'].append(filter_condition)
 
 def set_filters(request, query, result, static_items=None):
     """
@@ -457,7 +457,7 @@ def set_facets(facets, used_filters, principals, doc_types):
 
             if field.endswith('!'):
                 if terms == ['*']:
-                    filters.append({'missing': {'field': query_field}})
+                    negative_filters.append({'exists': {'field': query_field}})
                 else:
                     negative_filters.append({'terms': {query_field: terms}})
             else:
