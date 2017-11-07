@@ -96,6 +96,9 @@
         "status": {
             "title": "Status"
         },
+        "strain_background": {
+            "title": "Strain background"
+        },
         "lab.title": {
             "title": "Lab"
         }
@@ -110,8 +113,8 @@
         "status": {
             "title": "Status"
         },
-        "lab": {
-            "title": "Lab"
+        "lab.title": {
+            "title": "Title"
         },
         "strain_name": {
             "title": "Strain name"
@@ -128,8 +131,8 @@
         "external_ids": {
             "title": "Unique external identifier(s) of strain or donor"
         },
-        "organism.name": {
-            "title": "Organism"
+        "organism.scientific_name": {
+            "title": "Binomial name"
         }
     },
     "boost_values": {
