@@ -94,7 +94,7 @@ describe('Experiment Page', () => {
         });
 
         test('displays two alternate accessions', () => {
-            expect(alt.text()).toEqual('Replaces ENCSR000ACT, ENCSR999NOF');
+            expect(alt.text()).toEqual('Alternate accessions: ENCSR000ACT, ENCSR999NOF');
         });
     });
 });

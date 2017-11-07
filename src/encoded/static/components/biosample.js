@@ -10,7 +10,7 @@ import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
-import { singleTreatment, treatmentDisplay, PanelLookup } from './objectutils';
+import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession } from './objectutils';
 import pubReferenceList from './reference';
 import StatusLabel from './statuslabel';
 import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable } from './typeutils';
@@ -50,9 +50,6 @@ class BiosampleComponent extends React.Component {
         }
         combinedDocs = globals.uniqueObjectsArray(combinedDocs);
 
-        // Make string of alternate accessions
-        const altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
-
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
 
@@ -70,7 +67,7 @@ class BiosampleComponent extends React.Component {
                         <h2>
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
                         </h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <AlternateAccession altAcc={context.alternate_accessions} />
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />

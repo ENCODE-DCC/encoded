@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import url from 'url';
 import Table from './collection';
 import { FetchedData, Param } from './fetched';
-import * as globals from './globals';
 import { JSONSchemaForm } from './form';
+import * as globals from './globals';
+import { AlternateAccession } from './objectutils';
 
 
 const Fallback = (props, reactContext) => {
@@ -42,15 +43,12 @@ const Item = (props) => {
     const title = globals.listingTitles.lookup(context)({ context });
     const ItemPanel = globals.panelViews.lookup(context);
 
-    // Make string of alternate accessions
-    const altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
-
     return (
         <div className={itemClass}>
             <header className="row">
                 <div className="col-sm-12">
                     <h2>{title}</h2>
-                    {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                    <AlternateAccession altAcc={context.alternate_accessions} />
                 </div>
             </header>
             <div className="row item-row">
