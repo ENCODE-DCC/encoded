@@ -147,11 +147,17 @@ slim_shims = {
         'OBI:0001923': 'Proteomics',  # OBI:0000615': 'MS-MS'
         'OBI:0001849': 'Genotyping',  # OBI:0000435 (DNA-PET)
         'OBI:0002044': 'RNA binding',  # OBI:0001854 (RNA-Bind-N-Seq)
-        'OBI:0002091': 'Transcription',
-        'OBI:0002092': 'Transcription',
-        'OBI:0002093': 'Transcription'
+        'OBI:0002091': 'Transcription',  # 5' RACE
+        'OBI:0002092': 'Transcription',  # 3' RACE
+        'OBI:0002093': 'Transcription',  # 5' RLM RACE
+        'OBI:0001863': 'DNA methylation',  # WGBS
+        'OBI:0001862': 'DNA methylation',  # RRBS
+        'OBI:0001861': 'DNA methylation',  # MRE-seq
+        'OBI:0002086': 'DNA methylation'  # TAB-seq
     },
     'organ': {
+        'UBERON:0001871': 'brain',
+        'UBERON:0002686': 'brain',
         'EFO:0002782': 'brain',
         'EFO:0002246': 'blood',
         'EFO:0002034': 'blood',

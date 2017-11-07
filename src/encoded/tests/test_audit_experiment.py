@@ -2354,6 +2354,41 @@ def test_audit_experiment_out_of_date_analysis_removed_fastq(testapp,
     assert any(error['category'] == 'out of date analysis' for error in collect_audit_errors(res))
 
 
+def test_audit_experiment_not_out_of_date_analysis_DNase(testapp,
+                                                         base_experiment,
+                                                         replicate_1_1,
+                                                         replicate_1_2,
+                                                         file_fastq_3,
+                                                         file_fastq_4,
+                                                         file_bam_1_1,
+                                                         file_bam_2_1):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'DNase-seq'})
+    testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']]})
+    testapp.patch_json(file_fastq_3['@id'], {'replicate': replicate_1_1['@id']})
+    testapp.patch_json(file_fastq_4['@id'], {'replicate': replicate_1_2['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(error['category'] != 'out of date analysis' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_out_of_date_analysis_DNase(testapp,
+                                                     base_experiment,
+                                                     replicate_1_1,
+                                                     replicate_1_2,
+                                                     file_fastq_3,
+                                                     file_fastq_4,
+                                                     file_bam_1_1,
+                                                     file_bam_2_1):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'DNase-seq'})
+    testapp.patch_json(file_bam_1_1['@id'], {'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(file_bam_2_1['@id'], {'derived_from': [file_fastq_4['@id']]})
+    testapp.patch_json(file_fastq_3['@id'], {'replicate': replicate_1_1['@id'],
+                                             'status': 'deleted'})
+    testapp.patch_json(file_fastq_4['@id'], {'replicate': replicate_1_2['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] == 'out of date analysis' for error in collect_audit_errors(res))
+
+
 def test_audit_experiment_no_out_of_date_analysis(testapp,
                                                   base_experiment,
                                                   replicate_1_1,
