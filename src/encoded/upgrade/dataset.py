@@ -316,7 +316,8 @@ def dataset_14_15(value, system):
 
 @upgrade_step('annotation', '15', '16')
 def annotation_15_16(value, system):
-    if value['annotation_type'] in ['enhancer-like regions', 'promoter-like regions']:
-        value['annotation_type'] = 'candidate regulatory elements'
-    if value['annotation_type'] == 'DNase master peaks':
-        value['annotation_type'] = 'representative DNase hypersensitivity sites'
+    if 'annotation_type' in value:
+        if value['annotation_type'] in ['enhancer-like regions', 'promoter-like regions']:
+            value['annotation_type'] = 'candidate regulatory elements'
+        if value['annotation_type'] == 'DNase master peaks':
+            value['annotation_type'] = 'representative DNase hypersensitivity sites'
