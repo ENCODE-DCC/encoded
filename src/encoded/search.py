@@ -77,17 +77,12 @@ def get_pagination(request):
 def get_filtered_query(term, search_fields, result_fields, principals, doc_types):
     return {
         'query': {
-            'bool': {
-                'must': {
-                    'multi_match': {
-                        'query': term,
-                        'fields': search_fields,
-                        'type': 'best_fields',
-                        'operator': 'and'
-                    }
-                },
-                'must_not': []
-                }},
+            'query_string': {
+                'query': term,
+                'fields': search_fields,
+                'default_operator': 'AND'
+            }
+        },
         'post_filter': {
             'bool': {
                 'must': [
@@ -786,11 +781,11 @@ def search(context, request, search_type=None, return_generator=False):
     # If no text search, use match_all query instead of query_string
     if search_term == '*':
         # query['query']['match_all'] = {}
-        del query['query']['bool']['must']
+        del query['query']['query_string']
     # If searching for more than one type, don't specify which fields to search
     else:
         # del query['query']['bool']['must']['multi_match']['fields']
-        query['query']['bool']['must']['multi_match']['fields'].extend(['_all', '*.uuid', '*.md5sum', '*.submitted_file_name'])
+        query['query']['query_string']['fields'].extend(['_all', '*.uuid', '*.md5sum', '*.submitted_file_name'])
 
 
     # Set sort order
@@ -1029,11 +1024,11 @@ def matrix(context, request):
 
     if search_term == '*':
         # query['query']['match_all'] = {}
-        del query['query']['bool']['must']
+        del query['query']['query_string']
     # If searching for more than one type, don't specify which fields to search
     else:
         # del query['query']['bool']['must']['multi_match']['fields']
-        query['query']['bool']['must']['multi_match']['fields'].extend(['_all', '*.uuid', '*.md5sum', '*.submitted_file_name'])
+        query['query']['query_string']['fields'].extend(['_all', '*.uuid', '*.md5sum', '*.submitted_file_name'])
 
     # Setting filters.
     # Rather than setting them at the top level of the query
@@ -1174,7 +1169,7 @@ def news(context, request):
                                doc_types)
     
     # Keyword search on news items is not implemented yet
-    del query['query']['bool']['must']
+    del query['query']['query_string']
     # If searching for more than one type, don't specify which fields to search
 
     # Set sort order to sort by date_created.
@@ -1298,11 +1293,11 @@ def audit(context, request):
 
     if search_term == '*':
         # query['query']['match_all'] = {}
-        del query['query']['bool']['must']
+        del query['query']['query_string']
     # If searching for more than one type, don't specify which fields to search
     else:
         # del query['query']['bool']['must']['multi_match']['fields']
-        query['query']['bool']['must']['multi_match']['fields'].extend(['_all', '*.uuid', '*.md5sum', '*.submitted_file_name'])
+        query['query']['query_string']['fields'].extend(['_all', '*.uuid', '*.md5sum', '*.submitted_file_name'])
 
     # Setting filters.
     # Rather than setting them at the top level of the query
