@@ -107,6 +107,9 @@
         "status": {
             "title": "Status"
         },
+        "strain_background": {
+            "title": "Strain background"
+        },
         "lab.title": {
             "title": "Lab"
         }
@@ -121,8 +124,8 @@
         "status": {
             "title": "Status"
         },
-        "lab": {
-            "title": "Lab"
+        "lab.title": {
+            "title": "Title"
         },
         "strain_name": {
             "title": "Strain name"
@@ -132,6 +135,9 @@
         },
         "strain_background": {
             "title": "Strain background"
+        },
+        "organism.scientific_name": {
+            "title": "Binomial name"
         },
         "genetic_modifications": {
             "title": "Genetic modifications"
