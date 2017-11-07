@@ -2249,7 +2249,7 @@ def browsers_available(status, assemblies, types, item_type=None, files=None, ac
         if not mapped_assembly:
             continue
         vis_blob = None
-        if request is not None and accession is not None:
+        if request is not None and accession is not None and status == 'released':
             vis_blob = get_from_es(request, accession + "_" + assembly)  # use of find_or_make_acc_composite() will recurse!
         if 'ucsc' not in browsers and 'ucsc_assembly' in mapped_assembly.keys():
             if vis_blob is not None or files is None:  # If not checking files, be lenient
