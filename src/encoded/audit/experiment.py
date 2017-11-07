@@ -61,11 +61,11 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                 # initially was for file award
                 if not alignment_file.get('award') or \
                     alignment_file.get('award')['rfa'] not in [
-                    'ENCODE3',
-                    'ENCODE4',
-                    'ENCODE2-Mouse',
-                    'ENCODE2',
-                    'ENCODE',
+                        'ENCODE3',
+                        'ENCODE4',
+                        'ENCODE2-Mouse',
+                        'ENCODE2',
+                        'ENCODE',
                         'Roadmap']:
                     continue
                 if alignment_file.get('lab') not in ['/labs/encode-processing-pipeline/']:
@@ -278,7 +278,13 @@ def audit_experiment_with_uploading_files(value, system, files_structure):
 
 
 def audit_experiment_out_of_date_analysis(value, system, files_structure):
-    if value['assay_term_name'] not in ['ChIP-seq', 'DNase-seq']:
+    valid_assay_term_names = [
+        'ChIP-seq',
+        'DNase-seq',
+        'genetic modification followed by DNase-seq',
+    ]
+    assay_name = value['assay_term_name']
+    if assay_name not in valid_assay_term_names:
         return
 
     if len(files_structure.get('alignments').values()) == 0 and \
@@ -290,18 +296,19 @@ def audit_experiment_out_of_date_analysis(value, system, files_structure):
                   'transcriptome_alignments']
     for file_type in file_types:
         for bam_file in files_structure.get(file_type).values():
-            if bam_file.get('lab') == '/labs/encode-processing-pipeline/' and \
-                    bam_file.get('derived_from'):
-                if is_outdated_bams_replicate(bam_file, files_structure):
-                    assembly_detail = ''
+            if bam_file.get('lab') == '/labs/encode-processing-pipeline/' and bam_file.get('derived_from'):  
+                if is_outdated_bams_replicate(bam_file, files_structure, assay_name):
+                    assembly_detail = ' '
                     if bam_file.get('assembly'):
                         assembly_detail = ' for {} assembly '.format(
                             bam_file['assembly'])
-                        detail = 'Experiment {} '.format(value['@id']) + \
-                            'alignment file {} '.format(
-                            bam_file['@id']) + assembly_detail + \
-                            'is out of date.'
-                        yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
+                    detail = 'Experiment {} '\
+                             'alignment file {}{}'\
+                             'is out of date.'.format(
+                                value['@id'],
+                                bam_file['@id'],
+                                assembly_detail)
+                    yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
     return
 
 
@@ -3195,15 +3202,14 @@ def get_file_accessions(list_of_files):
     return accessions_set
 
 
-def is_outdated_bams_replicate(bam_file, files_structure):
-
+def is_outdated_bams_replicate(bam_file, files_structure, assay_name):
+    # if derived_from contains accessions that were not in
+    # original_files and not in contributing files - it is outdated!    
     for file_id in bam_file.get('derived_from'):
         if file_id not in files_structure.get('original_files') and \
            file_id not in files_structure.get('contributing_files'):
             return True
 
-    # if derived_from contains accessions that were not in
-    # original_files and not in contributing files - it is outdated!
     derived_from_fastqs = get_derived_from_files_set(
         [bam_file], files_structure, 'fastq', True)
 
@@ -3213,32 +3219,44 @@ def is_outdated_bams_replicate(bam_file, files_structure):
 
     derived_from_fastq_accessions = get_file_accessions(derived_from_fastqs)
 
-    bio_rep = []
-    for fastq_file in derived_from_fastqs:
-        if 'biological_replicates' in fastq_file and \
-           len(fastq_file['biological_replicates']) != 0:
-            for entry in fastq_file['biological_replicates']:
-                bio_rep.append(entry)
-            break
+    # for ChIP-seq we should consider biological replicates
+    # for DNase we should consider technial replicates
+    if assay_name != 'ChIP-seq':
+        replicate_type = 'technical_replicates'
+    else:
+        replicate_type = 'biological_replicates'
+    rep = bam_file.get(replicate_type)
+    
+    # number of replicates BAM file should belong to have to be one
+    # in cases where it is more than one, there probably was replicates 
+    # reorganization, that invalidates the analysis    
+    if isinstance(rep, list) and len(rep) > 1:
+        return True
 
-    bio_rep_fastqs = []
-    for fastq_file in files_structure.get('fastq_files').values():
-        if 'biological_replicates' in fastq_file:
-            for entry in fastq_file['biological_replicates']:
-                if entry in bio_rep:
-                    bio_rep_fastqs.append(fastq_file)
-                    break
 
-    replicate_fastq_accessions = get_file_accessions(bio_rep_fastqs)
-    for file_object in bio_rep_fastqs:
+    rep_type_fastqs = [
+        f for f in files_structure.get('fastq_files').values()
+        if replicate_type in f
+    ]
+    rep_set = set(rep)
+    rep_fastqs = [
+        f for f in rep_type_fastqs
+        if any(e in rep_set for e in set(f[replicate_type]))
+    ]
+
+    replicate_fastq_accessions = get_file_accessions(rep_fastqs)
+    for file_object in rep_fastqs:
         file_acc = file_object.get('accession')
-        if file_acc not in derived_from_fastq_accessions:
+        # for ChIP even one file out of pair is considerd uptodate
+        if assay_name == 'ChIP-seq' and file_acc not in derived_from_fastq_accessions:
             paired_file_id = file_object.get('paired_with')
-            if paired_file_id and \
-               paired_file_id.split('/')[2] not in derived_from_fastq_accessions:
+            if paired_file_id and paired_file_id.split('/')[2] not in derived_from_fastq_accessions:
                 return True
             elif not paired_file_id:
                 return True
+        # for DNase all the files from tech. rep should be in the list of the derived_from
+        elif assay_name != 'ChIP-seq' and file_acc not in derived_from_fastq_accessions:
+            return True
 
     for f_accession in derived_from_fastq_accessions:
         if f_accession not in replicate_fastq_accessions:
