@@ -219,7 +219,7 @@ There are 2 categories when we talk about updating an existing schema:
    **note** it is possible to write a "bad" upgrade that does not prevent your objects from loading or being shown.
    
    You can check using the following methods:
-   * Checking for errors in the /var/log/cloud-init-output.log (search for "batchupgrade" a few times) in any demo with your upgrade.
+   * Checking for errors in the /var/log/cloud-init-output.log (search for "batchupgrade" a few times) in any demo with your upgrade, this can be done about 30min after launch (after machine reboots post-install), no need to wait for the indexing to complete.
    * Looking at the JSON for an object that should be upgraded by checking it's schema_version property.
    * Updating and object and looking in the /var/log/apache2/error.log for stack traces.
    
