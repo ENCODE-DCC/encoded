@@ -198,7 +198,7 @@ class Collection extends React.Component {
                         <h4>{context.total} total {context.title}</h4>
                         <div className="collection-heading__controls">
                             {(context.actions || []).map(action =>
-                                <a href={action.href} className="btn btn-info">
+                                <a key={action.name} href={action.href} className="btn btn-info">
                                     {action.title}
                                 </a>
                             )}

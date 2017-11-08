@@ -87,6 +87,17 @@
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         }
     },
+    "facets": {
+        "status": {
+            "title": "Status"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "viewing_groups": {
+            "title": "View access group"
+        }
+    },
     "boost_values": {
         "title": 1.0,
         "lab": 1.0
