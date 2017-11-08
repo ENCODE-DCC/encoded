@@ -88,14 +88,8 @@
         }
     },
     "facets": {
-        "status": {
-            "title": "Status"
-        },
         "lab.title": {
             "title": "Lab"
-        },
-        "viewing_groups": {
-            "title": "View access group"
         }
     },
     "boost_values": {

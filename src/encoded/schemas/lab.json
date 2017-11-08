@@ -123,6 +123,9 @@
         }
     },
     "facets": {
+        "awards.rfa": {
+            "title": "RFA"
+        },
         "status": {
             "title": "Status"
         }
