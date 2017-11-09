@@ -1172,9 +1172,19 @@ export class ResultTable extends React.Component {
     constructor(props) {
         super(props);
 
+        // Make an array of all assemblies found in all files in the search results.
+        let assemblies = [];
+        const results = this.props.context['@graph'];
+        const files = results.length ? results.filter(result => result['@type'][0] === 'File') : [];
+        if (files.length) {
+            // Reduce all found file assemblies so we don't have duplicates in the 'assemblies' array.
+            assemblies = files.reduce((assembliesAcc, file) => ((!file.assembly || assembliesAcc.indexOf(file.assembly) > -1) ? assembliesAcc : assembliesAcc.concat(file.assembly)), []);
+        }
+
         // Set React component state.
         this.state = {
-            browserAssembly: this.props.assemblies && this.props.assemblies[0], // Currently selected assembly for the browser
+            assemblies,
+            browserAssembly: assemblies.length && assemblies[0], // Currently selected assembly for the browser
             selectedTab: '',
         };
 
@@ -1221,7 +1231,8 @@ export class ResultTable extends React.Component {
 
     render() {
         const visualizeLimit = 100;
-        const { context, searchBase, assemblies, restrictions } = this.props;
+        const { context, searchBase, restrictions } = this.props;
+        const { assemblies } = this.state
         const results = context['@graph'];
         const total = context.total;
         const visualizeDisabled = total > visualizeLimit;
@@ -1422,7 +1433,6 @@ ResultTable.propTypes = {
     context: PropTypes.object,
     actions: PropTypes.array,
     restrictions: PropTypes.object,
-    assemblies: PropTypes.array, // List of assemblies of all 'File' objects in search results
     searchBase: PropTypes.string,
     onChange: PropTypes.func,
     currentRegion: PropTypes.func,
@@ -1557,21 +1567,12 @@ class Search extends React.Component {
         const notification = context.notification;
         const searchBase = url.parse(this.context.location_href).search || '';
         const facetdisplay = context.facets && context.facets.some(facet => facet.total > 0);
-        let assemblies = [];
-
-        // Make an array of all assemblies found in all files in the search results.
-        const results = this.props.context['@graph'];
-        const files = results.length ? results.filter(result => result['@type'][0] === 'File') : [];
-        if (files.length) {
-            // Reduce all found file assemblies so we don't have duplicates in the 'assemblies' array.
-            assemblies = files.reduce((assembliesAcc, file) => ((!file.assembly || assembliesAcc.indexOf(file.assembly) > -1) ? assembliesAcc : assembliesAcc.concat(file.assembly)), []);
-        }
 
         return (
             <div>
                 {facetdisplay ?
                     <div className="panel data-display main-panel">
-                        <ResultTable {...this.props} key={undefined} searchBase={searchBase} assemblies={assemblies} onChange={this.context.navigate} currentRegion={this.currentRegion} />
+                        <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.context.navigate} currentRegion={this.currentRegion} />
                     </div>
                 : <h4>{notification}</h4>}
             </div>
