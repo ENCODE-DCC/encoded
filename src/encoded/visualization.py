@@ -787,18 +787,8 @@ def add_to_es(request, comp_id, composite):
     if not es:
         return
     if not es.indices.exists(key):
-        es.indices.create(index=key, body={'index': {'number_of_shards': 1, 'mapping.total_fields.limit': 5000}}, wait_for_active_shards=1)
-        mapping = {'default': {"_all":    {"enabled": False},
-                               "_source": {"enabled": True},
-                               # "_id":     {"index": "not_analyzed", "store": True},
-                               # "_ttl":    {"enabled": True, "default": "1d"},
-                               "dynamic_templates": [{ "everything_field": {
-                                   "match": "*",
-                                   "mapping": {
-                                       "index": "no"
-                                   }}
-                               }]
-                               }}
+        es.indices.create(index=key, body={'index': {'number_of_shards': 1}}, wait_for_active_shards=1)
+        mapping = {'default': {"enabled": False}}
         es.indices.put_mapping(index=key, doc_type='default', body=mapping)
         log.debug("created %s index" % key)
     es.index(index=key, doc_type='default', body=composite, id=comp_id)
@@ -2156,7 +2146,7 @@ def vis_cache_add(request, dataset, start_time=None):
         start_time = time.time()
 
     if not object_is_visualizable(dataset):
-        return None
+        return []
 
     acc = dataset['accession']
     assemblies = dataset['assembly']
