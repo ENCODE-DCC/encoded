@@ -2306,7 +2306,7 @@ def object_is_visualizable(obj, assembly=None, check_files=False, exclude_quickv
     browsers = browsers_available(obj.get('status', 'none'),  assemblies,
                                   obj.get('@type', []), files=files)
     if exclude_quickview:
-        browsers.remove('quickview')
+        browsers.pop('quickview',None)
 
     return len(browsers) > 0
 
