@@ -80,7 +80,7 @@ def test_set_filters():
     ))
     query = {
         'query': {
-            'bool': {}
+            'query_string': {}
         },
         'post_filter': {
             'bool': {
@@ -95,7 +95,7 @@ def test_set_filters():
     assert used_filters == {'field1': ['value1']}
     assert query == {
         'query': {
-            'bool': {}
+            'query_string': {}
         },
         'post_filter': {
             'bool': {
@@ -129,7 +129,7 @@ def test_set_filters_searchTerm():
     ))
     query = {
         'query': {
-            'bool': {}
+            'query_string': {}
         },
         'post_filter': {
             'bool': {
@@ -144,7 +144,7 @@ def test_set_filters_searchTerm():
     assert used_filters == {}
     assert query == {
         'query': {
-            'bool': {}
+            'query_string': {}
         },
         'post_filter': {
             'bool': {
@@ -175,7 +175,7 @@ def test_set_filters_reserved_params(param):
     ))
     query = {
         'query': {
-            'bool': {}
+            'query_string': {}
         },
         'post_filter': {
             'bool': {
@@ -190,7 +190,7 @@ def test_set_filters_reserved_params(param):
     assert used_filters == {}
     assert query == {
         'query': {
-            'bool': {}
+            'query_string': {}
         },
         'post_filter': {
             'bool': {
@@ -213,7 +213,7 @@ def test_set_filters_multivalued():
     ))
     query = {
         'query': {
-            'bool': {}
+            'query_string': {}
         },
         'post_filter': {
             'bool': {
@@ -228,7 +228,7 @@ def test_set_filters_multivalued():
     assert used_filters == {'field1': ['value1', 'value2']}
     assert query == {
         'query': {
-            'bool': {}
+            'query_string': {}
         },
         'post_filter': {
             'bool': {
@@ -267,7 +267,7 @@ def test_set_filters_negated():
     ))
     query = {
         'query': {
-            'bool': {}
+            'query_string': {}
         },
         'post_filter': {
             'bool': {
@@ -282,7 +282,7 @@ def test_set_filters_negated():
     assert used_filters == {'field1!': ['value1']}
     assert query == {
         'query': {
-            'bool': {}
+            'query_string': {}
         },
         'post_filter': {
             'bool': {
@@ -316,7 +316,7 @@ def test_set_filters_audit():
     ))
     query = {
         'query': {
-            'bool': {}
+            'query_string': {}
         },
         'post_filter': {
             'bool': {
@@ -331,7 +331,7 @@ def test_set_filters_audit():
     assert used_filters == {'audit.foo': ['value1']}
     assert query == {
         'query': {
-            'bool': {}
+            'query_string': {}
         },
         'post_filter': {
             'bool': {
@@ -366,7 +366,7 @@ def test_set_filters_exists_missing():
     ))
     query = {
         'query': {
-            'bool': {}
+            'query_string': {}
         },
         'post_filter': {
             'bool': {
@@ -395,13 +395,15 @@ def test_set_filters_exists_missing():
                             'field': 'embedded.field1'
                         }
                     },
+                ],
+                'must_not': [
                     {
-                        'missing': {
+                        'exists': {
                             'field': 'embedded.field2'
                         }
                     }
-                ],
-                'must_not': []
+
+                ]
             }
         }
     }

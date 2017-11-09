@@ -257,10 +257,10 @@ def list_result_fields(request, doc_types):
         fields = [frame + '.*']
     else:
         frame = 'columns'
-        # Fields that front-end expects is not returned as an emty array.
+        # Fields that front-end expects is not returned as an empty array.
         # At this time, no way of knowing knowing which are those fields
         # that are not covered by tests, hence embedded.* for _source
-        fields = {'embedded.@id', 'embedded.@type', 'embedded.*'}
+        fields = {'embedded.@id', 'embedded.@type'}
         if request.has_permission('search_audit'):
             fields.add('audit.*')
         types = request.registry[TYPES]
