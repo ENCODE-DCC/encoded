@@ -281,7 +281,7 @@ def region_search(context, request):
     # handling limit
     size = request.params.get('limit', 25)
     if size in ('all', ''):
-        size = 99999
+        size = 10000
     else:
         try:
             size = int(size)
