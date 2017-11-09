@@ -211,7 +211,9 @@ class SecondaryIndexer(Indexer):
                 if len(result):
                     # Warning: potentiallly slow uuid-level accounting, but single process so no concurency issue
                     self.state.viscached_uuid(uuid)
-            except:
+            except Exception as e:
+                log.error('Error indexing %s', uuid, exc_info=True)
+                #last_exc = repr(e)
                 pass  # It's only a vis_blob.
 
         if last_exc is not None:
