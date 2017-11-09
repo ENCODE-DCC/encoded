@@ -335,7 +335,7 @@ class BiosampleComponent extends React.Component {
         const age = (result.age && result.age !== 'unknown') ? ` ${result.age}` : '';
         const ageUnits = (result.age_units && result.age_units !== 'unknown' && age) ? ` ${result.age_units}` : '';
         const separator = (lifeStage || age) ? ',' : '';
-        const treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
+        const treatment = (result.treatments && result.treatments.length) ? result.treatments[0].treatment_term_name : '';
 
         // Calculate genetic modification properties for display.
         const rnais = [];
