@@ -137,6 +137,7 @@ VISIBLE_FILE_STATUSES = ["released"]
 VISIBLE_DATASET_TYPES = ["Experiment", "Annotation"]
 VISIBLE_DATASET_TYPES_LC = ["experiment", "annotation"]
 VISIBLE_ASSEMBLIES = ['hg19', 'GRCh38', 'mm10', 'mm10-minimal' ,'mm9','dm6','dm3','ce10','ce11']
+VISIBLE_FILE_FORMATS = BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES
 
 
 
@@ -2149,8 +2150,8 @@ def vis_cache_add(request, dataset, start_time=None):
     if start_time is None:
         start_time = time.time()
 
-    if not object_is_visualizable(dataset):
-        return None
+    if not object_is_visualizable(dataset, exclude_quickview=True):
+        return []
 
     acc = dataset['accession']
     assemblies = dataset['assembly']
@@ -2229,6 +2230,21 @@ def get_hub(label, comment=None, name=None):
     ])
     return render(hub)
 
+def visualizable_assemblies(assemblies, files, visible_statuses=VISIBLE_FILE_STATUSES):
+    '''Returns just the assemblies with visualizable files.'''
+    file_assemblies = set()  # sets for comparing
+    assemblies_set = set(assemblies)
+    for afile in files:
+        afile_assembly = afile.get('assembly')
+        if afile_assembly is None or afile_assembly in file_assemblies:
+            continue  # more efficient than simply relying on set()
+        if afile['status'] in visible_statuses and \
+           afile.get('file_format','') in VISIBLE_FILE_FORMATS:
+            file_assemblies.add(afile_assembly)
+        if file_assemblies == assemblies_set:
+            break  # Try not to go through the whole file list!
+    return list(file_assemblies)
+
 
 def browsers_available(status, assemblies, types, item_type=None, files=None, accession=None, request=None):
     '''Returns list of browsers based upon vis_blobs or else files list.'''
@@ -2244,44 +2260,38 @@ def browsers_available(status, assemblies, types, item_type=None, files=None, ac
             return []
 
     browsers = set()
+    full_set = {'ucsc', 'ensembl', 'quickview'}
+    file_assemblies = None
     for assembly in assemblies:
         mapped_assembly = _ASSEMBLY_MAPPER_FULL.get(assembly)
         if not mapped_assembly:
             continue
         vis_blob = None
-        if request is not None and accession is not None and status == 'released':
+        if request is not None and accession is not None and status in VISIBLE_FILE_STATUSES:
             vis_blob = get_from_es(request, accession + "_" + assembly)  # use of find_or_make_acc_composite() will recurse!
-        if 'ucsc' not in browsers and 'ucsc_assembly' in mapped_assembly.keys():
-            if vis_blob is not None or files is None:  # If not checking files, be lenient
-                browsers.add('ucsc')
-            elif files is not None:
-                for file in files:
-                    if file.get('assembly','') == assembly and file['status'] == 'released' \
-                        and file.get('file_format','') in ['bigBed', 'bigWig']:
-                        browsers.add('ucsc')
-                        break
+        if not vis_blob and file_assemblies is None and files is not None:
+            file_assemblies = visualizable_assemblies(assemblies, files)
 
+        if 'ucsc' not in browsers and 'ucsc_assembly' in mapped_assembly.keys():
+            if vis_blob or files is None or assembly in file_assemblies:
+                browsers.add('ucsc')
         if 'ensembl' not in browsers and 'ensembl_host' in mapped_assembly.keys():
-            if vis_blob is not None or files is None:
+            if vis_blob or files is None or assembly in file_assemblies:
                 browsers.add('ensembl')
-            elif files is not None:
-                for file in files:
-                    if file.get('assembly','') == assembly and file['status'] == 'released' \
-                        and file.get('file_format','') in ['bigBed', 'bigWig']:
-                        browsers.add('ensembl')
-                        break
         if 'quickview' not in browsers and 'quickview' in mapped_assembly.keys():
             # NOTE: quickview may not have vis_blob as 'in progress' files can also be displayed
             #       Ideally we would also look at files' statuses and formats.  However, the (calculated)files
             #       property only contains 'released' files so it doesn't really help for quickview!
-            if vis_blob is not None or (status not in QUICKVIEW_STATUSES_BLOCKED):
+            if vis_blob is not None or status not in QUICKVIEW_STATUSES_BLOCKED:
                 browsers.add('quickview')
-        if len(browsers) == 3:  # No use continuing
+
+        if browsers == full_set:  # No use continuing
             break
+
     return list(browsers)
 
 
-def object_is_visualizable(obj, assembly=None, check_files=False):
+def object_is_visualizable(obj, assembly=None, check_files=False, exclude_quickview=False):
     '''Returns true if it is likely that this object can be visualized.'''
 
     if 'accession' not in obj:
@@ -2292,8 +2302,11 @@ def object_is_visualizable(obj, assembly=None, check_files=False):
         assemblies = obj.get('assembly',[])
     files = None
     if check_files:
-        files = obj.get('files',[])
-    browsers = browsers_available(obj.get('status','none'), assemblies, obj.get('@type',[]), files=files)
+        files = obj.get('files',[])  # Returning [] instead of None is important
+    browsers = browsers_available(obj.get('status', 'none'),  assemblies,
+                                  obj.get('@type', []), files=files)
+    if exclude_quickview:
+        browsers.remove('quickview')
 
     return len(browsers) > 0
 
@@ -2458,16 +2471,18 @@ def generate_batch_hubs(context, request):
                     if len(assemblies) > 0:
                         g_text = get_genomes_txt(assemblies)
             if g_text == '':
-                log.debug('Requesting %s.%s#%s NO ASSEMBLY !!!' % (page,suffix,cmd))
-                g_text = json.dumps(results,indent=4)
-                assemblies = [result.get('assemblies',[]) for result in results['@graph']]
-                assembly_set = set(assemblies)
-                assemblies = list(assembly_set)
-                log.debug('Found %d ASSEMBLY !!!' % len(assemblies))
-#/search/?type=Experiment&lab.title=Ali+Mortazavi%2C+UCI&assay_title=microRNA+counts&status=released&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus&files.file_type=bigBed+bed6%2B&organ_slims=intestine
-#/search/?type=Experimentlab.title=Ali+Mortazavi%2C+UCI&&assay_title=microRNA+counts&status=released&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus&files.file_type=bigBed+bed6+organ_slims=intestine&
-
-#/search/?assay_title=microRNA+counts&organ_slims=intestine&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus&type=Experiment&files.file_type=bigBed+bed6+&lab.title=Ali+Mortazavi%2C+UCI&status=released
+                assembly_set = {
+                    result['assemblies']
+                    for result in results['@graph']
+                        if 'assemblies' in result
+                }
+                if len(assembly_set) > 0:
+                    g_text = get_genomes_txt(list(assembly_set))
+                    log.debug('Requesting %s.%s#%s NO ASSEMBLY !!!  Found %d anyway' %
+                                (page,suffix,cmd,len(assembly_set)))
+                else:
+                    g_text = json.dumps(results,indent=4)
+                    log.debug('Found 0 ASSEMBLIES !!!')
         return g_text
 
     else:
