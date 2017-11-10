@@ -423,6 +423,7 @@ globals.listingViews.register(Biosample, 'Biosample');
 class ExperimentComponent extends React.Component {
     render() {
         const result = this.props.context;
+        let synchronizations;
 
         // Collect all biosamples associated with the experiment. This array can contain duplicate
         // biosamples, but no null entries.
@@ -437,7 +438,7 @@ class ExperimentComponent extends React.Component {
         // Bek: Forrest should review the change for correctness
         // Collect synchronizations
         if (result.replicates && result.replicates.length) {
-            var synchronizations = _.uniq(result.replicates.filter(replicate =>
+            synchronizations = _.uniq(result.replicates.filter(replicate =>
                 replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization
             ).map((replicate) => {
                 const biosample = replicate.library.biosample;
@@ -534,7 +535,7 @@ class DatasetComponent extends React.Component {
         if (seriesDataset) {
             biosampleTerm = (result.biosample_term_name && typeof result.biosample_term_name === 'object' && result.biosample_term_name.length === 1) ? result.biosample_term_name[0] :
                 ((result.biosample_term_name && typeof result.biosample_term_name === 'string') ? result.biosample_term_name : '');
-            const organisms = _.uniq(result.organism && result.organism.length && result.organism.map(resultOrganism => resultOrganism.scientific_name));
+            const organisms = (result.organism && result.organism.length) ? _.uniq(result.organism.map(resultOrganism => resultOrganism.scientific_name)) : [];
             if (organisms.length === 1) {
                 organism = organisms[0];
             }
@@ -1232,7 +1233,7 @@ export class ResultTable extends React.Component {
     render() {
         const visualizeLimit = 100;
         const { context, searchBase, restrictions } = this.props;
-        const { assemblies } = this.state
+        const { assemblies } = this.state;
         const results = context['@graph'];
         const total = context.total;
         const visualizeDisabled = total > visualizeLimit;
@@ -1572,7 +1573,7 @@ class Search extends React.Component {
             <div>
                 {facetdisplay ?
                     <div className="panel data-display main-panel">
-                        <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.context.navigate} currentRegion={this.currentRegion} />
+                        <ResultTable {...this.props} searchBase={searchBase} onChange={this.context.navigate} currentRegion={this.currentRegion} />
                     </div>
                 : <h4>{notification}</h4>}
             </div>
