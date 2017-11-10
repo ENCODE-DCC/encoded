@@ -10,7 +10,7 @@ import pdb
 pytestmark = [pytest.mark.indexing]
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='module')
 def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
     from .conftest import _app_settings
     settings = _app_settings.copy()
@@ -27,7 +27,7 @@ def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
     return settings
 
 
-@pytest.yield_fixture(scope='session')
+@pytest.yield_fixture(scope='module')
 def app(app_settings):
     from encoded import main
     app = main({}, **app_settings)
@@ -44,7 +44,7 @@ def app(app_settings):
     DBSession.bind.pool.dispose()
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='module')
 def DBSession(app):
     from snovault import DBSESSION
     return app.registry[DBSESSION]

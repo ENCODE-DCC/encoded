@@ -66,7 +66,7 @@ def app(app_settings):
 
 
 @pytest.mark.fixture_cost(500)
-@pytest.yield_fixture(scope='session')
+@pytest.yield_fixture(scope='module')
 def workbook(conn, app, app_settings):
     tx = conn.begin_nested()
     try:
@@ -82,7 +82,6 @@ def workbook(conn, app, app_settings):
         inserts = resource_filename('encoded', 'tests/data/inserts/')
         docsdir = [resource_filename('encoded', 'tests/data/documents/')]
         load_all(testapp, inserts, docsdir)
-
         yield
     finally:
         tx.rollback()

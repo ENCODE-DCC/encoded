@@ -11,13 +11,13 @@ def external_tx():
     pass
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='module')
 def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server):
     from .. import test_indexing
     return test_indexing.app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
 
 
-@pytest.yield_fixture(scope='session')
+@pytest.yield_fixture(scope='module')
 def app(app_settings):
     from .. import test_indexing
     from snovault.elasticsearch import create_mapping
@@ -27,7 +27,7 @@ def app(app_settings):
 
 
 @pytest.mark.fixture_cost(500)
-@pytest.yield_fixture(scope='session')
+@pytest.yield_fixture(scope='module')
 def workbook(app):
     from webtest import TestApp
     environ = {
