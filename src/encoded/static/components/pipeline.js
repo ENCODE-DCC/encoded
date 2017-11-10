@@ -520,15 +520,22 @@ class ListingComponent extends React.Component {
         // Collect up an array of published-by and software titles for all steps in this pipeline
         if (result.analysis_steps && result.analysis_steps.length) {
             result.analysis_steps.forEach((step) => {
-                step.software_versions.forEach((version) => {
-                    swTitle.push(version.software.title);
-                    if (version.software.references && version.software.references.length) {
-                        version.software.references.forEach((reference) => {
-                            // add published_by array to publishedBy array.
-                            publishedBy.push(...reference.published_by);
-                        });
-                    }
-                });
+                if (step.versions && step.versions.length) {
+                    step.versions.forEach((version) => {
+                        if (version.software_versions && version.software_versions.length) {
+                            version.software_versions.forEach((softwareVersion) => {
+                                swTitle.push(softwareVersion.software.title);
+                                if (softwareVersion.software.references && softwareVersion.software.references.length) {
+                                    softwareVersion.software.references.forEach((reference) => {
+                                        if (reference.published_by && reference.published_by.length) {
+                                            publishedBy.push(...reference.published_by);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
             });
         }
         publishedBy = _.uniq(publishedBy);
@@ -554,6 +561,10 @@ class ListingComponent extends React.Component {
 
                         {swTitle.length ?
                             <div><strong>Software: </strong>{swTitle.join(', ')}</div>
+                        : null}
+
+                        {publishedBy.length ?
+                            <div><strong>References: </strong>{publishedBy.join(', ')}</div>
                         : null}
                     </div>
                 </div>
