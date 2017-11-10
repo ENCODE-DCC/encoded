@@ -2495,16 +2495,20 @@ def generate_batch_hubs(context, request):
                     if len(assemblies) > 0:
                         g_text = get_genomes_txt(assemblies)
             if g_text == '':
-                log.debug('Requesting %s.%s#%s NO ASSEMBLY !!!' % (page,suffix,cmd))
-                g_text = json.dumps(results,indent=4)
-                assemblies = [result['assemblies'] for result in results['@graph']]
-                assembly_set = set(assemblies)
-                assemblies = list(assembly_set)
-                log.debug('Found %d ASSEMBLY !!!' % len(assemblies))
-#/search/?type=Experiment&lab.title=Ali+Mortazavi%2C+UCI&assay_title=microRNA+counts&status=released&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus&files.file_type=bigBed+bed6%2B&organ_slims=intestine
-#/search/?type=Experimentlab.title=Ali+Mortazavi%2C+UCI&&assay_title=microRNA+counts&status=released&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus&files.file_type=bigBed+bed6+organ_slims=intestine&
-
-#/search/?assay_title=microRNA+counts&organ_slims=intestine&replicates.library.biosample.donor.organism.scientific_name=Mus+musculus&type=Experiment&files.file_type=bigBed+bed6+&lab.title=Ali+Mortazavi%2C+UCI&status=released
+                assembly_set = {
+                    result['assemblies']
+                    for result in results['@graph']
+                    if 'assemblies' in result
+                }
+                if len(assembly_set) > 0:
+                    g_text = get_genomes_txt(list(assembly_set))
+                    log.debug(
+                        'Requesting %s.%s#%s NO ASSEMBLY !!!  Found %d anyway' %
+                        (page, suffix, cmd, len(assembly_set))
+                    )
+                else:
+                    g_text = json.dumps(results, indent=4)
+                    log.debug('Found 0 ASSEMBLIES !!!')
         return g_text
 
     else:
