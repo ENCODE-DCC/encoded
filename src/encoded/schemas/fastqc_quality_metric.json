@@ -195,5 +195,13 @@
             "description": "FastQC metric"
         }
     },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
     "changelog": "/profiles/changelogs/fastqc_quality_metric.md"
 }

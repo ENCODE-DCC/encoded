@@ -94,5 +94,13 @@
             "title": "Attachment"
         }
     },
+    "facets": {
+        "characterization_method": {
+            "title": "Method"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
     "changelog": "/profiles/changelogs/genetic_modification_characterization.md"
 }

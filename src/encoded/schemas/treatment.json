@@ -134,6 +134,17 @@
              }
         }
     },
+    "facets": {
+        "treatment_type": {
+            "title": "Treatment type"
+        },
+        "status": {
+            "title": "Treatment status"
+        },
+        "lab.title": {
+            "title": "Lab"
+        }
+    },
     "changelog": "/profiles/changelogs/treatment.md"
 
 }

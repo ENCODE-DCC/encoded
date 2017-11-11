@@ -89,6 +89,11 @@
             ]
         }
     },
+    "facets": {
+        "status": {
+            "title": "Status"
+        }
+    },
     "changelog": "/profiles/changelogs/analysis_step_run.md"
 
 }

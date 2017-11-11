@@ -52,6 +52,13 @@
             "description": "Description of methods"
         }
     },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
     "changelog": "/profiles/changelogs/correlation_quality_metric.md"
-
 }
