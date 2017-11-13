@@ -9,6 +9,8 @@ bootcmd:
 output:
   all: '| tee -a /var/log/cloud-init-output.log'
 
+package_upgrade: true
+
 packages:
 - fuse
 ## - golang
