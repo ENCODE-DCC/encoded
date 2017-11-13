@@ -91,6 +91,7 @@ def run(out, err, url, username, password, search_query, accessions_list=None, b
     for ex in graph:
         replicates = set()
         replicates_reads = {}
+        dates = []
         files = []
         try:
             if ex.get('replicates') and ex.get('files'):
@@ -111,11 +112,14 @@ def run(out, err, url, username, password, search_query, accessions_list=None, b
                         url,
                         '/' + file_acc + '?frame=object&format=json'))
                     file_obj = file_request.json()
-                    if file_obj.get('status') not in [
-                            'uploading',
-                            'content error',
-                            'upload failed',
-                        ]:
+                    if file_obj.get('output_format') == 'fastq' and \
+                       file_obj.get('status') not in ['uploading',
+                                                      'content error',
+                                                      'upload failed',
+                                                     ]:
+                        file_date = datetime.datetime.strptime(
+                            file_obj['date_created'][:10], "%Y-%m-%d")
+                        dates.append(file_date)
                         files.append(file_obj)
                         if file_obj.get('read_count') and file_obj.get('replicate'):
                             if not replicates_reads.get(file_obj.get('replicate')) is None:
@@ -141,12 +145,6 @@ def run(out, err, url, username, password, search_query, accessions_list=None, b
                                 '\treads_count=' + str(replicates_reads[rep]) + '\n')
                             err.flush()
                             break
-                    if not depth_flag:
-                        out.write(
-                            award_obj.get('rfa') + \
-                            '\t' +ex['accession']+'\t' + \
-                            ex['status'] + '\t-> submitted\n')
-                        out.flush()
                 else:
                     if ex['assay_term_name'] in min_depth:
                         for rep in replicates_reads:
@@ -159,18 +157,31 @@ def run(out, err, url, username, password, search_query, accessions_list=None, b
                                     str(replicates_reads[rep]) + '\n')
                                 err.flush()
                                 break
-                        if not depth_flag:
+                if not depth_flag:
+                    pass_audit = True
+                    try:
+                        audit_request = session.get(urljoin(
+                            url,
+                            '/' + ex.get('accession') + '?frame=page&format=json'))
+                        audit_obj = audit_request.json().get('audit')
+                        if audit_obj.get("ERROR") or audit_obj.get("NOT_COMPLIANT"):
+                            pass_audit = False
+                    except requests.exceptions.RequestException:
+                        continue
+                    else:
+                        if pass_audit:
                             out.write(
                                 award_obj.get('rfa') + '\t' + \
                                 ex['accession']+'\t' + ex['status'] + \
-                                '\t-> submitted\n')
+                                '\t-> submitted\t' + max(dates).strftime("%Y-%m-%d") + '\n')
                             out.flush()
-                    else:
-                        out.write(
-                            award_obj.get('rfa') + '\t' + \
-                            ex['accession']+'\t' + ex['status'] + \
-                            '\t-> submitted\n')
-                        out.flush()
+                        else:
+                            err.write(
+                                award_obj.get('rfa') + '\t' + \
+                                ex['accession']+'\t' + \
+                                '\taudit errors\n')
+                            err.flush()
+
 
     finishing_run = 'FINISHED Checkexperiments at {}'.format(datetime.datetime.now())
     out.write(finishing_run + '\n')
