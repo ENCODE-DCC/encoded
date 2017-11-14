@@ -39,6 +39,8 @@ def run(out, err, url, username, password, search_query, accessions_list=None, b
     initiating_run = 'STARTING Checkexperiments version ' + \
         '{} ({}) ({}): {} on {} at {}'.format(
             version, url, search_query, dr, ip, datetime.datetime.now())
+    out.write(initiating_run + '\n')
+    out.flush()
     if bot_token:
         sc = SlackClient(bot_token)
         sc.api_call(
@@ -67,7 +69,7 @@ def run(out, err, url, username, password, search_query, accessions_list=None, b
             ACCESSIONS = [line.rstrip('\n') for line in open(accessions_list)]
         for acc in ACCESSIONS:
             r = session.get(
-                urljoin(url, '/search/?field=@id&limit=all&type=Experiment&accession=' + acc))
+                urljoin(url, '/search/?field=@id&frame=object&limit=all&type=Experiment&accession=' + acc))
             try:
                 r.raise_for_status()
             except requests.HTTPError:
@@ -80,59 +82,64 @@ def run(out, err, url, username, password, search_query, accessions_list=None, b
         r = session.get(
             urljoin(
                 url,
-                '/search/?type=Experiment&status=proposed' \
-                '&status=started&format=json&limit=all' + search_query))
+                '/search/?type=Experiment' \
+                '&format=json&frame=object&limit=all&' + search_query))
         try:
             r.raise_for_status()
         except requests.HTTPError:
             return
         else:
             graph = r.json()['@graph']
+    print('number of experiments: ' + str(len(graph)))
     for ex in graph:
+        experiment_accession = ex.get('accession')
+        award_request = session.get(urljoin(
+            url,
+            ex.get('award') + '?frame=object&format=json'))
+        award_obj = award_request.json()
         replicates = set()
         replicates_reads = {}
         dates = []
         files = []
         try:
-            if ex.get('replicates') and ex.get('files'):
-                award_request = session.get(urljoin(
-                    url,
-                    '/' + ex.get('award') + '?frame=object&format=json'))
-                award_obj = award_request.json()
+            if ex.get('replicates'):
                 for replicate in ex.get('replicates'):
                     replicate_request = session.get(urljoin(
                         url,
-                        '/' + replicate + '?frame=object&format=json'))
+                        replicate + '?frame=object&format=json'))
                     replicate_obj = replicate_request.json()
                     if replicate_obj.get('status') not in ['deleted']:
                         replicates.add(replicate_obj['@id'])
                         replicates_reads[replicate_obj['@id']] = 0
-                for file_acc in ex.get('files'):
-                    file_request = session.get(urljoin(
-                        url,
-                        '/' + file_acc + '?frame=object&format=json'))
-                    file_obj = file_request.json()
-                    if file_obj.get('output_format') == 'fastq' and \
-                       file_obj.get('status') not in ['uploading',
-                                                      'content error',
-                                                      'upload failed',
-                                                     ]:
-                        file_date = datetime.datetime.strptime(
-                            file_obj['date_created'][:10], "%Y-%m-%d")
-                        dates.append(file_date)
-                        files.append(file_obj)
-                        if file_obj.get('read_count') and file_obj.get('replicate'):
-                            if not replicates_reads.get(file_obj.get('replicate')) is None:
-                                replicates_reads[file_obj.get('replicate')] += \
-                                    file_obj.get('read_count')
-        except requests.exceptions.RequestException:
+                if  ex.get('files'):
+                    for file_acc in ex.get('files'):
+                        file_request = session.get(urljoin(
+                            url,
+                            file_acc + '?frame=object&format=json'))
+                        file_obj = file_request.json()
+                        if file_obj.get('file_format') == 'fastq' and \
+                           file_obj.get('status') not in ['uploading',
+                                                          'content error',
+                                                          'upload failed',
+                                                         ]:
+                            file_date = datetime.datetime.strptime(
+                                file_obj['date_created'][:10], "%Y-%m-%d")
+                            dates.append(file_date)
+                            files.append(file_obj)
+                            if file_obj.get('read_count') and file_obj.get('replicate'):
+                                if not replicates_reads.get(file_obj.get('replicate')) is None:
+                                    replicates_reads[file_obj.get('replicate')] += \
+                                        file_obj.get('read_count')
+        except requests.exceptions.RequestException as e:
+            print (e)
             continue
         else:
+            
             submitted_replicates = set()
             for file_obj in files:
                 if file_obj.get('replicate'):
                     submitted_replicates.add(file_obj.get('replicate'))
-            if not replicates - submitted_replicates:
+            if replicates and not replicates - submitted_replicates:
                 # check read depth:
                 depth_flag = False
                 if award_obj.get('rfa') == 'modENCODE':
@@ -141,8 +148,10 @@ def run(out, err, url, username, password, search_query, accessions_list=None, b
                             depth_flag = True
                             err.write(
                                 award_obj.get('rfa') + '\t' + \
-                                ex['accession']+'\t' + rep + \
-                                '\treads_count=' + str(replicates_reads[rep]) + '\n')
+                                experiment_accession + '\t' + rep + \
+                                '\treads_count=' + str(replicates_reads[rep]) + \
+                                '\texpected count=' + \
+                                str(min_depth['modENCODE-chip']) + '\n')
                             err.flush()
                             break
                 else:
@@ -152,9 +161,10 @@ def run(out, err, url, username, password, search_query, accessions_list=None, b
                                 depth_flag = True
                                 err.write(
                                     award_obj.get('rfa') + '\t' + \
-                                    ex['accession']+'\t' + rep + \
+                                    experiment_accession + '\t' + rep + \
                                     '\treads_count=' + \
-                                    str(replicates_reads[rep]) + '\n')
+                                    str(replicates_reads[rep]) + '\texpected count=' + \
+                                    str(min_depth[ex['assay_term_name']]) + '\n')
                                 err.flush()
                                 break
                 if not depth_flag:
@@ -162,7 +172,7 @@ def run(out, err, url, username, password, search_query, accessions_list=None, b
                     try:
                         audit_request = session.get(urljoin(
                             url,
-                            '/' + ex.get('accession') + '?frame=page&format=json'))
+                            '/' + experiment_accession + '?frame=page&format=json'))
                         audit_obj = audit_request.json().get('audit')
                         if audit_obj.get("ERROR") or audit_obj.get("NOT_COMPLIANT"):
                             pass_audit = False
@@ -172,14 +182,13 @@ def run(out, err, url, username, password, search_query, accessions_list=None, b
                         if pass_audit:
                             out.write(
                                 award_obj.get('rfa') + '\t' + \
-                                ex['accession']+'\t' + ex['status'] + \
+                                experiment_accession + '\t' + ex['status'] + \
                                 '\t-> submitted\t' + max(dates).strftime("%Y-%m-%d") + '\n')
                             out.flush()
                         else:
                             err.write(
-                                award_obj.get('rfa') + '\t' + \
-                                ex['accession']+'\t' + \
-                                '\taudit errors\n')
+                                award_obj.get('rfa') + '\t' +
+                                experiment_accession + '\taudit errors\n')
                             err.flush()
 
 
@@ -235,10 +244,8 @@ def main():
     parser.add_argument(
         '--dry-run', action='store_true', help="Don't update status, just check")
     parser.add_argument(
-        '--json-out', action='store_true', help="Output results as JSON (legacy)")
-    parser.add_argument(
         '--search-query', default='status=proposed&status=started',
-        help="override the experiment search query, e.g. 'accession=ENCFF000ABC'")
+        help="override the experiment search query, e.g. 'accession=ENCSR000ABC'")
     parser.add_argument(
         '--accessions-list', default='',
         help="list of experiment accessions to check")
