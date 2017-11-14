@@ -1,7 +1,5 @@
 import pytest
 
-pytestmark = pytest.mark.skipif(reason='Skipping test_views temporarily')
-
 def _type_length():
     # Not a fixture as we need to parameterize tests on this
     from ..loadxl import ORDER
