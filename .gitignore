@@ -28,5 +28,4 @@
 .python-version
 ~$*
 .~*#
-
-.python-version
+.vscode/settings.json
