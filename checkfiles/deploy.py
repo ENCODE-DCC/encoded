@@ -109,7 +109,7 @@ def main():
     parser.add_argument(
         '-n', '--name', type=hostname, help="Instance name")
     parser.add_argument(
-        '--image-id', default='ami-4b37d42b',
+        '--image-id', default='ami-0a00ce72',
         help="ubuntu/images/hvm-ssd/ubuntu-wily-15.10-amd64-server-20160217.1")
     parser.add_argument(
         '--instance-type', default='c4.xlarge',
