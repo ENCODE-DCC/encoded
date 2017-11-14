@@ -134,7 +134,8 @@ class HumanDonor(Donor):
         "items": {
             "type": ['string', 'object'],
             "linkFrom": "HumanDonor.parents"
-        }
+        },
+        "notSubmittable": True,
     })
     def children(self, request, parents):
         return paths_filtered_by_status(request, parents)

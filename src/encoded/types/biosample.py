@@ -284,6 +284,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             "type": ['string', 'object'],
             "linkFrom": "Biosample.part_of",
         },
+        'notSubmittable': True,
     })
     def parent_of(self, request, parent_of):
         return paths_filtered_by_status(request, parent_of)

@@ -95,6 +95,7 @@ class Dataset(Item):
             "type": ['string', 'object'],
             "linkFrom": "File.dataset",
         },
+        "notSubmittable": True,
     })
     def original_files(self, request, original_files):
         return paths_filtered_by_status(request, original_files)
@@ -329,6 +330,7 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
             "type": ['string', 'object'],
             "linkFrom": "Annotation.supersedes",
         },
+        "notSubmittable": True,
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)
