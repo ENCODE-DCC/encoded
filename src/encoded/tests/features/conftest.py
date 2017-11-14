@@ -29,6 +29,16 @@ def app(app_settings):
 @pytest.mark.fixture_cost(500)
 @pytest.yield_fixture(scope='session')
 def workbook(app):
+    # Clean up the data from another workbook
+    from snovault import DBSESSION
+    connection = app.registry[DBSESSION].bind.pool.unique_connection()
+    connection.detach()
+    conn = connection.connection
+    conn.autocommit = True
+    cursor = conn.cursor()
+    cursor.execute("""TRUNCATE resources, transactions CASCADE;""")
+    cursor.close()
+
     from webtest import TestApp
     environ = {
         'HTTP_ACCEPT': 'application/json',
@@ -40,7 +50,7 @@ def workbook(app):
     from pkg_resources import resource_filename
     inserts = resource_filename('encoded', 'tests/data/inserts/')
     docsdir = [resource_filename('encoded', 'tests/data/documents/')]
-    load_all(testapp, inserts, docsdir)
+    load_all(testapp, inserts, docsdir, test=True)
 
     testapp.post_json('/index', {})
     yield
