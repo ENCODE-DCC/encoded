@@ -40,7 +40,7 @@ def workbook(app):
     from pkg_resources import resource_filename
     inserts = resource_filename('encoded', 'tests/data/inserts/')
     docsdir = [resource_filename('encoded', 'tests/data/documents/')]
-    load_all(testapp, inserts, docsdir, test=True)
+    load_all(testapp, inserts, docsdir)
 
     testapp.post_json('/index', {})
     yield
