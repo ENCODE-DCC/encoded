@@ -21,7 +21,7 @@ def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
     settings['collection_datastore'] = 'elasticsearch'
     settings['item_datastore'] = 'elasticsearch'
     settings['indexer'] = True
-    settings['indexer.processes'] = 2
+    settings['indexer.processes'] = 8
     import pprint
     pprint.pprint(settings)
     return settings
