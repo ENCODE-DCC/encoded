@@ -244,15 +244,26 @@ def read_ssh_key():
             return ssh_pub_key
 
 
-def get_user_data(commit, config_file, data_insert):
+def get_user_data(commit, config_file, data_insert, profile_name):
     cmd_list = ['git', 'show', commit + config_file]
     config_template = subprocess.check_output(cmd_list).decode('utf-8')
     ssh_pub_key = read_ssh_key()
     if not ssh_pub_key:
-        # We can block deploy or add empty line??
-        raise Exception('No ssh public key found.  Create an ssh key pair')
-        print('does this fail')
+        print(
+            "WARNING: User is not authorized with ssh access to "
+            "new instance because they have no ssh key"
+        )
     data_insert['LOCAL_SSH_KEY'] = ssh_pub_key
+    # aws s3 authorized_keys folder
+    auth_base = 's3://encoded-conf-prod/ssh-keys'
+    auth_type = 'prod'
+    if profile_name != 'production':
+        auth_type = 'demo'
+    auth_keys_dir = '{auth_base}/{auth_type}-authorized_keys'.format(
+        auth_base=auth_base,
+        auth_type=auth_type,
+    )
+    data_insert['S3_AUTH_KEYS'] = auth_keys_dir
     user_data = config_template % data_insert
     return user_data
 
@@ -296,7 +307,6 @@ def run(
             config_file = ':cloud-config-cluster.yml'
         else:
             config_file = ':cloud-config.yml'
-        user_data = subprocess.check_output(['git', 'show', commit + config_file]).decode('utf-8')
         data_insert = {
             'WALE_S3_PREFIX': wale_s3_prefix,
             'COMMIT': commit,
@@ -304,7 +314,7 @@ def run(
         }
         if cluster_name:
             data_insert['CLUSTER_NAME'] = cluster_name
-        user_data = user_data % data_insert
+        user_data = get_user_data(commit, config_file, data_insert, profile_name)
         security_groups = ['ssh-http-https']
         iam_role = 'encoded-instance'
         count = 1
@@ -312,11 +322,11 @@ def run(
         if not cluster_name:
             print("Cluster must have a name")
             sys.exit(1)
-
-        user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config-elasticsearch.yml']).decode('utf-8')
-        user_data = user_data % {
+        config_file = ':cloud-config-elasticsearch.yml'
+        data_insert = {
             'CLUSTER_NAME': cluster_name,
         }
+        user_data = get_user_data(commit, config_file, data_insert, profile_name)
         security_groups = ['elasticsearch-https']
         iam_role = 'elasticsearch-instance'
         count = int(cluster_size)
