@@ -699,6 +699,7 @@ def search(context, request, search_type=None, return_generator=False):
 
     else:
         doc_types = [search_type]
+        result['schema_description'] = types[search_type].schema.get('description', '')
 
     # Normalize to item_type
     try:

@@ -16,7 +16,7 @@
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/assay" }
-   ],
+    ],
     "properties": {
         "schema_version": {
             "default": "7"
@@ -42,6 +42,13 @@
             "description": "Count of mapped reads after filtering"
         }
     },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
     "changelog": "/profiles/changelogs/filtering_quality_metric.md"
-
 }
