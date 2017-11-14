@@ -44,13 +44,5 @@
                 "Sanger sequencing"
             ]
         }
-    },
-    "facets": {
-        "characterization_method": {
-            "title": "Method"
-        },
-        "status": {
-            "title": "Status"
-        }
     }
 }

@@ -122,14 +122,6 @@
             "format": "phone"
         }
     },
-    "facets": {
-        "awards.rfa": {
-            "title": "RFA"
-        },
-        "status": {
-            "title": "Status"
-        }
-    },
     "boost_values": {
         "pi": 1.0,
         "name":1.0,

@@ -177,13 +177,5 @@
             "description": "samtools --stats: total length"
         }
     },
-    "facets": {
-        "assay_term_name": {
-            "title": "Assay name"
-        },
-        "status": {
-            "title": "Status"
-        }
-    },
     "changelog": "/profiles/changelogs/samtools_stats_quality_metric.md"
 }

@@ -52,13 +52,6 @@
             "description": "Count of read tags discovered to be in hotspots"
         }
     },
-    "facets": {
-        "assay_term_name": {
-            "title": "Assay name"
-        },
-        "status": {
-            "title": "Status"
-        }
-    },
     "changelog": "/profiles/changelogs/hotspot_quality_metric.md"
+
 }

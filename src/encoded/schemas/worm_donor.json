@@ -104,11 +104,11 @@
         "organism.name": {
             "title": "Organism"
         },
-        "strain_background": {
-            "title": "Strain background"
-        },
         "status": {
             "title": "Status"
+        },
+        "strain_background": {
+            "title": "Strain background"
         },
         "lab.title": {
             "title": "Lab"

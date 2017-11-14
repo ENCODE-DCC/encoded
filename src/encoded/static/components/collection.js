@@ -1,234 +1,463 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
+import url from 'url';
 import * as globals from './globals';
-import DataColors from './datacolors';
+import StickyHeader from './StickyHeader';
 
 
-// Maximum number of facet charts to display.
-const MAX_FACET_CHARTS = 3;
-
-// Initialize a list of colors to use in the chart.
-const collectionColors = new DataColors(); // Get a list of colors to use for the lab chart
-const collectionColorList = collectionColors.colorList();
-
-
-class FacetChart extends React.Component {
-    constructor() {
-        super();
-
-        this.chartInstance = null;
+function lookupColumn(result, column) {
+    let value = result;
+    const names = column.split('.');
+    for (let i = 0, len = names.length; i < len && value !== undefined; i += 1) {
+        value = value[names[i]];
     }
+    return value;
+}
 
-    componentDidUpdate() {
-        // This method might be called because we're drawing the chart for the first time (in
-        // that case this is an update because we already rendered an empty canvas before the
-        // chart.js module was loaded) or because we have new data to render into an existing
-        // chart.
-        const { chartId, facet, baseSearchUri } = this.props;
-        const Chart = this.props.chartModule;
-
-        // Before rendering anything into the chart, check whether we have a the chart.js module
-        // loaded yet. If it hasn't loaded yet, we have nothing to do yet. Also see if we have any
-        // values to render at all, and skip this if not.
-        if (Chart && this.values.length) {
-            // In case we don't have enough colors defined for all the values, make an array of
-            // colors with enough entries to fill out the labels and values.
-            const colors = this.labels.map((label, i) => collectionColorList[i % collectionColorList.length]);
-
-            if (this.chartInstance) {
-                // We've already created a chart instance, so just update it with new data.
-                this.chartInstance.data.datasets[0].data = this.values;
-                this.chartInstance.data.datasets[0].backgroundColor = colors;
-                this.chartInstance.data.labels = this.labels;
-                this.chartInstance.update();
-                document.getElementById(`${chartId}-legend`).innerHTML = this.chartInstance.generateLegend();
-            } else {
-                // We've not yet created a chart instance, so make a new one with the initial set
-                // of data. First extract the data in a way suitable for the chart API.
-                const canvas = document.getElementById(chartId);
-
-                const ctx = canvas.getContext('2d');
-
-                // Create and render the chart.
-                this.chartInstance = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: this.labels,
-                        datasets: [{
-                            data: this.values,
-                            backgroundColor: colors,
-                        }],
-                    },
-                    options: {
-                        maintainAspectRatio: false,
-                        responsive: true,
-                        legend: {
-                            display: false,
-                        },
-                        animation: {
-                            duration: 200,
-                        },
-                        legendCallback: (chart) => {
-                            const chartData = chart.data.datasets[0].data;
-                            const chartColors = chart.data.datasets[0].backgroundColor;
-                            const chartLabels = chart.data.labels;
-                            const text = [];
-                            text.push('<ul>');
-                            for (let i = 0; i < chartData.length; i += 1) {
-                                const searchUri = `${baseSearchUri}&${facet.field}=${encodeURIComponent(chartLabels[i]).replace(/%20/g, '+')}`;
-                                if (chartData[i]) {
-                                    text.push(`<li><a href="${searchUri}">`);
-                                    text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${chartColors[i]}"></i>`);
-                                    text.push(`<span class="chart-legend-label">${chartLabels[i]}</span>`);
-                                    text.push('</a></li>');
-                                }
-                            }
-                            text.push('</ul>');
-                            return text.join('');
-                        },
-                        onClick: (e) => {
-                            // React to clicks on pie sections
-                            const activePoints = this.chartInstance.getElementAtEvent(e);
-                            if (activePoints[0]) {
-                                const clickedElementIndex = activePoints[0]._index;
-                                const chartLabels = this.chartInstance.data.labels;
-                                const searchUri = `${baseSearchUri}&${facet.field}=${encodeURIComponent(chartLabels[clickedElementIndex]).replace(/%20/g, '+')}`;
-                                this.context.navigate(searchUri);
-                            }
-                        },
-                    },
-                });
-
-                // Create and render the legend by drawibg it into the <div> we set up for that
-                // purposee.
-                document.getElementById(`${chartId}-legend`).innerHTML = this.chartInstance.generateLegend();
-            }
-        }
-    }
-
-    render() {
-        const { chartId, facet } = this.props;
-
-        // Extract the arrays of labels from the facet keys, and the arrays of corresponding counts
-        // from the facet doc_counts. Only use non-zero facet terms in the charts. IF we have no
-        // usable data, both these arrays have no entries. componentDidMount assumes these arrays
-        // have been populated.
-        this.values = [];
-        this.labels = [];
-        facet.terms.forEach((term) => {
-            if (term.doc_count) {
-                this.values.push(term.doc_count);
-                this.labels.push(term.key);
-            }
-        });
-
-        // Check whether we have usable values in one array or the other we just collected (we'll
-        // just use `this;values` here) to see if we need to render a chart or not.
-        if (this.values.length) {
-            return (
-                <div className="collection-charts__chart">
-                    <div className="collection-charts__title">{facet.title}</div>
-                    <div className="collection-charts__canvas">
-                        <canvas id={chartId} />
-                    </div>
-                    <div id={`${chartId}-legend`} className="collection-charts__legend" />
+const Collection = (props) => {
+    const context = props.context;
+    return (
+        <div>
+            <header className="row">
+                <div className="col-sm-12">
+                    <h2>{context.title}</h2>
                 </div>
-            );
-        }
-        return null;
-    }
-}
-
-FacetChart.propTypes = {
-    facet: PropTypes.object.isRequired, // Facet data to display in the chart
-    chartId: PropTypes.string.isRequired, // HTML element ID to assign to the chart <canvas>
-    chartModule: PropTypes.func, // chart.js NPM module as loaded by webpack
-    baseSearchUri: PropTypes.string.isRequired, // Base URL of clicked chart elements
+            </header>
+            <p className="description">{context.description}</p>
+            <Table {...props} />
+        </div>
+    );
 };
-
-FacetChart.defaultProps = {
-    chartModule: null,
-};
-
-FacetChart.contextTypes = {
-    navigate: PropTypes.func,
-};
-
-
-class Collection extends React.Component {
-    constructor() {
-        super();
-
-        // Initialize component React state.
-        this.state = {
-            chartModule: null, // Refers to chart.js npm module
-            facetCharts: [], // Tracks all chart instances
-        };
-    }
-
-    componentDidMount() {
-        // Have webpack load the chart.js npm module. Once the module's ready, set the chartModule
-        // state so we can readraw the charts with the chart module in place.
-        require.ensure(['chart.js'], (require) => {
-            const Chart = require('chart.js');
-            this.setState({ chartModule: Chart });
-        });
-    }
-
-    render() {
-        const { context } = this.props;
-        const { facets } = context;
-
-        // Collect the three facets that will be included in the charts. This comprises the first
-        // MAX_FACET_CHARTS facets, not counting any facets with "type" for the field which we never
-        // chart, nor audit facets.
-        const chartFacets = facets ? facets.filter(facet => facet.field !== 'type' && facet.field.substring(0, 6) !== 'audit.').slice(0, MAX_FACET_CHARTS) : [];
-
-        return (
-            <div className={globals.itemClass(context, 'view-item')}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <h2>{context.title}</h2>
-                        {context.schema_description ? <h4 className="collection-sub-header">{context.schema_description}</h4> : null}
-                    </div>
-                </header>
-                <Panel>
-                    <PanelHeading addClasses="collection-heading">
-                        <h4>{context.total} total {context.title}</h4>
-                        <div className="collection-heading__controls">
-                            {(context.actions || []).map(action =>
-                                <a key={action.name} href={action.href} className="btn btn-info">
-                                    {action.title}
-                                </a>
-                            )}
-                        </div>
-                    </PanelHeading>
-                    <PanelBody>
-                        {chartFacets.length ?
-                            <div className="collection-charts">
-                                {chartFacets.map(facet =>
-                                    <FacetChart
-                                        key={facet.field}
-                                        facet={facet}
-                                        chartId={`${facet.field}-chart`}
-                                        chartModule={this.state.chartModule}
-                                        baseSearchUri={context.clear_filters}
-                                    />
-                                )}
-                            </div>
-                        :
-                            <p className="collection-no-chart">No facets defined in the &ldquo;{context.title}&rdquo; schema, or no data available.</p>
-                        }
-                    </PanelBody>
-                </Panel>
-            </div>
-        );
-    }
-}
 
 Collection.propTypes = {
     context: PropTypes.object.isRequired,
 };
 
 globals.contentViews.register(Collection, 'Collection');
+
+
+class Cell {
+    constructor(value, name, sortable) {
+        this.value = value;
+        this.name = name;
+        this.sortable = sortable;
+    }
+}
+
+
+class Row {
+    constructor(item, cells, text) {
+        this.item = item;
+        this.cells = cells;
+        this.text = text;
+    }
+}
+
+
+class Data {
+    constructor(rows) {
+        this.rows = rows;
+        this.sortedOn = null;
+        this.reversed = false;
+    }
+    sort(sortColumn, reverse) {
+        if (this.sortedOn === sortColumn && this.reversed === !!reverse) return;
+        this.sortedOn = sortColumn;
+        this.reversed = !!reverse;
+        this.rows.sort((rowA, rowB) => {
+            const a = String(rowA.cells[sortColumn].sortable);
+            const b = String(rowB.cells[sortColumn].sortable);
+            if (a < b) {
+                return reverse ? 1 : -1;
+            } else if (a > b) {
+                return reverse ? -1 : 1;
+            }
+            return 0;
+        });
+    }
+}
+
+const RowView = (props) => {
+    const { row, hidden } = props;
+    const id = row.item['@id'];
+    const tds = row.cells.map((cell, index) => {
+        let cellValue;
+        if (typeof cell.value === 'object') {
+            // Cell contains an array or object, so render specially.
+            if (Array.isArray(cell.value)) {
+                // The cell contains an array. Determine if it's empty or not.
+                if (cell.value.length) {
+                    // Non-empty array. Arrays of simple values get comma separated. Arrays of
+                    // objects get displayed as "[Objects]".
+                    cellValue = (typeof cell.value[0] === 'object') ? '[Objects]' : cell.value.join();
+                }
+            } else {
+                // The cell contains an object. Display "[Object]"
+                cellValue = '[Object]';
+            }
+        } else {
+            // Cell contains a simple value; just display it.
+            cellValue = cell.value;
+        }
+
+        // Render a cell, but Make the first column in the row a link to the object.
+        return (
+            <td key={cell.name}>
+                {index === 0 ?
+                    <a href={row.item['@id']}>{cellValue}</a>
+                :
+                    <span>{cellValue}</span>
+                }
+            </td>
+        );
+    });
+    return <tr key={id} hidden={hidden} data-href={id}>{tds}</tr>;
+};
+
+RowView.propTypes = {
+    row: PropTypes.object.isRequired, // Properties to render in the row
+    hidden: PropTypes.bool, // True if row is hidden; usually because of entered search terms
+};
+
+RowView.defaultProps = {
+    hidden: false,
+};
+
+
+class Table extends React.Component {
+    static extractParams(props, context) {
+        const params = url.parse(context.location_href, true).query;
+        let sorton = parseInt(params.sorton, 10);
+        if (isNaN(sorton)) {
+            sorton = props.defaultSortOn;
+        }
+        const state = {
+            sortOn: sorton,
+            reversed: params.reversed || false,
+            searchTerm: params.q || '',
+        };
+        return state;
+    }
+
+    /* eslint no-restricted-syntax: 0 */
+    // For reasons fytanaka can't yet fathom, replacing the for...in with Object.keys causes a
+    // Pyramid test failure in test_views. fytanaka can only assume the keys in the loop need to go
+    // up the prototype chain for some reason.
+    static guessColumns(props) {
+        const columnList = props.columns || props.context.columns;
+        const columns = [];
+        if (!columnList || Object.keys(columnList).length === 0) {
+            for (const key in props.context['@graph'][0]) {
+                if (key.slice(0, 1) !== '@' && key.search(/(uuid|_no|accession)/) === -1) {
+                    columns.push(key);
+                }
+            }
+            columns.sort();
+            columns.unshift('@id');
+        } else {
+            Object.keys(columnList).forEach((column) => {
+                columns.push(column);
+            });
+        }
+        return columns;
+    }
+
+    constructor(props, reactContext) {
+        super(props, reactContext);
+
+        // Set the initial React state.
+        this.state = Table.extractParams(this.props, this.context);
+        this.state.columns = Table.guessColumns(this.props);
+        this.state.data = new Data([]);  // Tables may be long so render empty first
+        this.state.communicating = true;
+
+        // Bind this to non-React methods.
+        this.extractData = this.extractData.bind(this);
+        this.fetchAll = this.fetchAll.bind(this);
+        this.handleClickHeader = this.handleClickHeader.bind(this);
+        this.handleKeyUp = this.handleKeyUp.bind(this);
+        this.submit = this.submit.bind(this);
+        this.clearFilter = this.clearFilter.bind(this);
+
+        // Initialize object data members.
+        this.componentMounted = false; // True if this component is currently mounted.
+    }
+
+    componentDidMount() {
+        this.componentMounted = true;
+        this.setState({
+            data: this.extractData(this.props),
+            communicating: this.fetchAll(this.props),
+            mounted: true,
+        });
+    }
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        let updateData = false;
+        if (nextProps.context !== this.props.context) {
+            updateData = true;
+            this.setState({
+                communicating: this.fetchAll(nextProps),
+            });
+        }
+        if (nextProps.columns !== this.props.columns) {
+            updateData = true;
+        }
+        if (updateData) {
+            const columns = Table.guessColumns(nextProps);
+            this.extractData(nextProps, columns);
+            this.setState({ columns });
+        }
+        if (nextContext.location_href !== this.context.location_href) {
+            const newState = Table.extractParams(nextProps, nextContext);
+            this.setState(newState);
+        }
+    }
+
+    componentWillUnmount() {
+        this.componentMounted = false;
+        if (typeof this.submitTimer !== 'undefined') {
+            clearTimeout(this.submitTimer);
+        }
+        const request = this.state.allRequest;
+        if (request) {
+            request.abort();
+        }
+    }
+
+    extractData(props, inColumns) {
+        if (this.componentMounted) {
+            const context = props.context;
+            const columns = inColumns || this.state.columns;
+            const rows = context['@graph'].map((item) => {
+                const cells = columns.map((column) => {
+                    let factory;
+                    let value = lookupColumn(item, column);
+                    if (column === '@id') {
+                        factory = globals.listingTitles.lookup(item);
+                        value = factory({ context: item });
+                    } else if (value === null || value === undefined) {
+                        value = '';
+                    } else if (!(value instanceof Array) && value['@type']) {
+                        factory = globals.listingTitles.lookup(value);
+                        value = factory({ context: value });
+                    }
+                    const sortable = String(value).toLowerCase();
+                    return new Cell(value, column, sortable);
+                });
+                const text = cells.map(cell => cell.value).join(' ').toLowerCase();
+                return new Row(item, cells, text);
+            });
+            const data = new Data(rows);
+            this.setState({ data });
+            return data;
+        }
+
+        // This Table component isn't mounted.
+        return null;
+    }
+
+    fetchAll(props) {
+        const context = props.context;
+        let communicating;
+        let request = this.state.allRequest;
+        if (request) {
+            request.abort();
+        }
+        if (context.all && this.componentMounted) {
+            communicating = true;
+            request = this.context.fetch(context.all, {
+                headers: { Accept: 'application/json' },
+            });
+            request.then((response) => {
+                if (!response.ok) throw response;
+                return response.json();
+            })
+            .then((data) => {
+                if (this.componentMounted) {
+                    this.extractData({ context: data });
+                    this.setState({ communicating: false });
+                }
+            }, globals.parseAndLogError.bind(undefined, 'allRequest'));
+            this.setState({
+                allRequest: request,
+                communicating: true,
+            });
+        }
+        return communicating;
+    }
+
+    handleClickHeader(event) {
+        let target = event.target;
+        while (target.tagName !== 'TH') {
+            target = target.parentElement;
+        }
+        const cellIndex = target.cellIndex;
+        let reversed = '';
+        const sorton = this.sorton;
+        if (this.props.defaultSortOn !== cellIndex) {
+            sorton.value = cellIndex;
+        } else {
+            sorton.value = '';
+        }
+        if (this.state.sortOn === cellIndex) {
+            reversed = !this.state.reversed || '';
+        }
+        this.reversed.value = reversed;
+        event.preventDefault();
+        event.stopPropagation();
+        this.submit();
+    }
+
+    handleKeyUp(event) {
+        if (typeof this.submitTimer !== 'undefined') {
+            clearTimeout(this.submitTimer);
+        }
+        // Skip when enter key is pressed
+        if (event.nativeEvent.keyCode === 13) return;
+        // IE8 should only submit on enter as page reload is triggered
+        if (typeof Event === 'undefined') return;
+        this.submitTimer = setTimeout(this.submit, 200);
+    }
+
+    submit() {
+        // form.submit() does not fire onsubmit handlers...
+        const target = this.form;
+
+        // IE8 does not support the Event constructor
+        if (typeof Event === 'undefined') {
+            target.submit();
+            return;
+        }
+
+        const event = new Event('submit', { bubbles: true, cancelable: true });
+        target.dispatchEvent(event);
+    }
+
+    clearFilter() {
+        this.q.value = '';
+        this.submitTimer = setTimeout(this.submit);
+    }
+
+    render() {
+        const { context, defaultSortOn } = this.props;
+        const { columns, sortOn, reversed, searchTerm } = this.state;
+        const titles = context.columns || {};
+        const data = this.state.data;
+        const total = context.count || data.rows.length;
+        data.sort(sortOn, reversed);
+        const headers = columns.map((column, index) => {
+            let className = 'icon';
+            if (index === sortOn) {
+                className += reversed ? ' icon-chevron-down' : ' icon-chevron-up';
+            }
+            return (
+                <th onClick={this.handleClickHeader} key={column}>
+                    {(titles[column] && titles[column].title) || column}
+                    <i className={className} />
+                </th>
+            );
+        });
+        const actions = (context.actions || []).map(action =>
+            <span className="table-actions" key={action.name}>
+                <a href={action.href}>
+                    <button className={`btn ${action.className}` || ''}>{action.title}</button>
+                </a>
+            </span>
+        );
+        const searchTermLower = this.state.searchTerm.trim().toLowerCase();
+        let matching = [];
+        const notMatching = [];
+
+        // Reorder rows so that the nth-child works
+        if (searchTerm) {
+            data.rows.forEach((row) => {
+                if (row.text.indexOf(searchTermLower) === -1) {
+                    notMatching.push(row);
+                } else {
+                    matching.push(row);
+                }
+            });
+        } else {
+            matching = data.rows;
+        }
+        const rows = matching.map(row => RowView({ row }));
+        rows.push(...notMatching.map(row => RowView({ row, hidden: true })));
+        let tableClass = 'sticky-area collection-table';
+        let loadingOrTotal;
+        if (this.state.communicating) {
+            tableClass += ' communicating';
+            loadingOrTotal = (
+                <span className="table-count label label-warning spinner-warning">Loading...</span>
+            );
+        } else {
+            loadingOrTotal = (
+                <span className="table-meta-data">
+                    <span className="table-count label label-default">{matching.length}</span>
+                    <span id="total-records">of {total} records</span>
+                </span>
+            );
+        }
+        return (
+            <div className="table-responsive">
+                <table className={`${tableClass} table table-striped table-hover table-panel`}>
+                    <StickyHeader>
+                    <thead className="sticky-header">
+                        {this.props.showControls ? <tr className="nosort table-controls">
+                            <th colSpan={columns.length}>
+                                {loadingOrTotal}
+                                {actions}
+                                <form
+                                    ref={(form) => { this.form = form; }}
+                                    className="table-filter"
+                                    onKeyUp={this.handleKeyUp}
+                                    data-skiprequest="true"
+                                    data-removeempty="true"
+                                >
+                                    <input
+                                        ref={(input) => { this.q = input; }}
+                                        disabled={this.state.communicating || undefined}
+                                        name="q"
+                                        type="search"
+                                        defaultValue={searchTerm}
+                                        placeholder="Filter table by..."
+                                        className="filter form-control"
+                                        id="table-filter"
+                                    />
+                                    <i className="icon icon-times-circle-o clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter} />
+                                    <input ref={(input) => { this.sorton = input; }} type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
+                                    <input ref={(input) => { this.reversed = input; }} type="hidden" name="reversed" defaultValue={!!reversed || ''} />
+                                </form>
+                            </th>
+                        </tr> : ''}
+                        <tr className="col-headers">
+                            {headers}
+                        </tr>
+                    </thead>
+                    </StickyHeader>
+                    <tbody>
+                        {rows}
+                    </tbody>
+                </table>
+            </div>
+        );
+    }
+}
+
+Table.propTypes = {
+    context: PropTypes.object.isRequired,
+    columns: PropTypes.object,
+    defaultSortOn: PropTypes.number,
+    showControls: PropTypes.bool,
+};
+
+Table.defaultProps = {
+    columns: null,
+    defaultSortOn: 0,
+    showControls: true,
+};
+
+Table.contextTypes = {
+    fetch: PropTypes.func,
+    location_href: PropTypes.string,
+};

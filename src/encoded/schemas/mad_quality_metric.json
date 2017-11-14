@@ -83,13 +83,5 @@
             "description": "Mean-Average-Deviation (MAD) of replicate log ratios from quantification"
         }
     },
-    "facets": {
-        "assay_term_name": {
-            "title": "Assay name"
-        },
-        "status": {
-            "title": "Status"
-        }
-    },
     "changelog": "/profiles/changelogs/mad_quality_metric.md"
 }

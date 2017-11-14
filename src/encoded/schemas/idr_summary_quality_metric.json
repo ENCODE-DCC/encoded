@@ -107,13 +107,5 @@
             "description": "IDR: Percent reported peaks"
         }
     },
-    "facets": {
-        "assay_term_name": {
-            "title": "Assay name"
-        },
-        "status": {
-            "title": "Status"
-        }
-    },
     "changelog": "/profiles/changelogs/idr_summary_quality_metric.md"
 }

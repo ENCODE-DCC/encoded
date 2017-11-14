@@ -278,16 +278,14 @@ class CalculatedVisualize:
         "title": "Visualize Data",
         "type": "string",
     })
-    def visualize(self, request, hub, accession, assembly, status, files):
+    def visualize(self, request, hub, assembly, status, files):
         hub_url = urljoin(request.resource_url(request.root), hub)
         viz = {}
+        browsers = browsers_available(assembly, status, files, self.base_types, self.item_type )
+        if len(browsers) == 0:
+            return None
         for assembly_name in assembly:
             if assembly_name in viz:
-                continue
-            browsers = browsers_available(status, [assembly_name],
-                                          self.base_types, self.item_type,
-                                          files, accession, request)
-            if len(browsers) == 0:
                 continue
             browser_urls = {}
             if 'ucsc' in browsers:

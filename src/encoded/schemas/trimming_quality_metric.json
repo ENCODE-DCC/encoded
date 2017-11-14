@@ -42,13 +42,6 @@
             "description": "Total number (single-end) reads trimmed"
         }
     },
-    "facets": {
-        "assay_term_name": {
-            "title": "Assay name"
-        },
-        "status": {
-            "title": "Status"
-        }
-    },
     "changelog": "/profiles/changelogs/trimming_quality_metric.md"
+
 }

@@ -314,7 +314,6 @@ class File(Item):
             "type": ['string', 'object'],
             "linkFrom": "QualityMetric.quality_metric_of",
         },
-        "notSubmittable": True,
     })
     def quality_metrics(self, request, quality_metrics):
         return paths_filtered_by_status(request, quality_metrics)
@@ -340,7 +339,6 @@ class File(Item):
             "type": ['string', 'object'],
             "linkFrom": "File.supersedes",
         },
-        "notSubmittable": True,
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)

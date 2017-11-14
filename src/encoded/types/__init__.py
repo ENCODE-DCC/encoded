@@ -86,9 +86,7 @@ class Source(Item):
 class Treatment(Item):
     item_type = 'treatment'
     schema = load_schema('encoded:schemas/treatment.json')
-    embedded = [
-        'lab',
-    ]
+    # XXX 'treatment_name' as key?
 
 
 @collection(

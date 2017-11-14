@@ -13,7 +13,7 @@ Feature: Portal pages
 
     Scenario: Add a page
         When I visit "/pages/"
-        And I wait for the content to load
+        And I wait for the table to fully load
         And I press "Add"
         And I wait for the form to fully load
         And I fill in "name" with "test"

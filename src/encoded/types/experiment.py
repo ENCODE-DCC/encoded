@@ -339,7 +339,6 @@ class Experiment(Dataset,
             "type": ['string', 'object'],
             "linkFrom": "Series.related_datasets",
         },
-        "notSubmittable": True,
     })
     def related_series(self, request, related_series):
         return paths_filtered_by_status(request, related_series)
@@ -351,7 +350,6 @@ class Experiment(Dataset,
             "type": ['string', 'object'],
             "linkFrom": "Experiment.supersedes",
         },
-        "notSubmittable": True,
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)

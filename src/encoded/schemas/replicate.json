@@ -84,14 +84,6 @@
             ]
         }
     },
-    "facets": {
-        "technical_replicate_number": {
-            "title": "Technical replicate"
-        },
-        "status": {
-            "title": "Status"
-        }
-    },
     "boost_values": {
         "experiment.accession": 1.0,
         "experiment.alternate_accessions": 1.0,

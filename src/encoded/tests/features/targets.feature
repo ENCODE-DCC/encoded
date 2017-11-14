@@ -1,20 +1,15 @@
 @targets @usefixtures(workbook)
 Feature: Targets
 
-    Scenario: Collection
+    Scenario: Table
         When I visit "/targets/"
-        And I wait for the content to load
-        Then I should see an element with the css selector ".view-item.type-TargetCollection"
+        And I wait for the table to fully load
 
-    Scenario: Click through
-        When I visit "/targets/"
-        And I wait for the content to load
-        When I click the link to "/search/?type=Target&organism.scientific_name=Homo+sapiens"
-        Then I should see an element with the css selector "div.panel.data-display.main-panel"
-        And I should see "Showing 21 of 21 results"
+        When I fill in "q" with "sapiens"
+        Then I should see an element with the css selector "tr:not([hidden]) a[href='/targets/ADNP-human/']" within 1 seconds
+        And I should see an element with the css selector "tr[hidden] a[href='/targets/H3K4me3-mouse/']"
+        And I should see exactly one element with the css selector ".table-count" containing the text "21"
 
-        When I go back
-        And I wait for the content to load
-        When I click the link to "/search/?type=Target&investigated_as=transcription+factor"
-        Then I should see an element with the css selector "div.panel.data-display.main-panel"
-        And I should see "Showing 15 of 15 results"
+    Scenario: Detail page
+        When I visit "/targets/ADNP-human/"
+        Then I should see an element with the css selector ".view-item.type-Target"

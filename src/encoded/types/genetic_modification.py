@@ -42,7 +42,6 @@ class GeneticModification(Item):
             "type": ['string', 'object'],
             "linkFrom": "Biosample.genetic_modifications",
         },
-        "notSubmittable": True,
     })
     def biosamples_modified(self, request, biosamples_modified):
         return paths_filtered_by_status(request, biosamples_modified)
@@ -55,7 +54,6 @@ class GeneticModification(Item):
             "type": ['string', 'object'],
             "linkFrom": "Donor.genetic_modifications",
         },
-        "notSubmittable": True,
     })
     def donors_modified(self, request, donors_modified):
         return paths_filtered_by_status(request, donors_modified)

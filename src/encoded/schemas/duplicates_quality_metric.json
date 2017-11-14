@@ -77,13 +77,5 @@
             "description": "Library size in reads as estimated by picard"
         }
     },
-    "facets": {
-        "assay_term_name": {
-            "title": "Assay name"
-        },
-        "status": {
-            "title": "Status"
-        }
-    },
     "changelog": "/profiles/changelogs/duplicates_quality_metric.md"
 }

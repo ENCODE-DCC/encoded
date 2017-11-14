@@ -34,8 +34,16 @@ def item_is_revoked(request, path):
 
 def calculate_assembly(request, files_list, status):
     assembly = set()
-    viewable_file_formats = ['bigWig', 'bigBed']
-    viewable_file_status = ['released','in progress']
+    viewable_file_formats = ['bigWig',
+                             'bigBed',
+                             'narrowPeak',
+                             'broadPeak',
+                             'bedRnaElements',
+                             'bedMethyl',
+                             'bedLogR']
+    viewable_file_status = ['released']
+    if status not in ['released']:
+        viewable_file_status.extend(['in progress'])
 
     for path in files_list:
         properties = request.embed(path, '@@object')
@@ -95,7 +103,6 @@ class Dataset(Item):
             "type": ['string', 'object'],
             "linkFrom": "File.dataset",
         },
-        "notSubmittable": True,
     })
     def original_files(self, request, original_files):
         return paths_filtered_by_status(request, original_files)
@@ -330,7 +337,6 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
             "type": ['string', 'object'],
             "linkFrom": "Annotation.supersedes",
         },
-        "notSubmittable": True,
     })
     def superseded_by(self, request, superseded_by):
         return paths_filtered_by_status(request, superseded_by)

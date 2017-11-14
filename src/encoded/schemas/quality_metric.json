@@ -14,7 +14,7 @@
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/assay" }
-    ],
+   ],
     "properties": {
         "schema_version": {
             "hidden comment": "Bump the default in the subclasses."
@@ -81,5 +81,6 @@
                 }
             }
         }
+
     }
 }
