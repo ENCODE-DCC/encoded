@@ -451,7 +451,7 @@ def attachment(path):
     filename = os.path.basename(path)
     mime_type, encoding = mimetypes.guess_type(path)
     major, minor = mime_type.split('/')
-    detected_type = magic.from_file(path, mime=True)
+    detected_type = magic.from_file(path, mime=True).decode('ascii')
 
     # XXX This validation logic should move server-side.
     if not (detected_type == mime_type or
