@@ -1,6 +1,5 @@
 import pytest
 
-
 def _type_length():
     # Not a fixture as we need to parameterize tests on this
     from ..loadxl import ORDER

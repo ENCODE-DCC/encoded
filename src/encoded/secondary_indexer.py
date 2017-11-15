@@ -20,7 +20,6 @@ import copy
 import json
 from pkg_resources import resource_filename
 from snovault.elasticsearch.indexer import (
-    SEARCH_MAX,
     IndexerState,
     Indexer,
     get_current_xmin,

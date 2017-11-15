@@ -385,7 +385,7 @@ def test_set_filters_exists_missing():
 
     assert query == {
         'query': {
-            'bool': {}
+            'query_string': {}
         },
         'post_filter': {
             'bool': {
@@ -592,10 +592,11 @@ def test_set_facets_type_exists():
                 'bool': {
                     'must': [
                         {'terms': {'principals_allowed.view': ['group.admin']}},
-                        {'terms': {'embedded.@type': ['Snowball']}},
-                        {'missing': {'field': 'embedded.field2'}},
+                        {'terms': {'embedded.@type': ['Snowball']}}
                     ],
-                    'must_not': []
+                    'must_not': [
+                        {'exists': {'field': 'embedded.field2'}}
+                    ]
                 },
             },
         },
@@ -713,7 +714,7 @@ def test_format_facets_skips_single_bucket_facets():
     ]
     used_filters = {}
     schemas = []
-    total = 42
+    total = 42 
     principals = []
     result = format_facets(
         es_result, facets, used_filters, schemas, total, principals)

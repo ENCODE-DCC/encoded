@@ -21,7 +21,7 @@ from snovault.elasticsearch.interfaces import (
 import copy
 from pprint import pprint as pp
 
-SEARCH_MAX = 10000  # OutOfMemoryError if too high
+SEARCH_MAX = 99999  # OutOfMemoryError if too high
 log = logging.getLogger(__name__)
 
 
@@ -88,7 +88,8 @@ def get_mapping(assembly_name='hg19'):
 def index_settings():
     return {
         'index': {
-            'number_of_shards': 1
+            'number_of_shards': 1,
+            'max_result_window': 99999,
         }
     }
 
