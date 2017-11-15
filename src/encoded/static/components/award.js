@@ -1966,7 +1966,7 @@ CumulativeGraph.defaultProps = {
 const AffiliatedLabsArray = (props) => {
     const { labs, award } = props;
     const labsArray = labs['@graph'].map(term => term.title);
-    const sortedArray = _.without(labsArray, award.pi.lab.title);
+    const sortedArray = award.pi && award.pi.lab ? _.without(labsArray, award.pi.lab.title) : labsArray;
     return (
         <div>
             {sortedArray.map((item, index) => <div key={index}>{item}</div>)}
