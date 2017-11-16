@@ -10,6 +10,7 @@ These are the primary software versions used in production, and you should be ab
 - Python 3.4.3
 - Node 6
 - Elasticsearch 1.7
+- Java VM 1.8
 - Ubuntu 14.04
 
 ### **0. Xcode for Mac OS build tools**  
@@ -76,11 +77,17 @@ brew install postgresql@9.3
 brew link --force postgresql@9.3
 brew install --force node@6
 brew link node@6 --force
-brew cask install java
+brew cask install java8
 brew tap garrow/homebrew-elasticsearch17
 brew install elasticsearch@1.7
 ```
-    
+>:star: _Note_: Elasticsearch 1.7 does not work with Java 9
+
+>:star: _Note_: Brew cannot find java8
+>- `brew tap caskroom/versions # lookup more versions`
+>- `brew cask search java # java8 now in list`
+>- `brew cask install java8`
+
 >:star: _Note_: This additional step is required for new macOS Sierra installations
 >- `brew cask install Caskroom/cask/xquartz`
 
@@ -107,7 +114,7 @@ brew install elasticsearch@1.7
 
 ### **4. Run buildout:**
 
-- `python3 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5`
+- `python3 bootstrap.py --buildout-version 2.9.5 --setuptools-version 18.5`
 - `bin/buildout`
 
 > :star: _Note_: If you have issues with postgres or the python interface to it (psycogpg2) you probably need to install postgresql via homebrew (as above)  
@@ -118,7 +125,7 @@ brew install elasticsearch@1.7
 
 
 >:star: _Note_: **Clean ALL the Things!** If you wish to **completely rebuild** the application or **cleanly reload** dependencies (:warning: long re-build time!):  
->- `make clean && python3 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5 && bin/buildout`
+>- `make clean && python3 bootstrap.py --buildout-version 2.9.5 --setuptools-version 18.5 && bin/buildout`
 
 
 ### **5. Start the application locally**

@@ -114,7 +114,8 @@ def target_2_3(value, system):
     elif value['label'] in control_targets:
         value['investigated_as'] = ['control']
     elif tag_prefix in recombinant_targets:
-        value['investigated_as'] = ['recombinant protein', 'transcription factor']
+        value['investigated_as'] = [
+            'recombinant protein', 'transcription factor']
     elif value['label'] in histone_targets:
         value['investigated_as'] = ['histone modification']
     else:
@@ -132,3 +133,9 @@ def target_3_4(value, system):
 
     if 'investigated_as' in value:
         value['investigated_as'] = list(set(value['investigated_as']))
+
+
+@upgrade_step('target', '5', '6')
+def target_5_6(value, system):
+    if value['status'] == 'proposed':
+        value['status'] = 'current'

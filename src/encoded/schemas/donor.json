@@ -18,23 +18,9 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitter_comment" },
         { "$ref": "mixins.json#/schema_version" }
     ],
-    "dependencies": {
-        "mutagen": {
-            "comment": "Mutagen could be specified only for model organism strains.",
-            "not": {
-                "properties": {
-                    "organism": {
-                        "linkTo": "Organism",
-                        "linkEnum": [
-                            "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-                        ]
-                    }
-                }
-            }
-        }
-    },
     "properties": {
         "schema_version": {
             "hidden comment": "Bump the default in the subclasses."
@@ -51,7 +37,7 @@
             "items": {
                 "type": "string",
                 "description": "External identifier that uniquely identify the donor of the sample, e.g. for strains it might be a strain identifier at a repository or a de-identified donor ID for a person.",
-                "pattern": "^(BDSC:\\d+)$|^(NICHD:\\d+)$|^(CGC:[A-Z]{2,3}[0-9]+)$|^(PGP:hu[A-Z0-9]+)$|^(PromoCell:\\d+)$|^(BioChain:[A-Z0-9-]+)$|^(DSSC:[0-9.-]+)$|^(DGGR:\\d+)$|^(GEO:SAMN\\d+)$|^(MGI.D:[A-Za-z0-9]+)$|^(GTEx:[A-Z0-9-]+)$|^(FlyBase:FBst\\d+)$|^(JAX:\\d{6})$|^(NBRP:\\d+)$"
+                "pattern": "^(BDSC:\\d+)$|^(NICHD:\\d+)$|^(CGC:[A-Z]{2,3}[0-9]+)$|^(PGP:hu[A-Z0-9]+)$|^(PromoCell:\\d+)$|^(BioChain:[A-Z0-9-]+)$|^(DSSC:[0-9.-]+)$|^(DGGR:\\d+)$|^(GEO:SAMN\\d+)$|^(MGI.D:[A-Za-z0-9]+)$|^(GTEx:[A-Z0-9-]+)$|^(FlyBase:FBst\\d+)$|^(JAX:\\d{6})$|^(NBRP:\\d+)$|^(TRiP:[A-Z0-9]+)$"
             }
         },
         "alternate_accessions": {

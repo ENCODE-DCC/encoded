@@ -10,10 +10,9 @@ import { DbxrefList } from './dbxref';
 import { ExperimentTable } from './dataset';
 import { FetchedItems } from './fetched';
 import { FileGallery } from './filegallery';
-import { GeneticModificationSummary } from './genetic_modification';
 import { ProjectBadge } from './image';
 import { Breadcrumbs } from './navigation';
-import { singleTreatment } from './objectutils';
+import { singleTreatment, AlternateAccession } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import StatusLabel from './statuslabel';
@@ -374,9 +373,6 @@ class ExperimentComponent extends React.Component {
             statuses.push({ status: context.internal_status, title: 'Internal' });
         }
 
-        // Make string of alternate accessions.
-        const altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
-
         // Make array of superseded_by accessions.
         let supersededBys = [];
         if (context.superseded_by && context.superseded_by.length) {
@@ -446,7 +442,7 @@ class ExperimentComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=Experiment" crumbs={crumbs} />
                         <h2>Experiment summary for {context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <AlternateAccession altAcc={context.alternate_accessions} />
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
                         {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
                         <div className="status-line">

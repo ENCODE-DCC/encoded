@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
 import { Panel, PanelBody, PanelHeading } from '../libs/bootstrap/panel';
+import { auditDecor } from './audit';
 import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, DocumentsSubpanels } from './doc';
@@ -10,8 +11,9 @@ import { GeneticModificationSummary } from './genetic_modification';
 import * as globals from './globals';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
-import { requestObjects } from './objectutils';
+import { requestObjects, AlternateAccession } from './objectutils';
 import pubReferenceList from './reference';
+import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import StatusLabel from './statuslabel';
 import { BiosampleTable } from './typeutils';
@@ -539,7 +541,6 @@ class Donor extends React.Component {
     render() {
         const { context } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
-        const altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
         const PanelView = globals.panelViews.lookup(context);
         let characterizationDocuments = [];
         let donorDocuments = [];
@@ -557,7 +558,7 @@ class Donor extends React.Component {
         // Combine characterization and donor documents.
         const combinedDocuments = [].concat(characterizationDocuments, donorDocuments);
 
-        // Set up breadcrumbs
+        // Set up breadcrumbs.
         const crumbs = [
             { id: 'Donors' },
             { id: <i>{context.organism.scientific_name}</i> },
@@ -569,7 +570,7 @@ class Donor extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>{context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <AlternateAccession altAcc={context.alternate_accessions} />
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />
@@ -586,7 +587,7 @@ class Donor extends React.Component {
 
                 <RelatedItems
                     title={`Biosamples from this ${context.organism.name === 'human' ? 'donor' : 'strain'}`}
-                    url={`/search/?type=biosample&donor.uuid=${context.uuid}`}
+                    url={`/search/?type=Biosample&donor.uuid=${context.uuid}`}
                     Component={BiosampleTable}
                 />
 
@@ -621,3 +622,85 @@ Donor.contextTypes = {
 };
 
 globals.contentViews.register(Donor, 'Donor');
+
+
+const DonorListingComponent = (props, reactContext) => {
+    const { organismTitle } = props;
+    const result = props.context;
+
+    // Make array of extra info for display in the search results link with a join. The `Boolean`
+    // constructor in the filter cleverly filters out falsy values from the array. See:
+    // https://stackoverflow.com/questions/32906887/remove-all-falsy-values-from-an-array#answer-32906951
+    const details = [
+        result.strain_name,
+        result.strain_background ? (result.strain_background !== 'unknown' ? result.strain_background : 'unknown strain background') : null,
+        result.sex ? (result.sex !== 'unknown' ? result.sex : 'unknown sex') : null,
+        result.life_stage ? (result.life_stage !== 'unknown' ? result.life_stage : 'unknown life stage') : null,
+        result.age ? (result.age !== 'unknown' ? `${result.age} ${result.age_units}` : 'unknown age') : null,
+    ].filter(Boolean);
+
+    return (
+        <li>
+            <div className="clearfix">
+                <PickerActions {...props} />
+                <div className="pull-right search-meta">
+                    <p className="type meta-title">{organismTitle}</p>
+                    <p className="type">{` ${result.accession}`}</p>
+                    <p className="type meta-status">{` ${result.status}`}</p>
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
+                </div>
+                <div className="accession">
+                    <a href={result['@id']}>
+                        <i>{result.organism.scientific_name}</i>
+                        {details.length ? ` (${details.join(', ')})` : null}
+                    </a>
+                </div>
+                <div className="data-row">
+                    {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
+                    {result.external_ids && result.external_ids.length ?
+                        <div>
+                            <strong>External resources: </strong>
+                            <DbxrefList context={result} dbxrefs={result.external_ids} />
+                        </div>
+                    : null}
+                </div>
+            </div>
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+        </li>
+    );
+};
+
+DonorListingComponent.propTypes = {
+    context: PropTypes.object.isRequired, // Search results object
+    organismTitle: PropTypes.string.isRequired, // Title to display on the right for each kind of organism
+    auditDetail: PropTypes.func.isRequired, // Audit HOC function to show audit details
+    auditIndicators: PropTypes.func.isRequired, // Audit HOC function to display audit indicators
+};
+
+DonorListingComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const DonorListing = auditDecor(DonorListingComponent);
+
+
+const HumanListing = props => (
+    <DonorListing {...props} organismTitle="Human donor" />
+);
+
+const MouseListing = props => (
+    <DonorListing {...props} organismTitle="Mouse donor" />
+);
+
+const WormListing = props => (
+    <DonorListing {...props} organismTitle="Worm donor" />
+);
+
+const FlyListing = props => (
+    <DonorListing {...props} organismTitle="Fly donor" />
+);
+
+globals.listingViews.register(HumanListing, 'HumanDonor');
+globals.listingViews.register(MouseListing, 'MouseDonor');
+globals.listingViews.register(WormListing, 'WormDonor');
+globals.listingViews.register(FlyListing, 'FlyDonor');

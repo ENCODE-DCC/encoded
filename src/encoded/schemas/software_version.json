@@ -45,5 +45,10 @@
             "type": "string",
             "format": "uri"
         }
+    },
+    "facets": {
+        "status": {
+            "title": "Status"
+        }
     }
 }

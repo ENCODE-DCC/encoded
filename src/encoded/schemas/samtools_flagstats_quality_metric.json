@@ -147,5 +147,13 @@
             "description": "flagstats: with itself and mate mapped - qc failed"
         }
     },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
     "changelog": "/profiles/changelogs/samtools_flagstats_quality_metric.md"
 }

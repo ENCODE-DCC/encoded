@@ -174,7 +174,8 @@ def get_search_fields(request, doc_types):
     """
     Returns set of columns that are being searched and highlights
     """
-    fields = {'uuid'}
+
+    fields = {'uuid', 'unique_keys.*'}
     highlights = {}
     types = request.registry[TYPES]
     for doc_type in doc_types:
@@ -641,6 +642,7 @@ def search(context, request, search_type=None, return_generator=False):
 
     else:
         doc_types = [search_type]
+        result['schema_description'] = types[search_type].schema.get('description', '')
 
     # Normalize to item_type
     try:

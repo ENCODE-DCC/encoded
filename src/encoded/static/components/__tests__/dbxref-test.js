@@ -138,8 +138,8 @@ describe('Test individual dbxref types', () => {
 
         it('has the correct links', () => {
             expect(dbxLinks.length).toBe(2);
-            expect(dbxLinks.at(0).prop('href')).toEqual('http://web.expasy.org/cellosaurus/CVCL_0395');
-            expect(dbxLinks.at(1).prop('href')).toEqual('http://web.expasy.org/cellosaurus/CVCL_5486');
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://web.expasy.org/cellosaurus/CVCL_0395');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://web.expasy.org/cellosaurus/CVCL_5486');
         });
     });
 
@@ -539,6 +539,25 @@ describe('Test individual dbxref types', () => {
             expect(dbxLinks.length).toBe(2);
             expect(dbxLinks.at(0).prop('href')).toEqual('https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=grants.nih.gov&query=NIHhESC-10-0062');
             expect(dbxLinks.at(1).prop('href')).toEqual('https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=grants.nih.gov&query=NIHhESC-10-0063');
+        });
+    });
+
+    describe('Test TRiP', () => {
+        let dbxLinks;
+
+        beforeAll(() => {
+            const context = { '@type': ['FlyDonor'] };
+            const wrapper = mount(
+                <DbxrefList context={context} dbxrefs={['TRiP:HMC04792', 'TRiP:HMC04793']} />
+            );
+
+            dbxLinks = wrapper.find('a');
+        });
+
+        it('has the correct links', () => {
+            expect(dbxLinks.length).toBe(2);
+            expect(dbxLinks.at(0).prop('href')).toEqual('http://www.flyrnai.org/cgi-bin/DRSC_gene_lookup.pl?gname=HMC04792');
+            expect(dbxLinks.at(1).prop('href')).toEqual('http://www.flyrnai.org/cgi-bin/DRSC_gene_lookup.pl?gname=HMC04793');
         });
     });
 

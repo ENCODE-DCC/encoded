@@ -118,7 +118,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "14"
+            "default": "16"
         },
         "annotation_type": {
             "title": "Type",
@@ -129,16 +129,13 @@
                 "blacklist",
                 "candidate regulatory elements",
                 "chromatin state",
-                "DNase master peaks",
                 "enhancer predictions",
-                "enhancer-like regions",
                 "gene expression",
                 "in vivo enhancer evaluations",
                 "long-range chromatin interactions",
                 "methylation summary",
                 "other",
                 "overlap",
-                "promoter-like regions",
                 "representative DNase hypersensitivity sites",
                 "transcript expression",
                 "transcription factor motifs",

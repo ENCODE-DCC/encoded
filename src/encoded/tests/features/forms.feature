@@ -21,7 +21,7 @@ Feature: Edit forms
         And I fill in "antigen_description" with "This is the new description"
         And I press "Save"
         And I wait for an element with the css selector ".view-item.type-AntibodyLot" to load
-        Then I should see "This is the new description" within 1 seconds
+        Then I should see "This is the new description"
 
     Scenario: Leaving a dirty form without saving asks for confirmation
         When I visit "/antibodies/ENCAB728YTO/#!edit"
@@ -34,6 +34,7 @@ Feature: Edit forms
         # Make sure we don't leave a dirty form that will interfere with subsequent tests
         When I click the link with text "ENCODE"
         And I accept the alert
+        And I wait for 5 seconds
 
     Scenario: Validation errors are shown in context
         When I visit "/antibodies/ENCAB728YTO/#!edit"

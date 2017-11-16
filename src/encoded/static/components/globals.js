@@ -45,10 +45,10 @@ documentViews.detail = new Registry();
 // Report-page cell components
 export const reportCell = new Registry();
 
-export function statusClass(status, htmlClass) {
+export function statusClass(status, htmlClass, supressSpace) {
     let localHtmlClass = htmlClass || '';
     if (typeof status === 'string') {
-        localHtmlClass += ` status-${status.toLowerCase().replace(/ /g, '-').replace(/\(|\)/g, '')}`;
+        localHtmlClass += `${supressSpace ? '' : ' '}status-${status.toLowerCase().replace(/ /g, '-').replace(/\(|\)/g, '')}`;
     }
     return localHtmlClass;
 }
@@ -279,44 +279,6 @@ export function sortDocs(docs) {
 
 
 export const dbxrefPrefixMap = {
-    UniProtKB: 'http://www.uniprot.org/uniprot/',
-    HGNC: 'http://www.genecards.org/cgi-bin/carddisp.pl?gene=',
-    // ENSEMBL link only works for human
-    ENSEMBL: 'http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=',
-    GeneID: 'https://www.ncbi.nlm.nih.gov/gene/',
-    GEO: 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=',
-    GEOSAMN: 'https://www.ncbi.nlm.nih.gov/biosample/',
-    IHEC: 'http://www.ebi.ac.uk/vg/epirr/view/',
-    Caltech: 'http://jumpgate.caltech.edu/library/',
-    Cellosaurus: 'http://web.expasy.org/cellosaurus/',
     FlyBase: 'http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context=',
-    // This WormBase link is strictly for Fly strains
-    FlyBaseStock: 'http://flybase.org/reports/',
-    BDSC: 'http://flystocks.bio.indiana.edu/Reports/',
-    WormBaseTargets: 'http://www.wormbase.org/species/c_elegans/gene/',
-    // This WormBase link is strictly for C. elegans strains
     WormBase: 'http://www.wormbase.org/species/c_elegans/strain/',
-    NBP: 'http://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq=',
-    CGC: 'https://cgc.umn.edu/strain/',
-    DSSC: 'https://stockcenter.ucsd.edu/index.php?action=view&q=',
-    MGI: 'http://www.informatics.jax.org/marker/',
-    MGID: 'http://www.informatics.jax.org/external/festing/mouse/docs/',
-    RBPImage: 'http://rnabiology.ircm.qc.ca/RBPImage/gene.php?cells=',
-    RefSeq: 'https://www.ncbi.nlm.nih.gov/gene/?term=',
-    JAX: 'https://www.jax.org/strain/',
-    NBRP: 'https://shigen.nig.ac.jp/c.elegans/mutants/DetailsSearch?lang=english&seq=',
-    // UCSC links need assembly (&db=) and accession (&hgt_mdbVal1=) added to url
-    'UCSC-ENCODE-mm9': 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=mm9&hgt_mdbVal1=',
-    'UCSC-ENCODE-hg19': 'http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1=',
-    'UCSC-ENCODE-cv': 'http://genome.cse.ucsc.edu/cgi-bin/hgEncodeVocab?ra=encode%2Fcv.ra&term=',
-    'UCSC-GB-mm9': 'http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=mm9&g=',
-    'UCSC-GB-hg19': 'http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g=',
-    // Dataset, experiment, and document references
-    PMID: 'https://www.ncbi.nlm.nih.gov/pubmed/?term=',
-    PMCID: 'https://www.ncbi.nlm.nih.gov/pmc/articles/',
-    doi: 'http://dx.doi.org/doi:',
-    // Antibody RRids
-    AR: 'http://antibodyregistry.org/search.php?q=',
-    // NIH stem cell
-    NIH: 'https://search.usa.gov/search?utf8=%E2%9C%93&affiliate=grants.nih.gov&query=',
 };

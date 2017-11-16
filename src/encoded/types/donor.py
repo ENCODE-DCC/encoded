@@ -29,7 +29,8 @@ class Donor(Item):
         'documents',
         'documents.award',
         'documents.lab',
-        'documents.submitted_by'
+        'documents.submitted_by',
+        'lab'
     ]
     name_key = 'accession'
     rev = {
@@ -66,7 +67,10 @@ class Donor(Item):
 class MouseDonor(Donor):
     item_type = 'mouse_donor'
     schema = load_schema('encoded:schemas/mouse_donor.json')
-    embedded = Donor.embedded + ['references']
+    embedded = Donor.embedded + ['references',
+                                 'genetic_modifications',
+                                 'genetic_modifications.modified_site_by_target_id',
+                                 'genetic_modifications.treatments']
 
     def __ac_local_roles__(self):
         # Disallow lab submitter edits
@@ -130,7 +134,8 @@ class HumanDonor(Donor):
         "items": {
             "type": ['string', 'object'],
             "linkFrom": "HumanDonor.parents"
-        }
+        },
+        "notSubmittable": True,
     })
     def children(self, request, parents):
         return paths_filtered_by_status(request, parents)

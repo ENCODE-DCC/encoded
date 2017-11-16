@@ -22,7 +22,8 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/accession" },
-        { "$ref": "mixins.json#/uuid" }
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitter_comment" }
     ],
     "facets": {
         "status": {
@@ -223,7 +224,7 @@
                     "required": ["read_length"],
                     "properties": {
                         "file_format": {
-                            "enum": ["fastq", "fasta", "csfasta", "csqual","sra"]
+                            "enum": ["fastq", "fasta", "csfasta", "csqual", "sra"]
                         },
                         "output_type": {
                              "enum": ["reads"]
@@ -241,50 +242,70 @@
                 }
             ]
         },
+        "assembly": {
+            "not": {
+                "anyOf": [
+                    {
+                        "properties": {
+                            "output_type": {
+                                "enum": ["reads"]
+                            }
+                        }
+                    },
+                    {
+                        "properties": {
+                            "output_type": {
+                                "enum": ["rejected reads"]
+                            }
+                        }
+                    }
+                ]
+            }
+        },
         "file_format":{
             "comment": "Fastq and sra files require run_type and replicate but should not have assembly. Raw data files require platform to be specified. Processed files require assembly to be specified.",
             "oneOf": [
                 {
-                    "allOf": [
-                        {
-                            "required": ["replicate", "run_type"],
-                            "properties": {
-                                "file_format": {
-                                    "enum": ["fastq","sra"]
-                                }
-                            }
-                        },
-                        {
-                            "not": {
-                                "required": ["assembly"],
-                                "properties": {
-                                    "file_format": {
-                                        "enum": ["fastq","sra"]
-                                    }
-                                }
-                            }
-                        },
-                        {
-                            "required": ["platform"],
-                            "properties": {
-                                "file_format": {
-                                    "enum": ["sra",
-                                             "fastq",
-                                             "csfasta",
-                                             "csqual",
-                                             "rcc",
-                                             "idat",
-                                             "CEL"]
-                                }
-                            }
-                        }
-                    ]
-                },
-                {
-                    "required": ["file_format_type", "assembly"],
+                    "required": [ "platform"],
                     "properties": {
                         "file_format": {
-                            "enum": ["gff","bed","bigBed"]
+                            "enum": [
+                                "rcc",
+                                "idat",
+                                "CEL",
+                                "csfasta",
+                                "csqual"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "required": [
+                        "replicate",
+                        "run_type",
+                        "platform"
+                    ],
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "fastq",
+                                "sra"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "required": [
+                        "file_format_type",
+                        "assembly"
+                    ],
+                    "properties": {
+                        "file_format": {
+                            "enum": [
+                                "gff",
+                                "bed",
+                                "bigBed"
+                            ]
                         }
                     }
                 },
@@ -292,7 +313,12 @@
                     "required": ["assembly"],
                     "properties": {
                         "file_format": {
-                            "enum": ["bam", "sam", "gtf", "bigWig"]
+                            "enum": [
+                                "bam",
+                                "sam",
+                                "gtf",
+                                "bigWig"
+                            ]
                         }
                     }
                 },
@@ -300,7 +326,22 @@
                     "not": {
                         "properties": {
                             "file_format": {
-                                "enum": ["fastq", "gff", "gtf", "bed", "bigBed", "bam", "sam", "sra", "bigWig"]
+                                "enum": [
+                                    "rcc",
+                                    "idat",
+                                    "CEL",
+                                    "fastq",
+                                    "gff",
+                                    "gtf",
+                                    "bed",
+                                    "bigBed",
+                                    "bam",
+                                    "sam",
+                                    "sra",
+                                    "bigWig",
+                                    "csfasta",
+                                    "csqual"
+                                ]
                             }
                         }
                     }
@@ -403,7 +444,7 @@
             "permission": "import_items"
         },
         "schema_version": {
-            "default": "11"
+            "default": "12"
         },
         "accession": {
             "accessionType": "FF"
