@@ -997,7 +997,7 @@ class StatusExperimentChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.statuses.length) {
+        if (this.relevantData.length) {
             this.createChart(`${statusChartId}-${this.props.ident}`, this.props.statuses);
         }
     }
@@ -1672,6 +1672,7 @@ const ExperimentDate = (props) => {
         submittedDates = (dateSubmittedFacet && dateSubmittedFacet.terms && dateSubmittedFacet.terms.length) ? dateSubmittedFacet.terms : [];
     }
 
+    // Take an array of date facet terms and return an array of terms sorted by date.
     function sortTerms(dateArray) {
         // Use Moment to format arrays of submitted and released date
         const standardTerms = dateArray.map((term) => {
@@ -1693,11 +1694,11 @@ const ExperimentDate = (props) => {
         );
     }
 
-    function fillDates(sortedArray, fillArray, difference, deduplicated) {
+    function fillDates(sortedArray, fillArray, difference, deduplicated, awardStartDate) {
         let monthdiff = difference;
 
         // Add an object with the award start date to both arrays
-        sortedArray.unshift({ key: award.start_date, doc_count: 0 });
+        sortedArray.unshift({ key: awardStartDate, doc_count: 0 });
 
         // Add objects to the array with doc_count 0 for the missing months
         const sortedTermsLength = sortedArray.length;
@@ -1716,7 +1717,7 @@ const ExperimentDate = (props) => {
 
         // Remove any objects with keys before the start date of the award
         const arrayLength = fillArray.length;
-        const assayStart = award.start_date;
+        const assayStart = awardStartDate;
         const shortenedArray = [];
         for (let j = 0; j < arrayLength - 2; j += 1) {
             if (moment(fillArray[j].key).isSameOrAfter(assayStart, 'date')) {
@@ -1763,8 +1764,18 @@ const ExperimentDate = (props) => {
             sortedsubmittedTerms.push({ key: sortedreleasedTerms[sortedreleasedTerms.length - 1].key, doc_count: 0 });
         }
     }
-    deduplicatedreleased = fillDates(sortedreleasedTerms, fillreleasedDates, monthreleaseddiff, deduplicatedreleased);
-    deduplicatedsubmitted = fillDates(sortedsubmittedTerms, fillsubmittedDates, monthsubmitteddiff, deduplicatedsubmitted);
+
+    // Figure out the award start date. If none, use the earlier of the earliest released or submitted dates.
+    let awardStartDate;
+    if (award.start_date) {
+        awardStartDate = award.start_date;
+    } else {
+        const earliestReleased = sortedreleasedTerms[0].key;
+        const earliestSubmitted = sortedsubmittedTerms[0].key;
+        awardStartDate = earliestReleased < earliestSubmitted ? earliestReleased : earliestSubmitted;
+    }
+    deduplicatedreleased = fillDates(sortedreleasedTerms, fillreleasedDates, monthreleaseddiff, deduplicatedreleased, awardStartDate);
+    deduplicatedsubmitted = fillDates(sortedsubmittedTerms, fillsubmittedDates, monthsubmitteddiff, deduplicatedsubmitted, awardStartDate);
 
     // Create an array of dates.
     const date = Object.keys(deduplicatedreleased).map(term => term);
@@ -1773,7 +1784,7 @@ const ExperimentDate = (props) => {
 
     return (
         <div>
-            {experiments && experiments.facets && experiments.facets.length ?
+            {accumulatedDataReleased.length || accumulatedDataSubmitted.length ?
                 <Panel>
                     <PanelHeading>
                         <h4>Cumulative Number of Experiments</h4>
