@@ -305,15 +305,17 @@ class LabChart extends React.Component {
     }
 
     componentDidMount() {
-        this.createChart(`${labChartId}-${this.props.ident}`, this.props.labs);
+        if (this.relevantData.length) {
+            this.createChart(`${labChartId}-${this.props.ident}`, this.relevantData);
+        }
     }
 
     componentDidUpdate() {
-        if (this.props.labs.length) {
+        if (this.relevantData.length) {
             if (this.chart) {
-                this.updateChart(this.chart, this.props.labs);
+                this.updateChart(this.chart, this.relevantData);
             } else {
-                this.createChart(`${statusChartId}-${this.props.ident}`, this.props.labs);
+                this.createChart(`${statusChartId}-${this.props.ident}`, this.relevantData);
             }
         } else if (this.chart) {
             this.chart.destroy();
@@ -368,6 +370,9 @@ class LabChart extends React.Component {
     render() {
         const { labs, ident } = this.props;
 
+        // Filter out category data with zero doc_count.
+        this.relevantData = labs.filter(term => term.doc_count);
+
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${labChartId}-${ident}`;
 
@@ -376,7 +381,7 @@ class LabChart extends React.Component {
                 <div className="award-charts__title">
                     Lab
                 </div>
-                {labs.length ?
+                {this.relevantData.length ?
                     <div className="award-charts__visual">
                         <div id={id} className="award-charts__canvas">
                             <canvas id={`${id}-chart`} />
@@ -416,17 +421,17 @@ class CategoryChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.categoryData.length) {
-            this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
+        if (this.relevantData.length) {
+            this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
         }
     }
 
     componentDidUpdate() {
-        if (this.props.categoryData.length) {
+        if (this.relevantData.length) {
             if (this.chart) {
-                this.updateChart(this.chart, this.props.categoryData);
+                this.updateChart(this.chart, this.relevantData);
             } else {
-                this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
+                this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
             }
         } else if (this.chart) {
             this.chart.destroy();
@@ -484,6 +489,9 @@ class CategoryChart extends React.Component {
     render() {
         const { categoryData, title, ident } = this.props;
 
+        // Filter out category data with zero doc_count.
+        this.relevantData = categoryData.filter(term => term.doc_count);
+
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${categoryChartId}-${ident}`;
 
@@ -492,7 +500,7 @@ class CategoryChart extends React.Component {
                 <div className="title">
                     {title}
                 </div>
-                {categoryData.length ?
+                {this.relevantData.length ?
                     <div className="award-charts__visual">
                         <div id={id} className="award-charts__canvas">
                             <canvas id={`${id}-chart`} />
@@ -533,17 +541,17 @@ class AntibodyChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.categoryData.length) {
-            this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
+        if (this.relevantData.length) {
+            this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
         }
     }
 
     componentDidUpdate() {
-        if (this.props.categoryData.length) {
+        if (this.relevantData.length) {
             if (this.chart) {
-                this.updateChart(this.chart, this.props.categoryData);
+                this.updateChart(this.chart, this.relevantData);
             } else {
-                this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
+                this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
             }
         } else if (this.chart) {
             this.chart.destroy();
@@ -601,18 +609,21 @@ class AntibodyChart extends React.Component {
         const { categoryData, ident, award } = this.props;
         const AntibodyQuery = generateQuery(this.props.selectedOrganisms, 'targets.organism.scientific_name=');
 
+        // Filter out category data with zero doc_count.
+        this.relevantData = categoryData.filter(term => term.doc_count);
+
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${categoryChartId}-${ident}`;
 
         return (
             <div className="award-charts__chart">
                 <div className="award-charts__title">
-                    Antibodies {categoryData.length ?
+                    Antibodies {this.relevantData.length ?
                     <a className="btn btn-info btn-xs reagentsreporttitle" href={`/report/?type=AntibodyLot&${AntibodyQuery}&award=${award['@id']}&field=accession&field=lot_reviews.status&field=lot_reviews.targets.label&field=lot_reviews.targets.organism.scientific_name&field=source.title&field=product_id&field=lot_id&field=date_created`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                     :
                     null}
-                    </div>
-                {categoryData.length ?
+                </div>
+                {this.relevantData.length ?
                     <div>
                         <div className="award-charts__visual">
                             <div id={id} className="award-charts__canvas">
@@ -651,17 +662,17 @@ class BiosampleChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.categoryData.length) {
-            this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
+        if (this.relevantData.length) {
+            this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
         }
     }
 
     componentDidUpdate() {
-        if (this.props.categoryData.length) {
+        if (this.relevantData.length) {
             if (this.chart) {
-                this.updateChart(this.chart, this.props.categoryData);
+                this.updateChart(this.chart, this.relevantData);
             } else {
-                this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
+                this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
             }
         } else if (this.chart) {
             this.chart.destroy();
@@ -718,18 +729,21 @@ class BiosampleChart extends React.Component {
     render() {
         const { categoryData, ident, award } = this.props;
         const BiosampleQuery = generateQuery(this.props.selectedOrganisms, 'organism.scientific_name=');
+
+        // Filter out category data with zero doc_count.
+        this.relevantData = categoryData.filter(term => term.doc_count);
+
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${categoryChartId}-${ident}`;
 
         return (
             <div className="award-charts__chart">
                 <div className="award-charts__title">
-                    Biosamples {categoryData.length ?
-                    <a className="btn btn-info btn-sm reagentsreporttitle" href={`/report/?type=Biosample&${BiosampleQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
-                    :
-                    null}
+                    Biosamples {this.relevantData.length ?
+                        <a className="btn btn-info btn-sm reagentsreporttitle" href={`/report/?type=Biosample&${BiosampleQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                    : null}
                 </div>
-                    {categoryData.length ?
+                {this.relevantData.length ?
                     <div>
                         <div className="award-charts__visual">
                             <div id={id} className="award-charts__canvas">
@@ -866,17 +880,17 @@ class ControlsChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.statuses.length) {
-            this.createChart(`${statusChartId}-${this.props.ident}-controls`, this.props.statuses);
+        if (this.relevantData.length) {
+            this.createChart(`${statusChartId}-${this.props.ident}-controls`, this.relevantData);
         }
     }
 
     componentDidUpdate() {
-        if (this.props.statuses.length) {
+        if (this.relevantData.length) {
             if (this.chart) {
-                this.updateChart(this.chart, this.props.statuses);
+                this.updateChart(this.chart, this.relevantData);
             } else {
-                this.createChart(`${statusChartId}-${this.props.ident}-controls`, this.props.statuses);
+                this.createChart(`${statusChartId}-${this.props.ident}-controls`, this.relevantData);
             }
         } else if (this.chart) {
             this.chart.destroy();
@@ -932,6 +946,9 @@ class ControlsChart extends React.Component {
     render() {
         const { statuses, ident } = this.props;
 
+        // Filter out category data with zero doc_count.
+        this.relevantData = statuses.filter(term => term.doc_count);
+
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${statusChartId}-${ident}-controls`;
 
@@ -940,7 +957,7 @@ class ControlsChart extends React.Component {
                 <div className="award-charts__title">
                     Controls
                 </div>
-                {statuses.length ?
+                {this.relevantData.length ?
                     <div className="award-charts__visual">
                         <div id={id} className="award-charts__canvas">
                             <canvas id={`${id}-chart`} />
@@ -986,11 +1003,11 @@ class StatusExperimentChart extends React.Component {
     }
 
     componentDidUpdate() {
-        if (this.props.statuses.length) {
+        if (this.relevantData.length) {
             if (this.chart) {
-                this.updateChart(this.chart, this.props.statuses);
+                this.updateChart(this.chart, this.relevantData);
             } else {
-                this.createChart(`${statusChartId}-${this.props.ident}`, this.props.statuses);
+                this.createChart(`${statusChartId}-${this.props.ident}`, this.relevantData);
             }
         } else if (this.chart) {
             this.chart.destroy();
@@ -1056,6 +1073,9 @@ class StatusExperimentChart extends React.Component {
     render() {
         const { statuses, ident } = this.props;
 
+        // Filter out category data with zero doc_count.
+        this.relevantData = statuses.filter(term => term.doc_count);
+
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${statusChartId}-${ident}`;
 
@@ -1064,7 +1084,7 @@ class StatusExperimentChart extends React.Component {
                 <div className="award-charts__title">
                     Status
                 </div>
-                 {statuses.length ?
+                 {this.relevantData.length ?
                     <div className="award-charts__visual">
                         <div id={id} className="award-charts__canvas">
                             <canvas id={`${id}-chart`} />
@@ -1113,17 +1133,17 @@ class StatusChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.statuses.length) {
-            this.createChart(`${statusChartId}-${this.props.ident}`, this.props.statuses);
+        if (this.relevantData.length) {
+            this.createChart(`${statusChartId}-${this.props.ident}`, this.relevantData);
         }
     }
 
     componentDidUpdate() {
-        if (this.props.statuses.length) {
+        if (this.relevantData.length) {
             if (this.chart) {
-                this.updateChart(this.chart, this.props.statuses);
+                this.updateChart(this.chart, this.relevantData);
             } else {
-                this.createChart(`${statusChartId}-${this.props.ident}`, this.props.statuses);
+                this.createChart(`${statusChartId}-${this.props.ident}`, this.relevantData);
             }
         } else if (this.chart) {
             this.chart.destroy();
@@ -1178,6 +1198,9 @@ class StatusChart extends React.Component {
     render() {
         const { statuses, ident } = this.props;
 
+        // Filter out category data with zero doc_count.
+        this.relevantData = statuses.filter(term => term.doc_count);
+
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${statusChartId}-${ident}`;
 
@@ -1186,7 +1209,7 @@ class StatusChart extends React.Component {
                 <div className="award-charts__title">
                     Status
                 </div>
-                {statuses.length ?
+                {this.relevantData.length ?
                     <div className="award-charts__visual">
                         <div id={id} className="award-charts__canvas">
                             <canvas id={`${id}-chart`} />
