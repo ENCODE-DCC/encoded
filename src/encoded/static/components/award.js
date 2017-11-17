@@ -1659,10 +1659,6 @@ const ExperimentDate = (props) => {
     const cumulativedatasetSubmitted = [];
     const accumulatorreleased = 0;
     const accumulatorsubmitted = 0;
-    const monthreleaseddiff = 0;
-    const monthsubmitteddiff = 0;
-    const fillreleasedDates = [];
-    const fillsubmittedDates = [];
 
     // Search experiments for month_released and date_submitted in facets
     if (experiments && experiments.facets && experiments.facets.length) {
@@ -1694,8 +1690,8 @@ const ExperimentDate = (props) => {
         );
     }
 
-    function fillDates(sortedArray, fillArray, difference, deduplicated, awardStartDate) {
-        let monthdiff = difference;
+    function fillDates(sortedArray, deduplicated, awardStartDate) {
+        const fillArray = [];
 
         // Add an object with the award start date to both arrays
         sortedArray.unshift({ key: awardStartDate, doc_count: 0 });
@@ -1706,7 +1702,7 @@ const ExperimentDate = (props) => {
             fillArray.push(sortedArray[j]);
             const startDate = moment(sortedArray[j].key);
             const endDate = moment(sortedArray[j + 1].key);
-            monthdiff = endDate.diff(startDate, 'months', false);
+            const monthdiff = endDate.diff(startDate, 'months', false);
             if (monthdiff > 1) {
                 for (let i = 0; i < monthdiff; i += 1) {
                     fillArray.push({ key: startDate.add(1, 'months').format('YYYY-MM'), doc_count: 0 });
@@ -1716,11 +1712,9 @@ const ExperimentDate = (props) => {
         fillArray.push(sortedArray[sortedArray - 1]);
 
         // Remove any objects with keys before the start date of the award
-        const arrayLength = fillArray.length;
-        const assayStart = awardStartDate;
         const shortenedArray = [];
-        for (let j = 0; j < arrayLength - 2; j += 1) {
-            if (moment(fillArray[j].key).isSameOrAfter(assayStart, 'date')) {
+        for (let j = 0; j < fillArray.length - 2; j += 1) {
+            if (moment(fillArray[j].key).isSameOrAfter(awardStartDate, 'date')) {
                 shortenedArray.push(fillArray[j]);
             }
         }
@@ -1768,14 +1762,14 @@ const ExperimentDate = (props) => {
     // Figure out the award start date. If none, use the earlier of the earliest released or submitted dates.
     let awardStartDate;
     if (award.start_date) {
-        awardStartDate = award.start_date;
+        awardStartDate = moment(award.start_date, 'YYYY-MM-DD').format('YYYY-MM');
     } else {
         const earliestReleased = sortedreleasedTerms[0].key;
         const earliestSubmitted = sortedsubmittedTerms[0].key;
         awardStartDate = earliestReleased < earliestSubmitted ? earliestReleased : earliestSubmitted;
     }
-    deduplicatedreleased = fillDates(sortedreleasedTerms, fillreleasedDates, monthreleaseddiff, deduplicatedreleased, awardStartDate);
-    deduplicatedsubmitted = fillDates(sortedsubmittedTerms, fillsubmittedDates, monthsubmitteddiff, deduplicatedsubmitted, awardStartDate);
+    deduplicatedreleased = fillDates(sortedreleasedTerms, deduplicatedreleased, awardStartDate);
+    deduplicatedsubmitted = fillDates(sortedsubmittedTerms, deduplicatedsubmitted, awardStartDate);
 
     // Create an array of dates.
     const date = Object.keys(deduplicatedreleased).map(term => term);
