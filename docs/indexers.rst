@@ -102,7 +102,8 @@ Several requests can be made of the state paths with use of ?request=value appen
 
   :reindex: Use 'all' for complete reindexing or comma separated uuids for specific reindexing.  This powerful method necessitates being logged on with admin permissions.
   :notify: One or more comma separated slack ids to be notified when the specific indexer is done.
-  :bot_token: For the time being this is required for slack notification to work.
-  :indexers: Use 'all' when combined with notify to be notified when all indexers have completed.
+
+    :bot_token: For the time being this is required for slack notification to work.
+    :which: Use 'all' when combined with notify to be notified when all indexers have completed.
 
 A note about reindexing the region indexer.  Since files are not expected to change contents they are not generally *readded* to the index, it is useful to be able to force one or more files into the regions index.  By requesting reindex=all or reindex={uuids} directly to ``/_regionindexer_state`` the qualified files will be *(re)added*.  It should be understood that the uuid expected is for tne dataset that contains the file, not the file itself.  It should also be clear that primary indexer reindexing will trigger (followup) region indexer reinexing.  However files already in the index will *not be readded* as a result.
