@@ -821,6 +821,8 @@
                         "raw signal",
                         "read-depth normalized signal",
                         "reads",
+                        "redacted alignments",
+                        "redacted unfiltered alignments",
                         "reference variants",
                         "relative replication signal",
                         "replicated peaks",
@@ -1143,6 +1145,8 @@
 
         "alignments": "alignment",
         "unfiltered alignments": "alignment",
+        "redacted alignments": "alignment",
+        "redacted unfiltered alignments": "alignment",
         "transcriptome alignments": "alignment",
         "spike-in alignments": "alignment",
         "maternal haplotype mapping": "alignment",
