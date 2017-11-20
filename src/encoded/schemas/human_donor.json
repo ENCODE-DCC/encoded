@@ -244,6 +244,9 @@
         "sex": {
             "title": "Sex"
         },
+        "lab.title": {
+            "title": "Lab"
+        },
         "status": {
             "title": "Status"
         }
