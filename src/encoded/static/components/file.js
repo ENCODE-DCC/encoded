@@ -11,6 +11,7 @@ import * as globals from './globals';
 import { requestFiles, requestObjects, requestSearch, RestrictedDownloadButton, AlternateAccession } from './objectutils';
 import { ProjectBadge } from './image';
 import { QualityMetricsPanel } from './quality_metric';
+import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import StatusLabel from './statuslabel';
 
@@ -668,31 +669,42 @@ SequenceFileInfo.propTypes = {
 };
 
 
-class Listing extends React.Component {
+class ListingComponent extends React.Component {
     render() {
         const result = this.props.context;
 
         return (
             <li>
                 <div className="clearfix">
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">File</p>
                         <p className="type">{` ${result.title}`}</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession"><a href={result['@id']}>{`${result.file_format}${result.file_format_type ? ` (${result.file_format_type})` : ''}`}</a></div>
                     <div className="data-row">
                         <div><strong>Lab: </strong>{result.lab.title}</div>
                         {result.award.project ? <div><strong>Project: </strong>{result.award.project}</div> : null}
                     </div>
+                    {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
                 </div>
             </li>
         );
     }
 }
 
-Listing.propTypes = {
+ListingComponent.propTypes = {
     context: PropTypes.object, // File object being rendered
+    auditIndicators: PropTypes.func, // Audit decorator function
+    auditDetail: PropTypes.func, // Audit decorator function
 };
+
+ListingComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Listing = auditDecor(ListingComponent);
 
 globals.listingViews.register(Listing, 'File');
