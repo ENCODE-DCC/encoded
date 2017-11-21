@@ -711,3 +711,30 @@ def test_audit_file_missing_derived_from_audit_with_made_up_status(testapp, file
         errors_list.extend(errors[error_type])
     assert all(error['category'] != 'missing derived_from'
                for error in errors_list)
+
+
+def test_audit_modERN_wrong_step_run(testapp, file_exp, file3, file4, award, analysis_step_version_bam, analysis_step_bam, analysis_step_run_bam):
+    testapp.patch_json(award['@id'], {'rfa': 'modERN'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file3['@id'], {'dataset': file_exp['@id'], 'file_format': 'bed',
+                                      'file_format_type': 'narrowPeak', 'output_type': 'peaks',
+                                      'step_run': analysis_step_run_bam['@id'], 'assembly': 'ce11',
+                                      'derived_from': [file4['@id']]})
+    res = testapp.get(file3['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'wrong step_run for peaks' for error in errors_list)
+
+
+def test_audit_modERN_unexpected_step_run(testapp, file_exp, file2, award, analysis_step_run_bam):
+    testapp.patch_json(award['@id'], {'rfa': 'modERN'})
+    testapp.patch_json(file_exp['@id'], {'assay_term_name': 'ChIP-seq'})
+    testapp.patch_json(file2['@id'], {'dataset': file_exp['@id'], 'step_run': analysis_step_run_bam['@id']})
+    res = testapp.get(file2['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] == 'unexpected step_run' for error in errors_list)

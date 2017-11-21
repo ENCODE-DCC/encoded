@@ -308,6 +308,76 @@ def audit_file(value, system):
         for failure in function_dispatcher[function_name](value, system):
             yield failure
 
+def check_award_condition(value, awards):
+    return value.get('award') and value.get('award')['rfa'] in awards
+
+
+@audit_checker('File', frame=['step_run', 'award',
+                              'dataset'])
+def audit_modERN_ChIP_pipeline_steps(value, system):
+    if not check_award_condition(value, ['modERN']):
+        return
+    expt = value['dataset']
+    if 'Experiment' not in expt['@type']:
+        return
+
+    if expt['assay_term_name'] != 'ChIP-seq':
+        return
+
+    if value['status'] in ['archived', 'revoked', 'deleted', 'replaced']:
+        return
+
+    if value['file_format'] == 'fastq':
+        if 'step_run' in value:
+            detail = 'Fastq file {} should not have an associated step_run'.format(value['@id'])
+            yield AuditFailure('unexpected step_run', detail, level='ERROR')
+        return
+
+    if 'step_run' not in value:
+        detail = 'File {} is missing a step_run'.format(value['@id'])
+        yield AuditFailure('missing step_run', detail, level='WARNING')
+        return
+
+    if (value['file_format'] != 'fastq') and ('derived_from' not in value):
+        detail = 'File {} is missing its derived_from'.format(value['@id'])
+        return
+
+    step = value['step_run']
+    if (value['file_format'] == 'bam') and step['aliases'][0] != 'modern:chip-seq-bwa-alignment-step-run-v-1-virtual':
+        detail = 'Bam {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+        yield AuditFailure('wrong step_run ChIP-seq bam', detail, level='WARNING')
+
+    if (value['output_type'] == 'normalized signal of all reads'):
+        if not ((step['aliases'][0] != 'modern:chip-seq-unique-read-signal-generation-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-unique-read-signal-generation-step-run-v-1-virtual')):
+            detail = 'Normalized signal of all reads {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for unique signal', detail, level='WARNING')
+
+    if (value['output_type']) == 'read-depth normalized signal':
+        if not ((step['aliases'][0] != 'modern:chip-seq-read-depth-normalized-signal-generation-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-read-depth-normalized-signal-generation-step-run-v-1-virtual')):
+            detail = 'Read depth normalized signal {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for depth signal', detail, level='WARNING')
+
+    if (value['output_type']) == 'control normalized signal':
+        if not ((step['aliases'][0] != 'modern:chip-seq-control-normalized-signal-generation-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-replicate-pooled-control-normalized-signal-generation-step-run-v-1-virtual')):
+            detail = 'Control normalized signal {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for control signal', detail, level='WARNING')
+
+    if (value['file_format'] == 'bigBed'):
+        if not ((step['aliases'][0] != 'modern:chip-seq-peaks-to-bigbed-step-run-v-1-virtual') or (step['aliases'][0] != 'modern:chip-seq-optimal-idr-thresholded-peaks-to-bigbed-step-run-v-1-virtual')):
+            detail = 'bigBed {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for bigBed peaks', detail, level='WARNING')
+
+    if (value['output_type'] == 'peaks') and (value['file_format'] == 'bed'):
+        if (value['file_format_type'] == 'narrowPeak') and (step['aliases'][0] != 'modern:chip-seq-spp-peak-calling-step-run-v-1-virtual'):
+            detail = 'Peaks {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for peaks', detail, level='WARNING')
+
+    if (value['output_type'] == 'optimal idr thresholded peaks') and (value['file_format'] == 'bed'):
+        if (value['file_format_type'] == 'narrowPeak') and (step['aliases'][0] != 'modern:chip-seq-optimal-idr-step-run-v-1-virtual'):
+            detail = 'Optimal IDR thresholded peaks {} is linked to the wrong step_run: {}'.format(value['@id'], step['aliases'][0])
+            yield AuditFailure('wrong step_run for IDR peaks', detail, level='WARNING')
+
+
 # def audit_file_chip_seq_control_read_depth(value, system):
 # migrated to experiment https://encodedcc.atlassian.net/browse/ENCD-3493
 
