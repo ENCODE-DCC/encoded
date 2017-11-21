@@ -4,6 +4,7 @@ from snovault import (
 )
 
 from .item import STATUS_LEVEL
+from .conditions import rfa
 
 
 def audit_file_processed_derived_from(value, system):
