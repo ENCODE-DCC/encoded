@@ -70,7 +70,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "12"
+            "default": "13"
         }
     },
     "facets": {
@@ -294,7 +294,6 @@
         "target.organism.name": 1.0,
         "target.organism.scientific_name": 1.0,
         "references.title": 1.0,
-        "related_datasets.replicates.library.biosample.rnais.product_id": 1.0,
         "internal_tags": 1.0
     },
     "changelog": "/profiles/changelogs/replication_timing_series.md"

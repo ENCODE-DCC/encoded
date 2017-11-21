@@ -270,7 +270,7 @@ class FileInfoButton extends React.Component {
     }
 
     onClick() {
-        this.props.clickHandler(`file:${this.props.file['@id']}`);
+        this.props.clickHandler(this.props.file);
     }
 
     render() {
@@ -422,11 +422,11 @@ RestrictedDownloadButton.propTypes = {
 
 
 export const DownloadableAccession = (props) => {
-    const { file, buttonEnabled, clickHandler, loggedIn, adminUser } = props;
+    const { file, clickHandler, loggedIn, adminUser } = props;
     return (
         <span className="file-table-accession">
-            <FileAccessionButton file={file} clickHandler={clickHandler} />
-            {buttonEnabled ? <FileInfoButton file={file} clickHandler={clickHandler} /> : null}
+            <FileAccessionButton file={file} />
+            {clickHandler ? <FileInfoButton file={file} clickHandler={clickHandler} /> : null}
             <RestrictedDownloadButton file={file} loggedIn={loggedIn} adminUser={adminUser} />
         </span>
     );
@@ -566,3 +566,28 @@ export function PanelLookup(properties) {
     const PanelView = globals.panelViews.lookup(localProps.context);
     return <PanelView key={localProps.context.uuid} {...localProps} />;
 }
+
+
+// Display the alternate accessions, normally below the header line in objects.
+export const AlternateAccession = (props) => {
+    const { altAcc } = props;
+
+    if (altAcc && altAcc.length) {
+        return (
+            <h4 className="repl-acc">
+                {altAcc.length === 1 ?
+                    <span>Alternate accession: {altAcc[0]}</span>
+                :
+                    <span>Alternate accessions: {altAcc.join(', ')}</span>
+                }
+            </h4>
+        );
+    }
+
+    // No alternate accessions to display.
+    return null;
+};
+
+AlternateAccession.propTypes = {
+    altAcc: PropTypes.array, // Array of alternate accession strings
+};

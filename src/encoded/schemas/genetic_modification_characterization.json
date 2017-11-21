@@ -17,11 +17,12 @@
         { "$ref": "characterization.json#/properties" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/standard_status"},
-        { "$ref": "mixins.json#/documents" }
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/submitter_comment" }
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "characterizes": {
             "title": "Genetic modification characterized",
@@ -33,11 +34,11 @@
             "description": "Experimental method of the characterization.",
             "type": "string",
             "enum": [
-                "PCR analysis",
-                "Sanger sequencing",
                 "high-throughput sequencing",
+                "immunoblot",
+                "PCR analysis",
                 "restriction digest",
-                "immunoblot"
+                "Sanger sequencing"
             ]
         },
         "attachment": {
@@ -60,12 +61,12 @@
                     "type": "string",
                     "enum": [
                         "application/pdf",
-                        "text/plain",
-                        "text/tab-separated-values",
+                        "image/gif",
                         "image/jpeg",
                         "image/png",
                         "image/tiff",
-                        "image/gif"                  
+                        "text/plain",
+                        "text/tab-separated-values"               
                      ]
                 },
                 "size": {
@@ -91,6 +92,14 @@
     "columns": {
         "attachment": {
             "title": "Attachment"
+        }
+    },
+    "facets": {
+        "characterization_method": {
+            "title": "Method"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "changelog": "/profiles/changelogs/genetic_modification_characterization.md"

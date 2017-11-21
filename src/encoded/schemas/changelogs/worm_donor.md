@@ -1,5 +1,13 @@
 ## Changelog for worm_donor.json
 
+### Schema version 9
+
+* *parent_strains* list property was added and limited to maximum 2 entries of strains of the same organism
+
+### Schema version 8
+
+* *constructs*, *mutated_gene* and *mutagen* properties were removed
+
 ### Schema version 7
 
 * *url* property was removed

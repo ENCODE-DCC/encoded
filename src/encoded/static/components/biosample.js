@@ -10,7 +10,7 @@ import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
-import { singleTreatment, treatmentDisplay, PanelLookup } from './objectutils';
+import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession } from './objectutils';
 import pubReferenceList from './reference';
 import StatusLabel from './statuslabel';
 import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable } from './typeutils';
@@ -50,13 +50,6 @@ class BiosampleComponent extends React.Component {
         }
         combinedDocs = globals.uniqueObjectsArray(combinedDocs);
 
-        // Collect up biosample and model organism donor constructs
-        const constructs = ((context.constructs && context.constructs.length) ? context.constructs : [])
-            .concat((context.model_organism_donor_constructs && context.model_organism_donor_constructs.length) ? context.model_organism_donor_constructs : []);
-
-        // Make string of alternate accessions
-        const altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
-
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
 
@@ -74,7 +67,7 @@ class BiosampleComponent extends React.Component {
                         <h2>
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
                         </h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <AlternateAccession altAcc={context.alternate_accessions} />
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel title="Status" status={context.status} />
@@ -291,7 +284,7 @@ class BiosampleComponent extends React.Component {
                                     {context.dbxrefs && context.dbxrefs.length ?
                                         <div data-test="externalresources">
                                             <dt>External resources</dt>
-                                            <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
                                         </div>
                                     : null}
 
@@ -352,28 +345,6 @@ class BiosampleComponent extends React.Component {
                                 <hr />
                                 <h4>Treatment details</h4>
                                 {context.treatments.map(treatment => treatmentDisplay(treatment))}
-                            </section>
-                        : null}
-
-                        {constructs.length ?
-                            <section>
-                                <hr />
-                                <h4>Construct details</h4>
-                                <div>
-                                    {constructs.map(construct =>
-                                        <div key={construct.uuid} className="subpanel">
-                                            {PanelLookup(construct)}
-                                        </div>
-                                    )}
-                                </div>
-                            </section>
-                        : null}
-
-                        {context.rnais.length ?
-                            <section>
-                                <hr />
-                                <h4>RNAi details</h4>
-                                {context.rnais.map(PanelLookup)}
                             </section>
                         : null}
                     </PanelBody>

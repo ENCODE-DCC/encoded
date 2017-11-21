@@ -81,9 +81,9 @@
             "type": "string",
             "description": "IDR reproducibility test result for this experiment",
             "enum": [
-                "pass",
                 "borderline",
-                "fail"
+                "fail",
+                "pass"
             ]
         },
         "N_optimal": {
@@ -399,6 +399,14 @@
                     "title": "MD5sum"
                 }
             }
+        }
+    },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "changelog": "/profiles/changelogs/idr_quality_metric.md"

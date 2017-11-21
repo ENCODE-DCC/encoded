@@ -1,5 +1,10 @@
 ## Changelog for replicate.json
 
+### Schema version 9
+
+* Remove standard_status mixin.
+* Remove *proposed* and *preliminary* from local status enum.
+
 ### Schema version 8
 
 * *status* property was restricted to one of  

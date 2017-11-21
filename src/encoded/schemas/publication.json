@@ -15,7 +15,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "title": {
             "title": "Title",
@@ -70,14 +70,10 @@
             "type": "string",
             "default": "in preparation",
             "enum" : [
-                "planned",
-                "in preparation",
-                "submitted",
-                "in revision",
-                "in press",
-                "published",
                 "deleted",
-                "replaced"
+                "in preparation",
+                "published",
+                "submitted"
             ]
         },
         "identifiers": {
@@ -128,29 +124,29 @@
                         "type": "string",
                         "enum" : [
                             "BED",
-                            "TSV",
                             "GTF",
-                            "VCF",
+                            "other format",
                             "text",
-                            "other format"
-                            ]
+                            "TSV",
+                            "VCF"
+                        ]
                     },
                     "supplementary_data_type": {
                         "title": "Supplementary data type",
                         "description": "The type of supplementary data reader should expect.",
                         "type": "string",
                         "enum" : [
-                            "peak calls",
+                            "connectivity",
                             "enhancer annotations",
-                            "RNA annotations",
-                            "promoter regions",
+                            "genomic annotations",
                             "HMM regions",
                             "HOT regions",
-                            "website",
                             "motifs",
-                            "genomic annotations",
-                            "connectivity"
-                            ]
+                            "peak calls",
+                            "promoter regions",
+                            "RNA annotations",
+                            "website"
+                        ]
                     },
                     "data_summary": {
                         "title": "Method summary",
@@ -168,19 +164,19 @@
                 "title": "Category",
                 "type": "string",
                 "enum" : [
-                    "human disease",
                     "basic biology",
-                    "software tool",
-                    "database",
-                    "integrative analysis",
-                    "technology development",
                     "data standard",
-                    "key publication",
-                    "pilot phase publication",
-                    "model organism biology",
-                    "tutorial",
+                    "database",
                     "genomic annotations",
-                    "production"
+                    "human disease",
+                    "integrative analysis",
+                    "key publication",
+                    "model organism biology",
+                    "pilot phase publication",
+                    "production",
+                    "software tool",
+                    "technology development",
+                    "tutorial"
                 ]
             }      
         },
@@ -193,12 +189,12 @@
                 "title": "Published by",
             "type": "string",
             "enum": [
-                "ENCODE",
-                "mouseENCODE",
-                "modENCODE",
-                "Roadmap",
                 "community",
-                "historical reference"
+                "ENCODE",
+                "historical reference",
+                "modENCODE",
+                "mouseENCODE",
+                "Roadmap"
                 ]
             }
         },

@@ -15,7 +15,8 @@
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
         "purpose": {
@@ -377,14 +378,12 @@
             "title": "Category",
             "description": "The category/type of the genetic modification performed.",
             "type": "string",
-            "comment": "Locking down to temporarily prevent new genetic_modifications from being submitted.",
-            "permission": "import_items",
             "enum": [
                 "deletion",
+                "interference",
                 "insertion",
-                "replacement",
                 "mutagenesis",
-                "interference"
+                "replacement"
             ]
         },
         "purpose":{
@@ -392,12 +391,12 @@
             "description": "The purpose of the genetic modification.",
             "type": "string",
             "enum": [
-                "repression",
                 "activation",
+                "analysis",
                 "overexpression",
+                "repression",
                 "tagging",
-                "validation",
-                "analysis"
+                "validation"
             ]
         },
         "zygosity":{
@@ -405,8 +404,8 @@
             "description": "The zygosity of the genetic modification.",
             "type": "string",
             "enum": [
-                "homozygous",
-                "heterozygous"
+                "heterozygous",
+                "homozygous"
             ]
         },
         "modified_site_by_target_id": {
@@ -428,17 +427,17 @@
                     "description": "The genome assembly to which modification coordinates relate. e.g. GRCh38.",
                     "type": "string",
                     "enum": [
-                        "mm9",
-                        "mm10",
-                        "mm10-minimal",
-                        "hg19",
-                        "GRCh38",
-                        "GRCh38-minimal",
                         "ce10",
                         "ce11",
                         "dm3",
                         "dm6",
-                        "J02459.1"
+                        "GRCh38-minimal",
+                        "GRCh38",
+                        "hg19",
+                        "J02459.1",
+                        "mm10-minimal",
+                        "mm10",
+                        "mm9"
                         ]
                 },
                 "chromosome": {
@@ -489,28 +488,28 @@
                     "name": {
                         "type": "string",
                         "enum": [
-                            "eGFP",
-                            "GFP",
-                            "YFP",
-                            "mCherry",
                             "3xFLAG",
-                            "FLAG",
                             "6XHis",
-                            "V5",
-                            "HA",
-                            "ER",
                             "DsRed",
+                            "eGFP",
+                            "ER",
+                            "FLAG",
+                            "GFP",
+                            "HA",
+                            "mCherry",
+                            "T2A",
                             "TRE",
-                            "T2A"
+                            "V5",
+                            "YFP"
                         ]
                     },
                     "location": {
                         "type": "string",
                         "default": "",
                         "enum": [
-                            "N-terminal",
                             "C-terminal",
                             "internal",
+                            "N-terminal",
                             "other",
                             "unknown"
                         ]
@@ -536,16 +535,16 @@
             "description": "The method used to produce the described genetic modification.",
             "type": "string",
             "enum":[
+                "bombardment",
                 "CRISPR",
-                "TALEN",
-                "stable transfection",
-                "transient transfection",
-                "site-specific recombination",
-                "transduction",
-                "RNAi",
-                "mutagen treatment",
                 "microinjection",
-                "bombardment"
+                "mutagen treatment",
+                "RNAi",
+                "site-specific recombination",
+                "stable transfection",
+                "TALEN",
+                "transduction",
+                "transient transfection"
             ]
         },
         "treatments": { 

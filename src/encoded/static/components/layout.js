@@ -125,6 +125,7 @@ class Block extends React.Component {
         this.blur = this.blur.bind(this);
         this.dragStart = this.dragStart.bind(this);
         this.dragOver = this.dragOver.bind(this);
+        this.remove = this.remove.bind(this);
     }
 
     componentDidMount() {

@@ -14,7 +14,7 @@
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/assay" }
-   ],
+    ],
     "properties": {
         "schema_version": {
             "hidden comment": "Bump the default in the subclasses."
@@ -58,8 +58,8 @@
                     "title": "MIME type",
                     "type": "string",
                     "enum": [
-                        "text/plain",
-                        "image/png"
+                        "image/png",
+                        "text/plain"
                     ]
                 },
                 "size": {
@@ -81,6 +81,5 @@
                 }
             }
         }
-
     }
 }

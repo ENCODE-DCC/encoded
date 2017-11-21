@@ -11,7 +11,7 @@ import { FetchedItems } from './fetched';
 import { auditDecor } from './audit';
 import StatusLabel from './statuslabel';
 import pubReferenceList from './reference';
-import { donorDiversity, publicDataset } from './objectutils';
+import { donorDiversity, publicDataset, AlternateAccession } from './objectutils';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
@@ -76,9 +76,6 @@ class AnnotationComponent extends React.Component {
             { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
         ];
 
-        // Make string of alternate accessions
-        const altacc = context.alternate_accessions.join(', ');
-
         // Make array of superseded_by accessions
         let supersededBys = [];
         if (context.superseded_by && context.superseded_by.length) {
@@ -106,7 +103,7 @@ class AnnotationComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for annotation file set {context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <AlternateAccession altAcc={context.alternate_accessions} />
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
                         {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
                         <div className="status-line">
@@ -209,7 +206,7 @@ class AnnotationComponent extends React.Component {
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
-                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
                                         </div>
                                     : null}
 
@@ -217,7 +214,7 @@ class AnnotationComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>
@@ -286,9 +283,6 @@ class PublicationDataComponent extends React.Component {
             { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
         ];
 
-        // Make string of alternate accessions
-        const altacc = context.alternate_accessions.join(', ');
-
         // Render the publication links
         const referenceList = pubReferenceList(context.references);
 
@@ -304,7 +298,7 @@ class PublicationDataComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for publication file set {context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <AlternateAccession altAcc={context.alternate_accessions} />
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -381,7 +375,7 @@ class PublicationDataComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>
@@ -450,9 +444,6 @@ class ReferenceComponent extends React.Component {
             { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
         ];
 
-        // Make string of alternate accessions
-        const altacc = context.alternate_accessions.join(', ');
-
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
 
@@ -468,7 +459,7 @@ class ReferenceComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for reference file set {context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <AlternateAccession altAcc={context.alternate_accessions} />
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -537,7 +528,7 @@ class ReferenceComponent extends React.Component {
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
-                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
                                         </div>
                                     : null}
 
@@ -545,7 +536,7 @@ class ReferenceComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>
@@ -617,9 +608,6 @@ class ProjectComponent extends React.Component {
             { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
         ];
 
-        // Make string of alternate accessions
-        const altacc = context.alternate_accessions.join(', ');
-
         // Get a list of reference links
         const references = pubReferenceList(context.references);
 
@@ -635,7 +623,7 @@ class ProjectComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for project file set {context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <AlternateAccession altAcc={context.alternate_accessions} />
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -725,7 +713,7 @@ class ProjectComponent extends React.Component {
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
-                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
                                         </div>
                                     : null}
 
@@ -733,7 +721,7 @@ class ProjectComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>
@@ -805,9 +793,6 @@ class UcscBrowserCompositeComponent extends React.Component {
             { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
         ];
 
-        // Make string of alternate accessions
-        const altacc = context.alternate_accessions.join(', ');
-
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
 
@@ -823,7 +808,7 @@ class UcscBrowserCompositeComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for UCSC browser composite file set {context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <AlternateAccession altAcc={context.alternate_accessions} />
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -899,7 +884,7 @@ class UcscBrowserCompositeComponent extends React.Component {
                                     {context.aliases.length ?
                                         <div data-test="aliases">
                                             <dt>Aliases</dt>
-                                            <dd><DbxrefList values={context.aliases} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={context.aliases} /></dd>
                                         </div>
                                     : null}
 
@@ -907,7 +892,7 @@ class UcscBrowserCompositeComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>
@@ -1269,9 +1254,6 @@ export class SeriesComponent extends React.Component {
             { id: breakSetName(seriesType), uri: `/search/?type=${seriesType}`, wholeTip: `Search for ${seriesType}` },
         ];
 
-        // Make string of alternate accessions
-        const altacc = context.alternate_accessions.join(', ');
-
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
 
@@ -1314,7 +1296,7 @@ export class SeriesComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for {seriesTitle} {context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <AlternateAccession altAcc={context.alternate_accessions} />
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -1390,7 +1372,7 @@ export class SeriesComponent extends React.Component {
                                         <dt>External resources</dt>
                                         <dd>
                                             {context.dbxrefs && context.dbxrefs.length ?
-                                                <DbxrefList values={context.dbxrefs} />
+                                                <DbxrefList context={context} dbxrefs={context.dbxrefs} />
                                             : <em>None submitted</em> }
                                         </dd>
                                     </div>

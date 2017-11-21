@@ -40,13 +40,13 @@
                     "properties": {
                         "biosample_type": {
                             "enum": [                
-                                "primary cell",
                                 "immortalized cell line",
-                                "tissue",
                                 "in vitro differentiated cells",
                                 "induced pluripotent stem cell line",
-                                "whole organisms",
-                                "stem cell"
+                                "primary cell",
+                                "stem cell",
+                                "tissue",
+                                "whole organisms"
                             ]
                         }
                     }
@@ -165,7 +165,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "13"
+            "default": "14"
         },
         "date_submitted": {
             "title": "Date submitted" ,
@@ -187,14 +187,14 @@
             "description": "The categorization of the biosample.",
             "type": "string",
             "enum" : [
-                "primary cell",
                 "immortalized cell line",
-                "tissue",
                 "in vitro differentiated cells",
+                "in vitro sample",
                 "induced pluripotent stem cell line",
-                "whole organisms",
+                "primary cell",
                 "stem cell",
-                "in vitro sample"
+                "tissue",
+                "whole organisms"
             ]
         },
         "dbxrefs": {
@@ -263,14 +263,14 @@
             "title": "Internal status",
             "enum": [
                 "unreviewed",
-                "no available pipeline",
-                "unrunnable",
                 "pipeline ready",
                 "processing",
                 "pipeline completed",
-                "requires lab review",
                 "release ready",
-                "pipeline error"
+                "requires lab review",
+                "no available pipeline",
+                "pipeline error",
+                "unrunnable"
             ]
         },
         "pipeline_error_detail": {
@@ -509,7 +509,6 @@
         "target.organism.name": 1.0,
         "target.organism.scientific_name": 1.0,
         "references.title": 1.0,
-        "replicates.library.biosample.rnais.product_id": 1.0,
         "notes": 1.0,
         "internal_tags": 1.0
     },

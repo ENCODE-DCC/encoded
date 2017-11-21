@@ -13,6 +13,34 @@ $inputFocusBorderColor: darken(#fff, 26%) !default;
 	padding: 4px 6px;
 }
 
+.form-control--select {
+	@extend .form-control;
+
+	select {
+		position: relative;
+		height: 30px;
+		padding-right: 30px;
+		font-size: 0.9rem;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+
+		&:after {
+			content: '\f0dc';
+			font-family: FontAwesome;
+			padding: 8px;
+			position: absolute;
+			right: 10px;
+			top: 5px;
+			z-index: 1;
+			width: 10px;
+			line-height: 50%;
+			font-size: 0.86rem;
+			color: #428bca;
+			pointer-events: none;
+		}
+	}
+}
+
 input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], textarea, select {
 	font-family: inherit;
 	font-size: 1rem;

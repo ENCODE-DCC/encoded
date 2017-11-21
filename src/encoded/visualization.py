@@ -14,14 +14,10 @@ from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 import time
 from pkg_resources import resource_filename
 
-# Note: Required for Bek's cache priming solution.
-from pyramid.events import subscriber
-from .peak_indexer import AfterIndexedExperimentsAndDatasets
-
 import logging
 
 log = logging.getLogger(__name__)
-# log.setLevel(logging.DEBUG)
+#log.setLevel(logging.DEBUG)
 log.setLevel(logging.INFO)
 
 # NOTE: Caching is turned on and off with this global AND TRACKHUB_CACHING in peak_indexer.py
@@ -122,6 +118,7 @@ _ASSEMBLY_MAPPER_FULL = {
 def includeme(config):
     config.add_route('batch_hub', '/batch_hub/{search_params}/{txt}')
     config.add_route('batch_hub:trackdb', '/batch_hub/{search_params}/{assembly}/{txt}')
+    config.add_route('index-vis', '/index-vis')
     config.scan(__name__)
 
 
@@ -130,7 +127,6 @@ PROFILE_START_TIME = 0  # For profiling within this module
 TAB = '\t'
 NEWLINE = '\n'
 HUB_TXT = 'hub.txt'
-GENOMES_TXT = 'genomes.txt'
 TRACKDB_TXT = 'trackDb.txt'
 BIGWIG_FILE_TYPES = ['bigWig']
 BIGBED_FILE_TYPES = ['bigBed']
@@ -140,6 +136,10 @@ QUICKVIEW_STATUSES_BLOCKED = ["proposed", "started", "deleted", "revoked", "repl
 VISIBLE_FILE_STATUSES = ["released"]
 VISIBLE_DATASET_TYPES = ["Experiment", "Annotation"]
 VISIBLE_DATASET_TYPES_LC = ["experiment", "annotation"]
+VISIBLE_ASSEMBLIES = ['hg19', 'GRCh38', 'mm10', 'mm10-minimal' ,'mm9','dm6','dm3','ce10','ce11']
+VISIBLE_FILE_FORMATS = BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES
+
+
 
 
 # ASSEMBLY_MAPPINGS is needed to ensure that mm10 and mm10-minimal will
@@ -475,7 +475,7 @@ def lookup_vis_defs(vis_type):
     if not VIS_DEFS_BY_TYPE:
         load_vis_defs()
     vis_def = VIS_DEFS_BY_TYPE.get(vis_type, COMPOSITE_VIS_DEFS_DEFAULT)
-    if EXP_GROUP not in vis_def["other_groups"]["groups"]:
+    if "other_groups" in vis_def and EXP_GROUP not in vis_def["other_groups"]["groups"]:
         vis_def["other_groups"]["groups"][EXP_GROUP] = DEFAULT_EXPERIMENT_GROUP
     if "sortOrder" in vis_def and EXP_GROUP not in vis_def["sortOrder"]:
         vis_def["sortOrder"].append(EXP_GROUP)
@@ -567,7 +567,6 @@ OUTPUT_TYPE_8CHARS = {
     "methylation state at CHH":             "mth CHH",
     "enrichment":                           "enrich",
     "replication timing profile":           "repli tm",
-    "relative replication signal":          "relrepsg",
     "variant calls":                        "vars",
     "filtered SNPs":                        "f SNPs",
     "filtered indels":                      "f indel",
@@ -1964,12 +1963,14 @@ def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
     # CHIP: https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR645BCH/@@hub/GRCh38/trackDb.txt
     # LRNA: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
 
+    (page,suffix,cmd) = urlpage(request.url)
+    json_out = (suffix == 'json')
+    vis_json = (page == 'vis_blob' and json_out)
+    ihec_out = (page == 'ihec' and json_out)
     if not regen:
-        regen = ("regenvis" in request.url)
-        # @@hub/GRCh38/regenvis/trackDb.txt regenvis/GRCh38 causes and error
-        if not regen:  # TODO temporary
-            regen = (request.url.find("ihecjson") > -1)
-            # @@hub/GRCh38/ihecjson/trackDb.txt  regenvis/GRCh38 causes and error
+        regen = ('regen' in cmd)
+        if not regen: # TODO temporary
+            regen = ihec_out
 
     acc = dataset['accession']
     ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
@@ -1992,16 +1993,17 @@ def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
         log.debug("%s composite %s_%s %s len(json):%d %.3f" % (found_or_made, dataset['accession'],
                   ucsc_assembly, vis_type, len(json.dumps(acc_composite)),
                   (time.time() - PROFILE_START_TIME)))
-    # del dataset
-    json_out = (request.url.find("jsonout") > -1)
-    ihec_out = (request.url.find("ihecjson") > -1)
-    if json_out:
+
+    if ihec_out:
+        ihec_json = remodel_acc_to_ihec_json({acc: acc_composite}, request)
+        return json.dumps(ihec_json, indent=4, sort_keys=True)
+    if vis_json:
+        return json.dumps(acc_composite, indent=4, sort_keys=True)
+    elif json_out:
         acc_composites = {} # Standardize output for biodalliance use
         acc_composites[acc] = acc_composite
         return json.dumps(acc_composites, indent=4, sort_keys=True)
-    elif ihec_out:
-        ihec_json = remodel_acc_to_ihec_json({acc: acc_composite}, request)
-        return json.dumps(ihec_json, indent=4, sort_keys=True)
+
     return ucsc_trackDb_composite_blob(acc_composite, acc)
 
 
@@ -2009,12 +2011,14 @@ def generate_batch_trackDb(request, hide=False, regen=False):
     '''Returns string content for a requested multi-experiment trackDb.txt.'''
     # local test: RNA-seq: curl https://../batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
 
-    # Special logic to force remaking of trackDb
+    (page,suffix,cmd) = urlpage(request.url)
+    json_out = (suffix == 'json')
+    vis_json = (page == 'vis_blob' and json_out)  # ...&bly=hg19&accjson/hg19/trackDb.txt
+    ihec_out = (page == 'ihec' and json_out)
     if not regen:
-        regen = (request.url.find("regenvis") > -1)
-        # ...&assembly=hg19&regenvis/hg19/trackDb.txt  regenvis=1 causes an error
-        if not regen:  # TODO temporary
-            regen = (request.url.find("ihecjson") > -1)  # ...&bly=hg19&ihecjson/hg19/trackDb.txt
+        regen = ('regen' in cmd)
+        if not regen: # TODO temporary
+            regen = ihec_out
 
     assembly = str(request.matchdict['assembly'])
     log.debug("Request for %s trackDb begins   %.3f secs" %
@@ -2093,17 +2097,14 @@ def generate_batch_trackDb(request, hide=False, regen=False):
     blob = ""
     set_composites = {}
     if found > 0 or made > 0:
-        ihec_out = (request.url.find("ihecjson") > -1)  # ...&ambly=hg19&ihecjson/hg19/trackDb.txt
-        acc_json = (request.url.find("accjson") > -1)  # ...&bly=hg19&accjson/hg19/trackDb.txt
         if ihec_out:
             ihec_json = remodel_acc_to_ihec_json(acc_composites, request)
             blob = json.dumps(ihec_json, indent=4, sort_keys=True)
-        if acc_json:
+        if vis_json:
             blob = json.dumps(acc_composites, indent=4, sort_keys=True)
         else:
             set_composites = remodel_acc_to_set_composites(acc_composites, hide_after=100)
 
-            json_out = (request.url.find("jsonout") > -1)  # ...&bly=hg19&jsonout/hg19/trackDb.txt
             if json_out:
                 blob = json.dumps(set_composites, indent=4, sort_keys=True)
             else:
@@ -2144,62 +2145,42 @@ def readable_time(secs_float):
     return result
 
 
-# Note: Required for Bek's cache priming solution.
-@subscriber(AfterIndexedExperimentsAndDatasets)
-def prime_vis_es_cache(event):
-    '''Priming occurs whenever es objects are invalidated but after _indexer is done with them.'''
-    global PROFILE_START_TIME
-    PROFILE_START_TIME = time.time()
-    # NOTE: should not be called unless peak_indexer.py::TRACKHUB_CACHING == True
-    request = event.request
-    uuids = event.object  # unordered set of unique ids that have been invalidated
-    if not uuids:
-        return
+def vis_cache_add(request, dataset, start_time=None):
+    '''For a single embedded dataset, builds and adds vis_blobs to es cache for each relevant assembly.'''
+    if start_time is None:
+        start_time = time.time()
 
-    # logging is not at visualization.py module level.  The logger is the scubscribed to one.
-    log.setLevel(logging.INFO)  # NOTE: Change here to show debug messages
-    verbose_threshold = 100     # Only be verbose if this is a big set
-    raw_count = len(uuids)
-    if raw_count >= verbose_threshold:  # If enough, then want this framed
-        log.info("Starting prime_vis_es_cache: %d uuids" % (raw_count))
-    else:
-        log.debug("Starting prime_vis_es_cache: %d uuids" % (raw_count))
+    if not object_is_visualizable(dataset, exclude_quickview=True):
+        return []
 
-    # NOTE: the request object coming from the peak indexer was not using elasticsearch!
-    request.datastore = 'elasticsearch'
+    acc = dataset['accession']
+    assemblies = dataset['assembly']
 
-    visualizabe_types = set(VISIBLE_DATASET_TYPES)
-    count = 0
-    for uuid in uuids:
-        dataset = request.embed(uuid)
-        # Try to limit the sets we are interested in
-        if dataset.get('status', 'none') not in VISIBLE_DATASET_STATUSES:
-            continue
-        if visualizabe_types.isdisjoint(dataset['@type']):
-            continue
-        acc = dataset['accession']
-        assemblies = dataset.get('assembly', [])
-        for assembly in assemblies:
-            ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
-            (made, acc_composite) = find_or_make_acc_composite(request, ucsc_assembly,
-                                                               acc, dataset, regen=True)
-            if acc_composite:
-                count += 1
-                log.debug("primed vis_es_cache with acc_composite %s_%s '%s'  %.3f secs" %
-                          (acc, ucsc_assembly,
-                           acc_composite.get('vis_type', ''), (time.time() - PROFILE_START_TIME)))
-            # Took 12h32m on initial
-            # else:
-            #    log.debug("prime_vis_es_cache for %s_%s unvisualizable '%s'" % \
-            #                                (acc,ucsc_assembly,get_vis_type(dataset)))
-    # if count == 0:
-    if raw_count >= verbose_threshold or count >= verbose_threshold/10:
-        log.info("prime_vis_es_cache made %d acc_composites  %s" %
-                 (count, readable_time(time.time() - PROFILE_START_TIME)))
-    else:
-        log.debug("prime_vis_es_cache made %d acc_composites  %s" %
-                  (count, readable_time(time.time() - PROFILE_START_TIME)))
-    log.setLevel(logging.NOTSET)  # Not sure if this is needed.
+    vis_blobs = []
+    for assembly in assemblies:
+        ucsc_assembly = _ASSEMBLY_MAPPER.get(assembly, assembly)
+        (made, vis_blob) = find_or_make_acc_composite(request, ucsc_assembly, acc, dataset,
+                                                                                    regen=True)
+        if vis_blob:
+            vis_blobs.append(vis_blob)
+            log.debug("primed vis_cache with vis_blob %s_%s '%s'  %.3f secs" %
+                        (acc, ucsc_assembly,
+                        vis_blob.get('vis_type', ''), (time.time() - start_time)))
+        # Took 12h32m on initial
+        # else:
+        #    log.debug("prime_vis_es_cache for %s_%s unvisualizable '%s'" % \
+        #                                (acc,ucsc_assembly,get_vis_type(dataset)))
+
+    return vis_blobs
+
+
+@view_config(context=Item, name='index-vis', permission='index', request_method='GET')
+def item_index_vis(context, request):
+    '''Called during secondary indexing to add one uuid to vis cache.'''
+    start_time = time.time()
+    uuid = str(context.uuid)
+    dataset = request.embed(uuid)
+    return vis_cache_add(request, dataset, start_time)
 
 
 def render(data):
@@ -2250,8 +2231,40 @@ def get_hub(label, comment=None, name=None):
     return render(hub)
 
 
-def browsers_available(assemblies, status, files, types, item_type=None):
-    '''Retrurns list of browsers this object visualizable on.'''
+def visualizable_assemblies(
+    assemblies,
+    files,
+    visible_statuses=VISIBLE_FILE_STATUSES
+):
+    '''Returns just the assemblies with visualizable files.'''
+    file_assemblies = set()  # sets for comparing
+    assemblies_set = set(assemblies)
+    for afile in files:
+        afile_assembly = afile.get('assembly')
+        if afile_assembly is None or afile_assembly in file_assemblies:
+            continue  # more efficient than simply relying on set()
+        if (afile['status'] in visible_statuses and
+                afile.get('file_format', '') in VISIBLE_FILE_FORMATS):
+            file_assemblies.add(afile_assembly)
+        if file_assemblies == assemblies_set:
+            break  # Try not to go through the whole file list!
+    return list(file_assemblies)
+
+
+def browsers_available(
+    status,
+    assemblies,
+    types,
+    item_type=None,
+    files=None,
+    accession=None,
+    request=None
+):
+    '''Returns list of browsers based upon vis_blobs or else files list.'''
+    # NOTES:When called by visualize calculated property,
+    #   vis_blob should be in vis_cache, but if not files are used.
+    #       When called by visindexer, neither vis_cache nor files are
+    #   used (could be called 'browsers_might_work').
     if "Dataset" not in types:
         return []
     if item_type is None:
@@ -2260,41 +2273,66 @@ def browsers_available(assemblies, status, files, types, item_type=None):
             return []
     elif item_type not in VISIBLE_DATASET_TYPES_LC:
             return []
-
-    if not files:
-        return []
-
     browsers = set()
+    full_set = {'ucsc', 'ensembl', 'quickview'}
+    file_assemblies = None
     for assembly in assemblies:
-        mapped_assembly = _ASSEMBLY_MAPPER_FULL[assembly]
+        mapped_assembly = _ASSEMBLY_MAPPER_FULL.get(assembly)
         if not mapped_assembly:
             continue
-        if 'ucsc_assembly' in mapped_assembly:
-            browsers.add('ucsc')
-        if 'ensembl_host' in mapped_assembly:
-            browsers.add('ensembl')
-        if 'quickview' in mapped_assembly:
-            browsers.add('quickview')
-
-    if status not in VISIBLE_DATASET_STATUSES:
-        if status not in QUICKVIEW_STATUSES_BLOCKED:
-            return ["quickview"]
-        return []
-
+        vis_blob = None
+        if (request is not None
+                and accession is not None
+                and status in VISIBLE_FILE_STATUSES):
+            # use of find_or_make_acc_composite() will recurse!
+            vis_blob = get_from_es(request, accession + "_" + assembly)
+        if not vis_blob and file_assemblies is None and files is not None:
+            file_assemblies = visualizable_assemblies(assemblies, files)
+        if ('ucsc' not in browsers
+                and 'ucsc_assembly' in mapped_assembly.keys()):
+            if vis_blob or files is None or assembly in file_assemblies:
+                browsers.add('ucsc')
+        if ('ensembl' not in browsers
+                and 'ensembl_host' in mapped_assembly.keys()):
+            if vis_blob or files is None or assembly in file_assemblies:
+                browsers.add('ensembl')
+        if ('quickview' not in browsers
+                and 'quickview' in mapped_assembly.keys()):
+            # NOTE: quickview may not have vis_blob as 'in progress'
+            #   files can also be displayed
+            #       Ideally we would also look at files' statuses and formats.
+            #   However, the (calculated)files property only contains
+            #   'released' files so it doesn't really help for quickview!
+            if vis_blob is not None or status not in QUICKVIEW_STATUSES_BLOCKED:
+                browsers.add('quickview')
+        if browsers == full_set:  # No use continuing
+            break
     return list(browsers)
 
 
-def object_is_visualizable(obj,assembly=None):
-    '''Retrurns list of browsers this object visualizable on.'''
-
+def object_is_visualizable(
+    obj,
+    assembly=None,
+    check_files=False,
+    exclude_quickview=False
+):
+    '''Returns true if it is likely that this object can be visualized.'''
     if 'accession' not in obj:
-        return []
+        return False
     if assembly is not None:
         assemblies = [ assembly ]
     else:
         assemblies = obj.get('assembly',[])
+    files = None
+    if check_files:
+        # Returning [] instead of None is important
+        files = obj.get('files', [])
+    browsers = browsers_available(obj.get('status', 'none'),  assemblies,
+                                  obj.get('@type', []), files=files)
+    if exclude_quickview:
+        browsers.pop('quickview', None)
 
-    return browsers_available(assemblies,obj.get('status'),obj.get('files'),obj['@type'])
+    return len(browsers) > 0
 
 
 def vis_format_url(browser, path, assembly, position=None):
@@ -2394,25 +2432,31 @@ def generate_html(context, request):
     return page  # data_description + header + file_table
 
 
+
+def urlpage(url):
+    '''returns (page,suffix,cmd) from url: as ('track','json','regen') from ./../track.regen.json'''
+    url_end = url.split('/')[-1]
+    parts = url_end.split('.')
+    page = parts[0]
+    suffix = parts[-1] if len(parts) > 1 else 'txt'
+    cmd = parts[1]     if len(parts) > 2 else ''
+    return (page, suffix, cmd)
+
 def generate_batch_hubs(context, request):
     '''search for the input params and return the trackhub'''
     global PROFILE_START_TIME
     PROFILE_START_TIME = time.time()
 
     results = {}
-    txt = request.matchdict['txt']
+    (page,suffix,cmd) = urlpage(request.url)
+    log.debug('Requesting %s.%s#%s' % (page,suffix,cmd))
 
-    if len(request.matchdict) == 3:
-
-        # Should generate a HTML page for requests other than trackDb.txt
-        if txt != TRACKDB_TXT:
-            data_policy = ('<br /><a href="http://encodeproject.org/ENCODE/terms.html">'
-                           'ENCODE data use policy</p>')
-            return generate_html(context, request) + data_policy
+    if (suffix == 'txt' and page == 'trackDb') or \
+         (suffix == 'json' and page in ['trackDb','ihec','vis_blob']):
 
         return generate_batch_trackDb(request)
 
-    elif txt == HUB_TXT:
+    elif page == 'hub' and suffix == 'txt':
         terms = request.matchdict['search_params'].replace(',,', '&')
         pairs = terms.split('&')
         label = "search:"
@@ -2421,13 +2465,20 @@ def generate_batch_hubs(context, request):
             if var not in ["type", "assembly", "status", "limit"]:
                 label += " %s" % val.replace('+', ' ')
         return NEWLINE.join(get_hub(label, request.url))
-    elif txt == GENOMES_TXT:
-        param_list = parse_qs(request.matchdict['search_params'].replace(',,', '&'))
+    elif page == 'genomes' and suffix == 'txt':
+        search_params = request.matchdict['search_params']
+        if search_params.find('bed6+') > -1:
+            search_params = search_params.replace('bed6+,,','bed6%2B,,')
+        log.debug('search_params: %s' % (search_params))
+        #param_list = parse_qs(request.matchdict['search_params'].replace(',,', '&'))
+        param_list = parse_qs(search_params.replace(',,', '&'))
+        log.debug('parse_qs: %s' % (param_list))
 
         view = 'search'
         if 'region' in param_list:
             view = 'region-search'
         path = '/%s/?%s' % (view, urlencode(param_list, True))
+        log.debug('Path in hunt for assembly %s' % (path))
         results = request.embed(path, as_user=True)
         # log.debug("generate_batch(genomes) len(results) = %d   %.3f secs" %
         #           (len(results),(time.time() - PROFILE_START_TIME)))
@@ -2443,7 +2494,28 @@ def generate_batch_hubs(context, request):
                             assemblies.append(term['key'])
                     if len(assemblies) > 0:
                         g_text = get_genomes_txt(assemblies)
+            if g_text == '':
+                assembly_set = {
+                    result['assemblies']
+                    for result in results['@graph']
+                    if 'assemblies' in result
+                }
+                if len(assembly_set) > 0:
+                    g_text = get_genomes_txt(list(assembly_set))
+                    log.debug(
+                        'Requesting %s.%s#%s NO ASSEMBLY !!!  Found %d anyway' %
+                        (page, suffix, cmd, len(assembly_set))
+                    )
+                else:
+                    g_text = json.dumps(results, indent=4)
+                    log.debug('Found 0 ASSEMBLIES !!!')
         return g_text
+
+    else:
+        # Should generate a HTML page for requests other than those supported
+        data_policy = ('<br /><a href="http://encodeproject.org/ENCODE/terms.html">'
+                       'ENCODE data use policy</p>')
+        return generate_html(context, request) + data_policy
 
 def respond_with_text(request, text, content_mime):
     '''Resonse that can handle range requests.'''
@@ -2474,12 +2546,11 @@ def hub(context, request):
     global PROFILE_START_TIME
     PROFILE_START_TIME = time.time()
 
-    url_ret = (request.url).split('@@hub')
     embedded = request.embed(request.resource_path(context))
 
-    url_end = url_ret[1][1:]
+    (page,suffix,cmd) = urlpage(request.url)
     content_mime = 'text/plain'
-    if url_end == HUB_TXT:
+    if page == 'hub' and suffix == 'txt':
         typeof = embedded.get("assay_title")
         if typeof is None:
             typeof = embedded["@id"].split('/')[1]
@@ -2487,14 +2558,17 @@ def hub(context, request):
         label = "%s %s" % (typeof, embedded['accession'])
         name = sanitize_name(label)
         text = NEWLINE.join(get_hub(label, request.url, name))
-    elif url_end == GENOMES_TXT:
+    elif page == 'genomes' and suffix == 'txt':
         assemblies = ''
         if 'assembly' in embedded:
             assemblies = embedded['assembly']
 
         text = get_genomes_txt(assemblies)
 
-    elif url_end.endswith(TRACKDB_TXT):
+    elif (suffix == 'txt' and page == 'trackDb') or \
+         (suffix == 'json' and page in ['trackDb','ihec','vis_blob']):
+        url_ret = (request.url).split('@@hub')
+        url_end = url_ret[1][1:]
         text = generate_trackDb(request, embedded, url_end.split('/')[0])
     else:
         data_policy = ('<br /><a href="http://encodeproject.org/ENCODE/terms.html">'

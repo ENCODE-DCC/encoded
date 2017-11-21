@@ -10,10 +10,9 @@ import { DbxrefList } from './dbxref';
 import { ExperimentTable } from './dataset';
 import { FetchedItems } from './fetched';
 import { FileGallery } from './filegallery';
-import { GeneticModificationSummary } from './genetic_modification';
 import { ProjectBadge } from './image';
 import { Breadcrumbs } from './navigation';
-import { singleTreatment } from './objectutils';
+import { singleTreatment, AlternateAccession } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import StatusLabel from './statuslabel';
@@ -302,14 +301,14 @@ class ExperimentComponent extends React.Component {
             };
             libraryComponents = {
                 nucleic_acid_starting_quantity: (library) => {
-                    if (library.nucleic_acid_starting_quantity && library.nucleic_acid_starting_quantity_units) {
+                    if (library && library.nucleic_acid_starting_quantity && library.nucleic_acid_starting_quantity_units) {
                         return <span>{library.nucleic_acid_starting_quantity}<span className="unit">{library.nucleic_acid_starting_quantity_units}</span></span>;
                     }
                     return null;
                 },
-                strand_specificity: library => <span>{library.strand_specificity ? 'Strand-specific' : 'Non-strand-specific'}</span>,
+                strand_specificity: library => (library ? <span>{library.strand_specificity ? 'Strand-specific' : 'Non-strand-specific'}</span> : null),
                 spikeins_used: (library) => {
-                    const spikeins = library.spikeins_used;
+                    const spikeins = library && library.spikeins_used;
                     if (spikeins && spikeins.length) {
                         return (
                             <span>
@@ -373,9 +372,6 @@ class ExperimentComponent extends React.Component {
         if (adminUser && context.internal_status) {
             statuses.push({ status: context.internal_status, title: 'Internal' });
         }
-
-        // Make string of alternate accessions.
-        const altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
         // Make array of superseded_by accessions.
         let supersededBys = [];
@@ -446,7 +442,7 @@ class ExperimentComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=Experiment" crumbs={crumbs} />
                         <h2>Experiment summary for {context.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <AlternateAccession altAcc={context.alternate_accessions} />
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
                         {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
                         <div className="status-line">
@@ -578,7 +574,7 @@ class ExperimentComponent extends React.Component {
                                     {context.dbxrefs.length ?
                                         <div data-test="external-resources">
                                             <dt>External resources</dt>
-                                            <dd><DbxrefList values={context.dbxrefs} cell_line={context.biosample_term_name} /></dd>
+                                            <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
                                         </div>
                                     : null}
 

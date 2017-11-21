@@ -73,11 +73,11 @@
             "items": {
                 "type": "string",
                 "enum": [
+                    "community",
                     "ENCODE3",
                     "ENCODE4",
                     "GGR",
-                    "REMC",
-                    "community"
+                    "REMC"
                 ]
             }
         },
@@ -85,6 +85,11 @@
             "title": "Job title",
             "type": "string",
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
+        }
+    },
+    "facets": {
+        "lab.title": {
+            "title": "Lab"
         }
     },
     "boost_values": {

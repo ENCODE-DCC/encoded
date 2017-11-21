@@ -1,5 +1,10 @@
 ## Changelog for publication.json
 
+### Schema version 5
+
+* Remove in press, in revision, planned, replaced from statuses
+
+
 ### Schema version 4
 
 * *aliases* now must be properly namespaced according lab.name:alphanumeric characters with no leading or trailing spaces

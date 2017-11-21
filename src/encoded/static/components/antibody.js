@@ -11,6 +11,7 @@ import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, Document, DocumentPreview } from './doc';
 import { RelatedItems } from './item';
+import { AlternateAccession } from './objectutils';
 import StatusLabel from './statuslabel';
 
 
@@ -74,16 +75,13 @@ const LotComponent = (props, reactContext) => {
         { id: geneComponents.length ? geneComponents : null, query: geneQuery, tip: geneTips.join(' + ') },
     ];
 
-    // Make string of alternate accessions
-    const altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
-
     return (
         <div className={globals.itemClass(context, 'view-item')}>
             <header className="row">
                 <div className="col-sm-12">
                     <Breadcrumbs root="/search/?type=antibody_lot" crumbs={crumbs} />
                     <h2>{context.accession}</h2>
-                    {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                    <AlternateAccession altAcc={context.alternate_accessions} />
                     <h3>
                         {targetKeys.length ?
                             <span>Antibody against {Object.keys(targets).map((target, i) => {
@@ -201,7 +199,7 @@ const LotComponent = (props, reactContext) => {
                         {context.dbxrefs && context.dbxrefs.length ?
                             <div data-test="dbxrefs">
                                 <dt>External resources</dt>
-                                <dd><DbxrefList values={context.dbxrefs} /></dd>
+                                <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
                             </div>
                         : null}
                     </dl>
@@ -449,15 +447,15 @@ const CharacterizationDetail = (props) => {
                     </div>
                 : null}
 
-                {doc.comment ?
-                    <div data-test="comment">
+                {doc.submitter_comment ?
+                    <div data-test="submittercomment">
                         <dt>Submitter comment</dt>
-                        <dd className="para-text">{doc.comment}</dd>
+                        <dd className="para-text">{doc.submitter_comment}</dd>
                     </div>
                 : null}
 
                 {doc.notes ?
-                    <div data-test="comment">
+                    <div data-test="reviewercomment">
                         <dt>Reviewer comment</dt>
                         <dd className="para-text">{doc.notes}</dd>
                     </div>

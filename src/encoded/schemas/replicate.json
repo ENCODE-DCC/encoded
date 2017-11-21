@@ -12,7 +12,6 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" }
     ],
@@ -22,7 +21,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "8"
+            "default": "9"
         },
         "antibody": {
             "title": "Antibody",
@@ -73,15 +72,24 @@
             ]
         },
         "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "in progress",
             "enum" : [
                 "in progress",
-                "deleted",
                 "released",
-                "preliminary",
-                "proposed",
                 "archived",
+                "deleted",
                 "revoked"
             ]
+        }
+    },
+    "facets": {
+        "technical_replicate_number": {
+            "title": "Technical replicate"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "boost_values": {

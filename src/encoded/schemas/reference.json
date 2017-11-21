@@ -46,7 +46,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "12"
+            "default": "13"
         },
         "reference_type": {
             "title": "Type",
@@ -54,9 +54,9 @@
             "type": "string",
             "enum": [
                 "index",
-                "spike-in",
+                "genome",
                 "mappability",
-                "genome"
+                "spike-in"
             ]
         },
         "organism": {

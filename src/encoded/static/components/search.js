@@ -335,16 +335,30 @@ class BiosampleComponent extends React.Component {
         const age = (result.age && result.age !== 'unknown') ? ` ${result.age}` : '';
         const ageUnits = (result.age_units && result.age_units !== 'unknown' && age) ? ` ${result.age_units}` : '';
         const separator = (lifeStage || age) ? ',' : '';
-        const rnais = (result.rnais[0] && result.rnais[0].target && result.rnais[0].target.label) ? result.rnais[0].target.label : '';
-        let constructs;
-
-        if (result.model_organism_donor_constructs && result.model_organism_donor_constructs.length) {
-            constructs = result.model_organism_donor_constructs[0].target.label;
-        } else {
-            constructs = result.constructs[0] ? result.constructs[0].target.label : '';
-        }
         const treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
-        const mutatedGenes = result.donor && result.donor.mutated_gene && result.donor.mutated_gene.label;
+
+        // Calculate genetic modification properties for display.
+        const rnais = [];
+        const constructs = [];
+        const mutatedGenes = [];
+        if (result.applied_modifications && result.applied_modifications.length) {
+            result.applied_modifications.forEach((am) => {
+                // Collect RNAi GM methods.
+                if (am.method === 'RNAi' && am.modified_site_by_target_id && am.modified_site_by_target_id.name) {
+                    rnais.push(am.modified_site_by_target_id.name);
+                }
+
+                // Collect construct GM methods.
+                if (am.purpose === 'tagging' && am.modified_site_by_target_id && am.modified_site_by_target_id.name) {
+                    constructs.push(am.modified_site_by_target_id.name);
+                }
+
+                // Collect mutated gene GM methods.
+                if ((am.category === 'deletion' || am.category === 'mutagenesis') && am.modified_site_by_target_id && am.modified_site_by_target_id.name) {
+                    mutatedGenes.push(am.modified_site_by_target_id.name);
+                }
+            });
+        }
 
         // Build the text of the synchronization string
         let synchText;
@@ -375,10 +389,10 @@ class BiosampleComponent extends React.Component {
                     <div className="data-row">
                         <div><strong>Type: </strong>{result.biosample_type}</div>
                         {result.summary ? <div><strong>Summary: </strong>{BiosampleSummaryString(result)}</div> : null}
-                        {rnais ? <div><strong>RNAi target: </strong>{rnais}</div> : null}
-                        {constructs ? <div><strong>Construct: </strong>{constructs}</div> : null}
+                        {rnais.length ? <div><strong>RNAi targets: </strong>{rnais.join(', ')}</div> : null}
+                        {constructs.length ? <div><strong>Constructs: </strong>{constructs.join(', ')}</div> : null}
                         {treatment ? <div><strong>Treatment: </strong>{treatment}</div> : null}
-                        {mutatedGenes ? <div><strong>Mutated gene: </strong>{mutatedGenes}</div> : null}
+                        {mutatedGenes.length ? <div><strong>Mutated genes: </strong>{mutatedGenes.join(', ')}</div> : null}
                         {result.culture_harvest_date ? <div><strong>Culture harvest date: </strong>{result.culture_harvest_date}</div> : null}
                         {result.date_obtained ? <div><strong>Date obtained: </strong>{result.date_obtained}</div> : null}
                         {synchText ? <div><strong>Synchronization timepoint: </strong>{synchText}</div> : null}
@@ -629,7 +643,7 @@ class TargetComponent extends React.Component {
                     <div className="data-row">
                         <strong>External resources: </strong>
                         {result.dbxref && result.dbxref.length ?
-                            <DbxrefList values={result.dbxref} target_gene={result.gene_name} target_ref />
+                            <DbxrefList context={result} dbxrefs={result.dbxref} />
                         : <em>None submitted</em> }
                     </div>
                 </div>
@@ -1155,9 +1169,19 @@ export class ResultTable extends React.Component {
     constructor(props) {
         super(props);
 
+        // Make an array of all assemblies found in all files in the search results.
+        let assemblies = [];
+        const results = this.props.context['@graph'];
+        const files = results.length ? results.filter(result => result['@type'][0] === 'File') : [];
+        if (files.length) {
+            // Reduce all found file assemblies so we don't have duplicates in the 'assemblies' array.
+            assemblies = files.reduce((assembliesAcc, file) => ((!file.assembly || assembliesAcc.indexOf(file.assembly) > -1) ? assembliesAcc : assembliesAcc.concat(file.assembly)), []);
+        }
+
         // Set React component state.
         this.state = {
-            browserAssembly: this.props.assemblies && this.props.assemblies[0], // Currently selected assembly for the browser
+            assemblies,
+            browserAssembly: assemblies.length && assemblies[0], // Currently selected assembly for the browser
             selectedTab: '',
         };
 
@@ -1204,7 +1228,8 @@ export class ResultTable extends React.Component {
 
     render() {
         const visualizeLimit = 100;
-        const { context, searchBase, assemblies, restrictions } = this.props;
+        const { context, searchBase, restrictions } = this.props;
+        const { assemblies } = this.state
         const results = context['@graph'];
         const total = context.total;
         const visualizeDisabled = total > visualizeLimit;
@@ -1405,7 +1430,6 @@ ResultTable.propTypes = {
     context: PropTypes.object,
     actions: PropTypes.array,
     restrictions: PropTypes.object,
-    assemblies: PropTypes.array, // List of assemblies of all 'File' objects in search results
     searchBase: PropTypes.string,
     onChange: PropTypes.func,
     currentRegion: PropTypes.func,
@@ -1460,15 +1484,18 @@ const ResultBrowser = (props) => {
         console.log('found region %s', region);
     }
     if (datasetCount === 1) {
-        // /datasets/{ENCSR000AEI}/@@hub/{hg19}/jsonout/trackDb.txt
-        visUrl = `${props.datasets[0]}/@@hub/${props.assembly}/jsonout/trackDb.txt`;
+        // /datasets/{ENCSR000AEI}/@@hub/{hg19}/trackDb.json
+        visUrl = `${props.datasets[0]}/@@hub/${props.assembly}/trackDb.json`;
     } else if (datasetCount > 1) {
-        // /batch_hub/type%3DExperiment%2C%2Caccession%3D{ENCSR000AAA}%2C%2Caccession%3D{ENCSR000AEI}%2C%2Caccjson/{hg19}/trackDb.txt
+        // /batch_hub/type%3DExperiment%2C%2Caccession%3D{ENCSR000AAA}%2C%2Caccession%3D{ENCSR000AEI}/{hg19}/vis_blob.json
         for (let ix = 0; ix < datasetCount; ix += 1) {
             const accession = props.datasets[ix].split('/')[2];
-            visUrl += `accession=${accession}%2C%2C`;
+            if (visUrl !== '') {
+                visUrl += '%2C%2C';
+            }
+            visUrl += `accession=${accession}`;
         }
-        visUrl = `batch_hub/type=Experiment/${visUrl}&accjson/${props.assembly}/trackDb.txt`;
+        visUrl = `batch_hub/type=Experiment/${visUrl}/${props.assembly}/vis_blob.json`;
     }
     if (datasetCount > 0) {
         return (
@@ -1537,21 +1564,12 @@ class Search extends React.Component {
         const notification = context.notification;
         const searchBase = url.parse(this.context.location_href).search || '';
         const facetdisplay = context.facets && context.facets.some(facet => facet.total > 0);
-        let assemblies = [];
-
-        // Make an array of all assemblies found in all files in the search results.
-        const results = this.props.context['@graph'];
-        const files = results.length ? results.filter(result => result['@type'][0] === 'File') : [];
-        if (files.length) {
-            // Reduce all found file assemblies so we don't have duplicates in the 'assemblies' array.
-            assemblies = files.reduce((assembliesAcc, file) => ((!file.assembly || assembliesAcc.indexOf(file.assembly) > -1) ? assembliesAcc : assembliesAcc.concat(file.assembly)), []);
-        }
 
         return (
             <div>
                 {facetdisplay ?
                     <div className="panel data-display main-panel">
-                        <ResultTable {...this.props} key={undefined} searchBase={searchBase} assemblies={assemblies} onChange={this.context.navigate} currentRegion={this.currentRegion} />
+                        <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.context.navigate} currentRegion={this.currentRegion} />
                     </div>
                 : <h4>{notification}</h4>}
             </div>

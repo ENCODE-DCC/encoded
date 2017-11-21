@@ -17,7 +17,8 @@
         { "$ref": "characterization.json#/properties" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/documents" }
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
         "characterization_reviews": ["primary_characterization_method"],
@@ -74,7 +75,7 @@
                     }
                 },
                 {
-                    "required": ["comment", "notes", "reviewed_by", "documents"],
+                    "required": ["submitter_comment", "notes", "reviewed_by", "documents"],
                     "properties": {
                         "status": {
                             "enum": ["exempt from standards"]
@@ -95,7 +96,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "10"
+            "default": "11"
         },
         "reviewed_by": {
             "title": "Reviewed by",
@@ -132,14 +133,14 @@
             "type": "string",
             "default": "in progress",
             "enum" : [
-                "in progress",
-                "pending dcc review",
                 "compliant",
+                "deleted",
+                "exempt from standards",
+                "in progress",
                 "not compliant",
                 "not reviewed",
                 "not submitted for review by lab",
-                "exempt from standards",
-                "deleted"
+                "pending dcc review"
             ]
         },
         "characterization_reviews": {
@@ -227,10 +228,10 @@
                         "permission": "import_items",
                         "default": "pending dcc review",
                         "enum" : [
-                            "pending dcc review",
                             "compliant",
+                            "exempt from standards",
                             "not compliant",
-                            "exempt from standards"
+                            "pending dcc review"
                         ]
                     },
                     "biosample_term_id": {
@@ -250,13 +251,13 @@
                         "description": "The categorization of the biosample.",
                         "type": "string",
                         "enum" : [
-                            "primary cell",
                             "immortalized cell line",
-                            "tissue",
                             "in vitro differentiated cells",
                             "induced pluripotent stem cell line",
-                            "whole organisms",
-                            "stem cell"
+                            "primary cell",
+                            "stem cell",
+                            "tissue",
+                            "whole organisms"
                         ]
                     }
                 }
@@ -275,8 +276,8 @@
             "type": "string",
             "enum": [
                 "immunoblot",
-                "immunoprecipitation",
-                "immunofluorescence"
+                "immunofluorescence",
+                "immunoprecipitation"
             ]
         },
         "secondary_characterization_method": {
@@ -284,17 +285,17 @@
             "description": "Secondary experimental method of the characterization, as defined in the standards document.",
             "type": "string",
             "enum": [
-                "knockdown or knockout",
-                "immunoprecipitation followed by mass spectrometry",
                 "ChIP-seq comparison",
                 "ChIP-string comparison",
-                "motif enrichment",
                 "dot blot assay",
-                "peptide array assay",
-                "peptide ELISA assay",
-                "peptide competition assay",
+                "histone variant-specific immunoblot",
+                "immunoprecipitation followed by mass spectrometry",
+                "knockdown or knockout",
+                "motif enrichment",
                 "overexpression analysis",
-                "histone variant-specific immunoblot"
+                "peptide array assay",
+                "peptide competition assay",
+                "peptide ELISA assay"
             ]
         }
     },

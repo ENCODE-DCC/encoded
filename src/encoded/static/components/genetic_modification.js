@@ -239,13 +239,13 @@ const ModificationMethod = (props) => {
                     <div data-test="reagent">
                         <dt>Reagents</dt>
                         <dd>
-                            <ul className="multi-value">
+                            <ul className="multi-value-line">
                                 {geneticModification.reagents.map((reagent, i) => {
                                     const reagentId = <span>{globals.atIdToAccession(reagent.source)} &mdash; {reagent.identifier}</span>;
                                     if (reagent.url) {
-                                        return <a key={i} href={reagent.url}>{reagentId}</a>;
+                                        return <li key={i}><a href={reagent.url}>{reagentId}</a></li>;
                                     }
-                                    return <span key={i}>{reagentId}</span>;
+                                    return <li key={i}>{reagentId}</li>;
                                 })}
                             </ul>
                         </dd>

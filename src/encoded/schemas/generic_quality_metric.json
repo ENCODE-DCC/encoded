@@ -45,12 +45,12 @@
                     "title": "MIME type",
                     "type": "string",
                     "enum": [
-                        "application/x-tar",
                         "application/pdf",
+                        "application/x-tar",
+                        "image/gif",
                         "image/jpeg",
                         "image/png",
                         "image/tiff",
-                        "image/gif",
                         "text/html",
                         "text/plain",
                         "text/tab-separated-values"
@@ -74,6 +74,14 @@
                     "type": "integer"
                 }
             }
+        }
+    },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
         }
     },
     "changelog": "/profiles/changelogs/generic_quality_metric.md"
