@@ -3465,6 +3465,124 @@ def audit_experiment(value, system):
     return
 
 
+@audit_checker('Experiment', frame=['original_files',
+                                    'original_files.replicate',
+                                    'original_files.derived_from',
+                                    'original_files.analysis_step_version',
+                                    'original_files.analysis_step_version.analysis_step',
+                                    'original_files.analysis_step_version.analysis_step.pipelines',
+                                    'target',
+                                    'replicates'])
+def audit_experiment_missing_processed_files(value, system):
+    if not check_award_condition(value, ['modERN']):
+        return
+    alignment_files = scan_files_for_file_format_output_type(value['original_files'],
+                                                             'bam', 'alignments')
+    alignment_files.extend(scan_files_for_file_format_output_type(value['original_files'],
+                                                                  'bam',
+                                                                  'unfiltered alignments'))
+    alignment_files.extend(scan_files_for_file_format_output_type(value['original_files'],
+                                                                  'bam',
+                                                                  'transcriptome alignments'))
+
+    # if there are no bam files - we don't know what pipeline, exit
+    if len(alignment_files) == 0:
+        return
+    # find out the pipeline
+    pipelines = getPipelines(alignment_files)
+    if len(pipelines) == 0:  # no pipelines detected
+        return
+
+    if 'Transcription factor ChIP-seq pipeline (modERN)' in pipelines:
+        # check if control
+        target = value.get('target')
+        if target is None:
+            return
+        if 'control' in target.get('investigated_as'):
+            replicate_structures = create_pipeline_structures(value['original_files'],
+                                                              'modERN_control')
+            for failure in check_structures(replicate_structures, True, value):
+                yield failure
+        else:
+            replicate_structures = create_pipeline_structures(value['original_files'],
+                                                              'modERN')
+            for failure in check_structures(replicate_structures, False, value):
+                yield failure
+
+
+def check_structures(replicate_structures, control_flag, experiment):
+    bio_reps = get_bio_replicates(experiment)
+    assemblies = get_assemblies(experiment['original_files'])
+    present_assemblies = []
+    replicates_dict = {}
+    for bio_rep in bio_reps:
+        for assembly in assemblies:
+            replicates_dict[(bio_rep, assembly)] = 0
+    pooled_quantity = 0
+
+    for (bio_rep_num, assembly) in replicate_structures.keys():
+        replicates_string = bio_rep_num[1:-1]
+        if len(replicates_string) > 0 and \
+           is_single_replicate(replicates_string) is True:
+            replicates_dict[(replicates_string, assembly)] = 1
+        elif len(replicates_string) > 0 and is_single_replicate(replicates_string) is False:
+            pooled_quantity += 1
+            present_assemblies.append(assembly)
+
+        if replicate_structures[(bio_rep_num, assembly)].has_orphan_files() is True:
+            detail = 'Experiment {} contains '.format(experiment['@id']) + \
+                     '{} '.format(replicate_structures[(bio_rep_num, assembly)].get_orphan_files()) + \
+                     'files, genomic assembly {} '.format(assembly) + \
+                     ' that are not associated with any replicate'
+            yield AuditFailure('orphan pipeline files', detail, level='INTERNAL_ACTION')
+        else:
+            if replicate_structures[(bio_rep_num, assembly)].has_unexpected_files() is True:
+                for unexpected_file in \
+                        replicate_structures[(bio_rep_num, assembly)].get_unexpected_files():
+                    detail = 'Experiment {} contains '.format(experiment['@id']) + \
+                             'unexpected file {} '.format(unexpected_file) + \
+                             'that is associated with ' + \
+                             'biological replicates {}.'.format(bio_rep_num)
+                    yield AuditFailure('unexpected pipeline files', detail, level='INTERNAL_ACTION')
+
+            if replicate_structures[(bio_rep_num, assembly)].is_complete() is False:
+                for missing_tuple in \
+                        replicate_structures[(bio_rep_num, assembly)].get_missing_fields_tuples():
+                    if is_single_replicate(bio_rep_num[1:-1]) is True:
+                        detail = 'In experiment {}, '.format(experiment['@id']) + \
+                                 'biological replicate {}, '.format(bio_rep_num[1:-1]) + \
+                                 'genomic assembly {} '.format(assembly) + \
+                                 'the file {} is missing.'.format(missing_tuple)
+                        yield AuditFailure('missing pipeline files', detail, level='INTERNAL_ACTION')
+                    else:
+                        detail = 'In experiment {}, '.format(experiment['@id']) + \
+                                 'biological replicates {}, '.format(bio_rep_num) + \
+                                 'genomic assembly {}, '.format(assembly) + \
+                                 'the file {} is missing.'.format(missing_tuple)
+                        yield AuditFailure('missing pipeline files', detail, level='INTERNAL_ACTION')
+
+            if replicate_structures[(bio_rep_num, assembly)].is_analyzed_more_than_once() is True:
+                detail = 'In experiment {}, '.format(experiment['@id']) + \
+                         'biological replicate {} contains '.format(bio_rep_num) + \
+                         'multiple processed files associated with the same fastq ' + \
+                         'files for {} assembly.'.format(assembly)
+                yield AuditFailure('inconsistent pipeline files', detail, level='INTERNAL_ACTION')
+
+    if pooled_quantity < (len(assemblies)) and control_flag is False:
+        detail = 'Experiment {} '.format(experiment['@id']) + \
+                 'does not contain all of the inter-replicate comparison anlaysis files. ' + \
+                 'Analysis was performed using {} assemblies, '.format(assemblies) + \
+                 'while inter-replicate comparison anlaysis was performed only using ' + \
+                 '{} assemblies.'.format(present_assemblies)
+        yield AuditFailure('missing pipeline files', detail, level='INTERNAL_ACTION')
+    for (rep_num, assembly) in replicates_dict:
+        if replicates_dict[(rep_num, assembly)] == 0:
+            detail = 'Experiment {} '.format(experiment['@id']) + \
+                     'contains biological replicate {}, '.format(rep_num) + \
+                     'without any processed files associated with {} assembly.'.format(assembly)
+            yield AuditFailure('missing pipeline files', detail, level='INTERNAL_ACTION')
+    return
+
 #  def audit_experiment_control_out_of_date_analysis(value, system):
 #  removed due to https://encodedcc.atlassian.net/browse/ENCD-3460
 
