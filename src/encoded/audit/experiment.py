@@ -4,6 +4,17 @@ from snovault import (
 )
 from .gtex_data import gtexDonorsList
 from .standards_data import pipelines_with_read_depth
+from .pipeline_structures import (
+    modERN_TF_control,
+    modERN_TF_replicate,
+    modERN_TF_pooled,
+    encode_chip_control,
+    encode_chip_histone_experiment_pooled,
+    encode_chip_tf_experiment_pooled,
+    encode_chip_experiment_replicate,
+    encode_rampage_experiment_replicate,
+    encode_rampage_experiment_pooled
+    )
 
 targetBasedAssayList = [
     'ChIP-seq',
@@ -3471,7 +3482,7 @@ def audit_experiment(value, system):
                                     'original_files.analysis_step_version',
                                     'original_files.analysis_step_version.analysis_step',
                                     'original_files.analysis_step_version.analysis_step.pipelines',
-                                    'target',
+                                    'target', 'award',
                                     'replicates'])
 def audit_experiment_missing_processed_files(value, system):
     if not check_award_condition(value, ['modERN']):
@@ -3508,6 +3519,39 @@ def audit_experiment_missing_processed_files(value, system):
                                                               'modERN')
             for failure in check_structures(replicate_structures, False, value):
                 yield failure
+
+def create_pipeline_structures(files_to_scan, structure_type):
+    structures_mapping = {
+        'modERN_control': modERN_TF_control,
+        'modERN_pooled': modERN_TF_pooled,
+        'modERN_replicate': modERN_TF_replicate
+    }
+    structures_to_return = {}
+    replicates_set = set()
+    for f in files_to_scan:
+        if f['status'] not in ['replaced', 'revoked', 'deleted', 'archived'] and \
+           f['output_category'] not in ['raw data', 'reference']:
+            bio_rep_num = str(f.get('biological_replicates'))
+            assembly = f.get('assembly')
+
+            if (bio_rep_num, assembly) not in replicates_set:
+                replicates_set.add((bio_rep_num, assembly))
+                if structure_type in ['modERN_control']:
+                    structures_to_return[(bio_rep_num, assembly)] = \
+                        structures_mapping[structure_type]()
+                else:
+                    if structure_type == 'modERN':
+                        if is_single_replicate(str(bio_rep_num)) is True:
+                            structures_to_return[(bio_rep_num, assembly)] = \
+                                structures_mapping['modERN_replicate']()
+                        else:
+                            structures_to_return[(bio_rep_num, assembly)] = \
+                                structures_mapping['modERN_pooled']()
+
+                structures_to_return[(bio_rep_num, assembly)].update_fields(f)
+            else:
+                structures_to_return[(bio_rep_num, assembly)].update_fields(f)
+    return structures_to_return
 
 
 def check_structures(replicate_structures, control_flag, experiment):
@@ -3583,6 +3627,47 @@ def check_structures(replicate_structures, control_flag, experiment):
             yield AuditFailure('missing pipeline files', detail, level='INTERNAL_ACTION')
     return
 
+def getPipelines(alignment_files):
+    pipelines = set()
+    for alignment_file in alignment_files:
+        if 'analysis_step_version' in alignment_file and \
+           'analysis_step' in alignment_file['analysis_step_version'] and \
+           'pipelines' in alignment_file['analysis_step_version']['analysis_step']:
+            for p in alignment_file['analysis_step_version']['analysis_step']['pipelines']:
+                pipelines.add(p['title'])
+    return pipelines
+
+
+def is_single_replicate(replicates_string):
+    if ',' not in replicates_string:
+        return True
+    return False
+
+
+def get_assemblies(list_of_files):
+    assemblies = set()
+    for f in list_of_files:
+        if f['status'] not in ['replaced', 'revoked', 'deleted', 'archived'] and \
+           f['output_category'] not in ['raw data', 'reference'] and \
+           f.get('assembly') is not None:
+                assemblies.add(f['assembly'])
+    return assemblies
+
+def get_bio_replicates(experiment):
+    bio_reps = set()
+    for rep in experiment['replicates']:
+        if rep['status'] not in ['deleted']:
+            bio_reps.add(str(rep['biological_replicate_number']))
+    return bio_reps
+
+def scan_files_for_file_format_output_type(files_to_scan, f_format, f_output_type):
+    files_to_return = []
+    for f in files_to_scan:
+        if 'file_format' in f and f['file_format'] == f_format and \
+           'output_type' in f and f['output_type'] == f_output_type and \
+           f['status'] not in ['replaced', 'revoked', 'deleted', 'archived']:
+            files_to_return.append(f)
+    return files_to_return
 #  def audit_experiment_control_out_of_date_analysis(value, system):
 #  removed due to https://encodedcc.atlassian.net/browse/ENCD-3460
 
