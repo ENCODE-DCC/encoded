@@ -794,7 +794,7 @@ function StatusData(experiments, unreplicated, isogenic, anisogenic) {
         isogenicArray = (isogenicFacet && isogenicFacet.terms && isogenicFacet.terms.length) ? isogenicFacet.terms : [];
         anisogenicArray = (anisogenicFacet && anisogenicFacet.terms && anisogenicFacet.terms.length) ? anisogenicFacet.terms : [];
     }
-    const labels = ['proposed', 'started', 'submitted', 'released', 'deleted', 'replaced', 'archived', 'revoked'];
+    const labels = ['started', 'submitted', 'released', 'deleted', 'replaced', 'archived', 'revoked'];
 
     // Check existence of data for each of the keys in array labels
     // Ensures that for each replicate type there exists the same set of labels and the corresponding data values (in order)
@@ -1597,10 +1597,6 @@ GenusButtons.defaultProps = {
 const milestonesTableColumns = {
     assay_term_name: {
         title: 'Assay name',
-    },
-
-    proposed_count: {
-        title: 'Proposed count',
     },
 
     deliverable_unit: {
