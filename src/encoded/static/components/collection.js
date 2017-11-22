@@ -5,7 +5,6 @@ import * as globals from './globals';
 import DataColors from './datacolors';
 
 
-
 const MAX_FACET_CHARTS = 3; // Maximum number of facet charts to display.
 const MAX_CHART_ITEMS = 9; // Maximum number of items to display in a chart; combine rest into "Other."
 
@@ -22,6 +21,17 @@ class FacetChart extends React.Component {
     }
 
     componentDidUpdate() {
+        // Utility function to generate a query string component using the given field and label.
+        function generateQuery(field, label) {
+            return `${field}=${encodeURIComponent(label).replace(/%20/g, '+')}`;
+        }
+
+        // Same as generateQuery, but generates a query string with multiple elements. The facet
+        // terms to use as a source of the data gets passed in the `terms` parameter.
+        function generateMultipleQuery(field, terms) {
+            return terms.reduce((combined, term) => `${combined}&${generateQuery(field, term.key)}`, '');
+        }
+
         // This method might be called because we're drawing the chart for the first time (in
         // that case this is an update because we already rendered an empty canvas before the
         // chart.js module was loaded) or because we have new data to render into an existing
@@ -77,7 +87,15 @@ class FacetChart extends React.Component {
                             const text = [];
                             text.push('<ul>');
                             for (let i = 0; i < chartData.length; i += 1) {
-                                const searchUri = `${baseSearchUri}&${facet.field}=${encodeURIComponent(chartLabels[i]).replace(/%20/g, '+')}`;
+                                let queryString = '';
+                                if (this.otherTerms.length && this.otherTermsIndex === i) {
+                                    // Handle a click in the "other" term. We need to generate a
+                                    // query string that combines all the "other" terms.
+                                    queryString = generateMultipleQuery(facet.field, this.otherTerms);
+                                } else {
+                                    queryString = generateQuery(facet.field, chartLabels[i]);
+                                }
+                                const searchUri = `${baseSearchUri}&${queryString}`;
                                 if (chartData[i]) {
                                     text.push(`<li><a href="${searchUri}">`);
                                     text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${chartColors[i]}"></i>`);
@@ -89,12 +107,21 @@ class FacetChart extends React.Component {
                             return text.join('');
                         },
                         onClick: (e) => {
+                            let queryString = '';
+
                             // React to clicks on pie sections
                             const activePoints = this.chartInstance.getElementAtEvent(e);
                             if (activePoints[0]) {
                                 const clickedElementIndex = activePoints[0]._index;
                                 const chartLabels = this.chartInstance.data.labels;
-                                const searchUri = `${baseSearchUri}&${facet.field}=${encodeURIComponent(chartLabels[clickedElementIndex]).replace(/%20/g, '+')}`;
+                                if (this.otherTerms.length && this.otherTermsIndex === clickedElementIndex) {
+                                    // The click was in the "other" term. We need to generate a
+                                    // query string that combines all the "other" terms.
+                                    queryString = generateMultipleQuery(facet.field, this.otherTerms);
+                                } else {
+                                    queryString = generateQuery(facet.field, chartLabels[clickedElementIndex]);
+                                }
+                                const searchUri = `${baseSearchUri}&${queryString}`;
                                 this.context.navigate(searchUri);
                             }
                         },
@@ -110,13 +137,22 @@ class FacetChart extends React.Component {
 
     render() {
         const { chartId, facet } = this.props;
-        let terms;
+        let terms = [];
+        let otherTerms = [];
 
         // If we have more facet terms than we allow to be displayed (determined through
-        // MAX_CHART_ITEMS), 
+        // MAX_CHART_ITEMS), then just get MAX_CHART_ITEMS to display as usual, and collect the
+        // rest to display as "other."
         if (facet.terms.length > MAX_CHART_ITEMS) {
-            terms = facet.terms.splice(0, MAX_CHART_ITEMS);
+            // We have more facet terms than we display individually. First get the terms to
+            // display as individual items.
+            terms = facet.terms.slice(0, MAX_CHART_ITEMS);
+
+            // Now collect the terms to display as "other."
+            otherTerms = facet.terms.slice(MAX_CHART_ITEMS);
         } else {
+            // We don't have enough facet terms for an "other" category, so just use the whole
+            // array of facet terms.
             terms = facet.terms;
         }
 
@@ -132,6 +168,22 @@ class FacetChart extends React.Component {
                 this.labels.push(term.key);
             }
         });
+
+        // Add labels and values for "other" terms, if any. Add up all the "other" items and push
+        // as another data item to the array of values.
+        if (otherTerms.length) {
+            this.values.push(otherTerms.reduce((sum, term) => sum + term.doc_count, 0));
+            this.labels.push('other');
+
+            // Keep track of the "other" terms and its location in the values/labels arrays so that
+            // the callbacks to handle clicks in the legend and the doughnut slices can handle the
+            // "other" term.
+            this.otherTerms = otherTerms;
+            this.otherTermsIndex = this.labels.length - 1;
+        } else {
+            // Remember we don't have enough terms to need an "other" term.
+            this.otherTerms = [];
+        }
 
         // Check whether we have usable values in one array or the other we just collected (we'll
         // just use `this;values` here) to see if we need to render a chart or not.
