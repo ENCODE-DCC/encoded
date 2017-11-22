@@ -88,5 +88,13 @@
             }
         }
     },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
     "changelog": "/profiles/changelogs/chipseq_filter_quality_metric.md"
 }

@@ -102,5 +102,13 @@
             "description": "Count of reads uniquely mapped"
         }
     },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
     "changelog": "/profiles/changelogs/edwbamstats_quality_metric.md"
 }

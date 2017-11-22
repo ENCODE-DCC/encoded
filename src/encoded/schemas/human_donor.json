@@ -241,8 +241,8 @@
         "life_stage": {
             "title": "Life stage"
         },
-        "lab.title": {
-            "title": "Lab"
+        "sex": {
+            "title": "Sex"
         },
         "status": {
             "title": "Status"

@@ -84,14 +84,14 @@ const filterValue = function filterValue(value) {
 // Given a schema, construct a default object.
 // The default object includes the `default` value
 // for any property that defines one,
-// with the exception of read-only and calculated properties.
+// with the exception of read-only and non-submittable properties.
 const defaultValue = function defaultValue(schema) {
     if (schema.default !== undefined) {
         return schema.default !== undefined ? schema.default : undefined;
     } else if (schema.properties !== undefined) {
         const value = {};
         _.each(schema.properties, (property, name) => {
-            if (property.calculatedProperty) return;
+            if (property.notSubmittable) return;
             if (!property.readonly) {
                 const propertyDefault = defaultValue(property);
                 if (propertyDefault !== undefined) {
@@ -624,7 +624,7 @@ export class Field extends UpdateChildMixin(React.Component) {
             Object.keys(schema.properties).forEach((key) => {
                 if (key === 'uuid' || key === 'schema_version') return;
                 const subschema = schema.properties[key];
-                if (subschema.calculatedProperty) return;
+                if (subschema.notSubmittable || subschema.hideFromForms) return;
                 // Readonly fields are omitted when showReadOnly is false
                 // (i.e. when adding a new object).
                 if (!this.context.showReadOnly && subschema.readonly) return;
