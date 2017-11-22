@@ -1599,6 +1599,10 @@ const milestonesTableColumns = {
         title: 'Assay name',
     },
 
+    proposed_count: {
+        title: 'Proposed count',
+    },
+
     deliverable_unit: {
         title: 'Biosample',
     },
