@@ -9,6 +9,8 @@ bootcmd:
 output:
   all: '| tee -a /var/log/cloud-init-output.log'
 
+package_upgrade: true
+
 packages:
 - fuse
 ## - golang
@@ -29,7 +31,7 @@ runcmd:
 - mkdir -p /s3/encode-files
 - mkdir -p /s3/encoded-files-dev
 
-- curl -sS -L -o /usr/local/bin/goofys https://github.com/kahing/goofys/releases/download/v0.0.5/goofys
+- curl -sS -L -o /usr/local/bin/goofys https://github.com/kahing/goofys/releases/download/v0.0.18/goofys
 - chmod +x /usr/local/bin/goofys
 
 ## - mkdir -p /opt/goofys/bin
