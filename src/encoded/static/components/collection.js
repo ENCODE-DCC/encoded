@@ -5,8 +5,9 @@ import * as globals from './globals';
 import DataColors from './datacolors';
 
 
-// Maximum number of facet charts to display.
-const MAX_FACET_CHARTS = 3;
+
+const MAX_FACET_CHARTS = 3; // Maximum number of facet charts to display.
+const MAX_CHART_ITEMS = 9; // Maximum number of items to display in a chart; combine rest into "Other."
 
 // Initialize a list of colors to use in the chart.
 const collectionColors = new DataColors(); // Get a list of colors to use for the lab chart
@@ -109,6 +110,15 @@ class FacetChart extends React.Component {
 
     render() {
         const { chartId, facet } = this.props;
+        let terms;
+
+        // If we have more facet terms than we allow to be displayed (determined through
+        // MAX_CHART_ITEMS), 
+        if (facet.terms.length > MAX_CHART_ITEMS) {
+            terms = facet.terms.splice(0, MAX_CHART_ITEMS);
+        } else {
+            terms = facet.terms;
+        }
 
         // Extract the arrays of labels from the facet keys, and the arrays of corresponding counts
         // from the facet doc_counts. Only use non-zero facet terms in the charts. IF we have no
@@ -116,7 +126,7 @@ class FacetChart extends React.Component {
         // have been populated.
         this.values = [];
         this.labels = [];
-        facet.terms.forEach((term) => {
+        terms.forEach((term) => {
             if (term.doc_count) {
                 this.values.push(term.doc_count);
                 this.labels.push(term.key);
