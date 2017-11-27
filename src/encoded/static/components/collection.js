@@ -93,6 +93,8 @@ class FacetChart extends React.Component {
                                     // query string that combines all the "other" terms.
                                     queryString = generateMultipleQuery(facet.field, this.otherTerms);
                                 } else {
+                                    // Handle a click in an individual term by generating a single-
+                                    // term query string.
                                     queryString = generateQuery(facet.field, chartLabels[i]);
                                 }
                                 const searchUri = `${baseSearchUri}&${queryString}`;
