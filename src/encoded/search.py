@@ -16,6 +16,7 @@ from .visualization import vis_format_url
 from collections import OrderedDict
 
 from pprint import pprint as pp
+import pdb
 
 
 CHAR_COUNT = 32
@@ -135,8 +136,6 @@ def set_sort_order(request, search_term, types, doc_types, query, result):
     """
     sets sort order for elasticsearch results
     """
-    import pdb
-    # pdb.set_trace()
     sort = OrderedDict()
     result_sort = OrderedDict()
 
@@ -586,7 +585,7 @@ def format_facets(es_results, facets, used_filters, schemas, total, principals):
         if agg_name not in aggregations:
             continue
         terms = aggregations[agg_name][agg_name]['buckets']
-        if len(terms) < 2:
+        if not any(bucket['doc_count'] > 0 for bucket in terms):
             continue
         # internal_status exception. Only display for admin users
         if field == 'internal_status' and 'group.admin' not in principals:
