@@ -2252,6 +2252,28 @@
         "submitted_by": "/users/f5b7857d-208e-4acc-ac4d-4c2520814fe1/",
         "run_type": "single-ended",
         "uuid": "d9277859-a3b7-44d2-bbd7-070071a753d5",
-        "no_file_available": true        
+        "no_file_available": true
+    },
+    {
+        "date_created": "2017-03-16T21:55:35.118926+00:00",
+        "replicate": "1add7e11-a642-42cd-9f4e-fe58fee29d88",
+        "lab": "richard-myers",
+        "status": "released",
+        "md5sum": "b52abba2d1e08ea93c527e38aff96e11",
+        "file_size": 1247813024,
+        "uuid": "fcc6b9b0-126f-41f5-a1aa-08a99a67f0fd",
+        "read_length": 36,
+        "external_accession": "SRR1270627",
+        "read_count": 42110808,
+        "output_type": "reads",
+        "dbxrefs": [
+            "SRA:SRR1270627"
+        ],
+        "award": "U54HG006998",
+        "run_type": "single-ended",
+        "platform": "/platforms/OBI%3A0002000/",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "file_format": "sra",
+        "dataset": "ENCSR765JPC"
     }
 ]
