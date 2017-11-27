@@ -21,7 +21,7 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitter_comment" },
-        { "$ref": "mixins.json#/schema_version" }         
+        { "$ref": "mixins.json#/schema_version" }
     ],
     "dependencies": {
         "internal_tags": {
@@ -208,7 +208,7 @@
             "description": "Some human donors are part of particular data collections",
             "comment": "Do not submit. DCC personnel is responsible for submission of this property.",
             "type": "array",
-          
+
             "permission": "import_items",
             "uniqueItems": true,
             "items": {
@@ -243,6 +243,9 @@
         },
         "sex": {
             "title": "Sex"
+        },
+        "lab.title": {
+            "title": "Lab"
         },
         "status": {
             "title": "Status"
