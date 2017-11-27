@@ -119,6 +119,8 @@ class FacetChart extends React.Component {
                                     // query string that combines all the "other" terms.
                                     queryString = generateMultipleQuery(facet.field, this.otherTerms);
                                 } else {
+                                    // The click was in an individual (not "other") term, so
+                                    // generate a single-term query string.
                                     queryString = generateQuery(facet.field, chartLabels[clickedElementIndex]);
                                 }
                                 const searchUri = `${baseSearchUri}&${queryString}`;
@@ -138,7 +140,7 @@ class FacetChart extends React.Component {
     render() {
         const { chartId, facet } = this.props;
         let terms = [];
-        let otherTerms = [];
+        let otherTerms;
 
         // If we have more facet terms than we allow to be displayed (determined through
         // MAX_CHART_ITEMS), then just get MAX_CHART_ITEMS to display as usual, and collect the
@@ -154,6 +156,7 @@ class FacetChart extends React.Component {
             // We don't have enough facet terms for an "other" category, so just use the whole
             // array of facet terms.
             terms = facet.terms;
+            otherTerms = [];
         }
 
         // Extract the arrays of labels from the facet keys, and the arrays of corresponding counts
@@ -175,14 +178,15 @@ class FacetChart extends React.Component {
             this.values.push(otherTerms.reduce((sum, term) => sum + term.doc_count, 0));
             this.labels.push('other');
 
-            // Keep track of the "other" terms and its location in the values/labels arrays so that
-            // the callbacks to handle clicks in the legend and the doughnut slices can handle the
-            // "other" term.
+            // Keep track of the "other" terms and its location (stored in this.otherTermsIndex) in
+            // the values/labels arrays so that the callbacks to handle clicks in the legend and
+            // the doughnut slices can handle the "other" term.
             this.otherTerms = otherTerms;
             this.otherTermsIndex = this.labels.length - 1;
         } else {
             // Remember we don't have enough terms to need an "other" term.
             this.otherTerms = [];
+            this.otherTermsIndex = 0;
         }
 
         // Check whether we have usable values in one array or the other we just collected (we'll
