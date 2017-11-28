@@ -1174,6 +1174,9 @@
         "accession": "ENCFF431TKZ",
         "dataset": "ENCSR765JPC",
         "date_created": "2013-03-23T16:46:18.670068+00:00",
+        "derived_from": [
+            "SRR1270627"
+        ],
         "file_size": 15887694972,
         "submitted_file_name": "gpfs/gpfs1/myerslab/data/Flowcells/HAA2RADXX/s1/7bp_Index_6/HAA2RADXX_s1_1_7bp_Index_6_SL65973.fastq.gz",
         "uuid": "f2bab944-8db9-4f2e-b569-a13d5a221a83",
