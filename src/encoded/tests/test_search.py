@@ -692,7 +692,7 @@ def test_format_facets_no_aggregations():
     assert result == []
 
 
-def test_format_facets_skips_single_bucket_facets():
+def test_format_facets_skips_zero_bucket_facets():
     from encoded.search import format_facets
     es_result = {
         'aggregations': {
@@ -701,11 +701,11 @@ def test_format_facets_skips_single_bucket_facets():
                     'buckets': [
                         {
                             'key': 'value1',
-                            'doc_count': 2,
+                            'doc_count': 0,
                         },
                     ]
                 },
-                'doc_count': 2,
+                'doc_count': 0,
             }
         }
     }
