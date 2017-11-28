@@ -192,7 +192,7 @@ class FacetChart extends React.Component {
         }
 
         // Check whether we have usable values in one array or the other we just collected (we'll
-        // just use `this;values` here) to see if we need to render a chart or not.
+        // just use `this.values` here) to see if we need to render a chart or not.
         if (this.values.length) {
             return (
                 <div className="collection-charts__chart">
