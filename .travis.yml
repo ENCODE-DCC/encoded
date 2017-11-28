@@ -41,6 +41,7 @@ before_install:
   - nvm install 6
   - node --version
   - npm config set python /usr/bin/python2.7
+  - pip install setuptools==18.5
 install:
   - python bootstrap.py --buildout-version 2.9.5 --setuptools-version 18.5
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
