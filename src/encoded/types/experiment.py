@@ -288,7 +288,7 @@ class Experiment(Dataset,
                             break
                         elif 'nucleic_acid_term_name' in libraryObject and \
                              libraryObject['nucleic_acid_term_name'] == 'polyadenylated mRNA':
-                            preferred_name = 'polyA mRNA RNA-seq'
+                            preferred_name = 'polyA RNA-seq'
                             break
             return preferred_name or assay_term_name
         return assay_term_name
