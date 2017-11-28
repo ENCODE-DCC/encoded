@@ -5,7 +5,6 @@ elasticsearch running as subprocesses.
 """
 
 import pytest
-import pdb
 
 pytestmark = [pytest.mark.indexing]
 
@@ -22,8 +21,6 @@ def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
     settings['item_datastore'] = 'elasticsearch'
     settings['indexer'] = True
     settings['indexer.processes'] = 2
-    import pprint
-    pprint.pprint(settings)
     return settings
 
 

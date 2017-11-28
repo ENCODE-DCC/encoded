@@ -15,9 +15,6 @@ from collections import OrderedDict
 from .visualization import vis_format_url
 from collections import OrderedDict
 
-from pprint import pprint as pp
-import pdb
-
 
 CHAR_COUNT = 32
 
@@ -810,7 +807,6 @@ def search(context, request, search_type=None, return_generator=False):
     # Search caching uses JSON as cache key, hence sorting the query
     query = sort_query(query)
 
-    # pp(query)
     # Decide whether to use scan for results.
     do_scan = size is None or size > 1000
 
@@ -826,8 +822,6 @@ def search(context, request, search_type=None, return_generator=False):
     else:
         es_results = es.search(body=query, index=es_index, from_=from_, size=size, request_cache=True)
 
-    # pp('QUERY')
-    # pp(query)
 
     result['total'] = total = es_results['hits']['total']
 
@@ -838,8 +832,6 @@ def search(context, request, search_type=None, return_generator=False):
     # Add batch actions
     result.update(search_result_actions(request, doc_types, es_results))
 
-    # pp('RESULT')
-    # pp(result)
 
     # Add all link for collections
     if size is not None and size < result['total']:
@@ -1079,7 +1071,6 @@ def matrix(context, request):
         },
         "aggs": aggs,
     }
-    # pdb.set_trace()
 
     # Execute the query
     es_results = es.search(body=query, index=es_index)

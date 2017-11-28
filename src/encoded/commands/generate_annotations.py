@@ -4,7 +4,6 @@ import re
 import time
 import multiprocessing as mp
 
-from pprint import pprint as pp
 
 EPILOG = __doc__
 
@@ -27,8 +26,6 @@ def get_annotation():
 
 def rate_limited_request(url):
     response = requests.get(url)
-    pp(response.json())
-    pp(response.headers)
     if int(response.headers.get('X-RateLimit-Remaining')) < 2:
         print('spleeping for about {} seconds'.format(response.headers.get('X-RateLimit-Reset')))
         time.sleep(int(float(response.headers.get('X-RateLimit-Reset'))) + 1)
@@ -60,7 +57,6 @@ def human_single_annotation(r):
         species = ' (homo sapiens)'
         species_for_payload = re.split('[(|)]', species)[1]
         # Ensembl ID is used to grab annotations for different references
-        pp(r)
         if 'Ensembl Gene ID' not in r:
             return
         if not r['Ensembl Gene ID']:
@@ -98,10 +94,8 @@ def human_single_annotation(r):
             id=r['Ensembl Gene ID'])
 
         try:
-            pp(url)
             response = rate_limited_request(url)
         except:
-            pp("BAD STUFF HAPPENED WITH HUMAN")
             return
         else:
             annotation = get_annotation()
@@ -136,7 +130,6 @@ def human_single_annotation(r):
 
 
 def mouse_single_annotation(r):
-    pp('')
     annotations = []
 
     if 'Chromosome Name' not in r:
@@ -172,9 +165,7 @@ def mouse_single_annotation(r):
     )
     try:
         response = requests.get(mm9_url).json()
-        pp(mm9_url)
     except:
-        pp("BAD STUFF HAPPENED WITH MOUSE")
         return
     else:
         if 'genomic_pos_mm9' in response and isinstance(response['genomic_pos_mm9'], dict):
