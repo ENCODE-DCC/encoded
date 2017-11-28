@@ -711,3 +711,109 @@ def test_audit_file_missing_derived_from_audit_with_made_up_status(testapp, file
         errors_list.extend(errors[error_type])
     assert all(error['category'] != 'missing derived_from'
                for error in errors_list)
+
+
+def test_audit_file_duplicate_quality_metrics(testapp,
+                                              file_exp,
+                                              file2,
+                                              file6,
+                                              chipseq_bam_quality_metric,
+                                              chipseq_bam_quality_metric_2,
+                                              analysis_step_run_bam):
+    testapp.patch_json(
+        file_exp['@id'],
+        {
+            'assay_term_name': 'ChIP-seq'
+        }
+    )
+    testapp.patch_json(
+        chipseq_bam_quality_metric['@id'],
+        {
+            'quality_metric_of': [file6['@id']],
+            'processing_stage': 'filtered'
+        }
+    )
+    testapp.patch_json(
+        chipseq_bam_quality_metric_2['@id'],
+        {
+            'quality_metric_of': [file6['@id']],
+            'processing_stage': 'filtered'
+        }
+    )
+    testapp.patch_json(
+        file6['@id'],
+        {
+            'dataset': file_exp['@id'],
+            'file_format': 'bam',
+            'output_type': 'alignments',
+            'assembly': 'GRCh38',
+            'derived_from': [file2['@id']],
+            'step_run': analysis_step_run_bam['@id'],
+            'quality_metrics': [
+                chipseq_bam_quality_metric['@id'],
+                chipseq_bam_quality_metric_2['@id']
+            ]
+        }
+    )
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(
+        error['category'] == 'duplicate quality metric'
+        for error in errors_list
+    )
+
+
+def test_audit_file_no_duplicate_quality_metrics(testapp,
+                                                 file_exp,
+                                                 file2,
+                                                 file6,
+                                                 chipseq_bam_quality_metric,
+                                                 chipseq_bam_quality_metric_2,
+                                                 analysis_step_run_bam):
+    testapp.patch_json(
+        file_exp['@id'],
+        {
+            'assay_term_name': 'ChIP-seq'
+        }
+    )
+    testapp.patch_json(
+        chipseq_bam_quality_metric['@id'],
+        {
+            'quality_metric_of': [file6['@id']],
+            'processing_stage': 'filtered'
+        }
+    )
+    testapp.patch_json(
+        chipseq_bam_quality_metric_2['@id'],
+        {
+            'quality_metric_of': [file6['@id']],
+            'processing_stage': 'unfiltered'
+        }
+    )
+    testapp.patch_json(
+        file6['@id'],
+        {
+            'dataset': file_exp['@id'],
+            'file_format': 'bam',
+            'output_type': 'alignments',
+            'assembly': 'GRCh38',
+            'derived_from': [file2['@id']],
+            'step_run': analysis_step_run_bam['@id'],
+            'quality_metrics': [
+                chipseq_bam_quality_metric['@id'],
+                chipseq_bam_quality_metric_2['@id']
+            ]
+        }
+    )
+    res = testapp.get(file6['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(
+        error['category'] != 'duplicate quality metric'
+        for error in errors_list
+    )
