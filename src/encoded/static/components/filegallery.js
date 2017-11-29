@@ -1050,6 +1050,23 @@ export function assembleGraph(files, dataset, options) {
         return `pipeline-node-file${active ? ' active' : ''}${colorizeNode ? ` ${statusClass}` : ''}${addClasses ? ` ${addClasses}` : ''}`;
     }
 
+    function collectDerived(file, dataset) {
+        if (file.derived_from && file.derived_from.length) {
+            // The has a derived_from chain, so for any files this file derives from (or parent
+            // files), go up the chain for any parent files belonging to the current dataset.
+            // Any parents not belonging to the current dataset get ignored.
+            file.derived_from.forEach((derivedFile) => {
+                if (derivedFile.dataset === dataset['@id']) {
+
+                }
+            });
+        } else {
+            // The file has no derived_from chain. This function requires `file` to belong to the
+            // `dataset`.
+            return { }
+        }
+    }
+
     const { infoNode, selectedAssembly, selectedAnnotation, colorize } = options;
     const derivedFileIds = _.memoize(rDerivedFileIds, file => file['@id']);
     const genQcId = _.memoize(rGenQcId, (metric, file) => metric['@id'] + file['@id']);
@@ -1237,6 +1254,10 @@ export function assembleGraph(files, dataset, options) {
             }
         }
     });
+
+    // See if anything in `allDerivedFroms` has its own derived_from. If it does, then treat it
+    // like any other file with `derived_from` set. Add it to `matchingFiles` and remove it from
+    // `allDerivedFroms`.
 
     // Create an empty graph architecture that we fill in next.
     const jsonGraph = new JsonGraph(dataset.accession);
