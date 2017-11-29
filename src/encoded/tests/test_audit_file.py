@@ -757,9 +757,7 @@ def test_audit_file_duplicate_quality_metrics(testapp,
     )
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
+    errors_list = [error for v in errors.values() for error in v]
     assert any(
         error['category'] == 'duplicate quality metric'
         for error in errors_list
@@ -810,9 +808,7 @@ def test_audit_file_no_duplicate_quality_metrics(testapp,
     )
     res = testapp.get(file6['@id'] + '@@index-data')
     errors = res.json['audit']
-    errors_list = []
-    for error_type in errors:
-        errors_list.extend(errors[error_type])
+    errors_list = [error for v in errors.values() for error in v]
     assert all(
         error['category'] != 'duplicate quality metric'
         for error in errors_list
