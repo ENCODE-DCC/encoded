@@ -332,7 +332,9 @@ function_dispatcher = {
                       'controlled_by.dataset',
                       'controlled_by.paired_with',
                       'controlled_by.platform',
-                      'quality_metrics', ])
+                      'quality_metrics',
+                      ]
+               )
 def audit_file(value, system):
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):
