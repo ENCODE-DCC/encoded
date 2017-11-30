@@ -1050,21 +1050,42 @@ export function assembleGraph(files, dataset, options) {
         return `pipeline-node-file${active ? ' active' : ''}${colorizeNode ? ` ${statusClass}` : ''}${addClasses ? ` ${addClasses}` : ''}`;
     }
 
-    function collectDerived(file, dataset) {
+    function collectDerivedFroms(fileAtId, fileDataset, allFiles) {
+        let collectedDerivedFroms = {};
+        const file = allFiles[fileAtId];
+
         if (file.derived_from && file.derived_from.length) {
-            // The has a derived_from chain, so for any files this file derives from (or parent
+            // File has a derived_from chain, so for any files this file derives from (parent
             // files), go up the chain for any parent files belonging to the current dataset.
             // Any parents not belonging to the current dataset get ignored.
-            file.derived_from.forEach((derivedFile) => {
-                if (derivedFile.dataset === dataset['@id']) {
+            file.derived_from.forEach((derivedFileAtId) => {
+                const derivedFile = allFiles[derivedFileAtId];
+                if (derivedFile.dataset === fileDataset['@id']) {
+                    // Get an object of all the parent derived_from files, keyed by file @id and
+                    // each with an array of file objects that are derived from that file.
+                    const branchDerivedFroms = collectDerivedFroms(derivedFileAtId, fileDataset, allFiles);
 
+                    // Add the file object to any properties with an empty array value, indicating
+                    // that this property is the direct parent derived_from file.
+                    Object.keys(branchDerivedFroms).forEach((branchDerivedFromAtId) => {
+                        if (branchDerivedFroms[branchDerivedFromAtId].length === 0) {
+                            branchDerivedFroms[branchDerivedFromAtId] = [file];
+                        }
+                    });
+
+                    // Add the current file object to the arrays of all the files this file derives
+                    // from.
+                    collectedDerivedFroms = Object.assign(collectedDerivedFroms, branchDerivedFroms);
                 }
             });
-        } else {
-            // The file has no derived_from chain. This function requires `file` to belong to the
-            // `dataset`.
-            return { }
         }
+        // Else the file has no derived_from chain and we can create a new, clean object to return
+        // to child nodes.
+
+        // Now add a property to the object of collected derived_froms keyed by the file's @id and
+        // containing an empty array to be filled in by child files.
+        collectedDerivedFroms[file['@id']] = [];
+        return collectedDerivedFroms;
     }
 
     const { infoNode, selectedAssembly, selectedAnnotation, colorize } = options;
@@ -1158,6 +1179,11 @@ export function assembleGraph(files, dataset, options) {
     // At this stage, any files in matchingFiles will be rendered. We just have to figure out what
     // other files need rendering, like raw sequencing files, contributing files, and derived-from
     // files that have a non-matching annotation and assembly.
+
+    Object.keys(matchingFiles).forEach((fileAtId) => {
+        const derived = collectDerivedFroms(fileAtId, dataset, allFiles);
+        console.log('%o', derived);
+    });
 
     const allReplicates = {}; // All file's replicates as keys; each key references an array of files
     Object.keys(matchingFiles).forEach((matchingFileId) => {
