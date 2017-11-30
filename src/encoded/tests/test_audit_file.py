@@ -748,11 +748,7 @@ def test_audit_file_duplicate_quality_metrics(testapp,
             'output_type': 'alignments',
             'assembly': 'GRCh38',
             'derived_from': [file2['@id']],
-            'step_run': analysis_step_run_bam['@id'],
-            'quality_metrics': [
-                chipseq_bam_quality_metric['@id'],
-                chipseq_bam_quality_metric_2['@id']
-            ]
+            'step_run': analysis_step_run_bam['@id']
         }
     )
     res = testapp.get(file6['@id'] + '@@index-data')
@@ -799,11 +795,7 @@ def test_audit_file_no_duplicate_quality_metrics(testapp,
             'output_type': 'alignments',
             'assembly': 'GRCh38',
             'derived_from': [file2['@id']],
-            'step_run': analysis_step_run_bam['@id'],
-            'quality_metrics': [
-                chipseq_bam_quality_metric['@id'],
-                chipseq_bam_quality_metric_2['@id']
-            ]
+            'step_run': analysis_step_run_bam['@id']
         }
     )
     res = testapp.get(file6['@id'] + '@@index-data')
