@@ -280,13 +280,42 @@ def audit_file_controlled_by(value, system):
                 return
 
 
+def audit_duplicate_quality_metrics(value, system):
+    quality_metrics = value.get('quality_metrics')
+    if not quality_metrics:
+        return
+    metric_signatures = []
+    audit_signatures = []
+    for metric in quality_metrics:
+        metric_type = metric.get('@type', [None])[0]
+        signature = (
+            metric_type,
+            metric.get('processing_stage')
+        )
+        if signature not in metric_signatures:
+            metric_signatures.append(signature)
+        elif signature not in audit_signatures:
+            # Add so only yields audit once per signature per file.
+            audit_signatures.append(signature)
+            detail = 'File {} has more than one {} quality metric'.format(
+                value.get('@id'),
+                metric_type
+            )
+            yield AuditFailure(
+                'duplicate quality metric',
+                detail,
+                level='INTERNAL_ACTION'
+            )
+
+
 function_dispatcher = {
     'audit_derived_from': audit_file_processed_derived_from,
     'audit_assembly': audit_file_assembly,
     'audit_replicate_match': audit_file_replicate_match,
     'audit_paired_with': audit_paired_with,
     'audit_specifications': audit_file_format_specifications,
-    'audit_controlled_by': audit_file_controlled_by
+    'audit_controlled_by': audit_file_controlled_by,
+    'audit_duplicate_quality_metrics': audit_duplicate_quality_metrics,
 }
 
 
@@ -302,7 +331,10 @@ function_dispatcher = {
                       'controlled_by.replicate',
                       'controlled_by.dataset',
                       'controlled_by.paired_with',
-                      'controlled_by.platform'])
+                      'controlled_by.platform',
+                      'quality_metrics',
+                      ]
+               )
 def audit_file(value, system):
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):
