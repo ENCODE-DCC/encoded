@@ -282,31 +282,21 @@ def audit_file_controlled_by(value, system):
 
 def audit_duplicate_quality_metrics(value, system):
     quality_metrics = value.get('quality_metrics')
-    if quality_metrics is None or len(quality_metrics) == 0:
+    if not quality_metrics:
         return
-    analysis_step = value.get('analysis_step_version',
-                              {}).get('analysis_step', {})
-    analysis_name = analysis_step.get('name')
-    assay_term_name = value.get('dataset',
-                                {}).get('assay_term_name')
-    file_format = value.get('file_format')
-    output_type = value.get('output_type')
-    metric_signatures = set()
-    audit_signatures = set()
+    metric_signatures = []
+    audit_signatures = []
     for metric in quality_metrics:
         metric_type = metric.get('@type', [None])[0]
-        processing_stage = metric.get('processing_stage')
         signature = (
-            assay_term_name,
-            analysis_name,
-            file_format,
-            output_type,
             metric_type,
-            processing_stage
+            metric.get('processing_stage')
         )
-        if signature in metric_signatures and signature not in audit_signatures:
+        if signature not in metric_signatures:
+            metric_signatures.append(signature)
+        elif signature not in audit_signatures:
             # Add so only yields audit once per signature per file.
-            audit_signatures.add(signature)
+            audit_signatures.append(signature)
             detail = 'File {} has more than one {} quality metric'.format(
                 value.get('@id'),
                 metric_type
@@ -316,8 +306,6 @@ def audit_duplicate_quality_metrics(value, system):
                 detail,
                 level='INTERNAL_ACTION'
             )
-        else:
-            metric_signatures.add(signature)
     return
 
 
@@ -328,7 +316,7 @@ function_dispatcher = {
     'audit_paired_with': audit_paired_with,
     'audit_specifications': audit_file_format_specifications,
     'audit_controlled_by': audit_file_controlled_by,
-    'audit_duplicate_quality_metrics': audit_duplicate_quality_metrics
+    'audit_duplicate_quality_metrics': audit_duplicate_quality_metrics,
 }
 
 
@@ -345,8 +333,7 @@ function_dispatcher = {
                       'controlled_by.dataset',
                       'controlled_by.paired_with',
                       'controlled_by.platform',
-                      'quality_metrics',
-                      'analysis_step_version.analysis_step'])
+                      'quality_metrics', ])
 def audit_file(value, system):
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):
