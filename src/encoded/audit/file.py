@@ -306,7 +306,6 @@ def audit_duplicate_quality_metrics(value, system):
                 detail,
                 level='INTERNAL_ACTION'
             )
-    return
 
 
 function_dispatcher = {
