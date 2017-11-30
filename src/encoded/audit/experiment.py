@@ -2135,7 +2135,7 @@ def audit_experiment_documents(value, system, excluded_types):
     '''
     Experiments should have documents.  Protocol documents or some sort of document.
     '''
-    if value['status'] in ['deleted', 'replaced', 'preliminary']:
+    if value['status'] in ['deleted', 'replaced']:
         return
 
     # If the experiment has documents, we are good
