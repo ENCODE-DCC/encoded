@@ -19,7 +19,6 @@ import logging
 import re
 
 
-
 log = logging.getLogger(__name__)
 
 
@@ -332,7 +331,7 @@ def region_search(context, request):
                                      index=chromosome.lower(),
                                      doc_type=_GENOME_TO_ALIAS[assembly],
                                      size=99999)
-    except Exception as e:
+    except Exception:
         result['notification'] = 'Error during search'
         return result
     file_uuids = []

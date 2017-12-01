@@ -77,8 +77,7 @@ def human_single_annotation(r):
                       r['Entrez Gene ID'] + ' (Gene ID)']
             }
         doc['payload'] = {'id': r['HGNC ID'],
-                        'species': species_for_payload
-            }
+                          'species': species_for_payload}
         doc['id'] = r['HGNC ID']
 
         if r['Entrez Gene ID'].isdigit():
@@ -142,8 +141,7 @@ def mouse_single_annotation(r):
         'input': []
         }
     doc['payload'] = {'id': r['Ensembl Gene ID'],
-                    'species': species_for_payload
-        }
+                      'species': species_for_payload}
     doc['id'] = r['Ensembl Gene ID']
 
     if 'MGI symbol' in r and r['MGI symbol'] is not None:
@@ -204,7 +202,6 @@ def prepare_for_bulk_indexing(annotations):
     return flattened_annotations
 
 
-
 def human_annotations(human_file):
     """
     Generates JSON from TSV files
@@ -214,7 +211,6 @@ def human_annotations(human_file):
     pool = mp.Pool(processes=1)
     annotations = pool.map(human_single_annotation, zipped_rows)
     return prepare_for_bulk_indexing(annotations)
-
 
 
 def mouse_annotations(mouse_file):
@@ -249,12 +245,9 @@ def other_annotations(file, species, assembly):
         doc = {'annotations': []}
         annotation = get_annotation()
 
-        doc['suggest'] = {
-            'input': [r['Associated Gene Name'] + species]
-            }
+        doc['suggest'] = {'input': [r['Associated Gene Name'] + species]}
         doc['payload'] = {'id': r['Ensembl Gene ID'],
-                        'species': species_for_payload
-            }
+                          'species': species_for_payload}
         doc['id'] = r['Ensembl Gene ID']
         annotation['assembly_name'] = assembly
         annotation['chromosome'] = r['Chromosome Name']
@@ -280,7 +273,8 @@ def main():
     import argparse
     parser = argparse.ArgumentParser(
         description="Generate annotations JSON file for multiple species",
-        epilog=EPILOG, formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     human = human_annotations(_HGNC_FILE)
     mouse = mouse_annotations(_MOUSE_FILE)

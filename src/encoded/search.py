@@ -59,6 +59,7 @@ def sort_query(unsorted_query):
             sorted_query[field] = value
     return sorted_query
 
+
 def get_pagination(request):
     from_ = request.params.get('from') or 0
     size = request.params.get('limit', 25)
@@ -98,7 +99,6 @@ def get_filtered_query(term, search_fields, result_fields, principals, doc_types
                 'must_not': []
             }
         },
-
         '_source': list(result_fields),
     }
 
@@ -616,7 +616,7 @@ def format_facets(es_results, facets, used_filters, schemas, total, principals):
                 'title': title,
                 'terms': [{'key': v} for v in values],
                 'total': total,
-                })
+            })
 
     return result
 

@@ -183,7 +183,7 @@ runcmd:
 - sudo -u encoded git clone --no-checkout https://github.com/ENCODE-DCC/encoded.git .
 - sudo -u encoded git checkout %(COMMIT)s
 - mkdir /opt/cloudwatchmon
-- chown build:build /opt/cloudwatchmon 
+- chown build:build /opt/cloudwatchmon
 - sudo -u build virtualenv --python=python2.7 /opt/cloudwatchmon
 - sudo -u build /opt/cloudwatchmon/bin/pip install -r cloudwatchmon-requirements.txt
 - mkdir /opt/wal-e

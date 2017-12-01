@@ -235,7 +235,7 @@ runcmd:
 # - sleep 60
 # - sudo -i -u encoded PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd" > tests.out
 # - sudo echo "00 7 * * * sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main" > /home/ubuntu/wal-e-backup
-# - sudo crontab /home/ubuntu/wal-e-backup 
+# - sudo crontab /home/ubuntu/wal-e-backup
 
 users:
 - default

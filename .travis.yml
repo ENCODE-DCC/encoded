@@ -16,7 +16,6 @@ addons:
       - graphviz
 env:
   global:
-    - BOTO_CONFIG=/bogus/value # see: https://github.com/boto/boto/issues/3263
     - secure: |-
         CMKR45ew7fJWfF/rvaFkV4gNhWRDdM4y8wlj5p1qrEzJ214SENg03fjHJr6B
         cvNf7vanTJKnVxpxUK9kH5Tn/uaJZtnbnJYehZ4YKwzbJQEAEJpWvCk4C54O
@@ -44,7 +43,6 @@ before_install:
   - node --version
   - npm config set python /usr/bin/python2.7
   - curl -O  ${ES_DOWNLOAD_URL} && sudo dpkg -i --force-confnew elasticsearch-${ES_VERSION}.deb && sudo service elasticsearch stop
-  - pip install setuptools==18.5
 install:
   - python bootstrap.py --buildout-version 2.9.5 --setuptools-version 18.5
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
@@ -52,7 +50,7 @@ install:
 before_script:
   - >
     if test -n "$BROWSER"; then
-      CONNECT_URL=https://saucelabs.com/downloads/sc-4.4.5-linux.tar.gz 
+      CONNECT_URL=https://saucelabs.com/downloads/sc-4.4.5-linux.tar.gz
       CONNECT_DOWNLOAD=sc.tar.gz
       SC_READYFILE=sauce-connect-ready-$RANDOM
       SC_LOGFILE=$HOME/sauce-connect.log
