@@ -36,6 +36,11 @@
             "format": "^[0-9]+$"
         }
     },
+    "facets": {
+        "status": {
+            "title": "Status"
+        }
+    },
     "boost_values": {
         "name": 1.0,
         "scientific_name": 1.0

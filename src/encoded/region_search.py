@@ -281,7 +281,7 @@ def region_search(context, request):
     # handling limit
     size = request.params.get('limit', 25)
     if size in ('all', ''):
-        size = 10000
+        size = 99999
     else:
         try:
             size = int(size)
@@ -331,7 +331,7 @@ def region_search(context, request):
         peak_results = snp_es.search(body=peak_query,
                                      index=chromosome.lower(),
                                      doc_type=_GENOME_TO_ALIAS[assembly],
-                                     size=10000)
+                                     size=99999)
     except Exception as e:
         result['notification'] = 'Error during search'
         return result

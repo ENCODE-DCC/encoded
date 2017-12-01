@@ -72,7 +72,7 @@ script:
   - if test -z "$BROWSER"; then bin/test -v -v --timeout=400 -m "not bdd"; fi
   - >
     if test -n "$BROWSER"; then
-      test -f "$SC_PIDFILE" && bin/test -v -v --timeout=600 -m "bdd" --tb=short \
+      test -f "$SC_PIDFILE" && bin/test -v -v --timeout=400 -m "bdd" --tb=short \
         --splinter-implicit-wait 10 \
         --splinter-webdriver remote \
         --splinter-remote-url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub" \

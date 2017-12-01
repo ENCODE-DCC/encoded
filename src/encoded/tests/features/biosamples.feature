@@ -6,21 +6,20 @@ Feature: Biosamples
         Then I should see "Richard Myers, HAIB"
         And I should see "ENCODE"
 
-    Scenario: Table
+    Scenario: Collection
         When I visit "/biosamples/"
-        And I wait for the table to fully load
+        And I wait for the content to load
+        Then I should see an element with the css selector ".view-item.type-BiosampleCollection"
 
-        When I fill in "q" with "Immortal"
-        Then I should see an element with the css selector "tr:not([hidden]) a[href='/biosamples/ENCBS000AAA/']" within 1 seconds
-        And I should see an element with the css selector "tr[hidden] a[href='/biosamples/ENCBS024AAA/']"
-        And I should see exactly one element with the css selector ".table-count" containing the text "25"
+    Scenario: Click through
+        When I visit "/biosamples/"
+        And I wait for the content to load
+        When I click the link to "/search/?type=Biosample&organism.scientific_name=Homo+sapiens"
+        Then I should see an element with the css selector "div.panel.data-display.main-panel"
+        And I should see "Showing 25 of 30 results"
 
-        When I fill in "q" with "Tissue"
-        Then I should see an element with the css selector "tr:not([hidden]) a[href='/biosamples/ENCBS024AAA/']" within 1 seconds
-        And I should see an element with the css selector "tr[hidden] a[href='/biosamples/ENCBS000AAA/']"
-        And I should see exactly one element with the css selector ".table-count" containing the text "14"
-
-        When I fill in "q" with "primary"
-        Then I should see an element with the css selector "tr:not([hidden]) a[href='/biosamples/ENCBS026ENC/']" within 1 seconds
-        And I should see an element with the css selector "tr[hidden] a[href='/biosamples/ENCBS000AAA/']"
-        And I should see exactly one element with the css selector ".table-count" containing the text "3"
+        When I go back
+        And I wait for the content to load
+        When I click the link to "/search/?type=Biosample&status=in+progress"
+        Then I should see an element with the css selector "div.panel.data-display.main-panel"
+        And I should see "Showing 25 of 36 results"

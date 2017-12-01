@@ -305,17 +305,15 @@ class LabChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.relevantData.length) {
-            this.createChart(`${labChartId}-${this.props.ident}`, this.relevantData);
-        }
+        this.createChart(`${labChartId}-${this.props.ident}`, this.props.labs);
     }
 
     componentDidUpdate() {
-        if (this.relevantData.length) {
+        if (this.props.labs.length) {
             if (this.chart) {
-                this.updateChart(this.chart, this.relevantData);
+                this.updateChart(this.chart, this.props.labs);
             } else {
-                this.createChart(`${statusChartId}-${this.props.ident}`, this.relevantData);
+                this.createChart(`${statusChartId}-${this.props.ident}`, this.props.labs);
             }
         } else if (this.chart) {
             this.chart.destroy();
@@ -370,9 +368,6 @@ class LabChart extends React.Component {
     render() {
         const { labs, ident } = this.props;
 
-        // Filter out category data with zero doc_count.
-        this.relevantData = labs.filter(term => term.doc_count);
-
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${labChartId}-${ident}`;
 
@@ -381,7 +376,7 @@ class LabChart extends React.Component {
                 <div className="award-charts__title">
                     Lab
                 </div>
-                {this.relevantData.length ?
+                {labs.length ?
                     <div className="award-charts__visual">
                         <div id={id} className="award-charts__canvas">
                             <canvas id={`${id}-chart`} />
@@ -421,17 +416,17 @@ class CategoryChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.relevantData.length) {
-            this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
+        if (this.props.categoryData.length) {
+            this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
         }
     }
 
     componentDidUpdate() {
-        if (this.relevantData.length) {
+        if (this.props.categoryData.length) {
             if (this.chart) {
-                this.updateChart(this.chart, this.relevantData);
+                this.updateChart(this.chart, this.props.categoryData);
             } else {
-                this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
+                this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
             }
         } else if (this.chart) {
             this.chart.destroy();
@@ -489,9 +484,6 @@ class CategoryChart extends React.Component {
     render() {
         const { categoryData, title, ident } = this.props;
 
-        // Filter out category data with zero doc_count.
-        this.relevantData = categoryData.filter(term => term.doc_count);
-
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${categoryChartId}-${ident}`;
 
@@ -500,7 +492,7 @@ class CategoryChart extends React.Component {
                 <div className="title">
                     {title}
                 </div>
-                {this.relevantData.length ?
+                {categoryData.length ?
                     <div className="award-charts__visual">
                         <div id={id} className="award-charts__canvas">
                             <canvas id={`${id}-chart`} />
@@ -541,17 +533,17 @@ class AntibodyChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.relevantData.length) {
-            this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
+        if (this.props.categoryData.length) {
+            this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
         }
     }
 
     componentDidUpdate() {
-        if (this.relevantData.length) {
+        if (this.props.categoryData.length) {
             if (this.chart) {
-                this.updateChart(this.chart, this.relevantData);
+                this.updateChart(this.chart, this.props.categoryData);
             } else {
-                this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
+                this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
             }
         } else if (this.chart) {
             this.chart.destroy();
@@ -609,21 +601,18 @@ class AntibodyChart extends React.Component {
         const { categoryData, ident, award } = this.props;
         const AntibodyQuery = generateQuery(this.props.selectedOrganisms, 'targets.organism.scientific_name=');
 
-        // Filter out category data with zero doc_count.
-        this.relevantData = categoryData.filter(term => term.doc_count);
-
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${categoryChartId}-${ident}`;
 
         return (
             <div className="award-charts__chart">
                 <div className="award-charts__title">
-                    Antibodies {this.relevantData.length ?
+                    Antibodies {categoryData.length ?
                     <a className="btn btn-info btn-xs reagentsreporttitle" href={`/report/?type=AntibodyLot&${AntibodyQuery}&award=${award['@id']}&field=accession&field=lot_reviews.status&field=lot_reviews.targets.label&field=lot_reviews.targets.organism.scientific_name&field=source.title&field=product_id&field=lot_id&field=date_created`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
                     :
                     null}
-                </div>
-                {this.relevantData.length ?
+                    </div>
+                {categoryData.length ?
                     <div>
                         <div className="award-charts__visual">
                             <div id={id} className="award-charts__canvas">
@@ -662,17 +651,17 @@ class BiosampleChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.relevantData.length) {
-            this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
+        if (this.props.categoryData.length) {
+            this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
         }
     }
 
     componentDidUpdate() {
-        if (this.relevantData.length) {
+        if (this.props.categoryData.length) {
             if (this.chart) {
-                this.updateChart(this.chart, this.relevantData);
+                this.updateChart(this.chart, this.props.categoryData);
             } else {
-                this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
+                this.createChart(`${categoryChartId}-${this.props.ident}`, this.props.categoryData);
             }
         } else if (this.chart) {
             this.chart.destroy();
@@ -729,21 +718,18 @@ class BiosampleChart extends React.Component {
     render() {
         const { categoryData, ident, award } = this.props;
         const BiosampleQuery = generateQuery(this.props.selectedOrganisms, 'organism.scientific_name=');
-
-        // Filter out category data with zero doc_count.
-        this.relevantData = categoryData.filter(term => term.doc_count);
-
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${categoryChartId}-${ident}`;
 
         return (
             <div className="award-charts__chart">
                 <div className="award-charts__title">
-                    Biosamples {this.relevantData.length ?
-                        <a className="btn btn-info btn-sm reagentsreporttitle" href={`/report/?type=Biosample&${BiosampleQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
-                    : null}
+                    Biosamples {categoryData.length ?
+                    <a className="btn btn-info btn-sm reagentsreporttitle" href={`/report/?type=Biosample&${BiosampleQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                    :
+                    null}
                 </div>
-                {this.relevantData.length ?
+                    {categoryData.length ?
                     <div>
                         <div className="award-charts__visual">
                             <div id={id} className="award-charts__canvas">
@@ -880,17 +866,17 @@ class ControlsChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.relevantData.length) {
-            this.createChart(`${statusChartId}-${this.props.ident}-controls`, this.relevantData);
+        if (this.props.statuses.length) {
+            this.createChart(`${statusChartId}-${this.props.ident}-controls`, this.props.statuses);
         }
     }
 
     componentDidUpdate() {
-        if (this.relevantData.length) {
+        if (this.props.statuses.length) {
             if (this.chart) {
-                this.updateChart(this.chart, this.relevantData);
+                this.updateChart(this.chart, this.props.statuses);
             } else {
-                this.createChart(`${statusChartId}-${this.props.ident}-controls`, this.relevantData);
+                this.createChart(`${statusChartId}-${this.props.ident}-controls`, this.props.statuses);
             }
         } else if (this.chart) {
             this.chart.destroy();
@@ -946,9 +932,6 @@ class ControlsChart extends React.Component {
     render() {
         const { statuses, ident } = this.props;
 
-        // Filter out category data with zero doc_count.
-        this.relevantData = statuses.filter(term => term.doc_count);
-
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${statusChartId}-${ident}-controls`;
 
@@ -957,7 +940,7 @@ class ControlsChart extends React.Component {
                 <div className="award-charts__title">
                     Controls
                 </div>
-                {this.relevantData.length ?
+                {statuses.length ?
                     <div className="award-charts__visual">
                         <div id={id} className="award-charts__canvas">
                             <canvas id={`${id}-chart`} />
@@ -997,17 +980,17 @@ class StatusExperimentChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.relevantData.length) {
+        if (this.props.statuses.length) {
             this.createChart(`${statusChartId}-${this.props.ident}`, this.props.statuses);
         }
     }
 
     componentDidUpdate() {
-        if (this.relevantData.length) {
+        if (this.props.statuses.length) {
             if (this.chart) {
-                this.updateChart(this.chart, this.relevantData);
+                this.updateChart(this.chart, this.props.statuses);
             } else {
-                this.createChart(`${statusChartId}-${this.props.ident}`, this.relevantData);
+                this.createChart(`${statusChartId}-${this.props.ident}`, this.props.statuses);
             }
         } else if (this.chart) {
             this.chart.destroy();
@@ -1073,9 +1056,6 @@ class StatusExperimentChart extends React.Component {
     render() {
         const { statuses, ident } = this.props;
 
-        // Filter out category data with zero doc_count.
-        this.relevantData = statuses.filter(term => term.doc_count);
-
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${statusChartId}-${ident}`;
 
@@ -1084,7 +1064,7 @@ class StatusExperimentChart extends React.Component {
                 <div className="award-charts__title">
                     Status
                 </div>
-                 {this.relevantData.length ?
+                 {statuses.length ?
                     <div className="award-charts__visual">
                         <div id={id} className="award-charts__canvas">
                             <canvas id={`${id}-chart`} />
@@ -1133,17 +1113,17 @@ class StatusChart extends React.Component {
     }
 
     componentDidMount() {
-        if (this.relevantData.length) {
-            this.createChart(`${statusChartId}-${this.props.ident}`, this.relevantData);
+        if (this.props.statuses.length) {
+            this.createChart(`${statusChartId}-${this.props.ident}`, this.props.statuses);
         }
     }
 
     componentDidUpdate() {
-        if (this.relevantData.length) {
+        if (this.props.statuses.length) {
             if (this.chart) {
-                this.updateChart(this.chart, this.relevantData);
+                this.updateChart(this.chart, this.props.statuses);
             } else {
-                this.createChart(`${statusChartId}-${this.props.ident}`, this.relevantData);
+                this.createChart(`${statusChartId}-${this.props.ident}`, this.props.statuses);
             }
         } else if (this.chart) {
             this.chart.destroy();
@@ -1198,9 +1178,6 @@ class StatusChart extends React.Component {
     render() {
         const { statuses, ident } = this.props;
 
-        // Filter out category data with zero doc_count.
-        this.relevantData = statuses.filter(term => term.doc_count);
-
         // Calculate a (hopefully) unique ID to put on the DOM elements.
         const id = `${statusChartId}-${ident}`;
 
@@ -1209,7 +1186,7 @@ class StatusChart extends React.Component {
                 <div className="award-charts__title">
                     Status
                 </div>
-                {this.relevantData.length ?
+                {statuses.length ?
                     <div className="award-charts__visual">
                         <div id={id} className="award-charts__canvas">
                             <canvas id={`${id}-chart`} />
@@ -1659,6 +1636,10 @@ const ExperimentDate = (props) => {
     const cumulativedatasetSubmitted = [];
     const accumulatorreleased = 0;
     const accumulatorsubmitted = 0;
+    const monthreleaseddiff = 0;
+    const monthsubmitteddiff = 0;
+    const fillreleasedDates = [];
+    const fillsubmittedDates = [];
 
     // Search experiments for month_released and date_submitted in facets
     if (experiments && experiments.facets && experiments.facets.length) {
@@ -1668,7 +1649,6 @@ const ExperimentDate = (props) => {
         submittedDates = (dateSubmittedFacet && dateSubmittedFacet.terms && dateSubmittedFacet.terms.length) ? dateSubmittedFacet.terms : [];
     }
 
-    // Take an array of date facet terms and return an array of terms sorted by date.
     function sortTerms(dateArray) {
         // Use Moment to format arrays of submitted and released date
         const standardTerms = dateArray.map((term) => {
@@ -1690,11 +1670,11 @@ const ExperimentDate = (props) => {
         );
     }
 
-    function fillDates(sortedArray, deduplicated, awardStartDate) {
-        const fillArray = [];
+    function fillDates(sortedArray, fillArray, difference, deduplicated) {
+        let monthdiff = difference;
 
         // Add an object with the award start date to both arrays
-        sortedArray.unshift({ key: awardStartDate, doc_count: 0 });
+        sortedArray.unshift({ key: award.start_date, doc_count: 0 });
 
         // Add objects to the array with doc_count 0 for the missing months
         const sortedTermsLength = sortedArray.length;
@@ -1702,7 +1682,7 @@ const ExperimentDate = (props) => {
             fillArray.push(sortedArray[j]);
             const startDate = moment(sortedArray[j].key);
             const endDate = moment(sortedArray[j + 1].key);
-            const monthdiff = endDate.diff(startDate, 'months', false);
+            monthdiff = endDate.diff(startDate, 'months', false);
             if (monthdiff > 1) {
                 for (let i = 0; i < monthdiff; i += 1) {
                     fillArray.push({ key: startDate.add(1, 'months').format('YYYY-MM'), doc_count: 0 });
@@ -1712,9 +1692,11 @@ const ExperimentDate = (props) => {
         fillArray.push(sortedArray[sortedArray - 1]);
 
         // Remove any objects with keys before the start date of the award
+        const arrayLength = fillArray.length;
+        const assayStart = award.start_date;
         const shortenedArray = [];
-        for (let j = 0; j < fillArray.length - 2; j += 1) {
-            if (moment(fillArray[j].key).isSameOrAfter(awardStartDate, 'date')) {
+        for (let j = 0; j < arrayLength - 2; j += 1) {
+            if (moment(fillArray[j].key).isSameOrAfter(assayStart, 'date')) {
                 shortenedArray.push(fillArray[j]);
             }
         }
@@ -1758,18 +1740,8 @@ const ExperimentDate = (props) => {
             sortedsubmittedTerms.push({ key: sortedreleasedTerms[sortedreleasedTerms.length - 1].key, doc_count: 0 });
         }
     }
-
-    // Figure out the award start date. If none, use the earlier of the earliest released or submitted dates.
-    let awardStartDate;
-    if (award.start_date) {
-        awardStartDate = moment(award.start_date, 'YYYY-MM-DD').format('YYYY-MM');
-    } else {
-        const earliestReleased = sortedreleasedTerms[0].key;
-        const earliestSubmitted = sortedsubmittedTerms[0].key;
-        awardStartDate = earliestReleased < earliestSubmitted ? earliestReleased : earliestSubmitted;
-    }
-    deduplicatedreleased = fillDates(sortedreleasedTerms, deduplicatedreleased, awardStartDate);
-    deduplicatedsubmitted = fillDates(sortedsubmittedTerms, deduplicatedsubmitted, awardStartDate);
+    deduplicatedreleased = fillDates(sortedreleasedTerms, fillreleasedDates, monthreleaseddiff, deduplicatedreleased);
+    deduplicatedsubmitted = fillDates(sortedsubmittedTerms, fillsubmittedDates, monthsubmitteddiff, deduplicatedsubmitted);
 
     // Create an array of dates.
     const date = Object.keys(deduplicatedreleased).map(term => term);
@@ -1778,7 +1750,7 @@ const ExperimentDate = (props) => {
 
     return (
         <div>
-            {accumulatedDataReleased.length || accumulatedDataSubmitted.length ?
+            {experiments && experiments.facets && experiments.facets.length ?
                 <Panel>
                     <PanelHeading>
                         <h4>Cumulative Number of Experiments</h4>
@@ -1994,7 +1966,7 @@ CumulativeGraph.defaultProps = {
 const AffiliatedLabsArray = (props) => {
     const { labs, award } = props;
     const labsArray = labs['@graph'].map(term => term.title);
-    const sortedArray = award.pi && award.pi.lab ? _.without(labsArray, award.pi.lab.title) : labsArray;
+    const sortedArray = _.without(labsArray, award.pi.lab.title);
     return (
         <div>
             {sortedArray.map((item, index) => <div key={index}>{item}</div>)}

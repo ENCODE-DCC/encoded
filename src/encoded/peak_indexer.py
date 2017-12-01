@@ -19,7 +19,6 @@ from snovault.elasticsearch.interfaces import (
     SNP_SEARCH_ES,
 )
 import copy
-from pprint import pprint as pp
 
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
 log = logging.getLogger(__name__)
@@ -301,7 +300,7 @@ def index_file(request):
     if not dry_run:
         err = None
         uuid_current = None
-        pp('length of invalidated {}'.format(len(invalidated)))
+        print('length of invalidated {}'.format(len(invalidated)))
         invalidated_files = list(set(invalidated).intersection(set(all_bed_file_uuids(request))))
         try:
             files_indexed = 0
