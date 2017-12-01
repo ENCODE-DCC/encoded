@@ -22,8 +22,9 @@ def json_from_path(path, default=None):
 def index_settings():
     return {
         'index': {
-            'number_of_shards': 1
-        }
+            'number_of_shards': 1,
+        }, 
+        'analysis.analyzer': 'standard'
     }
 
 
@@ -38,11 +39,8 @@ def run(app):
 
     mapping = {
         'properties': {
-            'name_suggest': {
+            'suggest': {
                 'type': 'completion',
-                'index_analyzer': 'standard',
-                'search_analyzer': 'standard',
-                'payloads': True
             }
         }
     }

@@ -90,7 +90,7 @@ class AutocompleteBoxMenu extends React.Component {
     // it the parameters of the clicked item.
     handleClick() {
         const { term, name } = this.props;
-        this.props.handleClick(term.text, term.payload.id, name);
+        this.props.handleClick(term.text, term._source.payload.id, name);
     }
 
     render() {

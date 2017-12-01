@@ -1,0 +1,2 @@
+cluster.name: elasticsearch_on_travis
+discovery.type: single-node

@@ -37,6 +37,7 @@ class Pipeline(Item):
         'analysis_steps.versions',
         'analysis_steps.versions.software_versions',
         'analysis_steps.versions.software_versions.software',
+        'analysis_steps.versions.software_versions.software.references',
         'lab',
         'award.pi.lab',
         'standards_page'
