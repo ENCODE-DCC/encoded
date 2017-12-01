@@ -296,7 +296,7 @@ def metadata_tsv(context, request):
 def batch_download(context, request):
     # adding extra params to get required columns
     param_list = parse_qs(request.matchdict['search_params'])
-    param_list['field'] = ['files.href', 'files.file_type']
+    param_list['field'] = ['files.href', 'files.file_type', 'files']
     param_list['limit'] = ['all']
     path = '/search/?%s' % urlencode(param_list, True)
     results = request.embed(path, as_user=True)

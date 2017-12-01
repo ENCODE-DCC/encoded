@@ -6,7 +6,7 @@ ssh_authorized_keys:
 
 apt_sources:
 - source: "ppa:webupd8team/java"
-- source: "deb http://packages.elasticsearch.org/elasticsearch/1.7/debian stable main"
+- source: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
@@ -100,18 +100,6 @@ bootcmd:
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
-- MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
-- if [ "$MEMGIGS" -gt 32 ]
-- then
--    echo "ES_HEAP_SIZE=8g" > /etc/default/elasticsearch
-- elif [ "$MEMGIGS" -gt 12 ]
-- then
--    echo "ES_HEAP_SIZE=4g" > /etc/default/elasticsearch
-- else
--    echo "ES_HEAP_SIZE=2g" > /etc/default/elasticsearch
--    sysctl "vm.swappiness=1"
--    swapon /swapfile
-- fi
 
 package_upgrade: true
 
@@ -164,11 +152,26 @@ runcmd:
 - sudo -u ubuntu aws s3 cp --region=us-west-2 %(S3_AUTH_KEYS)s /home/ubuntu/.ssh/authorized_keys
 # Ideally this would build as a different user so encoded only has read
 # permissions
+- MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
+- if [ "$MEMGIGS" -gt 32 ]
+- then
+-    echo "-Xms16g" >> /etc/elasticsearch/jvm.options
+-    echo "-Xmx16g" >> /etc/elasticsearch/jvm.options
+- elif [ "$MEMGIGS" -gt 12 ]
+- then
+-    echo "-Xms8g" >> /etc/elasticsearch/jvm.options
+-    echo "-Xmx8g" >> /etc/elasticsearch/jvm.options
+- else
+-    echo "-Xms4g" >> /etc/elasticsearch/jvm.options
+-    echo "-Xmx4g" >> /etc/elasticsearch/jvm.options
+-    sysctl "vm.swappiness=1"
+-    swapon /swapfile
+- fi
 - set -ex
 - update-rc.d elasticsearch defaults
 - sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
-- sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-cloud-aws/2.7.1
-- service elasticsearch start
+- sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install discovery-ec2
+- service elasticsearch restart
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf
 - echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 - if test "%(ROLE)s" = "demo"
@@ -196,7 +199,7 @@ runcmd:
 - sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
 - /etc/init.d/postgresql start
 - sudo -u encoded python3.4 bootstrap.py --buildout-version 2.9.5 --setuptools-version 18.5
-- sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg production-ini:region_search_instance=localhost:9200
+- sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg production-ini:region_search_instance=localhost:9201
 - sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
 - sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
@@ -271,24 +274,18 @@ write_files:
 
 - path: /etc/elasticsearch/elasticsearch.yml
   content: |
-    index.search.slowlog.threshold.query.warn: 8s
-    index.search.slowlog.threshold.fetch.warn: 1s
-    index.indexing.slowlog.threshold.index.warn: 25s
     network.host: 0.0.0.0
-    action.auto_create_index: false
-    index.mapper.dynamic: false
-
+    http.port: 9201
+    transport.tcp.port: 9299
     node.master: true
     node.data: false
-
-    discovery:
-        type: ec2
+    discovery.zen.minimum_master_nodes: 1
+    discovery.type: ec2
 
     cloud.aws.region: us-west-2
 
     discovery.ec2.groups: elasticsearch-https, ssh-http-https
 
-    # discovery.zen.minimum_master_nodes: 2
 
 - path: /etc/elasticsearch/cluster.sh
   content: |
@@ -300,6 +297,51 @@ write_files:
     else
         echo "argument error"
     fi
+
+- path: /etc/elasticsearch/jvm.options
+  content: |
+    ## GC configuration
+    -XX:+UseConcMarkSweepGC
+    -XX:CMSInitiatingOccupancyFraction=75
+    -XX:+UseCMSInitiatingOccupancyOnly
+
+    # disable calls to System#gc
+    -XX:+DisableExplicitGC
+
+    # pre-touch memory pages used by the JVM during initialization
+    -XX:+AlwaysPreTouch
+
+    # force the server VM (remove on 32-bit client JVMs)
+    -server
+
+    # explicitly set the stack size (reduce to 320k on 32-bit client JVMs)
+    -Xss1m
+
+    # set to headless, just in case
+    -Djava.awt.headless=true
+
+    # ensure UTF-8 encoding by default (e.g. filenames)
+    -Dfile.encoding=UTF-8
+
+    # use our provided JNA always versus the system one
+    -Djna.nosys=true
+
+    # use old-style file permissions on JDK9
+    -Djdk.io.permissionsUseCanonicalPath=true
+
+    # flags to configure Netty
+    -Dio.netty.noUnsafe=true
+    -Dio.netty.noKeySetOptimization=true
+    -Dio.netty.recycler.maxCapacityPerThread=0
+
+    # log4j 2
+    -Dlog4j.shutdownHookEnabled=false
+    -Dlog4j2.disable.jmx=true
+    -Dlog4j.skipJansi=true
+
+    # generate a heap dump when an allocation from the Java heap fails
+    # heap dumps are created in the working directory of the JVM
+    -XX:+HeapDumpOnOutOfMemoryError
 
 
 - path: /etc/postgresql/9.3/main/custom.conf
