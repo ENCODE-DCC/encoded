@@ -47,7 +47,7 @@ function AnalysisStep(step, node) {
         header = (
             <div className="details-view-info">
                 <h4>
-                    {swVersions ?
+                    {swVersions && swVersions.length ?
                         <span>{`${step.title} — Version ${node.metadata.ref.major_version}.${node.metadata.stepVersion.minor_version}`}</span>
                     :
                         <span>{step.title} — Version {node.metadata.ref.major_version}</span>
@@ -58,10 +58,12 @@ function AnalysisStep(step, node) {
         body = (
             <div>
                 <dl className="key-value">
-                    <div data-test="steptype">
-                        <dt>Step type</dt>
-                        <dd>{step.analysis_step_types.join(', ')}</dd>
-                    </div>
+                    {(step.analysis_step_types && step.analysis_step_types.length) ?
+                        <div data-test="steptype">
+                            <dt>Step type</dt>
+                            <dd>{step.analysis_step_types.join(', ')}</dd>
+                        </div>
+                    : null}
 
                     {step.aliases && step.aliases.length ?
                         <div data-test="stepname">
@@ -212,16 +214,17 @@ class PipelineComponent extends React.Component {
                 let label;
 
                 // Collect software version titles.
-                if (step.current_version) {
+                if (step.current_version && step.current_version.software_versions && step.current_version.software_versions.length) {
                     const softwareVersions = step.current_version.software_versions;
                     swVersionList = softwareVersions.map(version => version.software.title);
                 }
 
                 // Build the node label; both step types and sw version titles if available.
+                const stepTypes = (step.analysis_step_types && step.analysis_step_types.length) ? step.analysis_step_types.join(', ') : '';
                 if (swVersionList.length) {
-                    label = [step.analysis_step_types.join(', '), swVersionList.join(', ')];
+                    label = [stepTypes, swVersionList.join(', ')];
                 } else {
-                    label = step.analysis_step_types.join(', ');
+                    label = stepTypes;
                 }
 
                 // Assemble a single analysis step node.
@@ -520,15 +523,22 @@ class ListingComponent extends React.Component {
         // Collect up an array of published-by and software titles for all steps in this pipeline
         if (result.analysis_steps && result.analysis_steps.length) {
             result.analysis_steps.forEach((step) => {
-                step.software_versions.forEach((version) => {
-                    swTitle.push(version.software.title);
-                    if (version.software.references && version.software.references.length) {
-                        version.software.references.forEach((reference) => {
-                            // add published_by array to publishedBy array.
-                            publishedBy.push(...reference.published_by);
-                        });
-                    }
-                });
+                if (step.versions && step.versions.length) {
+                    step.versions.forEach((version) => {
+                        if (version.software_versions && version.software_versions.length) {
+                            version.software_versions.forEach((softwareVersion) => {
+                                swTitle.push(softwareVersion.software.title);
+                                if (softwareVersion.software.references && softwareVersion.software.references.length) {
+                                    softwareVersion.software.references.forEach((reference) => {
+                                        if (reference.published_by && reference.published_by.length) {
+                                            publishedBy.push(...reference.published_by);
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
             });
         }
         publishedBy = _.uniq(publishedBy);
@@ -554,6 +564,10 @@ class ListingComponent extends React.Component {
 
                         {swTitle.length ?
                             <div><strong>Software: </strong>{swTitle.join(', ')}</div>
+                        : null}
+
+                        {publishedBy.length ?
+                            <div><strong>References: </strong>{publishedBy.join(', ')}</div>
                         : null}
                     </div>
                 </div>
