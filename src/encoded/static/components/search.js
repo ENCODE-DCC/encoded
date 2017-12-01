@@ -535,7 +535,7 @@ class DatasetComponent extends React.Component {
         if (seriesDataset) {
             biosampleTerm = (result.biosample_term_name && typeof result.biosample_term_name === 'object' && result.biosample_term_name.length === 1) ? result.biosample_term_name[0] :
                 ((result.biosample_term_name && typeof result.biosample_term_name === 'string') ? result.biosample_term_name : '');
-            const organisms = _.uniq(result.organism && result.organism.length && result.organism.map(resultOrganism => resultOrganism.scientific_name));
+            const organisms = (result.organism && result.organism.length) ? _.uniq(result.organism.map(resultOrganism => resultOrganism.scientific_name)) : [];
             if (organisms.length === 1) {
                 organism = organisms[0];
             }
@@ -1573,7 +1573,7 @@ class Search extends React.Component {
             <div>
                 {facetdisplay ?
                     <div className="panel data-display main-panel">
-                        <ResultTable {...this.props} key={undefined} searchBase={searchBase} onChange={this.context.navigate} currentRegion={this.currentRegion} />
+                        <ResultTable {...this.props} searchBase={searchBase} onChange={this.context.navigate} currentRegion={this.currentRegion} />
                     </div>
                 : <h4>{notification}</h4>}
             </div>

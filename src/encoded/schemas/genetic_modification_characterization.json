@@ -95,7 +95,7 @@
         }
     },
     "facets": {
-        "assay_term_name": {
+        "characterization_method": {
             "title": "Method"
         },
         "status": {
