@@ -1316,6 +1316,24 @@ def test_audit_experiment_mismatched_inter_paired_sequencing_files(testapp,
                for error in collect_audit_errors(res))
 
 
+def test_audit_experiment_DNase_mismatched_inter_paired_sequencing_files(testapp,
+                                                                         base_experiment,
+                                                                         replicate_1_1,
+                                                                         replicate_2_1,
+                                                                         library_1,
+                                                                         library_2,
+                                                                         biosample_1,
+                                                                         biosample_2,
+                                                                         mouse_donor_1,
+                                                                         mouse_donor_2,
+                                                                         file_fastq_6,
+                                                                         file_fastq_4):
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'DNase-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(error['category'] != 'mixed run types'
+               for error in collect_audit_errors(res))
+
+
 def test_audit_experiment_mismatched_inter_length_sequencing_files(testapp,
                                                                    base_experiment,
                                                                    replicate_1_1,

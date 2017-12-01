@@ -1785,7 +1785,9 @@ def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
     if not value.get('replicates'):
         return
 
-    if value.get('assay_term_name') not in [
+    assay_term_name = value.get('assay_term_name')
+
+    if assay_term_name not in [
             'ChIP-seq',
             'DNase-seq',
             'genetic modification followed by DNase-seq']:
@@ -1804,7 +1806,8 @@ def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
                 replicate_read_lengths[bio_rep_number].add(
                     file_object['read_length'])
 
-            if 'run_type' in file_object:
+            # run type consistency is relevant only for ChIP-seq
+            if assay_term_name == 'ChIP-seq' and 'run_type' in file_object:
                 if bio_rep_number not in replicate_pairing_statuses:
                     replicate_pairing_statuses[bio_rep_number] = set()
                 replicate_pairing_statuses[bio_rep_number].add(
@@ -1825,15 +1828,6 @@ def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
                              replicate_read_lengths[key])
                 yield AuditFailure('mixed read lengths',
                                    detail, level='WARNING')
-
-    for key in replicate_pairing_statuses:
-        if len(replicate_pairing_statuses[key]) > 1:
-            detail = 'Biological replicate {} '.format(key) + \
-                     'in experiment {} '.format(value['@id']) + \
-                     'has mixed endedness {}.'.format(
-                         replicate_pairing_statuses[key])
-            yield AuditFailure('mixed run types',
-                               detail, level='WARNING')
 
     keys = list(replicate_read_lengths.keys())
 
@@ -1864,29 +1858,40 @@ def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
                     yield AuditFailure('mixed read lengths',
                                        detail, level='WARNING')
 
-    keys = list(replicate_pairing_statuses.keys())
-    if len(keys) > 1:
-        for index_i in range(len(keys)):
-            for index_j in range(index_i + 1, len(keys)):
-                i_pairs = replicate_pairing_statuses[keys[index_i]]
-                j_pairs = replicate_pairing_statuses[keys[index_j]]
-                diff_flag = False
-                for entry in i_pairs:
-                    if entry not in j_pairs:
-                        diff_flag = True
-                for entry in j_pairs:
-                    if entry not in i_pairs:
-                        diff_flag = True
-                if diff_flag is True:
-                    detail = 'Biological replicate {} '.format(keys[index_i]) + \
-                             'in experiment {} '.format(value['@id']) + \
-                             'has endedness {} '.format(i_pairs) + \
-                             ' that differ from replicate {},'.format(keys[index_j]) + \
-                             ' which has {}.'.format(j_pairs)
-                    yield AuditFailure('mixed run types',
-                                       detail, level='WARNING')
+    # run type consistency is relevant only for ChIP-seq
+    if assay_term_name == 'ChIP-seq':  
+        for key in replicate_pairing_statuses:
+            if len(replicate_pairing_statuses[key]) > 1:
+                detail = 'Biological replicate {} '.format(key) + \
+                        'in experiment {} '.format(value['@id']) + \
+                        'has mixed endedness {}.'.format(
+                            replicate_pairing_statuses[key])
+                yield AuditFailure('mixed run types',
+                                detail, level='WARNING')
 
-    return
+        
+
+        keys = list(replicate_pairing_statuses.keys())
+        if len(keys) > 1:
+            for index_i in range(len(keys)):
+                for index_j in range(index_i + 1, len(keys)):
+                    i_pairs = replicate_pairing_statuses[keys[index_i]]
+                    j_pairs = replicate_pairing_statuses[keys[index_j]]
+                    diff_flag = False
+                    for entry in i_pairs:
+                        if entry not in j_pairs:
+                            diff_flag = True
+                    for entry in j_pairs:
+                        if entry not in i_pairs:
+                            diff_flag = True
+                    if diff_flag is True:
+                        detail = 'Biological replicate {} '.format(keys[index_i]) + \
+                                'in experiment {} '.format(value['@id']) + \
+                                'has endedness {} '.format(i_pairs) + \
+                                ' that differ from replicate {},'.format(keys[index_j]) + \
+                                ' which has {}.'.format(j_pairs)
+                        yield AuditFailure('mixed run types',
+                                        detail, level='WARNING')
 
 
 def audit_experiment_replicate_with_no_files(value, system, files_structure):
