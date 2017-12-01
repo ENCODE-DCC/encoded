@@ -252,19 +252,18 @@ users:
   homedir: /srv/encoded
 
 write_files:
-#  These files are causing errors, need to be debugged separately from ES upgrade
-# - path: /etc/apt/apt.conf.d/20auto-upgrades
-#   content: |
-#     APT::Periodic::Update-Package-Lists "1";
-#     APT::Periodic::Unattended-Upgrade "1";
+- path: /etc/apt/apt.conf.d/20auto-upgrades
+  content: |
+    APT::Periodic::Update-Package-Lists "1";
+    APT::Periodic::Unattended-Upgrade "1";
 
-# - path: /etc/apt/apt.conf.d/50unattended-upgrades
-#   content: |
-#     Unattended-Upgrade::Allowed-Origins {
-#         "${distro_id} ${distro_codename}-security";
-#     };
-#     Unattended-Upgrade::Mail "encode-devops@lists.stanford.edu";
-#     Unattended-Upgrade::Automatic-Reboot "false";
+- path: /etc/apt/apt.conf.d/50unattended-upgrades
+  content: |
+    Unattended-Upgrade::Allowed-Origins {
+        "${distro_id} ${distro_codename}-security";
+    };
+    Unattended-Upgrade::Mail "encode-devops@lists.stanford.edu";
+    Unattended-Upgrade::Automatic-Reboot "false";
 
 - path: /etc/cron.d/cloudwatchmon
   content: |
