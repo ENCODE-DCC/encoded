@@ -272,7 +272,7 @@ def audit_experiment_with_uploading_files(value, system, files_structure):
                           'with the status {}.'.format(value['@id'],
                                                        file_object['@id'],
                                                        file_object['status']))
-                yield AuditFailure(category, detail, level='INTERNAL_ACTION')
+                yield AuditFailure(category, detail, level='WARNING')
 
     return
 
