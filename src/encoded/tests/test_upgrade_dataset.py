@@ -362,3 +362,5 @@ def test_upgrade_experiment_14_15(upgrader, experiment_14):
                              current_version='14', target_version='15')
     assert value['schema_version'] == '15'
     assert value['biosample_type'] == 'cell-free sample'
+    assert value['biosample_term_name'] == 'none'
+    assert value['biosample_term_id'] == 'NTR:0000471'
