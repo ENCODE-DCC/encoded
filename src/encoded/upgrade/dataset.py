@@ -328,3 +328,5 @@ def experiment_14_15(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3721
     if value['biosample_type'] == 'in vitro sample':
         value['biosample_type'] = 'cell-free sample'
+        value['biosample_term_id'] = 'NTR:0000471'
+        value['biosample_term_name'] = 'none'
