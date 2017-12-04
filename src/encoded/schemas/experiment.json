@@ -25,10 +25,10 @@
         { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
-
         "biosample_type": {
             "oneOf": [
-                {                   
+                {
+                    "required": ["biosample_term_id"],      
                     "properties": {
                         "biosample_type": {
                             "enum": ["cell-free sample"]
