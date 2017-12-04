@@ -41,6 +41,9 @@
         "file_format_type": {
             "title": "Specific file format type"
         },
+        "platform.term_name": {
+            "title": "Platform"
+        },
         "award.project": {
             "title": "Project"
         },
@@ -49,9 +52,6 @@
         },
         "lab.title": {
             "title": "Lab"
-        },
-        "platform": {
-            "title": "Platform"
         }
     },
     "dependencies": {
