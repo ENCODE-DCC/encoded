@@ -2,7 +2,7 @@
 
 ### Schema version 15
 
-* The biosample_type enum "in vitro sample" has been renamed to "cell-free sample"
+* The biosample_type enum "in vitro sample" has been renamed to "cell-free sample" and requires an accompanying biosample_term_id (of type NTR)
 
 ### Schema version 14
 
