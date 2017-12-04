@@ -49,6 +49,9 @@
         },
         "lab.title": {
             "title": "Lab"
+        },
+        "platform": {
+            "title": "Platform"
         }
     },
     "dependencies": {
