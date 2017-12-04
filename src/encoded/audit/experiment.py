@@ -2451,7 +2451,7 @@ def audit_experiment_biosample_term(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value.get('biosample_type') == 'in vitro sample':
+    if value.get('biosample_type') == 'cell-free sample':
         return
 
     ontology = system['registry']['ontology']

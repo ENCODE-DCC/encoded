@@ -6,7 +6,7 @@ def base_experiment(testapp, lab, award):
         'award': award['uuid'],
         'lab': lab['uuid'],
         'assay_term_name': 'RNA-seq',
-        'biosample_type': 'in vitro sample',
+        'biosample_type': 'cell-free sample',
         'status': 'started'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
