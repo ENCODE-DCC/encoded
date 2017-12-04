@@ -1019,26 +1019,46 @@ function qcAbbr(qc) {
 }
 
 
-function collectDerivedFroms(fileAtId, fileDataset, allFiles) {
+/**
+ * Compare the assemblies and annotations of the two given files, and return true if they're
+ * compatible, meaning if they both have an assembly, that their assemblies are the same -- and
+ * if they also both have an annotation, that their annotations are also the same. In addition,
+ * if one or both files has no assembly (a file can't have an annotation without an assembly)
+ *
+ * @param {object} file0 - First file to compare.
+ * @param {object} file1 - Second file to compare.
+ */
+function isCompatibleAssemblyAnnotation(file, assembly, annotation) {
+    if (file.assembly) {
+        return file.assembly === assembly && file.genome_annotation === annotation;
+    }
+
+    // File has no assembly, so it's always compatible (presumably a raw file)
+    return true;
+}
+
+
+function collectDerivedFroms(fileAtId, fileDataset, selectedAssembly, selectedAnnotation, allFiles) {
     let collectedDerivedFroms = {};
     const file = allFiles[fileAtId];
 
     if (file.derived_from && file.derived_from.length) {
         // File has a derived_from chain, so for any files this file derives from (parent
         // files), go up the chain for any parent files belonging to the current dataset.
-        // Any parents not belonging to the current dataset get ignored.
+        // Any parents not belonging to the current dataset or the selected assembly and annotation
+        // get ignored.
         file.derived_from.forEach((derivedFileAtId) => {
             const derivedFile = allFiles[derivedFileAtId];
-            if (derivedFile && derivedFile.dataset === fileDataset['@id']) {
+            if (derivedFile && derivedFile.dataset === fileDataset['@id'] && isCompatibleAssemblyAnnotation(file, selectedAssembly, selectedAnnotation)) {
                 // Get an object of all the parent derived_from files, keyed by file @id and
                 // each with an array of file objects that are derived from that file.
-                const branchDerivedFroms = collectDerivedFroms(derivedFileAtId, fileDataset, allFiles);
+                const branchDerivedFroms = collectDerivedFroms(derivedFileAtId, fileDataset, selectedAssembly, selectedAnnotation, allFiles);
 
-                // Add the file object to any properties with an empty array value, indicating
+                // Add the file object to any properties with an empty array value, which indicates
                 // that this property is the direct parent derived_from file.
                 Object.keys(branchDerivedFroms).forEach((branchDerivedFromAtId) => {
-                    if (branchDerivedFroms[branchDerivedFromAtId].length === 0) {
-                        branchDerivedFroms[branchDerivedFromAtId] = [file];
+                    if (branchDerivedFroms[branchDerivedFromAtId] === null) {
+                        branchDerivedFroms[branchDerivedFromAtId] = file;
                     }
                 });
 
@@ -1053,7 +1073,7 @@ function collectDerivedFroms(fileAtId, fileDataset, allFiles) {
 
     // Now add a property to the object of collected derived_froms keyed by the file's @id and
     // containing an empty array to be filled in by child files.
-    collectedDerivedFroms[file['@id']] = [];
+    collectedDerivedFroms[file['@id']] = null;
     return collectedDerivedFroms;
 }
 
@@ -1138,25 +1158,33 @@ export function assembleGraph(files, dataset, options) {
     //     /files/<contributing accession>: [matching file, matching file],
     //     /files/<missing accession>: [matching file, matching file],
     // }
+    const derivedChains = {};
+    const fileAtIds = Object.keys(matchingFiles);
+    for (let i = 0; i < fileAtIds.length; i += 1) {
+        const fileAtId = fileAtIds[i];
+        derivedChains[fileAtId] = collectDerivedFroms(fileAtId, dataset, selectedAssembly, selectedAnnotation, allFiles);
+    }
+
     const allDerivedFroms = {};
-    Object.keys(matchingFiles).forEach((matchingFileId) => {
-        const matchingFile = matchingFiles[matchingFileId];
-        if (matchingFile.derived_from && matchingFile.derived_from.length) {
-            matchingFile.derived_from.forEach((derivedFromAtId) => {
-                // Copy reference to allFiles copy of file. Will be undefined for missing and
-                // contributing files.
-                if (allDerivedFroms[derivedFromAtId]) {
-                    // Already saw a file derive from this one, so add the new reference to the end
-                    // of the array of derived-from files.
-                    allDerivedFroms[derivedFromAtId].push(matchingFile);
+    const matchingFileAtIds = Object.keys(derivedChains);
+    for (let i = 0; i < matchingFileAtIds.length; i += 1) {
+        const matchingFileAtId = matchingFileAtIds[i];
+        const matchingFileChain = derivedChains[matchingFileAtId];
+
+        const parentFileAtIds = Object.keys(matchingFileChain);
+        for (let j = 0; j < parentFileAtIds.length; j += 1) {
+            const parentFileAtId = parentFileAtIds[j];
+            if (matchingFileChain[parentFileAtId]) {
+                if (allDerivedFroms[parentFileAtId] && allDerivedFroms[parentFileAtId].findIndex(childFile => childFile['@id'] === matchingFileChain[parentFileAtId]['@id']) === -1) {
+                    allDerivedFroms[parentFileAtId].push(matchingFileChain[parentFileAtId]);
                 } else {
-                    // Never saw a file derive from this one, so make a new array with a reference
-                    // to it.
-                    allDerivedFroms[derivedFromAtId] = [matchingFile];
+                    allDerivedFroms[parentFileAtId] = [matchingFileChain[parentFileAtId]];
                 }
-            });
+            }
         }
-    });
+    }
+    console.log(allDerivedFroms);
+
     // Remember, at this stage allDerivedFroms includes keys for missing files, files not matching
     // the chosen assembly/annotation, and contributing files.
 
@@ -1180,23 +1208,6 @@ export function assembleGraph(files, dataset, options) {
     // At this stage, any files in matchingFiles will be rendered. We just have to figure out what
     // other files need rendering, like raw sequencing files, contributing files, and derived-from
     // files that have a non-matching annotation and assembly.
-
-    let derived = {};
-    Object.keys(matchingFiles).forEach((fileAtId) => {
-        const tempDerived = collectDerivedFroms(fileAtId, dataset, allFiles);
-        Object.keys(tempDerived).forEach((derivedFileAtId) => {
-            if (tempDerived[derivedFileAtId].length) {
-                if (derived[derivedFileAtId]) {
-                    derived[derivedFileAtId].push(tempDerived[derivedFileAtId][0]);
-                } else {
-                    derived[derivedFileAtId] = [tempDerived[derivedFileAtId][0]];
-                }
-            }
-        });
-        console.log('%s:%o', fileAtId, tempDerived);
-    });
-    console.log('%o', derived);
-
 
     const allReplicates = {}; // All file's replicates as keys; each key references an array of files
     Object.keys(matchingFiles).forEach((matchingFileId) => {
