@@ -321,3 +321,10 @@ def annotation_15_16(value, system):
             value['annotation_type'] = 'candidate regulatory elements'
         if value['annotation_type'] == 'DNase master peaks':
             value['annotation_type'] = 'representative DNase hypersensitivity sites'
+
+
+@upgrade_step('experiment', '14', '15')
+def experiment_14_15(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3721
+    if value['biosample_type'] == 'in vitro sample':
+        value['biosample_type'] = 'cell-free sample'
