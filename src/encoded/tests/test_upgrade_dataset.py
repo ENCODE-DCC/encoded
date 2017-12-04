@@ -143,6 +143,17 @@ def experiment_13(root, experiment):
     return properties
 
 
+@pytest.fixture
+def experiment_14(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '14',
+        'biosample_type': 'in vitro sample',
+    })
+    return properties
+
+
 def test_experiment_upgrade(root, upgrader, experiment, experiment_1, file_ucsc_browser_composite, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
@@ -344,3 +355,10 @@ def test_upgrade_annotation_15_16(upgrader, annotation_dataset):
     value = upgrader.upgrade('annotation', annotation_dataset,
                              current_version='15', target_version='16')
     assert annotation_dataset['annotation_type'] == 'representative DNase hypersensitivity sites'
+
+
+def test_upgrade_experiment_14_15(upgrader, experiment_14):
+    value = upgrader.upgrade('experiment', experiment_14,
+                             current_version='14', target_version='15')
+    assert value['schema_version'] == '15'
+    assert value['biosample_type'] == 'cell-free sample'
