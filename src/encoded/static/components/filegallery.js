@@ -1049,7 +1049,7 @@ function collectDerivedFroms(fileAtId, fileDataset, selectedAssembly, selectedAn
         // get ignored.
         file.derived_from.forEach((derivedFileAtId) => {
             const derivedFile = allFiles[derivedFileAtId];
-            if (derivedFile && derivedFile.dataset === fileDataset['@id'] && isCompatibleAssemblyAnnotation(file, selectedAssembly, selectedAnnotation)) {
+            if (derivedFile && derivedFile.dataset === fileDataset['@id'] && isCompatibleAssemblyAnnotation(derivedFile, selectedAssembly, selectedAnnotation)) {
                 // Get an object of all the parent derived_from files, keyed by file @id and
                 // each with an array of file objects that are derived from that file.
                 const branchDerivedFroms = collectDerivedFroms(derivedFileAtId, fileDataset, selectedAssembly, selectedAnnotation, allFiles);
@@ -1166,6 +1166,7 @@ export function assembleGraph(files, dataset, options) {
     }
 
     const allDerivedFroms = {};
+    const derivedFromList = {};
     const matchingFileAtIds = Object.keys(derivedChains);
     for (let i = 0; i < matchingFileAtIds.length; i += 1) {
         const matchingFileAtId = matchingFileAtIds[i];
@@ -1180,13 +1181,16 @@ export function assembleGraph(files, dataset, options) {
                 } else {
                     allDerivedFroms[parentFileAtId] = [matchingFileChain[parentFileAtId]];
                 }
+                derivedFromList[parentFileAtId] = allFiles[parentFileAtId];
             }
         }
     }
-    console.log(allDerivedFroms);
-
     // Remember, at this stage allDerivedFroms includes keys for missing files, files not matching
     // the chosen assembly/annotation, and contributing files.
+
+    // Add the derivedFromList to matchingFiles so that the rendering code renders them all
+    // together.
+    matchingFiles = Object.assign(matchingFiles, derivedFromList);
 
     // Filter any "island" files out of matchingFiles -- that is, files that derive from no other
     // files, and no other files derive from it.
@@ -1194,7 +1198,9 @@ export function assembleGraph(files, dataset, options) {
         const noIslandFiles = {};
         Object.keys(matchingFiles).forEach((matchingFileId) => {
             const matchingFile = matchingFiles[matchingFileId];
-            if ((matchingFile.derived_from && matchingFile.derived_from.length) || allDerivedFroms[matchingFileId]) {
+            const hasDerivedFroms = matchingFile.derived_from && matchingFile.derived_from.length &&
+                matchingFile.derived_from.some(derivedFileAtId => !!derivedFromList[derivedFileAtId]);
+            if (hasDerivedFroms || allDerivedFroms[matchingFileId]) {
                 // This file either has derived_from set, or other files derive from it. Copy it to
                 // our destination object.
                 noIslandFiles[matchingFileId] = matchingFile;
