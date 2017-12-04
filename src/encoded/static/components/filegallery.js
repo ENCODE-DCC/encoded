@@ -1030,7 +1030,7 @@ function qcAbbr(qc) {
  */
 function isCompatibleAssemblyAnnotation(file, assembly, annotation) {
     if (file.assembly) {
-        return file.assembly === assembly && file.genome_annotation === annotation;
+        return file.assembly === assembly && (file.genome_annotation || '') === annotation;
     }
 
     // File has no assembly, so it's always compatible (presumably a raw file)
