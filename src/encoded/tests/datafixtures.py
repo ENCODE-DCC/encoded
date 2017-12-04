@@ -226,7 +226,7 @@ def experiment(testapp, lab, award):
         'lab': lab['@id'],
         'award': award['@id'],
         'assay_term_name': 'RNA-seq',
-        'biosample_type': 'in vitro sample'
+        'biosample_type': 'cell-free sample'
     }
     return testapp.post_json('/experiment', item).json['@graph'][0]
 
