@@ -1413,6 +1413,9 @@ export function assembleGraph(files, dataset, options) {
             // Connect the file to the step, and the step to the derived_from files
             jsonGraph.addEdge(stepId, fileNodeId);
             file.derived_from.forEach((derivedFromAtId) => {
+                if (!allDerivedFroms[derivedFromAtId]) {
+                    return;
+                }
                 const derivedFromFile = allFiles[derivedFromAtId] || allMissingFiles.some(missingFileId => missingFileId === derivedFromAtId);
                 if (derivedFromFile) {
                     // Not derived from a contributing file; just add edges normally.
