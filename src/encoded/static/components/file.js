@@ -579,7 +579,6 @@ class SequenceFileInfo extends React.Component {
     render() {
         const { file } = this.props;
         const pairedWithAccession = file.paired_with ? globals.atIdToAccession(file.paired_with) : '';
-        const platformAccession = file.platform ? decodeURIComponent(globals.atIdToAccession(file.platform)) : '';
 
         return (
             <Panel>
@@ -592,7 +591,7 @@ class SequenceFileInfo extends React.Component {
                         {file.platform ?
                             <div data-test="platform">
                                 <dt>Platform</dt>
-                                <dd><a href={file.platform} title="View page for this platform">{platformAccession}</a></dd>
+                                <dd><a href={file.platform['@id']} title="View page for this platform">{file.platform.term_name}</a></dd>
                             </div>
                         : null}
 
