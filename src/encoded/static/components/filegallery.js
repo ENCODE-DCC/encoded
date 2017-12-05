@@ -1441,27 +1441,6 @@ export function assembleGraph(files, dataset, options) {
         }
     });
 
-    // Go through each derived-from file and add it to our graph.
-    Object.keys(allDerivedFroms).forEach((fileId) => {
-        const file = allFiles[fileId];
-        if (file && !matchingFiles[fileId]) {
-            const fileNodeId = `file:${file['@id']}`;
-            const fileNodeLabel = `${file.title} (${file.output_type})`;
-            const fileCssClass = fileCssClassGen(file, infoNode === fileNodeId, colorize);
-            const fileRef = file;
-            const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
-
-            jsonGraph.addNode(fileNodeId, fileNodeLabel, {
-                cssClass: fileCssClass,
-                type: 'File',
-                shape: 'rect',
-                cornerRadius: 16,
-                parentNode: replicateNode,
-                ref: fileRef,
-            });
-        }
-    });
-
     // Go through each derived-from contributing file and add it to our graph.
     Object.keys(usedContributingFiles).forEach((fileAtId) => {
         const fileNodeId = `file:${fileAtId}`;
