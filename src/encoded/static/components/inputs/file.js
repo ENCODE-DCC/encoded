@@ -37,8 +37,8 @@ export default class FileInput extends React.Component {
             };
             this.props.onChange(value);
         };
-        if (file) {
-            reader.readAsDataURL(file);
+        if (rFile) {
+            reader.readAsDataURL(rFile);
         }
     }
 
