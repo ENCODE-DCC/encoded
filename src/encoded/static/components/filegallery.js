@@ -1287,6 +1287,7 @@ export function assembleGraph(files, dataset, options) {
                         // Remove coalesced files from usedContributingFiles because we don't want
                         // to render individual files that have been coalesced.
                         delete usedContributingFiles[contributingFileAtId];
+                        delete matchingFiles[contributingFileAtId];
                     });
                 } else {
                     // The number of contributing files in a coalescing group isn't above our
