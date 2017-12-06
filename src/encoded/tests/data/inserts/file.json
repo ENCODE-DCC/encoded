@@ -1189,6 +1189,7 @@
         "output_type": "reads",
         "read_length": 50,
         "md5sum": "ee4dcf28c1a69557228da9a8c17fd1ea",
+        "step_run": "41cf4efe-5de6-4e67-9b17-a15201f72348",
         "status": "in progress",
         "replicate": "1add7e11-a642-42cd-9f4e-fe58fee29d88"
     },
