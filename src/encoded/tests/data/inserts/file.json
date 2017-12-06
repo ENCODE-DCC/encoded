@@ -2273,11 +2273,34 @@
         "dbxrefs": [
             "SRA:SRR1270627"
         ],
+        "derived_from": [
+            "SRR2172974"
+        ],
         "award": "U54HG006998",
         "run_type": "single-ended",
         "platform": "/platforms/OBI%3A0002000/",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "file_format": "sra",
         "dataset": "ENCSR765JPC"
+    },
+    {
+        "award": "U54HG006998",
+        "replicate": "1add7e11-a642-42cd-9f4e-fe58fee29d88",
+        "dataset": "ENCSR765JPC",
+        "dbxrefs": [
+            "SRA:SRR2172974"
+        ],
+        "external_accession": "SRR2172974",
+        "file_format": "sra",
+        "file_size": 2900000000,
+        "lab": "richard-myers",
+        "md5sum": "b52abba2d1e08ea93c527e38aff96e12",
+        "output_type": "reads",
+        "platform": "/platforms/OBI%3A0002000/",
+        "read_length": 76,
+        "run_type": "single-ended",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "83a8f967-d96d-4d61-9417-3d4890c33cf2"
     }
 ]
