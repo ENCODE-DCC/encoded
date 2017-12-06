@@ -2325,10 +2325,10 @@ def object_is_visualizable(
         files = obj.get('files', [])
     browsers = browsers_available(obj.get('status', 'none'),  assemblies,
                                   obj.get('@type', []), files=files)
-    if exclude_quickview:
-        browsers.pop('quickview', None)
-
-    return len(browsers) > 0
+    if exclude_quickview and 'quickview' in browsers:
+        return len(browsers) > 1
+    else:
+        return len(browsers) > 0
 
 
 def vis_format_url(browser, path, assembly, position=None):
