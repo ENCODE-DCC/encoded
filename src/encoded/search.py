@@ -582,7 +582,7 @@ def format_facets(es_results, facets, used_filters, schemas, total, principals):
         if agg_name not in aggregations:
             continue
         terms = aggregations[agg_name][agg_name]['buckets']
-        if not any(bucket['doc_count'] > 0 for bucket in terms if 'doc_count' in bucket):
+        if not aggregations[agg_name]['doc_count'] > 0:
             continue
         # internal_status exception. Only display for admin users
         if field == 'internal_status' and 'group.admin' not in principals:
