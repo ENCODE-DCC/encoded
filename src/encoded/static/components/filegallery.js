@@ -1220,30 +1220,13 @@ export function assembleGraph(files, dataset, options) {
         // If the file is part of a single biological replicate, add it to an array of files, where
         // the arrays are in an object keyed by their relevant biological replicate number.
         const matchingFile = matchingFiles[matchingFileId];
-        let replicateNum = (matchingFile && matchingFile.biological_replicates && matchingFile.biological_replicates.length === 1) ? matchingFile.biological_replicates[0] : undefined;
+        const replicateNum = (matchingFile && matchingFile.biological_replicates && matchingFile.biological_replicates.length === 1) ? matchingFile.biological_replicates[0] : undefined;
         if (replicateNum) {
             if (allReplicates[replicateNum]) {
                 allReplicates[replicateNum].push(matchingFile);
             } else {
                 allReplicates[replicateNum] = [matchingFile];
             }
-        }
-
-        // Add each file that a matching file derives from to the replicates.
-        if (matchingFile && matchingFile.derived_from && matchingFile.derived_from.length) {
-            matchingFile.derived_from.forEach((derivedFromAtId) => {
-                const file = allFiles[derivedFromAtId];
-                if (file) {
-                    replicateNum = (file.biological_replicates && file.biological_replicates.length === 1) ? file.biological_replicates[0] : undefined;
-                    if (replicateNum) {
-                        if (allReplicates[replicateNum]) {
-                            allReplicates[replicateNum].push(matchingFile);
-                        } else {
-                            allReplicates[replicateNum] = [matchingFile];
-                        }
-                    }
-                }
-            });
         }
     });
 
