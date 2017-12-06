@@ -581,13 +581,14 @@ def format_facets(es_results, facets, used_filters, schemas, total, principals):
         agg_name = field.replace('.', '-')
         if agg_name not in aggregations:
             continue
-        terms = aggregations[agg_name][agg_name]['buckets']
-        if not aggregations[agg_name]['doc_count'] > 0:
+        all_buckets_total = aggregations[agg_name]['doc_count']
+        if not all_buckets_total > 0:
             continue
         # internal_status exception. Only display for admin users
         if field == 'internal_status' and 'group.admin' not in principals:
             continue
         facet_type = options.get('type', 'terms')
+        terms = aggregations[agg_name][agg_name]['buckets']
         if facet_type == 'exists':
             terms = [
                 {'key': 'yes', 'doc_count': terms['yes']['doc_count']},
@@ -599,7 +600,7 @@ def format_facets(es_results, facets, used_filters, schemas, total, principals):
             'field': field,
             'title': options.get('title', field),
             'terms': terms,
-            'total': aggregations[agg_name]['doc_count']
+            'total': all_buckets_total
         })
 
     # Show any filters that aren't facets as a fake facet with one entry,
