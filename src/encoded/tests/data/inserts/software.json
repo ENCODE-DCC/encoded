@@ -283,6 +283,14 @@
         "lab": "j-michael-cherry",
         "url": "https://github.com/ENCODE-DCC/long-rna-seq-pipeline.git",
         "uuid":  "9337d94e-9f02-42a5-a0c0-43ea760cfccc"
+    },
+    {
+        "award": "U41HG006992",
+        "description": "Converts dbGaP-protected raw data in sra format to fastq format.",
+        "lab": "j-michael-cherry",
+        "name": "dbgap_sra_to_fastq",
+        "status": "released",
+        "title": "dbGaP SRA to fastq",
+        "uuid": "ae06530b-b0fe-4da6-aa27-dd407842190e"
     }
-
 ]

@@ -288,5 +288,22 @@
             "variant annotation"
         ],
         "uuid": "cd873058-423b-472e-b612-f2df2ffc1e62"
+    },
+    {
+        "analysis_step_types": [
+            "file format conversion"
+        ],
+        "date_created": "2017-10-16T15:56:52.458705+00:00",
+        "input_file_types": [
+            "raw data"
+        ],
+        "major_version": 1,
+        "output_file_types": [
+            "reads"
+        ],
+        "status": "released",
+        "step_label": "dbgap-sra-to-fastq-step",
+        "title": "dbGaP SRA to fastq step",
+        "uuid": "a66d510a-acef-4bb2-b51f-3369f5a537ca"
     }
 ]
