@@ -183,7 +183,7 @@ class Item(snovault.Item):
 
 
 class SharedItem(Item):
-    ''' An Item visible to all authenticated users while "proposed" or "in progress".
+    ''' An Item visible to all authenticated users while "in progress".
     '''
     def __ac_local_roles__(self):
         roles = {}
