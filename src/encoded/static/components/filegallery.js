@@ -1038,43 +1038,112 @@ function isCompatibleAssemblyAnnotation(file, assembly, annotation) {
 }
 
 
-function collectDerivedFroms(fileAtId, fileDataset, selectedAssembly, selectedAnnotation, allFiles) {
-    let collectedDerivedFroms = {};
-    const file = allFiles[fileAtId];
+/**
+ * Collect qualified derived_from files from a root file. Because derived_from chains can branch
+ * and merge, collectDerivedFroms calls itself recursively as it travels up the chains, with
+ * progressively higher parent files in `fileAtId` for each iterative call. The structure of the
+ * returned object describes the entire derived_from chain above the given `file` parameter. This
+ * function gets called once for every file that belongs to the current dataset that has an
+ * assembly/annotation matching the current selection. Here's an example where P1, P2 and P3 are
+ * processed files within the current dataset, and R1 and R2 and raw files.
+ *
+ * R1 ----------- P1
+ *              |
+ *    +---------+
+ *    |
+ * R2 ----------- P2 ----------- P3
+ *
+ * P1 has a derived_from of R1 and R2, P2 has a derived_from of R2 only, and P3 has a derived_from
+ * of P2. collectDerivedFroms gets called directly three times (not counting recursive calls) --
+ * once each for P1, P2, and P3. Once the dust settles, the result of the call for P1 is
+ *
+ * { R1@id: null } ---> resulting in { R1@id: P1 }
+ *
+ * P2
+ *
+ * { R2@id: null } ---> resulting in { R1@id: P2 }
+ *
+ * and P3
+ *
+ * { R2@id: P2, P2@id: null } ---> resulting in { R2@id: P2, P2@id: P3 }
+ *
+ * You can see that after collectDerivedFroms returns, the processed file puts itself in any null
+ * entries in the returned object, which is how the chain gradually gets built, showing what files
+ * derive from which.
+ *
+ * @param {object} file - File to begin the journey up the derived_from chains
+ * @param {object} fileDataset - Dataset being displayed
+ * @param {string} selectedAssembly - Assembly currently selected for display in the graph
+ * @param {string} selectedAnnotation - Genome annotation currently selected for display in the graph
+ * @param {object} allFiles - keys are @ids of all files in the current dataset, and the values are
+ *         the file objects themselves.
+ * @return {object} - Describes the derived_from chaih above the given `file` object. This single-
+ *         level object has keys that are the @id of every file that the given `file` directly or
+ *         indirectly derives from. Each key's value is the object of the file that directly
+ *         derives from it. A file can spawn more than one file, but in that case we'll have
+ *         multiple derived_from chains -- within a chain, every file produces exactly one file.
+ *         In addition the given `file`'s own @id is a key of the returned object, but its value
+ *         is null, to be filled in by the child file.
+ */
+function collectDerivedFroms(file, fileDataset, selectedAssembly, selectedAnnotation, allFiles) {
+    let accumulatedDerivedFroms = {};
 
-    if (file && file.derived_from && file.derived_from.length && file.dataset === fileDataset['@id']) {
-        // File has a derived_from chain, so for any files this file derives from (parent
-        // files), go up the chain for any parent files belonging to the current dataset.
-        // Any parents not belonging to the current dataset or the selected assembly and annotation
-        // get ignored.
-        file.derived_from.forEach((derivedFileAtId) => {
+    // Only step up the chain of derived froms if the file has one. Otherwise we're at a terminal
+    // file of this derived_from branch and can start stepping back down the chain. We also stop
+    // going up the chain once we get to a file not in the current dataset, which might be a
+    // processed file that doesn't belong in the graph, or a contributing file. Note that we have a
+    // risk of infinite recursion if the file data incluees a derived_from loop, which isn't valid.
+    if (file.derived_from && file.derived_from.length && file.dataset === fileDataset['@id']) {
+        // File is the product of at least one derived_from chain, so for any files this file
+        // derives from (parent files), go up the chain continuing to collect the files involved
+        // in the current branch of the chain.
+        for (let i = 0; i < file.derived_from.length; i += 1) {
+            const derivedFileAtId = file.derived_from[i];
+
+            // derived_from doesn't currently embed files; it's just a list of file @ids, and we
+            // have to use `allFiles` to get the corresponding file objects.
             const derivedFile = allFiles[derivedFileAtId];
-            if (!derivedFile || (derivedFile && isCompatibleAssemblyAnnotation(derivedFile, selectedAssembly, selectedAnnotation))) {
-                // Get an object of all the parent derived_from files, keyed by file @id and
-                // each with an array of file objects that are derived from that file.
-                const branchDerivedFroms = collectDerivedFroms(derivedFileAtId, fileDataset, selectedAssembly, selectedAnnotation, allFiles);
+            if (!derivedFile || isCompatibleAssemblyAnnotation(derivedFile, selectedAssembly, selectedAnnotation)) {
+                // The derived_from file either has an assembly/annotation compatible with the
+                // currently selected ones (including raw files that don't have an assembly nor
+                // annotation) -- OR we have the @id of a derived_from file not in this dataset and
+                // so doesn't exist in `allFiles`, which indicates a contirbuting file.
+                let branchDerivedFroms;
+                if (derivedFile) {
+                    // The derived_from file exists in the current dataset, so use that as the new
+                    // root of the derived_from chain to recursively go up the chain.
+                    branchDerivedFroms = collectDerivedFroms(derivedFile, fileDataset, selectedAssembly, selectedAnnotation, allFiles);
+                } else {
+                    // The derived_from file does not exist in the current dataset, so this is a
+                    // terminal file that gets a clean entry to return to the lower level of the
+                    // chain.
+                    accumulatedDerivedFroms[derivedFileAtId] = null;
+                    branchDerivedFroms = accumulatedDerivedFroms;
+                }
 
-                // Add the file object to any properties with an empty array value, which indicates
-                // that this property is the direct parent derived_from file.
-                Object.keys(branchDerivedFroms).forEach((branchDerivedFromAtId) => {
-                    if (branchDerivedFroms[branchDerivedFromAtId] === null) {
-                        branchDerivedFroms[branchDerivedFromAtId] = file;
+                // branchDerivedFroms keys with null values indicate files that are the direct
+                // parent of `file`. Replace the null value with `file` itself.
+                const branchDerivedFromAtIds = Object.keys(branchDerivedFroms);
+                for (let j = 0; j < branchDerivedFromAtIds.length; j += 1) {
+                    const oneDerivedFromAtId = branchDerivedFromAtIds[j];
+                    if (branchDerivedFroms[oneDerivedFromAtId] === null) {
+                        branchDerivedFroms[oneDerivedFromAtId] = file;
                     }
-                });
+                }
 
-                // Add the current file object to the arrays of all the files this file derives
-                // from.
-                collectedDerivedFroms = Object.assign(collectedDerivedFroms, branchDerivedFroms);
+                // Add the current file object to the object that accumulates all the files this
+                // file derives from.
+                accumulatedDerivedFroms = Object.assign(accumulatedDerivedFroms, branchDerivedFroms);
             }
-        });
+        }
     }
-    // Else the file has no derived_from chain and we can create a new, clean object to return
-    // to child nodes.
+    // Else the file has no derived_from chain or has a conflicting dataset, and we can stop going
+    // up the chain of derived froms.
 
     // Now add a property to the object of collected derived_froms keyed by the file's @id and
     // containing an null to be filled in by child files.
-    collectedDerivedFroms[fileAtId] = null;
-    return collectedDerivedFroms;
+    accumulatedDerivedFroms[file['@id']] = null;
+    return accumulatedDerivedFroms;
 }
 
 
@@ -1148,23 +1217,32 @@ export function assembleGraph(files, dataset, options) {
         }
     });
 
-    // Generate a list of file @ids that other files (matching the current assembly and annotation)
+    // For each matching file (file belonging to this dataset with an assembly/annotation matching
+    // the selected one), build an object describing the derived_from chains leading to this file.
+    // A detailed description is in the comments for collectDerivedFroms. Place the result in
+    // `derivedChains` which the next step uses to build allDerivedFroms.
+    const derivedChains = {};
+    const fileAtIds = Object.keys(matchingFiles);
+    for (let i = 0; i < fileAtIds.length; i += 1) {
+        const fileAtId = fileAtIds[i];
+        derivedChains[fileAtId] = collectDerivedFroms(allFiles[fileAtId], dataset, selectedAssembly, selectedAnnotation, allFiles);
+    }
+
+    // Generate a list of file @ids that other files matching the current assembly and annotation
     // derive from (i.e. files referenced in other files' derived_from). allDerivedFroms is keyed
-    // by the derived-from file @id (whether it matches the current assembly and annotation or not)
-    // and has an array of all files that derive from it for its value. So for example:
+    // by the derived_from file @id (whether it matches the current assembly and annotation or not)
+    // and has a value of the array of all files that derive from it. So for example:
     //
     // allDerivedFroms = {
     //     /files/<matching accession>: [matching file, matching file],
     //     /files/<contributing accession>: [matching file, matching file],
     //     /files/<missing accession>: [matching file, matching file],
     // }
-    const derivedChains = {};
-    const fileAtIds = Object.keys(matchingFiles);
-    for (let i = 0; i < fileAtIds.length; i += 1) {
-        const fileAtId = fileAtIds[i];
-        derivedChains[fileAtId] = collectDerivedFroms(fileAtId, dataset, selectedAssembly, selectedAnnotation, allFiles);
-    }
-
+    //
+    // Also generate `derivedFromList` which is just a convenience object. It contains the @ids of
+    // all files in allDerivedFroms, but with a value of the corresponding file object.
+    // `derivedFromList` isn't core to the graph-generating algorithm, but helps us avoid having
+    // to search arrays for file objects.
     const allDerivedFroms = {};
     const derivedFromList = {};
     const matchingFileAtIds = Object.keys(derivedChains);
@@ -1211,9 +1289,7 @@ export function assembleGraph(files, dataset, options) {
     if (Object.keys(matchingFiles).length === 0) {
         throw new GraphException('No graph: no file relationships for the selected assembly/annotation');
     }
-    // At this stage, any files in matchingFiles will be rendered. We just have to figure out what
-    // other files need rendering, like raw sequencing files, contributing files, and derived-from
-    // files that have a non-matching annotation and assembly.
+    // At this stage, any files in matchingFiles will be rendered.
 
     const allReplicates = {}; // All file's replicates as keys; each key references an array of files
     Object.keys(matchingFiles).forEach((matchingFileId) => {
@@ -1323,7 +1399,7 @@ export function assembleGraph(files, dataset, options) {
             const fileNodeId = `file:${fileId}`;
             const fileNodeLabel = `${globals.atIdToAccession(fileId)}`;
             const fileCssClass = `pipeline-node-file contributing${infoNode === fileNodeId ? ' active' : ''}`;
-    
+
             jsonGraph.addNode(fileNodeId, fileNodeLabel, {
                 cssClass: fileCssClass,
                 type: 'File',
