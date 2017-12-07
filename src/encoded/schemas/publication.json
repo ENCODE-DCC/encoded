@@ -15,7 +15,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "6"
         },
         "title": {
             "title": "Title",
@@ -68,12 +68,11 @@
         "status": {
             "title": "Status",
             "type": "string",
-            "default": "in preparation",
+            "default": "in progress",
             "enum" : [
                 "deleted",
-                "in preparation",
-                "published",
-                "submitted"
+                "in progress",
+                "released"
             ]
         },
         "identifiers": {

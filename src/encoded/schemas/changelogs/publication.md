@@ -1,5 +1,9 @@
 ## Changelog for publication.json
 
+### Schema version 6
+
+* Changed available enum options for status from *in preparation*, *submitted*, *published* and *deleted* to *in progress*, *released* and *deleted*.
+
 ### Schema version 5
 
 * Remove in press, in revision, planned, replaced from statuses
