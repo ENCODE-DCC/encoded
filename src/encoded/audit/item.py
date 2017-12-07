@@ -51,7 +51,6 @@ STATUS_LEVEL = {
     # public statuses
     'released': 100,
     'current': 100,
-    'published': 100,
     'compliant': 100,
     'not compliant': 100,
     'not reviewed': 100,
@@ -78,7 +77,6 @@ STATUS_LEVEL = {
     'content error': 50,
     'pending dcc review': 50,
     'awaiting lab characterization': 50,
-    'in preparation': 50,
 
     # invisible statuses (visible for admins only)
     'deleted': 0,
