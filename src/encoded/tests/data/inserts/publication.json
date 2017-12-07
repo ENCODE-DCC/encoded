@@ -9,7 +9,7 @@
         "volume": "489",
         "issue": "7414",
         "page": "57-74",
-        "status": "published",
+        "status": "released",
         "published_by": ["ENCODE"],
         "categories": ["integrative analysis"],
         "data_used": "ENCODE main paper",
@@ -18,7 +18,7 @@
         "uuid": "52e85c70-fe2d-11e3-9191-0800200c9a66"
     },
     {
-        "status":"in preparation",
+        "status":"in progress",
         "uuid":"baf202c2-b7af-4c43-b135-15104394daac",
         "title":"DNase-seq: a high-resolution technique for mapping active gene regulatory elements across the genome from mammalian cells.",
         "issue":"2",
@@ -34,7 +34,7 @@
         "categories": ["data standard"]
     },
     {
-        "status":"in preparation",
+        "status":"in progress",
         "uuid":"a63c94e8-4b64-425b-a5b5-86e4f0bdf4c2",
         "title":"The reality of pervasive transcription.",
         "issue":"7",
@@ -49,7 +49,7 @@
         "authors":"Clark MB, Amaral PP, Schlesinger FJ, Dinger ME, Taft RJ, Rinn JL, Ponting CP, Stadler PF, Morris KV, Morillon A, Rozowsky JS, Gerstein MB, Wahlestedt C, Hayashizaki Y, Carninci P, Gingeras TR, Mattick JS"
     },
     {
-        "status":"in preparation",
+        "status":"in progress",
         "uuid":"e9b33b63-3a85-47cf-9fc5-b1904c56d7ee",
         "title":"Missing lincs in the transcriptome.",
         "issue":"4",
@@ -64,7 +64,7 @@
         "authors":"Gingeras T"
     },
     {
-        "status":"in preparation",
+        "status":"in progress",
         "uuid":"f1d4ec0c-9c90-437e-a6e2-4688791abeea",
         "title":"Molecular biology: RNA discrimination.",
         "issue":"7385",
@@ -80,7 +80,7 @@
         "authors":"Kowalczyk MS, Higgs DR, Gingeras TR"
     },
     {
-        "status":"in preparation",
+        "status":"in progress",
         "uuid":"8c578e87-e4b1-432e-b58a-921c6933c1ea",
         "title":"Nucleosome positioning: bringing order to the eukaryotic genome.",
         "issue":"5",
@@ -96,7 +96,7 @@
         "abstract":"Nucleosomes are an essential component of eukaryotic chromosomes. The impact of nucleosomes is seen not just on processes that directly access the genome, such as transcription, but also on an evolutionary timescale. Recent studies in various organisms have provided high-resolution maps of nucleosomes throughout the genome. Computational analysis, in conjunction with many other kinds of data, has shed light on several aspects of nucleosome biology. Nucleosomes are positioned by several means, including intrinsic sequence biases, by stacking against a fixed barrier, by DNA-binding proteins and by chromatin remodelers. These studies underscore the important organizational role of nucleosomes in all  eukaryotic genomes. This paper reviews recent genomic studies that have shed light on the determinants of nucleosome positioning and their impact on the genome. AU"
     },
     {
-        "status":"in preparation",
+        "status":"in progress",
         "uuid":"46169636-fe8b-4823-bc73-49b6fcd6b484",
         "title":"Cross-talk between site-specific transcription factors and DNA methylation states.",
         "issue":"48",
@@ -112,7 +112,7 @@
         "abstract":"DNA methylation, which occurs predominantly at CpG dinucleotides, is a potent epigenetic repressor of transcription. Because DNA methylation is reversible, there is much interest in understanding the mechanisms by which it can be regulated by DNA-binding transcription factors. We discuss several models that, by incorporating sequence motifs, CpG density, and methylation levels, attempt to link the binding of a transcription factor with the acquisition or loss of DNA methylation at promoters and distal regulatory elements. Additional in vivo genome-wide characterization of transcription factor binding patterns and high-resolution DNA methylation analyses are clearly required for stronger support of each model. AU"
     },
     {
-        "status":"in preparation",
+        "status":"in progress",
         "uuid":"6af11fd9-c0d3-486a-afcb-6c350d20222c",
         "title":"Genome-wide epigenetic data facilitate understanding of disease susceptibility association studies.",
         "issue":"37",
@@ -145,7 +145,7 @@
             "PMID:23104886",
             "PMCID:PMC3530905"
         ],
-        "status": "published",
+        "status": "released",
         "title": "STAR: ultrafast universal RNA-seq aligner.",
         "volume": "29",
         "award": "U41HG006992",
@@ -200,7 +200,7 @@
                 "file_format": "BED"
             }
         ],
-        "status": "published",
+        "status": "released",
         "title": "HaploReg: a resource for exploring chromatin states, conservation, and regulatory motif alterations within sets of genetically linked variants.",
         "volume": "40",
         "award": "U41HG006992",
@@ -225,7 +225,7 @@
             "PMID:20110278",
             "PMCID:PMC2832824"
         ],
-        "status": "published",
+        "status": "released",
         "title": "BEDTools: a flexible suite of utilities for comparing genomic features.",
         "volume": "26",
         "award": "U41HG006992",
@@ -238,7 +238,7 @@
         "identifiers": [
             "PMID:23000965"
         ],
-        "status": "published",
+        "status": "released",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "title": "Systems-wide analysis of ubiquitylation dynamics reveals a key role for PAF15 ubiquitylation in DNA-damage bypass.",
@@ -250,7 +250,7 @@
         "identifiers": [
             "PMID:16395128"
         ],
-        "status": "published",
+        "status": "released",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "title": "Possible association between response inhibition and a variant in the brain-expressed tryptophan hydroxylase-2 gene.",
@@ -262,7 +262,7 @@
         "identifiers": [
              "PMID:22955991"
         ],
-        "status": "published",
+        "status": "released",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "title": "ChIP-seq guidelines and practices of the ENCODE and modENCODE consortia.",
@@ -274,7 +274,7 @@
         "identifiers": [
             "PMID:19966280"
         ],
-        "status": "published",
+        "status": "released",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "title": "Sequencing newly replicated DNA reveals widespread plasticity in human replication timing.",
@@ -286,7 +286,7 @@
         "identifiers": [
             "PMID:19261174"
         ],
-        "status": "published",
+        "status": "released",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "title": "Ultrafast and memory-efficient alignment of short DNA sequences to the human genome.",
@@ -298,7 +298,7 @@
         "identifiers": [
             "doi:10.1038/nphys1170"
         ],
-        "status": "published",
+        "status": "released",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "title": "Quantum tomography: Measured measurement",
@@ -310,7 +310,7 @@
         "identifiers": [
             "PMID:21131981"
         ],
-        "status": "published",
+        "status": "released",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "title":  "The three-dimensional folding of the α-globin gene domain reveals formation of chromatin globules.",
@@ -322,7 +322,7 @@
         "identifiers": [
             "PMID:16369547"
         ],
-        "status": "published",
+        "status": "released",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "title": "The three 'C' s of chromosome conformation capture: controls, controls, controls.",
@@ -334,7 +334,7 @@
         "identifiers": [
             "PMID:11847345"
         ],
-        "status": "published",
+        "status": "released",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "title": "Capturing chromosome conformation.",
@@ -346,7 +346,7 @@
         "identifiers": [
             "PMID:17446898"
         ],
-        "status": "published",
+        "status": "released",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "title": "Mapping networks of physical interactions between genomic elements using 5C technology.",
@@ -358,7 +358,7 @@
         "identifiers": [
             "PMID:16954542"
         ],
-        "status": "published",
+        "status": "released",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "title": "Chromosome Conformation Capture Carbon Copy (5C): a massively parallel solution for mapping interactions between genomic elements.",
@@ -369,7 +369,7 @@
         "identifiers": [
             "PMID:19789528"
         ],
-        "status": "published",
+        "status": "released",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "title": "My5C: web tools for chromosome conformation capture studies.",
@@ -381,7 +381,7 @@
         "identifiers": [
             "PMID:19706456"
         ],
-        "status": "published",
+        "status": "released",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "title": "Mapping accessible chromatin regions using Sono-Seq.",
@@ -393,7 +393,7 @@
         "identifiers": [
             "PMID:17568005"
         ],
-        "status": "published",
+        "status": "released",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "title": "Mapping of transcription factor binding regions in mammalian cells by ChIP: comparison of array- and sequencing-based technologies.",
@@ -405,7 +405,7 @@
         "identifiers": [
             "PMID:14527995"
         ],
-        "status": "published",
+        "status": "released",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "title": "Distribution of NF-kappaB-binding sites across human chromosome 22.",
@@ -417,7 +417,7 @@
         "identifiers": [
             "PMID:17558387"
         ],
-        "status": "published",
+        "status": "released",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "title": "Genome-wide profiles of STAT1 DNA association using chromatin immunoprecipitation and massively parallel sequencing.",
@@ -429,7 +429,7 @@
         "identifiers": [
             "PMID:19122651"
         ],
-        "status": "published",
+        "status": "released",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "title": "PeakSeq enables systematic scoring of ChIP-seq experiments relative to controls.",
