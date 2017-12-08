@@ -52,7 +52,7 @@ describe('Experiment Graph', () => {
             contextGraph.accession = 'ENCTS000BGR';
             files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-2cos')];
             contextGraph.files = files;
-            graph = assembleGraph(files, contextGraph, {});
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
         });
 
         it('Has the correct number of nodes and edges', () => {
@@ -81,7 +81,7 @@ describe('Experiment Graph', () => {
             const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000BDD';
             files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-3cos'), require('../testdata/file/bed-4cos')];
-            graph = assembleGraph(files, contextGraph, {});
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
         });
 
         it('Has the correct number of nodes and edges', () => {
@@ -111,7 +111,7 @@ describe('Experiment Graph', () => {
             const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000NDD';
             files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bed-5cos'), require('../testdata/file/bed-6cos')];
-            graph = assembleGraph(files, contextGraph, {});
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
         });
 
         it('Has the correct number of nodes and edges', () => {
@@ -140,7 +140,7 @@ describe('Experiment Graph', () => {
             const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000TFS';
             files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-7cos'), require('../testdata/file/bed-8cos')];
-            graph = assembleGraph(files, contextGraph, {});
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
         });
 
         it('Has the correct number of nodes and edges', () => {
@@ -169,7 +169,7 @@ describe('Experiment Graph', () => {
             const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000TOV';
             files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bam-vuz'), require('../testdata/file/bed-10cos'), require('../testdata/file/bed-11cos')];
-            graph = assembleGraph(files, contextGraph, {});
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
         });
 
         it('Has the correct number of nodes and edges', () => {
@@ -199,7 +199,7 @@ describe('Experiment Graph', () => {
             const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000DET';
             files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bam-vuz'), require('../testdata/file/bed-2cos')];
-            graph = assembleGraph(files, contextGraph, {});
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
         });
 
         it('Has the correct number of nodes and edges', () => {
@@ -234,7 +234,7 @@ describe('Experiment Graph', () => {
             files[2].biological_replicates = [1];
             files[3].biological_replicates = [2];
 
-            graph = assembleGraph(files, contextGraph, {});
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
         });
 
         it('Has the correct number of nodes and edges', () => {
@@ -275,7 +275,7 @@ describe('Experiment Graph', () => {
             files[1].biological_replicates = [1];
             files[2].derived_from = [require('../testdata/file/bam-vus')['@id']];
             files[2].biological_replicates = [2];
-            graph = assembleGraph(files, contextGraph, {});
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
         });
 
         it('Has the correct number of nodes and edges', () => {
