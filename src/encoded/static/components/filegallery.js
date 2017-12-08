@@ -1277,7 +1277,7 @@ export function assembleGraph(files, dataset, options) {
         Object.keys(matchingFiles).forEach((matchingFileId) => {
             const matchingFile = matchingFiles[matchingFileId];
             const hasDerivedFroms = matchingFile && matchingFile.derived_from && matchingFile.derived_from.length &&
-                matchingFile.derived_from.some(derivedFileAtId => !!derivedFromList[derivedFileAtId]);
+                matchingFile.derived_from.some(derivedFileAtId => derivedFileAtId in derivedFromList);
             if (hasDerivedFroms || allDerivedFroms[matchingFileId]) {
                 // This file either has derived_from set, or other files derive from it. Copy it to
                 // our destination object.
@@ -1396,18 +1396,20 @@ export function assembleGraph(files, dataset, options) {
         const file = matchingFiles[fileId];
 
         if (!file) {
-            const fileNodeId = `file:${fileId}`;
-            const fileNodeLabel = `${globals.atIdToAccession(fileId)}`;
-            const fileCssClass = `pipeline-node-file contributing${infoNode === fileNodeId ? ' active' : ''}`;
+            if (allMissingFiles.indexOf(fileId) === -1) {
+                const fileNodeId = `file:${fileId}`;
+                const fileNodeLabel = `${globals.atIdToAccession(fileId)}`;
+                const fileCssClass = `pipeline-node-file contributing${infoNode === fileNodeId ? ' active' : ''}`;
 
-            jsonGraph.addNode(fileNodeId, fileNodeLabel, {
-                cssClass: fileCssClass,
-                type: 'File',
-                shape: 'rect',
-                cornerRadius: 16,
-                contributing: fileId,
-                ref: {},
-            });
+                jsonGraph.addNode(fileNodeId, fileNodeLabel, {
+                    cssClass: fileCssClass,
+                    type: 'File',
+                    shape: 'rect',
+                    cornerRadius: 16,
+                    contributing: fileId,
+                    ref: {},
+                });
+            }
         } else {
             const fileNodeId = `file:${file['@id']}`;
             const fileNodeLabel = `${file.title} (${file.output_type})`;
