@@ -16,6 +16,6 @@ module.exports = {
     "step_run": require('../analysis_step/step-run-1'),
     "submitted_by": "amet.fusce@est.fermentum",
     "submitted_file_name": "../../wgEncodeAwg/wgEncodeAwgTfbsSydhGm12878Ebf1sc137065UniPk.narrowPeak",
-    "biological_replicates": [ ], // @calculated_property
+    "biological_replicates": [1, 2], // @calculated_property
     "uuid": "956cba28-ccff-4cbd-b1c8-39db4e3de572"
 };

@@ -1189,7 +1189,6 @@
         "output_type": "reads",
         "read_length": 50,
         "md5sum": "ee4dcf28c1a69557228da9a8c17fd1ea",
-        "step_run": "41cf4efe-5de6-4e67-9b17-a15201f72348",
         "status": "in progress",
         "replicate": "1add7e11-a642-42cd-9f4e-fe58fee29d88"
     },
@@ -1197,7 +1196,7 @@
         "paired_end": "1",
         "run_type": "paired-ended",
         "accession": "ENCFF504RKH",
-        "dataset": "ENCSR765JPC",
+        "dataset": "ENCSR000EYX",
         "alternate_accessions": [],
         "file_size": 16204266570,
         "aliases": [],
@@ -1220,7 +1219,7 @@
         "paired_end": "2",
         "run_type": "paired-ended",
         "accession": "ENCFF958GWJ",
-        "dataset": "ENCSR765JPC",
+        "dataset": "ENCSR000EYX",
         "paired_with": "ENCFF504RKH",
         "alternate_accessions": [],
         "file_size": 15409926897,
@@ -1242,7 +1241,7 @@
     {
         "paired_end": "2",
         "accession": "ENCFF360FSI",
-        "dataset": "ENCSR765JPC",
+        "dataset": "ENCSR000EYX",
         "paired_with": "/files/ENCFF431TKZ/",
         "alternate_accessions": [],
         "file_size": 15031538605,
@@ -1279,7 +1278,7 @@
         "lab": "/labs/richard-myers/",
         "output_type": "alignments",
         "assembly": "hg19",
-        "derived_from": ["ENCFF431TKZ", "ENCFF504RKH", "ENCFF958GWJ", "ENCFF360FSI", "ENCFF019HBG", "ENCFF020HBG", "ENCFF021HBG", "ENCFF022HBG"],
+        "derived_from": ["ENCFF431TKZ"],
         "aliases": [],
         "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b"
     },
@@ -1292,7 +1291,7 @@
         "accession": "ENCFF444GXF",
         "file_format": "bam",
         "award": "/awards/U54HG006998/",
-        "dataset": "ENCSR765JPC",
+        "dataset": "ENCSR000EYX",
         "flowcell_details": [],
         "alternate_accessions": [],
         "file_size": 64358869186,
@@ -2273,34 +2272,11 @@
         "dbxrefs": [
             "SRA:SRR1270627"
         ],
-        "derived_from": [
-            "SRR2172974"
-        ],
         "award": "U54HG006998",
         "run_type": "single-ended",
         "platform": "/platforms/OBI%3A0002000/",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "file_format": "sra",
         "dataset": "ENCSR765JPC"
-    },
-    {
-        "award": "U54HG006998",
-        "replicate": "1add7e11-a642-42cd-9f4e-fe58fee29d88",
-        "dataset": "ENCSR765JPC",
-        "dbxrefs": [
-            "SRA:SRR2172974"
-        ],
-        "external_accession": "SRR2172974",
-        "file_format": "sra",
-        "file_size": 2900000000,
-        "lab": "richard-myers",
-        "md5sum": "b52abba2d1e08ea93c527e38aff96e12",
-        "output_type": "reads",
-        "platform": "/platforms/OBI%3A0002000/",
-        "read_length": 76,
-        "run_type": "single-ended",
-        "status": "released",
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "83a8f967-d96d-4d61-9417-3d4890c33cf2"
     }
 ]
