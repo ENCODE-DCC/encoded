@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import stringify from 'json-stringify-safe';
 
 
 // Import test component and data.
@@ -298,6 +299,27 @@ describe('Experiment Graph', () => {
         it('has the right relationships between edges and nodes', () => {
             expect(hasParents(graph, 'step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/', ['file:/files/ENCFF000VUQ/'])).toBeTruthy();
             expect(hasParents(graph, 'file:/files/ENCFF003COS/', ['step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/'])).toBeTruthy();
+        });
+    });
+
+    // A processed file derives from a fastq that derives from an sra file.
+    describe('fastq derives from an sra in the same dataset, ', () => {
+        let graph;
+        let files;
+
+        beforeEach(() => {
+            const contextGraph = _.clone(context);
+            contextGraph.accession = 'ENCSR000RPM';
+            files = [require('../testdata/file/sra'), require('../testdata/file/fastq')[1], require('../testdata/file/bed-3cos')];
+            files[1].derived_from = [files[0]['@id']];
+            files[2].derived_from = [files[1]['@id']];
+            files[2].biological_replicates = [];
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
+        });
+
+        it('Has the correct number of nodes and edges', () => {
+            expect(graph.nodes.length).toEqual(5);
+            expect(graph.edges.length).toEqual(4);
         });
     });
 });
