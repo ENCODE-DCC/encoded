@@ -1,5 +1,4 @@
 import _ from 'underscore';
-import stringify from 'json-stringify-safe';
 
 
 // Import test component and data.
