@@ -97,8 +97,7 @@ def get_mapping(assembly_name='hg19'):
             },
             'properties': {
                 'uuid': {
-                    'type': 'string',
-                    'index': 'not_analyzed'
+                    'type': 'keyword' # WARNING: to add local files this must be 'type': 'string'
                 },
                 'positions': {
                     'type': 'nested',
@@ -119,7 +118,8 @@ def get_mapping(assembly_name='hg19'):
 def index_settings():
     return {
         'index': {
-            'number_of_shards': 1
+            'number_of_shards': 1,
+            'max_result_window': 99999
         }
     }
 
