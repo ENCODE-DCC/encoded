@@ -1020,32 +1020,30 @@ function qcAbbr(qc) {
 
 
 /**
- * Compare the assemblies and annotations of the two given files, and return true if they're
- * compatible, meaning if they both have an assembly, that their assemblies are the same -- and
- * if they also both have an annotation, that their annotations are also the same. In addition,
- * if one or both files has no assembly (a file can't have an annotation without an assembly)
+ * Test whether the given file is compatible with the given assembly and annotation. The file's
+ * compatible if it...
+ *   * has no assembly
+ *   * has an assembly and annotation matching the given ones
+ *   * has an assembly matching the given one, and no annotation, nor is there a given one
  *
- * @param {object} file0 - First file to compare.
- * @param {object} file1 - Second file to compare.
+ * @param {object} file - File whose assembly/annotation we're testing.
+ * @param {string} assembly - Currently selected assembly.
+ * @param {string} annotation - Currently selected annotation.
  */
 function isCompatibleAssemblyAnnotation(file, assembly, annotation) {
-    if (file.assembly) {
-        return file.assembly === assembly && (file.genome_annotation || '') === annotation;
-    }
-
-    // File has no assembly, so it's always compatible (presumably a raw file)
-    return true;
+    return !file.assembly || (file.assembly === assembly && (file.genome_annotation || '') === annotation);
 }
 
 
 /**
  * Collect qualified derived_from files from a root file. Because derived_from chains can branch
  * and merge, collectDerivedFroms calls itself recursively as it travels up the chains, with
- * progressively higher parent files in `fileAtId` for each iterative call. The structure of the
+ * progressively higher parent files in `file` for each iterative call. The structure of the
  * returned object describes the entire derived_from chain above the given `file` parameter. This
  * function gets called once for every file that belongs to the current dataset that has an
- * assembly/annotation matching the current selection. Here's an example where P1, P2 and P3 are
- * processed files within the current dataset, and R1 and R2 and raw files.
+ * assembly/annotation compatible with the current selection. Here's an example where P1, P2 and
+ * P3 are processed files within the current dataset and match the selected assembly and
+ * annotation, and R1 and R2 are raw files.
  *
  * R1 ----------- P1
  *              |
@@ -1061,7 +1059,7 @@ function isCompatibleAssemblyAnnotation(file, assembly, annotation) {
  *
  * P2
  *
- * { R2@id: null } ---> resulting in { R1@id: P2 }
+ * { R2@id: null } ---> resulting in { R2@id: P2 }
  *
  * and P3
  *
@@ -1081,9 +1079,10 @@ function isCompatibleAssemblyAnnotation(file, assembly, annotation) {
  *         level object has keys that are the @id of every file that the given `file` directly or
  *         indirectly derives from. Each key's value is the object of the file that directly
  *         derives from it. A file can spawn more than one file, but in that case we'll have
- *         multiple derived_from chains -- within a chain, every file produces exactly one file.
- *         In addition the given `file`'s own @id is a key of the returned object, but its value
- *         is null, to be filled in by the child file.
+ *         multiple derived_from chains -- within a chain, every file spawns exactly one file.
+ *         When this call returns (both when called normally as well as recursively), The given
+ *         `file`'s own @id is one key of the returned object, but its value is null, to be filled
+ *         when we process the child file.
  */
 function collectDerivedFroms(file, fileDataset, selectedAssembly, selectedAnnotation, allFiles) {
     let accumulatedDerivedFroms = {};
@@ -1107,7 +1106,7 @@ function collectDerivedFroms(file, fileDataset, selectedAssembly, selectedAnnota
                 // The derived_from file either has an assembly/annotation compatible with the
                 // currently selected ones (including raw files that don't have an assembly nor
                 // annotation) -- OR we have the @id of a derived_from file not in this dataset and
-                // so doesn't exist in `allFiles`, which indicates a contirbuting file.
+                // so doesn't exist in `allFiles`, which indicates a contributing file.
                 let branchDerivedFroms;
                 if (derivedFile) {
                     // The derived_from file exists in the current dataset, so use that as the new
@@ -1222,10 +1221,10 @@ export function assembleGraph(files, dataset, options) {
     // A detailed description is in the comments for collectDerivedFroms. Place the result in
     // `derivedChains` which the next step uses to build allDerivedFroms.
     const derivedChains = {};
-    const fileAtIds = Object.keys(matchingFiles);
-    for (let i = 0; i < fileAtIds.length; i += 1) {
-        const fileAtId = fileAtIds[i];
-        derivedChains[fileAtId] = collectDerivedFroms(allFiles[fileAtId], dataset, selectedAssembly, selectedAnnotation, allFiles);
+    let matchingFileAtIds = Object.keys(matchingFiles);
+    for (let i = 0; i < matchingFileAtIds.length; i += 1) {
+        const fileAtId = matchingFileAtIds[i];
+        derivedChains[fileAtId] = collectDerivedFroms(matchingFiles[fileAtId], dataset, selectedAssembly, selectedAnnotation, allFiles);
     }
 
     // Generate a list of file @ids that other files matching the current assembly and annotation
@@ -1243,20 +1242,29 @@ export function assembleGraph(files, dataset, options) {
     // all files in allDerivedFroms, but with a value of the corresponding file object.
     // `derivedFromList` isn't core to the graph-generating algorithm, but helps us avoid having
     // to search arrays for file objects.
+    //
+    // You can think of this nested loop turning `derivedChains` upside-down because it has the
+    // @ids of processed files as keys with files they derived from as values. allDerivedFroms is
+    // keyed by all file @ids that have other files derive from them, and an array of all files
+    // that derive from each one as values.
     const allDerivedFroms = {};
     const derivedFromList = {};
-    const matchingFileAtIds = Object.keys(derivedChains);
+    matchingFileAtIds = Object.keys(derivedChains);
     for (let i = 0; i < matchingFileAtIds.length; i += 1) {
         const matchingFileAtId = matchingFileAtIds[i];
         const matchingFileChain = derivedChains[matchingFileAtId];
 
+        // For each matching file @id in derivedChains, go through its chain of parents to fill in
+        // allDerivedFroms.
         const parentFileAtIds = Object.keys(matchingFileChain);
         for (let j = 0; j < parentFileAtIds.length; j += 1) {
             const parentFileAtId = parentFileAtIds[j];
             if (matchingFileChain[parentFileAtId]) {
                 if (allDerivedFroms[parentFileAtId] && allDerivedFroms[parentFileAtId].findIndex(childFile => childFile['@id'] === matchingFileChain[parentFileAtId]['@id']) === -1) {
+                    // We've already put this file @id in allDerivedFromss, so add this new parent file to its array.
                     allDerivedFroms[parentFileAtId].push(matchingFileChain[parentFileAtId]);
                 } else {
+                    // We've never seen this file @id in allDerivedFroms, os start a new array.
                     allDerivedFroms[parentFileAtId] = [matchingFileChain[parentFileAtId]];
                 }
                 derivedFromList[parentFileAtId] = allFiles[parentFileAtId];
@@ -1267,7 +1275,9 @@ export function assembleGraph(files, dataset, options) {
     // the chosen assembly/annotation, and contributing files.
 
     // Add the derivedFromList to matchingFiles so that the rendering code renders them all
-    // together.
+    // together. This is a major change made for ENCD-3661 which used to render this all
+    // `allDerivedFroms` separately. Now they're all rendered together, an no separate rendering
+    // step for derived froms exists anymore.
     matchingFiles = Object.assign(matchingFiles, derivedFromList);
 
     // Filter any "island" files out of matchingFiles -- that is, files that derive from no other
