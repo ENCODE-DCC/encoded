@@ -21,7 +21,6 @@ import json
 import requests
 from pkg_resources import resource_filename
 from snovault.elasticsearch.indexer import (
-    SEARCH_MAX,
     IndexerState,
     Indexer,
     get_current_xmin,
@@ -45,10 +44,17 @@ def includeme(config):
     registry = config.registry
     registry['vis'+INDEXER] = VisIndexer(registry)
 
+<<<<<<< HEAD
 class VisIndexerState(IndexerState):
     # Accepts handoff of uuids from primary indexer. Keeps track of uuids and vis_indexer state by cycle.
     def __init__(self, es, key):
         super(VisIndexerState, self).__init__(es,key, title='vis')
+=======
+class SecondState(IndexerState):
+    # Accepts handoff of uuids from primary indexer. Keeps track of uuids and secondary_indexer state by cycle.
+    def __init__(self, es, index):
+        super(SecondState, self).__init__(es, index, title='secondary')
+>>>>>>> es5/future-master
         self.viscached_set      = self.title + '_viscached'
         self.success_set        = self.viscached_set
         self.cleanup_last_cycle.append(self.viscached_set)  # Clean up at beginning of next cycle
@@ -179,7 +185,11 @@ def index_vis(request):
     indexer = request.registry['vis'+INDEXER]
 
     # keeping track of state
+<<<<<<< HEAD
     state = VisIndexerState(es,INDEX)
+=======
+    state = SecondState(es, INDEX)
+>>>>>>> es5/future-master
 
     last_xmin = None
     result = state.get_initial_state()
@@ -251,9 +261,9 @@ class VisIndexer(Indexer):
         last_exc = None
         # First get the object currently in es
         try:
-            result = self.es.get(index=self.index, id=str(uuid))  # No reason to restrict by version and that could interfere with reindex all signal.
+            result = self.esstorage.get_by_uuid(uuid)  # No reason to restrict by version and that could interfere with reindex all signal.
             #result = self.es.get(index=self.index, id=str(uuid), version=xmin, version_type='external_gte')
-            doc = result['_source']
+            doc = result.source
         except StatementError:
             # Can't reconnect until invalid transaction is rolled back
             raise
@@ -269,7 +279,9 @@ class VisIndexer(Indexer):
                 if len(result):
                     # Warning: potentiallly slow uuid-level accounting, but single process so no concurency issue
                     self.state.viscached_uuid(uuid)
-            except:
+            except Exception as e:
+                log.error('Error indexing %s', uuid, exc_info=True)
+                #last_exc = repr(e)
                 pass  # It's only a vis_blob.
 
         if last_exc is not None:

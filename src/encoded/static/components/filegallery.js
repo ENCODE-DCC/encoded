@@ -1301,7 +1301,7 @@ export function assembleGraph(files, dataset, options) {
         if (fileAnalysisStep) {
             // Make an ID and label for the step
             stepId = `step:${derivedFileIds(file) + fileAnalysisStep['@id']}`;
-            label = fileAnalysisStep.analysis_step_types;
+            label = (fileAnalysisStep.analysis_step_types && fileAnalysisStep.analysis_step_types).length ? fileAnalysisStep.analysis_step_types : [];
             pipelineInfo = allPipelines[fileAnalysisStep['@id']];
             error = false;
         } else if (derivedFileIds(file)) {
@@ -1931,7 +1931,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                         </div>
                     : null}
 
-                    {selectedFile.analysis_step_version ?
+                    {selectedFile.analysis_step_version && selectedFile.analysis_step_version.software_versions && selectedFile.analysis_step_version.software_versions.length ?
                         <div data-test="software">
                             <dt>Software</dt>
                             <dd>{softwareVersionList(selectedFile.analysis_step_version.software_versions)}</dd>

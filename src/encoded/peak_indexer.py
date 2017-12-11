@@ -66,8 +66,7 @@ def get_mapping(assembly_name='hg19'):
             },
             'properties': {
                 'uuid': {
-                    'type': 'string',
-                    'index': 'not_analyzed'
+                    'type': 'keyword',
                 },
                 'positions': {
                     'type': 'nested',
@@ -88,7 +87,8 @@ def get_mapping(assembly_name='hg19'):
 def index_settings():
     return {
         'index': {
-            'number_of_shards': 1
+            'number_of_shards': 1,
+            'max_result_window': 99999,
         }
     }
 
@@ -116,7 +116,6 @@ def index_peaks(uuid, request):
     Indexes bed files in elasticsearch index
     """
     context = request.embed('/', str(uuid), '@@object')
-
     if 'assembly' not in context:
         return
 
@@ -233,7 +232,6 @@ def index_file(request):
         'xmin': xmin,
         'last_xmin': last_xmin,
     }
-
     if last_xmin is None:
         result['types'] = request.json.get('types', None)
         invalidated = list(all_uuids(registry))
@@ -261,25 +259,28 @@ def index_file(request):
         if txn_count == 0:
             return result
 
-        es.indices.refresh(index=INDEX)
-        res = es.search(index=INDEX, size=SEARCH_MAX, body={
-            'filter': {
-                'or': [
-                    {
-                        'terms': {
-                            'embedded_uuids': updated,
-                            '_cache': False,
+        es.indices.refresh(index='_all')
+        res = es.search(index='_all', size=SEARCH_MAX, body={
+            'query': {
+                'bool': {
+                    'should': [
+                        {
+                            'terms': {
+                                'embedded_uuids': updated,
+                                '_cache': False,
+                            },
                         },
-                    },
-                    {
-                        'terms': {
-                            'linked_uuids': renamed,
-                            '_cache': False,
+                        {
+                            'terms': {
+                                'linked_uuids': renamed,
+                                '_cache': False,
+                            },
                         },
-                    },
-                ],
+                    ],
+                }
             },
             '_source': False,
+            
         })
         if res['hits']['total'] > SEARCH_MAX:
             invalidated = list(all_uuids(request.registry))
@@ -299,7 +300,7 @@ def index_file(request):
     if not dry_run:
         err = None
         uuid_current = None
-        th_indexer_run = False
+        print('length of invalidated {}'.format(len(invalidated)))
         invalidated_files = list(set(invalidated).intersection(set(all_bed_file_uuids(request))))
         try:
             files_indexed = 0
