@@ -889,7 +889,7 @@ class Facet extends React.Component {
             if (term.key) {
                 // See if the facet term also exists in the search result filters (i.e. the term
                 // exists in the URL query string).
-                const found = filters.some(filter => filter.term === term.key);
+                const found = filters.some(filter => filter.field === facet.field && filter.term === term.key);
 
                 // If the term wasn't in the filters list, allow its display only if it has a non-
                 // zero doc_count. If the term *does* exist in the filters list, display it
