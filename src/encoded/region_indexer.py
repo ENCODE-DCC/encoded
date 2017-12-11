@@ -48,7 +48,7 @@ SUPPORTED_ASSEMBLIES = ['hg19', 'mm10', 'mm9', 'GRCh38']
 
 ENCODED_ALLOWED_FILE_FORMATS = ['bed']
 ENCODED_ALLOWED_STATUSES = ['released']
-RESIDENT_DATASETS_KEY = 'resident_datasets'  # in regions_es, keeps track of what datsets are resident in one place
+RESIDENT_REGIONSET_KEY = 'resident_regionsets'  # in regions_es, keeps track of what datsets are resident in one place
 
 ENCODED_REGION_REQUIREMENTS = {
     'ChIP-seq': {
@@ -342,7 +342,7 @@ def regionindexer_state_show(request):
     display = state.display()
 
     try:
-        count = regions_es.count(index=RESIDENT_DATASETS_KEY, doc_type='default').get('count',0)
+        count = regions_es.count(index=RESIDENT_REGIONSET_KEY, doc_type='default').get('count',0)
         if count:
             display['files in index'] = count
     except:
@@ -481,7 +481,7 @@ class RegionIndexer(Indexer):
         self.encoded_es    = registry[ELASTIC_SEARCH]    # yes this is self.es but we want clarity
         self.encoded_INDEX = registry.settings['snovault.elasticsearch.index']  # yes this is self.index, but clarity
         self.regions_es    = registry[SNP_SEARCH_ES]
-        self.residents_index = RESIDENT_DATASETS_KEY
+        self.residents_index = RESIDENT_REGIONSET_KEY
         self.state = RegionIndexerState(self.encoded_es,self.encoded_INDEX)  # WARNING, race condition is avoided because there is only one worker
         self.test_instance = registry.settings.get('testing',False)
 

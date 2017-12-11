@@ -50,7 +50,7 @@ The *indexer listener* reports certain current and historical values from an *in
     :types: On small indexing cycle, may contain '\@type's of changed objects in Postgres.
     :stats: This contains the raw stats from the response header for this indexer call.
 
-The followup indexers my report a slightly different set of values as not all values will be relevant to each of the indexers.
+The followup indexers may report a slightly different set of values as not all values will be relevant to each of the indexers.
 
 ------------------
 _indexer_state API
@@ -60,11 +60,11 @@ In addition to using path /_indexer, a more complete image of an indexer can be 
 
 These views will return the following values with some slight variation between the 3 indexers:
 
-  :title: Either 'primary_indexer', 'vis_indexer' or 'region_indexer'
+  :title: Either 'primary_indexer', 'vis_indexer' or 'region_indexer'.
   :status: The indexer is either 'waiting' between cycles or 'indexing' during a cycle.  It might also be 'uninitialized' when the system is first coming up.
   :docs in index: (primary only) The count of all documents currently in the elasticsearch index.
   :vis_blobs in index: (vis only) The count of all vis objects currently in the elasticsearch index.
-  :files in index: (region only) The count of all vis objects currently in the elasticsearch region index.
+  :files in index: (region only) The count of all regionable file objects currently in the elasticsearch region index.
   :uuids in progress: The count of uuids currently being indexed.
   :uuids last cycle: The number of uuids in the previous cycle.
   :uuids troubled: The number of uuids that failed to index during the last cycle.
@@ -72,31 +72,31 @@ These views will return the following values with some slight variation between 
   :registered indexers: (primary only) List of indexers that have started.
   :staged by primary: (vis and region) Count of uuids that have been staged specifically for this indexer.
   :staged to process: (vis and region) Count of uuids set up for processing by this indexer.
-  :files added: (region only) Count of files added to the region indexer in the most recent cycle
-  :files dropped: (region only) Count of files dropped from the region indexer in the most recent cycle
+  :files added: (region only) Count of files added to the region indexer in the most recent cycle.
+  :files dropped: (region only) Count of files dropped from the region indexer in the most recent cycle.
   :now: The UTC time this view was displayed.  Useful for comparing to other times found here.
   :listener: The contents of an ``/_indexer`` request.  (Or ``/visindexer``, ``/_regionindexer`` as appropriate.)  *Described above*.
   :REINDEX requested: If reindexing was requested this will contain 'all' or a list of uuids.
-  :NOTIFY requested: If notify was requested, this will include who to notify and in which circumstances.
+  :NOTIFY requested: If notify was requested, this will include who will be notified and in which circumstances.
   :state: The contents of the indexer's state object held in elasticsearch...
 
     :title: Either 'primary_indexer', 'vis_indexer' or 'region_indexer'
-    :status: The indexer is either 'waiting' between cycles or 'indexing' during a cycle.
+    :status: The indexer is either 'done' with a cycle or 'indexing' during a cycle.
     :cycles: Count of indexer cycles that actually indexed something. This number should reflect all cycles since the system was initialized or since a full reindexing was requested.
-    :cycle_count: When indexing, the number of uuids in the cuuent cycle.
+    :cycle_count: When indexing, the number of uuids in the current cycle.
     :cycle_took: How long it took to complete the most recent indexer cycle.
     :cycle_started: When the most recent indexing cycle started.
     :indexed: Number of objects indexed in the most recent cycle.
+    :vis_updated: (vis indexer only) Number of uuids that actually resulted in a vis_blob added to index.
+    :invalidated: (primary only) Number of uuids needing to be indexed.
+    :renamed: (primary only) uuids of objects renamed in postgres.
+    :updated: (primary only) uuids of objects updated in postgres.
+    :referencing: (primary only) Count of uuids referenced by objects updated or renamed in postgres.
+    :txn_count: (primary only) Number of postgres transactions this cycle covers.
     :xmin: (primary and vis) Postgres transaction id of this cycle.
     :last_xmin: (primary and vis) Postgres transaction id of last cycle.  Indexing should have covered all objects changed between last_xmin and xmin.
     :max_xid: (primary and vis) This is a Postgres transaction id which should rise with each database change.  It is used to ensure a consistent view of data during an indexing cycle.
-    :invalidated: (primary only) Number of uuids invalidated.
-    :renamed: (primary only) uuids of renamed objects
-    :updated: (primary only) uuids of updated objects
-    :first_txn_timestamp: (primary only) Timestamp of when the postgres tranaction occurred which led to this indeing cycle.
-    :txn_count: (primary only) Number of postgres transactions this cycle covers.
-    :referencing: (primary only) Count of uuids referenced updated objects.
-    :vis_updated: (vis indexer only) Number of uuids that actually resulted in a vis_blob to index.
+    :first_txn_timestamp: (primary only) Timestamp of when the postgres tranaction occurred which led to this indexing cycle.
 
 Several requests can be made of the state paths with use of ?request=value appended to the url:
 
@@ -106,4 +106,4 @@ Several requests can be made of the state paths with use of ?request=value appen
     :bot_token: For the time being this is required for slack notification to work.
     :which: Use 'all' when combined with notify to be notified when all indexers have completed.
 
-A note about reindexing the region indexer.  Since files are not expected to change contents they are not generally *readded* to the index, it is useful to be able to force one or more files into the regions index.  By requesting reindex=all or reindex={uuids} directly to ``/_regionindexer_state`` the qualified files will be *(re)added*.  It should be understood that the uuid expected is for tne dataset that contains the file, not the file itself.  It should also be clear that primary indexer reindexing will trigger (followup) region indexer reinexing.  However files already in the index will *not be readded* as a result.
+A note about reindexing the region indexer.  Since files are not expected to change contents they are not generally *re-added* to the index, it is useful to be able to force one or more files into the regions index.  By requesting reindex=all or reindex={uuids} directly to ``/_regionindexer_state`` the qualified files *will be* (re)added.  It should be understood that the uuid expected is *for the dataset* that contains the file, not the file itself.  It should also be noted that a primary indexer reindex request will trigger the (followup) region indexer to reindex, but this will not force re-add files.
