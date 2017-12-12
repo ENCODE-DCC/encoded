@@ -254,7 +254,8 @@ def test_antibody_characterization_upgrade_not_compliant_status(upgrader, antibo
 def test_biosample_characterization_upgrade_references(root, upgrader, biosample_characterization, biosample_characterization_4, publication, threadlocals, dummy_request):
     context = root.get_by_uuid(biosample_characterization['uuid'])
     dummy_request.context = context
-    value = upgrader.upgrade('biosample_characterization', biosample_characterization_4, target_version='5', context=context)
+    value = upgrader.upgrade('biosample_characterization', biosample_characterization_4,
+                             target_version='5', context=context)
     assert value['schema_version'] == '5'
     assert value['references'] == [publication['uuid']]
 
@@ -282,7 +283,8 @@ def test_antibody_characterization_upgrade_inline(testapp, registry, antibody_ch
 
 
 def test_antibody_characterization_comment_to_submitter_comment_upgrade(upgrader, antibody_characterization_10, antibody_characterization):
-    value = upgrader.upgrade('antibody_characterization', antibody_characterization_10, current_version='10', target_version='11')
+    value = upgrader.upgrade('antibody_characterization', antibody_characterization_10,
+                             current_version='10', target_version='11')
     assert value['schema_version'] == '11'
     assert 'comment' not in value
     assert value['submitter_comment'] == 'We tried really hard to characterize this antibody.'
