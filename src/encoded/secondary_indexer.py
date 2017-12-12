@@ -44,17 +44,10 @@ def includeme(config):
     registry = config.registry
     registry['vis'+INDEXER] = VisIndexer(registry)
 
-<<<<<<< HEAD
 class VisIndexerState(IndexerState):
-    # Accepts handoff of uuids from primary indexer. Keeps track of uuids and vis_indexer state by cycle.
-    def __init__(self, es, key):
-        super(VisIndexerState, self).__init__(es,key, title='vis')
-=======
-class SecondState(IndexerState):
     # Accepts handoff of uuids from primary indexer. Keeps track of uuids and secondary_indexer state by cycle.
     def __init__(self, es, index):
-        super(SecondState, self).__init__(es, index, title='secondary')
->>>>>>> es5/future-master
+        super(VisIndexerState, self).__init__(es, index, title='vis')
         self.viscached_set      = self.title + '_viscached'
         self.success_set        = self.viscached_set
         self.cleanup_last_cycle.append(self.viscached_set)  # Clean up at beginning of next cycle
@@ -185,11 +178,7 @@ def index_vis(request):
     indexer = request.registry['vis'+INDEXER]
 
     # keeping track of state
-<<<<<<< HEAD
-    state = VisIndexerState(es,INDEX)
-=======
-    state = SecondState(es, INDEX)
->>>>>>> es5/future-master
+    state = VisIndexerState(es, INDEX)
 
     last_xmin = None
     result = state.get_initial_state()
