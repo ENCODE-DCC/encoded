@@ -25,7 +25,6 @@ ORDER = [
     'antibody_approval',
     'treatment',
     'construct',
-    'construct_characterization',
     'talen',
     'genetic_modification',
     'genetic_modification_characterization',
