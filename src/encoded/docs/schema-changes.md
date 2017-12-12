@@ -103,10 +103,12 @@ Refer to [object-lifecycle.rst] to understand object rendering. Example of basic
 
                 embedded = ['target']
 
-    * *Reverse links* - specifying the links that are back calculated from an object that ```linkTo``` this object, for construct we have:
-    
+    * *Reverse links* - specifying the links that are back calculated from an object that ```linkTo``` this object, for file we have:
+
                 rev = {
-                    'characterizations': ('construct_characterization', 'characterizes'),
+                    'paired_with': ('File', 'paired_with'),
+                    'quality_metrics': ('QualityMetric', 'quality_metric_of'),
+                    'superseded_by': ('File', 'supersedes'),
                 }
 
     * *Calculated properties* - dynamically calculated before rendering of an object, for platforms we calculate the title:
