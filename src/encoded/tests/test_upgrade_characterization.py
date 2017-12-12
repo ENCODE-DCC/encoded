@@ -115,13 +115,6 @@ def test_biosample_characterization_upgrade(upgrader, biosample_characterization
     assert value['characterization_method'] == 'FACs analysis'
 
 
-def test_construct_characterization_upgrade(upgrader, construct_characterization_1):
-    value = upgrader.upgrade('construct_characterization', construct_characterization_1, target_version='3')
-    assert value['schema_version'] == '3'
-    assert value['status'] == 'NOT SUBMITTED FOR REVIEW BY LAB'
-    assert value['characterization_method'] == 'immunoblot'
-
-
 def test_antibody_characterization_upgrade_status(upgrader, antibody_characterization_2):
     value = upgrader.upgrade('antibody_characterization', antibody_characterization_2, target_version='4')
     assert value['schema_version'] == '4'
@@ -132,12 +125,6 @@ def test_biosample_characterization_upgrade_status_encode2(upgrader, biosample_c
     value = upgrader.upgrade('biosample_characterization', biosample_characterization_2, target_version='4')
     assert value['schema_version'] == '4'
     assert value['status'] == 'released'
-
-
-def test_construct_characterization_upgrade_status_deleted(upgrader, construct_characterization_2):
-    value = upgrader.upgrade('construct_characterization', construct_characterization_2, target_version='4')
-    assert value['schema_version'] == '4'
-    assert value['status'] == 'deleted'
 
 
 def test_antibody_characterization_upgrade_primary(upgrader, antibody_characterization_3):
