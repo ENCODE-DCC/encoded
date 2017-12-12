@@ -25,15 +25,6 @@ def biosample_characterization_base(submitter, award, lab, biosample):
 
 
 @pytest.fixture
-def construct_characterization(submitter, award, lab, construct):
-    return {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'characterizes': construct['uuid'],
-    }
-
-
-@pytest.fixture
 def antibody_characterization_1(antibody_characterization):
     item = antibody_characterization.copy()
     item.update({
@@ -67,33 +58,11 @@ def biosample_characterization_1(biosample_characterization_base):
 
 
 @pytest.fixture
-def construct_characterization_1(construct_characterization):
-    item = construct_characterization.copy()
-    item.update({
-        'schema_version': '1',
-        'status': 'FAILED',
-        'characterization_method': 'western blot',
-    })
-    return item
-
-
-@pytest.fixture
 def biosample_characterization_2(biosample_characterization_base):
     item = biosample_characterization_base.copy()
     item.update({
         'schema_version': '3',
         'status': 'IN PROGRESS',
-        'award': '1a4d6443-8e29-4b4a-99dd-f93e72d42418'
-    })
-    return item
-
-
-@pytest.fixture
-def construct_characterization_2(construct_characterization):
-    item = construct_characterization.copy()
-    item.update({
-        'schema_version': '2',
-        'status': 'DELETED',
         'award': '1a4d6443-8e29-4b4a-99dd-f93e72d42418'
     })
     return item
