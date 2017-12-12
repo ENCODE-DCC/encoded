@@ -25,15 +25,6 @@ def biosample_characterization_base(submitter, award, lab, biosample):
 
 
 @pytest.fixture
-def rnai_characterization(submitter, award, lab, rnai):
-    return {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'characterizes': rnai['uuid'],
-    }
-
-
-@pytest.fixture
 def construct_characterization(submitter, award, lab, construct):
     return {
         'award': award['uuid'],
@@ -76,17 +67,6 @@ def biosample_characterization_1(biosample_characterization_base):
 
 
 @pytest.fixture
-def rnai_characterization_1(rnai_characterization):
-    item = rnai_characterization.copy()
-    item.update({
-        'schema_version': '2',
-        'status': 'INCOMPLETE',
-        'characterization_method': 'knockdowns',
-    })
-    return item
-
-
-@pytest.fixture
 def construct_characterization_1(construct_characterization):
     item = construct_characterization.copy()
     item.update({
@@ -104,17 +84,6 @@ def biosample_characterization_2(biosample_characterization_base):
         'schema_version': '3',
         'status': 'IN PROGRESS',
         'award': '1a4d6443-8e29-4b4a-99dd-f93e72d42418'
-    })
-    return item
-
-
-@pytest.fixture
-def rnai_characterization_2(rnai_characterization):
-    item = rnai_characterization.copy()
-    item.update({
-        'schema_version': '3',
-        'status': 'IN PROGRESS',
-        'award': 'ea1f650d-43d3-41f0-a96a-f8a2463d332f'
     })
     return item
 
