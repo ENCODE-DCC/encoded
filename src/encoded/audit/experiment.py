@@ -3359,7 +3359,6 @@ function_dispatcher_without_files = {
     'audit_replication': audit_experiment_replicated,
     'audit_RNA_size': audit_library_RNA_size_range,
     'audit_missing_modifiction': audit_missing_modification,
-    'audit_NTR': audit_experiment_assay,
     'audit_AB_characterization': audit_experiment_antibody_characterized,
     'audit_control': audit_experiment_control,
     'audit_spikeins': audit_experiment_spikeins
