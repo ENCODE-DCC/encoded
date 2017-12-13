@@ -101,21 +101,7 @@ class Construct(Item):
     item_type = 'construct'
     schema = load_schema('encoded:schemas/construct.json')
     # XXX 'vector_name' as key?
-    rev = {
-        'characterizations': ('ConstructCharacterization', 'characterizes'),
-    }
     embedded = ['target']
-
-    @calculated_property(schema={
-        "title": "Characterizations",
-        "type": "array",
-        "items": {
-            "type": "string",
-            "linkTo": "ConstructCharacterization",
-        },
-    })
-    def characterizations(self, request, characterizations):
-        return paths_filtered_by_status(request, characterizations)
 
 
 @collection(
@@ -248,20 +234,6 @@ class RNAi(Item):
     item_type = 'rnai'
     schema = load_schema('encoded:schemas/rnai.json')
     embedded = ['source', 'documents', 'target']
-    rev = {
-        'characterizations': ('RNAiCharacterization', 'characterizes'),
-    }
-
-    @calculated_property(schema={
-        "title": "Characterizations",
-        "type": "array",
-        "items": {
-            "type": "string",
-            "linkTo": "RNAiCharacterization",
-        },
-    })
-    def characterizations(self, request, characterizations):
-        return paths_filtered_by_status(request, characterizations)
 
 
 @collection(
