@@ -2158,24 +2158,6 @@ def audit_experiment_documents(value, system, excluded_types):
     return
 
 
-def audit_experiment_assay(value, system, excluded_types):
-    '''
-    Experiments should have assays with valid ontologies term ids and names that
-    are a valid synonym.
-    '''
-    if value['status'] == 'deleted':
-        return
-
-    term_id = value.get('assay_term_id')
-    term_name = value.get('assay_term_name')
-
-    if term_id.startswith('NTR:'):
-        detail = 'Assay_term_id is a New Term Request ({} - {})'.format(
-            term_id, term_name)
-        yield AuditFailure('NTR assay', detail, level='INTERNAL_ACTION')
-    return
-
-
 def audit_experiment_target(value, system, excluded_types):
     '''
     Certain assay types (ChIP-seq, ...) require valid targets and the replicate's
