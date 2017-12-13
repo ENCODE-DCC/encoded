@@ -115,9 +115,6 @@ class TALEN(Item):
     item_type = 'talen'
     schema = load_schema('encoded:schemas/talen.json')
     name_key = 'name'
-    rev = {
-        'characterizations': ('ConstructCharacterization', 'characterizes'),
-    }
     embedded = [
         'lab',
         'submitted_by',
@@ -126,17 +123,6 @@ class TALEN(Item):
         'documents.lab',
         'documents.submitted_by'
     ]
-
-    @calculated_property(schema={
-        "title": "Characterizations",
-        "type": "array",
-        "items": {
-            "type": "string",
-            "linkTo": "ConstructCharacterization",
-        },
-    })
-    def characterizations(self, request, characterizations):
-        return paths_filtered_by_status(request, characterizations)
 
 
 @collection(
