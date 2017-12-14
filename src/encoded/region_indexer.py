@@ -138,48 +138,19 @@ def gather_uuids(hits):
 
 def encoded_regionable_datasets(request, restrict_to_assays=[]):
     '''return list of all dataset uuids eligible for regions'''
-    # reverse engineered search.py to get this boiled down version.
-    #{
-    #"filter":
-    #    {
-    #    "and":
-    #        {
-    #        "filters":
-    #            [
-    #            {"terms": {"principals_allowed.view": ["system.Everyone"]}},
-    #            {"terms": {"embedded.@type.raw": ["Experiment"]}},
-    #            {"terms": {"embedded.assay_title.raw": ["ChIP-seq", "DNase-seq","eCLIP"]}}
-    #            ]
-    #        }
-    #    },
-    #"query": {"match_all": {}},
-    #"_source": ["uuid"]
-    #}
-    #curl -XGET http://localhost:9200/snovault/_search?size=1000 -H 'Content-Type: application/json' -d'{"filter": {"and": {"filters": [ {"terms": {"principals_allowed.view": ["system.Everyone"]}}, {"terms": {"embedded.@type.raw": ["Experiment"]}}, {"terms": {"embedded.assay_title.raw": ["ChIP-seq", "total RNA-seq"]}}]}},"query": {"match_all": {}},"_source": ["uuid"]}'
 
     encoded_es = request.registry[ELASTIC_SEARCH]
     encoded_INDEX = request.registry.settings['snovault.elasticsearch.index']
 
-    # basics... only want uuids
-    query = {'filter': {'and': {'filters': [ {'terms': {'principals_allowed.view': ['system.Everyone']}}]}},'query': {'match_all': {}},'_source': ['uuid']}
-    # Only experiments
-    term = {'terms': {'embedded.@type.raw': ['Experiment']}}
-    query['filter']['and']['filters'].append(term)
-    # Only released experiments
-    term = {'terms':{'embedded.status.raw': ['released']}}
-    query['filter']['and']['filters'].append(term)
-    # restrict to certain assays
-    if len(restrict_to_assays) > 0:
-        term = {'terms':{'embedded.assay_title.raw': restrict_to_assays}}
-        query['filter']['and']['filters'].append(term)
-    #log.war(query)  # make sure your query is what you think it is
-    #es_results = encoded_es.search(body=query, index=encoded_INDEX, search_type='count')
-    #if es_results['hits']['total'] <= 0:
-    #    log.warn('encoded_regionable_datasets returned 0 uuids from encoded_es')
-    #    return []
-    hits = scan(encoded_es, query=query, index=encoded_INDEX, preserve_order=False)
-    uuids = gather_uuids(hits)
-    return list(uuids)  # Ensures all get returned from generator
+    # basics... only want uuids of experiments that are released
+    query = '/search/?type=Experiment&field=uuid&status=released'
+    # Restrict to just these assays
+    for assay in restrict_to_assays:
+        query += '&assay_title=' + assay
+    results = request.embed(query)['@graph']
+    uuids = [ result['uuid'] for result in results ]
+
+    return uuids
 
 
 class RegionIndexerState(IndexerState):
@@ -498,7 +469,8 @@ class RegionIndexer(Indexer):
         if dataset_uuid.rfind('.') == -1:
 
             try:
-                dataset = self.encoded_es.get(index=self.encoded_INDEX, id=str(dataset_uuid)).get('_source',{}).get('embedded')
+                dataset = self.encoded_es.get(index='experiment', doc_type='experiment',
+                                              id=str(dataset_uuid)).get('_source',{}).get('embedded')
             except:
                 log.warn("dataset is not found for uuid: %s",dataset_uuid)
                 # Not an error if it wasn't found.
@@ -682,7 +654,7 @@ class RegionIndexer(Indexer):
             self.regions_es.indices.create(index=self.residents_index, body=index_settings())
 
         if not self.regions_es.indices.exists_type(index=self.residents_index, doc_type='default'):
-            mapping = {'default': {"_all":    {"enabled": False},"_source": {"enabled": True},}}
+            mapping = {'default': {"enabled": False}}
             self.regions_es.indices.put_mapping(index=self.residents_index, doc_type='default', body=mapping)
 
         self.regions_es.index(index=self.residents_index, doc_type='default', body=doc, id=str(id))
