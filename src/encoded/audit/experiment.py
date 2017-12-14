@@ -485,7 +485,7 @@ def check_experiment_dnase_seq_standards(experiment,
                                      metric['mapped']) + \
                                  'mapped reads. ' + suffix
                     if 20000000 <= metric['mapped'] < 50000000:
-                        yield AuditFailure('insufficient read depth', detail, level='WARNING')
+                        yield AuditFailure('low read depth', detail, level='WARNING')
                     elif metric['mapped'] < 20000000:
                         yield AuditFailure('extremely low read depth', detail, level='ERROR')
         elif alignment_files is not None and len(alignment_files) > 0 and \
