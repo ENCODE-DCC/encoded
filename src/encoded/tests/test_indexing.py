@@ -138,7 +138,7 @@ def test_indexing_simple(testapp, indexer_testapp):
 
 
 def test_indexer_vis_state(dummy_request):
-    from encoded.secondary_indexer import VisIndexerState
+    from encoded.vis_indexer import VisIndexerState
     INDEX = dummy_request.registry.settings['snovault.elasticsearch.index']
     es = dummy_request.registry['elasticsearch']
     state = VisIndexerState(es,INDEX)

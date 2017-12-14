@@ -45,7 +45,7 @@ def includeme(config):
     registry['vis'+INDEXER] = VisIndexer(registry)
 
 class VisIndexerState(IndexerState):
-    # Accepts handoff of uuids from primary indexer. Keeps track of uuids and secondary_indexer state by cycle.
+    # Accepts handoff of uuids from primary indexer. Keeps track of uuids and vis_indexer state by cycle.
     def __init__(self, es, index):
         super(VisIndexerState, self).__init__(es, index, title='vis')
         self.viscached_set      = self.title + '_viscached'

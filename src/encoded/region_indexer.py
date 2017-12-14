@@ -154,7 +154,7 @@ def encoded_regionable_datasets(request, restrict_to_assays=[]):
 
 
 class RegionIndexerState(IndexerState):
-    # Accepts handoff of uuids from primary indexer. Keeps track of uuids and secondary_indexer state by cycle.
+    # Accepts handoff of uuids from primary indexer. Keeps track of uuids and region_indexer state by cycle.
     def __init__(self, es, key):
         super(RegionIndexerState, self).__init__(es,key, title='region')
         self.files_added_set    = self.title + '_files_added'
@@ -192,7 +192,7 @@ class RegionIndexerState(IndexerState):
             state = self.get()
             state['status'] = 'uninitialized'
             self.put(state)
-            return ("uninitialized", [])  # primary indexer will know what to do and secondary indexer should do nothing yet
+            return ("uninitialized", [])  # primary indexer will know what to do and region indexer should do nothing yet
 
         # Is a full indexing underway
         primary_state = self.get_obj("primary_indexer")
