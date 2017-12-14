@@ -1257,7 +1257,7 @@ def check_wgbs_coverage(samtools_metrics,
             elif organism == 'human':
                 coverage = float(mapped_reads * read_length) / 3300000000.0
             detail = 'Replicate of experiment processed by {} ({}) '
-                     'has a coverage of {}. '
+                     'has a coverage of {}X. '
                      'The minimum ENCODE standard for each replicate in '
                      'a WGBS assay is 30X. (See /data-standards/wgbs/ )'
                      ''.format(
