@@ -1251,39 +1251,31 @@ def check_wgbs_coverage(samtools_metrics,
                         pipeline_objects):
     for m in samtools_metrics:
         if 'mapped' in m:
-            bio_rep_num = False
-            for f in m['quality_metric_of']:
-                if 'replicate' in f and \
-                   'biological_replicate_number' in f['replicate']:
-                    bio_rep_num = f['replicate']['biological_replicate_number']
-                    break
             mapped_reads = m['mapped']
             if organism == 'mouse':
                 coverage = float(mapped_reads * read_length) / 2800000000.0
             elif organism == 'human':
                 coverage = float(mapped_reads * read_length) / 3300000000.0
-
-            if coverage < 30:
-                if bio_rep_num is not False:
-                    detail = 'Biological replicate {} '.format(bio_rep_num) + \
-                             'of experiment processed by {} '.format(pipeline_title) + \
-                             '( {} ) '.format(pipeline_objects[0]['@id']) + \
-                             'has a coverage of {}. '.format(int(coverage)) + \
-                             'The minimum ENCODE standard for each replicate in ' + \
-                             'a WGBS assay is 30X. (See /data-standards/wgbs/ )'
-                    yield AuditFailure('insufficient coverage',
+            detail = 'Replicate of experiment processed by {} ({}) '
+                     'has a coverage of {}. '
+                     'The minimum ENCODE standard for each replicate in '
+                     'a WGBS assay is 30X. (See /data-standards/wgbs/ )'
+                     ''.format(
+                         pipeline_title,
+                         pipeline_objects[0]['@id'],
+                         int(coverage))
+            if coverage < 5:
+                yield AuditFailure('extremely low coverage',
+                                       detail,
+                                       level='ERROR')
+            elif coverage <25:
+                yield AuditFailure('insufficient coverage',
                                        detail,
                                        level='NOT_COMPLIANT')
-                else:
-                    detail = 'Replicate ' + \
-                             'of experiment processed by {} '.format(pipeline_title) + \
-                             '( {} ) '.format(pipeline_objects[0]['@id']) + \
-                             'has a coverage of {}. '.format(int(coverage)) + \
-                             'The minimum ENCODE standard for each replicate in ' + \
-                             'a WGBS assay is 30X. (See /data-standards/wgbs/ )'
-                    yield AuditFailure('insufficient coverage',
+            elif coverage < 30:
+                yield AuditFailure('low coverage',
                                        detail,
-                                       level='INTERNAL_ACTION')
+                                       level='WARNING')
     return
 
 
