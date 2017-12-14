@@ -2186,7 +2186,7 @@ def test_audit_experiment_dnase_low_read_length(testapp,
                                                 'assay_term_name': 'DNase-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] ==
-               'insufficient read length' for error in collect_audit_errors(res))
+               'low read length' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_dnase_low_correlation(testapp,
