@@ -38,8 +38,6 @@ brew link --force postgresql@9.3
 brew install --force node@6
 brew link node@6 --force
 brew cask install java8
-brew tap garrow/homebrew-elasticsearch17
-brew install elasticsearch@1.7
 brew install elasticsearch@5.6
 pip3 install typing
 ```
