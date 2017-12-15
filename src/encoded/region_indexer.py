@@ -34,13 +34,14 @@ log = logging.getLogger(__name__)
 
 
 # Region indexer 2.0
-# Plan:
+# What it does:
 # 1) get list of uuids of primary indexer and filter down to datasets covered
 # 2) walk through uuid list querying encoded for each doc[embedded]
 #    3) Walk through embedded files
 #       4) If file passes required tests (e.g. bed, released, DNase narrowpeak) AND not in regions_es, put in regions_es
 #       5) If file does not pass tests                                          AND     IN regions_es, remove from regions_es
 # TODO:
+# *) Build similar path for regulome files
 # - regulomeDb versions of ENCODED_ALLOWED_FILE_FORMATS, ENCODED_ALLOWED_STATUSES, add_encoded_to_regions_es()
 
 # Species and references being indexed
@@ -124,16 +125,9 @@ def index_settings():
     }
 
 
-def all_regionable_dataset_uuids(registry):
-    return list(all_uuids(registry, types=["experiment"]))
-
-
-def gather_uuids(hits):
-    """
-    Since es returns a genorator from scan(), use this to boil it down to uuids
-    """
-    for hit in hits:
-        yield hit['_id']
+#def all_regionable_dataset_uuids(registry):
+#    # NOTE: this old method needs postgres.  Avoid using postgres
+#    return list(all_uuids(registry, types=["experiment"]))
 
 
 def encoded_regionable_datasets(request, restrict_to_assays=[]):
@@ -143,14 +137,12 @@ def encoded_regionable_datasets(request, restrict_to_assays=[]):
     encoded_INDEX = request.registry.settings['snovault.elasticsearch.index']
 
     # basics... only want uuids of experiments that are released
-    query = '/search/?type=Experiment&field=uuid&status=released'
+    query = '/search/?type=Experiment&field=uuid&status=released&limit=all'
     # Restrict to just these assays
     for assay in restrict_to_assays:
         query += '&assay_title=' + assay
     results = request.embed(query)['@graph']
-    uuids = [ result['uuid'] for result in results ]
-
-    return uuids
+    return [ result['uuid'] for result in results ]
 
 
 class RegionIndexerState(IndexerState):
@@ -174,13 +166,7 @@ class RegionIndexerState(IndexerState):
     def all_indexable_uuids(self, request):
         '''returns list of uuids pertinant to this indexer.'''
         assays = list(ENCODED_REGION_REQUIREMENTS.keys())
-        uuids = []
-        try:
-            uuids = encoded_regionable_datasets(request, assays)  # Uses elasticsearch query
-        except:
-            # TODO: mention error?
-            uuids = list(all_regionable_dataset_uuids(request.registry))  #### This requires postgres!!!
-        return uuids
+        return encoded_regionable_datasets(request, assays)  # Uses elasticsearch query
 
     def priority_cycle(self, request):
         '''Initial startup, reindex, or interupted prior cycle can all lead to a priority cycle.
@@ -432,13 +418,13 @@ def index_regions(request):
 
     uuid_count = len(uuids)
     if uuid_count > 0 and not dry_run:
-        log.warn("Region indexer started on %d uuid(s)" % uuid_count) # TODO: DEBUG set back to info when done
+        log.info("Region indexer started on %d uuid(s)" % uuid_count)
 
         result = state.start_cycle(uuids, result)
         errors = indexer.update_objects(request, uuids, force)
         result = state.finish_cycle(result, errors)
         if result['indexed'] == 0:
-            log.warn("Region indexer added %d file(s)" % result['indexed'])    # TODO: DEBUG set back to info when done
+            log.info("Region indexer added %d file(s) from %d dataset uuids" % (result['indexed'], uuid_count))
 
         # cycle_took: "2:31:55.543311" reindex all with force (2017-10-16ish)
 
@@ -462,8 +448,6 @@ class RegionIndexer(Indexer):
 
     def update_object(self, request, dataset_uuid, force):
         request.datastore = 'elasticsearch'  # Let's be explicit
-
-        # TODO: if force then drop current index contents?
 
         # Could be uuid OR path to local regulomeDb file
         if dataset_uuid.rfind('.') == -1:
@@ -536,8 +520,8 @@ class RegionIndexer(Indexer):
                     log.info("dropped file_path: %s %s", file_path, using)
                     self.state.file_dropped(file_id)
 
-
         # TODO: gather and return errors
+
 
     def encoded_candidate_file(self, afile, assay_term_name):
         '''returns True if an encoded file should be in regions es'''
@@ -605,21 +589,21 @@ class RegionIndexer(Indexer):
             if not doc:
                 return False
         except:
-            # TODO: add a warning?
-            return False  # Will try next cycle
+            log.error("Region indexer failed to find expected %s in %s" % (id,self.residents_index))
+            return False  # Will try next full cycle
 
         for chrom in doc['chroms']:
             try:
                 self.regions_es.delete(index=chrom, doc_type=doc['assembly'], id=str(uuid))
             except:
-                # TODO: add a warning.
-                return False # Will try next cycle
+                log.error("Region indexer failed to remove %s regions of %s" % (chrom,id))
+                return False # Will try next full cycle
 
         try:
             self.regions_es.delete(index=self.residents_index, doc_type='default', id=str(uuid))
         except:
-            # TODO: add a warning.
-            return False # Will try next cycle
+            log.error("Region indexer failed to remove %s from %s" % (id, self.residents_index))
+            return False # Will try next full cycle
 
         return True
 
@@ -755,7 +739,7 @@ class RegionIndexer(Indexer):
             file = open(file_path, mode='rt')
 
         file_data = {}
-        for row in tsvreader(file):  # TODO: Will this work?
+        for row in tsvreader(file):
             chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
             if isinstance(start, int) and isinstance(end, int):
                 if chrom in file_data:
