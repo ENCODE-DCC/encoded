@@ -1,0 +1,15 @@
+[
+    {
+        "nreads": 29125217,
+        "nreads_in_peaks": 3481409,
+        "npeak_overlap": 27796,
+        "Ft": 0.1195324656293548,
+        "assay_term_name": "ChIP-seq",
+        "quality_metric_of": ["ENCFF001MXB"],
+        "step_run": "63b1b347-f008-4103-8d20-0e12f54d1882",
+        "uuid": "0f0951c2-f306-40e9-ad6c-1ad066e4ad78",
+        "status": "in progress",
+        "lab": "bradley-bernstein",
+        "award": "U54HG006991"
+    }
+]
