@@ -74,6 +74,7 @@ ORDER = [
     'trimming_quality_metric',
     'samtools_stats_quality_metric',
     'idr_quality_metric',
+    'histone_chipseq_quality_metric',
     'generic_quality_metric',
     'image',
     'page'
