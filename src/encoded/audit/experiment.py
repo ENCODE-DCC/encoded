@@ -57,10 +57,9 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
         target_name = value['target']['name']
         target_investigated_as = value['target']['investigated_as']
         if target_name not in ['Control-human', 'Control-mouse']:
-            for alignment_file in files_structure.get('alignments').values():
-                # initially was for file award
-                if not alignment_file.get('award') or \
-                    alignment_file.get('award')['rfa'] not in [
+            for peaks_file in files_structure.get('peaks_files').values():
+                if not peaks_file.get('award') or \
+                    peaks_file.get('award')['rfa'] not in [
                         'ENCODE3',
                         'ENCODE4',
                         'ENCODE2-Mouse',
@@ -68,17 +67,23 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                         'ENCODE',
                         'Roadmap']:
                     continue
-                if alignment_file.get('lab') not in ['/labs/encode-processing-pipeline/']:
+                if peaks_file.get('lab') not in ['/labs/encode-processing-pipeline/']:
                     continue
+                bio_reps = peaks_file.get('biological_replicates')
+                if not bio_reps or len(bio_reps) > 1:
+                    continue
+
+                # we have the peaks file with the corresponding BAM in derived_from (accessions only)
+
                 derived_from_files = list(
-                    get_derived_from_files_set([alignment_file], files_structure, 'fastq', True))
-                if not derived_from_files:
-                    continue
-                control_bam = get_control_bam(
-                    alignment_file,
-                    'ChIP-seq read mapping',
+                    get_derived_from_files_set([peaks_file], files_structure, 'bam', True))
+                # unfortunately we have to pool control bams
+
+                control_bams = get_control_bams(
                     derived_from_files,
+                    'ChIP-seq read mapping',
                     files_structure)
+                
                 if control_bam is not False:
                     control_depth = get_chip_seq_bam_read_depth(control_bam)
                     control_target = get_target_name(derived_from_files)
@@ -2824,7 +2829,14 @@ def get_mapped_length(bam_file, files_structure):
             return length
     return None
 
+def get_control_bams(experiment_peaks, pipeline_name, derived_from_fastqs, files_structure):
 
+    #### HERE WE ARE we need file structure of control
+    control_files_structure = create_files_mapping(control_fastq['dataset'].get('original_files'),
+                                                       files_structure.get('excluded_types'))
+
+
+    
 def get_control_bam(experiment_bam, pipeline_name, derived_from_fastqs, files_structure):
     #  get representative FASTQ file
     if not derived_from_fastqs:
