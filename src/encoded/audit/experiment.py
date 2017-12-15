@@ -78,9 +78,8 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                 derived_from_files = list(
                     get_derived_from_files_set([peaks_file], files_structure, 'bam', True))
                 # unfortunately we have to pool control bams
-
                 control_bams = get_control_bams(
-                    derived_from_files,
+                    [for derived_f in derived_from_files if derived_f.get('dataset') != value.get('@id')],
                     'ChIP-seq read mapping',
                     files_structure)
                 
@@ -2829,8 +2828,11 @@ def get_mapped_length(bam_file, files_structure):
             return length
     return None
 
-def get_control_bams(experiment_peaks, pipeline_name, derived_from_fastqs, files_structure):
+def get_control_bams(bam_files, pipeline_name, files_structure):
 
+    # potentially we can have BAMs from multiple experiments here
+    # I gess there is no point in rushing with this audit
+    # given peak file - you can have derived_from FPEAKS - because they wil apear in the file_structure in contributing_files!!!!
     #### HERE WE ARE we need file structure of control
     control_files_structure = create_files_mapping(control_fastq['dataset'].get('original_files'),
                                                        files_structure.get('excluded_types'))
