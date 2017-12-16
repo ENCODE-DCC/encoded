@@ -573,6 +573,7 @@ def wgbs_quality_metric(testapp, analysis_step_run_bam, file_bed_methyl, award, 
     return testapp.post_json('/bismark_quality_metric', item).json['@graph'][0]
 
 
+
 @pytest.fixture
 def file_bed_methyl(base_experiment, award, encode_lab, testapp, analysis_step_run_bam):
     item = {
@@ -2154,6 +2155,57 @@ def test_audit_experiment_dnase_seq_low_read_depth(testapp,
                'extremely low read depth' for error in collect_audit_errors(res))
 
 
+def test_audit_experiment_wgbs_coverage(testapp,
+                                         base_experiment,
+                                         replicate_1_1,
+                                         replicate_2_1,
+                                         library_1,
+                                         library_2,
+                                         biosample_1,
+                                         biosample_2,
+                                         mouse_donor_1,
+                                         file_fastq_3,
+                                         file_fastq_4,
+                                         file_bam_1_1,
+                                         file_bam_2_1,
+                                         file_bed_methyl,
+                                         chip_seq_quality_metric,
+                                         analysis_step_run_bam,
+                                         analysis_step_version_bam,
+                                         analysis_step_bam,
+                                         pipeline_bam):
+
+    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10',
+                                             'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(file_bam_2_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'assembly': 'mm10',
+                                             'derived_from': [file_fastq_4['@id']]})
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'WGBS paired-end pipeline'})
+
+    testapp.patch_json(chip_seq_quality_metric['@id'], {'quality_metric_of': [file_bed_methyl['@id']],
+                                                        'processing_stage': 'filtered',
+                                                        'total': 30000000,
+                                                        'mapped': 30000000,
+                                                        'read1': 100, 'read2': 100})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
+    testapp.patch_json(biosample_2['@id'], {'model_organism_sex': 'mixed'})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {'status': 'released',
+                                                'date_released': '2016-01-01',
+                                                'assay_term_name': 'whole-genome shotgun bisulfite sequencing'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] ==
+               'extremely low coverage' for error in collect_audit_errors(res))
+   
 def test_audit_experiment_dnase_low_read_length(testapp,
                                                 base_experiment,
                                                 replicate_1_1,
