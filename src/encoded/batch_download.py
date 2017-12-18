@@ -307,7 +307,7 @@ def batch_download(context, request):
     files = [metadata_link]
     if 'files.file_type' in param_list:
         for exp in results['@graph']:
-            for f in exp['files']:
+            for f in exp.get('files',[]):
                 if f['file_type'] in param_list['files.file_type']:
                     files.append('{host_url}{href}'.format(
                         host_url=request.host_url,
@@ -315,7 +315,7 @@ def batch_download(context, request):
                     ))
     else:
         for exp in results['@graph']:
-            for f in exp['files']:
+            for f in exp.get('files',[]):
                 files.append('{host_url}{href}'.format(
                     host_url=request.host_url,
                     href=f['href']
