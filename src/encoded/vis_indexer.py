@@ -29,6 +29,7 @@ from snovault.elasticsearch.indexer import (
 
 from .visualization import (
     VISIBLE_DATASET_TYPES_LC,
+    VIS_CACHE_INDEX,
     object_is_visualizable,
     vis_cache_add
 )
@@ -140,7 +141,7 @@ def visindexer_state_show(request):
 
     display = state.display()
     try:
-        count = es.count(index='vis_composite', doc_type='default').get('count',0)  # TODO: 'vis_composite' should be obtained from visualization.py
+        count = es.count(index=VIS_CACHE_INDEX, doc_type='default').get('count',0)  # TODO: 'vis_composite' should be obtained from visualization.py
         if count:
             display['vis_blobs in index'] = count
     except:

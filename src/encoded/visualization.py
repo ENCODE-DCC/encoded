@@ -117,6 +117,8 @@ def includeme(config):
     config.scan(__name__)
 
 
+VIS_CACHE_INDEX = "vis_cache"
+
 PROFILE_START_TIME = 0  # For profiling within this module
 
 TAB = '\t'
@@ -858,7 +860,7 @@ class VisCache(object):
     def __init__(self, request):
         self.request = request
         self.es = self.request.registry.get(ELASTIC_SEARCH, None)
-        self.index = "vis_cache"
+        self.index = VIS_CACHE_INDEX
 
     def create_cache(self):
         if not self.es:
