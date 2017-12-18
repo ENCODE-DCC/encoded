@@ -396,12 +396,12 @@ def index_regions(request):
 
     (uuids, force) = state.get_one_cycle(request)
 
-    # Note: if reindex=all then maybe we should delete the entire index
+    # Note: if reindex=all_uuids then maybe we should delete the entire index
     # On the otherhand, that should probably be left for extreme cases done by hand
     # curl -XDELETE http://region-search-test-v5.instance.encodedcc.org:9200/resident_datasets/
     #if force == 'all':  # Unfortunately force is a simple boolean
     #    try:
-    #        r = indexer.regions_es.indices.delete(index='chr*')  # maybe '*'
+    #        r = indexer.regions_es.indices.delete(index='chr*')  # Note region_es and encoded_es may be the same!
     #        r = indexer.regions_es.indices.delete(index=self.residents_index)
     #    except:
     #        pass
@@ -589,14 +589,13 @@ class RegionIndexer(Indexer):
             if not doc:
                 return False
         except:
-            log.error("Region indexer failed to find expected %s in %s" % (id,self.residents_index))
-            return False  # Will try next full cycle
+            return False  # Not an error: remove may be called without looking first
 
         for chrom in doc['chroms']:
             try:
                 self.regions_es.delete(index=chrom, doc_type=doc['assembly'], id=str(uuid))
             except:
-                log.error("Region indexer failed to remove %s regions of %s" % (chrom,id))
+                #log.error("Region indexer failed to remove %s regions of %s" % (chrom,id))
                 return False # Will try next full cycle
 
         try:

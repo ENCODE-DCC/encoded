@@ -121,6 +121,8 @@ def includeme(config):
     config.scan(__name__)
 
 
+VIS_CACHE_INDEX = "vis_composite"
+
 PROFILE_START_TIME = 0  # For profiling within this module
 
 TAB = '\t'
@@ -782,25 +784,23 @@ def sanitize_name(s):
 
 def add_to_es(request, comp_id, composite):
     '''Adds a composite json blob to elastic-search'''
-    index = "vis_composite"
     es = request.registry.get(ELASTIC_SEARCH, None)
     if not es:
         return
-    if not es.indices.exists(index):
-        es.indices.create(index=index, body={'index': {'number_of_shards': 1, 'max_result_window': 99999 }}, wait_for_active_shards=1)
+    if not es.indices.exists(VIS_CACHE_INDEX):
+        es.indices.create(index=VIS_CACHE_INDEX, body={'index': {'number_of_shards': 1, 'max_result_window': 99999 }}, wait_for_active_shards=1)
         mapping = {'default': {"enabled": False}}
-        es.indices.put_mapping(index=index, doc_type='default', body=mapping)
-        log.debug("created %s index" % index)
-    es.index(index=index, doc_type='default', body=composite, id=comp_id)
+        es.indices.put_mapping(index=VIS_CACHE_INDEX, doc_type='default', body=mapping)
+        log.debug("created %s index" % VIS_CACHE_INDEX)
+    es.index(index=VIS_CACHE_INDEX, doc_type='default', body=composite, id=comp_id)
 
 
 def get_from_es(request, comp_id):
     '''Returns composite json blob from elastic-search, or None if not found.'''
-    index = "vis_composite"
     es = request.registry.get(ELASTIC_SEARCH, None)
-    if es and es.indices.exists(index):
+    if es and es.indices.exists(VIS_CACHE_INDEX):
         try:
-            result = es.get(index=index, doc_type='default', id=comp_id)
+            result = es.get(index=VIS_CACHE_INDEX, doc_type='default', id=comp_id)
             return result['_source']
         except:
             pass
@@ -809,12 +809,11 @@ def get_from_es(request, comp_id):
 
 def search_es(request, ids):
     '''Returns a list of composites from elastic-search, or None if not found.'''
-    index = "vis_composite"
     es = request.registry.get(ELASTIC_SEARCH, None)
-    if es and es.indices.exists(index):
+    if es and es.indices.exists(VIS_CACHE_INDEX):
         try:
             query = {"query": {"ids": {"values": ids}}}
-            res = es.search(body=query, index=index, doc_type='default', size=99999)  # size=200?
+            res = es.search(body=query, index=VIS_CACHE_INDEX, doc_type='default', size=99999)  # size=200?
             hits = res.get("hits", {}).get("hits", [])
             results = {}
             for hit in hits:
