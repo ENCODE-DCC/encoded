@@ -1963,9 +1963,11 @@ def audit_experiment_replicated(value, system, excluded_types):
     '''
     Excluding single cell isolation experiments from the replication requirement
     Excluding RNA-bind-and-Seq from the replication requirment
+    Excluding genetic modification followed by DNase-seq from the replication requirement
     '''
     if value['assay_term_name'] in ['single cell isolation followed by RNA-seq',
-                                    'RNA Bind-n-Seq']:
+                                    'RNA Bind-n-Seq',
+                                    'genetic modification followed by DNase-seq']:
         return
     '''
     Excluding GTEX experiments from the replication requirement
