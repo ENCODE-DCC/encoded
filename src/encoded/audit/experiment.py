@@ -1303,9 +1303,9 @@ def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title):
 
 def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title):
     for metric in bismark_metrics:
-        cpg_string = metric['lambda C methylated in CpG context']
-        chg_string = metric['lambda C methylated in CHG context']
-        chh_string = metric['lambda C methylated in CHH context']
+        cpg_string = metric.get('lambda C methylated in CpG context')
+        chg_string = metric.get('lambda C methylated in CHG context')
+        chh_string = metric.get('lambda C methylated in CHH context')
         if (cpg_string and chg_string and chh_string):
             lambdaCpG = float(cpg_string[:-1])
             lambdaCHG = float(chg_string[:-1])
