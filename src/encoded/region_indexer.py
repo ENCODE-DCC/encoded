@@ -322,64 +322,6 @@ def regionindexer_state_show(request):
     return display
 
 
-def regulome_file_path_parse(file_path):
-    '''returns (file_name, assembly, assay, biosample, file_format) from regulome file path.'''
-    file_name = file_path.split('/')[-1]  # id is just the file name
-    parts = file_name.split('.')
-    assembly = 'unknown'
-    assay = 'unknown'
-    biosample = 'unknown'
-    file_format = 'unknown'
-    if len(parts) >= 2 and len(parts) <= 3:  # assay_biosample_assembly.bed.gz
-        if len(parts) < 3 or parts[2] == 'gz':
-            file_format = parts[1]
-    terms = parts[0].split('_')
-    if len(terms) == 3:
-        assay = terms[0]
-        assembly = terms[1]
-        biosample =  terms[2]
-    return (file_name, assembly, assay, biosample, file_format)
-
-def regulome_candidate_file(assembly, assay, biosample, file_format):
-    '''returns True when file properties are for a candidate reglulomeDb file.'''
-    if file_format not in ['bed']:         # TODO: DEFINE a set of approved file_types
-        return False
-    if assay not in ['DNase','ChIP']:      # TODO: DEFINE a set of approved assays
-        return False
-    if assembly not in ['hg19','GRCh38']:  # TODO: DEFINE a set of approved assemblies
-        return False
-    #if biosample not in ['Gm12878']:      # TODO: DEFINE a set of approved biosamples
-    #    return False
-
-    return True
-
-def regulome_local_files(request, indexer, force=False):
-    '''Returns list full paths of local regulome DB files'''
-    regulome_dir = request.registry.settings.get("regulome_local_directory")
-    #regulome_dir = '/tmp/regulome_files'
-    if regulome_dir is None:
-        return []
-
-    try:
-        dir_contents = os.listdir(regulome_dir)
-    except:
-        return []
-    file_paths = []
-    for file_name in dir_contents:
-        if file_name.startswith('.'):
-            continue
-        (file_id, assembly, assay, biosample, file_format) = regulome_file_path_parse(file_name)
-        if not regulome_candidate_file(assembly, assay, biosample, file_format):
-            continue
-        file_path = regulome_dir + '/' + file_name
-        if not os.path.isfile(file_path):
-            continue
-        if not indexer.in_regions_es(file_name) or force:
-            file_paths.append(file_path)
-
-    return file_paths
-
-
 @view_config(route_name='index_region', request_method='POST', permission="index")
 def index_regions(request):
     encoded_es = request.registry[ELASTIC_SEARCH]
@@ -405,16 +347,6 @@ def index_regions(request):
     #        r = indexer.regions_es.indices.delete(index=self.residents_index)
     #    except:
     #        pass
-
-    # RegulomeDb files in a local directory
-    # Gets assay, assembly, biosample and format from filename
-    # What about query by SNP?
-    # Do we need anything besides chrom,start,stop in es? (peak scores, names, ???)
-    # Any reason to segregate encoded and regulome into separate indexes?
-    # Different naming standards: Gm12878 v. GM12878.  Note chrom names get forced to lower()
-    file_paths = regulome_local_files(request, indexer, force)
-    if len(file_paths) > 0:
-        uuids.extend(file_paths)  # Use file paths instead of uuids
 
     uuid_count = len(uuids)
     if uuid_count > 0 and not dry_run:
@@ -449,76 +381,50 @@ class RegionIndexer(Indexer):
     def update_object(self, request, dataset_uuid, force):
         request.datastore = 'elasticsearch'  # Let's be explicit
 
-        # Could be uuid OR path to local regulomeDb file
-        if dataset_uuid.rfind('.') == -1:
+        try:
+            # less efficient than going to es directly but keeps methods in one place
+            dataset = request.embed(str(dataset_uuid), as_user=True)
+        except:
+            log.warn("dataset is not found for uuid: %s",dataset_uuid)
+            # Not an error if it wasn't found.
+            return
 
-            try:
-                dataset = self.encoded_es.get(index='experiment', doc_type='experiment',
-                                              id=str(dataset_uuid)).get('_source',{}).get('embedded')
-            except:
-                log.warn("dataset is not found for uuid: %s",dataset_uuid)
-                # Not an error if it wasn't found.
-                return
+        # TODO: add case where files are never dropped (when demos share test server this might be necessary)
+        if not self.encoded_candidate_dataset(dataset):
+            return  # Note that if a dataset is no longer a candidate but it had files in regions es, they won't get removed.
+        #log.debug("dataset is a candidate: %s", dataset['accession'])
 
-            # TODO: add case where files are never dropped (when demos share test server this might be necessary)
-            if not self.encoded_candidate_dataset(dataset):
-                return  # Note that if a dataset is no longer a candidate but it had files in regions es, they won't get removed.
-            #log.debug("dataset is a candidate: %s", dataset['accession'])
+        assay_term_name = dataset.get('assay_term_name')
+        if assay_term_name is None:
+            return
 
-            assay_term_name = dataset.get('assay_term_name')
-            if assay_term_name is None:
-                return
+        files = dataset.get('files',[])
+        for afile in files:
+            if afile.get('file_format') not in ENCODED_ALLOWED_FILE_FORMATS:
+                continue  # Note: if file_format changed to not allowed but file already in regions es, it doesn't get removed.
 
-            files = dataset.get('files',[])
-            for afile in files:
-                if afile.get('file_format') not in ENCODED_ALLOWED_FILE_FORMATS:
-                    continue  # Note: if file_format changed to not allowed but file already in regions es, it doesn't get removed.
+            file_uuid = afile['uuid']
 
-                file_uuid = afile['uuid']
+            if self.encoded_candidate_file(afile, assay_term_name):
 
-                if self.encoded_candidate_file(afile, assay_term_name):
-
-                    using = ""
-                    if force:
-                        using = "with FORCE"
-                        #log.debug("file is a candidate: %s %s", afile['accession'], using)
-                        self.remove_from_regions_es(file_uuid)  # remove all regions first
-                    else:
-                        #log.debug("file is a candidate: %s", afile['accession'])
-                        if self.in_regions_es(file_uuid):
-                            continue
-
-                    if self.add_encoded_file_to_regions_es(request, assay_term_name, afile):
-                        log.info("added file: %s %s %s", dataset['accession'], afile['href'], using)
-                        self.state.file_added(file_uuid)
-
-                else:
-                    if self.remove_from_regions_es(file_uuid):
-                        log.info("dropped file: %s %s %s", dataset['accession'], afile['@id'], using)
-                        self.state.file_dropped(file_uuid)
-
-        else:  # This is actually a path to a regulomeDb file
-            file_path = dataset_uuid
-            (file_id, assembly, assay_term_name, biosample, file_format) = regulome_file_path_parse(file_path)
-            if regulome_candidate_file(assembly, assay_term_name, biosample, file_format):
                 using = ""
                 if force:
                     using = "with FORCE"
                     #log.debug("file is a candidate: %s %s", afile['accession'], using)
-                    self.remove_from_regions_es(file_id)  # remove all regions first
-                    already_in = False
+                    self.remove_from_regions_es(file_uuid)  # remove all regions first
                 else:
                     #log.debug("file is a candidate: %s", afile['accession'])
-                    already_in = self.in_regions_es(file_id)
+                    if self.in_regions_es(file_uuid):
+                        continue
 
-                if not already_in and self.add_regulome_file_to_regions_es(request, file_id, file_path, assembly, assay_term_name):
-                    log.info("added file_path: %s %s", file_path, using)
-                    self.state.file_added(file_id)
+                if self.add_encoded_file_to_regions_es(request, assay_term_name, afile):
+                    log.info("added file: %s %s %s", dataset['accession'], afile['href'], using)
+                    self.state.file_added(file_uuid)
 
             else:
-                if self.remove_from_regions_es(file_id):
-                    log.info("dropped file_path: %s %s", file_path, using)
-                    self.state.file_dropped(file_id)
+                if self.remove_from_regions_es(file_uuid):
+                    log.info("dropped file: %s %s %s", dataset['accession'], afile['@id'], using)
+                    self.state.file_dropped(file_uuid)
 
         # TODO: gather and return errors
 
@@ -724,36 +630,3 @@ class RegionIndexer(Indexer):
             return self.add_to_regions_es(afile['uuid'], assembly, assay_term_name, file_data, 'encoded')
 
         return False
-
-    def add_regulome_file_to_regions_es(self, request, file_id, file_path, assembly, assay_term_name):
-        '''Given an encoded file object, reads the file to create regions data then loads that into region search es.'''
-        #return True # DEBUG
-
-        if assembly not in SUPPORTED_ASSEMBLIES:
-            return False
-
-        if file_path.endswith('.gz'):
-            file = gzip.open(file_path, mode='rt')
-        else:
-            file = open(file_path, mode='rt')
-
-        file_data = {}
-        for row in tsvreader(file):
-            chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
-            if isinstance(start, int) and isinstance(end, int):
-                if chrom in file_data:
-                    file_data[chrom].append({
-                        'start': start + 1,
-                        'end': end + 1
-                    })
-                else:
-                    file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
-            else:
-                log.warn('positions are not integers, will not index file')
-        file.close()
-
-        if file_data:
-            return self.add_to_regions_es(file_id, assembly, assay_term_name, file_data, 'regulome')
-
-        return False
-
