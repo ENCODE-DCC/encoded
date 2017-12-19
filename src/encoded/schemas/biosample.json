@@ -285,6 +285,7 @@
         },
         "fly_life_stage": {
             "comment": "Only fly biosamples are allowed to have fly_life_stage property.",
+            "controlFormVisibility": true,
             "properties": {
                 "organism": {
                     "linkTo": "Organism",
@@ -302,6 +303,7 @@
         },
         "fly_synchronization_stage": {
             "comment": "Only fly biosamples are allowed to have fly_synchronization_stage property.",
+            "controlFormVisibility": true,
             "properties": {
                 "organism": {
                     "linkTo": "Organism",
@@ -319,6 +321,7 @@
         },
         "worm_synchronization_stage": {
             "comment": "Only roundworm biosamples are allowed to have worm_synchronization_stage property.",
+            "controlFormVisibility": true,
             "properties": {
                 "organism": {
                     "linkTo": "Organism",
@@ -334,6 +337,7 @@
         },
         "worm_life_stage": {
             "comment": "Only roundworm biosamples are allowed to have worm_life_stage property.",
+            "controlFormVisibility": true,
             "properties": {
                 "organism": {
                     "linkTo": "Organism",
@@ -349,6 +353,7 @@
         },
         "mouse_life_stage": {
             "comment": "Only mouse biosamples are allowed to have mouse_life_stage property.",
+            "controlFormVisibility": true,
             "properties": {
                 "organism": {
                     "linkTo": "Organism",

@@ -52,6 +52,26 @@ validator.attributes.linkFrom = function validateLinkFrom(instance, schema, opti
     return result;
 };
 
+const checkFormDependencies = function checkFormDependencies(dependencies, instance) {
+    if (typeof dependencies !== 'object') return true;
+    if (!dependencies.controlFormVisibility) return true;
+    if (!dependencies.properties) {
+        throw new Error('`controlFormVisibility` currently only handles schema dependencies using `properties`.');
+    }
+    let valid = true;
+    Object.entries(dependencies.properties).forEach(([key, dependency]) => {
+        if (dependency.linkEnum) {
+            const value = instance[key];
+            if (!(value && dependency.linkEnum.includes(value))) {
+                valid = false;
+            }
+        } else {
+            throw new Error('`controlFormVisibility` currently only handles schema dependencies using `linkEnum`');
+        }
+    });
+    return valid;
+};
+
 // Recursively filter an object to remove calculated properties
 // (`schema_version`).
 // This is used before sending the value to the server.
@@ -630,6 +650,9 @@ export class Field extends UpdateChildMixin(React.Component) {
                 if (!this.context.showReadOnly && subschema.readonly) return;
                 // we can only edit child objects if we know the current object's id
                 if (subschema.items && subschema.items.linkFrom && !this.context.id) return;
+                if (schema.dependencies && schema.dependencies[key]) {
+                    if (!value[key] && !checkFormDependencies(schema.dependencies[key], value)) return;
+                }
                 const required = _.contains((schema.required || []), key);
                 input.push(<Field
                     key={key} name={key} path={`${path}.${key}`}
