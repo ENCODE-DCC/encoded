@@ -138,7 +138,10 @@ class ItemEdit extends React.Component {
             fetchedForm = (
                 <FetchedData>
                     <Param name="schemas" url="/profiles/" />
-                    <JSONSchemaForm type={type} action={action} method="POST" onFinish={this.finished} showReadOnly={false} />
+                    <JSONSchemaForm
+                        type={type} action={action} method="POST"
+                        onFinish={this.finished} showReadOnly={false} showSaveAndAdd
+                    />
                 </FetchedData>
             );
         } else {  // edit form
