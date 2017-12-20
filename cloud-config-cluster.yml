@@ -160,8 +160,8 @@ output:
   all: '| tee -a /var/log/cloud-init-output.log'
 
 runcmd:
-- mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
-- aws s3 cp --region=us-west-2 %(S3_AUTH_KEYS)s /home/ubuntu/.ssh/authorized_keys
+- sudo -u ubuntu mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
+- sudo -u ubuntu aws s3 cp --region=us-west-2 %(S3_AUTH_KEYS)s /home/ubuntu/.ssh/authorized_keys
 # Ideally this would build as a different user so encoded only has read
 # permissions
 - set -ex
