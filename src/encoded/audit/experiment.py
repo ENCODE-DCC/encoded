@@ -85,7 +85,6 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                                                                          files_structure,
                                                                          'bam',
                                                                          True))
-
                     derived_from_external_bams = [derived_from for derived_from in derived_from_files
                         if (derived_from.get('dataset') != value.get('@id')
                             and
@@ -94,28 +93,26 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                             check_pipeline('ChIP-seq read mapping',
                                            derived_from.get('@id'),
                                            controls_files_structures[derived_from.get('dataset')]))]
-                    control_read_depths = {}
+                    control_bam_details = []
+                    cumulative_read_depth = 0
                     for bam_file in derived_from_external_bams:
-                        bio_reps = bam_file.get('biological_replicates')
-                        if bio_reps and len(bio_reps) == 1:
-                            key = (bam_file.get('dataset'), bio_reps[0])
-                            control_depth = get_chip_seq_bam_read_depth(bam_file)
-                            control_target = get_target_name(bam_file.get('dataset'),
-                                                             control_objects)
-
-                            if control_depth and control_target in ['Control-human', 'Control-mouse']:
-                                if key in control_read_depths:
-                                    control_read_depths[key] += control_depth
-                                else:
-                                    control_read_depths[key] = control_depth
-                    for (dataset_id, replicate) in control_read_depths.keys():
-                        yield from check_control_read_depth_standards(
-                            peaks_file.get('assembly'),
-                            dataset_id,
-                            replicate,
-                            control_read_depths[(dataset_id, replicate)],
-                            target_name,
-                            target_investigated_as)
+                        control_depth = get_chip_seq_bam_read_depth(bam_file)
+                        control_target = get_target_name(bam_file.get('dataset'),
+                                                         control_objects)
+                        if control_depth and control_target in ['Control-human', 'Control-mouse']:
+                            # here we have the control bam file and it's read_depth and it's experiment
+                            cumulative_read_depth += control_depth
+                            triple = (
+                                bam_file.get('@id'),
+                                control_depth,
+                                bam_file.get('dataset'))
+                            control_bam_details.append(triple)
+                    yield from check_control_read_depth_standards(
+                        peaks_file.get('assembly'),
+                        cumulative_read_depth,
+                        control_bam_details,
+                        target_name,
+                        target_investigated_as)
 
 
 def check_pipeline(pipeline_title, control_file_id, file_structure):
@@ -127,10 +124,20 @@ def check_pipeline(pipeline_title, control_file_id, file_structure):
     return False
 
 
+def generate_control_bam_details_string(control_bam_details):
+    to_return = ''
+    for (file_id, depth, exp_id) in control_bam_details:
+        to_return += 'file {} from control experiment {} has {} usable fragments,'.format(
+            file_id,
+            exp_id,
+            depth
+        )
+    return to_return[:-1]
+
+
 def check_control_read_depth_standards(assembly,
-                                       dataset_id,
-                                       replicate,
                                        read_depth,
+                                       control_bam_details,
                                        control_to_target,
                                        target_investigated_as):
     marks = pipelines_with_read_depth['ChIP-seq read mapping']
@@ -138,29 +145,28 @@ def check_control_read_depth_standards(assembly,
     if control_to_target == 'empty':
         return
 
+    control_details = generate_control_bam_details_string(control_bam_details)
     # control_to_target in broad_peaks_targets:
     if 'broad histone mark' in target_investigated_as:
         if assembly:
-            detail = ('Control alignment file(s) from experiment {}, replicate {} '
-                      'mapped to {} assembly has {} usable fragments. '
+            detail = ('Control alignment files ({}) '
+                      'mapped to {} assembly have in aggregate {} usable fragments. '
                       'The minimum ENCODE standard for a control of ChIP-seq assays '
                       'targeting broad histone mark {} is 40 million usable fragments, '
                       'the recommended number of usable fragments is > 45 million. '
                       '(See /data-standards/chip-seq/ )').format(
-                          dataset_id,
-                          replicate,
+                          control_details,
                           assembly,
                           read_depth,
                           control_to_target)
         else:
-            detail = ('Control alignment file(s) from experiment {}, replicate {} '
-                      'has {} usable fragments. '
+            detail = ('Control alignment files ({}) '
+                      'have in aggregate {} usable fragments. '
                       'The minimum ENCODE standard for a control of ChIP-seq assays '
                       'targeting broad histone mark {} is 40 million usable fragments, '
                       'the recommended number of usable fragments is > 45 million. '
                       '(See /data-standards/chip-seq/ )').format(
-                          dataset_id,
-                          replicate,
+                          control_details,
                           read_depth,
                           control_to_target)
         if read_depth >= 40000000 and read_depth < marks['broad']:
@@ -171,26 +177,24 @@ def check_control_read_depth_standards(assembly,
             yield AuditFailure('control extremely low read depth', detail, level='ERROR')
     elif 'narrow histone mark' in target_investigated_as:  # else:
         if assembly:
-            detail = ('Control alignment file(s) from experiment {}, replicate {} '
-                      'mapped to {} assembly has {} usable fragments. '
+            detail = ('Control alignment files ({}) '
+                      'mapped to {} assembly have in aggregate {} usable fragments. '
                       'The minimum ENCODE standard for a control of ChIP-seq assays '
                       'targeting narrow histone mark {} is 10 million usable fragments, '
                       'the recommended number of usable fragments is > 20 million. '
                       '(See /data-standards/chip-seq/ )').format(
-                          dataset_id,
-                          replicate,
+                          control_details,
                           assembly,
                           read_depth,
                           control_to_target)
         else:
-            detail = ('Control alignment file(s) from experiment {}, replicate {} '
-                      'has {} usable fragments. '
+            detail = ('Control alignment files ({}) '
+                      'have in aggregate {} usable fragments. '
                       'The minimum ENCODE standard for a control of ChIP-seq assays '
                       'targeting narrow histone mark {} is 10 million usable fragments, '
                       'the recommended number of usable fragments is > 20 million. '
                       '(See /data-standards/chip-seq/ )').format(
-                          dataset_id,
-                          replicate,
+                          control_details,
                           read_depth,
                           control_to_target)
         if read_depth >= 10000000 and read_depth < marks['narrow']:
@@ -201,28 +205,26 @@ def check_control_read_depth_standards(assembly,
             yield AuditFailure('control extremely low read depth', detail, level='ERROR')
     else:
         if assembly:
-            detail = ('Control alignment file(s) from experiment {}, replicate {} '
-                      'mapped to {} assembly has {} usable fragments. '
+            detail = ('Control alignment files ({}) '
+                      'mapped to {} assembly have in aggregate {} usable fragments. '
                       'The minimum ENCODE standard for a control of ChIP-seq assays '
                       'targeting {} and investigated as a transcription factor is '
                       '10 million usable fragments, '
                       'the recommended number of usable fragments is > 20 million. '
                       '(See /data-standards/chip-seq/ )').format(
-                          dataset_id,
-                          replicate,
+                          control_details,
                           assembly,
                           read_depth,
                           control_to_target)
         else:
-            detail = ('Control alignment file(s) from experiment {}, replicate {} '
-                      'has {} usable fragments. '
+            detail = ('Control alignment files ({}) '
+                      'have in aggregate {} usable fragments. '
                       'The minimum ENCODE standard for a control of ChIP-seq assays '
                       'targeting {} and investigated as a transcription factor is '
                       '10 million usable fragments, '
                       'the recommended number of usable fragments is > 20 million. '
                       '(See /data-standards/chip-seq/ )').format(
-                          dataset_id,
-                          replicate,
+                          control_details,
                           read_depth,
                           control_to_target)
         if read_depth >= 10000000 and read_depth < marks['narrow']:
