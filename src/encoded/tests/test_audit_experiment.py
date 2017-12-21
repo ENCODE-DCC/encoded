@@ -188,7 +188,9 @@ def ctrl_experiment(testapp, lab, award, control_target):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'biosample_type': 'in vitro sample',
+        'biosample_type': 'cell-free sample',
+        'biosample_term_id': 'NTR:0000471',
+        'biosample_term_name': 'none',
         'status': 'started',
         'assay_term_name': 'ChIP-seq'
     }
