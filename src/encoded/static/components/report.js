@@ -437,10 +437,6 @@ class Report extends React.Component {
         // `newColumn s`has the user's chosen columns from the modal, while `columns` has the
         // columns selected by the query string.
         const parsedUrl = url.parse(this.context.location_href, true);
-        const type = parsedUrl.query.type;
-        const schema = this.props.schemas[type];
-        const queryFields = parsedUrl.query.field ? (typeof parsedUrl.query.field === 'object' ? parsedUrl.query.field : [parsedUrl.query.field]) : undefined;
-        const columns = columnChoices(schema, queryFields);
 
         const fields = Object.keys(newColumns).filter(columnPath => newColumns[columnPath].visible);
         parsedUrl.query.field = fields;
