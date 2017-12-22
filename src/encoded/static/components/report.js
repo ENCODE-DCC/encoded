@@ -298,13 +298,21 @@ class ColumnSelector extends React.Component {
     }
 
     toggleColumn(columnPath) {
+        // Called every time a column's checkbox gets clicked on or off in the modal. `columnPath`
+        // is the query-string term corresponding to each column.
         this.setState((prevState) => {
+            // Toggle the `visible` state corresponding to the column whose checkbox was toggled.
+            // Then set that as the new React state which causes a redraw of the modal with all the
+            // checkboxes in the correct state.
             prevState.columns[columnPath].visible = !prevState.columns[columnPath].visible;
             return { columns: prevState.columns };
         });
     }
 
-    submitHandler(e) {
+    submitHandler() {
+        // Called when the user clicks the Select button in the column checkbox modal, which
+        // sets a new state for all checked report columns.
+        this.props.setColumnState(this.state.columns);
     }
 
     render() {
@@ -331,7 +339,7 @@ class ColumnSelector extends React.Component {
                 </ModalBody>
                 <ModalFooter
                     closeModal
-                    submitBtn={<button className="btn btn-info" onClick={this.submitHandler}>Set</button>}
+                    submitBtn={this.submitHandler}
                 />
             </Modal>
         );
@@ -340,7 +348,7 @@ class ColumnSelector extends React.Component {
 
 ColumnSelector.propTypes = {
     columns: PropTypes.object.isRequired,
-    toggleColumn: PropTypes.func.isRequired,
+    setColumnState: PropTypes.func.isRequired,
 };
 
 
@@ -394,7 +402,7 @@ class Report extends React.Component {
 
         // Bind this to non-React methods.
         this.setSort = this.setSort.bind(this);
-        this.toggleColumn = this.toggleColumn.bind(this);
+        this.setColumnState = this.setColumnState.bind(this);
         this.loadMore = this.loadMore.bind(this);
     }
 
@@ -423,19 +431,18 @@ class Report extends React.Component {
         this.context.navigate(url.format(parsedUrl));
     }
 
-    toggleColumn(toggledPath) {
+    setColumnState(newColumns) {
+        // Gets called when the user clicks the Select button in the ColumnSelector modal.
+        // `newColumns` has the same format as `columns` returned from `columnChoices`, but
+        // `newColumn s`has the user's chosen columns from the modal, while `columns` has the
+        // columns selected by the query string.
         const parsedUrl = url.parse(this.context.location_href, true);
         const type = parsedUrl.query.type;
         const schema = this.props.schemas[type];
         const queryFields = parsedUrl.query.field ? (typeof parsedUrl.query.field === 'object' ? parsedUrl.query.field : [parsedUrl.query.field]) : undefined;
         const columns = columnChoices(schema, queryFields);
 
-        const fields = [];
-        _.mapObject(columns, (column, path) => {
-            if (path === toggledPath ? !column.visible : column.visible) {
-                fields.push(path);
-            }
-        });
+        const fields = Object.keys(newColumns).filter(columnPath => newColumns[columnPath].visible);
         parsedUrl.query.field = fields;
         delete parsedUrl.search;
         this.context.navigate(url.format(parsedUrl));
@@ -515,7 +522,7 @@ class Report extends React.Component {
                                         return <a href={href} className="btn btn-info btn-sm btn-svgicon" title={view.title} key={i}>{svgIcon(view2svg[view.icon])}</a>;
                                     })}
                                 </div>
-                                <ColumnSelector columns={columns} toggleColumn={this.toggleColumn} />
+                                <ColumnSelector columns={columns} setColumnState={this.setColumnState} />
                                 <a className="btn btn-info btn-sm" href={context.download_tsv} data-bypass>Download TSV</a>
                             </div>
                             <Table context={context} more={this.state.more} columns={columns} setSort={this.setSort} />
