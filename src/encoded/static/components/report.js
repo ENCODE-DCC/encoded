@@ -289,7 +289,7 @@ class ColumnSelector extends React.Component {
 
         // Set the initial React states.
         this.state = {
-            columns: props.columns, // Make a local mutatable copy of the columns
+            columns: props.columns, // Make (effectively) a local mutatable copy of the columns
         };
 
         // Bind `this` to non-React methods.
@@ -298,8 +298,9 @@ class ColumnSelector extends React.Component {
     }
 
     toggleColumn(columnPath) {
-        this.setState((prevState, props) => {
-            return {counter: prevState.counter + props.step};
+        this.setState((prevState) => {
+            prevState.columns[columnPath].visible = !prevState.columns[columnPath].visible;
+            return { columns: prevState.columns };
         });
     }
 
@@ -323,7 +324,7 @@ class ColumnSelector extends React.Component {
                 <ModalBody>
                     <div className="column-selector__selectors">
                         {columnPaths.map((columnPath) => {
-                            const column = this.props.columns[columnPath];
+                            const column = this.state.columns[columnPath];
                             return <ColumnItem key={columnPath} columnPath={columnPath} column={column} toggleColumn={this.toggleColumn} />;
                         })}
                     </div>
