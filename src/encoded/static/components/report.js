@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { svgIcon } from '../libs/svg-icons';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
@@ -283,45 +284,55 @@ ColumnHeader.propTypes = {
 
 
 class ColumnSelector extends React.Component {
-    constructor() {
+    constructor(props) {
         super();
 
-        // Set initial React state.
+        // Set the initial React states.
         this.state = {
-            open: false,
+            columns: props.columns, // Make a local mutatable copy of the columns
         };
 
-        // Bind this to non-React methods.
-        this.toggle = this.toggle.bind(this);
+        // Bind `this` to non-React methods.
+        this.submitHandler = this.submitHandler.bind(this);
         this.toggleColumn = this.toggleColumn.bind(this);
     }
 
-    toggle(e) {
-        e.preventDefault();
-        this.setState(prevState => ({
-            open: !prevState.open,
-        }));
+    toggleColumn(columnPath) {
+        this.setState((prevState, props) => {
+            return {counter: prevState.counter + props.step};
+        });
     }
 
-    toggleColumn(path) {
-        this.props.toggleColumn(path);
+    submitHandler(e) {
     }
 
     render() {
-        const columnPaths = Object.keys(this.props.columns);
+        const { columns } = this.props;
+        const columnPaths = Object.keys(columns);
+
         return (
-            <div style={{ display: 'inline-block', position: 'relative' }}>
-                <button className={`btn btn-info btn-sm${this.state.open ? ' active' : ''}`} onClick={this.toggle} title="Choose columns">
-                    <i className="icon icon-columns" /> Columns
-                </button>
-                {this.state.open && <div style={{ position: 'absolute', top: '30px', width: '230px', backgroundColor: '#fff', padding: '.5em', border: 'solid 1px #ccc', borderRadius: 3, zIndex: 1 }}>
-                    <h4>Columns</h4>
-                    {columnPaths.map((columnPath) => {
-                        const column = this.props.columns[columnPath];
-                        return <ColumnItem key={columnPath} columnPath={columnPath} column={column} toggleColumn={this.toggleColumn} />;
-                    })}
-                </div>}
-            </div>
+            <Modal
+                actuator={
+                    <button className="btn btn-info btn-sm" title="Choose columns">
+                        <i className="icon icon-columns" /> Columns
+                    </button>
+                }
+                addClasses="column-selector"
+            >
+                <ModalHeader title="Select columns to view" closeModal />
+                <ModalBody>
+                    <div className="column-selector__selectors">
+                        {columnPaths.map((columnPath) => {
+                            const column = this.props.columns[columnPath];
+                            return <ColumnItem key={columnPath} columnPath={columnPath} column={column} toggleColumn={this.toggleColumn} />;
+                        })}
+                    </div>
+                </ModalBody>
+                <ModalFooter
+                    closeModal
+                    submitBtn={<button className="btn btn-info" onClick={this.submitHandler}>Set</button>}
+                />
+            </Modal>
         );
     }
 }
@@ -349,7 +360,7 @@ class ColumnItem extends React.Component {
         const { column } = this.props;
 
         return (
-            <div>
+            <div className="column-selector__selector-item">
                 <input type="checkbox" onChange={this.toggleColumn} checked={column.visible} />&nbsp;
                 <span onClick={this.toggleColumn} style={{ cursor: 'pointer' }}>{column.title}</span>
             </div>
