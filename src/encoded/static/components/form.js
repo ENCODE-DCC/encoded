@@ -1113,6 +1113,7 @@ JSONSchemaForm.propTypes = {
 JSONSchemaForm.defaultProps = {
     schemas: null,
     context: null,
+    id: null,
     etag: '',
     showReadOnly: true,
     showSaveAndAdd: false,
