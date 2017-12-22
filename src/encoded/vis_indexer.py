@@ -27,12 +27,12 @@ from snovault.elasticsearch.indexer import (
     all_uuids
 )
 
-from .visualization import (
+from .vis_defines import (
     VISIBLE_DATASET_TYPES_LC,
-    VIS_CACHE_INDEX,
-    object_is_visualizable,
-    vis_cache_add
+    VIS_CACHE_INDEX
 )
+from .visualization import vis_cache_add
+
 
 log = logging.getLogger(__name__)
 SEARCH_MAX = 99999  # OutOfMemoryError if too high
