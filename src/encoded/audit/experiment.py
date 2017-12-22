@@ -85,7 +85,9 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                                                                          files_structure,
                                                                          'bam',
                                                                          True))
-                    derived_from_external_bams = [derived_from for derived_from in derived_from_files
+                    derived_from_external_bams = [
+                        derived_from for derived_from in
+                        derived_from_files
                         if (derived_from.get('dataset') != value.get('@id')
                             and
                             derived_from.get('dataset') in controls_files_structures
@@ -100,7 +102,6 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                         control_target = get_target_name(bam_file.get('dataset'),
                                                          control_objects)
                         if control_depth and control_target in ['Control-human', 'Control-mouse']:
-                            # here we have the control bam file and it's read_depth and it's experiment
                             cumulative_read_depth += control_depth
                             triple = (
                                 bam_file.get('@id'),
@@ -108,6 +109,7 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                                 bam_file.get('dataset'))
                             control_bam_details.append(triple)
                     yield from check_control_read_depth_standards(
+                        peaks_file.get('@id'),
                         peaks_file.get('assembly'),
                         cumulative_read_depth,
                         control_bam_details,
@@ -135,7 +137,8 @@ def generate_control_bam_details_string(control_bam_details):
     return to_return[:-1]
 
 
-def check_control_read_depth_standards(assembly,
+def check_control_read_depth_standards(peaks_file_id,
+                                       assembly,
                                        read_depth,
                                        control_bam_details,
                                        control_to_target,
@@ -145,58 +148,48 @@ def check_control_read_depth_standards(assembly,
     if control_to_target == 'empty':
         return
 
+    if not control_bam_details:
+        detail = ('The peaks file {} produced by ENCODE uniformly processing '
+                  'ChIP-seq pipeline has no control alignments specified.').format(
+                      peaks_file_id
+                  )
+        yield AuditFailure('missing control alignments', detail, level='ERROR')
+        return
     control_details = generate_control_bam_details_string(control_bam_details)
-    # control_to_target in broad_peaks_targets:
+    prefix = ('Control alignment files ({}) '
+              'have in aggregate {} usable fragments. ').format(
+                  control_details,
+                  read_depth)
+    if assembly:
+        prefix = ('Control alignment files ({}) '
+                  'mapped to {} assembly have in aggregate {} '
+                  'usable fragments. ').format(
+                      control_details,
+                      assembly,
+                      read_depth)
+    detail = prefix + (
+        'The minimum ENCODE standard for a control of ChIP-seq assays '
+        'targeting {} {} is {} million usable fragments, '
+        'the recommended number of usable fragments is > {} million. '
+        '(See /data-standards/chip-seq/ )')
     if 'broad histone mark' in target_investigated_as:
-        if assembly:
-            detail = ('Control alignment files ({}) '
-                      'mapped to {} assembly have in aggregate {} usable fragments. '
-                      'The minimum ENCODE standard for a control of ChIP-seq assays '
-                      'targeting broad histone mark {} is 40 million usable fragments, '
-                      'the recommended number of usable fragments is > 45 million. '
-                      '(See /data-standards/chip-seq/ )').format(
-                          control_details,
-                          assembly,
-                          read_depth,
-                          control_to_target)
-        else:
-            detail = ('Control alignment files ({}) '
-                      'have in aggregate {} usable fragments. '
-                      'The minimum ENCODE standard for a control of ChIP-seq assays '
-                      'targeting broad histone mark {} is 40 million usable fragments, '
-                      'the recommended number of usable fragments is > 45 million. '
-                      '(See /data-standards/chip-seq/ )').format(
-                          control_details,
-                          read_depth,
-                          control_to_target)
+        detail = detail.format(
+            'broad histone mark',
+            control_to_target,
+            40,
+            45)
         if read_depth >= 40000000 and read_depth < marks['broad']:
             yield AuditFailure('control low read depth', detail, level='WARNING')
         elif read_depth >= 5000000 and read_depth < 40000000:
             yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
         elif read_depth < 5000000:
             yield AuditFailure('control extremely low read depth', detail, level='ERROR')
-    elif 'narrow histone mark' in target_investigated_as:  # else:
-        if assembly:
-            detail = ('Control alignment files ({}) '
-                      'mapped to {} assembly have in aggregate {} usable fragments. '
-                      'The minimum ENCODE standard for a control of ChIP-seq assays '
-                      'targeting narrow histone mark {} is 10 million usable fragments, '
-                      'the recommended number of usable fragments is > 20 million. '
-                      '(See /data-standards/chip-seq/ )').format(
-                          control_details,
-                          assembly,
-                          read_depth,
-                          control_to_target)
-        else:
-            detail = ('Control alignment files ({}) '
-                      'have in aggregate {} usable fragments. '
-                      'The minimum ENCODE standard for a control of ChIP-seq assays '
-                      'targeting narrow histone mark {} is 10 million usable fragments, '
-                      'the recommended number of usable fragments is > 20 million. '
-                      '(See /data-standards/chip-seq/ )').format(
-                          control_details,
-                          read_depth,
-                          control_to_target)
+    elif 'narrow histone mark' in target_investigated_as:
+        detail = detail.format(
+            'narrow histone mark',
+            control_to_target,
+            10,
+            20)
         if read_depth >= 10000000 and read_depth < marks['narrow']:
             yield AuditFailure('control low read depth', detail, level='WARNING')
         elif read_depth >= 5000000 and read_depth < 10000000:
@@ -204,29 +197,11 @@ def check_control_read_depth_standards(assembly,
         elif read_depth < 5000000:
             yield AuditFailure('control extremely low read depth', detail, level='ERROR')
     else:
-        if assembly:
-            detail = ('Control alignment files ({}) '
-                      'mapped to {} assembly have in aggregate {} usable fragments. '
-                      'The minimum ENCODE standard for a control of ChIP-seq assays '
-                      'targeting {} and investigated as a transcription factor is '
-                      '10 million usable fragments, '
-                      'the recommended number of usable fragments is > 20 million. '
-                      '(See /data-standards/chip-seq/ )').format(
-                          control_details,
-                          assembly,
-                          read_depth,
-                          control_to_target)
-        else:
-            detail = ('Control alignment files ({}) '
-                      'have in aggregate {} usable fragments. '
-                      'The minimum ENCODE standard for a control of ChIP-seq assays '
-                      'targeting {} and investigated as a transcription factor is '
-                      '10 million usable fragments, '
-                      'the recommended number of usable fragments is > 20 million. '
-                      '(See /data-standards/chip-seq/ )').format(
-                          control_details,
-                          read_depth,
-                          control_to_target)
+        detail = detail.format(
+            control_to_target,
+            'and investigated as a transcription factor',
+            10,
+            20)
         if read_depth >= 10000000 and read_depth < marks['narrow']:
             yield AuditFailure('control low read depth', detail, level='WARNING')
         elif read_depth >= 3000000 and read_depth < 10000000:
