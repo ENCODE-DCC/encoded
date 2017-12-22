@@ -340,6 +340,7 @@ class ColumnSelector extends React.Component {
                 <ModalFooter
                     closeModal
                     submitBtn={this.submitHandler}
+                    submitTitle="Select"
                 />
             </Modal>
         );
