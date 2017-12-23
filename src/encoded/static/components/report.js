@@ -283,6 +283,8 @@ ColumnHeader.propTypes = {
 };
 
 
+// Displays a modal dialog with every possible column for the type of object being displayed.
+// This lets you choose which columns you want to appear in the report.
 class ColumnSelector extends React.Component {
     constructor(props) {
         super();
@@ -295,11 +297,29 @@ class ColumnSelector extends React.Component {
         // Bind `this` to non-React methods.
         this.submitHandler = this.submitHandler.bind(this);
         this.toggleColumn = this.toggleColumn.bind(this);
+        this.handleSelectAll = this.handleSelectAll.bind(this);
+        this.handleSelectOne = this.handleSelectOne.bind(this);
     }
 
     toggleColumn(columnPath) {
         // Called every time a column's checkbox gets clicked on or off in the modal. `columnPath`
-        // is the query-string term corresponding to each column.
+        // is the query-string term corresponding to each column. First, if the column is getting
+        // turned off, make sure we have at least one other column selected, because at least one
+        // column has to be selected.
+        if (this.state.columns[columnPath].visible) {
+            // The clicked column is currently visible, so before we make it invisible, make sure
+            // at least one other column is also visible.
+            const allColumnKeys = Object.keys(this.state.columns);
+            const anotherVisible = allColumnKeys.some(key => key !== columnPath && this.state.columns[key].visible);
+            if (!anotherVisible) {
+                // A checkbox is being turned off, and no other checkbox is checked, so ignore the
+                // click.
+                return;
+            }
+        }
+
+        // Either a checkbox is being turned on, or it's being turned off and another checkbox is
+        // still checked. Change the component state to reflect the new checkbox states.
         this.setState((prevState) => {
             // Toggle the `visible` state corresponding to the column whose checkbox was toggled.
             // Then set that as the new React state which causes a redraw of the modal with all the
@@ -315,9 +335,36 @@ class ColumnSelector extends React.Component {
         this.props.setColumnState(this.state.columns);
     }
 
+    handleSelectAll() {
+        // Called when the "Select all" button is clicked.
+        this.setState((prevState) => {
+            // For every column in this.state.columns, set its `visible` property to true.
+            Object.keys(prevState.columns).forEach((columnPath) => {
+                prevState.columns[columnPath].visible = true;
+            });
+            return { columns: prevState.columns };
+        });
+    }
+
+    handleSelectOne() {
+        // Called when the "Select first only" button is clicked.
+        this.setState((prevState) => {
+            // Set all columns to invisible first.
+            const columnPaths = Object.keys(prevState.columns);
+            columnPaths.forEach((columnPath) => {
+                prevState.columns[columnPath].visible = false;
+            });
+
+            // Now set the column for the first key to true so that only it's selected.
+            prevState.columns[columnPaths[0]].visible = true;
+            return { columns: prevState.columns };
+        });
+    }
+
     render() {
         const { columns } = this.props;
         const columnPaths = Object.keys(columns);
+        const firstColumnKey = Object.keys(this.state.columns)[0];
 
         return (
             <Modal
@@ -341,7 +388,13 @@ class ColumnSelector extends React.Component {
                     closeModal
                     submitBtn={this.submitHandler}
                     submitTitle="Select"
-                />
+                    addCss="column-selector__controls"
+                >
+                    <div className="column-selector__utility-buttons">
+                        <button onClick={this.handleSelectAll} className="btn btn-info">Select all</button>
+                        <button onClick={this.handleSelectOne} className="btn btn-info">Select {this.state.columns[firstColumnKey].title} only</button>
+                    </div>
+                </ModalFooter>
             </Modal>
         );
     }

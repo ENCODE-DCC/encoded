@@ -198,7 +198,7 @@ export class ModalFooter extends React.Component {
     }
 
     render() {
-        const { submitBtn, submitTitle } = this.props;
+        const { submitBtn, submitTitle, addCss } = this.props;
         let { closeModal } = this.props;
         let submitBtnComponent = null;
         let closeBtnComponent = null;
@@ -233,15 +233,14 @@ export class ModalFooter extends React.Component {
         }
 
         return (
-            <div className="modal-footer">
+            <div className={`modal-footer${addCss ? ` ${addCss}` : ''}`}>
                 {this.props.children ? this.props.children : null}
                 {submitBtnComponent || closeBtnComponent ?
                     <div className="modal-footer-controls">
                         {closeBtnComponent}
                         {submitBtnComponent}
                     </div>
-                    : null}
-                {this.props.children}
+                : null}
             </div>
         );
     }
@@ -253,6 +252,7 @@ ModalFooter.propTypes = {
         PropTypes.func, // Function to call when default-rendered Submit button clicked
     ]),
     submitTitle: PropTypes.string, // Title for default submit button
+    addCss: PropTypes.string, // CSS classes to add to modal header
     closeModal: PropTypes.oneOfType([
         PropTypes.bool, // Use default-rendered Cancel button that closes the modal
         PropTypes.object, // Cancel button is a React component; just render it
@@ -266,6 +266,7 @@ ModalFooter.propTypes = {
 ModalFooter.defaultProps = {
     submitBtn: null,
     submitTitle: '',
+    addCss: '',
     closeModal: undefined,
     dontClose: false,
     c_closeModal: null,

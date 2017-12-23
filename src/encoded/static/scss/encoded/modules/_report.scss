@@ -11,4 +11,22 @@
         flex: 0 1 33.33%;
         width: 33.33%;
     }
+
+    @at-root #{&}__controls {
+        .modal-footer-controls {
+            flex: 0 1 50%;
+            width: 50%;
+            text-align: right;
+        }
+    }
+
+    @at-root #{&}__controls {
+        display: flex;
+    }
+
+    @at-root #{&}__utility-buttons {
+        flex: 0 1 50%;
+        width: 50%;
+        text-align: left;
+    }
 }
