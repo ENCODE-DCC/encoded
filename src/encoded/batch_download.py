@@ -307,7 +307,7 @@ def batch_download(context, request):
     files = [metadata_link]
     if 'files.file_type' in param_list:
         for exp in results['@graph']:
-            for f in exp['files']:
+            for f in exp.get('files', []):
                 if f['file_type'] in param_list['files.file_type']:
                     files.append('{host_url}{href}'.format(
                         host_url=request.host_url,
@@ -315,7 +315,7 @@ def batch_download(context, request):
                     ))
     else:
         for exp in results['@graph']:
-            for f in exp['files']:
+            for f in exp.get('files', []):
                 files.append('{host_url}{href}'.format(
                     host_url=request.host_url,
                     href=f['href']
@@ -347,7 +347,12 @@ def lookup_column_value(value, path):
     if nodes and hasattr(nodes[0], '__contains__') and '@id' in nodes[0]:
         nodes = [node['@id'] for node in nodes]
     seen = set()
-    deduped_nodes = [n for n in nodes if not (n in seen or seen.add(n))]
+    deduped_nodes = []
+    for n in nodes:
+        if isinstance(n, dict):
+            n = str(n)
+        if n not in seen:
+            deduped_nodes.append(n)
     return u','.join(u'{}'.format(n) for n in deduped_nodes)
 
 
