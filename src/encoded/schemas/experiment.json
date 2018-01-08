@@ -333,6 +333,9 @@
         "files.file_type": {
             "title": "Available data"
         },
+        "files.platform.term_name": {
+            "title": "Platform"
+        },
         "files.run_type": {
             "title": "Run type"
         },
