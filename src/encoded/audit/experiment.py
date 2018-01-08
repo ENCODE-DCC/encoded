@@ -162,7 +162,7 @@ def check_control_read_depth_standards(value,
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth >= 5000000 and read_depth < 10000000:
-                yield AuditFailure('control low read depth', detail, level='NOT_COMPLIANT')
+                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
             elif read_depth < 5000000:
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
         else:
@@ -188,7 +188,7 @@ def check_control_read_depth_standards(value,
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth >= 3000000 and read_depth < 10000000:
-                yield AuditFailure('control low read depth', detail, level='NOT_COMPLIANT')
+                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
             elif read_depth < 3000000:
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
     return
@@ -485,7 +485,7 @@ def check_experiment_dnase_seq_standards(experiment,
                                      metric['mapped']) + \
                                  'mapped reads. ' + suffix
                     if 20000000 <= metric['mapped'] < 50000000:
-                        yield AuditFailure('insufficient read depth', detail, level='WARNING')
+                        yield AuditFailure('low read depth', detail, level='WARNING')
                     elif metric['mapped'] < 20000000:
                         yield AuditFailure('extremely low read depth', detail, level='ERROR')
         elif alignment_files is not None and len(alignment_files) > 0 and \
