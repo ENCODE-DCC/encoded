@@ -283,15 +283,61 @@ ColumnHeader.propTypes = {
 };
 
 
+class ColumnSelectorControls extends React.Component {
+    constructor() {
+        super();
+
+        // Set initial React state.
+        this.state = {
+            selectedSort: 'default',
+        };
+
+        // Bind `this` to non-React methods.
+        this.handleSortChange = this.handleSortChange.bind(this);
+    }
+
+    // Called when the user changes the sorting option.
+    handleSortChange(e) {
+        this.setState({ selectedSort: e.target.value });
+        this.props.handleSortChange(e.target.value);
+    }
+
+    render() {
+        const { handleSelectAll, handleSelectOne, firstColumnTitle } = this.props;
+
+        return (
+            <div className="column-selector__controls">
+                <div className="column-selector__utility-buttons">
+                    <button onClick={handleSelectAll} className="btn btn-info">Select all</button>
+                    <button onClick={handleSelectOne} className="btn btn-info">Select {firstColumnTitle} only</button>
+                </div>
+                <select className="column-selector__select" value={this.state.selectedSort} onChange={this.handleSortChange}>
+                    <option value="default">Default sort</option>
+                    <option value="alpha">Alphabetical sort</option>
+                </select>
+            </div>
+        );
+    }
+}
+
+ColumnSelectorControls.propTypes = {
+    handleSelectAll: PropTypes.func.isRequired, // Callback when Select All button clicked
+    handleSelectOne: PropTypes.func.isRequired, // Callback when SelectOne button clicked
+    handleSortChange: PropTypes.func.isRequired, // Callback when sorting option changed
+    firstColumnTitle: PropTypes.string.isRequired, // Title of first column
+};
+
+
 // Displays a modal dialog with every possible column for the type of object being displayed.
 // This lets you choose which columns you want to appear in the report.
 class ColumnSelector extends React.Component {
     constructor(props) {
-        super();
+        super(props);
 
         // Set the initial React states.
         this.state = {
             columns: props.columns, // Make (effectively) a local mutatable copy of the columns
+            sortOption: 'default', // Default sorting option
         };
 
         // Bind `this` to non-React methods.
@@ -299,6 +345,7 @@ class ColumnSelector extends React.Component {
         this.toggleColumn = this.toggleColumn.bind(this);
         this.handleSelectAll = this.handleSelectAll.bind(this);
         this.handleSelectOne = this.handleSelectOne.bind(this);
+        this.handleSortChange = this.handleSortChange.bind(this);
     }
 
     toggleColumn(columnPath) {
@@ -361,10 +408,18 @@ class ColumnSelector extends React.Component {
         });
     }
 
+    // Called when the sorting option gets changed.
+    handleSortChange(sortOption) {
+        this.setState({ sortOption });
+    }
+
     render() {
         const { columns } = this.props;
-        const columnPaths = Object.keys(columns);
         const firstColumnKey = Object.keys(this.state.columns)[0];
+        let columnPaths = Object.keys(columns);
+        if (this.state.sortOptions === 'alpha') {
+            columnPaths = columnPaths.sort();
+        }
 
         return (
             <Modal
@@ -377,6 +432,12 @@ class ColumnSelector extends React.Component {
             >
                 <ModalHeader title="Select columns to view" closeModal />
                 <ModalBody>
+                    <ColumnSelectorControls
+                        handleSelectAll={this.handleSelectAll}
+                        handleSelectOne={this.handleSelectOne}
+                        handleSortChange={this.handleSortChange}
+                        firstColumnTitle={this.state.columns[firstColumnKey].title}
+                    />
                     <div className="column-selector__selectors">
                         {columnPaths.map((columnPath) => {
                             const column = this.state.columns[columnPath];
@@ -389,12 +450,7 @@ class ColumnSelector extends React.Component {
                     submitBtn={this.submitHandler}
                     submitTitle="Select"
                     addCss="column-selector__controls"
-                >
-                    <div className="column-selector__utility-buttons">
-                        <button onClick={this.handleSelectAll} className="btn btn-info">Select all</button>
-                        <button onClick={this.handleSelectOne} className="btn btn-info">Select {this.state.columns[firstColumnKey].title} only</button>
-                    </div>
-                </ModalFooter>
+                />
             </Modal>
         );
     }
