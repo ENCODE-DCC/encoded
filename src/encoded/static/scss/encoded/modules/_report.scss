@@ -22,11 +22,28 @@
 
     @at-root #{&}__controls {
         display: flex;
+        padding: 5px;
+        border-bottom: 1px solid #a0a0a0;
+
+        button {
+            display: inline-block;
+            margin-right: 5px;
+        }
     }
 
     @at-root #{&}__utility-buttons {
         flex: 0 1 50%;
         width: 50%;
         text-align: left;
+    }
+
+    @at-root #{&}__sort-selector {
+        flex: 0 1 50%;
+        width: 50%;
+
+        > .form-control--select {
+            width: auto; // So the select only takes up as much room as it needs
+            margin-left: auto; // To right justify within a flex box
+        }
     }
 }

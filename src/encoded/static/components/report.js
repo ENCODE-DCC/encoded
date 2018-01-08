@@ -311,10 +311,12 @@ class ColumnSelectorControls extends React.Component {
                     <button onClick={handleSelectAll} className="btn btn-info">Select all</button>
                     <button onClick={handleSelectOne} className="btn btn-info">Select {firstColumnTitle} only</button>
                 </div>
-                <select className="column-selector__select" value={this.state.selectedSort} onChange={this.handleSortChange}>
-                    <option value="default">Default sort</option>
-                    <option value="alpha">Alphabetical sort</option>
-                </select>
+                <div className="column-selector__sort-selector">
+                    <select className="form-control--select" value={this.state.selectedSort} onChange={this.handleSortChange}>
+                        <option value="default">Default sort</option>
+                        <option value="alpha">Alphabetical sort</option>
+                    </select>
+                </div>
             </div>
         );
     }
@@ -414,11 +416,18 @@ class ColumnSelector extends React.Component {
     }
 
     render() {
-        const { columns } = this.props;
-        const firstColumnKey = Object.keys(this.state.columns)[0];
+        const { columns } = this.state;
+        const firstColumnKey = Object.keys(columns)[0];
+
+        // Get the column paths, sorting them by the corresponding column title if the user asked
+        // for that.
         let columnPaths = Object.keys(columns);
-        if (this.state.sortOptions === 'alpha') {
-            columnPaths = columnPaths.sort();
+        if (this.state.sortOption === 'alpha') {
+            columnPaths = columnPaths.sort((aKey, bKey) => {
+                const aTitle = columns[aKey].title;
+                const bTitle = columns[bKey].title;
+                return (aTitle < bTitle ? -1 : (bTitle < aTitle ? 1 : 0));
+            });
         }
 
         return (
@@ -431,16 +440,16 @@ class ColumnSelector extends React.Component {
                 addClasses="column-selector"
             >
                 <ModalHeader title="Select columns to view" closeModal />
+                <ColumnSelectorControls
+                    handleSelectAll={this.handleSelectAll}
+                    handleSelectOne={this.handleSelectOne}
+                    handleSortChange={this.handleSortChange}
+                    firstColumnTitle={columns[firstColumnKey].title}
+                />
                 <ModalBody>
-                    <ColumnSelectorControls
-                        handleSelectAll={this.handleSelectAll}
-                        handleSelectOne={this.handleSelectOne}
-                        handleSortChange={this.handleSortChange}
-                        firstColumnTitle={this.state.columns[firstColumnKey].title}
-                    />
                     <div className="column-selector__selectors">
                         {columnPaths.map((columnPath) => {
-                            const column = this.state.columns[columnPath];
+                            const column = columns[columnPath];
                             return <ColumnItem key={columnPath} columnPath={columnPath} column={column} toggleColumn={this.toggleColumn} />;
                         })}
                     </div>
@@ -449,7 +458,6 @@ class ColumnSelector extends React.Component {
                     closeModal
                     submitBtn={this.submitHandler}
                     submitTitle="Select"
-                    addCss="column-selector__controls"
                 />
             </Modal>
         );
