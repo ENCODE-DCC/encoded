@@ -101,7 +101,7 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                         control_depth = get_chip_seq_bam_read_depth(bam_file)
                         control_target = get_target_name(bam_file.get('dataset'),
                                                          control_objects)
-                        if control_depth and control_target in ['Control-human', 'Control-mouse']:
+                        if control_depth and "control" in control_target.get('investigated_as'):
                             cumulative_read_depth += control_depth
                             triple = (
                                 bam_file.get('@id'),
