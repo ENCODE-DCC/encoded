@@ -136,9 +136,6 @@ class Item(snovault.Item):
         'revoked': ALLOW_CURRENT,
         'in review': ALLOW_CURRENT_AND_SUBMITTER_EDIT,
 
-        # publication
-        'published': ALLOW_CURRENT,
-
         # pipeline
         'active': ALLOW_CURRENT,
         'archived': ALLOW_CURRENT,
