@@ -62,7 +62,7 @@ describe('Software', () => {
         let rows;
 
         beforeAll(() => {
-            const file0 = require('../testdata/file/fastq.js');
+            const file0 = require('../testdata/file/fastq.js')[0];
             file0.replicate = require('../testdata/replicate/human.js');
             const files = [file0];
             table = mount(
