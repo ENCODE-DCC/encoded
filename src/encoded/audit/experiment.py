@@ -226,7 +226,7 @@ def audit_experiment_pipeline_assay_details(value, system, files_structure):
             detail = 'This experiment ' + \
                 'contains file(s) associated with ' + \
                 'pipeline {} '.format(pipeline['@id']) + \
-                'which assay_term_names list does not include experiments\'s asssay_term_name.'
+                'which assay_term_names list does not include experiments\'s assay_term_name.'
             yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
     return
 
