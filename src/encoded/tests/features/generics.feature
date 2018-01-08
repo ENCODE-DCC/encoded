@@ -26,7 +26,7 @@ Feature: Generics
         | Experiment                    | DNA binding                           |
         | File                          | released                              |
         | Library                       | released                              |
-        | Publication                   | published                             |
+        | Publication                   | released                              |
         | Software                      | aligner                               |
         | Target                        | Homo sapiens                          |
 

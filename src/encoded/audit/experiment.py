@@ -162,7 +162,7 @@ def check_control_read_depth_standards(value,
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth >= 5000000 and read_depth < 10000000:
-                yield AuditFailure('control low read depth', detail, level='NOT_COMPLIANT')
+                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
             elif read_depth < 5000000:
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
         else:
@@ -188,7 +188,7 @@ def check_control_read_depth_standards(value,
             if read_depth >= 10000000 and read_depth < marks['narrow']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth >= 3000000 and read_depth < 10000000:
-                yield AuditFailure('control low read depth', detail, level='NOT_COMPLIANT')
+                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
             elif read_depth < 3000000:
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
     return
@@ -226,7 +226,7 @@ def audit_experiment_pipeline_assay_details(value, system, files_structure):
             detail = 'This experiment ' + \
                 'contains file(s) associated with ' + \
                 'pipeline {} '.format(pipeline['@id']) + \
-                'which assay_term_names list does not include experiments\'s asssay_term_name.'
+                'which assay_term_names list does not include experiments\'s assay_term_name.'
             yield AuditFailure('inconsistent assay_term_name', detail, level='INTERNAL_ACTION')
     return
 
@@ -272,7 +272,7 @@ def audit_experiment_with_uploading_files(value, system, files_structure):
                           'with the status {}.'.format(value['@id'],
                                                        file_object['@id'],
                                                        file_object['status']))
-                yield AuditFailure(category, detail, level='INTERNAL_ACTION')
+                yield AuditFailure(category, detail, level='WARNING')
 
     return
 
@@ -485,7 +485,7 @@ def check_experiment_dnase_seq_standards(experiment,
                                      metric['mapped']) + \
                                  'mapped reads. ' + suffix
                     if 20000000 <= metric['mapped'] < 50000000:
-                        yield AuditFailure('insufficient read depth', detail, level='WARNING')
+                        yield AuditFailure('low read depth', detail, level='WARNING')
                     elif metric['mapped'] < 20000000:
                         yield AuditFailure('extremely low read depth', detail, level='ERROR')
         elif alignment_files is not None and len(alignment_files) > 0 and \
@@ -1251,39 +1251,31 @@ def check_wgbs_coverage(samtools_metrics,
                         pipeline_objects):
     for m in samtools_metrics:
         if 'mapped' in m:
-            bio_rep_num = False
-            for f in m['quality_metric_of']:
-                if 'replicate' in f and \
-                   'biological_replicate_number' in f['replicate']:
-                    bio_rep_num = f['replicate']['biological_replicate_number']
-                    break
             mapped_reads = m['mapped']
             if organism == 'mouse':
                 coverage = float(mapped_reads * read_length) / 2800000000.0
             elif organism == 'human':
                 coverage = float(mapped_reads * read_length) / 3300000000.0
-
-            if coverage < 30:
-                if bio_rep_num is not False:
-                    detail = 'Biological replicate {} '.format(bio_rep_num) + \
-                             'of experiment processed by {} '.format(pipeline_title) + \
-                             '( {} ) '.format(pipeline_objects[0]['@id']) + \
-                             'has a coverage of {}. '.format(int(coverage)) + \
-                             'The minimum ENCODE standard for each replicate in ' + \
-                             'a WGBS assay is 30X. (See /data-standards/wgbs/ )'
-                    yield AuditFailure('insufficient coverage',
-                                       detail,
-                                       level='NOT_COMPLIANT')
-                else:
-                    detail = 'Replicate ' + \
-                             'of experiment processed by {} '.format(pipeline_title) + \
-                             '( {} ) '.format(pipeline_objects[0]['@id']) + \
-                             'has a coverage of {}. '.format(int(coverage)) + \
-                             'The minimum ENCODE standard for each replicate in ' + \
-                             'a WGBS assay is 30X. (See /data-standards/wgbs/ )'
-                    yield AuditFailure('insufficient coverage',
-                                       detail,
-                                       level='INTERNAL_ACTION')
+            detail = ('Replicate of experiment processed by {} ( {} ) '
+                      'has a coverage of {}X. '
+                      'The minimum ENCODE standard coverage for each replicate in '
+                      'a WGBS assay is 25X and the recommended value '
+                      'is > 30X (See /data-standards/wgbs/ )').format(
+                          pipeline_title,
+                          pipeline_objects[0]['@id'],
+                          int(coverage))
+            if coverage < 5:
+                yield AuditFailure('extremely low coverage',
+                                   detail,
+                                   level='ERROR')
+            elif coverage < 25:
+                yield AuditFailure('insufficient coverage',
+                                   detail,
+                                   level='NOT_COMPLIANT')
+            elif coverage < 30:
+                yield AuditFailure('low coverage',
+                                   detail,
+                                   level='WARNING')
     return
 
 
@@ -1303,21 +1295,23 @@ def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title):
 
 def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title):
     for metric in bismark_metrics:
-        lambdaCpG = float(metric['lambda C methylated in CpG context'][:-1])
-        lambdaCHG = float(metric['lambda C methylated in CHG context'][:-1])
-        lambdaCHH = float(metric['lambda C methylated in CHH context'][:-1])
-
-        if (lambdaCpG > 1 and lambdaCHG > 1 and lambdaCHH > 1) or \
-           (((lambdaCpG * 0.25) + (lambdaCHG * 0.25) + (lambdaCHH * 0.5)) > 1):
-            detail = 'ENCODE experiment processed by {} '.format(pipeline_title) + \
-                     'pipeline has the following %C methylated in different contexts. ' + \
-                     'lambda C methylated in CpG context was {}%, '.format(lambdaCpG) + \
-                     'lambda C methylated in CHG context was {}%, '.format(lambdaCHG) + \
-                     'lambda C methylated in CHH context was {}%. '.format(lambdaCHH) + \
-                     'The %C methylated in all contexts should be < 1%.'
-            yield AuditFailure('high lambda C methylation ratio', detail,
-                               level='WARNING')
-    return
+        cpg_string = metric.get('lambda C methylated in CpG context')
+        chg_string = metric.get('lambda C methylated in CHG context')
+        chh_string = metric.get('lambda C methylated in CHH context')
+        if (cpg_string and chg_string and chh_string):
+            lambdaCpG = float(cpg_string[:-1])
+            lambdaCHG = float(chg_string[:-1])
+            lambdaCHH = float(chh_string[:-1])
+            if (lambdaCpG > 1 and lambdaCHG > 1 and lambdaCHH > 1) or \
+            (((lambdaCpG * 0.25) + (lambdaCHG * 0.25) + (lambdaCHH * 0.5)) > 1):
+                detail = 'ENCODE experiment processed by {} '.format(pipeline_title) + \
+                        'pipeline has the following %C methylated in different contexts. ' + \
+                        'lambda C methylated in CpG context was {}%, '.format(lambdaCpG) + \
+                        'lambda C methylated in CHG context was {}%, '.format(lambdaCHG) + \
+                        'lambda C methylated in CHH context was {}%. '.format(lambdaCHH) + \
+                        'The %C methylated in all contexts should be < 1%.'
+                yield AuditFailure('high lambda C methylation ratio', detail,
+                                   level='WARNING')
 
 
 def check_file_chip_seq_read_depth(file_to_check,
@@ -1785,7 +1779,9 @@ def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
     if not value.get('replicates'):
         return
 
-    if value.get('assay_term_name') not in [
+    assay_term_name = value.get('assay_term_name')
+
+    if assay_term_name not in [
             'ChIP-seq',
             'DNase-seq',
             'genetic modification followed by DNase-seq']:
@@ -1804,7 +1800,8 @@ def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
                 replicate_read_lengths[bio_rep_number].add(
                     file_object['read_length'])
 
-            if 'run_type' in file_object:
+            # run type consistency is relevant only for ChIP-seq
+            if assay_term_name == 'ChIP-seq' and 'run_type' in file_object:
                 if bio_rep_number not in replicate_pairing_statuses:
                     replicate_pairing_statuses[bio_rep_number] = set()
                 replicate_pairing_statuses[bio_rep_number].add(
@@ -1825,15 +1822,6 @@ def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
                              replicate_read_lengths[key])
                 yield AuditFailure('mixed read lengths',
                                    detail, level='WARNING')
-
-    for key in replicate_pairing_statuses:
-        if len(replicate_pairing_statuses[key]) > 1:
-            detail = 'Biological replicate {} '.format(key) + \
-                     'in experiment {} '.format(value['@id']) + \
-                     'has mixed endedness {}.'.format(
-                         replicate_pairing_statuses[key])
-            yield AuditFailure('mixed run types',
-                               detail, level='WARNING')
 
     keys = list(replicate_read_lengths.keys())
 
@@ -1864,29 +1852,40 @@ def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
                     yield AuditFailure('mixed read lengths',
                                        detail, level='WARNING')
 
-    keys = list(replicate_pairing_statuses.keys())
-    if len(keys) > 1:
-        for index_i in range(len(keys)):
-            for index_j in range(index_i + 1, len(keys)):
-                i_pairs = replicate_pairing_statuses[keys[index_i]]
-                j_pairs = replicate_pairing_statuses[keys[index_j]]
-                diff_flag = False
-                for entry in i_pairs:
-                    if entry not in j_pairs:
-                        diff_flag = True
-                for entry in j_pairs:
-                    if entry not in i_pairs:
-                        diff_flag = True
-                if diff_flag is True:
-                    detail = 'Biological replicate {} '.format(keys[index_i]) + \
-                             'in experiment {} '.format(value['@id']) + \
-                             'has endedness {} '.format(i_pairs) + \
-                             ' that differ from replicate {},'.format(keys[index_j]) + \
-                             ' which has {}.'.format(j_pairs)
-                    yield AuditFailure('mixed run types',
-                                       detail, level='WARNING')
+    # run type consistency is relevant only for ChIP-seq
+    if assay_term_name == 'ChIP-seq':  
+        for key in replicate_pairing_statuses:
+            if len(replicate_pairing_statuses[key]) > 1:
+                detail = 'Biological replicate {} '.format(key) + \
+                        'in experiment {} '.format(value['@id']) + \
+                        'has mixed endedness {}.'.format(
+                            replicate_pairing_statuses[key])
+                yield AuditFailure('mixed run types',
+                                detail, level='WARNING')
 
-    return
+        
+
+        keys = list(replicate_pairing_statuses.keys())
+        if len(keys) > 1:
+            for index_i in range(len(keys)):
+                for index_j in range(index_i + 1, len(keys)):
+                    i_pairs = replicate_pairing_statuses[keys[index_i]]
+                    j_pairs = replicate_pairing_statuses[keys[index_j]]
+                    diff_flag = False
+                    for entry in i_pairs:
+                        if entry not in j_pairs:
+                            diff_flag = True
+                    for entry in j_pairs:
+                        if entry not in i_pairs:
+                            diff_flag = True
+                    if diff_flag is True:
+                        detail = 'Biological replicate {} '.format(keys[index_i]) + \
+                                'in experiment {} '.format(value['@id']) + \
+                                'has endedness {} '.format(i_pairs) + \
+                                ' that differ from replicate {},'.format(keys[index_j]) + \
+                                ' which has {}.'.format(j_pairs)
+                        yield AuditFailure('mixed run types',
+                                        detail, level='WARNING')
 
 
 def audit_experiment_replicate_with_no_files(value, system, files_structure):
@@ -1963,9 +1962,11 @@ def audit_experiment_replicated(value, system, excluded_types):
     '''
     Excluding single cell isolation experiments from the replication requirement
     Excluding RNA-bind-and-Seq from the replication requirment
+    Excluding genetic modification followed by DNase-seq from the replication requirement
     '''
     if value['assay_term_name'] in ['single cell isolation followed by RNA-seq',
-                                    'RNA Bind-n-Seq']:
+                                    'RNA Bind-n-Seq',
+                                    'genetic modification followed by DNase-seq']:
         return
     '''
     Excluding GTEX experiments from the replication requirement
@@ -2135,7 +2136,7 @@ def audit_experiment_documents(value, system, excluded_types):
     '''
     Experiments should have documents.  Protocol documents or some sort of document.
     '''
-    if value['status'] in ['deleted', 'replaced', 'preliminary']:
+    if value['status'] in ['deleted', 'replaced']:
         return
 
     # If the experiment has documents, we are good
@@ -2155,24 +2156,6 @@ def audit_experiment_documents(value, system, excluded_types):
     if lib_docs == 0:
         detail = 'Experiment {} has no attached documents'.format(value['@id'])
         yield AuditFailure('missing documents', detail, level='NOT_COMPLIANT')
-    return
-
-
-def audit_experiment_assay(value, system, excluded_types):
-    '''
-    Experiments should have assays with valid ontologies term ids and names that
-    are a valid synonym.
-    '''
-    if value['status'] == 'deleted':
-        return
-
-    term_id = value.get('assay_term_id')
-    term_name = value.get('assay_term_name')
-
-    if term_id.startswith('NTR:'):
-        detail = 'Assay_term_id is a New Term Request ({} - {})'.format(
-            term_id, term_name)
-        yield AuditFailure('NTR assay', detail, level='INTERNAL_ACTION')
     return
 
 
@@ -2451,7 +2434,7 @@ def audit_experiment_biosample_term(value, system, excluded_types):
     if value['status'] in ['deleted', 'replaced']:
         return
 
-    if value.get('biosample_type') == 'in vitro sample':
+    if value.get('biosample_type') == 'cell-free sample':
         return
 
     ontology = system['registry']['ontology']
@@ -3377,7 +3360,6 @@ function_dispatcher_without_files = {
     'audit_replication': audit_experiment_replicated,
     'audit_RNA_size': audit_library_RNA_size_range,
     'audit_missing_modifiction': audit_missing_modification,
-    'audit_NTR': audit_experiment_assay,
     'audit_AB_characterization': audit_experiment_antibody_characterized,
     'audit_control': audit_experiment_control,
     'audit_spikeins': audit_experiment_spikeins

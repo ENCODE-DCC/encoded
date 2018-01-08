@@ -138,7 +138,10 @@ class ItemEdit extends React.Component {
             fetchedForm = (
                 <FetchedData>
                     <Param name="schemas" url="/profiles/" />
-                    <JSONSchemaForm type={type} action={action} method="POST" onFinish={this.finished} showReadOnly={false} />
+                    <JSONSchemaForm
+                        type={type} action={action} method="POST"
+                        onFinish={this.finished} showReadOnly={false} showSaveAndAdd
+                    />
                 </FetchedData>
             );
         } else {  // edit form
@@ -206,7 +209,7 @@ FetchedRelatedItems.defaultProps = {
 
 
 export const RelatedItems = (props) => {
-    const itemUrl = globals.encodedURI(`${props.url}&status=released&status=started&status=proposed&status=submitted&status=ready+for+review&status=in+progress`);
+    const itemUrl = globals.encodedURI(`${props.url}&status=released&status=started&status=submitted&status=ready+for+review&status=in+progress`);
     const limitedUrl = `${itemUrl}&limit=${props.limit}`;
     const unlimitedUrl = `${itemUrl}&limit=all`;
     return (

@@ -181,6 +181,14 @@
             "913f5f5c-7e58-4dd2-9f6d-8fca92d0e91c"
         ],
         "minor_version": 0
+    },
+    {
+        "analysis_step": "dbgap-sra-to-fastq-step-v-1/",
+        "minor_version": 1,
+        "software_versions": [
+            "9277b2c0-271a-43e2-88a7-346796c6b776"
+        ],
+        "status": "released",
+        "uuid": "b75af1ff-b3ab-443f-a134-2b00cd318cd9"
     }
-
 ]

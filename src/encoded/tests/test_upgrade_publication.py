@@ -26,6 +26,16 @@ def publication_4():
     }
 
 
+@pytest.fixture
+def publication_5(publication):
+    item = publication.copy()
+    item.update({
+        'schema_version': '5',
+        'status': 'in preparation'
+    })
+    return item
+
+
 def test_publication_upgrade(upgrader, publication_1):
     value = upgrader.upgrade('publication', publication_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -55,3 +65,24 @@ def test_publication_upgrade_4_5(upgrader, publication_4):
     value = upgrader.upgrade('publication', publication_4,
                              current_version='4', target_version='5')
     assert value['status'] == 'submitted'
+
+
+def test_publication_upgrade_5_6(upgrader, publication_5):
+    value = upgrader.upgrade('publication', publication_5, current_version='5', target_version='6')
+    assert value['schema_version'] == '6'
+    assert value['status'] == 'in progress'
+    
+    publication_5['status'] = 'published'
+    value = upgrader.upgrade('publication', publication_5, current_version='5', target_version='6')
+    assert value['schema_version'] == '6'
+    assert value['status'] == 'released'
+
+    publication_5['status'] = 'submitted'
+    value = upgrader.upgrade('publication', publication_5, current_version='5', target_version='6')
+    assert value['schema_version'] == '6'
+    assert value['status'] == 'in progress'
+
+    publication_5['status'] = 'deleted'
+    value = upgrader.upgrade('publication', publication_5, current_version='5', target_version='6')
+    assert value['schema_version'] == '6'
+    assert value['status'] == 'deleted'

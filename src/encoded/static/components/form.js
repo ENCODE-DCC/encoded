@@ -6,7 +6,7 @@ import jsonschema from 'jsonschema';
 import _ from 'underscore';
 import offset from '../libs/offset';
 import { FetchedData, Param } from './fetched';
-import { parseAndLogError } from './globals';
+import { parseAndLogError, listingTitles } from './globals';
 import { FileInput, ItemPreview, ObjectPicker } from './inputs';
 import Layout from './layout';
 import DropdownButton from '../libs/bootstrap/button';
@@ -791,10 +791,11 @@ export class Form extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         // If form error state changed, scroll to first error message
         // to make sure the user notices it.
-        if (!_.isEqual(prevState.errors, this.state.errors)) {
-            const error = document.querySelector('.rf-Message');
-            if (error) {
-                window.scrollTo(0, offset(error).top - document.getElementById('navbar').clientHeight);
+        if (!_.isEqual(prevState.errors, this.state.errors) ||
+            (this.state.message && (this.state.message !== prevState.message))) {
+            const message = document.querySelector('.rf-Message,.alert');
+            if (message) {
+                window.scrollTo(0, offset(message).top - document.getElementById('navbar').clientHeight);
             }
         }
     }
@@ -871,6 +872,8 @@ export class Form extends React.Component {
         e.preventDefault();
         e.stopPropagation();
 
+        const button = e.target.getAttribute('data-button');
+
         // Filter out `schema_version` property
         const value = filterValue(this.state.value);
 
@@ -892,15 +895,17 @@ export class Form extends React.Component {
             return response.json();
         })
         .catch(parseAndLogError.bind(undefined, 'putRequest'))
-        .then(this.receive);
+        .then(this.receive.bind(this, button));
         // Set `communicating` to true so the Save button becomes disabled.
         this.setState({
+            message: null,
+            error: null,
             communicating: true,
             putRequest: request,
         });
     }
 
-    receive(data) {
+    receive(button, data) {
         // Handle a response that is not an HTTP error status.
 
         // Handle server-side validation errors using `this.showErrors`.
@@ -909,7 +914,7 @@ export class Form extends React.Component {
             return this.showErrors(data);
         }
         // Handle a successful form submission using `this.finish`.
-        return this.finish(data);
+        return this.finish(button, data);
     }
 
     showErrors(data) {
@@ -954,7 +959,7 @@ export class Form extends React.Component {
         });
     }
 
-    finish(data) {
+    finish(button, data) {
         // Handle a successful form submission.
 
         // Let the app know navigation is now allowed again
@@ -965,8 +970,17 @@ export class Form extends React.Component {
             this.setState({ unsavedToken: null });
         }
 
-        // Call the `onFinish` prop, if specified.
-        if (this.props.onFinish) {
+        if (button === 'saveAndAdd') {
+            const context = data['@graph'][0];
+            const title = listingTitles.lookup(context)({ context });
+            let message = `Created ${title}`;
+            if (context.accession && context.accession !== title) {
+                message += ` with accession ${context.accession}`;
+            }
+            message += '.';
+            this.setState({ message });
+        } else if (this.props.onFinish) {
+            // Default action: defer to the `onFinish` prop.
             this.props.onFinish(data);
         }
     }
@@ -977,6 +991,7 @@ export class Form extends React.Component {
                 className="rf-Form"
                 onSubmit={this.save}
             >
+                {this.state.message ? <div className="alert alert-success">{this.state.message}</div> : ''}
                 <Field
                     schema={this.props.schema}
                     value={this.state.value}
@@ -990,8 +1005,17 @@ export class Form extends React.Component {
                         onClick={this.save}
                         disabled={!this.canSave()}
                     >{this.props.submitLabel}</button>
+                    {' '}
+                    {this.props.showSaveAndAdd ?
+                        <button
+                            data-button="saveAndAdd"
+                            className="btn btn-success"
+                            onClick={this.save}
+                            disabled={!this.canSave()}
+                        >Save & Add Another</button>
+                    : ''}
                 </div>
-                {this.state.error ? <div className="rf-Message">{this.state.error}</div> : ''}
+                {this.state.error ? <div className="alert alert-danger">{this.state.error}</div> : ''}
             </form>
         );
     }
@@ -1003,6 +1027,7 @@ Form.propTypes = {
     schemas: PropTypes.object,
     schema: PropTypes.object.isRequired,
     showReadOnly: PropTypes.bool,
+    showSaveAndAdd: PropTypes.bool,
     id: PropTypes.string,
     method: PropTypes.string.isRequired,
     action: PropTypes.string.isRequired,
@@ -1017,6 +1042,7 @@ Form.defaultProps = {
     id: '',
     etag: '',
     showReadOnly: true,
+    showSaveAndAdd: false,
     submitLabel: 'Save',
 };
 
@@ -1064,6 +1090,7 @@ export class JSONSchemaForm extends React.Component {
             action={this.props.action} method={this.props.method} etag={this.props.etag}
             schemas={this.props.schemas} schema={this.state.schema}
             defaultValue={this.state.value} showReadOnly={this.props.showReadOnly}
+            showSaveAndAdd={this.props.showSaveAndAdd}
             id={this.props.id} onFinish={this.props.onFinish}
         />);
     }
@@ -1078,6 +1105,7 @@ JSONSchemaForm.propTypes = {
     method: PropTypes.string.isRequired,
     etag: PropTypes.string,
     showReadOnly: PropTypes.bool,
+    showSaveAndAdd: PropTypes.bool,
     id: PropTypes.string,
     onFinish: PropTypes.func.isRequired,
 };
@@ -1085,6 +1113,8 @@ JSONSchemaForm.propTypes = {
 JSONSchemaForm.defaultProps = {
     schemas: null,
     context: null,
+    id: null,
     etag: '',
     showReadOnly: true,
+    showSaveAndAdd: false,
 };

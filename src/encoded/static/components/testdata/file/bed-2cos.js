@@ -3,6 +3,7 @@ module.exports = {
     "@type": ["File", "Item"],
     "accession": "ENCFF002COS",
     "award": "ENCODE2",
+    "assembly": "hg19",
     "dataset": require('../experiment')['@id'],
     "derived_from": [require('./bam-vuq')['@id'], require('./bam-vus')['@id']],
     "file_format": "bed_narrowPeak",

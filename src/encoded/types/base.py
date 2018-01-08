@@ -136,9 +136,6 @@ class Item(snovault.Item):
         'revoked': ALLOW_CURRENT,
         'in review': ALLOW_CURRENT_AND_SUBMITTER_EDIT,
 
-        # publication
-        'published': ALLOW_CURRENT,
-
         # pipeline
         'active': ALLOW_CURRENT,
         'archived': ALLOW_CURRENT,
@@ -183,7 +180,7 @@ class Item(snovault.Item):
 
 
 class SharedItem(Item):
-    ''' An Item visible to all authenticated users while "proposed" or "in progress".
+    ''' An Item visible to all authenticated users while "in progress".
     '''
     def __ac_local_roles__(self):
         roles = {}

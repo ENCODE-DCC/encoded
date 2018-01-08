@@ -132,7 +132,7 @@ BIGWIG_FILE_TYPES = ['bigWig']
 BIGBED_FILE_TYPES = ['bigBed']
 
 VISIBLE_DATASET_STATUSES = ["released"]
-QUICKVIEW_STATUSES_BLOCKED = ["proposed", "started", "deleted", "revoked", "replaced"]
+QUICKVIEW_STATUSES_BLOCKED = ["started", "deleted", "revoked", "replaced"]
 VISIBLE_FILE_STATUSES = ["released"]
 VISIBLE_DATASET_TYPES = ["Experiment", "Annotation"]
 VISIBLE_DATASET_TYPES_LC = ["experiment", "annotation"]
