@@ -296,8 +296,10 @@ class ColumnSelectorControls extends React.Component {
         this.handleSortChange = this.handleSortChange.bind(this);
     }
 
-    // Called when the user changes the sorting option.
     handleSortChange(e) {
+        // Called when the user changes the sorting option. Sets a component state so that the
+        // controlled <select> component renders properly. It then calls the parent's callback to
+        // react to the new sorting option.
         this.setState({ selectedSort: e.target.value });
         this.props.handleSortChange(e.target.value);
     }
@@ -368,7 +370,11 @@ class ColumnSelector extends React.Component {
         }
 
         // Either a checkbox is being turned on, or it's being turned off and another checkbox is
-        // still checked. Change the component state to reflect the new checkbox states.
+        // still checked. Change the component state to reflect the new checkbox states. Presumably
+        // if the setState callback returned no properties setState becomes a null op, so the above
+        // test could be done inside the setState callback. The React docs don't say what happens
+        // if you return no properties (https://reactjs.org/docs/react-component.html#setstate) so
+        // I avoided doing this.
         this.setState((prevState) => {
             // Toggle the `visible` state corresponding to the column whose checkbox was toggled.
             // Then set that as the new React state which causes a redraw of the modal with all the
@@ -396,7 +402,7 @@ class ColumnSelector extends React.Component {
     }
 
     handleSelectOne() {
-        // Called when the "Select first only" button is clicked.
+        // Called when the "Select (first) only" button is clicked.
         this.setState((prevState) => {
             // Set all columns to invisible first.
             const columnPaths = Object.keys(prevState.columns);
