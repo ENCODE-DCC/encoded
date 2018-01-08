@@ -431,15 +431,8 @@ class ColumnSelector extends React.Component {
         }
 
         return (
-            <Modal
-                actuator={
-                    <button className="btn btn-info btn-sm" title="Choose columns">
-                        <i className="icon icon-columns" /> Columns
-                    </button>
-                }
-                addClasses="column-selector"
-            >
-                <ModalHeader title="Select columns to view" closeModal />
+            <Modal addClasses="column-selector">
+                <ModalHeader title="Select columns to view" closeModal={this.props.closeSelector} />
                 <ColumnSelectorControls
                     handleSelectAll={this.handleSelectAll}
                     handleSelectOne={this.handleSelectOne}
@@ -455,7 +448,7 @@ class ColumnSelector extends React.Component {
                     </div>
                 </ModalBody>
                 <ModalFooter
-                    closeModal
+                    closeModal={this.props.closeSelector}
                     submitBtn={this.submitHandler}
                     submitTitle="Select"
                 />
@@ -467,6 +460,7 @@ class ColumnSelector extends React.Component {
 ColumnSelector.propTypes = {
     columns: PropTypes.object.isRequired,
     setColumnState: PropTypes.func.isRequired,
+    closeSelector: PropTypes.func.isRequired,
 };
 
 
@@ -516,12 +510,15 @@ class Report extends React.Component {
             to: from + size,
             loading: false,
             more: [],
+            selectorOpen: false, // True if column selector modal is open
         };
 
         // Bind this to non-React methods.
         this.setSort = this.setSort.bind(this);
         this.setColumnState = this.setColumnState.bind(this);
         this.loadMore = this.loadMore.bind(this);
+        this.handleSelectorClick = this.handleSelectorClick.bind(this);
+        this.closeSelector = this.closeSelector.bind(this);
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
@@ -592,6 +589,16 @@ class Report extends React.Component {
         });
     }
 
+    handleSelectorClick() {
+        // Handle click on the column selector button by opening the modal.
+        this.setState({ selectorOpen: true });
+    }
+
+    closeSelector() {
+        // Close the column selector modal.
+        this.setState({ selectorOpen: false });
+    }
+
     render() {
         const parsedUrl = url.parse(this.context.location_href, true);
         if (parsedUrl.pathname.indexOf('/report') !== 0) return false;  // avoid breaking on re-render when navigate changes href before context is changed
@@ -636,7 +643,9 @@ class Report extends React.Component {
                                         return <a href={href} className="btn btn-info btn-sm btn-svgicon" title={view.title} key={i}>{svgIcon(view2svg[view.icon])}</a>;
                                     })}
                                 </div>
-                                <ColumnSelector columns={columns} setColumnState={this.setColumnState} />
+                                <button className="btn btn-info btn-sm" title="Choose columns" onClick={this.handleSelectorClick}>
+                                    <i className="icon icon-columns" /> Columns
+                                </button>
                                 <a className="btn btn-info btn-sm" href={context.download_tsv} data-bypass>Download TSV</a>
                             </div>
                             <Table context={context} more={this.state.more} columns={columns} setSort={this.setSort} />
@@ -651,6 +660,13 @@ class Report extends React.Component {
                         </div>
                     </div>
                 </div>
+                {this.state.selectorOpen ?
+                    <ColumnSelector
+                        columns={columns}
+                        setColumnState={this.setColumnState}
+                        closeSelector={this.closeSelector}
+                    />
+                : null}
             </div>
         );
     }
