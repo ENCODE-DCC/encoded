@@ -430,8 +430,8 @@ class ColumnSelector extends React.Component {
         let columnPaths = Object.keys(columns);
         if (this.state.sortOption === 'alpha') {
             columnPaths = columnPaths.sort((aKey, bKey) => {
-                const aTitle = columns[aKey].title;
-                const bTitle = columns[bKey].title;
+                const aTitle = columns[aKey].title.toLowerCase();
+                const bTitle = columns[bKey].title.toLowerCase();
                 return (aTitle < bTitle ? -1 : (bTitle < aTitle ? 1 : 0));
             });
         }
