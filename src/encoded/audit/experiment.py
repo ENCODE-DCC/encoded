@@ -1295,21 +1295,23 @@ def check_wgbs_pearson(cpg_metrics, threshold,  pipeline_title):
 
 def check_wgbs_lambda(bismark_metrics, threshold, pipeline_title):
     for metric in bismark_metrics:
-        lambdaCpG = float(metric['lambda C methylated in CpG context'][:-1])
-        lambdaCHG = float(metric['lambda C methylated in CHG context'][:-1])
-        lambdaCHH = float(metric['lambda C methylated in CHH context'][:-1])
-
-        if (lambdaCpG > 1 and lambdaCHG > 1 and lambdaCHH > 1) or \
-           (((lambdaCpG * 0.25) + (lambdaCHG * 0.25) + (lambdaCHH * 0.5)) > 1):
-            detail = 'ENCODE experiment processed by {} '.format(pipeline_title) + \
-                     'pipeline has the following %C methylated in different contexts. ' + \
-                     'lambda C methylated in CpG context was {}%, '.format(lambdaCpG) + \
-                     'lambda C methylated in CHG context was {}%, '.format(lambdaCHG) + \
-                     'lambda C methylated in CHH context was {}%. '.format(lambdaCHH) + \
-                     'The %C methylated in all contexts should be < 1%.'
-            yield AuditFailure('high lambda C methylation ratio', detail,
-                               level='WARNING')
-    return
+        cpg_string = metric.get('lambda C methylated in CpG context')
+        chg_string = metric.get('lambda C methylated in CHG context')
+        chh_string = metric.get('lambda C methylated in CHH context')
+        if (cpg_string and chg_string and chh_string):
+            lambdaCpG = float(cpg_string[:-1])
+            lambdaCHG = float(chg_string[:-1])
+            lambdaCHH = float(chh_string[:-1])
+            if (lambdaCpG > 1 and lambdaCHG > 1 and lambdaCHH > 1) or \
+            (((lambdaCpG * 0.25) + (lambdaCHG * 0.25) + (lambdaCHH * 0.5)) > 1):
+                detail = 'ENCODE experiment processed by {} '.format(pipeline_title) + \
+                        'pipeline has the following %C methylated in different contexts. ' + \
+                        'lambda C methylated in CpG context was {}%, '.format(lambdaCpG) + \
+                        'lambda C methylated in CHG context was {}%, '.format(lambdaCHG) + \
+                        'lambda C methylated in CHH context was {}%. '.format(lambdaCHH) + \
+                        'The %C methylated in all contexts should be < 1%.'
+                yield AuditFailure('high lambda C methylation ratio', detail,
+                                   level='WARNING')
 
 
 def check_file_chip_seq_read_depth(file_to_check,
