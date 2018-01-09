@@ -3,6 +3,7 @@ from pytest_bdd import (
     then,
     when,
 )
+import time
 
 
 @then(parse('the title should contain the text "{text}"'))
@@ -51,8 +52,16 @@ def click_element(browser, css):
 
 @when('I wait for the table to fully load')
 def wait_for_table(browser):
-    assert browser.is_element_present_by_css("table.collection-table")
-    assert browser.is_element_not_present_by_css("table.collection-table.communicating")
+    for attempts in range(10):
+        page_stopped_fetching = browser.is_element_not_present_by_css("table.sticky-area.collection-table.communicating")
+        page_loaded = browser.is_element_present_by_css("table.sticky-area.collection-table.table")
+        print("{} {}".format(page_stopped_fetching, page_loaded))
+        if page_stopped_fetching and page_loaded:
+            break
+        else:
+            time.sleep(1)
+    assert browser.is_element_present_by_css("table.sticky-area.collection-table.table")
+    assert browser.is_element_not_present_by_css("table.sticky-area.collection-table.communicating")
 
 
 @when('I wait for deferred content to fully load')

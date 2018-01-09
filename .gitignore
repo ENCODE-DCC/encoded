@@ -1,4 +1,6 @@
+.aws/
 .coverage
+.gitconfig
 /.installed.cfg
 /.mr.developer.cfg
 /.cache/

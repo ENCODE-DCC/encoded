@@ -29,6 +29,15 @@ def app(app_settings):
 @pytest.mark.fixture_cost(500)
 @pytest.yield_fixture(scope='session')
 def workbook(app):
+    from snovault import DBSESSION
+    connection = app.registry[DBSESSION].bind.pool.unique_connection()
+    connection.detach()
+    conn = connection.connection
+    conn.autocommit = True
+    cursor = conn.cursor()
+    cursor.execute("""TRUNCATE resources, transactions CASCADE;""")
+    cursor.close()
+
     from webtest import TestApp
     environ = {
         'HTTP_ACCEPT': 'application/json',
