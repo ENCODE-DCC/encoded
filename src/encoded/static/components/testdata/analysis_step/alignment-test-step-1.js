@@ -5,7 +5,6 @@ module.exports = {
     "major_version": 1,
     "title": "Alignment test step 1",
     "analysis_step_types": ["alignment"],
-    "analysis_step_types": ["alignment"],
     "status": "released",
     "uuid": "ab7ec880-50ab-11e4-916c-0800200c9a66"
 };
