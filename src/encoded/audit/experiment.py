@@ -99,9 +99,10 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                     cumulative_read_depth = 0
                     for bam_file in derived_from_external_bams:
                         control_depth = get_chip_seq_bam_read_depth(bam_file)
-                        control_target = get_target_name(bam_file.get('dataset'),
-                                                         control_objects)
-                        if control_depth and "control" in control_target.get('investigated_as'):
+                        control_target = check_target_investigated_as(
+                            bam_file.get('dataset'),
+                            control_objects)
+                        if control_depth and control_target:
                             cumulative_read_depth += control_depth
                             triple = (
                                 bam_file.get('@id'),
@@ -2900,11 +2901,11 @@ def has_pipelines(bam_file):
     return True
 
 
-def get_target_name(control_id, control_objects):
+def check_target_investigated_as(control_id, control_objects):
     control = control_objects.get(control_id)
     if control and 'target' in control and \
-       'name' in control['target']:
-        return control['target']['name']
+       'investigated_as' in control['target']:
+        return "control" in control['target']['investigated_as']
     return False
 
 
