@@ -105,7 +105,7 @@ def get_file_uuids(result_dict):
     return list(set(file_uuids))
 
 def get_biosample_accessions(file_json, experiment_json):
-    for f in experiment_json['files']:
+    for f in experiment_json.get('files', []):
         if file_json['uuid'] == f['uuid']:
             accession = f.get('replicate', {}).get('library', {}).get('biosample', {}).get('accession')
             if accession:
@@ -241,7 +241,7 @@ def metadata_tsv(context, request):
     results = request.embed(path, as_user=True)
     rows = []
     for experiment_json in results['@graph']:
-        if experiment_json['files']:
+        if experiment_json.get('files'):
             exp_data_row = []
             for column in header:
                 if not _tsv_mapping[column][0].startswith('files'):
