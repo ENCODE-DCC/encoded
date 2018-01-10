@@ -141,6 +141,46 @@ class SchemaTermItemDisplay extends React.Component {
 
         // Bind `this` to non-React methods.
         this.handleDisclosureClick = this.handleDisclosureClick.bind(this);
+        this.setupEditor = this.setupEditor.bind(this);
+    }
+
+    componentDidMount() {
+        if (this.state.jsonOpen) {
+            this.setupEditor();
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.state.jsonOpen) {
+            this.setupEditor();
+        }
+    }
+
+    setupEditor() {
+        const { schemaValue, term } = this.props;
+
+        require.ensure([
+            'brace',
+            'brace/mode/json',
+            'brace/theme/solarized_light',
+        ], (require) => {
+            const ace = require('brace');
+            require('brace/mode/json');
+            require('brace/theme/solarized_light');
+            const value = JSON.stringify(schemaValue[term], null, 4);
+            const editor = ace.edit(term);
+            const session = editor.getSession();
+            session.setMode('ace/mode/json');
+            editor.setValue(value);
+            editor.setOptions({
+                maxLines: 500,
+                minLines: 1,
+                readOnly: true,
+                highlightActiveLine: false,
+                highlightGutterLine: false,
+            });
+            editor.renderer.$cursorLayer.element.style.opacity = 0;
+        }, 'brace');
     }
 
     handleDisclosureClick() {
@@ -157,7 +197,7 @@ class SchemaTermItemDisplay extends React.Component {
                     <span> {term}</span>
                 </div>
                 {this.state.jsonOpen ?
-                    <pre>{JSON.stringify(schemaValue[term], null, 4)}</pre>
+                    <div id={term} style={{ width: '100%' }} />
                 : null}
             </div>
         )
