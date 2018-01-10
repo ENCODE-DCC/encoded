@@ -34,7 +34,7 @@
         "F1": {
             "title": "FRiP score from rep1 self-pseudoreplicate peaks",
             "type": "number",
-            "description": "Fraction reads in peaks (FRiP) from replicate 1 self-pseudoreplicates or the number of stable peaks that pass the internal psuedoreplication IDR threhold, when self-pseudoreplication is done on unreplicated experiments."
+            "description": "Fraction reads in peaks (FRiP) from replicate 1 self-pseudoreplicates or the number of stable peaks that pass the internal pseudoreplication IDR threhold, when self-pseudoreplication is done on unreplicated experiments."
         },
         "F2": {
             "title": "FRiP score from rep2 self-pseudoreplicate peaks",
