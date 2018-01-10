@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import marked from 'marked';
+import { collapseIcon } from '../libs/svg-icons';
 import { Param, FetchedData } from './fetched';
 import * as globals from './globals';
 
@@ -151,7 +152,10 @@ class SchemaTermItemDisplay extends React.Component {
 
         return (
             <div>
-                <div><span onClick={this.handleDisclosureClick}>{this.state.jsonOpen ? '-' : '+'}</span> {term}</div>
+                <div className="profile-value__item">
+                    <button className="profile-value__disclosure-button" onClick={this.handleDisclosureClick}>{collapseIcon(!this.state.jsonOpen)}</button>
+                    <span> {term}</span>
+                </div>
                 {this.state.jsonOpen ?
                     <pre>{JSON.stringify(schemaValue[term], null, 4)}</pre>
                 : null}
@@ -166,18 +170,13 @@ SchemaTermItemDisplay.propTypes = {
 };
 
 
-class SchemaTermDisplay extends React.Component {
-    render() {
-        const { schemaValue } = this.props;
-        return (
-            <div>
-                {Object.keys(schemaValue).map(key =>
-                    <SchemaTermItemDisplay key={key} schemaValue={schemaValue} term={key} />
-                )}
-            </div>
-        );
-    }
-}
+const SchemaTermDisplay = props => (
+    <div>
+        {Object.keys(props.schemaValue).map(key =>
+            <SchemaTermItemDisplay key={key} schemaValue={props.schemaValue} term={key} />
+        )}
+    </div>
+);
 
 SchemaTermDisplay.propTypes = {
     schemaValue: PropTypes.object, // Object from schema to display
