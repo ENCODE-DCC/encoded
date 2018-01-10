@@ -1,5 +1,5 @@
 {
-    "title": "Histione modification ChIP-seq quality metric",
+    "title": "Histone modification ChIP-seq quality metric",
     "description": "Schema for reporting histone modification ChIP-seq quality metrics",
     "id": "/profiles/histone_chipseq_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
