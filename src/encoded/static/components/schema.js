@@ -4,30 +4,16 @@ import marked from 'marked';
 import { Param, FetchedData } from './fetched';
 import * as globals from './globals';
 
-let lookupLibrary;
 const outlineClass = ['indent-one', 'indent-two', 'indent-three', 'indent-four', 'indent-five', 'indent-six'];
-function stringMethod(term) {
-    return (
-        <span>{term}</span>
-    );
-}
-function booleanMethod(term) {
-    return (
-        <span>
-        {term === false ?
-            <span>false</span>
-        :
-            <span>true</span>
-        }
-        </span>
-    );
-}
+
 function arrayMethod(term, currentValue, outlineNumber) {
     const outline = outlineNumber + 1;
     return (
         term.map((item, i) => <div key={i} className={outlineClass[outlineNumber]}>{lookupLibrary[typeof item](item, item, outline)}</div>)
     );
 }
+
+
 function objectMethod(term, currentValue, outlineNumber) {
     const newKey = Object.keys(currentValue);
     const newValue = Object.keys(currentValue).map(stuff =>
@@ -63,18 +49,19 @@ function objectMethod(term, currentValue, outlineNumber) {
     );
 }
 
-lookupLibrary = {
-    string: (item, currentValue, outlineNumber) =>
-        stringMethod(item, currentValue, outlineNumber),
+const lookupLibrary = {
+    string: (item) =>
+        <span>{item}</span>,
     array: (item, currentValue, outlineNumber) =>
         arrayMethod(item, currentValue, outlineNumber),
     object: (item, currentValue, outlineNumber) =>
         objectMethod(item, currentValue, outlineNumber),
-    boolean: (item, currentValue, outlineNumber) =>
-        booleanMethod(item, currentValue, outlineNumber),
+    boolean: (item) =>
+        <span>{item ? 'True' : 'False'}</span>,
     number: (item, currentValue, outlineNumber) =>
         <span className={outlineClass[outlineNumber]}>{item}</span>,
 };
+
 
 class CollapsibleElements extends React.Component {
     constructor() {
@@ -101,10 +88,10 @@ class CollapsibleElements extends React.Component {
                 </div>
                 <div key={i}>
                     {!this.state.collapsed ?
-                            Array.isArray(dataObject[term]) ?
-                                <div>{lookupLibrary.array(dataObject[term], dataObject[term], 0)}</div>
-                            :
-                                <div>{lookupLibrary[typeof dataObject[term]](dataObject[term], dataObject[term], 0)}</div>
+                        Array.isArray(dataObject[term]) ?
+                            <div>{lookupLibrary.array(dataObject[term], dataObject[term], 0)}</div>
+                        :
+                            <div>{lookupLibrary[typeof dataObject[term]](dataObject[term], dataObject[term], 0)}</div>
                     :
                         null
                     }
@@ -122,45 +109,152 @@ CollapsibleElements.defaultProps = {
     i: 0,
 };
 
-class DisplayObject extends React.Component {
+
+// Used to map schema property names to more visually pleasing versions.
+const titleMap = {
+    required: 'Required',
+    comment: 'Comment',
+    approvalRequired: 'Approval required',
+    identifyingProperties: 'Identifying properties',
+    dependencies: 'Dependencies',
+    properties: 'Properties',
+};
+
+
+// Functions to display simple schema term types.
+const simpleTypeDisplay = {
+    string: item => <span>{item}</span>,
+    boolean: item => <span>{item ? 'True' : 'False'}</span>,
+    number: item => <span >{item}</span>,
+};
+
+
+class SchemaTermItemDisplay extends React.Component {
+    constructor() {
+        super();
+
+        // Set initial React state
+        this.state = {
+            jsonOpen: false,
+        };
+
+        // Bind `this` to non-React methods.
+        this.handleDisclosureClick = this.handleDisclosureClick.bind(this);
+    }
+
+    handleDisclosureClick() {
+        this.setState(prevState => ({ jsonOpen: !prevState.jsonOpen }));
+    }
+
     render() {
-        const { dataObject } = this.props;
-        const dataArray = Object.keys(dataObject).map((term) => {
-            const labels = term;
-            return labels;
-        });
-        const removedItemKeys = ['type', 'additionalProperties', 'mixinProperties'];
+        const { schemaValue, term } = this.props;
+
         return (
             <div>
-                {dataArray.map((term, id) =>
-                    <div key={id}>
-                        <dl className="key-value">
-                            {removedItemKeys.includes(term) ?
-                                null
-                            :
-                                term === 'properties' || term === 'dependencies' ?
-                                    <div data-test="id">
-                                        <dt>{term}</dt>
-                                        <dd>
-                                            {Object.keys(dataObject[term]).map((item, i) =>
-                                                <CollapsibleElements term={item} dataObject={dataObject[term]} key={i} />
-                                            )}
-                                        </dd>
-                                    </div>
-                                :
-                                <div data-test="id">
-                                    <dt>{term}</dt>
-                                    <dd>
-                                    {Array.isArray(dataObject[term]) ?
-                                        <div>{lookupLibrary.array(dataObject[term], dataObject[term], 0)}</div>
-                                    :
-                                        <div>{lookupLibrary[typeof dataObject[term]](dataObject[term], dataObject[term], 0)}</div>
-                                    }
-                                    </dd>
-                                </div>
-                            }
-                        </dl>
-                    </div>
+                <div><span onClick={this.handleDisclosureClick}>{this.state.jsonOpen ? '-' : '+'}</span> {term}</div>
+                {this.state.jsonOpen ?
+                    <pre>{JSON.stringify(schemaValue[term], null, 4)}</pre>
+                : null}
+            </div>
+        )
+    }
+}
+
+SchemaTermItemDisplay.propTypes = {
+    schemaValue: PropTypes.object.isRequired, // Schema object to display
+    term: PropTypes.string.isRequired, // Item within the schema object to display
+};
+
+
+class SchemaTermDisplay extends React.Component {
+    render() {
+        const { schemaValue } = this.props;
+        return (
+            <div>
+                {Object.keys(schemaValue).map(key =>
+                    <SchemaTermItemDisplay key={key} schemaValue={schemaValue} term={key} />
+                )}
+            </div>
+        );
+    }
+}
+
+SchemaTermDisplay.propTypes = {
+    schemaValue: PropTypes.object, // Object from schema to display
+};
+
+
+const TermDisplay = (props) => {
+    const { term, termSchema } = props;
+    const termType = typeof termSchema;
+
+    // If the schema term value has a simple type (string, boolean, number), then just display
+    // that.
+    let displayMethod = simpleTypeDisplay[termType];
+    if (displayMethod) {
+        return <span>{displayMethod(termSchema)}</span>;
+    }
+
+    // If the schema term value is an object, see if it's actually an array.
+    if (termType === 'object') {
+        if (Array.isArray(termSchema)) {
+            // The value's an array, so display a list.
+            return (
+                <div>
+                    {termSchema.map((item, i) => {
+                        displayMethod = simpleTypeDisplay[typeof item];
+                        if (displayMethod) {
+                            // The schema term value array item is a simple type, so just
+                            // display it normally.
+                            return <div key={i}>{displayMethod(item)}</div>;
+                        }
+
+                        // The array element isn't a simple type, so just ignore it.
+                        return null;
+                    })}
+                </div>
+            );
+        }
+
+        // The value's an object, so display the schema value itself.
+        return <SchemaTermDisplay schemaValue={termSchema} />;
+    }
+    return null;
+};
+
+TermDisplay.propTypes = {
+    term: PropTypes.string.isRequired, // schema property term
+    termSchema: PropTypes.any.isRequired, // Value for `term` in the schema
+};
+
+
+const excludedTerms = [
+    'type',
+    'additionalProperties',
+    'mixinProperties',
+    'title',
+    'description',
+    'id',
+    '$schema',
+    'facets',
+    'columns',
+    'boost_values',
+    'changelog',
+    '@type',
+];
+
+
+class DisplayObject extends React.Component {
+    render() {
+        const { schema } = this.props;
+        const schemaTerms = Object.keys(schema).filter(term => excludedTerms.indexOf(term) === -1);
+        return (
+            <div className="profile-display">
+                {schemaTerms.map(term =>
+                    <dl className="profile-display__section" key={term}>
+                        <dt>{titleMap[term] || term}</dt>
+                        <TermDisplay term={term} termSchema={schema[term]} />
+                    </dl>
                 )}
             </div>
         );
@@ -168,7 +262,7 @@ class DisplayObject extends React.Component {
 }
 
 DisplayObject.propTypes = {
-    dataObject: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
 };
 
 
@@ -217,7 +311,7 @@ const SchemaPage = (props) => {
             </header>
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
             <section className="view-detail panel">
-                <DisplayObject dataObject={context} />
+                <DisplayObject schema={context} />
             </section>
             {changelog && <FetchedData>
                 <Param name="source" url={changelog} type="text" />
