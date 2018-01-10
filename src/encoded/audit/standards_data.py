@@ -43,6 +43,7 @@ pipelines_with_read_depth = {
     'Transcription factor ChIP-seq pipeline (modERN)': 3000000
     }
 
+
 special_assays_with_read_depth = {
     'shRNA knockdown followed by RNA-seq': 10000000,
     'siRNA knockdown followed by RNA-seq': 10000000,
@@ -50,3 +51,14 @@ special_assays_with_read_depth = {
     'CRISPR genome editing followed by RNA-seq': 10000000,
     'single cell isolation followed by RNA-seq': 5000000
     }
+
+
+minimal_read_depth_requirements = {
+    'ChIP-seq': 20000000,
+    'RAMPAGE': 10000000,
+    'shRNA knockdown followed by RNA-seq': 10000000,
+    'siRNA knockdown followed by RNA-seq': 10000000,
+    'single cell isolation followed by RNA-seq': 10000000,
+    'CRISPR genome editing followed by RNA-seq': 10000000,
+    'modENCODE-chip': 500000
+}
