@@ -162,15 +162,16 @@ class SchemaTermItemDisplay extends React.Component {
         require.ensure([
             'brace',
             'brace/mode/json',
-            'brace/theme/solarized_light',
+            'brace/theme/katzenmilch',
         ], (require) => {
             const ace = require('brace');
             require('brace/mode/json');
-            require('brace/theme/solarized_light');
+            require('brace/theme/katzenmilch');
             const value = JSON.stringify(schemaValue[term], null, 4);
             const editor = ace.edit(term);
             const session = editor.getSession();
             session.setMode('ace/mode/json');
+            editor.setTheme('ace/theme/katzenmilch');
             editor.setValue(value);
             editor.setOptions({
                 maxLines: 500,
@@ -178,7 +179,11 @@ class SchemaTermItemDisplay extends React.Component {
                 readOnly: true,
                 highlightActiveLine: false,
                 highlightGutterLine: false,
+                showGutter: false,
+                showPrintMargin: false,
             });
+            editor.clearSelection();
+            editor.textInput.getElement().disabled = true;
             editor.renderer.$cursorLayer.element.style.opacity = 0;
         }, 'brace');
     }
@@ -197,7 +202,9 @@ class SchemaTermItemDisplay extends React.Component {
                     <span> {term}</span>
                 </div>
                 {this.state.jsonOpen ?
-                    <div id={term} style={{ width: '100%' }} />
+                    <div className="profile-value__json">
+                        <div id={term} />
+                    </div>
                 : null}
             </div>
         )
