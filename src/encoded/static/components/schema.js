@@ -142,17 +142,21 @@ class SchemaTermItemDisplay extends React.Component {
         // Bind `this` to non-React methods.
         this.handleDisclosureClick = this.handleDisclosureClick.bind(this);
         this.setupEditor = this.setupEditor.bind(this);
-    }
 
-    componentDidMount() {
-        if (this.state.jsonOpen) {
-            this.setupEditor();
-        }
+        // Set object properties.
+        this.editor = null;
     }
 
     componentDidUpdate() {
         if (this.state.jsonOpen) {
             this.setupEditor();
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.editor) {
+            this.editor.destroy();
+            this.editor = null;
         }
     }
 
@@ -168,12 +172,12 @@ class SchemaTermItemDisplay extends React.Component {
             require('brace/mode/json');
             require('brace/theme/katzenmilch');
             const value = JSON.stringify(schemaValue[term], null, 4);
-            const editor = ace.edit(term);
+            this.editor = ace.edit(term);
             const session = editor.getSession();
             session.setMode('ace/mode/json');
-            editor.setTheme('ace/theme/katzenmilch');
-            editor.setValue(value);
-            editor.setOptions({
+            this.editor.setTheme('ace/theme/katzenmilch');
+            this.editor.setValue(value);
+            this.editor.setOptions({
                 maxLines: 500,
                 minLines: 1,
                 readOnly: true,
@@ -182,9 +186,9 @@ class SchemaTermItemDisplay extends React.Component {
                 showGutter: false,
                 showPrintMargin: false,
             });
-            editor.clearSelection();
-            editor.textInput.getElement().disabled = true;
-            editor.renderer.$cursorLayer.element.style.opacity = 0;
+            this.editor.clearSelection();
+            this.editor.textInput.getElement().disabled = true;
+            this.editor.renderer.$cursorLayer.element.style.opacity = 0;
         }, 'brace');
     }
 
