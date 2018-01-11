@@ -5,112 +5,6 @@ import { collapseIcon } from '../libs/svg-icons';
 import { Param, FetchedData } from './fetched';
 import * as globals from './globals';
 
-const outlineClass = ['indent-one', 'indent-two', 'indent-three', 'indent-four', 'indent-five', 'indent-six'];
-
-function arrayMethod(term, currentValue, outlineNumber) {
-    const outline = outlineNumber + 1;
-    return (
-        term.map((item, i) => <div key={i} className={outlineClass[outlineNumber]}>{lookupLibrary[typeof item](item, item, outline)}</div>)
-    );
-}
-
-
-function objectMethod(term, currentValue, outlineNumber) {
-    const newKey = Object.keys(currentValue);
-    const newValue = Object.keys(currentValue).map(stuff =>
-        currentValue[stuff]
-    );
-    // const newValue = Object.values(currentValue);
-    const classname = outlineClass[outlineNumber];
-    const outline = outlineNumber + 1;
-    return (
-        <div>
-            {
-                typeof term !== 'object' ?
-                    <strong>{lookupLibrary[typeof term](term, currentValue, outline)}</strong>
-                :
-                    null
-                }
-                {newValue.map((item, i) =>
-                <div key={i}>
-                    {Array.isArray(item) ?
-                        outlineNumber === 1 ?
-                            <div className={classname}><i>{newKey[i]}:</i> {lookupLibrary.array(item, item, outline)}</div>
-                        :
-                            <div className={classname}>{newKey[i]}: {lookupLibrary.array(item, item, outline)}</div>
-                    :
-                        outlineNumber === 1 ?
-                            <div className={classname}><i>{newKey[i]}:</i> {lookupLibrary[typeof item](item, item, outline)}</div>
-                        :
-                            <div className={classname}>{newKey[i]}: {lookupLibrary[typeof item](item, item, outline)}</div>
-                    }
-                </div>)
-            }
-        </div>
-    );
-}
-
-const lookupLibrary = {
-    string: (item) =>
-        <span>{item}</span>,
-    array: (item, currentValue, outlineNumber) =>
-        arrayMethod(item, currentValue, outlineNumber),
-    object: (item, currentValue, outlineNumber) =>
-        objectMethod(item, currentValue, outlineNumber),
-    boolean: (item) =>
-        <span>{item ? 'True' : 'False'}</span>,
-    number: (item, currentValue, outlineNumber) =>
-        <span className={outlineClass[outlineNumber]}>{item}</span>,
-};
-
-
-class CollapsibleElements extends React.Component {
-    constructor() {
-        super();
-        // Initialize React state variables.
-        this.state = {
-            collapsed: true, // Collapsed/uncollapsed state
-            active: false,
-        };
-        this.handleCollapse = this.handleCollapse.bind(this);
-    }
-    handleCollapse() {
-        // Handle click on panel collapse icon
-        this.setState({ collapsed: !this.state.collapsed, active: !this.state.active });
-    }
-
-    render() {
-        const { term, dataObject, i } = this.props;
-        return (
-            <div className="expandable">
-                <div className="dropPanel">
-                    <div onClick={this.handleCollapse} className={this.state.active ? 'triangle-down' : 'triangle-right'} />
-                    <span>{term}</span>
-                </div>
-                <div key={i}>
-                    {!this.state.collapsed ?
-                        Array.isArray(dataObject[term]) ?
-                            <div>{lookupLibrary.array(dataObject[term], dataObject[term], 0)}</div>
-                        :
-                            <div>{lookupLibrary[typeof dataObject[term]](dataObject[term], dataObject[term], 0)}</div>
-                    :
-                        null
-                    }
-                </div>
-            </div>
-        );
-    }
-}
-CollapsibleElements.propTypes = {
-    term: PropTypes.string.isRequired,
-    i: PropTypes.number,
-    dataObject: PropTypes.object.isRequired,
-};
-CollapsibleElements.defaultProps = {
-    i: 0,
-};
-
-
 // Used to map schema property names to more visually pleasing versions.
 const titleMap = {
     required: 'Required',
@@ -258,7 +152,7 @@ const TermDisplay = (props) => {
     // that.
     let displayMethod = simpleTypeDisplay[termType];
     if (displayMethod) {
-        return <span>{displayMethod(termSchema)}</span>;
+        return <div>{displayMethod(termSchema)}</div>;
     }
 
     // If the schema term value is an object, see if it's actually an array.

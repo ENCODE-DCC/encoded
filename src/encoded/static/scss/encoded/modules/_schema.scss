@@ -1,12 +1,29 @@
+.profile-display {
+    @at-root #{&}__section {
+        padding-bottom: 20px;
+        border-bottom: 1px solid #e0e0e0;
+
+        dt {
+            margin-bottom: 10px;
+        }
+    }
+}
+
 .profile-value {
     @at-root #{&}__item {
         margin: 2px 0;
     }
 
     @at-root #{&}__disclosure-button {
+        margin: 2px 0;
         padding: 0;
         font-size: 0; // Prevent gap between focus border and icon
         border: 0 none;
+        vertical-align: middle;
+
+        .collapsing-title-control {
+            display: block;
+        }
     }
 
     @at-root #{&}__json {
