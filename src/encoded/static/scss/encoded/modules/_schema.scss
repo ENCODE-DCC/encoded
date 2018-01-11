@@ -2,10 +2,15 @@
     @at-root #{&}__section {
         padding-bottom: 20px;
         border-bottom: 1px solid #e0e0e0;
+    }
 
-        dt {
-            margin-bottom: 10px;
-        }
+    h3 {
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+
+    @at-root #{&}__values {
+        margin-left: 10px;
     }
 }
 

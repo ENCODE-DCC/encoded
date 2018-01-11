@@ -5,6 +5,7 @@ import { collapseIcon } from '../libs/svg-icons';
 import { Param, FetchedData } from './fetched';
 import * as globals from './globals';
 
+
 // Used to map schema property names to more visually pleasing versions.
 const titleMap = {
     required: 'Required',
@@ -16,7 +17,7 @@ const titleMap = {
 };
 
 
-// Functions to display simple schema term types.
+// Functions to display simple schema term types, keyed by `typeof` result.
 const simpleTypeDisplay = {
     string: item => <span>{item}</span>,
     boolean: item => <span>{item ? 'True' : 'False'}</span>,
@@ -33,6 +34,7 @@ class SchemaTermJsonDisplay extends React.Component {
     }
 
     componentDidMount() {
+        // Now that the JSON display component has mounted, 
         const { schemaValue, term } = this.props;
 
         require.ensure([
@@ -145,7 +147,7 @@ SchemaTermDisplay.propTypes = {
 
 
 const TermDisplay = (props) => {
-    const { term, termSchema } = props;
+    const { termSchema } = props;
     const termType = typeof termSchema;
 
     // If the schema term value has a simple type (string, boolean, number), then just display
@@ -183,7 +185,6 @@ const TermDisplay = (props) => {
 };
 
 TermDisplay.propTypes = {
-    term: PropTypes.string.isRequired, // schema property term
     termSchema: PropTypes.any.isRequired, // Value for `term` in the schema
 };
 
@@ -211,10 +212,12 @@ class DisplayObject extends React.Component {
         return (
             <div className="profile-display">
                 {schemaTerms.map(term =>
-                    <dl className="profile-display__section" key={term}>
-                        <dt>{titleMap[term] || term}</dt>
-                        <TermDisplay term={term} termSchema={schema[term]} />
-                    </dl>
+                    <div className="profile-display__section" key={term}>
+                        <h3>{titleMap[term] || term}</h3>
+                        <div className="profile-display__values">
+                            <TermDisplay termSchema={schema[term]} />
+                        </div>
+                    </div>
                 )}
             </div>
         );
@@ -226,6 +229,7 @@ DisplayObject.propTypes = {
 };
 
 
+// Display markdown.
 const Markdown = (props) => {
     const html = marked(props.source, { sanitize: true });
     return <div dangerouslySetInnerHTML={{ __html: html }} />;
@@ -240,11 +244,10 @@ Markdown.defaultProps = {
 };
 
 
+// Display the Markdown-formatted change log.
 const ChangeLog = props => (
     <section className="view-detail panel">
-        <div className="container">
-            <Markdown source={props.source} />
-        </div>
+        <Markdown source={props.source} />
     </section>
 );
 
