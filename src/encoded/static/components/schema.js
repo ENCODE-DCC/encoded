@@ -130,37 +130,15 @@ const simpleTypeDisplay = {
 };
 
 
-class SchemaTermItemDisplay extends React.Component {
+class SchemaTermJsonDisplay extends React.Component {
     constructor() {
         super();
 
-        // Set initial React state
-        this.state = {
-            jsonOpen: false,
-        };
-
-        // Bind `this` to non-React methods.
-        this.handleDisclosureClick = this.handleDisclosureClick.bind(this);
-        this.setupEditor = this.setupEditor.bind(this);
-
-        // Set object properties.
-        this.editor = null;
+        // Initialize component properties.
+        this.editor = null; // Tracks brace editor reference.
     }
 
-    componentDidUpdate() {
-        if (this.state.jsonOpen) {
-            this.setupEditor();
-        }
-    }
-
-    componentWillUnmount() {
-        if (this.editor) {
-            this.editor.destroy();
-            this.editor = null;
-        }
-    }
-
-    setupEditor() {
+    componentDidMount() {
         const { schemaValue, term } = this.props;
 
         require.ensure([
@@ -173,7 +151,7 @@ class SchemaTermItemDisplay extends React.Component {
             require('brace/theme/katzenmilch');
             const value = JSON.stringify(schemaValue[term], null, 4);
             this.editor = ace.edit(term);
-            const session = editor.getSession();
+            const session = this.editor.getSession();
             session.setMode('ace/mode/json');
             this.editor.setTheme('ace/theme/katzenmilch');
             this.editor.setValue(value);
@@ -192,6 +170,46 @@ class SchemaTermItemDisplay extends React.Component {
         }, 'brace');
     }
 
+    componentWillUnmount() {
+        if (this.editor) {
+            this.editor.destroy();
+            this.editor = null;
+        }
+    }
+
+    render() {
+        const { term } = this.props;
+
+        return (
+            <div className="profile-value__json">
+                <div id={term} />
+            </div>
+        );
+    }
+}
+
+SchemaTermJsonDisplay.propTypes = {
+    schemaValue: PropTypes.object.isRequired, // Schema object to display
+    term: PropTypes.string.isRequired, // Item within the schema object to display
+};
+
+
+class SchemaTermItemDisplay extends React.Component {
+    constructor() {
+        super();
+
+        // Set initial React state
+        this.state = {
+            jsonOpen: false,
+        };
+
+        // Bind `this` to non-React methods.
+        this.handleDisclosureClick = this.handleDisclosureClick.bind(this);
+
+        // Set object properties.
+        this.editor = null;
+    }
+
     handleDisclosureClick() {
         this.setState(prevState => ({ jsonOpen: !prevState.jsonOpen }));
     }
@@ -206,9 +224,7 @@ class SchemaTermItemDisplay extends React.Component {
                     <span> {term}</span>
                 </div>
                 {this.state.jsonOpen ?
-                    <div className="profile-value__json">
-                        <div id={term} />
-                    </div>
+                    <SchemaTermJsonDisplay schemaValue={schemaValue} term={term} />
                 : null}
             </div>
         )
