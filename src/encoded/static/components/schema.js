@@ -205,24 +205,22 @@ const excludedTerms = [
 ];
 
 
-class DisplayObject extends React.Component {
-    render() {
-        const { schema } = this.props;
-        const schemaTerms = Object.keys(schema).filter(term => excludedTerms.indexOf(term) === -1);
-        return (
-            <div className="profile-display">
-                {schemaTerms.map(term =>
-                    <div className="profile-display__section" key={term}>
-                        <h3>{titleMap[term] || term}</h3>
-                        <div className="profile-display__values">
-                            <TermDisplay termSchema={schema[term]} />
-                        </div>
+const DisplayObject = (props) => {
+    const { schema } = props;
+    const schemaTerms = Object.keys(schema).filter(term => excludedTerms.indexOf(term) === -1);
+    return (
+        <div className="profile-display">
+            {schemaTerms.map(term =>
+                <div className="profile-display__section" key={term}>
+                    <h3>{titleMap[term] || term}</h3>
+                    <div className="profile-display__values">
+                        <TermDisplay termSchema={schema[term]} />
                     </div>
-                )}
-            </div>
-        );
-    }
-}
+                </div>
+            )}
+        </div>
+    );
+};
 
 DisplayObject.propTypes = {
     schema: PropTypes.object.isRequired,
