@@ -2256,8 +2256,6 @@
         "run_type": "single-ended",
         "uuid": "d9277859-a3b7-44d2-bbd7-070071a753d5",
         "no_file_available": true
-<<<<<<< HEAD
-=======
     },
     {
         "date_created": "2017-03-16T21:55:35.118926+00:00",
@@ -2280,6 +2278,5 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "file_format": "sra",
         "dataset": "ENCSR765JPC"
->>>>>>> master
     }
 ]

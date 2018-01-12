@@ -1405,47 +1405,11 @@ export function assembleGraph(files, dataset, options) {
     Object.keys(matchingFiles).forEach((fileId) => {
         const file = matchingFiles[fileId];
 
-<<<<<<< HEAD
-        // Add a node for a regular searched file.
-        jsonGraph.addNode(fileNodeId, fileNodeLabel, {
-            cssClass: fileCssClass,
-            type: 'File',
-            shape: 'rect',
-            cornerRadius: 16,
-            parentNode: replicateNode,
-            ref: fileRef,
-        }, metricsInfo);
-
-        // Figure out the analysis step we need to render between the node we just rendered and its
-        // derived_from.
-        let stepId;
-        let label;
-        let pipelineInfo;
-        let error;
-        const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
-        if (fileAnalysisStep) {
-            // Make an ID and label for the step
-            stepId = `step:${derivedFileIds(file) + fileAnalysisStep['@id']}`;
-            label = (fileAnalysisStep.analysis_step_types && fileAnalysisStep.analysis_step_types).length ? fileAnalysisStep.analysis_step_types : [];
-            pipelineInfo = allPipelines[fileAnalysisStep['@id']];
-            error = false;
-        } else if (derivedFileIds(file)) {
-            // File derives from others, but no analysis step; make dummy step.
-            stepId = `error:${derivedFileIds(file)}`;
-            label = 'Software unknown';
-            pipelineInfo = null;
-            error = true;
-        } else {
-            // No analysis step and no derived_from; don't add a step.
-            stepId = '';
-        }
-=======
         if (!file) {
             if (allMissingFiles.indexOf(fileId) === -1) {
                 const fileNodeId = `file:${fileId}`;
                 const fileNodeLabel = `${globals.atIdToAccession(fileId)}`;
                 const fileCssClass = `pipeline-node-file contributing${infoNode === fileNodeId ? ' active' : ''}`;
->>>>>>> master
 
                 jsonGraph.addNode(fileNodeId, fileNodeLabel, {
                     cssClass: fileCssClass,

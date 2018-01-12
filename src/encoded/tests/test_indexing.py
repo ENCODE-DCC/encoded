@@ -137,13 +137,8 @@ def test_indexing_simple(testapp, indexer_testapp):
     assert res.json['total'] == 3
 
 
-<<<<<<< HEAD
 def test_indexer_vis_state(dummy_request):
     from encoded.vis_indexer import VisIndexerState
-=======
-def test_indexer_state(dummy_request):
-    from encoded.secondary_indexer import SecondState
->>>>>>> master
     INDEX = dummy_request.registry.settings['snovault.elasticsearch.index']
     es = dummy_request.registry['elasticsearch']
     state = VisIndexerState(es,INDEX)
