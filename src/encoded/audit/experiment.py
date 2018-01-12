@@ -1795,7 +1795,7 @@ def audit_experiment_status(value, system, files_structure):
                 replicates_set.add(replicate_id)
                 replicates_reads[replicate_id] = 0
 
-        for file in file_structure.get('fastq_files'):
+        for file in files_structure.get('fastq_files').values():
             if file.get('status') not in ['uploading',
                                           'content error',
                                           'upload failed']:
