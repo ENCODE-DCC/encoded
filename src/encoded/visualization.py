@@ -62,6 +62,18 @@ ASSEMBLY_FAMILIES = {
 
 sanitize = Sanitize()
 
+def urlpage(url):
+    '''returns (page,suffix,cmd) from url: as ('track','json','regen') from ./../track.regen.json'''
+    url_end = url.split('/')[-1]
+    parts = url_end.split('.')
+    page = parts[0]
+    suffix = parts[-1] if len(parts) > 1 else 'txt'
+    cmd = parts[1]     if len(parts) > 2 else ''
+    if page == 'ihec' and suffix == 'json':    # TODO: remove after ihec is working
+        cmd = 'regen'
+
+    return (page, suffix, cmd)
+
 
 class VisCollections(object):
     # Gathers vis_datasets for remodelling and output
@@ -71,7 +83,9 @@ class VisCollections(object):
         self.vis_by_types = {}   # dict of assay based composites of files from vis_datasets
         self.found = 0
         self.built = 0
+        self.regen_requested = False
         self.request = request
+        self.page_requested = self.request.url.split('/')[-1]
         self.vis_cache = VisCache(self.request)
 
         if vis_datasets is not None:
@@ -80,15 +94,16 @@ class VisCollections(object):
             self.find(accessions, assembly)
 
     def add_one(self, accession, vis_dataset):
-        self.vis_datasets[accession] = vis_dataset  # TODO: change key to vis_id
+        # key on accession, not vis_id... collections are always for one assembly
+        self.vis_datasets[accession] = vis_dataset
 
     def add_to_collection(self, vis_datasets):
         if isinstance(vis_datasets, dict):
             self.vis_datasets.update(vis_datasets)
-        elif isinstance(vis_datasets, list) or  isinstance(vis_datasets, set):
+        elif isinstance(vis_datasets, list) or isinstance(vis_datasets, set):
             for vis_dataset in vis_datasets:
-                if 'name' in vis_dataset:  # Can't add empty vis_datasets this way
-                    self.add_one(vis_dataset['name'], vis_dataset)
+                if 'accession' in vis_dataset:  # NOTE: Can't add empty vis_datasets this way
+                    self.add_one(vis_dataset['accession'], vis_dataset)
 
     def find(self, accessions, assembly):
         self.vis_by_types = {}
@@ -99,6 +114,12 @@ class VisCollections(object):
         self.vis_by_types = {}
         self.found = 0
         self.built = 0
+
+        if not must_build:
+            (page, suffix, cmd) = urlpage(self.page_requested)
+            must_build = (cmd == 'regen')
+        self.regen_requested = must_build
+
         if not must_build:
             self.vis_datasets = self.find(accessions, assembly)
             self.found = self.len()
@@ -108,14 +129,15 @@ class VisCollections(object):
             # if self.found < (len(accessions) * 3 / 4):  # some heuristic to decide when too few means regenerate
             #     missing = list(set(accs) - set(self.vis_datasets.keys()))
 
-        if len(accessions) > 0:  # if 0 were found in cache try generating (for pre-primed-cache access)
+        if len(accessions) > 0:  # accessions not found in cache... try generating (for pre-primed-cache access)
             vis_factory = VisDataset(self.request)
             for accession in accessions:
                 vis_dataset = vis_factory.find_or_build(accession, assembly, dataset=None, hide=hide, must_build=True)
+                # vis_dataset could legitimately be {}... no visualizable files.
                 if vis_factory.built:
                     self.built += 1
                 else:
-                    self.found += 1  # Not expecting this
+                    self.found += 1  # Not expecting this since find turned up empty!
                 self.add_one(accession, vis_dataset)
         return self.vis_datasets
 
@@ -161,11 +183,11 @@ class VisCollections(object):
         self.vis_by_types = {}
         vis_defines = VisDefines()
 
-        for vis_id in sorted(self.vis_datasets.keys()):
-            vis_dataset = self.vis_datasets[vis_id]
+        for accession in sorted(self.vis_datasets.keys()):
+            vis_dataset = self.vis_datasets[accession]
             if vis_dataset is None or len(vis_dataset) == 0:
                 # log.debug("Found empty vis_dataset for %s" % (acc))
-                self.vis_by_types[vis_id] = {}  # wounded vis_datasets are retained for evidence
+                self.vis_by_types[accession] = {}  # wounded vis_datasets are retained for evidence
                 continue
 
             # Only show the first n datasets
@@ -278,7 +300,8 @@ class VisCollections(object):
         return self.vis_by_types
 
     def remodel_to_ihec_json(self):
-        '''TODO: remodels 1+ acc_composites into an IHEC hub json structure.'''
+        '''Formats this collection of vis_datasets into IHEC hub json structure.'''
+        # TODO: make ihec json work!
         if not self.vis_datasets:
             return {}
 
@@ -289,39 +312,35 @@ class VisCollections(object):
         # }
         ihec_json = {}
 
+        hub_description = {}
         # "hub_description": {     similar to hub.txt/genome.txt
         #     "taxon_id": ...,           Species taxonomy id. (e.g. human = 9606, Mus mus. 10090)
         #     "assembly": "...",         UCSC: hg19, hg38
-        #     "publishing_group": "...", ENCODE
-        #     "email": "...",            encode-help@lists.stanford.edu
-        #     "date": "...",             ISO 8601 format: YYYY-MM-DD
-        #     "description": "...",      (optional)
-        #     "description_url": "...",  (optional) If single vis_by_type: html  (e.g. ANNO.html)
-        # }
-        hub_description = {}
         hub_description["publishing_group"] = "ENCODE"
         hub_description["email"] = "encode-help@lists.stanford.edu"
         hub_description["date"] = time.strftime('%Y-%m-%d', time.gmtime())
-        # hub_description["description"] = "...",      (optional)
-        # hub_description["description_url"] = "...",  (optional)
+        # hub_description["description"] = "...",      (optional)  # TODO
+        # hub_description["description_url"] = "...",  (optional)  # TODO
+        # }
         #                                    If single vis_by_type: html (e.g. ANNO.html)
         ihec_json["hub_description"] = hub_description
 
+        samples = {}
         # "samples": {             one per biosample
         #     "sample_id_1": {                   biosample term
         #         "sample_ontology_uri": "...",  UBERON or CL
         #         "molecule": "...",             ["total RNA", "polyA RNA", "cytoplasmic RNA",
         #                                         "nuclear RNA", "genomic DNA", "protein", "other"]
-        #         "disease": "...",              optional?
-        #         "disease_ontology_uri": "...", optional?
+        #         "disease": "...",              optional?  # TODO
+        #         "disease_ontology_uri": "...", optional?  # TODO
         #         "biomaterial_type": "...",     ["Cell Line", "Primary Cell", "Primary Cell Culture",
         #                                         "Primary Tissue"]
         #     },
         #     "sample_id_2": { ... }
         # }
-        samples = {}
         ihec_json["samples"] = samples
 
+        datasets = {}
         # "datasets": {
         #    "experiment_1": {    one per experiment    accession
         #        "sample_id": "...",                    biosample_term
@@ -336,9 +355,9 @@ class VisCollections(object):
         #        "analysis_attributes": {
         #            "analysis_group": "...",              metadata_pairs['laboratory']
         #            "alignment_software": "...",          pipeline?
-        #            "alignment_software_version": "...",
-        #            "analysis_software": "...",
-        #            "analysis_software_version": "..."
+        #            "alignment_software_version": "...",  # TODO
+        #            "analysis_software": "...",           # TODO
+        #            "analysis_software_version": "..."    # TODO
         #        },
         #        "browser": {
         #            "signal_forward": [               view
@@ -359,17 +378,15 @@ class VisCollections(object):
         #        ...
         #    },
         # }
-        datasets = {}
         ihec_json["datasets"] = datasets
 
         # Other collections
         assays = {}
         pipelines = {}
 
-        for vis_id in self.vis_datasets.keys():
-            vis_dataset = self.vis_datasets[vis_id]
+        for accession in self.vis_datasets.keys():
+            vis_dataset = self.vis_datasets[accession]
             if vis_dataset is None or len(vis_dataset) == 0:
-                # log.debug("Found empty vis_dataset for %s" % (acc))
                 continue  # wounded vis_datasets can be dropped OR retained for evidence
 
             # From any vis_dataset, update these:
@@ -401,8 +418,8 @@ class VisCollections(object):
                 if biosample_type:
                     sample["biomaterial_type"] = biosample_type
                 sample["molecule"] = molecule
-                # sample["disease"] =
-                # sample["disease_ontology_uri"] =
+                # sample["disease"] =               # TODO
+                # sample["disease_ontology_uri"] =  # TODO
                 samples[sample_id] = sample
             dataset["sample_id"] = sample_id
 
@@ -431,13 +448,12 @@ class VisCollections(object):
                     analysis_attributes = deepcopy(pipelines[pipeline_title])  # deepcopy needed?
                 else:
                     analysis_attributes = {}
-                    pipeline_group = vis_dataset.get('pipeline_group')
-                    if pipeline_group:
-                        analysis_attributes["analysis_group"] = pipeline_group     # "ENCODE DCC"
                     analysis_attributes["analysis_software"] = pipeline_title
-                    # "analysis_software_version": "..."  # NOTE: version is hard for the whole exp
-                    # "alignment_software": "...",        # NOTE: sw *could* be found but not worth it
-                    # "alignment_software_version": "...",
+                    analysis_attributes["analysis_group"] = vis_dataset.get('pipeline_group','')
+                    # NOTE: version is hard for the whole exp
+                    analysis_attributes["analysis_software_version"] = vis_dataset.get('pipeline_version')
+                    # "alignment_software": "...",        # NOTE: sw *could* be found but not worth it  # TODO
+                    # "alignment_software_version": "...",                                              # TODO
                     #        },
                     pipelines[pipeline_title] = analysis_attributes
                 dataset["analysis_attributes"] = analysis_attributes
@@ -513,6 +529,29 @@ class VisCollections(object):
                 trackdb_txt += vis_defines.ucsc_single_composite_trackDb(self.vis_datasets[tag], tag)
         return trackdb_txt
 
+    def stringify(self, prepend_label=None):
+        '''returns string of trakDb.txt or json as appropriate.'''
+
+        (page, suffix, cmd) = urlpage(self.page_requested)
+        json_out = (suffix == 'json')                 # .../trackDb.json
+        vis_json = (page == 'vis_blob' and json_out)  # .../vis_blob.json
+        ihec_out = (page == 'ihec' and json_out)      # .../ihec.json
+
+        if self.len():
+            if ihec_out:
+                return json.dumps(self.remodel_to_ihec_json(), indent=4, sort_keys=True)
+            if vis_json:
+                return json.dumps(self.vis_datasets, indent=4, sort_keys=True)
+            else:
+                vis_by_types = self.remodel_to_type_collections(hide_after=100)
+                if prepend_label is not None:
+                    vis_by_types = self.prepend_assay_labels(prepend_label)
+
+                if json_out:
+                    return json.dumps(vis_by_types, indent=4, sort_keys=True)
+                else:
+                    return self.ucsc_trackDb()
+        return ""
 
 class VisDataset(object):
     # Finds, builds, stores, remodels vis_blobs
@@ -521,9 +560,11 @@ class VisDataset(object):
         self.found = False
         self.built = False
         self.request = request
+        self.page_requested = self.request.url.split('/')[-1]
         self.vis_cache = VisCache(self.request)
         self.vis_defines = None
         self.host = self.request.host_url
+        self.regen_requested = False
         if self.host is None or self.host.find("localhost") > -1:
             self.host = "https://www.encodeproject.org"
 
@@ -543,6 +584,11 @@ class VisDataset(object):
         self.assembly = assembly
         self.ucsc_assembly = ASSEMBLY_TO_UCSC_ID.get(self.assembly, self.assembly)
         self.vis_id = "%s_%s" % (self.accession, self.ucsc_assembly)  # key on normalized assembly!
+
+        if not must_build:
+            (page, suffix, cmd) = urlpage(self.page_requested)
+            must_build = (cmd == 'regen')
+        self.regen_requested = must_build
 
         # Find vis_dataset?
         if not must_build:
@@ -763,6 +809,7 @@ class VisDataset(object):
         return biosamples
 
     def replicates_pair(self, a_file):
+        '''Returns (title, value) for file's replicate ("replicates (bio_tech)","1_1, 2_1")'''
         if "replicate" in a_file:
             bio_rep = a_file["replicate"]["biological_replicate_number"]
             tech_rep = a_file["replicate"]["technical_replicate_number"]
@@ -796,7 +843,6 @@ class VisDataset(object):
             rep_key = 'replicates' + rep_key
         else:
             rep_key = 'replicate' + rep_key
-        # TODO handle tech_reps only?
         return (rep_key, rep_val)
 
     def gather_files_and_reps(self):
@@ -811,15 +857,16 @@ class VisDataset(object):
             output_types = view.get("output_type", [])
             file_format_types = view.get("file_format_type", [])
             file_format = view["type"].split()[0]
-            #if file_format == "bigBed":
-            #    format_type = view.get('file_format_type','')
-            #    if format_type == 'bedMethyl' or "itemRgb" in view:
-            #        view["type"] = "bigBed 9 +"  # itemRgb implies at least 9 +
-            #    elif format_type  == 'narrowPeak':
-            #        view["type"] = "bigNarrowPeak"  # scoreFilter implies score so 6 +
-            #    elif format_type == 'broadPeak' or "scoreFilter" in view:
-            #        view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
-            # log.debug("%d files looking for type %s" % (len(dataset["files"]),view["type"]))
+            if file_format == "bigBed":
+                format_type = view.get('file_format_type','')
+                if format_type == 'bedMethyl' or "itemRgb" in view:
+                    view["type"] = "bigBed 9 +"  # itemRgb implies at least 9 +
+                elif format_type  == 'narrowPeak':
+                    #view["type"] = "bigNarrowPeak"
+                    view["type"] = "bigBed 6 +"
+                elif format_type == 'broadPeak' or "scoreFilter" in view:
+                    view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
+            #log.debug("%d files looking for type %s" % (len(dataset["files"]),view["type"]))
             for a_file in self.dataset["files"]:
                 if a_file['status'] not in self.vis_defines.visible_file_statuses():
                     continue
@@ -910,8 +957,8 @@ class VisDataset(object):
                 if format_type == 'bedMethyl' or "itemRgb" in view:
                     view["type"] = "bigBed 9 +"  # itemRgb implies at least 9 +
                 elif format_type  == 'narrowPeak':
-                    #view["type"] = "bigNarrowPeak"  # scoreFilter implies score so 6 +  # DEBUG DEBUG
-                    view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
+                    #view["type"] = "bigNarrowPeak"
+                    view["type"] = "bigBed 6 +"
                 elif format_type == 'broadPeak' or "scoreFilter" in view:
                     view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
                 track["type"] = view["type"]
@@ -955,7 +1002,7 @@ class VisDataset(object):
                 if view['type'] == 'bigNarrowPeak':         # DEBUG DEBUG  Should be done in vis_def
                     view.pop('scoreFilter',None)            # DEBUG DEBUG
                     view['signalFilter'] = "0"              # DEBUG DEBUG
-                    view['signalFilterLimits'] = "0:18241"  # DEBUG DEBUG
+                #    view['signalFilterLimits'] = "0:18241"  # DEBUG DEBUG
 
                 for (group_tag, group) in self.vis_dataset["groups"].items():
                     # "Replicates", "Biosample", "Targets", "Assay", ... member?
@@ -999,20 +1046,7 @@ class VisDataset(object):
                     else:
                         assert(group_tag == "Don't know this group!")
 
-                # plumbing for ihec:
-                if 'pipeline' not in self.vis_dataset:
-                    as_ver = a_file.get("analysis_step_version")  # this embedding could evaporate
-                    if as_ver and isinstance(as_ver, dict):
-                        a_step = as_ver.get("analysis_step")
-                        if a_step and isinstance(a_step, dict):
-                            pipelines = a_step.get("pipelines")
-                            if pipelines and isinstance(pipelines, list) and len(pipelines) > 0:
-                                pipeline = pipelines[0].get("title")
-                                pipeline_group = pipelines[0].get("lab")
-                                if pipeline:
-                                    self.vis_dataset['pipeline'] = pipeline
-                                    if pipeline_group:
-                                        self.vis_dataset['pipeline_group'] = pipeline_group
+                self.add_pipeline_details(a_file, track)
                 track['md5sum'] = a_file['md5sum']
 
                 track["membership"] = membership
@@ -1022,6 +1056,58 @@ class VisDataset(object):
                 tracks.append(track)
 
         return tracks
+
+    def add_pipeline_details(self, a_file, track):
+        # plumbing for ihec
+
+        # Use step_ver to get at pipeline, but different files may be from different steps!
+        step_ver = a_file.get("analysis_step_version")  # this embedding could evaporate
+        if not step_ver:
+            return # Nothing to be done at this time
+        if isinstance(step_ver, str):
+            track['step_version'] = step_ver.split('/')[1]
+            return
+
+        # Use analysis_step to get at pipeline, but different files may be from different steps!
+        track['step_version'] = step_ver.get('name','')
+        analysis_step = step_ver.get("analysis_step")
+        if not analysis_step:
+            return # Nothing to be done at this time
+        if not isinstance(analysis_step, dict):
+            track['analysis_step'] = analysis_step.split('/')[1]
+            return
+
+        track['analysis_step'] = analysis_step.get('title','')
+
+        if 'pipeline' in self.vis_dataset:
+            return  # Don't bother looking up the same thing
+
+        # search for pipeline and version
+        pipelines = analysis_step.get("pipelines")
+        if not pipelines or not isinstance(pipelines, list) or len(pipelines) == 0:
+            return
+
+        pipeline_version = None
+        pipeline = None
+        for pipe in pipelines:
+            pipe_title = pipe.get('title')
+            if pipe_title:
+                if 'version' in pipe_title.lower():  # REALLY LESS THAN IDEAL
+                    pipe_ver = pipe_title.lower.split('version')[-1]
+                else:
+                    pipe_ver = '1'
+                if pipeline_version is None or pipe_ver > pipeline_version:
+                    pipeline_version = pipe_ver
+                    pipeline = pipe_ver
+                    pipeline_group = pipe.get("lab",'')
+
+        if pipeline:
+            self.vis_dataset['pipeline'] = pipeline
+            self.vis_dataset['pipeline_group'] = pipeline_group
+            self.vis_dataset['pipeline_version'] = pipeline_version
+
+        # TODO: aligner name and version for ihec
+        return
 
     def build(self, hide):
         '''Converts embedded dataset into a vis_dataset'''
@@ -1044,7 +1130,7 @@ class VisDataset(object):
 
         self.vis_dataset['assembly'] = self.assembly
         self.vis_dataset['ucsc_assembly'] = self.ucsc_assembly
-        self.vis_dataset["id"]  = self.vis_id
+        self.vis_dataset["vis_id"]  = self.vis_id
 
         # plumbing for ihec, among other things:
         for term in self.vis_defines.encoded_dataset_terms():
@@ -1103,15 +1189,19 @@ class VisDataset(object):
             vis_type = 'unknown'
         return vis_type
 
-    def vis_dict(self):
+    def as_collection(self):
+        # formats the single vis_dataset dict as a collection dict
         if self.vis_dataset is not None:
-            return {self.accession: self.vis_dataset}    # TODO: change key to vis_id
+            return {self.accession: self.vis_dataset} # NOTE: accession not vis_id, collections are always  one assembly
         return {}
 
     def remodel_to_ihec_json(self):
-        '''Formats single vis_dataset into UCSC trackDb.ra text'''
-        vis_collection = VisCollections(self.request, {self.accession: self.vis_dataset})
-        return vis_collection.remodel_to_ihec_json()
+        '''Formats single vis_dataset into IHEC json'''
+        # TODO: make ihec json work!
+        collection_of_one = self.as_collection()
+        if collection_of_one:
+            return VisCollections(self.request, collection_of_one).remodel_to_ihec_json()
+        return {}
 
     def ucsc_trackDb(self):
         '''Formats single vis_dataset into UCSC trackDb.ra text'''
@@ -1121,12 +1211,27 @@ class VisDataset(object):
         #vis_collection = VisCollections(self.request, {self.accession: self.vis_dataset})
         #return vis_collection.ucsc_trackDb()
 
+    def stringify(self):
+        '''returns string of trakDb.txt or json as appropriate.'''
 
-def vis_cache_add(request, dataset, start_time=None):
-    '''For a single embedded dataset, builds and adds vis_blobs to es cache for each relevant assembly.'''
-    if start_time is None:
-        start_time = time.time()
+        (page, suffix, cmd) = urlpage(self.page_requested)
+        json_out = (suffix == 'json')                 # .../trackDb.json
+        vis_json = (page == 'vis_blob' and json_out)  # .../vis_blob.json
+        ihec_out = (page == 'ihec' and json_out)      # .../ihec.json
 
+        if ihec_out:
+            return json.dumps(self.remodel_to_ihec_json(), indent=4, sort_keys=True)
+        if vis_json:
+            return json.dumps(self.vis_dataset, indent=4, sort_keys=True)
+        elif json_out:
+            return json.dumps(self.as_collection(), indent=4, sort_keys=True)
+
+        return self.ucsc_trackDb()
+
+
+
+def vis_cache_add(request, dataset):
+    '''For a single embedded dataset, builds and adds vis_dataset to es cache for each relevant assembly.'''
     if not object_is_visualizable(dataset, exclude_quickview=True):
         return []
 
@@ -1137,14 +1242,10 @@ def vis_cache_add(request, dataset, start_time=None):
     vis_factory = VisDataset(request)
     for assembly in assemblies:
         vis_dataset = vis_factory.find_or_build(accession, assembly, dataset, must_build=True)
-        if vis_dataset:
+        if vis_dataset:  # Don't bother caching empties (e.g. {} == no visualizable files).
             vis_datasets.append(vis_dataset)
-            log.debug("primed vis_cache with vis_dataset %s '%s' %.3f secs" %
-                        (vis_factory.vis_id, vis_factory.vis_type, (time.time() - start_time)))
-        # Took 12h32m on initial
-        # else:
-        #    log.debug("prime_vis_es_cache for %s_%s unvisualizable '%s'" % \
-        #                                (acc,ucsc_assembly,get_vis_type(dataset)))
+            log.debug("primed vis_cache with vis_dataset %s '%s'" %
+                        (vis_factory.vis_id, vis_factory.vis_type))
 
     return vis_datasets
 
@@ -1153,17 +1254,8 @@ def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
     '''Returns string content for a requested  single experiment trackDb.txt.'''
     # local test: bigBed: curl http://localhost:8000/experiments/ENCSR000DZQ/@@hub/hg19/trackDb.txt
     #             bigWig: curl http://localhost:8000/experiments/ENCSR000ADH/@@hub/mm9/trackDb.txt
-    # CHIP: https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR645BCH/@@hub/GRCh38/trackDb.txt
-    # LRNA: curl https://4217-trackhub-spa-ab9cd63-tdreszer.demo.encodedcc.org/experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
-
-    (page,suffix,cmd) = urlpage(request.url)
-    json_out = (suffix == 'json')
-    vis_json = (page == 'vis_blob' and json_out)
-    ihec_out = (page == 'ihec' and json_out)
-    if not regen:
-        regen = ('regen' in cmd)
-        if not regen: # TODO temporary
-            regen = ihec_out
+    # CHIP: https://.../experiments/ENCSR645BCH/@@hub/GRCh38/trackDb.txt
+    # LRNA: curl https://.../experiments/ENCSR000AAA/@@hub/GRCh38/trackDb.txt
 
     accession = dataset['accession']
 
@@ -1178,19 +1270,30 @@ def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
     msg = "%s vis_dataset %s %s len(json):%d %.3f" % (vis_factory.found_or_built(accession, assembly),
                  vis_factory.vis_id, vis_factory.vis_type, vis_factory.len(),
                  (time.time() - PROFILE_START_TIME))
-    if regen:  # Want to see message if regen was requested
+    if vis_factory.regen_requested:  # Want to see message if regen was requested
         log.info(msg)
     else:
         log.debug(msg)
 
-    if ihec_out:
-        return json.dumps(vis_factory.remodel_to_ihec_json(), indent=4, sort_keys=True)
-    if vis_json:
-        return json.dumps(vis_dataset, indent=4, sort_keys=True)
-    elif json_out:
-        return json.dumps(vis_factory.vis_dict(), indent=4, sort_keys=True)
+    return vis_factory.stringify()
 
-    return vis_factory.ucsc_trackDb()
+
+def generate_by_accessions(request, accessions, assembly, hide, regen, prepend_label=None):
+    '''Actual generation of trackDb for collections (batch and file_sets).'''
+
+    vis_collection = VisCollections(request)
+    vis_datasets = vis_collection.find_or_build(accessions, assembly, hide, must_build=regen)
+
+    blob = vis_collection.stringify(prepend_label)
+
+    msg = "%s. len(txt):%s  %.3f secs" % \
+                 (vis_collection.found_or_built(), len(blob), (time.time() - PROFILE_START_TIME))
+    if vis_collection.regen_requested:  # Want to see message if regen was requested
+        log.info(msg)
+    else:
+        log.debug(msg)
+
+    return blob
 
 
 def generate_set_trackDb(request, accession, dataset, assembly, hide=False, regen=False):
@@ -1222,39 +1325,12 @@ def generate_set_trackDb(request, accession, dataset, assembly, hide=False, rege
         log.error("failed to find true datasets for files in collection %s" % accession)
         return ""
 
-    vis_collection = VisCollections(request)
-    vis_datasets = vis_collection.find_or_build(sub_accessions, assembly, None, hide, must_build=regen)
-
-    blob = ""
-    vis_by_types = vis_collection.remodel_to_type_collections(hide_after=100)
-    vis_by_types = vis_collection.prepend_assay_labels(accession)
-
-    if request.url.endswith(".json"):
-        blob = json.dumps(vis_by_types, indent=4, sort_keys=True)
-    else:
-        blob = vis_collection.ucsc_trackDb()
-
-    msg = "%s. len(txt):%s  %.3f secs" % \
-                (vis_collection.found_or_built(), len(blob), (time.time() - PROFILE_START_TIME))
-    if regen:  # Want to see message if regen was requested
-        log.info(msg)
-    else:
-        log.debug(msg)
-    return blob
+    return generate_by_accessions(request, sub_accessions, assembly, hide, regen, prepend_label=accession)
 
 
 def generate_batch_trackDb(request, hide=False, regen=False):
     '''Returns string content for a requested multi-experiment trackDb.txt.'''
     # local test: RNA-seq: curl https://../batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
-
-    (page,suffix,cmd) = urlpage(request.url)
-    json_out = (suffix == 'json')
-    vis_json = (page == 'vis_blob' and json_out)  # ...&bly=hg19&accjson/hg19/trackDb.txt
-    ihec_out = (page == 'ihec' and json_out)
-    if not regen:
-        regen = ('regen' in cmd)
-        if not regen: # TODO temporary
-            regen = ihec_out
 
     assembly = str(request.matchdict['assembly'])
     log.debug("Request for %s trackDb begins   %.3f secs" %
@@ -1283,31 +1359,7 @@ def generate_batch_trackDb(request, hide=False, regen=False):
     accessions = [result['accession'] for result in results]
     del results
 
-    vis_collection = VisCollections(request)
-    vis_datasets = vis_collection.find_or_build(accessions, assembly, hide, must_build=regen)
-
-    blob = ""
-    if vis_collection.len():
-        if ihec_out:
-            blob = json.dumps(vis_collection.remodel_to_ihec_json(), indent=4, sort_keys=True)
-        if vis_json:
-            blob = json.dumps(vis_datasets, indent=4, sort_keys=True)
-        else:
-            vis_by_types = vis_collection.remodel_to_type_collections(hide_after=100)
-
-            if json_out:
-                blob = json.dumps(vis_by_types, indent=4, sort_keys=True)
-            else:
-                blob = vis_collection.ucsc_trackDb()
-
-    msg = "%s. len(txt):%s  %.3f secs" % \
-                 (vis_collection.found_or_built(), len(blob), (time.time() - PROFILE_START_TIME))
-    if regen:  # Want to see message if regen was requested
-        log.info(msg)
-    else:
-        log.debug(msg)
-
-    return blob
+    return generate_by_accessions(request, accessions, assembly, hide, regen)
 
 
 #def readable_time(secs_float):
@@ -1426,7 +1478,6 @@ def generate_html(context, request):
         except:
             pass
 
-    # TODO: Extend page with assay specific details
     details = vis_def.get("html_detail")
     if details is not None:
         page += details
@@ -1434,22 +1485,13 @@ def generate_html(context, request):
     return page  # data_description + header + file_table
 
 
-def urlpage(url):
-    '''returns (page,suffix,cmd) from url: as ('track','json','regen') from ./../track.regen.json'''
-    url_end = url.split('/')[-1]
-    parts = url_end.split('.')
-    page = parts[0]
-    suffix = parts[-1] if len(parts) > 1 else 'txt'
-    cmd = parts[1]     if len(parts) > 2 else ''
-    return (page, suffix, cmd)
-
 def generate_batch_hubs(context, request):
     '''search for the input params and return the trackhub'''
     global PROFILE_START_TIME
     PROFILE_START_TIME = time.time()
 
     results = {}
-    (page,suffix,cmd) = urlpage(request.url)
+    (page, suffix, cmd) = urlpage(request.url)
     log.debug('Requesting %s.%s#%s' % (page,suffix,cmd))
 
     if (suffix == 'txt' and page == 'trackDb') or \

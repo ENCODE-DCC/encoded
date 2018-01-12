@@ -227,7 +227,8 @@ SUPPORTED_TRACK_SETTINGS = [
     "type", "visibility", "longLabel", "shortLabel", "color", "altColor", "allButtonPair", "html",
     "scoreFilter", "spectrum", "minGrayLevel", "itemRgb", "viewLimits",
     "autoScale", "negateValues", "maxHeightPixels", "windowingFunction", "transformFunc",
-    "signalFilter", "signalFilterLimits", "pValueFilter", "pValueFilterLimits", "qValueFilter", "qValueFilterLimits" ]  # DEBUG DEBUG
+    "signalFilter", "signalFilterLimits", "pValueFilter", "pValueFilterLimits",
+    "qValueFilter", "qValueFilterLimits" ]
 VIEW_SETTINGS = SUPPORTED_TRACK_SETTINGS
 
 # UCSC trackDb settings that are supported
@@ -469,6 +470,7 @@ class VisDefines(object):
                 with open(folder + filename) as fh:
                     log.debug('Preparing to load %s' % (filename))
                     vis_def = json.load(fh)
+                    # Could alter vis_defs here if desired.
                     if vis_def:
                         VIS_DEFS_BY_TYPE.update(vis_def)
 
@@ -753,12 +755,12 @@ class VisDefines(object):
         # TODO: rna_species
         # elif token == "{rna_species}":
         #     if replicates.library.nucleic_acid = polyadenylated mRNA
-        #        rna_species = polyA RNA
-        #     elseif replicates.library.nucleic_acid = RNA
-        #        if polyadenylated mRNA in replicates.library.depleted_in_term_name
-        #                rna_species = polyA depleted RNA
+        #        rna_species = "polyA RNA"
+        #     elif replicates.library.nucleic_acid == "RNA":
+        #        if "polyadenylated mRNA" in replicates.library.depleted_in_term_name
+        #                rna_species = "polyA depleted RNA"
         #        else
-        #                rna_species = total RNA
+        #                rna_species = "total RNA"
         elif a_file is not None:
             if token == "{file.accession}":
                 return a_file['accession']
@@ -974,7 +976,7 @@ class VisDefines(object):
         return blob
 
 
-# TODO: move to separate vis_cache module
+# TODO: move to separate vis_cache module?
 class VisCache(object):
     # Stores and recalls vis_dataset formatted json to/from es vis_cache
 

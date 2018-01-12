@@ -141,7 +141,7 @@ def visindexer_state_show(request):
 
     display = state.display()
     try:
-        count = es.count(index=VIS_CACHE_INDEX, doc_type='default').get('count',0)  # TODO: 'vis_composite' should be obtained from visualization.py
+        count = es.count(index=VIS_CACHE_INDEX, doc_type='default').get('count',0)
         if count:
             display['vis_blobs in index'] = count
     except:
