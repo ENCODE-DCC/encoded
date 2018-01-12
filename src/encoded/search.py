@@ -1164,10 +1164,6 @@ def news(context, request):
     del query['query']['query_string']
     # If searching for more than one type, don't specify which fields to search
 
-    # Keyword search on news items is not implemented yet
-    del query['query']['query_string']
-    # If searching for more than one type, don't specify which fields to search
-
     # Set sort order to sort by date_created.
     sort = OrderedDict()
     result_sort = OrderedDict()
