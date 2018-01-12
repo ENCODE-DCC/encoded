@@ -176,7 +176,7 @@ SchemaTermItemDisplay.propTypes = {
 // Display all property terms of a schema object (usually dependencies and properties).
 const SchemaTermDisplay = props => (
     <div>
-        {Object.keys(props.schemaValue).map(key =>
+        {Object.keys(props.schemaValue).sort().map(key =>
             <SchemaTermItemDisplay key={key} schemaValue={props.schemaValue} term={key} />
         )}
     </div>
@@ -202,22 +202,30 @@ const TermDisplay = (props) => {
     // If the schema term value is an object, see if it's actually an array.
     if (termType === 'object') {
         if (Array.isArray(termSchema)) {
-            // The value's an array, so display a list.
-            return (
-                <div>
-                    {termSchema.map((item, i) => {
-                        displayMethod = simpleTypeDisplay[typeof item];
-                        if (displayMethod) {
-                            // The schema term value array item is a simple type, so just
-                            // display it normally.
-                            return <div key={i}>{displayMethod(item)}</div>;
-                        }
+            // The value's an array, so display a list. Filter out any non-simple types in the
+            // array (at this time, I don't think any schema array values have non-simple types)
+            // and sort the results.
+            const simpleTermValues = termSchema.filter(item => !!simpleTypeDisplay[typeof item]).sort();
+            if (simpleTermValues.length) {
+                return (
+                    <div>
+                        {simpleTermValues.map((item, i) => {
+                            displayMethod = simpleTypeDisplay[typeof item];
+                            if (displayMethod) {
+                                // The schema term value array item is a simple type, so just
+                                // display it normally.
+                                return <div key={i}>{displayMethod(item)}</div>;
+                            }
 
-                        // The array element isn't a simple type, so just ignore it.
-                        return null;
-                    })}
-                </div>
-            );
+                            // The array element isn't a simple type, so just ignore it.
+                            return null;
+                        })}
+                    </div>
+                );
+            }
+
+            // No simple term types in the schema value, so don't show anything.
+            return null;
         }
 
         // The value's an object, so display the schema value itself.
