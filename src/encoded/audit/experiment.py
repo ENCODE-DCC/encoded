@@ -1815,7 +1815,7 @@ def audit_experiment_status(value, system, files_structure):
                 key = assay_term_name
 
             for rep in replicates_reads:
-                if replicates_reads[rep] < min_depth[key]:
+                if replicates_reads[rep] < minimal_read_depth_requirements[key]:
                     detail = 'The cumulative number of reads {} in ' \
                              'replicate {} of experiment {} is lower then ' \
                              'the minimal expected read depth {} ' \
@@ -1823,7 +1823,7 @@ def audit_experiment_status(value, system, files_structure):
                                  replicates_reads[rep],
                                  rep,
                                  value['@id'],
-                                 min_depth[key]
+                                 minimal_read_depth_requirements[key]
                              )
                     yield AuditFailure('low read count',
                                        detail, level='WARNING')
