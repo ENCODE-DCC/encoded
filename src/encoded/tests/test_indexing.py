@@ -94,13 +94,9 @@ def test_indexing_workbook(testapp, indexer_testapp):
     res = indexer_testapp.post_json('/index', {'record': True})
     assert res.json['updated']
     assert res.json['indexed']
-<<<<<<< HEAD
-    assert res.json['pass2_took']
-=======
     ### OPTIONAL: audit via 2-pass is coming...
     #assert res.json['pass2_took']
     ### OPTIONAL: audit via 2-pass is coming...
->>>>>>> master
 
     res = indexer_testapp.post_json('/index_secondary', {'record': True})
     assert res.json['cycle_took']
