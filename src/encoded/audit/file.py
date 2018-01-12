@@ -79,7 +79,7 @@ def audit_file_assembly(value, system):
                 f['@id']) + \
                 'it was derived from.'
             yield AuditFailure('inconsistent assembly',
-                               detail, level='INTERNAL_ACTION')
+                               detail, level='WARNING')
             return
 
 

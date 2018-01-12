@@ -23,7 +23,12 @@ def index_settings():
     return {
         'index': {
             'number_of_shards': 1,
+<<<<<<< HEAD
         }, 
+=======
+            'max_result_window': 99999
+        },
+>>>>>>> master
         'analysis.analyzer': 'standard'
     }
 

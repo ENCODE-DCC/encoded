@@ -253,9 +253,9 @@ globals.contentViews.register(User, 'User');
 const ImpersonateUserSchema = {
     type: 'object',
     properties: {
-        userid: {
+        user: {
             title: 'User',
-            description: 'Enter the email of the user you want to impersonate.',
+            linkTo: ['User'],
         },
     },
 };

@@ -50,3 +50,16 @@ def publication_4_5(value, system):
         value['status'] = 'deleted'
     elif value['status'] in ['in press', 'in revision']:
         value['status'] = 'submitted'
+
+
+@upgrade_step('publication', '5', '6')
+def publication_5_6(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3708
+    if value['status'] == 'published':
+        value['status'] = 'released'
+    elif value['status'] == 'submitted':
+        value['status'] = 'in progress'
+    elif value['status'] == 'in preparation':
+        value['status'] = 'in progress'
+    else:
+        pass

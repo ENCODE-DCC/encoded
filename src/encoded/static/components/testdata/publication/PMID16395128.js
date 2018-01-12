@@ -5,7 +5,7 @@ module.exports = {
     "identifiers": [
         "PMID:16395128"
     ],
-    "status": "published",
+    "status": "released",
     "title": "Possible association between response inhibition and a variant in the brain-expressed tryptophan hydroxylase-2 gene.",
     "uuid": "b163ba10-bd4a-11e4-bb52-0800200c9a66"
 };

@@ -78,9 +78,9 @@ def test_login_logout(testapp, anontestapp, auth0_encode_user_token, auth0_encod
 
 def test_impersonate_user(anontestapp, admin, submitter):
     res = anontestapp.post_json(
-        '/impersonate-user', {'userid': submitter['email']},
+        '/impersonate-user', {'user': submitter['@id']},
         extra_environ={'REMOTE_USER': str(admin['email'])}, status=200)
     assert 'Set-Cookie' in res.headers
-    assert res.json['auth.userid'] == submitter['email']
+    assert res.json['auth.userid'] == submitter['uuid']
     res = anontestapp.get('/session')
-    assert res.json['auth.userid'] == submitter['email']
+    assert res.json['auth.userid'] == submitter['uuid']

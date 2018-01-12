@@ -41,6 +41,9 @@
         "file_format_type": {
             "title": "Specific file format type"
         },
+        "platform.term_name": {
+            "title": "Platform"
+        },
         "award.project": {
             "title": "Project"
         },
@@ -973,6 +976,7 @@
                 "M3",
                 "M4",
                 "M7",
+                "M14",
                 "miRBase V21",
                 "None",
                 "V10",

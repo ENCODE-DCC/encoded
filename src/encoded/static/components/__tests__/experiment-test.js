@@ -54,7 +54,7 @@ describe('Experiment Page', () => {
             contextRep.replicates = [require('../testdata/replicate/human'), require('../testdata/replicate/mouse')];
             contextRep.replicates[0].library = require('../testdata/library/sid38806');
             contextRep.replicates[1].library = require('../testdata/library/sid38807');
-            contextRep.files = [require('../testdata/file/fastq')];
+            contextRep.files = [require('../testdata/file/fastq')[0]];
             experiment = mount(
                 <Experiment context={contextRep} />
             );

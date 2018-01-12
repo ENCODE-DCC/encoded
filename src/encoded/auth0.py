@@ -18,6 +18,7 @@ from pyramid.settings import (
     asbool,
     aslist,
 )
+from pyramid.traversal import find_resource
 from pyramid.view import (
     view_config,
 )
@@ -173,21 +174,24 @@ def session(request):
              permission='impersonate')
 def impersonate_user(request):
     """As an admin, impersonate a different user."""
-    userid = request.validated['userid']
-    users = request.registry[COLLECTIONS]['user']
+    user = request.validated['user']
 
     try:
-        user = users[userid]
+        user = find_resource(request.root, user)
     except KeyError:
-        raise ValidationFailure('body', ['userid'], 'User not found.')
+        raise ValidationFailure('body', ['user'], 'User not found.')
 
+    if user.item_type != 'user':
+        raise ValidationFailure('body', ['user'], 'User not found.')
     if user.properties.get('status') != 'current':
-        raise ValidationFailure('body', ['userid'], 'User is not enabled.')
+        raise ValidationFailure('body', ['user'], 'User is not enabled.')
 
     request.session.invalidate()
     request.session.get_csrf_token()
-    request.response.headerlist.extend(remember(request, 'mailto.' + userid))
-    user_properties = request.embed('/session-properties', as_user=userid)
+    request.response.headerlist.extend(
+        remember(request, 'mailto.%s' % user.uuid))
+    user_properties = request.embed(
+        '/session-properties', as_user=str(user.uuid))
     if 'auth.userid' in request.session:
         user_properties['auth.userid'] = request.session['auth.userid']
 
