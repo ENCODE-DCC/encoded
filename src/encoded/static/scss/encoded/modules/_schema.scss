@@ -44,3 +44,32 @@
         background-color: #f3f2f3;
     }
 }
+
+// For the list of available schemas on the /profiles/ page.
+.schema-list {
+    display: block;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    @at-root #{&}__item {
+        margin: 2px 0;
+
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 50%;
+            width: 50%;
+        }
+
+        @media screen and (min-width: $screen-lg-min) {
+            flex: 0 1 33.33%;
+            width: 33.33%;
+            margin: 2px 0;
+        }
+
+        .btn {
+            margin-right: 5px;
+        }
+    }
+}

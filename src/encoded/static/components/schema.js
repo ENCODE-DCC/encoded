@@ -94,7 +94,7 @@ class SchemaTermJsonDisplay extends React.Component {
     }
 
     componentDidMount() {
-        // Now that the JSON display component has mounted, 
+        // Now that the JSON display component has mounted,
         const { schemaValue, term } = this.props;
 
         // Create a read-only brace editor to display the formatted JSON.
@@ -375,3 +375,38 @@ SchemaPage.propTypes = {
 };
 
 globals.contentViews.register(SchemaPage, 'JSONSchema');
+
+
+function schemaIdToPath(schemaId) {
+    const pathMatch = schemaId.match(/\/profiles\/(.*).json/);
+    return pathMatch && pathMatch.length ? pathMatch[1] : null;
+}
+
+
+export default class AllSchemasPage extends React.Component {
+    render() {
+        const { schemas } = this.props;
+        const schemaNames = Object.keys(schemas).sort().filter(schemaName => (
+            !!(schemas[schemaName].identifyingProperties && schemas[schemaName].identifyingProperties.length)
+        ));
+
+        return (
+            <div className="schema-list">
+                {schemaNames.map((schemaName) => {
+                    const schemaId = schemas[schemaName].id;
+                    const schemaPath = schemaIdToPath(schemaId);
+                    return (
+                        <div className="schema-list__item" key={schemaName}>
+                            <a className="btn btn-info btn-xs" href={`/${schemaPath}/#!add`}>Add</a>
+                            <a href={schemaId} title={schemas[schemaName].description}>{schemaName}</a>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    }
+}
+
+AllSchemasPage.propTypes = {
+    schemas: PropTypes.object.isRequired, // All schemas in encoded
+};
