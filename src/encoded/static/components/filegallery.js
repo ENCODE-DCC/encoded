@@ -1019,6 +1019,133 @@ function qcAbbr(qc) {
 }
 
 
+/**
+ * Test whether the given file is compatible with the given assembly and annotation. The file's
+ * compatible if it...
+ *   * has no assembly
+ *   * has an assembly and annotation matching the given ones
+ *   * has an assembly matching the given one, and no annotation, nor is there a given one
+ *
+ * @param {object} file - File whose assembly/annotation we're testing.
+ * @param {string} assembly - Currently selected assembly.
+ * @param {string} annotation - Currently selected annotation.
+ */
+function isCompatibleAssemblyAnnotation(file, assembly, annotation) {
+    return !file.assembly || (file.assembly === assembly && (file.genome_annotation || '') === annotation);
+}
+
+
+/**
+ * Collect qualified derived_from files from a root file. Because derived_from chains can branch
+ * and merge, collectDerivedFroms calls itself recursively as it travels up the chains, with
+ * progressively higher parent files in `file` for each iterative call. The structure of the
+ * returned object describes the entire derived_from chain above the given `file` parameter. This
+ * function gets called once for every file that belongs to the current dataset that has an
+ * assembly/annotation compatible with the current selection. Here's an example where P1, P2 and
+ * P3 are processed files within the current dataset and match the selected assembly and
+ * annotation, and R1 and R2 are raw files.
+ *
+ * R1 ----------- P1
+ *              |
+ *    +---------+
+ *    |
+ * R2 ----------- P2 ----------- P3
+ *
+ * P1 has a derived_from of R1 and R2, P2 has a derived_from of R2 only, and P3 has a derived_from
+ * of P2. collectDerivedFroms gets called directly three times (not counting recursive calls) --
+ * once each for P1, P2, and P3. Once the dust settles, the result of the call for P1 is
+ *
+ * { R1@id: null } ---> resulting in { R1@id: P1 }
+ *
+ * P2
+ *
+ * { R2@id: null } ---> resulting in { R2@id: P2 }
+ *
+ * and P3
+ *
+ * { R2@id: P2, P2@id: null } ---> resulting in { R2@id: P2, P2@id: P3 }
+ *
+ * You can see that after collectDerivedFroms returns, the processed file puts itself in any null
+ * entries in the returned object, which is how the chain gradually gets built, showing what files
+ * derive from which.
+ *
+ * @param {object} file - File to begin the journey up the derived_from chains
+ * @param {object} fileDataset - Dataset being displayed
+ * @param {string} selectedAssembly - Assembly currently selected for display in the graph
+ * @param {string} selectedAnnotation - Genome annotation currently selected for display in the graph
+ * @param {object} allFiles - keys are @ids of all files in the current dataset, and the values are
+ *         the file objects themselves.
+ * @return {object} - Describes the derived_from chaih above the given `file` object. This single-
+ *         level object has keys that are the @id of every file that the given `file` directly or
+ *         indirectly derives from. Each key's value is the object of the file that directly
+ *         derives from it. A file can spawn more than one file, but in that case we'll have
+ *         multiple derived_from chains -- within a chain, every file spawns exactly one file.
+ *         When this call returns (both when called normally as well as recursively), The given
+ *         `file`'s own @id is one key of the returned object, but its value is null, to be filled
+ *         when we process the child file.
+ */
+function collectDerivedFroms(file, fileDataset, selectedAssembly, selectedAnnotation, allFiles) {
+    let accumulatedDerivedFroms = {};
+
+    // Only step up the chain of derived froms if the file has one. Otherwise we're at a terminal
+    // file of this derived_from branch and can start stepping back down the chain. We also stop
+    // going up the chain once we get to a file not in the current dataset, which might be a
+    // processed file that doesn't belong in the graph, or a contributing file. Note that we have a
+    // risk of infinite recursion if the file data incluees a derived_from loop, which isn't valid.
+    if (file.derived_from && file.derived_from.length && file.dataset === fileDataset['@id']) {
+        // File is the product of at least one derived_from chain, so for any files this file
+        // derives from (parent files), go up the chain continuing to collect the files involved
+        // in the current branch of the chain.
+        for (let i = 0; i < file.derived_from.length; i += 1) {
+            const derivedFileAtId = file.derived_from[i];
+
+            // derived_from doesn't currently embed files; it's just a list of file @ids, and we
+            // have to use `allFiles` to get the corresponding file objects.
+            const derivedFile = allFiles[derivedFileAtId];
+            if (!derivedFile || isCompatibleAssemblyAnnotation(derivedFile, selectedAssembly, selectedAnnotation)) {
+                // The derived_from file either has an assembly/annotation compatible with the
+                // currently selected ones (including raw files that don't have an assembly nor
+                // annotation) -- OR we have the @id of a derived_from file not in this dataset and
+                // so doesn't exist in `allFiles`, which indicates a contributing file.
+                let branchDerivedFroms;
+                if (derivedFile) {
+                    // The derived_from file exists in the current dataset, so use that as the new
+                    // root of the derived_from chain to recursively go up the chain.
+                    branchDerivedFroms = collectDerivedFroms(derivedFile, fileDataset, selectedAssembly, selectedAnnotation, allFiles);
+                } else {
+                    // The derived_from file does not exist in the current dataset, so this is a
+                    // terminal file that gets a clean entry to return to the lower level of the
+                    // chain.
+                    accumulatedDerivedFroms[derivedFileAtId] = null;
+                    branchDerivedFroms = accumulatedDerivedFroms;
+                }
+
+                // branchDerivedFroms keys with null values indicate files that are the direct
+                // parent of `file`. Replace the null value with `file` itself.
+                const branchDerivedFromAtIds = Object.keys(branchDerivedFroms);
+                for (let j = 0; j < branchDerivedFromAtIds.length; j += 1) {
+                    const oneDerivedFromAtId = branchDerivedFromAtIds[j];
+                    if (branchDerivedFroms[oneDerivedFromAtId] === null) {
+                        branchDerivedFroms[oneDerivedFromAtId] = file;
+                    }
+                }
+
+                // Add the current file object to the object that accumulates all the files this
+                // file derives from.
+                accumulatedDerivedFroms = Object.assign(accumulatedDerivedFroms, branchDerivedFroms);
+            }
+        }
+    }
+    // Else the file has no derived_from chain or has a conflicting dataset, and we can stop going
+    // up the chain of derived froms.
+
+    // Now add a property to the object of collected derived_froms keyed by the file's @id and
+    // containing an null to be filled in by child files.
+    accumulatedDerivedFroms[file['@id']] = null;
+    return accumulatedDerivedFroms;
+}
+
+
 // Assembly a graph of files, the QC objects that belong to them, and the steps that connect them.
 export function assembleGraph(files, dataset, options) {
     // Calculate a step ID from a file's derived_from array.
@@ -1089,37 +1216,69 @@ export function assembleGraph(files, dataset, options) {
         }
     });
 
-    // Generate a list of file @ids that other files (matching the current assembly and annotation)
+    // For each matching file (file belonging to this dataset with an assembly/annotation matching
+    // the selected one), build an object describing the derived_from chains leading to this file.
+    // A detailed description is in the comments for collectDerivedFroms. Place the result in
+    // `derivedChains` which the next step uses to build allDerivedFroms.
+    const derivedChains = {};
+    let matchingFileAtIds = Object.keys(matchingFiles);
+    for (let i = 0; i < matchingFileAtIds.length; i += 1) {
+        const fileAtId = matchingFileAtIds[i];
+        derivedChains[fileAtId] = collectDerivedFroms(matchingFiles[fileAtId], dataset, selectedAssembly, selectedAnnotation, allFiles);
+    }
+
+    // Generate a list of file @ids that other files matching the current assembly and annotation
     // derive from (i.e. files referenced in other files' derived_from). allDerivedFroms is keyed
-    // by the derived-from file @id (whether it matches the current assembly and annotation or not)
-    // and has an array of all files that derive from it for its value. So for example:
+    // by the derived_from file @id (whether it matches the current assembly and annotation or not)
+    // and has a value of the array of all files that derive from it. So for example:
     //
     // allDerivedFroms = {
     //     /files/<matching accession>: [matching file, matching file],
     //     /files/<contributing accession>: [matching file, matching file],
     //     /files/<missing accession>: [matching file, matching file],
     // }
+    //
+    // Also generate `derivedFromList` which is just a convenience object. It contains the @ids of
+    // all files in allDerivedFroms, but with a value of the corresponding file object.
+    // `derivedFromList` isn't core to the graph-generating algorithm, but helps us avoid having
+    // to search arrays for file objects.
+    //
+    // You can think of this nested loop turning `derivedChains` upside-down because it has the
+    // @ids of processed files as keys with files they derived from as values. allDerivedFroms is
+    // keyed by all file @ids that have other files derive from them, and an array of all files
+    // that derive from each one as values.
     const allDerivedFroms = {};
-    Object.keys(matchingFiles).forEach((matchingFileId) => {
-        const matchingFile = matchingFiles[matchingFileId];
-        if (matchingFile.derived_from && matchingFile.derived_from.length) {
-            matchingFile.derived_from.forEach((derivedFromAtId) => {
-                // Copy reference to allFiles copy of file. Will be undefined for missing and
-                // contributing files.
-                if (allDerivedFroms[derivedFromAtId]) {
-                    // Already saw a file derive from this one, so add the new reference to the end
-                    // of the array of derived-from files.
-                    allDerivedFroms[derivedFromAtId].push(matchingFile);
+    const derivedFromList = {};
+    matchingFileAtIds = Object.keys(derivedChains);
+    for (let i = 0; i < matchingFileAtIds.length; i += 1) {
+        const matchingFileAtId = matchingFileAtIds[i];
+        const matchingFileChain = derivedChains[matchingFileAtId];
+
+        // For each matching file @id in derivedChains, go through its chain of parents to fill in
+        // allDerivedFroms.
+        const parentFileAtIds = Object.keys(matchingFileChain);
+        for (let j = 0; j < parentFileAtIds.length; j += 1) {
+            const parentFileAtId = parentFileAtIds[j];
+            if (matchingFileChain[parentFileAtId]) {
+                if (allDerivedFroms[parentFileAtId] && allDerivedFroms[parentFileAtId].findIndex(childFile => childFile['@id'] === matchingFileChain[parentFileAtId]['@id']) === -1) {
+                    // We've already put this file @id in allDerivedFromss, so add this new parent file to its array.
+                    allDerivedFroms[parentFileAtId].push(matchingFileChain[parentFileAtId]);
                 } else {
-                    // Never saw a file derive from this one, so make a new array with a reference
-                    // to it.
-                    allDerivedFroms[derivedFromAtId] = [matchingFile];
+                    // We've never seen this file @id in allDerivedFroms, os start a new array.
+                    allDerivedFroms[parentFileAtId] = [matchingFileChain[parentFileAtId]];
                 }
-            });
+                derivedFromList[parentFileAtId] = allFiles[parentFileAtId];
+            }
         }
-    });
+    }
     // Remember, at this stage allDerivedFroms includes keys for missing files, files not matching
     // the chosen assembly/annotation, and contributing files.
+
+    // Add the derivedFromList to matchingFiles so that the rendering code renders them all
+    // together. This is a major change made for ENCD-3661 which used to render this all
+    // `allDerivedFroms` separately. Now they're all rendered together, an no separate rendering
+    // step for derived froms exists anymore.
+    matchingFiles = Object.assign(matchingFiles, derivedFromList);
 
     // Filter any "island" files out of matchingFiles -- that is, files that derive from no other
     // files, and no other files derive from it.
@@ -1127,7 +1286,9 @@ export function assembleGraph(files, dataset, options) {
         const noIslandFiles = {};
         Object.keys(matchingFiles).forEach((matchingFileId) => {
             const matchingFile = matchingFiles[matchingFileId];
-            if ((matchingFile.derived_from && matchingFile.derived_from.length) || allDerivedFroms[matchingFileId]) {
+            const hasDerivedFroms = matchingFile && matchingFile.derived_from && matchingFile.derived_from.length &&
+                matchingFile.derived_from.some(derivedFileAtId => derivedFileAtId in derivedFromList);
+            if (hasDerivedFroms || allDerivedFroms[matchingFileId]) {
                 // This file either has derived_from set, or other files derive from it. Copy it to
                 // our destination object.
                 noIslandFiles[matchingFileId] = matchingFile;
@@ -1138,39 +1299,20 @@ export function assembleGraph(files, dataset, options) {
     if (Object.keys(matchingFiles).length === 0) {
         throw new GraphException('No graph: no file relationships for the selected assembly/annotation');
     }
-    // At this stage, any files in matchingFiles will be rendered. We just have to figure out what
-    // other files need rendering, like raw sequencing files, contributing files, and derived-from
-    // files that have a non-matching annotation and assembly.
+    // At this stage, any files in matchingFiles will be rendered.
 
     const allReplicates = {}; // All file's replicates as keys; each key references an array of files
     Object.keys(matchingFiles).forEach((matchingFileId) => {
         // If the file is part of a single biological replicate, add it to an array of files, where
         // the arrays are in an object keyed by their relevant biological replicate number.
         const matchingFile = matchingFiles[matchingFileId];
-        let replicateNum = (matchingFile.biological_replicates && matchingFile.biological_replicates.length === 1) ? matchingFile.biological_replicates[0] : undefined;
+        const replicateNum = (matchingFile && matchingFile.biological_replicates && matchingFile.biological_replicates.length === 1) ? matchingFile.biological_replicates[0] : undefined;
         if (replicateNum) {
             if (allReplicates[replicateNum]) {
                 allReplicates[replicateNum].push(matchingFile);
             } else {
                 allReplicates[replicateNum] = [matchingFile];
             }
-        }
-
-        // Add each file that a matching file derives from to the replicates.
-        if (matchingFile.derived_from && matchingFile.derived_from.length) {
-            matchingFile.derived_from.forEach((derivedFromAtId) => {
-                const file = allFiles[derivedFromAtId];
-                if (file) {
-                    replicateNum = (file.biological_replicates && file.biological_replicates.length === 1) ? file.biological_replicates[0] : undefined;
-                    if (replicateNum) {
-                        if (allReplicates[replicateNum]) {
-                            allReplicates[replicateNum].push(matchingFile);
-                        } else {
-                            allReplicates[replicateNum] = [matchingFile];
-                        }
-                    }
-                }
-            });
         }
     });
 
@@ -1214,6 +1356,7 @@ export function assembleGraph(files, dataset, options) {
                         // Remove coalesced files from usedContributingFiles because we don't want
                         // to render individual files that have been coalesced.
                         delete usedContributingFiles[contributingFileAtId];
+                        delete matchingFiles[contributingFileAtId];
                     });
                 } else {
                     // The number of contributing files in a coalescing group isn't above our
@@ -1238,6 +1381,10 @@ export function assembleGraph(files, dataset, options) {
         }
     });
 
+    // See if anything in `allDerivedFroms` has its own derived_from. If it does, then treat it
+    // like any other file with `derived_from` set. Add it to `matchingFiles` and remove it from
+    // `allDerivedFroms`.
+
     // Create an empty graph architecture that we fill in next.
     const jsonGraph = new JsonGraph(dataset.accession);
 
@@ -1257,123 +1404,48 @@ export function assembleGraph(files, dataset, options) {
     // graph.
     Object.keys(matchingFiles).forEach((fileId) => {
         const file = matchingFiles[fileId];
-        const fileNodeId = `file:${file['@id']}`;
-        const fileNodeLabel = `${file.title} (${file.output_type})`;
-        const fileCssClass = fileCssClassGen(file, !!(infoNode && infoNode.id === fileNodeId), colorize);
-        const fileRef = file;
-        const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
-        let metricsInfo;
 
-        // Add QC metrics info from the file to the list to generate the nodes later.
-        if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length) {
-            const sortedMetrics = fileQcMetrics[fileId].sort((a, b) => (a['@type'][0] > b['@type'][0] ? 1 : (a['@type'][0] < b['@type'][0] ? -1 : 0)));
-            metricsInfo = sortedMetrics.map((metric) => {
-                const qcId = genQcId(metric, file);
-                return {
-                    id: qcId,
-                    label: qcAbbr(metric),
-                    '@type': ['QualityMetric'],
-                    class: `pipeline-node-qc-metric${infoNode && infoNode.id === qcId ? ' active' : ''}`,
-                    tooltip: true,
-                    ref: metric,
-                    parent: file,
-                };
-            });
-        }
+        if (!file) {
+            if (allMissingFiles.indexOf(fileId) === -1) {
+                const fileNodeId = `file:${fileId}`;
+                const fileNodeLabel = `${globals.atIdToAccession(fileId)}`;
+                const fileCssClass = `pipeline-node-file contributing${infoNode === fileNodeId ? ' active' : ''}`;
 
-        // Add a node for a regular searched file.
-        jsonGraph.addNode(fileNodeId, fileNodeLabel, {
-            cssClass: fileCssClass,
-            type: 'File',
-            shape: 'rect',
-            cornerRadius: 16,
-            parentNode: replicateNode,
-            ref: fileRef,
-        }, metricsInfo);
-
-        // Figure out the analysis step we need to render between the node we just rendered and its
-        // derived_from.
-        let stepId;
-        let label;
-        let pipelineInfo;
-        let error;
-        const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
-        if (fileAnalysisStep) {
-            // Make an ID and label for the step
-            stepId = `step:${derivedFileIds(file) + fileAnalysisStep['@id']}`;
-            label = (fileAnalysisStep.analysis_step_types && fileAnalysisStep.analysis_step_types).length ? fileAnalysisStep.analysis_step_types : [];
-            pipelineInfo = allPipelines[fileAnalysisStep['@id']];
-            error = false;
-        } else if (derivedFileIds(file)) {
-            // File derives from others, but no analysis step; make dummy step.
-            stepId = `error:${derivedFileIds(file)}`;
-            label = 'Software unknown';
-            pipelineInfo = null;
-            error = true;
-        } else {
-            // No analysis step and no derived_from; don't add a step.
-            stepId = '';
-        }
-
-        // If we have a step to render, do that here.
-        if (stepId) {
-            // Add the step to the graph only if we haven't for this derived-from set already
-            if (!jsonGraph.getNode(stepId)) {
-                jsonGraph.addNode(stepId, label, {
-                    cssClass: `pipeline-node-analysis-step${(infoNode && infoNode.id === stepId ? ' active' : '') + (error ? ' error' : '')}`,
-                    type: 'Step',
+                jsonGraph.addNode(fileNodeId, fileNodeLabel, {
+                    cssClass: fileCssClass,
+                    type: 'File',
                     shape: 'rect',
-                    cornerRadius: 4,
-                    parentNode: replicateNode,
-                    ref: fileAnalysisStep,
-                    pipelines: pipelineInfo,
-                    fileId: file['@id'],
-                    fileAccession: file.title,
-                    stepVersion: file.analysis_step_version,
+                    cornerRadius: 16,
+                    contributing: fileId,
+                    ref: {},
+                });
+            }
+        } else {
+            const fileNodeId = `file:${file['@id']}`;
+            const fileNodeLabel = `${file.title} (${file.output_type})`;
+            const fileCssClass = fileCssClassGen(file, !!(infoNode && infoNode.id === fileNodeId), colorize);
+            const fileRef = file;
+            const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
+            let metricsInfo;
+
+            // Add QC metrics info from the file to the list to generate the nodes later.
+            if (fileQcMetrics[fileId] && fileQcMetrics[fileId].length) {
+                const sortedMetrics = fileQcMetrics[fileId].sort((a, b) => (a['@type'][0] > b['@type'][0] ? 1 : (a['@type'][0] < b['@type'][0] ? -1 : 0)));
+                metricsInfo = sortedMetrics.map((metric) => {
+                    const qcId = genQcId(metric, file);
+                    return {
+                        id: qcId,
+                        label: qcAbbr(metric),
+                        '@type': ['QualityMetric'],
+                        class: `pipeline-node-qc-metric${infoNode && infoNode.id === qcId ? ' active' : ''}`,
+                        tooltip: true,
+                        ref: metric,
+                        parent: file,
+                    };
                 });
             }
 
-            // Connect the file to the step, and the step to the derived_from files
-            jsonGraph.addEdge(stepId, fileNodeId);
-            file.derived_from.forEach((derivedFromAtId) => {
-                const derivedFromFile = allFiles[derivedFromAtId] || allMissingFiles.some(missingFileId => missingFileId === derivedFromAtId);
-                if (derivedFromFile) {
-                    // Not derived from a contributing file; just add edges normally.
-                    const derivedFileId = `file:${derivedFromAtId}`;
-                    if (!jsonGraph.getEdge(derivedFileId, stepId)) {
-                        jsonGraph.addEdge(derivedFileId, stepId);
-                    }
-                } else {
-                    // File derived from a contributing file; add edges to a coalesced node
-                    // that we'll add to the graph later.
-                    const coalescedContributing = allCoalesced[derivedFromAtId];
-                    if (coalescedContributing) {
-                        // Rendering a coalesced contributing file.
-                        const derivedFileId = `coalesced:${coalescedContributing}`;
-                        if (!jsonGraph.getEdge(derivedFileId, stepId)) {
-                            jsonGraph.addEdge(derivedFileId, stepId);
-                        }
-                    } else if (usedContributingFiles[derivedFromAtId]) {
-                        const derivedFileId = `file:${derivedFromAtId}`;
-                        if (!jsonGraph.getEdge(derivedFileId, stepId)) {
-                            jsonGraph.addEdge(derivedFileId, stepId);
-                        }
-                    }
-                }
-            });
-        }
-    });
-
-    // Go through each derived-from file and add it to our graph.
-    Object.keys(allDerivedFroms).forEach((fileId) => {
-        const file = allFiles[fileId];
-        if (file && !matchingFiles[fileId]) {
-            const fileNodeId = `file:${file['@id']}`;
-            const fileNodeLabel = `${file.title} (${file.output_type})`;
-            const fileCssClass = fileCssClassGen(file, infoNode === fileNodeId, colorize);
-            const fileRef = file;
-            const replicateNode = (file.biological_replicates && file.biological_replicates.length === 1) ? jsonGraph.getNode(`rep:${file.biological_replicates[0]}`) : null;
-
+            // Add a node for a regular searched file.
             jsonGraph.addNode(fileNodeId, fileNodeLabel, {
                 cssClass: fileCssClass,
                 type: 'File',
@@ -1381,24 +1453,83 @@ export function assembleGraph(files, dataset, options) {
                 cornerRadius: 16,
                 parentNode: replicateNode,
                 ref: fileRef,
-            });
+            }, metricsInfo);
+
+            // Figure out the analysis step we need to render between the node we just rendered and its
+            // derived_from.
+            let stepId;
+            let label;
+            let pipelineInfo;
+            let error;
+            const fileAnalysisStep = file.analysis_step_version && file.analysis_step_version.analysis_step;
+            if (fileAnalysisStep) {
+                // Make an ID and label for the step
+                stepId = `step:${derivedFileIds(file) + fileAnalysisStep['@id']}`;
+                label = fileAnalysisStep.analysis_step_types;
+                pipelineInfo = allPipelines[fileAnalysisStep['@id']];
+                error = false;
+            } else if (derivedFileIds(file)) {
+                // File derives from others, but no analysis step; make dummy step.
+                stepId = `error:${derivedFileIds(file)}`;
+                label = 'Software unknown';
+                pipelineInfo = null;
+                error = true;
+            } else {
+                // No analysis step and no derived_from; don't add a step.
+                stepId = '';
+            }
+
+            // If we have a step to render, do that here.
+            if (stepId) {
+                // Add the step to the graph only if we haven't for this derived-from set already
+                if (!jsonGraph.getNode(stepId)) {
+                    jsonGraph.addNode(stepId, label, {
+                        cssClass: `pipeline-node-analysis-step${(infoNode && infoNode.id === stepId ? ' active' : '') + (error ? ' error' : '')}`,
+                        type: 'Step',
+                        shape: 'rect',
+                        cornerRadius: 4,
+                        parentNode: replicateNode,
+                        ref: fileAnalysisStep,
+                        pipelines: pipelineInfo,
+                        fileId: file['@id'],
+                        fileAccession: file.title,
+                        stepVersion: file.analysis_step_version,
+                    });
+                }
+
+                // Connect the file to the step, and the step to the derived_from files
+                jsonGraph.addEdge(stepId, fileNodeId);
+                file.derived_from.forEach((derivedFromAtId) => {
+                    if (!allDerivedFroms[derivedFromAtId]) {
+                        return;
+                    }
+                    const derivedFromFile = allFiles[derivedFromAtId] || allMissingFiles.some(missingFileId => missingFileId === derivedFromAtId);
+                    if (derivedFromFile) {
+                        // Not derived from a contributing file; just add edges normally.
+                        const derivedFileId = `file:${derivedFromAtId}`;
+                        if (!jsonGraph.getEdge(derivedFileId, stepId)) {
+                            jsonGraph.addEdge(derivedFileId, stepId);
+                        }
+                    } else {
+                        // File derived from a contributing file; add edges to a coalesced node
+                        // that we'll add to the graph later.
+                        const coalescedContributing = allCoalesced[derivedFromAtId];
+                        if (coalescedContributing) {
+                            // Rendering a coalesced contributing file.
+                            const derivedFileId = `coalesced:${coalescedContributing}`;
+                            if (!jsonGraph.getEdge(derivedFileId, stepId)) {
+                                jsonGraph.addEdge(derivedFileId, stepId);
+                            }
+                        } else if (usedContributingFiles[derivedFromAtId]) {
+                            const derivedFileId = `file:${derivedFromAtId}`;
+                            if (!jsonGraph.getEdge(derivedFileId, stepId)) {
+                                jsonGraph.addEdge(derivedFileId, stepId);
+                            }
+                        }
+                    }
+                });
+            }
         }
-    });
-
-    // Go through each derived-from contributing file and add it to our graph.
-    Object.keys(usedContributingFiles).forEach((fileAtId) => {
-        const fileNodeId = `file:${fileAtId}`;
-        const fileNodeLabel = `${globals.atIdToAccession(fileAtId)}`;
-        const fileCssClass = `pipeline-node-file contributing${infoNode === fileNodeId ? ' active' : ''}`;
-
-        jsonGraph.addNode(fileNodeId, fileNodeLabel, {
-            cssClass: fileCssClass,
-            type: 'File',
-            shape: 'rect',
-            cornerRadius: 16,
-            contributing: fileAtId,
-            ref: {},
-        });
     });
 
     // Now add coalesced nodes to the graph.

@@ -1,5 +1,9 @@
 ## Changelog for experiment.json
 
+### Schema version 15
+
+* The biosample_type enum "in vitro sample" has been renamed to "cell-free sample" and requires an accompanying biosample_term_id (of type NTR)
+
 ### Schema version 14
 
 * Remove *proposed* from status enum (dataset mixin).

@@ -2,6 +2,7 @@ module.exports = {
     "@id": "/files/ENCFF005COS/",
     "@type": ["File", "Item"],
     "accession": "ENCFF005COS",
+    "assembly": "hg19",
     "award": "ENCODE2",
     "dataset": require('../experiment')['@id'],
     "derived_from": [require('./bam-vuq')['@id']],

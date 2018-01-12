@@ -7,7 +7,9 @@ def experiment_pipeline_error(testapp, lab, award):
         'lab': lab['@id'],
         'award': award['@id'],
         'assay_term_name': 'ChIP-seq',
-        'biosample_type': 'in vitro sample',
+        'biosample_type': 'cell-free sample',
+        'biosample_term_id': 'NTR:0000471',
+        'biosample_term_name': 'none',
         'internal_status': 'pipeline error'
     }
     return item
@@ -19,7 +21,9 @@ def experiment_no_error(testapp, lab, award):
         'lab': lab['@id'],
         'award': award['@id'],
         'assay_term_name': 'ChIP-seq',
-        'biosample_type': 'in vitro sample',
+        'biosample_type': 'cell-free sample',
+        'biosample_term_id': 'NTR:0000471',
+        'biosample_term_name': 'none',
         'internal_status': 'release ready'
     }
     return item

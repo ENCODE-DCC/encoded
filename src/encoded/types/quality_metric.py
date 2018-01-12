@@ -211,6 +211,17 @@ class IDRQualityMetric(QualityMetric, CalculatedAssayTermID):
 
 
 @collection(
+    name='histone-chipseq-quality-metrics',
+    properties={
+        'title': "Histone ChIP-seq Quality Metrics",
+        'description': "Quality metrics from histone ChIP-seq peak overlap analysis",
+    })
+class HistoneChipSeqQualityMetric(QualityMetric, CalculatedAssayTermID):
+    item_type = 'histone_chipseq_quality_metric'
+    schema = load_schema('encoded:schemas/histone_chipseq_quality_metric.json')
+
+
+@collection(
     name='generic-quality-metrics',
     properties={
         'title': "Generic Quality Metric",

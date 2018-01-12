@@ -485,5 +485,14 @@
         "uuid": "39b4ccfe-c700-4ead-972e-71479c03c97e",
         "status": "virtual",
         "analysis_step_version": "78a19d0d-cfff-418a-9549-6aed3d492e6f"
+    },
+    {
+        "aliases": [
+            "encode:dbgap-sra-to-fastq"
+        ],
+        "analysis_step_version": "b75af1ff-b3ab-443f-a134-2b00cd318cd9",
+        "date_created": "2017-10-16T16:12:30.339473+00:00",
+        "status": "virtual",
+        "uuid": "41cf4efe-5de6-4e67-9b17-a15201f72348"
     }
 ]

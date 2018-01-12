@@ -25,24 +25,6 @@ def biosample_characterization_base(submitter, award, lab, biosample):
 
 
 @pytest.fixture
-def rnai_characterization(submitter, award, lab, rnai):
-    return {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'characterizes': rnai['uuid'],
-    }
-
-
-@pytest.fixture
-def construct_characterization(submitter, award, lab, construct):
-    return {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'characterizes': construct['uuid'],
-    }
-
-
-@pytest.fixture
 def antibody_characterization_1(antibody_characterization):
     item = antibody_characterization.copy()
     item.update({
@@ -76,55 +58,11 @@ def biosample_characterization_1(biosample_characterization_base):
 
 
 @pytest.fixture
-def rnai_characterization_1(rnai_characterization):
-    item = rnai_characterization.copy()
-    item.update({
-        'schema_version': '2',
-        'status': 'INCOMPLETE',
-        'characterization_method': 'knockdowns',
-    })
-    return item
-
-
-@pytest.fixture
-def construct_characterization_1(construct_characterization):
-    item = construct_characterization.copy()
-    item.update({
-        'schema_version': '1',
-        'status': 'FAILED',
-        'characterization_method': 'western blot',
-    })
-    return item
-
-
-@pytest.fixture
 def biosample_characterization_2(biosample_characterization_base):
     item = biosample_characterization_base.copy()
     item.update({
         'schema_version': '3',
         'status': 'IN PROGRESS',
-        'award': '1a4d6443-8e29-4b4a-99dd-f93e72d42418'
-    })
-    return item
-
-
-@pytest.fixture
-def rnai_characterization_2(rnai_characterization):
-    item = rnai_characterization.copy()
-    item.update({
-        'schema_version': '3',
-        'status': 'IN PROGRESS',
-        'award': 'ea1f650d-43d3-41f0-a96a-f8a2463d332f'
-    })
-    return item
-
-
-@pytest.fixture
-def construct_characterization_2(construct_characterization):
-    item = construct_characterization.copy()
-    item.update({
-        'schema_version': '2',
-        'status': 'DELETED',
         'award': '1a4d6443-8e29-4b4a-99dd-f93e72d42418'
     })
     return item
@@ -177,20 +115,6 @@ def test_biosample_characterization_upgrade(upgrader, biosample_characterization
     assert value['characterization_method'] == 'FACs analysis'
 
 
-def test_construct_characterization_upgrade(upgrader, construct_characterization_1):
-    value = upgrader.upgrade('construct_characterization', construct_characterization_1, target_version='3')
-    assert value['schema_version'] == '3'
-    assert value['status'] == 'NOT SUBMITTED FOR REVIEW BY LAB'
-    assert value['characterization_method'] == 'immunoblot'
-
-
-def test_rnai_characterization_upgrade(upgrader, rnai_characterization_1):
-    value = upgrader.upgrade('rnai_characterization', rnai_characterization_1, target_version='3')
-    assert value['schema_version'] == '3'
-    assert value['status'] == 'IN PROGRESS'
-    assert value['characterization_method'] == 'knockdown or knockout'
-
-
 def test_antibody_characterization_upgrade_status(upgrader, antibody_characterization_2):
     value = upgrader.upgrade('antibody_characterization', antibody_characterization_2, target_version='4')
     assert value['schema_version'] == '4'
@@ -201,18 +125,6 @@ def test_biosample_characterization_upgrade_status_encode2(upgrader, biosample_c
     value = upgrader.upgrade('biosample_characterization', biosample_characterization_2, target_version='4')
     assert value['schema_version'] == '4'
     assert value['status'] == 'released'
-
-
-def test_rnai_characterization_upgrade_status_encode3(upgrader, rnai_characterization_2):
-    value = upgrader.upgrade('rnai_characterization', rnai_characterization_2, target_version='4')
-    assert value['schema_version'] == '4'
-    assert value['status'] == 'in progress'
-
-
-def test_construct_characterization_upgrade_status_deleted(upgrader, construct_characterization_2):
-    value = upgrader.upgrade('construct_characterization', construct_characterization_2, target_version='4')
-    assert value['schema_version'] == '4'
-    assert value['status'] == 'deleted'
 
 
 def test_antibody_characterization_upgrade_primary(upgrader, antibody_characterization_3):
@@ -254,7 +166,8 @@ def test_antibody_characterization_upgrade_not_compliant_status(upgrader, antibo
 def test_biosample_characterization_upgrade_references(root, upgrader, biosample_characterization, biosample_characterization_4, publication, threadlocals, dummy_request):
     context = root.get_by_uuid(biosample_characterization['uuid'])
     dummy_request.context = context
-    value = upgrader.upgrade('biosample_characterization', biosample_characterization_4, target_version='5', context=context)
+    value = upgrader.upgrade('biosample_characterization', biosample_characterization_4,
+                             target_version='5', context=context)
     assert value['schema_version'] == '5'
     assert value['references'] == [publication['uuid']]
 
@@ -282,7 +195,8 @@ def test_antibody_characterization_upgrade_inline(testapp, registry, antibody_ch
 
 
 def test_antibody_characterization_comment_to_submitter_comment_upgrade(upgrader, antibody_characterization_10, antibody_characterization):
-    value = upgrader.upgrade('antibody_characterization', antibody_characterization_10, current_version='10', target_version='11')
+    value = upgrader.upgrade('antibody_characterization', antibody_characterization_10,
+                             current_version='10', target_version='11')
     assert value['schema_version'] == '11'
     assert 'comment' not in value
     assert value['submitter_comment'] == 'We tried really hard to characterize this antibody.'
