@@ -73,3 +73,16 @@
         }
     }
 }
+
+// Button in profile object's tab bar to add a new object of this type.
+.profiles-add-obj {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    height: 100%;
+    z-index: 1;
+
+    @at-root #{&}__btn {
+        height: 90%;
+    }
+}

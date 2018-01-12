@@ -84,6 +84,18 @@ function createJsonDisplay(elementId, term) {
 }
 
 
+/**
+ * Convert the contents of the `id` field of a schema to a path we can use to link to the page to
+ * add a new object of its type.
+ *
+ * @param {*} schemaId - `id` property from schema
+ */
+function schemaIdToPath(schemaId) {
+    const pathMatch = schemaId.match(/\/profiles\/(.*).json/);
+    return pathMatch && pathMatch.length ? pathMatch[1] : null;
+}
+
+
 // Display JSON for one schema term.
 class SchemaTermJsonDisplay extends React.Component {
     constructor() {
@@ -333,6 +345,10 @@ const SchemaPage = (props) => {
     const itemClass = globals.itemClass(context);
     const title = context.title;
     const changelog = context.changelog;
+
+    // Generate a link to add an object for the currently displayed schema.
+    const schemaPath = schemaIdToPath(context.id);
+
     return (
         <div className={itemClass}>
             <header className="row">
@@ -342,7 +358,11 @@ const SchemaPage = (props) => {
             </header>
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
             <Panel>
-                <TabPanel tabs={{ formatted: 'Formatted', raw: 'Raw' }}>
+                <TabPanel
+                    tabs={{ formatted: 'Formatted', raw: 'Raw' }}
+                    decoration={<a href={`/${schemaPath}/#!add`} className="btn btn-info profiles-add-obj__btn">Add</a>}
+                    decorationClasses="profiles-add-obj"
+                >
                     <TabPanelPane key="formatted">
                         <PanelBody>
                             <DisplayObject schema={context} />
@@ -377,15 +397,13 @@ SchemaPage.propTypes = {
 globals.contentViews.register(SchemaPage, 'JSONSchema');
 
 
-function schemaIdToPath(schemaId) {
-    const pathMatch = schemaId.match(/\/profiles\/(.*).json/);
-    return pathMatch && pathMatch.length ? pathMatch[1] : null;
-}
-
-
+// Displays a page listing all schemas available in the system.
 export default class AllSchemasPage extends React.Component {
     render() {
         const { schemas } = this.props;
+
+        // Get a sorted list of all available schemas. Filter out those without any
+        // `identifyingProperties` because the user can't add objects of that type.
         const schemaNames = Object.keys(schemas).sort().filter(schemaName => (
             !!(schemas[schemaName].identifyingProperties && schemas[schemaName].identifyingProperties.length)
         ));
@@ -395,6 +413,7 @@ export default class AllSchemasPage extends React.Component {
                 {schemaNames.map((schemaName) => {
                     const schemaId = schemas[schemaName].id;
                     const schemaPath = schemaIdToPath(schemaId);
+
                     return (
                         <div className="schema-list__item" key={schemaName}>
                             <a className="btn btn-info btn-xs" href={`/${schemaPath}/#!add`}>Add</a>
