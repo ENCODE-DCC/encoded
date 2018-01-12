@@ -335,7 +335,7 @@ class BiosampleComponent extends React.Component {
         const age = (result.age && result.age !== 'unknown') ? ` ${result.age}` : '';
         const ageUnits = (result.age_units && result.age_units !== 'unknown' && age) ? ` ${result.age_units}` : '';
         const separator = (lifeStage || age) ? ',' : '';
-        const treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
+        const treatment = (result.treatments && result.treatments.length) ? result.treatments[0].treatment_term_name : '';
 
         // Calculate genetic modification properties for display.
         const rnais = [];
@@ -423,6 +423,7 @@ globals.listingViews.register(Biosample, 'Biosample');
 class ExperimentComponent extends React.Component {
     render() {
         const result = this.props.context;
+        let synchronizations;
 
         // Collect all biosamples associated with the experiment. This array can contain duplicate
         // biosamples, but no null entries.
@@ -434,16 +435,19 @@ class ExperimentComponent extends React.Component {
         // Get all biosample organism names
         const organismNames = biosamples.length ? BiosampleOrganismNames(biosamples) : [];
 
+        // Bek: Forrest should review the change for correctness
         // Collect synchronizations
-        const synchronizations = _.uniq(result.replicates.filter(replicate =>
-            replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization
-        ).map((replicate) => {
-            const biosample = replicate.library.biosample;
-            return (biosample.synchronization +
-                (biosample.post_synchronization_time ?
-                    ` + ${biosample.post_synchronization_time}${biosample.post_synchronization_time_units ? ` ${biosample.post_synchronization_time_units}` : ''}`
-                : ''));
-        }));
+        if (result.replicates && result.replicates.length) {
+            synchronizations = _.uniq(result.replicates.filter(replicate =>
+                replicate.library && replicate.library.biosample && replicate.library.biosample.synchronization
+            ).map((replicate) => {
+                const biosample = replicate.library.biosample;
+                return (biosample.synchronization +
+                    (biosample.post_synchronization_time ?
+                        ` + ${biosample.post_synchronization_time}${biosample.post_synchronization_time_units ? ` ${biosample.post_synchronization_time_units}` : ''}`
+                    : ''));
+            }));
+        }
 
         return (
             <li>
@@ -531,7 +535,7 @@ class DatasetComponent extends React.Component {
         if (seriesDataset) {
             biosampleTerm = (result.biosample_term_name && typeof result.biosample_term_name === 'object' && result.biosample_term_name.length === 1) ? result.biosample_term_name[0] :
                 ((result.biosample_term_name && typeof result.biosample_term_name === 'string') ? result.biosample_term_name : '');
-            const organisms = _.uniq(result.organism && result.organism.length && result.organism.map(resultOrganism => resultOrganism.scientific_name));
+            const organisms = (result.organism && result.organism.length) ? _.uniq(result.organism.map(resultOrganism => resultOrganism.scientific_name)) : [];
             if (organisms.length === 1) {
                 organism = organisms[0];
             }
@@ -889,7 +893,7 @@ class Facet extends React.Component {
             if (term.key) {
                 // See if the facet term also exists in the search result filters (i.e. the term
                 // exists in the URL query string).
-                const found = filters.some(filter => filter.term === term.key);
+                const found = filters.some(filter => filter.field === facet.field && filter.term === term.key);
 
                 // If the term wasn't in the filters list, allow its display only if it has a non-
                 // zero doc_count. If the term *does* exist in the filters list, display it
@@ -1169,9 +1173,19 @@ export class ResultTable extends React.Component {
     constructor(props) {
         super(props);
 
+        // Make an array of all assemblies found in all files in the search results.
+        let assemblies = [];
+        const results = this.props.context['@graph'];
+        const files = results.length ? results.filter(result => result['@type'][0] === 'File') : [];
+        if (files.length) {
+            // Reduce all found file assemblies so we don't have duplicates in the 'assemblies' array.
+            assemblies = files.reduce((assembliesAcc, file) => ((!file.assembly || assembliesAcc.indexOf(file.assembly) > -1) ? assembliesAcc : assembliesAcc.concat(file.assembly)), []);
+        }
+
         // Set React component state.
         this.state = {
-            browserAssembly: this.props.assemblies && this.props.assemblies[0], // Currently selected assembly for the browser
+            assemblies,
+            browserAssembly: assemblies.length && assemblies[0], // Currently selected assembly for the browser
             selectedTab: '',
         };
 
@@ -1218,7 +1232,8 @@ export class ResultTable extends React.Component {
 
     render() {
         const visualizeLimit = 100;
-        const { context, searchBase, assemblies, restrictions } = this.props;
+        const { context, searchBase, restrictions } = this.props;
+        const { assemblies } = this.state;
         const results = context['@graph'];
         const total = context.total;
         const visualizeDisabled = total > visualizeLimit;
@@ -1419,7 +1434,6 @@ ResultTable.propTypes = {
     context: PropTypes.object,
     actions: PropTypes.array,
     restrictions: PropTypes.object,
-    assemblies: PropTypes.array, // List of assemblies of all 'File' objects in search results
     searchBase: PropTypes.string,
     onChange: PropTypes.func,
     currentRegion: PropTypes.func,
@@ -1554,21 +1568,12 @@ class Search extends React.Component {
         const notification = context.notification;
         const searchBase = url.parse(this.context.location_href).search || '';
         const facetdisplay = context.facets && context.facets.some(facet => facet.total > 0);
-        let assemblies = [];
-
-        // Make an array of all assemblies found in all files in the search results.
-        const results = this.props.context['@graph'];
-        const files = results.length ? results.filter(result => result['@type'][0] === 'File') : [];
-        if (files.length) {
-            // Reduce all found file assemblies so we don't have duplicates in the 'assemblies' array.
-            assemblies = files.reduce((assembliesAcc, file) => ((!file.assembly || assembliesAcc.indexOf(file.assembly) > -1) ? assembliesAcc : assembliesAcc.concat(file.assembly)), []);
-        }
 
         return (
             <div>
                 {facetdisplay ?
                     <div className="panel data-display main-panel">
-                        <ResultTable {...this.props} key={undefined} searchBase={searchBase} assemblies={assemblies} onChange={this.context.navigate} currentRegion={this.currentRegion} />
+                        <ResultTable {...this.props} searchBase={searchBase} onChange={this.context.navigate} currentRegion={this.currentRegion} />
                     </div>
                 : <h4>{notification}</h4>}
             </div>

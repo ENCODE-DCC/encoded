@@ -284,6 +284,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             "type": ['string', 'object'],
             "linkFrom": "Biosample.part_of",
         },
+        'notSubmittable': True,
     })
     def parent_of(self, request, parent_of):
         return paths_filtered_by_status(request, parent_of)
@@ -683,27 +684,20 @@ def generate_summary_dictionary(
 
     if treatment_objects_list is not None and len(treatment_objects_list) > 0:
         treatments_list = []
-        for treatmentObject in treatment_objects_list:
+        for treatment_object in treatment_objects_list:
             to_add = ''
-
-            if experiment_flag is True:
-                if 'treatment_term_name' in treatmentObject:
-                    to_add = treatmentObject['treatment_term_name'] + ' '
-            else:
-                if 'amount' in treatmentObject and \
-                    'amount_units' in treatmentObject:
-                    to_add += str(treatmentObject['amount']) + ' ' + \
-                        treatmentObject['amount_units'] + ' '
-                if 'treatment_term_name' in treatmentObject:
-                    to_add += treatmentObject['treatment_term_name'] + ' '
-                if 'duration' in treatmentObject and \
-                    'duration_units' in treatmentObject:
-                    if treatmentObject['duration_units'][-1] == 's':
-                        to_add += 'for ' + str(treatmentObject['duration']) + ' ' + \
-                            treatmentObject['duration_units']
-                    else:
-                        to_add += 'for ' + str(treatmentObject['duration']) + ' ' + \
-                            treatmentObject['duration_units'] + 's'
+            amt = str(treatment_object.get('amount', ''))
+            amt_units = treatment_object.get('amount_units', '')
+            treatment_term_name = treatment_object.get('treatment_term_name', '')
+            dur = str(treatment_object.get('duration', ''))
+            dur_units = treatment_object.get('duration_units', '')
+            if dur_units and dur_units[-1] != 's':
+                dur_units += 's'
+            to_add = "{}{}{}".format(
+                (amt + ' ' + amt_units + ' ' if amt and amt_units else ''),
+                (treatment_term_name + ' ' if treatment_term_name else ''),
+                ('for ' + dur + ' ' + dur_units if dur and dur_units else '')
+            )
             if to_add != '':
                 treatments_list.append(to_add)
 
@@ -729,7 +723,7 @@ def generate_summary_dictionary(
     if originated_from_object is not None:
         if 'biosample_term_name' in originated_from_object:
             dict_of_phrases['originated_from'] = ('originated from ' +
-                                                    originated_from_object['biosample_term_name'])
+                                                   originated_from_object['biosample_term_name'])
 
     if modifications_list is not None and len(modifications_list) > 0:
         gm_methods = set()
@@ -737,7 +731,6 @@ def generate_summary_dictionary(
         for (gm_method, gm_object) in modifications_list:
             gm_methods.add(gm_method)
             gm_summaries.add(generate_modification_summary(gm_method, gm_object))
-            
         if experiment_flag is True:
             dict_of_phrases['modifications_list'] = 'genetically modified using ' + \
                 ', '.join(map(str, list(gm_methods)))
@@ -778,7 +771,6 @@ def generate_modification_summary(method, modification):
 
         if modification.get('target'):
             modification_summary += ' targeting ' + modification.get('target')
- 
     return modification_summary.strip()
 
 

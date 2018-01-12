@@ -111,12 +111,11 @@ def test_indexing_workbook(testapp, indexer_testapp):
 
 
 def test_indexing_simple(testapp, indexer_testapp):
+    import time
     # First post a single item so that subsequent indexing is incremental
     testapp.post_json('/testing-post-put-patch/', {'required': ''})
     res = indexer_testapp.post_json('/index', {'record': True})
     assert res.json['indexed'] == 1
-    assert 'txn_count' not in res.json
-
     res = testapp.post_json('/testing-post-put-patch/', {'required': ''})
     uuid = res.json['@graph'][0]['uuid']
     res = indexer_testapp.post_json('/index', {'record': True})
@@ -124,7 +123,14 @@ def test_indexing_simple(testapp, indexer_testapp):
     assert res.json['txn_count'] == 1
     assert res.json['updated'] == [uuid]
     res = testapp.get('/search/?type=TestingPostPutPatch')
-    assert res.json['total'] == 2
+    uuids = [indv_res['uuid'] for indv_res in res.json['@graph'] if 'uuid' in indv_res]
+    count = 0
+    while uuid not in uuids and count < 20:
+        time.sleep(1)
+        res = testapp.get('/search/?type=TestingPostPutPatch')
+        uuids = [indv_res['uuid'] for indv_res in res.json['@graph'] if 'uuid' in indv_res]
+        count += 1
+    assert res.json['total'] == 3
 
 
 def test_indexer_state(dummy_request):

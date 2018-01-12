@@ -103,10 +103,12 @@ Refer to [object-lifecycle.rst] to understand object rendering. Example of basic
 
                 embedded = ['target']
 
-    * *Reverse links* - specifying the links that are back calculated from an object that ```linkTo``` this object, for construct we have:
-    
+    * *Reverse links* - specifying the links that are back calculated from an object that ```linkTo``` this object, for file we have:
+
                 rev = {
-                    'characterizations': ('construct_characterization', 'characterizes'),
+                    'paired_with': ('File', 'paired_with'),
+                    'quality_metrics': ('QualityMetric', 'quality_metric_of'),
+                    'superseded_by': ('File', 'supersedes'),
                 }
 
     * *Calculated properties* - dynamically calculated before rendering of an object, for platforms we calculate the title:
@@ -213,10 +215,21 @@ There are 2 categories when we talk about updating an existing schema:
             value = migrator.upgrade('{metadata_object}', {metadata_object}_2, target_version='3')
             assert value['schema_version'] == '3'
             assert value['property_1'] == 'value 1'
+            
+5. You must check the results of your upgrade on the current database:
+   
+   **note** it is possible to write a "bad" upgrade that does not prevent your objects from loading or being shown.
+   
+   You can check using the following methods:
+   * Checking for errors in the /var/log/cloud-init-output.log (search for "batchupgrade" a few times) in any demo with your upgrade, this can be done about 30min after launch (after machine reboots post-install), no need to wait for the indexing to complete.
+   * Looking at the JSON for an object that should be upgraded by checking it's schema_version property.
+   * Updating and object and looking in the /var/log/apache2/error.log for stack traces.
+   
+   It is also possible that an upgrade can be clean under a current database but new objects POSTed before release are broken, so it will be checked again during release.
 
-5. If applicable you may need to update audits on the metadata. Please refer to [making_audits]
+6. If applicable you may need to update audits on the metadata. Please refer to [making_audits]
 
-6. To document all the schema changes that occurred between increments of the ```schema_version``` update the object changelogs the **schemas/changelogs** directory. Below is an example of the changelog for above upgrade:
+7. To document all the schema changes that occurred between increments of the ```schema_version``` update the object changelogs the **schemas/changelogs** directory. Below is an example of the changelog for above upgrade:
 
     Schema version 2
     ----------------

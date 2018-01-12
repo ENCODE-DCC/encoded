@@ -21,7 +21,6 @@ import json
 from pyramid.response import Response
 from pkg_resources import resource_filename
 from snovault.elasticsearch.indexer import (
-    SEARCH_MAX,
     IndexerState,
     Indexer,
     get_current_xmin,
@@ -48,8 +47,8 @@ def includeme(config):
 
 class SecondState(IndexerState):
     # Accepts handoff of uuids from primary indexer. Keeps track of uuids and secondary_indexer state by cycle.
-    def __init__(self, es, key):
-        super(SecondState, self).__init__(es,key, title='secondary')
+    def __init__(self, es, index):
+        super(SecondState, self).__init__(es, index, title='secondary')
         self.viscached_set      = self.title + '_viscached'
         self.success_set        = self.viscached_set
         self.cleanup_last_cycle.append(self.viscached_set)  # Clean up at beginning of next cycle
@@ -166,7 +165,7 @@ def index_secondary(request):
     indexer = request.registry['secondary'+INDEXER]
 
     # keeping track of state
-    state = SecondState(es,INDEX)
+    state = SecondState(es, INDEX)
 
     last_xmin = None
     result = state.get_initial_state()
@@ -237,9 +236,9 @@ class SecondaryIndexer(Indexer):
         last_exc = None
         # First get the object currently in es
         try:
-            result = self.es.get(index=self.index, id=str(uuid))  # No reason to restrict by version and that could interfere with reindex all signal.
+            result = self.esstorage.get_by_uuid(uuid)  # No reason to restrict by version and that could interfere with reindex all signal.
             #result = self.es.get(index=self.index, id=str(uuid), version=xmin, version_type='external_gte')
-            doc = result['_source']
+            doc = result.source
         except StatementError:
             # Can't reconnect until invalid transaction is rolled back
             raise
@@ -255,7 +254,9 @@ class SecondaryIndexer(Indexer):
                 if len(result):
                     # Warning: potentiallly slow uuid-level accounting, but single process so no concurency issue
                     self.state.viscached_uuid(uuid)
-            except:
+            except Exception as e:
+                log.error('Error indexing %s', uuid, exc_info=True)
+                #last_exc = repr(e)
                 pass  # It's only a vis_blob.
 
         if last_exc is not None:

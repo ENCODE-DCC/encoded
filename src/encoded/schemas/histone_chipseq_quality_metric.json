@@ -1,0 +1,69 @@
+{
+    "title": "Histione modification ChIP-seq quality metric",
+    "description": "Schema for reporting histone modification ChIP-seq quality metrics",
+    "id": "/profiles/histone_chipseq_quality_metric.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["step_run","quality_metric_of", "award", "lab"],
+    "additionalProperties": false,
+    "identifyingProperties": ["uuid"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "quality_metric.json#/properties" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/aliases"},
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/assay" }
+   ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "nreads": {
+            "title": "# of reads",
+            "type": "integer",
+            "description": "# of starting reads in the pool (if replicated) or experiment (if unreplicated)"
+        },
+        "nreads_in_peaks": {
+            "title": "# of reaads in peaks",
+            "type": "integer",
+            "description": "# of reads that fall within peaks." 
+        },
+        "npeak_overlap": {
+            "title": "# of overlapping peaks",
+            "type": "integer",
+            "description": "# peaks overlapping with true replicate or pooled pseudoreplicate peaks"
+        },
+        "Fp": {
+            "title": "FRiP score from pooled pseudoreplicate peaks",
+            "type": "number",
+            "description": "Fraction reads in replicated/stable narrowPeaks (FRiP) from pooled pseudoreplicates"
+        },
+        "Ft": {
+            "title": "FRiP score from true replicate peaks",
+            "type": "number",
+            "description": "Fraction reads in replicated/stable narrowPeaks (FRiP) from true replicates"
+        },
+        "F1": {
+            "title": "FRiP score from rep1 self-pseudoreplicate peaks",
+            "type": "number",
+            "description": "Fraction reads in replicated/stable narrowPeaks (FRiP) from replicate 1 self-pseudoreplicates or the number of stable peaks that pass internal psuedoreplication,  when self-pseudoreplication is done on unreplicated experiments."
+        },
+        "F2": {
+            "title": "FRiP score from rep2 self-pseudoreplicate peaks",
+            "type": "number",
+            "description": "Fraction reads in replicated/stable narrowPeaks (FRiP) from replicate 2 self-pseudoreplicates"
+        }
+    },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay name"
+        },
+        "status": {
+            "title": "Status"
+        }
+    },
+    "changelog": "/profiles/changelogs/histone_chipseq_quality_metric.md"
+}   

@@ -3,6 +3,8 @@ from snovault import (
     audit_checker,
 )
 
+from .item import STATUS_LEVEL
+
 
 def audit_file_processed_derived_from(value, system):
     if value['output_category'] in ['raw data',
@@ -21,17 +23,24 @@ def audit_file_processed_derived_from(value, system):
 
     if value['file_format'] != 'bam':
         return
+    # Ignore replaced BAMs because missing derived_from logic should be applied to their
+    # replacements instead (ENCD-3595).
+    if value['status'] == 'replaced':
+        return
 
     fastq_bam_counter = 0
     for f in value.get('derived_from'):
-        if (f['file_format'] == 'bam' or
-                f['file_format'] == 'fastq' or
-                (f['file_format'] == 'fasta' and
-                 f['output_type'] == 'reads' and
-                 f['output_category'] == 'raw data')):
+        if (f['file_format'] == 'bam'
+            or f['file_format'] == 'fastq'
+            or (f['file_format'] in ['fasta', 'csfasta', 'csqual']
+                and f['output_type'] == 'reads'
+                and f['output_category'] == 'raw data')):
 
-            if f['status'] not in ['deleted', 'replaced', 'revoked'] or \
-               f['status'] == value['status']:
+            # Audit shouldn't trigger if status isn't registered in STATUS_LEVEL dict.
+            if f['status'] not in STATUS_LEVEL or value['status'] not in STATUS_LEVEL:
+                return
+
+            if STATUS_LEVEL[f['status']] >= STATUS_LEVEL[value['status']]:
                 fastq_bam_counter += 1
 
             if f['dataset'] != value['dataset'].get('@id'):
@@ -64,13 +73,13 @@ def audit_file_assembly(value, system):
         if f.get('assembly') and value.get('assembly') and \
            f.get('assembly') != value.get('assembly'):
             detail = 'Processed file {} '.format(value['@id']) + \
-                        'assembly {} '.format(value['assembly']) + \
-                        'does not match assembly {} of the file {} '.format(
-                            f['assembly'],
-                            f['@id']) + \
-                        'it was derived from.'
+                'assembly {} '.format(value['assembly']) + \
+                'does not match assembly {} of the file {} '.format(
+                f['assembly'],
+                f['@id']) + \
+                'it was derived from.'
             yield AuditFailure('inconsistent assembly',
-                               detail, level='INTERNAL_ACTION')
+                               detail, level='WARNING')
             return
 
 
@@ -151,7 +160,7 @@ def audit_file_format_specifications(value, system):
             detail = 'File {} has document {} not of type file format specification'.format(
                 value['@id'],
                 doc['@id']
-                )
+            )
             yield AuditFailure('inconsistent document_type', detail, level='ERROR')
             return
 
@@ -249,7 +258,7 @@ def audit_file_controlled_by(value, system):
                     run_type,
                     ff['@id'],
                     control_run
-                    )
+                )
                 yield AuditFailure('inconsistent control run_type',
                                    detail, level='WARNING')
 
@@ -265,10 +274,38 @@ def audit_file_controlled_by(value, system):
                     value['read_length'],
                     ff['@id'],
                     ff['read_length']
-                    )
+                )
                 yield AuditFailure('inconsistent control read length',
                                    detail, level='WARNING')
                 return
+
+
+def audit_duplicate_quality_metrics(value, system):
+    quality_metrics = value.get('quality_metrics')
+    if not quality_metrics:
+        return
+    metric_signatures = []
+    audit_signatures = []
+    for metric in quality_metrics:
+        metric_type = metric.get('@type', [None])[0]
+        signature = (
+            metric_type,
+            metric.get('processing_stage')
+        )
+        if signature not in metric_signatures:
+            metric_signatures.append(signature)
+        elif signature not in audit_signatures:
+            # Add so only yields audit once per signature per file.
+            audit_signatures.append(signature)
+            detail = 'File {} has more than one {} quality metric'.format(
+                value.get('@id'),
+                metric_type
+            )
+            yield AuditFailure(
+                'duplicate quality metric',
+                detail,
+                level='INTERNAL_ACTION'
+            )
 
 
 function_dispatcher = {
@@ -277,7 +314,8 @@ function_dispatcher = {
     'audit_replicate_match': audit_file_replicate_match,
     'audit_paired_with': audit_paired_with,
     'audit_specifications': audit_file_format_specifications,
-    'audit_controlled_by': audit_file_controlled_by
+    'audit_controlled_by': audit_file_controlled_by,
+    'audit_duplicate_quality_metrics': audit_duplicate_quality_metrics,
 }
 
 
@@ -293,7 +331,10 @@ function_dispatcher = {
                       'controlled_by.replicate',
                       'controlled_by.dataset',
                       'controlled_by.paired_with',
-                      'controlled_by.platform'])
+                      'controlled_by.platform',
+                      'quality_metrics',
+                      ]
+               )
 def audit_file(value, system):
     for function_name in function_dispatcher.keys():
         for failure in function_dispatcher[function_name](value, system):
@@ -316,7 +357,7 @@ def audit_file(value, system):
 # def audit_file_derived_from_revoked(value, system): removed at release 56
 # http://redmine.encodedcc.org/issues/5018
 
-# def audit_file_biological_replicate_number_match 
+# def audit_file_biological_replicate_number_match
 # https://encodedcc.atlassian.net/browse/ENCD-3493
 
 # def audit_file_platform(value, system): removed from release v56

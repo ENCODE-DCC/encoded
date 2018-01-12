@@ -23,28 +23,6 @@ class Characterization(ItemWithAttachment, Item):
 
 
 @collection(
-    name='construct-characterizations',
-    properties={
-        'title': 'Construct characterizations',
-        'description': 'Listing of biosample construct characterizations',
-    })
-class ConstructCharacterization(Characterization):
-    item_type = 'construct_characterization'
-    schema = load_schema('encoded:schemas/construct_characterization.json')
-
-
-@collection(
-    name='rnai-characterizations',
-    properties={
-        'title': 'RNAi characterizations',
-        'description': 'Listing of biosample RNAi characterizations',
-    })
-class RNAiCharacterization(Characterization):
-    item_type = 'rnai_characterization'
-    schema = load_schema('encoded:schemas/rnai_characterization.json')
-
-
-@collection(
     name='donor-characterizations',
     properties={
         'title': 'Donor characterizations',

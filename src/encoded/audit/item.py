@@ -28,7 +28,8 @@ def audit_item_schema(value, system):
         except RuntimeError:
             raise
         except Exception as e:
-            detail = '%r upgrading from %r to %r' % (e, current_version, target_version)
+            detail = '%r upgrading from %r to %r' % (
+                e, current_version, target_version)
             yield AuditFailure('upgrade failure', detail, level='INTERNAL_ACTION')
             return
 
@@ -41,7 +42,8 @@ def audit_item_schema(value, system):
         path = list(error.path)
         if path:
             category += ': ' + '/'.join(str(elem) for elem in path)
-        detail = 'Object {} has schema error {}'.format(value['@id'], error.message)
+        detail = 'Object {} has schema error {}'.format(
+            value['@id'], error.message)
         yield AuditFailure(category, detail, level='INTERNAL_ACTION')
 
 
@@ -49,7 +51,6 @@ STATUS_LEVEL = {
     # public statuses
     'released': 100,
     'current': 100,
-    'published': 100,
     'compliant': 100,
     'not compliant': 100,
     'not reviewed': 100,
@@ -58,6 +59,8 @@ STATUS_LEVEL = {
     'eligible for new data': 100,
     'not eligible for new data': 100,
     'not pursued': 100,
+    'virtual': 100,
+    'active': 100,
 
     # 'discouraged for use' public statuses
     'archived': 40,
@@ -66,12 +69,12 @@ STATUS_LEVEL = {
     # private statuses (visible for consortium members only)
     'in progress': 50,
     'pending dcc review': 50,
-    'proposed': 50,
     'started': 50,
     'submitted': 50,
     'ready for review': 50,
     'uploading': 50,
     'upload failed': 50,
+    'content error': 50,
     'pending dcc review': 50,
     'awaiting lab characterization': 50,
 
@@ -79,7 +82,7 @@ STATUS_LEVEL = {
     'deleted': 0,
     'replaced': 0,
     'disabled': 0
-    }
+}
 
 
 @audit_checker('Item', frame='object')
@@ -107,7 +110,7 @@ def audit_item_relations_status(value, system):
                             value['status'],
                             linked_value['@id'],
                             linked_value['status']
-                            )
+                        )
                     if level == 100 and linked_level in [0, 50, 100]:
                         yield AuditFailure(
                             'mismatched status',
@@ -147,7 +150,7 @@ def audit_item_relations_status(value, system):
                                 message,
                                 linked_value['@id'],
                                 linked_value['status']
-                                )
+                            )
                         yield AuditFailure(
                             'mismatched status',
                             detail,

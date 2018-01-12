@@ -27,7 +27,55 @@ These are the primary software versions used in production, and you should be ab
   - `brew doctor`
 
 
-### **2. Python**  
+### **2. (Mac) Install or update other dependencies:**
+
+```bash
+brew install libevent libmagic libxml2 libxslt openssl graphviz nginx
+brew install freetype libjpeg libtiff littlecms webp chromedriver
+brew tap petere/postgresql
+brew install postgresql@9.3
+brew link --force postgresql@9.3
+brew install --force node@6
+brew link node@6 --force
+brew cask install java8
+brew install elasticsearch@5.6
+pip3 install typing
+```
+>:star: _Note_: Elasticsearch 1.7 does not work with Java 9
+>:star: _Note_: To unlink elasticsearch 1.7 and install elasticsearch 5.6
+>- `brew search elasticsearch`
+>- `brew install elasticsearch@5.6`
+>- `brew unlink elasticsearch@1.7 && brew link elasticsearch@5.6 --force`
+
+
+>:star: _Note_: Brew cannot find java8
+>- `brew tap caskroom/versions # lookup more versions`
+>- `brew cask search java # java8 now in list`
+>- `brew cask install java8`
+
+>:star: _Note_: This additional step is required for new macOS Sierra installations
+>- `brew cask install Caskroom/cask/xquartz`
+
+>:star: _Note_: **Node version mangement with nvm**: If you need to easily switch between **node** versions you may wish to use [nvm](https://github.com/creationix/nvm) instead (not required for most users)
+>- `npm install -g nvm`
+>- `nvm install 6`
+>- `nvm use 6`
+>
+>:star: _Note_: **Node version mangement with homebrew**: Switching node versions with homebrew (which is not package manager but not a typical version manager) is possible but is not as flexbible for this purpose, e.g.:
+>- `brew install node@7`
+>- `brew unlink node@6 && brew link --overwrite --force node@7`
+>- `node --version`
+>- `brew unlink node@7 && brew link --overwrite --force node@6`
+>- `node --version`
+
+>:warning: _Note_: If you need to update Python dependencies (do not do this randomly as you may lose important brew versions of packages you need):
+>- `rm -rf encoded/eggs` (then re-run buildout below)
+> and possibly
+>- `brew update`
+>- `brew upgrade`
+
+
+### **3. Python**  
 Encoded requires a UNIX based system (Mac or Linux) and **Python 3.4.3** (but works with 3.5.x):
 
  - For local development on a Mac, follow the steps below.  For Linux use apt-get or yum as your Linux flavor demands.  You can consult cloud-config.yml for other steps.
@@ -66,50 +114,15 @@ source ~/.bash_profile
 >  - `pyenv install 2.7.13`  
 >  - `pyenv migrate 2.7 2.7.13`
 
-    
-### **3. (Mac) Install or update other dependencies:** 
-
-```bash
-brew install libevent libmagic libxml2 libxslt openssl graphviz nginx
-brew install freetype libjpeg libtiff littlecms webp chromedriver
-brew tap petere/postgresql
-brew install postgresql@9.3
-brew link --force postgresql@9.3
-brew install --force node@6
-brew link node@6 --force
-brew cask install java
-brew tap garrow/homebrew-elasticsearch17
-brew install elasticsearch@1.7
-```
->:star: _Note_: Elasticsearch 1.7 does not work with Java 9
-
->:star: _Note_: This additional step is required for new macOS Sierra installations
->- `brew cask install Caskroom/cask/xquartz`
-
->:star: _Note_: **Node version mangement with nvm**: If you need to easily switch between **node** versions you may wish to use [nvm](https://github.com/creationix/nvm) instead (not required for most users)
->- `npm install -g nvm`
->- `nvm install 6`
->- `nvm use 6`
+>:star: _Note: `pyenv` install fails with "ERROR: The Python ssl extension was not compiled. Missing the OpenSSL lib?" for MAC OS High Sierra
 >
->:star: _Note_: **Node version mangement with homebrew**: Switching node versions with homebrew (which is not package manager but not a typical version manager) is possible but is not as flexbible for this purpose, e.g.:
->- `brew install node@7`
->- `brew unlink node@6 && brew link --overwrite --force node@7`
->- `node --version`
->- `brew unlink node@7 && brew link --overwrite --force node@6`
->- `node --version`
-
->:warning: _Note_: If you need to update Python dependencies (do not do this randomly as you may lose important brew versions of packages you need):  
->- `rm -rf encoded/eggs` (then re-run buildout below)  
-> and possibly  
->- `brew update`  
->- `brew upgrade`
-
- 
+>Uninstall and re-install openssl using the following command when you install pyenv
+>- `brew uninstall --ignore-dependencies openssl && brew install openssl && CFLAGS="-I$(brew --prefix openssl)/include" LDFLAGS="-L$(brew --prefix openssl)/lib" pyenv install <VERSION>`
 
 
 ### **4. Run buildout:**
 
-- `python3 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5`
+- `python3 bootstrap.py --buildout-version 2.9.5 --setuptools-version 18.5`
 - `bin/buildout`
 
 > :star: _Note_: If you have issues with postgres or the python interface to it (psycogpg2) you probably need to install postgresql via homebrew (as above)  
@@ -120,7 +133,7 @@ brew install elasticsearch@1.7
 
 
 >:star: _Note_: **Clean ALL the Things!** If you wish to **completely rebuild** the application or **cleanly reload** dependencies (:warning: long re-build time!):  
->- `make clean && python3 bootstrap.py --buildout-version 2.4.1 --setuptools-version 18.5 && bin/buildout`
+>- `make clean && python3 bootstrap.py --buildout-version 2.9.5 --setuptools-version 18.5 && bin/buildout`
 
 
 ### **5. Start the application locally**
@@ -142,6 +155,8 @@ brew install elasticsearch@1.7
   - `bin/pserve development.ini`
 
 Indexing will then proceed in a background thread similar to the production setup.
+
+>:star: _Note_: If you run into a java stack trace when you run the app, it is worth checking if /usr/local/etc/elasticsearch/elasticsearch.yml *might* have the line: ‘path.plugins: /usr/local/var/lib/elasticsearch/plugins’. If it does, it needs to be commented out.
 
 ### **6. :tada: Check out the app! :tada:**
 - Browse to the interface at http://localhost:8000/.

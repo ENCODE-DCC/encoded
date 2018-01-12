@@ -8,9 +8,10 @@ import { auditDecor } from './audit';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel } from './doc';
 import * as globals from './globals';
-import { requestFiles, requestObjects, requestSearch, RestrictedDownloadButton } from './objectutils';
+import { requestFiles, requestObjects, requestSearch, RestrictedDownloadButton, AlternateAccession } from './objectutils';
 import { ProjectBadge } from './image';
 import { QualityMetricsPanel } from './quality_metric';
+import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import StatusLabel from './statuslabel';
 
@@ -37,7 +38,7 @@ const derivingCols = {
     assembly: { title: 'Mapping assembly' },
     status: {
         title: 'File status',
-        display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} /></div>,
+        display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} fileStatus /></div>,
     },
 };
 
@@ -332,7 +333,6 @@ class FileComponent extends React.Component {
     render() {
         const { context } = this.props;
         const itemClass = globals.itemClass(context, 'view-item');
-        const altacc = (context.alternate_accessions && context.alternate_accessions.length) ? context.alternate_accessions.join(', ') : null;
         const aliasList = (context.aliases && context.aliases.length) ? context.aliases.join(', ') : '';
         const datasetAccession = globals.atIdToAccession(context.dataset);
         const adminUser = !!this.context.session_properties.admin;
@@ -360,13 +360,14 @@ class FileComponent extends React.Component {
                 <header className="row">
                     <div className="col-sm-12">
                         <h2>File summary for {context.title} (<span className="sentence-case">{context.file_format}</span>)</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <AlternateAccession altAcc={context.alternate_accessions} />
+                        {context.restricted ? <h4 className="superseded-acc">Restricted file</h4> : null}
                         {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
                         {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
                         <div className="status-line">
                             {context.status ?
                                 <div className="characterization-status-labels">
-                                    <StatusLabel title="Status" status={context.status} />
+                                    <StatusLabel title="Status" status={context.status} fileStatus />
                                 </div>
                             : null}
                             {this.props.auditIndicators(context.audit, 'file-audit', { session: this.context.session })}
@@ -578,7 +579,6 @@ class SequenceFileInfo extends React.Component {
     render() {
         const { file } = this.props;
         const pairedWithAccession = file.paired_with ? globals.atIdToAccession(file.paired_with) : '';
-        const platformAccession = file.platform ? decodeURIComponent(globals.atIdToAccession(file.platform)) : '';
 
         return (
             <Panel>
@@ -591,7 +591,7 @@ class SequenceFileInfo extends React.Component {
                         {file.platform ?
                             <div data-test="platform">
                                 <dt>Platform</dt>
-                                <dd><a href={file.platform} title="View page for this platform">{platformAccession}</a></dd>
+                                <dd><a href={file.platform['@id']} title="View page for this platform">{file.platform.term_name}</a></dd>
                             </div>
                         : null}
 
@@ -668,31 +668,42 @@ SequenceFileInfo.propTypes = {
 };
 
 
-class Listing extends React.Component {
+class ListingComponent extends React.Component {
     render() {
         const result = this.props.context;
 
         return (
             <li>
                 <div className="clearfix">
+                    <PickerActions {...this.props} />
                     <div className="pull-right search-meta">
                         <p className="type meta-title">File</p>
                         <p className="type">{` ${result.title}`}</p>
                         <p className="type meta-status">{` ${result.status}`}</p>
+                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession"><a href={result['@id']}>{`${result.file_format}${result.file_format_type ? ` (${result.file_format_type})` : ''}`}</a></div>
                     <div className="data-row">
                         <div><strong>Lab: </strong>{result.lab.title}</div>
                         {result.award.project ? <div><strong>Project: </strong>{result.award.project}</div> : null}
                     </div>
+                    {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
                 </div>
             </li>
         );
     }
 }
 
-Listing.propTypes = {
+ListingComponent.propTypes = {
     context: PropTypes.object, // File object being rendered
+    auditIndicators: PropTypes.func, // Audit decorator function
+    auditDetail: PropTypes.func, // Audit decorator function
 };
+
+ListingComponent.contextTypes = {
+    session: PropTypes.object, // Login information from <App>
+};
+
+const Listing = auditDecor(ListingComponent);
 
 globals.listingViews.register(Listing, 'File');

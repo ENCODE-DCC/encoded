@@ -224,11 +224,10 @@
         }
     },
     "boost_values": {
-        "name": 2.0,
-        "title": 2.0,
-        "news_keywords": 2.0,
+        "name": 1.0,
+        "title": 1.0,
+        "news_keywords": 1.0,
         "layout.blocks.body": 1.0
     },
     "changelog": "/profiles/changelogs/page.md"
-
 }

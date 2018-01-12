@@ -25,13 +25,13 @@
         { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
-
         "biosample_type": {
             "oneOf": [
-                {                   
+                {
+                    "required": ["biosample_term_id"],      
                     "properties": {
                         "biosample_type": {
-                            "enum": ["in vitro sample"]
+                            "enum": ["cell-free sample"]
                         }
                     }
                 },
@@ -105,6 +105,18 @@
                             "pattern": "^(CL|EFO|NTR):[0-9]{2,8}$"
                         }
                     }
+                },
+                {
+                    "properties": {
+                        "biosample_type": {
+                            "enum": [
+                                "cell-free sample"
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^NTR:[0-9]{2,8}$"
+                        }
+                    }
                 }
             ]
         },
@@ -165,7 +177,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "13"
+            "default": "15"
         },
         "date_submitted": {
             "title": "Date submitted" ,
@@ -189,7 +201,7 @@
             "enum" : [
                 "immortalized cell line",
                 "in vitro differentiated cells",
-                "in vitro sample",
+                "cell-free sample",
                 "induced pluripotent stem cell line",
                 "primary cell",
                 "stem cell",
@@ -320,6 +332,9 @@
         },
         "files.file_type": {
             "title": "Available data"
+        },
+        "files.platform.term_name": {
+            "title": "Platform"
         },
         "files.run_type": {
             "title": "Run type"
@@ -494,6 +509,7 @@
         "replicates.library.nucleic_acid_term_name": 1.0,
         "award.title": 1.0,
         "award.project": 1.0,
+        "award.name": 1.0,
         "submitted_by.email": 1.0,
         "submitted_by.first_name": 1.0,
         "submitted_by.last_name": 1.0,

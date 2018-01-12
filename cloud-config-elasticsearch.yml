@@ -1,10 +1,12 @@
 #cloud-config
 
 # Instance
+ssh_authorized_keys:
+  - %(LOCAL_SSH_KEY)s
 
 apt_sources:
 - source: "ppa:webupd8team/java"
-- source: "deb http://packages.elasticsearch.org/elasticsearch/1.7/debian stable main"
+- source: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
@@ -40,24 +42,15 @@ apt_sources:
 
 bootcmd:
 - set -ex
-- cloud-init-per once ssh-users-ca echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
 - cloud-init-per once accepted-oracle-license-v1-1 echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
-- MEMGIGS=$(awk '/MemTotal/{printf int($2 / 1024**2)}' /proc/meminfo)
-- if [ "$MEMGIGS" -gt 12 ];
-- then
--    echo "ES_HEAP_SIZE=8g" > /etc/default/elasticsearch
-- else
--    echo "ES_HEAP_SIZE=4g" > /etc/default/elasticsearch
--    sysctl "vm.swappiness=1"
--    swapon /swapfile
-- fi
 
 package_upgrade: true
 
 packages:
+- awscli
 - build-essential
 - elasticsearch
 - libssl-dev
@@ -79,13 +72,26 @@ output:
   all: '| tee -a /var/log/cloud-init-output.log'
 
 runcmd:
+- sudo -u ubuntu mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
+- sudo -u ubuntu aws s3 cp --region=us-west-2 %(S3_AUTH_KEYS)s /home/ubuntu/.ssh/authorized_keys
 # Ideally this would build as a different user so encoded only has read
 # permissions
+- MEMGIGS=$(awk '/MemTotal/{printf int($2 / 1024**2)}' /proc/meminfo)
+- if [ "$MEMGIGS" -gt 12 ];
+- then
+-    echo "-Xms8g" >> /etc/elasticsearch/jvm.options
+-    echo "-Xmx8g" >> /etc/elasticsearch/jvm.options
+- else
+-    echo "-Xms4g" >> /etc/elasticsearch/jvm.options
+-    echo "-Xmx4g" >> /etc/elasticsearch/jvm.options
+-    sysctl "vm.swappiness=1"
+-    swapon /swapfile
+- fi
 - set -ex
 - update-rc.d elasticsearch defaults
 - sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
-- sudo /usr/share/elasticsearch/bin/plugin install elasticsearch/elasticsearch-cloud-aws/2.7.1
-- service elasticsearch start
+- sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install discovery-ec2
+- service elasticsearch restart
 - mkdir /srv/encoded
 - chown encoded:encoded /srv/encoded
 - cd /srv/encoded
@@ -137,24 +143,17 @@ write_files:
 
 - path: /etc/elasticsearch/elasticsearch.yml
   content: |
-    index.search.slowlog.threshold.query.warn: 8s
-    index.search.slowlog.threshold.fetch.warn: 1s
-    index.indexing.slowlog.threshold.index.warn: 25s
     network.host: 0.0.0.0
-    action.auto_create_index: false
-    index.mapper.dynamic: false
-
+    http.port: 9201
+    transport.tcp.port: 9299
     node.master: false
     node.data: true
-
-    discovery:
-        type: ec2
+    discovery.zen.minimum_master_nodes: 1
+    discovery.type: ec2
 
     cloud.aws.region: us-west-2
 
     discovery.ec2.groups: elasticsearch-https, ssh-http-https
-
-    # discovery.zen.minimum_master_nodes: 2
 
 - path: /etc/elasticsearch/cluster.sh
   content: |
@@ -167,5 +166,47 @@ write_files:
         echo "argument error"
     fi
 
-- path: /etc/ssh/users_ca.pub
-  content: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAv/ymOcnN4LhM4NACc3Or116XXJ6KytuOgB/+1qNkOFBqBosrn7cmJ35rsoNHRgYNrCsRE9ch74RKsN6H72FtSJgBhGh/9oUK7Os6Fqt3/ZZXxgxIx6ubs/MTgrxrAnujiBxUXMXQhLKMriNMpo8mt4nGYVtLk9PBjiyfncaS8H9ZKoNio9dhP8bmTuYvioAI35dqKdSlVLyzr/XkZxia8Ki+pQ0N6uuiEwMR3ToM+LSp8wpFOOAiu4PEAujRW7us/+1hlpKWfn0J7/V3826joHE+I967Vg/+ikcVhF77JjK1nib879VgCWfmn1HPQosIpk4yJfVgGvRVI7I2nfBPVw== encoded@demo-l.encodedcc.org
+- path: /etc/elasticsearch/jvm.options
+  content: |
+    ## GC configuration
+    -XX:+UseConcMarkSweepGC
+    -XX:CMSInitiatingOccupancyFraction=75
+    -XX:+UseCMSInitiatingOccupancyOnly
+
+    # disable calls to System#gc
+    -XX:+DisableExplicitGC
+
+    # pre-touch memory pages used by the JVM during initialization
+    -XX:+AlwaysPreTouch
+
+    # force the server VM (remove on 32-bit client JVMs)
+    -server
+
+    # explicitly set the stack size (reduce to 320k on 32-bit client JVMs)
+    -Xss1m
+
+    # set to headless, just in case
+    -Djava.awt.headless=true
+
+    # ensure UTF-8 encoding by default (e.g. filenames)
+    -Dfile.encoding=UTF-8
+
+    # use our provided JNA always versus the system one
+    -Djna.nosys=true
+
+    # use old-style file permissions on JDK9
+    -Djdk.io.permissionsUseCanonicalPath=true
+
+    # flags to configure Netty
+    -Dio.netty.noUnsafe=true
+    -Dio.netty.noKeySetOptimization=true
+    -Dio.netty.recycler.maxCapacityPerThread=0
+
+    # log4j 2
+    -Dlog4j.shutdownHookEnabled=false
+    -Dlog4j2.disable.jmx=true
+    -Dlog4j.skipJansi=true
+
+    # generate a heap dump when an allocation from the Java heap fails
+    # heap dumps are created in the working directory of the JVM
+    -XX:+HeapDumpOnOutOfMemoryError

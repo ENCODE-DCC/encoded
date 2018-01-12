@@ -10,6 +10,7 @@ text = type(u'')
 logger = logging.getLogger('encoded')
 logger.setLevel(logging.INFO)  # doesn't work to shut off sqla INFO
 
+
 ORDER = [
     'user',
     'award',
@@ -24,7 +25,6 @@ ORDER = [
     'antibody_approval',
     'treatment',
     'construct',
-    'construct_characterization',
     'talen',
     'genetic_modification',
     'genetic_modification_characterization',
@@ -74,6 +74,7 @@ ORDER = [
     'trimming_quality_metric',
     'samtools_stats_quality_metric',
     'idr_quality_metric',
+    'histone_chipseq_quality_metric',
     'generic_quality_metric',
     'image',
     'page'
@@ -414,7 +415,7 @@ def pipeline_logger(item_type, phase):
 
         loaded = created + updated
         logger.info('Loaded %d of %d %s (phase %s). CREATED: %d, UPDATED: %d, SKIPPED: %d, ERRORS: %d' % (
-             loaded, count, item_type, phase, created, updated, skipped, errors))
+            loaded, count, item_type, phase, created, updated, skipped, errors))
 
     return component
 
@@ -555,8 +556,11 @@ PHASE1_PIPELINES = {
     'mouse_donor': [
         remove_keys('parent_strains'),
     ],
+    'fly_donor': [
+        remove_keys('parent_strains'),
+    ],
     'worm_donor': [
-        remove_keys('outcrossed_strain'),
+        remove_keys('outcrossed_strain', 'parent_strains'),
     ],
     'human_donor': [
         remove_keys('parents', 'children', 'siblings', 'twin'),
@@ -637,7 +641,10 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('parent_strains'),
     ],
     'worm_donor': [
-        skip_rows_missing_all_keys('outcrossed_strain'),
+        skip_rows_missing_all_keys('outcrossed_strain', 'parent_strains'),
+    ],
+    'fly_donor': [
+        skip_rows_missing_all_keys('parent_strains'),
     ],
     'annotation': [
         skip_rows_missing_all_keys('related_files', 'software_used'),

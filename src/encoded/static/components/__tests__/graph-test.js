@@ -52,8 +52,7 @@ describe('Experiment Graph', () => {
             contextGraph.accession = 'ENCTS000BGR';
             files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-2cos')];
             contextGraph.files = files;
-            const graphRes = assembleGraph(contextGraph, null, '', files);
-            graph = graphRes.graph;
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
         });
 
         it('Has the correct number of nodes and edges', () => {
@@ -82,8 +81,7 @@ describe('Experiment Graph', () => {
             const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000BDD';
             files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-3cos'), require('../testdata/file/bed-4cos')];
-            const graphRes = assembleGraph(contextGraph, null, '', files);
-            graph = graphRes.graph;
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
         });
 
         it('Has the correct number of nodes and edges', () => {
@@ -113,8 +111,7 @@ describe('Experiment Graph', () => {
             const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000NDD';
             files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bed-5cos'), require('../testdata/file/bed-6cos')];
-            const graphRes = assembleGraph(contextGraph, null, '', files);
-            graph = graphRes.graph;
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
         });
 
         it('Has the correct number of nodes and edges', () => {
@@ -143,8 +140,7 @@ describe('Experiment Graph', () => {
             const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000TFS';
             files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bed-7cos'), require('../testdata/file/bed-8cos')];
-            const graphRes = assembleGraph(contextGraph, null, '', files);
-            graph = graphRes.graph;
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
         });
 
         it('Has the correct number of nodes and edges', () => {
@@ -173,8 +169,7 @@ describe('Experiment Graph', () => {
             const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000TOV';
             files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bam-vuz'), require('../testdata/file/bed-10cos'), require('../testdata/file/bed-11cos')];
-            const graphRes = assembleGraph(contextGraph, null, '', files);
-            graph = graphRes.graph;
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
         });
 
         it('Has the correct number of nodes and edges', () => {
@@ -204,8 +199,7 @@ describe('Experiment Graph', () => {
             const contextGraph = _.clone(context);
             contextGraph.accession = 'ENCTS000DET';
             files = [require('../testdata/file/bam-vuq'), require('../testdata/file/bam-vus'), require('../testdata/file/bam-vuz'), require('../testdata/file/bed-2cos')];
-            const graphRes = assembleGraph(contextGraph, null, '', files);
-            graph = graphRes.graph;
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
         });
 
         it('Has the correct number of nodes and edges', () => {
@@ -240,8 +234,7 @@ describe('Experiment Graph', () => {
             files[2].biological_replicates = [1];
             files[3].biological_replicates = [2];
 
-            const graphRes = assembleGraph(contextGraph, null, '', files);
-            graph = graphRes.graph;
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
         });
 
         it('Has the correct number of nodes and edges', () => {
@@ -282,8 +275,7 @@ describe('Experiment Graph', () => {
             files[1].biological_replicates = [1];
             files[2].derived_from = [require('../testdata/file/bam-vus')['@id']];
             files[2].biological_replicates = [2];
-            const graphRes = assembleGraph(contextGraph, null, '', files);
-            graph = graphRes.graph;
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
         });
 
         it('Has the correct number of nodes and edges', () => {
@@ -306,6 +298,27 @@ describe('Experiment Graph', () => {
         it('has the right relationships between edges and nodes', () => {
             expect(hasParents(graph, 'step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/', ['file:/files/ENCFF000VUQ/'])).toBeTruthy();
             expect(hasParents(graph, 'file:/files/ENCFF003COS/', ['step:/files/ENCFF000VUQ//analysis-steps/1b7bec83-dd21-4086-8673-2e08cf8f1c0f/'])).toBeTruthy();
+        });
+    });
+
+    // A processed file derives from a fastq that derives from an sra file.
+    describe('fastq derives from an sra in the same dataset, ', () => {
+        let graph;
+        let files;
+
+        beforeEach(() => {
+            const contextGraph = _.clone(context);
+            contextGraph.accession = 'ENCSR000RPM';
+            files = [require('../testdata/file/sra'), require('../testdata/file/fastq')[1], require('../testdata/file/bed-3cos')];
+            files[1].derived_from = [files[0]['@id']];
+            files[2].derived_from = [files[1]['@id']];
+            files[2].biological_replicates = [];
+            graph = assembleGraph(files, contextGraph, { selectedAssembly: 'hg19', selectedAnnotation: '' });
+        });
+
+        it('Has the correct number of nodes and edges', () => {
+            expect(graph.nodes.length).toEqual(5);
+            expect(graph.edges.length).toEqual(4);
         });
     });
 });

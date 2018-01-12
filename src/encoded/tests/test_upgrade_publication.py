@@ -18,6 +18,24 @@ def publication_1(publication):
     return item
 
 
+@pytest.fixture
+def publication_4():
+    return {
+        'title': 'Fake paper',
+        'schema_version': '4'
+    }
+
+
+@pytest.fixture
+def publication_5(publication):
+    item = publication.copy()
+    item.update({
+        'schema_version': '5',
+        'status': 'in preparation'
+    })
+    return item
+
+
 def test_publication_upgrade(upgrader, publication_1):
     value = upgrader.upgrade('publication', publication_1, target_version='2')
     assert value['schema_version'] == '2'
@@ -25,3 +43,46 @@ def test_publication_upgrade(upgrader, publication_1):
     assert value['identifiers'] == ['PMID:25409824']
     assert value['lab'] == "cb0ef1f6-3bd3-4000-8636-1c5b9f7000dc"
     assert value['award'] == "b5736134-3326-448b-a91a-894aafb77876"
+
+
+def test_publication_upgrade_4_5(upgrader, publication_4):
+    publication_4['status'] = 'planned'
+    value = upgrader.upgrade('publication', publication_4,
+                             current_version='4', target_version='5')
+    assert value['status'] == 'in preparation'
+
+    publication_4['status'] = 'replaced'
+    value = upgrader.upgrade('publication', publication_4,
+                             current_version='4', target_version='5')
+    assert value['status'] == 'deleted'
+
+    publication_4['status'] = 'in press'
+    value = upgrader.upgrade('publication', publication_4,
+                             current_version='4', target_version='5')
+    assert value['status'] == 'submitted'
+
+    publication_4['status'] = 'in revision'
+    value = upgrader.upgrade('publication', publication_4,
+                             current_version='4', target_version='5')
+    assert value['status'] == 'submitted'
+
+
+def test_publication_upgrade_5_6(upgrader, publication_5):
+    value = upgrader.upgrade('publication', publication_5, current_version='5', target_version='6')
+    assert value['schema_version'] == '6'
+    assert value['status'] == 'in progress'
+    
+    publication_5['status'] = 'published'
+    value = upgrader.upgrade('publication', publication_5, current_version='5', target_version='6')
+    assert value['schema_version'] == '6'
+    assert value['status'] == 'released'
+
+    publication_5['status'] = 'submitted'
+    value = upgrader.upgrade('publication', publication_5, current_version='5', target_version='6')
+    assert value['schema_version'] == '6'
+    assert value['status'] == 'in progress'
+
+    publication_5['status'] = 'deleted'
+    value = upgrader.upgrade('publication', publication_5, current_version='5', target_version='6')
+    assert value['schema_version'] == '6'
+    assert value['status'] == 'deleted'

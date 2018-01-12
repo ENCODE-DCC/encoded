@@ -16,7 +16,8 @@
         { "$ref": "mixins.json#/notes"},
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/submitted"},
-        { "$ref": "mixins.json#/documents" }
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "mixins.json#/submitter_comment" }
     ],
     "dependencies": {
         "assay_term_names": {
@@ -199,7 +200,7 @@
         "title": {
             "title": "Pipeline groups"
         },
-        "analysis_steps.software_versions.software.title": {
+        "analysis_steps.versions.software_versions.software.title": {
             "title": "Software"
         },
         "lab.title": {
@@ -222,28 +223,19 @@
         "status": {
             "title": "Status"
         },
-        "analysis_steps.software_versions.version": {
-            "title": "Software"
-        },
-        "analysis_steps.software_versions.downloaded_url": {
+        "analysis_steps.versions.software_versions.downloaded_url": {
             "title": "URL"
         },
-        "analysis_steps.software_versions.download_checksum": {
+        "analysis_steps.versions.software_versions.download_checksum": {
             "title": "Checksum"
         },
-        "analysis_steps.software_versions.software.title": {
+        "analysis_steps.versions.software_versions.software.title": {
             "title": "Software"
         },
-        "analysis_steps.software_versions.downloaded_url": {
-            "title": "Download URL"
-        },
-        "analysis_steps.software_versions.download_checksum": {
-            "title": "Download checksum"
-        },
-        "analysis_steps.software_versions.software.@id": {
+        "analysis_steps.versions.software_versions.software.@id": {
             "title": "ID"
         },
-        "analysis_steps.software_versions.software.references.published_by": {
+        "analysis_steps.versions.software_versions.software.references.published_by": {
             "title": "Created by"
         }
     },
@@ -260,5 +252,4 @@
         "title": 1.0
     },
     "changelog": "/profiles/changelogs/pipeline.md"
-
 }
