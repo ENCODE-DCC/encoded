@@ -398,34 +398,38 @@ globals.contentViews.register(SchemaPage, 'JSONSchema');
 
 
 // Displays a page listing all schemas available in the system.
-export default class AllSchemasPage extends React.Component {
-    render() {
-        const { schemas } = this.props;
+const AllSchemasPage = (props) => {
+    const { schemas } = props;
 
-        // Get a sorted list of all available schemas. Filter out those without any
-        // `identifyingProperties` because the user can't add objects of that type.
-        const schemaNames = Object.keys(schemas).sort().filter(schemaName => (
-            !!(schemas[schemaName].identifyingProperties && schemas[schemaName].identifyingProperties.length)
-        ));
+    // Get a sorted list of all available schemas. Filter out those without any
+    // `identifyingProperties` because the user can't add objects of that type.
+    const schemaNames = Object.keys(schemas).sort().filter(schemaName => (
+        !!(schemas[schemaName].identifyingProperties && schemas[schemaName].identifyingProperties.length)
+    ));
 
-        return (
-            <div className="schema-list">
-                {schemaNames.map((schemaName) => {
-                    const schemaId = schemas[schemaName].id;
-                    const schemaPath = schemaIdToPath(schemaId);
+    return (
+        <Panel>
+            <PanelBody>
+                <div className="schema-list">
+                    {schemaNames.map((schemaName) => {
+                        const schemaId = schemas[schemaName].id;
+                        const schemaPath = schemaIdToPath(schemaId);
 
-                    return (
-                        <div className="schema-list__item" key={schemaName}>
-                            <a className="btn btn-info btn-xs" href={`/${schemaPath}/#!add`}>Add</a>
-                            <a href={schemaId} title={schemas[schemaName].description}>{schemaName}</a>
-                        </div>
-                    );
-                })}
-            </div>
-        );
-    }
-}
+                        return (
+                            <div className="schema-list__item" key={schemaName}>
+                                <a className="btn btn-info btn-xs" href={`/${schemaPath}/#!add`}>Add</a>
+                                <a href={schemaId} title={schemas[schemaName].description}>{schemaName}</a>
+                            </div>
+                        );
+                    })}
+                </div>
+            </PanelBody>
+        </Panel>
+    );
+};
 
 AllSchemasPage.propTypes = {
     schemas: PropTypes.object.isRequired, // All schemas in encoded
 };
+
+export default AllSchemasPage;
