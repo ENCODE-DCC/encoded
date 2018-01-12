@@ -2728,3 +2728,16 @@ def test_audit_experiment_chip_seq_consistent_mapped_read_length(
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert all(error['category'] !=
                'inconsistent mapped reads lengths' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_chip_seq_read_count(
+        testapp,
+        base_experiment,
+        file_fastq_3,
+        file_fastq_4):
+    testapp.patch_json(file_fastq_3['@id'], {'read_count': 124})
+    testapp.patch_json(file_fastq_4['@id'], {'read_count': 130})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert all(error['category'] !=
+               'low read count' for error in collect_audit_errors(res))

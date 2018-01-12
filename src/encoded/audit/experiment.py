@@ -4,7 +4,6 @@ from snovault import (
 )
 from .gtex_data import gtexDonorsList
 from .standards_data import pipelines_with_read_depth, minimal_read_depth_requirements
-import datetime
 
 targetBasedAssayList = [
     'ChIP-seq',
@@ -1776,13 +1775,18 @@ def audit_experiment_geo_submission(value, system, excluded_types):
 def audit_experiment_status(value, system, files_structure):
     if value['status'] not in ['started']:
         return
+    assay_term_name = value.get('assay_term_name')
+    if assay_term_name not in minimal_read_depth_requirements:
+        return
+    award_rfa = value.get('award').get('rfa')
+    if award_rfa == 'modERN':
+        return
+    if award_rfa == 'modENCODE' and assay_term_name != 'ChIP-seq':
+        return
 
     replicates_set = set()
     submitted_replicates = set()
     replicates_reads = {}
-    dates = []
-    files = []
-
     replicates = value.get('replicates')
     if replicates:
         for replicate in replicates:
@@ -1799,73 +1803,31 @@ def audit_experiment_status(value, system, files_structure):
                 file_replicate = file.get('replicate')
                 read_count = file.get('read_count')
                 if read_count and file_replicate:
-                    file_date = datetime.datetime.strptime(
-                    file.get('date_created')[:10], "%Y-%m-%d")
-                    dates.append(file_date)
-                    files.append(file)
                     replicate_id = file_replicate.get('@id')
                     submitted_replicates.add(replicate_id)
                     if replicate_id in replicates_reads:
                         replicates_reads[replicate_id] += read_count
-        
+
         if replicates_set and not replicates_set - submitted_replicates:
-            #minimal_read_depth_requirements
-            '''if award_obj.get('rfa') == 'modERN':
-                    err.write(
-                        award_obj.get('rfa') + '\t' +
-                        experiment_accession + '\texcluded from automatic screening\n')
-                    err.flush()
-                else:
-                    # check read depth:
-                    depth_flag = False
-                    if award_obj.get('rfa') == 'modENCODE':
-                        for rep in replicates_reads:
-                            if replicates_reads[rep] < min_depth['modENCODE-chip']:
-                                depth_flag = True
-                                err.write(
-                                    award_obj.get('rfa') + '\t' + \
-                                    experiment_accession + '\t' + rep + \
-                                    '\treads_count=' + str(replicates_reads[rep]) + \
-                                    '\texpected count=' + \
-                                    str(min_depth['modENCODE-chip']) + '\n')
-                                err.flush()
-                                break
-                    else:
-                        if ex['assay_term_name'] in min_depth:
-                            for rep in replicates_reads:
-                                if replicates_reads[rep] < min_depth[ex['assay_term_name']]:
-                                    depth_flag = True
-                                    err.write(
-                                        award_obj.get('rfa') + '\t' + \
-                                        experiment_accession + '\t' + rep + \
-                                        '\treads_count=' + \
-                                        str(replicates_reads[rep]) + '\texpected count=' + \
-                                        str(min_depth[ex['assay_term_name']]) + '\n')
-                                    err.flush()
-                                    break
-                    if not depth_flag:
-                        pass_audit = True
-                        try:
-                            audit_request = session.get(urljoin(
-                                url,
-                                '/' + experiment_accession + '?frame=page&format=json'))
-                            audit_obj = audit_request.json().get('audit')
-                            if audit_obj.get("ERROR"):
-                                pass_audit = False
-                        except requests.exceptions.RequestException:
-                            continue
-                        else:
-                            if pass_audit:
-                                out.write(
-                                    award_obj.get('rfa') + '\t' + \
-                                    experiment_accession + '\t' + ex['status'] + \
-                                    '\t-> submitted\t' + max(dates).strftime("%Y-%m-%d") + '\n')
-                                out.flush()
-                            else:
-                                err.write(
-                                    award_obj.get('rfa') + '\t' +
-                                    experiment_accession + '\taudit errors\n')
-                                err.flush()'''
+            if award_rfa == 'modENCODE':
+                key = 'modENCODE-chip'
+            else:
+                key = assay_term_name
+
+            for rep in replicates_reads:
+                if replicates_reads[rep] < min_depth[key]:
+                    detail = 'The cumulative number of reads {} in ' \
+                             'replicate {} of experiment {} is lower then ' \
+                             'the minimal expected read depth {} ' \
+                             'for this type of assay {}.'.format(
+                                 replicates_reads[rep],
+                                 rep,
+                                 value['@id'],
+                                 min_depth[key]
+                             )
+                    yield AuditFailure('low read count',
+                                       detail, level='WARNING')
+
 
 def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
