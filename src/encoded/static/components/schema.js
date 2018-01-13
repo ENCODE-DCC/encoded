@@ -340,14 +340,20 @@ ChangeLog.defaultProps = {
 };
 
 
-const SchemaPage = (props) => {
+const SchemaPage = (props, reactContext) => {
     const context = props.context;
     const itemClass = globals.itemClass(context);
     const title = context.title;
     const changelog = context.changelog;
+    const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
 
     // Generate a link to add an object for the currently displayed schema.
     const schemaPath = schemaIdToPath(context.id);
+
+    // Determine whether we should display an "Add" button or not depending on the user's logged-in
+    // state.
+    const decoration = loggedIn ? <a href={`/${schemaPath}/#!add`} className="btn btn-info profiles-add-obj__btn">Add</a> : null;
+    const decorationClasses = loggedIn ? 'profiles-add-obj' : '';
 
     return (
         <div className={itemClass}>
@@ -360,8 +366,8 @@ const SchemaPage = (props) => {
             <Panel>
                 <TabPanel
                     tabs={{ formatted: 'Formatted', raw: 'Raw' }}
-                    decoration={<a href={`/${schemaPath}/#!add`} className="btn btn-info profiles-add-obj__btn">Add</a>}
-                    decorationClasses="profiles-add-obj"
+                    decoration={decoration}
+                    decorationClasses={decorationClasses}
                 >
                     <TabPanelPane key="formatted">
                         <PanelBody>
@@ -394,12 +400,17 @@ SchemaPage.propTypes = {
     context: PropTypes.object.isRequired,
 };
 
+SchemaPage.contextTypes = {
+    session: PropTypes.object,
+};
+
 globals.contentViews.register(SchemaPage, 'JSONSchema');
 
 
 // Displays a page listing all schemas available in the system.
-const AllSchemasPage = (props) => {
+const AllSchemasPage = (props, reactContext) => {
     const { schemas } = props;
+    const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
 
     // Get a sorted list of all available schemas. Filter out those without any
     // `identifyingProperties` because the user can't add objects of that type.
@@ -417,7 +428,7 @@ const AllSchemasPage = (props) => {
 
                         return (
                             <div className="schema-list__item" key={schemaName}>
-                                <a className="btn btn-info btn-xs" href={`/${schemaPath}/#!add`}>Add</a>
+                                {loggedIn ? <a className="btn btn-info btn-xs" href={`/${schemaPath}/#!add`}>Add</a> : null}
                                 <a href={schemaId} title={schemas[schemaName].description}>{schemaName}</a>
                             </div>
                         );
@@ -430,6 +441,10 @@ const AllSchemasPage = (props) => {
 
 AllSchemasPage.propTypes = {
     schemas: PropTypes.object.isRequired, // All schemas in encoded
+};
+
+AllSchemasPage.contextTypes = {
+    session: PropTypes.object,
 };
 
 export default AllSchemasPage;
