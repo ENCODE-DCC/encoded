@@ -446,6 +446,13 @@ class PipelineComponent extends React.Component {
                                     <dd><a href={context.standards_page['@id']}>{context.standards_page.title}</a></dd>
                                 </div>
                             : null}
+
+                            {context.submitter_comment ?
+                                <div data-test="submittercomment">
+                                    <dt>Submitter comment</dt>
+                                    <dd>{context.submitter_comment}</dd>
+                                </div>
+                            : null}
                         </dl>
                     </PanelBody>
                 </Panel>

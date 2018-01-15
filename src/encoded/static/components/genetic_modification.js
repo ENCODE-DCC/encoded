@@ -297,6 +297,13 @@ const AttributionRenderer = (props) => {
                         <dd>{geneticModification.aliases.join(', ')}</dd>
                     </div>
                 : null}
+
+                {geneticModification.submitter_comment ?
+                    <div data-test="submittercomment">
+                        <dt>Submitter comment</dt>
+                        <dd>{geneticModification.submitter_comment}</dd>
+                    </div>
+                : null}
             </dl>
         </div>
     );

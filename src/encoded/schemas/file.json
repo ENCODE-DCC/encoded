@@ -1134,6 +1134,9 @@
         "restricted": {
             "title": "Restricted file"
         },
+        "submitter_comment": {
+            "title": "Submitter comment"
+        },
         "status": {
             "title": "File status"
         }
