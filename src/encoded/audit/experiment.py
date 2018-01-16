@@ -1819,7 +1819,7 @@ def audit_experiment_status(value, system, files_structure):
                     detail = 'The cumulative number of reads {} in ' \
                              'replicate {} of experiment {} is lower then ' \
                              'the minimal expected read depth {} ' \
-                             'for this type of assay {}.'.format(
+                             'for this type of assay.'.format(
                                  replicates_reads[rep],
                                  rep,
                                  value['@id'],

@@ -2736,8 +2736,13 @@ def test_audit_experiment_chip_seq_read_count(
         file_fastq_3,
         file_fastq_4):
     testapp.patch_json(file_fastq_3['@id'], {'read_count': 124})
-    testapp.patch_json(file_fastq_4['@id'], {'read_count': 130})
+    testapp.patch_json(file_fastq_4['@id'], {'read_count': 134})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] ==
+               'low read count' for error in collect_audit_errors(res))
+    testapp.patch_json(file_fastq_3['@id'], {'read_count': 100000000})
+    testapp.patch_json(file_fastq_4['@id'], {'read_count': 100000000})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert all(error['category'] !=
                'low read count' for error in collect_audit_errors(res))
