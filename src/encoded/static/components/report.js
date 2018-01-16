@@ -122,6 +122,12 @@ function lookupColumn(result, column) {
     if (nodes.length && nodes[0]['@id'] !== undefined) {
         nodes = nodes.map(node => node['@id']);
     }
+
+    // Stringify any nodes that are objects or arrays. Objects and arrays have typeof `object`.
+    if (nodes.length) {
+        nodes = nodes.map(item => (typeof item === 'object' ? JSON.stringify(item) : item));
+    }
+
     return _.uniq(nodes).join(', ');
 }
 
