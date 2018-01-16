@@ -381,17 +381,19 @@ const SchemaPage = (props, reactContext) => {
                     </TabPanelPane>
                 </TabPanel>
             </Panel>
-            <Panel>
-                <PanelHeading>
-                    <h4>ChangeLog</h4>
-                </PanelHeading>
-                <PanelBody>
-                    {changelog && <FetchedData>
-                        <Param name="source" url={changelog} type="text" />
-                        <ChangeLog />
-                    </FetchedData>}
-                </PanelBody>
-            </Panel>
+            {changelog ?
+                <Panel>
+                    <PanelHeading>
+                        <h4>ChangeLog</h4>
+                    </PanelHeading>
+                    <PanelBody>
+                        <FetchedData>
+                            <Param name="source" url={changelog} type="text" />
+                            <ChangeLog />
+                        </FetchedData>
+                    </PanelBody>
+                </Panel>
+            : null}
         </div>
     );
 };
