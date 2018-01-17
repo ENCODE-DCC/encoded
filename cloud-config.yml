@@ -127,8 +127,6 @@ packages:
 - lzop
 - nodejs
 - ntp
-- oracle-java8-installer
-- oracle-java8-set-default
 - postgresql-9.3
 - pv
 - python2.7-dev
@@ -169,6 +167,13 @@ runcmd:
 -    swapon /swapfile
 - fi
 - set -ex
+# Manually install java 8u161
+- sudo mkdir -p /usr/lib/jvm
+- sudo chmod 777 /usr/lib/jvm
+- [ wget, --no-cookies, --no-check-certificate, --header, "Cookie: oraclelicense=accept-securebackup-cookie", "http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/jdk-8u161-linux-x64.tar.gz", -O , /usr/lib/jvm/jdk-8-161-linux-x64.tar.gz ]
+- sudo tar -xzvf /usr/lib/jvm/jdk-8-161-linux-x64.tar.gz --directory /usr/lib/jvm/
+- sudo chmod 755 /usr/lib/jvm
+- sudo update-alternatives --install /usr/bin/java java /usr/lib/jvm/jdk1.8.0_161/bin/java 100
 - update-rc.d elasticsearch defaults
 - service elasticsearch restart
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf
