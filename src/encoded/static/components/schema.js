@@ -5,6 +5,7 @@ import { Panel, PanelHeading, PanelBody, TabPanel, TabPanelPane } from '../libs/
 import { collapseIcon } from '../libs/svg-icons';
 import { Param, FetchedData } from './fetched';
 import * as globals from './globals';
+import { Breadcrumbs } from './navigation';
 
 
 // Used to map schema property names to more visually pleasing versions.
@@ -350,6 +351,13 @@ const SchemaPage = (props, reactContext) => {
     // Generate a link to add an object for the currently displayed schema.
     const schemaPath = schemaIdToPath(context.id);
 
+    // Set up the "breadcrumbs" (sneer quotes because it's really just a link to /profiles/)
+    const crumbs = [
+        { id: 'Profiles', uri: '/profiles/', wholeTip: 'All schemas' },
+        { id: schemaPath },
+    ];
+
+
     // Determine whether we should display an "Add" button or not depending on the user's logged-in
     // state.
     const decoration = loggedIn ? <a href={`/${schemaPath}/#!add`} className="btn btn-info profiles-add-obj__btn">Add</a> : null;
@@ -359,6 +367,7 @@ const SchemaPage = (props, reactContext) => {
         <div className={itemClass}>
             <header className="row">
                 <div className="col-sm-12">
+                    <Breadcrumbs root="/profiles/" crumbs={crumbs} />
                     <h2>{title}</h2>
                 </div>
             </header>
