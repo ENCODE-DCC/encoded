@@ -162,7 +162,7 @@ def check_control_read_depth_standards(value,
             if read_depth >= marks['narrow']['minimal'] and read_depth < marks['narrow']['recommended']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth >= marks['narrow']['low'] and read_depth < marks['narrow']['minimal']:
-                yield AuditFailure('control low read depth', detail, level='NOT_COMPLIANT')
+                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
             elif read_depth < marks['narrow']['low']:
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
         else:
@@ -1380,7 +1380,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                         'histone marks ' + \
                         'is 20 million usable fragments, the recommended number of usable ' + \
                         'fragments is > 45 million. (See /data-standards/chip-seq/ )'
-                yield AuditFailure('low read depth', detail, level='INTERNAL_ACTION')
+                yield AuditFailure('insufficient read depth for broad peaks control', detail, level='INTERNAL_ACTION')
             if read_depth < marks['narrow']['recommended']:
                 if 'assembly' in file_to_check:
                     detail = 'Control alignment file {} mapped using {} assembly has {} '.format(
@@ -1450,9 +1450,12 @@ def check_file_chip_seq_read_depth(file_to_check,
                     if read_depth >= marks['broad']['minimal']:
                         yield AuditFailure('low read depth',
                                            detail, level='WARNING')
-                    elif read_depth < marks['broad']['minimal']:
+                    elif read_depth >= 100 and read_depth < marks['broad']['minimal']:
                         yield AuditFailure('insufficient read depth',
                                            detail, level='NOT_COMPLIANT')
+                    elif read_depth < 100:
+                        yield AuditFailure('extremely low read depth',
+                                           detail, level='ERROR')
             else:
                 if 'assembly' in file_to_check:
                     detail = 'Alignment file {} '.format(file_to_check['@id']) + \
