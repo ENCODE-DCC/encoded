@@ -127,27 +127,45 @@
             }
         },
         "run_type": {
-            "comment": "Only paired-ended files should have paired_end values.",
-            "oneOf": [
+            "comment": "run_type should not be specified for PacBio platform FASTQ files. Illumina produced paired-ended files should have paired_end value specified.",
+            "required": ["platform"], 
+            "allOf": [
                 {
-                    "properties": {
-                        "run_type": {
-                            "enum": ["single-ended"]
-                        }                        
+                    "not": {
+                        "properties": {
+                            "platform": {
+                                "linkTo": "Platform",
+                                "linkEnum": [
+                                    "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                ]
+                            }
+                        }                    
                     }
                 },
                 {
-                    "required": ["paired_end"],
-                    "properties": {
-                        "run_type": {
-                            "enum": ["paired-ended"]
+                    "oneOf": [
+                        {
+                            "properties": {
+                                "run_type": {
+                                    "enum": ["single-ended"]
+                                }                        
+                            }
                         },
-                        "paired_end":{
-                            "enum": ["1", "2", "1,2"]
+                        {
+                            "required": ["paired_end"],
+                            "properties": {
+                                "run_type": {
+                                    "enum": ["paired-ended"]
+                                },
+                                "paired_end":{
+                                    "enum": ["1", "2", "1,2"]
+                                }
+                            }
                         }
-                    }
+                    ]
                 }
-            ]
+            ]           
         },
         "external_accession": {
             "comment": "A file with an external accession should not get an ENCODE accession.",
@@ -221,18 +239,67 @@
             ]
         },
         "output_type":{
-            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified.",
+            "comment": "Files with output_type reads and file format fastq, fatsa, csfasta, csqual and sra require read_length to be specified, unless the file was produced by PacBio platform",
             "oneOf":[
                 {
-                    "required": ["read_length"],
                     "properties": {
-                        "file_format": {
-                            "enum": ["fastq", "fasta", "csfasta", "csqual", "sra"]
-                        },
                         "output_type": {
-                             "enum": ["reads"]
+                            "enum": ["reads"]
                         }
-                    }
+                    },
+                    "oneOf": [
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                    ]
+                                }
+                                
+                            }
+                        },
+                        {
+                            "not": {
+                                "required": ["read_length"]
+                            },
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "sra"]
+                                },
+                                "platform": {
+                                    "linkTo": "Platform",
+                                    "linkEnum": [
+                                        "ced61406-dcc6-43c4-bddd-4c977cc676e8"                                        
+                                    ]
+                                }
+                                
+                            }
+                        },
+                        {
+                            "required": ["read_length"],
+                            "properties": {
+                                "file_format": {
+                                    "enum": ["fastq", "fasta", "csfasta", "csqual", "sra"]
+                                },
+                                "not": {
+                                    "platform": {
+                                        "linkTo": "Platform",
+                                        "linkEnum": [
+                                            "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                            "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    ]
                 },
                 {
                     "not": {
@@ -265,6 +332,42 @@
                 ]
             }
         },
+        "platform": {
+            "not": {
+                "required": ["run_type", "paired_end", "read_length"],
+                "properties": {
+                    "platform": {
+                        "linkTo": "Platform",
+                        "linkEnum": [
+                            "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                            "c7564b38-ab4f-4c42-a401-3de48689a998"
+                        ]
+                    }
+                }  
+            }
+        },
+        "read_length": {
+            "oneOf": [
+                {
+                    "not": {
+                        "required":["platform"]
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "platform": {
+                                "linkTo": "Platform",
+                                "linkEnum": [
+                                    "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                ]
+                            }
+                        }  
+                    }
+                }
+            ]            
+        },
         "file_format":{
             "comment": "Fastq and sra files require run_type and replicate but should not have assembly. Raw data files require platform to be specified. Processed files require assembly to be specified.",
             "oneOf": [
@@ -285,7 +388,6 @@
                 {
                     "required": [
                         "replicate",
-                        "run_type",
                         "platform"
                     ],
                     "properties": {
