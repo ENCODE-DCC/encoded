@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'underscore';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
-import { AttachmentPanel, DocumentsPanel } from './doc';
+import { AttachmentPanel, Document, DocumentPreview, DocumentFile, DocumentsPanel } from './doc';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
-import { ProjectBadge, Attachment } from './image';
+import { ProjectBadge } from './image';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
 import { singleTreatment } from './objectutils';
@@ -341,158 +342,145 @@ Attribution.propTypes = {
 
 const DocumentsRenderer = (props) => {
     const modDocs = props.modDocs ? props.modDocs['@graph'] : [];
-    const charDocs = props.charDocs ? props.charDocs['@graph'] : [];
 
     return (
         <DocumentsPanel
             documentSpecs={[
+                { label: 'Characterizations', documents: props.characterizations },
                 { label: 'Modification', documents: modDocs },
-                { label: 'Characterization', documents: charDocs },
             ]}
         />
     );
 };
 
 DocumentsRenderer.propTypes = {
+    characterizations: PropTypes.array, // GM characterizations
     modDocs: PropTypes.object, // GM document search results
-    charDocs: PropTypes.object, // GM characterization document search results
 };
 
 DocumentsRenderer.defaultProps = {
     modDocs: null,
-    charDocs: null,
 };
 
 
 // Render the entire GeneticModification page. This is called by the back end as a result of an
 // attempt to render an object with an @type of GeneticModification.
-export class GeneticModificationComponent extends React.Component {
-    render() {
-        const context = this.props.context;
-        const itemClass = globals.itemClass(context, 'view-detail key-value');
+export const GeneticModificationComponent = (props, reactContext) => {
+    const context = props.context;
+    const itemClass = globals.itemClass(context, 'view-detail key-value');
 
-        // Configure breadcrumbs for the page.
-        const crumbs = [
-            { id: 'Genetic Modifications' },
-            { id: context.target && context.target.label, query: `target.label=${context.target && context.target.label}`, tip: context.target && context.target.label },
-            { id: context.modification_type, query: `modification_type=${context.modification_type}`, tip: context.modification_type },
-        ];
+    // Configure breadcrumbs for the page.
+    const crumbs = [
+        { id: 'Genetic Modifications' },
+        { id: context.target && context.target.label, query: `target.label=${context.target && context.target.label}`, tip: context.target && context.target.label },
+        { id: context.modification_type, query: `modification_type=${context.modification_type}`, tip: context.modification_type },
+    ];
 
-        // Collect and combine documents, including from genetic modification characterizations.
-        let modDocsQuery;
-        let charDocsQuery;
-        if (context.documents && context.documents.length) {
-            // Take the array of document @ids and combine them into one query string for a search
-            // of the form "&@id=/documents/{uuid}&@id=/documents/{uuid}..."
-            modDocsQuery = context.documents.reduce((acc, document) => `${acc}&@id=${document}`, '');
-        }
-        if (context.characterizations && context.characterizations.length) {
-            let charDocs = [];
-            context.characterizations.forEach((characterization) => {
-                if (characterization.documents && characterization.documents.length) {
-                    charDocs = charDocs.concat(characterization.documents);
-                }
-            });
+    // Collect and combine document @ids, including from genetic modification
+    // characterization document @ids. Later we'll do a GET request on these @ids to show these
+    // documents along with the embedded characterizations.
+    let modDocs = context.documents && context.documents.length ? context.documents : [];
+    let charDocs = [];
+    if (context.characterizations && context.characterizations.length) {
+        context.characterizations.forEach((characterization) => {
+            if (characterization.documents && characterization.documents.length) {
+                charDocs = charDocs.concat(characterization.documents);
+            }
+        });
+    }
+    modDocs = _.uniq(modDocs.concat(charDocs));
 
-            // Take the array of characgterization document @ids and combine them into one query
-            // string for a search of the form "&@id=/documents/{uuid}&@id=/documents/{uuid}..."
-            charDocsQuery = charDocs.reduce((acc, document) => `${acc}&@id=${document}`, '');
-        }
+    // Convert the array of document @ids into a query string that we can do a GET request on.
+    const modDocsQuery = modDocs.length ? modDocs.reduce((acc, document) => `${acc}&@id=${document}`, '') : null;
 
-        return (
-            <div className={globals.itemClass(context, 'view-item')}>
-                <header className="row">
-                    <div className="col-sm-12">
-                        <Breadcrumbs root="/search/?type=GeneticModification" crumbs={crumbs} />
-                        <h2>{context.accession}</h2>
-                        <div className="status-line">
-                            <div className="characterization-status-labels">
-                                <StatusLabel title="Status" status={context.status} />
-                            </div>
-                            {this.props.auditIndicators(context.audit, 'genetic-modification-audit', { session: this.context.session })}
+    return (
+        <div className={globals.itemClass(context, 'view-item')}>
+            <header className="row">
+                <div className="col-sm-12">
+                    <Breadcrumbs root="/search/?type=GeneticModification" crumbs={crumbs} />
+                    <h2>{context.accession}</h2>
+                    <div className="status-line">
+                        <div className="characterization-status-labels">
+                            <StatusLabel title="Status" status={context.status} />
+                        </div>
+                        {props.auditIndicators(context.audit, 'genetic-modification-audit', { session: reactContext.session })}
+                    </div>
+                </div>
+            </header>
+            {props.auditDetail(context.audit, 'genetic-modification-audit', { session: reactContext.session, except: context['@id'] })}
+            <Panel addClasses="data-display">
+                <PanelBody addClasses="panel-body-with-header">
+                    <div className="flexrow">
+                        <div className="flexcol-sm-6">
+                            <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                            <dl className={itemClass}>
+                                {context.description ?
+                                    <div data-test="description">
+                                        <dt>Description</dt>
+                                        <dd>{context.description}</dd>
+                                    </div>
+                                : null}
+
+                                <div data-test="type">
+                                    <dt>Type</dt>
+                                    <dd>{context.category}</dd>
+                                </div>
+
+                                {context.introduced_sequence ?
+                                    <div data-test="type">
+                                        <dt>Introduced sequence</dt>
+                                        <dd>{context.introduced_sequence ? <span>{context.introduced_sequence}</span> : null}</dd>
+                                    </div>
+                                : null}
+
+                                {context.zygosity ?
+                                    <div data-test="zygosity">
+                                        <dt>Zygosity</dt>
+                                        <dd>{context.zygosity}</dd>
+                                    </div>
+                                : null}
+
+                                <IntroducedTags geneticModification={context} />
+
+                                <div data-test="purpose">
+                                    <dt>Purpose</dt>
+                                    <dd>{context.purpose}</dd>
+                                </div>
+                            </dl>
+
+                            <ModificationSite geneticModification={context} />
+
+                            <ModificationMethod geneticModification={context} />
+                        </div>
+
+                        <div className="flexcol-sm-6">
+                            <Attribution geneticModification={context} />
                         </div>
                     </div>
-                </header>
-                {this.props.auditDetail(context.audit, 'genetic-modification-audit', { session: this.context.session, except: context['@id'] })}
-                <Panel addClasses="data-display">
-                    <PanelBody addClasses="panel-body-with-header">
-                        <div className="flexrow">
-                            <div className="flexcol-sm-6">
-                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
-                                <dl className={itemClass}>
-                                    {context.description ?
-                                        <div data-test="description">
-                                            <dt>Description</dt>
-                                            <dd>{context.description}</dd>
-                                        </div>
-                                    : null}
+                </PanelBody>
+            </Panel>
 
-                                    <div data-test="type">
-                                        <dt>Type</dt>
-                                        <dd>{context.category}</dd>
-                                    </div>
+            {modDocsQuery || (context.characterizations && context.characterizations.length) ?
+                <FetchedData>
+                    {modDocsQuery ? <Param name="modDocs" url={`/search/?type=Document${modDocsQuery}`} /> : null}
+                    <DocumentsRenderer characterizations={context.characterizations} />
+                </FetchedData>
+            : null}
 
-                                    {context.introduced_sequence ?
-                                        <div data-test="type">
-                                            <dt>Introduced sequence</dt>
-                                            <dd>{context.introduced_sequence ? <span>{context.introduced_sequence}</span> : null}</dd>
-                                        </div>
-                                    : null}
+            <RelatedItems
+                title="Donors using this genetic modification"
+                url={`/search/?type=Donor&genetic_modifications.uuid=${context.uuid}`}
+                Component={DonorTable}
+            />
 
-                                    {context.zygosity ?
-                                        <div data-test="zygosity">
-                                            <dt>Zygosity</dt>
-                                            <dd>{context.zygosity}</dd>
-                                        </div>
-                                    : null}
-
-                                    <IntroducedTags geneticModification={context} />
-
-                                    <div data-test="purpose">
-                                        <dt>Purpose</dt>
-                                        <dd>{context.purpose}</dd>
-                                    </div>
-                                </dl>
-
-                                <ModificationSite geneticModification={context} />
-
-                                <ModificationMethod geneticModification={context} />
-                            </div>
-
-                            <div className="flexcol-sm-6">
-                                <Attribution geneticModification={context} />
-                            </div>
-                        </div>
-                    </PanelBody>
-                </Panel>
-
-                {context.characterizations && context.characterizations.length ?
-                    <GeneticModificationCharacterizations characterizations={context.characterizations} />
-                : null}
-
-                {modDocsQuery || charDocsQuery ?
-                    <FetchedData>
-                        {modDocsQuery ? <Param name="modDocs" url={`/search/?type=Document${modDocsQuery}`} /> : null}
-                        {charDocsQuery ? <Param name="charDocs" url={`/search/?type=Document${charDocsQuery}`} /> : null}
-                        <DocumentsRenderer />
-                    </FetchedData>
-                : null}
-
-                <RelatedItems
-                    title="Donors using this genetic modification"
-                    url={`/search/?type=Donor&genetic_modifications.uuid=${context.uuid}`}
-                    Component={DonorTable}
-                />
-
-                <RelatedItems
-                    title="Biosamples using this genetic modification"
-                    url={`/search/?type=Biosample&genetic_modifications.uuid=${context.uuid}`}
-                    Component={BiosampleTable}
-                />
-            </div>
-        );
-    }
-}
+            <RelatedItems
+                title="Biosamples using this genetic modification"
+                url={`/search/?type=Biosample&genetic_modifications.uuid=${context.uuid}`}
+                Component={BiosampleTable}
+            />
+        </div>
+    );
+};
 
 GeneticModificationComponent.propTypes = {
     context: PropTypes.object.isRequired, // GM object being displayed
@@ -509,71 +497,29 @@ const GeneticModification = auditDecor(GeneticModificationComponent);
 globals.contentViews.register(GeneticModification, 'GeneticModification');
 
 
-const GMAttachmentCaption = (props) => {
-    const { title } = props;
+const ListingComponent = (props, reactContext) => {
+    const result = props.context;
 
     return (
-        <div className="document__caption">
-            <div data-test="caption">
-                <strong>Attachment: </strong>
-                {title}
-            </div>
-        </div>
-    );
-};
-
-GMAttachmentCaption.propTypes = {
-    title: PropTypes.string.isRequired, // Title to display for attachment
-};
-
-
-const GMAttachmentPreview = (props) => {
-    const { context, attachment } = props;
-
-    return (
-        <figure className="document__preview">
-            <Attachment context={context} attachment={attachment} className="characterization" />
-        </figure>
-    );
-};
-
-GMAttachmentPreview.propTypes = {
-    context: PropTypes.object.isRequired, // QC metric object that owns the attachment to render
-    attachment: PropTypes.object.isRequired, // Attachment to render
-};
-
-// Register document caption rendering components
-globals.documentViews.caption.register(GMAttachmentCaption, 'GeneticModificationCharacterization');
-
-// Register document preview rendering components
-globals.documentViews.preview.register(GMAttachmentPreview, 'GeneticModificationCharacterization');
-
-
-class ListingComponent extends React.Component {
-    render() {
-        const result = this.props.context;
-
-        return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Genetic modification</p>
-                        <p className="type">{` ${result.accession}`}</p>
-                        <p className="type meta-status">{` ${result.status}`}</p>
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
-                    </div>
-                    <div className="accession"><a href={result['@id']}>{result.category} &mdash; {result.purpose} &mdash; {result.method}</a></div>
-                    <div className="data-row">
-                        {result.modified_site_by_target_id ? <div><strong>Target: </strong>{result.modified_site_by_target_id.name}</div> : null}
-                        {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
-                    </div>
+        <li>
+            <div className="clearfix">
+                <PickerActions {...props} />
+                <div className="pull-right search-meta">
+                    <p className="type meta-title">Genetic modification</p>
+                    <p className="type">{` ${result.accession}`}</p>
+                    <p className="type meta-status">{` ${result.status}`}</p>
+                    {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
                 </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
-            </li>
-        );
-    }
-}
+                <div className="accession"><a href={result['@id']}>{result.category} &mdash; {result.purpose} &mdash; {result.method}</a></div>
+                <div className="data-row">
+                    {result.modified_site_by_target_id ? <div><strong>Target: </strong>{result.modified_site_by_target_id.name}</div> : null}
+                    {result.lab ? <div><strong>Lab: </strong>{result.lab.title}</div> : null}
+                </div>
+            </div>
+            {props.auditDetail(result.audit, result['@id'], { session: reactContext.session, except: result['@id'], forcedEditLink: true })}
+        </li>
+    );
+};
 
 ListingComponent.propTypes = {
     context: PropTypes.object.isRequired, // Search results object
@@ -618,3 +564,112 @@ GeneticModificationSummary.columns = {
         display: item => <ModificationSiteItems geneticModification={item} itemClass={'gm-table-modification-site'} />,
     },
 };
+
+
+// Biosample and donor characterization documents
+
+const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
+
+// Document header component -- Characterizations
+const CharacterizationHeader = props => (
+    <div className="document__header">
+        {props.doc.characterization_method}
+    </div>
+);
+
+CharacterizationHeader.propTypes = {
+    doc: PropTypes.object.isRequired, // Document object to render
+};
+
+
+// Document caption component -- Characterizations
+const CharacterizationCaption = (props) => {
+    const doc = props.doc;
+    const caption = doc.caption;
+    let excerpt;
+
+    if (caption && caption.length > EXCERPT_LENGTH) {
+        excerpt = globals.truncateString(caption, EXCERPT_LENGTH);
+    }
+
+    return (
+        <div className="document__caption">
+            {excerpt || caption ?
+                <div data-test="caption">
+                    <strong>{excerpt ? 'Caption excerpt: ' : 'Caption: '}</strong>
+                    {excerpt ? <span>{excerpt}</span> : <span>{caption}</span>}
+                </div>
+            : <em>No caption</em>}
+        </div>
+    );
+};
+
+CharacterizationCaption.propTypes = {
+    doc: PropTypes.object.isRequired, // Document object to render
+};
+
+
+// Document detail component -- default
+const CharacterizationDetail = (props) => {
+    const doc = props.doc;
+    const keyClass = `document__detail${props.detailOpen ? ' active' : ''}`;
+    const excerpt = doc.description && doc.description.length > EXCERPT_LENGTH;
+
+    return (
+        <div className={keyClass}>
+            <dl className="key-value-doc" id={`panel${props.id}`} aria-labelledby={`tab${props.id}`} role="tabpanel">
+                {excerpt ?
+                    <div data-test="caption">
+                        <dt>Caption</dt>
+                        <dd>{doc.caption}</dd>
+                    </div>
+                : null}
+
+                {doc.submitted_by && doc.submitted_by.title ?
+                    <div data-test="submitted-by">
+                        <dt>Submitted by</dt>
+                        <dd>{doc.submitted_by.title}</dd>
+                    </div>
+                : null}
+
+                <div data-test="lab">
+                    <dt>Lab</dt>
+                    <dd>{doc.lab.title}</dd>
+                </div>
+
+                {doc.award && doc.award.name ?
+                    <div data-test="award">
+                        <dt>Grant</dt>
+                        <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
+                    </div>
+                : null}
+
+                {doc.submitter_comment ?
+                    <div data-test="submittercomment">
+                        <dt>Submitter comment</dt>
+                        <dd>{doc.submitter_comment}</dd>
+                    </div>
+                : null}
+            </dl>
+        </div>
+    );
+};
+
+CharacterizationDetail.propTypes = {
+    doc: PropTypes.object.isRequired, // Document object to render
+    id: PropTypes.string.isRequired, // Unique ID string for the detail panel
+    detailOpen: PropTypes.bool, // True if detail panel is visible
+};
+
+CharacterizationDetail.defaultProps = {
+    detailOpen: false,
+};
+
+
+// Parts of individual document panels
+globals.panelViews.register(Document, 'GeneticModificationCharacterization');
+globals.documentViews.header.register(CharacterizationHeader, 'GeneticModificationCharacterization');
+globals.documentViews.caption.register(CharacterizationCaption, 'GeneticModificationCharacterization');
+globals.documentViews.preview.register(DocumentPreview, 'GeneticModificationCharacterization');
+globals.documentViews.file.register(DocumentFile, 'GeneticModificationCharacterization');
+globals.documentViews.detail.register(CharacterizationDetail, 'GeneticModificationCharacterization');
