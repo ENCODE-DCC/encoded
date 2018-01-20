@@ -87,6 +87,9 @@ class VisCollections(object):
         self.request = request
         self.page_requested = self.request.url.split('/')[-1]
         self.vis_cache = VisCache(self.request)
+        self.host = self.request.host_url
+        if self.host is None or self.host.find("localhost") > -1:
+            self.host = "https://www.encodeproject.org"
 
         if vis_datasets is not None:
             self.add_to_collection(vis_datasets)
@@ -186,7 +189,7 @@ class VisCollections(object):
         for accession in sorted(self.vis_datasets.keys()):
             vis_dataset = self.vis_datasets[accession]
             if vis_dataset is None or len(vis_dataset) == 0:
-                # log.debug("Found empty vis_dataset for %s" % (acc))
+                # log.debug("Found empty vis_dataset for %s" % (accession))
                 self.vis_by_types[accession] = {}  # wounded vis_datasets are retained for evidence
                 continue
 
@@ -319,10 +322,9 @@ class VisCollections(object):
         hub_description["publishing_group"] = "ENCODE"
         hub_description["email"] = "encode-help@lists.stanford.edu"
         hub_description["date"] = time.strftime('%Y-%m-%d', time.gmtime())
-        # hub_description["description"] = "...",      (optional)  # TODO
-        # hub_description["description_url"] = "...",  (optional)  # TODO
+        hub_description["description"] = "ENCODE: Encyclopedia of DNA Elements"  # (optional?)  # something better?
+        hub_description["description_url"] = self.request.host_url # "https://www.encodeproject.org/"
         # }
-        #                                    If single vis_by_type: html (e.g. ANNO.html)
         ihec_json["hub_description"] = hub_description
 
         samples = {}
@@ -353,11 +355,11 @@ class VisCollections(object):
         #                                                 assigned after submitting to EpiRR
         #        },
         #        "analysis_attributes": {
-        #            "analysis_group": "...",              metadata_pairs['laboratory']
-        #            "alignment_software": "...",          pipeline?
-        #            "alignment_software_version": "...",  # TODO
-        #            "analysis_software": "...",           # TODO
-        #            "analysis_software_version": "..."    # TODO
+        #            "analysis_software": "...",           pipeline
+        #            "analysis_software_version": "..."    pipeline version
+        #            "analysis_group": "...",              pipeline laboratory
+        #            "alignment_software": "...",          software ugly lookup. Single for whole experiment!
+        #            "alignment_software_version": "...",  software_version
         #        },
         #        "browser": {
         #            "signal_forward": [               view
@@ -399,15 +401,15 @@ class VisCollections(object):
                     hub_description["taxon_id"] = taxon_id
 
             dataset = {}
-            datasets[acc] = dataset
+            datasets[accession] = dataset
 
             # Find/create sample:
             biosample_name = vis_dataset.get('biosample_term_name', 'none')
             if biosample_name == 'none':
-                log.debug("vis_dataset %s is missing biosample_name", acc)
+                log.debug("vis_dataset %s is missing biosample_name", accession)
             molecule = vis_dataset.get('molecule', 'none')  # ["total RNA", "polyA RNA", ...
             if molecule == 'none':
-                log.debug("vis_dataset %s is missing molecule", acc)
+                log.debug("vis_dataset %s is missing molecule", accession)
             sample_id = "%s; %s" % (biosample_name, molecule)
             if sample_id not in samples:
                 sample = {}
@@ -442,21 +444,20 @@ class VisCollections(object):
 
             # find/create analysis_attributes:
             # WARNING: This could go crazy!
-            pipeline_title = vis_dataset.get('pipeline')
-            if pipeline_title:
-                if pipeline_title in pipelines:
-                    analysis_attributes = deepcopy(pipelines[pipeline_title])  # deepcopy needed?
-                else:
-                    analysis_attributes = {}
-                    analysis_attributes["analysis_software"] = pipeline_title
-                    analysis_attributes["analysis_group"] = vis_dataset.get('pipeline_group','')
-                    # NOTE: version is hard for the whole exp
-                    analysis_attributes["analysis_software_version"] = vis_dataset.get('pipeline_version')
-                    # "alignment_software": "...",        # NOTE: sw *could* be found but not worth it  # TODO
-                    # "alignment_software_version": "...",                                              # TODO
-                    #        },
-                    pipelines[pipeline_title] = analysis_attributes
+            # NOTE: single pipeline version AND single aligner only allowed for the whole exp!
+            analysis_attributes = {}
+            pipeline = vis_dataset.get('pipeline')
+            if pipeline and 'title' in pipeline:
+                analysis_attributes["analysis_software"] = pipeline['title']
+                analysis_attributes["analysis_group"] = pipeline.get('lab')
+                analysis_attributes["analysis_software_version"] = pipeline.get('version')
+            aligner = vis_dataset.get('aligner')
+            if aligner:
+                analysis_attributes["alignment_software"] = aligner.get('name')
+                analysis_attributes["alignment_software_version"] = aligner.get('version')
+            if analysis_attributes:
                 dataset["analysis_attributes"] = analysis_attributes
+            # TODO: What to do about no pipeline and/or no aligner in vis_dataset???
 
             # create browser, which holds views, which hold tracks:
             browser = {}
@@ -478,10 +479,10 @@ class VisCollections(object):
                     ihec_track = {}
                     # ["bigDataUrl","longLabel","shortLabel","type","color","altColor"]
                     ihec_track["big_data_url"] = self.host + track["bigDataUrl"]  # contains ?proxy=true
-                    ihec_track["description_url"] = '%s/%s/' % (self.host, acc)
-                    if request:
-                        url = '/'.join(request.url.split('/')[0:-1])
-                        url += '/' + acc + '.html'
+                    ihec_track["description_url"] = '%s/%s/' % (self.host, accession)
+                    if 'path' in vis_dataset:
+                        url = self.host + '/'.join(vis_dataset['path'].split('/')[0:-1])
+                        url += '/' + accession + '.html'
                         ihec_track["description_url"] = url
                     md5sum = track.get('md5sum')
                     if md5sum:
@@ -925,6 +926,8 @@ class VisDataset(object):
         if files is None:
             return None
 
+        self.gather_pipeline_details()  # Mostly for IHEC
+
         # No we can go through the files again to build tracks
         tracks = []
         if self.host is None:
@@ -1046,7 +1049,7 @@ class VisDataset(object):
                     else:
                         assert(group_tag == "Don't know this group!")
 
-                self.add_pipeline_details(a_file, track)
+                self.add_pipeline_details(a_file, track)  # pipeline details per track mostly for IHEC
                 track['md5sum'] = a_file['md5sum']
 
                 track["membership"] = membership
@@ -1057,13 +1060,126 @@ class VisDataset(object):
 
         return tracks
 
+    def gather_pipeline_details(self):
+        '''At the dataset level, gathers all pipeline and aligner deets needed for IHEC'''
+        self.aligners = {}
+        self.pipelines = {}
+        ucsc_assembly = self.vis_dataset['ucsc_assembly']
+        software_files = {}  # { sw_key: {file_accession: rep_tech} }
+        pipeline_files = {}  # { pipe_key: {file_accession: rep_tech} }
+        for a_file in self.dataset["files"]:
+            if a_file['status'] not in self.vis_defines.visible_file_statuses():
+                continue
+            if 'assembly' not in a_file or \
+                ASSEMBLY_TO_UCSC_ID.get(a_file['assembly'], a_file['assembly']) != ucsc_assembly:
+                continue
+            step_ver = a_file.get("analysis_step_version")  # this embedding could evaporate
+            file_acc = a_file['accession']
+            if not step_ver:
+                continue  # can't tell anything without step versions!
+            if isinstance(step_ver, str):
+                continue  # TODO: Lookup step_version?
+
+            if 'bam' == a_file['file_format']:
+                # now we should have a relevant file
+                sw_versions = step_ver.get('software_versions')
+                if sw_versions is not None:
+                    if "rep_tech" not in a_file:
+                        rep_tech = self.vis_defines.rep_for_file(a_file)
+                        a_file["rep_tech"] = rep_tech
+                    for swv_key in sw_versions:
+                        if swv_key not in software_files:
+                            software_files[swv_key] = { a_file['@id']: a_file["rep_tech"] }
+                        else:
+                            software_files[swv_key][a_file['@id']] = a_file["rep_tech"]
+            if a_file['file_format'] in VISIBLE_FILE_FORMATS:
+                # Looking for pipeline details
+                a_step = step_ver['analysis_step']
+                if not isinstance(a_step, dict):
+                    continue # TODO: Lookup analysis_step?
+                pipes = a_step.get("pipelines")
+                if not pipes or not isinstance(pipes, list) or len(pipes) == 0:
+                    continue # TODO: Lookup pipeline?
+                for a_pipe in pipes:
+                    pipe_key = a_pipe['@id']
+                    pipe = {}
+                    if pipe_key not in pipeline_files:
+                        pipe['title'] = a_pipe.get('title')
+                        pipe['version'] = '1'
+                        pipe['lab'] = a_pipe.get("lab",'unknown')
+                        if pipe['lab'].startswith('/labs/'):
+                            pipe['lab'] = pipe['lab'][6:-1]
+                        if pipe['title']:
+                            if 'version' in pipe['title'].lower():  # REALLY LESS THAN IDEAL
+                                pipe['version'] = pipe['title'].lower().split('version')[-1]
+                        pipe['files'] = [ a_file['@id'] ]
+                        pipeline_files[pipe_key] = pipe
+                    else:
+                        pipeline_files[pipe_key]['files'].append(a_file['@id'])
+
+        if software_files:
+            aligners = {'files': {}, 'rep_techs': {}}
+            query="type=SoftwareVersion&software.software_type=aligner"  # TODO: 'aligner is weakly associated!
+            params = { 'type': 'SoftwareVersion', 'software.software_type': 'aligner', '@id': software_files.keys() }
+            #for swv in software_files.keys():
+            #    query += "@id=" + swv
+            # make query
+            path = '/search/?%s&frame=embedded' % (urlencode(params, True))
+            results = self.request.embed(path, as_user=True)['@graph']
+            # More than one for some: LRNA (star v. tophat)
+            for sw_version in results:
+                swv_key = sw_version['@id']
+                #sw_files = software_files[swv_key].keys()
+                aligner = { 'name':sw_version['software']['name'], 'version': sw_version['version']}
+                if 'default' not in aligners or aligners['default']['version'] < aligner['version']:
+                    aligners['default'] = aligner  # TODO: version compare fails if multiple aligners exist
+                for file_id in software_files[swv_key].keys():
+                    rep_tech = software_files[swv_key][file_id]
+                    aligners['files'][file_id] = aligner
+                    aligners['rep_techs'][rep_tech] = aligner
+            self.aligners = aligners
+            #aligners = { 'file': {ENCFF000AAA: {name:'STAR': version:'2.5.1a'},..., 'rep_tech': rep1_1: {'STAR': '2.5.1a'},... }
+        if pipeline_files:
+            pipelines =  {}
+            for pipe_key in pipeline_files.keys():
+                pipe = pipeline_files[pipe_key]
+                pipe_files = pipe.pop('files')
+                for file_id in pipe_files:
+                    if file_id not in pipelines or pipe['version'] > pipelines[file_id]['version']:
+                        pipelines[file_id] = pipe
+            #pipelines = {ENCFF000AAA: {title: 'RNA pipeline', version: 2, lab:'ENCODE DCC'},...}
+            self.pipelines = pipelines
+
     def add_pipeline_details(self, a_file, track):
+        '''At the track level, look up previously gathered details for IHEC'''
         # plumbing for ihec
+        if self.aligners:
+            # go through derived_from to find aligner, if not found then hope tech_rep works
+            for file_id in a_file.get('derived_from',[]):
+                if file_id in self.aligners['files']:
+                    track['aligner'] = self.aligners['files'][file_id]
+                    break
+            if 'aligner' not in track:
+                if a_file['rep_tech'] in self.aligners['rep_techs']:
+                    track['aligner'] = self.aligners['rep_techs'][a_file['rep_tech']]
+            if 'default' in self.aligners:
+                self.vis_dataset['aligner'] = self.aligners['default']
+                if 'aligner' not in track:
+                    track['aligner'] = self.aligners['default']
+
+        if self.pipelines:
+            for file_id in self.pipelines.keys():
+                pipe = self.pipelines[file_id]
+                if file_id == a_file['@id']:
+                    track['pipeline'] = pipe
+                if 'pipeline' not in self.vis_dataset or \
+                    pipe['version'] > self.vis_dataset['pipeline']['version']:
+                    self.vis_dataset['pipeline'] = pipe
 
         # Use step_ver to get at pipeline, but different files may be from different steps!
         step_ver = a_file.get("analysis_step_version")  # this embedding could evaporate
         if not step_ver:
-            return # Nothing to be done at this time
+            return  # We tried
         if isinstance(step_ver, str):
             track['step_version'] = step_ver.split('/')[1]
             return
@@ -1072,41 +1188,11 @@ class VisDataset(object):
         track['step_version'] = step_ver.get('name','')
         analysis_step = step_ver.get("analysis_step")
         if not analysis_step:
-            return # Nothing to be done at this time
+            return  # oh well
         if not isinstance(analysis_step, dict):
             track['analysis_step'] = analysis_step.split('/')[1]
-            return
-
-        track['analysis_step'] = analysis_step.get('title','')
-
-        if 'pipeline' in self.vis_dataset:
-            return  # Don't bother looking up the same thing
-
-        # search for pipeline and version
-        pipelines = analysis_step.get("pipelines")
-        if not pipelines or not isinstance(pipelines, list) or len(pipelines) == 0:
-            return
-
-        pipeline_version = None
-        pipeline = None
-        for pipe in pipelines:
-            pipe_title = pipe.get('title')
-            if pipe_title:
-                if 'version' in pipe_title.lower():  # REALLY LESS THAN IDEAL
-                    pipe_ver = pipe_title.lower.split('version')[-1]
-                else:
-                    pipe_ver = '1'
-                if pipeline_version is None or pipe_ver > pipeline_version:
-                    pipeline_version = pipe_ver
-                    pipeline = pipe_ver
-                    pipeline_group = pipe.get("lab",'')
-
-        if pipeline:
-            self.vis_dataset['pipeline'] = pipeline
-            self.vis_dataset['pipeline_group'] = pipeline_group
-            self.vis_dataset['pipeline_version'] = pipeline_version
-
-        # TODO: aligner name and version for ihec
+        else:
+            track['analysis_step'] = analysis_step.get('title','')
         return
 
     def build(self, hide):
@@ -1131,6 +1217,8 @@ class VisDataset(object):
         self.vis_dataset['assembly'] = self.assembly
         self.vis_dataset['ucsc_assembly'] = self.ucsc_assembly
         self.vis_dataset["vis_id"]  = self.vis_id
+        self.vis_dataset["path"] = self.request.path
+
 
         # plumbing for ihec, among other things:
         for term in self.vis_defines.encoded_dataset_terms():
@@ -1227,7 +1315,6 @@ class VisDataset(object):
             return json.dumps(self.as_collection(), indent=4, sort_keys=True)
 
         return self.ucsc_trackDb()
-
 
 
 def vis_cache_add(request, dataset):
@@ -1441,9 +1528,9 @@ def generate_html(context, request):
     html_requested = request.url.split('/')[-1].split('.')[0]
     if html_requested.startswith('ENCSR'):
         embedded = request.embed(request.resource_path(context))
-        acc = embedded['accession']
-        log.debug("generate_html for %s   %.3f secs" % (acc, (time.time() - PROFILE_START_TIME)))
-        assert(html_requested == acc)
+        accession = embedded['accession']
+        log.debug("generate_html for %s   %.3f secs" % (accession, (time.time() - PROFILE_START_TIME)))
+        assert(html_requested == accession)
 
         vis_defines = VisDefines(embedded)
         vis_type = vis_defines.get_vis_type()
@@ -1452,10 +1539,10 @@ def generate_html(context, request):
                                  '{assay_term_name} of {biosample_term_name} - {accession}')
         longLabel = sanitize.label(vis_defines.convert_mask(longLabel))
 
-        link = request.host_url + '/experiments/' + acc + '/'
-        acc_link = '<a href={link}>{accession}<a>'.format(link=link, accession=acc)
-        if longLabel.find(acc) != -1:
-            longLabel = longLabel.replace(acc, acc_link)
+        link = request.host_url + '/experiments/' + accession + '/'
+        acc_link = '<a href={link}>{accession}<a>'.format(link=link, accession=accession)
+        if longLabel.find(accession) != -1:
+            longLabel = longLabel.replace(accession, acc_link)
         else:
             longLabel += " - " + acc_link
         page = '<h2>%s</h2>' % longLabel

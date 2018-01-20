@@ -457,7 +457,6 @@ class VisDefines(object):
         if not self.vis_defs:
             self.load_vis_defs()
 
-
     def load_vis_defs(self):
         '''Loads 'vis_defs' (visualization definitions by assay type) from a static files.'''
         #global VIS_DEFS_FOLDER
@@ -477,7 +476,6 @@ class VisDefines(object):
         self.vis_defs = VIS_DEFS_BY_TYPE
         VIS_DEFS_DEFAULT = self.vis_defs.get("opaque",{})
         self.vis_def_default = VIS_DEFS_DEFAULT
-
 
     def get_vis_type(self):
         '''returns the best visualization definition type, based upon dataset.'''
