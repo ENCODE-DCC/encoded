@@ -1,5 +1,5 @@
 {
-    "title": "Histione modification ChIP-seq quality metric",
+    "title": "Histone modification ChIP-seq quality metric",
     "description": "Schema for reporting histone modification ChIP-seq quality metrics",
     "id": "/profiles/histone_chipseq_quality_metric.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -27,7 +27,7 @@
             "description": "# of starting reads in the pool (if replicated) or experiment (if unreplicated)"
         },
         "nreads_in_peaks": {
-            "title": "# of reaads in peaks",
+            "title": "# of reads in peaks",
             "type": "integer",
             "description": "# of reads that fall within peaks." 
         },
@@ -49,7 +49,7 @@
         "F1": {
             "title": "FRiP score from rep1 self-pseudoreplicate peaks",
             "type": "number",
-            "description": "Fraction reads in replicated/stable narrowPeaks (FRiP) from replicate 1 self-pseudoreplicates or the number of stable peaks that pass internal psuedoreplication,  when self-pseudoreplication is done on unreplicated experiments."
+            "description": "Fraction reads in replicated/stable narrowPeaks (FRiP) from replicate 1 self-pseudoreplicates or the number of stable peaks that pass internal pseudoreplication,  when self-pseudoreplication is done on unreplicated experiments."
         },
         "F2": {
             "title": "FRiP score from rep2 self-pseudoreplicate peaks",
