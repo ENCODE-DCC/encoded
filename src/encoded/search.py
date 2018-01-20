@@ -386,7 +386,7 @@ def build_aggregation(facet_name, facet_options, min_doc_count=0):
             'terms': {
                 'field': field,
                 'min_doc_count': min_doc_count,
-                'size': 100,
+                'size': 200,
             },
         }
         if exclude:
