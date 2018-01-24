@@ -365,6 +365,10 @@ const DocumentsRenderer = (props) => {
         // got from the GET request for documents.
         characterizations.forEach((characterization) => {
             if (characterization.documents && characterization.documents.length) {
+                // We cloned the characterizations array, but each still refers to the original
+                // characterizations.docuemnts array that we have to mutate. So clone that array
+                // and overwrite the one in the cloned characterization object. Now
+                // props.characterizations is completely protected against mutation.
                 const charDocs = Object.assign([], characterization.documents);
                 characterization.documents = [];
 
