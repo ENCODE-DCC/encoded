@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
-import { collapseIcon } from '../libs/svg-icons';
 import Table from './collection';
 import { FetchedData, Param } from './fetched';
 import { JSONSchemaForm } from './form';
