@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import url from 'url';
 import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
 import { AttachmentPanel, Document, DocumentPreview, DocumentFile, DocumentsPanel } from './doc';
@@ -341,7 +342,39 @@ Attribution.propTypes = {
 
 
 const DocumentsRenderer = (props) => {
+    // Get the document objects and convert to an object keyed by their @id for easy searching in
+    // the next step.
     const modDocs = props.modDocs ? props.modDocs['@graph'] : [];
+    const modDocsKeyed = {};
+    modDocs.forEach((doc) => {
+        modDocsKeyed[doc['@id']] = doc;
+    });
+
+    // Now go through the GM characterizations and replace any document @ids with the actual
+    // document objects.
+    if (props.characterizations && props.characterizations.length) {
+        props.characterizations.forEach((characterization) => {
+            if (characterization.documents && characterization.documents.length) {
+                // For each document in the current GM characterization, find it's full object in
+                // `modDocs` and copy that full object into the characterization document,
+                // replacing the document's @id. Then delete the corresponding document in
+                // `modDocs`.
+                for (let i = 0; i < characterization.documents.length; i += 1) {
+                    const charDocAtId = characterization.documents[i];
+                    characterization.documents[i] = modDocsKeyed[charDocAtId];
+
+                    // Now delete the document from modDocs so it won't display on its own in the
+                    // Documents panel.
+                    const doomedDocIndex = modDocs.findIndex(doc => doc['@id'] === charDocAtId);
+                    if (doomedDocIndex !== -1) {
+                        // Should be guaranteed to find a matching document, but protect against
+                        // not finding it just in case.
+                        delete modDocs[doomedDocIndex];
+                    }
+                }
+            }
+        });
+    }
 
     return (
         <DocumentsPanel
@@ -609,6 +642,35 @@ CharacterizationCaption.propTypes = {
 };
 
 
+const CharacterizationDocuments = (props) => {
+    const docs = props.docs;
+    return (
+        <dd>
+            {docs.map((doc, i) => {
+                if (doc.attachment) {
+                    const attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
+                    const docName = (doc.aliases && doc.aliases.length) ? doc.aliases[0] :
+                        ((doc.attachment && doc.attachment.download) ? doc.attachment.download : '');
+                    return (
+                        <div className="multi-dd dl-link" key={doc['@id']}>
+                            <i className="icon icon-download" />&nbsp;
+                            <a data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
+                                {docName}
+                            </a>
+                        </div>
+                    );
+                }
+                return <div className="multi-dd dl-link" key={doc['@id']} />;
+            })}
+        </dd>
+    );
+};
+
+CharacterizationDocuments.propTypes = {
+    docs: PropTypes.array.isRequired,
+};
+
+
 // Document detail component -- default
 const CharacterizationDetail = (props) => {
     const doc = props.doc;
@@ -648,6 +710,13 @@ const CharacterizationDetail = (props) => {
                     <div data-test="submittercomment">
                         <dt>Submitter comment</dt>
                         <dd>{doc.submitter_comment}</dd>
+                    </div>
+                : null}
+
+                {doc.documents && doc.documents.length ?
+                    <div data-test="documents">
+                        <dt>Documents</dt>
+                        <CharacterizationDocuments docs={doc.documents} />
                     </div>
                 : null}
             </dl>
