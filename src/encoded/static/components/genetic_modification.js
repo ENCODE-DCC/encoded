@@ -342,44 +342,50 @@ Attribution.propTypes = {
 
 
 const DocumentsRenderer = (props) => {
+    let characterizations;
+
     // Get the document objects and convert to an object keyed by their @id for easy searching in
     // the next step.
-    const modDocs = props.modDocs ? props.modDocs['@graph'] : [];
-    const modDocsKeyed = {};
-    modDocs.forEach((doc) => {
-        modDocsKeyed[doc['@id']] = doc;
+    const modCharDocs = props.modCharDocs ? props.modCharDocs['@graph'] : [];
+    const modCharDocsKeyed = {};
+    modCharDocs.forEach((doc) => {
+        modCharDocsKeyed[doc['@id']] = doc;
     });
 
     // Now go through the GM characterizations and replace any document @ids with the actual
     // document objects.
     if (props.characterizations && props.characterizations.length) {
-        props.characterizations.forEach((characterization) => {
+        // Clone the characterizations array so we don't mutate the original characterization objects
+        // which causes problems if other props change which could happen if the user logs in while
+        // viewing this page. Will avoid mutating characterizations.documents (which still refers
+        // to props.characterizations.documents) in the loop following.
+        characterizations = props.characterizations.map(characterization => Object.assign({}, characterization));
+
+        // Now replace the characterization document array @ids with the actual document objects we
+        // got from the GET request for documents.
+        characterizations.forEach((characterization) => {
             if (characterization.documents && characterization.documents.length) {
-                // For each document in the current GM characterization, find it's full object in
+                const charDocs = Object.assign([], characterization.documents);
+                characterization.documents = [];
+
+                // For each document in the current GM characterization, find its full object in
                 // `modDocs` and copy that full object into the characterization document,
                 // replacing the document's @id. Then delete the corresponding document in
                 // `modDocs`.
-                for (let i = 0; i < characterization.documents.length; i += 1) {
-                    const charDocAtId = characterization.documents[i];
-                    characterization.documents[i] = modDocsKeyed[charDocAtId];
-
-                    // Now delete the document from modDocs so it won't display on its own in the
-                    // Documents panel.
-                    const doomedDocIndex = modDocs.findIndex(doc => doc['@id'] === charDocAtId);
-                    if (doomedDocIndex !== -1) {
-                        // Should be guaranteed to find a matching document, but protect against
-                        // not finding it just in case.
-                        delete modDocs[doomedDocIndex];
-                    }
+                for (let i = 0; i < charDocs.length; i += 1) {
+                    characterization.documents[i] = modCharDocsKeyed[charDocs[i]];
                 }
             }
         });
     }
 
+    // Now filter out any characterization documents out of modDocs.
+    const modDocs = modCharDocs.filter(doc => props.charDocs.indexOf(doc['@id']) === -1);
+
     return (
         <DocumentsPanel
             documentSpecs={[
-                { label: 'Characterizations', documents: props.characterizations },
+                { label: 'Characterizations', documents: characterizations },
                 { label: 'Modification', documents: modDocs },
             ]}
         />
@@ -387,12 +393,13 @@ const DocumentsRenderer = (props) => {
 };
 
 DocumentsRenderer.propTypes = {
-    characterizations: PropTypes.array, // GM characterizations
-    modDocs: PropTypes.object, // GM document search results
+    modCharDocs: PropTypes.object, // GM document search results containing GM docs and GM characterization docs
+    characterizations: PropTypes.array.isRequired, // GM characterizations
+    charDocs: PropTypes.array.isRequired, // Array of @ids of docs belonging to all GM characterizations
 };
 
 DocumentsRenderer.defaultProps = {
-    modDocs: null,
+    modCharDocs: null,
 };
 
 
@@ -424,7 +431,7 @@ export const GeneticModificationComponent = (props, reactContext) => {
     modDocs = _.uniq(modDocs.concat(charDocs));
 
     // Convert the array of document @ids into a query string that we can do a GET request on.
-    const modDocsQuery = modDocs.length ? modDocs.reduce((acc, document) => `${acc}&@id=${document}`, '') : null;
+    const modDocsQuery = modDocs.length ? modDocs.reduce((acc, document) => `${acc}&${globals.encodedURIComponent(`@id=${document}`)}`, '') : null;
 
     return (
         <div className={globals.itemClass(context, 'view-item')}>
@@ -495,8 +502,8 @@ export const GeneticModificationComponent = (props, reactContext) => {
 
             {modDocsQuery || (context.characterizations && context.characterizations.length) ?
                 <FetchedData>
-                    {modDocsQuery ? <Param name="modDocs" url={`/search/?type=Document${modDocsQuery}`} /> : null}
-                    <DocumentsRenderer characterizations={context.characterizations} />
+                    {modDocsQuery ? <Param name="modCharDocs" url={`/search/?type=Document${modDocsQuery}`} /> : null}
+                    <DocumentsRenderer characterizations={context.characterizations} charDocs={charDocs} />
                 </FetchedData>
             : null}
 
@@ -643,11 +650,11 @@ CharacterizationCaption.propTypes = {
 
 
 const CharacterizationDocuments = (props) => {
-    const docs = props.docs;
+    const docs = props.docs.filter(doc => !!doc);
     return (
         <dd>
             {docs.map((doc, i) => {
-                if (doc.attachment) {
+                if (doc && doc.attachment) {
                     const attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
                     const docName = (doc.aliases && doc.aliases.length) ? doc.aliases[0] :
                         ((doc.attachment && doc.attachment.download) ? doc.attachment.download : '');
