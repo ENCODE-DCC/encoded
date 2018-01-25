@@ -155,6 +155,8 @@ write_files:
 
     discovery.ec2.groups: elasticsearch-https, ssh-http-https
 
+    indices.query.bool.max_clause_count: 99999
+
 - path: /etc/elasticsearch/cluster.sh
   content: |
     #!/bin/bash
