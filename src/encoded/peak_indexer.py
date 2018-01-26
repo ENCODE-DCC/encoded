@@ -13,7 +13,7 @@ from snovault import DBSESSION, COLLECTIONS
 from snovault.storage import (
     TransactionRecord,
 )
-from snovault.elasticsearch.indexer import all_uuids
+from snovault.elasticsearch.indexer import ( all_uuids, MAX_CLAUSES_FOR_ES )
 from snovault.elasticsearch.interfaces import (
     ELASTIC_SEARCH,
     SNP_SEARCH_ES,
@@ -259,42 +259,45 @@ def index_file(request):
         if txn_count == 0:
             return result
 
-        es.indices.refresh(index='_all')
-        res = es.search(index='_all', size=SEARCH_MAX, request_timeout=60, body={
-            'query': {
-                'bool': {
-                    'should': [
-                        {
-                            'terms': {
-                                'embedded_uuids': updated,
-                                '_cache': False,
-                            },
-                        },
-                        {
-                            'terms': {
-                                'linked_uuids': renamed,
-                                '_cache': False,
-                            },
-                        },
-                    ],
-                }
-            },
-            '_source': False,       
-        })
-        if res['hits']['total'] > SEARCH_MAX:
+        if len(updated) + len(renamed) > MAX_CLAUSES_FOR_ES:
             invalidated = list(all_uuids(request.registry))
         else:
-            referencing = {hit['_id'] for hit in res['hits']['hits']}
-            invalidated = referencing | updated
-            result.update(
-                max_xid=max_xid,
-                renamed=renamed,
-                updated=updated,
-                referencing=len(referencing),
-                invalidated=len(invalidated),
-                txn_count=txn_count,
-                first_txn_timestamp=first_txn.isoformat(),
-            )
+            es.indices.refresh(index='_all')
+            res = es.search(index='_all', size=SEARCH_MAX, request_timeout=60, body={
+                'query': {
+                    'bool': {
+                        'should': [
+                            {
+                                'terms': {
+                                    'embedded_uuids': updated,
+                                    '_cache': False,
+                                },
+                            },
+                            {
+                                'terms': {
+                                    'linked_uuids': renamed,
+                                    '_cache': False,
+                                },
+                            },
+                        ],
+                    }
+                },
+                '_source': False,
+            })
+            if res['hits']['total'] > SEARCH_MAX:
+                invalidated = list(all_uuids(request.registry))
+            else:
+                referencing = {hit['_id'] for hit in res['hits']['hits']}
+                invalidated = referencing | updated
+                result.update(
+                    max_xid=max_xid,
+                    renamed=renamed,
+                    updated=updated,
+                    referencing=len(referencing),
+                    invalidated=len(invalidated),
+                    txn_count=txn_count,
+                    first_txn_timestamp=first_txn.isoformat(),
+                )
 
     if not dry_run:
         err = None
