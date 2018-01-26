@@ -1787,6 +1787,8 @@ def audit_experiment_status(value, system, files_structure):
     replicates_set = set()
     submitted_replicates = set()
     replicates_reads = {}
+    bio_rep_reads = {}
+    replicates_bio_index = {}
     replicates = value.get('replicates')
     if replicates:
         for replicate in replicates:
@@ -1794,6 +1796,8 @@ def audit_experiment_status(value, system, files_structure):
                 replicate_id = replicate.get('@id')
                 replicates_set.add(replicate_id)
                 replicates_reads[replicate_id] = 0
+                replicates_bio_index[replicate_id] = replicate.get('biological_replicate_number')
+                bio_rep_reads[replicates_bio_index[replicate_id]] = 0
 
         for file in files_structure.get('fastq_files').values():
             if file.get('status') not in ['uploading',
@@ -1807,24 +1811,34 @@ def audit_experiment_status(value, system, files_structure):
                     submitted_replicates.add(replicate_id)
                     if replicate_id in replicates_reads:
                         replicates_reads[replicate_id] += read_count
+                        bio_rep_reads[replicates_bio_index[replicate_id]] += read_count
+
 
         if replicates_set and not replicates_set - submitted_replicates:
+            part_of_detail = 'replicate'
             if award_rfa == 'modENCODE':
                 key = 'modENCODE-chip'
             else:
                 key = assay_term_name
+                if assay_term_name in [
+                        'DNase-seq',
+                        'genetic modification followed by DNase-seq',
+                        'ChIP-seq']:
+                    replicates_reads = bio_rep_reads
+                    part_of_detail = 'biological replicate'
 
             for rep in replicates_reads:
                 if replicates_reads[rep] < minimal_read_depth_requirements[key]:
-                    detail = 'The cumulative number of reads {} in ' \
-                             'replicate {} of experiment {} is lower then ' \
-                             'the minimal expected read depth {} ' \
-                             'for this type of assay.'.format(
-                                 replicates_reads[rep],
-                                 rep,
-                                 value['@id'],
-                                 minimal_read_depth_requirements[key]
-                             )
+                    detail = ('The cumulative number of reads in ' \
+                              '{} {} of experiment {} is {}. That is lower then ' \
+                              'the minimal expected read depth of {} ' \
+                              'for this type of assay.').format(
+                                  part_of_detail,
+                                  rep,
+                                  value['@id'],
+                                  replicates_reads[rep],
+                                  minimal_read_depth_requirements[key]
+                              )
                     yield AuditFailure('low read count',
                                        detail, level='WARNING')
 
