@@ -260,7 +260,7 @@ def index_file(request):
             return result
 
         es.indices.refresh(index='_all')
-        res = es.search(index='_all', size=SEARCH_MAX, body={
+        res = es.search(index='_all', size=SEARCH_MAX, request_timeout=60, body={
             'query': {
                 'bool': {
                     'should': [
@@ -279,8 +279,7 @@ def index_file(request):
                     ],
                 }
             },
-            '_source': False,
-            
+            '_source': False,       
         })
         if res['hits']['total'] > SEARCH_MAX:
             invalidated = list(all_uuids(request.registry))
