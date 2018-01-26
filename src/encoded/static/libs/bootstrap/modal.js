@@ -252,7 +252,7 @@ ModalFooter.propTypes = {
         PropTypes.func, // Function to call when default-rendered Submit button clicked
     ]),
     submitTitle: PropTypes.string, // Title for default submit button
-    addCss: PropTypes.string, // CSS classes to add to modal header
+    addCss: PropTypes.string, // CSS classes to add to modal footer
     closeModal: PropTypes.oneOfType([
         PropTypes.bool, // Use default-rendered Cancel button that closes the modal
         PropTypes.object, // Cancel button is a React component; just render it
