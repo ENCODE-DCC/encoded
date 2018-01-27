@@ -176,22 +176,6 @@
                 }
             }
         },
-        "PMI": {
-            "comment": "The PMI property is restricted to biosamples with biosample_type = tissue.",
-            "properties": {
-                "biosample_type": {
-                    "enum": ["tissue"]
-                }
-            }
-        },
-        "PMI_units": {
-            "comment": "The PMI_units property is restricted to biosamples with biosample_type = tissue.",
-            "properties": {
-                "biosample_type": {
-                    "enum": ["tissue"]
-                }
-            }
-        },
         "starting_amount":{
             "required": ["starting_amount_units"],
             "comment": "Biosamples with a specified starting_amount require starting_amount_units to also be specified."
@@ -202,11 +186,23 @@
         },
         "PMI":{
             "required": ["PMI_units"],
-            "comment": "Tissue biosamples with a specified PMI require PMI_units to also be specified."
+            "comment": "Tissue biosamples with a specified PMI require PMI_units to also be specified.",
+            "properties": {
+                "biosample_type": {
+                    "comment": "The PMI property is restricted to biosamples with biosample_type = tissue.",
+                    "enum": ["tissue"]
+                }
+            }
         },
         "PMI_units": {
             "required":["PMI"],
-            "comment": "Tissue biosamples with a specified PMI_units require PMI to also be specified."
+            "comment": "Tissue biosamples with a specified PMI_units require PMI to also be specified.",
+            "properties": {
+                "biosample_type": {
+                    "comment": "The PMI_units property is restricted to biosamples with biosample_type = tissue.",
+                    "enum": ["tissue"]
+                }
+            }
         },
         "model_organism_age_units": {
             "required":["model_organism_age"],
