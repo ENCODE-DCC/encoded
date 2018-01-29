@@ -1,5 +1,9 @@
 ## Changelog for file.json
 
+### Minor changes since schema version 12
+
+* New enumerations were added in output_types: "differential expression quantifications" and "differential splicing quantifications"; both enumerations are categorized as "quantification"
+
 ### Schema version 12
 
 * *run_type* and *mapped_run_type* were limited to only "single-ended" and "paired-ended" types
