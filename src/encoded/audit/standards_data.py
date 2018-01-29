@@ -44,7 +44,7 @@ pipelines_with_read_depth = {
         },
         'broad': {
             'recommended': 45000000,
-            'minimal': 35000000,
+            'minimal': 40000000,
             'low': 5000000
         },
         'TF': {
