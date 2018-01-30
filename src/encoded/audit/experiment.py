@@ -188,7 +188,7 @@ def check_control_read_depth_standards(value,
             if read_depth >= marks['TF']['minimal'] and read_depth < marks['TF']['recommended']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth >= marks['TF']['low'] and read_depth < marks['TF']['minimal']:
-                yield AuditFailure('control low read depth', detail, level='NOT_COMPLIANT')
+                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
             elif read_depth < marks['TF']['low']:
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
     return
