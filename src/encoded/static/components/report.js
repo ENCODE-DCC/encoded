@@ -400,9 +400,10 @@ class ColumnSelector extends React.Component {
             // Toggle the `visible` state corresponding to the column whose checkbox was toggled.
             // Then set that as the new React state which causes a redraw of the modal with all the
             // checkboxes in the correct state.
-            const oldColumns = Object.assign({}, prevState.columns);
-            oldColumns[columnPath].visible = !oldColumns[columnPath].visible;
-            return { columns: oldColumns };
+            const columns = Object.assign({}, prevState.columns);
+            columns[columnPath] = Object.assign({}, columns[columnPath]);
+            columns[columnPath].visible = !columns[columnPath].visible;
+            return { columns };
         });
     }
 
@@ -416,11 +417,12 @@ class ColumnSelector extends React.Component {
         // Called when the "Select all" button is clicked.
         this.setState((prevState) => {
             // For every column in this.state.columns, set its `visible` property to true.
-            const oldColumns = Object.assign({}, prevState.columns);
-            Object.keys(oldColumns).forEach((columnPath) => {
-                oldColumns[columnPath].visible = true;
+            const columns = Object.assign({}, prevState.columns);
+            Object.keys(columns).forEach((columnPath) => {
+                columns[columnPath] = Object.assign({}, columns[columnPath]);
+                columns[columnPath].visible = true;
             });
-            return { columns: oldColumns };
+            return { columns };
         });
     }
 
@@ -428,15 +430,16 @@ class ColumnSelector extends React.Component {
         // Called when the "Select (first) only" button is clicked.
         this.setState((prevState) => {
             // Set all columns to invisible first.
-            const oldColumns = Object.assign({}, prevState.columns);
-            const columnPaths = Object.keys(oldColumns);
+            const columns = Object.assign({}, prevState.columns);
+            const columnPaths = Object.keys(columns);
             columnPaths.forEach((columnPath) => {
-                oldColumns[columnPath].visible = false;
+                columns[columnPath] = Object.assign({}, columns[columnPath]);
+                columns[columnPath].visible = false;
             });
 
             // Now set the column for the first key to true so that only it's selected.
-            oldColumns[columnPaths[0]].visible = true;
-            return { columns: oldColumns };
+            columns[columnPaths[0]].visible = true;
+            return { columns };
         });
     }
 
@@ -575,7 +578,7 @@ class Report extends React.Component {
         // `newColumns` has the user's chosen columns from the modal, while `columns` has the
         // columns selected by the query string.
         const parsedUrl = url.parse(this.context.location_href, true);
-        parsedUrl.query.field = Object.keys(newColumns).filter(columnPath => newColumns[columnPath].visible);;
+        parsedUrl.query.field = Object.keys(newColumns).filter(columnPath => newColumns[columnPath].visible);
         delete parsedUrl.search;
         this.context.navigate(url.format(parsedUrl));
     }
