@@ -1810,6 +1810,9 @@ def audit_experiment_status(value, system, files_structure):
                     replicate_id = file_replicate.get('@id')
                     submitted_replicates.add(replicate_id)
                     if replicate_id in replicates_reads:
+                        run_type = file.get('run_type')
+                        if run_type and run_type == 'paired-ended':
+                            read_count == read_count/2
                         replicates_reads[replicate_id] += read_count
                         bio_rep_reads[replicates_bio_index[replicate_id]] += read_count
 
