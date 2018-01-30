@@ -328,12 +328,12 @@ const DocumentsRenderer = (props) => {
     });
 
     // Now go through the GM characterizations and replace any document @ids with the actual
-    // document objects.
+    // document objects. This allows us to pass the characterizations array to `DocumentsPanel`
+    // in a way it expects, with embedded documents that GM objects do not have.
     if (props.characterizations && props.characterizations.length) {
         // Clone the characterizations array so we don't mutate the original characterization objects
         // which causes problems if other props change which could happen if the user logs in while
-        // viewing this page. Will avoid mutating characterizations.documents (which still refers
-        // to props.characterizations.documents) in the loop following.
+        // viewing this page.
         characterizations = props.characterizations.map(characterization => Object.assign({}, characterization));
 
         // Now replace the characterization document array @ids with the actual document objects we
@@ -341,10 +341,10 @@ const DocumentsRenderer = (props) => {
         characterizations.forEach((characterization) => {
             if (characterization.documents && characterization.documents.length) {
                 // We cloned the characterizations array, but each still refers to the original
-                // characterizations.documents array that we have to mutate. So clone that array
-                // and overwrite the one in the cloned characterization object. Now
-                // props.characterizations is completely protected against mutation.
-                const charDocs = Object.assign([], characterization.documents);
+                // characterizations.documents @id array that we're overwriting. Copy its reference
+                // and then overwrite `characterization.documents` to prepare it to receive actual
+                // document objects.
+                const charDocs = characterization.documents;
                 characterization.documents = [];
 
                 // For each document in the current GM characterization, find its full object in
