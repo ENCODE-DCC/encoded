@@ -210,4 +210,3 @@ write_files:
     # generate a heap dump when an allocation from the Java heap fails
     # heap dumps are created in the working directory of the JVM
     -XX:+HeapDumpOnOutOfMemoryError
-  
