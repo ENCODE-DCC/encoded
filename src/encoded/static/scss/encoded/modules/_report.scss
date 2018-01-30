@@ -1,15 +1,24 @@
 // CSS class for the contents of the column-selector modal.
 .column-selector {
     // Container for all the selector checkboxes.
-    @at-root #{&}__selectors {
-        display: flex;
-        flex-wrap: wrap;
+    @media screen and (min-width: $screen-sm-min) {
+        @at-root #{&}__selectors {
+            display: flex;
+            flex-wrap: wrap;
+        }
     }
 
     // Each selector checkbox/label combo.
     @at-root #{&}__selector-item {
-        flex: 0 1 33.33%;
-        width: 33.33%;
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 1 50%;
+            width: 50%;
+        }
+
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 33.33%;
+            width: 33.33%;
+        }
     }
 
     @at-root #{&}__controls {

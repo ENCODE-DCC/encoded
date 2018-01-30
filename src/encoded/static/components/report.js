@@ -332,6 +332,27 @@ ColumnSelectorControls.propTypes = {
 };
 
 
+/**
+ * Extract the list of column paths from `columns`, with an order according to the given sorting
+ * option.
+ *
+ * @param {object} columns - Object with column states controlled by <Report> component.
+ * @param {string} sortOption - Current sort option; 'default' or 'alpha' currently.
+ * @return (array) - List of column paths, optionally sorted.
+ */
+function getColumnPaths(columns, sortOption) {
+    const columnPaths = Object.keys(columns);
+    if (sortOption === 'alpha') {
+        columnPaths.sort((aKey, bKey) => {
+            const aTitle = columns[aKey].title.toLowerCase();
+            const bTitle = columns[bKey].title.toLowerCase();
+            return (aTitle < bTitle ? -1 : (bTitle < aTitle ? 1 : 0));
+        });
+    }
+    return columnPaths;
+}
+
+
 // Displays a modal dialog with every possible column for the type of object being displayed.
 // This lets you choose which columns you want to appear in the report.
 class ColumnSelector extends React.Component {
@@ -379,8 +400,9 @@ class ColumnSelector extends React.Component {
             // Toggle the `visible` state corresponding to the column whose checkbox was toggled.
             // Then set that as the new React state which causes a redraw of the modal with all the
             // checkboxes in the correct state.
-            prevState.columns[columnPath].visible = !prevState.columns[columnPath].visible;
-            return { columns: prevState.columns };
+            const oldColumns = Object.assign({}, prevState.columns);
+            oldColumns[columnPath].visible = !oldColumns[columnPath].visible;
+            return { columns: oldColumns };
         });
     }
 
@@ -394,10 +416,11 @@ class ColumnSelector extends React.Component {
         // Called when the "Select all" button is clicked.
         this.setState((prevState) => {
             // For every column in this.state.columns, set its `visible` property to true.
-            Object.keys(prevState.columns).forEach((columnPath) => {
-                prevState.columns[columnPath].visible = true;
+            const oldColumns = Object.assign({}, prevState.columns);
+            Object.keys(oldColumns).forEach((columnPath) => {
+                oldColumns[columnPath].visible = true;
             });
-            return { columns: prevState.columns };
+            return { columns: oldColumns };
         });
     }
 
@@ -405,14 +428,15 @@ class ColumnSelector extends React.Component {
         // Called when the "Select (first) only" button is clicked.
         this.setState((prevState) => {
             // Set all columns to invisible first.
-            const columnPaths = Object.keys(prevState.columns);
+            const oldColumns = Object.assign({}, prevState.columns);
+            const columnPaths = Object.keys(oldColumns);
             columnPaths.forEach((columnPath) => {
-                prevState.columns[columnPath].visible = false;
+                oldColumns[columnPath].visible = false;
             });
 
             // Now set the column for the first key to true so that only it's selected.
-            prevState.columns[columnPaths[0]].visible = true;
-            return { columns: prevState.columns };
+            oldColumns[columnPaths[0]].visible = true;
+            return { columns: oldColumns };
         });
     }
 
@@ -427,14 +451,7 @@ class ColumnSelector extends React.Component {
 
         // Get the column paths, sorting them by the corresponding column title if the user asked
         // for that.
-        let columnPaths = Object.keys(columns);
-        if (this.state.sortOption === 'alpha') {
-            columnPaths = columnPaths.sort((aKey, bKey) => {
-                const aTitle = columns[aKey].title.toLowerCase();
-                const bTitle = columns[bKey].title.toLowerCase();
-                return (aTitle < bTitle ? -1 : (bTitle < aTitle ? 1 : 0));
-            });
-        }
+        const columnPaths = getColumnPaths(columns, this.state.sortOption);
 
         return (
             <Modal addClasses="column-selector">
@@ -456,7 +473,7 @@ class ColumnSelector extends React.Component {
                 <ModalFooter
                     closeModal={this.props.closeSelector}
                     submitBtn={this.submitHandler}
-                    submitTitle="Select"
+                    submitTitle="View selected columns"
                 />
             </Modal>
         );
@@ -555,12 +572,10 @@ class Report extends React.Component {
     setColumnState(newColumns) {
         // Gets called when the user clicks the Select button in the ColumnSelector modal.
         // `newColumns` has the same format as `columns` returned from `columnChoices`, but
-        // `newColumn s`has the user's chosen columns from the modal, while `columns` has the
+        // `newColumns` has the user's chosen columns from the modal, while `columns` has the
         // columns selected by the query string.
         const parsedUrl = url.parse(this.context.location_href, true);
-
-        const fields = Object.keys(newColumns).filter(columnPath => newColumns[columnPath].visible);
-        parsedUrl.query.field = fields;
+        parsedUrl.query.field = Object.keys(newColumns).filter(columnPath => newColumns[columnPath].visible);;
         delete parsedUrl.search;
         this.context.navigate(url.format(parsedUrl));
     }

@@ -207,7 +207,7 @@ export class ModalFooter extends React.Component {
         // given function. Note: if you pass `null` in the submitBtn property, this component
         // thinks that's a function because of an old Javascript characteristic.
         if (submitBtn) {
-            submitBtnComponent = (typeof submitBtn === 'object') ? submitBtn : <button className="btn btn-info" onClick={this.submitModal}>{submitTitle || 'Submit'}</button>;
+            submitBtnComponent = (typeof submitBtn === 'object') ? submitBtn : <button className="btn btn-info" onClick={this.submitModal}>{submitTitle}</button>;
         }
 
         // If the given closeModal property is a component, make sure it calls the close function
@@ -265,7 +265,7 @@ ModalFooter.propTypes = {
 
 ModalFooter.defaultProps = {
     submitBtn: null,
-    submitTitle: '',
+    submitTitle: 'Submit',
     addCss: '',
     closeModal: undefined,
     dontClose: false,
