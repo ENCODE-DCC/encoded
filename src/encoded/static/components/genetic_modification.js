@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
-import { Panel, PanelHeading, PanelBody } from '../libs/bootstrap/panel';
+import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
-import { AttachmentPanel, Document, DocumentPreview, DocumentFile, DocumentsPanel } from './doc';
+import { Document, DocumentPreview, DocumentFile, DocumentsPanel } from './doc';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
 import { ProjectBadge } from './image';
@@ -15,31 +15,6 @@ import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import StatusLabel from './statuslabel';
 import { BiosampleTable, DonorTable } from './typeutils';
-
-
-// Display a panel of characterizations associated with a genetic modification object.
-const GeneticModificationCharacterizations = (props) => {
-    const { characterizations } = props;
-
-    return (
-        <Panel>
-            <PanelHeading>
-                <h4>Characterization attachments</h4>
-            </PanelHeading>
-            <PanelBody addClasses="attachment-panel-outer">
-                <section className="flexrow attachment-panel-inner">
-                    {characterizations.map(characterization =>
-                        <AttachmentPanel key={characterization.uuid} context={characterization} attachment={characterization.attachment} title={characterization.characterization_method} />,
-                    )}
-                </section>
-            </PanelBody>
-        </Panel>
-    );
-};
-
-GeneticModificationCharacterizations.propTypes = {
-    characterizations: PropTypes.array.isRequired, // Genetic modificiation characterizations to display
-};
 
 
 // Generate a <dt>/<dd> combination to render GeneticModification.epitope_tags into a <dl>. If no
@@ -342,7 +317,7 @@ Attribution.propTypes = {
 
 
 const DocumentsRenderer = (props) => {
-    let characterizations;
+    let characterizations = [];
 
     // Get the document objects and convert to an object keyed by their @id for easy searching in
     // the next step.
@@ -366,7 +341,7 @@ const DocumentsRenderer = (props) => {
         characterizations.forEach((characterization) => {
             if (characterization.documents && characterization.documents.length) {
                 // We cloned the characterizations array, but each still refers to the original
-                // characterizations.docuemnts array that we have to mutate. So clone that array
+                // characterizations.documents array that we have to mutate. So clone that array
                 // and overwrite the one in the cloned characterization object. Now
                 // props.characterizations is completely protected against mutation.
                 const charDocs = Object.assign([], characterization.documents);
@@ -410,7 +385,7 @@ DocumentsRenderer.defaultProps = {
 // Render the entire GeneticModification page. This is called by the back end as a result of an
 // attempt to render an object with an @type of GeneticModification.
 export const GeneticModificationComponent = (props, reactContext) => {
-    const context = props.context;
+    const { context } = props;
     const itemClass = globals.itemClass(context, 'view-detail key-value');
 
     // Configure breadcrumbs for the page.
@@ -610,11 +585,13 @@ GeneticModificationSummary.columns = {
 };
 
 
-// Biosample and donor characterization documents
+// The next few components override parts of the standard documents panel for genetic modification
+// characterizations. GM characterizations are attachments and not actual document objects, so the
+// default document display components have to be overridden with these. See globals.js for a
+// summary of the different document panel components.
 
 const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
 
-// Document header component -- Characterizations
 const CharacterizationHeader = props => (
     <div className="document__header">
         {props.doc.characterization_method}
@@ -622,11 +599,10 @@ const CharacterizationHeader = props => (
 );
 
 CharacterizationHeader.propTypes = {
-    doc: PropTypes.object.isRequired, // Document object to render
+    doc: PropTypes.object.isRequired, // Characterization object to render
 };
 
 
-// Document caption component -- Characterizations
 const CharacterizationCaption = (props) => {
     const doc = props.doc;
     const caption = doc.caption;
@@ -682,7 +658,6 @@ CharacterizationDocuments.propTypes = {
 };
 
 
-// Document detail component -- default
 const CharacterizationDetail = (props) => {
     const doc = props.doc;
     const keyClass = `document__detail${props.detailOpen ? ' active' : ''}`;
@@ -746,7 +721,7 @@ CharacterizationDetail.defaultProps = {
 };
 
 
-// Parts of individual document panels
+// Parts of individual genetic modification characterization panels override default parts.
 globals.panelViews.register(Document, 'GeneticModificationCharacterization');
 globals.documentViews.header.register(CharacterizationHeader, 'GeneticModificationCharacterization');
 globals.documentViews.caption.register(CharacterizationCaption, 'GeneticModificationCharacterization');
