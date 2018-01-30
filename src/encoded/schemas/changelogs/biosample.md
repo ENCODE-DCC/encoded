@@ -5,6 +5,7 @@
 * *PMI* and *PMI_units* were added as new properties, with dependencies enforcing their interdependent use.
 * *PMI* and *PMI_units* are additionally restricted to only be used for tissue biosamples.
 * *culture_harvest_date* and *culture_start_date* no longer can be used for tissues (a mistake introduced recently and now corrected within the dependencies).
+* Sample property *preservation_method* with enums ["cryopreservation", "flash-frozen"] was added.
 
 ### Schema version 19
 

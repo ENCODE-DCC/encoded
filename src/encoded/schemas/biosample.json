@@ -653,6 +653,15 @@
                 "week"
             ]
         },
+        "preservation_method": {
+            "title": "Preservation method",
+            "description": "The method by which the sample was preserved: cryopreservation (slow-freeze) or flash-frozen.",
+            "type": "string",
+            "enum": [
+                "cryopreservation",
+                "flash-frozen"
+            ]
+        },
         "model_organism_sex": {
             "title": "Model organism sex",
             "type": "string",
