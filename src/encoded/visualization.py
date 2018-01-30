@@ -863,8 +863,7 @@ class VisDataset(object):
                 if format_type == 'bedMethyl' or "itemRgb" in view:
                     view["type"] = "bigBed 9 +"  # itemRgb implies at least 9 +
                 elif format_type  == 'narrowPeak':
-                    #view["type"] = "bigNarrowPeak"
-                    view["type"] = "bigBed 6 +"
+                    view["type"] = "bigNarrowPeak"
                 elif format_type == 'broadPeak' or "scoreFilter" in view:
                     view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
             #log.debug("%d files looking for type %s" % (len(dataset["files"]),view["type"]))
@@ -960,8 +959,7 @@ class VisDataset(object):
                 if format_type == 'bedMethyl' or "itemRgb" in view:
                     view["type"] = "bigBed 9 +"  # itemRgb implies at least 9 +
                 elif format_type  == 'narrowPeak':
-                    #view["type"] = "bigNarrowPeak"
-                    view["type"] = "bigBed 6 +"
+                    view["type"] = "bigNarrowPeak"
                 elif format_type == 'broadPeak' or "scoreFilter" in view:
                     view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
                 track["type"] = view["type"]
@@ -1002,10 +1000,11 @@ class VisDataset(object):
                 membership = {}
                 membership["view"] = view["tag"]
                 view["tracks"].append(track)  # <==== This is how we connect them to the views
-                if view['type'] == 'bigNarrowPeak':         # DEBUG DEBUG  Should be done in vis_def
-                    view.pop('scoreFilter',None)            # DEBUG DEBUG
-                    view['signalFilter'] = "0"              # DEBUG DEBUG
-                #    view['signalFilterLimits'] = "0:18241"  # DEBUG DEBUG
+                if view['type'] == 'bigNarrowPeak':
+                    view.pop('scoreFilter',None)  # TODO The vis_defs should be changed
+                    # TODO indivudual vis_defs should have signalFilter, pValueFilter and qValueFilter added as appropriate
+                    #view['signalFilter'] = "0"
+                    #view['signalFilterLimits'] = "0:18241"  # DEBUG DEBUG
 
                 for (group_tag, group) in self.vis_dataset["groups"].items():
                     # "Replicates", "Biosample", "Targets", "Assay", ... member?
@@ -1121,6 +1120,7 @@ class VisDataset(object):
             aligners = {'files': {}, 'rep_techs': {}}
             query="type=SoftwareVersion&software.software_type=aligner"  # TODO: 'aligner is weakly associated!
             params = { 'type': 'SoftwareVersion', 'software.software_type': 'aligner', '@id': software_files.keys() }
+            # TODO: Limit to aligner and not other
             #for swv in software_files.keys():
             #    query += "@id=" + swv
             # make query
