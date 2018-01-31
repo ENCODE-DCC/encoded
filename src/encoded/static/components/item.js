@@ -6,14 +6,11 @@ import { FetchedData, Param } from './fetched';
 import { JSONSchemaForm } from './form';
 import * as globals from './globals';
 import { AlternateAccession } from './objectutils';
-import AllSchemasPage from './schema';
 
 
 const Fallback = (props, reactContext) => {
     const context = props.context;
-    const path = url.parse(reactContext.location_href).path;
-    const title = typeof context.title === 'string' ? context.title : (path === '/profiles/' ? 'Schemas' : path);
-
+    const title = typeof context.title === 'string' ? context.title : url.parse(reactContext.location_href).path;
     return (
         <div className="view-item">
             <header className="row">
@@ -22,15 +19,11 @@ const Fallback = (props, reactContext) => {
                 </div>
             </header>
             {typeof context.description === 'string' ? <p className="description">{context.description}</p> : null}
-            {path === '/profiles/' ?
-                <AllSchemasPage schemas={context} />
-            :
-                <section className="view-detail panel">
-                    <div className="container">
-                        <pre>{JSON.stringify(context, null, 4)}</pre>
-                    </div>
-                </section>
-            }
+            <section className="view-detail panel">
+                <div className="container">
+                    <pre>{JSON.stringify(context, null, 4)}</pre>
+                </div>
+            </section>
         </div>
     );
 };

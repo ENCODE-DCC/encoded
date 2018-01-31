@@ -420,13 +420,13 @@ globals.contentViews.register(SchemaPage, 'JSONSchema');
 
 // Displays a page listing all schemas available in the system.
 const AllSchemasPage = (props, reactContext) => {
-    const { schemas } = props;
+    const { context } = props;
     const loggedIn = !!(reactContext.session && reactContext.session['auth.userid']);
 
     // Get a sorted list of all available schemas. Filter out those without any
     // `identifyingProperties` because the user can't add objects of that type.
-    const schemaNames = Object.keys(schemas).sort().filter(schemaName => (
-        !!(schemas[schemaName].identifyingProperties && schemas[schemaName].identifyingProperties.length)
+    const schemaNames = Object.keys(context).sort().filter(schemaName => (
+        !!(context[schemaName].identifyingProperties && context[schemaName].identifyingProperties.length)
     ));
 
     return (
@@ -434,13 +434,13 @@ const AllSchemasPage = (props, reactContext) => {
             <PanelBody>
                 <div className="schema-list">
                     {schemaNames.map((schemaName) => {
-                        const schemaId = schemas[schemaName].id;
+                        const schemaId = context[schemaName].id;
                         const schemaPath = schemaIdToPath(schemaId);
 
                         return (
                             <div className="schema-list__item" key={schemaName}>
                                 {loggedIn ? <a className="btn btn-info btn-xs" href={`/${schemaPath}/#!add`}>Add</a> : null}
-                                <a href={schemaId} title={schemas[schemaName].description}>{schemaName}</a>
+                                <a href={schemaId} title={context[schemaName].description}>{schemaName}</a>
                             </div>
                         );
                     })}
@@ -451,11 +451,11 @@ const AllSchemasPage = (props, reactContext) => {
 };
 
 AllSchemasPage.propTypes = {
-    schemas: PropTypes.object.isRequired, // All schemas in encoded
+    context: PropTypes.object.isRequired,
 };
 
 AllSchemasPage.contextTypes = {
     session: PropTypes.object,
 };
 
-export default AllSchemasPage;
+globals.contentViews.register(AllSchemasPage, 'JSONSchemas');
