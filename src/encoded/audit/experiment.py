@@ -3290,8 +3290,8 @@ def get_platforms_used_in_experiment(files_structure_to_check):
             if file_object['platform']['term_id'] in ['OBI:0002002', 'OBI:0002001']:
                 platforms.add('Illumina HiSeq 2000/2500')
             elif file_object['platform']['term_id'] in ['OBI:0002000',
-                                                          'OBI:0000703',
-                                                          'OBI:0002027']:
+                                                        'OBI:0000703',
+                                                        'OBI:0002027']:
                 platforms.add('Illumina Genome Analyzer II/e/x')
             else:
                 platforms.add(file_object['platform']['term_name'])
