@@ -3286,12 +3286,12 @@ def get_platforms_used_in_experiment(files_structure_to_check):
     for file_object in files_structure_to_check.get('original_files').values():
         if file_object['output_category'] == 'raw data' and \
                 'platform' in file_object:
-            # collapsing interchangable platforms
-            if file_object['platform']['term_name'] in ['HiSeq 2000', 'HiSeq 2500']:
-                platforms.add('HiSeq 2000/2500')
-            elif file_object['platform']['term_name'] in ['Illumina Genome Analyzer IIx',
-                                                          'Illumina Genome Analyzer IIe',
-                                                          'Illumina Genome Analyzer II']:
+            # collapsing interchangable platforms HiSeq2000/2500 and all Ilumina Genome Analyzers II/IIe/IIx
+            if file_object['platform']['term_id'] in ['OBI:0002002', 'OBI:0002001']:
+                platforms.add('Illumina HiSeq 2000/2500')
+            elif file_object['platform']['term_id'] in ['OBI:0002000',
+                                                          'OBI:0000703',
+                                                          'OBI:0002027']:
                 platforms.add('Illumina Genome Analyzer II/e/x')
             else:
                 platforms.add(file_object['platform']['term_name'])
