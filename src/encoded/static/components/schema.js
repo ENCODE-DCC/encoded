@@ -207,7 +207,7 @@ const TermDisplay = (props) => {
 
     // If the schema term value has a simple type (string, boolean, number), then just display
     // that.
-    let displayMethod = simpleTypeDisplay[termType];
+    const displayMethod = simpleTypeDisplay[termType];
     if (displayMethod) {
         return <div>{displayMethod(termSchema)}</div>;
     }
@@ -222,17 +222,9 @@ const TermDisplay = (props) => {
             if (simpleTermValues.length) {
                 return (
                     <div>
-                        {simpleTermValues.map((item, i) => {
-                            displayMethod = simpleTypeDisplay[typeof item];
-                            if (displayMethod) {
-                                // The schema term value array item is a simple type, so just
-                                // display it normally.
-                                return <div key={i}>{displayMethod(item)}</div>;
-                            }
-
-                            // The array element isn't a simple type, so just ignore it.
-                            return null;
-                        })}
+                        {simpleTermValues.map((item, i) => (
+                            <div key={i}>{simpleTypeDisplay[typeof item](item)}</div>
+                        ))}
                     </div>
                 );
             }
@@ -351,7 +343,9 @@ const SchemaPage = (props, reactContext) => {
     // Generate a link to add an object for the currently displayed schema.
     const schemaPath = schemaIdToPath(context.id);
 
-    // Set up the "breadcrumbs" (sneer quotes because it's really just a link to /profiles/)
+    // Set up the "breadcrumbs" (sneer quotes because it's really just a link to /profiles/).
+    // If schemaPath happened to be null (which it realistically can't), <BreadCrumbs> would
+    // harmlessly display nothing.
     const crumbs = [
         { id: 'Profiles', uri: '/profiles/', wholeTip: 'All schemas' },
         { id: schemaPath },
