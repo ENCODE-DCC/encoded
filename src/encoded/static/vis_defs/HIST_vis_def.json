@@ -18,6 +18,9 @@
                     "visibility": "dense",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
+                    "signalFilter": "0",
+                    "pValueFilter": "0",
+                    "qValueFilter": "0",
                     "spectrum":"on",
                     "output_type": [ "optimal idr thresholded peaks" ]
                 },
@@ -26,6 +29,9 @@
                     "visibility": "dense",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
+                    "signalFilter": "0",
+                    "pValueFilter": "0",
+                    "qValueFilter": "0",
                     "spectrum":"on",
                     "output_type": [ "replicated peaks" ]
                 },
@@ -34,6 +40,9 @@
                     "visibility": "dense",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
+                    "signalFilter": "0",
+                    "pValueFilter": "0",
+                    "qValueFilter": "0",
                     "spectrum":"on",
                     "output_type": [ "stable peaks" ]
                 },
@@ -42,6 +51,9 @@
                     "visibility": "hide",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
+                    "signalFilter": "0",
+                    "pValueFilter": "0",
+                    "qValueFilter": "0",
                     "output_type": [ "peaks" ]
                 },
                 "Fold change over control": {

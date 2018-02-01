@@ -19,6 +19,9 @@
                     "visibility": "dense",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
+                    "signalFilter": "0",
+                    "pValueFilter": "0",
+                    "qValueFilter": "0",
                     "spectrum":"on",
                     "output_type": [ "optimal idr thresholded peaks" ]
                 },
@@ -27,6 +30,9 @@
                     "visibility": "hide",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
+                    "signalFilter": "0",
+                    "pValueFilter": "0",
+                    "qValueFilter": "0",
                     "spectrum":"on",
                     "output_type": [ "conservative idr thresholded peaks" ]
                 },
@@ -35,6 +41,9 @@
                     "visibility": "dense",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
+                    "signalFilter": "0",
+                    "pValueFilter": "0",
+                    "qValueFilter": "0",
                     "spectrum":"on",
                     "output_type": [ "pseudoreplicated idr thresholded peaks" ]
                 },
@@ -43,6 +52,9 @@
                     "visibility": "hide",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
+                    "signalFilter": "0",
+                    "pValueFilter": "0",
+                    "qValueFilter": "0",
                     "output_type": [ "peaks" ]
                 },
                 "Replicated Peaks": {
@@ -50,6 +62,9 @@
                     "visibility": "hide",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
+                    "signalFilter": "0",
+                    "pValueFilter": "0",
+                    "qValueFilter": "0",
                     "output_type": [ "replicated peaks" ]
                 },
                 "Filtered Peaks": {
@@ -57,6 +72,9 @@
                     "visibility": "hide",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
+                    "signalFilter": "0",
+                    "pValueFilter": "0",
+                    "qValueFilter": "0",
                     "output_type": [ "filtered peaks" ]
                 },
                 "Stable Peaks": {
@@ -64,6 +82,9 @@
                     "visibility": "hide",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
+                    "signalFilter": "0",
+                    "pValueFilter": "0",
+                    "qValueFilter": "0",
                     "output_type": [ "stable peaks" ]
                 },
                 "Fold change over control": {

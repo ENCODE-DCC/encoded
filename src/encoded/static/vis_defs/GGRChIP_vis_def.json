@@ -17,6 +17,8 @@
                     "visibility": "dense",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
+                    "signalFilter": "0",
+                    "qValueFilter": "0",
                     "output_type": [ "peaks" ]
                 },
                 "Signal": {
