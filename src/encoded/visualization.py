@@ -35,6 +35,8 @@ def includeme(config):
     config.scan(__name__)
 
 
+IHEC_DEEP_DIG = True  # ihec requires pipeline and aligner information which is not easy to get
+
 PROFILE_START_TIME = 0  # For profiling within this module
 
 # ASSEMBLY_FAMILIES is needed to ensure that mm10 and mm10-minimal will
@@ -445,19 +447,24 @@ class VisCollections(object):
             # find/create analysis_attributes:
             # WARNING: This could go crazy!
             # NOTE: single pipeline version AND single aligner only allowed for the whole exp!
-            analysis_attributes = {}
-            pipeline = vis_dataset.get('pipeline')
-            if pipeline and 'title' in pipeline:
-                analysis_attributes["analysis_software"] = pipeline['title']
-                analysis_attributes["analysis_group"] = pipeline.get('lab')
-                analysis_attributes["analysis_software_version"] = pipeline.get('version')
-            aligner = vis_dataset.get('aligner')
-            if aligner:
-                analysis_attributes["alignment_software"] = aligner.get('name')
-                analysis_attributes["alignment_software_version"] = aligner.get('version')
-            if analysis_attributes:
-                dataset["analysis_attributes"] = analysis_attributes
-            # TODO: What to do about no pipeline and/or no aligner in vis_dataset???
+            # NOTE: Ugly defaults
+            analysis_attributes = { "analysis_software": 'ENCODE',
+                                    "analysis_group": 'ENCODE DCC',
+                                    "analysis_software_version": '1',
+                                    "alignment_software": 'unknown',
+                                    "alignment_software_version": '1'
+                                }
+            if IHEC_DEEP_DIG:
+                pipeline = vis_dataset.get('pipeline')
+                if pipeline and 'title' in pipeline:
+                    analysis_attributes["analysis_software"] = pipeline['title']
+                    analysis_attributes["analysis_group"] = pipeline.get('lab')
+                    analysis_attributes["analysis_software_version"] = pipeline.get('version')
+                aligner = vis_dataset.get('aligner')
+                if aligner:
+                    analysis_attributes["alignment_software"] = aligner.get('name')
+                    analysis_attributes["alignment_software_version"] = aligner.get('version')
+            dataset["analysis_attributes"] = analysis_attributes
 
             # create browser, which holds views, which hold tracks:
             browser = {}
@@ -925,7 +932,8 @@ class VisDataset(object):
         if files is None:
             return None
 
-        self.gather_pipeline_details()  # Mostly for IHEC
+        if IHEC_DEEP_DIG:
+            self.gather_pipeline_details()  # for IHEC
 
         # No we can go through the files again to build tracks
         tracks = []
@@ -1003,7 +1011,8 @@ class VisDataset(object):
                 if view['type'] == 'bigNarrowPeak':
                     view.pop('scoreFilter',None)  # TODO The vis_defs should be changed
                     # TODO indivudual vis_defs should have signalFilter, pValueFilter and qValueFilter added as appropriate
-                    #view['signalFilter'] = "0"
+                    if 'signalFilter' not in view:  # NOTE: UCSC is giving warning if no signalFilter!
+                        view['signalFilter'] = "0"
                     #view['signalFilterLimits'] = "0:18241"  # DEBUG DEBUG
 
                 for (group_tag, group) in self.vis_dataset["groups"].items():
@@ -1048,7 +1057,8 @@ class VisDataset(object):
                     else:
                         assert(group_tag == "Don't know this group!")
 
-                self.add_pipeline_details(a_file, track)  # pipeline details per track mostly for IHEC
+                if IHEC_DEEP_DIG:
+                    self.add_pipeline_details(a_file, track)  # pipeline details per track for IHEC
                 track['md5sum'] = a_file['md5sum']
 
                 track["membership"] = membership
@@ -1118,27 +1128,38 @@ class VisDataset(object):
 
         if software_files:
             aligners = {'files': {}, 'rep_techs': {}}
-            query="type=SoftwareVersion&software.software_type=aligner"  # TODO: 'aligner is weakly associated!
+            # TODO: software_type='aligner' is weakly associated!
+            # Note: lab!=/labs/encode-processing-pipeline/ should eliminate analysis_steps themselves
             params = { 'type': 'SoftwareVersion', 'software.software_type': 'aligner', '@id': software_files.keys() }
-            # TODO: Limit to aligner and not other
-            #for swv in software_files.keys():
-            #    query += "@id=" + swv
-            # make query
-            path = '/search/?%s&frame=embedded' % (urlencode(params, True))
+            path = '/search/?%s&software.lab!=/labs/encode-processing-pipeline/&frame=embedded' % (urlencode(params, True))
             results = self.request.embed(path, as_user=True)['@graph']
             # More than one for some: LRNA (star v. tophat)
             for sw_version in results:
                 swv_key = sw_version['@id']
                 #sw_files = software_files[swv_key].keys()
                 aligner = { 'name':sw_version['software']['name'], 'version': sw_version['version']}
-                if 'default' not in aligners or aligners['default']['version'] < aligner['version']:
-                    aligners['default'] = aligner  # TODO: version compare fails if multiple aligners exist
+                aligner_key = aligner['name'].lower()
+                if 'default' not in aligners:
+                    aligners['default'] = { aligner_key: aligner }
+                elif aligner_key not in aligners['default'] or \
+                     aligners['default'][aligner_key]['version'] < aligner['version']:
+                    aligners['default'][aligner_key] = aligner
                 for file_id in software_files[swv_key].keys():
                     rep_tech = software_files[swv_key][file_id]
-                    aligners['files'][file_id] = aligner
-                    aligners['rep_techs'][rep_tech] = aligner
+                    if file_id not in aligners['files']:
+                        aligners['files'][file_id] = aligner
+                    elif aligners['files'][file_id]['name'] == aligner['name']:
+                        if aligners['files'][file_id]['version'] < aligner['version']:
+                            aligners['files'][file_id] = aligner
+                    #else:  # one bam file 2 aligners, not likely
+                    if rep_tech not in aligners['rep_techs']:
+                        aligners['rep_techs'][rep_tech] = { aligner_key: aligner }
+                    elif aligner_key not in aligners['rep_techs'][rep_tech] or \
+                         aligners['rep_techs'][rep_tech][aligner_key]['version'] < aligner['version']:
+                        aligners['rep_techs'][rep_tech][aligner_key] = aligner
+
             self.aligners = aligners
-            #aligners = { 'file': {ENCFF000AAA: {name:'STAR': version:'2.5.1a'},..., 'rep_tech': rep1_1: {'STAR': '2.5.1a'},... }
+            #aligners = { 'file': {ENCFF000AAA: {name:'STAR': version:'2.5.1a'},..., 'rep_tech': rep1_1: {'star': {'STAR': '2.5.1a'},'tophat':...} }
         if pipeline_files:
             pipelines =  {}
             for pipe_key in pipeline_files.keys():
@@ -1154,18 +1175,30 @@ class VisDataset(object):
         '''At the track level, look up previously gathered details for IHEC'''
         # plumbing for ihec
         if self.aligners:
-            # go through derived_from to find aligner, if not found then hope tech_rep works
+            # go through derived_from to find aligner, if not found then hope rep_tech works
             for file_id in a_file.get('derived_from',[]):
+                # easy way: when bam is in derived_from and aligner is associated with bam
                 if file_id in self.aligners['files']:
                     track['aligner'] = self.aligners['files'][file_id]
                     break
             if 'aligner' not in track:
+                # hard way: more than one possibility so match on first or if submitted name helps
+                possible_aligners = {}
                 if a_file['rep_tech'] in self.aligners['rep_techs']:
-                    track['aligner'] = self.aligners['rep_techs'][a_file['rep_tech']]
-            if 'default' in self.aligners:
-                self.vis_dataset['aligner'] = self.aligners['default']
-                if 'aligner' not in track:
-                    track['aligner'] = self.aligners['default']
+                    possible_aligners = self.aligners['rep_techs'][a_file['rep_tech']]
+                elif 'default' in self.aligners:
+                    possible_aligners = self.aligners['default']
+                if possible_aligners:
+                    submitted_name = a_file.get('submitted_file_name', "none")
+                    for aligner_key in possible_aligners.keys():  # e.g. 'tophat' in '..._tophat.bw'
+                        if 'aligner' not in track or aligner_key in submitted_name:
+                            track['aligner'] = possible_aligners[aligner_key]
+            if 'aligner' in track:
+                # after all this: IHEC only allows one aligner per experiment!
+                self.vis_dataset['aligner'] = track['aligner']
+            if 'aligner' not in self.vis_dataset and 'default' in self.aligners \
+                and len(self.aligners['default'].keys()) >= 1:
+                    track['aligner'] = self.aligners['default'][self.aligners['default'].keys()[0]]
 
         if self.pipelines:
             for file_id in self.pipelines.keys():
