@@ -1120,7 +1120,7 @@ class VisDataset(object):
                             pipe['lab'] = pipe['lab'][6:-1]
                         if pipe['title']:
                             if 'version' in pipe['title'].lower():  # REALLY LESS THAN IDEAL
-                                pipe['version'] = pipe['title'].lower().split('version')[-1]
+                                pipe['version'] = pipe['title'].lower().split('version')[-1].strip()
                         pipe['files'] = [ a_file['@id'] ]
                         pipeline_files[pipe_key] = pipe
                     else:

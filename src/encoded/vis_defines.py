@@ -1021,13 +1021,12 @@ class VisCache(object):
             vis_ids = [accession + "_" + ucsc_assembly for accession in accessions]
             try:
                 query = {"query": {"ids": {"values": vis_ids}}}
-                res = es.search(body=query, index=self.index, doc_type='default', size=99999)  # size=200?
+                res = self.es.search(body=query, index=self.index, doc_type='default', size=99999)  # size=200?
                 hits = res.get("hits", {}).get("hits", [])
                 results = {}
                 for hit in hits:
                     results[hit["_id"]] = hit["_source"]  # make this a generator? No... len(results)
-                log.debug("ids found: %d   %.3f secs" %
-                        (len(results), (time.time() - PROFILE_START_TIME)))
+                log.debug("ids found: %d" % (len(results)))
                 return results
             except:
                 pass
