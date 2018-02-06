@@ -309,17 +309,23 @@ def batch_download(context, request):
         for exp in results['@graph']:
             for f in exp.get('files', []):
                 if f['file_type'] in param_list['files.file_type']:
+                    if 'restricted' in f and f['restricted'] == 'true':
+                        continue
+                    else:
+                        files.append('{host_url}{href}'.format(
+                            host_url=request.host_url,
+                            href=f['href']
+                        ))
+    else:
+        for exp in results['@graph']:
+            for f in exp.get('files', []):
+                if 'restricted' in f and f['restricted'] == 'true':
+                    continue
+                else:
                     files.append('{host_url}{href}'.format(
                         host_url=request.host_url,
                         href=f['href']
                     ))
-    else:
-        for exp in results['@graph']:
-            for f in exp.get('files', []):
-                files.append('{host_url}{href}'.format(
-                    host_url=request.host_url,
-                    href=f['href']
-                ))
     return Response(
         content_type='text/plain',
         body='\n'.join(files),
