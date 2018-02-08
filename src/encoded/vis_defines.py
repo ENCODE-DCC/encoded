@@ -502,7 +502,12 @@ class VisDefines(object):
 
         # Ugly rules:
         vis_type = None
-        if assay in ["RNA-seq", "single cell isolation followed by RNA-seq"]:
+        if assay in ["RNA-seq", "PAS-seq", "microRNA-seq", \
+                     "shRNA knockdown followed by RNA-seq", \
+                     "CRISPR genome editing followed by RNA-seq", \
+                     "CRISPRi followed by RNA-seq", \
+                     "single cell isolation followed by RNA-seq", \
+                     "siRNA knockdown followed by RNA-seq"]:
             reps = self.dataset.get("replicates", [])  # NOTE: overly cautious
             if len(reps) < 1:
                 log.debug("Could not distinguish between long and short RNA for %s because there are "
@@ -538,14 +543,13 @@ class VisDefines(object):
                         vis_type = "SRNA"  # this will be more noticed if there is a mistake
 
                 if vis_type is None:
-                    if max_size <= 200 and max_size != min_size:
+                    if min_size == 120 and max_size == 200: # Another ugly exception!
+                        vis_type = "LRNA"
+                    elif max_size <= 200 and max_size != min_size:
                         vis_type = "SRNA"
                     elif min_size >= 150:
                         vis_type = "LRNA"
-                    elif (min_size + max_size)/2 >= 235:
-                        # This is some wicked voodoo (SRNA:108-347=227; LRNA:155-315=235)
-                        vis_type = "LRNA"
-                    else:
+                    elif (min_size + max_size)/2 >= 235: # This is some wicked voodoo (SRNA:108-347=227; LRNA:155-315=235)
                         vis_type = "SRNA"
 
         if vis_type is None:

@@ -71,8 +71,8 @@ def urlpage(url):
     page = parts[0]
     suffix = parts[-1] if len(parts) > 1 else 'txt'
     cmd = parts[1]     if len(parts) > 2 else ''
-    if page == 'ihec' and suffix == 'json':    # TODO: remove after ihec is working
-        cmd = 'regen'
+    #if page == 'ihec' and suffix == 'json':    # TODO: remove after ihec is working
+    #    cmd = 'regen'
 
     return (page, suffix, cmd)
 
@@ -304,11 +304,80 @@ class VisCollections(object):
                     vis_by_type['shortLabel'] = "%s %s" % (prefix, vis_by_type['shortLabel'])
         return self.vis_by_types
 
+    def ihec_biomaterial_type(self, vis_dataset):
+        # For IHEC, biomaterial type: "Cell Line", "Primary Cell" "Primary Cell Culture" "Primary Tissue"
+        # TODO: What is right?
+        biosample_type = vis_dataset.get('biosample_type').lower()
+        if biosample_type:
+            if "tissue" in biosample_type:
+                return "Primary Tissue"
+            if "culture" in biosample_type:
+                return "Primary Cell Culture"
+            if "primary cell" in biosample_type:
+                return "Primary Cell"
+            return "Cell Line"
+
+    def ihec_view_type(self, view, track):
+        # For IHEC, dataset track view type needed: signal_unstranded, peak_calls, methylation_profile, signal_forward, signal_reverse,
+        #            rpkm_forward, rpkm_reverse, rpkm_unstranded, reads_per_million_ miRNA_mapped, copy_number_variation
+        # https://github.com/IHEC/ihec-ecosystems/blob/master/docs/minimum_required_track_types.md
+        track_type = track.get('type','').split()[0]
+        if track_type in ['bigBed', 'bigNarrowPeak']:
+            return 'peak_calls'
+        view_title = view.get('title').lower()
+        if 'minus signal' in view_title:
+            return 'signal_reverse'
+        if 'plus signal' in view_title:
+            return 'signal_forward'
+        return 'signal_unstranded'
+
+    def ihec_exp_type(self, vis_dataset):
+        # For IHEC, a simple experiment type is needed:
+        # TODO: EpiRR experiment type: ChIP-Seq Input, Histone H3K27ac, mRNA-Seq, total-RNA-Seq, Stranded Total RNA-Seq
+        # /Ihec_metadata_specification.md: Chromatin Accessibility, Bisulfite-Seq, MeDIP-Seq, MRE-Seq, ChIP-Seq, mRNA-Seq, smRNA-Seq
+
+        vis_type = vis_dataset['vis_type']
+        if vis_type is not None:
+            if vis_type in ["ChIP", "GGRChIP", "HIST"]:
+                target = vis_dataset.get('target',{}).get('target',{}).get('groups',{'unknown':1}).keys()[0]
+                if vis_type == "HIST":
+                    return "Histone " + target
+                if target == "unknown":
+                    return "ChIP-seq"
+                return "ChIP-seq " +  target
+            if vis_type in ["LRNA", "scRNA", "tkRNA"]:
+                label_words = vis_dataset['longLabel'].lower().split()
+                if 'total' in label_words:
+                    return 'total-RNA-Seq'
+                if 'cytosol' in label_words:
+                    return 'mRNA-Seq'
+                return "RNA-seq"
+            if vis_type in ["SRNA", "miRNA"]:
+                return "smRNA-Seq"
+            if vis_type == "DNASE":
+                return "DNase-seq"
+            if vis_type == "ATAC":
+                return "ATAC-seq"
+            if vis_type == "ChIA":
+                return "ChIA-pet"
+            if vis_type == "HiC":
+                return "Hi-C"
+            if vis_type == "TSS":
+                return "Rampage"
+            if vis_type == "eCLIP":
+                return "e-CLIP"
+            if vis_type == "WGBS":
+                return "DNA Methylation"
+            if vis_type == "ANNO":
+                return "Annotation"
+        return vis_dataset.get('assay_term_name','Unknown')
+
     def remodel_to_ihec_json(self):
         '''Formats this collection of vis_datasets into IHEC hub json structure.'''
         # TODO: make ihec json work!
         if not self.vis_datasets:
             return {}
+        vis_defines = VisDefines()
 
         # {
         # "hub_description": { ... },  similar to hub.txt/genome.txt
@@ -400,7 +469,7 @@ class VisCollections(object):
                     hub_description["assembly"] = ucsc_assembly
                 taxon_id = vis_dataset.get('taxon_id')
                 if taxon_id:
-                    hub_description["taxon_id"] = taxon_id
+                    hub_description["taxon_id"] = int(taxon_id)
 
             dataset = {}
             datasets[accession] = dataset
@@ -418,9 +487,7 @@ class VisCollections(object):
                 biosample_term_id = vis_dataset.get('biosample_term_id')
                 if biosample_term_id:
                     sample["sample_ontology_uri"] = biosample_term_id
-                biosample_type = vis_dataset.get('biosample_type')  # ["Cell Line","Primary Cell", ...
-                if biosample_type:
-                    sample["biomaterial_type"] = biosample_type
+                sample["biomaterial_type"] = self.ihec_biomaterial_type(vis_dataset) # ["Cell Line","Primary Cell", ...
                 sample["molecule"] = molecule
                 # sample["disease"] =               # TODO
                 # sample["disease_ontology_uri"] =  # TODO
@@ -438,6 +505,7 @@ class VisCollections(object):
                     assay_name = vis_dataset.get('assay_term_name')
                     if assay_name:
                         experiment_attributes["assay_type"] = assay_name
+                    experiment_attributes["experiment_type"] = self.ihec_exp_type(vis_dataset)
                     # "experiment_type": assay_name # EpiRR
                     # "reference_registry_id": "..."     IHEC Reference Epigenome registry ID,
                     #                                     assigned after submitting to EpiRR
@@ -507,7 +575,7 @@ class VisCollections(object):
                     for term in ["type", "color", "altColor"]:
                         if term in track:
                             ihec_track[term] = track[term]
-                    ihec_track["view"] = view["title"]
+                    ihec_track["view"] = self.ihec_view_type(view,track)
                     metadata_pairs = track.get("metadata_pairs", {})
                     for meta_key in metadata_pairs:
                         ihec_track[meta_key.replace('&#32;', ' ')] = metadata_pairs[meta_key][1:-1]
@@ -517,9 +585,9 @@ class VisCollections(object):
                     #     if file_download:
                     #         file_download = file_download.split()[1][6:-1]
                     #         ihec_track["file download"] = file_download
-                    ihec_view.append(ihec_track)
-                if len(ihec_view) > 0:
-                    browser[view["title"]] = ihec_view
+                    if ihec_track["view"] not in browser.keys():
+                        browser[ihec_track["view"]] = []
+                    browser[ihec_track["view"]].append(ihec_track)
 
         return ihec_json
 
@@ -1408,10 +1476,10 @@ def generate_by_accessions(request, accessions, assembly, hide, regen, prepend_l
 
     msg = "%s. len(txt):%s  %.3f secs" % \
                  (vis_collection.found_or_built(), len(blob), (time.time() - PROFILE_START_TIME))
-    if vis_collection.regen_requested:  # Want to see message if regen was requested
-        log.info(msg)
-    else:
-        log.debug(msg)
+    #if vis_collection.regen_requested:  # Want to see message if regen was requested
+    log.info(msg)
+    #else:
+    #    log.debug(msg)
 
     return blob
 
