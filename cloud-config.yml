@@ -277,6 +277,12 @@ write_files:
   content: |
     http.port: 9201
 
+    thread_pool:
+        search:
+            core: 50
+            max: 200
+            keep_alive: 2m
+
 - path: /etc/elasticsearch/jvm.options
   content: |
     ## GC configuration
