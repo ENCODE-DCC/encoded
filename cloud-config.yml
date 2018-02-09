@@ -279,9 +279,10 @@ write_files:
 
     thread_pool:
         search:
-            core: 50
-            max: 200
-            keep_alive: 2m
+            size: 100
+            queue_size: 2000
+        index:
+            queue_size: 400
 
 - path: /etc/elasticsearch/jvm.options
   content: |
