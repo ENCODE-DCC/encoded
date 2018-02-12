@@ -1,7 +1,11 @@
 Changes
 =======
 
-65.2 (released)
+65.3 (released)
+----------------
+    * ENCD-3851 Add max clause es5 updates
+
+65.2 (unreleased)
 ----------------
     * Update to snovault 1.0.2 (#2128) -> ENCD-3845
 
