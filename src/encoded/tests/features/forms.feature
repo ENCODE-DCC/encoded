@@ -12,12 +12,11 @@ Feature: Edit forms
         When I fill in "antigen_description" with "It's not a very nice antigen"
         And I press "Save"
         And I wait for an element with the css selector ".view-item.type-AntibodyLot" to load
-        And I wait for 5 seconds
         Then I should see "It's not a very nice antigen"
 
     Scenario: Edit a child object
-        When I visit "/antibodies/ENCAB728YTO/#!edit"
-        And I wait for 5 seconds
+        When I wait for 10 seconds
+        And I visit "/antibodies/ENCAB728YTO/#!edit"
         And I wait for an element with the css selector ".collapsible-trigger" to load
         And I click the element with the css selector ".collapsible-trigger"
         And I wait for an element with the css selector "input[name=antigen_description]" to load
