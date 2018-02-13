@@ -708,7 +708,7 @@ CharacterizationCaption.propTypes = {
 const CharacterizationDetail = (props) => {
     const characterization = props.doc;
     const keyClass = `document__detail${props.detailOpen ? ' active' : ''}`;
-    const excerpt = characterization.description && characterization.description.length > EXCERPT_LENGTH;
+    const excerpt = characterization.caption && characterization.caption.length > EXCERPT_LENGTH;
 
     // See if we need a list of documents or not. Documents without attachments don't get
     // displayed.
