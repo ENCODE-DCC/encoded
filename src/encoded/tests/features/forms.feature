@@ -15,7 +15,9 @@ Feature: Edit forms
         Then I should see "It's not a very nice antigen"
 
     Scenario: Edit a child object
-        When I wait for 10 seconds
+        When I visit "/antibodies/ENCAB728YTO/"
+        And I wait for the content to load
+        And I wait 10 seconds
         And I visit "/antibodies/ENCAB728YTO/#!edit"
         And I wait for an element with the css selector ".collapsible-trigger" to load
         And I click the element with the css selector ".collapsible-trigger"
