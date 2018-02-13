@@ -17,6 +17,7 @@ Feature: Edit forms
 
     Scenario: Edit a child object
         When I visit "/antibodies/ENCAB728YTO/#!edit"
+        And I wait for 5 seconds
         And I wait for an element with the css selector ".collapsible-trigger" to load
         And I click the element with the css selector ".collapsible-trigger"
         And I wait for an element with the css selector "input[name=antigen_description]" to load
