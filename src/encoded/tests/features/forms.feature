@@ -15,10 +15,10 @@ Feature: Edit forms
         Then I should see "It's not a very nice antigen"
 
     Scenario: Edit a child object
-        When I visit "/antibodies/ENCAB728YTO/"
+        When I visit "/"
         And I wait for the content to load
-        And I wait for 10 seconds
-        And I visit "/antibodies/ENCAB728YTO/#!edit"
+        Then the title should contain the text "ENCODE"
+        When I visit "/antibodies/ENCAB728YTO/#!edit"
         And I wait for an element with the css selector ".collapsible-trigger" to load
         And I click the element with the css selector ".collapsible-trigger"
         And I wait for an element with the css selector "input[name=antigen_description]" to load
@@ -28,6 +28,9 @@ Feature: Edit forms
         Then I should see "This is the new description"
 
     Scenario: Leaving a dirty form without saving asks for confirmation
+        When I visit "/"
+        And I wait for the content to load
+        Then the title should contain the text "ENCODE"
         When I visit "/antibodies/ENCAB728YTO/#!edit"
         And I wait for an element with the css selector "form.rf-Form" to load
         And I wait for 5 seconds
@@ -41,6 +44,9 @@ Feature: Edit forms
         And I wait for 5 seconds
 
     Scenario: Validation errors are shown in context
+        When I visit "/"
+        And I wait for the content to load
+        Then the title should contain the text "ENCODE"
         When I visit "/antibodies/ENCAB728YTO/#!edit"
         And I wait for an element with the css selector "form.rf-Form" to load
         And I fill in "date_created" with "bogus"
