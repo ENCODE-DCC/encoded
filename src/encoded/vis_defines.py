@@ -243,6 +243,13 @@ TRACK_SETTINGS = ["bigDataUrl", "longLabel", "shortLabel", "type", "color", "alt
 ENCODED_DATASET_TERMS = ['biosample_term_name', 'biosample_term_id', 'biosample_summary',
                     'biosample_type', 'assay_term_id', 'assay_term_name']
 
+# This dataset terms (among others) are needed in vis_dataset formatting
+ENCODED_DATASET_EMBEDDED_TERMS = {
+    'biosample_accession':  'replicates.library.biosample.accession',
+    'sex':                  'replicates.library.biosample.sex',
+    'taxon_id':             'replicates.library.biosample.organism.taxon_id'
+}
+
 # Abbeviations  for output_type to fit in UCSC shortLabel
 OUTPUT_TYPE_8CHARS = {
     # "idat green channel": "idat gr",     # raw data
@@ -580,7 +587,7 @@ class VisDefines(object):
         return SUPPORTED_SUBGROUPS
 
     def encoded_dataset_terms(self):
-        return ENCODED_DATASET_TERMS
+        return list(ENCODED_DATASET_EMBEDDED_TERMS.keys()) + ENCODED_DATASET_TERMS
 
     def pennants(self, project):
         return PENNANTS.get(project, PENNANTS['NHGRI'])
@@ -690,6 +697,24 @@ class VisDefines(object):
             rep += "_%d" % tech_rep
         return rep
 
+    def lookup_embedded_token(self, name, obj):
+        '''Encodes the string to swap special characters and remove spaces.'''
+        token = ENCODED_DATASET_EMBEDDED_TERMS.get(name, name)
+        if token[0] == '{' and token[-1] == '}':
+            token = token[1:-1]
+        terms = token.split('.')
+        cur_obj = obj
+        while len(terms) > 0:
+            term = terms.pop(0)
+            cur_obj = cur_obj.get(term)
+            if len(terms) == 0 or cur_obj is None:
+                return cur_obj
+            if isinstance(cur_obj,list):
+                if len(cur_obj) == 0:
+                    return None
+                cur_obj = cur_obj[0]  # Can't presume to use any but first
+        return None
+
     def lookup_token(self, token, dataset, a_file=None):
         '''Encodes the string to swap special characters and remove spaces.'''
         # dataset might not be self.dataset
@@ -707,53 +732,27 @@ class VisDefines(object):
             return term
         elif token == "{experiment.accession}":
             return dataset['accession']
-        elif token in ["{target}", "{target.label}", "{target.name}", "{target.title}"]:
-            target = dataset.get('target', {})
-            if isinstance(target, list):
-                if len(target) > 0:
-                    target = target[0]
-                else:
-                    target = {}
-            if token.find('.') > -1:
-                sub_token = token.strip('{}').split('.')[1]
-            else:
-                sub_token = "label"
-            return target.get(sub_token, "Unknown Target")
-        elif token in ["{target.name}", "{target.investigated_as}"]:
-            target = dataset.get('target', {})
-            if isinstance(target, list):
-                if len(target) > 0:
-                    target = target[0]
-                else:
-                    target = {}
-            if token == "{target.name}":
-                return target.get('label', "Unknown Target")
-            elif token == "{target.investigated_as}":
-                investigated_as = target.get('investigated_as', "Unknown Target")
-                if not isinstance(investigated_as, list):
-                    return investigated_as
-                elif len(investigated_as) > 0:
-                    return investigated_as[0]
-                else:
-                    return "Unknown Target"
+        elif token in ["{target}", "{target.label}", "{target.name}", "{target.title}", "{target.investigated_as}"]:
+            if token == '{target}':
+                token = '{target.label}'
+            term = self.lookup_embedded_token(token, dataset)
+            if term is None and token == '{target.name}':
+                term = self.lookup_embedded_token('{target.label}', dataset)
+            if term is not None:
+                if isinstance(term, list) and len(term) > 0:
+                    return term[0]
+                return term
+            return "Unknown Target"
         elif token in ["{replicates.library.biosample.summary}",
                     "{replicates.library.biosample.summary|multiple}"]:
-            term = None
-            replicates = dataset.get("replicates", [])
-            if replicates:
-                term = replicates[0].get("library", {}).get("biosample", {}).get("summary")
+            term = self.lookup_embedded_token('{replicates.library.biosample.summary}', dataset)
             if term is None:
                 term = dataset.get("{biosample_term_name}")
-            if term is None:
-                if token.endswith("|multiple}"):
-                    term = "multiple biosamples"
-                else:
-                    term = "Unknown Biosample"
-            return term
-        elif token == "{lab.title}":
-            return dataset['lab'].get('title', 'unknown')
-        elif token == "{award.rfa}":
-            return dataset['award'].get('rfa', 'unknown')
+            if term is not None:
+                return term
+            if token.endswith("|multiple}"):
+                return "multiple biosamples"
+            return "Unknown Biosample"
         elif token == "{biosample_term_name|multiple}":
             return dataset.get("biosample_term_name", "multiple biosamples")
         # TODO: rna_species
@@ -768,8 +767,8 @@ class VisDefines(object):
         elif a_file is not None:
             if token == "{file.accession}":
                 return a_file['accession']
-            elif token == "{output_type}":
-                return a_file['output_type']
+            #elif token == "{output_type}":
+            #    return a_file['output_type']
             elif token == "{output_type_short_label}":
                 output_type = a_file['output_type']
                 return OUTPUT_TYPE_8CHARS.get(output_type, output_type)
@@ -804,8 +803,14 @@ class VisDefines(object):
             elif token == "{rep_tech}":
                 return a_file.get("rep_tech", self.rep_for_file(a_file))
             else:
+                val = self.lookup_embedded_token(token, a_file)
+                if val is not None and isinstance(val, str):
+                    return val
                 return ""
         else:
+            val = self.lookup_embedded_token(token, dataset)
+            if val is not None and isinstance(val, str):
+                return val
             log.debug('Untranslated token: "%s"' % token)
             return "unknown"
 
@@ -985,9 +990,11 @@ class IhecDefines(object):
 
     def __init__(self):
         self.assays = {}
+        self.vis_defines = None
 
 
     def molecule(self, dataset):
+        # ["total RNA", "polyA RNA", "cytoplasmic RNA", "nuclear RNA", "genomic DNA", "protein", "other"]
         default = "genomic DNA"  # default
         replicates = dataset.get("replicates", [])
         if len(replicates) == 0:
@@ -996,21 +1003,27 @@ class IhecDefines(object):
         if not molecule:
             return default
         if molecule == "RNA":
-            descr = dataset.get('description', '').lower()
-            if 'total' in descr:
-                return "total RNA"
-            elif 'poly' in descr:
+            descr = dataset.get('assay_term_name', '').lower()
+            #if 'total' in descr:
+            #    return "total RNA"
+            if 'poly' in descr:
                 return "polyA RNA"
-            return molecule
+            elif 'nuclear' in descr:
+                return "nuclear RNA"
+            elif 'cyto' in descr:
+                return "cytoplasmic RNA"
+            return "total RNA"
         return default
 
     def lineage(self, biosample):
+        # TODO: faking lineage
         dev_slims = biosample.get("developmental_slims",[])
         if len(dev_slims) > 0:
             return ','.join(dev_slims)
         return None
 
     def differentiation(self, biosample):
+        # TODO: faking differentiation
         diff_slims = biosample.get("organ_slims",[])
         if len(diff_slims) > 0:
             return '.'.join(diff_slims)
@@ -1101,33 +1114,78 @@ class IhecDefines(object):
 
     def biomaterial_type(self, biosample_type):
         # For IHEC, biomaterial type: "Cell Line", "Primary Cell" "Primary Cell Culture" "Primary Tissue"
-        # TODO: What is right?
         if biosample_type:
             biosample_type = biosample_type.lower()
-            if "tissue" in biosample_type:
+            if biosample_type in ["tissue", "whole organism"]:  # "whole organism" (but really they should add another enum) - hitz
                 return "Primary Tissue"
-            if "culture" in biosample_type:
+                # Sample “ENCBS012ALX” requires: "donor_id", "donor_age", "donor_age_unit", "donor_life_stage",
+                #   "donor_health_status", "donor_sex", "donor_ethnicity", "tissue_type", "tissue_depot"
+            if biosample_type in ["primary cell", "stem cell"]: # "stem cell" (I think) = hitz
                 return "Primary Cell Culture"
-            if "primary cell" in biosample_type:
-                return "Primary Cell"
+                # Sample “ENCBS094MGI” requires: "donor_id", "donor_age", "donor_age_unit", "donor_life_stage"
+                #   "donor_health_status", "donor_sex", "donor_ethnicity", "cell_type", "culture_conditions"
+            #if biosample_type in ["immortalized cell line", "induced pluripotent stem cell", "in vitro differentiated cells"]:
+            #    return "Cell Line"
             return "Cell Line"
 
-    def sample(self, vis_dataset):
-        # returns an ihec sample appropriate for the vis_dataset
+    def sample(self, dataset, vis_defines=None):
+        # returns an ihec sample appropriate for the dataset
+        if vis_defines is None:
+            if self.vis_defines is None:
+                self.vis_defines = VisDefines()
+            vis_defines = self.vis_defines
+
         sample = {}
-        biosample_term_id = vis_dataset.get('biosample_term_id')
+        biosample = vis_defines.lookup_embedded_token('replicates.library.biosample', dataset)
+        if biosample is None:
+            return {}
+        lineage = self.lineage(biosample)
+        if lineage is not None:
+            sample['lineage'] = lineage
+        else:
+            sample['lineage'] = 'unknown'
+        differentiation = self.differentiation(biosample)
+        if differentiation is not None:
+            sample['differentiation_stage'] = differentiation
+        else:
+            sample['differentiation_stage'] = 'unknown'
+        biosample_term_id = biosample.get('biosample_term_id')
         if biosample_term_id:
             sample["sample_ontology_uri"] = biosample_term_id
 
-        sample["biomaterial_type"] = self.biomaterial_type(vis_dataset.get('biosample_type')) # ["Cell Line","Primary Cell", ...
-        sample["line"] = vis_dataset.get('biosample_term_name', 'none')
-        sample["lineage"] = vis_dataset.get('lineage','Unknown')                        # TODO: faked
-        sample["differentiation_stage"] = vis_dataset.get('differentiation','Unknown')  # TODO: faked
-        sample["medium"] = "unknown"                                                    # TODO
-        sample["sex"] = vis_dataset.get('sex','Unknown').capitalize()
-        sample["molecule"] = vis_dataset['molecule']
-        sample["disease"] = "Healthy"                # TODO
-        sample["disease_ontology_uri"] = "http://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code=C115935&ns=NCI_Thesaurus"   # TODO
+        sample["biomaterial_type"] = self.biomaterial_type(biosample.get('biosample_type')) # ["Cell Line","Primary Cell", ...
+        sample["line"] = biosample.get('biosample_term_name', 'none')
+        sample["medium"] = "unknown"                                                    # We don't have
+        sample['molecule'] = self.molecule(dataset)
+        sample["disease"] = biosample.get('health_status',"Healthy").capitalize()  #  assume all samples are healthy - hitz
+        if sample["disease"] == "Healthy":
+            sample["disease_ontology_uri"] = "http://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code=C115935&ns=NCI_Thesaurus"
+        else:
+            # Note only term for disease ontology is healthy=C115935.  No search url syntax known
+            sample["disease_ontology_uri"] = "https://ncit.nci.nih.gov/ncitbrowser/pages/multiple_search.jsf?nav_type=terminologies"
+        sample["sex"] = biosample.get('sex','unknown').capitalize()
+        if sample["biomaterial_type"] in ["Primary Tissue", "Primary Cell Culture"]:
+            sample["donor_sex"] = sample["sex"]
+            donor = biosample.get('donor')
+            if donor is not None:
+                ids = [ donor['accession'] ]
+                if 'external_ids' in donor:
+                    ids.extend(donor['external_ids'])
+                    sample["donor_id"] = ','.join(ids)
+                else:
+                    sample["donor_id"] = ids[0]
+                sample["donor_age"] = donor.get('age','NA')  # unknwn is not supported
+                sample["donor_age_unit"] = donor.get('age_units','year')  # unknwn is not supported
+                sample["donor_life_stage"] = donor.get('life_stage','unknown')
+                sample["donor_health_status"] = sample["disease"]
+                if donor.get('organism',{}).get('name','unknown') == 'human':
+                    sample["donor_ethnicity"] = donor.get('ethnicity','unknown')
+            if sample["biomaterial_type"] == "Primary Tissue":
+                sample["tissue_type"] = sample["line"]
+                sample["tissue_depot"] = biosample.get('source',{}).get('description','unknown')
+            elif sample["biomaterial_type"] == "Primary Cell Culture":
+                sample["cell_type"] = sample["line"]
+                sample["culture_conditions"] = "unknwon" # applied_modifications=[], treatments=[], genetic_modifications=[], characterizations=[]
         return sample
 
     def view_type(self, view, track):
@@ -1249,14 +1307,17 @@ class IhecDefines(object):
             datasets[accession] = dataset
 
             # Find/create sample:
-            biosample_name = vis_dataset.get('biosample_term_name', 'none')
-            if biosample_name == 'none':
-                log.warn("vis_dataset %s is missing biosample_name", accession)
+            biosample_accession = vis_dataset.get('biosample_accession')
+            if biosample_accession is None:
+                log.warn("vis_dataset %s is missing biosample", accession)
                 continue
-            #sample_id = "%s; %s" % (biosample_name, vis_dataset['molecule'])
-            sample_id = biosample_name
+            sample_id = biosample_accession
             if sample_id not in samples:
-                samples[sample_id] = self.sample(vis_dataset)
+                sample = vis_dataset.get('ihec_sample',{})
+                if not sample:
+                    log.warn("vis_dataset %s is missing sample", accession)
+                    continue
+                samples[sample_id] = sample
             dataset["sample_id"] = sample_id
 
             attributes = self.experiment_attributes(vis_dataset)
@@ -1290,13 +1351,9 @@ class IhecDefines(object):
 
                 for track in tracks:
                     ihec_track = {}
-                    # ["bigDataUrl","longLabel","shortLabel","type","color","altColor"]
                     ihec_track["big_data_url"] = host_url + track["bigDataUrl"]  # contains ?proxy=true
-                    ihec_track["description_url"] = '%s/%s/' % (host_url, accession)
-                    if 'path' in vis_dataset:
-                        url = host_url + '/'.join(vis_dataset['path'].split('/')[0:-1])
-                        url += '/' + accession + '.html'
-                        ihec_track["description_url"] = url
+                    path = '/experiments/%s/@@hub/%s/%s.html' % (accession, vis_dataset.get('ucsc_assembly'), accession)
+                    ihec_track["description_url"] = host_url + path
                     md5sum = track.get('md5sum')
                     if md5sum:
                         ihec_track["md5sum"] = md5sum

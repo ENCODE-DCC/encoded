@@ -1035,32 +1035,24 @@ class VisDataset(object):
         self.vis_dataset['assembly'] = self.assembly
         self.vis_dataset['ucsc_assembly'] = self.ucsc_assembly
         self.vis_dataset["vis_id"]  = self.vis_id
-        self.vis_dataset["path"] = self.request.path
 
-
-        # plumbing for ihec, among other things:
         for term in self.vis_defines.encoded_dataset_terms():
-            if term in self.dataset:
-                self.vis_dataset[term] = self.dataset[term]
+            val = self.vis_defines.lookup_embedded_token(term, self.dataset)
+            if val is not None:
+                self.vis_dataset[term] = val
 
         if self.ihec is None:
             self.ihec = IhecDefines()
-        self.vis_dataset['molecule'] = self.ihec.molecule(self.dataset)
-        replicates = self.dataset.get("replicates", [])
-        if len(replicates) > 0:
-            biosample = replicates[0].get("library", {}).get("biosample", {})
-            if biosample is not None:
-                if 'sex' in biosample:
-                    self.vis_dataset['sex'] = biosample["sex"]
-                lineage = self.ihec.lineage(biosample)
-                if lineage is not None:
-                    self.vis_dataset['lineage'] = lineage
-                differentiation = self.ihec.differentiation(biosample)
-                if differentiation is not None:
-                    self.vis_dataset['differentiation'] = differentiation
-                taxon_id = biosample.get("organism",{}).get("taxon_id")
-                if taxon_id:
-                    self.vis_dataset['taxon_id'] = taxon_id
+        self.vis_dataset['ihec_sample'] = self.ihec.sample(self.dataset, self.vis_defines)
+        #self.vis_dataset['molecule'] = self.ihec.molecule(self.dataset)
+        #biosample = self.vis_defines.lookup_embedded_token('replicates.library.biosample', self.dataset)
+        #if biosample is not None:
+        #    lineage = self.ihec.lineage(biosample)
+        #    if lineage is not None:
+        #        self.vis_dataset['lineage'] = lineage
+        #    differentiation = self.ihec.differentiation(biosample)
+        #    if differentiation is not None:
+        #        self.vis_dataset['differentiation'] = differentiation
 
         longLabel = self.vis_def.get('longLabel','{assay_term_name} of {biosample_term_name} - {accession}')
         self.vis_dataset['longLabel'] = sanitize.label(self.vis_defines.convert_mask(longLabel))
