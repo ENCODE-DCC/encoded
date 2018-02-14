@@ -79,6 +79,7 @@ script:
         --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER" \
         --browser-arg-int build  "$TRAVIS_BUILD_NUMBER" \
         --browser-arg-int idleTimeout 300 \
+        --browser-arg-int chromedriverVersion 2.33 \
         --browser-arg name "$TRAVIS_REPO_SLUG $TRAVIS_BRANCH $TRAVIS_COMMIT" \
         --browser-arg browser "$BROWSER"
     fi
