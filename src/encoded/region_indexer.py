@@ -18,10 +18,12 @@ from snovault import DBSESSION, COLLECTIONS
 #    TransactionRecord,
 #)
 from snovault.elasticsearch.indexer import (
+    Indexer
+)
+from snovault.elasticsearch.indexer_state import (
     SEARCH_MAX,
     IndexerState,
-    Indexer,
-    all_uuids,
+    all_uuids
 )
 
 from snovault.elasticsearch.interfaces import (
