@@ -277,6 +277,8 @@ write_files:
   content: |
     http.port: 9201
 
+    indices.query.bool.max_clause_count: 8192
+
 - path: /etc/elasticsearch/jvm.options
   content: |
     ## GC configuration
