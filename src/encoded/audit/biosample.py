@@ -203,7 +203,7 @@ def audit_biosample_nih_institutional_certification(value, system):
     Check if library from human biosample and ENCODE4 award has NIH consent identifier.
     '''
     if (value.get('award', {}).get('rfa') == 'ENCODE4'
-            and value.get('organism', {}).get('name') == 'human'
+            and value.get('organism') == '/organisms/human/'
             and not value.get('nih_institutional_certification')):
         detail = ('Biosample {} is missing NIH institutional certification'
                   ' required for human data'.format(value['@id']))
@@ -238,7 +238,6 @@ function_dispatcher = {
                frame=['award',
                       'donor',
                       'donor.mutated_gene',
-                      'organism',
                       'part_of'])
 def audit_biosample(value, system):
     for function_name in function_dispatcher.keys():

@@ -131,6 +131,18 @@ def test_audit_biosample_donor_organism(testapp, base_biosample, base_human_dono
     assert any(error['category'] == 'inconsistent organism' for error in errors_list)
 
 
+def test_audit_biosample_consistent_organism(testapp, base_biosample, base_human_donor):
+    testapp.patch_json(base_biosample['@id'], {'donor': base_human_donor['@id']})
+    r = testapp.get(base_biosample['@id'] + '@@index-data')
+    audits = r.json['audit']
+    assert all(
+        [
+            detail['category'] != 'inconsistent organism'
+            for audit in audits.values() for detail in audit
+        ]
+    )
+
+
 def test_audit_biosample_status(testapp, base_biosample, construct_genetic_modification):
     testapp.patch_json(base_biosample['@id'], {
         'status': 'released',
