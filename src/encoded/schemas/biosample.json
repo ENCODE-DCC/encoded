@@ -830,6 +830,13 @@
             "type": "string",
             "description": "Health status of the model organism.",
             "comment": "model_organism_health_status is not valid for a human biosample."
+        },
+        "nih_institutional_certification": {
+            "type": "string",
+            "title": "NIH institutional certification",
+            "description": "Institutional certification given by the NIH for human biosamples.",
+            "comment": "Required for ENCODE4 human biosamples.",
+            "pattern": "^NIC[A-Z0-9]+$"
         }
     },
     "facets": {
@@ -1004,7 +1011,8 @@
         "references.title": 1.0,
         "award.pi.title": 1.0,
         "notes": 1.0,
-        "internal_tags": 1.0
+        "internal_tags": 1.0,
+        "nih_institutional_certification": 1.0
     },
     "changelog": "/profiles/changelogs/biosample.md"
 
