@@ -222,11 +222,12 @@ class Table extends React.Component {
         const sort = this.getSort();
 
         const headers = columns.map((column, index) => {
-            let className = 'icon';
-            if (column.path === sort.column) {
-                className += sort.reversed ? ' icon-chevron-up' : ' icon-chevron-down';
+            let className;
+            const sortable = context.non_sortable.indexOf(column.path) === -1;
+            if (column.path === sort.column && sortable) {
+                className = `icon ${sort.reversed ? 'icon-chevron-up' : 'icon-chevron-down'}`;
             }
-            return <ColumnHeader key={index} setSort={this.setSort} column={column} className={className} />;
+            return <ColumnHeader key={index} setSort={this.setSort} sortable={sortable} column={column} className={className} />;
         });
 
         const data = this.extractData(context['@graph']).concat(this.extractData(this.props.more));
@@ -268,14 +269,16 @@ class ColumnHeader extends React.Component {
     }
 
     setSort() {
-        this.props.setSort(this.props.column.path);
+        if (this.props.sortable) {
+            this.props.setSort(this.props.column.path);
+        }
     }
 
     render() {
-        const { column, className } = this.props;
+        const { column, className, sortable } = this.props;
 
         return (
-            <th onClick={this.setSort}>
+            <th onClick={this.setSort} className={sortable ? null : 'non-sortable'}>
                 {column.title}&nbsp;<i className={className} />
             </th>
         );
@@ -284,8 +287,15 @@ class ColumnHeader extends React.Component {
 
 ColumnHeader.propTypes = {
     setSort: PropTypes.func, // Parent function to handle a click in a column header
-    column: PropTypes.object,
+    column: PropTypes.object.isRequired,
     className: PropTypes.string, // CSS class string for column title
+    sortable: PropTypes.bool, // True if column isn't sortable
+};
+
+ColumnHeader.defaultProps = {
+    setSort: null,
+    className: '',
+    sortable: true,
 };
 
 
