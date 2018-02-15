@@ -1063,12 +1063,10 @@ class IhecDefines(object):
                 return "ChIP-seq"
             return "ChIP-seq " + target
         if vis_type in ["LRNA", "scRNA", "tkRNA"]:
-            label_words = vis_dataset['longLabel'].lower().split()
+            label_words = dataset['assay_title'].lower().split()
             if 'total' in label_words:
                 return 'total-RNA-Seq'
-            if 'polya' in label_words or 'cytosol' in label_words:
-                return 'mRNA-Seq'
-            return "RNA-seq"
+            return 'mRNA-Seq'
         if vis_type == "SRNA":
             return "smRNA-Seq"
         if vis_type == "miRNA":  # TODO: have to ask them
