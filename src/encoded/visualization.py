@@ -900,9 +900,10 @@ class VisDataset(object):
                     if pipe_key not in pipeline_files:
                         pipe['title'] = a_pipe.get('title')
                         pipe['version'] = '1'
-                        pipe['lab'] = a_pipe.get("lab",'unknown')
-                        if pipe['lab'].startswith('/labs/'):
-                            pipe['lab'] = pipe['lab'][6:-1]
+                        pipe['lab'] = a_file.get('lab',{}).get('title','unknown')
+                        #pipe['lab'] = a_pipe.get("lab",'unknown')
+                        #if pipe['lab'].startswith('/labs/'):
+                        #    pipe['lab'] = pipe['lab'][6:-1]
                         if pipe['title']:
                             if 'version' in pipe['title'].lower():  # REALLY LESS THAN IDEAL
                                 pipe['version'] = pipe['title'].lower().split('version')[-1].strip()
@@ -1043,7 +1044,10 @@ class VisDataset(object):
 
         if self.ihec is None:
             self.ihec = IhecDefines()
-        self.vis_dataset['ihec_sample'] = self.ihec.sample(self.dataset, self.vis_defines)
+        ihec_exp_type = self.ihec.exp_type(vis_type, self.dataset)
+        if ihec_exp_type is not None:
+            self.vis_dataset['ihec_exp_type'] = ihec_exp_type
+            self.vis_dataset['ihec_sample'] = self.ihec.sample(self.dataset, self.vis_defines)
         #self.vis_dataset['molecule'] = self.ihec.molecule(self.dataset)
         #biosample = self.vis_defines.lookup_embedded_token('replicates.library.biosample', self.dataset)
         #if biosample is not None:

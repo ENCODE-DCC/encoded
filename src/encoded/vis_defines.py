@@ -989,31 +989,36 @@ class IhecDefines(object):
     # Defines and formatting code for IHEC JSON
 
     def __init__(self):
-        self.assays = {}
+        self.samples = {}
         self.vis_defines = None
 
 
     def molecule(self, dataset):
         # ["total RNA", "polyA RNA", "cytoplasmic RNA", "nuclear RNA", "genomic DNA", "protein", "other"]
-        default = "genomic DNA"  # default
         replicates = dataset.get("replicates", [])
         if len(replicates) == 0:
-            return default
+            return None
         molecule = replicates[0].get("library", {}).get("nucleic_acid_term_name")
         if not molecule:
-            return default
+            return None
+        if molecule == "DNA":
+            return "genomic DNA"
         if molecule == "RNA":
-            descr = dataset.get('assay_term_name', '').lower()
-            #if 'total' in descr:
-            #    return "total RNA"
-            if 'poly' in descr:
-                return "polyA RNA"
-            elif 'nuclear' in descr:
-                return "nuclear RNA"
-            elif 'cyto' in descr:
-                return "cytoplasmic RNA"
+            # TODO: Can/should we distinguish "cytoplasmic RNA" and "nuclear RNA"
+            #descr = dataset.get('assay_term_name', '').lower()
+            #if 'nuclear' in descr:
+            #    return "nuclear RNA"
+            #if 'cyto' in descr:
+            #    return "cytoplasmic RNA"
             return "total RNA"
-        return default
+        if molecule == "polyadenylated mRNA":
+            return "polyA RNA"
+        if molecule == "miRNA":
+            return "other"  # TODO: should this be something else
+        if molecule == "protein":
+            return "protein"
+            return "total RNA"
+        return "genomic DNA"  # default
 
     def lineage(self, biosample):
         # TODO: faking lineage
@@ -1029,64 +1034,78 @@ class IhecDefines(object):
             return '.'.join(diff_slims)
         return None
 
-    def exp_type(self, vis_dataset):
+    def exp_type(self, vis_type, dataset):
         # For IHEC, a simple experiment type is needed:
         # TODO: EpiRR experiment type: ChIP-Seq Input, Histone H3K27ac, mRNA-Seq, total-RNA-Seq, Stranded Total RNA-Seq
         # /Ihec_metadata_specification.md: Chromatin Accessibility, Bisulfite-Seq, MeDIP-Seq, MRE-Seq, ChIP-Seq, mRNA-Seq, smRNA-Seq
 
-        vis_type = vis_dataset['vis_type']
-        if vis_type is not None:
-            if vis_type in ["ChIP", "GGRChIP", "HIST"]:
-                target = vis_dataset.get('target',{}).get('target',{}).get('groups',{'unknown':1}).keys()[0]
-                if vis_type == "HIST":
-                    return "Histone " + target
-                if target == "unknown":
-                    return "ChIP-seq"
-                return "ChIP-seq " +  target
-            if vis_type in ["LRNA", "scRNA", "tkRNA"]:
-                label_words = vis_dataset['longLabel'].lower().split()
-                if 'total' in label_words:
-                    return 'total-RNA-Seq'
-                if 'cytosol' in label_words:
-                    return 'mRNA-Seq'
-                return "RNA-seq"
-            if vis_type in ["SRNA", "miRNA"]:
-                return "smRNA-Seq"
-            if vis_type == "DNASE":
-                return "Chromatin Accessibility"
-            if vis_type == "ATAC":
-                return "ATAC-seq"
-            if vis_type == "ChIA":
-                return "ChIA-pet"
-            if vis_type == "HiC":
-                return "Hi-C"
-            if vis_type == "TSS":
-                return "Rampage"
-            if vis_type == "eCLIP":
-                return "e-CLIP"
-            if vis_type == "WGBS":
-                return "DNA Methylation"
-            if vis_type == "ANNO":
-                return "Annotation"
-        return vis_dataset.get('assay_term_name','Unknown')
+        # DNA Methylation --> DNA Methylation
+        # DNA accessibility --> Chromatin Accessibility
+        # if assay_slims=Transcription, get assay_title
+        # polyA RNA-seq --> mRNA-Seq
+        # total RNA-seq --> total-RNA-Seq
+        # small RNA-seq --> smRNA-Seq
+        # microRNA-seq/transcription profiling by array assay/microRNA counts/ - I have to ask them
+        # if assay_slims=DNA Binding, then get the target.label
+        # control --> ChIP-Seq Input
+        # if not control, then look at target.investigated_as to contain 'histone' or 'transcription factor'
+        # Then either 'Histone <target.label>' or 'Transcription Factor <target.label>' (example: 'Histone H3K4me3')
+
+        if vis_type in ["ChIP", "GGRChIP", "HIST"]:
+            target = dataset.get('target',{}).get('label','unknown')
+            # Controls have no visualizable foles so we shouldn't see them, however...
+            # Chip-seq Controls would have target.investigated_as=Control
+            if target.lower() == 'control':
+                target = 'Input'
+            if vis_type == "HIST":
+                return "Histone " + target
+            if target == "unknown":
+                return "ChIP-seq"
+            return "ChIP-seq " + target
+        if vis_type in ["LRNA", "scRNA", "tkRNA"]:
+            label_words = vis_dataset['longLabel'].lower().split()
+            if 'total' in label_words:
+                return 'total-RNA-Seq'
+            if 'polya' in label_words or 'cytosol' in label_words:
+                return 'mRNA-Seq'
+            return "RNA-seq"
+        if vis_type == "SRNA":
+            return "smRNA-Seq"
+        if vis_type == "miRNA":  # TODO: have to ask them
+            return "smRNA-Seq"
+        if vis_type == "DNASE":
+            return "Chromatin Accessibility"
+        if vis_type == "ATAC":
+            return "Chromatin Accessibility"  # TODO Confirm
+        if vis_type == "WGBS":
+            return "DNA Methylation"
+        #if vis_type == "ChIA":
+        #    return "ChIA-pet"
+        #if vis_type == "HiC":
+        #    return "Hi-C"
+        #if vis_type == "TSS":
+        #    return "Rampage"
+        #if vis_type == "eCLIP":
+        #    return "e-CLIP"
+        #if vis_type == "ANNO":
+        #    return "Annotation"
+        return None  # vis_dataset.get('assay_term_name','Unknown')
 
     def experiment_attributes(self, vis_dataset):
         assay_id = vis_dataset.get('assay_term_id')
         if not assay_id:
             return {}
-        if assay_id in self.assays:
-            return self.assays[assay_id]
         attributes = {}
-        attributes["experiment_ontology_uri"] = assay_id
+        experiment_type = vis_dataset.get('ihec_exp_type')
+        if experiment_type is None:
+            return {}
+        attributes["experiment_type"] = experiment_type
+        attributes["experiment_ontology_uri"] = 'http://purl.obolibrary.org/obo/' + assay_id.replace(':','_')
         assay_name = vis_dataset.get('assay_term_name')
         if assay_name:
             attributes["assay_type"] = assay_name
-        attributes["experiment_type"] = self.exp_type(vis_dataset)
-        # "experiment_type": assay_name # EpiRR
         # "reference_registry_id": "..."     IHEC Reference Epigenome registry ID,
         #                                     assigned after submitting to EpiRR
-
-        self.assays[assay_id] = attributes
         return attributes
 
     def analysis_attributes(self, vis_dataset):
@@ -1118,14 +1137,8 @@ class IhecDefines(object):
             biosample_type = biosample_type.lower()
             if biosample_type in ["tissue", "whole organism"]:  # "whole organism" (but really they should add another enum) - hitz
                 return "Primary Tissue"
-                # Sample “ENCBS012ALX” requires: "donor_id", "donor_age", "donor_age_unit", "donor_life_stage",
-                #   "donor_health_status", "donor_sex", "donor_ethnicity", "tissue_type", "tissue_depot"
             if biosample_type in ["primary cell", "stem cell"]: # "stem cell" (I think) = hitz
                 return "Primary Cell Culture"
-                # Sample “ENCBS094MGI” requires: "donor_id", "donor_age", "donor_age_unit", "donor_life_stage"
-                #   "donor_health_status", "donor_sex", "donor_ethnicity", "cell_type", "culture_conditions"
-            #if biosample_type in ["immortalized cell line", "induced pluripotent stem cell", "in vitro differentiated cells"]:
-            #    return "Cell Line"
             return "Cell Line"
 
     def sample(self, dataset, vis_defines=None):
@@ -1139,6 +1152,14 @@ class IhecDefines(object):
         biosample = vis_defines.lookup_embedded_token('replicates.library.biosample', dataset)
         if biosample is None:
             return {}
+        sample_id = biosample['accession']
+        if sample_id in self.samples:
+            return self.samples[sample_id]
+
+        molecule = self.molecule(dataset)
+        if molecule is None:
+            return {}
+        sample['molecule'] = molecule
         lineage = self.lineage(biosample)
         if lineage is not None:
             sample['lineage'] = lineage
@@ -1156,7 +1177,6 @@ class IhecDefines(object):
         sample["biomaterial_type"] = self.biomaterial_type(biosample.get('biosample_type')) # ["Cell Line","Primary Cell", ...
         sample["line"] = biosample.get('biosample_term_name', 'none')
         sample["medium"] = "unknown"                                                    # We don't have
-        sample['molecule'] = self.molecule(dataset)
         sample["disease"] = biosample.get('health_status',"Healthy").capitalize()  #  assume all samples are healthy - hitz
         if sample["disease"] == "Healthy":
             sample["disease_ontology_uri"] = "http://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code=C115935&ns=NCI_Thesaurus"
@@ -1164,6 +1184,7 @@ class IhecDefines(object):
             # Note only term for disease ontology is healthy=C115935.  No search url syntax known
             sample["disease_ontology_uri"] = "https://ncit.nci.nih.gov/ncitbrowser/pages/multiple_search.jsf?nav_type=terminologies"
         sample["sex"] = biosample.get('sex','unknown').capitalize()
+
         if sample["biomaterial_type"] in ["Primary Tissue", "Primary Cell Culture"]:
             sample["donor_sex"] = sample["sex"]
             donor = biosample.get('donor')
@@ -1186,6 +1207,7 @@ class IhecDefines(object):
             elif sample["biomaterial_type"] == "Primary Cell Culture":
                 sample["cell_type"] = sample["line"]
                 sample["culture_conditions"] = "unknwon" # applied_modifications=[], treatments=[], genetic_modifications=[], characterizations=[]
+        self.samples[sample_id] = sample
         return sample
 
     def view_type(self, view, track):
@@ -1227,7 +1249,7 @@ class IhecDefines(object):
         # }
         ihec_json["hub_description"] = hub_description
 
-        samples = {}
+        self.samples = {}  # Start this empty, just in case it was used in making samples from datasets
         # "samples": {             one per biosample
         #     "sample_id_1": {                   biosample_term_name, molecule
         #         "sample_ontology_uri": "...",  UBERON or CL
@@ -1245,7 +1267,7 @@ class IhecDefines(object):
         #     },
         #     "sample_id_2": { ... }
         # }
-        ihec_json["samples"] = samples
+        ihec_json["samples"] = self.samples
 
         datasets = {}
         # "datasets": {
@@ -1306,26 +1328,28 @@ class IhecDefines(object):
             dataset = {}
             datasets[accession] = dataset
 
-            # Find/create sample:
-            biosample_accession = vis_dataset.get('biosample_accession')
-            if biosample_accession is None:
-                log.warn("vis_dataset %s is missing biosample", accession)
-                continue
-            sample_id = biosample_accession
-            if sample_id not in samples:
-                sample = vis_dataset.get('ihec_sample',{})
-                if not sample:
-                    log.warn("vis_dataset %s is missing sample", accession)
-                    continue
-                samples[sample_id] = sample
-            dataset["sample_id"] = sample_id
-
+            # Check if experiment is IHEC-able first
             attributes = self.experiment_attributes(vis_dataset)
             if attributes:
                 dataset["experiment_attributes"] = attributes
             else:
                 log.warn("Could not determine IHEC experiment attributes for %s", accession)
                 continue
+
+            # Find/create sample:
+            biosample_accession = vis_dataset.get('biosample_accession')
+            if biosample_accession is None:
+                log.warn("vis_dataset %s is missing biosample", accession)
+                continue
+            sample_id = biosample_accession
+            if sample_id not in self.samples:
+                sample = vis_dataset.get('ihec_sample',{})
+                if not sample:
+                    log.warn("vis_dataset %s is missing sample", accession)
+                    continue
+                self.samples[sample_id] = sample
+            dataset["sample_id"] = sample_id
+
             attributes = self.analysis_attributes(vis_dataset)
             if attributes:
                 dataset["analysis_attributes"] = attributes

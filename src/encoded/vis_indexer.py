@@ -21,10 +21,13 @@ import json
 import requests
 from pkg_resources import resource_filename
 from snovault.elasticsearch.indexer import (
-    IndexerState,
     Indexer,
-    get_current_xmin,
-    all_uuids
+    get_current_xmin
+)
+from snovault.elasticsearch.indexer_state import (
+    IndexerState,
+    all_uuids,
+    SEARCH_MAX
 )
 
 from .vis_defines import (
@@ -35,7 +38,6 @@ from .visualization import vis_cache_add
 
 
 log = logging.getLogger(__name__)
-SEARCH_MAX = 99999  # OutOfMemoryError if too high
 
 
 def includeme(config):
