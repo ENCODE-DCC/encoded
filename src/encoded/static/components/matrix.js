@@ -268,7 +268,7 @@ class Matrix extends React.Component {
                                                 parsed.query['y.limit'] = null;
                                                 delete parsed.search; // this makes format compose the search string out of the query object
                                                 const groupHref = url.format(parsed);
-                                                const rows = [<tr key={group.key}>
+                                                const rows = [<tr key={`group-${group.key}`}>
                                                     <th colSpan={colCount + 1} style={{ textAlign: 'left', backgroundColor: groupColor }}>
                                                         <a href={groupHref} style={{ color: '#fff' }}>{group.key}</a>
                                                     </th>
@@ -283,7 +283,7 @@ class Matrix extends React.Component {
                                                 rows.push(...groupRows.map((yb) => {
                                                     const href = `${searchBase}&${secondaryYGrouping}=${globals.encodedURIComponent(yb.key)}`;
                                                     return (
-                                                        <tr key={yb.key}>
+                                                        <tr key={`yb-${yb.key}`}>
                                                             <th style={{ backgroundColor: '#ddd', border: 'solid 1px white' }}><a href={href}>{yb.key}</a></th>
                                                             {xBuckets.map((xb, k) => {
                                                                 if (k < xLimit) {
