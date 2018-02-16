@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
 import url from 'url';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { svgIcon } from '../libs/svg-icons';
 import { FetchedData, Param } from './fetched';
 import * as globals from './globals';
@@ -282,53 +283,210 @@ ColumnHeader.propTypes = {
 };
 
 
-class ColumnSelector extends React.Component {
+class ColumnSelectorControls extends React.Component {
     constructor() {
         super();
 
         // Set initial React state.
         this.state = {
-            open: false,
+            selectedSort: 'default',
         };
 
-        // Bind this to non-React methods.
-        this.toggle = this.toggle.bind(this);
-        this.toggleColumn = this.toggleColumn.bind(this);
+        // Bind `this` to non-React methods.
+        this.handleSortChange = this.handleSortChange.bind(this);
     }
 
-    toggle(e) {
-        e.preventDefault();
-        this.setState(prevState => ({
-            open: !prevState.open,
-        }));
-    }
-
-    toggleColumn(path) {
-        this.props.toggleColumn(path);
+    handleSortChange(e) {
+        // Called when the user changes the sorting option. Sets a component state so that the
+        // controlled <select> component renders properly. It then calls the parent's callback to
+        // react to the new sorting option.
+        this.setState({ selectedSort: e.target.value });
+        this.props.handleSortChange(e.target.value);
     }
 
     render() {
-        const columnPaths = Object.keys(this.props.columns);
+        const { handleSelectAll, handleSelectOne, firstColumnTitle } = this.props;
+
         return (
-            <div style={{ display: 'inline-block', position: 'relative' }}>
-                <button className={`btn btn-info btn-sm${this.state.open ? ' active' : ''}`} onClick={this.toggle} title="Choose columns">
-                    <i className="icon icon-columns" /> Columns
-                </button>
-                {this.state.open && <div style={{ position: 'absolute', top: '30px', width: '230px', backgroundColor: '#fff', padding: '.5em', border: 'solid 1px #ccc', borderRadius: 3, zIndex: 1 }}>
-                    <h4>Columns</h4>
-                    {columnPaths.map((columnPath) => {
-                        const column = this.props.columns[columnPath];
-                        return <ColumnItem key={columnPath} columnPath={columnPath} column={column} toggleColumn={this.toggleColumn} />;
-                    })}
-                </div>}
+            <div className="column-selector__controls">
+                <div className="column-selector__utility-buttons">
+                    <button onClick={handleSelectAll} className="btn btn-info">Select all</button>
+                    <button onClick={handleSelectOne} className="btn btn-info">Select {firstColumnTitle} only</button>
+                </div>
+                <div className="column-selector__sort-selector">
+                    <select className="form-control--select" value={this.state.selectedSort} onChange={this.handleSortChange}>
+                        <option value="default">Default sort</option>
+                        <option value="alpha">Alphabetical sort</option>
+                    </select>
+                </div>
             </div>
+        );
+    }
+}
+
+ColumnSelectorControls.propTypes = {
+    handleSelectAll: PropTypes.func.isRequired, // Callback when Select All button clicked
+    handleSelectOne: PropTypes.func.isRequired, // Callback when SelectOne button clicked
+    handleSortChange: PropTypes.func.isRequired, // Callback when sorting option changed
+    firstColumnTitle: PropTypes.string.isRequired, // Title of first column
+};
+
+
+/**
+ * Extract the list of column paths from `columns`, with an order according to the given sorting
+ * option.
+ *
+ * @param {object} columns - Object with column states controlled by <Report> component.
+ * @param {string} sortOption - Current sort option; 'default' or 'alpha' currently.
+ * @return (array) - List of column paths, optionally sorted.
+ */
+function getColumnPaths(columns, sortOption) {
+    const columnPaths = Object.keys(columns);
+    if (sortOption === 'alpha') {
+        columnPaths.sort((aKey, bKey) => {
+            const aTitle = columns[aKey].title.toLowerCase();
+            const bTitle = columns[bKey].title.toLowerCase();
+            return (aTitle < bTitle ? -1 : (bTitle < aTitle ? 1 : 0));
+        });
+    }
+    return columnPaths;
+}
+
+
+// Displays a modal dialog with every possible column for the type of object being displayed.
+// This lets you choose which columns you want to appear in the report.
+class ColumnSelector extends React.Component {
+    constructor(props) {
+        super(props);
+
+        // Set the initial React states.
+        this.state = {
+            columns: props.columns, // Make (effectively) a local mutatable copy of the columns
+            sortOption: 'default', // Default sorting option
+        };
+
+        // Bind `this` to non-React methods.
+        this.submitHandler = this.submitHandler.bind(this);
+        this.toggleColumn = this.toggleColumn.bind(this);
+        this.handleSelectAll = this.handleSelectAll.bind(this);
+        this.handleSelectOne = this.handleSelectOne.bind(this);
+        this.handleSortChange = this.handleSortChange.bind(this);
+    }
+
+    toggleColumn(columnPath) {
+        // Called every time a column's checkbox gets clicked on or off in the modal. `columnPath`
+        // is the query-string term corresponding to each column. First, if the column is getting
+        // turned off, make sure we have at least one other column selected, because at least one
+        // column has to be selected.
+        if (this.state.columns[columnPath].visible) {
+            // The clicked column is currently visible, so before we make it invisible, make sure
+            // at least one other column is also visible.
+            const allColumnKeys = Object.keys(this.state.columns);
+            const anotherVisible = allColumnKeys.some(key => key !== columnPath && this.state.columns[key].visible);
+            if (!anotherVisible) {
+                // A checkbox is being turned off, and no other checkbox is checked, so ignore the
+                // click.
+                return;
+            }
+        }
+
+        // Either a checkbox is being turned on, or it's being turned off and another checkbox is
+        // still checked. Change the component state to reflect the new checkbox states. Presumably
+        // if the setState callback returned no properties setState becomes a null op, so the above
+        // test could be done inside the setState callback. The React docs don't say what happens
+        // if you return no properties (https://reactjs.org/docs/react-component.html#setstate) so
+        // I avoided doing this.
+        this.setState((prevState) => {
+            // Toggle the `visible` state corresponding to the column whose checkbox was toggled.
+            // Then set that as the new React state which causes a redraw of the modal with all the
+            // checkboxes in the correct state.
+            const columns = Object.assign({}, prevState.columns);
+            columns[columnPath] = Object.assign({}, columns[columnPath]);
+            columns[columnPath].visible = !columns[columnPath].visible;
+            return { columns };
+        });
+    }
+
+    submitHandler() {
+        // Called when the user clicks the Select button in the column checkbox modal, which
+        // sets a new state for all checked report columns.
+        this.props.setColumnState(this.state.columns);
+    }
+
+    handleSelectAll() {
+        // Called when the "Select all" button is clicked.
+        this.setState((prevState) => {
+            // For every column in this.state.columns, set its `visible` property to true.
+            const columns = Object.assign({}, prevState.columns);
+            Object.keys(columns).forEach((columnPath) => {
+                columns[columnPath] = Object.assign({}, columns[columnPath]);
+                columns[columnPath].visible = true;
+            });
+            return { columns };
+        });
+    }
+
+    handleSelectOne() {
+        // Called when the "Select (first) only" button is clicked.
+        this.setState((prevState) => {
+            // Set all columns to invisible first.
+            const columns = Object.assign({}, prevState.columns);
+            const columnPaths = Object.keys(columns);
+            columnPaths.forEach((columnPath) => {
+                columns[columnPath] = Object.assign({}, columns[columnPath]);
+                columns[columnPath].visible = false;
+            });
+
+            // Now set the column for the first key to true so that only it's selected.
+            columns[columnPaths[0]].visible = true;
+            return { columns };
+        });
+    }
+
+    // Called when the sorting option gets changed.
+    handleSortChange(sortOption) {
+        this.setState({ sortOption });
+    }
+
+    render() {
+        const { columns } = this.state;
+        const firstColumnKey = Object.keys(columns)[0];
+
+        // Get the column paths, sorting them by the corresponding column title if the user asked
+        // for that.
+        const columnPaths = getColumnPaths(columns, this.state.sortOption);
+
+        return (
+            <Modal addClasses="column-selector">
+                <ModalHeader title="Select columns to view" closeModal={this.props.closeSelector} />
+                <ColumnSelectorControls
+                    handleSelectAll={this.handleSelectAll}
+                    handleSelectOne={this.handleSelectOne}
+                    handleSortChange={this.handleSortChange}
+                    firstColumnTitle={columns[firstColumnKey].title}
+                />
+                <ModalBody>
+                    <div className="column-selector__selectors">
+                        {columnPaths.map((columnPath) => {
+                            const column = columns[columnPath];
+                            return <ColumnItem key={columnPath} columnPath={columnPath} column={column} toggleColumn={this.toggleColumn} />;
+                        })}
+                    </div>
+                </ModalBody>
+                <ModalFooter
+                    closeModal={this.props.closeSelector}
+                    submitBtn={this.submitHandler}
+                    submitTitle="View selected columns"
+                />
+            </Modal>
         );
     }
 }
 
 ColumnSelector.propTypes = {
     columns: PropTypes.object.isRequired,
-    toggleColumn: PropTypes.func.isRequired,
+    setColumnState: PropTypes.func.isRequired,
+    closeSelector: PropTypes.func.isRequired,
 };
 
 
@@ -349,7 +507,7 @@ class ColumnItem extends React.Component {
         const { column } = this.props;
 
         return (
-            <div>
+            <div className="column-selector__selector-item">
                 <input type="checkbox" onChange={this.toggleColumn} checked={column.visible} />&nbsp;
                 <span onClick={this.toggleColumn} style={{ cursor: 'pointer' }}>{column.title}</span>
             </div>
@@ -378,12 +536,15 @@ class Report extends React.Component {
             to: from + size,
             loading: false,
             more: [],
+            selectorOpen: false, // True if column selector modal is open
         };
 
         // Bind this to non-React methods.
         this.setSort = this.setSort.bind(this);
-        this.toggleColumn = this.toggleColumn.bind(this);
+        this.setColumnState = this.setColumnState.bind(this);
         this.loadMore = this.loadMore.bind(this);
+        this.handleSelectorClick = this.handleSelectorClick.bind(this);
+        this.closeSelector = this.closeSelector.bind(this);
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
@@ -411,20 +572,13 @@ class Report extends React.Component {
         this.context.navigate(url.format(parsedUrl));
     }
 
-    toggleColumn(toggledPath) {
+    setColumnState(newColumns) {
+        // Gets called when the user clicks the Select button in the ColumnSelector modal.
+        // `newColumns` has the same format as `columns` returned from `columnChoices`, but
+        // `newColumns` has the user's chosen columns from the modal, while `columns` has the
+        // columns selected by the query string.
         const parsedUrl = url.parse(this.context.location_href, true);
-        const type = parsedUrl.query.type;
-        const schema = this.props.schemas[type];
-        const queryFields = parsedUrl.query.field ? (typeof parsedUrl.query.field === 'object' ? parsedUrl.query.field : [parsedUrl.query.field]) : undefined;
-        const columns = columnChoices(schema, queryFields);
-
-        const fields = [];
-        _.mapObject(columns, (column, path) => {
-            if (path === toggledPath ? !column.visible : column.visible) {
-                fields.push(path);
-            }
-        });
-        parsedUrl.query.field = fields;
+        parsedUrl.query.field = Object.keys(newColumns).filter(columnPath => newColumns[columnPath].visible);
         delete parsedUrl.search;
         this.context.navigate(url.format(parsedUrl));
     }
@@ -457,6 +611,16 @@ class Report extends React.Component {
             to: this.state.to + this.state.size,
             loading: true,
         });
+    }
+
+    handleSelectorClick() {
+        // Handle click on the column selector button by opening the modal.
+        this.setState({ selectorOpen: true });
+    }
+
+    closeSelector() {
+        // Close the column selector modal.
+        this.setState({ selectorOpen: false });
     }
 
     render() {
@@ -503,7 +667,9 @@ class Report extends React.Component {
                                         return <a href={href} className="btn btn-info btn-sm btn-svgicon" title={view.title} key={i}>{svgIcon(view2svg[view.icon])}</a>;
                                     })}
                                 </div>
-                                <ColumnSelector columns={columns} toggleColumn={this.toggleColumn} />
+                                <button className="btn btn-info btn-sm" title="Choose columns" onClick={this.handleSelectorClick}>
+                                    <i className="icon icon-columns" /> Columns
+                                </button>
                                 <a className="btn btn-info btn-sm" href={context.download_tsv} data-bypass>Download TSV</a>
                             </div>
                             <Table context={context} more={this.state.more} columns={columns} setSort={this.setSort} />
@@ -518,6 +684,13 @@ class Report extends React.Component {
                         </div>
                     </div>
                 </div>
+                {this.state.selectorOpen ?
+                    <ColumnSelector
+                        columns={columns}
+                        setColumnState={this.setColumnState}
+                        closeSelector={this.closeSelector}
+                    />
+                : null}
             </div>
         );
     }
