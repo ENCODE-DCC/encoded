@@ -164,7 +164,7 @@
             "comment": "The culture_harvest_date property is restricted to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "properties": {
                 "biosample_type": {
-                    "enum": ["tissue", "primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
                 }
             }
         },
@@ -172,17 +172,37 @@
             "comment": "The culture_start_date property is restricted to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "properties": {
                 "biosample_type": {
-                    "enum": ["tissue", "primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
                 }
             }
         },
         "starting_amount":{
             "required": ["starting_amount_units"],
-            "comment": "Biosample with a specified starting_amount requires starting_amount_units specification."
+            "comment": "Biosamples with a specified starting_amount require starting_amount_units to also be specified."
         },
         "starting_amount_units": {
             "required":["starting_amount"],
-            "comment": "Biosample with a specified starting_amount_units requires starting_amount specification."
+            "comment": "Biosamples with a specified starting_amount_units require starting_amount to also be specified."
+        },
+        "PMI":{
+            "required": ["PMI_units"],
+            "comment": "Tissue biosamples with a specified PMI require PMI_units to also be specified.",
+            "properties": {
+                "biosample_type": {
+                    "comment": "The PMI property is restricted to biosamples with biosample_type = tissue.",
+                    "enum": ["tissue"]
+                }
+            }
+        },
+        "PMI_units": {
+            "required":["PMI"],
+            "comment": "Tissue biosamples with a specified PMI_units require PMI to also be specified.",
+            "properties": {
+                "biosample_type": {
+                    "comment": "The PMI_units property is restricted to biosamples with biosample_type = tissue.",
+                    "enum": ["tissue"]
+                }
+            }
         },
         "model_organism_age_units": {
             "required":["model_organism_age"],
@@ -614,6 +634,23 @@
                 "whole animals",
                 "whole embryos",
                 "μg"
+            ]
+        },
+        "PMI": {
+            "title": "Post-mortem interval",
+            "description": "The amount of time elapsed since death.",
+            "type": "integer"
+        },
+        "PMI_units": {
+            "title": "Post-mortem interval units",
+            "description": "The unit in which the PMI time was reported.",
+            "type": "string",
+            "enum": [
+                "second",
+                "minute",
+                "hour",
+                "day",
+                "week"
             ]
         },
         "model_organism_sex": {
