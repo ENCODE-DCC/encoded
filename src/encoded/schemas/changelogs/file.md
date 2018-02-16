@@ -1,5 +1,7 @@
 ## Changelog for file.json
 
+* *fastq_signature* list items (colon separated flowcell, lane, read-end and barcode items) now can include 3 as the read-end portion of the signature item.
+
 ### Schema version 12
 
 * *run_type* and *mapped_run_type* were limited to only "single-ended" and "paired-ended" types
