@@ -291,7 +291,6 @@ def metadata_tsv(context, request):
         content_disposition='attachment;filename="%s"' % 'metadata.tsv'
     )
 
-
 @view_config(route_name='batch_download', request_method='GET')
 def batch_download(context, request):
     # adding extra params to get required columns
@@ -305,32 +304,30 @@ def batch_download(context, request):
         search_params=request.matchdict['search_params']
     )
     files = [metadata_link]
-    if 'files.file_type' in param_list:
-        for exp in results['@graph']:
-            for f in exp.get('files', []):
-                if f['file_type'] in param_list['files.file_type']:
-                    if 'restricted' in f and f['restricted'] == 'true':
-                        continue
-                    else:
-                        files.append('{host_url}{href}'.format(
-                            host_url=request.host_url,
-                            href=f['href']
-                        ))
-    else:
-        for exp in results['@graph']:
-            for f in exp.get('files', []):
-                if 'restricted' in f and f['restricted'] == 'true':
-                    continue
-                else:
-                    files.append('{host_url}{href}'.format(
-                        host_url=request.host_url,
-                        href=f['href']
-                    ))
+    exp_files_gen = filter_restricted_files(results)
+    for exp_file in exp_files_gen:
+        if exp_file['file_type'] in param_list.get('files.file_type', []):
+            files.append(
+                '{host_url}{href}'.format(
+                    host_url=request.host_url,
+                    href=exp_file['href'],
+                )
+            )
     return Response(
         content_type='text/plain',
         body='\n'.join(files),
         content_disposition='attachment; filename="%s"' % 'files.txt'
     )
+
+
+def filter_restricted_files(results):
+    files_gen = (
+        exp_file
+        for exp in results['@graph']
+        for exp_file in exp.get('files', [])
+        if not exp_file.get('restricted') == True
+    )
+    return files_gen
 
 
 def lookup_column_value(value, path):
