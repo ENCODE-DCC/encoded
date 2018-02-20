@@ -112,6 +112,13 @@ const HumanDonor = (props) => {
                             </div>
                         : null}
 
+                        {context.submitter_comment ?
+                            <div data-test="submittercomment">
+                                <dt>Submitter comment</dt>
+                                <dd>{context.submitter_comment}</dd>
+                            </div>
+                        : null}
+
                         {tagBadges ?
                             <div className="tag-badges" data-test="tags">
                                 <dt>Tags</dt>
@@ -309,6 +316,13 @@ const MouseDonor = (props) => {
                                 <dd>{tagBadges}</dd>
                             </div>
                         : null}
+
+                        {context.submitter_comment ?
+                            <div data-test="submittercomment">
+                                <dt>Submitter comment</dt>
+                                <dd>{context.submitter_comment}</dd>
+                            </div>
+                        : null}
                     </dl>
 
                     {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
@@ -431,6 +445,14 @@ const FlyWormDonor = (props) => {
                             <div data-test="external-resources">
                                 <dt>External resources</dt>
                                 <dd><DbxrefList context={context} dbxrefs={context.dbxrefs} /></dd>
+                            </div>
+                        : null}
+
+
+                        {context.submitter_comment ?
+                            <div data-test="submittercomment">
+                                <dt>Submitter comment</dt>
+                                <dd>{context.submitter_comment}</dd>
                             </div>
                         : null}
 

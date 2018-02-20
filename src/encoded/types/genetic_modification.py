@@ -23,6 +23,7 @@ class GeneticModification(Item):
     name_key = 'accession'
     embedded = [
         'characterizations',
+        'characterizations.lab',
         'modified_site_by_target_id',
         'treatments',
         'lab'
