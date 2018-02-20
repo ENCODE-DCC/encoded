@@ -122,7 +122,7 @@ def check_control_read_depth_standards(value,
                     'usable fragments. ' + \
                     'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' + \
                     'histone mark {} '.format(control_to_target) + \
-                    'is 40 million usable fragments, the recommended number of usable ' + \
+                    'is 35 million usable fragments, the recommended number of usable ' + \
                     'fragments is > 45 million. (See /data-standards/chip-seq/ )'
             else:
                 detail = 'Control alignment file {} has {} '.format(
@@ -131,13 +131,13 @@ def check_control_read_depth_standards(value,
                     'usable fragments. ' + \
                     'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' + \
                     'histone mark {} '.format(control_to_target) + \
-                    'is 40 million usable fragments, the recommended number of usable ' + \
+                    'is 35 million usable fragments, the recommended number of usable ' + \
                     'fragments is > 45 million. (See /data-standards/chip-seq/ )'
-            if read_depth >= 40000000 and read_depth < marks['broad']:
+            if read_depth >= marks['broad']['minimal'] and read_depth < marks['broad']['recommended']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
-            elif read_depth >= 5000000 and read_depth < 40000000:
+            elif read_depth >= marks['broad']['low'] and read_depth < marks['broad']['minimal']:
                 yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
-            elif read_depth < 5000000:
+            elif read_depth < marks['broad']['low']:
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
         elif 'narrow histone mark' in target_investigated_as:  # else:
             if 'assembly' in value:
@@ -159,11 +159,11 @@ def check_control_read_depth_standards(value,
                     'histone mark {} '.format(control_to_target) + \
                     'is 10 million usable fragments, the recommended number of usable ' + \
                     'fragments is > 20 million. (See /data-standards/chip-seq/ )'
-            if read_depth >= 10000000 and read_depth < marks['narrow']:
+            if read_depth >= marks['narrow']['minimal'] and read_depth < marks['narrow']['recommended']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
-            elif read_depth >= 5000000 and read_depth < 10000000:
+            elif read_depth >= marks['narrow']['low'] and read_depth < marks['narrow']['minimal']:
                 yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
-            elif read_depth < 5000000:
+            elif read_depth < marks['narrow']['low']:
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
         else:
             if 'assembly' in value:
@@ -185,11 +185,11 @@ def check_control_read_depth_standards(value,
                     '{} and investigated as a transcription factor '.format(control_to_target) + \
                     'is 10 million usable fragments, the recommended number of usable ' + \
                     'fragments is > 20 million. (See /data-standards/chip-seq/ )'
-            if read_depth >= 10000000 and read_depth < marks['narrow']:
+            if read_depth >= marks['TF']['minimal'] and read_depth < marks['TF']['recommended']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
-            elif read_depth >= 3000000 and read_depth < 10000000:
+            elif read_depth >= marks['TF']['low'] and read_depth < marks['TF']['minimal']:
                 yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
-            elif read_depth < 3000000:
+            elif read_depth < marks['TF']['low']:
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
     return
 
@@ -1361,7 +1361,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                 yield AuditFailure('insufficient read depth',
                                    detail, level='NOT_COMPLIANT')
         else:
-            if read_depth >= marks['narrow'] and read_depth < marks['broad']:
+            if read_depth >= marks['narrow']['recommended'] and read_depth < marks['broad']['recommended']:
                 if 'assembly' in file_to_check:
                     detail = 'Control alignment file {} mapped using {} assembly has {} '.format(
                         file_to_check['@id'],
@@ -1380,8 +1380,8 @@ def check_file_chip_seq_read_depth(file_to_check,
                         'histone marks ' + \
                         'is 20 million usable fragments, the recommended number of usable ' + \
                         'fragments is > 45 million. (See /data-standards/chip-seq/ )'
-                yield AuditFailure('low read depth', detail, level='INTERNAL_ACTION')
-            if read_depth < marks['narrow']:
+                yield AuditFailure('insufficient read depth for broad peaks control', detail, level='INTERNAL_ACTION')
+            if read_depth < marks['narrow']['recommended']:
                 if 'assembly' in file_to_check:
                     detail = 'Control alignment file {} mapped using {} assembly has {} '.format(
                         file_to_check['@id'],
@@ -1408,9 +1408,9 @@ def check_file_chip_seq_read_depth(file_to_check,
                         'histone marks or transcription factors ' + \
                         'is 10 million usable fragments, the recommended number of usable ' + \
                         'fragments is > 20 million. (See /data-standards/chip-seq/ )'
-                if read_depth >= 10000000:
+                if read_depth >= marks['narrow']['minimal']:
                     yield AuditFailure('low read depth', detail, level='WARNING')
-                elif read_depth >= 3000000 and read_depth < 10000000:
+                elif read_depth >= marks['narrow']['low'] and read_depth < marks['narrow']['minimal']:
                     yield AuditFailure('insufficient read depth',
                                        detail, level='NOT_COMPLIANT')
                 else:
@@ -1422,7 +1422,7 @@ def check_file_chip_seq_read_depth(file_to_check,
             pipeline_objects, 'ChIP-seq read mapping')
         if pipeline_object:
             if target_name in ['H3K9me3-human', 'H3K9me3-mouse']:
-                if read_depth < 45000000:
+                if read_depth < marks['broad']['recommended']:
                     if 'assembly' in file_to_check:
                         detail = 'Alignment file {} '.format(file_to_check['@id']) + \
                             'produced by {} '.format(pipeline_object['title']) + \
@@ -1433,8 +1433,8 @@ def check_file_chip_seq_read_depth(file_to_check,
                             'mapped reads. ' + \
                             'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
                             'experiment targeting {} and investigated as '.format(target_name) + \
-                            'a broad histone mark is 40 million mapped reads. ' + \
-                            'The recommended value is > 45 million, but > 40 million is ' + \
+                            'a broad histone mark is 35 million mapped reads. ' + \
+                            'The recommended value is > 45 million, but > 35 million is ' + \
                             'acceptable. (See /data-standards/chip-seq/ )'
                     else:
                         detail = 'Alignment file {} '.format(file_to_check['@id']) + \
@@ -1444,18 +1444,18 @@ def check_file_chip_seq_read_depth(file_to_check,
                             'mapped reads. ' + \
                             'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
                             'experiment targeting {} and investigated as '.format(target_name) + \
-                            'a broad histone mark is 40 million mapped reads. ' + \
-                            'The recommended value is > 45 million, but > 40 million is ' + \
+                            'a broad histone mark is 35 million mapped reads. ' + \
+                            'The recommended value is > 45 million, but > 35 million is ' + \
                             'acceptable. (See /data-standards/chip-seq/ )'
-                    if read_depth >= 40000000:
+                    if read_depth >= marks['broad']['minimal']:
                         yield AuditFailure('low read depth',
                                            detail, level='WARNING')
-                    elif read_depth >= 5000000 and read_depth < 40000000:
+                    elif read_depth >= 100 and read_depth < marks['broad']['minimal']:
                         yield AuditFailure('insufficient read depth',
                                            detail, level='NOT_COMPLIANT')
-                    elif read_depth < 5000000:
+                    elif read_depth < 100:
                         yield AuditFailure('extremely low read depth',
-                                           detail, level='WARNING')
+                                           detail, level='ERROR')
             else:
                 if 'assembly' in file_to_check:
                     detail = 'Alignment file {} '.format(file_to_check['@id']) + \
@@ -1468,7 +1468,7 @@ def check_file_chip_seq_read_depth(file_to_check,
                         'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
                         'experiment targeting {} and investigated as '.format(target_name) + \
                         'a broad histone mark is 20 million usable fragments. ' + \
-                        'The recommended value is > 45 million, but > 40 million is ' + \
+                        'The recommended value is > 45 million, but > 35 million is ' + \
                         'acceptable. (See /data-standards/chip-seq/ )'
                 else:
                     detail = 'Alignment file {} '.format(file_to_check['@id']) + \
@@ -1479,16 +1479,16 @@ def check_file_chip_seq_read_depth(file_to_check,
                         'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
                         'experiment targeting {} and investigated as '.format(target_name) + \
                         'a broad histone mark is 20 million usable fragments. ' + \
-                        'The recommended value is > 45 million, but > 40 million is ' + \
+                        'The recommended value is > 45 million, but > 35 million is ' + \
                         'acceptable. (See /data-standards/chip-seq/ )'
 
-                if read_depth >= 40000000 and read_depth < marks['broad']:
+                if read_depth >= marks['broad']['minimal'] and read_depth < marks['broad']['recommended']:
                     yield AuditFailure('low read depth',
                                        detail, level='WARNING')
-                elif read_depth < 40000000 and read_depth >= 5000000:
+                elif read_depth < marks['broad']['minimal'] and read_depth >= marks['broad']['low']:
                     yield AuditFailure('insufficient read depth',
                                        detail, level='NOT_COMPLIANT')
-                elif read_depth < 5000000:
+                elif read_depth < marks['broad']['low']:
                     yield AuditFailure('extremely low read depth',
                                        detail, level='ERROR')
     elif 'narrow histone mark' in target_investigated_as and \
@@ -1520,12 +1520,12 @@ def check_file_chip_seq_read_depth(file_to_check,
                     'a narrow histone mark is 10 million usable fragments. ' + \
                     'The recommended value is > 20 million, but > 10 million is ' + \
                     'acceptable. (See /data-standards/chip-seq/ )'
-            if read_depth >= 10000000 and read_depth < marks['narrow']:
+            if read_depth >= marks['narrow']['minimal'] and read_depth < marks['narrow']['recommended']:
                 yield AuditFailure('low read depth', detail, level='WARNING')
-            elif read_depth < 10000000 and read_depth >= 5000000:
+            elif read_depth < marks['narrow']['minimal'] and read_depth >= marks['narrow']['low']:
                 yield AuditFailure('insufficient read depth',
                                    detail, level='NOT_COMPLIANT')
-            elif read_depth < 5000000:
+            elif read_depth < marks['narrow']['low']:
                 yield AuditFailure('extremely low read depth',
                                    detail, level='ERROR')
     else:
@@ -1568,12 +1568,12 @@ def check_file_chip_seq_read_depth(file_to_check,
                         'a transcription factor is 10 million usable fragments. ' + \
                         'The recommended value is > 20 million, but > 10 million is ' + \
                         'acceptable. (See /data-standards/chip-seq/ )'
-                if read_depth >= 10000000 and read_depth < marks['narrow']:
+                if read_depth >= marks['TF']['minimal'] and read_depth < marks['TF']['recommended']:
                     yield AuditFailure('low read depth', detail, level='WARNING')
-                elif read_depth < 10000000 and read_depth >= 3000000:
+                elif read_depth < marks['TF']['minimal'] and read_depth >= marks['TF']['low']:
                     yield AuditFailure('insufficient read depth',
                                        detail, level='NOT_COMPLIANT')
-                elif read_depth < 3000000:
+                elif read_depth < marks['TF']['low']:
                     yield AuditFailure('extremely low read depth',
                                        detail, level='ERROR')
     return
