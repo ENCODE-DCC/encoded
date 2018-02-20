@@ -6,6 +6,7 @@
 * *PMI* and *PMI_units* are additionally restricted to only be used for tissue biosamples.
 * *culture_harvest_date* and *culture_start_date* no longer can be used for tissues (a mistake introduced recently and now corrected within the dependencies).
 * Sample property *preservation_method* with enums ["cryopreservation", "flash-freezing"] was added.
+* Add nih_institutional_certification property for storing biosample institutional certification.
 
 ### Schema version 19
 
