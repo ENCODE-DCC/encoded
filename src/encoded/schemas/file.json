@@ -637,9 +637,9 @@
             "items": {
                 "title": "Flowcell based fastq signature part",
                 "description": "Fastq file flowcell based unique signature to reference a file.",
-                "comment": "Current convention is based on the Illumina unique sequence identifier, colon separated flowcell, lane, read_end(1/2) and barcode.",
+                "comment": "Current convention is based on the Illumina unique sequence identifier, colon separated flowcell, lane, read_end(1/2/3) and barcode.",
                 "type":  "string",
-                "pattern": "^[a-zA-Z0-9_-]+:[0-9]+:[12]:.*:.*$"
+                "pattern": "^[a-zA-Z0-9_-]+:[0-9]+:[123]:.*:.*$"
             }
         },
         "file_size": {
@@ -773,6 +773,8 @@
                         "conservative idr thresholded peaks",
                         "control normalized signal",
                         "DHS peaks",
+                        "differential expression quantifications",
+                        "differential splicing quantifications",
                         "enhancer validation",
                         "enrichment",
                         "exon quantifications",
@@ -1134,6 +1136,9 @@
         "restricted": {
             "title": "Restricted file"
         },
+        "submitter_comment": {
+            "title": "Submitter comment"
+        },
         "status": {
             "title": "File status"
         }
@@ -1196,6 +1201,8 @@
         "unfiltered peptide quantification": "quantification",
         "replication timing profile": "quantification",
         "motif model": "quantification",
+        "differential expression quantifications": "quantification",
+        "differential splicing quantifications": "quantification",
 
         "hotspots": "annotation",
         "long range chromatin interactions": "annotation",

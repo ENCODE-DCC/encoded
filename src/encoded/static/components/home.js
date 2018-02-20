@@ -628,12 +628,11 @@ class HomepageChart2 extends React.Component {
                         },
                         onClick: (e) => {
                             // React to clicks on pie sections
-                            const query = this.computationalPredictions ? 'biosample_type=' : 'replicates.library.biosample.biosample_type=';
                             const activePoints = this.myPieChart.getElementAtEvent(e);
                             if (activePoints[0]) {
                                 const clickedElementIndex = activePoints[0]._index;
                                 const term = this.myPieChart.data.labels[clickedElementIndex];
-                                this.context.navigate(`/matrix/${this.props.query}&${query}${term}`); // go to matrix view
+                                this.context.navigate(`/matrix/${this.props.query}&biosample_type=${term}`); // go to matrix view
                             }
                         },
                     },
