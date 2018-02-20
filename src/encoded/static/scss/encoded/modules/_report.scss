@@ -1,0 +1,58 @@
+// CSS class for the contents of the column-selector modal.
+.column-selector {
+    // Container for all the selector checkboxes.
+    @media screen and (min-width: $screen-sm-min) {
+        @at-root #{&}__selectors {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    }
+
+    // Each selector checkbox/label combo.
+    @at-root #{&}__selector-item {
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 1 50%;
+            width: 50%;
+        }
+
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 33.33%;
+            width: 33.33%;
+        }
+    }
+
+    @at-root #{&}__controls {
+        .modal-footer-controls {
+            flex: 0 1 50%;
+            width: 50%;
+            text-align: right;
+        }
+    }
+
+    @at-root #{&}__controls {
+        display: flex;
+        padding: 5px;
+        border-bottom: 1px solid #a0a0a0;
+
+        button {
+            display: inline-block;
+            margin-right: 5px;
+        }
+    }
+
+    @at-root #{&}__utility-buttons {
+        flex: 0 1 50%;
+        width: 50%;
+        text-align: left;
+    }
+
+    @at-root #{&}__sort-selector {
+        flex: 0 1 50%;
+        width: 50%;
+
+        > .form-control--select {
+            width: auto; // So the select only takes up as much room as it needs
+            margin-left: auto; // To right justify within a flex box
+        }
+    }
+}

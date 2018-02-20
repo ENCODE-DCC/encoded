@@ -37,7 +37,6 @@ export default class Footer extends React.Component {
                             <div className="col-sm-6 col-sm-pull-6">
                                 <ul className="footer-logos">
                                     <li><a href="/"><img src="/static/img/encode-logo-small-2x.png" alt="ENCODE" id="encode-logo" height="45px" width="78px" /></a></li>
-                                    <li><a href="http://www.ucsc.edu"><img src="/static/img/ucsc-logo-white-alt-2x.png" alt="UC Santa Cruz" id="ucsc-logo" width="107px" height="42px" /></a></li>
                                     <li><a href="http://www.stanford.edu"><img src="/static/img/su-logo-white-2x.png" alt="Stanford University" id="su-logo" width="105px" height="49px" /></a></li>
                                 </ul>
                             </div>

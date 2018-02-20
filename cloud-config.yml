@@ -276,13 +276,13 @@ write_files:
 - path: /etc/elasticsearch/elasticsearch.yml
   content: |
     http.port: 9201
-
     thread_pool:
         search:
             size: 100
             queue_size: 2000
         index:
             queue_size: 400
+    indices.query.bool.max_clause_count: 8192
 
 - path: /etc/elasticsearch/jvm.options
   content: |
