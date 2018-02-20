@@ -773,6 +773,8 @@
                         "conservative idr thresholded peaks",
                         "control normalized signal",
                         "DHS peaks",
+                        "differential expression quantifications",
+                        "differential splicing quantifications",
                         "enhancer validation",
                         "enrichment",
                         "exon quantifications",
@@ -1199,6 +1201,8 @@
         "unfiltered peptide quantification": "quantification",
         "replication timing profile": "quantification",
         "motif model": "quantification",
+        "differential expression quantifications": "quantification",
+        "differential splicing quantifications": "quantification",
 
         "hotspots": "annotation",
         "long range chromatin interactions": "annotation",
