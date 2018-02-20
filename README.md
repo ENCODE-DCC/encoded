@@ -9,7 +9,7 @@
 These are the primary software versions used in production, and you should be able to use them locally:
 - Python 3.4.3
 - Node 6
-- Elasticsearch 5.4 (or later?)
+- Elasticsearch 1.7
 - Java VM 1.8
 - Ubuntu 14.04
 
