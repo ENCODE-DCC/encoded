@@ -3,7 +3,7 @@ from snovault import (
     audit_checker,
 )
 from .gtex_data import gtexDonorsList
-from .standards_data import pipelines_with_read_depth
+from .standards_data import pipelines_with_read_depth, minimal_read_depth_requirements
 
 targetBasedAssayList = [
     'ChIP-seq',
@@ -1772,6 +1772,78 @@ def audit_experiment_geo_submission(value, system, excluded_types):
     return
 
 
+def audit_experiment_status(value, system, files_structure):
+    if value['status'] not in ['started']:
+        return
+    assay_term_name = value.get('assay_term_name')
+    if assay_term_name not in minimal_read_depth_requirements:
+        return
+    award_rfa = value.get('award', {}).get('rfa')
+    if award_rfa == 'modERN':
+        return
+    if award_rfa == 'modENCODE' and assay_term_name != 'ChIP-seq':
+        return
+    replicates = value.get('replicates')
+    if not replicates:
+        return
+    replicates_set = set()
+    submitted_replicates = set()
+    replicates_reads = {}
+    bio_rep_reads = {}
+    replicates_bio_index = {}
+    for replicate in replicates:
+        if replicate.get('status') not in ['deleted']:
+            replicate_id = replicate.get('@id')
+            replicates_set.add(replicate_id)
+            replicates_reads[replicate_id] = 0
+            replicates_bio_index[replicate_id] = replicate.get('biological_replicate_number')
+            bio_rep_reads[replicates_bio_index[replicate_id]] = 0
+
+    erroneous_status = ['uploading', 'content error', 'upload failed']
+    for fastq_file in files_structure.get('fastq_files').values():
+        if fastq_file.get('status') not in erroneous_status:
+            file_replicate = fastq_file.get('replicate')
+            read_count = fastq_file.get('read_count')
+            if read_count and file_replicate:
+                replicate_id = file_replicate.get('@id')
+                submitted_replicates.add(replicate_id)
+                if replicate_id in replicates_reads:
+                    run_type = fastq_file.get('run_type')
+                    if run_type and run_type == 'paired-ended':
+                        read_count == read_count/2
+                    replicates_reads[replicate_id] += read_count
+                    bio_rep_reads[replicates_bio_index[replicate_id]] += read_count
+
+
+    if replicates_set and not replicates_set - submitted_replicates:
+        part_of_detail = 'replicate'
+        if award_rfa == 'modENCODE':
+            key = 'modENCODE-chip'
+        else:
+            key = assay_term_name
+            if assay_term_name in [
+                    'DNase-seq',
+                    'genetic modification followed by DNase-seq',
+                    'ChIP-seq']:
+                replicates_reads = bio_rep_reads
+                part_of_detail = 'biological replicate'
+
+        for rep in replicates_reads:
+            if replicates_reads[rep] < minimal_read_depth_requirements[key]:
+                detail = ('The cumulative number of reads in '
+                            '{} {} of experiment {} is {}. That is lower then '
+                            'the minimal expected read depth of {} '
+                            'for this type of assay.').format(
+                                part_of_detail,
+                                rep,
+                                value['@id'],
+                                replicates_reads[rep],
+                                minimal_read_depth_requirements[key]
+                            )
+                yield AuditFailure('low read count',
+                                    detail, level='WARNING')
+
+
 def audit_experiment_consistent_sequencing_runs(value, system, files_structure):
     if value['status'] in ['deleted', 'replaced', 'revoked']:
         return
@@ -3377,7 +3449,8 @@ function_dispatcher_with_files = {
     'audit_read_length': audit_experiment_mapped_read_length,
     'audit_chip_control': audit_experiment_ChIP_control,
     'audit_read_depth_chip_control': audit_experiment_chipseq_control_read_depth,
-    'audit_experiment_standards': audit_experiment_standards_dispatcher
+    'audit_experiment_standards': audit_experiment_standards_dispatcher,
+    'audit_submitted_status': audit_experiment_status
 }
 
 
