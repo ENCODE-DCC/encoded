@@ -639,11 +639,13 @@
         "PMI": {
             "title": "Post-mortem interval",
             "description": "The amount of time elapsed since death.",
+            "comment": "Post-mortem interval for tissues should be reported, if known. Use for other biosample_types currently not allowed.",
             "type": "integer"
         },
         "PMI_units": {
             "title": "Post-mortem interval units",
             "description": "The unit in which the PMI time was reported.",
+            "comment": "Post-mortem interval units for tissues should be reported with PMI value, if known. Use for other biosample_types currently not allowed.",
             "type": "string",
             "enum": [
                 "second",
@@ -651,6 +653,16 @@
                 "hour",
                 "day",
                 "week"
+            ]
+        },
+        "preservation_method": {
+            "title": "Preservation method",
+            "description": "The method by which the sample was preserved: cryopreservation (slow-freeze) or flash-freezing.",
+            "comment": "Indicate the sample preservation_method if known and may be/become an experimental variable to track.", 
+            "type": "string",
+            "enum": [
+                "cryopreservation",
+                "flash-freezing"
             ]
         },
         "model_organism_sex": {
