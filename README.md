@@ -31,7 +31,7 @@ These are the primary software versions used in production, and you should be ab
 
 ```bash
 brew install libevent libmagic libxml2 libxslt openssl graphviz nginx
-brew install freetype libjpeg libtiff littlecms webp chromedriver
+brew install freetype libjpeg libtiff littlecms webp # chromedriver temporarily broken
 brew tap petere/postgresql
 brew install postgresql@9.3
 brew link --force postgresql@9.3
@@ -67,6 +67,14 @@ pip3 install typing
 >- `node --version`
 >- `brew unlink node@7 && brew link --overwrite --force node@6`
 >- `node --version`
+
+>:warning: _Note_: The current version of chromedriver doesn’t allow our BDD tests to pass, so you must install the earlier 2.33 version.
+>
+> Visit <https://chromedriver.storage.googleapis.com/index.html?path=2.33/> and download chromedriver_mac64.zip to your Downloads folder. Then move the file to /usr/local/bin. Verify you have the correct version installed by then entering:
+>
+>- `chromedriver --version`
+>
+> It should show, among other things, that you’re running chromedriver 2.33.
 
 >:warning: _Note_: If you need to update Python dependencies (do not do this randomly as you may lose important brew versions of packages you need):
 >- `rm -rf encoded/eggs` (then re-run buildout below)
