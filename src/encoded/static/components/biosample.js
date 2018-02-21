@@ -745,17 +745,17 @@ const CharacterizationDetail = (props) => {
                     </div>
                 : null}
 
+                {characterization.submitter_comment ?
+                    <div data-test="submittercomment">
+                        <dt>Submitter comment</dt>
+                        <dd>{characterization.submitter_comment}</dd>
+                    </div>
+                : null}
+
                 {docs.length ?
                     <div data-test="documents">
                         <dt>Documents</dt>
                         <CharacterizationDocuments docs={docs} />
-                    </div>
-                : null}
-
-                {doc.submitter_comment ?
-                    <div data-test="submittercomment">
-                        <dt>Submitter comment</dt>
-                        <dd>{doc.submitter_comment}</dd>
                     </div>
                 : null}
             </dl>
