@@ -120,11 +120,28 @@
         "paired_with": {
             "comment": "Only paired-ended files should have paired_with value.",
             "required": ["run_type"],
-            "properties": {
-                "run_type": {
-                    "enum": ["paired-ended"]
+            "allOf": [
+                {
+                    "not": {
+                        "properties": {
+                            "platform": {
+                                "linkTo": "Platform",
+                                "linkEnum": [
+                                    "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+                                    "c7564b38-ab4f-4c42-a401-3de48689a998"
+                                ]
+                            }
+                        }                    
+                    }
+                },
+                {
+                    "properties": {
+                        "run_type": {
+                            "enum": ["paired-ended"]
+                        }
+                    }
                 }
-            }
+            ]
         },
         "run_type": {
             "comment": "run_type should not be specified for PacBio platform FASTQ files. Illumina produced paired-ended files should have paired_end value specified.",
