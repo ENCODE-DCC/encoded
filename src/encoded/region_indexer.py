@@ -270,8 +270,8 @@ class RegionIndexerState(IndexerState):
 
         return state
 
-    def display(self):
-        display = super(RegionIndexerState, self).display()
+    def display(self, uuids=None):
+        display = super(RegionIndexerState, self).display(uuids=uuids)
         display['staged to process'] = self.get_count(self.staged_cycles_list)
         display['files added'] = self.get_count(self.files_added_set)
         display['files dropped'] = self.get_count(self.files_dropped_set)
@@ -298,7 +298,7 @@ def regionindexer_state_show(request):
         if isinstance(notices,str):
             return notices
 
-    display = state.display()
+    display = state.display(uuids=request.params.get("uuids"))
 
     try:
         count = regions_es.count(index=RESIDENT_REGIONSET_KEY, doc_type='default').get('count',0)
