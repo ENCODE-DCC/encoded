@@ -24,6 +24,7 @@ from snovault.elasticsearch.indexer import (
     Indexer,
     get_current_xmin
 )
+
 from snovault.elasticsearch.indexer_state import (
     IndexerState,
     all_uuids,
@@ -115,8 +116,8 @@ class VisIndexerState(IndexerState):
                 self.put_list(self.staged_cycles_list,staged_list[looking_at:]) # Push back for start of next uuid cycle
         return (xmin, next_xmin, uuids)
 
-    def display(self):
-        display = super(VisIndexerState, self).display()
+    def display(self, uuids=None):
+        display = super(VisIndexerState, self).display(uuids=uuids)
         display['staged to process'] = self.get_count(self.staged_cycles_list)
         display['datasets vis cached current cycle'] = self.get_count(self.success_set)
         return display
@@ -141,7 +142,7 @@ def visindexer_state_show(request):
         if isinstance(notices,str):
             return notices
 
-    display = state.display()
+    display = state.display(uuids=request.params.get("uuids"))
     try:
         count = es.count(index=VIS_CACHE_INDEX, doc_type='default').get('count',0)
         if count:
