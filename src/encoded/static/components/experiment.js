@@ -204,14 +204,36 @@ class ExperimentComponent extends React.Component {
         let librarySpecials = {};
         let libraryComponents = {};
         let condensedReplicates = [];
+        let libSubmitterComments = [];
         const context = this.props.context;
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         const itemClass = globals.itemClass(context, 'view-item');
-        const replicates = context.replicates;
-        if (replicates) {
+        const replicates = context.replicates && context.replicates.length ? context.replicates : [];
+        if (replicates.length) {
             const condensedReplicatesKeyed = _(replicates).groupBy(replicate => (replicate.library ? replicate.library['@id'] : replicate.uuid));
             if (Object.keys(condensedReplicatesKeyed).length) {
                 condensedReplicates = _.toArray(condensedReplicatesKeyed);
+            }
+
+            // Collect all replicate libraries into one array of library objects.
+            const libraries = replicates.reduce((libraryAcc, replicate) => (replicate.library ? libraryAcc.concat([replicate.library]) : libraryAcc), []);
+
+            // Now create an array of React components displaying each library submitter comment
+            // as part of a definitino list.
+            if (libraries.length) {
+                libSubmitterComments = libraries.map((library) => {
+                    if (library.submitter_comment) {
+                        return (
+                            <div key={library['@id']} data-test={`submittercomment${library['@id']}`}>
+                                <dt>{library.accession} submitter comment</dt>
+                                <dd>{library.submitter_comment}</dd>
+                            </div>
+                        );
+                    }
+
+                    // No submitter comment.
+                    return null;
+                });
             }
         }
 
@@ -222,7 +244,7 @@ class ExperimentComponent extends React.Component {
         // collect up library documents.
         const libraryDocs = [];
         let biosamples = [];
-        if (replicates) {
+        if (replicates.length) {
             biosamples = _.compact(replicates.map((replicate) => {
                 if (replicate.library) {
                     if (replicate.library.documents && replicate.library.documents.length) {
@@ -248,7 +270,7 @@ class ExperimentComponent extends React.Component {
         // If we have replicates, handle what we used to call Assay Details -- display data about
         // each of the replicates, breaking out details
         // if they differ between replicates.
-        if (replicates && replicates.length) {
+        if (replicates.length) {
             // Prepare to collect values from each replicate's library. Each key in this object
             // refers to a property in the libraries. For any library properties that aren't simple
             // values, put functions to process them into simple values in this object, keyed by
@@ -619,6 +641,8 @@ class ExperimentComponent extends React.Component {
                                             <dd>{context.submitter_comment}</dd>
                                         </div>
                                     : null}
+
+                                    {libSubmitterComments}
 
                                     {tagBadges ?
                                         <div className="tag-badges" data-test="tags">

@@ -879,3 +879,14 @@ def platform2(testapp):
         'term_name': 'HiSeq4000'
     }
     return testapp.post_json('/platform', item).json['@graph'][0]
+
+
+@pytest.fixture
+def encode4_award(testapp):
+    item = {
+        'name': 'encode4-award',
+        'rfa': 'ENCODE4',
+        'project': 'ENCODE',
+        'viewing_group': 'ENCODE4',
+    }
+    return testapp.post_json('/award', item).json['@graph'][0]
