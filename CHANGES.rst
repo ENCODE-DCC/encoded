@@ -1,6 +1,32 @@
 Changes
 =======
 
+66.0 (unreleased)
+----------------
+01. ENCD-3878 Update to snovault version 1.0.4 (#2148)
+02. ENCD-3834 Add Alembic framework for Postgres migrations (#2142)
+03. ENCD-3869 Downgrade chromedriver version 2.33 (#2143)
+04. ENCD-3827 Fix ES5 version in README (#2141)
+05. ENCD-3698 Add Institutional certifications to biosample (#2140)
+06. ENCD-1934 Format schema displays (#2115)
+07. ENCD-3865 Update to snovault version 1.0.3 (#2139)
+08. ENCD-3836 Small heap single machine (#2137)
+09. ENCD-3819 Add biosample preservation method (#2122)
+10. ENCD-3835 Fix inconsistent platforms audit HiSeq2K 2.5K (#2133)
+11. ENCD-3341 Add new output_types to file json (#2132)
+12. ENCD-3853 Remove UCSC logos (#2134)
+13. ENCD-3757 Adjust histone broad peak read depth audit (#2125)
+14. ENCD-3831 Add exp audit to flag standards violations (#2124)
+15. ENCD-3766 Add submitter comments to certain js pages (#2123)
+16. ENCD-3820 Biosample: PMI property (#2120)
+17. ENCD-3798 Ontology Update Jan2018 (#2119)
+18. ENCD-3816 Update selenium version to 3.8.1 (#2118)
+19. ENCD-3803 Allow fastq_sig to accept 3 in SRR headers (#2113)
+20. ENCD-3456 Stringify array and object items in a cell (#2111)
+21. ENCD-3762 Add RegulomeDB internal_tag and badge (#2110)
+22. ENCD-3421 Properly link home chart to matrix (#2108)
+23. ENCD-2567 New report page column selector modal (#2105)
+
 65.3 (released)
 ----------------
     * ENCD-3851 Add max clause es5 updates
