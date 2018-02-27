@@ -53,7 +53,7 @@
                     "properties": {
                         "biosample_type": {
                             "enum" : [
-                                "immortalized cell line",
+                                "cell line",
                                 "induced pluripotent stem cell line"                               
                             ]
                         },

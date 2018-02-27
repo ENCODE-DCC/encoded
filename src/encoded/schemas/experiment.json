@@ -40,7 +40,7 @@
                     "properties": {
                         "biosample_type": {
                             "enum": [                
-                                "immortalized cell line",
+                                "cell line",
                                 "in vitro differentiated cells",
                                 "induced pluripotent stem cell line",
                                 "primary cell",
@@ -84,7 +84,7 @@
                     "properties": {
                         "biosample_type": {
                             "enum" : [
-                                "immortalized cell line",
+                                "cell line",
                                 "induced pluripotent stem cell line"                               
                             ]
                         },
@@ -199,7 +199,7 @@
             "description": "The categorization of the biosample.",
             "type": "string",
             "enum" : [
-                "immortalized cell line",
+                "cell line",
                 "in vitro differentiated cells",
                 "cell-free sample",
                 "induced pluripotent stem cell line",

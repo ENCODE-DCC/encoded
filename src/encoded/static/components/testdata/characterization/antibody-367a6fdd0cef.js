@@ -21,7 +21,7 @@ module.exports = {
             "lane_status": "not compliant",
             "lane": 2,
             "biosample_term_id": "EFO:0002791",
-            "biosample_type": "immortalized cell line",
+            "biosample_type": "cell line",
             "biosample_term_name": "HeLa-S3",
             "organism": "7745b647-ff15-4ff3-9ced-b897d4e2983c"
         }

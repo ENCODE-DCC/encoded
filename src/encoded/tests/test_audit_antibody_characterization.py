@@ -12,7 +12,7 @@ def base_antibody_characterization(testapp, lab, ENCODE3_award, target, antibody
         'organism': organism['uuid'],
         'biosample_term_name': 'K562',
         'biosample_term_id': 'EFO:0002067',
-        'biosample_type': 'immortalized cell line',
+        'biosample_type': 'cell line',
         'lane_status': 'pending dcc review'
     }]
     item = {
@@ -35,7 +35,7 @@ def base_characterization_review(testapp, organism):
         'organism': organism['uuid'],
         'biosample_term_name': 'K562',
         'biosample_term_id': 'EFO:0002067',
-        'biosample_type': 'immortalized cell line',
+        'biosample_type': 'cell line',
         'lane_status': 'pending dcc review'
     }
 
@@ -47,7 +47,7 @@ def base_characterization_review2(testapp, organism):
         'organism': organism['uuid'],
         'biosample_term_name': 'HepG2',
         'biosample_term_id': 'EFO:0001187',
-        'biosample_type': 'immortalized cell line',
+        'biosample_type': 'cell line',
         'lane_status': 'compliant'
     }
 

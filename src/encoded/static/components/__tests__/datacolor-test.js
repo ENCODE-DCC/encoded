@@ -4,7 +4,7 @@ import DataColors from '../datacolors';
 describe('DataColor Module', () => {
     describe('Returns correct colors for keys', () => {
         const testKeys = [
-            'immortalized cell line',
+            'cell line',
             'tissue',
             'primary cell',
             'whole organisms',
