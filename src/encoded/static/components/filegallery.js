@@ -2117,6 +2117,13 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                             </dd>
                         </div>
                     : null}
+
+                    {selectedFile.submitter_comment ?
+                        <div data-test="submittercomment">
+                            <dt>Submitter comment</dt>
+                            <dd>{selectedFile.submitter_comment}</dd>
+                        </div>
+                    : null}
                 </dl>
 
                 {auditsDisplayed(selectedFile.audit, session) ?

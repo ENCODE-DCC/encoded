@@ -738,6 +738,13 @@ const CharacterizationDetail = (props) => {
                         <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
                     </div>
                 : null}
+
+                {doc.submitter_comment ?
+                    <div data-test="submittercomment">
+                        <dt>Submitter comment</dt>
+                        <dd>{doc.submitter_comment}</dd>
+                    </div>
+                : null}
             </dl>
         </div>
     );

@@ -131,6 +131,18 @@ def test_audit_biosample_donor_organism(testapp, base_biosample, base_human_dono
     assert any(error['category'] == 'inconsistent organism' for error in errors_list)
 
 
+def test_audit_biosample_consistent_organism(testapp, base_biosample, base_human_donor):
+    testapp.patch_json(base_biosample['@id'], {'donor': base_human_donor['@id']})
+    r = testapp.get(base_biosample['@id'] + '@@index-data')
+    audits = r.json['audit']
+    assert all(
+        [
+            detail['category'] != 'inconsistent organism'
+            for audit in audits.values() for detail in audit
+        ]
+    )
+
+
 def test_audit_biosample_status(testapp, base_biosample, construct_genetic_modification):
     testapp.patch_json(base_biosample['@id'], {
         'status': 'released',
@@ -216,3 +228,28 @@ def test_audit_biosample_part_of_consistency_ontology_part_of(testapp,
     for error_type in errors:
         errors_list.extend(errors[error_type])
     assert all(error['category'] != 'inconsistent biosample_term_id' for error in errors_list)
+
+
+def test_audit_library_without_nih_consent(testapp, biosample, encode4_award):
+    testapp.patch_json(biosample['@id'], {'award': encode4_award['@id']})
+    r = testapp.get(biosample['@id'] + '@@index-data')
+    audits = r.json['audit']
+    assert any(
+        [
+            detail['category'] == 'missing nih_institutional_certification'
+            for audit in audits.values() for detail in audit
+        ]
+    )
+
+
+def test_audit_library_with_nih_consent(testapp, biosample, encode4_award):
+    testapp.patch_json(biosample['@id'], {'award': encode4_award['@id'],
+                                          'nih_institutional_certification': 'NICABC123'})
+    r = testapp.get(biosample['@id'] + '@@index-data')
+    audits = r.json['audit']
+    assert all(
+        [
+            detail['category'] != 'missing nih_institutional_certification'
+            for audit in audits.values() for detail in audit
+        ]
+    )
