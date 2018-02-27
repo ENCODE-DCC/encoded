@@ -2826,9 +2826,13 @@ def audit_experiment_mapped_read_length(value, system, files_structure):
                     if mapped_read_length:
                         read_lengths_set.add(mapped_read_length)
                     else:
-                        detail = 'Experiment {} '.format(value['@id']) + \
-                                 'contains an alignments .bam file {} '.format(bam_file['@id']) + \
-                                 'that lacks mapped reads length information.'
+                        detail = ('Experiment {} ' +
+                                  'contains an {} .bam file {} ' +
+                                  'that lacks mapped reads ' + 
+                                  'length information.').format(
+                                      value['@id'],
+                                      bam_file['output_type'],
+                                      bam_file['@id'])                                 
                         yield AuditFailure('missing mapped reads lengths', detail,
                                            level='INTERNAL_ACTION')
             if len(read_lengths_set) > 1:
