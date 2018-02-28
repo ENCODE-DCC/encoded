@@ -1,6 +1,7 @@
 from pyramid.view import view_config
 from snovault import TYPES
 from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
+from snovault.elasticsearch.indexer import MAX_CLAUSES_FOR_ES
 from pyramid.security import effective_principals
 from .search import (
     format_results,
@@ -343,7 +344,14 @@ def region_search(context, request):
 
 
     # if more than one peak found return the experiments with those peak files
-    if len(file_uuids):
+    uuid_count = len(file_uuids)
+    if uuid_count > MAX_CLAUSES_FOR_ES:
+        log.error("REGION_SEARCH WARNING: region with %d file_uuids is being restricted to %d" % \
+                                                            (uuid_count, MAX_CLAUSES_FOR_ES))
+        file_uuids = file_uuids[:MAX_CLAUSES_FOR_ES]
+        uuid_count = len(file_uuids)
+
+    if uuid_count:
         query = get_filtered_query('', [], set(), principals, ['Experiment'])
         del query['query']
         query['post_filter']['bool']['must'].append({
@@ -356,7 +364,7 @@ def region_search(context, request):
         query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Experiment'])
         schemas = (types[item_type].schema for item_type in ['Experiment'])
         es_results = es.search(
-            body=query, index='experiment', doc_type='experiment', size=size
+            body=query, index='experiment', doc_type='experiment', size=size, request_timeout=60
         )
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
         result['total'] = total = es_results['hits']['total']
