@@ -1278,7 +1278,7 @@
         "lab": "/labs/richard-myers/",
         "output_type": "alignments",
         "assembly": "hg19",
-        "derived_from": ["ENCFF431TKZ", "ENCFF504RKH", "ENCFF958GWJ", "ENCFF360FSI", "ENCFF019HBG", "ENCFF020HBG", "ENCFF021HBG", "ENCFF022HBG"],
+        "derived_from": ["ENCFF431TKZ", "ENCFF504RKH", "ENCFF958GWJ", "ENCFF360FSI", "ENCFF019HBG", "ENCFF022HBG"],
         "aliases": [],
         "step_run": "7c81414f-a9c0-44ed-87fb-2e2207733d3b"
     },
