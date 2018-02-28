@@ -16,6 +16,7 @@ def app_settings(wsgi_server_host_port, elasticsearch_server, postgresql_server)
     settings['create_tables'] = True
     settings['persona.audiences'] = 'http://%s:%s' % wsgi_server_host_port
     settings['elasticsearch.server'] = elasticsearch_server
+    settings['snp_search.server'] = elasticsearch_server  # NOTE: tfrom snovault/serverfixtures.py  Need a region_es version?
     settings['sqlalchemy.url'] = postgresql_server
     settings['collection_datastore'] = 'elasticsearch'
     settings['item_datastore'] = 'elasticsearch'
@@ -98,9 +99,16 @@ def test_indexing_workbook(testapp, indexer_testapp):
     #assert res.json['pass2_took']
     ### OPTIONAL: audit via 2-pass is coming...
 
-    res = indexer_testapp.post_json('/index_secondary', {'record': True})
+    # NOTE: Both vis and region indexers are "followup" or secondary indexers
+    #       and must be staged by the primary indexer
+    res = indexer_testapp.post_json('/index_vis', {'record': True})
     assert res.json['cycle_took']
-    assert res.json['title'] == 'secondary_indexer'
+    assert res.json['title'] == 'vis_indexer'
+
+    res = indexer_testapp.post_json('/index_region', {'record': True})
+    assert res.json['cycle_took']
+    assert res.json['title'] == 'region_indexer'
+    assert res.json['indexed'] > 0
 
     res = testapp.get('/search/?type=Biosample')
     assert res.json['total'] > 5
@@ -129,13 +137,13 @@ def test_indexing_simple(testapp, indexer_testapp):
     assert res.json['total'] == 3
 
 
-def test_indexer_state(dummy_request):
-    from encoded.secondary_indexer import SecondState
+def test_indexer_vis_state(dummy_request):
+    from encoded.vis_indexer import VisIndexerState
     INDEX = dummy_request.registry.settings['snovault.elasticsearch.index']
     es = dummy_request.registry['elasticsearch']
-    state = SecondState(es,INDEX)
+    state = VisIndexerState(es,INDEX)
     result = state.get_initial_state()
-    assert result['title'] == 'secondary_indexer'
+    assert result['title'] == 'vis_indexer'
     result = state.start_cycle(['1','2','3'], result)
     assert result['cycle_count'] == 3
     assert result['status'] == 'indexing'
@@ -143,6 +151,19 @@ def test_indexer_state(dummy_request):
     result = state.finish_cycle(result, [])
     assert result['cycles'] == (cycles + 1)
     assert result['status'] == 'done'
+
+
+def test_indexer_region_state(dummy_request):
+    from encoded.region_indexer import RegionIndexerState
+    INDEX = dummy_request.registry.settings['snovault.elasticsearch.index']
+    es = dummy_request.registry['elasticsearch']
+    state = RegionIndexerState(es,INDEX)
+    result = state.get_initial_state()
+    assert result['title'] == 'region_indexer'
+    assert result['status'] == 'idle'
+    display = state.display()
+    assert 'files added' in display
+    assert 'files dropped' in display
 
 
 def test_listening(testapp, listening_conn):

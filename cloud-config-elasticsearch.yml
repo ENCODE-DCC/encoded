@@ -161,7 +161,7 @@ write_files:
   content: |
     #!/bin/bash
     name=$1
-    
+
     if [[ -n "$name" ]]; then
         echo "cluster.name: $name" >> /etc/elasticsearch/elasticsearch.yml
     else
