@@ -197,6 +197,20 @@ def audit_biosample_part_of_consistency(value, system):
                            level='INTERNAL_ACTION')
         return
 
+
+def audit_biosample_nih_institutional_certification(value, system):
+    '''
+    Check if library from human biosample and ENCODE4 award has NIH consent identifier.
+    '''
+    if (value.get('award', {}).get('rfa') == 'ENCODE4'
+            and value.get('organism') == '/organisms/human/'
+            and not value.get('nih_institutional_certification')):
+        detail = ('Biosample {} is missing NIH institutional certification'
+                  ' required for human data'.format(value['@id']))
+        yield AuditFailure('missing nih_institutional_certification', detail, level='ERROR')
+
+
+
 # utility functions
 
 def is_part_of(term_id, part_of_term_id, ontology):
@@ -216,7 +230,8 @@ function_dispatcher = {
     'audit_bio_term': audit_biosample_term,
     'audit_culture_date': audit_biosample_culture_date,
     'audit_donor': audit_biosample_donor,
-    'audit_part_of': audit_biosample_part_of_consistency
+    'audit_part_of': audit_biosample_part_of_consistency,
+    'audit_nih_consent': audit_biosample_nih_institutional_certification,
 }
 
 @audit_checker('Biosample',

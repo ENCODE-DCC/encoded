@@ -15,7 +15,7 @@
     "UCSC-GB-hg19": "http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g=",
     "PMID": "https://www.ncbi.nlm.nih.gov/pubmed/?term=",
     "PMCID": "https://www.ncbi.nlm.nih.gov/pmc/articles/",
-    "doi": "http://dx.doi.org/doi:",
+    "doi": "https://doi.org/doi:",
     "EFO": "http://www.ebi.ac.uk/efo/EFO_",
     "CL": "http://purl.obolibrary.org/obo/CL_",
     "UBERON": "http://purl.obolibrary.org/obo/UBERON_",

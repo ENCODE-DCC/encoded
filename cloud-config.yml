@@ -156,15 +156,15 @@ runcmd:
 - MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
 - if [ "$MEMGIGS" -gt 32 ]
 - then
--    echo "-Xms16g" >> /etc/elasticsearch/jvm.options
--    echo "-Xmx16g" >> /etc/elasticsearch/jvm.options
-- elif [ "$MEMGIGS" -gt 12 ]
-- then
 -    echo "-Xms8g" >> /etc/elasticsearch/jvm.options
 -    echo "-Xmx8g" >> /etc/elasticsearch/jvm.options
-- else
+- elif [ "$MEMGIGS" -gt 12 ]
+- then
 -    echo "-Xms4g" >> /etc/elasticsearch/jvm.options
 -    echo "-Xmx4g" >> /etc/elasticsearch/jvm.options
+- else
+-    echo "-Xms2g" >> /etc/elasticsearch/jvm.options
+-    echo "-Xmx2g" >> /etc/elasticsearch/jvm.options
 -    sysctl "vm.swappiness=1"
 -    swapon /swapfile
 - fi
@@ -276,7 +276,12 @@ write_files:
 - path: /etc/elasticsearch/elasticsearch.yml
   content: |
     http.port: 9201
-
+    thread_pool:
+        search:
+            size: 100
+            queue_size: 2000
+        index:
+            queue_size: 400
     indices.query.bool.max_clause_count: 8192
 
 - path: /etc/elasticsearch/jvm.options
