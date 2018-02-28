@@ -1,0 +1,89 @@
+.profile-display {
+    @at-root #{&}__section {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #e0e0e0;
+
+        &:first-child {
+            margin-top: 0;
+            border-top: none;
+        }
+    }
+
+    h3 {
+        margin-top: 0;
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+
+    @at-root #{&}__values {
+        margin-left: 10px;
+    }
+}
+
+.profile-value {
+    @at-root #{&}__item {
+        margin: 2px 0;
+    }
+
+    @at-root #{&}__disclosure-button {
+        margin: 2px 0;
+        padding: 0;
+        font-size: 0; // Prevent gap between focus border and icon
+        border: 0 none;
+        background-color: transparent;
+        vertical-align: middle;
+
+        .collapsing-title-control {
+            display: block;
+        }
+    }
+
+    @at-root #{&}__json {
+        padding: 10px;
+        border: 1px solid #e0e0e0;
+        background-color: #f3f2f3;
+    }
+}
+
+// For the list of available schemas on the /profiles/ page.
+.schema-list {
+    display: block;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    @at-root #{&}__item {
+        margin: 2px 0;
+
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 50%;
+            width: 50%;
+        }
+
+        @media screen and (min-width: $screen-lg-min) {
+            flex: 0 1 33.33%;
+            width: 33.33%;
+            margin: 2px 0;
+        }
+
+        .btn {
+            margin-right: 5px;
+        }
+    }
+}
+
+// Button in profile object's tab bar to add a new object of this type.
+.profiles-add-obj {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    height: 100%;
+    z-index: 1;
+
+    @at-root #{&}__btn {
+        height: 90%;
+    }
+}

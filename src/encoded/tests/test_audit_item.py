@@ -76,6 +76,10 @@ def test_audit_item_status_level_dict_contains_all_statuses_in_schema(testapp):
     status_level_keys = STATUS_LEVEL.keys()
     schemas = testapp.get('/profiles/').json
     for title, schema in schemas.items():
+        # Ignore @type schemas property.
+        if title == '@type':
+            continue
+
         # Assumes all statuses are in properties.status.enum.
         schema_statuses = schema.get(
             'properties', {}).get('status', {}).get('enum')

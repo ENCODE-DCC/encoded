@@ -167,7 +167,7 @@ export const dbxrefPrefixMap = {
         pattern: 'https://www.ncbi.nlm.nih.gov/pmc/articles/{0}',
     },
     doi: {
-        pattern: 'http://dx.doi.org/doi:{0}',
+        pattern: 'https://doi.org/doi:{0}',
     },
     AR: {
         pattern: 'http://antibodyregistry.org/search.php?q={0}',

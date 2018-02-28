@@ -51,6 +51,8 @@ const portal = {
                 { id: 'pipelines', title: 'Pipelines', url: '/pipelines/' },
                 { id: 'datause', title: 'Release policy', url: '/about/data-use-policy/' },
                 { id: 'dataaccess', title: 'Data access', url: '/about/data-access/' },
+                { id: 'sep-mm-2' },
+                { id: 'profiles', title: 'Schemas', url: '/profiles/' },
             ],
         },
         {

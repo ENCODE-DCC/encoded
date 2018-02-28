@@ -499,8 +499,8 @@ describe('Test individual dbxref types', () => {
 
         it('has the correct links', () => {
             expect(dbxLinks.length).toBe(2);
-            expect(dbxLinks.at(0).prop('href')).toEqual('http://dx.doi.org/doi:10.1038%2Fnphys1170');
-            expect(dbxLinks.at(1).prop('href')).toEqual('http://dx.doi.org/doi:10.1006%2Fgeno.1998.5693');
+            expect(dbxLinks.at(0).prop('href')).toEqual('https://doi.org/doi:10.1038%2Fnphys1170');
+            expect(dbxLinks.at(1).prop('href')).toEqual('https://doi.org/doi:10.1006%2Fgeno.1998.5693');
         });
     });
 
