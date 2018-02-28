@@ -1219,7 +1219,7 @@ def check_file_chip_seq_library_complexity(alignment_file):
             NRF_value = float(metric['NRF'])
             detail = (nrf_detail + 'ENCODE processed {} file {} ' +
                      'was generated from a library with ' +
-                     'NRF value of {0:.2f}.').format(
+                     'NRF value of {:.2f}.').format(
                          alignment_file['output_type'],
                          alignment_file['@id'],
                          NRF_value)
@@ -1232,7 +1232,7 @@ def check_file_chip_seq_library_complexity(alignment_file):
         if 'PBC1' in metric:
             PBC1_value = float(metric['PBC1'])
             detail = (pbc1_detail + 'ENCODE processed {} file {} ' +
-                     'was generated from a library with PBC1 value of {0:.2f}.').format(
+                     'was generated from a library with PBC1 value of {:.2f}.').format(
                          alignment_file['output_type'],
                          alignment_file['@id'],
                          PBC1_value)
@@ -1249,7 +1249,7 @@ def check_file_chip_seq_library_complexity(alignment_file):
             else:
                 PBC2_value = float(metric['PBC2'])
             detail = (pbc2_detail + 'ENCODE processed {} file {} ' +
-                     'was generated from a library with PBC2 value of {0:.2f}.').format(
+                     'was generated from a library with PBC2 value of {:.2f}.').format(
                          alignment_file['output_type'],
                          alignment_file['@id'],
                          PBC2_value)
