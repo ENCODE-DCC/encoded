@@ -1017,22 +1017,21 @@ class IhecDefines(object):
             return "other"  # TODO: should this be something else
         if molecule == "protein":
             return "protein"
-            return "total RNA"
         return "genomic DNA"  # default
 
-    def lineage(self, biosample):
+    def lineage(self, biosample, default=None):
         # TODO: faking lineage
         dev_slims = biosample.get("developmental_slims",[])
         if len(dev_slims) > 0:
             return ','.join(dev_slims)
-        return None
+        return default
 
-    def differentiation(self, biosample):
+    def differentiation(self, biosample, default=None):
         # TODO: faking differentiation
         diff_slims = biosample.get("organ_slims",[])
         if len(diff_slims) > 0:
             return '.'.join(diff_slims)
-        return None
+        return default
 
     def exp_type(self, vis_type, dataset):
         # For IHEC, a simple experiment type is needed:
@@ -1053,7 +1052,7 @@ class IhecDefines(object):
 
         if vis_type in ["ChIP", "GGRChIP", "HIST"]:
             target = dataset.get('target',{}).get('label','unknown')
-            # Controls have no visualizable foles so we shouldn't see them, however...
+            # Controls have no visualizable files so we shouldn't see them, however...
             # Chip-seq Controls would have target.investigated_as=Control
             if target.lower() == 'control':
                 target = 'Input'
@@ -1158,16 +1157,8 @@ class IhecDefines(object):
         if molecule is None:
             return {}
         sample['molecule'] = molecule
-        lineage = self.lineage(biosample)
-        if lineage is not None:
-            sample['lineage'] = lineage
-        else:
-            sample['lineage'] = 'unknown'
-        differentiation = self.differentiation(biosample)
-        if differentiation is not None:
-            sample['differentiation_stage'] = differentiation
-        else:
-            sample['differentiation_stage'] = 'unknown'
+        sample['lineage'] = self.lineage(biosample, 'unknown')
+        sample['differentiation_stage'] = self.differentiation(biosample, 'unknown')
         biosample_term_id = biosample.get('biosample_term_id')
         if biosample_term_id:
             sample["sample_ontology_uri"] = biosample_term_id
