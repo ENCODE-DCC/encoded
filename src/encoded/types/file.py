@@ -174,7 +174,7 @@ class File(Item):
     @calculated_property(schema={
         "title": "Download URL",
         "description": "The download path for S3 to obtain the actual file.",
-        "comment": "Do not submit. This is issued by the server.", 
+        "comment": "Do not submit. This is issued by the server.",
         "type": "string",
     })
     def href(self, request, file_format, accession=None, external_accession=None):
@@ -186,7 +186,7 @@ class File(Item):
     @calculated_property(condition=show_upload_credentials, schema={
         "title": "Upload Credentials",
         "description": "The upload credentials for S3 to submit the file content.",
-        "comment": "Do not submit. This is issued by the server.", 
+        "comment": "Do not submit. This is issued by the server.",
         "type": "object",
     })
     def upload_credentials(self):
@@ -197,7 +197,7 @@ class File(Item):
     @calculated_property(schema={
         "title": "Read length units",
         "description": "The units for read length.",
-        "comment": "Do not submit. This is a fixed value.", 
+        "comment": "Do not submit. This is a fixed value.",
         "type": "string",
         "enum": [
             "nt"
