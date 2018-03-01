@@ -1163,7 +1163,7 @@ def news(context, request):
                                sorted(list_result_fields(request, doc_types)),
                                principals,
                                doc_types)
-    
+
     # Keyword search on news items is not implemented yet
     del query['query']['query_string']
     # If searching for more than one type, don't specify which fields to search
