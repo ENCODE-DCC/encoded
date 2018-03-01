@@ -5,6 +5,7 @@ from snovault import (
     AbstractCollection,
     TYPES,
 )
+from urllib.parse import parse_qs
 from snovault.elasticsearch import ELASTIC_SEARCH
 from snovault.elasticsearch.create_mapping import TEXT_FIELDS
 from snovault.resource_views import collection_view_listing_db
@@ -27,6 +28,7 @@ def includeme(config):
     config.add_route('news', '/news/')
     config.add_route('audit', '/audit/')
     config.add_route('summary', '/summary{slash:/?}')
+    config.add_route('search_items', '/search_items/{search_params}')
     config.scan(__name__)
 
 
@@ -343,11 +345,12 @@ def set_filters(request, query, result, static_items=None):
         terms = all_terms[field]
         if field in ['type', 'limit', 'y.limit', 'x.limit', 'mode', 'annotation',
                      'format', 'frame', 'datastore', 'field', 'region', 'genome',
-                     'sort', 'from', 'referrer']:
+                     'sort', 'from', 'referrer', 'filterresponse']:
             continue
 
         # Add filter to result
-        if field in qs_fields:
+        filterresponse = request.params.get('filterresponse', 'on')
+        if field in qs_fields and filterresponse == 'on':
             for term in terms:
                 qs = urlencode([
                     (k.encode('utf-8'), v.encode('utf-8'))
@@ -1758,3 +1761,12 @@ def summary(context, request):
     result['facets'] = format_facets(
         es_results, facets, used_filters, (schema,), total, principals)
     return result
+
+
+@view_config(route_name='search_items', request_method='POST')
+def search_items(context, request):
+    param_list = parse_qs(request.matchdict['search_params'])
+    param_list.update(request.json_body)
+    path = '/search/?%s' % urlencode(param_list, True)
+    results = request.embed(path, as_user=True)
+    return results

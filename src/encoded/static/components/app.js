@@ -3,12 +3,15 @@ import PropTypes from 'prop-types';
 import Auth0Lock from 'auth0-lock';
 import serialize from 'form-serialize';
 import ga from 'google-analytics';
+import { Provider } from 'react-redux';
 import _ from 'underscore';
 import url from 'url';
 import jsonScriptEscape from '../libs/jsonScriptEscape';
 import origin from '../libs/origin';
+import initializeCart, { cartAddItems, cartCacheSaved, cartSave } from './cart';
 import * as globals from './globals';
 import Navigation from './navigation';
+import { requestSearch } from './objectutils';
 import Footer from './footer';
 import Home from './home';
 import newsHead from './page';
@@ -195,6 +198,8 @@ class App extends React.Component {
             promisePending: false,
         };
 
+        this.cartStore = initializeCart();
+
         this.triggers = {
             login: 'triggerLogin',
             profile: 'triggerProfile',
@@ -231,6 +236,7 @@ class App extends React.Component {
             location_href: this.state.href,
             portal,
             fetch: this.fetch,
+            fetchSessionProperties: this.fetchSessionProperties,
             navigate: this.navigate,
             adviseUnsavedChanges: this.adviseUnsavedChanges,
             session: this.state.session,
@@ -442,6 +448,7 @@ class App extends React.Component {
             return response.json();
         }).then((sessionProperties) => {
             this.setState({ session_properties: sessionProperties });
+            return this.initializeCartFromSessionProperties(sessionProperties);
         });
     }
 
@@ -467,6 +474,8 @@ class App extends React.Component {
         }).then((sessionProperties) => {
             this.setState({ session_properties: sessionProperties });
             this.sessionPropertiesRequest = null;
+            return this.initializeCartFromSessionProperties(sessionProperties);
+        }).then(() => {
             let nextUrl = window.location.href;
             if (window.location.hash === '#logged-out') {
                 nextUrl = window.location.pathname + window.location.search;
@@ -550,6 +559,38 @@ class App extends React.Component {
             exDescription: `${mutatableUri}@${line},${column}: ${msg}`,
             exFatal: true,
             location: window.location.href,
+        });
+    }
+
+    // Retrieve the cart contents for the current logged-in user and add them to the in-memory cart.
+    initializeCartFromSessionProperties(sessionProperties) {
+        // Get the newly logged-in user's saved cart, if any.
+        return requestSearch(`type=Cart&submitted_by=${globals.encodedURIComponent(sessionProperties.user['@id'])}`).then((savedCartResults) => {
+            // For now just use the first cart in the cart search results until we support multiple
+            // carts per user.
+            const savedCartObj = (savedCartResults['@graph'] && savedCartResults['@graph'].length > 0) ? savedCartResults['@graph'][0] : null;
+            const savedCart = (savedCartObj && savedCartObj.items) || [];
+            let memoryCart = this.cartStore.getState().cart;
+            const memoryCartLength = memoryCart.length;
+            if (memoryCartLength !== savedCart.length || !_.isEqual(memoryCart, savedCart)) {
+                // The in-memory cart has different contents from saved cart. Add saved cart items
+                // to in-memory cart.
+                if (savedCart.length) {
+                    cartAddItems(savedCart, this.cartStore.dispatch);
+                    cartCacheSaved(savedCartObj, this.cartStore.dispatch);
+                }
+
+                // Save the updated in-memory cart if it had something in it before we loaded the
+                // saved cart.
+                if (memoryCartLength > 0) {
+                    memoryCart = this.cartStore.getState().cart;
+                    return cartSave(memoryCart, savedCartObj, sessionProperties.user, this.fetch).then((updatedSavedCartObj) => {
+                        cartCacheSaved(updatedSavedCartObj, this.cartStore.dispatch);
+                    });
+                }
+            }
+
+            return savedCartObj;
         });
     }
 
@@ -747,7 +788,7 @@ class App extends React.Component {
         } catch (exc) {
             decodedHref = mutatableHref;
         }
-        const isDownload = decodedHref.includes('/@@download');
+        const isDownload = decodedHref.includes('/@@download') || decodedHref.includes('/batch_download/');
         if (!this.constructor.historyEnabled() || isDownload) {
             this.fallbackNavigate(mutatableHref, fragment, mutatableOptions);
             return null;
@@ -988,12 +1029,16 @@ class App extends React.Component {
                         <div id="application" className={appClass}>
                             <div className="loading-spinner" />
                             <div id="layout">
-                                <Navigation isHomePage={isHomePage} />
-                                <div id="content" className={containerClass} key={key}>
-                                    {content}
-                                </div>
-                                {errors}
-                                <div id="layout-footer" />
+                                <Provider store={this.cartStore}>
+                                    <div>
+                                        <Navigation isHomePage={isHomePage} />
+                                        <div id="content" className={containerClass} key={key}>
+                                            {content}
+                                        </div>
+                                        {errors}
+                                        <div id="layout-footer" />
+                                    </div>
+                                </Provider>
                             </div>
                             <Footer version={this.props.context.app_version} />
                         </div>
@@ -1024,6 +1069,7 @@ App.childContextTypes = {
     currentResource: PropTypes.func,
     location_href: PropTypes.string,
     fetch: PropTypes.func,
+    fetchSessionProperties: PropTypes.func,
     navigate: PropTypes.func,
     portal: PropTypes.object,
     projectColors: PropTypes.object,

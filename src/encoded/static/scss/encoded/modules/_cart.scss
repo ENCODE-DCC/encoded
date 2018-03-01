@@ -1,0 +1,249 @@
+.cart {
+    // Cart navigation menu
+    @at-root #{&}__nav {
+        position: relative;
+        display: table-cell;
+        vertical-align: bottom;
+        width: 34px;
+        height: 24px;
+        fill: white;
+
+        &-icon {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 16px;
+            vertical-align: top;
+        }
+
+        &-count {
+            display: inline-block;
+            position: relative;
+            padding: 0 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border-radius: 1.4rem;
+            background-color: green;
+            height: 16px;
+            line-height: 16px;
+        }
+    }
+
+    // Indicates if item has been saved.
+    @at-root #{&}__saved-status {
+        display: inline-block;
+        width: 10px;
+        height: 16px;
+        line-height: 16px;
+
+        svg {
+            display: block;
+            fill: #cc0700;
+        }
+    }
+
+    // Cart contents list
+    @at-root #{&}__result-table {
+        .result-table {
+            padding: 0;
+            border: none;
+        }
+    }
+
+    // Heading for cart page panel
+    @at-root #{&}__heading {
+        text-align: center;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+
+    // Warning about losing cart items
+    @at-root #{&}__loss-warning {
+        font-style: italic;
+        text-align: center;
+    
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 1 auto;
+            text-align: left;
+        }
+    }
+
+    @at-root #{&}__save-button {
+        margin-top: 10px;
+
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 1 auto;
+            margin: -5px;
+        }
+    }
+
+    // Checkbox block in search results
+    @at-root #{&}__search-controls {
+        padding: 5px;
+        text-align: right;
+        border-width: 1px 1px 0 1px;
+        border-color: #a0a0a0;
+        border-style: solid;
+        background-color: #d8d8d8;
+
+        button {
+            margin-left: 5px;
+        }
+    }
+
+    // Checkbox used in search results
+    @at-root #{&}__checkbox {
+        display: inline-block;
+        height: 16px;
+        line-height: 16px;
+        margin-right: 3px;
+        margin-left: 3px;
+
+        // Button when item not in cart
+        button {
+            width: 16px;
+            height: 16px;
+            border: none;
+            padding: 0;
+            stroke: #000;
+            stroke-width: 0.5px;
+            fill: #000;
+            fill-opacity: 0;
+
+            &:disabled {
+                stroke: #a0a0a0;
+            }
+        }
+
+        &--in-cart {
+            // Button when item in cart
+            button {
+                stroke-width: 0;
+                fill-opacity: 1;
+            }
+        }
+    }
+
+    @at-root #{&}__empty-message {
+        margin: 10px 0;
+        text-align: center;
+        font-style: italic;
+    }
+
+    // Cart control (add/remove) button
+    @at-root #{&}__control-button {
+        @at-root #{&}--inline {
+            display: inline-block;
+            margin-right: 5px;
+            height: 28px;
+        }
+    }
+
+    @at-root #{&}__missing-items {
+        border-top: 1px solid #a0a0a0;
+        background-color: #f0f0f0;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: flex;
+            flex-wrap: wrap;
+
+            p {
+                flex: 0 1 100%;
+            }
+        }
+    }
+
+    @at-root #{&}__missing-item {
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 1 50%;
+        }
+
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 33.33%;
+        }
+
+        @media screen and (min-width: $screen-lg-min) {
+            flex: 0 1 25%;
+        }
+    }
+
+    // Cart result table item count
+    @at-root #{&}__item-count {
+        padding: 2px 0;
+        text-align: center;
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+    }
+
+    // Cart result table pager control area.
+    @at-root #{&}__pager {
+        flex: 0 1 auto;
+    }
+
+    @at-root #{&}__tools {
+        flex: 0 1 auto;
+    }
+
+    // Header of cart panel.
+    @at-root #{&}__header {
+        display: flex;
+        justify-content: space-between;
+
+        button {
+            margin-left: 5px;
+        }
+    }
+}
+
+// Cart button in navigation bar
+.navbar-inverse .nav > li > button.cart__nav-button {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+
+// Search-result-like file facet and results display.
+.cart__display {
+    display: flex;
+
+    .facets {
+        flex: 1 1 auto;
+        position: relative;
+        margin-right: 20px;
+        z-index: 0;
+
+        // <button> specific to cart file facets
+        button {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            border: none;
+            background-color: transparent;
+        }
+
+        progress {
+            width: 100%;
+        }
+    }
+
+    .result-table {
+        flex: 0 1 75%;
+    }
+}
+
+
+// Controls to display on cart page panel.
+.cart-controls {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    bottom: 4px;
+    z-index: 1;
+
+    button {
+        margin-left: 5px;
+    }
+}

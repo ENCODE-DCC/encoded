@@ -50,7 +50,15 @@ export class Navbar extends React.Component {
     }
 
     render() {
-        const { brand, brandlink, label, navClasses } = this.props;
+        const { brand, brandlink, label, navClasses, openDropdown, dropdownClick } = this.props;
+
+        // Add openDropdown and dropdownClick props to the child components.
+        let children = [];
+        if (this.props.children && this.props.children.length) {
+            children = React.Children.map(this.props.children, child => (
+                child ? React.cloneElement(child, { openDropdown, dropdownClick }) : null
+            ));
+        }
 
         return (
             <nav className={`navbar ${navClasses || 'navbar-default'}`}>
@@ -67,7 +75,7 @@ export class Navbar extends React.Component {
                 </div>
 
                 <div className={`collapse navbar-collapse${this.state.expanded ? ' in' : ''}`} id={label}>
-                    {this.props.children}
+                    {children}
                 </div>
             </nav>
         );
@@ -82,6 +90,8 @@ Navbar.propTypes = {
     brandlink: PropTypes.string, // href for clicking brand
     label: PropTypes.string.isRequired, // id for nav; unique on page
     navClasses: PropTypes.string, // CSS classes for <nav> in addition to "navbar"; default to "navbar-default"
+    openDropdown: PropTypes.string.isRequired, // ID of the dropdown currently visible
+    dropdownClick: PropTypes.func.isRequired, // Function to call when dropdown clicked
     children: PropTypes.node, // Child menus to display in the menu bar
 };
 
@@ -112,18 +122,20 @@ Nav.defaultProps = {
 
 
 // Controls one top-level item within a <Nav>. It can be a stand-alone item or a dropdown menu
-export const NavItem = (props, context) => {
-    const { dropdownId, dropdownTitle } = props;
-    const dropdownOpen = dropdownId && (context.openDropdown === dropdownId);
+export const NavItem = (props) => {
+    const { dropdownId, dropdownTitle, label, buttonCss } = props;
+    const dropdownOpen = dropdownId && (props.openDropdown === dropdownId);
 
     return (
         <li className={dropdownId ? `dropdown${dropdownOpen ? ' open' : ''}` : ''}>
             {dropdownTitle ?
                 <NavItemButton
-                    clickHandler={context.dropdownClick}
+                    clickHandler={props.dropdownClick}
                     dropdownOpen={dropdownOpen}
                     dropdownTitle={dropdownTitle}
                     dropdownId={dropdownId}
+                    label={label}
+                    css={buttonCss}
                 />
             : null}
             {props.children}
@@ -137,18 +149,21 @@ NavItem.propTypes = {
         PropTypes.string,
         PropTypes.object,
     ]),
+    openDropdown: PropTypes.string,
+    dropdownClick: PropTypes.func,
+    label: PropTypes.string, // Navigation button aria label text
+    buttonCss: PropTypes.string, // CSS classes to add to navigation button
     children: PropTypes.node, // Child components within one menu item, likely just text
 };
 
 NavItem.defaultProps = {
     dropdownId: '',
     dropdownTitle: null,
+    openDropdown: '',
+    dropdownClick: null,
+    label: '',
+    buttonCss: '',
     children: null,
-};
-
-NavItem.contextTypes = {
-    openDropdown: PropTypes.string,
-    dropdownClick: PropTypes.func,
 };
 
 
@@ -161,36 +176,45 @@ class NavItemButton extends React.Component {
     }
 
     clickHandler(e) {
-        this.props.clickHandler(this.props.dropdownId, e);
+        if (this.props.clickHandler) {
+            this.props.clickHandler(this.props.dropdownId, e);
+        }
     }
 
     render() {
+        const { dropdownOpen, dropdownTitle, label, css } = this.props;
         return (
             <button
-                className="dropdown-toggle"
+                className={`dropdown-toggle${css ? ` ${css}` : ''}`}
                 data-toggle="dropdown"
                 aria-haspopup="true"
-                aria-expanded={this.props.dropdownOpen}
+                aria-expanded={dropdownOpen}
+                aria-label={label}
                 onClick={this.clickHandler}
             >
-                {this.props.dropdownTitle}
+                {dropdownTitle}
             </button>
         );
     }
 }
 
 NavItemButton.propTypes = {
-    clickHandler: PropTypes.func.isRequired, // Parent function to react to clicks in this dropdown menu title
+    clickHandler: PropTypes.func, // Parent function to react to clicks in this dropdown menu title
     dropdownOpen: PropTypes.bool, // True if the dropdown menu for this item is visible
     dropdownId: PropTypes.string, // ID of the dropdown that was clicked
     dropdownTitle: PropTypes.oneOfType([ // Title to display within the actutor part of the dropdown
         PropTypes.string,
         PropTypes.object,
     ]),
+    label: PropTypes.string, // aria-label text
+    css: PropTypes.string, // CSS classes to add to button
 };
 
 NavItemButton.defaultProps = {
+    clickHandler: null,
     dropdownOpen: false,
     dropdownId: '',
     dropdownTitle: null,
+    label: '',
+    css: '',
 };
