@@ -295,7 +295,7 @@ def regionindexer_state_show(request):
     bot_token = request.params.get("bot_token")
     if who is not None or bot_token is not None:
         notices = state.set_notices(request.host_url, who, bot_token, request.params.get("which"))
-        if isinstance(notices,str):
+        if notices is not None:
             return notices
 
     display = state.display(uuids=request.params.get("uuids"))
