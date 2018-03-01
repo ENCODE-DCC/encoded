@@ -9,7 +9,7 @@ import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
-import { DocumentsPanel, Document, DocumentPreview } from './doc';
+import { DocumentsPanel, Document, DocumentPreview, CharacterizationDocuments } from './doc';
 import { RelatedItems } from './item';
 import { AlternateAccession } from './objectutils';
 import StatusLabel from './statuslabel';
@@ -235,35 +235,6 @@ globals.contentViews.register(Lot, 'AntibodyLot');
 export default Lot;
 
 
-const Documents = (props) => {
-    const docs = props.docs;
-    return (
-        <dd>
-            {docs.map((doc, i) => {
-                if (doc.attachment) {
-                    const attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
-                    const docName = (doc.aliases && doc.aliases.length) ? doc.aliases[0] :
-                        ((doc.attachment && doc.attachment.download) ? doc.attachment.download : '');
-                    return (
-                        <div className="multi-dd dl-link" key={doc.uuid}>
-                            <i className="icon icon-download" />&nbsp;
-                            <a data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
-                                {docName}
-                            </a>
-                        </div>
-                    );
-                }
-                return <div className="multi-dd dl-link" key={doc.uuid} />;
-            })}
-        </dd>
-    );
-};
-
-Documents.propTypes = {
-    docs: PropTypes.array.isRequired,
-};
-
-
 const AntibodyStatus = (props) => {
     const context = props.context;
 
@@ -486,7 +457,7 @@ const CharacterizationDetail = (props) => {
                 {doc.documents && doc.documents.length ?
                     <div data-test="documents">
                         <dt>Documents</dt>
-                        <Documents docs={doc.documents} />
+                        <CharacterizationDocuments docs={doc.documents} />
                     </div>
                 : null}
             </dl>
