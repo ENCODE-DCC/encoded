@@ -10,6 +10,7 @@ import { DbxrefList } from './dbxref';
 import { ExperimentTable } from './dataset';
 import { FetchedItems } from './fetched';
 import { FileGallery } from './filegallery';
+import { CartControl } from './cart';
 import { ProjectBadge } from './image';
 import { Breadcrumbs } from './navigation';
 import { singleTreatment, AlternateAccession, DisplayAsJson } from './objectutils';
@@ -207,6 +208,7 @@ class ExperimentComponent extends React.Component {
         let condensedReplicates = [];
         let libSubmitterComments = [];
         const context = this.props.context;
+        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         const itemClass = globals.itemClass(context, 'view-item');
         const replicates = context.replicates && context.replicates.length ? context.replicates : [];
@@ -402,7 +404,6 @@ class ExperimentComponent extends React.Component {
 
         // Get a list of related datasets, possibly filtering on their status.
         let seriesList = [];
-        const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
         if (context.related_series && context.related_series.length) {
             seriesList = _(context.related_series).filter(dataset => loggedIn || dataset.status === 'released');
         }
@@ -455,8 +456,9 @@ class ExperimentComponent extends React.Component {
                         <h2>Experiment summary for {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         <Supersede context={context} />
-                        {this.props.auditIndicators(context.audit, 'experiment-audit', { session: this.context.session })}
                         <DisplayAsJson />
+                        <CartControl current={context} />
+                        {this.props.auditIndicators(context.audit, 'experiment-audit', { session: this.context.session })}
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'experiment-audit', { session: this.context.session, except: context['@id'] })}

@@ -446,6 +446,9 @@
         "status": {
             "title": "Status"
         },
+        "files.@id": {
+            "title": "Files"
+        },
         "replicates.library.biosample.accession": {
             "title": "Biosample accession"
         },

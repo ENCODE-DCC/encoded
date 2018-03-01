@@ -5,6 +5,7 @@ require('./app');
 require('./award');
 require('./image');
 require('./biosample');
+require('./cart/cart');
 require('./collection');
 require('./dataset');
 require('./dbxref');
