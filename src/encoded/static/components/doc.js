@@ -447,3 +447,34 @@ globals.documentViews.caption.register(QCAttachmentCaption, 'QualityMetric');
 
 // Register document preview rendering components
 globals.documentViews.preview.register(QCAttachmentPreview, 'QualityMetric');
+
+
+// Display a list of document links within a characterization.
+export const CharacterizationDocuments = (props) => {
+    const docs = props.docs.filter(doc => !!doc);
+    return (
+        <dd>
+            {docs.map((doc) => {
+                if (doc && doc.attachment) {
+                    const attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
+                    const docName = (doc.aliases && doc.aliases.length) ? doc.aliases[0] :
+                        ((doc.attachment && doc.attachment.download) ? doc.attachment.download : '');
+                    return (
+                        <div className="multi-dd dl-link" key={doc['@id']}>
+                            <i className="icon icon-download" />&nbsp;
+                            <a data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
+                                {docName}
+                            </a>
+                        </div>
+                    );
+                }
+
+                return null;
+            })}
+        </dd>
+    );
+};
+
+CharacterizationDocuments.propTypes = {
+    docs: PropTypes.array.isRequired, // Array of documents to display within characterization details panel
+};
