@@ -53,7 +53,7 @@ As an example query (show me all the files that link back to dataset with uuid: 
 
 Alembic is a git-like framework for making database migrations. (http://alembic.zzzcomputing.com/en/latest/)
 
-It allows you to autogenerate code to update the Postgres database based on changes to the SQLAlchemy models. For example, if we add :code:`index=True` to the *rid* column in the PropertySheet model in snovault.storage::
+It allows us to autogenerate code to update the Postgres database based on changes to the SQLAlchemy models. For example, if we add :code:`index=True` to the *rid* column in the PropertySheet model in snovault.storage::
   
    rid = Column(UUID,
                 ForeignKey('resources.rid',
@@ -77,7 +77,7 @@ Then :code:`bin/alembic revision --autogenerate` (note that *bin/alembic* is a t
        op.drop_index(op.f('ix_propsheets_rid'), table_name='propsheets')
        # ### end Alembic commands ###
        
-Check for correctness before running against Postgres! Running :code:`bin/alembic upgrade head` will apply the upgrade function to Postgres. (Can also upgrade/downgrade by revision ID or relative steps: :code:`bin/alembic downgrade cfcf1fdff25c` or :code:`bin/alembic upgrade +1`)
+Running :code:`bin/alembic upgrade head` will apply the upgrade function to Postgres (check the update function for correctness first!). It is possible to upgrade/downgrade by revision ID or relative steps as well: :code:`bin/alembic downgrade cfcf1fdff25c` or :code:`bin/alembic upgrade +1`
 
 
 ===================
@@ -88,7 +88,7 @@ but these dbs are both destroyed when you kill the dev-servers process
 
 ====================
 
-**Creating a SparkQL store**
+**Creating a SPARQL store**
 
 After building out the software, it will create an executable called json_rdf::
 
