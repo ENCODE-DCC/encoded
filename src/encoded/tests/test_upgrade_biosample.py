@@ -174,7 +174,7 @@ def biosample_18(biosample_0, biosample, construct, rnai):
     item.update({
         'biosample_term_id': 'EFO:0002067',
         'biosample_term_name': 'K562',
-        'biosample_type': 'cell line',
+        'biosample_type': 'immortalized cell line',
         'constructs': list(construct),
         'rnais': list(rnai),
         'transfection_type': 'stable',
