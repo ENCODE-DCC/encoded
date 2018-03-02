@@ -379,7 +379,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "19"
+            "default": "20"
         },
         "accession": {
             "accessionType": "BS"
