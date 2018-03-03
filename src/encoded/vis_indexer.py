@@ -118,8 +118,8 @@ class VisIndexerState(IndexerState):
 
     def display(self, uuids=None):
         display = super(VisIndexerState, self).display(uuids=uuids)
-        display['staged to process'] = self.get_count(self.staged_cycles_list)
-        display['datasets vis cached current cycle'] = self.get_count(self.success_set)
+        display['staged_to_process'] = self.get_count(self.staged_cycles_list)
+        display['datasets_vis_cached_current_cycle'] = self.get_count(self.success_set)
         return display
 
 
@@ -146,9 +146,9 @@ def visindexer_state_show(request):
     try:
         count = es.count(index=VIS_CACHE_INDEX, doc_type='default').get('count',0)
         if count:
-            display['vis_blobs in index'] = count
+            display['vis_blobs_in_index'] = count
     except:
-        display['vis_blobs in index'] = 'Not Found'
+        display['vis_blobs_in_index'] = 'Not Found'
         pass
 
     if not request.registry.settings.get('testing',False):  # NOTE: _indexer not working on local instances
