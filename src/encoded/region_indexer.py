@@ -272,9 +272,9 @@ class RegionIndexerState(IndexerState):
 
     def display(self, uuids=None):
         display = super(RegionIndexerState, self).display(uuids=uuids)
-        display['staged to process'] = self.get_count(self.staged_cycles_list)
-        display['files added'] = self.get_count(self.files_added_set)
-        display['files dropped'] = self.get_count(self.files_dropped_set)
+        display['staged_to_process'] = self.get_count(self.staged_cycles_list)
+        display['files_added'] = self.get_count(self.files_added_set)
+        display['files_dropped'] = self.get_count(self.files_dropped_set)
         return display
 
 
@@ -303,9 +303,9 @@ def regionindexer_state_show(request):
     try:
         count = regions_es.count(index=RESIDENT_REGIONSET_KEY, doc_type='default').get('count',0)
         if count:
-            display['files in index'] = count
+            display['files_in_index'] = count
     except:
-        display['files in index'] = 'Not Found'
+        display['files_in_index'] = 'Not Found'
         pass
 
     if not request.registry.settings.get('testing',False):  # NOTE: _indexer not working on local instances

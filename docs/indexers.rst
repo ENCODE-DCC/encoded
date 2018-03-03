@@ -62,22 +62,22 @@ These views will return the following values with some slight variation between 
 
   :title: Either 'primary_indexer', 'vis_indexer' or 'region_indexer'.
   :status: The indexer is either 'waiting' between cycles or 'indexing' during a cycle.  It might also be 'uninitialized' when the system is first coming up.
-  :docs in index: (primary only) The count of all documents currently in the elasticsearch index.
-  :vis_blobs in index: (vis only) The count of all vis objects currently in the elasticsearch index.
-  :files in index: (region only) The count of all regionable file objects currently in the elasticsearch region index.
-  :uuids in progress: The count of uuids currently being indexed.
-  :uuids last cycle: The number of uuids in the previous cycle.
-  :uuids troubled: The number of uuids that failed to index during the last cycle.
-  :to be handed off to other indexer(s): (primary only) The count of uuids that will be staged by the primary indexer when its current cycle completes.
-  :registered indexers: (primary only) List of indexers that have started.
-  :staged by primary: (vis and region) Count of uuids that have been staged specifically for this indexer.
-  :staged to process: (vis and region) Count of uuids set up for processing by this indexer.
-  :files added: (region only) Count of files added to the region indexer in the most recent cycle.
-  :files dropped: (region only) Count of files dropped from the region indexer in the most recent cycle.
+  :docs_in_index: (primary only) The count of all documents currently in the elasticsearch index.
+  :vis_blobs_in_index: (vis only) The count of all vis objects currently in the elasticsearch index.
+  :files_in_index: (region only) The count of all regionable file objects currently in the elasticsearch region index.
+  :uuids_in_progress: The count of uuids currently being indexed.
+  :uuids_last_cycle: The number of uuids in the previous cycle.
+  :uuids_troubled: The number of uuids that failed to index during the last cycle.
+  :to_be_staged_for_follow_up_indexers: (primary only) The count of uuids that will be staged by the primary indexer when its current cycle completes.
+  :registered_indexers: (primary only) List of indexers that have started.
+  :staged_by_primary: (vis and region) Count of uuids that have been staged specifically for this indexer.
+  :staged_to_process: (vis and region) Count of uuids set up for processing by this indexer.
+  :files_added: (region only) Count of files added to the region indexer in the most recent cycle.
+  :files_dropped: (region only) Count of files dropped from the region indexer in the most recent cycle.
   :now: The UTC time this view was displayed.  Useful for comparing to other times found here.
   :listener: The contents of an ``/_indexer`` request.  (Or ``/visindexer``, ``/_regionindexer`` as appropriate.)  *Described above*.
-  :REINDEX requested: If reindexing was requested this will contain 'all' or a list of uuids.
-  :NOTIFY requested: If notify was requested, this will include who will be notified and in which circumstances.
+  :reindex_requested: If reindexing was requested this will contain 'all' or a list of uuids.
+  :notify_requested: If notify was requested, this will include who will be notified and in which circumstances.
   :state: The contents of the indexer's state object held in elasticsearch...
 
     :title: Either 'primary_indexer', 'vis_indexer' or 'region_indexer'
