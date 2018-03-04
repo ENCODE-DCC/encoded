@@ -878,6 +878,10 @@
         },
         "award.rfa": {
             "title": "RFA"
+        },
+        "nih_institutional_certification": {
+            "type": "exists",
+            "title": "Has NIH institutional certification"
         }
     },
     "columns": {
