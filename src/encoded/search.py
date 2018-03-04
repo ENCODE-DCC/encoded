@@ -138,9 +138,10 @@ def set_sort_order(request, search_term, types, doc_types, query, result):
     sort = OrderedDict()
     result_sort = OrderedDict()
 
-    # Prefer sort order specified in request, if any
+    # Prefer sort order specified in request, if any. Ignore if the sorted
+    # field is included in TEXT_FIELDS and thus can't be sorted.
     requested_sort = request.params.get('sort')
-    if requested_sort:
+    if requested_sort and requested_sort.replace('-', '', 1) not in TEXT_FIELDS:
         if requested_sort.startswith('-'):
             name = requested_sort[1:]
             order = 'desc'
@@ -148,11 +149,10 @@ def set_sort_order(request, search_term, types, doc_types, query, result):
             name = requested_sort
             order = 'asc'
         # TODO: unmapped type needs to be determined, not hard coded
-        if name not in TEXT_FIELDS:
-            sort['embedded.' + name] = result_sort[name] = {
-                'order': order,
-                'unmapped_type': 'keyword',
-            }
+        sort['embedded.' + name] = result_sort[name] = {
+            'order': order,
+            'unmapped_type': 'keyword',
+        }
 
     # Otherwise we use a default sort only when there's no text search to be  ranked
     if not sort and search_term == '*':
