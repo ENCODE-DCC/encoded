@@ -56,8 +56,6 @@ STATUS_LEVEL = {
     'not reviewed': 100,
     'not submitted for review by lab': 100,
     'exempt from standards': 100,
-    'eligible for new data': 100,
-    'not eligible for new data': 100,
     'not pursued': 100,
     'virtual': 100,
     'active': 100,
@@ -76,7 +74,6 @@ STATUS_LEVEL = {
     'upload failed': 50,
     'content error': 50,
     'pending dcc review': 50,
-    'awaiting lab characterization': 50,
 
     # invisible statuses (visible for admins only)
     'deleted': 0,
