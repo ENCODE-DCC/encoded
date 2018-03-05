@@ -212,7 +212,7 @@ def characterization_10_11(value, system):
 
 
 @upgrade_step('antibody_characterization', '11', '12')
-def antibody_characterization(value, system):
+def antibody_characterization_11_12(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3848
     for characterization_review in value.get('characterization_reviews'):
         if characterization_review.get('biosample_type') == 'immortalized cell line':
