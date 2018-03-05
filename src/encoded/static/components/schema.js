@@ -33,6 +33,9 @@ const excludedTerms = [
     'boost_values',
     'changelog',
     '@type',
+    'output_type_output_category',
+    'file_format_file_extension',
+    'sort_by',
 ];
 
 
@@ -244,6 +247,63 @@ TermDisplay.propTypes = {
 };
 
 
+class DisplayObjectSection extends React.PureComponent {
+    constructor() {
+        super();
+
+        // Set initial React component state.
+        this.state = {
+            sectionOpen: false, // True if the section has been opened for display
+        };
+
+        // Bind `this` to non-React methods.
+        this.handleDisclosureClick = this.handleDisclosureClick.bind(this);
+    }
+
+    handleDisclosureClick() {
+        // Click in the disclosure icon. Toggle the `sectionOpen` state to show or hide the list of
+        // child properties.
+        this.setState(prevState => ({ sectionOpen: !prevState.sectionOpen }));
+    }
+
+    render() {
+        const { term, schema } = this.props;
+
+        // Set aria values for accessibility.
+        const accordionId = `profile-display-values-${term}`;
+        const accordionLabel = `profile-value-item-${term}`;
+
+        return (
+            <div className={`profile-display__section${this.state.sectionOpen ? ' profile-display__section--open' : ''}`}>
+                <h3 className="profile-value__item" id={accordionLabel}>
+                    <button
+                        className="profile-value__disclosure-button"
+                        data-toggle="collapse"
+                        data-target={`#${accordionId}`}
+                        aria-controls={accordionId}
+                        aria-expanded={this.state.sectionOpen}
+                        onClick={this.handleDisclosureClick}
+                    >
+                        {collapseIcon(!this.state.sectionOpen)}
+                    </button>
+                    {titleMap[term] || term}
+                </h3>
+                {this.state.sectionOpen ?
+                    <div id={accordionId} aria-labelledby={accordionLabel} className="profile-display__values">
+                        <TermDisplay termSchema={schema[term]} />
+                    </div>
+                : null}
+            </div>
+        );
+    }
+}
+
+DisplayObjectSection.propTypes = {
+    term: PropTypes.string.isRequired, // Top-level property name in schema being displayed
+    schema: PropTypes.object.isRequired, // Entire Schema containing term being displayed
+};
+
+
 // Display an entire formatted schema.
 const DisplayObject = (props) => {
     const { schema } = props;
@@ -251,12 +311,7 @@ const DisplayObject = (props) => {
     return (
         <div className="profile-display">
             {schemaTerms.map(term =>
-                <div className="profile-display__section" key={term}>
-                    <h3>{titleMap[term] || term}</h3>
-                    <div className="profile-display__values">
-                        <TermDisplay termSchema={schema[term]} />
-                    </div>
-                </div>
+                <DisplayObjectSection key={term} term={term} schema={schema} />
             )}
         </div>
     );
