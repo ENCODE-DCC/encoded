@@ -48,7 +48,7 @@ def antibody_lot_3_4(value, system):
     root = find_root(context)
     approvals = []
 
-    for link_uuid in connection.get_rev_links(context.model, 'antibody', 'antibody_approval'):
+    for link_uuid in connection.get_rev_links(context.model, 'antibody'):
         approvals.append(root.get_by_uuid(link_uuid))
 
     targets = set()
