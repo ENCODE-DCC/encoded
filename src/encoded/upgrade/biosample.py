@@ -319,3 +319,10 @@ def biosample_18_19(value, system):
         del value['transfection_type']
     if 'transfection_method' in value:
         del value['transfection_method']
+
+
+@upgrade_step('biosample', '19', '20')
+def biosample_19_20(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3848
+    if value.get('biosample_type') == 'immortalized cell line':
+        value['biosample_type'] = "cell line"
