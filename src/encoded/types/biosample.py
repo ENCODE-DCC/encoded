@@ -398,9 +398,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 transfection_type=None,
                 genetic_modifications=None,
                 model_organism_donor_modifications=None,
-                constructs=None,
-                model_organism_donor_constructs=None,
-                rnais=None):
+                model_organism_donor_constructs=None):
 
         sentence_parts = [
             'organism_name',
