@@ -132,7 +132,9 @@ def visindexer_state_show(request):
     # requesting reindex
     reindex = request.params.get("reindex")
     if reindex is not None:
-        state.request_reindex(reindex)
+        msg = state.request_reindex(reindex)
+        if msg is not None:
+            return msg
 
     # Requested notification
     who = request.params.get("notify")
