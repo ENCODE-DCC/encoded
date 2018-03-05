@@ -33,33 +33,7 @@ def antibody_lot_2_3(value, system):
 
 @upgrade_step('antibody_lot', '3', '4')
 def antibody_lot_3_4(value, system):
-    # http://redmine.encodedcc.org/issues/380
-
-    tagged_ab = {
-        'eGFP': '59c3efe9-00c6-4b1b-858b-5a208478972c',
-        'YFP': '8a4e81d-3181-4332-9138-ecc39be4a3ab',
-        'HA': '77d56f5a-e445-4f2c-83ac-65e00ce50ac1',
-        '3XFLAG': 'f2d60a72-7b9c-422a-a80e-9493640c1d58'
-    }
-
-    context = system['context']
-    registry = system['registry']
-    connection = registry[CONNECTION]
-    root = find_root(context)
-    approvals = []
-
-    for link_uuid in connection.get_rev_links(context.model, 'antibody'):
-        approvals.append(root.get_by_uuid(link_uuid))
-
-    targets = set()
-    for approval in approvals:
-        target = root.get_by_uuid(approval.properties['target'])
-        tag = target.properties['label'].split('-')[0]
-        if tag in tagged_ab.keys():
-            targets.add(tagged_ab[tag])
-        else:
-            targets.add(approval.properties['target'])
-    value['targets'] = list(targets)
+    return
 
 
 @upgrade_step('antibody_lot', '4', '5')
