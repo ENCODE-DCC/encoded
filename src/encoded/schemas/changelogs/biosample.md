@@ -1,5 +1,9 @@
 ## Changelog for biosample.json
 
+### Schema version 20
+
+* Replace *immortalized cell line* with *cell line* in biosample_type enum
+
 ### Minor changes since schema version 19
 
 * *PMI* and *PMI_units* were added as new properties, with dependencies enforcing their interdependent use.
