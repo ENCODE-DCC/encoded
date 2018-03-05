@@ -114,22 +114,6 @@ def test_json_basic_auth(anonhtmltestapp):
     assert res.content_type == 'application/json'
 
 
-def _test_antibody_approval_creation(testapp):
-    from urllib.parse import urlparse
-    new_antibody = {'foo': 'bar'}
-    res = testapp.post_json('/antibodies/', new_antibody, status=201)
-    assert res.location
-    assert '/profiles/result' in res.json['@type']['profile']
-    assert res.json['@graph'] == [{'href': urlparse(res.location).path}]
-    res = testapp.get(res.location, status=200)
-    assert '/profiles/antibody_approval' in res.json['@type']
-    data = res.json
-    for key in new_antibody:
-        assert data[key] == new_antibody[key]
-    res = testapp.get('/antibodies/', status=200)
-    assert len(res.json['@graph']) == 1
-
-
 def test_load_sample_data(
         analysis_step,
         analysis_step_run,
@@ -138,7 +122,6 @@ def test_load_sample_data(
         award,
         biosample,
         biosample_characterization,
-        construct,
         document,
         experiment,
         file,
@@ -151,7 +134,6 @@ def test_load_sample_data(
         publication_data,
         quality_metric,
         replicate,
-        rnai,
         software,
         software_version,
         source,
@@ -321,20 +303,6 @@ def test_page_collection_default(workbook, anontestapp):
     res = anontestapp.get('/images/', status=200)
     assert 'default_page' in res.json
     assert res.json['default_page']['@id'] == '/pages/images/'
-
-
-def test_antibody_redirect(testapp, antibody_approval, anontestapp):
-    assert antibody_approval['@id'].startswith('/antibody-approvals/')
-
-    res = testapp.get(antibody_approval['@id'], status=200)
-    assert 'antibody' in res.json
-
-    anontestapp.get(antibody_approval['@id'], status=403)
-
-    res = testapp.get('/antibodies/%s/' % antibody_approval['uuid']).follow(status=200)
-    assert res.json['@type'] == ['AntibodyLot', 'Item']
-
-    assert anontestapp.get('/antibodies/%s/' % antibody_approval['uuid'], status=301)
 
 
 def test_jsonld_context(testapp):
