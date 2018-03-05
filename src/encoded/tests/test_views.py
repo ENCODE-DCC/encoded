@@ -132,7 +132,6 @@ def test_load_sample_data(
         pipeline,
         publication,
         publication_data,
-        quality_metric,
         replicate,
         software,
         software_version,
