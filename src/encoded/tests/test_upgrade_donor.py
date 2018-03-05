@@ -115,11 +115,10 @@ def human_donor_9(root, donor_1):
 
 
 @pytest.fixture
-def fly_donor_7(root, fly, construct, target_promoter):
+def fly_donor_7(root, fly, target_promoter):
     item = fly.copy()
     item.update({
         'schema_version': '7',
-        'constructs': list(construct),
         'mutated_gene': target_promoter['uuid'],
         'mutagen': 'TMP/UV'
     })
