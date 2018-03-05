@@ -84,7 +84,7 @@ def test_antibody_lot_upgrade_status_deleted(upgrader, antibody_lot_2):
 
 def test_antibody_lot_upgrade_targets(
         root, registry, upgrader, antibody_lot, antibody_lot_3, target,
-        antibody_approval, threadlocals, dummy_request):
+        threadlocals, dummy_request):
     context = root.get_by_uuid(antibody_lot['uuid'])
     dummy_request.context = context
     value = upgrader.upgrade(
