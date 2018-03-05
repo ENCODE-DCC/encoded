@@ -169,14 +169,12 @@ def biosample_15(biosample_0, biosample):
 
 
 @pytest.fixture
-def biosample_18(biosample_0, biosample, construct, rnai):
+def biosample_18(biosample_0, biosample):
     item = biosample_0.copy()
     item.update({
         'biosample_term_id': 'EFO:0002067',
         'biosample_term_name': 'K562',
-        'biosample_type': 'immortalized cell line',
-        'constructs': list(construct),
-        'rnais': list(rnai),
+        'biosample_type': 'immortalized cell line'
         'transfection_type': 'stable',
         'transfection_method': 'electroporation'
     })
