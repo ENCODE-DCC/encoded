@@ -105,16 +105,14 @@ def antibody_characterization_10(antibody_characterization_1):
 def antibody_characterization_11(antibody_characterization):
     item = antibody_characterization.copy()
     item.update({
-        'characterization_reviews': [
-        {
+        'characterization_reviews': [{
             'biosample_term_name': 'K562',
             'biosample_term_id': 'EFO:0002067',
             'lane_status': 'exempt from standards',
             'biosample_type': 'immortalized cell line',
             'lane': 2,
             'organism': '/organisms/human/'
-        }
-    ]
+        }]
     })
     return item
 
