@@ -6,6 +6,7 @@ from snovault import (
     TYPES,
 )
 from snovault.elasticsearch import ELASTIC_SEARCH
+from snovault.elasticsearch.create_mapping import TEXT_FIELDS
 from snovault.resource_views import collection_view_listing_db
 from elasticsearch.helpers import scan
 from pyramid.httpexceptions import HTTPBadRequest
@@ -147,10 +148,11 @@ def set_sort_order(request, search_term, types, doc_types, query, result):
             name = requested_sort
             order = 'asc'
         # TODO: unmapped type needs to be determined, not hard coded
-        sort['embedded.' + name] = result_sort[name] = {
-            'order': order,
-            'unmapped_type': 'keyword',
-        }
+        if name not in TEXT_FIELDS:
+            sort['embedded.' + name] = result_sort[name] = {
+                'order': order,
+                'unmapped_type': 'keyword',
+            }
 
     # Otherwise we use a default sort only when there's no text search to be  ranked
     if not sort and search_term == '*':
@@ -944,6 +946,7 @@ def report(context, request):
     res['download_tsv'] = request.route_path('report_download') + search_base
     res['title'] = 'Report'
     res['@type'] = ['Report']
+    res['non_sortable'] = TEXT_FIELDS
     return res
 
 
