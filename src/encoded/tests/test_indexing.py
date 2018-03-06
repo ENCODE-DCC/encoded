@@ -162,8 +162,8 @@ def test_indexer_region_state(dummy_request):
     assert result['title'] == 'region_indexer'
     assert result['status'] == 'idle'
     display = state.display()
-    assert 'files added' in display
-    assert 'files dropped' in display
+    assert 'files_added' in display
+    assert 'files_dropped' in display
 
 
 def test_listening(testapp, listening_conn):
