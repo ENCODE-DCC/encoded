@@ -267,11 +267,12 @@ def audit_experiment_missing_unfiltered_bams(value, system, files_structure):
             get_pipeline_objects(files_structure.get('alignments').values())):
         for filtered_file in files_structure.get('alignments').values():
             if has_only_raw_files_in_derived_from(filtered_file, files_structure) and \
+               filtered_file.get('lab') == '/labs/encode-processing-pipeline/' and \
                has_no_unfiltered(filtered_file,
                                  files_structure.get('unfiltered_alignments').values()):
-                detail = ('Experiment {} contains biological replicate ' +
-                         '{} with a filtered {} file {}, mapped to ' +
-                         'a {} assembly, but has no unfiltered ' +
+                detail = ('Experiment {} contains biological replicate '
+                         '{} with a filtered {} file {}, mapped to '
+                         'a {} assembly, but has no unfiltered '
                          '{} file.').format(
                              value['@id'],
                              filtered_file['biological_replicates'],
