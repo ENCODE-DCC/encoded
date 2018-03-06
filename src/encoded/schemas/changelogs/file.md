@@ -2,6 +2,8 @@
 
 ### Minor changes since schema version 12
 
+* New enumerations that could be posted only by the DCC were added in output_types: ""redacted alignments" and "redacted unfiltered alignments"; both enumerations are categorized as "alignments".
+DNA sequence information was removed from these analyses, since they are based on primary data with restricted public access (such as dbGap).
 * New enumerations were added in output_types: "differential expression quantifications" and "differential splicing quantifications"; both enumerations are categorized as "quantification"
 * *fastq_signature* list items (colon separated flowcell, lane, read-end and barcode items) now can include 3 as the read-end portion of the signature item.
 

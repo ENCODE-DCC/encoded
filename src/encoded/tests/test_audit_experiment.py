@@ -1802,6 +1802,65 @@ def test_audit_experiment_chip_seq_standards_depth(testapp,
                'low read depth' for error in collect_audit_errors(res))
 
 
+def test_audit_experiment_chip_seq_redacted_alignments_standards_depth(
+    testapp,
+    base_experiment,
+    replicate_1_1,
+    replicate_2_1,
+    library_1,
+    library_2,
+    biosample_1,
+    biosample_2,
+    mouse_donor_1,
+    file_fastq_3,
+    file_fastq_4,
+    file_bam_1_1,
+    file_bam_2_1,
+    file_tsv_1_2,
+    mad_quality_metric_1_2,
+    chip_seq_quality_metric,
+    analysis_step_run_bam,
+    analysis_step_version_bam,
+    analysis_step_bam,
+    pipeline_bam,
+    target_H3K27ac):
+
+    testapp.patch_json(chip_seq_quality_metric['@id'], {'quality_metric_of': [file_bam_1_1['@id'],
+                                                                              file_bam_2_1['@id']],
+                                                        'processing_stage': 'filtered',
+                                                        'total': 30000000,
+                                                        'mapped': 30000000,
+                                                        'read1': 100, 'read2': 100})
+    testapp.patch_json(file_fastq_3['@id'], {'read_length': 20})
+    testapp.patch_json(file_fastq_4['@id'], {'read_length': 100})
+
+    testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'output_type': 'redacted alignments',
+                                             'assembly': 'mm10',
+                                             'derived_from': [file_fastq_3['@id']]})
+    testapp.patch_json(file_bam_2_1['@id'], {'step_run': analysis_step_run_bam['@id'],
+                                             'output_type': 'redacted alignments',
+                                             'assembly': 'mm10',
+                                             'derived_from': [file_fastq_4['@id']]})
+    testapp.patch_json(pipeline_bam['@id'], {'title':
+                                             'ChIP-seq read mapping'})
+    testapp.patch_json(biosample_1['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_2['@id'], {'donor': mouse_donor_1['@id']})
+    testapp.patch_json(biosample_1['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_2['@id'], {'organism': '/organisms/mouse/'})
+    testapp.patch_json(biosample_1['@id'], {'model_organism_sex': 'mixed'})
+    testapp.patch_json(biosample_2['@id'], {'model_organism_sex': 'mixed'})
+    testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
+    testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
+    testapp.patch_json(replicate_1_1['@id'], {'library': library_1['@id']})
+    testapp.patch_json(replicate_2_1['@id'], {'library': library_2['@id']})
+    testapp.patch_json(base_experiment['@id'], {'target': target_H3K27ac['@id'],
+                                                'status': 'released',
+                                                'date_released': '2016-01-01',
+                                                'assay_term_name': 'ChIP-seq'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    assert any(error['category'] ==
+               'low read depth' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_chip_seq_control_standards(testapp,
