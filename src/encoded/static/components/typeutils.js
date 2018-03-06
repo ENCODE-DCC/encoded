@@ -48,10 +48,6 @@ export function CollectBiosampleDocs(biosample) {
             donorDocuments = biosample.donor.documents;
         }
     }
-    let donorConstructs = [];
-    if (biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length) {
-        donorConstructs = biosample.model_organism_donor_constructs.reduce((allDocs, construct) => ((construct.documents && construct.documents.length) ? allDocs.concat(construct.documents) : allDocs), []);
-    }
     let treatmentDocuments = [];
     if (biosample.treatments && biosample.treatments.length) {
         treatmentDocuments = biosample.treatments.reduce((allDocs, treatment) => ((treatment.documents && treatment.documents.length) ? allDocs.concat(treatment.documents) : allDocs), []);
@@ -64,7 +60,6 @@ export function CollectBiosampleDocs(biosample) {
         characterizations,
         donorDocuments,
         donorCharacterizations,
-        donorConstructs,
         treatmentDocuments,
     ));
 
