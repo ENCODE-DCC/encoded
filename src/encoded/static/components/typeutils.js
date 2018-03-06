@@ -26,8 +26,7 @@ export function BiosampleOrganismNames(biosamples) {
 
 // Collect up all the documents associated with the given biosample. They get combined all into one array of
 // documents (with @type of Document or Characterization). If the given biosample has no documdents, this
-// function returns null. Protocol documents, characterizations, construct documents, and RNAi documents
-// all get included.
+// function returns null. Protocol documents and characterizations get included.
 export function CollectBiosampleDocs(biosample) {
     // Collect up the various biosample documents
     let protocolDocuments = [];
