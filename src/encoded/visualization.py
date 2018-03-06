@@ -1192,10 +1192,10 @@ def generate_by_accessions(request, accessions, assembly, hide, regen, prepend_l
 
     msg = "%s. len(txt):%s  %.3f secs" % \
                  (vis_collection.found_or_built(), len(blob), (time.time() - PROFILE_START_TIME))
-    #if vis_collection.regen_requested:  # Want to see message if regen was requested
-    log.info(msg)
-    #else:
-    #    log.debug(msg)
+    if vis_collection.regen_requested:  # Want to see message if regen was requested
+        log.info(msg)
+    else:
+        log.debug(msg)
 
     return blob
 
