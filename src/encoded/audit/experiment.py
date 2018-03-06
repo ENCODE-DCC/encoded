@@ -2905,6 +2905,28 @@ def audit_experiment_mapped_read_length(value, system, files_structure):
     return
 
 
+def audit_experiment_nih_institutional_certification(value, system, excluded_types):
+    '''
+    Check if ENCODE4 experiment uses biosample without NIH institutional certification.
+    '''
+    # Only check ENCODE4 experiments. 
+    if value.get('award', {}).get('rfa') != 'ENCODE4':
+        return
+    # Build up list of human biosamples missing NIC used in experiment. 
+    human_biosamples_missing_hic = [
+        b['@id']
+        for b in get_biosamples(value)
+        if (b.get('organism') == '/organisms/human/'
+                and not b.get('nih_institutional_certification'))
+    ]
+    # Yield AuditFailure for unique biosamples.
+    for b in set(human_biosamples_missing_hic):
+        detail = ('Experiment {} uses biosample {} missing NIH institutional'
+                  ' certification required for human data'.format(value['@id'], b))
+        yield AuditFailure('missing nih_institutional_certification', detail, level='ERROR')
+
+
+
 #######################
 # utilities
 #######################
@@ -3483,7 +3505,6 @@ def is_gtex_experiment(experiment_to_check):
 def check_award_condition(experiment, awards):
     return experiment.get('award') and experiment.get('award')['rfa'] in awards
 
-
 function_dispatcher_without_files = {
     'audit_isogeneity': audit_experiment_isogeneity,
     'audit_replicate_biosample': audit_experiment_replicates_biosample,
@@ -3501,7 +3522,8 @@ function_dispatcher_without_files = {
     'audit_missing_modifiction': audit_missing_modification,
     'audit_AB_characterization': audit_experiment_antibody_characterized,
     'audit_control': audit_experiment_control,
-    'audit_spikeins': audit_experiment_spikeins
+    'audit_spikeins': audit_experiment_spikeins,
+    'audit_nih_consent': audit_experiment_nih_institutional_certification,
 }
 
 function_dispatcher_with_files = {
