@@ -2805,3 +2805,31 @@ def test_audit_experiment_chip_seq_read_count(
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert all(error['category'] !=
                'low read count' for error in collect_audit_errors(res))
+
+
+def test_audit_experiment_with_biosample_missing_nih_consent(testapp, experiment, replicate,
+                                                             library, biosample, encode4_award):
+    testapp.patch_json(experiment['@id'], {'award': encode4_award['@id']})
+    r = testapp.get(experiment['@id'] + '@@index-data')
+    audits = r.json['audit']
+    assert any(
+        [
+            detail['category'] == 'missing nih_institutional_certification'
+            for audit in audits.values() for detail in audit
+        ]
+    )
+
+
+def test_audit_experiment_with_biosample_not_missing_nih_consent(testapp, experiment, replicate,
+                                                                 library, biosample, encode4_award):
+    testapp.patch_json(experiment['@id'], {'award': encode4_award['@id']})
+    testapp.patch_json(biosample['@id'], {'nih_institutional_certification': 'NICABC123'})
+    r = testapp.get(experiment['@id'] + '@@index-data')
+    audits = r.json['audit']
+    assert all(
+        [
+            detail['category'] != 'missing nih_institutional_certification'
+            for audit in audits.values() for detail in audit
+        ]
+    )
+
