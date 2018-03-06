@@ -4,7 +4,7 @@ import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
 import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
-import { Document, DocumentsPanel, DocumentPreview, DocumentFile } from './doc';
+import { Document, DocumentsPanel, DocumentPreview, DocumentFile, CharacterizationDocuments } from './doc';
 import { GeneticModificationSummary } from './genetic_modification';
 import * as globals from './globals';
 import { ProjectBadge } from './image';
@@ -706,9 +706,15 @@ CharacterizationCaption.propTypes = {
 
 // Document detail component -- default
 const CharacterizationDetail = (props) => {
-    const doc = props.doc;
+    const characterization = props.doc;
     const keyClass = `document__detail${props.detailOpen ? ' active' : ''}`;
-    const excerpt = doc.description && doc.description.length > EXCERPT_LENGTH;
+    const excerpt = characterization.caption && characterization.caption.length > EXCERPT_LENGTH;
+
+    // See if we need a list of documents or not. Documents without attachments don't get
+    // displayed.
+    const docs = characterization.documents && characterization.documents.length ?
+        characterization.documents.filter(doc => !!(doc.attachment && doc.attachment.href && doc.attachment.download))
+    : [];
 
     return (
         <div className={keyClass}>
@@ -716,33 +722,40 @@ const CharacterizationDetail = (props) => {
                 {excerpt ?
                     <div data-test="caption">
                         <dt>Caption</dt>
-                        <dd>{doc.caption}</dd>
+                        <dd>{characterization.caption}</dd>
                     </div>
                 : null}
 
-                {doc.submitted_by && doc.submitted_by.title ?
+                {characterization.submitted_by && characterization.submitted_by.title ?
                     <div data-test="submitted-by">
                         <dt>Submitted by</dt>
-                        <dd>{doc.submitted_by.title}</dd>
+                        <dd>{characterization.submitted_by.title}</dd>
                     </div>
                 : null}
 
                 <div data-test="lab">
                     <dt>Lab</dt>
-                    <dd>{doc.lab.title}</dd>
+                    <dd>{characterization.lab.title}</dd>
                 </div>
 
-                {doc.award && doc.award.name ?
+                {characterization.award && characterization.award.name ?
                     <div data-test="award">
                         <dt>Grant</dt>
-                        <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
+                        <dd><a href={characterization.award['@id']}>{characterization.award.name}</a></dd>
                     </div>
                 : null}
 
-                {doc.submitter_comment ?
+                {characterization.submitter_comment ?
                     <div data-test="submittercomment">
                         <dt>Submitter comment</dt>
-                        <dd>{doc.submitter_comment}</dd>
+                        <dd>{characterization.submitter_comment}</dd>
+                    </div>
+                : null}
+
+                {docs.length ?
+                    <div data-test="documents">
+                        <dt>Documents</dt>
+                        <CharacterizationDocuments docs={docs} />
                     </div>
                 : null}
             </dl>
