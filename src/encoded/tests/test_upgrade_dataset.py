@@ -154,6 +154,27 @@ def experiment_14(root, experiment):
     return properties
 
 
+@pytest.fixture
+def experiment_15(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '15',
+        'biosample_type': 'immortalized cell line'
+    })
+    return properties
+
+
+@pytest.fixture
+def annotation_16(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '16',
+        'biosample_type': 'immortalized cell line'
+    }
+
+
 def test_experiment_upgrade(root, upgrader, experiment, experiment_1, file_ucsc_browser_composite, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
@@ -364,3 +385,16 @@ def test_upgrade_experiment_14_15(upgrader, experiment_14):
     assert value['biosample_type'] == 'cell-free sample'
     assert value['biosample_term_name'] == 'none'
     assert value['biosample_term_id'] == 'NTR:0000471'
+
+
+def test_upgrade_experiment_15_to_16(upgrader, experiment_15):
+    value = upgrader.upgrade('experiment', experiment_15, current_version='15', target_version='16')
+    assert value['schema_version'] == '16'
+    assert value['biosample_type'] == 'cell line'
+
+
+def test_upgrade_annotation_16_to_17(upgrader, annotation_16):
+    value = upgrader.upgrade('annotation', annotation_16, current_version='16', target_version='17')
+    assert value['schema_version'] == '17'
+    assert value['biosample_type'] == 'cell line'
+
