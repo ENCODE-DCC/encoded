@@ -23,7 +23,6 @@ require('./platform');
 require('./search');
 require('./report');
 require('./matrix');
-require('./talen');
 require('./target');
 require('./publication');
 require('./pipeline');
