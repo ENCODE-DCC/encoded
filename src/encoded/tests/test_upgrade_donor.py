@@ -212,7 +212,6 @@ def test_upgrade_human_donor_9_10(root, upgrader, human_donor_9):
 
 def test_upgrade_fly_worm_donor_7_8(root, upgrader, fly_donor_7):
     value = upgrader.upgrade('fly_donor', fly_donor_7, current_version='7', target_version='8')
-    assert 'constructs' not in value
     assert 'mutated_gene' not in value
     assert 'mutagen' not in value
     assert value['schema_version'] == '8'

@@ -492,8 +492,6 @@ def test_upgrade_biosample_15_to_16(upgrader, biosample_15, biosample):
 
 def test_upgrade_biosample_18_to_19(upgrader, biosample_18, biosample):
     value = upgrader.upgrade('biosample', biosample_18, current_version='18', target_version='19')
-    assert 'constructs' not in value
-    assert 'rnais' not in value
     assert 'transfection_type' not in value
     assert 'transfection_method' not in value
 
