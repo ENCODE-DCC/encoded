@@ -86,7 +86,7 @@ def test_have_primary_missing_secondary(testapp,
     characterization_review = {
         'biosample_term_name': 'K562',
         'biosample_term_id': 'EFO:0002067',
-        'biosample_type': 'immortalized cell line',
+        'biosample_type': 'cell line',
         'organism': human['@id'],
         'lane': 1
     }
@@ -200,7 +200,7 @@ def test_multiple_secondary_one_primary(testapp,
     characterization_review = {
         'biosample_term_name': 'K562',
         'biosample_term_id': 'EFO:0002067',
-        'biosample_type': 'immortalized cell line',
+        'biosample_type': 'cell line',
         'organism': human['@id'],
         'lane': 1,
         'lane_status': 'compliant'
@@ -350,21 +350,21 @@ def test_multi_lane_primary(testapp,
     characterization_review = {
         'biosample_term_name': 'K562',
         'biosample_term_id': 'EFO:0002067',
-        'biosample_type': 'immortalized cell line',
+        'biosample_type': 'cell line',
         'organism': human['@id'],
         'lane': 1,
         'lane_status': 'compliant'
     }
     characterization_review_2 = {'biosample_term_name': 'HepG2',
                                  'biosample_term_id': 'EFO:0001187',
-                                 'biosample_type': 'immortalized cell line',
+                                 'biosample_type': 'cell line',
                                  'organism': human['@id'],
                                  'lane': 2,
                                  'lane_status': 'not compliant'}
 
     characterization_review_3 = {'biosample_term_name': 'GM12878',
                                  'biosample_term_id': 'EFO:0002784',
-                                 'biosample_type': 'immortalized cell line',
+                                 'biosample_type': 'cell line',
                                  'organism': human['@id'],
                                  'lane': 3,
                                  'lane_status': 'exempt from standards'}
@@ -426,7 +426,7 @@ def test_bonus_char_reviews_in_primary(testapp,
     characterization_review1 = {
         'biosample_term_name': 'K562',
         'biosample_term_id': 'EFO:0002067',
-        'biosample_type': 'immortalized cell line',
+        'biosample_type': 'cell line',
         'organism': human['@id'],
         'lane': 1,
         'lane_status': 'pending dcc review'
@@ -444,7 +444,7 @@ def test_bonus_char_reviews_in_primary(testapp,
     characterization_review2 = {
         'biosample_term_name': 'HepG2',
         'biosample_term_id': 'EFO:0001187',
-        'biosample_type': 'immortalized cell line',
+        'biosample_type': 'cell line',
         'organism': human['@id'],
         'lane': 1,
         'lane_status': 'pending dcc review'

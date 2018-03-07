@@ -1,5 +1,9 @@
 ## Change log for antibody_characterization.json
 
+### Schema version 12
+
+* Replace *immortalized cell line* with *cell line* for biosample_type in characterization_reviews
+
 ### Schema version 11
 
 * *comment* has been replaced with *submitter_comment*

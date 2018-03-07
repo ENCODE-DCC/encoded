@@ -664,7 +664,7 @@ def generate_summary_dictionary(
                                                 's after the sample was ')
 
     if ('sample_type' in dict_of_phrases and
-        dict_of_phrases['sample_type'] != 'immortalized cell line') or \
+        dict_of_phrases['sample_type'] != 'cell line') or \
         ('sample_type' not in dict_of_phrases):
         phrase = ''
 

@@ -162,7 +162,7 @@ def base_antibody_characterization1(testapp, lab, award, target, antibody_lot, o
                 'organism': organism['uuid'],
                 'biosample_term_name': 'K562',
                 'biosample_term_id': 'EFO:0002067',
-                'biosample_type': 'immortalized cell line',
+                'biosample_type': 'cell line',
                 'lane_status': 'compliant'
             }
         ]
@@ -837,7 +837,7 @@ def test_audit_experiment_no_characterizations_antibody(testapp,
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
                                                 'biosample_term_id': 'EFO:0002067',
                                                 'biosample_term_name': 'K562',
-                                                'biosample_type': 'immortalized cell line',
+                                                'biosample_type': 'cell line',
                                                 'target': target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'uncharacterized antibody'
@@ -866,7 +866,7 @@ def test_audit_experiment_wrong_organism_histone_antibody(testapp,
         {
             'biosample_term_name': 'MEL cell line',
             'biosample_term_id': 'EFO:0003971',
-            'biosample_type': 'immortalized cell line',
+            'biosample_type': 'cell line',
             'organism': mouse['@id'],
             'lane_status': 'not compliant',
             'lane': 1
@@ -874,7 +874,7 @@ def test_audit_experiment_wrong_organism_histone_antibody(testapp,
         {
             'biosample_term_name': 'K562',
             'biosample_term_id': 'EFO:0002067',
-            'biosample_type': 'immortalized cell line',
+            'biosample_type': 'cell line',
             'organism': human['@id'],
             'lane_status': 'compliant',
             'lane': 2
@@ -899,7 +899,7 @@ def test_audit_experiment_wrong_organism_histone_antibody(testapp,
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
                                                 'biosample_term_id': 'EFO:0003971',
                                                 'biosample_term_name': 'MEL cell line',
-                                                'biosample_type': 'immortalized cell line',
+                                                'biosample_type': 'cell line',
                                                 'target': mouse_H3K9me3['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'antibody not characterized to standard'
@@ -925,7 +925,7 @@ def test_audit_experiment_partially_characterized_antibody(testapp,
         {
             'biosample_term_name': 'HepG2',
             'biosample_term_id': 'EFO:0001187',
-            'biosample_type': 'immortalized cell line',
+            'biosample_type': 'cell line',
             'organism': human['@id'],
             'lane_status': 'not compliant',
             'lane': 1
@@ -933,7 +933,7 @@ def test_audit_experiment_partially_characterized_antibody(testapp,
         {
             'biosample_term_name': 'K562',
             'biosample_term_id': 'EFO:0002067',
-            'biosample_type': 'immortalized cell line',
+            'biosample_type': 'cell line',
             'organism': human['@id'],
             'lane_status': 'exempt from standards',
             'lane': 2
@@ -953,7 +953,7 @@ def test_audit_experiment_partially_characterized_antibody(testapp,
     testapp.patch_json(base_experiment['@id'], {'assay_term_name': 'ChIP-seq',
                                                 'biosample_term_id': 'EFO:0002067',
                                                 'biosample_term_name': 'K562',
-                                                'biosample_type': 'immortalized cell line',
+                                                'biosample_type': 'cell line',
                                                 'target': base_target['@id']})
 
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -2664,11 +2664,11 @@ def test_audit_experiment_missing_genetic_modification(
 
     testapp.patch_json(biosample_1['@id'], {'biosample_term_name': 'K562',
                                             'biosample_term_id': 'EFO:0002067',
-                                            'biosample_type': 'immortalized cell line',
+                                            'biosample_type': 'cell line',
                                             'donor': donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'biosample_term_name': 'K562',
                                             'biosample_term_id': 'EFO:0002067',
-                                            'biosample_type': 'immortalized cell line',
+                                            'biosample_type': 'cell line',
                                             'donor': donor_2['@id']})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})
@@ -2723,11 +2723,11 @@ def test_audit_experiment_wrong_modification(
                         'introduced_tags': [{'name': 'FLAG', 'location': 'internal'}]})
     testapp.patch_json(biosample_1['@id'], {'biosample_term_name': 'K562',
                                             'biosample_term_id': 'EFO:0002067',
-                                            'biosample_type': 'immortalized cell line',
+                                            'biosample_type': 'cell line',
                                             'donor': donor_1['@id']})
     testapp.patch_json(biosample_2['@id'], {'biosample_term_name': 'K562',
                                             'biosample_term_id': 'EFO:0002067',
-                                            'biosample_type': 'immortalized cell line',
+                                            'biosample_type': 'cell line',
                                             'donor': donor_2['@id']})
     testapp.patch_json(library_1['@id'], {'biosample': biosample_1['@id']})
     testapp.patch_json(library_2['@id'], {'biosample': biosample_2['@id']})

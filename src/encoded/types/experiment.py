@@ -399,7 +399,7 @@ class Experiment(Dataset,
         if (len(set(biosample_number_list)) < 2):
             return 'unreplicated'
 
-        if biosample_type == 'immortalized cell line':
+        if biosample_type == 'cell line':
             return 'isogenic'
 
         # Since we are not looking for model organisms here, we likely need audits

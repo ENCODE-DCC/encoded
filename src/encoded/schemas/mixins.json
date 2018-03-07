@@ -238,7 +238,7 @@
             "comment": "Required property. The specified category should match the type of ontology used to describe the biosample.",
             "type": "string",
             "enum" : [
-                "immortalized cell line",
+                "cell line",
                 "in vitro differentiated cells",
                 "induced pluripotent stem cell line",
                 "primary cell",
