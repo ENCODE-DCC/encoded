@@ -40,7 +40,7 @@ _app_settings = {
     'multiauth.policy.accesskey.check': 'encoded.authentication.basic_auth_check',
     'load_test_only': True,
     'testing': True,
-    'stage_for_followup': True,
+    'stage_for_followup': 'vis_indexer, region_indexer',
     'pyramid.debug_authorization': True,
     'postgresql.statement_timeout': 20,
     'tm.attempts': 3,

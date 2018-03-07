@@ -37,7 +37,7 @@
                     "visibility": "hide",
                     "type": "bigBed",
                     "spectrum": "on",
-                    "scoreFilter": "100",
+                    "signalFilter": "0",
                     "output_type": [ "peaks" ]
                 },
                 "Hotspots": {
