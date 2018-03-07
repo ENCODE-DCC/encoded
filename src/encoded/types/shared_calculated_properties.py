@@ -2,7 +2,7 @@ from snovault import calculated_property
 from snovault.util import ensurelist
 from .assay_data import assay_terms
 from urllib.parse import urljoin
-from ..visualization import (
+from ..vis_defines import (
     vis_format_url,
     browsers_available
     )

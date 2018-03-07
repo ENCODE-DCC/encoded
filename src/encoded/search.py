@@ -13,7 +13,7 @@ from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
-from .visualization import vis_format_url
+from .vis_defines import vis_format_url
 from collections import OrderedDict
 
 
