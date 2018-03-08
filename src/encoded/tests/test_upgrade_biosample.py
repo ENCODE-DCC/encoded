@@ -182,7 +182,7 @@ def biosample_18(biosample_0, biosample):
 
 
 @pytest.fixture
-def biosample_19(biosample_0, biosample, construct, rnai):
+def biosample_19(biosample_0, biosample):
     item = biosample_0.copy()
     item.update({
         'biosample_type': 'immortalized cell line',
