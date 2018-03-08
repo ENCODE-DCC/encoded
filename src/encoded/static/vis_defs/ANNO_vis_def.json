@@ -43,7 +43,6 @@
                     "visibility": "hide",
                     "type": "bigBed",
                     "file_format_type": [ "narrowPeak" ],
-                    "scoreFilter": "0:1000",
                     "output_type": [ "peaks" ]
                 }
             }
