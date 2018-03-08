@@ -306,13 +306,21 @@ def batch_download(context, request):
     files = [metadata_link]
     exp_files_gen = filter_restricted_files(results)
     for exp_file in exp_files_gen:
-        if exp_file['file_type'] in param_list.get('files.file_type', []):
-            files.append(
-                '{host_url}{href}'.format(
-                    host_url=request.host_url,
-                    href=exp_file['href'],
+        if 'files.file_type' in param_list:
+            if exp_file['file_type'] in param_list.get('files.file_type', []):
+                files.append(
+                    '{host_url}{href}'.format(
+                        host_url=request.host_url,
+                        href=exp_file['href'],
+                    )
                 )
-            )
+        else:
+            files.append(
+                    '{host_url}{href}'.format(
+                        host_url=request.host_url,
+                        href=exp_file['href'],
+                    )
+                )
     return Response(
         content_type='text/plain',
         body='\n'.join(files),
