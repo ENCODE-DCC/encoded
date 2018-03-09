@@ -44,6 +44,7 @@ DEFAULT_DOC_TYPES = [
     'Award',
     'Biosample',
     'Dataset',
+    'GeneticModification',
     'Page',
     'Pipeline',
     'Publication',
