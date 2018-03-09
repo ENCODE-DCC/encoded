@@ -134,8 +134,8 @@ function collectLinks(prop) {
             // Simple linkTo or linkFrom property; adds its value to the array we're collecting.
             linksLists[key].push(key === 'linkFrom' ? prop[key].split('.')[0] : prop[key]);
         } else if (typeof prop[key] === 'object' && !Array.isArray(prop[key])) {
-            // The schema property key is not one of `nonlinkProps` and has a value that's an object.
-            // Look for linkTo properties within this object.
+            // The schema property is an object. Look for linkTo/LinkFrom properties within this
+            // object.
             const subLinksLists = collectLinks(prop[key]);
             linksLists.linkTo = linksLists.linkTo.concat(subLinksLists.linkTo);
             linksLists.linkFrom = linksLists.linkFrom.concat(subLinksLists.linkFrom);
