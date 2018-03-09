@@ -997,7 +997,6 @@ function qcAbbr(qc) {
         EdwbamstatsQualityMetric: 'EB',
         EdwcomparepeaksQualityMetric: 'EP',
         Encode2ChipSeqQualityMetric: 'EC',
-        FastqcQualityMetric: 'FQ',
         FilteringQualityMetric: 'FG',
         GenericQualityMetric: 'GN',
         HotspotQualityMetric: 'HS',

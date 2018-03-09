@@ -26,8 +26,7 @@ export function BiosampleOrganismNames(biosamples) {
 
 // Collect up all the documents associated with the given biosample. They get combined all into one array of
 // documents (with @type of Document or Characterization). If the given biosample has no documdents, this
-// function returns null. Protocol documents, characterizations, construct documents, and RNAi documents
-// all get included.
+// function returns null. Protocol documents and characterizations get included.
 export function CollectBiosampleDocs(biosample) {
     // Collect up the various biosample documents
     let protocolDocuments = [];
@@ -37,14 +36,6 @@ export function CollectBiosampleDocs(biosample) {
     let characterizations = [];
     if (biosample.characterizations && biosample.characterizations.length) {
         characterizations = _.uniq(biosample.characterizations);
-    }
-    let constructDocuments = [];
-    if (biosample.constructs && biosample.constructs.length) {
-        constructDocuments = biosample.constructs.reduce((allDocs, construct) => ((construct.documents && construct.documents.length) ? allDocs.concat(construct.documents) : allDocs), []);
-    }
-    let rnaiDocuments = [];
-    if (biosample.rnais && biosample.rnais.length) {
-        rnaiDocuments = biosample.rnais.reduce((allDocs, rnai) => ((rnai.documents && rnai.documents.length) ? allDocs.concat(rnai.documents) : allDocs), []);
     }
     let donorDocuments = [];
     let donorCharacterizations = [];
@@ -56,14 +47,6 @@ export function CollectBiosampleDocs(biosample) {
             donorDocuments = biosample.donor.documents;
         }
     }
-    let donorConstructs = [];
-    if (biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length) {
-        donorConstructs = biosample.model_organism_donor_constructs.reduce((allDocs, construct) => ((construct.documents && construct.documents.length) ? allDocs.concat(construct.documents) : allDocs), []);
-    }
-    let talenDocuments = [];
-    if (biosample.talens && biosample.talens.length) {
-        talenDocuments = biosample.talens.reduce((allDocs, talen) => ((talen.documents && talen.documents.length) ? allDocs.concat(talen.documents) : allDocs), []);
-    }
     let treatmentDocuments = [];
     if (biosample.treatments && biosample.treatments.length) {
         treatmentDocuments = biosample.treatments.reduce((allDocs, treatment) => ((treatment.documents && treatment.documents.length) ? allDocs.concat(treatment.documents) : allDocs), []);
@@ -74,12 +57,8 @@ export function CollectBiosampleDocs(biosample) {
     const combinedDocuments = _.uniq([].concat(
         protocolDocuments,
         characterizations,
-        constructDocuments,
-        rnaiDocuments,
         donorDocuments,
         donorCharacterizations,
-        donorConstructs,
-        talenDocuments,
         treatmentDocuments,
     ));
 

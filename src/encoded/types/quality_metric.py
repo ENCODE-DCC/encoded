@@ -34,17 +34,6 @@ class StarQualityMetric(QualityMetric, CalculatedAssayTermID):
 
 
 @collection(
-    name='fastqc-quality-metrics',
-    properties={
-        'title': "FastQC mapping quality metrics",
-        'description': 'A set of QC metrics from FastQC',
-    })
-class FastqcQualityMetric(QualityMetric, CalculatedAssayTermID):
-    item_type = 'fastqc_quality_metric'
-    schema = load_schema('encoded:schemas/fastqc_quality_metric.json')
-
-
-@collection(
     name='bismark-quality-metrics',
     properties={
         'title': "Bismark (WGBS) mapping quality metrics",

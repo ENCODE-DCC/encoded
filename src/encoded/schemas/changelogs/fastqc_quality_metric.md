@@ -1,5 +1,7 @@
 ## Changelog for fastqc_quality_metric.json
 
+### Deprecated object, removed in v66/67
+
 ### Schema version 7
 
 * *status* property was restricted to one of  

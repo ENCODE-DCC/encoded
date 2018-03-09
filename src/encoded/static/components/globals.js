@@ -158,12 +158,12 @@ export function zeroFill(n, digits) {
 
 // Order that antibody statuses should be displayed
 export const statusOrder = [
-    'eligible for new data',
-    'not eligible for new data',
-    'pending dcc review',
-    'awaiting lab characterization',
+    'characterized to standards',
+    'characterized to standards with exemption',
+    'awaiting characterization',
+    'partially characterized',
     'not pursued',
-    'not reviewed',
+    'not characterized to standards',
 ];
 
 export const productionHost = { 'www.encodeproject.org': 1, 'encodeproject.org': 1, 'www.encodedcc.org': 1 };

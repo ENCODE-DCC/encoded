@@ -127,8 +127,6 @@ class Item(snovault.Item):
         'exempt from standards': ALLOW_CURRENT,
 
         # antibody_lot
-        'eligible for new data': ALLOW_CURRENT,
-        'not eligible for new data': ALLOW_CURRENT,
         'not pursued': ALLOW_CURRENT,
 
         # dataset / experiment

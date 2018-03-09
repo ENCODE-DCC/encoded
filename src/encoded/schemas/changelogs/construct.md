@@ -1,5 +1,7 @@
 ## Changelog for construct.json
 
+### Deprecated object, removed in v66/67
+
 ### Schema version 6
 
 * *status* property was restricted to one of  

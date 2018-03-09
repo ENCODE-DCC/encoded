@@ -324,7 +324,7 @@
         "genetic_modifications": {
             "title": "Genetic modifications",
             "description": "Genetic modification(s). Any genetic alteration of a biosample or donor.",
-            "comment": "Work in progress. Constructs, TALENs and RNAi objects are being migrated to objects that would be linked via genetic_modifications objects to the biosamples/donors.",
+            "comment": "Constructs, TALENs, and RNAi objects have been migrated to the GeneticModification object.",
             "type": "array",
             "default": [],
             "uniqueItems": true,

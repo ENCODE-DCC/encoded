@@ -92,40 +92,6 @@ class Treatment(Item):
 
 
 @collection(
-    name='constructs',
-    properties={
-        'title': 'Constructs',
-        'description': 'Listing of Biosample Constructs',
-    })
-class Construct(Item):
-    item_type = 'construct'
-    schema = load_schema('encoded:schemas/construct.json')
-    # XXX 'vector_name' as key?
-    embedded = ['target']
-
-
-@collection(
-    name='talens',
-    unique_key='talen:name',
-    properties={
-        'title': 'TALENs',
-        'description': 'Listing of TALEN Constructs',
-    })
-class TALEN(Item):
-    item_type = 'talen'
-    schema = load_schema('encoded:schemas/talen.json')
-    name_key = 'name'
-    embedded = [
-        'lab',
-        'submitted_by',
-        'documents',
-        'documents.award',
-        'documents.lab',
-        'documents.submitted_by'
-    ]
-
-
-@collection(
     name='documents',
     properties={
         'title': 'Documents',
@@ -208,18 +174,6 @@ class Library(Item):
             else:
                 term_id.append('Term ID unknown')
         return term_id
-
-
-@collection(
-    name='rnais',
-    properties={
-        'title': 'RNAi',
-        'description': 'Listing of RNAi',
-    })
-class RNAi(Item):
-    item_type = 'rnai'
-    schema = load_schema('encoded:schemas/rnai.json')
-    embedded = ['source', 'documents', 'target']
 
 
 @collection(
