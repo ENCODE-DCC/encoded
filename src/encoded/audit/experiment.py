@@ -2913,14 +2913,14 @@ def audit_experiment_nih_institutional_certification(value, system, excluded_typ
     if value.get('award', {}).get('rfa') != 'ENCODE4':
         return
     # Build up list of human biosamples missing NIC used in experiment. 
-    human_biosamples_missing_hic = [
+    human_biosamples_missing_hic = {
         b['@id']
         for b in get_biosamples(value)
         if (b.get('organism') == '/organisms/human/'
-                and not b.get('nih_institutional_certification'))
-    ]
+            and not b.get('nih_institutional_certification'))
+    }
     # Yield AuditFailure for unique biosamples.
-    for b in set(human_biosamples_missing_hic):
+    for b in human_biosamples_missing_hic:
         detail = ('Experiment {} uses biosample {} missing NIH institutional'
                   ' certification required for human data'.format(value['@id'], b))
         yield AuditFailure('missing nih_institutional_certification', detail, level='ERROR')
