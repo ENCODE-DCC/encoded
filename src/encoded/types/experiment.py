@@ -440,11 +440,13 @@ class Experiment(Dataset,
                 'assay_slims',
                 'target.investigated_as',
                 'month_released',
+                'date_submitted',
                 'files.file_type',
             ],
             'group_by': 'assay_title',
             'label': 'Assay',
         },
+        'summary_grouping': ['replication_type', 'status'],
     }
 
 

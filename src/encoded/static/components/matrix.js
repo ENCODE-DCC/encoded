@@ -184,7 +184,7 @@ class Matrix extends React.Component {
             };
 
             // Make an array of colors corresponding to the ordering of biosample_type
-            const biosampleTypeColors = this.context.biosampleTypeColors.colorList(yGroups.map(yGroup => yGroup.key));
+            const biosampleTypeColors = globals.biosampleTypeColors.colorList(yGroups.map(yGroup => yGroup.key));
 
             return (
                 <div>

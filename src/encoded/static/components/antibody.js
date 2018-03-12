@@ -12,7 +12,7 @@ import { DbxrefList } from './dbxref';
 import { DocumentsPanel, Document, DocumentPreview, CharacterizationDocuments } from './doc';
 import { RelatedItems } from './item';
 import { AlternateAccession } from './objectutils';
-import StatusLabel from './statuslabel';
+import { StatusLabel } from './statuslabel';
 
 
 const LotComponent = (props, reactContext) => {
