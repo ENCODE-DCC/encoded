@@ -9,7 +9,7 @@ import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
-import StatusLabel from './statuslabel';
+import { StatusLabel } from './statuslabel';
 
 const labChartId = 'lab-chart'; // Lab chart <div> id attribute
 const categoryChartId = 'category-chart'; // Assay chart <div> id attribute
@@ -125,7 +125,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
                         text.push('<ul>');
                         for (let i = 0; i < chartData.length; i += 1) {
                             if (chartData[i]) {
-                                text.push(`<li><a href="${baseSearchUri}${chartLabels[i]}">`);
+                                text.push(`<li><a href="${baseSearchUri}${globals.encodedURIComponent(chartLabels[i])}">`);
                                 text.push(`<i class="icon icon-circle chart-legend-chip" aria-hidden="true" style="color:${chartColors[i]}"></i>`);
                                 text.push(`<span class="chart-legend-label">${chartLabels[i]}</span>`);
                                 text.push('</a></li>');
@@ -180,7 +180,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
 //             because this function can't access the navigation function.
  * @return {promise}
  */
-function createBarChart(chartId, data, colors, replicateLabels, baseSearchUri, navigate) {
+export function createBarChart(chartId, data, colors, replicateLabels, legendTitle, baseSearchUri, navigate) {
     return new Promise((resolve) => {
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
@@ -226,6 +226,9 @@ function createBarChart(chartId, data, colors, replicateLabels, baseSearchUri, n
                             gridLines: {
                             },
                             stacked: true,
+                            ticks: {
+                                autoSkip: false,
+                            },
                         }],
                         yAxes: [{
                             gridLines: {
@@ -238,17 +241,20 @@ function createBarChart(chartId, data, colors, replicateLabels, baseSearchUri, n
                         }],
                     },
                     animation: {
-                        duration: 200,
+                        duration: 0,
                     },
                     legendCallback: (chartInstance) => {
                         const LegendLabels = [];
                         const dataColors = [];
                         // If data array has value, add to legend
-                        for (let i = 0; i < datasets.length; i += 1) {
+                        for (let i = 0; i < chartInstance.data.datasets.length; i += 1) {
                             LegendLabels.push(chartInstance.data.datasets[i].label);
                             dataColors.push(chartInstance.data.datasets[i].backgroundColor);
                         }
                         const text = [];
+                        if (legendTitle) {
+                            text.push(`<div class="legend-title">${legendTitle}</div>`);
+                        }
                         text.push('<ul>');
                         for (let i = 0; i < LegendLabels.length; i += 1) {
                             if (LegendLabels[i]) {
@@ -295,7 +301,7 @@ function createBarChart(chartId, data, colors, replicateLabels, baseSearchUri, n
 
 
 // Display and handle clicks in the chart of labs.
-class LabChart extends React.Component {
+export class LabChart extends React.Component {
     constructor() {
         super();
 
@@ -310,12 +316,16 @@ class LabChart extends React.Component {
         }
     }
 
+    shouldComponentUpdate(nextProps) {
+        return !_.isEqual(this.props.labs, nextProps.labs);
+    }
+
     componentDidUpdate() {
         if (this.relevantData.length) {
             if (this.chart) {
                 this.updateChart(this.chart, this.relevantData);
             } else {
-                this.createChart(`${statusChartId}-${this.props.ident}`, this.relevantData);
+                this.createChart(`${labChartId}-${this.props.ident}`, this.props.labs);
             }
         } else if (this.chart) {
             this.chart.destroy();
@@ -340,7 +350,7 @@ class LabChart extends React.Component {
         chart.data.datasets[0].data = values;
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
-        chart.options.onClick.baseSearchUri = `${linkUri}${award.name}${objectQuery}&lab.title=`;
+        chart.options.onClick.baseSearchUri = `${linkUri}${award ? award.name : ''}${objectQuery}&lab.title=`;
         chart.update();
 
         // Redraw the updated legend
@@ -360,7 +370,7 @@ class LabChart extends React.Component {
         const colors = labels.map((label, i) => labColorList[i % labColorList.length]);
 
         // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, `${this.props.linkUri}${this.props.award.name}&lab.title=`, (uri) => { this.context.navigate(uri); })
+        createDoughnutChart(chartId, values, labels, colors, `${this.props.linkUri}${this.props.award ? this.props.award.name : ''}&lab.title=`, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -397,7 +407,7 @@ class LabChart extends React.Component {
 }
 
 LabChart.propTypes = {
-    award: PropTypes.object.isRequired, // Award being displayed
+    award: PropTypes.object, // Award being displayed
     labs: PropTypes.array.isRequired, // Array of labs facet data
     linkUri: PropTypes.string.isRequired, // Base URI for matrix links
     ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
@@ -405,6 +415,7 @@ LabChart.propTypes = {
 };
 
 LabChart.defaultProps = {
+    award: null,
     objectQuery: '',
 };
 
@@ -413,7 +424,7 @@ LabChart.contextTypes = {
 };
 
 // Display and handle clicks in the chart of assays.
-class CategoryChart extends React.Component {
+export class CategoryChart extends React.Component {
     constructor() {
         super();
         this.createChart = this.createChart.bind(this);
@@ -424,6 +435,10 @@ class CategoryChart extends React.Component {
         if (this.relevantData.length) {
             this.createChart(`${categoryChartId}-${this.props.ident}`, this.relevantData);
         }
+    }
+
+    shouldComponentUpdate(nextProps) {
+        return !_.isEqual(this.props.categoryData, nextProps.categoryData);
     }
 
     componentDidUpdate() {
@@ -457,7 +472,7 @@ class CategoryChart extends React.Component {
         chart.data.datasets[0].data = values;
         chart.data.datasets[0].backgroundColor = colors;
         chart.data.labels = labels;
-        chart.options.onClick.baseSearchUri = `${linkUri}${award.name}${objectQuery}&${categoryFacet}=`;
+        chart.options.onClick.baseSearchUri = `${linkUri}${award ? award.name : ''}${objectQuery}&${categoryFacet}=`;
         chart.update();
 
         // Redraw the updated legend
@@ -479,7 +494,7 @@ class CategoryChart extends React.Component {
         const colors = labels.map((label, i) => typeSpecificColorList[i % typeSpecificColorList.length]);
 
         // Create the chart.
-        createDoughnutChart(chartId, values, labels, colors, `${linkUri}${award.name}&${categoryFacet}=`, (uri) => { this.context.navigate(uri); })
+        createDoughnutChart(chartId, values, labels, colors, `${linkUri}${award ? award.name : ''}&${categoryFacet}=`, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -516,7 +531,7 @@ class CategoryChart extends React.Component {
 }
 
 CategoryChart.propTypes = {
-    award: PropTypes.object.isRequired, // Award being displayed
+    award: PropTypes.object, // Award being displayed
     categoryData: PropTypes.array.isRequired, // Type-specific data to display in a chart
     title: PropTypes.string.isRequired, // Title to display above the chart
     linkUri: PropTypes.string.isRequired, // Element of matrix URI to select
@@ -526,12 +541,15 @@ CategoryChart.propTypes = {
 };
 
 CategoryChart.defaultProps = {
+    award: null,
     objectQuery: '',
 };
 
 CategoryChart.contextTypes = {
     navigate: PropTypes.func,
 };
+
+
 // Display and handle clicks in the chart of antibodies.
 class AntibodyChart extends React.Component {
     constructor() {
@@ -1050,7 +1068,7 @@ class StatusExperimentChart extends React.Component {
             chart.data.datasets[1] = {};
             chart.data.datasets[2] = {};
         }
-        chart.options.onClick.baseSearchUri = `${linkUri}${award.name}${objectQuery}`;
+        chart.options.onClick.baseSearchUri = `${linkUri}${award ? award.name : ''}${objectQuery}`;
         chart.update();
 
         document.getElementById(`${statusChartId}-${this.props.ident}-legend`).innerHTML = chart.generateLegend();
@@ -1063,7 +1081,7 @@ class StatusExperimentChart extends React.Component {
         const replicatelabels = ['unreplicated', 'isogenic', 'anisogenic'];
         const colors = replicatelabels.map((label, i) => statusColorList[i % statusColorList.length]);
 
-        createBarChart(chartId, data, colors, replicatelabels, `${this.props.linkUri}${this.props.award.name}`, (uri) => { this.context.navigate(uri); })
+        createBarChart(chartId, data, colors, replicatelabels, 'Replication', `${this.props.linkUri}${this.props.award ? this.props.award.name : ''}`, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
@@ -1084,7 +1102,7 @@ class StatusExperimentChart extends React.Component {
                 <div className="award-charts__title">
                     Status
                 </div>
-                 {this.relevantData.length ?
+                {this.relevantData.length ?
                     <div className="award-charts__visual">
                         <div id={id} className="award-charts__canvas">
                             <canvas id={`${id}-chart`} />
@@ -1100,7 +1118,7 @@ class StatusExperimentChart extends React.Component {
 }
 
 StatusExperimentChart.propTypes = {
-    award: PropTypes.object.isRequired, // Award being displayed
+    award: PropTypes.object, // Award being displayed
     statuses: PropTypes.array, // Array of status facet data
     linkUri: PropTypes.string.isRequired, // URI to use for matrix links
     ident: PropTypes.string.isRequired, // Unique identifier to `id` the charts
@@ -1112,6 +1130,7 @@ StatusExperimentChart.propTypes = {
 };
 
 StatusExperimentChart.defaultProps = {
+    award: null,
     statuses: [],
     unreplicated: {},
     anisogenic: {},
@@ -1648,20 +1667,81 @@ MilestonesTable.propTypes = {
     award: PropTypes.object.isRequired,
 };
 
+
+/**
+ * Take a sorted array of date terms and generate a new array of date terms with the same dates
+ * plus `0` doc_count entries for any months missing between `sortedDateTerms` entries. The new
+ * array has contiguous months.
+ *
+ * @param {array} sortedDateTerms - Array of date terms sorted by date
+ * @param {string} startDate - First date to appear in new array in YYYY-MM format
+ * @return {array} - New array with `sortedDateTerms` data plus 0 entries in between given months.
+ */
+const fillDates = (sortedDateTerms, startDate) => {
+    // The new array limits go between `startDate` and the current date.
+    const startDateMoment = moment(startDate, 'YYYY-MM');
+    const endDateMoment = moment();
+    const monthCount = endDateMoment.diff(startDateMoment, 'months') + 1;
+
+    // For every possible month, generate a new array entry, filling in the doc_count with
+    // matching data from `sortedDateTerms`, or 0 if `sortedDateTerms` has no matching month.
+    const filledDateArray = [];
+    let sortedDateIndex = sortedDateTerms.findIndex(term => term.key >= startDate);
+    sortedDateIndex = sortedDateIndex > -1 ? sortedDateIndex : 0;
+    let currentMonth = startDate;
+    for (let i = 0; i < monthCount; i += 1) {
+        let docCount = 0;
+        if (sortedDateTerms[sortedDateIndex] && currentMonth === sortedDateTerms[sortedDateIndex].key) {
+            // An entry in `sortedDateTerms` matches the current month we're generating in the new
+            // array, so copy its doc_count to the new array and go to the next entry in
+            // `sortedDateTerms`.
+            docCount = sortedDateTerms[sortedDateIndex].doc_count;
+            sortedDateIndex += 1;
+        }
+        filledDateArray.push({ key: currentMonth, doc_count: docCount });
+
+        // Move to the next month. Note `add()` mutates `startDateMoment`.
+        currentMonth = startDateMoment.add(1, 'month').format('YYYY-MM');
+    }
+    return filledDateArray;
+};
+
+
+/**
+ * Any terms in `dateTerms` (must be sorted by month) with matching months get their values
+ * combined and placed into just one date term entry in the new output array of date terms.
+ * The new output array of date terms is still sorted.
+ *
+ * @param {array} dateTerms - Array of search result date terms to consolidate.
+ * @returns {array} - Equivalent to `dateTerms` but with duplicate date entries consolidated.
+ */
+const consolidateSortedDates = (dateTerms) => {
+    const consolidatedTerms = [];
+    let lastTerm = null;
+    for (let i = 0; i < dateTerms.length; i += 1) {
+        if (lastTerm && dateTerms[i].key === lastTerm.key) {
+            // Current `dateTerms` entry key matches last one we pushed onto consolidatedTerms,
+            // so just add their doc_counts together in the last term.
+            lastTerm.doc_count += dateTerms[i].doc_count;
+        } else {
+            consolidatedTerms.push({ key: dateTerms[i].key, doc_count: dateTerms[i].doc_count });
+            lastTerm = consolidatedTerms[consolidatedTerms.length - 1];
+        }
+    }
+    return consolidatedTerms;
+};
+
+
 // Overall component to render the cumulative line chart
-const ExperimentDate = (props) => {
-    const { experiments, award } = props;
+export const ExperimentDate = (props) => {
+    const { experiments, award, panelCss, panelHeadingCss } = props;
     let releasedDates = [];
     let submittedDates = [];
     let deduplicatedreleased = {};
     let deduplicatedsubmitted = {};
-    const cumulativedatasetReleased = [];
-    const cumulativedatasetSubmitted = [];
-    const accumulatorreleased = 0;
-    const accumulatorsubmitted = 0;
 
     // Search experiments for month_released and date_submitted in facets
-    if (experiments && experiments.facets && experiments.facets.length) {
+    if (experiments.facets && experiments.facets.length) {
         const monthReleasedFacet = experiments.facets.find(facet => facet.field === 'month_released');
         const dateSubmittedFacet = experiments.facets.find(facet => facet.field === 'date_submitted');
         releasedDates = (monthReleasedFacet && monthReleasedFacet.terms && monthReleasedFacet.terms.length) ? monthReleasedFacet.terms : [];
@@ -1690,97 +1770,60 @@ const ExperimentDate = (props) => {
         );
     }
 
-    function fillDates(sortedArray, deduplicated, awardStartDate) {
-        const fillArray = [];
-
-        // Add an object with the award start date to both arrays
-        sortedArray.unshift({ key: awardStartDate, doc_count: 0 });
-
-        // Add objects to the array with doc_count 0 for the missing months
-        const sortedTermsLength = sortedArray.length;
-        for (let j = 0; j < sortedTermsLength - 1; j += 1) {
-            fillArray.push(sortedArray[j]);
-            const startDate = moment(sortedArray[j].key);
-            const endDate = moment(sortedArray[j + 1].key);
-            const monthdiff = endDate.diff(startDate, 'months', false);
-            if (monthdiff > 1) {
-                for (let i = 0; i < monthdiff; i += 1) {
-                    fillArray.push({ key: startDate.add(1, 'months').format('YYYY-MM'), doc_count: 0 });
-                }
-            }
-        }
-        fillArray.push(sortedArray[sortedArray - 1]);
-
-        // Remove any objects with keys before the start date of the award
-        const shortenedArray = [];
-        for (let j = 0; j < fillArray.length - 2; j += 1) {
-            if (moment(fillArray[j].key).isSameOrAfter(awardStartDate, 'date')) {
-                shortenedArray.push(fillArray[j]);
-            }
-        }
-        const formatTerms = shortenedArray.map((term) => {
-            const formattedDate = moment(term.key, ['YYYY-MM']).format('MMM YY');
-            return { key: formattedDate, doc_count: term.doc_count };
-        });
-        // Deduplicate dates
-        formatTerms.forEach((elem) => {
-            if (deduplicated[elem.key]) {
-                deduplicated[elem.key] += elem.doc_count;
-            } else {
-                deduplicated[elem.key] = elem.doc_count;
-            }
-        });
-        return (deduplicated);
-    }
-
-    function createDataset(deduplicated, accumulatorType, cumulativeData) {
-        let cumulativedataset = cumulativeData;
-        let accumulator = accumulatorType;
-        // Create an array of data from objects' doc_counts
-        const dataset = Object.keys(deduplicated).map(item => deduplicated[item]);
+    function createDataset(deduplicated) {
+        let accumulator = 0;
         // Make the data cumulative
-        const accumulatedData = dataset.map((term) => {
-            accumulator += term;
-            cumulativedataset = accumulator;
-            return cumulativedataset;
+        const accumulatedData = deduplicated.map((term) => {
+            accumulator += term.doc_count;
+            return accumulator;
         });
         return (accumulatedData);
     }
 
-    const sortedreleasedTerms = sortTerms(releasedDates);
-    const sortedsubmittedTerms = sortTerms(submittedDates);
+    let accumulatedDataReleased = [];
+    let accumulatedDataSubmitted = [];
+    let date = [];
+    if (releasedDates.length || submittedDates.length) {
+        const sortedreleasedTerms = consolidateSortedDates(sortTerms(releasedDates));
+        const sortedsubmittedTerms = consolidateSortedDates(sortTerms(submittedDates));
 
-    // Add an object with the most current date to one of the arrays.
-    if ((releasedDates && releasedDates.length) && (submittedDates && submittedDates.length)) {
-        if (moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isAfter(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
-            sortedreleasedTerms.push({ key: sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key, doc_count: 0 });
-        } else if (moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isBefore(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
-            sortedsubmittedTerms.push({ key: sortedreleasedTerms[sortedreleasedTerms.length - 1].key, doc_count: 0 });
+        // Add an object with the most current date to one of the arrays.
+        if ((releasedDates && releasedDates.length) && (submittedDates && submittedDates.length)) {
+            if (sortedreleasedTerms.length && moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isAfter(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
+                sortedreleasedTerms.push({ key: sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key, doc_count: 0 });
+            } else if (sortedsubmittedTerms.length && moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isBefore(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
+                sortedsubmittedTerms.push({ key: sortedreleasedTerms[sortedreleasedTerms.length - 1].key, doc_count: 0 });
+            }
         }
-    }
 
-    // Figure out the award start date. If none, use the earlier of the earliest released or submitted dates.
-    let awardStartDate;
-    if (award.start_date) {
-        awardStartDate = moment(award.start_date, 'YYYY-MM-DD').format('YYYY-MM');
-    } else {
-        const earliestReleased = sortedreleasedTerms[0].key;
-        const earliestSubmitted = sortedsubmittedTerms[0].key;
-        awardStartDate = earliestReleased < earliestSubmitted ? earliestReleased : earliestSubmitted;
-    }
-    deduplicatedreleased = fillDates(sortedreleasedTerms, deduplicatedreleased, awardStartDate);
-    deduplicatedsubmitted = fillDates(sortedsubmittedTerms, deduplicatedsubmitted, awardStartDate);
+        // Figure out the award start date. If none, use the earlier of the earliest released or submitted dates.
+        let awardStartDate;
+        if (award && award.start_date) {
+            awardStartDate = moment(award.start_date, 'YYYY-MM-DD').format('YYYY-MM');
+        } else {
+            const releasedIndex = sortedreleasedTerms.findIndex(item => item.doc_count);
+            const submittedIndex = sortedsubmittedTerms.findIndex(item => item.doc_count);
+            const earliestReleased = releasedIndex > -1 ? sortedreleasedTerms[releasedIndex].key : sortedreleasedTerms[sortedreleasedTerms.length - 1];
+            const earliestSubmitted = submittedIndex > -1 ? sortedsubmittedTerms[submittedIndex].key : sortedsubmittedTerms[sortedsubmittedTerms.length - 1];
+            awardStartDate = earliestReleased < earliestSubmitted ? earliestReleased : earliestSubmitted;
+        }
+        deduplicatedreleased = fillDates(sortedreleasedTerms, awardStartDate);
+        deduplicatedsubmitted = fillDates(sortedsubmittedTerms, awardStartDate);
 
-    // Create an array of dates.
-    const date = Object.keys(deduplicatedreleased).map(term => term);
-    const accumulatedDataReleased = createDataset(deduplicatedreleased, accumulatorreleased, cumulativedatasetReleased);
-    const accumulatedDataSubmitted = createDataset(deduplicatedsubmitted, accumulatorsubmitted, cumulativedatasetSubmitted);
+        // Create an array of dates.
+        date = deduplicatedreleased.map(dateTerm => moment(dateTerm.key, 'YYYY-MM').format('MMM YYYY'));
+        accumulatedDataReleased = createDataset(deduplicatedreleased);
+        accumulatedDataSubmitted = createDataset(deduplicatedsubmitted);
+
+        // Adjust the submitted counts by the released counts so we can stack the chart.
+        accumulatedDataSubmitted = accumulatedDataReleased.map((count, i) => Math.max((accumulatedDataSubmitted[i] || 0) - count, 0));
+    }
 
     return (
         <div>
             {accumulatedDataReleased.length || accumulatedDataSubmitted.length ?
-                <Panel>
-                    <PanelHeading>
+                <Panel addClasses={panelCss}>
+                    <PanelHeading addClasses={panelHeadingCss}>
                         <h4>Cumulative Number of Experiments</h4>
                     </PanelHeading>
                     <PanelBody>
@@ -1794,11 +1837,16 @@ const ExperimentDate = (props) => {
 
 ExperimentDate.propTypes = {
     experiments: PropTypes.object,
-    award: PropTypes.object.isRequired,
+    award: PropTypes.object,
+    panelCss: PropTypes.string,
+    panelHeadingCss: PropTypes.string,
 };
 
 ExperimentDate.defaultProps = {
     experiments: {},
+    award: null,
+    panelCss: '',
+    panelHeadingCss: '',
 };
 
 
@@ -1919,7 +1967,34 @@ LineChart.propTypes = {
 
 // Create a cumulative line chart in the div.
 class CumulativeGraph extends React.Component {
+    constructor() {
+        super();
+        this.chart = null;
+
+        // Bind `this` to non-React methods.
+        this.createChart = this.createChart.bind(this);
+        this.updateChart = this.updateChart.bind(this);
+    }
+
     componentDidMount() {
+        this.createChart();
+    }
+
+    shouldComponentUpdate(nextProps) {
+        return !_.isEqual(this.props.releaseddatavalue, nextProps.releaseddatavalue) ||
+                !_.isEqual(this.props.submitteddatavalue, nextProps.submitteddatavalue) ||
+                !_.isEqual(this.props.monthReleased, nextProps.monthReleased);
+    }
+
+    componentDidUpdate() {
+        if (this.chart) {
+            this.updateChart();
+        } else {
+            this.createChart();
+        }
+    }
+
+    createChart() {
         const { releaseddatavalue, submitteddatavalue, monthReleased } = this.props;
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
@@ -1951,30 +2026,43 @@ class CumulativeGraph extends React.Component {
                                 autoSkip: true,
                                 maxTicksLimit: 15, // sets maximum number of x-axis labels
                             },
-                        },
-                        ],
+                        }],
+                        yAxes: [{
+                            stacked: true,
+                        }],
                     },
                 },
                 data: {
                     labels: monthReleased,
                     datasets: [{
-                        label: 'Date Released',
-                        data: releaseddatavalue,
-                        backgroundColor: '#604a7b',
+                        label: 'Submitted',
+                        data: submitteddatavalue,
+                        backgroundColor: '#a9d18e',
                     },
                     {
-                        label: 'Date Submitted',
-                        data: submitteddatavalue,
-                        backgroundColor: '#ccc1da',
+                        label: 'Released',
+                        data: releaseddatavalue,
+                        backgroundColor: '#538235',
                     }],
                 },
             });
         });
     }
 
+    updateChart() {
+        const { releaseddatavalue, submitteddatavalue, monthReleased } = this.props;
+
+        this.chart.data.labels = monthReleased;
+        this.chart.data.datasets[0].data = submitteddatavalue;
+        this.chart.data.datasets[1].data = releaseddatavalue;
+        this.chart.update();
+    }
+
     render() {
         return (
-            <canvas id="myGraph" style={{ height: 300 }} /> // responsive and maintainAspectRatio allow for height to be set here
+            <div style={{ position: 'relative', height: 500 }}>
+                <canvas id="myGraph" />
+            </div>
         );
     }
 }

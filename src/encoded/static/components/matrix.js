@@ -181,10 +181,11 @@ class Matrix extends React.Component {
             const view2svg = {
                 'list-alt': 'search',
                 table: 'table',
+                summary: 'summary',
             };
 
             // Make an array of colors corresponding to the ordering of biosample_type
-            const biosampleTypeColors = this.context.biosampleTypeColors.colorList(yGroups.map(yGroup => yGroup.key));
+            const biosampleTypeColors = globals.biosampleTypeColors.colorList(yGroups.map(yGroup => yGroup.key));
 
             return (
                 <div>

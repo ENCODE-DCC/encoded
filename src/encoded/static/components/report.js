@@ -658,6 +658,7 @@ class Report extends React.Component {
         const view2svg = {
             'list-alt': 'search',
             th: 'matrix',
+            summary: 'summary',
         };
 
         return (

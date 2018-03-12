@@ -13,7 +13,7 @@ import { Breadcrumbs } from './navigation';
 import { singleTreatment } from './objectutils';
 import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
-import StatusLabel from './statuslabel';
+import { StatusLabel } from './statuslabel';
 import { BiosampleTable, DonorTable } from './typeutils';
 
 

@@ -1,0 +1,120 @@
+// Contains the summary title and horizontal facets
+.summary-header {
+    @at-root #{&}__facets-horizontal {
+        @media print {
+            display: none;
+        }
+    }
+
+    @at-root #{&}__title {
+        margin-bottom: 30px;
+
+        h1 {
+            margin: 0 0 5px;
+            font-size: 1.7rem;
+        }
+    }
+
+    .clear-filters-control--summary {
+        margin: 5px 0 0;
+    }
+}
+
+
+// Contains the vertical facets and the charts.
+.summary-content {
+    display: block;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+    }
+
+    @media print {
+        display: block;
+        padding: 20px;
+    }
+
+    @at-root #{&}__facets-vertical {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 0 20%;
+        }
+
+        @media print {
+            display: none;
+        }
+    }
+
+    // Contains all the charts.
+    @at-root #{&}__data {
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 80%;
+            min-width: 0; // https://github.com/chartjs/Chart.js/issues/4156#issuecomment-345773111
+        }
+
+        @media print {
+            display: block;
+            width: 100%;
+        }
+    }
+
+    // Contains side-by-side charts.
+    @at-root #{&}__snapshot {
+        display: block;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        @media screen and (min-width: $screen-md-min) {
+            flex-wrap: nowrap;
+        }
+
+        & .award-charts__chart {
+            @media screen and (min-width: $screen-sm-min) {
+                flex: 0 0 50%;
+                width: 50%;
+            }
+
+            @media screen and (min-width: $screen-md-min) {
+                flex: 0 0 33.33%;
+                width: 33.33%;
+            }
+        }
+    }
+
+    // Contains a full-width chart.
+    @at-root #{&}__statistics {
+        display: block;     
+
+        @media print {
+            width: 100%;
+
+            canvas {
+                display: block;
+            }
+        }
+    }
+
+    @at-root #{&}__panel {
+        border: none;
+        page-break-inside: avoid;
+    }
+}
+
+.panel.panel-default > .panel-heading.summary-content__panel-heading {
+    background-color: transparent;
+    border-bottom: none;
+
+    h4 {
+        text-align: center;
+        font-weight: normal;
+        color: #808080;
+    }
+}
+
+.chartjs-size-monitor {
+    @media print {
+        display: none;
+    }
+}

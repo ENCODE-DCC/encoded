@@ -4,6 +4,12 @@
     min-height: 100%;
 }
 
+@media print {
+    .container {
+        width: 100%;
+    }
+}
+
 .homepage-main-box {
 	min-height: 400px;
 	background: url('/static/img/encode-bg-gray.png') no-repeat center;

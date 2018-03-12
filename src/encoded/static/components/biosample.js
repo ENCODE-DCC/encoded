@@ -12,7 +12,7 @@ import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
 import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession } from './objectutils';
 import pubReferenceList from './reference';
-import StatusLabel from './statuslabel';
+import { StatusLabel } from './statuslabel';
 import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable } from './typeutils';
 
 
