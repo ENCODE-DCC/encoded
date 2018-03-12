@@ -558,7 +558,22 @@ def file_10_11(value, system):
     # to also be upgraded or patched. The patch was applied post-release and 
     # can be found in ./upgrade_data/file_10_to_11_patch.tsv
 
+
 @upgrade_step('file', '11', '12')
 def file_11_12(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3347
+    return
+
+
+@upgrade_step('file', '12', '13')
+def file_12_13(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3809
+    platform = value.get('platform', None)
+
+    if platform and platform in [
+        '/platforms/NTR%3A0000430/',
+        '/platforms/OBI%3A0002012/'
+        ]:        
+            value.pop('read_length', None)
+            value.pop('run_type', None)
     return

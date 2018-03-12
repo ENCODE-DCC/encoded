@@ -1,5 +1,9 @@
 ## Changelog for file.json
 
+### Schema version 13
+
+* *run_type* and *read_length* properties should not be specified for FASTQ files produced on PacBio platform. Dependency that enforces that was added.
+
 ### Minor changes since schema version 12
 
 * New enumerations that could be posted only by the DCC were added in output_types: ""redacted alignments" and "redacted unfiltered alignments"; both enumerations are categorized as "alignments".
