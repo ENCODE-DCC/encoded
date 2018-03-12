@@ -68,6 +68,10 @@ ENCODED_REGION_REQUIREMENTS = {
     }
 }
 
+REGULOME_REGION_REQUIREMENTS = {
+    'file_format': ['bed']
+}
+
 # On local instance, these are the only files that can be downloaded and regionalizable.  Currently only one is!
 TESTABLE_FILES = ['ENCFF002COS']  # '/static/test/peak_indexer/ENCFF002COS.bed.gz']
                                   # '/static/test/peak_indexer/ENCFF296FFD.tsv',     # tsv's some day?
@@ -146,6 +150,16 @@ def encoded_regionable_datasets(request, restrict_to_assays=[]):
     results = request.embed(query)['@graph']
     return [ result['uuid'] for result in results ]
 
+def regulome_regionable_datasets(request):
+
+    encoded_es = request.registry[ELASTIC_SEARCH]
+    encoded_INDEX = request.registry.settings['snovault.elasticsearch.index']
+
+    # basics... only want uuids of experiments that are released
+    query = '/search/?type=Experiment&field=uuid&status=released&internal_tags=RegulomeDB&limit=all'
+    results = request.embed(query)['@graph']
+    return [ result['uuid'] for result in results ]
+
 
 class RegionIndexerState(IndexerState):
     # Accepts handoff of uuids from primary indexer. Keeps track of uuids and region_indexer state by cycle.
@@ -165,10 +179,16 @@ class RegionIndexerState(IndexerState):
     def file_dropped(self, uuid):
         self.list_extend(self.files_added_set, [uuid])
 
+    def all_indexable_uuids_set(self, request):
+        '''returns set of uuids. allowing intersections.'''
+        assays = list(ENCODED_REGION_REQUIREMENTS.keys())
+        uuids = set(encoded_regionable_datasets(request, assays))
+        uuids |= set(regulome_regionable_datasets(request))
+        return uuids  # Uses elasticsearch query
+
     def all_indexable_uuids(self, request):
         '''returns list of uuids pertinant to this indexer.'''
-        assays = list(ENCODED_REGION_REQUIREMENTS.keys())
-        return encoded_regionable_datasets(request, assays)  # Uses elasticsearch query
+        return list(self.all_indexable_uuids_set(request))
 
     def priority_cycle(self, request):
         '''Initial startup, reindex, or interupted prior cycle can all lead to a priority cycle.
@@ -238,8 +258,7 @@ class RegionIndexerState(IndexerState):
         if len(uuids) > 500:  # some arbitrary cutoff.
             # There is an efficiency trade off examining many non-dataset uuids
             # # vs. the cost of eliminating those uuids from the list ahead of time.
-            assays = list(ENCODED_REGION_REQUIREMENTS.keys())
-            uuids = list(set(encoded_regionable_datasets(request, assays)).intersection(uuids))
+            uuids = list(self.all_indexable_uuids_set(request).intersection(uuids))
             uuid_count = len(uuids)
 
         return (list(set(uuids)),False)  # Only unique uuids
@@ -367,6 +386,9 @@ def index_regions(request):
     state.send_notices()
     return result
 
+NON_REGIONABLE = 0x00
+ENCODED_REGIONS_TAG = 'ENCODE'
+REGULOME_REGIONS_TAG = 'RegulomeDB'
 
 class RegionIndexer(Indexer):
     def __init__(self, registry):
@@ -394,7 +416,8 @@ class RegionIndexer(Indexer):
             return
 
         # TODO: add case where files are never dropped (when demos share test server this might be necessary)
-        if not self.encoded_candidate_dataset(dataset):
+        dataset_region_tags = self.candidate_dataset(dataset)
+        if not dataset_region_tags:
             return  # Note that if a dataset is no longer a candidate but it had files in regions es, they won't get removed.
         #log.debug("dataset is a candidate: %s", dataset['accession'])
 
@@ -409,7 +432,8 @@ class RegionIndexer(Indexer):
 
             file_uuid = afile['uuid']
 
-            if self.encoded_candidate_file(afile, assay_term_name):
+            file_region_tags = self.candidate_file(afile, assay_term_name, dataset_region_tags)
+            if file_region_tags:
 
                 using = ""
                 if force:
@@ -421,7 +445,7 @@ class RegionIndexer(Indexer):
                     if self.in_regions_es(file_uuid):
                         continue
 
-                if self.add_encoded_file_to_regions_es(request, assay_term_name, afile):
+                if self.add_file_to_regions_es(request, assay_term_name, afile, file_region_tags):
                     log.info("added file: %s %s %s", dataset['accession'], afile['href'], using)
                     self.state.file_added(file_uuid)
 
@@ -433,35 +457,74 @@ class RegionIndexer(Indexer):
         # TODO: gather and return errors
 
 
-    def encoded_candidate_file(self, afile, assay_term_name):
+    def candidate_file(self, afile, assay_term_name, dataset_tags):
         '''returns True if an encoded file should be in regions es'''
         if afile.get('status', 'imagined') not in ENCODED_ALLOWED_STATUSES:
-            return False
+            return None
         if afile.get('href') is None:
-            return False
+            return None
+
+        if self.test_instance:
+            if afile['accession'] not in TESTABLE_FILES:
+                return None
 
         assembly = afile.get('assembly','unknown')
         if assembly == 'mm10-minimal':        # Treat mm10-minimal as mm10
             assembly = 'mm10'
         if assembly not in SUPPORTED_ASSEMBLIES:
-            return False
+            return None
 
-        required = ENCODED_REGION_REQUIREMENTS.get(assay_term_name,{})
-        if not required:
-            return False
+        file_tags = []
+        if ENCODED_REGIONS_TAG in dataset_tags:  # encoded datasets must have encoded files
+            required_enc_props = ENCODED_REGION_REQUIREMENTS.get(assay_term_name,{})
+            if required_enc_props:
+                failed = False
+                for prop in list(required_enc_props.keys()):
+                    val = afile.get(prop)
+                    if val is None:
+                        failed = True
+                        break
+                    if val not in required_enc_props[prop]:
+                        failed = True
+                        break
+                if not failed:
+                    file_tags.append(ENCODED_REGIONS_TAG)
 
-        for prop in list(required.keys()):
-            val = afile.get(prop)
-            if val is None:
-                return False
-            if val not in required[prop]:
-                return False
+        if REGULOME_REGIONS_TAG in dataset_tags:  # regulome datasets must have regulome files
+            failed = False
+            for prop in list(ENCODED_REGION_REQUIREMENTS.keys()):
+                val = afile.get(prop)
+                if val is None:
+                    failed = True
+                    break
+                if val not in ENCODED_REGION_REQUIREMENTS[prop]:
+                    failed = True
+                    break
+            if not failed:
+                file_tags.append(REGULOME_REGIONS_TAG)
 
-        if self.test_instance:
-            if afile['accession'] not in TESTABLE_FILES:
-                return False
+        return file_tags
 
-        return True
+    def candidate_dataset(self, dataset):
+        '''returns True if an encoded dataset may have files that should be in regions es'''
+        if 'Experiment' not in dataset['@type']:  # Only experiments?
+            return None
+
+        if len(dataset.get('files',[])) == 0:
+            return NON_REGIONABLE
+
+        assay_term_name = dataset.get('assay_term_name')
+        if assay_term_name is None:
+            return None  # TODO: Regulome has to have assay???
+
+        dataset_tags = []
+        if assay_term_name in list(ENCODED_REGION_REQUIREMENTS.keys()):
+            dataset_tags.append(ENCODED_REGIONS_TAG)
+
+        if 'RegulomeDB' not in dataset.get('internal_tags',[]):
+            dataset_tags.append(REGULOME_REGIONS_TAG)
+
+        return dataset_tags
 
     def encoded_candidate_dataset(self, dataset):
         '''returns True if an encoded dataset may have files that should be in regions es'''
@@ -517,7 +580,7 @@ class RegionIndexer(Indexer):
         return True
 
 
-    def add_to_regions_es(self, id, assembly, assay_term_name, regions, source='encoded'):
+    def add_to_regions_es(self, id, assembly, assay_term_name, regions, region_tags):
         '''Given regions from some source (most likely encoded file) loads the data into region search es'''
         #return True # DEBUG
         for key in regions:
@@ -537,7 +600,7 @@ class RegionIndexer(Indexer):
         # Now add dataset to residency list
         doc = {
             'uuid': str(id),
-            'source': source,
+            'source': region_tags,
             'assay_term_name': assay_term_name,
             'assembly': assembly,
             'chroms': list(regions.keys())
@@ -553,7 +616,7 @@ class RegionIndexer(Indexer):
         self.regions_es.index(index=self.residents_index, doc_type='default', body=doc, id=str(id))
         return True
 
-    def add_encoded_file_to_regions_es(self, request, assay_term_name, afile):
+    def add_file_to_regions_es(self, request, assay_term_name, afile, region_tags):
         '''Given an encoded file object, reads the file to create regions data then loads that into region search es.'''
         #return True # DEBUG
 
@@ -631,6 +694,6 @@ class RegionIndexer(Indexer):
         #else:  Other file types?
 
         if file_data:
-            return self.add_to_regions_es(afile['uuid'], assembly, assay_term_name, file_data, 'encoded')
+            return self.add_to_regions_es(afile['uuid'], assembly, assay_term_name, file_data, region_tags)
 
         return False
