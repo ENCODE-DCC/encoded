@@ -571,8 +571,8 @@ def file_12_13(value, system):
     platform = value.get('platform', None)
 
     if platform and platform in [
-        '/platforms/NTR%3A0000430/',
-        '/platforms/OBI%3A0002012/'
+        "ced61406-dcc6-43c4-bddd-4c977cc676e8",
+        "c7564b38-ab4f-4c42-a401-3de48689a998"
         ]:        
             value.pop('read_length', None)
             value.pop('run_type', None)

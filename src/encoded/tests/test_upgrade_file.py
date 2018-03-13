@@ -111,7 +111,7 @@ def file_10(file_base):
 def file_12(file_base):
     item = file_base.copy()
     item.update({
-        'platform': '/platforms/NTR%3A0000430/',
+        'platform': 'ced61406-dcc6-43c4-bddd-4c977cc676e8',
         'schema_version': '12',
         'file_format': 'fastq',
         'run_type': 'single-ended',
