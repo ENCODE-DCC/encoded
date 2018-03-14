@@ -305,26 +305,43 @@ def batch_download(context, request):
         search_params=request.matchdict['search_params']
     )
     files = [metadata_link]
-    if 'files.file_type' in param_list:
-        for exp in results['@graph']:
-            for f in exp.get('files', []):
-                if f['file_type'] in param_list['files.file_type']:
-                    files.append('{host_url}{href}'.format(
-                        host_url=request.host_url,
-                        href=f['href']
-                    ))
-    else:
-        for exp in results['@graph']:
-            for f in exp.get('files', []):
-                files.append('{host_url}{href}'.format(
-                    host_url=request.host_url,
-                    href=f['href']
-                ))
+
+    exp_files = (
+            exp_file
+            for exp in results['@graph']
+            for exp_file in exp.get('files', [])
+    )
+
+    for exp_file in exp_files:
+        if not file_type_param_list(exp_file, param_list):
+            continue
+        elif restricted_files_present(exp_file):
+            continue
+        files.append(
+            '{host_url}{href}'.format(
+                host_url=request.host_url,
+                href=exp_file['href'],
+            )
+        )
+
     return Response(
         content_type='text/plain',
         body='\n'.join(files),
         content_disposition='attachment; filename="%s"' % 'files.txt'
     )
+
+
+def file_type_param_list(exp_file, param_list):
+    if 'files.file_type' in param_list:
+        if not exp_file['file_type'] in param_list.get('files.file_type', []):
+            return False
+    return True
+
+
+def restricted_files_present(exp_file):
+    if exp_file.get('restricted', False) is True:
+        return True
+    return False
 
 
 def lookup_column_value(value, path):
