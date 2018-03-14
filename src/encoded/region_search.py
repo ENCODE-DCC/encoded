@@ -3,13 +3,13 @@ from snovault import TYPES
 from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 from snovault.elasticsearch.indexer import MAX_CLAUSES_FOR_ES
 from pyramid.security import effective_principals
-from .search import (
-    format_results,
+from .helper import (
+    get_filtered_query,
     set_filters,
     set_facets,
-    get_filtered_query,
-    format_facets,
-    search_result_actions
+    format_results,
+    search_result_actions,
+    format_facets
 )
 from .batch_download import get_peak_metadata_links
 from collections import OrderedDict
