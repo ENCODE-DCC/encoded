@@ -402,12 +402,12 @@ def main():
     parser.add_argument(
         '--test', action='store_const', default='demo', const='test', dest='role',
         help="Deploy to production AWS")
-    parser.add_argument(
-        '--image-id', default='ami-1c1eff2f',
-        help="ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-20151015")
+    parser.add_argument(ami-8f78c2f7
+        '--image-id', default='ami-8f78c2f7',
+        help="ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-20151015 or try ami-2133bc59")
     parser.add_argument(
         '--instance-type', default='c4.4xlarge',
-        help="(defualts toc4.4xlarge for indexing) Switch to a smaller instance afterwards"
+        help="(defualts to c4.4xlarge for indexing) Switch to a smaller instance afterwards"
         "(m4.xlarge or c4.xlarge)")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
     parser.add_argument('--elasticsearch', default=None, help="Launch an Elasticsearch instance")
