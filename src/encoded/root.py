@@ -64,7 +64,6 @@ class EncodedRoot(Root):
     def get_by_uuid(self, uuid, default=None):
         return self.connection.get_by_uuid(uuid, default)
 
-
     def get(self, name, default=None):
         resource = super(EncodedRoot, self).get(name, None)
         if resource is not None:
@@ -80,6 +79,9 @@ class EncodedRoot(Root):
             resource = self.connection.get_by_unique_key('alias', name)
             if resource is not None:
                 return resource
+        resource = self.connection.get_by_unique_key('external_accession', name)
+        if resource is not None:
+            return resource
         return default
 
     @calculated_property(schema={
