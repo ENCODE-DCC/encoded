@@ -108,6 +108,22 @@ def file_10(file_base):
 
 
 @pytest.fixture
+def file_12(file_base):
+    item = file_base.copy()
+    item.update({
+        'platform': 'ced61406-dcc6-43c4-bddd-4c977cc676e8',
+        'schema_version': '12',
+        'file_format': 'fastq',
+        'run_type': 'single-ended',
+        'read_length': 55,
+        'file_size': 243434,
+        'md5sum': 'd41d8cd98f00b204e9800998ecf8423e',
+        'output_type': 'reads'
+    })
+    return item
+
+
+@pytest.fixture
 def old_file(experiment):
     return {
         'accession': 'ENCFF000OLD',
@@ -203,3 +219,9 @@ def test_file_upgrade_10_to_11(upgrader, file_10):
     value = upgrader.upgrade('file', file_10, current_version='10', target_version='11')
     assert value['schema_version'] == '11'
     assert value['no_file_available'] is False
+
+
+def test_file_upgrade_12_to_13(upgrader, file_12):
+    value = upgrader.upgrade('file', file_12, current_version='12', target_version='13')
+    assert value['schema_version'] == '13'
+    assert 'run_type' not in value
