@@ -1,6 +1,7 @@
 import copy
 import re
-from pyramid.view import view_config
+from urllib.parse import urlencode
+from collections import OrderedDict
 from snovault import (
     AbstractCollection,
     TYPES,
@@ -8,14 +9,28 @@ from snovault import (
 from snovault.elasticsearch import ELASTIC_SEARCH
 from snovault.elasticsearch.create_mapping import TEXT_FIELDS
 from snovault.resource_views import collection_view_listing_db
+from .vis_defines import vis_format_url
 from elasticsearch.helpers import scan
+from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import effective_principals
-from urllib.parse import urlencode
-from collections import OrderedDict
-from .vis_defines import vis_format_url
-from collections import OrderedDict
-
+from .helper import (
+    sort_query,
+    get_pagination,
+    get_filtered_query,
+    prepare_search_term,
+    set_sort_order,
+    get_search_fields,
+    list_visible_columns_for_schemas,
+    list_result_fields,
+    set_filters,
+    set_facets,
+    format_results,
+    search_result_actions,
+    format_facets,
+    normalize_query,
+    iter_long_json
+)
 
 CHAR_COUNT = 32
 
@@ -79,7 +94,8 @@ def search(context, request, search_type=None, return_generator=False):
     # extract from/size from query parameters
     from_, size = get_pagination(request)
 
-    # looks at searchTerm query parameter, sets to '*' if none, and creates antlr/lucene query for fancy stuff
+    # looks at searchTerm query parameter, sets to '*' if none,
+    # and creates antlr/lucene query for fancy stuff
     search_term = prepare_search_term(request)
 
     ## converts type= query parameters to list of doc_types to search, "*" becomes super class Item
@@ -111,7 +127,8 @@ def search(context, request, search_type=None, return_generator=False):
     else:
         # Possibly type(s) in query string
         clear_qs = urlencode([("type", typ) for typ in doc_types])
-    result['clear_filters'] = request.route_path('search', slash='/') + (('?' + clear_qs) if clear_qs else '')
+    result['clear_filters'] = request.route_path('search', slash='/') +\
+                                      (('?' + clear_qs) if clear_qs else '')
 
     # Building query for filters
     if not doc_types:
@@ -129,7 +146,8 @@ def search(context, request, search_type=None, return_generator=False):
             ti = types[item_type]
             qs = urlencode([
                 (k.encode('utf-8'), v.encode('utf-8'))
-                for k, v in request.params.items() if not (k == 'type' and types['Item' if v == '*' else v] is ti)
+                for k, v in request.params.items()\
+                    if not (k == 'type' and types['Item' if v == '*' else v] is ti)
             ])
             result['filters'].append({
                 'field': 'type',
@@ -176,7 +194,8 @@ def search(context, request, search_type=None, return_generator=False):
     # If searching for more than one type, don't specify which fields to search
     else:
         # del query['query']['bool']['must']['multi_match']['fields']
-        query['query']['query_string']['fields'].extend(['_all', '*.uuid', '*.md5sum', '*.submitted_file_name'])
+        query['query']['query_string']['fields']\
+                .extend(['_all', '*.uuid', '*.md5sum', '*.submitted_file_name'])
 
 
     # Set sort order
@@ -194,7 +213,8 @@ def search(context, request, search_type=None, return_generator=False):
 
     # Display all audits if logged in, or all but INTERNAL_ACTION if logged out
     for audit_facet in audit_facets:
-        if search_audit and 'group.submitter' in principals or 'INTERNAL_ACTION' not in audit_facet[0]:
+        if search_audit and 'group.submitter' in principals\
+                     or 'INTERNAL_ACTION' not in audit_facet[0]:
             facets.append(audit_facet)
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
@@ -209,13 +229,15 @@ def search(context, request, search_type=None, return_generator=False):
     if not request.params.get('type') or 'Item' in doc_types:
         es_index = '_all'
     else:
-        es_index = [types[type_name].item_type for type_name in doc_types if hasattr(types[type_name], 'item_type')]
+        es_index = [types[type_name].item_type for type_name\
+                    in doc_types if hasattr(types[type_name], 'item_type')]
 
     # Execute the query
     if do_scan:
         es_results = es.search(body=query, index=es_index, search_type='query_then_fetch')
     else:
-        es_results = es.search(body=query, index=es_index, from_=from_, size=size, request_cache=True)
+        es_results = es.search(body=query, index=es_index,\
+                               from_=from_, size=size, request_cache=True)
 
 
     result['total'] = total = es_results['hits']['total']
@@ -415,7 +437,8 @@ def matrix(context, request):
     # If searching for more than one type, don't specify which fields to search
     else:
         # del query['query']['bool']['must']['multi_match']['fields']
-        query['query']['query_string']['fields'].extend(['_all', '*.uuid', '*.md5sum', '*.submitted_file_name'])
+        query['query']['query_string']['fields']\
+                .extend(['_all', '*.uuid', '*.md5sum', '*.submitted_file_name'])
 
     # Setting filters.
     # Rather than setting them at the top level of the query
@@ -432,7 +455,8 @@ def matrix(context, request):
 
     # Display all audits if logged in, or all but INTERNAL_ACTION if logged out
     for audit_facet in audit_facets:
-        if search_audit and 'group.submitter' in principals or 'INTERNAL_ACTION' not in audit_facet[0]:
+        if search_audit and 'group.submitter' in principals\
+           or 'INTERNAL_ACTION' not in audit_facet[0]:
             facets.append(audit_facet)
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
@@ -570,7 +594,8 @@ def news(context, request):
 
     # Set filters; has side effect of setting result['filters']. We add some static terms since we
     # have search parameters not specified in the query string.
-    used_filters = set_filters(request, query, result, [('type', 'Page'), ('news', 'true'), ('status', 'released')])
+    used_filters = set_filters(request, query, result,\
+                               [('type', 'Page'), ('news', 'true'), ('status', 'released')])
 
     # Build up the facets to search.
     facets = []
@@ -683,7 +708,8 @@ def audit(context, request):
     # If searching for more than one type, don't specify which fields to search
     else:
         # del query['query']['bool']['must']['multi_match']['fields']
-        query['query']['query_string']['fields'].extend(['_all', '*.uuid', '*.md5sum', '*.submitted_file_name'])
+        query['query']['query_string']['fields']\
+                .extend(['_all', '*.uuid', '*.md5sum', '*.submitted_file_name'])
 
     # Setting filters.
     # Rather than setting them at the top level of the query
@@ -700,7 +726,8 @@ def audit(context, request):
 
     # Display all audits if logged in, or all but INTERNAL_ACTION if logged out
     for audit_facet in audit_facets:
-        if search_audit and 'group.submitter' in principals or 'INTERNAL_ACTION' not in audit_facet[0]:
+        if search_audit and 'group.submitter' in principals\
+           or 'INTERNAL_ACTION' not in audit_facet[0]:
             facets.append(audit_facet)
 
     # To get list of audit categories from facets
@@ -804,14 +831,15 @@ def audit(context, request):
                 'field': 'audit.INTERNAL_ACTION.category', 'size': 999999
             }
         }
-        aggs['no.audit.error']['aggs']['no.audit.not_compliant']['aggs']['no.audit.warning']['aggs']['no.audit.internal_action'] = {
-                            "missing": {
-                                "field": "audit.INTERNAL_ACTION.category"
-                            },
-                            "aggs": {
-                                x_grouping: x_agg
-                            }
-        }
+        aggs['no.audit.error']['aggs']['no.audit.not_compliant']['aggs']\
+                ['no.audit.warning']['aggs']['no.audit.internal_action'] = {
+                    "missing": {
+                        "field": "audit.INTERNAL_ACTION.category"
+                    },
+                    "aggs": {
+                        x_grouping: x_agg
+                    }
+                }
         no_audits_groupings.append("no.audit.internal_action")
 
     aggs['x'] = x_agg
@@ -868,10 +896,14 @@ def audit(context, request):
                     if 'key' in assay:
                         counts[assay['key']] = doc_count
 
-                # We now have `counts` containing each displayed key and the corresponding count for a
-                # row of the matrix. Convert that to a list of counts (cell values for a row of the
-                # matrix) to replace the existing bucket for the given grouping_fields term with a
-                # simple list of counts without their keys -- the position within the list corresponds
+                # We now have `counts` containing each displayed
+                # key and the corresponding count for a
+                # row of the matrix. Convert that to a list
+                # of counts (cell values for a row of the
+                # matrix) to replace the existing bucket for
+                # the given grouping_fields term with a
+                # simple list of counts without their keys
+                # -- the position within the list corresponds
                 # to the keys within 'x'.
                 summary = []
                 for xbucket in x_buckets:
@@ -906,7 +938,8 @@ def audit(context, request):
         # If there are still items in grouping_fields, then loop by recursion until there is
         # nothing left in grouping_fields.
         if grouping_fields:
-            summarize_no_audits(matrix, x_buckets, outer_bucket[group_by], grouping_fields, aggregations)
+            summarize_no_audits(matrix, x_buckets, outer_bucket[group_by],
+                                grouping_fields, aggregations)
 
         counts = {}
         # We have recursed through to the last grouping_field in the array given in the top-
