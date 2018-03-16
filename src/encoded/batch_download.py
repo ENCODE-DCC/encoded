@@ -49,6 +49,7 @@ _tsv_mapping = OrderedDict([
                                          'replicates.library.biosample.worm_synchronization_stage',
                                          'replicates.library.biosample.post_synchronization_time',
                                          'replicates.library.biosample.post_synchronization_time_units']),
+    ('Biosample summary', ['replicates.library.biosample.summary']),
     ('Experiment target', ['target.name']),
     ('Antibody accession', ['replicates.antibody.accession']),
     ('Library made from', ['replicates.library.nucleic_acid_term_name']),
