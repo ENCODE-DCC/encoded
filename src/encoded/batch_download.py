@@ -241,7 +241,7 @@ def metadata_tsv(context, request):
     results = request.embed(path, as_user=True)
     rows = []
     for experiment_json in results['@graph']:
-        if experiment_json['files']:
+        if experiment_json.get('files', []):
             exp_data_row = []
             for column in header:
                 if not _tsv_mapping[column][0].startswith('files'):
