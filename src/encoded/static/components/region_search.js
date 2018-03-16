@@ -283,7 +283,7 @@ class RegionSearch extends React.Component {
             <div>
                 <h2>Region search</h2>
                 <AdvSearch {...this.props} />
-                    {notification === 'Success' ?
+                    {notification.startsWith('Success') ?
                         <div className="panel data-display main-panel">
                             <div className="row">
                                 <div className="col-sm-5 col-md-4 col-lg-3">
