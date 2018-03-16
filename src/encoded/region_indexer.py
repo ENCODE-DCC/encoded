@@ -48,10 +48,17 @@ log = logging.getLogger(__name__)
 
 # Species and references being indexed
 SUPPORTED_ASSEMBLIES = ['hg19', 'mm10', 'mm9', 'GRCh38']
+#SUPPORTED_CHROMOSOMES = [
+#    'chr1',  'chr2',  'chr3',  'chr4',  'chr5',  'chr6',  'chr7',  'chr8',  'chr9',  'chr10',
+#    'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20',
+#    'chr21', 'chr22', 'chrx',  'chry']  # chroms are lower case
 
 ENCODED_ALLOWED_FILE_FORMATS = ['bed']
 ENCODED_ALLOWED_STATUSES = ['released']
 RESIDENT_REGIONSET_KEY = 'resident_regionsets'  # in regions_es, keeps track of what datsets are resident in one place
+
+FOR_REGION_SEARCH = 'region_search'
+FOR_REGULOME_DB = 'RegulomeDB'
 
 ENCODED_REGION_REQUIREMENTS = {
     'ChIP-seq': {
@@ -69,7 +76,21 @@ ENCODED_REGION_REQUIREMENTS = {
 }
 
 REGULOME_REGION_REQUIREMENTS = {
-    'file_format': ['bed']
+    'ChIP-seq': {
+        'output_type': ['optimal idr thresholded peaks'],
+        'file_format': ['bed']
+    },
+    'DNase-seq': {
+        'file_type': ['bed narrowPeak'],
+        'file_format': ['bed']
+    },
+    'eCLIP': {
+        'file_type': ['bed narrowPeak'],
+        'file_format': ['bed']
+    },
+    'default': {
+        'file_format': ['bed']
+    }
 }
 
 # On local instance, these are the only files that can be downloaded and regionalizable.  Currently only one is!
@@ -387,10 +408,6 @@ def index_regions(request):
     state.send_notices()
     return result
 
-NON_REGIONABLE = 0x00
-ENCODED_REGIONS_TAG = 'ENCODE'
-REGULOME_REGIONS_TAG = 'RegulomeDB'
-
 class RegionIndexer(Indexer):
     def __init__(self, registry):
         super(RegionIndexer, self).__init__(registry)
@@ -417,8 +434,8 @@ class RegionIndexer(Indexer):
             return
 
         # TODO: add case where files are never dropped (when demos share test server this might be necessary)
-        dataset_region_tags = self.candidate_dataset(dataset)
-        if not dataset_region_tags:
+        dataset_region_uses = self.candidate_dataset(dataset)
+        if not dataset_region_uses:
             return  # Note that if a dataset is no longer a candidate but it had files in regions es, they won't get removed.
         #log.debug("dataset is a candidate: %s", dataset['accession'])
 
@@ -433,8 +450,8 @@ class RegionIndexer(Indexer):
 
             file_uuid = afile['uuid']
 
-            file_region_tags = self.candidate_file(afile, assay_term_name, dataset_region_tags)
-            if file_region_tags:
+            file_region_uses = self.candidate_file(afile, assay_term_name, dataset_region_uses)
+            if file_region_uses:
 
                 using = ""
                 if force:
@@ -446,19 +463,21 @@ class RegionIndexer(Indexer):
                     if self.in_regions_es(file_uuid):
                         continue
 
-                if self.add_file_to_regions_es(request, assay_term_name, afile, file_region_tags):
+                if self.add_file_to_regions_es(request, assay_term_name, afile, file_region_uses):
                     log.info("added file: %s %s %s", dataset['accession'], afile['href'], using)
                     self.state.file_added(file_uuid)
+                    if FOR_REGULOME_DB in file_region_uses:
+                        log.warn("Indexed %s file %s", FOR_REGULOME_DB, afile['accession'])
 
             else:
                 if self.remove_from_regions_es(file_uuid):
-                    log.info("dropped file: %s %s %s", dataset['accession'], afile['@id'], using)
+                    log.warn("dropped file: %s %s", dataset['accession'], afile['@id'])
                     self.state.file_dropped(file_uuid)
 
         # TODO: gather and return errors
 
 
-    def candidate_file(self, afile, assay_term_name, dataset_tags):
+    def candidate_file(self, afile, assay_term_name, dataset_uses):
         '''returns True if an encoded file should be in regions es'''
         if afile.get('status', 'imagined') not in ENCODED_ALLOWED_STATUSES:
             return None
@@ -475,8 +494,8 @@ class RegionIndexer(Indexer):
         if assembly not in SUPPORTED_ASSEMBLIES:
             return None
 
-        file_tags = []
-        if ENCODED_REGIONS_TAG in dataset_tags:  # encoded datasets must have encoded files
+        file_uses = []
+        if FOR_REGION_SEARCH in dataset_uses:  # encoded datasets must have encoded files
             required_enc_props = ENCODED_REGION_REQUIREMENTS.get(assay_term_name,{})
             if required_enc_props:
                 failed = False
@@ -489,22 +508,27 @@ class RegionIndexer(Indexer):
                         failed = True
                         break
                 if not failed:
-                    file_tags.append(ENCODED_REGIONS_TAG)
+                    file_uses.append(FOR_REGION_SEARCH)
 
-        if REGULOME_REGIONS_TAG in dataset_tags:  # regulome datasets must have regulome files
+        if FOR_REGULOME_DB in dataset_uses:  # regulome datasets must have regulome files
             failed = False
-            for prop in list(ENCODED_REGION_REQUIREMENTS.keys()):
+            if assay_term_name in REGULOME_REGION_REQUIREMENTS:
+                requirements = REGULOME_REGION_REQUIREMENTS[assay_term_name]
+            else:
+                requirements = REGULOME_REGION_REQUIREMENTS['default']
+            for prop in list(requirements.keys()):
                 val = afile.get(prop)
                 if val is None:
                     failed = True
                     break
-                if val not in ENCODED_REGION_REQUIREMENTS[prop]:
+                if val not in requirements[prop]:
                     failed = True
                     break
             if not failed:
-                file_tags.append(REGULOME_REGIONS_TAG)
+                file_uses.append(FOR_REGULOME_DB)
+                #log.warn("File %s is %s", afile['accession'], FOR_REGULOME_DB)
 
-        return file_tags
+        return file_uses
 
     def candidate_dataset(self, dataset):
         '''returns True if an encoded dataset may have files that should be in regions es'''
@@ -512,32 +536,21 @@ class RegionIndexer(Indexer):
             return None
 
         if len(dataset.get('files',[])) == 0:
-            return NON_REGIONABLE
+            return None
 
         assay_term_name = dataset.get('assay_term_name')
         if assay_term_name is None:
             return None  # TODO: Regulome has to have assay???
 
-        dataset_tags = []
+        dataset_uses = []
         if assay_term_name in list(ENCODED_REGION_REQUIREMENTS.keys()):
-            dataset_tags.append(ENCODED_REGIONS_TAG)
+            dataset_uses.append(FOR_REGION_SEARCH)
 
-        if 'RegulomeDB' not in dataset.get('internal_tags',[]):
-            dataset_tags.append(REGULOME_REGIONS_TAG)
+        if 'RegulomeDB' in dataset.get('internal_tags',[]):
+            dataset_uses.append(FOR_REGULOME_DB)
+            #log.warn("Dataset %s is %s", dataset['accession'], FOR_REGULOME_DB)
 
-        return dataset_tags
-
-    def encoded_candidate_dataset(self, dataset):
-        '''returns True if an encoded dataset may have files that should be in regions es'''
-        if 'Experiment' not in dataset['@type']:  # Only experiments?
-            return False
-
-        if dataset.get('assay_term_name','unknown') not in list(ENCODED_REGION_REQUIREMENTS.keys()):
-            return False
-
-        if len(dataset.get('files',[])) == 0:
-            return False
-        return True
+        return dataset_uses
 
     def in_regions_es(self, id):
         '''returns True if an id is in regions es'''
@@ -557,51 +570,54 @@ class RegionIndexer(Indexer):
 
     def remove_from_regions_es(self, id):
         '''Removes all traces of an id (usually uuid) from region search elasticsearch index.'''
-        #return True # DEBUG
         try:
             doc = self.regions_es.get(index=self.residents_index, doc_type='default', id=str(id)).get('_source',{})
             if not doc:
+                log.warn("Trying to drop file: %s  NOT FOUND", id)
                 return False
         except:
             return False  # Not an error: remove may be called without looking first
 
         for chrom in doc['chroms']:
             try:
-                self.regions_es.delete(index=chrom, doc_type=doc['assembly'], id=str(uuid))
+                self.regions_es.delete(index=chrom, doc_type=doc['assembly'], id=str(id))
             except:
-                #log.error("Region indexer failed to remove %s regions of %s" % (chrom,id))
+                log.error("Region indexer failed to remove %s regions of %s" % (chrom,id))  #, exc_info=True)
                 return False # Will try next full cycle
 
         try:
-            self.regions_es.delete(index=self.residents_index, doc_type='default', id=str(uuid))
+            self.regions_es.delete(index=self.residents_index, doc_type='default', id=str(id))
         except:
-            log.error("Region indexer failed to remove %s from %s" % (id, self.residents_index))
+            log.error("Region indexer failed to remove %s from %s" % (id, self.residents_index))  #, exc_info=True)
             return False # Will try next full cycle
 
         return True
 
 
-    def add_to_regions_es(self, id, assembly, assay_term_name, regions, region_tags):
+    def add_to_regions_es(self, afile, assembly, assay_term_name, regions, region_uses):
         '''Given regions from some source (most likely encoded file) loads the data into region search es'''
-        #return True # DEBUG
-        for key in regions:
+        id = afile['uuid']
+        dataset = afile.get('dataset')
+
+        for chrom in list(regions.keys()):
             doc = {
                 'uuid': str(id),
-                'positions': regions[key]
+                'positions': regions[chrom]
             }
             # Could be a chrom never seen before!
-            if not self.regions_es.indices.exists(key):
-                self.regions_es.indices.create(index=key, body=index_settings())
+            if not self.regions_es.indices.exists(chrom):
+                self.regions_es.indices.create(index=chrom, body=index_settings())
 
-            if not self.regions_es.indices.exists_type(index=key, doc_type=assembly):
-                self.regions_es.indices.put_mapping(index=key, doc_type=assembly, body=get_mapping(assembly))
+            if not self.regions_es.indices.exists_type(index=chrom, doc_type=assembly):
+                self.regions_es.indices.put_mapping(index=chrom, doc_type=assembly, body=get_mapping(assembly))
 
-            self.regions_es.index(index=key, doc_type=assembly, body=doc, id=str(id))
+            self.regions_es.index(index=chrom, doc_type=assembly, body=doc, id=str(id))
 
         # Now add dataset to residency list
         doc = {
             'uuid': str(id),
-            'source': region_tags,
+            'dataset': dataset,
+            'uses': region_uses,
             'assay_term_name': assay_term_name,
             'assembly': assembly,
             'chroms': list(regions.keys())
@@ -617,7 +633,7 @@ class RegionIndexer(Indexer):
         self.regions_es.index(index=self.residents_index, doc_type='default', body=doc, id=str(id))
         return True
 
-    def add_file_to_regions_es(self, request, assay_term_name, afile, region_tags):
+    def add_file_to_regions_es(self, request, assay_term_name, afile, region_uses):
         '''Given an encoded file object, reads the file to create regions data then loads that into region search es.'''
         #return True # DEBUG
 
@@ -682,6 +698,8 @@ class RegionIndexer(Indexer):
             with gzip.open(file_in_mem, mode='rt') as file:  # localhost:8000 would not require localhost
                 for row in tsvreader(file):
                     chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
+                    #if chrom not in SUPPORTED_CHROMOSOMES:
+                    #    continue
                     if isinstance(start, int) and isinstance(end, int):
                         if chrom in file_data:
                             file_data[chrom].append({
@@ -695,6 +713,6 @@ class RegionIndexer(Indexer):
         #else:  Other file types?
 
         if file_data:
-            return self.add_to_regions_es(afile['uuid'], assembly, assay_term_name, file_data, region_tags)
+            return self.add_to_regions_es(afile, assembly, assay_term_name, file_data, region_uses)
 
         return False

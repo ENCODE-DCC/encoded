@@ -12,6 +12,11 @@ from .search import (
     search_result_actions
 )
 from .batch_download import get_peak_metadata_links
+from .region_indexer import (
+    RESIDENT_REGIONSET_KEY,
+    FOR_REGION_SEARCH,
+    FOR_REGULOME_DB
+)
 from collections import OrderedDict
 import requests
 from urllib.parse import urlencode
@@ -137,6 +142,58 @@ def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
     if with_inner_hits:
         query['query']['bool']['filter']['nested']['inner_hits'] = {'size': 99999}
     return query
+
+
+def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, with_inner_hits=False, uses=[FOR_REGION_SEARCH]):  #, uses=[FOR_REGULOME_DB]):  #
+    '''Returns a list of file uuids AND dataset paths for chromosome location'''
+
+    region_query = get_peak_query(start, end, with_inner_hits=with_inner_hits, within_peaks=peaks_too)
+
+    try:
+        results = region_es.search(body=region_query,
+                                            index=chrom.lower(),
+                                            doc_type=_GENOME_TO_ALIAS[assembly],
+                                            size=99999)
+    except Exception:
+        return ([], [], [], 'Error during region search')
+
+    peaks = list(results['hits']['hits'])
+    peak_count = len(peaks)
+    uuids = [ peak['_id'] for peak in peaks ]
+    uuids = list(set(uuids))
+    if not uuids:
+        return ([], [], [], 'No uuids found in region')
+
+    resident_details = {}
+    try:
+        id_query = {"query": {"ids": {"values": uuids}}}
+        res = region_es.search(body=id_query, index=RESIDENT_REGIONSET_KEY, doc_type='default', size=99999)
+        hits = res.get("hits", {}).get("hits", [])
+        for hit in hits:
+            resident_details[hit["_id"]] = hit["_source"]
+    except Exception:
+        return ([], [], [], 'Error during resident_details search')
+
+    file_uuids = set()
+    dataset_ids = set()
+    uses_set = set(uses)
+    for uuid in uuids:
+        if uuid not in resident_details:
+            continue
+        if uses and not list(uses_set.intersection(set(resident_details[uuid].get('uses',[])))):
+            continue
+        file_uuids.add(uuid)
+        dataset_ids.add(resident_details[uuid].get('dataset'))
+
+    file_uuids = list(file_uuids)
+    dataset_ids = list(dataset_ids)
+    if not peaks_too:
+        peaks = []  # Don't burden results with too much info
+
+    msg = '%d peaks in %d files belonging to %s experiments in this region' % \
+                (peak_count, len(file_uuids), len(dataset_ids))
+
+    return (file_uuids, dataset_ids, peaks, msg)
 
 
 def sanitize_coordinates(term):
@@ -322,26 +379,16 @@ def region_search(context, request):
         )
 
     # Search for peaks for the coordinates we got
-    try:
-        # including inner hits is very slow
-        # figure out how to distinguish browser requests from .embed method requests
-        if 'peak_metadata' in request.query_string:
-            peak_query = get_peak_query(start, end, with_inner_hits=True, within_peaks=region_inside_peak_status)
-        else:
-            peak_query = get_peak_query(start, end, within_peaks=region_inside_peak_status)
-        peak_results = snp_es.search(body=peak_query,
-                                     index=chromosome.lower(),
-                                     doc_type=_GENOME_TO_ALIAS[assembly],
-                                     size=99999)
-    except Exception:
-        result['notification'] = 'Error during search'
+    peaks_too = ('peak_metadata' in request.query_string)
+    if peaks_too:
+        region_inside_peak_status = True
+    (file_uuids, dataset_ids, peaks, msg) = region_get_hits(snp_es, assembly,
+                                                chromosome, start, end,
+                                                peaks_too=peaks_too,
+                                                with_inner_hits=region_inside_peak_status)
+    result['notification'] = msg
+    if not file_uuids:
         return result
-    file_uuids = []
-    for hit in peak_results['hits']['hits']:
-        if hit['_id'] not in file_uuids:
-            file_uuids.append(hit['_id'])
-    file_uuids = list(set(file_uuids))
-    result['notification'] = 'No results found'
 
 
     # if more than one peak found return the experiments with those peak files
@@ -357,11 +404,12 @@ def region_search(context, request):
         del query['query']
         query['post_filter']['bool']['must'].append({
             'terms': {
-                'embedded.files.uuid': file_uuids
+                'embedded.@id': dataset_ids
             }
         })
+        #        'embedded.file.uuids': file_uuids
         used_filters = set_filters(request, query, result)
-        used_filters['files.uuid'] = file_uuids
+        used_filters['@id'] = dataset_ids
         query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Experiment'])
         schemas = (types[item_type].schema for item_type in ['Experiment'])
         es_results = es.search(
@@ -370,10 +418,11 @@ def region_search(context, request):
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
         result['total'] = total = es_results['hits']['total']
         result['facets'] = format_facets(es_results, _FACETS, used_filters, schemas, total, principals)
-        result['peaks'] = list(peak_results['hits']['hits'])
+        if peaks_too:
+            result['peaks'] = peaks
         result['download_elements'] = get_peak_metadata_links(request)
         if result['total'] > 0:
-            result['notification'] = 'Success'
+            result['notification'] = 'Success: ' + result['notification']
             position_for_browser = format_position(result['coordinates'], 200)
             result.update(search_result_actions(request, ['Experiment'], es_results, position=position_for_browser))
 
