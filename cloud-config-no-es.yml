@@ -6,39 +6,6 @@ ssh_authorized_keys:
 
 apt_sources:
 - source: "ppa:webupd8team/java"
-- source: "deb https://artifacts.elastic.co/packages/5.x/apt stable main"
-  key: |
-    -----BEGIN PGP PUBLIC KEY BLOCK-----
-    Version: GnuPG v2.0.14 (GNU/Linux)
-
-    mQENBFI3HsoBCADXDtbNJnxbPqB1vDNtCsqhe49vFYsZN9IOZsZXgp7aHjh6CJBD
-    A+bGFOwyhbd7at35jQjWAw1O3cfYsKAmFy+Ar3LHCMkV3oZspJACTIgCrwnkic/9
-    CUliQe324qvObU2QRtP4Fl0zWcfb/S8UYzWXWIFuJqMvE9MaRY1bwUBvzoqavLGZ
-    j3SF1SPO+TB5QrHkrQHBsmX+Jda6d4Ylt8/t6CvMwgQNlrlzIO9WT+YN6zS+sqHd
-    1YK/aY5qhoLNhp9G/HxhcSVCkLq8SStj1ZZ1S9juBPoXV1ZWNbxFNGwOh/NYGldD
-    2kmBf3YgCqeLzHahsAEpvAm8TBa7Q9W21C8vABEBAAG0RUVsYXN0aWNzZWFyY2gg
-    KEVsYXN0aWNzZWFyY2ggU2lnbmluZyBLZXkpIDxkZXZfb3BzQGVsYXN0aWNzZWFy
-    Y2gub3JnPokBOAQTAQIAIgUCUjceygIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgEC
-    F4AACgkQ0n1mbNiOQrRzjAgAlTUQ1mgo3nK6BGXbj4XAJvuZDG0HILiUt+pPnz75
-    nsf0NWhqR4yGFlmpuctgCmTD+HzYtV9fp9qW/bwVuJCNtKXk3sdzYABY+Yl0Cez/
-    7C2GuGCOlbn0luCNT9BxJnh4mC9h/cKI3y5jvZ7wavwe41teqG14V+EoFSn3NPKm
-    TxcDTFrV7SmVPxCBcQze00cJhprKxkuZMPPVqpBS+JfDQtzUQD/LSFfhHj9eD+Xe
-    8d7sw+XvxB2aN4gnTlRzjL1nTRp0h2/IOGkqYfIG9rWmSLNlxhB2t+c0RsjdGM4/
-    eRlPWylFbVMc5pmDpItrkWSnzBfkmXL3vO2X3WvwmSFiQbkBDQRSNx7KAQgA5JUl
-    zcMW5/cuyZR8alSacKqhSbvoSqqbzHKcUQZmlzNMKGTABFG1yRx9r+wa/fvqP6OT
-    RzRDvVS/cycws8YX7Ddum7x8uI95b9ye1/Xy5noPEm8cD+hplnpU+PBQZJ5XJ2I+
-    1l9Nixx47wPGXeClLqcdn0ayd+v+Rwf3/XUJrvccG2YZUiQ4jWZkoxsA07xx7Bj+
-    Lt8/FKG7sHRFvePFU0ZS6JFx9GJqjSBbHRRkam+4emW3uWgVfZxuwcUCn1ayNgRt
-    KiFv9jQrg2TIWEvzYx9tywTCxc+FFMWAlbCzi+m4WD+QUWWfDQ009U/WM0ks0Kww
-    EwSk/UDuToxGnKU2dQARAQABiQEfBBgBAgAJBQJSNx7KAhsMAAoJENJ9ZmzYjkK0
-    c3MIAIE9hAR20mqJWLcsxLtrRs6uNF1VrpB+4n/55QU7oxA1iVBO6IFu4qgsF12J
-    TavnJ5MLaETlggXY+zDef9syTPXoQctpzcaNVDmedwo1SiL03uMoblOvWpMR/Y0j
-    6rm7IgrMWUDXDPvoPGjMl2q1iTeyHkMZEyUJ8SKsaHh4jV9wp9KmC8C+9CwMukL7
-    vM5w8cgvJoAwsp3Fn59AxWthN3XJYcnMfStkIuWgR7U2r+a210W6vnUxU4oN0PmM
-    cursYPyeV0NX/KQeUeNMwGTFB6QHS/anRaGQewijkrYYoTNtfllxIu9XYmiBERQ/
-    qPDlGRlOgVTd9xUfHFkzB52c70E=
-    =92oX
-    -----END PGP PUBLIC KEY BLOCK-----
 - source: "deb https://deb.nodesource.com/node_6.x trusty main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -101,6 +68,7 @@ bootcmd:
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
 
+
 package_upgrade: true
 
 packages:
@@ -108,7 +76,6 @@ packages:
 - awscli
 - bsdtar
 - build-essential
-- elasticsearch
 - git
 - graphviz
 - libapache2-mod-wsgi-py3
@@ -150,28 +117,6 @@ output:
 runcmd:
 - sudo -u ubuntu mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
 - sudo -u ubuntu aws s3 cp --region=us-west-2 %(S3_AUTH_KEYS)s /home/ubuntu/.ssh/authorized_keys
-# Ideally this would build as a different user so encoded only has read
-# permissions
-- MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
-- if [ "$MEMGIGS" -gt 32 ]
-- then
--    echo "-Xms16g" >> /etc/elasticsearch/jvm.options
--    echo "-Xmx16g" >> /etc/elasticsearch/jvm.options
-- elif [ "$MEMGIGS" -gt 12 ]
-- then
--    echo "-Xms8g" >> /etc/elasticsearch/jvm.options
--    echo "-Xmx8g" >> /etc/elasticsearch/jvm.options
-- else
--    echo "-Xms4g" >> /etc/elasticsearch/jvm.options
--    echo "-Xmx4g" >> /etc/elasticsearch/jvm.options
--    sysctl "vm.swappiness=1"
--    swapon /swapfile
-- fi
-- set -ex
-- update-rc.d elasticsearch defaults
-- sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
-- sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install discovery-ec2
-- service elasticsearch restart
 - chown postgres:postgres /etc/postgresql/9.3/main/*.conf
 - echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 - if test "%(ROLE)s" = "demo"
@@ -203,8 +148,6 @@ runcmd:
 - sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
 - sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
-- sudo -u encoded bin/create-mapping production.ini --app-name app
-- sudo -u encoded bin/index-annotations production.ini --app-name app
 - ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
 - ln -s /srv/encoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
 - a2enmod headers
@@ -230,15 +173,6 @@ runcmd:
 - sudo mv /etc/mailname /etc/mailname.OLD
 - sudo echo "$PUBLIC_DNS_NAME" | sudo tee --append /etc/mailname
 - sudo service postfix restart
-# - sleep 10
-# - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
-# - pg_ctlcluster 9.3 main reload
-# - pg_ctlcluster 9.3 main promote
-# - sudo -u encoded bin/update-keys-links production.ini --app-name app
-# - sudo -u encoded bin/upgrade production.ini --app-name app
-# - sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-push /var/lib/postgresql/9.3/main
-# - sleep 60
-# - sudo -i -u encoded PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd" > tests.out
 
 users:
 - default
@@ -271,80 +205,6 @@ write_files:
 - path: /etc/cron.d/cloudwatchmon
   content: |
     */5 * * * * nobody /opt/cloudwatchmon/bin/mon-put-instance-stats.py --mem-util --swap-util --disk-space-util --disk-path=/ --from-cron
-
-- path: /etc/elasticsearch/elasticsearch.yml
-  content: |
-    network.host: 0.0.0.0
-    http.port: 9201
-    transport.tcp.port: 9299
-    node.master: true
-    node.data: false
-    discovery.zen.minimum_master_nodes: 1
-    discovery.type: ec2
-
-    cloud.aws.region: us-west-2
-
-    discovery.ec2.groups: elasticsearch-https, ssh-http-https
-
-    indices.query.bool.max_clause_count: 8192
-
-
-- path: /etc/elasticsearch/cluster.sh
-  content: |
-    #!/bin/bash
-    name=$1
-    
-    if [[ -n "$name" ]]; then
-        echo "cluster.name: $name" >> /etc/elasticsearch/elasticsearch.yml
-    else
-        echo "argument error"
-    fi
-
-- path: /etc/elasticsearch/jvm.options
-  content: |
-    ## GC configuration
-    -XX:+UseConcMarkSweepGC
-    -XX:CMSInitiatingOccupancyFraction=75
-    -XX:+UseCMSInitiatingOccupancyOnly
-
-    # disable calls to System#gc
-    -XX:+DisableExplicitGC
-
-    # pre-touch memory pages used by the JVM during initialization
-    -XX:+AlwaysPreTouch
-
-    # force the server VM (remove on 32-bit client JVMs)
-    -server
-
-    # explicitly set the stack size (reduce to 320k on 32-bit client JVMs)
-    -Xss1m
-
-    # set to headless, just in case
-    -Djava.awt.headless=true
-
-    # ensure UTF-8 encoding by default (e.g. filenames)
-    -Dfile.encoding=UTF-8
-
-    # use our provided JNA always versus the system one
-    -Djna.nosys=true
-
-    # use old-style file permissions on JDK9
-    -Djdk.io.permissionsUseCanonicalPath=true
-
-    # flags to configure Netty
-    -Dio.netty.noUnsafe=true
-    -Dio.netty.noKeySetOptimization=true
-    -Dio.netty.recycler.maxCapacityPerThread=0
-
-    # log4j 2
-    -Dlog4j.shutdownHookEnabled=false
-    -Dlog4j2.disable.jmx=true
-    -Dlog4j.skipJansi=true
-
-    # generate a heap dump when an allocation from the Java heap fails
-    # heap dumps are created in the working directory of the JVM
-    -XX:+HeapDumpOnOutOfMemoryError
-
 
 - path: /etc/postgresql/9.3/main/custom.conf
   content: |
