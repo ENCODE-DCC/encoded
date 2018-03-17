@@ -11,6 +11,8 @@ from .pipeline_structures import (
     encode_chip_histone_experiment_pooled,
     encode_chip_tf_experiment_pooled,
     encode_chip_experiment_replicate,
+    encode_chip_tf_experiment_unreplicated,
+    encode_chip_histone_experiment_unreplicated
     )
 
 def getPipelines(alignment_files):
@@ -48,6 +50,14 @@ def get_assemblies(list_of_files):
                 assemblies.add(f['assembly'])
     return assemblies
 
+def filter_files(list_of_files):
+    to_return = []
+    for f in list_of_files:
+        if f.get('lab') == '/labs/encode-processing-pipeline/':
+            to_return.append(f)       
+    return to_return
+
+
 @audit_checker('Experiment', frame=['original_files',
                                     'original_files.replicate',
                                     'original_files.derived_from',
@@ -55,16 +65,18 @@ def get_assemblies(list_of_files):
                                     'original_files.analysis_step_version.analysis_step',
                                     'original_files.analysis_step_version.analysis_step.pipelines',
                                     'target',
+                                    'award',
                                     'replicates'])
 def audit_experiment_missing_processed_files(value, system):
-    alignment_files = scan_files_for_file_format_output_type(value['original_files'],
+    if value.get('award').get('project') != 'ENCODE':
+        return
+    un_alignment_files = scan_files_for_file_format_output_type(value['original_files'],
                                                              'bam', 'alignments')
-    alignment_files.extend(scan_files_for_file_format_output_type(value['original_files'],
+    un_alignment_files.extend(scan_files_for_file_format_output_type(value['original_files'],
                                                                   'bam',
                                                                   'unfiltered alignments'))
-    alignment_files.extend(scan_files_for_file_format_output_type(value['original_files'],
-                                                                  'bam',
-                                                                  'transcrptome alignments'))
+
+    alignment_files = filter_files(un_alignment_files)
 
     # if there are no bam files - we don't know what pipeline, exit
     if len(alignment_files) == 0:
@@ -74,20 +86,25 @@ def audit_experiment_missing_processed_files(value, system):
     if len(pipelines) == 0:  # no pipelines detected
         return
 
-    elif 'Histone ChIP-seq' in pipelines or \
-         'Transcription factor ChIP-seq' or \
-         'ChIP-seq read mapping' in pipelines:
-        # check if control
-        target = value.get('target')
-        if target is None:
-            return
-        if 'control' in target.get('investigated_as'):
-            replicate_structures = create_pipeline_structures(value['original_files'],
-                                                              'encode_chip_control')
-            for failure in check_structures(replicate_structures, False, value):
-                yield failure
+    target = value.get('target')
+    if target is None:
+        return
 
-        elif 'transcription factor' in target.get('investigated_as'):
+    if 'Transcription factor ChIP-seq (unreplicated)' in pipelines:
+        replicate_structures = create_pipeline_structures(
+            value['original_files'],
+            'encode_chip_tf_experiment_unreplicated')
+        for failure in check_structures(replicate_structures, False, value):
+            yield failure       
+    elif 'Histone ChIP-seq (unreplicated)' in pipelines:
+        replicate_structures = create_pipeline_structures(
+            value['original_files'],
+            'encode_chip_histone_experiment_unreplicated')
+        for failure in check_structures(replicate_structures, False, value):
+            yield failure     
+    elif 'Histone ChIP-seq' in pipelines or \
+         'Transcription factor ChIP-seq' in pipelines:
+        if 'transcription factor' in target.get('investigated_as'):
             replicate_structures = create_pipeline_structures(value['original_files'],
                                                               'encode_chip_tf')
             for failure in check_structures(replicate_structures, False, value):
@@ -95,6 +112,13 @@ def audit_experiment_missing_processed_files(value, system):
         elif 'histone' in target.get('investigated_as'):
             replicate_structures = create_pipeline_structures(value['original_files'],
                                                               'encode_chip_histone')
+            for failure in check_structures(replicate_structures, False, value):
+                yield failure
+    elif 'ChIP-seq read mapping' in pipelines:
+        # check if control
+        if 'control' in target.get('investigated_as'):
+            replicate_structures = create_pipeline_structures(value['original_files'],
+                                                              'encode_chip_control')
             for failure in check_structures(replicate_structures, False, value):
                 yield failure
 
