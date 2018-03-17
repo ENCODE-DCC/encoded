@@ -117,7 +117,7 @@ def audit_experiment_missing_processed_files(value, system):
         if 'control' in target.get('investigated_as'):
             replicate_structures = create_pipeline_structures(value['original_files'],
                                                               'encode_chip_control')
-            for failure in check_structures(replicate_structures, False, value):
+            for failure in check_structures(replicate_structures, True, value):
                 yield failure
 
 
