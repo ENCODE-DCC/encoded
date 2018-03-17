@@ -2,8 +2,6 @@ from snovault import (
     AuditFailure,
     audit_checker,
 )
-from .gtex_data import gtexDonorsList
-from .standards_data import pipelines_with_read_depth, minimal_read_depth_requirements
 
 
 from .pipeline_structures import (
