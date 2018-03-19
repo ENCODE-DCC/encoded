@@ -41,10 +41,11 @@ def get_bio_replicates(experiment):
 
 def get_assemblies(list_of_files):
     assemblies = set()
-    for f in list_of_files:
+    for f in filter_files(list_of_files):
         if f['status'] not in ['replaced', 'revoked', 'deleted', 'archived'] and \
            f['output_category'] not in ['raw data', 'reference'] and \
-           f.get('assembly') is not None:
+           f.get('assembly') is not None and \
+           f.get('assembly') not in ['mm9', 'mm10-minimal']:
                 assemblies.add(f['assembly'])
     return assemblies
 
@@ -87,38 +88,45 @@ def audit_experiment_missing_processed_files(value, system):
     target = value.get('target')
     if target is None:
         return
-
-    if 'Transcription factor ChIP-seq (unreplicated)' in pipelines:
-        replicate_structures = create_pipeline_structures(
-            value['original_files'],
-            'encode_chip_tf_experiment_unreplicated')
-        for failure in check_structures(replicate_structures, False, value):
-            yield failure       
-    elif 'Histone ChIP-seq (unreplicated)' in pipelines:
-        replicate_structures = create_pipeline_structures(
-            value['original_files'],
-            'encode_chip_histone_experiment_unreplicated')
-        for failure in check_structures(replicate_structures, False, value):
-            yield failure     
-    elif 'Histone ChIP-seq' in pipelines or \
-         'Transcription factor ChIP-seq' in pipelines:
-        if 'transcription factor' in target.get('investigated_as'):
-            replicate_structures = create_pipeline_structures(value['original_files'],
-                                                              'encode_chip_tf')
-            for failure in check_structures(replicate_structures, False, value):
-                yield failure
-        elif 'histone' in target.get('investigated_as'):
-            replicate_structures = create_pipeline_structures(value['original_files'],
-                                                              'encode_chip_histone')
-            for failure in check_structures(replicate_structures, False, value):
-                yield failure
-    elif 'ChIP-seq read mapping' in pipelines:
-        # check if control
-        if 'control' in target.get('investigated_as'):
+    
+    # control
+    if 'control' in target.get('investigated_as'):
+        if 'ChIP-seq read mapping' in pipelines:
+            # check if control
             replicate_structures = create_pipeline_structures(value['original_files'],
                                                               'encode_chip_control')
             for failure in check_structures(replicate_structures, True, value):
+                yield failure       
+    #histone
+    elif 'histone' in target.get('investigated_as'):
+        if 'Histone ChIP-seq (unreplicated)' in pipelines:
+            replicate_structures = create_pipeline_structures(
+                value['original_files'],
+                'encode_chip_histone_experiment_unreplicated')
+            for failure in check_structures(replicate_structures, False, value):
                 yield failure
+        elif  'Histone ChIP-seq' in pipelines:
+            replicate_structures = create_pipeline_structures(
+                value['original_files'],
+                'encode_chip_histone')
+            for failure in check_structures(replicate_structures, False, value):
+                yield failure
+    #tf
+    elif 'transcription factor' in target.get('investigated_as'):
+        if 'Transcription factor ChIP-seq (unreplicated)' in pipelines:
+            replicate_structures = create_pipeline_structures(
+                value['original_files'],
+                'encode_chip_tf_experiment_unreplicated')
+            for failure in check_structures(replicate_structures, False, value):
+                yield failure       
+        elif  'Transcription factor ChIP-seq' in pipelines:
+            replicate_structures = create_pipeline_structures(
+                value['original_files'],
+                'encode_chip_tf')
+            for failure in check_structures(replicate_structures, False, value):
+                yield failure
+
+
 
 
 def check_structures(replicate_structures, control_flag, experiment):
