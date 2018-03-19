@@ -1,8 +1,36 @@
 Changes
 =======
 
-66.0 (unreleased)
-----------------
+67.0 (unreleased)
+-----------------
+01. ENCD-3915 Remove chromedriver lock from Travis (#2174)
+02. ENCD-3892 Update to snovault 1.0.5 (#2173)
+03. ENCD-3809 Add run_types for pacbio and oxford nanopore (#2172)
+04. ENCD-3839 Remove schemas for the deleted objects (#2167)
+05. ENCD-3891 Fix file test for duplicates in derived_from (#2162)
+06. ENCD-3908 Update indexer doc for march 2018 update
+07. ENCD-3913 Update regionsearch MAX_CLAUSES request_timeout
+08. ENCD-3900 Increase demo volume size
+09. ENCD-3756 Remove scorefilter in dnase visuals
+10. ENCD-3907 Adopting UCSC bigNarrowPeak type
+11. ENCD-3260 Refactor visualization
+12. ENCD-3602 Migrate indexers to region and secondary
+13. ENCD-3894 Move NIH cert audit to experiment (#2166)
+14. ENCD-3840 Add link to linkFrom linkTo schema properties (#2168)
+15. ENCD-3899 Fix exp audit trigger on non-encode pipelines (#2170)
+16. ENCD-3604 Update boost to include GM accessions (#2171)
+17. ENCD-3848 Remove immortalize from cell line (#2164)
+18. ENCD-3854 Fix report description column sort error (#2150)
+19. ENCD-3893 Add NIH cert to biosample facets (#2165)
+20. ENCD-3828 Update redacted alignments (#2163)
+21. ENCD-3841 Add collapsing sections on schema pages (#2154)
+22. ENCD-3880 Add Alembic documentation (#2152)
+23. ENCD-3821 Show biosample characterization doc links (#2145)
+24. ENCD-3882 Update DOI preferred resolver url (#2135)
+25. ENCD-3879 Pin Alembic version (#2151)
+
+66.0 (released)
+---------------
 01. ENCD-3878 Update to snovault version 1.0.4 (#2148)
 02. ENCD-3834 Add Alembic framework for Postgres migrations (#2142)
 03. ENCD-3869 Downgrade chromedriver version 2.33 (#2143)
@@ -32,15 +60,15 @@ Changes
     * ENCD-3851 Add max clause es5 updates
 
 65.2 (unreleased)
-----------------
+-----------------
     * Update to snovault 1.0.2 (#2128) -> ENCD-3845
 
 65.1 (unreleased)
-----------------
+-----------------
     * ENCD-3813 Update to snovault 1.0.1 (#2116)
 
 65.0 (unreleased)
-----------------
+-----------------
     1. ENCD-3815 Fix tests for facet aggregation set to 200 (#2109)
     2. ENCD-3795 Fix spelling in histone and idr qm jsons (#2104)
     3. ENCD-3810 Set facet aggregation to 200 in search (#2107)
