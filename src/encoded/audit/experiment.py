@@ -199,13 +199,13 @@ def check_control_read_depth_standards(peaks_file_id,
         detail = detail.format(
             'broad histone mark',
             control_to_target,
-            40,
+            35,
             45)
-        if read_depth >= 40000000 and read_depth < marks['broad']:
-            yield AuditFailure('control low read depth', detail, level='WARNING')
-        elif read_depth >= 5000000 and read_depth < 40000000:
+        if read_depth >= marks['broad']['minimal'] and read_depth < marks['broad']['recommended']:
+                yield AuditFailure('control low read depth', detail, level='WARNING')
+        elif read_depth >= marks['broad']['low'] and read_depth < marks['broad']['minimal']:
             yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
-        elif read_depth < 5000000:
+        elif read_depth < marks['broad']['low']:
             yield AuditFailure('control extremely low read depth', detail, level='ERROR')
     elif 'narrow histone mark' in target_investigated_as:
         detail = detail.format(
@@ -213,11 +213,11 @@ def check_control_read_depth_standards(peaks_file_id,
             control_to_target,
             10,
             20)
-        if read_depth >= 10000000 and read_depth < marks['narrow']:
+        if read_depth >= marks['narrow']['minimal'] and read_depth < marks['narrow']['recommended']:
             yield AuditFailure('control low read depth', detail, level='WARNING')
-        elif read_depth >= 5000000 and read_depth < 10000000:
-            yield AuditFailure('control low read depth', detail, level='NOT_COMPLIANT')
-        elif read_depth < 5000000:
+        elif read_depth >= marks['narrow']['low'] and read_depth < marks['narrow']['minimal']:
+            yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
+        elif read_depth < marks['narrow']['low']:
             yield AuditFailure('control extremely low read depth', detail, level='ERROR')
     else:
         detail = detail.format(
@@ -225,11 +225,11 @@ def check_control_read_depth_standards(peaks_file_id,
             'and investigated as a transcription factor',
             10,
             20)
-        if read_depth >= 10000000 and read_depth < marks['narrow']:
+        if read_depth >= marks['TF']['minimal'] and read_depth < marks['TF']['recommended']:
             yield AuditFailure('control low read depth', detail, level='WARNING')
-        elif read_depth >= 3000000 and read_depth < 10000000:
-            yield AuditFailure('control low read depth', detail, level='NOT_COMPLIANT')
-        elif read_depth < 3000000:
+        elif read_depth >= marks['TF']['low'] and read_depth < marks['TF']['minimal']:
+            yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
+        elif read_depth < marks['TF']['low']:
             yield AuditFailure('control extremely low read depth', detail, level='ERROR')
 
 
