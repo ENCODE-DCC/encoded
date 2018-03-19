@@ -57,162 +57,180 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
         target_name = value['target']['name']
         target_investigated_as = value['target']['investigated_as']
         if target_name not in ['Control-human', 'Control-mouse']:
-            for alignment_file in files_structure.get('alignments').values():
-                # initially was for file award
-                if not alignment_file.get('award') or \
-                    alignment_file.get('award')['rfa'] not in [
-                        'ENCODE3',
-                        'ENCODE4',
-                        'ENCODE2-Mouse',
-                        'ENCODE2',
-                        'ENCODE',
-                        'Roadmap']:
-                    continue
-                if alignment_file.get('lab') not in ['/labs/encode-processing-pipeline/']:
-                    continue
-                derived_from_files = list(
-                    get_derived_from_files_set([alignment_file], files_structure, 'fastq', True))
-                if not derived_from_files:
-                    continue
-                control_bam = get_control_bam(
-                    alignment_file,
-                    'ChIP-seq read mapping',
-                    derived_from_files,
-                    files_structure)
-                if control_bam is not False:
-                    control_depth = get_chip_seq_bam_read_depth(control_bam)
-                    control_target = get_target_name(derived_from_files)
-                    if control_depth is not False and control_target is not False:
-                        yield from check_control_read_depth_standards(
-                            control_bam,
-                            control_depth,
-                            control_target,
-                            True,
-                            target_name,
-                            target_investigated_as)
-    return
+            controls = value.get('possible_controls')
+            if controls:
+                controls_files_structures = {}
+                control_objects = {}
+                for control_experiment in controls:
+                    control_objects[control_experiment.get('@id')] = control_experiment
+                    controls_files_structures[control_experiment.get('@id')] = create_files_mapping(
+                        control_experiment.get('original_files'),
+                        files_structure.get('excluded_types'))
+                for peaks_file in files_structure.get('peaks_files').values():
+                    if not peaks_file.get('award') or \
+                        peaks_file.get('award')['rfa'] not in [
+                                'ENCODE3',
+                                'ENCODE4',
+                                'ENCODE2-Mouse',
+                                'ENCODE2',
+                                'ENCODE',
+                                'Roadmap']:
+                        continue
+                    if peaks_file.get('lab') not in ['/labs/encode-processing-pipeline/']:
+                        continue
+                    bio_reps = peaks_file.get('biological_replicates')
+                    if not bio_reps or len(bio_reps) > 1:
+                        continue
+
+                    derived_from_files = list(get_derived_from_files_set([peaks_file],
+                                                                         files_structure,
+                                                                         'bam',
+                                                                         True))
+                    derived_from_external_bams = [
+                        derived_from for derived_from in
+                        derived_from_files
+                        if (derived_from.get('dataset') != value.get('@id')
+                            and
+                            derived_from.get('dataset') in controls_files_structures
+                            and
+                            check_pipeline('ChIP-seq read mapping',
+                                           derived_from.get('@id'),
+                                           controls_files_structures[derived_from.get('dataset')]))]
+                    control_bam_details = []
+                    cumulative_read_depth = 0
+                    for bam_file in derived_from_external_bams:
 
 
-def check_control_read_depth_standards(value,
+                        control_depth = get_chip_seq_bam_read_depth(bam_file)
+                        control_target = get_control_target_name(
+                            bam_file.get('dataset'),
+                            control_objects)
+                            
+                        if control_target not in ['Control-human', 'Control-mouse']:
+                            detail = (
+                                'Control {} file {} ' +
+                                'has a target {} that is neither ' +
+                                'Control-human nor Control-mouse.').format(
+                                    bam_file['output_type'],
+                                    bam_file['@id'],
+                                    control_target)
+                            yield AuditFailure('inconsistent target of control experiment', detail, level='WARNING')
+                            return
+
+                        if control_depth and control_target:
+                            cumulative_read_depth += control_depth
+                            triple = (
+                                bam_file.get('@id'),
+                                control_depth,
+                                bam_file.get('dataset'))
+                            control_bam_details.append(triple)
+                    yield from check_control_read_depth_standards(
+                        peaks_file.get('@id'),
+                        peaks_file.get('assembly'),
+                        cumulative_read_depth,
+                        control_bam_details,
+                        target_name,
+                        target_investigated_as)
+
+
+def get_control_target_name(control_id, control_objects):
+    control = control_objects.get(control_id)
+    if control and 'target' in control and \
+       'name' in control['target']:
+        return control['target']['name']
+    return False
+
+
+def check_pipeline(pipeline_title, control_file_id, file_structure):
+    control_file = file_structure.get('alignments')[control_file_id]
+    if ('analysis_step_version' in control_file and
+            'analysis_step' in control_file.get('analysis_step_version')):
+        pipelines = control_file.get('analysis_step_version').get('analysis_step').get('pipelines')
+        return pipeline_title in get_pipeline_titles(pipelines)
+    return False
+
+
+def generate_control_bam_details_string(control_bam_details):
+    to_return = ''
+    for (file_id, depth, exp_id) in control_bam_details:
+        to_return += 'file {} from control experiment {} has {} usable fragments,'.format(
+            file_id,
+            exp_id,
+            depth
+        )
+    return to_return[:-1]
+
+
+def check_control_read_depth_standards(peaks_file_id,
+                                       assembly,
                                        read_depth,
-                                       target_name,
-                                       is_control_file,
+                                       control_bam_details,
                                        control_to_target,
                                        target_investigated_as):
     marks = pipelines_with_read_depth['ChIP-seq read mapping']
-    # treat this file as control_bam - raising insufficient control read depth
-    if is_control_file is True:
-        if target_name not in ['Control-human', 'Control-mouse']:
-            detail = ('Control {} file {} ' +
-                     'has a target {} that is neither ' +
-                     'Control-human nor Control-mouse.').format(
-                         value['output_type'],
-                         value['@id'],
-                         target_name)
-            yield AuditFailure('inconsistent target of control experiment', detail, level='WARNING')
-            return
+    if control_to_target == 'empty':
+        return
 
-        if control_to_target == 'empty':
-            return
-
-        # control_to_target in broad_peaks_targets:
-        elif 'broad histone mark' in target_investigated_as:
-            if 'assembly' in value:
-                detail = ('Control {} file {} mapped to {} assembly has {} ' +
-                    'usable fragments. ' +
-                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' +
-                    'histone mark {} ' +
-                    'is 35 million usable fragments, the recommended number of usable ' +
-                    'fragments is > 45 million. (See /data-standards/chip-seq/ )').format(
-                        value['output_type'],
-                        value['@id'],
-                        value['assembly'],
-                        read_depth,
-                        control_to_target
-                    )
-            else:
-                detail = ('Control {} file {} has {} ' +
-                    'usable fragments. ' +
-                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' +
-                    'histone mark {} ' +
-                    'is 35 million usable fragments, the recommended number of usable ' +
-                    'fragments is > 45 million. (See /data-standards/chip-seq/ )').format(
-                        value['output_type'],
-                        value['@id'],
-                        read_depth,
-                        control_to_target
-                    )
-            if read_depth >= marks['broad']['minimal'] and read_depth < marks['broad']['recommended']:
-                yield AuditFailure('control low read depth', detail, level='WARNING')
-            elif read_depth >= marks['broad']['low'] and read_depth < marks['broad']['minimal']:
-                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
-            elif read_depth < marks['broad']['low']:
-                yield AuditFailure('control extremely low read depth', detail, level='ERROR')
-        elif 'narrow histone mark' in target_investigated_as:  # else:
-            if 'assembly' in value:
-                detail = ('Control {} file {} mapped to {} assembly has {} ' +
-                    'usable fragments. ' +
-                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting narrow ' +
-                    'histone mark {} ' +
-                    'is 10 million usable fragments, the recommended number of usable ' +
-                    'fragments is > 20 million. (See /data-standards/chip-seq/ )').format(
-                        value['output_type'],
-                        value['@id'],
-                        value['assembly'],
-                        read_depth,
-                        control_to_target
-                    )
-            else:
-                detail = ('Control {} file {} has {} ' +
-                    'usable fragments. ' +
-                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting narrow ' +
-                    'histone mark {} ' +
-                    'is 10 million usable fragments, the recommended number of usable ' +
-                    'fragments is > 20 million. (See /data-standards/chip-seq/ )').format(
-                        value['output_type'],
-                        value['@id'],
-                        read_depth,
-                        control_to_target                       
-                    )
-            if read_depth >= marks['narrow']['minimal'] and read_depth < marks['narrow']['recommended']:
-                yield AuditFailure('control low read depth', detail, level='WARNING')
-            elif read_depth >= marks['narrow']['low'] and read_depth < marks['narrow']['minimal']:
-                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
-            elif read_depth < marks['narrow']['low']:
-                yield AuditFailure('control extremely low read depth', detail, level='ERROR')
-        else:
-            if 'assembly' in value:
-                detail = ('Control {} file {} mapped to {} assembly has {} ' +
-                    'usable fragments. ' +
-                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting ' +
-                    '{} and investigated as a transcription factor ' +
-                    'is 10 million usable fragments, the recommended number of usable ' +
-                    'fragments is > 20 million. (See /data-standards/chip-seq/ )').format(
-                        value['output_type'],
-                        value['@id'],
-                        value['assembly'],
-                        read_depth,
-                        control_to_target
-                    )
-            else:
-                detail = ('Control {} file {} has {} ' +
-                    'usable fragments. ' +
-                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting ' +
-                    '{} and investigated as a transcription factor ' +
-                    'is 10 million usable fragments, the recommended number of usable ' +
-                    'fragments is > 20 million. (See /data-standards/chip-seq/ )').format(
-                        value['output_type'],
-                        value['@id'],
-                        read_depth,
-                        control_to_target
-                    )
-            if read_depth >= marks['TF']['minimal'] and read_depth < marks['TF']['recommended']:
-                yield AuditFailure('control low read depth', detail, level='WARNING')
-            elif read_depth >= marks['TF']['low'] and read_depth < marks['TF']['minimal']:
-                yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
-            elif read_depth < marks['TF']['low']:
-                yield AuditFailure('control extremely low read depth', detail, level='ERROR')
-    return
+    if not control_bam_details:
+        detail = ('The peaks file {} produced by ENCODE uniformly processing '
+                  'ChIP-seq pipeline has no control alignments specified.').format(
+                      peaks_file_id
+                  )
+        yield AuditFailure('missing control alignments', detail, level='ERROR')
+        return
+    control_details = generate_control_bam_details_string(control_bam_details)
+    prefix = ('Control alignment files ({}) '
+              'have in aggregate {} usable fragments. ').format(
+                  control_details,
+                  read_depth)
+    if assembly:
+        prefix = ('Control alignment files ({}) '
+                  'mapped to {} assembly have in aggregate {} '
+                  'usable fragments. ').format(
+                      control_details,
+                      assembly,
+                      read_depth)
+    detail = prefix + (
+        'The minimum ENCODE standard for a control of ChIP-seq assays '
+        'targeting {} {} is {} million usable fragments, '
+        'the recommended number of usable fragments is > {} million. '
+        '(See /data-standards/chip-seq/ )')
+    if 'broad histone mark' in target_investigated_as:
+        detail = detail.format(
+            'broad histone mark',
+            control_to_target,
+            40,
+            45)
+        if read_depth >= 40000000 and read_depth < marks['broad']:
+            yield AuditFailure('control low read depth', detail, level='WARNING')
+        elif read_depth >= 5000000 and read_depth < 40000000:
+            yield AuditFailure('control insufficient read depth', detail, level='NOT_COMPLIANT')
+        elif read_depth < 5000000:
+            yield AuditFailure('control extremely low read depth', detail, level='ERROR')
+    elif 'narrow histone mark' in target_investigated_as:
+        detail = detail.format(
+            'narrow histone mark',
+            control_to_target,
+            10,
+            20)
+        if read_depth >= 10000000 and read_depth < marks['narrow']:
+            yield AuditFailure('control low read depth', detail, level='WARNING')
+        elif read_depth >= 5000000 and read_depth < 10000000:
+            yield AuditFailure('control low read depth', detail, level='NOT_COMPLIANT')
+        elif read_depth < 5000000:
+            yield AuditFailure('control extremely low read depth', detail, level='ERROR')
+    else:
+        detail = detail.format(
+            control_to_target,
+            'and investigated as a transcription factor',
+            10,
+            20)
+        if read_depth >= 10000000 and read_depth < marks['narrow']:
+            yield AuditFailure('control low read depth', detail, level='WARNING')
+        elif read_depth >= 3000000 and read_depth < 10000000:
+            yield AuditFailure('control low read depth', detail, level='NOT_COMPLIANT')
+        elif read_depth < 3000000:
+            yield AuditFailure('control extremely low read depth', detail, level='ERROR')
 
 
 def audit_experiment_mixed_libraries(value, system, excluded_types):
@@ -3562,10 +3580,14 @@ function_dispatcher_with_files = {
         'possible_controls',
         'possible_controls.original_files',
         'possible_controls.original_files.platform',
+        'possible_controls.original_files.analysis_step_version',
+        'possible_controls.original_files.analysis_step_version.analysis_step',
+        'possible_controls.original_files.analysis_step_version.analysis_step.pipelines',
         'possible_controls.target',
         'possible_controls.replicates',
         'possible_controls.replicates.antibody',
         'contributing_files',
+        'contributing_files.quality_metrics',
         'original_files',
         'original_files.award',
         'original_files.quality_metrics',
@@ -3575,15 +3597,7 @@ function_dispatcher_with_files = {
         'original_files.analysis_step_version.analysis_step',
         'original_files.analysis_step_version.analysis_step.pipelines',
         'original_files.analysis_step_version.software_versions',
-        'original_files.analysis_step_version.software_versions.software',
-        'original_files.controlled_by',
-        'original_files.controlled_by.dataset',
-        'original_files.controlled_by.dataset.target',
-        'original_files.controlled_by.dataset.original_files',
-        'original_files.controlled_by.dataset.original_files.quality_metrics',
-        'original_files.controlled_by.dataset.original_files.analysis_step_version',
-        'original_files.controlled_by.dataset.original_files.analysis_step_version.analysis_step',
-        'original_files.controlled_by.dataset.original_files.analysis_step_version.analysis_step.pipelines',
+        'original_files.analysis_step_version.software_versions.software'
     ])
 def audit_experiment(value, system):
     excluded_files = ['revoked', 'archived']
