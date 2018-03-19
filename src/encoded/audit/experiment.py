@@ -52,7 +52,9 @@ def get_assemblies(list_of_files):
 def filter_files(list_of_files):
     to_return = []
     for f in list_of_files:
-        if f.get('lab') == '/labs/encode-processing-pipeline/':
+        if f.get('lab') == '/labs/encode-processing-pipeline/' and \
+            ((f.get('assembly') is None) or 
+             (f.get('assembly') is not None and f.get('assembly') not in ['mm9', 'mm10-minimal'])):
             to_return.append(f)       
     return to_return
 
@@ -67,7 +69,7 @@ def filter_files(list_of_files):
                                     'award',
                                     'replicates'])
 def audit_experiment_missing_processed_files(value, system):
-    if value.get('award').get('project') != 'ENCODE':
+    if value.get('award').get('project') != 'ENCODE' and value.get('assay_term_name') != 'ChIP-seq':
         return
     un_alignment_files = scan_files_for_file_format_output_type(value['original_files'],
                                                              'bam', 'alignments')
@@ -214,7 +216,14 @@ def create_pipeline_structures(files_to_scan, structure_type):
         'encode_chip_histone_pooled': encode_chip_histone_experiment_pooled,
         'encode_chip_tf_pooled': encode_chip_tf_experiment_pooled,
         'encode_chip_replicate': encode_chip_experiment_replicate,
+        'encode_chip_tf_experiment_unreplicated': encode_chip_tf_experiment_unreplicated,
+        'encode_chip_histone_experiment_unreplicated': encode_chip_histone_experiment_unreplicated
     }
+
+
+   
+   
+
     structures_to_return = {}
     replicates_set = set()
     for f in files_to_scan:
