@@ -99,8 +99,6 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                     control_bam_details = []
                     cumulative_read_depth = 0
                     for bam_file in derived_from_external_bams:
-
-
                         control_depth = get_chip_seq_bam_read_depth(bam_file)
                         control_target = get_control_target_name(
                             bam_file.get('dataset'),
@@ -116,7 +114,6 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                                     control_target)
                             yield AuditFailure('inconsistent target of control experiment', detail, level='WARNING')
                             return
-
                         if control_depth and control_target:
                             cumulative_read_depth += control_depth
                             triple = (
@@ -3213,18 +3210,13 @@ def get_metrics(files_list, metric_type, desired_assembly=None, desired_annotati
 def get_chip_seq_bam_read_depth(bam_file):
     if bam_file['status'] in ['deleted', 'replaced']:
         return False
-
     if bam_file['file_format'] != 'bam' or \
         bam_file['output_type'] not in ['alignments', 'redacted alignments']:
         return False
-
     # Check to see if bam is from ENCODE or modERN pipelines
     if bam_file['lab'] not in ['/labs/encode-processing-pipeline/', '/labs/kevin-white/']:
         return False
-
-    if has_pipelines(bam_file) is False:
-        return False
-
+    
     quality_metrics = bam_file.get('quality_metrics')
 
     if (quality_metrics is None) or (quality_metrics == []):
