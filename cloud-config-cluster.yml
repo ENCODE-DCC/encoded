@@ -208,9 +208,9 @@ runcmd:
 - if test "%(REGION_INDEX)s" = "False"
 - then
 -    sudo -u encoded cp /srv/encoded/etc/encoded-apache.conf /srv/encoded/etc/encoded-apache.conf.original
--    sudo -u encoded grep -v encoded\-regionindexer /srv/encoded/etc/encoded-apache.conf.original | grep -v _region > /srv/encoded/etc/work/encoded-apache.conf
+-    sudo -u encoded sh -c "grep -v encoded\-regionindexer /srv/encoded/etc/encoded-apache.conf.original | grep -v _region > /srv/encoded/etc/encoded-apache.conf"
 -    sudo -u encoded cp /srv/encoded/base.ini /srv/encoded/base.ini.original
--    sudo -u encoded sed 's/vis_indexer, region_indexer/vis_indexer/' /srv/encoded/base.ini.original > /srv/encoded/base.ini
+-    sudo -u encoded sh -c "sed 's/vis_indexer, region_indexer/vis_indexer/' /srv/encoded/base.ini.original > /srv/encoded/base.ini"
 - fi
 - ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
 - ln -s /srv/encoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
