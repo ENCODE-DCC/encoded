@@ -1009,5 +1009,21 @@
             "2f33a486-e3d9-4633-8682-a363b48ba67d",
             "b9264c83-2222-4678-a82f-4915af941fa4"
         ]
+    },
+    {
+        "accession": "ENCBS175SCS",
+        "award": "UM1HG009390",
+        "biosample_term_id": "CL:0002322",
+        "biosample_term_name": "embryonic stem cell",
+        "biosample_type": "single cell",
+        "description": "Undifferentiated mouse embryonic stem single cell",
+        "donor": "ENCDO015AAA",
+        "lab": "john-stamatoyannopoulos",
+        "model_organism_health_status": "unknown",
+        "mouse_life_stage": "embryonic",
+        "organism": "mouse",
+        "source": "dana-levasseur",
+        "submitted_by": "blandit.orci@conubia.magna",
+        "uuid": "66df3a6b-ad36-4ea9-954f-06ecf41bb6ad"
     }
 ]
