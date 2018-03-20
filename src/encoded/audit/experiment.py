@@ -213,16 +213,12 @@ def is_single_replicate(replicates_string):
 def create_pipeline_structures(files_to_scan, structure_type):
     structures_mapping = {
         'encode_chip_control': encode_chip_control,
-        'encode_chip_histone_pooled': encode_chip_histone_experiment_pooled,
-        'encode_chip_tf_pooled': encode_chip_tf_experiment_pooled,
+        'encode_chip_histone': encode_chip_histone_experiment_pooled,
+        'encode_chip_tf': encode_chip_tf_experiment_pooled,
         'encode_chip_replicate': encode_chip_experiment_replicate,
         'encode_chip_tf_experiment_unreplicated': encode_chip_tf_experiment_unreplicated,
         'encode_chip_histone_experiment_unreplicated': encode_chip_histone_experiment_unreplicated
     }
-
-
-   
-   
 
     structures_to_return = {}
     replicates_set = set()
@@ -244,14 +240,20 @@ def create_pipeline_structures(files_to_scan, structure_type):
                                 structures_mapping['encode_chip_replicate']()
                         else:
                             structures_to_return[(bio_rep_num, assembly)] = \
-                                structures_mapping['encode_chip_histone_pooled']()
+                                structures_mapping['encode_chip_histone']()
                     elif structure_type == 'encode_chip_tf':
                         if is_single_replicate(str(bio_rep_num)) is True:
                             structures_to_return[(bio_rep_num, assembly)] = \
                                 structures_mapping['encode_chip_replicate']()
                         else:
                             structures_to_return[(bio_rep_num, assembly)] = \
-                                structures_mapping['encode_chip_tf_pooled']()
+                                structures_mapping['encode_chip_tf']()
+                    elif structure_type == 'encode_chip_histone_experiment_unreplicated':
+                        structures_to_return[(bio_rep_num, assembly)] = \
+                                structures_mapping['encode_chip_histone_experiment_unreplicated']()
+                    elif structure_type == 'encode_chip_tf_experiment_unreplicated':
+                        structures_to_return[(bio_rep_num, assembly)] = \
+                                structures_mapping['encode_chip_tf_experiment_unreplicated']()
 
                 structures_to_return[(bio_rep_num, assembly)].update_fields(f)
             else:
