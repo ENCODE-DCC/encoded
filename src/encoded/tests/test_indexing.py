@@ -87,6 +87,7 @@ def test_indexing_workbook(testapp, indexer_testapp):
     res = indexer_testapp.post_json('/index', {'record': True})
     assert res.json['indexed'] == 1
 
+    import time
     from ..loadxl import load_all
     from pkg_resources import resource_filename
     inserts = resource_filename('encoded', 'tests/data/inserts/')
@@ -122,6 +123,7 @@ def test_indexing_workbook(testapp, indexer_testapp):
     assert res.json['tkRNA']['vis_id'] == 'ENCSR000AEN_hg19'
 
     # region indexer contents via region_search
+    time.sleep(1)  # For some reason this fails without some winks
     res = testapp.get('/region-search/?region=chr13%3A61800000-78800000&genome=GRCh37')
     assert res.json['total'] == 1
     assert res.json['visualize_batch']['hg19']['UCSC']

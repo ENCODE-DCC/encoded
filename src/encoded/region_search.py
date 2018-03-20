@@ -407,7 +407,6 @@ def region_search(context, request):
                 'embedded.@id': dataset_ids
             }
         })
-        #        'embedded.file.uuids': file_uuids
         used_filters = set_filters(request, query, result)
         used_filters['@id'] = dataset_ids
         query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Experiment'])
