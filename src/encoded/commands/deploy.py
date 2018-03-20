@@ -271,7 +271,8 @@ def get_user_data(commit, config_file, data_insert, profile_name):
 def run(
     wale_s3_prefix, image_id, instance_type, elasticsearch, spot_instance,
     spot_price, cluster_size, cluster_name, check_price, branch=None,
-    name=None, role='demo', profile_name=None, teardown_cluster=None
+    name=None, role='demo', profile_name=None, teardown_cluster=None, volume_size=None,
+    region_index=None
 ):
     if branch is None:
         branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode('utf-8').strip()
@@ -314,6 +315,11 @@ def run(
         }
         if cluster_name:
             data_insert['CLUSTER_NAME'] = cluster_name
+            data_insert['REGION_INDEX'] = "True"  # clustered demos have region_index by default
+        else:
+            data_insert['REGION_INDEX'] = "False"  # unclustered demos have no region_index by defalt
+        if region_index is not None:
+            data_insert['REGION_INDEX'] = region_index
         user_data = get_user_data(commit, config_file, data_insert, profile_name)
         security_groups = ['ssh-http-https']
         iam_role = 'encoded-instance'
@@ -335,6 +341,11 @@ def run(
         ec2_spot = boto3.client('ec2')
         spot_instance_price_check(ec2_spot, instance_type)
         exit()
+
+    if volume_size is not None:
+        for device in BDM:
+            if 'Ebs' in device and 'VolumeSize' in device['Ebs']:
+                device['Ebs']['VolumeSize'] = int(volume_size)
 
     if spot_instance:
         print("spot_instance check worked")
@@ -414,6 +425,13 @@ def main():
     parser.add_argument('--cluster-size', default=2, help="Elasticsearch cluster size")
     parser.add_argument('--teardown-cluster', default=None, help="Takes down all the cluster launched from the branch")
     parser.add_argument('--cluster-name', default=None, help="Name of the cluster")
+    parser.add_argument('--volume-size', default=None, help="Size of disk")
+    parser.add_argument(
+        '--region-index', action='store_const', default=None, const='True', dest='region_index', \
+        help="Unclustered demos will have no region index by default")
+    parser.add_argument(
+        '--no-region-index', action='store_const', default=None, const='False', dest='region_index', \
+        help="Clustered instances will make a region index by default")
     args = parser.parse_args()
 
     return run(**vars(args))
