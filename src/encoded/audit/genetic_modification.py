@@ -15,7 +15,7 @@ def audit_tagging_modification(value, system):
         yield AuditFailure(
             'missing genetic modification characterization',
             detail,
-            level='INTERNAL_ACTION')
+            level='WARNING')
         return
 
 
