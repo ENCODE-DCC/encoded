@@ -535,6 +535,19 @@ class MatchedSet(Series):
 
 
 @collection(
+    name='aggregate-series',
+    unique_key='accession',
+    properties={
+        'title': "Aggregate series",
+        'description': 'A series that is an aggregate of related assays.',
+    })
+class AggregateSeries(Series):
+    item_type = 'aggregate_series'
+    schema = load_schema('encoded:schemas/aggregate_series.json')
+    embedded = Series.embedded
+
+
+@collection(
     name='treatment-time-series',
     unique_key='accession',
     properties={
