@@ -62,3 +62,10 @@ def pipeline_7_8(value, system):
         value['assay_term_names'] = [value.get('assay_term_name')]
         del value['assay_term_name']
     return
+
+
+@upgrade_step('pipeline', '8', '9')
+def pipeline_8_9(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3773
+    if value.get('status') == 'active':
+        value['status'] = 'released'
