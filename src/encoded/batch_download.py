@@ -10,7 +10,7 @@ from urllib.parse import (
     urlencode,
 )
 from .search import iter_search_results
-from .search import list_visible_columns_for_schemas
+from .helper import list_visible_columns_for_schemas
 import csv
 import io
 import json

@@ -73,7 +73,7 @@ class FakeRequest(object):
 
 
 def test_set_filters():
-    from encoded.search import set_filters
+    from encoded.helper import set_filters
 
     request = FakeRequest((
         ('field1', 'value1'),
@@ -122,7 +122,7 @@ def test_set_filters():
 
 
 def test_set_filters_searchTerm():
-    from encoded.search import set_filters
+    from encoded.helper import set_filters
 
     request = FakeRequest((
         ('searchTerm', 'value1'),
@@ -168,7 +168,7 @@ def test_set_filters_searchTerm():
     'type', 'limit', 'mode',
     'format', 'frame', 'datastore', 'field', 'sort', 'from', 'referrer'])
 def test_set_filters_reserved_params(param):
-    from encoded.search import set_filters
+    from encoded.helper import set_filters
 
     request = FakeRequest((
         (param, 'foo'),
@@ -205,7 +205,7 @@ def test_set_filters_reserved_params(param):
 
 
 def test_set_filters_multivalued():
-    from encoded.search import set_filters
+    from encoded.helper import set_filters
 
     request = FakeRequest((
         ('field1', 'value1'),
@@ -260,7 +260,7 @@ def test_set_filters_multivalued():
 
 
 def test_set_filters_negated():
-    from encoded.search import set_filters
+    from encoded.helper import set_filters
 
     request = FakeRequest((
         ('field1!', 'value1'),
@@ -309,7 +309,7 @@ def test_set_filters_negated():
 
 
 def test_set_filters_audit():
-    from encoded.search import set_filters
+    from encoded.helper import set_filters
 
     request = FakeRequest((
         ('audit.foo', 'value1'),
@@ -358,7 +358,7 @@ def test_set_filters_audit():
 
 
 def test_set_filters_exists_missing():
-    from encoded.search import set_filters
+    from encoded.helper import set_filters
 
     request = FakeRequest((
         ('field1', '*'),
@@ -426,7 +426,7 @@ def test_set_filters_exists_missing():
 
 def test_set_facets():
     from collections import OrderedDict
-    from encoded.search import set_facets
+    from encoded.helper import set_facets
     facets = [
         ('type', {'title': 'Type'}),
         ('audit.foo', {'title': 'Audit'}),
@@ -512,7 +512,7 @@ def test_set_facets():
 
 def test_set_facets_negated_filter():
     from collections import OrderedDict
-    from encoded.search import set_facets
+    from encoded.helper import set_facets
     facets = [
         ('facet1', {'title': 'Facet 1'}),
     ]
@@ -551,7 +551,7 @@ def test_set_facets_negated_filter():
 
 def test_set_facets_type_exists():
     from collections import OrderedDict
-    from encoded.search import set_facets
+    from encoded.helper import set_facets
     facets = [
         ('field1', {'title': 'Facet 1', 'type': 'exists'}),
         ('field2', {'title': 'Facet 2', 'type': 'exists'}),
@@ -638,7 +638,7 @@ def test_set_facets_type_exists():
 
 
 def test_format_facets():
-    from encoded.search import format_facets
+    from encoded.helper import format_facets
     es_result = {
         'aggregations': {
             'field1': {
@@ -687,13 +687,13 @@ def test_format_facets():
 
 
 def test_format_facets_no_aggregations():
-    from encoded.search import format_facets
+    from encoded.helper import format_facets
     result = format_facets({}, [], [], [], 0, [])
     assert result == []
 
 
 def test_format_facets_skips_zero_bucket_facets():
-    from encoded.search import format_facets
+    from encoded.helper import format_facets
     es_result = {
         'aggregations': {
             'field1': {
@@ -723,7 +723,7 @@ def test_format_facets_skips_zero_bucket_facets():
 
 
 def test_format_facets_adds_pseudo_facet_for_extra_filters():
-    from encoded.search import format_facets
+    from encoded.helper import format_facets
     es_result = {
         'aggregations': {},
     }
