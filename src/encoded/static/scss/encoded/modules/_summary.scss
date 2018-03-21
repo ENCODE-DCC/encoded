@@ -21,7 +21,11 @@
 
 // Contains the vertical facets and the charts.
 .summary-content {
-    display: flex;
+    display: block;
+
+    @media screen and (min-width: $screen-md-min) {
+        display: flex;
+    }
 
     @media print {
         display: block;
@@ -29,7 +33,9 @@
     }
 
     @at-root #{&}__facets-vertical {
-        flex: 0 0 20%;
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 0 20%;
+        }
 
         @media print {
             display: none;
@@ -38,8 +44,10 @@
 
     // Contains all the charts.
     @at-root #{&}__data {
-        flex: 0 1 80%;
-        min-width: 0; // https://github.com/chartjs/Chart.js/issues/4156#issuecomment-345773111
+        @media screen and (min-width: $screen-md-min) {
+            flex: 0 1 80%;
+            min-width: 0; // https://github.com/chartjs/Chart.js/issues/4156#issuecomment-345773111
+        }
 
         @media print {
             display: block;
@@ -49,11 +57,27 @@
 
     // Contains side-by-side charts.
     @at-root #{&}__snapshot {
-        display: flex;
+        display: block;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        @media screen and (min-width: $screen-md-min) {
+            flex-wrap: nowrap;
+        }
 
         & .award-charts__chart {
-            flex: 0 0 33.33%;
-            width: 33.33%;
+            @media screen and (min-width: $screen-sm-min) {
+                flex: 0 0 50%;
+                width: 50%;
+            }
+
+            @media screen and (min-width: $screen-md-min) {
+                flex: 0 0 33.33%;
+                width: 33.33%;
+            }
         }
     }
 
