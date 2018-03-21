@@ -34,9 +34,11 @@ def scan_files_for_file_format_output_type(files_to_scan, f_format, f_output_typ
 
 def get_bio_replicates(experiment):
     bio_reps = set()
-    for rep in experiment['replicates']:
-        if rep['status'] not in ['deleted']:
-            bio_reps.add(str(rep['biological_replicate_number']))
+    for f in experiment['original_files']:
+        if f['status'] not in ['replaced', 'revoked', 'deleted', 'archived'] and f['file_format'] == 'fastq' and f.get('replicate'):
+            rep = f.get('replicate')
+            if rep['status'] not in ['deleted']:
+                bio_reps.add(str(rep['biological_replicate_number']))
     return bio_reps
 
 def get_assemblies(list_of_files):
@@ -45,7 +47,7 @@ def get_assemblies(list_of_files):
         if f['status'] not in ['replaced', 'revoked', 'deleted', 'archived'] and \
            f['output_category'] not in ['raw data', 'reference'] and \
            f.get('assembly') is not None and \
-           f.get('assembly') not in ['mm9', 'mm10-minimal']:
+           f.get('assembly') not in ['mm9', 'mm10-minimal', 'GRCh38-minimal']:
                 assemblies.add(f['assembly'])
     return assemblies
 
@@ -54,7 +56,7 @@ def filter_files(list_of_files):
     for f in list_of_files:
         if f.get('lab') == '/labs/encode-processing-pipeline/' and \
             ((f.get('assembly') is None) or 
-             (f.get('assembly') is not None and f.get('assembly') not in ['mm9', 'mm10-minimal'])):
+             (f.get('assembly') is not None and f.get('assembly') not in ['mm9', 'mm10-minimal', 'GRCh38-minimal'])):
             to_return.append(f)       
     return to_return
 
@@ -76,7 +78,8 @@ def audit_experiment_missing_processed_files(value, system):
     un_alignment_files.extend(scan_files_for_file_format_output_type(value['original_files'],
                                                                   'bam',
                                                                   'unfiltered alignments'))
-
+    un_alignment_files.extend(scan_files_for_file_format_output_type(value['original_files'],
+                                                             'bed', 'peaks'))
     alignment_files = filter_files(un_alignment_files)
 
     # if there are no bam files - we don't know what pipeline, exit
@@ -90,6 +93,7 @@ def audit_experiment_missing_processed_files(value, system):
     target = value.get('target')
     if target is None:
         return
+    
     
     # control
     if 'control' in target.get('investigated_as'):
@@ -189,7 +193,7 @@ def check_structures(replicate_structures, control_flag, experiment):
                          'files for {} assembly.'.format(assembly)
                 yield AuditFailure('mismatched pipeline files', detail, level='INTERNAL_ACTION')
 
-    if pooled_quantity < (len(assemblies)) and control_flag is False:
+    if pooled_quantity < (len(assemblies)) and control_flag is False and not is_single_replicate(replicates_string):
         detail = 'Experiment {} '.format(experiment['@id']) + \
                  'does not contain all of the inter-replicate comparison anlaysis files. ' + \
                  'Analysis was performed using {} assemblies, '.format(assemblies) + \
