@@ -138,7 +138,7 @@ class SummaryStatusChart extends React.Component {
         // Generate colors to use for each replicate type.
         const colors = globals.replicateTypeColors.colorList(globals.replicateTypeList);
 
-        createBarChart(this.chartId, data, colors, globals.replicateTypeList, this.props.linkUri, (uri) => { this.context.navigate(uri); })
+        createBarChart(this.chartId, data, colors, globals.replicateTypeList, 'Replication', this.props.linkUri, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;

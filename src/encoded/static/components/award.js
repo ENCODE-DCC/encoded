@@ -180,7 +180,7 @@ function createDoughnutChart(chartId, values, labels, colors, baseSearchUri, nav
 //             because this function can't access the navigation function.
  * @return {promise}
  */
-export function createBarChart(chartId, data, colors, replicateLabels, baseSearchUri, navigate) {
+export function createBarChart(chartId, data, colors, replicateLabels, legendTitle, baseSearchUri, navigate) {
     return new Promise((resolve) => {
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
@@ -252,6 +252,9 @@ export function createBarChart(chartId, data, colors, replicateLabels, baseSearc
                             dataColors.push(chartInstance.data.datasets[i].backgroundColor);
                         }
                         const text = [];
+                        if (legendTitle) {
+                            text.push(`<div class="legend-title">${legendTitle}</div>`);
+                        }
                         text.push('<ul>');
                         for (let i = 0; i < LegendLabels.length; i += 1) {
                             if (LegendLabels[i]) {
@@ -1078,7 +1081,7 @@ class StatusExperimentChart extends React.Component {
         const replicatelabels = ['unreplicated', 'isogenic', 'anisogenic'];
         const colors = replicatelabels.map((label, i) => statusColorList[i % statusColorList.length]);
 
-        createBarChart(chartId, data, colors, replicatelabels, `${this.props.linkUri}${this.props.award ? this.props.award.name : ''}`, (uri) => { this.context.navigate(uri); })
+        createBarChart(chartId, data, colors, replicatelabels, 'Replication', `${this.props.linkUri}${this.props.award ? this.props.award.name : ''}`, (uri) => { this.context.navigate(uri); })
             .then((chartInstance) => {
                 // Save the created chart instance.
                 this.chart = chartInstance;
