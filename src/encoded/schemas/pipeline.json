@@ -126,11 +126,12 @@
             "type": "string",
             "default": "in progress",
             "enum": [
-                "active",
+                "released",
                 "archived",
                 "deleted",
                 "in progress",
-                "replaced"
+                "replaced",
+                "revoked"
             ]
         },
         "title": {
