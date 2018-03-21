@@ -47,7 +47,8 @@ class basic_experiment(object):
         return self.orphan_files
 
     def update_fields(self, processed_file):
-        if processed_file.get('lab') == '/labs/encode-processing-pipeline/':
+        if processed_file.get('lab') == '/labs/encode-processing-pipeline/' and \
+            processed_file.get('assembly') and processed_file.get('assembly') not in ['mm9', 'mm10-minimal', 'GRCh38-minimal']:
             if len(processed_file.get('biological_replicates')) == 0:
                 self.orphan_files.append(processed_file.get('accession'))
                 self.orphan_files_flag = True
@@ -71,7 +72,8 @@ class encode_chip_control(basic_experiment):
         self.file_types[('bam', 'unfiltered alignments')] = None
 
     def update_fields(self, processed_file):
-        if processed_file.get('lab') == '/labs/encode-processing-pipeline/':
+        if processed_file.get('lab') == '/labs/encode-processing-pipeline/' and \
+            processed_file.get('assembly') and processed_file.get('assembly') not in ['mm9', 'mm10-minimal', 'GRCh38-minimal']:
             if len(processed_file.get('biological_replicates')) == 0:
                 self.orphan_files.append(processed_file.get('accession'))
                 self.orphan_files_flag = True
