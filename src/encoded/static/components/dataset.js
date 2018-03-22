@@ -1268,7 +1268,7 @@ const seriesComponents = {
     ReplicationTimingSeries: { title: 'replication timing series', table: replicationTimingSeriesTableColumns },
     TreatmentConcentrationSeries: { title: 'treatment concentration series', table: treatmentSeriesTableColumns },
     TreatmentTimeSeries: { title: 'treatment time series', table: treatmentSeriesTableColumns },
-    AggregateSeries: { title: 'aggregate series', table: taggregateSeriesTableColumns },
+    AggregateSeries: { title: 'aggregate series', table: aggregateSeriesTableColumns },
 };
 
 export class SeriesComponent extends React.Component {
