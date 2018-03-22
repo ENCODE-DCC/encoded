@@ -1824,7 +1824,7 @@ export const ExperimentDate = (props) => {
         accumulatedDataSubmitted = createDataset(deduplicatedsubmitted, accumulatorsubmitted, cumulativedatasetSubmitted);
 
         // Adjust the submitted counts by the released counts so we can stack the chart.
-        accumulatedDataSubmitted = accumulatedDataSubmitted.map((count, i) => Math.max(count - accumulatedDataReleased[i], 0));
+        accumulatedDataSubmitted = accumulatedDataReleased.map((count, i) => Math.max((accumulatedDataSubmitted[i - 1] || 0) - count, 0));
     }
 
     return (
