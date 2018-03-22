@@ -1,5 +1,9 @@
 ## Changelog for treatment_time_series.json
 
+### Schema version 17
+
+* Remove *ready for review* as status in dataset and add import_items permission.
+
 ### Schema version 13
 
 * Remove *proposed* from status enum (dataset mixin).
