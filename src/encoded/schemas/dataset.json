@@ -13,7 +13,6 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
