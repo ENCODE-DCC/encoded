@@ -166,6 +166,18 @@ def experiment_15(root, experiment):
 
 
 @pytest.fixture
+def experiment_16(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '16',
+        'biosample_type': 'immortalized cell line',
+        'status': 'ready for review'
+    })
+    return properties
+
+
+@pytest.fixture
 def annotation_16(award, lab):
     return {
         'award': award['@id'],
@@ -398,3 +410,10 @@ def test_upgrade_annotation_16_to_17(upgrader, annotation_16):
     assert value['schema_version'] == '17'
     assert value['biosample_type'] == 'cell line'
 
+
+def test_upgrade_experiment_16_17(upgrader, experiment_16):
+    assert experiment_16['schema_version'] == '16'
+    assert experiment_16['status'] == 'ready for review'
+    value = upgrader.upgrade('experiment', experiment_16, current_version='16', target_version='17')
+    assert value['schema_version'] == '17'
+    assert value['status'] == 'submitted'
