@@ -299,3 +299,7 @@ def test_wronggroup_post_qc_metric(remc_member_testapp, step_run, file, remc_lab
         'award': award['@id']
     }
     remc_member_testapp.post_json('/generic-quality-metrics', item, status=403)
+
+
+def test_experiment_submitter_no_edit_status(submitter_testapp, lab, award, experiment):
+    submitter_testapp.patch_json(experiment['@id'], {'status': 'submitted'}, status=422)
