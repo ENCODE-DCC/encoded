@@ -181,10 +181,14 @@ def encoded_regionable_datasets(request, restrict_to_assays=[]):
     return [ result['uuid'] for result in results ]
 
 def regulome_regionable_datasets(request):
+<<<<<<< HEAD
     query = '/search/?type=Dataset&field=uuid&limit=all'
     query += '&internal_tags=' + FOR_REGULOME_DB
     for status in REGULOME_ALLOWED_STATUSES:
         query += '&status=' + status
+=======
+    query = '/search/?type=Experiment&field=uuid&status=released&internal_tags=RegulomeDB&limit=all'
+>>>>>>> First pass at regulome scoring.  Had to change the regions residence index to include ChIP target.
     results = request.embed(query)['@graph']
     return [ result['uuid'] for result in results ]
 
@@ -491,11 +495,11 @@ class RegionIndexer(Indexer):
     def candidate_file(self, afile, dataset, dataset_uses):
         '''returns None or a document with file details to save in the residence index'''
         if afile.get('href') is None:
-            return None
+            return (None, None)
 
         if self.test_instance:
             if afile['accession'] not in TESTABLE_FILES:
-                return None
+                return (None, None)
 
         file_status = afile.get('status', 'imagined')
         assembly = afile.get('assembly','unknown')
