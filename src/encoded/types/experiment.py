@@ -426,6 +426,8 @@ class Experiment(Dataset,
                 'biosample_type',
                 'organ_slims',
                 'award.project',
+                'award.rfa',
+                'status',
                 'assembly',
                 'internal_status',
                 'audit_category', # Added for auditmatrix

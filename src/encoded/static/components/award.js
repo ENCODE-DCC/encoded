@@ -1794,6 +1794,7 @@ export const ExperimentDate = (props) => {
         const sortedreleasedTerms = sortTerms(releasedDates);
         const sortedsubmittedTerms = sortTerms(submittedDates);
 
+        // Trim to the earliest non-zero doc_count.
         // Add an object with the most current date to one of the arrays.
         if ((releasedDates && releasedDates.length) && (submittedDates && submittedDates.length)) {
             if (sortedreleasedTerms.length && moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isAfter(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
@@ -1808,8 +1809,10 @@ export const ExperimentDate = (props) => {
         if (award && award.start_date) {
             awardStartDate = moment(award.start_date, 'YYYY-MM-DD').format('YYYY-MM');
         } else {
-            const earliestReleased = sortedreleasedTerms[0].key;
-            const earliestSubmitted = sortedsubmittedTerms[0].key;
+            const releasedIndex = sortedreleasedTerms.findIndex(item => item.doc_count);
+            const submittedIndex = sortedsubmittedTerms.findIndex(item => item.doc_count);
+            const earliestReleased = sortedreleasedTerms[releasedIndex].key;
+            const earliestSubmitted = sortedsubmittedTerms[submittedIndex].key;
             awardStartDate = earliestReleased < earliestSubmitted ? earliestReleased : earliestSubmitted;
         }
         deduplicatedreleased = fillDates(sortedreleasedTerms, deduplicatedreleased, awardStartDate);
@@ -1820,7 +1823,7 @@ export const ExperimentDate = (props) => {
         accumulatedDataReleased = createDataset(deduplicatedreleased, accumulatorreleased, cumulativedatasetReleased);
         accumulatedDataSubmitted = createDataset(deduplicatedsubmitted, accumulatorsubmitted, cumulativedatasetSubmitted);
 
-        // Adjust the submitted counts by the released counts.
+        // Adjust the submitted counts by the released counts so we can stack the chart.
         accumulatedDataSubmitted = accumulatedDataSubmitted.map((count, i) => Math.max(count - accumulatedDataReleased[i], 0));
     }
 
