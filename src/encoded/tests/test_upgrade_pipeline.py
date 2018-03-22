@@ -37,7 +37,7 @@ def pipeline_7(award, lab):
 def pipeline_8(award, lab):
     return {
         'assay_term_names': ['MNase-seq'],
-        'schema_version': '9',
+        'schema_version': '8',
         'status': 'active',
         'title': 'Test pipeline',
         'award': award['uuid'],
@@ -68,4 +68,5 @@ def test_pipeline_upgrade_7_8(upgrader, pipeline_7):
 
 def test_pipeline_upgrade_8_9(upgrader, pipeline_8):
     value = upgrader.upgrade('pipeline', pipeline_8, current_version='8', target_version='9')
+    assert value['schema_version'] == '9'
     assert value.get('status') == 'released'
