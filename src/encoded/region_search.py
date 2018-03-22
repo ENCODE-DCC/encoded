@@ -29,6 +29,7 @@ log = logging.getLogger(__name__)
 
 
 _ENSEMBL_URL = 'http://rest.ensembl.org/'
+_ENSEMBL_URL_GRCH37 = 'http://grch37.rest.ensembl.org/'
 
 _REGION_FIELDS = [
     'embedded.files.uuid',
@@ -69,6 +70,7 @@ _GENOME_TO_ALIAS = {
 
 def includeme(config):
     config.add_route('region-search', '/region-search{slash:/?}')
+    config.add_route('regulome-search', '/regulome-search{slash:/?}')
     config.add_route('suggest', '/suggest{slash:/?}')
     config.scan(__name__)
 
@@ -144,8 +146,10 @@ def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
     return query
 
 
-def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, with_inner_hits=False, uses=[FOR_REGION_SEARCH]):  #, uses=[FOR_REGULOME_DB]):  #
+def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, with_inner_hits=False, uses=[]):
     '''Returns a list of file uuids AND dataset paths for chromosome location'''
+
+    all_hits = {}  #{ 'dataset_paths': [], 'file_hits': {}, 'peaks': [], 'message': ''}
 
     region_query = get_peak_query(start, end, with_inner_hits=with_inner_hits, within_peaks=peaks_too)
 
@@ -155,14 +159,14 @@ def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, wit
                                             doc_type=_GENOME_TO_ALIAS[assembly],
                                             size=99999)
     except Exception:
-        return ([], [], [], 'Error during region search')
+        return {'message': 'Error during region search'}
 
-    peaks = list(results['hits']['hits'])
-    peak_count = len(peaks)
-    uuids = [ peak['_id'] for peak in peaks ]
+    all_hits['peaks'] = list(results['hits']['hits'])
+    all_hits['peak_count'] = len(all_hits['peaks'])
+    uuids = [ peak['_id'] for peak in all_hits['peaks'] ]
     uuids = list(set(uuids))
     if not uuids:
-        return ([], [], [], 'No uuids found in region')
+        return {'message': 'No uuids found in region'}
 
     resident_details = {}
     try:
@@ -172,28 +176,28 @@ def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, wit
         for hit in hits:
             resident_details[hit["_id"]] = hit["_source"]
     except Exception:
-        return ([], [], [], 'Error during resident_details search')
+        return {'message': 'Error during resident_details search'}
 
-    file_uuids = set()
     dataset_ids = set()
     uses_set = set(uses)
+    all_hits['file_hits'] = {}
     for uuid in uuids:
         if uuid not in resident_details:
             continue
         if uses and not list(uses_set.intersection(set(resident_details[uuid].get('uses',[])))):
             continue
-        file_uuids.add(uuid)
         dataset_ids.add(resident_details[uuid].get('dataset'))
+        all_hits['file_hits'][uuid] = resident_details[uuid]
 
-    file_uuids = list(file_uuids)
-    dataset_ids = list(dataset_ids)
+    all_hits['dataset_paths'] = list(dataset_ids)
     if not peaks_too:
+        all_hits['peaks'] = []
         peaks = []  # Don't burden results with too much info
 
-    msg = '%d peaks in %d files belonging to %s experiments in this region' % \
-                (peak_count, len(file_uuids), len(dataset_ids))
+    all_hits['message'] = '%d peaks in %d files belonging to %s experiments in this region' % \
+                (all_hits['peak_count'], len(all_hits['file_hits'].keys()), len(all_hits['dataset_paths']))
 
-    return (file_uuids, dataset_ids, peaks, msg)
+    return all_hits
 
 
 def sanitize_coordinates(term):
@@ -255,8 +259,11 @@ def assembly_mapper(location, species, input_assembly, output_assembly):
 
 def get_rsid_coordinates(id, assembly):
     species = _GENOME_TO_SPECIES[assembly]
+    ensembl_url = _ENSEMBL_URL
+    if assembly == 'GRCh37':
+        ensembl_url = _ENSEMBL_URL_GRCH37
     url = '{ensembl}variation/{species}/{id}?content-type=application/json'.format(
-        ensembl=_ENSEMBL_URL,
+        ensembl=ensembl_url,
         species=species,
         id=id
     )
@@ -269,7 +276,7 @@ def get_rsid_coordinates(id, assembly):
             return('', '', '')
         for mapping in response['mappings']:
             if 'PATCH' not in mapping['location']:
-                location = mapping['location']
+                #location = mapping['location']
                 if mapping['assembly_name'] == assembly:
                     chromosome, start, end = re.split(':|-', mapping['location'])
                     return('chr' + chromosome, start, end)
@@ -312,16 +319,92 @@ def format_position(position, resolution):
     end = int(end) + resolution
     return '{}:{}-{}'.format(chromosome, start, end)
 
+def regulome_score(file_hits):
+    '''Calculate RegulomeDB score based upon hits and voodoo'''
+    ChIP = False
+    DNase = False
+    PWM = False
+    Footprint = False
+    EQTL = False
+    targets = { 'ChIP-seq': [], 'PWM': [], 'Footprint': []}
+    for file_hit in file_hits.values():
+        assay = file_hit['assay_term_name']
+        target = file_hit.get('target')
+        if target and assay in ['ChIP-seq', 'PWM', 'Footprint']:
+            targets[assay].append(target)
+
+        if not ChIP and assay == 'ChIP-seq':
+            ChIP = True
+        elif not DNase and assay == 'DNase-seq':
+            DNase = True
+        if not PWM and assay == 'PWM':              # TODO: Figure out how to recognize PWM
+            PWM = True
+        if not Footprint and assay == 'Footprint':  # TODO: Figure out how to recognize Footptrints
+            Footprint = True
+        if not EQTL and assay == 'EQTL':            # TODO: Figure out how to recognize EQTLs
+            EQTL = True
+
+    # Targets... For each ChIP target, there should be a PWM and/or Footprint to match
+    PWM_matched = False
+    Footprint_matched = False
+    for target in targets['ChIP-seq']:
+        if target in targets['PWM']:
+            PWM_matched = True
+        if target in targets['Footprint']:
+            Footprint_matched = True
+        if PWM_matched and Footprint_matched:
+            break
+
+    # Now the scoring
+    if EQTL:
+        if ChIP:
+            if PWM_matched and Footprint_matched and DNase:
+                return '1a'
+            if PWM and Footprint and DNase:
+                return '1b'
+            if PWM_matched and DNase:
+                return '1c'
+            if PWM and DNase:
+                return '1d'
+            if PWM_matched:
+                return '1e'
+        return '1f'
+        if DNase:
+            return '1f'
+    if ChIP:
+        if DNase:
+            if PWM:
+                if Footprint:
+                    if PWM_matched and Footprint_matched:
+                        return '2a'
+                    return '2b'
+                if PWM_matched:
+                    return '2c'
+                return '3a'
+        if PWM_matched:
+            score = '3b'
+        if DNase:
+            return '4'
+        return '5'
+    if DNase:
+        return '5'
+    if PWM or Footprint or EQTL:
+        return '6'
+
+    return None
+
+@view_config(route_name='regulome-search', request_method='GET', permission='search')
 @view_config(route_name='region-search', request_method='GET', permission='search')
 def region_search(context, request):
     """
     Search files by region.
     """
     types = request.registry[TYPES]
+    page = request.path.split('/')[1]
     result = {
-        '@id': '/region-search/' + ('?' + request.query_string.split('&referrer')[0] if request.query_string else ''),
+        '@id': '/' + page + '/' + ('?' + request.query_string.split('&referrer')[0] if request.query_string else ''),
         '@type': ['region-search'],
-        'title': 'Search by region',
+        'title': ('Regulome search' if page.startswith('regulome') else 'Region search'),
         'facets': [],
         '@graph': [],
         'columns': OrderedDict(),
@@ -382,33 +465,39 @@ def region_search(context, request):
     peaks_too = ('peak_metadata' in request.query_string)
     if peaks_too:
         region_inside_peak_status = True
-    (file_uuids, dataset_ids, peaks, msg) = region_get_hits(snp_es, assembly,
-                                                chromosome, start, end,
-                                                peaks_too=peaks_too,
-                                                with_inner_hits=region_inside_peak_status)
-    result['notification'] = msg
-    if not file_uuids:
+    uses = [FOR_REGION_SEARCH]
+    if page.startswith('regulome'):
+        uses = [FOR_REGULOME_DB]
+    all_hits = region_get_hits(snp_es, assembly, chromosome, start, end, peaks_too=peaks_too,
+                                        with_inner_hits=region_inside_peak_status, uses=uses)
+    result['notification'] = all_hits['message']
+    if 'file_hits' not in all_hits or not all_hits['file_hits']:
         return result
 
+    if page.startswith('regulome') and region.startswith('rs'):
+        score = regulome_score(all_hits['file_hits'])
+        if score:
+            result['notification'] += '.  RegulomeDB score: ' + score
 
     # if more than one peak found return the experiments with those peak files
-    uuid_count = len(file_uuids)
-    if uuid_count > MAX_CLAUSES_FOR_ES:
-        log.error("REGION_SEARCH WARNING: region with %d file_uuids is being restricted to %d" % \
-                                                            (uuid_count, MAX_CLAUSES_FOR_ES))
-        file_uuids = file_uuids[:MAX_CLAUSES_FOR_ES]
-        uuid_count = len(file_uuids)
+    dataset_count = len(all_hits['dataset_paths'])
+    if dataset_count > MAX_CLAUSES_FOR_ES:
+        log.error("REGION_SEARCH WARNING: region covered by %d datasets is being restricted to %d" % \
+                                                            (dataset_count, MAX_CLAUSES_FOR_ES))
+        all_hits['dataset_paths'] = all_hits['dataset_paths'][:MAX_CLAUSES_FOR_ES]
+        dataset_count = len(all_hits['dataset_paths'])
 
-    if uuid_count:
-        query = get_filtered_query('', [], set(), principals, ['Experiment'])
+    if dataset_count:
+
+        query = get_filtered_query('Experiment', [], set(), principals, ['Experiment'])
         del query['query']
-        query['post_filter']['bool']['must'].append({
-            'terms': {
-                'embedded.@id': dataset_ids
-            }
-        })
+        query['post_filter']['bool']['must'].extend([
+            {'terms': {'embedded.status': ['released']}},
+            {'terms': {'embedded.@id':    all_hits['dataset_paths']}}
+        ])
         used_filters = set_filters(request, query, result)
-        used_filters['@id'] = dataset_ids
+        used_filters['@id'] = all_hits['dataset_paths']
+        used_filters['status'] = ['released']
         query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Experiment'])
         schemas = (types[item_type].schema for item_type in ['Experiment'])
         es_results = es.search(
@@ -418,7 +507,7 @@ def region_search(context, request):
         result['total'] = total = es_results['hits']['total']
         result['facets'] = format_facets(es_results, _FACETS, used_filters, schemas, total, principals)
         if peaks_too:
-            result['peaks'] = peaks
+            result['peaks'] = all_hits['peaks']
         result['download_elements'] = get_peak_metadata_links(request)
         if result['total'] > 0:
             result['notification'] = 'Success: ' + result['notification']
