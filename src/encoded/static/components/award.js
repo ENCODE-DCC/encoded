@@ -1811,8 +1811,8 @@ export const ExperimentDate = (props) => {
         } else {
             const releasedIndex = sortedreleasedTerms.findIndex(item => item.doc_count);
             const submittedIndex = sortedsubmittedTerms.findIndex(item => item.doc_count);
-            const earliestReleased = sortedreleasedTerms[releasedIndex].key;
-            const earliestSubmitted = sortedsubmittedTerms[submittedIndex].key;
+            const earliestReleased = releasedIndex > -1 ? sortedreleasedTerms[releasedIndex].key : sortedreleasedTerms[sortedreleasedTerms.length - 1];
+            const earliestSubmitted = submittedIndex > -1 ? sortedsubmittedTerms[submittedIndex].key : sortedsubmittedTerms[sortedsubmittedTerms.length - 1];
             awardStartDate = earliestReleased < earliestSubmitted ? earliestReleased : earliestSubmitted;
         }
         deduplicatedreleased = fillDates(sortedreleasedTerms, deduplicatedreleased, awardStartDate);
