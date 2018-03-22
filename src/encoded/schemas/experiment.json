@@ -41,6 +41,7 @@
                         "biosample_type": {
                             "enum": [                
                                 "cell line",
+                                "single cell",
                                 "in vitro differentiated cells",
                                 "induced pluripotent stem cell line",
                                 "primary cell",
