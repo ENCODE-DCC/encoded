@@ -1,5 +1,9 @@
 ## Changelog for experiment.json
 
+### Schema version 17
+
+* Remove *ready for review* as status in dataset and add import_items permission.
+
 ### Schema version 16
 
 * Replace *immortalized cell line* with *cell line* in biosample_type enum
