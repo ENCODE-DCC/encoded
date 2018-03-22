@@ -1821,7 +1821,7 @@ export const ExperimentDate = (props) => {
         accumulatedDataSubmitted = createDataset(deduplicatedsubmitted, accumulatorsubmitted, cumulativedatasetSubmitted);
 
         // Adjust the submitted counts by the released counts.
-        accumulatedDataSubmitted = accumulatedDataSubmitted.map((count, i) => Math.max(count - accumulatedDataReleased[i]));
+        accumulatedDataSubmitted = accumulatedDataSubmitted.map((count, i) => Math.max(count - accumulatedDataReleased[i], 0));
     }
 
     return (
