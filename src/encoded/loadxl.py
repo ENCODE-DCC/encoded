@@ -46,6 +46,7 @@ ORDER = [
     'treatment_concentration_series',
     'organism_development_series',
     'replication_timing_series',
+    'aggregate_series',
     'reference_epigenome',
     'software',
     'software_version',
