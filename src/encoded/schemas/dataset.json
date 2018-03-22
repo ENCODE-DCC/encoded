@@ -114,7 +114,6 @@
             "enum" : [
                 "started",
                 "submitted",
-                "ready for review",
                 "released",
                 "archived",
                 "deleted",
