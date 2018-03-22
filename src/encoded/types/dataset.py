@@ -539,7 +539,7 @@ class MatchedSet(Series):
     unique_key='accession',
     properties={
         'title': "Aggregate series",
-        'description': 'A series that is an aggregate of related assays.',
+        'description': 'A series that groups two or more datastes to allow meta-analysis.',
     })
 class AggregateSeries(Series):
     item_type = 'aggregate_series'

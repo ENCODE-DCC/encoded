@@ -1029,6 +1029,49 @@ const basicTableColumns = {
     },
 };
 
+const aggregateSeriesTableColumns = {
+    accession: {
+        title: 'Accession',
+        display: (experiment, meta) =>
+            <span>
+                {meta.adminUser || publicDataset(experiment) ?
+                    <a href={experiment['@id']} title={`View page for experiment ${experiment.accession}`}>{experiment.accession}</a>
+                :
+                    <span>{experiment.accession}</span>
+                }
+            </span>,
+    },
+
+    possible_controls: {
+        title: 'Possible controls',
+        display: (experiment, meta) => displayPossibleControls(experiment, meta.adminUser),
+        sorter: false,
+    },
+
+    assay_term_name: {
+        title: 'Assay',
+    },
+
+    target: {
+        title: 'Target',
+        getValue: experiment => (experiment.target ? experiment.target.label : null),
+    },
+
+    description: {
+        title: 'Description',
+    },
+
+    lab: {
+        title: 'Lab',
+        getValue: experiment => (experiment.lab ? experiment.lab.title : null),
+    },
+
+    status: {
+        title: 'Status',
+        display: experiment => <div className="characterization-meta-data"><StatusLabel status={experiment.status} /></div>,
+    },
+};
+
 const treatmentSeriesTableColumns = {
     accession: {
         title: 'Accession',
@@ -1225,6 +1268,7 @@ const seriesComponents = {
     ReplicationTimingSeries: { title: 'replication timing series', table: replicationTimingSeriesTableColumns },
     TreatmentConcentrationSeries: { title: 'treatment concentration series', table: treatmentSeriesTableColumns },
     TreatmentTimeSeries: { title: 'treatment time series', table: treatmentSeriesTableColumns },
+    AggregateSeries: { title: 'aggregate series', table: taggregateSeriesTableColumns },
 };
 
 export class SeriesComponent extends React.Component {
