@@ -691,7 +691,7 @@ def test_audit_experiment_target(testapp, base_experiment):
 
 
 def test_audit_experiment_replicated(testapp, base_experiment, base_replicate, base_library):
-    testapp.patch_json(base_experiment['@id'], {'status': 'ready for review'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'submitted'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'unreplicated experiment'
                for error in collect_audit_errors(res))
@@ -736,7 +736,7 @@ def test_audit_experiment_technical_replicates_biosample(
 
 def test_audit_experiment_with_libraryless_replicated(
         testapp, base_experiment, base_replicate, base_library):
-    testapp.patch_json(base_experiment['@id'], {'status': 'ready for review'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'submitted'})
     testapp.patch_json(base_experiment['@id'], {'replicates': [base_replicate['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] == 'replicate with no library'
@@ -745,7 +745,7 @@ def test_audit_experiment_with_libraryless_replicated(
 
 def test_audit_experiment_single_cell_replicated(
         testapp, base_experiment, base_replicate, base_library):
-    testapp.patch_json(base_experiment['@id'], {'status': 'ready for review'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'submitted'})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name':
                                                 'single cell isolation followed by RNA-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -755,7 +755,7 @@ def test_audit_experiment_single_cell_replicated(
 
 def test_audit_experiment_RNA_bind_n_seq_replicated(testapp, base_experiment, base_replicate,
                                                     base_library):
-    testapp.patch_json(base_experiment['@id'], {'status': 'ready for review'})
+    testapp.patch_json(base_experiment['@id'], {'status': 'submitted'})
     testapp.patch_json(base_experiment['@id'], {'assay_term_name':
                                                 'RNA Bind-n-Seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')

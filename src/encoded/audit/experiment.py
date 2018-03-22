@@ -2085,10 +2085,10 @@ def audit_experiment_replicated(value, system, excluded_types):
             'ENCODE4', 'ENCODE3', 'GGR']):
         return
     '''
-    Experiments in ready for review state should be replicated. If not,
+    Experiments in submitted state should be replicated. If not,
     wranglers should check with lab as to why before release.
     '''
-    if value['status'] not in ['released', 'ready for review']:
+    if value['status'] not in ['released', 'submitted']:
         return
     '''
     Excluding single cell isolation experiments from the replication requirement
