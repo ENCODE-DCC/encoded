@@ -1821,7 +1821,7 @@ export const ExperimentDate = (props) => {
         accumulatedDataSubmitted = createDataset(deduplicatedsubmitted, accumulatorsubmitted, cumulativedatasetSubmitted);
 
         // Adjust the submitted counts by the released counts.
-        accumulatedDataSubmitted = accumulatedDataSubmitted.map((count, i) => Math.max(count - accumulatedDataReleased[i], 0));
+        accumulatedDataSubmitted = accumulatedDataSubmitted.map((count, i) => count + accumulatedDataReleased[i]);
     }
 
     return (
@@ -2032,20 +2032,17 @@ class CumulativeGraph extends React.Component {
                                 maxTicksLimit: 15, // sets maximum number of x-axis labels
                             },
                         }],
-                        yAxes: [{
-                            stacked: true,
-                        }],
                     },
                 },
                 data: {
                     labels: monthReleased,
                     datasets: [{
-                        label: 'Date Released',
+                        label: 'Released',
                         data: releaseddatavalue,
                         backgroundColor: '#604a7b',
                     },
                     {
-                        label: 'Date Submitted',
+                        label: 'Submitted + Released',
                         data: submitteddatavalue,
                         backgroundColor: '#ccc1da',
                     }],
