@@ -330,8 +330,16 @@ def run(
         config_file = ':cloud-config-elasticsearch.yml'
         data_insert = {
             'CLUSTER_NAME': cluster_name,
+            'ES_DATA': 'true',
+            'ES_MASTER': 'false',
         }
         user_data = get_user_data(commit, config_file, data_insert, profile_name)
+        master_data_insert = {
+            'CLUSTER_NAME': cluster_name,
+            'ES_DATA': 'false',
+            'ES_MASTER': 'true',
+        }
+        master_user_data = get_user_data(commit, config_file, master_data_insert, profile_name)
         security_groups = ['elasticsearch-https']
         iam_role = 'elasticsearch-instance'
         count = int(cluster_size)
@@ -377,6 +385,24 @@ def run(
             print('ssh %s.%s.encodedcc.org' % (tmp_name, domain))
             if domain == 'instance':
                 print('https://%s.demo.encodedcc.org' % tmp_name)
+
+    if elasticsearch == 'yes' and count > 1:
+        security_groups = ['ssh-http-https']
+        iam_role = 'encoded-instance'
+        image_id = 'ami-8f78c2f7'
+        instance_type = 'c5.9xlarge'
+        instances = create_ec2_instances(
+            ec2, image_id, 1, instance_type,
+            security_groups, master_user_data, BDM, iam_role
+        )
+        print('Creating Elasticsearch cluster MASTER')
+        tmp_name = "{}{}".format(name, i)
+        print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
+        instance.wait_until_exists()
+        tag_ec2_instance(instance, tmp_name, branch, commit, username, elasticsearch, cluster_name)
+        print('ssh %s.%s.encodedcc.org' % (tmp_name, domain))
+        if domain == 'instance':
+            print('https://%s.demo.encodedcc.org' % tmp_name)
 
     if spot_instance:
         tag_spot_instance(instances, tmp_name, branch, commit, username, elasticsearch, client.spotClient, cluster_name)
