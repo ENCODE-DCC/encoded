@@ -110,6 +110,7 @@
         "status": {
             "title": "Status",
             "type": "string",
+            "permission": "import_items",
             "default": "started",
             "enum" : [
                 "started",
