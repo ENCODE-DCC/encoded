@@ -252,6 +252,7 @@
                         "type": "string",
                         "enum" : [
                             "cell line",
+                            "single cell",
                             "in vitro differentiated cells",
                             "induced pluripotent stem cell line",
                             "primary cell",
