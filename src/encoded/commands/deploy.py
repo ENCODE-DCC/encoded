@@ -395,6 +395,7 @@ def run(
             ec2, image_id, 1, instance_type,
             security_groups, master_user_data, BDM, iam_role
         )
+        instance = instances[0]
         print('Creating Elasticsearch cluster MASTER')
         tmp_name = "{}{}".format(name, 'master')
         print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
