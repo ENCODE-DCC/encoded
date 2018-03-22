@@ -389,14 +389,14 @@ def run(
     if elasticsearch == 'yes' and count > 1:
         security_groups = ['ssh-http-https']
         iam_role = 'encoded-instance'
-        image_id = 'ami-8f78c2f7'
+        image_id = 'ami-2133bc59'
         instance_type = 'c5.9xlarge'
         instances = create_ec2_instances(
             ec2, image_id, 1, instance_type,
             security_groups, master_user_data, BDM, iam_role
         )
         print('Creating Elasticsearch cluster MASTER')
-        tmp_name = "{}{}".format(name, i)
+        tmp_name = "{}{}".format(name, 'master')
         print('%s.%s.encodedcc.org' % (instance.id, domain))  # Instance:i-34edd56f
         instance.wait_until_exists()
         tag_ec2_instance(instance, tmp_name, branch, commit, username, elasticsearch, cluster_name)
@@ -438,7 +438,7 @@ def main():
         help="ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-20151015")
     parser.add_argument(
         '--instance-type', default='c4.4xlarge',
-        help="(defualts toc4.4xlarge for indexing) Switch to a smaller instance afterwards"
+        help="(defualts to c4.4xlarge for indexing) Switch to a smaller instance afterwards"
         "(m4.xlarge or c4.xlarge)")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
     parser.add_argument('--elasticsearch', default=None, help="Launch an Elasticsearch instance")
