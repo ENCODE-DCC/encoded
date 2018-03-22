@@ -339,3 +339,11 @@ def dataset_15_16(value, system):
     if value.get('biosample_type') == 'immortalized cell line':
         value['biosample_type'] = "cell line"
 
+
+@upgrade_step('experiment', '16', '17')
+@upgrade_step('reference', '13', '14')
+@upgrade_step('treatment_time_series', '13', '14')
+def dataset_16_17(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3780
+    if value['status'] == "ready for review":
+        value['status'] = "submitted"
