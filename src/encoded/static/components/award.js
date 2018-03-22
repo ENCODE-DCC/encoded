@@ -1819,6 +1819,9 @@ export const ExperimentDate = (props) => {
         date = Object.keys(deduplicatedreleased).map(term => term);
         accumulatedDataReleased = createDataset(deduplicatedreleased, accumulatorreleased, cumulativedatasetReleased);
         accumulatedDataSubmitted = createDataset(deduplicatedsubmitted, accumulatorsubmitted, cumulativedatasetSubmitted);
+
+        // Adjust the submitted counts by the released counts.
+        accumulatedDataSubmitted = accumulatedDataSubmitted.map((count, i) => Math.max(count - accumulatedDataSubmitted[i], 0));
     }
 
     return (
