@@ -404,11 +404,11 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             'genotype_strain',
             'sex_stage_age',
             'synchronization',
+            'term_phrase',
             'modifications_list',
             'originated_from',
             'treatments_phrase',
-            'depleted_in',
-            'term_phrase',
+            'depleted_in',            
             'phase',
             'fractionated'
         ]
