@@ -150,7 +150,7 @@ def check_pipeline(pipeline_title, control_file_id, file_structure):
 def generate_control_bam_details_string(control_bam_details):
     to_return = ''
     for (file_id, depth, exp_id) in control_bam_details:
-        to_return += 'file {} from control experiment {} has {} usable fragments,'.format(
+        to_return += 'file {} from control experiment {} has {} usable fragments;'.format(
             file_id,
             exp_id,
             depth
