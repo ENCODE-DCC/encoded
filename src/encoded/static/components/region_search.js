@@ -131,7 +131,7 @@ class AdvSearch extends React.Component {
             showAutoSuggest: false,
             searchTerm: '',
             coordinates: '',
-            genome: regionGenomes[0].value,
+            genome: '',
             terms: {},
         };
 
@@ -140,6 +140,8 @@ class AdvSearch extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleAutocompleteClick = this.handleAutocompleteClick.bind(this);
         this.handleAssemblySelect = this.handleAssemblySelect.bind(this);
+        this.handleAssemblySelect = this.handleAssemblySelect.bind(this);
+        this.handleSearchButtonFocus = this.handleSearchButtonFocus.bind(this);
         this.tick = this.tick.bind(this);
     }
 
@@ -178,6 +180,14 @@ class AdvSearch extends React.Component {
         this.setState({ genome: event.target.value });
     }
 
+    handleAssemblyFocus() {
+        this.setState({ showAutoSuggest: false });
+    }
+
+    handleSearchButtonFocus() {
+        this.setState({ showAutoSuggest: false });
+    }
+
     tick() {
         if (this.newSearchTerm !== this.state.searchTerm) {
             this.setState({ searchTerm: this.newSearchTerm });
@@ -188,6 +198,10 @@ class AdvSearch extends React.Component {
         const context = this.props.context;
         const id = url.parse(this.context.location_href, true);
         const region = id.query.region || '';
+
+        if (this.state.genome === '') {
+            this.state.genome = context.assembly ? context.assembly : regionGenomes[0].value;
+        }
 
         return (
             <Panel>
@@ -205,7 +219,7 @@ class AdvSearch extends React.Component {
                                     </FetchedData>
                                 : null}
                                 <div className="input-group-addon input-group-select-addon">
-                                    <select value={this.state.genome} name="genome" onChange={this.handleAssemblySelect}>
+                                    <select value={this.state.genome} name="genome" onFocus={this.handleAssemblyFocus} onChange={this.handleAssemblySelect}>
                                         {regionGenomes.map(genomeId =>
                                             <option key={genomeId.value} value={genomeId.value}>{genomeId.display}</option>
                                         )}
@@ -216,10 +230,13 @@ class AdvSearch extends React.Component {
                                 : null}
                             </div>
                         </div>
-                        <input type="submit" value="Search" className="btn btn-sm btn-info pull-right" />
+                        <input type="submit" value="Search" className="btn btn-sm btn-info pull-right" onFocus={this.handleSearchButtonFocus} />
                     </form>
                     {context.coordinates ?
-                        <p>Searched coordinates: <strong>{context.coordinates}</strong></p>
+                            <p>Searched coordinates: <strong>{context.coordinates}</strong></p>
+                        : null}
+                    {context.regulome_score ?
+                        <p><strong>RegulomeDB score: {context.regulome_score}</strong></p>
                     : null}
                 </PanelBody>
             </Panel>
