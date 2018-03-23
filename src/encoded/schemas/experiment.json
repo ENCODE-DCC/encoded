@@ -201,6 +201,7 @@
             "type": "string",
             "enum" : [
                 "cell line",
+                "single cell",
                 "in vitro differentiated cells",
                 "cell-free sample",
                 "induced pluripotent stem cell line",
