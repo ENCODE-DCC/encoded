@@ -1688,15 +1688,67 @@ ExperimentDateRenderer.defaultProps = {
 };
 
 
-const fillDates2 = (sortedDates, startDate) => {
+/**
+ * Take a sorted array of date terms and generate a new array of date terms with the same dates
+ * plus `0` doc_count entries for any months missing between `sortedDateTerms` entries. The new
+ * array has contiguous months.
+ *
+ * @param {array} sortedDateTerms - Array of date terms sorted by date
+ * @param {string} startDate - First date to appear in new array in YYYY-MM format
+ * @return {array} - New array with `sortedDateTerms` data plus 0 entries in between given months.
+ */
+const fillDates = (sortedDateTerms, startDate) => {
+    // The new array limits go between `startDate` and the current date.
     const startDateMoment = moment(startDate, 'YYYY-MM');
     const endDateMoment = moment();
     const monthCount = endDateMoment.diff(startDateMoment, 'months');
-    const filledDateArray = [{ key: startDateMoment.format('YYYY-MM'), doc_count: 0 }];
+
+    // For every possible month, generate a new array entry, filling in the doc_count with
+    // matching data from `sortedDateTerms`, or 0 if `sortedDateTerms` has no matching month.
+    const filledDateArray = [];
+    let sortedDateIndex = sortedDateTerms.findIndex(term => term.key >= startDate);
+    sortedDateIndex = sortedDateIndex > -1 ? sortedDateIndex : 0;
+    let currentMonth = startDate;
     for (let i = 0; i < monthCount; i += 1) {
-        filledDateArray.push({ key: startDateMoment.add(1, 'month').format('YYYY-MM'), doc_count: 0 });
+        let docCount = 0;
+        if (currentMonth === sortedDateTerms[sortedDateIndex].key) {
+            // An entry in `sortedDateTerms` matches the current month we're generating in the new
+            // array, so copy its doc_count to the new array and go to the next entry in
+            // `sortedDateTerms`.
+            docCount = sortedDateTerms[sortedDateIndex].doc_count;
+            sortedDateIndex += 1;
+        }
+        filledDateArray.push({ key: currentMonth, doc_count: docCount });
+
+        // Move to the next month. Note `add()` mutates `startDateMoment`.
+        currentMonth = startDateMoment.add(1, 'month').format('YYYY-MM');
     }
-    console.log('MonthCount: %s:%o', startDate, filledDateArray);
+    return filledDateArray;
+};
+
+
+/**
+ * Any terms in `dateTerms` (must be sorted by month) with matching months get their values
+ * combined and placed into just one date term entry in the new output array of date terms.
+ * The new output array of date terms is still sorted.
+ *
+ * @param {array} dateTerms - Array of search result date terms to consolidate.
+ * @returns {array} - Equivalent to `dateTerms` but with duplicate date entries consolidated.
+ */
+const consolidateSortedDates = (dateTerms) => {
+    const consolidatedTerms = [];
+    let lastTerm = null;
+    for (let i = 0; i < dateTerms.length; i += 1) {
+        if (lastTerm && dateTerms[i].key === lastTerm.key) {
+            // Current `dateTerms` entry key matches last one we pushed onto consolidatedTerms,
+            // so just add their doc_counts together in the last term.
+            lastTerm.doc_count += dateTerms[i].doc_count;
+        } else {
+            consolidatedTerms.push({ key: dateTerms[i].key, doc_count: dateTerms[i].doc_count });
+            lastTerm = consolidatedTerms[consolidatedTerms.length - 1];
+        }
+    }
+    return consolidatedTerms;
 };
 
 
@@ -1707,10 +1759,6 @@ export const ExperimentDate = (props) => {
     let submittedDates = [];
     let deduplicatedreleased = {};
     let deduplicatedsubmitted = {};
-    const cumulativedatasetReleased = [];
-    const cumulativedatasetSubmitted = [];
-    const accumulatorreleased = 0;
-    const accumulatorsubmitted = 0;
 
     // Search experiments for month_released and date_submitted in facets
     if (experiments && experiments.length) {
@@ -1742,59 +1790,12 @@ export const ExperimentDate = (props) => {
         );
     }
 
-    function fillDates(sortedArray, deduplicated, awardStartDate) {
-        const fillArray = [];
-
-        // Add an object with the award start date to both arrays
-        sortedArray.unshift({ key: awardStartDate, doc_count: 0 });
-
-        // Add objects to the array with doc_count 0 for the missing months
-        const sortedTermsLength = sortedArray.length;
-        for (let j = 0; j < sortedTermsLength - 1; j += 1) {
-            fillArray.push(sortedArray[j]);
-            const startDate = moment(sortedArray[j].key);
-            const endDate = moment(sortedArray[j + 1].key);
-            const monthdiff = endDate.diff(startDate, 'months', false);
-            if (monthdiff > 1) {
-                for (let i = 0; i < monthdiff; i += 1) {
-                    fillArray.push({ key: startDate.add(1, 'months').format('YYYY-MM'), doc_count: 0 });
-                }
-            }
-        }
-        fillArray.push(sortedArray[sortedArray - 1]);
-
-        // Remove any objects with keys before the start date of the award
-        const shortenedArray = [];
-        for (let j = 0; j < fillArray.length - 2; j += 1) {
-            if (moment(fillArray[j].key).isSameOrAfter(awardStartDate, 'date')) {
-                shortenedArray.push(fillArray[j]);
-            }
-        }
-        const formatTerms = shortenedArray.map((term) => {
-            const formattedDate = moment(term.key, ['YYYY-MM']).format('MMM YY');
-            return { key: formattedDate, doc_count: term.doc_count };
-        });
-        // Deduplicate dates
-        formatTerms.forEach((elem) => {
-            if (deduplicated[elem.key]) {
-                deduplicated[elem.key] += elem.doc_count;
-            } else {
-                deduplicated[elem.key] = elem.doc_count;
-            }
-        });
-        return (deduplicated);
-    }
-
-    function createDataset(deduplicated, accumulatorType, cumulativeData) {
-        let cumulativedataset = cumulativeData;
-        let accumulator = accumulatorType;
-        // Create an array of data from objects' doc_counts
-        const dataset = Object.keys(deduplicated).map(item => deduplicated[item]);
+    function createDataset(deduplicated) {
+        let accumulator = 0;
         // Make the data cumulative
-        const accumulatedData = dataset.map((term) => {
-            accumulator += term;
-            cumulativedataset = accumulator;
-            return cumulativedataset;
+        const accumulatedData = deduplicated.map((term) => {
+            accumulator += term.doc_count;
+            return accumulator;
         });
         return (accumulatedData);
     }
@@ -1803,8 +1804,8 @@ export const ExperimentDate = (props) => {
     let accumulatedDataSubmitted = [];
     let date = [];
     if (releasedDates.length || submittedDates.length) {
-        const sortedreleasedTerms = sortTerms(releasedDates);
-        const sortedsubmittedTerms = sortTerms(submittedDates);
+        const sortedreleasedTerms = consolidateSortedDates(sortTerms(releasedDates));
+        const sortedsubmittedTerms = consolidateSortedDates(sortTerms(submittedDates));
 
         // Add an object with the most current date to one of the arrays.
         if ((releasedDates && releasedDates.length) && (submittedDates && submittedDates.length)) {
@@ -1826,14 +1827,13 @@ export const ExperimentDate = (props) => {
             const earliestSubmitted = submittedIndex > -1 ? sortedsubmittedTerms[submittedIndex].key : sortedsubmittedTerms[sortedsubmittedTerms.length - 1];
             awardStartDate = earliestReleased < earliestSubmitted ? earliestReleased : earliestSubmitted;
         }
-        fillDates2(sortedsubmittedTerms, awardStartDate);
-        deduplicatedreleased = fillDates(sortedreleasedTerms, deduplicatedreleased, awardStartDate);
-        deduplicatedsubmitted = fillDates(sortedsubmittedTerms, deduplicatedsubmitted, awardStartDate);
+        deduplicatedreleased = fillDates(sortedreleasedTerms, awardStartDate);
+        deduplicatedsubmitted = fillDates(sortedsubmittedTerms, awardStartDate);
 
         // Create an array of dates.
-        date = Object.keys(deduplicatedreleased);
-        accumulatedDataReleased = createDataset(deduplicatedreleased, accumulatorreleased, cumulativedatasetReleased);
-        accumulatedDataSubmitted = createDataset(deduplicatedsubmitted, accumulatorsubmitted, cumulativedatasetSubmitted);
+        date = deduplicatedreleased.map(dateTerm => moment(dateTerm.key, 'YYYY-MM').format('MMM YYYY'));
+        accumulatedDataReleased = createDataset(deduplicatedreleased);
+        accumulatedDataSubmitted = createDataset(deduplicatedsubmitted);
 
         // Adjust the submitted counts by the released counts so we can stack the chart.
         accumulatedDataSubmitted = accumulatedDataReleased.map((count, i) => Math.max((accumulatedDataSubmitted[i - 1] || 0) - count, 0));
