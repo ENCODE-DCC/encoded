@@ -1688,6 +1688,18 @@ ExperimentDateRenderer.defaultProps = {
 };
 
 
+const fillDates2 = (sortedDates, startDate) => {
+    const startDateMoment = moment(startDate, 'YYYY-MM');
+    const endDateMoment = moment();
+    const monthCount = endDateMoment.diff(startDateMoment, 'months');
+    const filledDateArray = [{ key: startDateMoment.format('YYYY-MM'), doc_count: 0 }];
+    for (let i = 0; i < monthCount; i += 1) {
+        filledDateArray.push({ key: startDateMoment.add(1, 'month').format('YYYY-MM'), doc_count: 0 });
+    }
+    console.log('MonthCount: %s:%o', startDate, filledDateArray);
+};
+
+
 // Overall component to render the cumulative line chart
 export const ExperimentDate = (props) => {
     const { experiments, award, panelCss, panelHeadingCss } = props;
@@ -1794,7 +1806,6 @@ export const ExperimentDate = (props) => {
         const sortedreleasedTerms = sortTerms(releasedDates);
         const sortedsubmittedTerms = sortTerms(submittedDates);
 
-        // Trim to the earliest non-zero doc_count.
         // Add an object with the most current date to one of the arrays.
         if ((releasedDates && releasedDates.length) && (submittedDates && submittedDates.length)) {
             if (sortedreleasedTerms.length && moment(sortedsubmittedTerms[sortedsubmittedTerms.length - 1].key).isAfter(sortedreleasedTerms[sortedreleasedTerms.length - 1].key, 'date')) {
@@ -1815,11 +1826,12 @@ export const ExperimentDate = (props) => {
             const earliestSubmitted = submittedIndex > -1 ? sortedsubmittedTerms[submittedIndex].key : sortedsubmittedTerms[sortedsubmittedTerms.length - 1];
             awardStartDate = earliestReleased < earliestSubmitted ? earliestReleased : earliestSubmitted;
         }
+        fillDates2(sortedsubmittedTerms, awardStartDate);
         deduplicatedreleased = fillDates(sortedreleasedTerms, deduplicatedreleased, awardStartDate);
         deduplicatedsubmitted = fillDates(sortedsubmittedTerms, deduplicatedsubmitted, awardStartDate);
 
         // Create an array of dates.
-        date = Object.keys(deduplicatedreleased).map(term => term);
+        date = Object.keys(deduplicatedreleased);
         accumulatedDataReleased = createDataset(deduplicatedreleased, accumulatorreleased, cumulativedatasetReleased);
         accumulatedDataSubmitted = createDataset(deduplicatedsubmitted, accumulatorsubmitted, cumulativedatasetSubmitted);
 
