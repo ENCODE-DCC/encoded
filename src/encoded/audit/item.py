@@ -69,7 +69,6 @@ STATUS_LEVEL = {
     'pending dcc review': 50,
     'started': 50,
     'submitted': 50,
-    'ready for review': 50,
     'uploading': 50,
     'upload failed': 50,
     'content error': 50,
