@@ -6,7 +6,7 @@ def base_reference_epigenome(testapp, lab, award):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'status': 'ready for review'
+        'status': 'submitted'
     }
     return testapp.post_json('/reference-epigenomes', item, status=201).json['@graph'][0]
 
@@ -20,7 +20,7 @@ def base_experiment(testapp, lab, award):
         'biosample_type': 'cell-free sample',
         'biosample_term_id': 'NTR:0000471',
         'biosample_term_name': 'none',
-        'status': 'ready for review'
+        'status': 'submitted'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
