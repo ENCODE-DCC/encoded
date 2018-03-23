@@ -1701,7 +1701,7 @@ const fillDates = (sortedDateTerms, startDate) => {
     // The new array limits go between `startDate` and the current date.
     const startDateMoment = moment(startDate, 'YYYY-MM');
     const endDateMoment = moment();
-    const monthCount = endDateMoment.diff(startDateMoment, 'months');
+    const monthCount = endDateMoment.diff(startDateMoment, 'months') + 1;
 
     // For every possible month, generate a new array entry, filling in the doc_count with
     // matching data from `sortedDateTerms`, or 0 if `sortedDateTerms` has no matching month.
