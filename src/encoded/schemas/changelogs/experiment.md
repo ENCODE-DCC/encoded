@@ -2,7 +2,7 @@
 
 ### Schema version 17
 
-* Remove *ready for review* as status in dataset and add import_items permission.
+* Replace the *status* field value *ready for review* by *submitted*. Make the *status* field editable by DCC personnel only.
 
 ### Schema version 16
 
