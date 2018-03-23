@@ -236,10 +236,13 @@ class AdvSearch extends React.Component {
                                 : null}
                             </div>
                         </div>
-                        <input type="submit" value="Search" className="btn btn-sm btn-info pull-right" />
+                        <input type="submit" value="Search" className="btn btn-sm btn-info pull-right" onFocus={this.handleSearchButtonFocus} />
                     </form>
                     {context.coordinates ?
-                        <p>Searched coordinates: <strong>{context.coordinates}</strong></p>
+                            <p>Searched coordinates: <strong>{context.coordinates}</strong></p>
+                        : null}
+                    {context.regulome_score ?
+                        <p><strong>RegulomeDB score: {context.regulome_score}</strong></p>
                     : null}
                 </PanelBody>
             </Panel>
