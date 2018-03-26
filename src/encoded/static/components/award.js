@@ -1834,6 +1834,9 @@ export const ExperimentDate = (props) => {
         date = deduplicatedreleased.map(dateTerm => moment(dateTerm.key, 'YYYY-MM').format('MMM YYYY'));
         accumulatedDataReleased = createDataset(deduplicatedreleased);
         accumulatedDataSubmitted = createDataset(deduplicatedsubmitted);
+
+        // Adjust the submitted counts by the released counts so we can stack the chart.
+        accumulatedDataSubmitted = accumulatedDataReleased.map((count, i) => Math.max((accumulatedDataSubmitted[i - 1] || 0) - count, 0));
     }
 
     return (
@@ -2043,6 +2046,9 @@ class CumulativeGraph extends React.Component {
                                 autoSkip: true,
                                 maxTicksLimit: 15, // sets maximum number of x-axis labels
                             },
+                        }],
+                        yAxes: [{
+                            stacked: true,
                         }],
                     },
                 },
