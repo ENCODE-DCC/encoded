@@ -2055,14 +2055,14 @@ class CumulativeGraph extends React.Component {
                 data: {
                     labels: monthReleased,
                     datasets: [{
-                        label: 'Released',
-                        data: releaseddatavalue,
-                        backgroundColor: '#538235',
-                    },
-                    {
                         label: 'Submitted',
                         data: submitteddatavalue,
                         backgroundColor: '#a9d18e',
+                    },
+                    {
+                        label: 'Released',
+                        data: releaseddatavalue,
+                        backgroundColor: '#538235',
                     }],
                 },
             });
