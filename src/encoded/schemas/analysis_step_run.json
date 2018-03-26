@@ -12,7 +12,8 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/submitted"},
-        { "$ref": "mixins.json#/notes"}
+        { "$ref": "mixins.json#/notes"},
+        { "$ref": "mixins.json#/standard_status"}
     ],
     "properties": {
         "schema_version": {
@@ -77,16 +78,6 @@
                     }
                 }
             }
-        },
-        "status": {
-            "title": "Status",
-            "type": "string",
-            "enum" : [
-                "in progress",
-                "released",
-                "virtual",
-                "deleted"
-            ]
         }
     },
     "facets": {
