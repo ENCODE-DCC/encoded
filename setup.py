@@ -60,7 +60,7 @@ tests_require = [
 
 setup(
     name='encoded',
-    version='66.0',
+    version='67.0',
     description='Metadata database for ENCODE',
     long_description=README + '\n\n' + CHANGES,
     packages=find_packages('src'),
@@ -105,7 +105,8 @@ setup(
 
         [paste.composite_factory]
         indexer = snovault.elasticsearch.es_index_listener:composite
-        secondaryindexer = snovault.elasticsearch.es_index_listener:composite
+        visindexer = snovault.elasticsearch.es_index_listener:composite
+        regionindexer = snovault.elasticsearch.es_index_listener:composite
 
         [paste.filter_app_factory]
         memlimit = encoded.memlimit:filter_app

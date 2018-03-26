@@ -1,5 +1,9 @@
 ## Changelog for annotation.json
 
+### Schema version 17
+
+* Replace *immortalized cell line* with *cell line* in biosample_type enum
+
 ### Schema version 16
 
 * Remove enhancer- and promoter-like regions from annotation_type (now candidate regulatory elements)

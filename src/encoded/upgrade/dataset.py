@@ -330,3 +330,12 @@ def experiment_14_15(value, system):
         value['biosample_type'] = 'cell-free sample'
         value['biosample_term_id'] = 'NTR:0000471'
         value['biosample_term_name'] = 'none'
+
+
+@upgrade_step('experiment', '15', '16')
+@upgrade_step('annotation', '16', '17')
+def dataset_15_16(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3848
+    if value.get('biosample_type') == 'immortalized cell line':
+        value['biosample_type'] = "cell line"
+

@@ -440,42 +440,6 @@ def antibody_characterization(testapp, award, lab, target, antibody_lot, attachm
 
 
 @pytest.fixture
-def antibody_approval(testapp, award, lab, target, antibody_lot, antibody_characterization):
-    item = {
-        'antibody': antibody_lot['@id'],
-        'characterizations': [antibody_characterization['@id']],
-        'target': target['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'status': 'pending dcc review',
-    }
-    return testapp.post_json('/antibody_approval', item).json['@graph'][0]
-
-
-@pytest.fixture
-def rnai(testapp, lab, award, target):
-    item = {
-        'target': target['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'rnai_sequence': 'TATATGGGGAA',
-        'rnai_type': 'shRNA',
-    }
-    return testapp.post_json('/rnai', item).json['@graph'][0]
-
-@pytest.fixture
-def construct(testapp, lab, award, target, source, target_control):
-    item = {
-        'target': target['@id'],
-        'award': award['@id'],
-        'lab': lab['@id'],
-        'source': source['@id'],
-        'construct_type': 'fusion protein',
-        'tags': [{'name': 'eGFP', 'location': 'C-terminal'}],
-    }
-    return testapp.post_json('/construct', item).json['@graph'][0]
-
-@pytest.fixture
 def construct_genetic_modification(
         testapp,
         lab,
@@ -620,16 +584,6 @@ def analysis_step_run(testapp, analysis_step_version):
         'status': 'released',
     }
     return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
-
-
-@pytest.fixture
-def quality_metric(testapp, analysis_step_run, award, lab):
-    item = {
-        'step_run': analysis_step_run['@id'],
-        'award': award['@id'],
-        'lab': lab['@id']
-    }
-    return testapp.post_json('/fastqc_quality_metric', item).json['@graph'][0]
 
 
 @pytest.fixture

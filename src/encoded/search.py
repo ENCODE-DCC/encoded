@@ -6,13 +6,14 @@ from snovault import (
     TYPES,
 )
 from snovault.elasticsearch import ELASTIC_SEARCH
+from snovault.elasticsearch.create_mapping import TEXT_FIELDS
 from snovault.resource_views import collection_view_listing_db
 from elasticsearch.helpers import scan
 from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.security import effective_principals
 from urllib.parse import urlencode
 from collections import OrderedDict
-from .visualization import vis_format_url
+from .vis_defines import vis_format_url
 from collections import OrderedDict
 
 
@@ -43,6 +44,7 @@ DEFAULT_DOC_TYPES = [
     'Award',
     'Biosample',
     'Dataset',
+    'GeneticModification',
     'Page',
     'Pipeline',
     'Publication',
@@ -147,10 +149,11 @@ def set_sort_order(request, search_term, types, doc_types, query, result):
             name = requested_sort
             order = 'asc'
         # TODO: unmapped type needs to be determined, not hard coded
-        sort['embedded.' + name] = result_sort[name] = {
-            'order': order,
-            'unmapped_type': 'keyword',
-        }
+        if name not in TEXT_FIELDS:
+            sort['embedded.' + name] = result_sort[name] = {
+                'order': order,
+                'unmapped_type': 'keyword',
+            }
 
     # Otherwise we use a default sort only when there's no text search to be  ranked
     if not sort and search_term == '*':
@@ -944,6 +947,7 @@ def report(context, request):
     res['download_tsv'] = request.route_path('report_download') + search_base
     res['title'] = 'Report'
     res['@type'] = ['Report']
+    res['non_sortable'] = TEXT_FIELDS
     return res
 
 
@@ -1159,7 +1163,7 @@ def news(context, request):
                                sorted(list_result_fields(request, doc_types)),
                                principals,
                                doc_types)
-    
+
     # Keyword search on news items is not implemented yet
     del query['query']['query_string']
     # If searching for more than one type, don't specify which fields to search

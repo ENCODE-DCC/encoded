@@ -34,6 +34,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'donor.organism',
         'donor.characterizations',
         'donor.characterizations.award',
+        'donor.characterizations.documents',
         'donor.characterizations.lab',
         'donor.characterizations.submitted_by',
         'donor.documents',
@@ -69,6 +70,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         'characterizations.submitted_by',
         'characterizations.award',
         'characterizations.lab',
+        'characterizations.documents',
         'organism',
         'references',
         'applied_modifications',
@@ -395,10 +397,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
                 transfection_method=None,
                 transfection_type=None,
                 genetic_modifications=None,
-                model_organism_donor_modifications=None,
-                constructs=None,
-                model_organism_donor_constructs=None,
-                rnais=None):
+                model_organism_donor_modifications=None):
 
         sentence_parts = [
             'organism_name',
@@ -662,7 +661,7 @@ def generate_summary_dictionary(
                                                 's after the sample was ')
 
     if ('sample_type' in dict_of_phrases and
-        dict_of_phrases['sample_type'] != 'immortalized cell line') or \
+        dict_of_phrases['sample_type'] != 'cell line') or \
         ('sample_type' not in dict_of_phrases):
         phrase = ''
 

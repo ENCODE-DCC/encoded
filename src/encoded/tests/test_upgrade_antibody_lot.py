@@ -82,17 +82,6 @@ def test_antibody_lot_upgrade_status_deleted(upgrader, antibody_lot_2):
     assert value['status'] == 'deleted'
 
 
-def test_antibody_lot_upgrade_targets(
-        root, registry, upgrader, antibody_lot, antibody_lot_3, target,
-        antibody_approval, threadlocals, dummy_request):
-    context = root.get_by_uuid(antibody_lot['uuid'])
-    dummy_request.context = context
-    value = upgrader.upgrade(
-        'antibody_lot', antibody_lot_3, target_version='4', context=context, registry=registry)
-    assert value['schema_version'] == '4'
-    assert value['targets'] == [target['uuid']]
-
-
 def test_antibody_lot_unique_array(upgrader, antibody_lot_4):
     value = upgrader.upgrade('antibody_lot', antibody_lot_4, current_version='4', target_version='5')
     assert len(value['purifications']) == len(set(value['purifications']))

@@ -103,9 +103,12 @@ def check_control_read_depth_standards(value,
     # treat this file as control_bam - raising insufficient control read depth
     if is_control_file is True:
         if target_name not in ['Control-human', 'Control-mouse']:
-            detail = 'Control alignment file {} '.format(value['@id']) + \
-                     'has a target {} that is neither '.format(target_name) + \
-                     'Control-human nor Control-mouse.'
+            detail = ('Control {} file {} ' +
+                     'has a target {} that is neither ' +
+                     'Control-human nor Control-mouse.').format(
+                         value['output_type'],
+                         value['@id'],
+                         target_name)
             yield AuditFailure('inconsistent target of control experiment', detail, level='WARNING')
             return
 
@@ -115,24 +118,30 @@ def check_control_read_depth_standards(value,
         # control_to_target in broad_peaks_targets:
         elif 'broad histone mark' in target_investigated_as:
             if 'assembly' in value:
-                detail = 'Control alignment file {} mapped to {} assembly has {} '.format(
-                    value['@id'],
-                    value['assembly'],
-                    read_depth) + \
-                    'usable fragments. ' + \
-                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' + \
-                    'histone mark {} '.format(control_to_target) + \
-                    'is 35 million usable fragments, the recommended number of usable ' + \
-                    'fragments is > 45 million. (See /data-standards/chip-seq/ )'
+                detail = ('Control {} file {} mapped to {} assembly has {} ' +
+                    'usable fragments. ' +
+                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' +
+                    'histone mark {} ' +
+                    'is 35 million usable fragments, the recommended number of usable ' +
+                    'fragments is > 45 million. (See /data-standards/chip-seq/ )').format(
+                        value['output_type'],
+                        value['@id'],
+                        value['assembly'],
+                        read_depth,
+                        control_to_target
+                    )
             else:
-                detail = 'Control alignment file {} has {} '.format(
-                    value['@id'],
-                    read_depth) + \
-                    'usable fragments. ' + \
-                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' + \
-                    'histone mark {} '.format(control_to_target) + \
-                    'is 35 million usable fragments, the recommended number of usable ' + \
-                    'fragments is > 45 million. (See /data-standards/chip-seq/ )'
+                detail = ('Control {} file {} has {} ' +
+                    'usable fragments. ' +
+                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' +
+                    'histone mark {} ' +
+                    'is 35 million usable fragments, the recommended number of usable ' +
+                    'fragments is > 45 million. (See /data-standards/chip-seq/ )').format(
+                        value['output_type'],
+                        value['@id'],
+                        read_depth,
+                        control_to_target
+                    )
             if read_depth >= marks['broad']['minimal'] and read_depth < marks['broad']['recommended']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth >= marks['broad']['low'] and read_depth < marks['broad']['minimal']:
@@ -141,24 +150,30 @@ def check_control_read_depth_standards(value,
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
         elif 'narrow histone mark' in target_investigated_as:  # else:
             if 'assembly' in value:
-                detail = 'Control alignment file {} mapped to {} assembly has {} '.format(
-                    value['@id'],
-                    value['assembly'],
-                    read_depth) + \
-                    'usable fragments. ' + \
-                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting narrow ' + \
-                    'histone mark {} '.format(control_to_target) + \
-                    'is 10 million usable fragments, the recommended number of usable ' + \
-                    'fragments is > 20 million. (See /data-standards/chip-seq/ )'
+                detail = ('Control {} file {} mapped to {} assembly has {} ' +
+                    'usable fragments. ' +
+                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting narrow ' +
+                    'histone mark {} ' +
+                    'is 10 million usable fragments, the recommended number of usable ' +
+                    'fragments is > 20 million. (See /data-standards/chip-seq/ )').format(
+                        value['output_type'],
+                        value['@id'],
+                        value['assembly'],
+                        read_depth,
+                        control_to_target
+                    )
             else:
-                detail = 'Control alignment file {} has {} '.format(
-                    value['@id'],
-                    read_depth) + \
-                    'usable fragments. ' + \
-                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting narrow ' + \
-                    'histone mark {} '.format(control_to_target) + \
-                    'is 10 million usable fragments, the recommended number of usable ' + \
-                    'fragments is > 20 million. (See /data-standards/chip-seq/ )'
+                detail = ('Control {} file {} has {} ' +
+                    'usable fragments. ' +
+                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting narrow ' +
+                    'histone mark {} ' +
+                    'is 10 million usable fragments, the recommended number of usable ' +
+                    'fragments is > 20 million. (See /data-standards/chip-seq/ )').format(
+                        value['output_type'],
+                        value['@id'],
+                        read_depth,
+                        control_to_target                       
+                    )
             if read_depth >= marks['narrow']['minimal'] and read_depth < marks['narrow']['recommended']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth >= marks['narrow']['low'] and read_depth < marks['narrow']['minimal']:
@@ -167,24 +182,30 @@ def check_control_read_depth_standards(value,
                 yield AuditFailure('control extremely low read depth', detail, level='ERROR')
         else:
             if 'assembly' in value:
-                detail = 'Control alignment file {} mapped to {} assembly has {} '.format(
-                    value['@id'],
-                    value['assembly'],
-                    read_depth) + \
-                    'usable fragments. ' + \
-                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting ' + \
-                    '{} and investigated as a transcription factor '.format(control_to_target) + \
-                    'is 10 million usable fragments, the recommended number of usable ' + \
-                    'fragments is > 20 million. (See /data-standards/chip-seq/ )'
+                detail = ('Control {} file {} mapped to {} assembly has {} ' +
+                    'usable fragments. ' +
+                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting ' +
+                    '{} and investigated as a transcription factor ' +
+                    'is 10 million usable fragments, the recommended number of usable ' +
+                    'fragments is > 20 million. (See /data-standards/chip-seq/ )').format(
+                        value['output_type'],
+                        value['@id'],
+                        value['assembly'],
+                        read_depth,
+                        control_to_target
+                    )
             else:
-                detail = 'Control alignment file {} has {} '.format(
-                    value['@id'],
-                    read_depth) + \
-                    'usable fragments. ' + \
-                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting ' + \
-                    '{} and investigated as a transcription factor '.format(control_to_target) + \
-                    'is 10 million usable fragments, the recommended number of usable ' + \
-                    'fragments is > 20 million. (See /data-standards/chip-seq/ )'
+                detail = ('Control {} file {} has {} ' +
+                    'usable fragments. ' +
+                    'The minimum ENCODE standard for a control of ChIP-seq assays targeting ' +
+                    '{} and investigated as a transcription factor ' +
+                    'is 10 million usable fragments, the recommended number of usable ' +
+                    'fragments is > 20 million. (See /data-standards/chip-seq/ )').format(
+                        value['output_type'],
+                        value['@id'],
+                        read_depth,
+                        control_to_target
+                    )
             if read_depth >= marks['TF']['minimal'] and read_depth < marks['TF']['recommended']:
                 yield AuditFailure('control low read depth', detail, level='WARNING')
             elif read_depth >= marks['TF']['low'] and read_depth < marks['TF']['minimal']:
@@ -246,15 +267,20 @@ def audit_experiment_missing_unfiltered_bams(value, system, files_structure):
             get_pipeline_objects(files_structure.get('alignments').values())):
         for filtered_file in files_structure.get('alignments').values():
             if has_only_raw_files_in_derived_from(filtered_file, files_structure) and \
+               filtered_file.get('lab') == '/labs/encode-processing-pipeline/' and \
                has_no_unfiltered(filtered_file,
                                  files_structure.get('unfiltered_alignments').values()):
-
-                detail = 'Experiment {} contains biological replicate '.format(value['@id']) + \
-                         '{} '.format(filtered_file['biological_replicates']) + \
-                         'with a filtered alignments file {}, mapped to '.format(
-                             filtered_file['@id']) + \
-                         'a {} assembly, '.format(filtered_file['assembly']) + \
-                         'but has no unfiltered alignments file.'
+                detail = ('Experiment {} contains biological replicate '
+                         '{} with a filtered {} file {}, mapped to '
+                         'a {} assembly, but has no unfiltered '
+                         '{} file.').format(
+                             value['@id'],
+                             filtered_file['biological_replicates'],
+                             filtered_file['output_type'],
+                             filtered_file['@id'],
+                             filtered_file['assembly'],
+                             filtered_file['output_type']
+                         )
                 yield AuditFailure('missing unfiltered alignments', detail, level='INTERNAL_ACTION')
     return
 
@@ -302,10 +328,11 @@ def audit_experiment_out_of_date_analysis(value, system, files_structure):
                     if bam_file.get('assembly'):
                         assembly_detail = ' for {} assembly '.format(
                             bam_file['assembly'])
-                    detail = 'Experiment {} '\
-                             'alignment file {}{}'\
-                             'is out of date.'.format(
+                    detail = ('Experiment {} ' +
+                             '{} file {} mapped to {}' +
+                             'is out of date.').format(
                                 value['@id'],
+                                bam_file['output_type'],
                                 bam_file['@id'],
                                 assembly_detail)
                     yield AuditFailure('out of date analysis', detail, level='INTERNAL_ACTION')
@@ -1191,34 +1218,29 @@ def check_file_chip_seq_library_complexity(alignment_file):
 
         if 'NRF' in metric:
             NRF_value = float(metric['NRF'])
+            detail = (nrf_detail + 'ENCODE processed {} file {} ' +
+                     'was generated from a library with ' +
+                     'NRF value of {:.2f}.').format(
+                         alignment_file['output_type'],
+                         alignment_file['@id'],
+                         NRF_value)
             if NRF_value < 0.5:
-                detail = nrf_detail + 'ENCODE processed alignment file {} '.format(
-                    alignment_file['@id']) + \
-                    'was generated from a library with ' + \
-                    'NRF value of {0:.2f}.'.format(NRF_value)
                 yield AuditFailure('poor library complexity', detail,
                                    level='NOT_COMPLIANT')
             elif NRF_value >= 0.5 and NRF_value < 0.8:
-                detail = nrf_detail + 'ENCODE Processed alignment file {} '.format(
-                    alignment_file['@id']) + \
-                    'was generated from a library with NRF value of {0:.2f}.'.format(
-                        NRF_value)
                 yield AuditFailure('moderate library complexity', detail,
                                    level='WARNING')
         if 'PBC1' in metric:
             PBC1_value = float(metric['PBC1'])
+            detail = (pbc1_detail + 'ENCODE processed {} file {} ' +
+                     'was generated from a library with PBC1 value of {:.2f}.').format(
+                         alignment_file['output_type'],
+                         alignment_file['@id'],
+                         PBC1_value)
             if PBC1_value < 0.5:
-                detail = pbc1_detail + 'ENCODE processed alignment file {} '.format(
-                    alignment_file['@id']) + \
-                    'was generated from a library with PBC1 value of {0:.2f}.'.format(
-                        PBC1_value)
                 yield AuditFailure('severe bottlenecking', detail,
                                    level='NOT_COMPLIANT')
             elif PBC1_value >= 0.5 and PBC1_value < 0.9:
-                detail = pbc1_detail + 'ENCODE processed alignment file {} '.format(
-                    alignment_file['@id']) + \
-                    'was generated from a library with PBC1 value of {0:.2f}.'.format(
-                        PBC1_value)
                 yield AuditFailure('mild to moderate bottlenecking', detail,
                                    level='WARNING')
         if 'PBC2' in metric:
@@ -1227,18 +1249,15 @@ def check_file_chip_seq_library_complexity(alignment_file):
                 PBC2_value = float('inf')
             else:
                 PBC2_value = float(metric['PBC2'])
-            if PBC2_value < 1:
-                detail = pbc2_detail + 'ENCODE processed alignment file {} '.format(
-                    alignment_file['@id']) + \
-                    'was generated from a library with PBC2 value of {0:.2f}.'.format(
-                        PBC2_value)
+            detail = (pbc2_detail + 'ENCODE processed {} file {} ' +
+                     'was generated from a library with PBC2 value of {:.2f}.').format(
+                         alignment_file['output_type'],
+                         alignment_file['@id'],
+                         PBC2_value)
+            if PBC2_value < 1: 
                 yield AuditFailure('severe bottlenecking', detail,
                                    level='NOT_COMPLIANT')
             elif PBC2_value >= 1 and PBC2_value < 10:
-                detail = pbc2_detail + 'ENCODE processed alignment file {} '.format(
-                    alignment_file['@id']) + \
-                    'was generated from a library with PBC2 value of {0:.2f}.'.format(
-                        PBC2_value)
                 yield AuditFailure('mild to moderate bottlenecking', detail,
                                    level='WARNING')
     return
@@ -1334,7 +1353,8 @@ def check_file_chip_seq_read_depth(file_to_check,
     modERN_cutoff = pipelines_with_read_depth[
         'Transcription factor ChIP-seq pipeline (modERN)']
     if read_depth is False:
-        detail = 'ENCODE Processed alignment file {} has no read depth information.'.format(
+        detail = 'ENCODE processed {} file {} has no read depth information.'.format(
+            file_to_check['output_type'],
             file_to_check['@id'])
         yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
         return
@@ -1363,51 +1383,57 @@ def check_file_chip_seq_read_depth(file_to_check,
         else:
             if read_depth >= marks['narrow']['recommended'] and read_depth < marks['broad']['recommended']:
                 if 'assembly' in file_to_check:
-                    detail = 'Control alignment file {} mapped using {} assembly has {} '.format(
-                        file_to_check['@id'],
-                        file_to_check['assembly'],
-                        read_depth) + \
-                        'usable fragments. ' + \
-                        'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' + \
-                        'histone marks ' + \
-                        'is 20 million usable fragments, the recommended number of usable ' + \
-                        'fragments is > 45 million. (See /data-standards/chip-seq/ )'
+                    detail = ('Control {} file {} mapped using {} assembly has {} ' +
+                        'usable fragments. ' +
+                        'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' +
+                        'histone marks ' +
+                        'is 20 million usable fragments, the recommended number of usable ' +
+                        'fragments is > 45 million. (See /data-standards/chip-seq/ )').format(
+                            file_to_check['output_type'],
+                            file_to_check['@id'],
+                            file_to_check['assembly'],
+                            read_depth)
                 else:
-                    detail = 'Control alignment file {} has {} '.format(file_to_check['@id'],
-                                                                        read_depth) + \
-                        'usable fragments. ' + \
-                        'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' + \
-                        'histone marks ' + \
-                        'is 20 million usable fragments, the recommended number of usable ' + \
-                        'fragments is > 45 million. (See /data-standards/chip-seq/ )'
+                    detail = ('Control {} file {} has {} ' +
+                        'usable fragments. ' +
+                        'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' +
+                        'histone marks ' +
+                        'is 20 million usable fragments, the recommended number of usable ' +
+                        'fragments is > 45 million. (See /data-standards/chip-seq/ )').format(
+                            file_to_check['output_type'],
+                            file_to_check['@id'],
+                            read_depth)
                 yield AuditFailure('insufficient read depth for broad peaks control', detail, level='INTERNAL_ACTION')
             if read_depth < marks['narrow']['recommended']:
                 if 'assembly' in file_to_check:
-                    detail = 'Control alignment file {} mapped using {} assembly has {} '.format(
-                        file_to_check['@id'],
-                        file_to_check['assembly'],
-                        read_depth) + \
-                        'usable fragments. ' + \
-                        'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' + \
-                        'histone marks ' + \
-                        'is 20 million usable fragments, the recommended number of usable ' + \
-                        'fragments is > 45 million. ' + \
-                        'The minimum for a control of ChIP-seq assays targeting narrow ' + \
-                        'histone marks or transcription factors ' + \
-                        'is 10 million usable fragments, the recommended number of usable ' + \
-                        'fragments is > 20 million. (See /data-standards/chip-seq/ )'
+                    detail = ('Control {} file {} mapped using {} assembly has {} ' +
+                        'usable fragments. ' +
+                        'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' +
+                        'histone marks ' +
+                        'is 20 million usable fragments, the recommended number of usable ' +
+                        'fragments is > 45 million. ' +
+                        'The minimum for a control of ChIP-seq assays targeting narrow ' +
+                        'histone marks or transcription factors ' +
+                        'is 10 million usable fragments, the recommended number of usable ' +
+                        'fragments is > 20 million. (See /data-standards/chip-seq/ )').format(
+                            file_to_check['output_type'],
+                            file_to_check['@id'],
+                            file_to_check['assembly'],
+                            read_depth)
                 else:
-                    detail = 'Control alignment file {} has {} '.format(file_to_check['@id'],
-                                                                        read_depth) + \
-                        'usable fragments. ' + \
-                        'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' + \
-                        'histone marks ' + \
-                        'is 20 million usable fragments, the recommended number of usable ' + \
-                        'fragments is > 45 million. ' + \
-                        'The minimum for a control of ChIP-seq assays targeting narrow ' + \
-                        'histone marks or transcription factors ' + \
-                        'is 10 million usable fragments, the recommended number of usable ' + \
-                        'fragments is > 20 million. (See /data-standards/chip-seq/ )'
+                    detail = ('Control {} file {} has {} ' +
+                        'usable fragments. ' +
+                        'The minimum ENCODE standard for a control of ChIP-seq assays targeting broad ' +
+                        'histone marks ' +
+                        'is 20 million usable fragments, the recommended number of usable ' +
+                        'fragments is > 45 million. ' +
+                        'The minimum for a control of ChIP-seq assays targeting narrow ' +
+                        'histone marks or transcription factors ' +
+                        'is 10 million usable fragments, the recommended number of usable ' +
+                        'fragments is > 20 million. (See /data-standards/chip-seq/ )').format(
+                            file_to_check['output_type'],
+                            file_to_check['@id'],
+                            read_depth)
                 if read_depth >= marks['narrow']['minimal']:
                     yield AuditFailure('low read depth', detail, level='WARNING')
                 elif read_depth >= marks['narrow']['low'] and read_depth < marks['narrow']['minimal']:
@@ -1424,29 +1450,35 @@ def check_file_chip_seq_read_depth(file_to_check,
             if target_name in ['H3K9me3-human', 'H3K9me3-mouse']:
                 if read_depth < marks['broad']['recommended']:
                     if 'assembly' in file_to_check:
-                        detail = 'Alignment file {} '.format(file_to_check['@id']) + \
-                            'produced by {} '.format(pipeline_object['title']) + \
-                            'pipeline ( {} ) using the {} assembly '.format(
+                        detail = ('Processed {} file {} produced by {} ' +
+                            'pipeline ( {} ) using the {} assembly ' +
+                            'has {} mapped reads. ' +
+                            'The minimum ENCODE standard for each replicate in a ChIP-seq ' +
+                            'experiment targeting {} and investigated as ' +
+                            'a broad histone mark is 35 million mapped reads. ' +
+                            'The recommended value is > 45 million, but > 35 million is ' +
+                            'acceptable. (See /data-standards/chip-seq/ )').format(
+                                file_to_check['output_type'],
+                                file_to_check['@id'],
+                                pipeline_object['title'],
                                 pipeline_object['@id'],
-                                file_to_check['assembly']) + \
-                            'has {} '.format(read_depth) + \
-                            'mapped reads. ' + \
-                            'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
-                            'experiment targeting {} and investigated as '.format(target_name) + \
-                            'a broad histone mark is 35 million mapped reads. ' + \
-                            'The recommended value is > 45 million, but > 35 million is ' + \
-                            'acceptable. (See /data-standards/chip-seq/ )'
+                                file_to_check['assembly'],
+                                read_depth,
+                                target_name)
                     else:
-                        detail = 'Alignment file {} '.format(file_to_check['@id']) + \
-                            'produced by {} '.format(pipeline_object['title']) + \
-                            'pipeline ( {} ) '.format(pipeline_object['@id']) + \
-                            'has {} '.format(read_depth) + \
-                            'mapped reads. ' + \
-                            'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
-                            'experiment targeting {} and investigated as '.format(target_name) + \
-                            'a broad histone mark is 35 million mapped reads. ' + \
-                            'The recommended value is > 45 million, but > 35 million is ' + \
-                            'acceptable. (See /data-standards/chip-seq/ )'
+                        detail = ('Processed {} file {} produced by {} ' +
+                            'pipeline ( {} ) has {} mapped reads. ' +
+                            'The minimum ENCODE standard for each replicate in a ChIP-seq ' +
+                            'experiment targeting {} and investigated as ' +
+                            'a broad histone mark is 35 million mapped reads. ' +
+                            'The recommended value is > 45 million, but > 35 million is ' +
+                            'acceptable. (See /data-standards/chip-seq/ )').format(
+                                file_to_check['output_type'],
+                                file_to_check['@id'],
+                                pipeline_object['title'],
+                                pipeline_object['@id'],
+                                read_depth,
+                                target_name)
                     if read_depth >= marks['broad']['minimal']:
                         yield AuditFailure('low read depth',
                                            detail, level='WARNING')
@@ -1458,29 +1490,35 @@ def check_file_chip_seq_read_depth(file_to_check,
                                            detail, level='ERROR')
             else:
                 if 'assembly' in file_to_check:
-                    detail = 'Alignment file {} '.format(file_to_check['@id']) + \
-                        'produced by {} '.format(pipeline_object['title']) + \
-                        'pipeline ( {} ) using the {} assembly '.format(
-                            pipeline_object['@id'],
-                            file_to_check['assembly']) + \
-                        'has {} '.format(read_depth) + \
-                        'usable fragments. ' + \
-                        'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
-                        'experiment targeting {} and investigated as '.format(target_name) + \
-                        'a broad histone mark is 20 million usable fragments. ' + \
-                        'The recommended value is > 45 million, but > 35 million is ' + \
-                        'acceptable. (See /data-standards/chip-seq/ )'
+                    detail = ('Processed {} file {} produced by {} ' +
+                        'pipeline ( {} ) using the {} assembly ' +
+                        'has {} usable fragments. ' +
+                        'The minimum ENCODE standard for each replicate in a ChIP-seq ' +
+                        'experiment targeting {} and investigated as ' +
+                        'a broad histone mark is 20 million usable fragments. ' +
+                        'The recommended value is > 45 million, but > 35 million is ' +
+                        'acceptable. (See /data-standards/chip-seq/ )').format(
+                                file_to_check['output_type'],
+                                file_to_check['@id'],
+                                pipeline_object['title'],
+                                pipeline_object['@id'],
+                                file_to_check['assembly'],
+                                read_depth,
+                                target_name)
                 else:
-                    detail = 'Alignment file {} '.format(file_to_check['@id']) + \
-                        'produced by {} '.format(pipeline_object['title']) + \
-                        'pipeline ( {} ) '.format(pipeline_object['@id']) + \
-                        'has {} '.format(read_depth) + \
-                        'usable fragments. ' + \
-                        'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
-                        'experiment targeting {} and investigated as '.format(target_name) + \
-                        'a broad histone mark is 20 million usable fragments. ' + \
-                        'The recommended value is > 45 million, but > 35 million is ' + \
-                        'acceptable. (See /data-standards/chip-seq/ )'
+                    detail = ('Processed {} file {} produced by {} ' +
+                        'pipeline ( {} ) has {} usable fragments. ' +
+                        'The minimum ENCODE standard for each replicate in a ChIP-seq ' +
+                        'experiment targeting {} and investigated as ' +
+                        'a broad histone mark is 20 million usable fragments. ' +
+                        'The recommended value is > 45 million, but > 35 million is ' +
+                        'acceptable. (See /data-standards/chip-seq/ )').format(
+                            file_to_check['output_type'],
+                            file_to_check['@id'],
+                            pipeline_object['title'],
+                            pipeline_object['@id'],
+                            read_depth,
+                            target_name)
 
                 if read_depth >= marks['broad']['minimal'] and read_depth < marks['broad']['recommended']:
                     yield AuditFailure('low read depth',
@@ -1497,29 +1535,35 @@ def check_file_chip_seq_read_depth(file_to_check,
             pipeline_objects, 'ChIP-seq read mapping')
         if pipeline_object:
             if 'assembly' in file_to_check:
-                detail = 'Alignment file {} '.format(file_to_check['@id']) + \
-                    'produced by {} '.format(pipeline_object['title']) + \
-                    'pipeline ( {} ) using the {} assembly '.format(
-                        pipeline_object['@id'],
-                        file_to_check['assembly']) + \
-                    'has {} '.format(read_depth) + \
-                    'usable fragments. ' + \
-                    'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
-                    'experiment targeting {} and investigated as '.format(target_name) + \
-                    'a narrow histone mark is 10 million usable fragments. ' + \
-                    'The recommended value is > 20 million, but > 10 million is ' + \
-                    'acceptable. (See /data-standards/chip-seq/ )'
+                detail = ('Processed {} file {} produced by {} ' +
+                    'pipeline ( {} ) using the {} assembly '+
+                    'has {} usable fragments. ' +
+                    'The minimum ENCODE standard for each replicate in a ChIP-seq ' +
+                    'experiment targeting {} and investigated as ' +
+                    'a narrow histone mark is 10 million usable fragments. ' +
+                    'The recommended value is > 20 million, but > 10 million is ' +
+                    'acceptable. (See /data-standards/chip-seq/ )').format(
+                                file_to_check['output_type'],
+                                file_to_check['@id'],
+                                pipeline_object['title'],
+                                pipeline_object['@id'],
+                                file_to_check['assembly'],
+                                read_depth,
+                                target_name)
             else:
-                detail = 'Alignment file {} '.format(file_to_check['@id']) + \
-                    'produced by {} '.format(pipeline_object['title']) + \
-                    'pipeline ( {} ) '.format(pipeline_object['@id']) + \
-                    'has {} '.format(read_depth) + \
-                    'usable fragments. ' + \
-                    'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
-                    'experiment targeting {} and investigated as '.format(target_name) + \
-                    'a narrow histone mark is 10 million usable fragments. ' + \
-                    'The recommended value is > 20 million, but > 10 million is ' + \
-                    'acceptable. (See /data-standards/chip-seq/ )'
+                detail = ('Processed {} file {} produced by {} ' +
+                    'pipeline ( {} ) has {} usable fragments. ' +
+                    'The minimum ENCODE standard for each replicate in a ChIP-seq ' +
+                    'experiment targeting {} and investigated as ' +
+                    'a narrow histone mark is 10 million usable fragments. ' +
+                    'The recommended value is > 20 million, but > 10 million is ' +
+                    'acceptable. (See /data-standards/chip-seq/ )').format(
+                            file_to_check['output_type'],
+                            file_to_check['@id'],
+                            pipeline_object['title'],
+                            pipeline_object['@id'],
+                            read_depth,
+                            target_name)
             if read_depth >= marks['narrow']['minimal'] and read_depth < marks['narrow']['recommended']:
                 yield AuditFailure('low read depth', detail, level='WARNING')
             elif read_depth < marks['narrow']['minimal'] and read_depth >= marks['narrow']['low']:
@@ -1545,29 +1589,35 @@ def check_file_chip_seq_read_depth(file_to_check,
                                                    'ChIP-seq read mapping')
             if pipeline_object:
                 if 'assembly' in file_to_check:
-                    detail = 'Alignment file {} '.format(file_to_check['@id']) + \
-                        'produced by {} '.format(pipeline_object['title']) + \
-                        'pipeline ( {} ) using the {} assembly '.format(
+                    detail = ('Processed {} file {} produced by {} ' +
+                        'pipeline ( {} ) using the {} assembly has {} ' +
+                        'usable fragments. ' +
+                        'The minimum ENCODE standard for each replicate in a ChIP-seq ' +
+                        'experiment targeting {} and investigated as ' +
+                        'a transcription factor is 10 million usable fragments. ' +
+                        'The recommended value is > 20 million, but > 10 million is ' +
+                        'acceptable. (See /data-standards/chip-seq/ )').format(
+                            file_to_check['output_type'],
+                            file_to_check['@id'],
+                            pipeline_object['title'],
                             pipeline_object['@id'],
-                            file_to_check['assembly']) + \
-                        'has {} '.format(read_depth) + \
-                        'usable fragments. ' + \
-                        'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
-                        'experiment targeting {} and investigated as '.format(target_name) + \
-                        'a transcription factor is 10 million usable fragments. ' + \
-                        'The recommended value is > 20 million, but > 10 million is ' + \
-                        'acceptable. (See /data-standards/chip-seq/ )'
+                            file_to_check['assembly'],
+                            read_depth,
+                            target_name)
                 else:
-                    detail = 'Alignment file {} '.format(file_to_check['@id']) + \
-                        'produced by {} '.format(pipeline_object['title']) + \
-                        'pipeline ( {} ) '.format(pipeline_object['@id']) + \
-                        'has {} '.format(read_depth) + \
-                        'usable fragments. ' + \
-                        'The minimum ENCODE standard for each replicate in a ChIP-seq ' + \
-                        'experiment targeting {} and investigated as '.format(target_name) + \
-                        'a transcription factor is 10 million usable fragments. ' + \
-                        'The recommended value is > 20 million, but > 10 million is ' + \
-                        'acceptable. (See /data-standards/chip-seq/ )'
+                    detail = ('Processed {} file {} roduced by {} ' +
+                        'pipeline ( {} ) has {} usable fragments. ' +
+                        'The minimum ENCODE standard for each replicate in a ChIP-seq ' +
+                        'experiment targeting {} and investigated as ' +
+                        'a transcription factor is 10 million usable fragments. ' +
+                        'The recommended value is > 20 million, but > 10 million is ' +
+                        'acceptable. (See /data-standards/chip-seq/ )').format(
+                            file_to_check['output_type'],
+                            file_to_check['@id'],
+                            pipeline_object['title'],
+                            pipeline_object['@id'],
+                            read_depth,
+                            target_name)
                 if read_depth >= marks['TF']['minimal'] and read_depth < marks['TF']['recommended']:
                     yield AuditFailure('low read depth', detail, level='WARNING')
                 elif read_depth < marks['TF']['minimal'] and read_depth >= marks['TF']['low']:
@@ -1589,7 +1639,8 @@ def check_file_read_depth(file_to_check,
                           pipeline,
                           standards_link):
     if read_depth is False:
-        detail = 'Alignment file {} has no read depth information.'.format(
+        detail = 'Processed {} file {} has no read depth information.'.format(
+            file_to_check['output_type'],
             file_to_check['@id'])
         yield AuditFailure('missing read depth', detail, level='INTERNAL_ACTION')
         return
@@ -1604,16 +1655,24 @@ def check_file_read_depth(file_to_check,
                 '{} assay is {} aligned reads. '.format(assay_term_name, middle_threshold) + \
                 '(See {} )'.format(standards_link)
         if 'assembly' in file_to_check:
-            detail = 'Alignment file {} produced by {} '.format(file_to_check['@id'],
-                                                                pipeline_title) + \
-                     'pipeline ( {} ) using the {} assembly has {} aligned reads. '.format(
-                         pipeline['@id'], file_to_check['assembly'], read_depth) + \
-                     second_half_of_detail
+            detail = ('Processed {} file {} produced by {} ' +
+                     'pipeline ( {} ) using the {} assembly has {} aligned reads. ' +
+                     second_half_of_detail).format(
+                         file_to_check['output_type'],
+                         file_to_check['@id'],
+                         pipeline_title,
+                         pipeline['@id'],
+                         file_to_check['assembly'],
+                         read_depth)
         else:
-            detail = 'Alignment file {} produced by {} '.format(file_to_check['@id'],
-                                                                pipeline_title) + \
-                     'pipeline ( {} ) has {} aligned reads. '.format(pipeline['@id'], read_depth) + \
-                     second_half_of_detail
+            detail = ('Processed {} file {} produced by {} ' +
+                     'pipeline ( {} ) has {} aligned reads. ' +
+                     second_half_of_detail).format(
+                         file_to_check['output_type'],
+                         file_to_check['@id'],
+                         pipeline_title,
+                         pipeline['@id'],
+                         read_depth)
         if read_depth >= middle_threshold and read_depth < upper_threshold:
             yield AuditFailure('low read depth', detail, level='WARNING')
         elif read_depth >= lower_threshold and read_depth < middle_threshold:
@@ -2826,9 +2885,13 @@ def audit_experiment_mapped_read_length(value, system, files_structure):
                     if mapped_read_length:
                         read_lengths_set.add(mapped_read_length)
                     else:
-                        detail = 'Experiment {} '.format(value['@id']) + \
-                                 'contains an alignments .bam file {} '.format(bam_file['@id']) + \
-                                 'that lacks mapped reads length information.'
+                        detail = ('Experiment {} ' +
+                                  'contains a processed {} .bam file {} ' +
+                                  'that lacks mapped reads ' + 
+                                  'length information.').format(
+                                      value['@id'],
+                                      bam_file['output_type'],
+                                      bam_file['@id'])                                 
                         yield AuditFailure('missing mapped reads lengths', detail,
                                            level='INTERNAL_ACTION')
             if len(read_lengths_set) > 1:
@@ -2841,6 +2904,28 @@ def audit_experiment_mapped_read_length(value, system, files_structure):
                     yield AuditFailure('inconsistent mapped reads lengths',
                                        detail, level='INTERNAL_ACTION')
     return
+
+
+def audit_experiment_nih_institutional_certification(value, system, excluded_types):
+    '''
+    Check if ENCODE4 experiment uses biosample without NIH institutional certification.
+    '''
+    # Only check ENCODE4 experiments. 
+    if value.get('award', {}).get('rfa') != 'ENCODE4':
+        return
+    # Build up list of human biosamples missing NIC used in experiment. 
+    human_biosamples_missing_hic = {
+        b['@id']
+        for b in get_biosamples(value)
+        if (b.get('organism') == '/organisms/human/'
+            and not b.get('nih_institutional_certification'))
+    }
+    # Yield AuditFailure for unique biosamples.
+    for b in human_biosamples_missing_hic:
+        detail = ('Experiment {} uses biosample {} missing NIH institutional'
+                  ' certification required for human data'.format(value['@id'], b))
+        yield AuditFailure('missing nih_institutional_certification', detail, level='ERROR')
+
 
 
 #######################
@@ -3111,7 +3196,8 @@ def get_chip_seq_bam_read_depth(bam_file):
     if bam_file['status'] in ['deleted', 'replaced']:
         return False
 
-    if bam_file['file_format'] != 'bam' or bam_file['output_type'] != 'alignments':
+    if bam_file['file_format'] != 'bam' or \
+        bam_file['output_type'] not in ['alignments', 'redacted alignments']:
         return False
 
     # Check to see if bam is from ENCODE or modERN pipelines
@@ -3170,11 +3256,15 @@ def create_files_mapping(files_list, excluded):
                     to_return['fastq_files'][file_object['@id']] = file_object
 
                 if file_format and file_format == 'bam' and \
-                        file_output and file_output == 'alignments':
+                        file_output and (
+                            file_output == 'alignments' or
+                            file_output and file_output == 'redacted alignments'):
                     to_return['alignments'][file_object['@id']] = file_object
 
                 if file_format and file_format == 'bam' and \
-                        file_output and file_output == 'unfiltered alignments':
+                        file_output and (
+                            file_output == 'unfiltered alignments' or
+                            file_output == 'redacted unfiltered alignments'):
                     to_return['unfiltered_alignments'][file_object['@id']
                                                        ] = file_object
 
@@ -3416,7 +3506,6 @@ def is_gtex_experiment(experiment_to_check):
 def check_award_condition(experiment, awards):
     return experiment.get('award') and experiment.get('award')['rfa'] in awards
 
-
 function_dispatcher_without_files = {
     'audit_isogeneity': audit_experiment_isogeneity,
     'audit_replicate_biosample': audit_experiment_replicates_biosample,
@@ -3434,7 +3523,8 @@ function_dispatcher_without_files = {
     'audit_missing_modifiction': audit_missing_modification,
     'audit_AB_characterization': audit_experiment_antibody_characterized,
     'audit_control': audit_experiment_control,
-    'audit_spikeins': audit_experiment_spikeins
+    'audit_spikeins': audit_experiment_spikeins,
+    'audit_nih_consent': audit_experiment_nih_institutional_certification,
 }
 
 function_dispatcher_with_files = {
@@ -3466,10 +3556,6 @@ function_dispatcher_with_files = {
         'replicates.library.biosample.applied_modifications',
         'replicates.library.biosample.applied_modifications.modified_site_by_target_id',
         'replicates.library.biosample.donor',
-        'replicates.library.biosample.constructs',
-        'replicates.library.biosample.constructs.target',
-        'replicates.library.biosample.model_organism_donor_constructs',
-        'replicates.library.biosample.model_organism_donor_constructs.target',
         'replicates.antibody',
         'replicates.antibody.targets',
         'replicates.antibody.lot_reviews',

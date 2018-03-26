@@ -29,10 +29,10 @@
     ],
     "dependencies": {
         "phase": {
-            "comment": "The phase property is restricted to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "comment": "The phase property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "properties": {
                 "biosample_type": {
-                    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                    "enum": ["primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
                 }
             }
         },
@@ -67,7 +67,7 @@
                     "properties": {
                         "biosample_type": {
                             "enum" : [
-                                "immortalized cell line",
+                                "cell line",
                                 "induced pluripotent stem cell line"                               
                             ]
                         },
@@ -161,18 +161,18 @@
             }
         },
         "culture_harvest_date":{
-            "comment": "The culture_harvest_date property is restricted to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "comment": "The culture_harvest_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "properties": {
                 "biosample_type": {
-                    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                    "enum": ["primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
                 }
             }
         },
         "culture_start_date": {
-            "comment": "The culture_start_date property is restricted to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "comment": "The culture_start_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "properties": {
                 "biosample_type": {
-                    "enum": ["primary cell", "immortalized cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                    "enum": ["primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
                 }
             }
         },
@@ -244,7 +244,7 @@
                                 "biosample_type": {
                                     "enum": [
                                         "primary cell",
-                                        "immortalized cell line",
+                                        "cell line",
                                         "tissue",
                                         "in vitro differentiated cells",
                                         "induced pluripotent stem cell line",
@@ -379,7 +379,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "19"
+            "default": "20"
         },
         "accession": {
             "accessionType": "BS"
@@ -579,7 +579,7 @@
         "phase": {
             "title": "Cell-cycle phase",
             "description": "Specification of cell cycle phase of the biosample.",
-            "comment": "The phase property is restricted to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "comment": "The phase property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "type": "string",
             "enum": [
                 "G1",
@@ -597,14 +597,14 @@
         "culture_harvest_date": {
             "title": "Culture harvest date",
             "description": "For cultured samples, the date the biosample was taken.",
-            "comment": "Date should be submitted in as YYYY-MM-DD. The property is limited to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "comment": "Date should be submitted in as YYYY-MM-DD. The property is limited to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "type": "string",
             "format": "date"
         },
         "culture_start_date": {
             "title": "Culture start date",
             "description": "For cultured samples, the date the culture was started. For cell lines, the date this particular growth was started, not the date the line was established.",
-            "comment": "Date should be submitted in as YYYY-MM-DD. The property is limited to biosamples with biosample_type that belongs to [primary cell, immortalized cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "comment": "Date should be submitted in as YYYY-MM-DD. The property is limited to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "type": "string",            
             "format": "date"
         },
@@ -878,6 +878,10 @@
         },
         "award.rfa": {
             "title": "RFA"
+        },
+        "nih_institutional_certification": {
+            "type": "exists",
+            "title": "Has NIH institutional certification"
         }
     },
     "columns": {

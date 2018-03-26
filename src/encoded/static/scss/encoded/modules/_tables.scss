@@ -136,6 +136,12 @@ form.table-filter {
 
 .col-headers th:hover {
     cursor: pointer;
+    background-color: darken($tableHeadFootBackgroundColor, 5%);
+}
+
+.col-headers th.non-sortable:hover {
+    cursor: default;
+    background-color: $tableHeadFootBackgroundColor;
 }
 
 .tcell-sortable {

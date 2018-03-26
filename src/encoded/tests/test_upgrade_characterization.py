@@ -101,6 +101,22 @@ def antibody_characterization_10(antibody_characterization_1):
     return item
 
 
+@pytest.fixture
+def antibody_characterization_11(antibody_characterization):
+    item = antibody_characterization.copy()
+    item.update({
+        'characterization_reviews': [{
+            'biosample_term_name': 'K562',
+            'biosample_term_id': 'EFO:0002067',
+            'lane_status': 'exempt from standards',
+            'biosample_type': 'immortalized cell line',
+            'lane': 2,
+            'organism': '/organisms/human/'
+        }]
+    })
+    return item
+
+
 def test_antibody_characterization_upgrade(upgrader, antibody_characterization_1):
     value = upgrader.upgrade('antibody_characterization', antibody_characterization_1, target_version='3')
     assert value['schema_version'] == '3'
@@ -200,3 +216,9 @@ def test_antibody_characterization_comment_to_submitter_comment_upgrade(upgrader
     assert value['schema_version'] == '11'
     assert 'comment' not in value
     assert value['submitter_comment'] == 'We tried really hard to characterize this antibody.'
+
+
+def test_upgrade_antibody_characterization_11_to_12(upgrader, antibody_characterization_11, biosample):
+    value = upgrader.upgrade('antibody_characterization', antibody_characterization_11, current_version='11', target_version='12')
+    for characterization_review in value['characterization_reviews']:
+        assert characterization_review['biosample_type'] == 'cell line'

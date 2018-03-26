@@ -1,5 +1,9 @@
 ## Changelog for experiment.json
 
+### Schema version 16
+
+* Replace *immortalized cell line* with *cell line* in biosample_type enum
+
 ### Schema version 15
 
 * The biosample_type enum "in vitro sample" has been renamed to "cell-free sample" and requires an accompanying biosample_term_id (of type NTR)

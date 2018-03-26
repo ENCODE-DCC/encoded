@@ -169,16 +169,23 @@ def biosample_15(biosample_0, biosample):
 
 
 @pytest.fixture
-def biosample_18(biosample_0, biosample, construct, rnai):
+def biosample_18(biosample_0, biosample):
     item = biosample_0.copy()
     item.update({
         'biosample_term_id': 'EFO:0002067',
         'biosample_term_name': 'K562',
         'biosample_type': 'immortalized cell line',
-        'constructs': list(construct),
-        'rnais': list(rnai),
         'transfection_type': 'stable',
         'transfection_method': 'electroporation'
+    })
+    return item
+
+
+@pytest.fixture
+def biosample_19(biosample_0, biosample):
+    item = biosample_0.copy()
+    item.update({
+        'biosample_type': 'immortalized cell line',
     })
     return item
 
@@ -485,7 +492,10 @@ def test_upgrade_biosample_15_to_16(upgrader, biosample_15, biosample):
 
 def test_upgrade_biosample_18_to_19(upgrader, biosample_18, biosample):
     value = upgrader.upgrade('biosample', biosample_18, current_version='18', target_version='19')
-    assert 'constructs' not in value
-    assert 'rnais' not in value
     assert 'transfection_type' not in value
     assert 'transfection_method' not in value
+
+
+def test_upgrade_biosample_19_to_20(upgrader, biosample_19, biosample):
+    value = upgrader.upgrade('biosample', biosample_19, current_version='19', target_version='20')
+    assert value['biosample_type'] == 'cell line'

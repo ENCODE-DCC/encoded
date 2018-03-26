@@ -16,7 +16,7 @@ def antibody_characterization(submitter, award, lab, antibody_lot, target):
 
 
 def test_antibody_characterization_reviews(testapp, antibody_characterization):
-    antibody_characterization['characterization_reviews'] = [{"organism": "human", "lane": 2, "biosample_type": "immortalized cell line", "biosample_term_name": "K562", "biosample_term_id": "EFO:0002067"}]
+    antibody_characterization['characterization_reviews'] = [{"organism": "human", "lane": 2, "biosample_type": "cell line", "biosample_term_name": "K562", "biosample_term_id": "EFO:0002067"}]
     testapp.post_json('/antibody_characterization', antibody_characterization, status=422)
 
 
@@ -43,7 +43,7 @@ def test_antibody_characterization_exemption_no_explanation(testapp,
                                                             document):
     antibody_characterization['characterization_reviews'] = [{"organism": "human", "lane": 2,
                                                               "biosample_type":
-                                                              "immortalized cell line",
+                                                              "cell line",
                                                               "biosample_term_name": "K562",
                                                               "biosample_term_id": "EFO:0002067",
                                                               "lane_status":
@@ -58,7 +58,7 @@ def test_antibody_biosample_invalid_term_in_review(testapp, antibody_characteriz
     antibody_characterization['primary_characterization_method'] = 'immunoblot'
     antibody_characterization['characterization_reviews'] = [{"organism": "human", "lane": 2,
                                                               "biosample_type":
-                                                              "immortalized cell line",
+                                                              "cell line",
                                                               "biosample_term_name": "K562",
                                                               "biosample_term_id": "UBERON:0002067",
                                                               "lane_status":
@@ -66,7 +66,7 @@ def test_antibody_biosample_invalid_term_in_review(testapp, antibody_characteriz
     testapp.post_json('/antibody_characterization', antibody_characterization, status=422)
     antibody_characterization['characterization_reviews'] = [{"organism": "human", "lane": 2,
                                                               "biosample_type":
-                                                              "immortalized cell line",
+                                                              "cell line",
                                                               "biosample_term_name": "K562",
                                                               "biosample_term_id": "EFO:0002067",
                                                               "lane_status":

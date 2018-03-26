@@ -110,7 +110,7 @@ def test_experiment_biosample_summary(testapp,
                                             'treatments': [treatment['@id']],
                                             "biosample_term_id": "EFO:0005837",
                                             "biosample_term_name": "S2R+",
-                                            "biosample_type": "immortalized cell line",
+                                            "biosample_type": "cell line",
                                             "subcellular_fraction_term_name": "nucleus",
                                             })
     testapp.patch_json(biosample_2['@id'], {'donor': donor_2['@id'],

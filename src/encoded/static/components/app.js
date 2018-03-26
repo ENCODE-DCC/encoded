@@ -83,7 +83,7 @@ const projectList = [
     'GGR',
 ];
 const biosampleTypeList = [
-    'immortalized cell line',
+    'cell line',
     'tissue',
     'primary cell',
     'whole organisms',

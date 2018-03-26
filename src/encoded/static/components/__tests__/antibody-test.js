@@ -46,7 +46,7 @@ describe('Antibody', () => {
             const row = panel.find('.status-organism-row');
             const element = row.at(0).find('.status-status');
             expect(element).toHaveLength(1);
-            expect(element.text()).toEqual('awaiting lab characterization');
+            expect(element.text()).toEqual('awaiting characterization');
             expect(row.find('.status-organism').text()).toEqual('Homo sapiens');
             expect(row.find('.status-terms').text()).toEqual('HeLa-S3');
         });

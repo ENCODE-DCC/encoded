@@ -4,7 +4,7 @@ import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
 import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
-import { Document, DocumentsPanel, DocumentPreview, DocumentFile } from './doc';
+import { Document, DocumentsPanel, DocumentPreview, DocumentFile, CharacterizationDocuments } from './doc';
 import { GeneticModificationSummary } from './genetic_modification';
 import * as globals from './globals';
 import { ProjectBadge } from './image';
@@ -499,168 +499,6 @@ Treatment.propTypes = {
 globals.panelViews.register(Treatment, 'Treatment');
 
 
-// Display a panel with details of the biosample construct. Also displays any embedded documents
-// for the construct.
-
-const Construct = (props) => {
-    const { context, embeddedDocs } = props;
-    const constructDocuments = {};
-    context.documents.forEach((doc) => {
-        constructDocuments[doc['@id']] = PanelLookup({ context: doc, embeddedDocs });
-    });
-
-    return (
-        <div>
-            <dl className="key-value">
-                {context.target ?
-                    <div data-test="target">
-                        <dt>Target</dt>
-                        <dd><a href={context.target['@id']}>{context.target.name}</a></dd>
-                    </div>
-                : null}
-
-                {context.vector_backbone_name ?
-                    <div data-test="vector">
-                        <dt>Vector</dt>
-                        <dd>{context.vector_backbone_name}</dd>
-                    </div>
-                : null}
-
-                {context.construct_type ?
-                    <div data-test="construct-type">
-                        <dt>Construct Type</dt>
-                        <dd>{context.construct_type}</dd>
-                    </div>
-                : null}
-
-                {context.description ?
-                    <div data-test="description">
-                        <dt>Description</dt>
-                        <dd>{context.description}</dd>
-                    </div>
-                : null}
-
-                {context.tags.length ?
-                    <div data-test="tags">
-                        <dt>Tags</dt>
-                        <dd>
-                            <ul>
-                                {context.tags.map((tag, index) => (
-                                    <li key={index}>
-                                        {tag.name} (Location: {tag.location})
-                                    </li>
-                                ))}
-                            </ul>
-                        </dd>
-                    </div>
-                : null}
-
-                {context.source.title ?
-                    <div data-test="source">
-                        <dt>Source</dt>
-                        <dd>{context.source.title}</dd>
-                    </div>
-                : null}
-
-                {context.product_id ?
-                    <div data-test="product-id">
-                        <dt>Product ID</dt>
-                        <dd><MaybeLink href={context.url}>{context.product_id}</MaybeLink></dd>
-                    </div>
-                : null}
-            </dl>
-
-            {embeddedDocs && Object.keys(constructDocuments).length ?
-                <div>
-                    <hr />
-                    <h4>Construct documents</h4>
-                    <div className="row">{constructDocuments}</div>
-                </div>
-            : null}
-        </div>
-    );
-};
-
-Construct.propTypes = {
-    context: PropTypes.object.isRequired, // Construct context object being rendered here
-    embeddedDocs: PropTypes.array, // Array of document objects to render within the Construct panel
-};
-
-Construct.defaultProps = {
-    embeddedDocs: null,
-};
-
-globals.panelViews.register(Construct, 'Construct');
-
-
-const RNAi = (props) => {
-    const context = props.context;
-    return (
-            <dl className="key-value">
-            {context.target ?
-                <div data-test="target">
-                    <dt>Target</dt>
-                    <dd><a href={context.target['@id']}>{context.target.name}</a></dd>
-                </div>
-            : null}
-
-            {context.rnai_type ?
-                <div data-test="type">
-                    <dt>RNAi type</dt>
-                    <dd>{context.rnai_type}</dd>
-                </div>
-            : null}
-
-            {context.source && context.source.title ?
-                <div data-test="source">
-                    <dt>Source</dt>
-                    <dd>
-                        {context.source.url ?
-                            <a href={context.source.url}>{context.source.title}</a>
-                        :
-                            <span>{context.source.title}</span>
-                        }
-                    </dd>
-                </div>
-            : null}
-
-            {context.product_id ?
-                <div data-test="productid">
-                    <dt>Product ID</dt>
-                    <dd>
-                        {context.url ?
-                            <a href={context.url}>{context.product_id}</a>
-                        :
-                            <span>{context.product_id}</span>
-                        }
-                    </dd>
-                </div>
-            : null}
-
-            {context.rnai_target_sequence ?
-                <div data-test="targetsequence">
-                    <dt>Target sequence</dt>
-                    <dd>{context.rnai_target_sequence}</dd>
-                </div>
-            : null}
-
-            {context.vector_backbone_name ?
-                <div data-test="vectorbackbone">
-                    <dt>Vector backbone</dt>
-                    <dd>{context.vector_backbone_name}</dd>
-                </div>
-            : null}
-        </dl>
-    );
-};
-
-RNAi.propTypes = {
-    context: PropTypes.object.isRequired, // RNAi context object to render
-};
-
-globals.panelViews.register(RNAi, 'RNAi');
-
-
 // Biosample and donor characterization documents
 
 const EXCERPT_LENGTH = 80; // Maximum number of characters in an excerpt
@@ -706,9 +544,15 @@ CharacterizationCaption.propTypes = {
 
 // Document detail component -- default
 const CharacterizationDetail = (props) => {
-    const doc = props.doc;
+    const characterization = props.doc;
     const keyClass = `document__detail${props.detailOpen ? ' active' : ''}`;
-    const excerpt = doc.description && doc.description.length > EXCERPT_LENGTH;
+    const excerpt = characterization.caption && characterization.caption.length > EXCERPT_LENGTH;
+
+    // See if we need a list of documents or not. Documents without attachments don't get
+    // displayed.
+    const docs = characterization.documents && characterization.documents.length ?
+        characterization.documents.filter(doc => !!(doc.attachment && doc.attachment.href && doc.attachment.download))
+    : [];
 
     return (
         <div className={keyClass}>
@@ -716,33 +560,40 @@ const CharacterizationDetail = (props) => {
                 {excerpt ?
                     <div data-test="caption">
                         <dt>Caption</dt>
-                        <dd>{doc.caption}</dd>
+                        <dd>{characterization.caption}</dd>
                     </div>
                 : null}
 
-                {doc.submitted_by && doc.submitted_by.title ?
+                {characterization.submitted_by && characterization.submitted_by.title ?
                     <div data-test="submitted-by">
                         <dt>Submitted by</dt>
-                        <dd>{doc.submitted_by.title}</dd>
+                        <dd>{characterization.submitted_by.title}</dd>
                     </div>
                 : null}
 
                 <div data-test="lab">
                     <dt>Lab</dt>
-                    <dd>{doc.lab.title}</dd>
+                    <dd>{characterization.lab.title}</dd>
                 </div>
 
-                {doc.award && doc.award.name ?
+                {characterization.award && characterization.award.name ?
                     <div data-test="award">
                         <dt>Grant</dt>
-                        <dd><a href={doc.award['@id']}>{doc.award.name}</a></dd>
+                        <dd><a href={characterization.award['@id']}>{characterization.award.name}</a></dd>
                     </div>
                 : null}
 
-                {doc.submitter_comment ?
+                {characterization.submitter_comment ?
                     <div data-test="submittercomment">
                         <dt>Submitter comment</dt>
-                        <dd>{doc.submitter_comment}</dd>
+                        <dd>{characterization.submitter_comment}</dd>
+                    </div>
+                : null}
+
+                {docs.length ?
+                    <div data-test="documents">
+                        <dt>Documents</dt>
+                        <CharacterizationDocuments docs={docs} />
                     </div>
                 : null}
             </dl>

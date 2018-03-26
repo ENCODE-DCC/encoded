@@ -6,7 +6,7 @@ module.exports = {
     "award": "/awards/U54HG007005/",
     "biosample_term_id": "EFO:0002067",
     "biosample_term_name": "K562",
-    "biosample_type": "immortalized cell line",
+    "biosample_type": "cell line",
     "culture_harvest_date": "2013-03-06",
     "culture_start_date": "2013-02-28",
     "description": "The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. ENCODE3 RNA-seq evaluation replicate 1.",
