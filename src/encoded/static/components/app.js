@@ -90,6 +90,8 @@ const biosampleTypeList = [
     'stem cell',
     'in vitro differentiated cells',
     'induced pluripotent stem cell line',
+    "single cell",
+    "cell-free sample"
 ];
 
 
