@@ -1,7 +1,10 @@
 Changes
 =======
 
-67.0 (unreleased)
+67.1 (released)
+1. ENCD-3916 Fix for broken metadata queries (#2179)
+
+67.0 (released)
 -----------------
 01. ENCD-3915 Remove chromedriver lock from Travis (#2174)
 02. ENCD-3892 Update to snovault 1.0.5 (#2173)
