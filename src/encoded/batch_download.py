@@ -358,7 +358,7 @@ def lookup_column_value(value, path):
 
 def format_row(columns):
     """Format a list of text columns as a tab-separated byte string."""
-    return b'\t'.join([bytes_(c, 'utf-8') for c in columns]) + b'\r\n'
+    return b'\t'.join([bytes_(" ".join(c.strip('\t\n\r').split()), 'utf-8') for c in columns]) + b'\r\n'
 
 
 @view_config(route_name='report_download', request_method='GET')
