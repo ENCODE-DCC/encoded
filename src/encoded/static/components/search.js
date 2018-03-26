@@ -1047,7 +1047,7 @@ TextFilter.propTypes = {
 // Displays the entire list of facets. It contains a number of <Facet> cmoponents.
 export class FacetList extends React.Component {
     render() {
-        const { context, facets, filters, mode, orientation, hideTextFilter } = this.props;
+        const { context, facets, filters, mode, orientation, hideTextFilter, addClasses } = this.props;
 
         // Get "normal" facets, meaning non-audit facets.
         const normalFacets = facets.filter(facet => facet.field.substring(0, 6) !== 'audit.');
@@ -1092,7 +1092,7 @@ export class FacetList extends React.Component {
         const negationFilters = filters.filter(filter => filter.field.charAt(filter.field.length - 1) === '!');
 
         return (
-            <div className="box facets">
+            <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
                 <div className={`orientation${this.props.orientation === 'horizontal' ? ' horizontal' : ''}`}>
                     {clearButton ?
                         <div className="clear-filters-control">
@@ -1131,10 +1131,12 @@ FacetList.propTypes = {
     mode: PropTypes.string,
     orientation: PropTypes.string,
     hideTextFilter: PropTypes.bool,
+    addClasses: PropTypes.string, // CSS classes to use if the default isn't needed.
 };
 
 FacetList.defaultProps = {
     orientation: 'vertical',
+    addClasses: '',
 };
 
 FacetList.contextTypes = {

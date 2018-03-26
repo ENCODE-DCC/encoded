@@ -6,7 +6,7 @@ import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import pubReferenceList from './reference';
 import { PickerActions } from './search';
-import StatusLabel from './statuslabel';
+import { StatusLabel } from './statuslabel';
 import { auditDecor } from './audit';
 
 

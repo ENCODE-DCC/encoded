@@ -26,6 +26,7 @@ def includeme(config):
     config.add_route('matrix', '/matrix{slash:/?}')
     config.add_route('news', '/news/')
     config.add_route('audit', '/audit/')
+    config.add_route('summary', '/summary{slash:/?}')
     config.scan(__name__)
 
 
@@ -1621,4 +1622,108 @@ def audit(context, request):
         request.response.status_code = 404
         result['notification'] = 'No results found'
 
+    return result
+
+
+@view_config(route_name='summary', request_method='GET', permission='search')
+def summary(context, request):
+    search_base = normalize_query(request)
+    result = {
+        '@context': request.route_path('jsonld_context'),
+        '@id': request.route_path('summary', slash='/') + search_base,
+        '@type': ['Summary'],
+        'filters': [],
+        'notification': '',
+    }
+    doc_types = request.params.getall('type')
+    if len(doc_types) != 1:
+        msg = 'Search result matrix currently requires specifying a single type.'
+        raise HTTPBadRequest(explanation=msg)
+    item_type = doc_types[0]
+    types = request.registry[TYPES]
+    if item_type not in types:
+        msg = 'Invalid type: {}'.format(item_type)
+        raise HTTPBadRequest(explanation=msg)
+    type_info = types[item_type]
+    if not hasattr(type_info.factory, 'matrix'):
+        msg = 'No summary configured for type: {}'.format(item_type)
+        raise HTTPBadRequest(explanation=msg)
+    schema = type_info.schema
+    summary = result['summary'] = type_info.factory.matrix.copy()
+    summary['search_base'] = request.route_path('search', slash='/') + search_base
+    summary['clear_summary'] = request.route_path('summary', slash='/') + '?type=' + item_type
+    result['title'] = type_info.name + ' Summary'
+    es = request.registry[ELASTIC_SEARCH]
+    es_index = '_all'
+    principals = effective_principals(request)
+    search_term = prepare_search_term(request)
+    search_fields, highlights = get_search_fields(request, doc_types)
+    clear_qs = urlencode([("type", typ) for typ in doc_types])
+    result['clear_filters'] = request.route_path('summary', slash='/') + (('?' + clear_qs) if clear_qs else '')
+    query = get_filtered_query(search_term,
+                               search_fields,
+                               [],
+                               principals,
+                               doc_types)
+    if search_term == '*':
+        del query['query']['query_string']
+    else:
+        query['query']['query_string']['fields'].extend(['_all', '*.uuid', '*.md5sum', '*.submitted_file_name'])
+    query_filters = query['post_filter'].pop('bool')
+    filter_collector = {'post_filter': {'bool': query_filters}}
+    used_filters = set_filters(request, filter_collector, result)
+    filters = filter_collector['post_filter']['bool']['must']
+    facets = [(field, facet) for field, facet in schema['facets'].items() if
+              field in summary['x']['facets'] or field in summary['y']['facets']]
+    query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
+    x_grouping = summary['x']['group_by']
+    y_groupings = summary['y']['group_by']
+    summary_groupings = summary['summary_grouping']
+    x_agg = {
+        "terms": {
+            "field": 'embedded.' + x_grouping,
+            "size": 999999,
+        },
+    }
+    aggs = {x_grouping: x_agg}
+    for field in reversed(y_groupings):
+        aggs = {
+            field: {
+                "terms": {
+                    "field": 'embedded.' + field,
+                    "size": 999999,
+                },
+                "aggs": aggs,
+            },
+        }
+    summary_aggs = None
+    for field in reversed(summary_groupings):
+        sub_summary_aggs = summary_aggs
+        summary_aggs = {
+            field: {
+                "terms": {
+                    "field": 'embedded.' + field,
+                    "size": 999999,
+                },
+            },
+        }
+        if sub_summary_aggs:
+            summary_aggs[field]['aggs'] = sub_summary_aggs
+    aggs['x'] = x_agg
+    query['aggs']['summary'] = {
+        "filter": {
+            "bool": {
+                "must": filters,
+            }
+        },
+        "aggs": summary_aggs,
+    }
+    query['size'] = 0
+    es_results = es.search(body=query, index=es_index)
+    aggregations = es_results['aggregations']
+    result['summary']['doc_count'] = total = aggregations['summary']['doc_count']
+    result['summary']['max_cell_doc_count'] = 0
+    result['summary'][summary_groupings[0]] = es_results['aggregations']['summary']
+    result['facets'] = format_facets(
+        es_results, facets, used_filters, (schema,), total, principals)
     return result

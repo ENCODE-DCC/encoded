@@ -7,7 +7,6 @@ import url from 'url';
 import jsonScriptEscape from '../libs/jsonScriptEscape';
 import origin from '../libs/origin';
 import * as globals from './globals';
-import DataColors from './datacolors';
 import Navigation from './navigation';
 import Footer from './footer';
 import Home from './home';
@@ -22,6 +21,8 @@ const portal = {
             children: [
                 { id: 'assaymatrix', title: 'Matrix', url: '/matrix/?type=Experiment' },
                 { id: 'assaysearch', title: 'Search', url: '/search/?type=Experiment' },
+                { id: 'assaysummary', title: 'Summary', url: '/summary/?type=Experiment' },
+                { id: 'sep-mm-1' },
                 { id: 'region-search', title: 'Search by region', url: '/region-search/' },
                 { id: 'reference-epigenomes', title: 'Reference epigenomes', url: '/search/?type=ReferenceEpigenome' },
                 { id: 'publications', title: 'Publications', url: '/publications/' },
@@ -70,27 +71,6 @@ const portal = {
         },
     ],
 };
-
-
-// Keep lists of currently known project and biosample_type. As new project and biosample_type
-// enter the system, these lists must be updated. Used mostly to keep chart and matrix colors
-// consistent.
-const projectList = [
-    'ENCODE',
-    'Roadmap',
-    'modENCODE',
-    'modERN',
-    'GGR',
-];
-const biosampleTypeList = [
-    'cell line',
-    'tissue',
-    'primary cell',
-    'whole organisms',
-    'stem cell',
-    'in vitro differentiated cells',
-    'induced pluripotent stem cell line',
-];
 
 
 // See https://github.com/facebook/react/issues/2323 for an IE8 fix removed for Redmine #4755.
@@ -241,17 +221,11 @@ class App extends React.Component {
 
     // Data for child components to subscrie to.
     getChildContext() {
-        // Make `project` and `biosample_type` color mappings for downstream modules to use.
-        const projectColors = new DataColors(projectList);
-        const biosampleTypeColors = new DataColors(biosampleTypeList);
-
         return {
             listActionsFor: this.listActionsFor,
             currentResource: this.currentResource,
             location_href: this.state.href,
             portal,
-            projectColors,
-            biosampleTypeColors,
             fetch: this.fetch,
             navigate: this.navigate,
             adviseUnsavedChanges: this.adviseUnsavedChanges,

@@ -8,6 +8,10 @@
     padding: 15px 20px;
     overflow: visible;
 
+    @media print {
+        border: none;
+    }
+
     &.panel-default {
         padding: 0;
 

@@ -426,6 +426,8 @@ class Experiment(Dataset,
                 'biosample_type',
                 'organ_slims',
                 'award.project',
+                'award.rfa',
+                'status',
                 'assembly',
                 'internal_status',
                 'audit_category', # Added for auditmatrix
@@ -440,11 +442,13 @@ class Experiment(Dataset,
                 'assay_slims',
                 'target.investigated_as',
                 'month_released',
+                'date_submitted',
                 'files.file_type',
             ],
             'group_by': 'assay_title',
             'label': 'Assay',
         },
+        'summary_grouping': ['replication_type', 'status'],
     }
 
 

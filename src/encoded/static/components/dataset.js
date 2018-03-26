@@ -9,7 +9,7 @@ import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
 import { auditDecor } from './audit';
-import StatusLabel from './statuslabel';
+import { StatusLabel } from './statuslabel';
 import pubReferenceList from './reference';
 import { donorDiversity, publicDataset, AlternateAccession } from './objectutils';
 import { softwareVersionList } from './software';

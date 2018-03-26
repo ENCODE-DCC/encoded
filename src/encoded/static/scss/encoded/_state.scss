@@ -2,7 +2,7 @@
 #content {
     padding-top: 0;
     
-    @media (min-width: $screen-md-min) {
+    @media screen and (min-width: $screen-md-min) {
         padding-top: 75px;
     }
 }
@@ -63,5 +63,11 @@
             padding-left: 10px;
             padding-right: 10px;
         }
+    }
+}
+
+#page-footer {
+    @media print {
+        display: none;
     }
 }

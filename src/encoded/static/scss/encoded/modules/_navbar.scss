@@ -4,6 +4,10 @@
     border-bottom: 0px solid #4e7294;
     background: #0a253d;
 
+    @media print {
+        display: none;
+    }
+
     .navbar-brand {
         margin-left: -15px;
         color: #fff;

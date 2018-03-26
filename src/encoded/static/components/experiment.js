@@ -15,7 +15,7 @@ import { Breadcrumbs } from './navigation';
 import { singleTreatment, AlternateAccession } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
-import StatusLabel from './statuslabel';
+import { StatusLabel } from './statuslabel';
 import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef } from './typeutils';
 
 

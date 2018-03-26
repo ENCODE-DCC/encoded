@@ -15,7 +15,7 @@ import { requestObjects, AlternateAccession } from './objectutils';
 import pubReferenceList from './reference';
 import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
-import StatusLabel from './statuslabel';
+import { StatusLabel } from './statuslabel';
 import { BiosampleTable } from './typeutils';
 
 

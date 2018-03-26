@@ -2,7 +2,61 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as globals from './globals';
 
-const StatusLabel = (props) => {
+
+// objectStatuses holds all possible statuses for each kind of object at the different logged-in
+// levels. These must be kept in sync with statuses defined in each object's schema. Each top-level
+// property has a name matching the @type of each kind of object. Within that property are objects of
+// arrays; each array defining the statuses available at each logged-in level represented by that
+// object.
+const objectStatuses = {
+    Experiment: {
+        external: [
+            'released',
+            'archived',
+            'revoked',
+        ],
+        consortium: [
+            'proposed',
+            'started',
+            'submitted',
+        ],
+        admin: [
+            'deleted',
+            'replaced',
+        ],
+    },
+};
+
+
+// Defines the order of the viewing access of the different logged-in states, and has to match the
+// order of arrays in each @type property in `objectStatuses`.
+const objectStatusLevelOrder = ['external', 'consortium', 'admin'];
+
+
+/**
+ * Given an object @id and login level, get an array of all possible statuses for that object at
+ * that login level.
+ *
+ * @param {string} objectType - Retrieve possible statuses for this @type.
+ * @param {string} level - Level of statuses to get (external, consortium, admin). If nothing is
+ *         passed in this parameter, then 'admin' is assumed.
+ * @return (array) - Returns array of possible statuses for the given object and access level.
+ */
+export function getObjectStatuses(objectType, level = 'admin') {
+    const maxLevelIndex = objectStatusLevelOrder.indexOf(level);
+    const objectStatusGroups = objectStatuses[objectType];
+    if (maxLevelIndex !== -1 && objectStatusGroups) {
+        let statuses = [];
+        for (let levelIndex = 0; levelIndex <= maxLevelIndex; levelIndex += 1) {
+            statuses = statuses.concat(objectStatusGroups[objectStatusLevelOrder[levelIndex]]);
+        }
+        return statuses;
+    }
+    return [];
+}
+
+
+export const StatusLabel = (props) => {
     const { status, title, buttonLabel, fileStatus } = props;
 
     // Handle file statuses speficially.
@@ -59,5 +113,3 @@ StatusLabel.defaultProps = {
     buttonLabel: '',
     fileStatus: false,
 };
-
-export default StatusLabel;
