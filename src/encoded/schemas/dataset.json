@@ -13,7 +13,6 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/documents" },
@@ -111,11 +110,11 @@
         "status": {
             "title": "Status",
             "type": "string",
+            "permission": "import_items",
             "default": "started",
             "enum" : [
                 "started",
                 "submitted",
-                "ready for review",
                 "released",
                 "archived",
                 "deleted",

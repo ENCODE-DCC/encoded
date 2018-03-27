@@ -1,4 +1,5 @@
 import pytest
+from datetime import datetime
 
 
 @pytest.fixture
@@ -72,3 +73,30 @@ def test_submission_date(testapp, experiment_no_error):
     expt = testapp.post_json('/experiment', experiment_no_error).json['@graph'][0]
     res = testapp.patch_json(expt['@id'], {'date_submitted': '2000-10-10'}, expect_errors=True)
     assert res.status_code == 200
+
+
+@pytest.mark.parametrize(
+    'status',
+    [
+        'started',
+        'submitted',
+        'released',
+        'archived',
+        'deleted',
+        'revoked'
+    ]
+)
+def test_experiment_valid_statuses(status, testapp, experiment):
+    # Need date_released for released/revoked experiment dependency.
+    testapp.patch_json(
+        experiment['@id'],
+        {'date_released': datetime.now().strftime('%Y-%m-%d')}
+    )
+    testapp.patch_json(experiment['@id'], {'status': status})
+    res = testapp.get(experiment['@id'] + '@@embedded').json
+    assert res['status'] == status
+
+
+def test_experiment_invalid_statuses(testapp, experiment):
+    with pytest.raises(Exception):
+        testapp.patch_json(experiment['@id'], {'status': 'ready for review'})
