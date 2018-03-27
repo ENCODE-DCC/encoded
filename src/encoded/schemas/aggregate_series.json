@@ -1,0 +1,277 @@
+{
+    "title": "Aggregate series",
+    "description": "Schema for submitting metadata for an aggregate series.",
+    "id": "/profiles/aggregate_series.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [ "award", "lab"],
+    "identifyingProperties": ["uuid", "accession" , "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/references" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/documents" },
+        { "$ref": "dataset.json#/properties" },
+        { "$ref": "series.json#/properties" },
+        { "$ref": "mixins.json#/submitter_comment" }
+    ],
+    "dependencies": {
+        "status": {
+            "oneOf": [
+                {
+                    "required": ["date_released"],
+                    "properties": {
+                        "status": {
+                            "enum": ["released", "revoked"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "status": {
+                                "enum": ["released", "revoked"]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        }
+    },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay"
+        },
+        "status": {
+            "title": "Series status"
+        },
+        "assembly": {
+            "title": "Genome assembly (visualization)"
+        },
+        "organism.scientific_name": {
+            "title": "Organism"
+        },
+        "target.investigated_as": {
+            "title": "Target of assay"
+        },
+        "biosample_type": {
+            "title": "Biosample type"
+        },
+        "organ_slims": {
+            "title": "Organ"
+        },
+        "related_datasets.replicates.library.biosample.life_stage": {
+            "title": "Life stage"
+        },
+        "treatment_term_name": {
+            "title": "Biosample treatment"
+        },
+        "related_datasets.files.file_type": {
+            "title": "Available data"
+        },
+        "related_datsets.files.run_type": {
+            "title": "Run type"
+        },
+        "related_datasets.files.read_length": {
+            "title": "Read length"
+        },
+        "related_datasets.files.mapped_read_length": {
+            "title": "Mapped read length"
+        },
+        "related_datasets.replicates.library.size_range": {
+            "title": "Library insert size (nt)"
+        },
+        "related_datasets.replicates.library.nucleic_acid_term_name": {
+            "title": "Library made from"
+        },
+        "related_datasets.replicates.library.depleted_in_term_name": {
+            "title": "Library depleted in"
+        },
+        "related_datasets.replicates.library.treatments.treatment_term_name": {
+            "title": "Library treatment"
+        },
+        "month_released": {
+            "title": "Date released"
+        },
+        "lab.title": {
+            "title": "Lab"
+        },
+        "award.project": {
+            "title": "Project"
+        },
+        "award.rfa": {
+            "title": "RFA"
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
+        "assay_term_name": {
+            "title": "Assay Type",
+            "type": "string"
+        },
+        "organism.scientific_name": {
+            "title": "Organism scientific name",
+            "type": "string"
+        },
+        "related_datasets.target.label":{
+            "title": "Target",
+            "type": "string"
+        },
+        "related_datasets.biosample_term_name": {
+            "title": "Biosample",
+            "type": "string"
+        },
+        "description": {
+            "title": "Description",
+            "type": "string"
+        },
+        "biosample_term_name": {
+            "title": "Biosample term name",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        },
+        "award.project": {
+            "title": "Project",
+            "type": "string"
+        },
+        "status": {
+            "title": "Status",
+            "type": "string"
+        },
+        "target.label": {
+            "title": "Target",
+            "type": "string"
+        },
+        "related_datasets.replicates.antibody.accession": {
+            "title": "Linked Antibody",
+            "type": "string"
+        },
+        "related_datasets.replicates.library.biosample.organism.scientific_name": {
+            "title": "Species",
+            "type": "array"
+        },
+        "related_datasets.replicates.library.biosample.life_stage": {
+            "title": "Life stage",
+            "type": "array"
+        },
+        "related_datasets.replicates.library.biosample.age_display": {
+            "title": "Age display",
+            "type": "string"
+        },
+        "related_datasets.replicates.library.biosample.treatments.treatment_term_name": {
+            "title": "Treatment",
+            "type": "string"
+        },
+        "related_datasets.replicates.library.biosample.treatments.treatment_term_id": {
+            "title": "Term ID",
+            "type": "string"
+        },
+        "related_datasets.replicates.library.biosample.treatments.concentration": {
+            "title": "Concentration",
+            "type": "number"
+        },
+        "related_datasets.replicates.library.biosample.treatments.concentration_units": {
+            "title": "Concentration units",
+            "type": "string"
+        },
+        "related_datasets.replicates.library.biosample.treatments.duration": {
+            "title": "Duration",
+            "type": "number"
+        },
+        "related_datasets.replicates.library.biosample.treatments.duration_units": {
+            "title": "Duration units",
+            "type": "string"
+        },
+        "related_datasets.replicates.library.biosample.synchronization": {
+            "title": "Synchronization",
+            "type": "string"
+        },
+        "related_datasets.replicates.library.biosample.post_synchronization_time": {
+            "title": "Post-synchronization time",
+            "type": "string"
+        },
+        "related_datasets.replicates.library.biosample.post_synchronization_time_units": {
+            "title": "Post-synchronization time units",
+            "type": "string"
+        }
+    },
+    "boost_values": {
+        "accession": 1.0,
+        "alternate_accessions": 1.0,
+        "related_datasets.assay_term_name": 1.0,
+        "related_datasets.assay_term_id": 1.0,
+        "dbxrefs": 1.0,
+        "aliases": 1.0,
+        "related_datasets.biosample_term_id": 1.0,
+        "related_datasets.biosample_term_name": 1.0,
+        "related_datasets.biosample_type": 1.0,
+        "related_datasets.organ_slims": 1.0,
+        "related_datasets.developmental_slims": 1.0,
+        "related_datasets.assay_synonyms": 1.0,
+        "related_datasets.biosample_synonyms": 1.0,
+        "files.accession": 1.0,
+        "files.alternate_accessions": 1.0,
+        "files.file_format": 1.0,
+        "files.output_type": 1.0,
+        "files.md5sum": 1.0,
+        "related_datasets.replicates.library.accession": 1.0,
+        "related_datasets.replicates.library.alternate_accessions": 1.0,
+        "related_datasets.replicates.library.aliases": 1.0,
+        "related_datasets.replicates.library.biosample.accession": 1.0,
+        "related_datasets.replicates.library.biosample.alternate_accessions": 1.0,
+        "related_datasets.replicates.library.biosample.aliases": 1.0,
+        "related_datasets.replicates.library.biosample.subcellular_fraction_term_name" : 1.0,
+        "related_datasets.replicates.library.biosample.donor.accession": 1.0,
+        "related_datasets.replicates.library.biosample.donor.alternate_accessions": 1.0,
+        "related_datasets.replicates.antibody.accession": 1.0,
+        "related_datasets.replicates.antibody.alternate_accessions": 1.0,
+        "related_datasets.replicates.antibody.lot_id": 1.0,
+        "related_datasets.replicates.antibody.lot_id_alias": 1.0,
+        "related_datasets.replicates.antibody.clonality": 1.0,
+        "related_datasets.replicates.antibody.isotype": 1.0,
+        "related_datasets.replicates.antibody.purifications": 1.0,
+        "related_datasets.replicates.antibody.product_id": 1.0,
+        "related_datasets.replicates.antibody.aliases": 1.0,
+        "related_datasets.replicates.antibody.dbxrefs": 1.0,
+        "organism.name": 1.0,
+        "organism.scientific_name": 1.0,
+        "organism.taxon_id": 1.0,
+        "award.title": 1.0,
+        "award.project": 1.0,
+        "award.name": 1.0,
+        "submitted_by.email": 1.0,
+        "submitted_by.first_name": 1.0,
+        "submitted_by.last_name": 1.0,
+        "lab.institute_name": 1.0,
+        "lab.institute_label": 1.0,
+        "lab.title": 1.0,
+        "related_datasets.possible_controls.accession": 1.0,
+        "related_datasets.possible_controls.alternate_accessions": 1.0,
+        "target.aliases": 1.0,
+        "target.gene_name": 1.0,
+        "target.label": 1.0,
+        "target.dbxref": 1.0,
+        "target.organism.name": 1.0,
+        "target.organism.scientific_name": 1.0,
+        "references.title": 1.0,
+        "internal_tags": 1.0
+    },
+    "changelog": "/profiles/changelogs/aggregate_series.md"
+}

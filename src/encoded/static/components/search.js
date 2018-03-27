@@ -26,6 +26,7 @@ const types = {
     dataset: { title: 'Datasets' },
     image: { title: 'Images' },
     matched_set: { title: 'Matched set series' },
+    aggregate_series: { title: 'Aggregate series' },
     organism_development_series: { title: 'Organism development series' },
     publication: { title: 'Publications' },
     page: { title: 'Web page' },
@@ -53,6 +54,7 @@ const datasetTypes = {
     ReplicationTimingSeries: types.replication_timing_series.title,
     TreatmentConcentrationSeries: types.treatment_concentration_series.title,
     TreatmentTimeSeries: types.treatment_time_series.title,
+    AggregateSeries: types.aggregate_series.title,
     UcscBrowserComposite: types.ucsc_browser_composite.title,
 };
 

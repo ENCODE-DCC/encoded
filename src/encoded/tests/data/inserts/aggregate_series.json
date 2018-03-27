@@ -1,0 +1,16 @@
+[
+	{
+        "_test": "aggregate series",
+        "accession": "ENCSR300AGG",
+        "award": "U24HG009397",
+        "description": "Aggregate series for HiC experiment mega-maps.",
+        "lab": "john-stamatoyannopoulos",
+        "status": "released",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "related_datasets": [
+            "/experiments/ENCSR000AJK"
+        ],
+        "uuid": "467c72a2-4f84-2c8f-96b0-ec8715e18185",
+        "date_released": "2018-01-01"
+    }
+]

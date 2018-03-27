@@ -46,6 +46,7 @@ ORDER = [
     'treatment_concentration_series',
     'organism_development_series',
     'replication_timing_series',
+    'aggregate_series',
     'reference_epigenome',
     'software',
     'software_version',
@@ -585,6 +586,9 @@ PHASE1_PIPELINES = {
     'treatment_concentration_series': [
         remove_keys('related_datasets'),
     ],
+    'aggregate_series': [
+        remove_keys('related_datasets'),
+    ],
     'organism_development_series': [
         remove_keys('related_datasets'),
     ],
@@ -658,6 +662,9 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_files'),
     ],
     'treatment_time_series': [
+        skip_rows_missing_all_keys('related_datasets'),
+    ],
+    'aggregate_series': [
         skip_rows_missing_all_keys('related_datasets'),
     ],
     'treatment_concentration_series': [
