@@ -78,7 +78,7 @@ def test_submission_date(testapp, experiment_no_error):
 @pytest.mark.parametrize(
     'status',
     [
-        'started',
+        'in progress',
         'submitted',
         'released',
         'archived',
@@ -97,6 +97,13 @@ def test_experiment_valid_statuses(status, testapp, experiment):
     assert res['status'] == status
 
 
-def test_experiment_invalid_statuses(testapp, experiment):
+@pytest.mark.parametrize(
+    'status',
+    [
+        'ready for review',
+        'started'
+    ]
+)
+def test_experiment_invalid_statuses(status, testapp, experiment):
     with pytest.raises(Exception):
-        testapp.patch_json(experiment['@id'], {'status': 'ready for review'})
+        testapp.patch_json(experiment['@id'], {'status': status})
