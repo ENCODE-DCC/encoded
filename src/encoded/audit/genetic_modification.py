@@ -5,8 +5,8 @@ from snovault import (
 
 # flag genetic modifications with purpose "tagging" that lack genetic modification characterization.
 def audit_tagging_modification(value, system):
-    if value['purpose'] == 'tagging' and\
-       not value.get('characterizations'):
+    if (value['purpose'] == 'tagging' and
+       not value.get('characterizations')):
         detail = ('Genetic modification {} performed for the '
                   'purpose of {} is missing validating characterization.').format(
             value['@id'],
@@ -26,6 +26,5 @@ function_dispatcher = {
 @audit_checker('GeneticModification',
                frame=['characterizations'])
 def audit_modification(value, system):
-    for function_name in function_dispatcher.keys():
-        for failure in function_dispatcher[function_name](value, system):
-            yield failure
+    for audit_function in function_dispatcher.values():
+        yield from audit_function(value, system)
