@@ -1,5 +1,9 @@
 ## Changelog for ucsc_browser_composite.json
 
+### Schema version 14
+
+* Replace started status with in progress.
+
 ### Schema version 13
 
 * *proposed* removed from status enum (dataset mixin).
