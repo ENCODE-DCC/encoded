@@ -199,6 +199,17 @@ def annotation_16(award, lab):
     }
 
 
+@pytest.fixture
+def annotation_17(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '17',
+        'biosample_type': 'immortalized cell line',
+        'status': 'started'
+    }
+
+
 def test_experiment_upgrade(root, upgrader, experiment, experiment_1, file_ucsc_browser_composite, threadlocals, dummy_request):
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
@@ -437,3 +448,8 @@ def test_upgrade_experiment_17_18(upgrader, experiment_17):
     value = upgrader.upgrade('experiment', experiment_17, current_version='17', target_version='18')
     assert value['schema_version'] == '18'
     assert value['status'] == 'in progress'
+
+
+def test_upgrade_annotation_17_to_18(upgrader, annotation_17):
+    value = upgrader.upgrade('annotation', annotation_17, current_version='17', target_version='18')
+    assert value['schema_version'] == '18'
