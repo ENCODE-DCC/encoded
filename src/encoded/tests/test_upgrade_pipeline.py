@@ -20,6 +20,7 @@ def pipeline_2(award, lab):
         'lab': lab['uuid'],
     }
 
+
 @pytest.fixture
 def pipeline_7(award, lab):
     return {
@@ -30,6 +31,19 @@ def pipeline_7(award, lab):
         'award': award['uuid'],
         'lab': lab['uuid'],
     }
+
+
+@pytest.fixture
+def pipeline_8(award, lab):
+    return {
+        'assay_term_names': ['MNase-seq'],
+        'schema_version': '8',
+        'status': 'active',
+        'title': 'Test pipeline',
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+    }
+
 
 def test_pipeline_upgrade_1_2(upgrader, pipeline_1):
     value = upgrader.upgrade('pipeline', pipeline_1, target_version='2')
@@ -50,3 +64,9 @@ def test_pipeline_upgrade_7_8(upgrader, pipeline_7):
     assert value['schema_version'] == '8'
     assert 'assay_term_name' not in value
     assert value['assay_term_names'] == ['MNase-seq']
+
+
+def test_pipeline_upgrade_8_9(upgrader, pipeline_8):
+    value = upgrader.upgrade('pipeline', pipeline_8, current_version='8', target_version='9')
+    assert value['schema_version'] == '9'
+    assert value.get('status') == 'released'
