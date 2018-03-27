@@ -808,7 +808,7 @@ function StatusData(experiments, unreplicated, isogenic, anisogenic) {
         isogenicArray = (isogenicFacet && isogenicFacet.terms && isogenicFacet.terms.length) ? isogenicFacet.terms : [];
         anisogenicArray = (anisogenicFacet && anisogenicFacet.terms && anisogenicFacet.terms.length) ? anisogenicFacet.terms : [];
     }
-    const labels = ['started', 'submitted', 'released', 'deleted', 'replaced', 'archived', 'revoked'];
+    const labels = ['in progress', 'submitted', 'released', 'deleted', 'replaced', 'archived', 'revoked'];
 
     // Check existence of data for each of the keys in array labels
     // Ensures that for each replicate type there exists the same set of labels and the corresponding data values (in order)
