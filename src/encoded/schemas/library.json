@@ -70,6 +70,35 @@
                 "linkTo": "Reference"
             }
         },
+        "barcode_details": {
+            "title": "Single cell barcodes information",
+            "description": "For single cell biosamples, the barcodes used to identify the biosamples.",
+            "type": "array",
+            "uniqueItems": true,
+            "default": [],
+            "items": {
+                "title": "Biosample barcode",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "barcode": {
+                        "title": "Barcode",
+                        "type": "string"
+                    },
+                    "plate_id": {
+                        "title": "Identifier of the plate the single cell sample originated from",
+                        "description": "The plate the single cell sample comes from..",
+                        "type": "string"
+                    },
+                    "plate_location": {
+                         "title": "Position of the single cell sample on the plate",
+                         "description": "The X,Y coordinates of the single cell sample on the plate.",
+                         "type": "string",
+                         "pattern": "^(\\d+:\\d+)$"
+                    }
+                }
+            }
+        },
         "biosample": {
             "title": "Biosample",
             "description": "The biosample that nucleic acid was isolated from to generate the library.",

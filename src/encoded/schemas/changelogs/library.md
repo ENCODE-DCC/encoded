@@ -1,5 +1,9 @@
 ## Changelog for library.json
 
+### Minor changes since schema version 8
+
+* *barcode_details* property is added, the property contains barcode details of single cell samples.
+
 ### Schema version 8
 
 * *alternate_accessions* now must match accession format, "ENCLB..." or "TSTLB..."
