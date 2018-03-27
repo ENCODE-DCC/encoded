@@ -347,3 +347,20 @@ def dataset_16_17(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3780
     if value['status'] == "ready for review":
         value['status'] = "submitted"
+
+
+@upgrade_step('experiment', '17', '18')
+@upgrade_step('annotation', '17', '18')
+@upgrade_step('reference', '14', '15')
+@upgrade_step('project', '13', '14')
+@upgrade_step('matched_set', '13', '14')
+@upgrade_step('publication_data', '13', '14')
+@upgrade_step('ucsc_browser_composite', '13', '14')
+@upgrade_step('organism_development_series', '13', '14')
+@upgrade_step('reference_epigenome', '13', '14')
+@upgrade_step('replication_timing_series', '13', '14')
+@upgrade_step('treatment_time_series', '14', '15')
+@upgrade_step('treatment_concentration_series', '13', '14')
+def dataset_17_18(value, system):
+    if value['status'] == "started":
+        value['status'] = "in progress"
