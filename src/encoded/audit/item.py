@@ -57,7 +57,6 @@ STATUS_LEVEL = {
     'not submitted for review by lab': 100,
     'exempt from standards': 100,
     'not pursued': 100,
-    'virtual': 100,
     'active': 100,
 
     # 'discouraged for use' public statuses

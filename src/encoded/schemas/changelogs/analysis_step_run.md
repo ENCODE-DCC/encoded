@@ -1,5 +1,10 @@
 ## Change log for analysis_step_run.json
 
+### Schema version 5
+
+* Remove *virtual* as status and use standard_status mixin.
+
+
 ### Schema version 4
 
 #### Fields restricted to DCC access only:
