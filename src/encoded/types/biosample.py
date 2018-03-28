@@ -402,15 +402,15 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
         sentence_parts = [
             'organism_name',
             'genotype_strain',
-            'term_phrase',
-            'phase',
-            'fractionated',
             'sex_stage_age',
             'synchronization',
+            'term_phrase',
             'modifications_list',
             'originated_from',
             'treatments_phrase',
-            'depleted_in'
+            'depleted_in',            
+            'phase',
+            'fractionated'
         ]
         organismObject = None
         donorObject = None
