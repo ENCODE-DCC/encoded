@@ -75,21 +75,21 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                         'ENCODE2',
                         'ENCODE',
                         'Roadmap']
-        for peaks_file in files_structure.get('peaks_files').values():
-            if not peaks_file.get('award') or \
-                peaks_file.get('award')['rfa'] not in awards_to_be_checked:
-                continue
-            if peaks_file.get('lab') not in ['/labs/encode-processing-pipeline/']:
-                continue
-            bio_reps = peaks_file.get('biological_replicates')
-            if not bio_reps or len(bio_reps) > 1:
-                continue
+        peaks_file_gen = (
+            peaks_file for peaks_file in files_structure.get('peaks_files').values()
+            if  (peaks_file.get('award') and
+                peaks_file.get('award')['rfa'] in awards_to_be_checked and
+                peaks_file.get('lab') in ['/labs/encode-processing-pipeline/'] and
+                peaks_file.get('biological_replicates') and
+                len(peaks_file.get('biological_replicates')) == 1)
+        )
 
+        for peaks_file in peaks_file_gen:
             derived_from_files = get_derived_from_files_set([peaks_file],
                                                             files_structure,
                                                             'bam',
                                                             True)
-            derived_from_external_bams = [
+            derived_from_external_bams_gen = (
                 derived_from for derived_from in
                 derived_from_files
                 if (derived_from.get('dataset') != value.get('@id')
@@ -98,10 +98,10 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                     and
                     check_pipeline('ChIP-seq read mapping',
                                     derived_from.get('@id'),
-                                    controls_files_structures[derived_from.get('dataset')]))]
+                                    controls_files_structures[derived_from.get('dataset')])))
             control_bam_details = []
             cumulative_read_depth = 0
-            for bam_file in derived_from_external_bams:
+            for bam_file in derived_from_external_bams_gen:
                 control_depth = get_chip_seq_bam_read_depth(bam_file)
                 control_target = get_control_target_name(
                     bam_file.get('dataset'),
