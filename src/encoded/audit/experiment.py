@@ -56,86 +56,89 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
     if value.get('target') and 'name' in value.get('target'):
         target_name = value['target']['name']
         target_investigated_as = value['target']['investigated_as']
-        if target_name not in ['Control-human', 'Control-mouse']:
-            controls = value.get('possible_controls')
-            if controls:
-                controls_files_structures = {}
-                control_objects = {}
-                for control_experiment in controls:
-                    control_objects[control_experiment.get('@id')] = control_experiment
-                    controls_files_structures[control_experiment.get('@id')] = create_files_mapping(
-                        control_experiment.get('original_files'),
-                        files_structure.get('excluded_types'))
-                for peaks_file in files_structure.get('peaks_files').values():
-                    if not peaks_file.get('award') or \
-                        peaks_file.get('award')['rfa'] not in [
-                                'ENCODE3',
-                                'ENCODE4',
-                                'ENCODE2-Mouse',
-                                'ENCODE2',
-                                'ENCODE',
-                                'Roadmap']:
-                        continue
-                    if peaks_file.get('lab') not in ['/labs/encode-processing-pipeline/']:
-                        continue
-                    bio_reps = peaks_file.get('biological_replicates')
-                    if not bio_reps or len(bio_reps) > 1:
-                        continue
+        if target_name in ['Control-human', 'Control-mouse']:
+            return
+        controls = value.get('possible_controls')
+        if not controls:
+            return
+        controls_files_structures = {}
+        control_objects = {}
+        for control_experiment in controls:
+            control_objects[control_experiment.get('@id')] = control_experiment
+            controls_files_structures[control_experiment.get('@id')] = create_files_mapping(
+                control_experiment.get('original_files'),
+                files_structure.get('excluded_types'))
+        awards_to_be_checked = [
+                        'ENCODE3',
+                        'ENCODE4',
+                        'ENCODE2-Mouse',
+                        'ENCODE2',
+                        'ENCODE',
+                        'Roadmap']
+        for peaks_file in files_structure.get('peaks_files').values():
+            if not peaks_file.get('award') or \
+                peaks_file.get('award')['rfa'] not in awards_to_be_checked:
+                continue
+            if peaks_file.get('lab') not in ['/labs/encode-processing-pipeline/']:
+                continue
+            bio_reps = peaks_file.get('biological_replicates')
+            if not bio_reps or len(bio_reps) > 1:
+                continue
 
-                    derived_from_files = list(get_derived_from_files_set([peaks_file],
-                                                                         files_structure,
-                                                                         'bam',
-                                                                         True))
-                    derived_from_external_bams = [
-                        derived_from for derived_from in
-                        derived_from_files
-                        if (derived_from.get('dataset') != value.get('@id')
-                            and
-                            derived_from.get('dataset') in controls_files_structures
-                            and
-                            check_pipeline('ChIP-seq read mapping',
-                                           derived_from.get('@id'),
-                                           controls_files_structures[derived_from.get('dataset')]))]
-                    control_bam_details = []
-                    cumulative_read_depth = 0
-                    for bam_file in derived_from_external_bams:
-                        control_depth = get_chip_seq_bam_read_depth(bam_file)
-                        control_target = get_control_target_name(
-                            bam_file.get('dataset'),
-                            control_objects)
-                            
-                        if control_target not in ['Control-human', 'Control-mouse']:
-                            detail = (
-                                'Control {} file {} ' +
-                                'has a target {} that is neither ' +
-                                'Control-human nor Control-mouse.').format(
-                                    bam_file['output_type'],
-                                    bam_file['@id'],
-                                    control_target)
-                            yield AuditFailure('inconsistent target of control experiment', detail, level='WARNING')
-                            return
-                        if control_depth and control_target:
-                            cumulative_read_depth += control_depth
-                            triple = (
-                                bam_file.get('@id'),
-                                control_depth,
-                                bam_file.get('dataset'))
-                            control_bam_details.append(triple)
-                    yield from check_control_read_depth_standards(
-                        peaks_file.get('@id'),
-                        peaks_file.get('assembly'),
-                        cumulative_read_depth,
-                        control_bam_details,
-                        target_name,
-                        target_investigated_as)
+            derived_from_files = get_derived_from_files_set([peaks_file],
+                                                            files_structure,
+                                                            'bam',
+                                                            True)
+            derived_from_external_bams = [
+                derived_from for derived_from in
+                derived_from_files
+                if (derived_from.get('dataset') != value.get('@id')
+                    and
+                    derived_from.get('dataset') in controls_files_structures
+                    and
+                    check_pipeline('ChIP-seq read mapping',
+                                    derived_from.get('@id'),
+                                    controls_files_structures[derived_from.get('dataset')]))]
+            control_bam_details = []
+            cumulative_read_depth = 0
+            for bam_file in derived_from_external_bams:
+                control_depth = get_chip_seq_bam_read_depth(bam_file)
+                control_target = get_control_target_name(
+                    bam_file.get('dataset'),
+                    control_objects)
+                    
+                if control_target not in ['Control-human', 'Control-mouse']:
+                    detail = (
+                        'Control {} file {} ' +
+                        'has a target {} that is neither ' +
+                        'Control-human nor Control-mouse.').format(
+                            bam_file['output_type'],
+                            bam_file['@id'],
+                            control_target)
+                    yield AuditFailure('inconsistent target of control experiment', detail, level='WARNING')
+                    return
+                if control_depth and control_target:
+                    cumulative_read_depth += control_depth
+                    triple = (
+                        bam_file.get('@id'),
+                        control_depth,
+                        bam_file.get('dataset'))
+                    control_bam_details.append(triple)
+            yield from check_control_read_depth_standards(
+                peaks_file.get('@id'),
+                peaks_file.get('assembly'),
+                cumulative_read_depth,
+                control_bam_details,
+                target_name,
+                target_investigated_as)
 
 
 def get_control_target_name(control_id, control_objects):
     control = control_objects.get(control_id)
-    if control and 'target' in control and \
-       'name' in control['target']:
+    if (control and 
+        'target' in control and
+        'name' in control['target']):
         return control['target']['name']
-    return False
 
 
 def check_pipeline(pipeline_title, control_file_id, file_structure):
@@ -176,10 +179,6 @@ def check_control_read_depth_standards(peaks_file_id,
         yield AuditFailure('missing control alignments', detail, level='ERROR')
         return
     control_details = generate_control_bam_details_string(control_bam_details)
-    prefix = ('Control alignment files ({}) '
-              'have in aggregate {} usable fragments. ').format(
-                  control_details,
-                  read_depth)
     if assembly:
         prefix = ('Control alignment files ({}) '
                   'mapped to {} assembly have in aggregate {} '
@@ -187,6 +186,11 @@ def check_control_read_depth_standards(peaks_file_id,
                       control_details,
                       assembly,
                       read_depth)
+    else:
+        prefix = ('Control alignment files ({}) '
+            'have in aggregate {} usable fragments. ').format(
+                control_details,
+                read_depth)
     detail = prefix + (
         'The minimum ENCODE standard for a control of ChIP-seq assays '
         'targeting {} {} is {} million usable fragments, '
@@ -3019,8 +3023,11 @@ def get_control_bam(experiment_bam, pipeline_name, derived_from_fastqs, files_st
                 if is_same_pipeline is True and \
                    'derived_from' in control_file and \
                    len(control_file['derived_from']) > 0:
-                    derived_list = list(
-                        get_derived_from_files_set([control_file], control_files_structure, 'fastq', True))
+                    derived_list = get_derived_from_files_set(
+                        [control_file],
+                        control_files_structure,
+                        'fastq',
+                        True)
 
                     for entry in derived_list:
                         if entry['accession'] == control_fastq['accession']:
@@ -3347,7 +3354,7 @@ def get_derived_from_files_set(list_of_files, files_structure, file_format, obje
                         derived_from_objects_list.append(derived_object)
     if object_flag:
         return derived_from_objects_list
-    return derived_from_set
+    return list(derived_from_set)
 
 
 def get_file_accessions(list_of_files):
