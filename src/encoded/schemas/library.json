@@ -87,14 +87,14 @@
                     },
                     "plate_id": {
                         "title": "Identifier of the plate the single cell sample originated from",
-                        "description": "The plate the single cell sample comes from..",
+                        "description": "The plate the single cell sample comes from.",
                         "type": "string"
                     },
                     "plate_location": {
                          "title": "Position of the single cell sample on the plate",
-                         "description": "The X,Y coordinates of the single cell sample on the plate.",
+                         "description": "The location (such as A1) of the single cell sample on the plate.",
                          "type": "string",
-                         "pattern": "^(\\d+:\\d+)$"
+                         "pattern": "^([ABCDEFGH]([1-9]|1[0-2]))$"
                     }
                 }
             }
