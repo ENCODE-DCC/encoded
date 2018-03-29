@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import moment from 'moment';
 import { FetchedData, FetchedItems, Param } from './fetched';
+import * as globals from './globals';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 
 
@@ -379,7 +380,7 @@ class HomepageChart extends React.Component {
             const Chart = require('chart.js');
 
             // for each item, set doc count, add to total doc count, add proper label, and assign color.
-            const colors = this.context.projectColors.colorList(facetData.map(term => term.key), { shade: 10 });
+            const colors = globals.projectColors.colorList(facetData.map(term => term.key), { shade: 10 });
             const data = [];
             const labels = [];
 
@@ -462,7 +463,7 @@ class HomepageChart extends React.Component {
     // Update existing chart with new data.
     updateChart(Chart, facetData) {
         // for each item, set doc count, add to total doc count, add proper label, and assign color.
-        const colors = this.context.projectColors.colorList(facetData.map(term => term.key), { shade: 10 });
+        const colors = globals.projectColors.colorList(facetData.map(term => term.key), { shade: 10 });
         const data = [];
         const labels = [];
 
@@ -571,7 +572,7 @@ class HomepageChart2 extends React.Component {
         // require.
         require.ensure(['chart.js'], (require) => {
             const Chart = require('chart.js');
-            const colors = this.context.biosampleTypeColors.colorList(facetData.map(term => term.key), { shade: 10 });
+            const colors = globals.biosampleTypeColors.colorList(facetData.map(term => term.key), { shade: 10 });
             const data = [];
             const labels = [];
 
@@ -657,7 +658,7 @@ class HomepageChart2 extends React.Component {
 
     updateChart(Chart, facetData) {
         // for each item, set doc count, add to total doc count, add proper label, and assign color.
-        const colors = this.context.biosampleTypeColors.colorList(facetData.map(term => term.key), { shade: 10 });
+        const colors = globals.biosampleTypeColors.colorList(facetData.map(term => term.key), { shade: 10 });
         const data = [];
         const labels = [];
 

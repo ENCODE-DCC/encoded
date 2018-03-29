@@ -11,7 +11,7 @@ import { Breadcrumbs } from './navigation';
 import { PanelLookup } from './objectutils';
 import { PickerActions } from './search';
 import { softwareVersionList } from './software';
-import StatusLabel from './statuslabel';
+import { StatusLabel } from './statuslabel';
 
 
 const stepNodePrefix = 'step'; // Prefix for step node IDs

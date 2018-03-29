@@ -11,6 +11,12 @@
             width: 33.3333%;
         }
 
+        @media print {
+            break-after: page;
+            page-break-after: always;
+            margin: 0 auto;
+        }
+
         .title {
             font-size: 1.2rem;
         }
@@ -21,6 +27,12 @@
         position: relative;
         height: 180px;
 
+        @media print {
+            width: 100%;
+            height: auto;
+            margin: 0 auto;
+        }
+
         canvas {
             display: block;
             width: 0;
@@ -29,12 +41,15 @@
     }
 
     @at-root #{&}__legend {
-        margin: 50px auto;
+        margin: 20px auto 50px;
         width: 100%;
 
         @media screen and (min-width: $screen-md-min) {
-            margin: 20px auto;
             width: 80%;
+        }
+
+        @media print {
+            width: 70%;
         }
 
         ul {
@@ -138,3 +153,9 @@
 
 }
 
+.legend-title {
+    margin-bottom: 5px;
+    text-align: center;
+    color: #808080;
+    font-size: 1.1rem;
+}
