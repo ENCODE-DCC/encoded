@@ -178,12 +178,35 @@ def experiment_16(root, experiment):
 
 
 @pytest.fixture
+def experiment_17(root, experiment):
+    item = root.get_by_uuid(experiment['uuid'])
+    properties = item.properties.copy()
+    properties.update({
+        'schema_version': '17',
+        'biosample_type': 'immortalized cell line',
+        'status': 'started'
+    })
+    return properties
+
+
+@pytest.fixture
 def annotation_16(award, lab):
     return {
         'award': award['@id'],
         'lab': lab['@id'],
         'schema_version': '16',
         'biosample_type': 'immortalized cell line'
+    }
+
+
+@pytest.fixture
+def annotation_17(award, lab):
+    return {
+        'award': award['@id'],
+        'lab': lab['@id'],
+        'schema_version': '17',
+        'biosample_type': 'immortalized cell line',
+        'status': 'started'
     }
 
 
@@ -417,3 +440,16 @@ def test_upgrade_experiment_16_17(upgrader, experiment_16):
     value = upgrader.upgrade('experiment', experiment_16, current_version='16', target_version='17')
     assert value['schema_version'] == '17'
     assert value['status'] == 'submitted'
+
+
+def test_upgrade_experiment_17_18(upgrader, experiment_17):
+    assert experiment_17['schema_version'] == '17'
+    assert experiment_17['status'] == 'started'
+    value = upgrader.upgrade('experiment', experiment_17, current_version='17', target_version='18')
+    assert value['schema_version'] == '18'
+    assert value['status'] == 'in progress'
+
+
+def test_upgrade_annotation_17_to_18(upgrader, annotation_17):
+    value = upgrader.upgrade('annotation', annotation_17, current_version='17', target_version='18')
+    assert value['schema_version'] == '18'

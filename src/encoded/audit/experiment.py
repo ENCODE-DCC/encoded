@@ -1832,7 +1832,7 @@ def audit_experiment_geo_submission(value, system, excluded_types):
 
 
 def audit_experiment_status(value, system, files_structure):
-    if value['status'] not in ['started']:
+    if value['status'] not in ['in progress']:
         return
     assay_term_name = value.get('assay_term_name')
     if assay_term_name not in minimal_read_depth_requirements:

@@ -111,9 +111,9 @@
             "title": "Status",
             "type": "string",
             "permission": "import_items",
-            "default": "started",
+            "default": "in progress",
             "enum" : [
-                "started",
+                "in progress",
                 "submitted",
                 "released",
                 "archived",

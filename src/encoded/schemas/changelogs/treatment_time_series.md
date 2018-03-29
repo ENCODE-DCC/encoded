@@ -1,6 +1,10 @@
 ## Changelog for treatment_time_series.json
 
-### Schema version 17
+### Schema version 15
+
+* Replace started status with in progress.
+
+### Schema version 14
 
 * Replace the *status* field value *ready for review* by *submitted*. Make the *status* field editable by DCC personnel only.
 

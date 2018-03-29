@@ -115,7 +115,7 @@ ASSEMBLY_TO_UCSC_ID = {
 }
 
 
-QUICKVIEW_STATUSES_BLOCKED = ["proposed", "started", "deleted", "revoked", "replaced"]
+QUICKVIEW_STATUSES_BLOCKED = ["in progress", "submitted", "deleted", "revoked", "replaced"]
 
 VISIBLE_DATASET_STATUSES = ["released"]
 VISIBLE_FILE_STATUSES = ["released"]

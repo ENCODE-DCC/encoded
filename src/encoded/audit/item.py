@@ -65,7 +65,6 @@ STATUS_LEVEL = {
     # private statuses (visible for consortium members only)
     'in progress': 50,
     'pending dcc review': 50,
-    'started': 50,
     'submitted': 50,
     'uploading': 50,
     'upload failed': 50,

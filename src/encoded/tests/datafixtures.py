@@ -242,7 +242,7 @@ def base_experiment(testapp, lab, award):
         'biosample_type': 'tissue',
         'biosample_term_name': 'heart',
         'biosample_term_id': 'UBERON:349829',
-        'status': 'started'
+        'status': 'in progress'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
