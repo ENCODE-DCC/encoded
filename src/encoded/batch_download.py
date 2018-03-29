@@ -357,12 +357,11 @@ def lookup_column_value(value, path):
     # if we ended with an embedded object, show the @id
     if nodes and hasattr(nodes[0], '__contains__') and '@id' in nodes[0]:
         nodes = [node['@id'] for node in nodes]
-    seen = set()
     deduped_nodes = []
     for n in nodes:
         if isinstance(n, dict):
             n = str(n)
-        if n not in seen:
+        if n not in deduped_nodes:
             deduped_nodes.append(n)
     return u','.join(u'{}'.format(n) for n in deduped_nodes)
 
