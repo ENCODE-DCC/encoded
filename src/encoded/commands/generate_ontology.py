@@ -437,8 +437,8 @@ slim_shims = {
         'NTR:0000483': ['skin of body', 'connective tissue'],
         'NTR:0000484': ['lung', 'connective tissue'],
         'NTR:0000485': ['skin of body', 'connective tissue'],
-        'CL:0002328': ['lung'],
-        'CL:0002598': ['lung'],
+        'CL:0002328': ['lung', 'bronchus', 'epithelium'],
+        'CL:0002598': ['lung', 'bronchus'],
         'CL:2000017': ['connective tissue', 'mouth']
     }
 

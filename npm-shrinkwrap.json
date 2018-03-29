@@ -2423,11 +2423,6 @@
         "es6-promise": "3.0.2",
         "jszlib": "github:dasmoth/jszlib#4e562c7b88749f3e1e402737ddef5f96bf0906c6",
         "ramda": "0.21.0"
-      },
-      "dependencies": {
-        "jszlib": {
-          "version": "github:dasmoth/jszlib#4e562c7b88749f3e1e402737ddef5f96bf0906c6"
-        }
       }
     },
     "damerau-levenshtein": {
@@ -6227,6 +6222,9 @@
       "resolved": "https://registry.npmjs.org/jsx-ast-utils/-/jsx-ast-utils-1.4.1.tgz",
       "integrity": "sha1-OGchPo3Xm/Ho8jAMDPwe+xgsDfE=",
       "dev": true
+    },
+    "jszlib": {
+      "version": "github:dasmoth/jszlib#4e562c7b88749f3e1e402737ddef5f96bf0906c6"
     },
     "kind-of": {
       "version": "3.2.2",
