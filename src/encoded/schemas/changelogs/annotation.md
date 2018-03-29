@@ -1,5 +1,9 @@
 ## Changelog for annotation.json
 
+### Minor changes since schema version 17
+
+* Added *single cell* to biosample_type enums
+
 ### Schema version 17
 
 * Replace *immortalized cell line* with *cell line* in biosample_type enum

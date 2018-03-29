@@ -1,5 +1,9 @@
 ## Changelog for antibody_lot.json
 
+### Minor changes since schema version 9
+
+* Added *single cell* to biosample_type enums
+
 ### Schema 9
 
 * *status* is restricted to DCC access only
