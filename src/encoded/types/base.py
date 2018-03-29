@@ -116,9 +116,6 @@ class Item(snovault.Item):
         'current': ALLOW_CURRENT,
         'disabled': ONLY_ADMIN_VIEW,
 
-        # file
-        'obsolete': ONLY_ADMIN_VIEW,
-
         # antibody_characterization
         'compliant': ALLOW_CURRENT,
         'not compliant': ALLOW_CURRENT,
