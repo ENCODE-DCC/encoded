@@ -44,7 +44,7 @@ def lookup_column_value_validate():
         'award.project': 'Roadmap',
         '@id': '/experiments/ENCSR751ISO/',
         'level.name': '',
-        '@type': ['Experiment', 'Dataset', 'Item']
+        '@type': 'Experiment,Dataset,Item'
     }
     return valid
 
