@@ -408,7 +408,7 @@ class Biosample(Item, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms):
             'modifications_list',
             'originated_from',
             'treatments_phrase',
-            'depleted_in',            
+            'depleted_in',
             'phase',
             'fractionated'
         ]

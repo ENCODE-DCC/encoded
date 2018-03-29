@@ -72,6 +72,18 @@
                     "properties": {
                         "biosample_type": {
                             "enum" : [
+                                "single cell"
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(CL|EFO|UBERON|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                },
+                { 
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
                                 "tissue",
                                 "whole organisms"
                             ]
