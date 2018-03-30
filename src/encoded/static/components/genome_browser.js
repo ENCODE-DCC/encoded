@@ -61,21 +61,19 @@ function rAssemblyToSources(assembly, region) {
         for (let i = 0; i < positions.length; i += 1) {
             positions[i] = parseInt(positions[i].replace(/,/g, ''), 10);
         }
-        if (positions.length > 1) {
-            if (positions[0] > 10000) {
-                browserCfg.viewStart = positions[0] - 10000;
-            } else {
-                browserCfg.viewStart = 1;
-            }
-            browserCfg.viewEnd = positions[1] + 10000;
-        } else {
-            if (positions[0] > 10000) {
-                browserCfg.viewStart = positions[0] - 10000;
-            } else {
-                browserCfg.viewStart = 1;
-            }
-            browserCfg.viewEnd = positions[0] + 10000;
+        if (positions.length === 1) {
+            positions[1] = positions[0];
         }
+        if ((positions[1] - positions[0]) < 10) {
+            if (positions[0] > 10000) {
+                positions[0] -= 10000;
+            } else {
+                positions[0] = 1;
+            }
+            positions[1] += 10000;
+        }
+        browserCfg.viewStart = positions[0];
+        browserCfg.viewEnd = positions[1];
         browserCfg.positionSet = true;
     }
 

@@ -1,6 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
+<<<<<<< HEAD
+=======
+// import DropdownButton from '../libs/bootstrap/button';
+// import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
+>>>>>>> Changes to handle regulome annotations and archived experiments.  Also work on region/regulome-search and 'quick view'.
 import { BrowserSelector } from './objectutils';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { FacetList, Listing } from './search';
@@ -343,6 +348,7 @@ class RegionSearch extends React.Component {
                                                         >
                                                             View 25
                                                         </a>
+<<<<<<< HEAD
                                                 : null}
                                             </span>
                                         }
@@ -355,6 +361,21 @@ class RegionSearch extends React.Component {
                                             />
                                         : null}
 
+=======
+                                                    : null}
+                                                </span>
+                                            }
+
+                                            {visualizeKeys && context.visualize_batch ?
+                                                <BrowserSelector
+                                                    visualizeCfg={context.visualize_batch}
+                                                    disabled={visualizeDisabled}
+                                                    title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'}
+                                                />
+                                            : null}
+
+                                        </div>
+>>>>>>> Changes to handle regulome annotations and archived experiments.  Also work on region/regulome-search and 'quick view'.
                                     </div>
                                 </div>
 
@@ -364,8 +385,7 @@ class RegionSearch extends React.Component {
                                 </ul>
                             </div>
                         </div>
-                    </div>
-                : null}
+                    : null}
             </div>
         );
     }
