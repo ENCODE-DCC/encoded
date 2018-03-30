@@ -747,9 +747,9 @@
                 "barcode": "ABCDEFG1"
             },
             {
-                "barcode": "ABC2EFG12",
+                "barcode": "ABCDEFG12",
                 "plate_id": "plate_1",
-                "plate_location": "5:3"
+                "plate_location": "A11"
             }
         ],
         "nucleic_acid_term_name": "DNA",
