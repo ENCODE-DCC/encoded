@@ -1247,6 +1247,7 @@ export class ResultTable extends React.Component {
         const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
         let browseAllFiles = true; // True to pass all files to browser
         let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
+        let browserRegion = '';  // Region that may be passed to browser
         let browserDatasets = []; // Datasets will be used to get vis_json blobs
         let browserFiles = [];   // Files to pass to ResultsBrowser component
         let assemblyChooser;
@@ -1351,6 +1352,10 @@ export class ResultTable extends React.Component {
                     </div>
                 );
             }
+            browserRegion = this.props.region;
+            if (browserRegion) {
+                this.props.currentRegion(browserAssembly, browserRegion);
+            }
         }
 
         return (
@@ -1418,7 +1423,7 @@ export class ResultTable extends React.Component {
                                         </TabPanelPane>
                                         <TabPanelPane key="browserpane">
                                             {assemblyChooser}
-                                            <ResultBrowser files={results} assembly={browserAssembly} datasets={browserDatasets} limitFiles={!browseAllFiles} currentRegion={this.props.currentRegion} />
+                                            <ResultBrowser files={results} assembly={browserAssembly} region={browserRegion} datasets={browserDatasets} limitFiles={!browseAllFiles} currentRegion={this.props.currentRegion} />
                                         </TabPanelPane>
                                     </TabPanel>
                                 :
@@ -1442,6 +1447,7 @@ ResultTable.propTypes = {
     searchBase: PropTypes.string,
     onChange: PropTypes.func,
     currentRegion: PropTypes.func,
+    region: PropTypes.string,
 };
 
 ResultTable.defaultProps = {
@@ -1486,7 +1492,7 @@ ResultTableList.propTypes = {
 const ResultBrowser = (props) => {
     let visUrl = '';
     const datasetCount = props.datasets.length;
-    let region;  // optionally make a persistent region
+    let region = props.region;  // optionally make a persistent region
     const lastRegion = props.currentRegion();
     if (lastRegion && lastRegion.assembly === props.assembly) {
         region = lastRegion.region;
@@ -1499,12 +1505,9 @@ const ResultBrowser = (props) => {
         // /batch_hub/type%3DExperiment%2C%2Caccession%3D{ENCSR000AAA}%2C%2Caccession%3D{ENCSR000AEI}/{hg19}/vis_blob.json
         for (let ix = 0; ix < datasetCount; ix += 1) {
             const accession = props.datasets[ix].split('/')[2];
-            if (visUrl !== '') {
-                visUrl += '%2C%2C';
-            }
-            visUrl += `accession=${accession}`;
+            visUrl += `%2C%2Caccession=${accession}`;
         }
-        visUrl = `batch_hub/type=Experiment/${visUrl}/${props.assembly}/vis_blob.json`;
+        visUrl = `/batch_hub/type=Dataset${visUrl}/${props.assembly}/vis_blob.json`;
     }
     if (datasetCount > 0) {
         return (
@@ -1524,6 +1527,7 @@ const ResultBrowser = (props) => {
 ResultBrowser.propTypes = {
     files: PropTypes.array, // Array of files whose browser we're rendering
     assembly: PropTypes.string, // Filter `files` by this assembly
+    region: PropTypes.string, // Filter `files` by this assembly
     datasets: PropTypes.array, // One or more '/dataset/ENCSRnnnXXX/' that files belong to
     limitFiles: PropTypes.bool, // True to limit browsing to 20 files
     currentRegion: PropTypes.func,
@@ -1573,12 +1577,21 @@ class Search extends React.Component {
         const notification = context.notification;
         const searchBase = url.parse(this.context.location_href).search || '';
         const facetdisplay = context.facets && context.facets.some(facet => facet.total > 0);
+        const queryParsed = this.context.location_href && url.parse(this.context.location_href, true).query;
+        let region = '';
+
+        if (queryParsed && Object.keys(queryParsed).length) {
+            const regionKey = _(Object.keys(queryParsed)).find(key => key === 'region');
+            if (regionKey) {
+                region = queryParsed.region;
+            }
+        }
 
         return (
             <div>
                 {facetdisplay ?
                     <div className="panel data-display main-panel">
-                        <ResultTable {...this.props} searchBase={searchBase} onChange={this.context.navigate} currentRegion={this.currentRegion} />
+                        <ResultTable {...this.props} searchBase={searchBase} region={region} onChange={this.context.navigate} currentRegion={this.currentRegion} />
                     </div>
                 : <h4>{notification}</h4>}
             </div>

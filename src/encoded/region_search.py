@@ -15,7 +15,12 @@ from .batch_download import get_peak_metadata_links
 from .region_indexer import (
     RESIDENT_REGIONSET_KEY,
     FOR_REGION_SEARCH,
-    FOR_REGULOME_DB
+    FOR_REGULOME_DB,
+    FOR_MULTIPLE_USES
+)
+from .vis_defines import (
+    vis_format_url,
+    ASSEMBLY_TO_UCSC_ID
 )
 from collections import OrderedDict
 import requests
@@ -23,6 +28,7 @@ from urllib.parse import urlencode
 
 import logging
 import re
+import json
 
 
 log = logging.getLogger(__name__)
@@ -43,6 +49,20 @@ _REGION_FIELDS = [
 
 _FACETS = [
     ('assay_term_name', {'title': 'Assay'}),
+    ('biosample_term_name', {'title': 'Biosample term'}),
+    ('target.label', {'title': 'Target'}),
+    ('replicates.library.biosample.donor.organism.scientific_name', {
+        'title': 'Organism'
+    }),
+    ('organ_slims', {'title': 'Organ'}),
+    ('assembly', {'title': 'Genome assembly'}),
+    ('files.file_type', {'title': 'Available data'})
+]
+
+_REGULOME_FACETS = [
+    ('assay_term_name', {'title': 'Assay'}),
+    ('annotation_type', {'title': 'Annotation type'}),
+    ('status', {'title': 'Status'}),
     ('biosample_term_name', {'title': 'Biosample term'}),
     ('target.label', {'title': 'Target'}),
     ('replicates.library.biosample.donor.organism.scientific_name', {
@@ -104,6 +124,7 @@ def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
     """
     return peak query
     """
+    # BUG?  within_peaks is not used.
     query = {
         'query': {
             'bool': {
@@ -121,26 +142,29 @@ def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
          },
         '_source': False,
     }
-    search_ranges = {
-        'peaks_inside_range': {
-            'start': start,
-            'end': end
-        },
-        'range_inside_peaks': {
-            'start': end,
-            'end': start
-        },
-        'peaks_overlap_start_range': {
-            'start': start,
-            'end': start
-        },
-        'peaks_overlap_end_range': {
-            'start': end,
-            'end': end
-        }
-    }
-    for key, value in search_ranges.items():
-        query['query']['bool']['filter']['nested']['query']['bool']['should'].append(get_bool_query(value['start'], value['end']))
+    # get all peaks that overlap requested region peak.start <= requested.end and peak.end >= requested.start
+    query['query']['bool']['filter']['nested']['query']['bool']['should'].append(get_bool_query(end, start))
+    # BUG?  the for loop below adds all ranges, which should be subsets of above overlap net
+    #search_ranges = {
+    #    'peaks_inside_range': {
+    #        'start': start,
+    #        'end': end
+    #    },
+    #    'range_inside_peaks': {
+    #        'start': end,
+    #        'end': start
+    #    },
+    #    'peaks_overlap_start_range': {
+    #        'start': start,
+    #        'end': start
+    #    },
+    #    'peaks_overlap_end_range': {
+    #        'start': end,
+    #        'end': end
+    #    }
+    #}
+    #for key, value in search_ranges.items():
+    #    query['query']['bool']['filter']['nested']['query']['bool']['should'].append(get_bool_query(value['start'], value['end']))
     if with_inner_hits:
         query['query']['bool']['filter']['nested']['inner_hits'] = {'size': 99999}
     return query
@@ -154,24 +178,26 @@ def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, wit
     region_query = get_peak_query(start, end, with_inner_hits=with_inner_hits, within_peaks=peaks_too)
 
     try:
-        results = region_es.search(body=region_query,
-                                            index=chrom.lower(),
-                                            doc_type=_GENOME_TO_ALIAS[assembly],
-                                            size=99999)
+        results = region_es.search(body=region_query, index=chrom.lower(),
+                                    doc_type=_GENOME_TO_ALIAS[assembly], size=99999)
     except Exception:
         return {'message': 'Error during region search'}
 
     all_hits['peaks'] = list(results['hits']['hits'])
     all_hits['peak_count'] = len(all_hits['peaks'])
+    # NOTE: peak['inner_hits']['positions']['hits']['hits'] may exist with uuids but to same file
     uuids = [ peak['_id'] for peak in all_hits['peaks'] ]
     uuids = list(set(uuids))
     if not uuids:
         return {'message': 'No uuids found in region'}
 
     resident_details = {}
+    use_types = [FOR_MULTIPLE_USES]
+    if len(uses) == 1:
+        use_types.append(uses[0])
     try:
         id_query = {"query": {"ids": {"values": uuids}}}
-        res = region_es.search(body=id_query, index=RESIDENT_REGIONSET_KEY, doc_type='default', size=99999)
+        res = region_es.search(body=id_query, index=RESIDENT_REGIONSET_KEY, doc_type=use_types, size=99999)
         hits = res.get("hits", {}).get("hits", [])
         for hit in hits:
             resident_details[hit["_id"]] = hit["_source"]
@@ -179,13 +205,14 @@ def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, wit
         return {'message': 'Error during resident_details search'}
 
     dataset_ids = set()
-    uses_set = set(uses)
+    #uses_set = set(uses)
     all_hits['file_hits'] = {}
     for uuid in uuids:
         if uuid not in resident_details:
             continue
-        if uses and not list(uses_set.intersection(set(resident_details[uuid].get('uses',[])))):
-            continue
+        # Don't need to check uses, since query was restricted on use_types
+        #if uses and not list(uses_set.intersection(set(resident_details[uuid].get('uses',[])))):
+        #    continue
         dataset_ids.add(resident_details[uuid].get('dataset'))
         all_hits['file_hits'][uuid] = resident_details[uuid]
 
@@ -194,7 +221,7 @@ def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, wit
         all_hits['peaks'] = []
         peaks = []  # Don't burden results with too much info
 
-    all_hits['message'] = '%d peaks in %d files belonging to %s experiments in this region' % \
+    all_hits['message'] = '%d peaks in %d files belonging to %s datasets in this region' % \
                 (all_hits['peak_count'], len(all_hits['file_hits'].keys()), len(all_hits['dataset_paths']))
 
     return all_hits
@@ -258,7 +285,7 @@ def assembly_mapper(location, species, input_assembly, output_assembly):
 
 
 def get_rsid_coordinates(id, assembly):
-    species = _GENOME_TO_SPECIES[assembly]
+    species = _GENOME_TO_SPECIES.get(assembly, 'homo_sapiens')
     ensembl_url = _ENSEMBL_URL
     if assembly == 'GRCh37':
         ensembl_url = _ENSEMBL_URL_GRCH37
@@ -288,7 +315,7 @@ def get_rsid_coordinates(id, assembly):
 
 
 def get_ensemblid_coordinates(id, assembly):
-    species = _GENOME_TO_SPECIES[assembly]
+    species = _GENOME_TO_SPECIES.get(assembly, 'homo_sapiens')
     url = '{ensembl}lookup/id/{id}?content-type=application/json'.format(
         ensembl=_ENSEMBL_URL,
         id=id
@@ -319,79 +346,94 @@ def format_position(position, resolution):
     end = int(end) + resolution
     return '{}:{}-{}'.format(chromosome, start, end)
 
+regulome_score_rules = [  # TODO: ways to make more efficient?
+    ('1a', {'EQTL','ChIP', 'DNase', 'PWM_matched', 'Footprint_matched'}),
+    ('1b', {'EQTL','ChIP', 'DNase', 'PWM', 'Footprint'}),
+    ('1c', {'EQTL','ChIP', 'DNase', 'PWM_matched'}),
+    ('1d', {'EQTL','ChIP', 'DNase', 'PWM'}),
+    ('1e', {'EQTL','ChIP', 'PWM_matched'}),
+    ('1f', {'EQTL','ChIP'}),
+    ('1f', {'EQTL','DNase'}),
+    ('2a', {'ChIP','DNase', 'PWM', 'Footprint', 'PWM_matched', 'Footprint_matched'}),
+    ('2b', {'ChIP','DNase', 'PWM', 'Footprint'}),
+    ('2c', {'ChIP','DNase', 'PWM', 'PWM_matched'}),
+    ('3a', {'ChIP','DNase', 'PWM'}),
+    ('3b', {'ChIP','PWM_matched'}),
+    ('4',  {'ChIP','DNase'}),
+    ('5',  {'ChIP'}),
+    ('5',  {'DNase'}),
+    ('6',  {'PWM'}),
+    ('6',  {'Footprint'}),
+    ('6',  {'EQTL'}),
+]
+
 def regulome_score(file_hits):
     '''Calculate RegulomeDB score based upon hits and voodoo'''
-    ChIP = False
-    DNase = False
-    PWM = False
-    Footprint = False
-    EQTL = False
+    characterize = set()
     targets = { 'ChIP-seq': [], 'PWM': [], 'Footprint': []}
     for file_hit in file_hits.values():
-        assay = file_hit['assay_term_name']
+        assay = file_hit.get('assay_term_name',file_hit.get('annotation_type'))
+        if assay is None:
+            continue
         target = file_hit.get('target')
         if target and assay in ['ChIP-seq', 'PWM', 'Footprint']:
             targets[assay].append(target)
 
-        if not ChIP and assay == 'ChIP-seq':
-            ChIP = True
-        elif not DNase and assay == 'DNase-seq':
-            DNase = True
-        if not PWM and assay == 'PWM':              # TODO: Figure out how to recognize PWM
-            PWM = True
-        if not Footprint and assay == 'Footprint':  # TODO: Figure out how to recognize Footptrints
-            Footprint = True
-        if not EQTL and assay == 'EQTL':            # TODO: Figure out how to recognize EQTLs
-            EQTL = True
+        if assay == 'ChIP-seq':
+            characterize.add('ChIP')
+        elif assay in ['DNase-seq', 'FAIRE-seq']:  # TODO: confirm FAIRE is lumped in
+            characterize.add('DNase')                 #       aka Chromatin_Structure
+        if assay == 'PWM':                         # TODO: Figure out Position Weight Matrix
+            characterize.add('PWM')                   #       From motifs
+        if assay == 'Footprint':                   # TODO: Figure out how to recognize Footptrints
+            characterize.add('Footprint')             #       Also in Motifs?
+        if assay == 'EQTL':                        # TODO: Figure out how to recognize EQTLs
+            characterize.add('EQTL')                  #       From Single_Nucleoties
 
     # Targets... For each ChIP target, there should be a PWM and/or Footprint to match
-    PWM_matched = False
-    Footprint_matched = False
+    to_match = {'PWM_matched', 'Footprint_matched'}
     for target in targets['ChIP-seq']:
-        if target in targets['PWM']:
-            PWM_matched = True
-        if target in targets['Footprint']:
-            Footprint_matched = True
-        if PWM_matched and Footprint_matched:
+        if not to_match:
             break
+        if target in targets['PWM']:
+            characterize.add('PWM_matched')
+            to_match.discard('PWM_matched')
+        if target in targets['Footprint']:
+            characterize.add('Footprint_matched')
+            to_match.discard('Footprint_matched')
 
     # Now the scoring
-    if EQTL:
-        if ChIP:
-            if PWM_matched and Footprint_matched and DNase:
-                return '1a'
-            if PWM and Footprint and DNase:
-                return '1b'
-            if PWM_matched and DNase:
-                return '1c'
-            if PWM and DNase:
-                return '1d'
-            if PWM_matched:
-                return '1e'
-        return '1f'
-        if DNase:
-            return '1f'
-    if ChIP:
-        if DNase:
-            if PWM:
-                if Footprint:
-                    if PWM_matched and Footprint_matched:
-                        return '2a'
-                    return '2b'
-                if PWM_matched:
-                    return '2c'
-                return '3a'
-        if PWM_matched:
-            score = '3b'
-        if DNase:
-            return '4'
-        return '5'
-    if DNase:
-        return '5'
-    if PWM or Footprint or EQTL:
-        return '6'
-
+    for (score, rule) in regulome_score_rules:
+        if characterize == rule:
+            return score
     return None
+
+def update_viusalize(result, assembly, dataset_paths, regulome=False):
+    '''Restrict visualize to assembly and add Quick View if possible.'''
+    vis = result.get('visualize_batch')
+    if vis is None:
+        return None
+    assembly = _GENOME_TO_ALIAS[assembly]
+    vis_assembly = vis.pop(assembly, None)
+    if vis_assembly is None:
+        return None
+    if regulome:
+        datasets = ''
+        count = 0
+        for path in dataset_paths:
+            if not path.startswith('/annotations/'):
+                datasets += '&dataset=' + path
+                count += 1
+                if count > 25:
+                    break
+        if count >= 1 and count <= 25:
+            datasets = datasets[9:]  # first dataset= would be redundant
+            pos = result.get('coordinates')
+            quickview_url = vis_format_url("quickview", datasets, assembly, pos)
+            if quickview_url is not None:
+                vis_assembly['Quick View'] = quickview_url
+    return { assembly: vis_assembly }
+
 
 @view_config(route_name='regulome-search', request_method='GET', permission='search')
 @view_config(route_name='region-search', request_method='GET', permission='search')
@@ -401,10 +443,11 @@ def region_search(context, request):
     """
     types = request.registry[TYPES]
     page = request.path.split('/')[1]
+    regulome = page.startswith('regulome')
     result = {
         '@id': '/' + page + '/' + ('?' + request.query_string.split('&referrer')[0] if request.query_string else ''),
         '@type': ['region-search'],
-        'title': ('Regulome search' if page.startswith('regulome') else 'Region search'),
+        'title': ('Regulome search' if regulome else 'Region search'),
         'facets': [],
         '@graph': [],
         'columns': OrderedDict(),
@@ -431,6 +474,7 @@ def region_search(context, request):
         region = '*'
 
     assembly = request.params.get('genome', '*')
+    result['assembly'] = _GENOME_TO_ALIAS.get(assembly,'GRCh38')
     annotation = request.params.get('annotation', '*')
     chromosome, start, end = ('', '', '')
 
@@ -465,7 +509,7 @@ def region_search(context, request):
     if peaks_too:
         region_inside_peak_status = True
     uses = [FOR_REGION_SEARCH]
-    if page.startswith('regulome'):
+    if regulome:
         uses = [FOR_REGULOME_DB]
     all_hits = region_get_hits(snp_es, assembly, chromosome, start, end, peaks_too=peaks_too,
                                         with_inner_hits=region_inside_peak_status, uses=uses)
@@ -473,10 +517,16 @@ def region_search(context, request):
     if 'file_hits' not in all_hits or not all_hits['file_hits']:
         return result
 
-    if page.startswith('regulome') and region.startswith('rs'):
-        score = regulome_score(all_hits['file_hits'])
-        if score:
-            result['notification'] += '.  RegulomeDB score: ' + score
+    # score regulome SNPs or point locations
+    if regulome:
+        if (region.startswith('rs') or (int(end) - int(start)) <= 1):
+            # NOTE: This is on all file hits rather than 'released' or set reduced by facet selection
+            regdb_score = regulome_score(all_hits['file_hits'])
+            if regdb_score:
+                result['regulome_score'] = regdb_score
+    else:  # not regulome then clean up message
+        if result['notification'].startswith('Success'):
+            result['notification']= 'Success'
 
     # if more than one peak found return the experiments with those peak files
     dataset_count = len(all_hits['dataset_paths'])
@@ -488,23 +538,33 @@ def region_search(context, request):
 
     if dataset_count:
 
-        query = get_filtered_query('Experiment', [], set(), principals, ['Experiment'])
+        set_type = ['Experiment']
+        set_indices = 'experiment'
+        allowed_status = ['released']
+        facets = _FACETS
+        if regulome:
+            set_type = ['Dataset']
+            set_indices = ['experiment','annotation']  # TODO: ,'fileset'] ???
+            allowed_status = ['released', 'archived']
+            facets = _REGULOME_FACETS
+
+        query = get_filtered_query('Dataset', [], set(), principals, set_type)
         del query['query']
-        query['post_filter']['bool']['must'].extend([
-            {'terms': {'embedded.status': ['released']}},
-            {'terms': {'embedded.@id':    all_hits['dataset_paths']}}
-        ])
+        query['post_filter']['bool']['must'].append({'terms': {'embedded.@id': all_hits['dataset_paths']}})
+        query['post_filter']['bool']['must'].append({'terms': {'embedded.status': allowed_status}})
+
         used_filters = set_filters(request, query, result)
         used_filters['@id'] = all_hits['dataset_paths']
-        used_filters['status'] = ['released']
-        query['aggs'] = set_facets(_FACETS, used_filters, principals, ['Experiment'])
+        used_filters['status'] = allowed_status  # TODO: force regulome to show this facet
+        query['aggs'] = set_facets(facets, used_filters, principals, ['Dataset'])
         schemas = (types[item_type].schema for item_type in ['Experiment'])
         es_results = es.search(
-            body=query, index='experiment', doc_type='experiment', size=size, request_timeout=60
+            body=query, index=set_indices, doc_type=set_indices, size=size, request_timeout=60
         )
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
         result['total'] = total = es_results['hits']['total']
-        result['facets'] = format_facets(es_results, _FACETS, used_filters, schemas, total, principals)
+        result['facets'] = format_facets(es_results, facets, used_filters, schemas, total, principals)
+
         if peaks_too:
             result['peaks'] = all_hits['peaks']
         result['download_elements'] = get_peak_metadata_links(request)
@@ -512,6 +572,11 @@ def region_search(context, request):
             result['notification'] = 'Success: ' + result['notification']
             position_for_browser = format_position(result['coordinates'], 200)
             result.update(search_result_actions(request, ['Experiment'], es_results, position=position_for_browser))
+        result.pop('batch_download', None)  # not desired for region OR regulome
+
+        vis = update_viusalize(result, assembly, all_hits['dataset_paths'], regulome)
+        if vis is not None:
+            result['visualize_batch'] = vis
 
     return result
 
@@ -551,7 +616,7 @@ def suggest(context, request):
         result['@id'] = '/suggest/?' + urlencode({'genome': requested_genome, 'q': text}, ['q','genome'])
         result['@graph'] = []
         for item in results['suggest']['default-suggest'][0]['options']:
-            if _GENOME_TO_SPECIES[requested_genome].replace('_', ' ') == item['_source']['payload']['species']:
+            if _GENOME_TO_SPECIES.get(requested_genome,'homo_sapiens').replace('_', ' ') == item['_source']['payload']['species']:
                 result['@graph'].append(item)
         result['@graph'] = result['@graph'][:10]
         return result

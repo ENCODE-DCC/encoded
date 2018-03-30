@@ -1607,7 +1607,10 @@ def vis_format_url(browser, path, assembly, position=None):
     elif browser == "quickview":
         file_formats = '&file_format=bigBed&file_format=bigWig'
         file_inclusions = '&status=released&status=in+progress'
-        return ('/search/?type=File&assembly=%s&dataset=%s%s%s#browser' % (assembly,path,file_formats,file_inclusions))
+        region = ''
+        if position is not None:
+            region = '&region=' + position
+        return ('/search/?type=File&assembly=%s%s&dataset=%s%s%s#browser' % (assembly,region,path,file_formats,file_inclusions))
     #else:
         # ERROR: not supported at this time
     return None

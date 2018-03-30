@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
-import DropdownButton from '../libs/bootstrap/button';
-import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
+// import DropdownButton from '../libs/bootstrap/button';
+// import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
+import { BrowserSelector } from './objectutils';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { FacetList, Listing } from './search';
 import { FetchedData, Param } from './fetched';
@@ -341,18 +342,12 @@ class RegionSearch extends React.Component {
                                                 </span>
                                             }
 
-                                            {visualizeKeys ?
-                                                <DropdownButton disabled={visualizeDisabled} title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'} label="batchhubs" wrapperClasses="results-table-button">
-                                                    <DropdownMenu>
-                                                        {visualizeKeys.map(assembly =>
-                                                            Object.keys(context.visualize_batch[assembly]).sort().map(browser =>
-                                                                <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize_batch[assembly][browser]}>
-                                                                    {assembly} {browser}
-                                                                </a>
-                                                            )
-                                                        )}
-                                                    </DropdownMenu>
-                                                </DropdownButton>
+                                            {visualizeKeys && context.visualize_batch ?
+                                                <BrowserSelector
+                                                    visualizeCfg={context.visualize_batch}
+                                                    disabled={visualizeDisabled}
+                                                    title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'}
+                                                />
                                             : null}
 
                                         </div>
