@@ -145,7 +145,7 @@ class AdvSearch extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleAutocompleteClick = this.handleAutocompleteClick.bind(this);
         this.handleAssemblySelect = this.handleAssemblySelect.bind(this);
-        this.handleAssemblySelect = this.handleAssemblySelect.bind(this);
+        this.handleAssemblyFocus = this.handleAssemblyFocus.bind(this);
         this.handleSearchButtonFocus = this.handleSearchButtonFocus.bind(this);
         this.tick = this.tick.bind(this);
     }
