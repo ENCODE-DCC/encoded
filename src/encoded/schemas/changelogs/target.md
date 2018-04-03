@@ -1,5 +1,9 @@
 ## Changelog for target.json
 
+### Minor changes since schema version 6
+
+* Add to *investigated_as* list of enums *cofactor* and *general transcription machinery*
+
 ### Schema version 6
 
 * Remove *proposed* from status enum.

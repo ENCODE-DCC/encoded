@@ -10,7 +10,7 @@
         "label": "ADNP",
         "organism": "human",
         "status": "current",
-        "investigated_as": ["transcription factor"],
+        "investigated_as": ["transcription factor", "cofactor"],
         "uuid": "e310f899-8622-4aa7-8c48-8c2199dc8d15"
     },
     {
@@ -74,7 +74,7 @@
         "label": "CXXC1",
         "organism": "human",
         "status": "current",
-        "investigated_as": ["transcription factor"],
+        "investigated_as": ["transcription factor", "general transcription machinery"],
         "uuid": "aacec93d-d9dc-4f73-8edd-8ecce2debb43"
     },
     {
