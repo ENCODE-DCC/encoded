@@ -968,7 +968,11 @@
                         "transcriptome reference",
                         "TSS reference",
                         "unfiltered alignments",
-                        "variant calls"
+                        "variant calls",
+                        "eQTLs",
+                        "dsQTLs",
+                        "footprints",
+                        "PWMs"
                     ]
                 },
                 {
