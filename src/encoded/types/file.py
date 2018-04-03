@@ -119,12 +119,6 @@ class File(Item):
         'step_run',
     ]
     audit_inherit = [
-        'replicate',
-        'replicate.experiment',
-        'replicate.experiment.target',
-        'replicate.library',
-        'lab',
-        'submitted_by',
         'analysis_step_version.analysis_step',
         'analysis_step_version.analysis_step.pipelines',
         'analysis_step_version.analysis_step.versions',

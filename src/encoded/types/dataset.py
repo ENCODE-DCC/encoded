@@ -78,10 +78,6 @@ class Dataset(Item):
         'original_files',
         'revoked_files',
         'contributing_files'
-        'submitted_by',
-        'lab',
-        'award',
-        'documents.lab',
     ]
     name_key = 'accession'
     rev = {
