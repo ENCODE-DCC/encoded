@@ -110,6 +110,7 @@ class File(Item):
         'replicate.experiment.target',
         'replicate.library',
         'lab',
+        'dataset.replicates.library.biosample',
         'submitted_by',
         'analysis_step_version.analysis_step',
         'analysis_step_version.analysis_step.pipelines',
