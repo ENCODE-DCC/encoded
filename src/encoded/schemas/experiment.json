@@ -144,10 +144,18 @@
                     }
                 },
                 {
+                    "required": ["date_submitted"],
+                    "properties": {
+                        "status": {
+                            "enum": ["submitted"]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "status": {
-                                "enum": ["released", "revoked"]
+                                "enum": ["released", "revoked", "submitted"]
                             }
                         }
                     }

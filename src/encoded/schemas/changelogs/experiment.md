@@ -1,5 +1,9 @@
 ## Changelog for experiment.json
 
+### Minor changes since schema version 18
+
+* Make *date_submitted* value a required property for experiments in status *submitted*
+
 ### Schema version 18
 
 * Replace started status with in progress.
