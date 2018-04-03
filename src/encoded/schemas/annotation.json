@@ -140,6 +140,10 @@
                 "transcript expression",
                 "transcription factor motifs",
                 "validated enhancers",
+                "eQTLs",
+                "dsQTLs",
+                "Footprints",
+                "PWMs",
                 "variant calls"
             ]
         },
