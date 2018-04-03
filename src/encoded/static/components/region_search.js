@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
-// import DropdownButton from '../libs/bootstrap/button';
-// import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
 import { BrowserSelector } from './objectutils';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { FacetList, Listing } from './search';
@@ -141,7 +139,7 @@ class AdvSearch extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleAutocompleteClick = this.handleAutocompleteClick.bind(this);
         this.handleAssemblySelect = this.handleAssemblySelect.bind(this);
-        this.handleAssemblySelect = this.handleAssemblySelect.bind(this);
+        this.handleAssemblyFocus = this.handleAssemblyFocus.bind(this);
         this.handleSearchButtonFocus = this.handleSearchButtonFocus.bind(this);
         this.tick = this.tick.bind(this);
     }
