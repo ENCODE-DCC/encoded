@@ -199,7 +199,7 @@ class AdvSearch extends React.Component {
         const region = id.query.region || '';
 
         if (this.state.genome === '') {
-            this.state.genome = context.assembly ? context.assembly : regionGenomes[0].value;
+            this.setState({ genome: context.assembly || regionGenomes[0].value });
         }
 
         return (
