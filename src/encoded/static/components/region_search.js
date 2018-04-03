@@ -206,10 +206,14 @@ class AdvSearch extends React.Component {
 
         if (this.state.genome === '') {
 <<<<<<< HEAD
+<<<<<<< HEAD
             this.setState({ genome: context.assembly || regionGenomes[0].value });
 =======
             this.setState({ genome: context.assembly ? context.assembly : regionGenomes[0].value });
 >>>>>>> With Forrest's guidance, using setState instead of directly setting state contents.
+=======
+            this.setState({ genome: context.assembly || regionGenomes[0].value });
+>>>>>>> Closing in by steps.  Thanks Forrest.
         }
 
         return (
