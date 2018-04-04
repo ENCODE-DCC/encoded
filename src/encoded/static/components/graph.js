@@ -24,7 +24,6 @@ const graphHeightMargin = 40; // Margin on vertical edges of graph SVG
 // This allows edges to cross between children and parents.
 
 export class JsonGraph {
-
     constructor(id) {
         this.id = id;
         this.root = true;
@@ -151,7 +150,6 @@ export class JsonGraph {
         }
         return returnArray;
     }
-
 }
 
 
@@ -278,11 +276,11 @@ export class Graph extends React.Component {
                 // Delay loading dagre for Jest testing compatibility;
                 // Both D3 and Jest have their own conflicting JSDOM instances
                 require.ensure(['dagre-d3', 'd3'], (require) => {
-                    if (this.refs.graphdisplay) {
+                    if (this.graphdisplay) {
                         this.d3 = require('d3');
                         this.dagreD3 = require('dagre-d3');
 
-                        const el = this.refs.graphdisplay;
+                        const el = this.graphdisplay;
 
                         // Add SVG element to the graph component, and assign it classes, sizes, and a group
                         const svg = this.d3.select(el).insert('svg', '#graph-node-info')
@@ -308,14 +306,14 @@ export class Graph extends React.Component {
                 });
             } else {
                 // Output text indicating that graphs aren't supported.
-                let el = this.refs.graphdisplay;
+                let el = this.graphdisplay;
                 const para = document.createElement('p');
                 para.className = 'browser-error';
                 para.innerHTML = 'Graphs not supported in your browser. You need a more modern browser to view it.';
                 el.appendChild(para);
 
                 // Disable the download button
-                el = this.refs.dlButton;
+                el = this.dlButton;
                 el.setAttribute('disabled', 'disabled');
             }
 
@@ -329,7 +327,7 @@ export class Graph extends React.Component {
     // State change; redraw the graph
     componentDidUpdate() {
         if (this.dagreD3 && !this.cv.zoomMouseDown) {
-            const el = this.refs.graphdisplay; // Change in React 0.14
+            const el = this.graphdisplay;
             const { viewBoxWidth, viewBoxHeight } = this.drawGraph(el);
 
             // Bind node/subnode click handlers to parent component handlers
@@ -632,7 +630,7 @@ export class Graph extends React.Component {
 
     rangeDoubleClick() {
         // Handle a double click in the zoom slider
-        const el = this.refs.graphdisplay;
+        const el = this.graphdisplay;
         const zoomLevel = this.setInitialZoomLevel(el, this.cv.savedSvg);
         this.setState({ zoomLevel });
     }
@@ -656,11 +654,11 @@ export class Graph extends React.Component {
                             </tbody>
                         </table>
                     </div>
-                    <div ref="graphdisplay" className="graph-display" onScroll={this.scrollHandler} />
+                    <div ref={(div) => { this.graphdisplay = div; }} className="graph-display" onScroll={this.scrollHandler} />
                     {colorize ? <GraphLegend /> : null}
                     <div className="graph-dl clearfix">
                         <button className="btn btn-info btn-sm btn-orient" title={orientBtnAlt} onClick={this.handleOrientationClick}>{svgIcon(currOrientKey)}<span className="sr-only">{orientBtnAlt}</span></button>
-                        <button ref="dlButton" className="btn btn-info btn-sm" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
+                        <button ref={(button) => { this.dlButton = button; }} className="btn btn-info btn-sm" value="Test" onClick={this.handleDlClick} disabled={this.state.dlDisabled}>Download Graph</button>
                     </div>
                     {this.props.children}
                 </div>

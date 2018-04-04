@@ -19,7 +19,8 @@ const PublicationComponent = (props, reactContext) => {
         {
             id: context.categories ? context.categories.join(' + ') : null,
             query: (categoryTerms && categoryTerms.join('&')),
-            tip: context.categories && context.categories.join(' + ') },
+            tip: context.categories && context.categories.join(' + '),
+        },
     ];
 
     return (

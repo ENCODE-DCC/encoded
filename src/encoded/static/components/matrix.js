@@ -236,7 +236,7 @@ class Matrix extends React.Component {
                                             <tr style={{ borderBottom: 'solid 1px #ddd' }}>
                                                 <th style={{ textAlign: 'center', width: 200 }}>
                                                     <h3>
-                                                      {matrix.doc_count} results
+                                                        {matrix.doc_count} results
                                                     </h3>
                                                     <div className="btn-attached">
                                                         {matrix.doc_count && context.views ? context.views.map(view => <a href={view.href} key={view.icon} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{svgIcon(view2svg[view.icon])}</a>) : ''}
@@ -269,11 +269,13 @@ class Matrix extends React.Component {
                                                 parsed.query['y.limit'] = null;
                                                 delete parsed.search; // this makes format compose the search string out of the query object
                                                 const groupHref = url.format(parsed);
-                                                const rows = [<tr key={`group-${group.key}`}>
-                                                    <th colSpan={colCount + 1} style={{ textAlign: 'left', backgroundColor: groupColor }}>
-                                                        <a href={groupHref} style={{ color: '#fff' }}>{group.key}</a>
-                                                    </th>
-                                                </tr>];
+                                                const rows = [
+                                                    <tr key={`group-${group.key}`}>
+                                                        <th colSpan={colCount + 1} style={{ textAlign: 'left', backgroundColor: groupColor }}>
+                                                            <a href={groupHref} style={{ color: '#fff' }}>{group.key}</a>
+                                                        </th>
+                                                    </tr>,
+                                                ];
                                                 const groupBuckets = group[secondaryYGrouping].buckets;
                                                 const yLimit = matrix.y.limit || groupBuckets.length;
 
@@ -340,7 +342,7 @@ class Matrix extends React.Component {
                                         </tbody>
                                     </table>
                                 </div>
-                                <div className="hubs-controls" ref="hubscontrols">
+                                <div className="hubs-controls" ref={(div) => { this.hubscontrols = div; }}>
                                     {context.batch_download ?
                                         <BatchDownload context={context} />
                                     : null}

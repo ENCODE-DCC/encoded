@@ -169,7 +169,7 @@ export function donorDiversity(dataset) {
             const replicatesByExperiment = experiments.map(experiment => (
                 (experiment.replicates && experiment.replicates.length) ?
                     experiment.replicates.filter(replicate => replicate.status !== 'deleted')
-                : []),
+                : [])
             );
 
             // Merge all replicate arrays into one non-deleted replicate array.
@@ -243,9 +243,13 @@ class DownloadIcon extends React.Component {
 }
 
 DownloadIcon.propTypes = {
-    hoverDL: PropTypes.func, // Function to call when hovering or stop hovering over the icon
-    file: PropTypes.object, // File associated with this download button
+    hoverDL: PropTypes.func.isRequired, // Function to call when hovering or stop hovering over the icon
+    file: PropTypes.object.isRequired, // File associated with this download button
     adminUser: PropTypes.bool, // True if logged-in user is an admin
+};
+
+DownloadIcon.defaultProps = {
+    adminUser: false,
 };
 
 
@@ -286,7 +290,7 @@ class FileInfoButton extends React.Component {
 
 FileInfoButton.propTypes = {
     file: PropTypes.object.isRequired, // File whose information is to be displayed
-    clickHandler: PropTypes.func, // Function to call when the info button is clicked
+    clickHandler: PropTypes.func.isRequired, // Function to call when the info button is clicked
 };
 
 
@@ -415,9 +419,14 @@ export class RestrictedDownloadButton extends React.Component {
 }
 
 RestrictedDownloadButton.propTypes = {
-    file: PropTypes.object, // File containing `href` to use as download link
+    file: PropTypes.object.isRequired, // File containing `href` to use as download link
     adminUser: PropTypes.bool, // True if logged in user is admin
     downloadComponent: PropTypes.object, // Optional component to render the download button, insetad of default
+};
+
+RestrictedDownloadButton.defaultProps = {
+    adminUser: false,
+    downloadComponent: null,
 };
 
 
@@ -434,10 +443,15 @@ export const DownloadableAccession = (props) => {
 
 DownloadableAccession.propTypes = {
     file: PropTypes.object.isRequired, // File whose accession to render
-    buttonEnabled: PropTypes.bool, // True if accession should be a button
     clickHandler: PropTypes.func, // Function to call when button is clicked
     loggedIn: PropTypes.bool, // True if current user is logged in
     adminUser: PropTypes.bool, // True if current user is logged in and admin
+};
+
+DownloadableAccession.defaultProps = {
+    clickHandler: null,
+    loggedIn: false,
+    adminUser: false,
 };
 
 
@@ -538,6 +552,11 @@ BrowserSelector.propTypes = {
     title: PropTypes.string, // Title of Visualize button if "Visualize" isn't desired
 };
 
+BrowserSelector.defaultProps = {
+    disabled: false,
+    title: '',
+};
+
 
 // You can use this function to render a panel view for a context object with a couple options:
 //   1. Pass an ENCODE context object (e.g. Biosample or Experiment) directly in props. PanelLookup
@@ -590,4 +609,8 @@ export const AlternateAccession = (props) => {
 
 AlternateAccession.propTypes = {
     altAcc: PropTypes.array, // Array of alternate accession strings
+};
+
+AlternateAccession.defaultProps = {
+    altAcc: null,
 };

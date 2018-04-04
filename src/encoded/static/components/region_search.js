@@ -96,11 +96,13 @@ class AutocompleteBoxMenu extends React.Component {
     render() {
         const { preText, matchText, postText } = this.props;
 
+        /* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/click-events-have-key-events */
         return (
             <li tabIndex="0" onClick={this.handleClick}>
                 {preText}<b>{matchText}</b>{postText}
             </li>
         );
+        /* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex, jsx-a11y/click-events-have-key-events */
     }
 }
 
@@ -126,14 +128,17 @@ class AdvSearch extends React.Component {
         super();
 
         // Set intial React state.
+        /* eslint-disable react/no-unused-state */
+        // Need to disable this rule because of a bug in eslint-plugin-react.
+        // https://github.com/yannickcr/eslint-plugin-react/issues/1484#issuecomment-366590614
         this.state = {
             disclosed: false,
             showAutoSuggest: false,
             searchTerm: '',
-            coordinates: '',
             genome: regionGenomes[0].value,
             terms: {},
         };
+        /* eslint-enable react/no-unused-state */
 
         // Bind this to non-React methods.
         this.handleDiscloseClick = this.handleDiscloseClick.bind(this);
@@ -192,10 +197,10 @@ class AdvSearch extends React.Component {
         return (
             <Panel>
                 <PanelBody>
-                    <form id="panel1" className="adv-search-form" ref="adv-search" role="form" autoComplete="off" aria-labelledby="tab1">
+                    <form id="panel1" className="adv-search-form" autoComplete="off" aria-labelledby="tab1">
                         <input type="hidden" name="annotation" value={this.state.terms.annotation} />
                         <div className="form-group">
-                            <label htmlFor="annotation" >Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
+                            <label htmlFor="annotation">Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
                             <div className="input-group input-group-region-input">
                                 <input id="annotation" ref={(input) => { this.annotation = input; }} defaultValue={region} name="region" type="text" className="form-control" onChange={this.handleChange} />
                                 {(this.state.showAutoSuggest && this.state.searchTerm) ?
@@ -283,72 +288,72 @@ class RegionSearch extends React.Component {
             <div>
                 <h2>Region search</h2>
                 <AdvSearch {...this.props} />
-                    {notification === 'Success' ?
-                        <div className="panel data-display main-panel">
-                            <div className="row">
-                                <div className="col-sm-5 col-md-4 col-lg-3">
-                                    <FacetList
-                                        {...this.props}
-                                        facets={facets}
-                                        filters={filters}
-                                        searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
-                                        onFilter={this.onFilter}
-                                    />
-                                </div>
-                                <div className="col-sm-7 col-md-8 col-lg-9">
-                                    <div>
-                                        <h4>
-                                            Showing {results.length} of {total}
-                                        </h4>
-                                        <div className="results-table-control">
-                                            {total > results.length && searchBase.indexOf('limit=all') === -1 ?
-                                                    <a
-                                                        rel="nofollow"
-                                                        className="btn btn-info btn-sm"
-                                                        href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
-                                                        onClick={this.onFilter}
-                                                    >
-                                                        View All
-                                                    </a>
-                                            :
-                                                <span>
-                                                    {results.length > 25 ?
-                                                            <a
-                                                                className="btn btn-info btn-sm"
-                                                                href={trimmedSearchBase || '/region-search/'}
-                                                                onClick={this.onFilter}
-                                                            >
-                                                                View 25
+                {notification === 'Success' ?
+                    <div className="panel data-display main-panel">
+                        <div className="row">
+                            <div className="col-sm-5 col-md-4 col-lg-3">
+                                <FacetList
+                                    {...this.props}
+                                    facets={facets}
+                                    filters={filters}
+                                    searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
+                                    onFilter={this.onFilter}
+                                />
+                            </div>
+                            <div className="col-sm-7 col-md-8 col-lg-9">
+                                <div>
+                                    <h4>
+                                        Showing {results.length} of {total}
+                                    </h4>
+                                    <div className="results-table-control">
+                                        {total > results.length && searchBase.indexOf('limit=all') === -1 ?
+                                                <a
+                                                    rel="nofollow"
+                                                    className="btn btn-info btn-sm"
+                                                    href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
+                                                    onClick={this.onFilter}
+                                                >
+                                                    View All
+                                                </a>
+                                        :
+                                            <span>
+                                                {results.length > 25 ?
+                                                        <a
+                                                            className="btn btn-info btn-sm"
+                                                            href={trimmedSearchBase || '/region-search/'}
+                                                            onClick={this.onFilter}
+                                                        >
+                                                            View 25
+                                                        </a>
+                                                : null}
+                                            </span>
+                                        }
+
+                                        {visualizeKeys ?
+                                            <DropdownButton disabled={visualizeDisabled} title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'} label="batchhubs" wrapperClasses="results-table-button">
+                                                <DropdownMenu>
+                                                    {visualizeKeys.map(assembly =>
+                                                        Object.keys(context.visualize_batch[assembly]).sort().map(browser =>
+                                                            <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize_batch[assembly][browser]}>
+                                                                {assembly} {browser}
                                                             </a>
-                                                    : null}
-                                                </span>
-                                            }
+                                                        )
+                                                    )}
+                                                </DropdownMenu>
+                                            </DropdownButton>
+                                        : null}
 
-                                            {visualizeKeys ?
-                                                <DropdownButton disabled={visualizeDisabled} title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'} label="batchhubs" wrapperClasses="results-table-button">
-                                                    <DropdownMenu>
-                                                        {visualizeKeys.map(assembly =>
-                                                            Object.keys(context.visualize_batch[assembly]).sort().map(browser =>
-                                                                <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize_batch[assembly][browser]}>
-                                                                    {assembly} {browser}
-                                                                </a>
-                                                            )
-                                                        )}
-                                                    </DropdownMenu>
-                                                </DropdownButton>
-                                            : null}
-
-                                        </div>
                                     </div>
-
-                                  <hr />
-                                  <ul className="nav result-table" id="result-table">
-                                      {results.map(result => Listing({ context: result, columns, key: result['@id'] }))}
-                                  </ul>
                                 </div>
+
+                                <hr />
+                                <ul className="nav result-table" id="result-table">
+                                    {results.map(result => Listing({ context: result, columns, key: result['@id'] }))}
+                                </ul>
                             </div>
                         </div>
-                    : null}
+                    </div>
+                : null}
             </div>
         );
     }

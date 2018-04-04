@@ -291,3 +291,7 @@ Breadcrumbs.propTypes = {
     root: PropTypes.string, // Root URI for searches
     crumbs: PropTypes.arrayOf(PropTypes.object).isRequired, // Object with breadcrumb contents
 };
+
+Breadcrumbs.defaultProps = {
+    root: '',
+};

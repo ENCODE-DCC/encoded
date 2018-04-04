@@ -129,12 +129,13 @@ export function atIdToAccession(atId) {
 }
 
 
-/* eslint no-extend-native: ["error", { "exceptions": ["String"] }]*/
 // Make the first character of the given string uppercase. Can be less fiddly than CSS text-transform.
 // http://stackoverflow.com/questions/1026069/capitalize-the-first-letter-of-string-in-javascript#answer-1026087
+/* eslint-disable no-extend-native */
 String.prototype.uppercaseFirstChar = function uppercaseFirstChar() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 };
+/* eslint-enable no-extend-native */
 
 // Convert a string to a 32-bit hash.
 // http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/

@@ -92,7 +92,9 @@ export default class FallbackBlockEdit extends React.Component {
     render() {
         const { schema, value } = this.props;
         return (<Field
-            schema={schema || fallbackSchema} value={value} updateChild={this.update}
+            schema={schema || fallbackSchema}
+            value={value}
+            updateChild={this.update}
         />);
     }
 }

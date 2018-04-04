@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 export default class FileInput extends React.Component {
     static onDragOver(e) {
         e.dataTransfer.dropEffect = 'copy';
-        e.preventDefault();  // indicate we are going to handle the drop
+        e.preventDefault(); // indicate we are going to handle the drop
     }
 
     constructor() {
@@ -25,7 +25,7 @@ export default class FileInput extends React.Component {
     onChange(e, file) {
         let rFile = file;
         if (rFile === undefined) {
-            const input = this.refs.input;
+            const input = this.input;
             rFile = input.files[0];
         }
         const reader = new FileReader();
@@ -50,12 +50,14 @@ export default class FileInput extends React.Component {
         return (
             <div className={`dropzone${this.props.disabled ? ' disabled' : ''}`} onDragOver={FileInput.onDragOver} onDrop={this.onDrop}>
                 <div className="drop">
-                    {filename ? <div>
-                        <a href={value.href} target="_blank" rel="noopener noreferrer">{filename}</a>
-                    </div> : ''}
+                    {filename ?
+                        <div>
+                            <a href={value.href} target="_blank" rel="noopener noreferrer">{filename}</a>
+                        </div>
+                    : ''}
                     <div>{preview}</div>
                     <br />Drop a {filename ? 'replacement' : ''} file here.
-                    Or <input ref="input" type="file" onChange={this.onChange} disabled={this.props.disabled} />
+                    Or <input ref={(input) => { this.input = input; }} type="file" onChange={this.onChange} disabled={this.props.disabled} />
                     <br /><br />
                 </div>
             </div>

@@ -96,6 +96,7 @@ import { Panel } from '../libs/bootstrap/panel';
 // Display an audit icon. This normally gets displayed within the audit indicator button, but it
 // doesn't rely on much so you could use it anywhere you want to display the icon associated with
 // the audit with the level passed in the `level` property.
+/* eslint-disable react/prefer-stateless-function */
 export class AuditIcon extends React.Component {
     render() {
         const { level, addClasses } = this.props;
@@ -105,6 +106,7 @@ export class AuditIcon extends React.Component {
         return <i className={iconClass}><span className="sr-only">Audit {levelName}</span></i>;
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 AuditIcon.propTypes = {
     level: PropTypes.string.isRequired, // Level name from an audit object
@@ -117,6 +119,7 @@ AuditIcon.defaultProps = {
 
 
 // Display details text with embedded links. This gets displayed in each row of the audit details.
+/* eslint-disable react/prefer-stateless-function */
 class DetailEmbeddedLink extends React.Component {
     render() {
         const { detail } = this.props;
@@ -152,6 +155,7 @@ class DetailEmbeddedLink extends React.Component {
         return <span>{detail}</span>;
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 DetailEmbeddedLink.propTypes = {
     detail: PropTypes.string.isRequired, // Test to display in each audit's detail, possibly containing @ids that this component turns into links automatically
@@ -205,7 +209,7 @@ class AuditGroup extends React.Component {
                     {group.map((audit, i) =>
                         <div className={alertItemClass} key={i} role="alert">
                             <DetailEmbeddedLink detail={audit.detail} except={except} forcedEditLink={forcedEditLink} />
-                        </div>,
+                        </div>
                     )}
                 </div>
             </div>
@@ -326,7 +330,7 @@ export const auditDecor = AuditComponent => class extends React.Component {
                                     except={except}
                                     forcedEditLink={forcedEditLink}
                                     key={groupName}
-                                />,
+                                />
                             );
                         }
                         return null;

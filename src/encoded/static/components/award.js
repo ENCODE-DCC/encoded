@@ -1450,9 +1450,11 @@ const ChartRenderer = (props) => {
             <div> <GenusButtons handleClick={handleClick} selectedOrganisms={selectedOrganisms} updatedGenusArray={updatedGenusArray} /> </div>
             <PanelBody>
                 <div className="award-chart__group-wrapper">
-                    <h2>Assays {experimentsConfig.labs.length ?
-                    <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Experiment&${ExperimentQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
-                    : null}</h2>
+                    <h2>
+                        Assays {experimentsConfig.labs.length ?
+                            <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Experiment&${ExperimentQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                        : null}
+                    </h2>
                     {experimentsConfig.labs.length ?
                         <div>
                             <div className="award-chart__group">
@@ -1492,9 +1494,11 @@ const ChartRenderer = (props) => {
                     }
                 </div>
                 <div className="award-chart__group-wrapper">
-                    <h2>Annotations {annotationsConfig.labs.length ?
-                    <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Annotation&${AnnotationQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
-                    : null}</h2>
+                    <h2>
+                        Annotations {annotationsConfig.labs.length ?
+                            <a className="btn btn-info btn-sm reporttitle" href={`/report/?type=Annotation&${AnnotationQuery}&award.name=${award.name}`} title="View tabular report"><svg id="Table" data-name="Table" xmlns="http://www.w3.org/2000/svg" width="29" height="17" viewBox="0 0 29 17" className="svg-icon svg-icon-table"><title>table-tab-icon </title><path d="M22,0H0V17H29V0H22ZM21,4.33V8H15V4.33h6ZM15,9h6v3H15V9Zm-1,3H8V9h6v3Zm0-7.69V8H8V4.33h6Zm-13,0H7V8H1V4.33ZM1,9H7v3H1V9Zm0,7V13H7v3H1Zm7,0V13h6v3H8Zm7,0V13h6v3H15Zm13,0H22V13h6v3Zm0-4H22V9h6v3Zm0-4H22V4.33h6V8Z" /></svg></a>
+                        : null}
+                    </h2>
                     {annotationsConfig.labs.length ?
                         <div>
                             <div className="award-chart__group">
@@ -1595,13 +1599,14 @@ ChartRenderer.defaultProps = {
 };
 
 // Create new tabdisplay of genus buttons
+/* eslint-disable react/prefer-stateless-function */
 class GenusButtons extends React.Component {
     render() {
         const { updatedGenusArray, selectedOrganisms, handleClick } = this.props;
         // If genera exist, then the button for each specific genus is created
         if (updatedGenusArray.length) {
             return (
-                <div className="organism-selector" ref="tabdisplay">
+                <div className="organism-selector">
                     {updatedGenusArray.indexOf('HUMAN') !== -1 ?
                         <OrganismSelector organism="HUMAN" selected={selectedOrganisms.indexOf('HUMAN') !== -1} organismButtonClick={handleClick} />
                     :
@@ -1624,6 +1629,7 @@ class GenusButtons extends React.Component {
         return null;
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 GenusButtons.propTypes = {
     selectedOrganisms: PropTypes.array, // Array of currently selected buttons
@@ -1863,8 +1869,9 @@ class OrganismSelector extends React.Component {
     render() {
         const { organism, selected } = this.props;
         return (
-            <button onClick={this.buttonClick} className={`organism-selector__tab${selected ? ' organism-selector--selected' : ''}`} >
-            {organism} </button>
+            <button onClick={this.buttonClick} className={`organism-selector__tab${selected ? ' organism-selector--selected' : ''}`}>
+                {organism}
+            </button>
         );
     }
 }
@@ -1886,7 +1893,7 @@ class AwardCharts extends React.Component {
     constructor() {
         super();
         this.state = {
-            selectedOrganisms: [], //create empty array of selected organism tabs
+            selectedOrganisms: [], // create empty array of selected organism tabs
         };
         this.handleClick = this.handleClick.bind(this);
     }
@@ -1940,12 +1947,13 @@ class AwardCharts extends React.Component {
 
 AwardCharts.propTypes = {
     award: PropTypes.object.isRequired, // Award represented by this chart
-    updatedGenusArray: PropTypes.array, //Array of existing genera
+    updatedGenusArray: PropTypes.array, // Array of existing genera
 };
 AwardCharts.defaultProps = {
     updatedGenusArray: [],
 };
 
+/* eslint-disable react/prefer-stateless-function */
 class LineChart extends React.Component {
     render() {
         const { award } = this.props;
@@ -1959,6 +1967,7 @@ class LineChart extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 LineChart.propTypes = {
     award: PropTypes.object.isRequired, // Award represented by this chart
@@ -2099,6 +2108,7 @@ AffiliatedLabsArray.defaultProps = {
     labs: {},
 };
 
+/* eslint-disable react/prefer-stateless-function */
 class AffiliatedLabs extends React.Component {
     render() {
         const { award } = this.props;
@@ -2110,11 +2120,13 @@ class AffiliatedLabs extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 AffiliatedLabs.propTypes = {
     award: PropTypes.object.isRequired, // Award represented by this chart
 };
 
+/* eslint-disable react/prefer-stateless-function */
 class Award extends React.Component {
     render() {
         // const { award } = this.props;
@@ -2203,6 +2215,7 @@ class Award extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 Award.propTypes = {
     context: PropTypes.object.isRequired, // Award object being rendered

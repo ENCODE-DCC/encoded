@@ -570,6 +570,10 @@ GeneticModificationSummary.propTypes = {
     geneticModifications: PropTypes.array, // Array of genetic modifications to display
 };
 
+GeneticModificationSummary.defaultProps = {
+    geneticModifications: null,
+};
+
 GeneticModificationSummary.columns = {
     accession: {
         title: 'Accession',

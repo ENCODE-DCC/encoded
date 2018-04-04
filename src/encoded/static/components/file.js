@@ -216,6 +216,7 @@ DerivedFiles.propTypes = {
 
 
 // Display a table of files the current file derives from.
+/* eslint-disable react/prefer-stateless-function */
 class DerivedFromFiles extends React.Component {
     render() {
         const { file, derivedFromFiles } = this.props;
@@ -231,6 +232,7 @@ class DerivedFromFiles extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 DerivedFromFiles.propTypes = {
     file: PropTypes.object.isRequired, // File being analyzed
@@ -241,32 +243,41 @@ DerivedFromFiles.propTypes = {
 // Display a file download button.
 class FileDownloadButton extends React.Component {
     onMouseEnter() {
-        this.props.hoverDL(true);
+        if (this.props.hoverDL) {
+            this.props.hoverDL(true);
+        }
     }
 
     onMouseLeave() {
-        this.props.hoverDL(false);
+        if (this.props.hoverDL) {
+            this.props.hoverDL(false);
+        }
     }
 
     render() {
         const { file, buttonEnabled } = this.props;
 
-        return (
-            <div className="tooltip-button-wrapper">
-                <a
-                    className="btn btn-info"
-                    href={file.href}
-                    download={file.href.substr(file.href.lastIndexOf('/') + 1)}
-                    data-bypass="true"
-                    disabled={!buttonEnabled}
-                    onMouseEnter={file.restricted ? this.onMouseEnter : null}
-                    onMouseLeave={file.restricted ? this.onMouseLeave : null}
-                >Download {file.title}</a>
-                {!buttonEnabled ?
-                    <div className="tooltip-button-overlay" onMouseEnter={file.restricted ? this.onMouseEnter : null} onMouseLeave={file.restricted ? this.onMouseLeave : null} />
-                : null}
-            </div>
-        );
+        if (file) {
+            return (
+                <div className="tooltip-button-wrapper">
+                    <a
+                        className="btn btn-info"
+                        href={file.href}
+                        download={file.href.substr(file.href.lastIndexOf('/') + 1)}
+                        data-bypass="true"
+                        disabled={!buttonEnabled}
+                        onMouseEnter={file.restricted ? this.onMouseEnter : null}
+                        onMouseLeave={file.restricted ? this.onMouseLeave : null}
+                    >
+                        Download {file.title}
+                    </a>
+                    {!buttonEnabled ?
+                        <div className="tooltip-button-overlay" onMouseEnter={file.restricted ? this.onMouseEnter : null} onMouseLeave={file.restricted ? this.onMouseLeave : null} />
+                    : null}
+                </div>
+            );
+        }
+        return null;
     }
 }
 
@@ -274,6 +285,12 @@ FileDownloadButton.propTypes = {
     file: PropTypes.object, // File we're possibly downloading by clicking this button
     hoverDL: PropTypes.func, // Function to call when hovering starts/stops over button
     buttonEnabled: PropTypes.bool, // `true` if button is enabled
+};
+
+FileDownloadButton.defaultProps = {
+    file: null,
+    hoverDL: null,
+    buttonEnabled: false,
 };
 
 
@@ -414,7 +431,7 @@ class FileComponent extends React.Component {
                                                     <span key={pipeline['@id']}>
                                                         {i > 0 ? <span>{','}<br /></span> : null}
                                                         <a href={pipeline['@id']} title="View page for this pipeline">{pipeline.title}</a>
-                                                    </span>,
+                                                    </span>
                                                 )}
                                             </dd>
                                         </div>
@@ -566,9 +583,9 @@ class FileComponent extends React.Component {
 }
 
 FileComponent.propTypes = {
-    context: PropTypes.object, // File object being displayed
-    auditIndicators: PropTypes.func, // Audit indicator rendering function from auditDecor
-    auditDetail: PropTypes.func, // Audit detail rendering function from auditDecor
+    context: PropTypes.object.isRequired, // File object being displayed
+    auditIndicators: PropTypes.func.isRequired, // Audit indicator rendering function from auditDecor
+    auditDetail: PropTypes.func.isRequired, // Audit detail rendering function from auditDecor
 };
 
 FileComponent.contextTypes = {
@@ -582,6 +599,7 @@ globals.contentViews.register(File, 'File');
 
 
 // Display the sequence file summary panel for fastq files.
+/* eslint-disable react/prefer-stateless-function */
 class SequenceFileInfo extends React.Component {
     render() {
         const { file } = this.props;
@@ -668,6 +686,7 @@ class SequenceFileInfo extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 
 SequenceFileInfo.propTypes = {
@@ -675,6 +694,7 @@ SequenceFileInfo.propTypes = {
 };
 
 
+/* eslint-disable react/prefer-stateless-function */
 class ListingComponent extends React.Component {
     render() {
         const result = this.props.context;
@@ -700,11 +720,12 @@ class ListingComponent extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 ListingComponent.propTypes = {
-    context: PropTypes.object, // File object being rendered
-    auditIndicators: PropTypes.func, // Audit decorator function
-    auditDetail: PropTypes.func, // Audit decorator function
+    context: PropTypes.object.isRequired, // File object being rendered
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
 };
 
 ListingComponent.contextTypes = {

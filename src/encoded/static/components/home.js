@@ -44,7 +44,6 @@ export default class Home extends React.Component {
 
         // Set initial React state.
         this.state = {
-            current: '?type=Experiment&status=released', // show all released experiments
             organisms: [], // create empty array of selected tabs
             assayCategory: '',
             socialHeight: 0,
@@ -150,6 +149,10 @@ ChartGallery.propTypes = {
     query: PropTypes.string, // Query string to add to /matrix/ URI
 };
 
+ChartGallery.defaultProps = {
+    query: null,
+};
+
 
 // Component to allow clicking boxes on classic image
 class AssayClicking extends React.Component {
@@ -191,7 +194,7 @@ class AssayClicking extends React.Component {
         const assayCategory = this.props.assayCategory;
 
         return (
-            <div ref="graphdisplay">
+            <div>
                 <div className="overall-classic">
 
                     <h1>ENCODE: Encyclopedia of DNA Elements</h1>
@@ -255,16 +258,26 @@ BannerOverlayButton.propTypes = {
     width: PropTypes.string, // Width of button in pixels
     height: PropTypes.string, // Height of button in pixels
     selected: PropTypes.bool, // `true` if button is selected
-    clickHandler: PropTypes.func, // Function to call when the button is clicked
+    clickHandler: PropTypes.func.isRequired, // Function to call when the button is clicked
+};
+
+BannerOverlayButton.defaultProps = {
+    item: '',
+    x: '0',
+    y: '0',
+    width: '0',
+    height: '0',
+    selected: false,
 };
 
 
 // Passes in tab to handleTabClick
+/* eslint-disable react/prefer-stateless-function */
 class TabClicking extends React.Component {
     render() {
         const { organisms, handleTabClick } = this.props;
         return (
-            <div ref="tabdisplay">
+            <div>
                 <div className="organism-selector">
                     <OrganismSelector organism="Human" selected={organisms.indexOf('HUMAN') !== -1} clickHandler={handleTabClick} />
                     <OrganismSelector organism="Mouse" selected={organisms.indexOf('MOUSE') !== -1} clickHandler={handleTabClick} />
@@ -275,10 +288,15 @@ class TabClicking extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 TabClicking.propTypes = {
     organisms: PropTypes.array, // Array of currently selected tabs
-    handleTabClick: PropTypes.func, // Function to call when a tab is clicked
+    handleTabClick: PropTypes.func.isRequired, // Function to call when a tab is clicked
+};
+
+TabClicking.defaultProps = {
+    organisms: [],
 };
 
 
@@ -295,7 +313,12 @@ const OrganismSelector = (props) => {
 OrganismSelector.propTypes = {
     organism: PropTypes.string, // Organism this selector represents
     selected: PropTypes.bool, // `true` if selector is selected
-    clickHandler: PropTypes.func, // Function to call to handle a selector click
+    clickHandler: PropTypes.func.isRequired, // Function to call to handle a selector click
+};
+
+OrganismSelector.defaultProps = {
+    organism: '',
+    selected: false,
 };
 
 
@@ -316,6 +339,12 @@ HomepageChartLoader.propTypes = {
     query: PropTypes.string, // Current search URI based on selected assayCategory
     organisms: PropTypes.array, // Array of selected organism strings
     assayCategory: PropTypes.string, // Selected assay category
+};
+
+HomepageChartLoader.defaultProps = {
+    query: '',
+    organisms: [],
+    assayCategory: '',
 };
 
 
@@ -461,6 +490,7 @@ class HomepageChart extends React.Component {
     }
 
     // Update existing chart with new data.
+    /* eslint-disable class-methods-use-this */
     updateChart(Chart, facetData) {
         // for each item, set doc count, add to total doc count, add proper label, and assign color.
         const colors = globals.projectColors.colorList(facetData.map(term => term.key), { shade: 10 });
@@ -482,6 +512,7 @@ class HomepageChart extends React.Component {
         // Redraw the updated legend
         document.getElementById('chart-legend').innerHTML = Chart.generateLegend();
     }
+    /* eslint-enable class-methods-use-this */
 
     render() {
         const facets = this.props.data && this.props.data.facets;
@@ -530,8 +561,12 @@ class HomepageChart extends React.Component {
 }
 
 HomepageChart.propTypes = {
-    query: PropTypes.string,
+    query: PropTypes.string.isRequired,
     data: PropTypes.object,
+};
+
+HomepageChart.defaultProps = {
+    data: null,
 };
 
 HomepageChart.contextTypes = {
@@ -656,6 +691,7 @@ class HomepageChart2 extends React.Component {
         });
     }
 
+    /* eslint-disable class-methods-use-this */
     updateChart(Chart, facetData) {
         // for each item, set doc count, add to total doc count, add proper label, and assign color.
         const colors = globals.biosampleTypeColors.colorList(facetData.map(term => term.key), { shade: 10 });
@@ -677,6 +713,7 @@ class HomepageChart2 extends React.Component {
         // Redraw the updated legend
         document.getElementById('chart-legend-2').innerHTML = Chart.generateLegend(); // generates legend
     }
+    /* eslint-enable class-methods-use-this */
 
     render() {
         const facets = this.props.data && this.props.data.facets;
@@ -726,9 +763,14 @@ class HomepageChart2 extends React.Component {
 }
 
 HomepageChart2.propTypes = {
-    query: PropTypes.string,
+    query: PropTypes.string.isRequired,
     data: PropTypes.object,
     assayCategory: PropTypes.string,
+};
+
+HomepageChart2.defaultProps = {
+    data: null,
+    assayCategory: '',
 };
 
 HomepageChart2.contextTypes = {
@@ -941,8 +983,13 @@ class HomepageChart3 extends React.Component {
 
 HomepageChart3.propTypes = {
     assayCategory: PropTypes.string,
-    query: PropTypes.string,
+    query: PropTypes.string.isRequired,
     data: PropTypes.object,
+};
+
+HomepageChart3.defaultProps = {
+    assayCategory: '',
+    data: null,
 };
 
 HomepageChart3.contextTypes = {
@@ -969,7 +1016,7 @@ class News extends React.Component {
                             <div className="news-listing-readmore">
                                 <a className="btn btn-info btn-sm" href={item['@id']} title={`View news post for ${item.title}`} key={item['@id']}>Read more</a>
                             </div>
-                        </div>,
+                        </div>
                     )}
                 </div>
             );
@@ -983,14 +1030,20 @@ News.propTypes = {
     newsLoaded: PropTypes.func.isRequired, // Called parent once the news is loaded
 };
 
+News.defaultProps = {
+    items: null,
+};
+
 
 // Send a GET request for the most recent five news posts. Don't make this a stateless component
 // because we attach `ref` to this, and stateless components don't support that.
+/* eslint-disable react/prefer-stateless-function */
 class NewsLoader extends React.Component {
     render() {
         return <FetchedItems {...this.props} url={`${newsUri}&limit=5`} Component={News} newsLoaded={this.props.newsLoaded} />;
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 NewsLoader.propTypes = {
     newsLoaded: PropTypes.func.isRequired, // Called parent once the news is loaded
@@ -1030,7 +1083,7 @@ class TwitterWidget extends React.Component {
 
     render() {
         return (
-            <div ref="twitterwidget">
+            <div>
                 <div className="twitter-header">
                     <h2>Twitter <a href="https://twitter.com/EncodeDCC" title="ENCODE DCC Twitter page in a new window or tab" target="_blank" rel="noopener noreferrer"className="twitter-ref">@EncodeDCC</a></h2>
                 </div>

@@ -491,8 +491,9 @@ class App extends React.Component {
             }
         }, (err) => {
             globals.parseError(err).then((data) => {
-                data.title = `Logout failure: ${data.title}`;
-                this.setState({ context: data });
+                const newContext = Object.assign({}, data);
+                newContext.title = `Logout failure: ${data.title}`;
+                this.setState({ context: newContext });
             });
         });
     }
@@ -670,7 +671,7 @@ class App extends React.Component {
                 this.requestCurrent = false;
             }
             this.setState({
-                href,  // href should be consistent with context
+                href, // href should be consistent with context
                 context: event.state,
             });
         }
@@ -796,9 +797,7 @@ class App extends React.Component {
                 throw response;
             }
             return response.json();
-        })
-        .catch(globals.parseAndLogError.bind(undefined, 'contextRequest'))
-        .then(this.receiveContextResponse);
+        }).catch(globals.parseAndLogError.bind(undefined, 'contextRequest')).then(this.receiveContextResponse);
 
         if (!mutatableOptions.replace) {
             promise.then(this.constructor.scrollTo);
@@ -932,6 +931,7 @@ class App extends React.Component {
             this.constructor.historyEnabled = false;
         }
 
+        /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
         return (
             <html lang="en" ref={this.props.domReader ? node => this.props.domReader(node) : null}>
                 <head>
@@ -956,9 +956,7 @@ class App extends React.Component {
                     />
                     <div id="slot-application">
                         <div id="application" className={appClass}>
-
-                        <div className="loading-spinner" />
-
+                            <div className="loading-spinner" />
                             <div id="layout">
                                 <Navigation isHomePage={isHomePage} />
                                 <div id="content" className={containerClass} key={key}>
@@ -973,6 +971,7 @@ class App extends React.Component {
                 </body>
             </html>
         );
+        /* eslint-enable jsx-a11y/click-events-have-key-events */
     }
 }
 

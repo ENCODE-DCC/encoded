@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
-import * as globals from './globals';
 import { SortTablePanel, SortTable } from './sorttable';
 
 
@@ -59,7 +58,7 @@ export function CollectBiosampleDocs(biosample) {
         characterizations,
         donorDocuments,
         donorCharacterizations,
-        treatmentDocuments,
+        treatmentDocuments
     ));
 
     return combinedDocuments;
@@ -96,6 +95,13 @@ BiosampleTable.propTypes = {
     title: PropTypes.string,
 };
 
+BiosampleTable.defaultProps = {
+    limit: 0,
+    total: 0,
+    url: '',
+    title: '',
+};
+
 BiosampleTable.columns = {
     accession: {
         title: 'Accession',
@@ -123,6 +129,12 @@ BiosampleTableFooter.propTypes = {
     items: PropTypes.array, // List of biosamples in the table
     total: PropTypes.number, // Total number of biosamples matching search criteria
     url: PropTypes.string, // URI to get full search results
+};
+
+BiosampleTableFooter.defaultProps = {
+    items: [],
+    total: 0,
+    url: '#',
 };
 
 
