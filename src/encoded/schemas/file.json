@@ -1371,6 +1371,10 @@
         "phased variant calls": "annotation",
         "filtered SNPs": "annotation",
         "filtered indels": "annotation",
+        "eQTLs": "annotation",
+        "dsQTLs": "annotation",
+        "Footprints": "annotation",
+        "PWMs": "annotation",
 
         "transcriptome reference": "reference",
         "transcriptome index": "reference",
