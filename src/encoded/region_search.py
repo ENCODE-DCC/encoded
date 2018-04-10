@@ -2,6 +2,9 @@ from pyramid.view import view_config
 from snovault import TYPES
 from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 from snovault.elasticsearch.indexer import MAX_CLAUSES_FOR_ES
+from elasticsearch.exceptions import (
+    NotFoundError
+)
 from pyramid.security import effective_principals
 from .search import (
     format_results,
@@ -16,7 +19,9 @@ from .region_indexer import (
     RESIDENT_REGIONSET_KEY,
     FOR_REGION_SEARCH,
     FOR_REGULOME_DB,
-    FOR_MULTIPLE_USES
+    FOR_MULTIPLE_USES,
+    ENCODED_ALLOWED_STATUSES,
+    REGULOME_ALLOWED_STATUSES
 )
 from .vis_defines import (
     vis_format_url,
@@ -29,7 +34,6 @@ from urllib.parse import urlencode
 import logging
 import re
 import json
-
 
 log = logging.getLogger(__name__)
 
@@ -180,8 +184,10 @@ def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, wit
     try:
         results = region_es.search(body=region_query, index=chrom.lower(),
                                     doc_type=_GENOME_TO_ALIAS[assembly], size=99999)
-    except Exception:
-        return {'message': 'Error during region search'}
+    except NotFoundError:
+        return {'message': 'No uuids found in this location'}
+    except Exception as e:
+        return {'message': 'Error during region search: ' + str(e)}
 
     all_hits['peaks'] = list(results['hits']['hits'])
     all_hits['peak_count'] = len(all_hits['peaks'])
@@ -347,16 +353,17 @@ def format_position(position, resolution):
     return '{}:{}-{}'.format(chromosome, start, end)
 
 regulome_score_rules = [  # TODO: ways to make more efficient?
-    ('1a', {'EQTL','ChIP', 'DNase', 'PWM_matched', 'Footprint_matched'}),
-    ('1b', {'EQTL','ChIP', 'DNase', 'PWM', 'Footprint'}),
-    ('1c', {'EQTL','ChIP', 'DNase', 'PWM_matched'}),
-    ('1d', {'EQTL','ChIP', 'DNase', 'PWM'}),
-    ('1e', {'EQTL','ChIP', 'PWM_matched'}),
-    ('1f', {'EQTL','ChIP'}),
-    ('1f', {'EQTL','DNase'}),
-    ('2a', {'ChIP','DNase', 'PWM', 'Footprint', 'PWM_matched', 'Footprint_matched'}),
+    ('1a', {'eQTL','ChIP', 'DNase', 'PWM_matched', 'Footprint_matched'}),
+    ('1b', {'eQTL','ChIP', 'DNase', 'PWM', 'Footprint'}),
+    ('1c', {'eQTL','ChIP', 'DNase', 'PWM_matched'}),
+    ('1d', {'eQTL','ChIP', 'DNase', 'PWM'}),
+    ('1e', {'eQTL','ChIP', 'PWM_matched'}),
+    ('1f', {'eQTL','ChIP','DNase'}),
+    ('1f', {'eQTL','ChIP'}),
+    ('1f', {'eQTL','DNase'}),
+    ('2a', {'ChIP','DNase', 'PWM_matched', 'Footprint_matched'}),
     ('2b', {'ChIP','DNase', 'PWM', 'Footprint'}),
-    ('2c', {'ChIP','DNase', 'PWM', 'PWM_matched'}),
+    ('2c', {'ChIP','DNase', 'PWM_matched'}),
     ('3a', {'ChIP','DNase', 'PWM'}),
     ('3b', {'ChIP','PWM_matched'}),
     ('4',  {'ChIP','DNase'}),
@@ -364,7 +371,7 @@ regulome_score_rules = [  # TODO: ways to make more efficient?
     ('5',  {'DNase'}),
     ('6',  {'PWM'}),
     ('6',  {'Footprint'}),
-    ('6',  {'EQTL'}),
+    ('6',  {'eQTL'}),
 ]
 
 def regulome_score(file_hits):
@@ -372,23 +379,23 @@ def regulome_score(file_hits):
     characterize = set()
     targets = { 'ChIP-seq': [], 'PWM': [], 'Footprint': []}
     for file_hit in file_hits.values():
-        assay = file_hit.get('assay_term_name',file_hit.get('annotation_type'))
-        if assay is None:
+        data_type = file_hit.get('assay_term_name',file_hit.get('annotation_type'))
+        if data_type is None:
             continue
         target = file_hit.get('target')
-        if target and assay in ['ChIP-seq', 'PWM', 'Footprint']:
-            targets[assay].append(target)
+        if target and data_type in ['ChIP-seq', 'PWM', 'Footprint']:
+            targets[data_type].append(target)
 
-        if assay == 'ChIP-seq':
+        if data_type == 'ChIP-seq':
             characterize.add('ChIP')
-        elif assay in ['DNase-seq', 'FAIRE-seq']:  # TODO: confirm FAIRE is lumped in
-            characterize.add('DNase')                 #       aka Chromatin_Structure
-        if assay == 'PWM':                         # TODO: Figure out Position Weight Matrix
-            characterize.add('PWM')                   #       From motifs
-        if assay == 'Footprint':                   # TODO: Figure out how to recognize Footptrints
-            characterize.add('Footprint')             #       Also in Motifs?
-        if assay == 'EQTL':                        # TODO: Figure out how to recognize EQTLs
-            characterize.add('EQTL')                  #       From Single_Nucleoties
+        elif data_type in ['DNase-seq', 'FAIRE-seq']:  # TODO: confirm FAIRE is lumped in
+            characterize.add('DNase')                  #       aka Chromatin_Structure
+        if data_type == 'PWM':                         # TODO: Figure out Position Weight Matrix
+            characterize.add('PWM')                    #       From motifs
+        if data_type == 'Footprint':                   # TODO: Figure out how to recognize Footptrints
+            characterize.add('Footprint')              #       Also in Motifs?
+        if data_type in ['eQTLs','dsQTLs']:
+            characterize.add('eQTL')
 
     # Targets... For each ChIP target, there should be a PWM and/or Footprint to match
     to_match = {'PWM_matched', 'Footprint_matched'}
@@ -397,16 +404,18 @@ def regulome_score(file_hits):
             break
         if target in targets['PWM']:
             characterize.add('PWM_matched')
+            characterize.discard('PWM')  # match implies PWM
             to_match.discard('PWM_matched')
         if target in targets['Footprint']:
             characterize.add('Footprint_matched')
+            characterize.discard('Footprint')
             to_match.discard('Footprint_matched')
 
     # Now the scoring
     for (score, rule) in regulome_score_rules:
         if characterize == rule:
             return score
-    return None
+    return "Found: " + str(characterize)
 
 def update_viusalize(result, assembly, dataset_paths, regulome=False):
     '''Restrict visualize to assembly and add Quick View if possible.'''
@@ -519,7 +528,7 @@ def region_search(context, request):
 
     # score regulome SNPs or point locations
     if regulome:
-        if (region.startswith('rs') or (int(end) - int(start)) <= 1):
+        if (region.startswith('rs') or (int(end) - int(start)) <= 5):
             # NOTE: This is on all file hits rather than 'released' or set reduced by facet selection
             regdb_score = regulome_score(all_hits['file_hits'])
             if regdb_score:
@@ -540,12 +549,12 @@ def region_search(context, request):
 
         set_type = ['Experiment']
         set_indices = 'experiment'
-        allowed_status = ['released']
+        allowed_status = ['released']  # ENCODED_ALLOWED_STATUSES
         facets = _FACETS
         if regulome:
             set_type = ['Dataset']
-            set_indices = ['experiment','annotation']  # TODO: ,'fileset'] ???
-            allowed_status = ['released', 'archived']
+            set_indices = ['experiment','annotation']  # TODO: REGULOME_PRIORITIZED_TYPES ? lowercase
+            allowed_status = REGULOME_ALLOWED_STATUSES
             facets = _REGULOME_FACETS
 
         query = get_filtered_query('Dataset', [], set(), principals, set_type)
