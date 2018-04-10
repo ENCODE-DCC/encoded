@@ -60,7 +60,7 @@ tests_require = [
 
 setup(
     name='encoded',
-    version='67.1',
+    version='68.0',
     description='Metadata database for ENCODE',
     long_description=README + '\n\n' + CHANGES,
     packages=find_packages('src'),
