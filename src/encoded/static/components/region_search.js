@@ -302,66 +302,66 @@ class RegionSearch extends React.Component {
             <div>
                 <h2>Region search</h2>
                 <AdvSearch {...this.props} />
-                    {notification === 'Success' ?
-                        <div className="panel data-display main-panel">
-                            <div className="row">
-                                <div className="col-sm-5 col-md-4 col-lg-3">
-                                    <FacetList
-                                        {...this.props}
-                                        facets={facets}
-                                        filters={filters}
-                                        searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
-                                        onFilter={this.onFilter}
-                                    />
-                                </div>
-                                <div className="col-sm-7 col-md-8 col-lg-9">
-                                    <div>
-                                        <h4>
-                                            Showing {results.length} of {total}
-                                        </h4>
-                                        <div className="results-table-control">
-                                            {total > results.length && searchBase.indexOf('limit=all') === -1 ?
-                                                    <a
-                                                        rel="nofollow"
-                                                        className="btn btn-info btn-sm"
-                                                        href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
-                                                        onClick={this.onFilter}
-                                                    >
-                                                        View All
-                                                    </a>
-                                            :
-                                                <span>
-                                                    {results.length > 25 ?
-                                                            <a
-                                                                className="btn btn-info btn-sm"
-                                                                href={trimmedSearchBase || '/region-search/'}
-                                                                onClick={this.onFilter}
-                                                            >
-                                                                View 25
-                                                            </a>
-                                                    : null}
-                                                </span>
-                                            }
+                {notification === 'Success' ?
+                    <div className="panel data-display main-panel">
+                        <div className="row">
+                            <div className="col-sm-5 col-md-4 col-lg-3">
+                                <FacetList
+                                    {...this.props}
+                                    facets={facets}
+                                    filters={filters}
+                                    searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
+                                    onFilter={this.onFilter}
+                                />
+                            </div>
+                            <div className="col-sm-7 col-md-8 col-lg-9">
+                                <div>
+                                    <h4>
+                                        Showing {results.length} of {total}
+                                    </h4>
+                                    <div className="results-table-control">
+                                        {total > results.length && searchBase.indexOf('limit=all') === -1 ?
+                                                <a
+                                                    rel="nofollow"
+                                                    className="btn btn-info btn-sm"
+                                                    href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
+                                                    onClick={this.onFilter}
+                                                >
+                                                    View All
+                                                </a>
+                                        :
+                                            <span>
+                                                {results.length > 25 ?
+                                                        <a
+                                                            className="btn btn-info btn-sm"
+                                                            href={trimmedSearchBase || '/region-search/'}
+                                                            onClick={this.onFilter}
+                                                        >
+                                                            View 25
+                                                        </a>
+                                                : null}
+                                            </span>
+                                        }
 
-                                            {visualizeKeys && context.visualize_batch ?
-                                                <BrowserSelector
-                                                    visualizeCfg={context.visualize_batch}
-                                                    disabled={visualizeDisabled}
-                                                    title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'}
-                                                />
-                                            : null}
+                                        {visualizeKeys && context.visualize_batch ?
+                                            <BrowserSelector
+                                                visualizeCfg={context.visualize_batch}
+                                                disabled={visualizeDisabled}
+                                                title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'}
+                                            />
+                                        : null}
 
-                                        </div>
                                     </div>
-
-                                  <hr />
-                                  <ul className="nav result-table" id="result-table">
-                                      {results.map(result => Listing({ context: result, columns, key: result['@id'] }))}
-                                  </ul>
                                 </div>
+
+                                <hr />
+                                <ul className="nav result-table" id="result-table">
+                                    {results.map(result => Listing({ context: result, columns, key: result['@id'] }))}
+                                </ul>
                             </div>
                         </div>
-                    : null}
+                    </div>
+                : null}
             </div>
         );
     }
