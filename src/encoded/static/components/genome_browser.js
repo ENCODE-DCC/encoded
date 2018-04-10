@@ -398,7 +398,7 @@ class GenomeBrowser extends React.Component {
         const browserCfg = rAssemblyToSources(assembly, region);
 
         this.browserFiles = [];
-        let domain = `${location.protocol}//${location.hostname}`;
+        let domain = `${window.location.protocol}//${window.location.hostname}`;
         if (domain.includes('localhost')) {
             domain = domainName;
         }
@@ -478,7 +478,7 @@ class GenomeBrowser extends React.Component {
 
         const files = !this.context.localInstance ? this.props.files.slice(0, maxFilesBrowsed - 1) : dummyFiles;
         if (this.browser && files && files.length) {
-            let domain = `${location.protocol}//${location.hostname}`;
+            let domain = `${window.location.protocol}//${window.location.hostname}`;
             if (domain.includes('localhost')) {
                 domain = domainName;
             }

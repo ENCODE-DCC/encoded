@@ -31,14 +31,18 @@ class SearchBlockEdit extends React.Component {
 
     render() {
         const styles = { maxHeight: 300, overflow: 'scroll', clear: 'both' };
+        /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
         return (
             <div
-                className="well" style={styles} onClick={openLinksInNewWindow}
+                className="well"
+                style={styles}
+                onClick={openLinksInNewWindow}
                 ref={(comp) => { this.domNode = comp; }}
             >
                 <ResultTable {...this.props} mode="picker" />
             </div>
         );
+        /* eslint-enable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
     }
 }
 
@@ -47,11 +51,13 @@ export const ItemPreview = (props) => {
     const context = props.data;
     if (context === undefined) return null;
     const Listing = globals.listingViews.lookup(context);
+    /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */
     return (
         <ul className="nav result-table" onClick={openLinksInNewWindow}>
             <Listing context={context} key={context['@id']} />
         </ul>
     );
+    /* eslint-enable jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */
 };
 
 ItemPreview.propTypes = {
@@ -189,7 +195,9 @@ ObjectPicker.propTypes = {
 };
 
 ObjectPicker.defaultProps = {
+    onChange: null,
     restrictions: {},
     searchBase: '?mode=picker',
+    value: '',
     disabled: false,
 };

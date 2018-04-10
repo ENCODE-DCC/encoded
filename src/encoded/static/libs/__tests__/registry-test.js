@@ -10,7 +10,6 @@ const views = [
     { name: 'named', for_: 'Item' },
 ];
 
-/* eslint no-underscore-dangle: ["error", { "allow": ["for_"] }]*/
 function makeOne() {
     const registry = new Registry();
     views.forEach((view) => {

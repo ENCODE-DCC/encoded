@@ -454,6 +454,10 @@ DisplayObject.propTypes = {
     profilesMap: PropTypes.object, // Map of schema object @type to corresponding schema ID; required but provided by GET response
 };
 
+DisplayObject.defaultProps = {
+    profilesMap: null,
+};
+
 
 // Display a complete raw schema object.
 class DisplayRawObject extends React.Component {
@@ -561,11 +565,7 @@ const SchemaPanel = (props, reactContext) => {
 
 SchemaPanel.propTypes = {
     schema: PropTypes.object.isRequired, // Schema to display
-    schemaName: PropTypes.string, // Schema name e.g. genetic_modification
-};
-
-SchemaPanel.defaultProps = {
-    profilesMap: {},
+    schemaName: PropTypes.string.isRequired, // Schema name e.g. genetic_modification
 };
 
 SchemaPanel.contextTypes = {

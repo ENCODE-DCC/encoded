@@ -163,7 +163,6 @@ class Collection extends React.Component {
         // Initialize component React state.
         this.state = {
             chartModule: null, // Refers to chart.js npm module
-            facetCharts: [], // Tracks all chart instances
         };
     }
 

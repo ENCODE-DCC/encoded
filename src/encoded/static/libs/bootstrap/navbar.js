@@ -169,7 +169,6 @@ class NavItemButton extends React.Component {
             <button
                 className="dropdown-toggle"
                 data-toggle="dropdown"
-                role="button"
                 aria-haspopup="true"
                 aria-expanded={this.props.dropdownOpen}
                 onClick={this.clickHandler}

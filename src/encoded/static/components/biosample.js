@@ -16,6 +16,7 @@ import { StatusLabel } from './statuslabel';
 import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable } from './typeutils';
 
 
+/* eslint-disable react/prefer-stateless-function */
 class BiosampleComponent extends React.Component {
     render() {
         const context = this.props.context;
@@ -391,6 +392,7 @@ class BiosampleComponent extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 BiosampleComponent.propTypes = {
     context: PropTypes.object.isRequired, // ENCODE biosample object to be rendered
