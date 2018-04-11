@@ -2,10 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 // import DropdownButton from '../libs/bootstrap/button';
 // import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
 >>>>>>> Changes to handle regulome annotations and archived experiments.  Also work on region/regulome-search and 'quick view'.
+=======
+>>>>>>> Fix rebase issues.
 import { BrowserSelector } from './objectutils';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { FacetList, Listing } from './search';
@@ -205,6 +208,7 @@ class AdvSearch extends React.Component {
         const region = id.query.region || '';
 
         if (this.state.genome === '') {
+<<<<<<< HEAD
             let assembly = regionGenomes[0].value;
             if (context.assembly) {
                 assembly = regionGenomes.find(el =>
@@ -212,6 +216,9 @@ class AdvSearch extends React.Component {
                 ).value;
             }
             this.setState({ genome: assembly });
+=======
+            this.setState({ genome: context.assembly || regionGenomes[0].value });
+>>>>>>> Fix rebase issues.
         }
 
         return (
@@ -241,7 +248,7 @@ class AdvSearch extends React.Component {
                                 : null}
                             </div>
                         </div>
-                        <input type="submit" value="Search" className="btn btn-sm btn-info pull-right" onFocus={this.handleSearchButtonFocus} />
+                        <input type="submit" value="Search" className="btn btn-sm btn-info pull-right" />
                     </form>
                     {context.coordinates ?
                             <p>Searched coordinates: <strong>{context.coordinates}</strong></p>
@@ -311,7 +318,7 @@ class RegionSearch extends React.Component {
             <div>
                 <h2>{context.title}</h2>
                 <AdvSearch {...this.props} />
-                    {notification.startsWith('Success') ?
+                {notification.startsWith('Success') ?
                     <div className="panel data-display main-panel">
                         <div className="row">
                             <div className="col-sm-5 col-md-4 col-lg-3">
@@ -338,7 +345,7 @@ class RegionSearch extends React.Component {
                                                 >
                                                     View All
                                                 </a>
-                                            :
+                                        :
                                             <span>
                                                 {results.length > 25 ?
                                                         <a
@@ -349,6 +356,9 @@ class RegionSearch extends React.Component {
                                                             View 25
                                                         </a>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Fix rebase issues.
                                                 : null}
                                             </span>
                                         }
@@ -361,6 +371,7 @@ class RegionSearch extends React.Component {
                                             />
                                         : null}
 
+<<<<<<< HEAD
 =======
                                                     : null}
                                                 </span>
@@ -376,6 +387,8 @@ class RegionSearch extends React.Component {
 
                                         </div>
 >>>>>>> Changes to handle regulome annotations and archived experiments.  Also work on region/regulome-search and 'quick view'.
+=======
+>>>>>>> Fix rebase issues.
                                     </div>
                                 </div>
 
@@ -385,7 +398,8 @@ class RegionSearch extends React.Component {
                                 </ul>
                             </div>
                         </div>
-                    : null}
+                    </div>
+                : null}
             </div>
         );
     }
