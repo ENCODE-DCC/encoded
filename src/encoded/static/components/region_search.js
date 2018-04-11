@@ -248,7 +248,7 @@ class AdvSearch extends React.Component {
                                 : null}
                             </div>
                         </div>
-                        <input type="submit" value="Search" className="btn btn-sm btn-info pull-right" onFocus={this.handleSearchButtonFocus} />
+                        <input type="submit" value="Search" className="btn btn-sm btn-info pull-right" />
                     </form>
                     {context.coordinates ?
                             <p>Searched coordinates: <strong>{context.coordinates}</strong></p>
