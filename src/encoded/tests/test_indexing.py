@@ -114,11 +114,6 @@ def test_indexing_workbook(testapp, indexer_testapp):
 
     # vis indexer contents
     res = testapp.get('/batch_hub/type%3DExperiment/hg19/trackDb.json')
-    # trackDb.json currently returns text/plain
-    #import json
-    #content = json.loads(res.text)
-    #assert content['ChIP']['view']['groups']['aOIDR']['type'] == 'bigNarrowPeak'
-    #assert content['tkRNA']['vis_id'] == 'ENCSR000AEN_hg19'
     assert res.json['ChIP']['view']['groups']['aOIDR']['type'] == 'bigNarrowPeak'
     assert res.json['tkRNA']['vis_id'] == 'ENCSR000AEN_hg19'
 
