@@ -11,7 +11,7 @@ notifications:
 addons:
   apt:
     packages:
-      - oracle-java8-set-default
+      - oracle-java9-set-default
       - bsdtar
       - graphviz
 env:
