@@ -5,7 +5,7 @@ import { auditDecor } from './audit';
 import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { Document, DocumentsPanel, DocumentPreview, DocumentFile, CharacterizationDocuments } from './doc';
-import { GeneticModificationSummary } from './genetic_modification';
+import GeneticModificationSummary from './genetic_modification';
 import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { RelatedItems } from './item';
