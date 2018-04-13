@@ -1569,7 +1569,7 @@ def object_is_visualizable(
 
 
 # Currently called in types/shared_calculated_properties.py and in search.py
-def vis_format_url(browser, path, assembly, position=None):
+def vis_format_url(browser, path, assembly, position=None, file_statuses=None):
     '''Given a url to hub.txt, returns the url to an external browser or None.'''
     mapped_assembly = ASSEMBLY_DETAILS[assembly]
     if not mapped_assembly:
@@ -1607,6 +1607,11 @@ def vis_format_url(browser, path, assembly, position=None):
     elif browser == "quickview":
         file_formats = '&file_format=bigBed&file_format=bigWig'
         file_inclusions = '&status=released&status=in+progress'
+        if file_statuses is not None:
+            file_inclusions = ''
+            for status in file_statuses:
+                file_inclusions += '&status=' + status.replace(' ','+')
+
         region = ''
         if position is not None:
             region = '&region=' + position

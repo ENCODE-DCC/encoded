@@ -343,6 +343,8 @@ class VisCollections(object):
                     return json.dumps(vis_by_types, indent=4, sort_keys=True)
                 else:
                     return self.ucsc_trackDb()
+        if json_out:
+            return "{}"
         return ""
 
 class VisDataset(object):

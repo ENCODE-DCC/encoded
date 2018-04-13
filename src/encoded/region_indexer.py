@@ -40,19 +40,15 @@ log = logging.getLogger(__name__)
 # 1) get list of uuids of primary indexer and filter down to datasets covered
 # 2) walk through uuid list querying encoded for each doc[embedded]
 #    3) Walk through embedded files
-#       4) If file passes required tests (e.g. bed, released, DNase narrowpeak) AND not in regions_es, put in regions_es
-#       5) If file does not pass tests                                          AND     IN regions_es, remove from regions_es
-# TODO:
-# *) Build similar path for regulome files
-# - regulomeDb versions of ENCODED_ALLOWED_FILE_FORMATS, ENCODED_ALLOWED_STATUSES, add_encoded_to_regions_es()
+#       4) If file passes required tests (e.g. bed, released, ...) AND not in regions_es, put in regions_es
+#       5) If file does not pass tests                             AND     IN regions_es, remove from regions_es
 
-# Species and references being indexed
 #SUPPORTED_CHROMOSOMES = [
 #    'chr1',  'chr2',  'chr3',  'chr4',  'chr5',  'chr6',  'chr7',  'chr8',  'chr9',  'chr10',
 #    'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20',
 #    'chr21', 'chr22', 'chrx',  'chry']  # chroms are lower case
 
-ENCODED_ALLOWED_FILE_FORMATS = ['bed']
+ALLOWED_FILE_FORMATS = ['bed']
 RESIDENT_REGIONSET_KEY = 'resident_regionsets'  # in regions_es, keeps track of what datsets are resident in one place
 
 FOR_REGION_SEARCH = 'region_search'
@@ -123,9 +119,7 @@ def tsvreader(file):
         yield row
 
 # Mapping should be generated dynamically for each assembly type
-
-
-def get_mapping(assembly_name='hg19'):
+def get_chrom_index_mapping(assembly_name='hg19'):
     return {
         assembly_name: {
             '_all': {
@@ -153,6 +147,38 @@ def get_mapping(assembly_name='hg19'):
         }
     }
 
+def get_resident_mapping(use_type=FOR_MULTIPLE_USES):
+    return {use_type: {"enabled": False}}
+    # True map: IF we ever want to query by anything other than uuid...
+    # return {
+    #     use_type: {
+    #         '_all':    {'enabled': False},
+    #         '_source': {'enabled': True},
+    #         'properties': {
+    #             'uuid':   {'type': 'keyword'},  # same as _id and file['uuid']
+    #             'uses':   {'type': 'keyword'},  # e.g FOR_REGULOME_DB
+    #             'chroms': {'type': 'keyword'},  # Used to remove from 'chr*' indices
+    #             'file': {
+    #                 'properties': {
+    #                     'uuid':     {'type': 'keyword'},  # Yes, redundant
+    #                     '@id':      {'type': 'keyword'},
+    #                     'assembly': {'type': 'keyword'},
+    #                 }
+    #             },
+    #             'dataset': {
+    #                 'properties': {
+    #                     'uuid':            {'type': 'keyword'},
+    #                     '@id':             {'type': 'keyword'},
+    #                     'assay_term_name': {'type': 'keyword'},
+    #                     'annotation_type': {'type': 'keyword'},
+    #                     'collection_type': {'type': 'keyword'},  # assay or else annotation
+    #                     'target':          {'type': 'keyword'},
+    #                     'dataset_type':    {'type': 'keyword'}   # 1st @type of *_PRIORITIZED_TYPES
+    #                 }
+    #             }
+    #         }
+    #     }
+    # }
 
 def index_settings():
     return {
@@ -161,11 +187,6 @@ def index_settings():
             'max_result_window': 99999
         }
     }
-
-
-#def all_regionable_dataset_uuids(registry):
-#    # NOTE: this old method needs postgres.  Avoid using postgres
-#    return list(all_uuids(registry, types=["experiment"]))
 
 
 def encoded_regionable_datasets(request, restrict_to_assays=[]):
@@ -262,11 +283,6 @@ class RegionIndexerState(IndexerState):
                 return (uuids, True)
             if status == "restart":  # Restart is fine... just do the uuids over again
                 return (uuids, False)
-                #log.info('%s skipping this restart' % (self.state_id))
-                #state = self.get()
-                #state['status'] = "interrupted"
-                #self.put(state)
-                #return ([], False)
         assert(uuids == [])
 
         # Normal case, look for uuids staged by primary indexer
@@ -347,6 +363,10 @@ def regionindexer_state_show(request):
         notices = state.set_notices(request.host_url, who, bot_token, request.params.get("which"))
         if notices is not None:
             return notices
+    # Note: if reindex=all then maybe we should delete the entire region_index
+    # On the otherhand, that should probably be left for extreme cases done by hand
+    # curl -XDELETE http://localhost:9201/resident_datasets/
+    # curl -XDELETE http://localhost:9201/chr*/
 
     display = state.display(uuids=request.params.get("uuids"))
 
@@ -399,16 +419,6 @@ def index_regions(request):
 
     (uuids, force) = state.get_one_cycle(request)
 
-    # Note: if reindex=all_uuids then maybe we should delete the entire index
-    # On the otherhand, that should probably be left for extreme cases done by hand
-    # curl -XDELETE http://region-search-test-v5.instance.encodedcc.org:9200/resident_datasets/
-    #if force == 'all':  # Unfortunately force is a simple boolean
-    #    try:
-    #        r = indexer.regions_es.indices.delete(index='chr*')  # Note region_es and encoded_es may be the same!
-    #        r = indexer.regions_es.indices.delete(index=self.residents_index)
-    #    except:
-    #        pass
-
     uuid_count = len(uuids)
     if uuid_count > 0 and not dry_run:
         log.info("Region indexer started on %d uuid(s)" % uuid_count)
@@ -418,8 +428,6 @@ def index_regions(request):
         result = state.finish_cycle(result, errors)
         if result['indexed'] == 0:
             log.warn("Region indexer added %d file(s) from %d dataset uuids" % (result['indexed'], uuid_count))
-
-        # cycle_took: "2:31:55.543311" reindex all with force (2017-10-16ish)
 
     state.send_notices()
     return result
@@ -433,10 +441,6 @@ class RegionIndexer(Indexer):
         self.residents_index = RESIDENT_REGIONSET_KEY
         self.state = RegionIndexerState(self.encoded_es,self.encoded_INDEX)  # WARNING, race condition is avoided because there is only one worker
         self.test_instance = registry.settings.get('testing',False)
-
-    def get_from_es(request, comp_id):
-        '''Returns composite json blob from elastic-search, or None if not found.'''
-        return None
 
     def update_object(self, request, dataset_uuid, force):
         request.datastore = 'elasticsearch'  # Let's be explicit
@@ -457,7 +461,7 @@ class RegionIndexer(Indexer):
 
         files = dataset.get('files',[])
         for afile in files:
-            if afile.get('file_format') not in ENCODED_ALLOWED_FILE_FORMATS:
+            if afile.get('file_format') not in ALLOWED_FILE_FORMATS:
                 continue  # Note: if file_format changed to not allowed but file already in regions es, it doesn't get removed.
 
             file_uuid = afile['uuid']
@@ -468,18 +472,14 @@ class RegionIndexer(Indexer):
                 using = ""
                 if force:
                     using = "with FORCE"
-                    #log.debug("file is a candidate: %s %s", afile['accession'], using)
                     self.remove_from_regions_es(file_uuid)  # remove all regions first
                 else:
-                    #log.debug("file is a candidate: %s", afile['accession'])
                     if self.in_regions_es(file_uuid):
                         continue
 
                 if self.add_file_to_regions_es(request, afile, file_doc):
                     log.info("added file: %s %s %s", dataset['accession'], afile['href'], using)
                     self.state.file_added(file_uuid)
-                    #if FOR_REGULOME_DB in file_doc['uses']:
-                    #    log.warn("Indexed %s file %s", FOR_REGULOME_DB, afile['accession'])
 
             else:
                 if self.remove_from_regions_es(file_uuid):
@@ -488,9 +488,67 @@ class RegionIndexer(Indexer):
 
         # TODO: gather and return errors
 
+    def candidate_dataset(self, dataset):
+        '''returns None, or a list of uses which may include region search and/or regulome.'''
+        if 'Experiment' not in dataset['@type'] and 'FileSet' not in dataset['@type']:
+            return None
+
+        if len(dataset.get('files',[])) == 0:
+            return None
+
+        dataset_uses = []
+        assay = dataset.get('assay_term_name')
+        if assay is not None and assay in list(ENCODED_REGION_REQUIREMENTS.keys()):
+            dataset_uses.append(FOR_REGION_SEARCH)
+        if FOR_REGULOME_DB in dataset.get('internal_tags',[]):
+            collection_type = assay if assay else dataset.get('annotation_type')
+            if collection_type is not None and \
+                collection_type in list(REGULOME_REGION_REQUIREMENTS.keys()):
+                dataset_uses.append(FOR_REGULOME_DB)
+
+        return dataset_uses
+
+    def metadata_doc(self, afile, dataset, assembly, uses):
+        '''returns file and dataset metadata document'''
+        meta_doc = {
+            'uuid': str(afile['uuid']),
+            'uses': uses,
+            'file': {
+                'uuid': str(afile['uuid']),
+                '@id': afile['@id'],
+                'assembly': assembly
+            },
+            'dataset': {
+                'uuid': str(dataset['uuid']),  # TODO: dataset may be file_set and file's dataset is different!!!!
+                '@id': dataset['@id']
+            }
+        }
+
+        assay_term_name = dataset.get('assay_term_name')
+        if assay_term_name:
+            meta_doc['dataset']['assay_term_name'] = assay_term_name
+            meta_doc['dataset']['collection_type'] = assay_term_name
+        annotation_type = dataset.get('annotation_type')
+        if annotation_type:
+            meta_doc['dataset']['annotation_type'] = annotation_type
+            if assay_term_name is None:
+                meta_doc['dataset']['collection_type'] = annotation_type
+        target = dataset.get('target',{}).get('label')
+        if target:
+            meta_doc['target'] = target
+
+        for dataset_type in REGULOME_PRIORITIZED_TYPES:  # prioritized
+            if dataset_type in dataset['@type']:
+                meta_doc['dataset_type'] = dataset_type
+                break
+
+        return meta_doc
+
     def candidate_file(self, afile, dataset, dataset_uses):
         '''returns None or a document with file details to save in the residence index'''
         if afile.get('href') is None:
+            return None
+        if afile['file_format'] not in ALLOWED_FILE_FORMATS:
             return None
 
         if self.test_instance:
@@ -501,6 +559,17 @@ class RegionIndexer(Indexer):
         assembly = afile.get('assembly','unknown')
         if assembly == 'mm10-minimal':        # Treat mm10-minimal as mm10
             assembly = 'mm10'
+
+        # dataset passed in can be file's dataset OR file_set, with each file pointing elsewhere
+        if isinstance(afile['dataset'],dict):
+            dataset = afile['dataset']
+        elif isinstance(afile['dataset'],str) and afile['dataset'] != dataset['@id']:
+            try:
+                dataset = request.embed(afile['dataset'], as_user=True)
+            except:
+                log.warn("dataset is not found for uuid: %s",dataset_uuid)
+                return None
+
         assay_term_name = dataset.get('assay_term_name')
         annotation_type = dataset.get('annotation_type')
 
@@ -540,63 +609,14 @@ class RegionIndexer(Indexer):
                                 break
                         if not failed:
                             file_uses.append(FOR_REGULOME_DB)
-                            #log.warn("File %s is %s", afile['accession'], FOR_REGULOME_DB)
 
         if not file_uses:
             return None
 
-        # this dict is the proto residence doc
-        file_doc = {
-                    'uuid': str(afile['uuid']),
-                    '@id': afile['@id'],
-                    'assembly': assembly,
-                    'uses': file_uses
-        }
-        if isinstance(afile['dataset'],str):
-            file_doc['dataset'] = afile['dataset']
-        else:
-            file_doc['dataset'] = afile['dataset']['@id']
-        if file_doc['dataset'] == dataset['@id']:
-            file_doc['dataset_uuid'] = str(dataset['uuid'])  # uuids would be preferred for id lookups
-        else:
-            file_doc['source_uuid'] = str(dataset['uuid'])
-        if assay_term_name is not None:
-            file_doc['assay_term_name'] = assay_term_name
-        if annotation_type is not None:
-            file_doc['annotation_type'] = annotation_type
-        for dataset_type in REGULOME_PRIORITIZED_TYPES:  # prioritized
-            if dataset_type in dataset['@type']:
-                file_doc['dataset_type'] = dataset_type
-                break
-        target = dataset.get('target',{}).get('label')
-        if target:
-            file_doc['target'] = target
-
-        return file_doc
-
-    def candidate_dataset(self, dataset):
-        '''returns None, or a list of uses which may include region search and/or regulome.'''
-        if 'Experiment' not in dataset['@type'] and 'FileSet' not in dataset['@type']:
-            return None
-
-        if len(dataset.get('files',[])) == 0:
-            return None
-
-        dataset_uses = []
-        assay = dataset.get('assay_term_name')
-        if assay is not None and assay in list(ENCODED_REGION_REQUIREMENTS.keys()):
-            dataset_uses.append(FOR_REGION_SEARCH)
-        if FOR_REGULOME_DB in dataset.get('internal_tags',[]):
-            collection_type = assay if assay else dataset.get('annotation_type')
-            if collection_type is not None and \
-                collection_type in list(REGULOME_REGION_REQUIREMENTS.keys()):
-                dataset_uses.append(FOR_REGULOME_DB)
-
-        return dataset_uses
+        return self.metadata_doc(afile, dataset, assembly, file_uses)
 
     def in_regions_es(self, id):
         '''returns True if an id is in regions es'''
-        #return False # DEBUG
         try:
             doc = self.regions_es.get(index=self.residents_index, id=str(id)).get('_source',{})
             if doc:
@@ -622,7 +642,7 @@ class RegionIndexer(Indexer):
         except:
             return False  # Not an error: remove may be called without looking first
 
-        for chrom in doc['chroms']:
+        for chrom in doc['chroms']:  # Could just try index='chr*'
             try:
                 self.regions_es.delete(index=chrom, doc_type=doc['assembly'], id=str(id))
             except:
@@ -652,7 +672,8 @@ class RegionIndexer(Indexer):
                 self.regions_es.indices.create(index=chrom, body=index_settings())
 
             if not self.regions_es.indices.exists_type(index=chrom, doc_type=assembly):
-                self.regions_es.indices.put_mapping(index=chrom, doc_type=assembly, body=get_mapping(assembly))
+                mapping = get_chrom_index_mapping(assembly)
+                self.regions_es.indices.put_mapping(index=chrom, doc_type=assembly, body=mapping)
 
             self.regions_es.index(index=chrom, doc_type=assembly, body=doc, id=str(id))
 
@@ -669,7 +690,7 @@ class RegionIndexer(Indexer):
             self.regions_es.indices.create(index=self.residents_index, body=index_settings())
 
         if not self.regions_es.indices.exists_type(index=self.residents_index, doc_type=use_type):
-            mapping = {use_type: {"enabled": False}}
+            mapping = get_resident_mapping(use_type)
             self.regions_es.indices.put_mapping(index=self.residents_index, doc_type=use_type, body=mapping)
 
         self.regions_es.index(index=self.residents_index, doc_type=use_type, body=file_doc, id=str(id))
@@ -677,46 +698,15 @@ class RegionIndexer(Indexer):
 
     def add_file_to_regions_es(self, request, afile, file_doc):
         '''Given an encoded file object, reads the file to create regions data then loads that into region search es.'''
-        #return True # DEBUG
 
-        assembly = file_doc['assembly']
+        assembly = file_doc['file']['assembly']
 
         # Special case local instace so that tests can work...
         if self.test_instance:
-            #if request.host_url == 'http://localhost':
-            # assume we are running in dev-servers
-            #href = request.host_url + ':8000' + afile['submitted_file_name']
-            href = 'http://www.encodeproject.org' + afile['href']
+            href = 'http://www.encodeproject.org' + afile['href']  # test files are read from production
         else:
             href = request.host_url + afile['href']
 
-        ### Works with localhost:8000
-        # NOTE: Using requests instead of http.request which works locally and doesn't require gzip.open
-        #r = requests.get(href)
-        #if not r or r.status_code != 200:
-        #    log.warn("File (%s or %s) not found" % (afile.get('accession', id), href))
-        #    return False
-        #file_in_mem = io.StringIO()
-        #file_in_mem.write(r.text)
-        #file_in_mem.seek(0)
-        #
-        #file_data = {}
-        #if afile['file_format'] == 'bed':
-        #    for row in tsvreader(file_in_mem):
-        #        chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
-        #        if isinstance(start, int) and isinstance(end, int):
-        #            if chrom in file_data:
-        #                file_data[chrom].append({
-        #                    'start': start + 1,
-        #                    'end': end + 1
-        #                })
-        #            else:
-        #                file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
-        #        else:
-        #            log.warn('positions are not integers, will not index file')
-        ##else:  Other file types?
-
-        ### Works with http://www.encodeproject.org
         # Note: this reads the file into an in-memory byte stream.  If files get too large,
         # We could replace this with writing a temp file, then reading it via gzip and tsvreader.
         urllib3.disable_warnings()

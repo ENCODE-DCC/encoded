@@ -34,6 +34,7 @@ from urllib.parse import urlencode
 import logging
 import re
 import json
+import time
 
 log = logging.getLogger(__name__)
 
@@ -124,11 +125,13 @@ def get_bool_query(start, end):
 
 
 
-def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
+def get_peak_query(start, end, with_inner_hits=False):
     """
     return peak query
     """
-    # BUG?  within_peaks is not used.
+    # get all peaks that overlap requested region:
+    #     peak.start <= requested.end and peak.end >= requested.start
+    range_clause = [ get_bool_query(end, start) ]
     query = {
         'query': {
             'bool': {
@@ -137,98 +140,84 @@ def get_peak_query(start, end, with_inner_hits=False, within_peaks=False):
                         'path': 'positions',
                         'query': {
                             'bool': {
-                                'should': []
+                                'should': range_clause
                             }
                         }
                     }
                 }
-             }
-         },
+            }
+        },
         '_source': False,
     }
-    # get all peaks that overlap requested region peak.start <= requested.end and peak.end >= requested.start
-    query['query']['bool']['filter']['nested']['query']['bool']['should'].append(get_bool_query(end, start))
-    # BUG?  the for loop below adds all ranges, which should be subsets of above overlap net
-    #search_ranges = {
-    #    'peaks_inside_range': {
-    #        'start': start,
-    #        'end': end
-    #    },
-    #    'range_inside_peaks': {
-    #        'start': end,
-    #        'end': start
-    #    },
-    #    'peaks_overlap_start_range': {
-    #        'start': start,
-    #        'end': start
-    #    },
-    #    'peaks_overlap_end_range': {
-    #        'start': end,
-    #        'end': end
-    #    }
-    #}
-    #for key, value in search_ranges.items():
-    #    query['query']['bool']['filter']['nested']['query']['bool']['should'].append(get_bool_query(value['start'], value['end']))
+    # special case to get hits that are subsets of other hits
+    # NOTE: not sure what good it does because we do NOT return actual positions, only uuids
     if with_inner_hits:
         query['query']['bool']['filter']['nested']['inner_hits'] = {'size': 99999}
     return query
 
 
-def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, with_inner_hits=False, uses=[]):
+def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, with_inner_hits=False, use=None):
     '''Returns a list of file uuids AND dataset paths for chromosome location'''
 
-    all_hits = {}  #{ 'dataset_paths': [], 'file_hits': {}, 'peaks': [], 'message': ''}
+    all_hits = {}  #{ 'dataset_paths': [], 'files': {}, 'datasets': {}, 'peaks': [], 'message': ''}
 
-    region_query = get_peak_query(start, end, with_inner_hits=with_inner_hits, within_peaks=peaks_too)
+    region_query = get_peak_query(start, end, with_inner_hits=with_inner_hits)
 
+    begin = time.time()  # DEBUG: timing
     try:
-        results = region_es.search(body=region_query, index=chrom.lower(),
+        results = region_es.search(body=region_query, index=chrom.lower(), _source=False,
                                     doc_type=_GENOME_TO_ALIAS[assembly], size=99999)
     except NotFoundError:
-        return {'message': 'No uuids found in this location'}
+        return {'message': 'No hits found in this location'}
     except Exception as e:
         return {'message': 'Error during region search: ' + str(e)}
+    timing1 = time.time() - begin  # DEBUG: timing
 
-    all_hits['peaks'] = list(results['hits']['hits'])
-    all_hits['peak_count'] = len(all_hits['peaks'])
+    peaks = list(results['hits']['hits'])
+    all_hits['peak_count'] = len(peaks)
     # NOTE: peak['inner_hits']['positions']['hits']['hits'] may exist with uuids but to same file
-    uuids = [ peak['_id'] for peak in all_hits['peaks'] ]
-    uuids = list(set(uuids))
+    uuids = set()
+    uuids.update( [ peak['_id'] for peak in peaks ] )
     if not uuids:
         return {'message': 'No uuids found in region'}
+    all_hits['peaks'] = list(uuids)  # TODO: Need to determine what is wanted: peaks + inner_hits?
 
     resident_details = {}
     use_types = [FOR_MULTIPLE_USES]
-    if len(uses) == 1:
-        use_types.append(uses[0])
+    if use is not None:
+        use_types.append(use)
+
+    begin = time.time()  # DEBUG: timing
     try:
-        id_query = {"query": {"ids": {"values": uuids}}}
+        id_query = {"query": {"ids": {"values": all_hits['peaks']}}}
         res = region_es.search(body=id_query, index=RESIDENT_REGIONSET_KEY, doc_type=use_types, size=99999)
-        hits = res.get("hits", {}).get("hits", [])
-        for hit in hits:
-            resident_details[hit["_id"]] = hit["_source"]
     except Exception:
         return {'message': 'Error during resident_details search'}
+    all_hits['timing_es'] = [timing1, (time.time() - begin)]  # DEBUG: timing
+
+    hits = res.get("hits", {}).get("hits", [])
+    for hit in hits:
+        resident_details[hit["_id"]] = hit["_source"]
 
     dataset_ids = set()
-    #uses_set = set(uses)
-    all_hits['file_hits'] = {}
-    for uuid in uuids:
+    all_hits['files'] = {}
+    all_hits['datasets'] = {}
+    for uuid in all_hits['peaks']:
         if uuid not in resident_details:
             continue
-        # Don't need to check uses, since query was restricted on use_types
-        #if uses and not list(uses_set.intersection(set(resident_details[uuid].get('uses',[])))):
-        #    continue
-        dataset_ids.add(resident_details[uuid].get('dataset'))
-        all_hits['file_hits'][uuid] = resident_details[uuid]
+        all_hits['files'][uuid] = resident_details[uuid]['file']
+        dataset = resident_details[uuid]['dataset']
+        all_hits['datasets'][dataset['uuid']] = dataset
+        dataset_ids.add(dataset['@id'])
 
     all_hits['dataset_paths'] = list(dataset_ids)
+    all_hits['file_count'] = len(all_hits['files'].keys())
+    all_hits['dataset_count'] = len(all_hits['datasets'].keys())
     if not peaks_too:
-        all_hits['peaks'] = []
-        peaks = []  # Don't burden results with too much info
+        all_hits['peaks'] = [] # Don't burden results with too much info
 
     all_hits['message'] = '%d peaks in %d files belonging to %s datasets in this region' % \
-                (all_hits['peak_count'], len(all_hits['file_hits'].keys()), len(all_hits['dataset_paths']))
+                (all_hits['peak_count'], all_hits['file_count'], all_hits['dataset_count'])
 
     return all_hits
 
@@ -272,7 +261,7 @@ def get_annotation_coordinates(es, id, assembly):
             return (chromosome, start, end)
 
 def assembly_mapper(location, species, input_assembly, output_assembly):
-    # All others
+    # maps location on GRCh38 to hg19 for example
     new_url = _ENSEMBL_URL + 'map/' + species + '/' \
         + input_assembly + '/' + location + '/' + output_assembly \
         + '/?content-type=application/json'
@@ -352,95 +341,107 @@ def format_position(position, resolution):
     end = int(end) + resolution
     return '{}:{}-{}'.format(chromosome, start, end)
 
-regulome_score_rules = [  # TODO: ways to make more efficient?
-    ('1a', {'eQTL','ChIP', 'DNase', 'PWM_matched', 'Footprint_matched'}),
-    ('1b', {'eQTL','ChIP', 'DNase', 'PWM', 'Footprint'}),
-    ('1c', {'eQTL','ChIP', 'DNase', 'PWM_matched'}),
-    ('1d', {'eQTL','ChIP', 'DNase', 'PWM'}),
-    ('1e', {'eQTL','ChIP', 'PWM_matched'}),
-    ('1f', {'eQTL','ChIP','DNase'}),
-    ('1f', {'eQTL','ChIP'}),
-    ('1f', {'eQTL','DNase'}),
-    ('2a', {'ChIP','DNase', 'PWM_matched', 'Footprint_matched'}),
-    ('2b', {'ChIP','DNase', 'PWM', 'Footprint'}),
-    ('2c', {'ChIP','DNase', 'PWM_matched'}),
-    ('3a', {'ChIP','DNase', 'PWM'}),
-    ('3b', {'ChIP','PWM_matched'}),
-    ('4',  {'ChIP','DNase'}),
-    ('5',  {'ChIP'}),
-    ('5',  {'DNase'}),
-    ('6',  {'PWM'}),
-    ('6',  {'Footprint'}),
-    ('6',  {'eQTL'}),
-]
-
-def regulome_score(file_hits):
+def regulome_score(datasets):
     '''Calculate RegulomeDB score based upon hits and voodoo'''
     characterize = set()
     targets = { 'ChIP-seq': [], 'PWM': [], 'Footprint': []}
-    for file_hit in file_hits.values():
-        data_type = file_hit.get('assay_term_name',file_hit.get('annotation_type'))
-        if data_type is None:
+    for dataset in datasets.values():
+        #collection_type = dataset.get('collection_type',dataset.get('assay_term_name',dataset.get('annotation_type')))
+        collection_type = dataset.get('collection_type')
+        if collection_type is None:
             continue
-        target = file_hit.get('target')
-        if target and data_type in ['ChIP-seq', 'PWM', 'Footprint']:
-            targets[data_type].append(target)
 
-        if data_type == 'ChIP-seq':
+        target = dataset.get('target')
+        if target and collection_type in ['ChIP-seq', 'PWM', 'Footprint']:
+            targets[collection_type].append(target)
+
+        if collection_type == 'ChIP-seq':
             characterize.add('ChIP')
-        elif data_type in ['DNase-seq', 'FAIRE-seq']:  # TODO: confirm FAIRE is lumped in
-            characterize.add('DNase')                  #       aka Chromatin_Structure
-        if data_type == 'PWM':                         # TODO: Figure out Position Weight Matrix
-            characterize.add('PWM')                    #       From motifs
-        if data_type == 'Footprint':                   # TODO: Figure out how to recognize Footptrints
-            characterize.add('Footprint')              #       Also in Motifs?
-        if data_type in ['eQTLs','dsQTLs']:
+        elif collection_type in ['DNase-seq', 'FAIRE-seq']:  # TODO: confirm FAIRE is lumped in
+            characterize.add('DNase')                        #       aka Chromatin_Structure
+        if collection_type == 'PWM':                         # TODO: Figure out Position Weight Matrix
+            characterize.add('PWM')                          #       From motifs
+        if collection_type == 'Footprint':                   # TODO: Figure out how to recognize Footptrints
+            characterize.add('Footprint')                    #       Also in Motifs?
+        if collection_type in ['eQTLs','dsQTLs']:
             characterize.add('eQTL')
 
     # Targets... For each ChIP target, there should be a PWM and/or Footprint to match
-    to_match = {'PWM_matched', 'Footprint_matched'}
     for target in targets['ChIP-seq']:
-        if not to_match:
-            break
         if target in targets['PWM']:
             characterize.add('PWM_matched')
-            characterize.discard('PWM')  # match implies PWM
-            to_match.discard('PWM_matched')
         if target in targets['Footprint']:
             characterize.add('Footprint_matched')
-            characterize.discard('Footprint')
-            to_match.discard('Footprint_matched')
 
     # Now the scoring
-    for (score, rule) in regulome_score_rules:
-        if characterize == rule:
-            return score
+    # score_rules = [ ('1a', {'eQTL','ChIP', 'DNase', 'PWM_matched', 'Footprint_matched'}), ... ]
+    #for (score, rule) in regulome_score_rules:
+    #    if characterize == rule:
+    #        return score
+    # Unfortunately, comparing set to set is less efficient than ifs and is prone to <= bugs...
+    if 'eQTL' in characterize:
+        if 'ChIP' in characterize:
+            if 'DNase':
+                if 'PWM_matched' in characterize and 'Footprint_matched' in characterize:
+                    return '1a'
+                if 'PWM' in characterize and 'Footprint' in characterize:
+                    return '1b'
+                if 'PWM_matched' in characterize:
+                    return '1c'
+                if 'PWM' in characterize:
+                    return '1d'
+            elif 'PWM_matched' in characterize:
+                return '1e'
+            return '1f'
+        if 'DNase' in characterize:
+            return '1f'
+    if 'ChIP' in characterize:
+        if 'DNase':
+            if 'PWM_matched' in characterize and 'Footprint_matched' in characterize:
+                return '2a'
+            if 'PWM' in characterize and 'Footprint' in characterize:
+                return '2b'
+            if 'PWM_matched' in characterize:
+                return '2c'
+            if 'PWM' in characterize:
+                return '3a'
+        elif 'PWM_matched' in characterize:
+            return '3b'
+        if 'DNase' in characterize:
+            return '4'
+        return '5'
+    if 'DNase' in characterize:
+        return '5'
+    if 'PWM' in characterize or 'Footprint' in characterize or 'eQTL' in characterize:
+        return '6'
+
     return "Found: " + str(characterize)
 
-def update_viusalize(result, assembly, dataset_paths, regulome=False):
+def update_viusalize(result, assembly, dataset_paths, file_statuses):
     '''Restrict visualize to assembly and add Quick View if possible.'''
+    # TODO: figure out why arxhived files are failing in biodaliance
     vis = result.get('visualize_batch')
     if vis is None:
-        return None
+        vis = {}
     assembly = _GENOME_TO_ALIAS[assembly]
     vis_assembly = vis.pop(assembly, None)
     if vis_assembly is None:
+        vis_assembly = {}
+    datasets = ''
+    count = 0
+    for path in dataset_paths:
+        datasets += '&dataset=' + path
+        count += 1
+        if count > 25:    # NOTE: only first 25 datasets
+            break
+    if count >= 1:
+        datasets = datasets[9:]  # first '&dataset=' will be redundant in vis_format_url
+        pos = result.get('coordinates')
+        quickview_url = vis_format_url("quickview", datasets, assembly, pos, file_statuses)
+        if quickview_url is not None:
+            vis_assembly['Quick View'] = quickview_url
+    if not vis_assembly:
         return None
-    if regulome:
-        datasets = ''
-        count = 0
-        for path in dataset_paths:
-            if not path.startswith('/annotations/'):
-                datasets += '&dataset=' + path
-                count += 1
-                if count > 25:
-                    break
-        if count >= 1 and count <= 25:
-            datasets = datasets[9:]  # first dataset= would be redundant
-            pos = result.get('coordinates')
-            quickview_url = vis_format_url("quickview", datasets, assembly, pos)
-            if quickview_url is not None:
-                vis_assembly['Quick View'] = quickview_url
     return { assembly: vis_assembly }
 
 
@@ -450,6 +451,7 @@ def region_search(context, request):
     """
     Search files by region.
     """
+    begin = time.time()  # DEBUG: timing
     types = request.registry[TYPES]
     page = request.path.split('/')[1]
     regulome = page.startswith('regulome')
@@ -461,7 +463,8 @@ def region_search(context, request):
         '@graph': [],
         'columns': OrderedDict(),
         'notification': '',
-        'filters': []
+        'filters': [],
+        'timing': []  # DEBUG: timing
     }
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
@@ -497,7 +500,6 @@ def region_search(context, request):
         if region.startswith('rs'):
             sanitized_region = sanitize_rsid(region)
             chromosome, start, end = get_rsid_coordinates(sanitized_region, assembly)
-            region_inside_peak_status = True
         elif region.startswith('ens'):
             chromosome, start, end = get_ensemblid_coordinates(region, assembly)
         elif region.startswith('chr'):
@@ -516,29 +518,25 @@ def region_search(context, request):
     # Search for peaks for the coordinates we got
     peaks_too = ('peak_metadata' in request.query_string)
     if peaks_too:
-        region_inside_peak_status = True
-    uses = [FOR_REGION_SEARCH]
+        region_inside_peak_status = True  # Much slower
+    use = FOR_REGION_SEARCH
     if regulome:
-        uses = [FOR_REGULOME_DB]
+        use = FOR_REGULOME_DB
+    result['timing'].append(('preamble',time.time() - begin))       # DEBUG: timing
+    begin = time.time()                                             # DEBUG: timing
     all_hits = region_get_hits(snp_es, assembly, chromosome, start, end, peaks_too=peaks_too,
-                                        with_inner_hits=region_inside_peak_status, uses=uses)
+                                        with_inner_hits=region_inside_peak_status, use=use)
+    if 'timing_es' in all_hits:                                     # DEBUG: timing
+        result['timing'].append(('hits_es',all_hits['timing_es']))  # DEBUG: timing
+    result['timing'].append(('hits',time.time() - begin))           # DEBUG: timing
+    begin = time.time()                                             # DEBUG: timing
     result['notification'] = all_hits['message']
-    if 'file_hits' not in all_hits or not all_hits['file_hits']:
+    if all_hits.get('dataset_count',0) == 0:
         return result
 
-    # score regulome SNPs or point locations
-    if regulome:
-        if (region.startswith('rs') or (int(end) - int(start)) <= 5):
-            # NOTE: This is on all file hits rather than 'released' or set reduced by facet selection
-            regdb_score = regulome_score(all_hits['file_hits'])
-            if regdb_score:
-                result['regulome_score'] = regdb_score
-    else:  # not regulome then clean up message
-        if result['notification'].startswith('Success'):
-            result['notification']= 'Success'
 
     # if more than one peak found return the experiments with those peak files
-    dataset_count = len(all_hits['dataset_paths'])
+    dataset_count = all_hits['dataset_count']
     if dataset_count > MAX_CLAUSES_FOR_ES:
         log.error("REGION_SEARCH WARNING: region covered by %d datasets is being restricted to %d" % \
                                                             (dataset_count, MAX_CLAUSES_FOR_ES))
@@ -549,7 +547,7 @@ def region_search(context, request):
 
         set_type = ['Experiment']
         set_indices = 'experiment'
-        allowed_status = ['released']  # ENCODED_ALLOWED_STATUSES
+        allowed_status = ENCODED_ALLOWED_STATUSES
         facets = _FACETS
         if regulome:
             set_type = ['Dataset']
@@ -573,6 +571,8 @@ def region_search(context, request):
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
         result['total'] = total = es_results['hits']['total']
         result['facets'] = format_facets(es_results, facets, used_filters, schemas, total, principals)
+        if len(result['@graph']) < dataset_count:  # paths should be the chosen few
+            all_hits['dataset_paths'] = [ dataset['@id'] for dataset in result['@graph'] ]
 
         if peaks_too:
             result['peaks'] = all_hits['peaks']
@@ -583,9 +583,25 @@ def region_search(context, request):
             result.update(search_result_actions(request, ['Experiment'], es_results, position=position_for_browser))
         result.pop('batch_download', None)  # not desired for region OR regulome
 
-        vis = update_viusalize(result, assembly, all_hits['dataset_paths'], regulome)
+        result['timing'].append(('graph',time.time() - begin))  # DEBUG: timing
+        begin = time.time()                                     # DEBUG: timing
+        vis = update_viusalize(result, assembly, all_hits['dataset_paths'], allowed_status)
         if vis is not None:
             result['visualize_batch'] = vis
+        result['timing'].append(('visualize',time.time() - begin))  # DEBUG: timing
+        begin = time.time()                                         # DEBUG: timing
+
+        if regulome:
+            # score regulome SNPs or point locations
+            if (region.startswith('rs') or (int(end) - int(start)) <= 5):
+                # NOTE: Needs all hits rather than 'released' or set reduced by facet selection
+                regdb_score = regulome_score(all_hits['datasets'])
+                if regdb_score:
+                    result['regulome_score'] = regdb_score
+            result['timing'].append(('scoring',time.time() - begin))  # DEBUG: timing
+        else:  # not regulome then clean up message
+            if result['notification'].startswith('Success'):
+                result['notification']= 'Success'
 
     return result
 
@@ -597,7 +613,6 @@ def suggest(context, request):
     if 'q' in request.params:
         text = request.params.get('q', '')
         requested_genome = request.params.get('genome', '')
-        # print(requested_genome)
 
     result = {
         '@id': '/suggest/?' + urlencode({'genome': requested_genome, 'q': text}, ['q', 'genome']),
