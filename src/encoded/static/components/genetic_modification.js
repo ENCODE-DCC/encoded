@@ -319,7 +319,7 @@ Attribution.propTypes = {
 // Render a panel containing GM document panels and GM characterization panels associated with a
 // GM object.
 const DocumentsRenderer = ({ characterizations, modificationDocuments, characterizationDocuments }) => {
-    // Don't need to check for characterizationDocuments.length because these only get displyed
+    // Don't need to check for characterizationDocuments.length because these only get displayed
     // within characterization panels.
     if (characterizations.length || modificationDocuments.length) {
         // Make a mapping of characterization document @ids to characterization documents
@@ -334,7 +334,7 @@ const DocumentsRenderer = ({ characterizations, modificationDocuments, character
         // make a copy of each and modify that instead.
         const characterizationsCopy = characterizations.map((characterization) => {
             const copy = Object.assign({}, characterization);
-            copy.documents = _.compact(characterization.documents.map(documentAtId => characterizationDocumentMap[documentAtId]));
+            copy.documents = characterization.documents ? _.compact(characterization.documents.map(documentAtId => characterizationDocumentMap[documentAtId])) : [];
             return copy;
         });
 
@@ -357,6 +357,25 @@ DocumentsRenderer.propTypes = {
 };
 
 
+/**
+ * Collect an array of all characterization document @ids.
+ *
+ * @param {array} characterizations - Array of characterizations from GM context object.
+ * @return {array} - Array of all characterization document @ids from all characterizations in the GM context object.
+ */
+const collectCharacterizationAtIds = (characterizations) => {
+    const characterizationDocumentAtIds = [];
+    if (characterizations && characterizations.length) {
+        characterizations.forEach((characterization) => {
+            if (characterization.documents && characterization.documents.length) {
+                characterizationDocumentAtIds.push(...characterization.documents);
+            }
+        });
+    }
+    return characterizationDocumentAtIds;
+};
+
+
 // Render the entire GeneticModification page. This is called by the back end as a result of an
 // attempt to render an object with an @type of GeneticModification.
 class GeneticModificationComponent extends React.Component {
@@ -374,22 +393,44 @@ class GeneticModificationComponent extends React.Component {
         this.requestDocuments();
     }
 
-    componentDidUpdate() {
-        this.requestDocuments();
+    componentDidUpdate(previousProperties, previousState) {
+
+        // Trigger a request for new documents if the GM documents have changed, or if the
+        // characterization documents have changed.
+        let update = false;
+        const previousCharacterizations = previousProperties.context.characterizations || [];
+        const currentCharacterizations = this.props.context.characterizations || [];
+        const previousModificationDocuments = previousProperties.context.documents || [];
+        const currentModificationDocuments = this.props.context.documents || [];
+
+        // If the lengths of the embedded characterizations array have changed or the length of the
+        // GM documents array have changed, we need to request new documents.
+        update = previousCharacterizations.length !== currentCharacterizations.length ||
+            previousModificationDocuments.length !== currentModificationDocuments.length;
+        if (!update) {
+            // The lengths of both arrays are the same; check their contents.
+            update = (previousCharacterizations.some((characterization, i) => characterization['@id'] !== currentCharacterizations[i]['@id']) ||
+            previousModificationDocuments.some((document, i) => document !== currentModificationDocuments[i]))
+        }
+
+        if (!update) {
+            // The characterizations and documents arrays have the same contents. Now check the
+            // characterization documents.
+            const previousCharacterizationDocuments = collectCharacterizationAtIds(previousCharacterizations);
+            const currentCharacterizationDocuments = collectCharacterizationAtIds(currentCharacterizations);
+            update = previousCharacterizationDocuments.some((documentAtId, i) => documentAtId !== currentCharacterizationDocuments[i]);
+        }
+
+        if (update) {
+            this.requestDocuments();
+        }
     }
 
     requestDocuments() {
         const { context } = this.props;
 
         // Collect all GM characterization document @ids.
-        const characterizationDocumentAtIds = [];
-        if (context.characterizations && context.characterizations.length) {
-            context.characterizations.forEach((characterization) => {
-                if (characterization.documents && characterization.documents.length) {
-                    characterizationDocumentAtIds.push(...characterization.documents);
-                }
-            });
-        }
+        const characterizationDocumentAtIds = collectCharacterizationAtIds(context.characterizations);
 
         // Collect GM document @ids and combine with characterization document @ids so we can do
         // one GET request for both.
@@ -397,12 +438,20 @@ class GeneticModificationComponent extends React.Component {
 
         // Convert the array of document @ids into a query string and do the GET request for their
         // objects.
+        const modificationDocuments = [];
+        const characterizationDocuments = [];
+        let searchPromise = null;
         const modificationCharacterizationDocumentsQuery = modificationCharacterizationDocumentsAtIds.length ? modificationCharacterizationDocumentsAtIds.reduce((acc, document) => `${acc}&${globals.encodedURIComponent(`@id=${document}`)}`, '') : null;
-        requestSearch(`type=Document${modificationCharacterizationDocumentsQuery}`).then(
+        if (modificationCharacterizationDocumentsQuery) {
+            searchPromise = requestSearch(`type=Document${modificationCharacterizationDocumentsQuery}`);
+        } else {
+            // No documents to search for, so return empty object, as requestSearch does if it
+            // finds no documents.
+            searchPromise = Promise.resolve({});
+        }
+        searchPromise.then(
             (results) => {
                 // `results` is the search results object, or {} if it 404ed.
-                const modificationDocuments = [];
-                const characterizationDocuments = [];
                 if (results['@graph'] && results['@graph'].length) {
                     // Split the results into arrays of modification and characterization
                     // document objects.
