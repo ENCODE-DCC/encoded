@@ -98,31 +98,31 @@ def get_file_uuids(result_dict):
     return list(set(file_uuids))
 
 def get_biosample_accessions(file_json, experiment_json):
+    bio_reps = None
     for f in experiment_json['files']:
         if file_json['uuid'] == f['uuid']:
-            accession = None
-            try:
-                accession = f.get('replicate', {}).get('library', {}).get('biosample', {}).get('accession')
-            except:
-                pass
-            if accession:
-                return accession
-    accessions = []
+            bio_reps = f.get('biological_replicates')
+    accessions = set()
     for replicate in experiment_json.get('replicates', []):
-        accession = None
+        if bio_reps and replicate.get('biological_replicate_number',0) not in bio_reps:
+            continue
         try:
-            accession = replicate.get('library',{}).get('biosample',{}).get('accession')
+            accession = replicate['library']['biosample']['accession']
+            if accession:
+                accessions.add(accession)
         except:
             pass
-        if accession:
-            accessions.append(accession)
-    return ', '.join(list(set(accessions)))
+    return ', '.join(list(accessions))
 
 def get_peak_metadata_links(request):
     if request.matchdict.get('search_params'):
         search_params = request.matchdict['search_params']
     else:
         search_params = request.query_string
+    page = request.path.split('/')[1]
+    regulome = page.startswith('regulome')
+    if regulome:
+        search_params += '&regulome=1'
 
     peak_metadata_tsv_link = '{host_url}/peak_metadata/{search_params}/peak_metadata.tsv'.format(
         host_url=request.host_url,
@@ -174,10 +174,15 @@ def make_audit_cell(header_column, experiment_json, file_json):
 @view_config(route_name='peak_metadata', request_method='GET')
 def peak_metadata(context, request):
     param_list = parse_qs(request.matchdict['search_params'])
+    regulome = param_list.pop('regulome',None)
+    target_page = 'region-search'
+    if regulome:
+        target_page = 'regulome-search'
+
     param_list['field'] = []
     header = ['assay_term_name', 'coordinates', 'target.label', 'biosample.accession', 'file.accession', 'experiment.accession']
     param_list['limit'] = ['all']
-    path = '/region-search/?{}&{}'.format(urlencode(param_list, True),'referrer=peak_metadata')
+    path = '/{}/?{}&{}'.format(target_page,urlencode(param_list, True),'referrer=peak_metadata')
     results = request.embed(path, as_user=True)
     uuids_in_results = get_file_uuids(results)
     rows = []
@@ -191,8 +196,10 @@ def peak_metadata(context, request):
                 coordinates = '{}:{}-{}'.format(row['_index'], hit['_source']['start'], hit['_source']['end'])
                 file_accession = file_json['accession']
                 experiment_accession = experiment_json['accession']
-                assay_name = experiment_json['assay_term_name']
-                target_name = experiment_json.get('target', {}).get('label') # not all experiments have targets
+                assay_name = experiment_json.get('assay_term_name','')
+                if assay_name == '' and regulome:
+                    assay_name = experiment_json.get('annotation_type','')
+                target_name = experiment_json.get('target', {}).get('label','') # not all experiments have targets
                 biosample_accession = get_biosample_accessions(file_json, experiment_json)
                 data_row.extend([assay_name, coordinates, target_name, biosample_accession, file_accession, experiment_accession])
                 rows.append(data_row)
