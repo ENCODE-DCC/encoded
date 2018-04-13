@@ -100,13 +100,22 @@ def get_file_uuids(result_dict):
 def get_biosample_accessions(file_json, experiment_json):
     for f in experiment_json['files']:
         if file_json['uuid'] == f['uuid']:
-            accession = f.get('replicate', {}).get('library', {}).get('biosample', {}).get('accession')
+            accession = None
+            try:
+                accession = f.get('replicate', {}).get('library', {}).get('biosample', {}).get('accession')
+            except:
+                pass
             if accession:
                 return accession
     accessions = []
     for replicate in experiment_json.get('replicates', []):
-        accession = replicate['library']['biosample']['accession']
-        accessions.append(accession)
+        accession = None
+        try:
+            accession = replicate.get('library',{}).get('biosample',{}).get('accession')
+        except:
+            pass
+        if accession:
+            accessions.append(accession)
     return ', '.join(list(set(accessions)))
 
 def get_peak_metadata_links(request):
@@ -388,7 +397,7 @@ def report_download(context, request):
     def format_header(seq):
         newheader="%s\t%s%s?%s\r\n" % (currenttime, request.host_url, '/report/', request.query_string)
         return(bytes(newheader, 'utf-8'))
-       
+
 
     # Work around Excel bug; can't open single column TSV with 'ID' header
     if len(columns) == 1 and '@id' in columns:

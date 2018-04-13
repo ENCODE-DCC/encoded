@@ -149,19 +149,18 @@ def get_peak_query(start, end, with_inner_hits=False):
         },
         '_source': False,
     }
-    # special case to get hits that are subsets of other hits
-    # NOTE: not sure what good it does because we do NOT return actual positions, only uuids
+    # special SLOW query will return inner_hits positions
     if with_inner_hits:
         query['query']['bool']['filter']['nested']['inner_hits'] = {'size': 99999}
     return query
 
 
-def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, with_inner_hits=False, use=None):
+def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, use=None):
     '''Returns a list of file uuids AND dataset paths for chromosome location'''
 
     all_hits = {}  #{ 'dataset_paths': [], 'files': {}, 'datasets': {}, 'peaks': [], 'message': ''}
 
-    region_query = get_peak_query(start, end, with_inner_hits=with_inner_hits)
+    region_query = get_peak_query(start, end, peaks_too)
 
     begin = time.time()  # DEBUG: timing
     try:
@@ -175,12 +174,14 @@ def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, wit
 
     peaks = list(results['hits']['hits'])
     all_hits['peak_count'] = len(peaks)
+    if peaks_too:
+        all_hits['peaks'] = peaks  # For "download_elements", contains 'inner_hits' with positions
     # NOTE: peak['inner_hits']['positions']['hits']['hits'] may exist with uuids but to same file
     uuids = set()
     uuids.update( [ peak['_id'] for peak in peaks ] )
     if not uuids:
         return {'message': 'No uuids found in region'}
-    all_hits['peaks'] = list(uuids)  # TODO: Need to determine what is wanted: peaks + inner_hits?
+    uuids = list(uuids)
 
     resident_details = {}
     use_types = [FOR_MULTIPLE_USES]
@@ -189,7 +190,7 @@ def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, wit
 
     begin = time.time()  # DEBUG: timing
     try:
-        id_query = {"query": {"ids": {"values": all_hits['peaks']}}}
+        id_query = {"query": {"ids": {"values": uuids}}}
         res = region_es.search(body=id_query, index=RESIDENT_REGIONSET_KEY, doc_type=use_types, size=99999)
     except Exception:
         return {'message': 'Error during resident_details search'}
@@ -202,7 +203,7 @@ def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, wit
     dataset_ids = set()
     all_hits['files'] = {}
     all_hits['datasets'] = {}
-    for uuid in all_hits['peaks']:
+    for uuid in uuids:
         if uuid not in resident_details:
             continue
         all_hits['files'][uuid] = resident_details[uuid]['file']
@@ -213,8 +214,6 @@ def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, wit
     all_hits['dataset_paths'] = list(dataset_ids)
     all_hits['file_count'] = len(all_hits['files'].keys())
     all_hits['dataset_count'] = len(all_hits['datasets'].keys())
-    if not peaks_too:
-        all_hits['peaks'] = [] # Don't burden results with too much info
 
     all_hits['message'] = '%d peaks in %d files belonging to %s datasets in this region' % \
                 (all_hits['peak_count'], all_hits['file_count'], all_hits['dataset_count'])
@@ -470,8 +469,6 @@ def region_search(context, request):
     es = request.registry[ELASTIC_SEARCH]
     snp_es = request.registry['snp_search']
     region = request.params.get('region', '*')
-    region_inside_peak_status = False
-
 
     # handling limit
     size = request.params.get('limit', 25)
@@ -517,15 +514,13 @@ def region_search(context, request):
 
     # Search for peaks for the coordinates we got
     peaks_too = ('peak_metadata' in request.query_string)
-    if peaks_too:
-        region_inside_peak_status = True  # Much slower
     use = FOR_REGION_SEARCH
     if regulome:
         use = FOR_REGULOME_DB
     result['timing'].append(('preamble',time.time() - begin))       # DEBUG: timing
     begin = time.time()                                             # DEBUG: timing
-    all_hits = region_get_hits(snp_es, assembly, chromosome, start, end, peaks_too=peaks_too,
-                                        with_inner_hits=region_inside_peak_status, use=use)
+    all_hits = region_get_hits(snp_es, assembly, chromosome, start, end,
+                                                peaks_too=peaks_too, use=use)
     if 'timing_es' in all_hits:                                     # DEBUG: timing
         result['timing'].append(('hits_es',all_hits['timing_es']))  # DEBUG: timing
     result['timing'].append(('hits',time.time() - begin))           # DEBUG: timing
