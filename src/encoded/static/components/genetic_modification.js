@@ -386,44 +386,55 @@ class GeneticModificationComponent extends React.Component {
             characterizationDocuments: [], // GM characterization document search results
         };
         this.requestDocuments = this.requestDocuments.bind(this);
-        this.geneticModificationComponentChanged = this.geneticModificationComponentChanged.bind(this);
+        this.documentsChanged = this.documentsChanged.bind(this);
+        this.conditionsChanged = this.conditionsChanged.bind(this);
     }
 
     componentDidMount() {
         this.requestDocuments();
     }
 
-    componentDidUpdate(previousProperties, previousState) {
+    componentDidUpdate(previousProperties, previousState, previousContext) {
+        if (this.conditionsChanged(previousProperties, previousState, previousContext)) {
+            this.requestDocuments();
+        }
+    }
 
-        // Trigger a request for new documents if the GM documents have changed, or if the
-        // characterization documents have changed.
-        let update = false;
+    conditionsChanged(previousProperties, previousState, previousContext) {
+        // Logged-in state has changed.
+        const previousLoggedIn = !!(previousContext.session && previousContext.session['auth.userid']);
+        const currentLoggedIn = !!(this.context.session && this.context.session['auth.userid']);
+        if (previousLoggedIn !== currentLoggedIn) {
+            return true;
+        }
+
         const previousCharacterizations = previousProperties.context.characterizations || [];
         const currentCharacterizations = this.props.context.characterizations || [];
         const previousModificationDocuments = previousProperties.context.documents || [];
         const currentModificationDocuments = this.props.context.documents || [];
 
-        // If the lengths of the embedded characterizations array have changed or the length of the
-        // GM documents array have changed, we need to request new documents.
-        update = previousCharacterizations.length !== currentCharacterizations.length ||
-            previousModificationDocuments.length !== currentModificationDocuments.length;
-        if (!update) {
-            // The lengths of both arrays are the same; check their contents.
-            update = (previousCharacterizations.some((characterization, i) => characterization['@id'] !== currentCharacterizations[i]['@id']) ||
-            previousModificationDocuments.some((document, i) => document !== currentModificationDocuments[i]))
+        // The characterizations array length or the GM documents array length has changed.
+        if (previousCharacterizations.length !== currentCharacterizations.length || previousModificationDocuments.length !== currentModificationDocuments.length) {
+            return true;
         }
 
-        if (!update) {
-            // The characterizations and documents arrays have the same contents. Now check the
-            // characterization documents.
-            const previousCharacterizationDocuments = collectCharacterizationAtIds(previousCharacterizations);
-            const currentCharacterizationDocuments = collectCharacterizationAtIds(currentCharacterizations);
-            update = previousCharacterizationDocuments.some((documentAtId, i) => documentAtId !== currentCharacterizationDocuments[i]);
+        // The lengths of both arrays are the same; check their contents.
+        if (previousCharacterizations.some((characterization, i) => characterization['@id'] !== currentCharacterizations[i]['@id']) ||
+                previousModificationDocuments.some((document, i) => document !== currentModificationDocuments[i])) {
+            return true;
         }
 
-        if (update) {
-            this.requestDocuments();
+        // The characterizations and documents arrays have the same contents. Now check the
+        // previous and current characterization document array lengths and contents.
+        const previousCharacterizationDocuments = collectCharacterizationAtIds(previousCharacterizations);
+        const currentCharacterizationDocuments = collectCharacterizationAtIds(currentCharacterizations);
+        if (previousCharacterizationDocuments.length !== currentCharacterizationDocuments.length) {
+            return true;
         }
+        if (previousCharacterizationDocuments.some((documentAtId, i) => documentAtId !== currentCharacterizationDocuments[i])) {
+            return true;
+        }
+        return false;
     }
 
     requestDocuments() {
@@ -466,7 +477,7 @@ class GeneticModificationComponent extends React.Component {
 
                 // If the resulting documents are different from what we have in state, then
                 // update the state.
-                if (this.geneticModificationComponentChanged(modificationDocuments, characterizationDocuments)) {
+                if (this.documentsChanged(modificationDocuments, characterizationDocuments)) {
                     this.setState({ modificationDocuments, characterizationDocuments });
                 }
             }
@@ -475,7 +486,7 @@ class GeneticModificationComponent extends React.Component {
 
     // Compare the given modificationDocuments and characterizationDocuments arrays with what's
     // currently in state, returning true if they're different.
-    geneticModificationComponentChanged(modificationDocuments, characterizationDocuments) {
+    documentsChanged(modificationDocuments, characterizationDocuments) {
         if (modificationDocuments.length !== this.state.modificationDocuments.length ||
             characterizationDocuments.length !== this.state.characterizationDocuments.length) {
             return true;
