@@ -216,6 +216,18 @@
                 }
             }
         },
+        "cell_isolation_method": {
+            "not": {
+                "properties": {
+                    "biosample_type": {
+                        "enum": [
+                            "whole organisms",
+                            "tissue"
+                        ]
+                    }
+                }
+            }
+        },
         "model_organism_age_units": {
             "required":["model_organism_age"],
             "comment": "Biosample with a specified model_organism_age_units requires model_organism_age specification."
@@ -676,6 +688,19 @@
             "enum": [
                 "cryopreservation",
                 "flash-freezing"
+            ]
+        },
+        "cell_isolation_method": {
+            "title": "Cell isolation method",
+            "description": "The method by which the cell(s) in the sampe were isolated.",
+            "comment": "Indicate the method used to isolate cell(s) in the sample. For example Fluidigm C1 cell isolation should specify: microfluidic cell sorting.", 
+            "type": "string",
+            "enum": [
+                "micropipetting",
+                "microfluidic cell sorting",
+                "dilution",
+                "laser capture microdissection",
+                "fluorescence activated cell sorting"
             ]
         },
         "model_organism_sex": {
