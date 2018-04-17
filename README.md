@@ -131,6 +131,7 @@ source ~/.bash_profile
 ### **4. Run buildout:**
 
 - `pip3 install -U zc.buildout setuptools`
+- `pyenv rehash`
 - `buildout bootstrap`
 - `bin/buildout`
 
