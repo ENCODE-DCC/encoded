@@ -1,5 +1,9 @@
 ## Changelog for ucsc_browser_composite.json
 
+### Schema version 15
+
+* Make *date_submitted* value a required property for objects in status *submitted*
+
 ### Schema version 14
 
 * Replace started status with in progress.

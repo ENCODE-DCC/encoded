@@ -1,5 +1,9 @@
 ## Changelog for treatment_time_series.json
 
+### Schema version 16
+
+* Make *date_submitted* value a required property for objects in status *submitted*
+
 ### Schema version 15
 
 * Replace started status with in progress.
