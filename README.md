@@ -127,6 +127,10 @@ source ~/.bash_profile
 >Uninstall and re-install openssl using the following command when you install pyenv
 >- `brew uninstall --ignore-dependencies openssl && brew install openssl && CFLAGS="-I$(brew --prefix openssl)/include" LDFLAGS="-L$(brew --prefix openssl)/lib" pyenv install <VERSION>`
 
+**Set the correct Python for the current directory:**
+```bash
+pyenv local 3.4.3
+```
 
 ### **4. Run buildout:**
 
