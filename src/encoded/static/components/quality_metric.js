@@ -219,7 +219,8 @@ const QCDataDisplay = (props) => {
     // aren't interesting for the QC panel. Also sort the keys case insensitively.
     const displayKeys = Object.keys(qcMetric).filter((key) => {
         const schemaProperty = qcSchema.properties[key];
-        return !genericQCSchema.properties[key] && (schemaProperty.type === 'number' || schemaProperty.type === 'string');
+        return !genericQCSchema.properties[key]
+            && (schemaProperty.type === 'number' || schemaProperty.type === 'string' || schemaProperty.type === 'integer' || schemaProperty.type === 'boolean');
     }).sort((a, b) => {
         const aUp = a.toUpperCase();
         const bUp = b.toUpperCase();
@@ -231,7 +232,7 @@ const QCDataDisplay = (props) => {
             {displayKeys.map(key =>
                 <div key={key} data-test={key}>
                     <dt className="sentence-case">{qcSchema.properties[key].title}</dt>
-                    <dd>{qcMetric[key]}</dd>
+                    <dd>{typeof qcMetric[key] === 'boolean' ? qcMetric[key].toString() : qcMetric[key]}</dd>
                 </div>
             )}
         </dl>
