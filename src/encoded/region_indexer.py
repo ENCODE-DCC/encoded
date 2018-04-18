@@ -97,8 +97,17 @@ REGULOME_REGION_REQUIREMENTS = {
     },
     'dsQTLs': {
         'file_format': ['bed']
+    },
+    'variant calls': {
+        'output_type': ['variant calls'],
+        'file_format': ['bed']
     }
 }
+# Less than ideal way to recognize the SNP files by submitted_file_name
+SNP_FILES = [
+    's3://regulomedb/snp141/snp141_hg19.bed.gz',
+    's3://regulomedb/snp141/snp141_GRCh38.bed.gz'
+]
 
 # On local instance, these are the only files that can be downloaded and regionalizable.  Currently only one is!
 TESTABLE_FILES = ['ENCFF002COS']  # '/static/test/peak_indexer/ENCFF002COS.bed.gz']
@@ -118,7 +127,7 @@ def tsvreader(file):
     for row in reader:
         yield row
 
-# Mapping should be generated dynamically for each assembly type
+# Region mapping: index: chr*, doc_type: assembly, _id=uuid
 def get_chrom_index_mapping(assembly_name='hg19'):
     return {
         assembly_name: {
@@ -147,6 +156,7 @@ def get_chrom_index_mapping(assembly_name='hg19'):
         }
     }
 
+# Files are also put in the resident: index: RESIDENT_REGIONSET_KEY, doc_type: use_type, _id=uuid
 def get_resident_mapping(use_type=FOR_MULTIPLE_USES):
     return {use_type: {"enabled": False}}
     # True map: IF we ever want to query by anything other than uuid...
@@ -158,6 +168,8 @@ def get_resident_mapping(use_type=FOR_MULTIPLE_USES):
     #             'uuid':   {'type': 'keyword'},  # same as _id and file['uuid']
     #             'uses':   {'type': 'keyword'},  # e.g FOR_REGULOME_DB
     #             'chroms': {'type': 'keyword'},  # Used to remove from 'chr*' indices
+    #             'snps':   {'type': 'boolean'},  # If present, then this is a file of SNPs
+    #             'index':  {'type': 'keyword'},  # If present, the 1 index for this 1 SNP file
     #             'file': {
     #                 'properties': {
     #                     'uuid':     {'type': 'keyword'},  # Yes, redundant
@@ -179,6 +191,35 @@ def get_resident_mapping(use_type=FOR_MULTIPLE_USES):
     #         }
     #     }
     # }
+
+# SNP mapping index: snp141_hg19, doc_type: chr*, _id=rsid
+def get_snp_index_mapping(chrom='chr1'):
+    return {
+        chrom: {
+            '_all': {
+                'enabled': False
+            },
+            '_source': {
+                'enabled': True
+            },
+            'properties': {
+                'rsid': {
+                    'type': 'keyword'
+                },
+                'start': {
+                    'type': 'long'
+                },
+                'end': {
+                    'type': 'long'
+                }
+            }
+        }
+    }
+
+SNP_INDEX_PREFIX = 'snp141_'
+def snp_index_key(assembly):
+    return SNP_INDEX_PREFIX + assembly.lower()
+
 
 def index_settings():
     return {
@@ -457,7 +498,7 @@ class RegionIndexer(Indexer):
         dataset_region_uses = self.candidate_dataset(dataset)
         if not dataset_region_uses:
             return  # Note that if a dataset is no longer a candidate but it had files in regions es, they won't get removed.
-        #log.debug("dataset is a candidate: %s", dataset['accession'])
+        #log.warn("dataset is a candidate: %s", dataset['accession'])
 
         files = dataset.get('files',[])
         for afile in files:
@@ -469,6 +510,7 @@ class RegionIndexer(Indexer):
             file_doc = self.candidate_file(afile, dataset, dataset_region_uses)
             if file_doc:
 
+                #log.warn("file is a candidate: %s", afile['accession'])
                 using = ""
                 if force:
                     using = "with FORCE"
@@ -541,7 +583,9 @@ class RegionIndexer(Indexer):
             if dataset_type in dataset['@type']:
                 meta_doc['dataset_type'] = dataset_type
                 break
-
+        if afile['submitted_file_name'] in SNP_FILES:
+            meta_doc['snps'] = True
+        #log.error(json.dumps(meta_doc))
         return meta_doc
 
     def candidate_file(self, afile, dataset, dataset_uses):
@@ -642,12 +686,19 @@ class RegionIndexer(Indexer):
         except:
             return False  # Not an error: remove may be called without looking first
 
-        for chrom in doc['chroms']:  # Could just try index='chr*'
+        if 'index' in doc:
             try:
-                self.regions_es.delete(index=chrom, doc_type=doc['assembly'], id=str(id))
+                self.regions_es.delete(index=doc['index'])
             except:
-                log.error("Region indexer failed to remove %s regions of %s" % (chrom,id))  #, exc_info=True)
+                log.error("Region indexer failed to delete %s index" % (doc['index']))  #, exc_info=True)
                 return False # Will try next full cycle
+        else:
+            for chrom in doc['chroms']:  # Could just try index='chr*'
+                try:
+                    self.regions_es.delete(index=chrom, doc_type=doc['assembly'], id=str(id))
+                except:
+                    log.error("Region indexer failed to remove %s regions of %s" % (chrom,id))  #, exc_info=True)
+                    return False # Will try next full cycle
 
         try:
             self.regions_es.delete(index=self.residents_index, doc_type=use_type, id=str(id))
@@ -657,29 +708,8 @@ class RegionIndexer(Indexer):
 
         return True
 
-
-    def add_to_regions_es(self, afile, assembly, regions, file_doc):
-        '''Given regions from some source (most likely encoded file) loads the data into region search es'''
-        id = afile['uuid']
-
-        for chrom in list(regions.keys()):
-            doc = {
-                'uuid': str(id),
-                'positions': regions[chrom]
-            }
-            # Could be a chrom never seen before!
-            if not self.regions_es.indices.exists(chrom):
-                self.regions_es.indices.create(index=chrom, body=index_settings())
-
-            if not self.regions_es.indices.exists_type(index=chrom, doc_type=assembly):
-                mapping = get_chrom_index_mapping(assembly)
-                self.regions_es.indices.put_mapping(index=chrom, doc_type=assembly, body=mapping)
-
-            self.regions_es.index(index=chrom, doc_type=assembly, body=doc, id=str(id))
-
-        # Now add dataset to residency list
-        file_doc['chroms'] = list(regions.keys())
-
+    def add_to_residence(self, uuid, file_doc):
+        '''Adds a file into residence index.'''
         # Only splitting on doc_type=use in order to easily count them
         use_type = FOR_MULTIPLE_USES
         if len(file_doc['uses']) == 1:
@@ -693,13 +723,71 @@ class RegionIndexer(Indexer):
             mapping = get_resident_mapping(use_type)
             self.regions_es.indices.put_mapping(index=self.residents_index, doc_type=use_type, body=mapping)
 
-        self.regions_es.index(index=self.residents_index, doc_type=use_type, body=file_doc, id=str(id))
+        self.regions_es.index(index=self.residents_index, doc_type=use_type, body=file_doc, id=str(uuid))
         return True
 
-    def add_file_to_regions_es(self, request, afile, file_doc):
+    def add_to_regions_es(self, afile, assembly, regions, file_doc):
+        '''Given regions from some source (most likely encoded file) loads the data into region search es'''
+        uuid = str(afile['uuid'])
+
+        for chrom in list(regions.keys()):
+            doc = {
+                'uuid': uuid,
+                'positions': regions[chrom]
+            }
+            # Could be a chrom never seen before!
+            if not self.regions_es.indices.exists(chrom):
+                self.regions_es.indices.create(index=chrom, body=index_settings())
+
+            if not self.regions_es.indices.exists_type(index=chrom, doc_type=assembly):
+                mapping = get_chrom_index_mapping(assembly)
+                self.regions_es.indices.put_mapping(index=chrom, doc_type=assembly, body=mapping)
+
+            self.regions_es.index(index=chrom, doc_type=assembly, body=doc, id=uuid)
+
+        # Now add dataset to residency list
+        file_doc['chroms'] = list(regions.keys())
+
+        return self.add_to_residence(uuid, file_doc)
+
+    def add_snps_to_regions_es(self, afile, assembly, regions, file_doc):
+        '''Given SNPs from file loads the data into region search es'''
+        uuid = str(afile['uuid'])
+        snp_index = snp_index_key(assembly)
+
+        if not self.regions_es.indices.exists(snp_index):
+            self.regions_es.indices.create(index=snp_index, body=index_settings())
+
+        for chrom in list(regions.keys()):
+            if not self.regions_es.indices.exists_type(index=snp_index, doc_type=chrom):
+                mapping = get_snp_index_mapping(chrom)
+                self.regions_es.indices.put_mapping(index=snp_index, doc_type=chrom, body=mapping)
+
+            #self.regions_es.bulk(snp_index, doc_type=chrom, body=regions[chrom])
+            for doc in regions[chrom]:
+                self.regions_es.index(snp_index, doc_type=chrom, body=doc, id=doc['rsid'])
+
+        # Now add dataset to residency list
+        file_doc['chroms'] = list(regions.keys())
+        file_doc['index'] = snp_index
+
+        return self.add_to_residence(uuid, file_doc)
+
+    def read_region(self, row):
+        '''Read a region from an in memory row and returns chrom and document to index.'''
+        chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
+        return (chrom, {'start': start + 1, 'end': end})
+
+    def read_snp(self, row):
+        '''Read a SNP from an in memory row and returns chrom and document to index.'''
+        chrom, start, end, rsid = row[0].lower(), int(row[1]), int(row[2]), row[3]
+        return (chrom, {'rsid': rsid, 'start': start + 1, 'end': end})
+
+    def add_file_to_regions_es(self, request, afile, file_doc, snp=False):
         '''Given an encoded file object, reads the file to create regions data then loads that into region search es.'''
 
         assembly = file_doc['file']['assembly']
+        snps = file_doc.get('snps', False)
 
         # Special case local instace so that tests can work...
         if self.test_instance:
@@ -713,7 +801,7 @@ class RegionIndexer(Indexer):
         http = urllib3.PoolManager()
         r = http.request('GET', href)
         if r.status != 200:
-            log.warn("File (%s or %s) not found" % (afile.get('accession', id), href))
+            log.warn("File (%s or %s) not found" % (afile['@id'], href))
             return False
         file_in_mem = io.BytesIO()
         file_in_mem.write(r.data)
@@ -725,26 +813,28 @@ class RegionIndexer(Indexer):
             # NOTE: requests doesn't require gzip but http.request does.
             with gzip.open(file_in_mem, mode='rt') as file:  # localhost:8000 would not require localhost
                 for row in tsvreader(file):
+                    if row[0].startswith('#'):
+                        continue
                     try:
-                        chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
-                    except:
-                        if row[0].startswith('#'):
-                            continue
+                        if snps:
+                            (chrom, doc) = self.read_snp(row)
                         else:
-                            log.warn('positions are not integers %s:%s:%s, will not index file' % row[0], row[1], row[2])
-                            break
+                            (chrom, doc) = self.read_region(row)
+                    except:
+                            log.warn('positions are not integers %s:%s:%s, will not index file' % \
+                                                                row[0], row[1], row[2])
                     #if chrom not in SUPPORTED_CHROMOSOMES:
                     #    continue
                     if chrom in file_data:
-                        file_data[chrom].append({
-                            'start': start + 1,
-                            'end': end + 1
-                        })
+                        file_data[chrom].append(doc)
                     else:
-                        file_data[chrom] = [{'start': start + 1, 'end': end + 1}]
+                        file_data[chrom] = [doc]
         #else:  TODO: bigBeds? Other file types?
 
         if file_data:
-            return self.add_to_regions_es(afile, assembly, file_data, file_doc)
+            if snps:
+                return self.add_snps_to_regions_es(afile, assembly, file_data, file_doc)
+            else:
+                return self.add_to_regions_es(afile, assembly, file_data, file_doc)
 
         return False
