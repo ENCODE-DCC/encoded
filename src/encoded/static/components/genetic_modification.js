@@ -13,7 +13,7 @@ import { Breadcrumbs } from './navigation';
 import { singleTreatment, requestSearch } from './objectutils';
 import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
-import { StatusLabel } from './statuslabel';
+import Status from './status';
 import { BiosampleTable, DonorTable } from './typeutils';
 
 
@@ -517,12 +517,7 @@ class GeneticModificationComponent extends React.Component {
                     <div className="col-sm-12">
                         <Breadcrumbs root="/search/?type=GeneticModification" crumbs={crumbs} />
                         <h2>{context.accession}</h2>
-                        <div className="status-line">
-                            <div className="characterization-status-labels">
-                                <StatusLabel title="Status" status={context.status} />
-                            </div>
-                            {this.props.auditIndicators(context.audit, 'genetic-modification-audit', { session: this.context.session })}
-                        </div>
+                        {this.props.auditIndicators(context.audit, 'genetic-modification-audit', { session: this.context.session })}
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'genetic-modification-audit', { session: this.context.session, except: context['@id'] })}
@@ -532,6 +527,11 @@ class GeneticModificationComponent extends React.Component {
                             <div className="flexcol-sm-6">
                                 <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
                                 <dl className={itemClass}>
+                                    <div data-test="status">
+                                        <dt>Status</dt>
+                                        <dd><Status item={context} inline /></dd>
+                                    </div>
+
                                     {context.description ?
                                         <div data-test="description">
                                             <dt>Description</dt>
@@ -625,7 +625,7 @@ const ListingComponent = (props, reactContext) => {
                 <div className="pull-right search-meta">
                     <p className="type meta-title">Genetic modification</p>
                     <p className="type">{` ${result.accession}`}</p>
-                    <p className="type meta-status">{` ${result.status}`}</p>
+                    <Status item={result.status} size="small" css="result-table__status" />
                     {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
                 </div>
                 <div className="accession"><a href={result['@id']}>{result.category} &mdash; {result.purpose} &mdash; {result.method}</a></div>

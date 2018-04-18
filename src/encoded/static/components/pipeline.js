@@ -11,7 +11,7 @@ import { Breadcrumbs } from './navigation';
 import { PanelLookup } from './objectutils';
 import { PickerActions } from './search';
 import { softwareVersionList } from './software';
-import { StatusLabel } from './statuslabel';
+import Status from './status';
 
 
 const stepNodePrefix = 'step'; // Prefix for step node IDs
@@ -394,18 +394,18 @@ class PipelineComponent extends React.Component {
                     <div className="col-sm-12">
                         {crumbs ? <Breadcrumbs root="/search/?type=Pipeline" crumbs={crumbs} /> : null}
                         <h2>{context.title}</h2>
-                        <div className="characterization-status-labels">
-                            <div className="characterization-status-labels">
-                                <StatusLabel title="Status" status={context.status} />
-                            </div>
-                            {this.props.auditIndicators(context.audit, 'pipeline-audit', { session: this.context.session })}
-                        </div>
+                        {this.props.auditIndicators(context.audit, 'pipeline-audit', { session: this.context.session })}
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'pipeline-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
                     <PanelBody>
                         <dl className="key-value">
+                            <div data-test="status">
+                                <dt>Status</dt>
+                                <dd><Status item={context} inline /></dd>
+                            </div>
+
                             <div data-test="title">
                                 <dt>Title</dt>
                                 <dd>{context.title}</dd>
@@ -563,7 +563,7 @@ class ListingComponent extends React.Component {
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Pipeline</p>
                         <p className="type">{` ${result.accession}`}</p>
-                        {result.status ? <p className="type meta-status">{` ${result.status}`}</p> : ''}
+                        <Status item={result.status} size="small" css="result-table__status" />
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession">

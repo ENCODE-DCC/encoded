@@ -13,6 +13,7 @@ import { requestFiles, DownloadableAccession, BrowserSelector } from './objectut
 import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
+import Status from './status';
 
 
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
@@ -342,7 +343,7 @@ FileTable.procTableColumns = {
     },
     status: {
         title: 'File status',
-        display: item => <div className="characterization-meta-data"><FileStatusLabel file={item} /></div>,
+        display: item => <Status item={item} size="small" css="status__table-cell" />,
     },
 };
 
@@ -393,7 +394,7 @@ FileTable.refTableColumns = {
     },
     status: {
         title: 'File status',
-        display: item => <div className="characterization-meta-data"><FileStatusLabel file={item} /></div>,
+        display: item => <Status item={item} size="small" css="status__table-cell" />,
     },
 };
 
@@ -427,25 +428,6 @@ function sortBioReps(a, b) {
     }
     return result;
 }
-
-
-const FileStatusLabel = (props) => {
-    const { file } = props;
-    const status = file.status;
-    const statusClass = globals.statusClass(status, 'status-indicator status-indicator--', true);
-
-    // Display simple string and optional title in badge
-    return (
-        <div key={status} className={statusClass}>
-            <i className="icon icon-circle status-indicator__icon" />
-            <div className="status-indicator__label">{status}</div>
-        </div>
-    );
-};
-
-FileStatusLabel.propTypes = {
-    file: PropTypes.object.isRequired, // File whose status we're displaying
-};
 
 
 class RawSequencingTable extends React.Component {
@@ -610,7 +592,7 @@ class RawSequencingTable extends React.Component {
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
-                                            <td className={`${pairClass} characterization-meta-data`}><FileStatusLabel file={file} /></td>
+                                            <td className={pairClass}><Status item={file} size="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
                                 });
@@ -644,7 +626,7 @@ class RawSequencingTable extends React.Component {
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
-                                        <td className="characterization-meta-data"><FileStatusLabel file={file} /></td>
+                                        <td><Status item={file} size="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
                             })}
@@ -788,7 +770,7 @@ class RawFileTable extends React.Component {
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
-                                            <td className={`${pairClass} characterization-meta-data`}><FileStatusLabel file={file} /></td>
+                                            <td className={pairClass}><Status item={file} size="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
                                 });
@@ -816,7 +798,7 @@ class RawFileTable extends React.Component {
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
-                                        <td className="characterization-meta-data"><FileStatusLabel file={file} /></td>
+                                        <td><Status item={file} size="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
                             })}
@@ -1166,6 +1148,20 @@ function collectDerivedFroms(file, fileDataset, selectedAssembly, selectedAnnota
 }
 
 
+/**
+ * Generate a string of CSS classes for a file node. Plass the result into a `className` property of a component.
+ *
+ * @param {object-required} file - File we're generating the statuses for.
+ * @param {bool} active - True if the file is active and should be highlighted as such.
+ * @param (bool) colorize - True to colorize the nodes according to their status by adding a CSS class for their status
+ * @param {string} addClasses - CSS classes to add in addition to the ones generated by the file statuses.
+ */
+const fileCssClassGen = (file, active, colorizeNode, addClasses) => {
+    const statusClass = colorizeNode ? ` graph-node--${globals.statusToClassElement(file.status)}` : '';
+    return `pipeline-node-file${active ? ' active' : ''}${statusClass}${addClasses ? ` ${addClasses}` : ''}`;
+};
+
+
 // Assembly a graph of files, the QC objects that belong to them, and the steps that connect them.
 export function assembleGraph(files, dataset, options) {
     // Calculate a step ID from a file's derived_from array.
@@ -1179,22 +1175,6 @@ export function assembleGraph(files, dataset, options) {
     // Calculate a QC node ID.
     function rGenQcId(metric, file) {
         return `qc:${metric['@id'] + file['@id']}`;
-    }
-
-    /**
-     * Generate a string of CSS classes for a file node. Plass the result into a `className` property of a component.
-     *
-     * @param {object-required} file - File we're generating the statuses for.
-     * @param {bool} active - True if the file is active and should be highlighted as such.
-     * @param (bool) colorize - True to colorize the nodes according to their status by adding a CSS class for their status
-     * @param {string} addClasses - CSS classes to add in addition to the ones generated by the file statuses.
-     */
-    function fileCssClassGen(file, active, colorizeNode, addClasses) {
-        let statusClass;
-        if (colorizeNode) {
-            statusClass = file.status.replace(/ /g, '-');
-        }
-        return `pipeline-node-file${active ? ' active' : ''}${colorizeNode ? ` ${statusClass}` : ''}${addClasses ? ` ${addClasses}` : ''}`;
     }
 
     const { infoNode, selectedAssembly, selectedAnnotation, colorize } = options;
@@ -2028,7 +2008,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                 <dl className="key-value">
                     <div data-test="status">
                         <dt>Status</dt>
-                        <dd><FileStatusLabel file={selectedFile} /></dd>
+                        <dd><Status item={selectedFile} inline /></dd>
                     </div>
 
                     {selectedFile.output_type ?
@@ -2221,7 +2201,7 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
             },
             status: {
                 title: 'Status',
-                display: item => <div className="characterization-meta-data"><FileStatusLabel file={item} /></div>,
+                display: item => <Status item={item} size="small" />,
             },
         };
 

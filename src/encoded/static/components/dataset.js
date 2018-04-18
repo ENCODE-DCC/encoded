@@ -9,7 +9,7 @@ import { Breadcrumbs } from './navigation';
 import { DbxrefList } from './dbxref';
 import { FetchedItems } from './fetched';
 import { auditDecor } from './audit';
-import { StatusLabel } from './statuslabel';
+import Status from './status';
 import pubReferenceList from './reference';
 import { donorDiversity, publicDataset, AlternateAccession } from './objectutils';
 import { softwareVersionList } from './software';
@@ -57,8 +57,6 @@ class AnnotationComponent extends React.Component {
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
 
-        const statuses = [{ status: context.status, title: 'Status' }];
-
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
 
@@ -94,12 +92,7 @@ class AnnotationComponent extends React.Component {
                         <h2>Summary for annotation file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         <Supersede context={context} />
-                        <div className="status-line">
-                            <div className="characterization-status-labels">
-                                <StatusLabel status={statuses} />
-                            </div>
-                            {this.props.auditIndicators(context.audit, 'annotation-audit', { session: this.context.session })}
-                        </div>
+                        {this.props.auditIndicators(context.audit, 'annotation-audit', { session: this.context.session })}
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'annotation-audit', { session: this.context.session, except: context['@id'] })}
@@ -109,6 +102,11 @@ class AnnotationComponent extends React.Component {
                             <div className="flexcol-sm-6">
                                 <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
                                 <dl className="key-value">
+                                    <div data-test="status">
+                                        <dt>Status</dt>
+                                        <dd><Status item={context} inline /></dd>
+                                    </div>
+
                                     <div data-test="accession">
                                         <dt>Accession</dt>
                                         <dd>{context.accession}</dd>
@@ -259,7 +257,6 @@ class PublicationDataComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
-        const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -289,12 +286,7 @@ class PublicationDataComponent extends React.Component {
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for publication file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
-                        <div className="status-line">
-                            <div className="characterization-status-labels">
-                                <StatusLabel status={statuses} />
-                            </div>
-                            {this.props.auditIndicators(context.audit, 'publicationdata-audit', { session: this.context.session })}
-                        </div>
+                        {this.props.auditIndicators(context.audit, 'publicationdata-audit', { session: this.context.session })}
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'publicationdata-audit', { session: this.context.session, except: context['@id'] })}
@@ -304,6 +296,11 @@ class PublicationDataComponent extends React.Component {
                             <div className="flexcol-sm-6">
                                 <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
                                 <dl className="key-value">
+                                    <div data-test="status">
+                                        <dt>Status</dt>
+                                        <dd><Status item={context} inline /></dd>
+                                    </div>
+
                                     {context.assay_term_name && context.assay_term_name.length ?
                                         <div data-test="assaytermname">
                                             <dt>Assay(s)</dt>
@@ -422,7 +419,6 @@ class ReferenceComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
-        const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -452,12 +448,7 @@ class ReferenceComponent extends React.Component {
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for reference file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
-                        <div className="status-line">
-                            <div className="characterization-status-labels">
-                                <StatusLabel status={statuses} />
-                            </div>
-                            {this.props.auditIndicators(context.audit, 'reference-audit', { session: this.context.session })}
-                        </div>
+                        {this.props.auditIndicators(context.audit, 'reference-audit', { session: this.context.session })}
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'reference-audit', { session: this.context.session, except: context['@id'] })}
@@ -467,6 +458,11 @@ class ReferenceComponent extends React.Component {
                             <div className="flexcol-sm-6">
                                 <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
                                 <dl className="key-value">
+                                    <div data-test="status">
+                                        <dt>Status</dt>
+                                        <dd><Status item={context} inline /></dd>
+                                    </div>
+
                                     <div data-test="accession">
                                         <dt>Accession</dt>
                                         <dd>{context.accession}</dd>
@@ -585,7 +581,6 @@ class ProjectComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
-        const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -618,12 +613,7 @@ class ProjectComponent extends React.Component {
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for project file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
-                        <div className="status-line">
-                            <div className="characterization-status-labels">
-                                <StatusLabel status={statuses} />
-                            </div>
-                            {this.props.auditIndicators(context.audit, 'project-audit', { session: this.context.session })}
-                        </div>
+                        {this.props.auditIndicators(context.audit, 'project-audit', { session: this.context.session })}
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'project-audit', { session: this.context.session, except: context['@id'] })}
@@ -633,6 +623,11 @@ class ProjectComponent extends React.Component {
                             <div className="flexcol-sm-6">
                                 <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
                                 <dl className="key-value">
+                                    <div data-test="status">
+                                        <dt>Status</dt>
+                                        <dd><Status item={context} inline /></dd>
+                                    </div>
+
                                     {context.assay_term_name && context.assay_term_name.length ?
                                         <div data-test="assaytermname">
                                             <dt>Assay(s)</dt>
@@ -772,7 +767,6 @@ class UcscBrowserCompositeComponent extends React.Component {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
-        const statuses = [{ status: context.status, title: 'Status' }];
 
         // Build up array of documents attached to this dataset
         const datasetDocuments = (context.documents && context.documents.length) ? context.documents : [];
@@ -805,12 +799,7 @@ class UcscBrowserCompositeComponent extends React.Component {
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for UCSC browser composite file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
-                        <div className="status-line">
-                            <div className="characterization-status-labels">
-                                <StatusLabel status={statuses} />
-                            </div>
-                            {this.props.auditIndicators(context.audit, 'ucscbrowsercomposite-audit', { session: this.context.session })}
-                        </div>
+                        {this.props.auditIndicators(context.audit, 'ucscbrowsercomposite-audit', { session: this.context.session })}
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'ucscbrowsercomposite-audit', { session: this.context.session, except: context['@id'] })}
@@ -820,6 +809,11 @@ class UcscBrowserCompositeComponent extends React.Component {
                             <div className="flexcol-sm-6">
                                 <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
                                 <dl className="key-value">
+                                    <div data-test="status">
+                                        <dt>Status</dt>
+                                        <dd><Status item={context} inline /></dd>
+                                    </div>
+
                                     {context.assay_term_name && context.assay_term_name.length ?
                                         <div data-test="assays">
                                             <dt>Assay(s)</dt>
@@ -1022,7 +1016,7 @@ const basicTableColumns = {
     },
     status: {
         title: 'Status',
-        display: experiment => <div className="characterization-meta-data"><StatusLabel status={experiment.status} /></div>,
+        display: experiment => <Status item={experiment} size="small" />,
     },
 };
 
@@ -1065,7 +1059,7 @@ const treatmentSeriesTableColumns = {
 
     status: {
         title: 'Status',
-        display: experiment => <div className="characterization-meta-data"><StatusLabel status={experiment.status} /></div>,
+        display: experiment => <Status item={experiment} size="small" />,
     },
 };
 
@@ -1122,7 +1116,7 @@ const replicationTimingSeriesTableColumns = {
 
     status: {
         title: 'Status',
-        display: experiment => <div className="characterization-meta-data"><StatusLabel status={experiment.status} /></div>,
+        display: experiment => <Status item={experiment} size="small" />,
     },
 };
 
@@ -1209,7 +1203,7 @@ const organismDevelopmentSeriesTableColumns = {
 
     status: {
         title: 'Status',
-        display: experiment => <div className="characterization-meta-data"><StatusLabel status={experiment.status} /></div>,
+        display: experiment => <Status item={experiment} size="small" />,
     },
 };
 
@@ -1232,7 +1226,6 @@ export class SeriesComponent extends React.Component {
         const itemClass = globals.itemClass(context, 'view-item');
         const adminUser = !!(this.context.session_properties && this.context.session_properties.admin);
         let experiments = {};
-        const statuses = [{ status: context.status, title: 'Status' }];
         context.files.forEach((file) => {
             const experiment = file.replicate && file.replicate.experiment;
             if (experiment) {
@@ -1297,12 +1290,7 @@ export class SeriesComponent extends React.Component {
                         <h2>Summary for {seriesTitle} {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         <Supersede context={context} />
-                        <div className="status-line">
-                            <div className="characterization-status-labels">
-                                <StatusLabel status={statuses} />
-                            </div>
-                            {this.props.auditIndicators(context.audit, 'series-audit', { session: this.context.session })}
-                        </div>
+                        {this.props.auditIndicators(context.audit, 'series-audit', { session: this.context.session })}
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'series-audit', { session: this.context.session, except: context['@id'] })}
@@ -1312,6 +1300,11 @@ export class SeriesComponent extends React.Component {
                             <div className="flexcol-sm-6">
                                 <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
                                 <dl className="key-value">
+                                    <div data-test="status">
+                                        <dt>Status</dt>
+                                        <dd><Status item={context} inline /></dd>
+                                    </div>
+
                                     {context.description ?
                                         <div data-test="description">
                                             <dt>Description</dt>

@@ -325,14 +325,14 @@
         "assay_title": {
             "title": "Assay"
         },
+        "status": {
+            "title": "Experiment status"
+        },
         "award.project": {
             "title": "Project"
         },
         "award.rfa": {
             "title": "RFA"
-        },
-        "status": {
-            "title": "Experiment status"
         },
         "assembly": {
             "title": "Genome assembly (visualization)"
