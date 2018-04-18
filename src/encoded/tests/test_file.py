@@ -178,6 +178,10 @@ def test_file_external_accession(testapp, external_accession):
     assert 'accession' not in item
     assert item['@id'] == '/files/EXTERNAL/'
 
+    # Root redirects external accession to canonical path
+    response = testapp.get('/EXTERNAL/', status=301)
+    assert response.headers['location'].endswith('/files/EXTERNAL/')
+
 
 def test_file_technical_replicates(testapp, fastq_pair_1):
     res = testapp.post_json('/file', fastq_pair_1, status=201)

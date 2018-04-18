@@ -109,11 +109,11 @@ def main():
     parser.add_argument(
         '-n', '--name', type=hostname, help="Instance name")
     parser.add_argument(
-        '--image-id', default='ami-4b37d42b',
-        help="ubuntu/images/hvm-ssd/ubuntu-wily-15.10-amd64-server-20160217.1")
+        '--image-id', default='ami-2133bc59',
+        help="https://us-west-2.console.aws.amazon.com/ec2/home?region=us-west-2#LaunchInstanceWizard:ami=ami-2133bc59")
     parser.add_argument(
-        '--instance-type', default='c4.xlarge',
-        help="specify 'c4.8xlarge' if there are many files to check")
+        '--instance-type', default='c5.xlarge',
+        help="specify 'c5.9xlarge' if there are many files to check")
     parser.add_argument(
         '--profile-name', default=None, help="AWS creds profile")
     parser.add_argument(

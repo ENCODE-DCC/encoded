@@ -139,6 +139,7 @@ const QualityMetricsModal = (props) => {
     const { qc, file, qcSchema, genericQCSchema } = props;
     const meta = qcModalContent(qc, file, qcSchema, genericQCSchema);
 
+    /* eslint-disable jsx-a11y/anchor-is-valid */
     return (
         <Modal actuator={<button className="btn btn-info qc-individual-panel__modal-actuator" title="View data and attachments for this quality metric"><i className="icon icon-info-circle" /></button>}>
             <ModalHeader closeModal addCss="graph-modal-quality-metric">
@@ -150,6 +151,7 @@ const QualityMetricsModal = (props) => {
             <ModalFooter closeModal={<a className="btn btn-info btn-sm">Close</a>} />
         </Modal>
     );
+    /* eslint-enable jsx-a11y/anchor-is-valid */
 };
 
 QualityMetricsModal.propTypes = {
@@ -361,7 +363,7 @@ QualityMetricsPanelRenderer.defaultProps = {
 
 
 // Display the metadata of the selected file in the graph
-const QCDetailView = function QCDetailView(node, qcClick, auditIndicators, auditDetail, session, sessionProperties) {
+const QCDetailView = function QCDetailView(node) {
     // The node is for a file
     const selectedQc = node.ref;
     let modalContent = {};

@@ -1,5 +1,9 @@
 ## Changelog for pipeline.json
 
+### Schema version 9
+
+Add *revoked* to possible statuses and change *active* to *released*.
+
 ### Schema version 8
 
 * *assay_term_name* property was replaced by *assay_term_names*, a list of assay names consistent with the pipeline type

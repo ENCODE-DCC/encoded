@@ -31,3 +31,9 @@ def analysis_step_run_3_4(value, system):
         value['status'] = 'in progress'
     elif status == 'finished':
         value['status'] = 'released'
+
+
+@upgrade_step('analysis_step_run', '4', '5')
+def analysis_step_run_4_5(value, system):
+    if value.get('status') == 'virtual':
+        value['status'] = 'released'

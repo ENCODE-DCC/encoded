@@ -8,6 +8,7 @@ import { DbxrefList, dbxrefHref } from './dbxref';
 import { RelatedItems } from './item';
 
 
+/* eslint-disable react/prefer-stateless-function */
 class Target extends React.Component {
     render() {
         const context = this.props.context;
@@ -90,6 +91,7 @@ class Target extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 Target.propTypes = {
     context: PropTypes.object, // Target object to display

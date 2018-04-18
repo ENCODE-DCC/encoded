@@ -242,7 +242,7 @@ def base_experiment(testapp, lab, award):
         'biosample_type': 'tissue',
         'biosample_term_name': 'heart',
         'biosample_term_id': 'UBERON:349829',
-        'status': 'started'
+        'status': 'in progress'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 
@@ -790,7 +790,7 @@ def analysis_step_run_bam(testapp, analysis_step_version_bam):
     item = {
         'analysis_step_version': analysis_step_version_bam['@id'],
         'status': 'released',
-        'aliases': ['modern:chip-seq-bwa-alignment-step-run-v-1-virtual']
+        'aliases': ['modern:chip-seq-bwa-alignment-step-run-v-1-released']
     }
     return testapp.post_json('/analysis_step_run', item).json['@graph'][0]
 

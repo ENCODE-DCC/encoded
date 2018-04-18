@@ -17,7 +17,7 @@ function sortedJson(obj) {
     return obj;
 }
 
-
+/* eslint-disable react/no-unused-state */
 class EditForm extends React.Component {
     constructor() {
         super();
@@ -88,8 +88,8 @@ class EditForm extends React.Component {
             if (!response.ok) throw response;
             return response.json();
         })
-        .catch(globals.parseAndLogError.bind(undefined, 'putRequest'))
-        .then(this.receive);
+            .catch(globals.parseAndLogError.bind(undefined, 'putRequest'))
+            .then(this.receive);
         this.setState({
             communicating: true,
             putRequest: request,
@@ -107,6 +107,7 @@ class EditForm extends React.Component {
         if (!erred) this.context.navigate('');
     }
 
+    /* eslint-disable jsx-a11y/anchor-is-valid */
     render() {
         const error = this.state.error;
         return (
@@ -133,7 +134,9 @@ class EditForm extends React.Component {
             </div>
         );
     }
+    /* eslint-enable jsx-a11y/anchor-is-valid */
 }
+/* eslint-enable react/no-unused-state */
 
 EditForm.propTypes = {
     context: PropTypes.object.isRequired,

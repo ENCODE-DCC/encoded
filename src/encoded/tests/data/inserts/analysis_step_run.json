@@ -1,12 +1,12 @@
 [
     {
         "uuid": "e2c67389-1e84-4506-8ddc-03b566ce4995",
-        "status": "virtual",
+        "status": "released",
         "analysis_step_version": "ab7ec880-50ab-11e4-916c-0800200c9a66"
     },
     {
         "uuid": "a2cc2a38-ad62-4f01-bd5b-0ae31e6f3024",
-        "status": "virtual",
+        "status": "released",
         "analysis_step_version": "c4a33ee0-50ab-11e4-916c-0800200c9a66"
     },
     {
@@ -463,27 +463,27 @@
     },
     {
         "uuid": "63b1b347-f008-4103-8d20-0e12f54d1882",
-        "status": "virtual",
+        "status": "released",
         "analysis_step_version": "1b7bec83-dd21-4086-8673-2e08cf8f1c0f"
     },
     {
         "uuid": "472a9e56-3304-4e2b-b352-ddcc2e310a92",
-        "status": "virtual",
+        "status": "released",
         "analysis_step_version": "11440ed3-1228-4430-aa5a-54cd408ff105"
     },
     {
         "uuid": "635ac7ff-7822-4f72-aad5-5d8b51b60d95",
-        "status": "virtual",
+        "status": "released",
         "analysis_step_version": "9c0120e0-a594-11e4-bcd8-0800200c9a66"
     },
     {
         "uuid":"56c6a019-a247-495c-8179-1639f4836ef8",
-        "status": "virtual",
+        "status": "released",
         "analysis_step_version": "5cdff4b0-9b37-4fb1-a93e-664742dbe505"
     },
     {
         "uuid": "39b4ccfe-c700-4ead-972e-71479c03c97e",
-        "status": "virtual",
+        "status": "released",
         "analysis_step_version": "78a19d0d-cfff-418a-9549-6aed3d492e6f"
     },
     {
@@ -492,7 +492,7 @@
         ],
         "analysis_step_version": "b75af1ff-b3ab-443f-a134-2b00cd318cd9",
         "date_created": "2017-10-16T16:12:30.339473+00:00",
-        "status": "virtual",
+        "status": "released",
         "uuid": "41cf4efe-5de6-4e67-9b17-a15201f72348"
     }
 ]

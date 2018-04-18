@@ -37,18 +37,12 @@ _tsv_mapping = OrderedDict([
     ('Biosample term id', ['biosample_term_id']),
     ('Biosample term name', ['biosample_term_name']),
     ('Biosample type', ['biosample_type']),
-    ('Biosample life stage', ['replicates.library.biosample.life_stage']),
-    ('Biosample sex', ['replicates.library.biosample.sex']),
-    ('Biosample Age', ['replicates.library.biosample.age',
-                       'replicates.library.biosample.age_units']),
     ('Biosample organism', ['replicates.library.biosample.organism.scientific_name']),
     ('Biosample treatments', ['replicates.library.biosample.treatments.treatment_term_name']),
-    ('Biosample subcellular fraction term name', ['replicates.library.biosample.subcellular_fraction_term_name']),
-    ('Biosample phase', ['replicates.library.biosample.phase']),
-    ('Biosample synchronization stage', ['replicates.library.biosample.fly_synchronization_stage',
-                                         'replicates.library.biosample.worm_synchronization_stage',
-                                         'replicates.library.biosample.post_synchronization_time',
-                                         'replicates.library.biosample.post_synchronization_time_units']),
+    ('Biosample treatments amount', ['replicates.library.biosample.treatments.amount',
+                                     'replicates.library.biosample.treatments.amount_units']),
+    ('Biosample treatments duration', ['replicates.library.biosample.treatments.duration',
+                                       'replicates.library.biosample.treatments.duration_units']),
     ('Experiment target', ['target.name']),
     ('Antibody accession', ['replicates.antibody.accession']),
     ('Library made from', ['replicates.library.nucleic_acid_term_name']),
@@ -241,7 +235,7 @@ def metadata_tsv(context, request):
     results = request.embed(path, as_user=True)
     rows = []
     for experiment_json in results['@graph']:
-        if experiment_json['files']:
+        if experiment_json.get('files', []):
             exp_data_row = []
             for column in header:
                 if not _tsv_mapping[column][0].startswith('files'):
@@ -305,26 +299,43 @@ def batch_download(context, request):
         search_params=request.matchdict['search_params']
     )
     files = [metadata_link]
-    if 'files.file_type' in param_list:
-        for exp in results['@graph']:
-            for f in exp.get('files', []):
-                if f['file_type'] in param_list['files.file_type']:
-                    files.append('{host_url}{href}'.format(
-                        host_url=request.host_url,
-                        href=f['href']
-                    ))
-    else:
-        for exp in results['@graph']:
-            for f in exp.get('files', []):
-                files.append('{host_url}{href}'.format(
-                    host_url=request.host_url,
-                    href=f['href']
-                ))
+
+    exp_files = (
+            exp_file
+            for exp in results['@graph']
+            for exp_file in exp.get('files', [])
+    )
+
+    for exp_file in exp_files:
+        if not file_type_param_list(exp_file, param_list):
+            continue
+        elif restricted_files_present(exp_file):
+            continue
+        files.append(
+            '{host_url}{href}'.format(
+                host_url=request.host_url,
+                href=exp_file['href'],
+            )
+        )
+
     return Response(
         content_type='text/plain',
         body='\n'.join(files),
         content_disposition='attachment; filename="%s"' % 'files.txt'
     )
+
+
+def file_type_param_list(exp_file, param_list):
+    if 'files.file_type' in param_list:
+        if not exp_file['file_type'] in param_list.get('files.file_type', []):
+            return False
+    return True
+
+
+def restricted_files_present(exp_file):
+    if exp_file.get('restricted', False) is True:
+        return True
+    return False
 
 
 def lookup_column_value(value, path):
@@ -346,19 +357,18 @@ def lookup_column_value(value, path):
     # if we ended with an embedded object, show the @id
     if nodes and hasattr(nodes[0], '__contains__') and '@id' in nodes[0]:
         nodes = [node['@id'] for node in nodes]
-    seen = set()
     deduped_nodes = []
     for n in nodes:
         if isinstance(n, dict):
             n = str(n)
-        if n not in seen:
+        if n not in deduped_nodes:
             deduped_nodes.append(n)
     return u','.join(u'{}'.format(n) for n in deduped_nodes)
 
 
 def format_row(columns):
     """Format a list of text columns as a tab-separated byte string."""
-    return b'\t'.join([bytes_(c, 'utf-8') for c in columns]) + b'\r\n'
+    return b'\t'.join([bytes_(" ".join(c.strip('\t\n\r').split()), 'utf-8') for c in columns]) + b'\r\n'
 
 
 @view_config(route_name='report_download', request_method='GET')

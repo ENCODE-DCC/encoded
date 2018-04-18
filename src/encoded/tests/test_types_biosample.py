@@ -139,8 +139,8 @@ def test_biosample_summary(testapp,
                                             "biosample_type": "tissue",
                                             'treatments': [treatment['@id']]})
     res = testapp.get(biosample_1['@id']+'@@index-data')
-    assert res.json['object']['summary'] == \
-        'Homo sapiens liver tissue male child (10 days) treated with ethanol'
+    assert res.json['object']['summary'] == (
+        'Homo sapiens male child (10 days) liver tissue treated with ethanol')
 
 
 def test_biosample_summary_construct(testapp,
@@ -160,6 +160,6 @@ def test_biosample_summary_construct(testapp,
         'model_organism_sex': 'female',
         'organism': fly['@id']})
     res = testapp.get(biosample_1['@id']+'@@index-data')
-    assert res.json['object']['summary'] == \
-        'Drosophila melanogaster liver tissue ' + \
-        'female (10 days) stably expressing C-terminal eGFP-tagged ATF4 under daf-2 promoter'
+    assert res.json['object']['summary'] == (
+        'Drosophila melanogaster '
+        'female (10 days) liver tissue stably expressing C-terminal eGFP-tagged ATF4 under daf-2 promoter')

@@ -84,6 +84,7 @@ class Experiment(Dataset,
         'replicates.library.biosample',
         'replicates.library.biosample.organism',
         'replicates.library.biosample.treatments',
+        'replicates.library.biosample.applied_modifications',
         'replicates.library.biosample.donor.organism',
         'replicates.library.biosample.donor',
         'replicates.library.biosample.treatments',
@@ -445,6 +446,38 @@ class Experiment(Dataset,
             'group_by': 'assay_title',
             'label': 'Assay',
         },
+    }
+
+    summary_data = {
+        'y': {
+            'facets': [
+                'replicates.library.biosample.donor.organism.scientific_name',
+                'biosample_type',
+                'organ_slims',
+                'award.project',
+                'award.rfa',
+                'status',
+                'assembly',
+                'internal_status',
+                'audit_category',
+                'lab.title'
+            ],
+            'group_by': ['biosample_type', 'biosample_term_name'],
+            'label': 'Biosample',
+        },
+        'x': {
+            'facets': [
+                'assay_title',
+                'assay_slims',
+                'target.investigated_as',
+                'month_released',
+                'date_submitted',
+                'files.file_type',
+            ],
+            'group_by': 'assay_title',
+            'label': 'Assay',
+        },
+        'grouping': ['replication_type', 'status'],
     }
 
 

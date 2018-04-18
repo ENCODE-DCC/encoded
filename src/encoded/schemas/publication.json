@@ -8,10 +8,11 @@
     "identifyingProperties": ["uuid", "title"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/attribution" }
+        {"$ref": "mixins.json#/schema_version"},
+        {"$ref": "mixins.json#/uuid"},
+        {"$ref": "mixins.json#/submitted"},
+        {"$ref": "mixins.json#/attribution"},
+        {"$ref": "mixins.json#/standard_status"}
     ],
     "properties": {
         "schema_version": {
@@ -64,16 +65,6 @@
             "title": "Journal",
             "description": "The journal of the publication.",
             "type": "string"
-        },
-        "status": {
-            "title": "Status",
-            "type": "string",
-            "default": "in progress",
-            "enum" : [
-                "deleted",
-                "in progress",
-                "released"
-            ]
         },
         "identifiers": {
             "title": "Identifiers",

@@ -6,10 +6,11 @@ import * as globals from './globals';
 import { Breadcrumbs } from './navigation';
 import pubReferenceList from './reference';
 import { PickerActions } from './search';
-import StatusLabel from './statuslabel';
+import { StatusLabel } from './statuslabel';
 import { auditDecor } from './audit';
 
 
+/* eslint-disable react/prefer-stateless-function */
 class SoftwareComponent extends React.Component {
     render() {
         const { context } = this.props;
@@ -105,6 +106,7 @@ class SoftwareComponent extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 SoftwareComponent.propTypes = {
     context: PropTypes.object.isRequired, // Software object being rendered
@@ -167,6 +169,7 @@ SoftwareVersionTable.defaultProps = {
 };
 
 
+/* eslint-disable react/prefer-stateless-function */
 class ListingComponent extends React.Component {
     render() {
         const result = this.props.context;
@@ -198,6 +201,7 @@ class ListingComponent extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 ListingComponent.propTypes = {
     context: PropTypes.object.isRequired, // Software object being rendered as a search result.

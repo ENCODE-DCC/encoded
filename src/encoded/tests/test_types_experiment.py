@@ -9,7 +9,7 @@ def base_experiment(testapp, lab, award):
         'biosample_type': 'cell-free sample',
         'biosample_term_id': 'NTR:0000471',
         'biosample_term_name': 'none',
-        'status': 'started'
+        'status': 'in progress'
     }
     return testapp.post_json('/experiment', item, status=201).json['@graph'][0]
 

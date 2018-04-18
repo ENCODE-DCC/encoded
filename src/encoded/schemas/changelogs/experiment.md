@@ -1,5 +1,14 @@
 ## Changelog for experiment.json
 
+### Schema version 18
+
+* Replace started status with in progress.
+
+### Schema version 17
+
+* Replace the *status* field value *ready for review* by *submitted*. Make the *status* field editable by DCC personnel only.
+* Added *single cell* to biosample_type enums
+
 ### Schema version 16
 
 * Replace *immortalized cell line* with *cell line* in biosample_type enum

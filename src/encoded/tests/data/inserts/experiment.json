@@ -468,7 +468,7 @@
         "uuid": "7a9ac6d3-278f-4a0f-bc6b-8356ff10fa8b"
     },
     {
-        "_test": "treatment concentration series 2 started",
+        "_test": "treatment concentration series 2 in progress",
         "accession": "ENCSR002CON",
         "assay_term_name": "ChIP-seq",
         "award": "U54HG007004",
@@ -479,7 +479,7 @@
         "target": "/targets/TCF4-human",
         "description": "TCF4 ChIP-seq on A549 cell line treated with 80 nM dexamethasone for 8 hours.",
         "lab": "robert-waterston",
-        "status": "started",
+        "status": "in progress",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "4c1be4ea-22ae-4880-9002-03617e3dde92"
     },
@@ -759,7 +759,7 @@
         "biosample_term_id": "UBERON:0001891",
         "lab": "john-stamatoyannopoulos",
         "assay_term_name": "DNase-seq",
-        "status": "started",
+        "status": "in progress",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U54HG007010",
         "accession": "ENCSR706IDL",

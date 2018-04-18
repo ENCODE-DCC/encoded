@@ -15,7 +15,7 @@ import { Breadcrumbs } from './navigation';
 import { singleTreatment, AlternateAccession } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
-import StatusLabel from './statuslabel';
+import { StatusLabel } from './statuslabel';
 import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef } from './typeutils';
 
 
@@ -473,7 +473,7 @@ class ExperimentComponent extends React.Component {
                             </div>
                             {this.props.auditIndicators(context.audit, 'experiment-audit', { session: this.context.session })}
                         </div>
-                   </div>
+                    </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'experiment-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
@@ -830,6 +830,10 @@ ReplicateTable.propTypes = {
     replicationType: PropTypes.string, // Type of replicate so we can tell what's isongenic/anisogenic/whatnot
 };
 
+ReplicateTable.defaultProps = {
+    replicationType: '',
+};
+
 
 // Display a list of datasets related to the experiment
 class RelatedSeriesList extends React.Component {
@@ -940,6 +944,7 @@ class RelatedSeriesItem extends React.Component {
     render() {
         const { series, detailOpen } = this.props;
 
+        /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
         return (
             <span>
                 <a href={series['@id']} title={`View page for series dataset ${series.accession}`}>{series.accession}</a>&nbsp;
@@ -960,12 +965,17 @@ class RelatedSeriesItem extends React.Component {
                 </div>
             </span>
         );
+        /* eslint-enable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
     }
 }
 
 RelatedSeriesItem.propTypes = {
     series: PropTypes.object.isRequired, // Series object to display
     detailOpen: PropTypes.bool, // TRUE to open the series' detail tooltip
-    handleInfoClick: PropTypes.func, // Function to call to handle click in info icon
-    handleInfoHover: PropTypes.func, // Function to call when mouse enters or leaves info icon
+    handleInfoClick: PropTypes.func.isRequired, // Function to call to handle click in info icon
+    handleInfoHover: PropTypes.func.isRequired, // Function to call when mouse enters or leaves info icon
+};
+
+RelatedSeriesItem.defaultProps = {
+    detailOpen: false,
 };

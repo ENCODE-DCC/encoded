@@ -435,12 +435,12 @@ def main():
         '--test', action='store_const', default='demo', const='test', dest='role',
         help="Deploy to production AWS")
     parser.add_argument(
-        '--image-id', default='ami-1c1eff2f',
-        help="ubuntu/images/hvm-ssd/ubuntu-trusty-14.04-amd64-server-20151015")
+        '--image-id', default='ami-2133bc59',
+        help="https://us-west-2.console.aws.amazon.com/ec2/home?region=us-west-2#LaunchInstanceWizard:ami=ami-2133bc59")
     parser.add_argument(
-        '--instance-type', default='c4.4xlarge',
-        help="(defualts to c4.4xlarge for indexing) Switch to a smaller instance afterwards"
-        "(m4.xlarge or c4.xlarge)")
+        '--instance-type', default='c5.9xlarge',
+        help="(defualts to c5.9xlarge for indexing) Switch to a smaller instance afterwards"
+        "(m5.xlarge or c5.xlarge).")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
     parser.add_argument('--elasticsearch', default=None, help="Launch an Elasticsearch instance")
     parser.add_argument('--cluster-size', default=2, help="Elasticsearch cluster size")

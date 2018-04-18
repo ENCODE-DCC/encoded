@@ -1,7 +1,41 @@
 Changes
 =======
 
-67.0 (unreleased)
+68.0 (unreleased)
+-----------------
+01. ENCD-3965 Update to snovault 1.0.6 (#2209)
+02. ENCD-3934 fix plate location in library (#2208)
+03. ENCD-3944 Add organ slim shims & update ontology.json (#2201)
+04. ENCD-3934 Update to original 3934 commit (#2207)
+05. ENCD-3739 rewriting chip control read depth audit (#2188)
+06. ENCD-3775-started-to-in-progress (#2202)
+07. ENCD-3451 Summary page (#2200)
+08. ENCD-2992 Remove unused status (#2206)
+09. ENCD-3960 Fix batch download lookup column test (#2205)
+10. ENCD-3935 adding new biosample type "single cell" (#2193)
+11. ENCD-3898 adding an audit flagging "tagging" GM without characterization (#2187)
+12. ENCD-3886 Update deploy machine instance types (#2181)
+13. ENCD-3863 Eliminate repeated values in report TSV (#2136)
+14. ENCD-3938 Adding new Series type "AggregateSeries" (#2190)
+15. ENCD-3934 adding "barcode_details" to library schema (#2197)
+16. ENCD-3189 Traverse root using external_accession key from files (#2178)
+17. ENCD-3645 & ENCD-3716 Strip white spaces from values (#2194)
+18. ENCD-3716 Strip white spaces from values (#2194)
+19. ENCD-3773-pipeline-status (#2189)
+20. ENCD-3870-publication-status-mixin (#2191)
+21. ENCD-3780-remove-ready-for-review (#2192)
+22. ENCD-3772-remove-virtual (#2195)
+23. ENCD-1 Add treatments amount, duration to metadata.tsv
+24. ENCD-2845 Quick fix for biosamples with both the sexes
+25. ENCD-3868 - Adding unit tests for batch_download helpers
+26. ENCD-3823 & ENCD-3864 - Filter out restricted files and refactor batch_download
+27. ENCD-3864 - Filter out restricted files and refactor batch_download
+
+67.1 (released)
+---------------
+1. ENCD-3916 Fix for broken metadata queries (#2179)
+
+67.0 (released)
 -----------------
 01. ENCD-3915 Remove chromedriver lock from Travis (#2174)
 02. ENCD-3892 Update to snovault 1.0.5 (#2173)

@@ -131,7 +131,7 @@ class ItemEdit extends React.Component {
         let action;
         let fetchedForm;
         let type;
-        if (context['@type'][0].indexOf('Collection') !== -1) {  // add form
+        if (context['@type'][0].indexOf('Collection') !== -1) { // add form
             type = context['@type'][0].substr(0, context['@type'][0].length - 10);
             title = `${title}: Add`;
             action = context['@id'];
@@ -139,12 +139,16 @@ class ItemEdit extends React.Component {
                 <FetchedData>
                     <Param name="schemas" url="/profiles/" />
                     <JSONSchemaForm
-                        type={type} action={action} method="POST"
-                        onFinish={this.finished} showReadOnly={false} showSaveAndAdd
+                        type={type}
+                        action={action}
+                        method="POST"
+                        onFinish={this.finished}
+                        showReadOnly={false}
+                        showSaveAndAdd
                     />
                 </FetchedData>
             );
-        } else {  // edit form
+        } else { // edit form
             type = context['@type'][0];
             title = `Edit ${title}`;
             const id = this.props.context['@id'];
@@ -209,7 +213,7 @@ FetchedRelatedItems.defaultProps = {
 
 
 export const RelatedItems = (props) => {
-    const itemUrl = globals.encodedURI(`${props.url}&status=released&status=started&status=submitted&status=ready+for+review&status=in+progress`);
+    const itemUrl = globals.encodedURI(`${props.url}&status=released&status=submitted&status=in+progress`);
     const limitedUrl = `${itemUrl}&limit=${props.limit}`;
     const unlimitedUrl = `${itemUrl}&limit=all`;
     return (

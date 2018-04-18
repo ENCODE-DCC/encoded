@@ -11,7 +11,7 @@
         ],
         "lab": "joe-ecker",
         "award": "U54HG006997",
-        "status": "active"
+        "status": "released"
     },
     {
         "accession": "ENCPL000MEG",
@@ -29,7 +29,7 @@
         ],
         "lab": "joe-ecker",
         "award": "U54HG006997",
-        "status": "active"
+        "status": "released"
     },
     {
         "accession": "ENCPL002BIS",
@@ -43,7 +43,7 @@
         ],
         "lab": "joe-ecker",
         "award": "U54HG006997",
-        "status": "active"
+        "status": "released"
     },
     {
         "accession": "ENCPL003RNA",
@@ -63,7 +63,7 @@
             "bam-to-bigwig-tophat-step-v-1",
             "bam-to-bigwig-star-step-v-1"
         ],
-        "status": "active"
+        "status": "released"
     },
     {
         "accession": "ENCPL001GRV",
@@ -75,7 +75,7 @@
         "documents": [
             "brenton-graveley:Graveley_Group_RNA-Seq_Pipeline_02042013"
         ],
-        "status": "active",
+        "status": "released",
         "title": "Graveley RNA-seq Analysis",
         "lab": "brenton-graveley",
         "award": "U54HG007005",
@@ -92,7 +92,7 @@
         "documents": [
             "roderic-guigo:GeneQuantificationPipeline"
         ],
-        "status": "active",
+        "status": "released",
         "award": "U54HG007004",
         "lab": "thomas-gingeras",
         "title": "Gene Quantification Pipeline",
@@ -109,7 +109,7 @@
             "encode:ENCODE2_ChIP_seq_pipeline_diagram",
             "encode:ENCODE2ChIP-seqpipelinespecifications"
         ],
-        "status": "active",
+        "status": "released",
         "title": "ENCODE2 ChIP-seq pipeline",
         "award": "U54HG007004",
         "lab": "thomas-gingeras",
@@ -125,7 +125,7 @@
         "documents": [
              "gene-yeo:iCLIP_pipeline_ENCODE.pdf"
         ],
-        "status": "active",
+        "status": "released",
         "lab": "brenton-graveley",
         "award": "U54HG007005",
         "title": "iCLIP-seq Analysis Pipeline",
@@ -137,7 +137,7 @@
         "analysis_steps": [
             "fastqc-step-v-1"
         ],
-        "status": "active",
+        "status": "released",
         "lab": "brenton-graveley",
         "award": "U54HG007005",
         "title": "ENCODE File Validation",
@@ -149,7 +149,7 @@
         "analysis_steps": [
             "fastqc-step-v-1"
         ],
-        "status": "active",
+        "status": "released",
         "lab": "brenton-graveley",
         "award": "U54HG007005",
         "title": "Test ISO-seq pipeline",
@@ -161,7 +161,7 @@
         "analysis_steps": [
             "fastqc-step-v-1"
         ],
-        "status": "active",
+        "status": "released",
         "lab": "brenton-graveley",
         "award": "U54HG007005",
         "title": "Test STARR-seq pipeline",

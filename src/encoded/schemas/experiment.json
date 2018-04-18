@@ -41,6 +41,7 @@
                         "biosample_type": {
                             "enum": [                
                                 "cell line",
+                                "single cell",
                                 "in vitro differentiated cells",
                                 "induced pluripotent stem cell line",
                                 "primary cell",
@@ -55,6 +56,18 @@
         },
         "biosample_term_id":{
             "oneOf": [
+                { 
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "single cell"
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(CL|EFO|UBERON|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                },
                 { 
                     "properties": {
                         "biosample_type": {
@@ -177,7 +190,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "16"
+            "default": "18"
         },
         "date_submitted": {
             "title": "Date submitted" ,
@@ -200,6 +213,7 @@
             "type": "string",
             "enum" : [
                 "cell line",
+                "single cell",
                 "in vitro differentiated cells",
                 "cell-free sample",
                 "induced pluripotent stem cell line",

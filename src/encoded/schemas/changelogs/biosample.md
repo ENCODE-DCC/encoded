@@ -1,5 +1,9 @@
 ## Changelog for biosample.json
 
+### Minor changes since schema version 20
+
+* Added *single cell* to biosample_type enums
+
 ### Schema version 20
 
 * Replace *immortalized cell line* with *cell line* in biosample_type enum

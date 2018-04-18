@@ -12,7 +12,7 @@ import { DbxrefList } from './dbxref';
 import { DocumentsPanel, Document, DocumentPreview, CharacterizationDocuments } from './doc';
 import { RelatedItems } from './item';
 import { AlternateAccession } from './objectutils';
-import StatusLabel from './statuslabel';
+import { StatusLabel } from './statuslabel';
 
 
 const LotComponent = (props, reactContext) => {
@@ -84,10 +84,12 @@ const LotComponent = (props, reactContext) => {
                     <AlternateAccession altAcc={context.alternate_accessions} />
                     <h3>
                         {targetKeys.length ?
-                            <span>Antibody against {Object.keys(targets).map((target, i) => {
-                                const targetObj = targets[target];
-                                return <span key={i}>{i !== 0 ? ', ' : ''}<em>{targetObj.organism.scientific_name}</em>{` ${targetObj.label}`}</span>;
-                            })}</span>
+                            <span>
+                                Antibody against {Object.keys(targets).map((target, i) => {
+                                    const targetObj = targets[target];
+                                    return <span key={i}>{i !== 0 ? ', ' : ''}<em>{targetObj.organism.scientific_name}</em>{` ${targetObj.label}`}</span>;
+                                })}
+                            </span>
                         :
                             <span>Antibody</span>
                         }
@@ -207,7 +209,7 @@ const LotComponent = (props, reactContext) => {
             </Panel>
 
             <RelatedItems
-                title={'Experiments using this antibody'}
+                title="Experiments using this antibody"
                 url={`/search/?type=Experiment&replicates.antibody.accession=${context.accession}`}
                 Component={ExperimentTable}
             />
@@ -240,9 +242,9 @@ const AntibodyStatus = (props) => {
 
     // Sort the lot reviews by their status according to our predefined order
     // given in the statusOrder array we imported from globals.js.
-    const lotReviews = _.sortBy(context.lot_reviews, lotReview =>
-        globals.statusOrder.indexOf(lotReview.status) // Use underscore indexOf so that this works in IE8
-    );
+    const lotReviews = _.sortBy(context.lot_reviews, (lotReview =>
+        globals.statusOrder.indexOf(lotReview.status)
+    ));
 
     // Build antibody display object as a hierarchy: status=>organism=>biosample_term_name
     const statusTree = {};

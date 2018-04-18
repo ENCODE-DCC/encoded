@@ -57,8 +57,6 @@ STATUS_LEVEL = {
     'not submitted for review by lab': 100,
     'exempt from standards': 100,
     'not pursued': 100,
-    'virtual': 100,
-    'active': 100,
 
     # 'discouraged for use' public statuses
     'archived': 40,
@@ -67,9 +65,7 @@ STATUS_LEVEL = {
     # private statuses (visible for consortium members only)
     'in progress': 50,
     'pending dcc review': 50,
-    'started': 50,
     'submitted': 50,
-    'ready for review': 50,
     'uploading': 50,
     'upload failed': 50,
     'content error': 50,

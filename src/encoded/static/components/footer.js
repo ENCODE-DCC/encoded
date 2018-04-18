@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 
-/* eslint "jsx-a11y/href-no-hash": 0 */
 // Reworking the data triggers to use buttons doesn't seem worth it to avoid an eslint warning.
+/* eslint-disable jsx-a11y/anchor-is-valid, react/prefer-stateless-function */
 export default class Footer extends React.Component {
     render() {
         const session = this.context.session;
@@ -47,6 +47,7 @@ export default class Footer extends React.Component {
         );
     }
 }
+/* eslint-enable jsx-a11y/anchor-is-valid, react/prefer-stateless-function */
 
 Footer.contextTypes = {
     session: PropTypes.object,

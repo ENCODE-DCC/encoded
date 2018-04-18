@@ -33,6 +33,12 @@
             }
         }
     }
+
+    &.summary-facets {
+        padding: 0;
+        border: none;
+        border-radius: 0;
+    }
 }
 
 .sm-no-padding {
@@ -44,6 +50,16 @@
     margin-bottom: 5px;
     text-align: right;
     font-size: 0.9rem;
+
+    @at-root #{&}--summary {
+        margin-top: -30px;
+        margin-bottom: 30px;
+        text-align: left;
+
+        @media print {
+            display: none;
+        }
+    }
 }
 
 .clear-filters-control-matrix {

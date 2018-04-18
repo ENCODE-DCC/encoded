@@ -5,17 +5,18 @@ import { auditDecor } from './audit';
 import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { Document, DocumentsPanel, DocumentPreview, DocumentFile, CharacterizationDocuments } from './doc';
-import { GeneticModificationSummary } from './genetic_modification';
+import GeneticModificationSummary from './genetic_modification';
 import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
 import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession } from './objectutils';
 import pubReferenceList from './reference';
-import StatusLabel from './statuslabel';
+import { StatusLabel } from './statuslabel';
 import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable } from './typeutils';
 
 
+/* eslint-disable react/prefer-stateless-function */
 class BiosampleComponent extends React.Component {
     render() {
         const context = this.props.context;
@@ -391,6 +392,7 @@ class BiosampleComponent extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 BiosampleComponent.propTypes = {
     context: PropTypes.object.isRequired, // ENCODE biosample object to be rendered

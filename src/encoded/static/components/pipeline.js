@@ -11,7 +11,7 @@ import { Breadcrumbs } from './navigation';
 import { PanelLookup } from './objectutils';
 import { PickerActions } from './search';
 import { softwareVersionList } from './software';
-import StatusLabel from './statuslabel';
+import { StatusLabel } from './statuslabel';
 
 
 const stepNodePrefix = 'step'; // Prefix for step node IDs
@@ -82,12 +82,14 @@ function AnalysisStep(step, node) {
                     {step.output_file_types && step.output_file_types.length ?
                         <div data-test="outputtypes">
                             <dt>Output</dt>
-                            <dd>{step.output_file_types.map((type, i) =>
-                                <span key={i}>
-                                    {i > 0 ? <span>{','}<br /></span> : null}
-                                    {type}
-                                </span>
-                            )}</dd>
+                            <dd>
+                                {step.output_file_types.map((type, i) =>
+                                    <span key={i}>
+                                        {i > 0 ? <span>{','}<br /></span> : null}
+                                        {type}
+                                    </span>
+                                )}
+                            </dd>
                         </div>
                     : null}
 
@@ -108,12 +110,14 @@ function AnalysisStep(step, node) {
                     {step.qa_stats_generated && step.qa_stats_generated.length ?
                         <div data-test="qastats">
                             <dt>QA statistics</dt>
-                            <dd>{step.qa_stats_generated.map((stat, i) =>
-                                <span key={i}>
-                                    {i > 0 ? <span>{','}<br /></span> : null}
-                                    {stat}
-                                </span>
-                            )}</dd>
+                            <dd>
+                                {step.qa_stats_generated.map((stat, i) =>
+                                    <span key={i}>
+                                        {i > 0 ? <span>{','}<br /></span> : null}
+                                        {stat}
+                                    </span>
+                                )}
+                            </dd>
                         </div>
                     : null}
 
@@ -521,6 +525,7 @@ const StepDetailView = function StepDetailView(node) {
 globals.graphDetail.register(StepDetailView, 'Step');
 
 
+/* eslint-disable react/prefer-stateless-function */
 class ListingComponent extends React.Component {
     render() {
         const result = this.props.context;
@@ -583,6 +588,7 @@ class ListingComponent extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 ListingComponent.propTypes = {
     context: PropTypes.object.isRequired, // Search result object

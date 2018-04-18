@@ -26,6 +26,7 @@ const types = {
     dataset: { title: 'Datasets' },
     image: { title: 'Images' },
     matched_set: { title: 'Matched set series' },
+    aggregate_series: { title: 'Aggregate series' },
     organism_development_series: { title: 'Organism development series' },
     publication: { title: 'Publications' },
     page: { title: 'Web page' },
@@ -53,6 +54,7 @@ const datasetTypes = {
     ReplicationTimingSeries: types.replication_timing_series.title,
     TreatmentConcentrationSeries: types.treatment_concentration_series.title,
     TreatmentTimeSeries: types.treatment_time_series.title,
+    AggregateSeries: types.aggregate_series.title,
     UcscBrowserComposite: types.ucsc_browser_composite.title,
 };
 
@@ -84,6 +86,7 @@ export function Listing(reactProps) {
 }
 
 
+/* eslint-disable react/prefer-stateless-function */
 export class PickerActions extends React.Component {
     render() {
         if (this.context.actions && this.context.actions.length) {
@@ -98,9 +101,10 @@ export class PickerActions extends React.Component {
         return <span />;
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 PickerActions.propTypes = {
-    context: PropTypes.object,
+    context: PropTypes.object.isRequired,
 };
 
 PickerActions.contextTypes = {
@@ -108,6 +112,7 @@ PickerActions.contextTypes = {
 };
 
 
+/* eslint-disable react/prefer-stateless-function */
 class ItemComponent extends React.Component {
     render() {
         const result = this.props.context;
@@ -135,11 +140,12 @@ class ItemComponent extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 ItemComponent.propTypes = {
-    context: PropTypes.object, // Component to render in a listing view
-    auditIndicators: PropTypes.func, // Audit decorator function
-    auditDetail: PropTypes.func, // Audit decorator function
+    context: PropTypes.object.isRequired, // Component to render in a listing view
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
 };
 
 ItemComponent.contextTypes = {
@@ -223,7 +229,11 @@ class StatusIndicator extends React.Component {
 
 StatusIndicator.propTypes = {
     status: PropTypes.string,
-    terms: PropTypes.array,
+    terms: PropTypes.array.isRequired,
+};
+
+StatusIndicator.defaultProps = {
+    status: '',
 };
 
 
@@ -244,11 +254,12 @@ const StatusIndicators = (props) => {
 };
 
 StatusIndicators.propTypes = {
-    targetTree: PropTypes.object,
-    target: PropTypes.string,
+    targetTree: PropTypes.object.isRequired,
+    target: PropTypes.string.isRequired,
 };
 
 
+/* eslint-disable react/prefer-stateless-function */
 class AntibodyComponent extends React.Component {
     render() {
         const result = this.props.context;
@@ -312,11 +323,12 @@ class AntibodyComponent extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 AntibodyComponent.propTypes = {
-    context: PropTypes.object, // Antibody search results
-    auditIndicators: PropTypes.func, // Audit decorator function
-    auditDetail: PropTypes.func, // Audit decorator function
+    context: PropTypes.object.isRequired, // Antibody search results
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
 };
 
 AntibodyComponent.contextTypes = {
@@ -328,6 +340,7 @@ const Antibody = auditDecor(AntibodyComponent);
 globals.listingViews.register(Antibody, 'AntibodyLot');
 
 
+/* eslint-disable react/prefer-stateless-function */
 class BiosampleComponent extends React.Component {
     render() {
         const result = this.props.context;
@@ -404,11 +417,12 @@ class BiosampleComponent extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 BiosampleComponent.propTypes = {
-    context: PropTypes.object, // Biosample search results
-    auditIndicators: PropTypes.func, // Audit decorator function
-    auditDetail: PropTypes.func, // Audit decorator function
+    context: PropTypes.object.isRequired, // Biosample search results
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
 };
 
 BiosampleComponent.contextTypes = {
@@ -504,9 +518,9 @@ class ExperimentComponent extends React.Component {
 }
 
 ExperimentComponent.propTypes = {
-    context: PropTypes.object, // Experiment search results
-    auditIndicators: PropTypes.func, // Audit decorator function
-    auditDetail: PropTypes.func,
+    context: PropTypes.object.isRequired, // Experiment search results
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired,
 };
 
 ExperimentComponent.contextTypes = {
@@ -518,6 +532,7 @@ const Experiment = auditDecor(ExperimentComponent);
 globals.listingViews.register(Experiment, 'Experiment');
 
 
+/* eslint-disable react/prefer-stateless-function */
 class DatasetComponent extends React.Component {
     render() {
         const result = this.props.context;
@@ -611,11 +626,12 @@ class DatasetComponent extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 DatasetComponent.propTypes = {
-    context: PropTypes.object, // Dataset search results
-    auditIndicators: PropTypes.func, // Audit decorator function
-    auditDetail: PropTypes.func, // Audit decorator function
+    context: PropTypes.object.isRequired, // Dataset search results
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
 };
 
 DatasetComponent.contextTypes = {
@@ -627,6 +643,7 @@ const Dataset = auditDecor(DatasetComponent);
 globals.listingViews.register(Dataset, 'Dataset');
 
 
+/* eslint-disable react/prefer-stateless-function */
 class TargetComponent extends React.Component {
     render() {
         const result = this.props.context;
@@ -656,11 +673,12 @@ class TargetComponent extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 TargetComponent.propTypes = {
-    context: PropTypes.object, // Target search results
-    auditIndicators: PropTypes.func, // Audit decorator function
-    auditDetail: PropTypes.func, // Audit decorator function
+    context: PropTypes.object.isRequired, // Target search results
+    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
+    auditDetail: PropTypes.func.isRequired, // Audit decorator function
 };
 
 TargetComponent.contextTypes = {
@@ -694,7 +712,7 @@ const Image = (props) => {
 };
 
 Image.propTypes = {
-    context: PropTypes.object, // Image search results
+    context: PropTypes.object.isRequired, // Image search results
 };
 
 globals.listingViews.register(Image, 'Image');
@@ -831,14 +849,20 @@ const Term = (props) => {
 };
 
 Term.propTypes = {
-    filters: PropTypes.array, // Search result filters
-    term: PropTypes.object, // One element of the terms array from a single facet
+    filters: PropTypes.array.isRequired, // Search result filters
+    term: PropTypes.object.isRequired, // One element of the terms array from a single facet
     title: PropTypes.string, // Optional override for facet title
-    facet: PropTypes.object, // Search result facet object containing the given term
-    total: PropTypes.number, // Total number of items this term includes
+    facet: PropTypes.object.isRequired, // Search result facet object containing the given term
+    total: PropTypes.number.isRequired, // Total number of items this term includes
     canDeselect: PropTypes.bool,
-    searchBase: PropTypes.string, // Base URI for the search
+    searchBase: PropTypes.string.isRequired, // Base URI for the search
     onFilter: PropTypes.func,
+};
+
+Term.defaultProps = {
+    title: '',
+    canDeselect: true,
+    onFilter: null,
 };
 
 
@@ -856,9 +880,9 @@ const TypeTerm = (props) => {
 };
 
 TypeTerm.propTypes = {
-    term: PropTypes.object,
-    filters: PropTypes.array,
-    total: PropTypes.number,
+    term: PropTypes.object.isRequired,
+    filters: PropTypes.array.isRequired,
+    total: PropTypes.number.isRequired,
 };
 
 
@@ -971,9 +995,8 @@ class Facet extends React.Component {
 }
 
 Facet.propTypes = {
-    facet: PropTypes.object,
-    filters: PropTypes.array,
-    // negationFilters: PropTypes.array, // Array of filter terms used for negating a search term; passed through spread operator
+    facet: PropTypes.object.isRequired,
+    filters: PropTypes.array.isRequired,
 };
 
 Facet.defaultProps = {
@@ -1027,10 +1050,13 @@ export class TextFilter extends React.Component {
         return (
             <div className="facet">
                 <input
-                    ref="input" type="search" className="form-control search-query"
+                    type="search"
+                    className="form-control search-query"
                     placeholder="Enter search term(s)"
                     defaultValue={this.getValue(this.props)}
-                    onChange={TextFilter.onChange} onBlur={this.onBlur} onKeyDown={this.onKeyDown}
+                    onChange={TextFilter.onChange}
+                    onBlur={this.onBlur}
+                    onKeyDown={this.onKeyDown}
                 />
             </div>
         );
@@ -1038,16 +1064,17 @@ export class TextFilter extends React.Component {
 }
 
 TextFilter.propTypes = {
-    filters: PropTypes.array,
-    searchBase: PropTypes.string,
-    onChange: PropTypes.func,
+    filters: PropTypes.array.isRequired,
+    searchBase: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
 };
 
 
 // Displays the entire list of facets. It contains a number of <Facet> cmoponents.
+/* eslint-disable react/prefer-stateless-function */
 export class FacetList extends React.Component {
     render() {
-        const { context, facets, filters, mode, orientation, hideTextFilter } = this.props;
+        const { context, facets, filters, mode, orientation, hideTextFilter, addClasses } = this.props;
 
         // Get "normal" facets, meaning non-audit facets.
         const normalFacets = facets.filter(facet => facet.field.substring(0, 6) !== 'audit.');
@@ -1092,7 +1119,7 @@ export class FacetList extends React.Component {
         const negationFilters = filters.filter(filter => filter.field.charAt(filter.field.length - 1) === '!');
 
         return (
-            <div className="box facets">
+            <div className={`box facets${addClasses ? ` ${addClasses}` : ''}`}>
                 <div className={`orientation${this.props.orientation === 'horizontal' ? ' horizontal' : ''}`}>
                     {clearButton ?
                         <div className="clear-filters-control">
@@ -1120,21 +1147,27 @@ export class FacetList extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 FacetList.propTypes = {
     context: PropTypes.object,
     facets: PropTypes.oneOfType([
         PropTypes.array,
         PropTypes.object,
-    ]),
-    filters: PropTypes.array,
+    ]).isRequired,
+    filters: PropTypes.array.isRequired,
     mode: PropTypes.string,
     orientation: PropTypes.string,
     hideTextFilter: PropTypes.bool,
+    addClasses: PropTypes.string, // CSS classes to use if the default isn't needed.
 };
 
 FacetList.defaultProps = {
+    context: null,
+    mode: '',
     orientation: 'vertical',
+    hideTextFilter: false,
+    addClasses: '',
 };
 
 FacetList.contextTypes = {
@@ -1144,15 +1177,20 @@ FacetList.contextTypes = {
 
 export const BatchDownload = (props) => {
     const link = props.context.batch_download;
+    /* eslint-disable jsx-a11y/anchor-is-valid */
     return (
         <Modal actuator={<button className="btn btn-info btn-sm">Download</button>}>
             <ModalHeader title="Using batch download" closeModal />
             <ModalBody>
-                <p>Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
-                The first line of the file will always be the URL to download the metadata file. <br />
-                Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.</p><br />
-                <p>The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
-                The following command using cURL can be used to download all the files in the list:</p><br />
+                <p>
+                    Click the &ldquo;Download&rdquo; button below to download a &ldquo;files.txt&rdquo; file that contains a list of URLs to a file containing all the experimental metadata and links to download the file.
+                    The first line of the file will always be the URL to download the metadata file. <br />
+                    Further description of the contents of the metadata file are described in the <a href="/help/batch-download/">Batch Download help doc</a>.
+                </p><br />
+                <p>
+                    The &ldquo;files.txt&rdquo; file can be copied to any server.<br />
+                    The following command using cURL can be used to download all the files in the list:
+                </p><br />
                 <code>xargs -n 1 curl -O -L &lt; files.txt</code><br />
             </ModalBody>
             <ModalFooter
@@ -1162,10 +1200,11 @@ export const BatchDownload = (props) => {
             />
         </Modal>
     );
+    /* eslint-enable jsx-a11y/anchor-is-valid */
 };
 
 BatchDownload.propTypes = {
-    context: PropTypes.object,
+    context: PropTypes.object.isRequired,
 };
 
 
@@ -1215,7 +1254,7 @@ export class ResultTable extends React.Component {
         this.props.onChange(searchStr);
         e.stopPropagation();
         e.preventDefault();
-        this.setState({ selectedTab: 'listpane' });  // Always return to listpane so that browser can rerender
+        this.setState({ selectedTab: 'listpane' }); // Always return to listpane so that browser can rerender
     }
 
     // Called when new value chosen from assembly dropdown.
@@ -1244,7 +1283,7 @@ export class ResultTable extends React.Component {
         let browseAllFiles = true; // True to pass all files to browser
         let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
         let browserDatasets = []; // Datasets will be used to get vis_json blobs
-        let browserFiles = [];   // Files to pass to ResultsBrowser component
+        let browserFiles = []; // Files to pass to ResultsBrowser component
         let assemblyChooser;
 
         const facets = context.facets.map((facet) => {
@@ -1282,6 +1321,7 @@ export class ResultTable extends React.Component {
         const view2svg = {
             table: 'table',
             th: 'matrix',
+            summary: 'summary',
         };
 
         // Check whether the search query qualifies for a genome browser display. Start by counting
@@ -1321,7 +1361,7 @@ export class ResultTable extends React.Component {
                 }
             } else {
                 browseAllFiles = false;
-                browserAvail = false;    // NEW: Limit browser option to type=File&dataset=... only!
+                browserAvail = false; // NEW: Limit browser option to type=File&dataset=... only!
             }
         }
 
@@ -1351,12 +1391,17 @@ export class ResultTable extends React.Component {
         return (
             <div>
                 <div className="row">
-                    {facets.length ? <div className="col-sm-5 col-md-4 col-lg-3">
-                        <FacetList
-                            {...this.props} facets={facets} filters={filters}
-                            searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`} onFilter={this.onFilter}
-                        />
-                    </div> : ''}
+                    {facets.length ?
+                        <div className="col-sm-5 col-md-4 col-lg-3">
+                            <FacetList
+                                {...this.props}
+                                facets={facets}
+                                filters={filters}
+                                searchBase={searchBase ? `${searchBase}&` : `${searchBase}?`}
+                                onFilter={this.onFilter}
+                            />
+                        </div>
+                    : ''}
                     <div className="col-sm-7 col-md-8 col-lg-9">
 
                         {context.notification === 'Success' ?
@@ -1373,7 +1418,8 @@ export class ResultTable extends React.Component {
 
                                     {total > results.length && searchBase.indexOf('limit=all') === -1 ?
                                         <a
-                                            rel="nofollow" className="btn btn-info btn-sm"
+                                            rel="nofollow"
+                                            className="btn btn-info btn-sm"
                                             href={searchBase ? `${searchBase}&limit=all` : '?limit=all'}
                                             onClick={this.onFilter}
                                         >
@@ -1431,17 +1477,19 @@ export class ResultTable extends React.Component {
 }
 
 ResultTable.propTypes = {
-    context: PropTypes.object,
+    context: PropTypes.object.isRequired,
     actions: PropTypes.array,
     restrictions: PropTypes.object,
     searchBase: PropTypes.string,
-    onChange: PropTypes.func,
+    onChange: PropTypes.func.isRequired,
     currentRegion: PropTypes.func,
 };
 
 ResultTable.defaultProps = {
+    actions: [],
     restrictions: {},
     searchBase: '',
+    currentRegion: null,
 };
 
 ResultTable.childContextTypes = {
@@ -1449,7 +1497,7 @@ ResultTable.childContextTypes = {
 };
 
 ResultTable.contextTypes = {
-    session: React.PropTypes.object,
+    session: PropTypes.object,
 };
 
 
@@ -1475,13 +1523,17 @@ ResultTableList.propTypes = {
     tabbed: PropTypes.bool, // True if table is in a tab
 };
 
+ResultTableList.defaultProps = {
+    tabbed: false,
+};
+
 
 // Display a local genome browser in the ResultTable where search results would normally go. This
 // only gets displayed if the query string contains only one type and it's "File."
 const ResultBrowser = (props) => {
     let visUrl = '';
     const datasetCount = props.datasets.length;
-    let region;  // optionally make a persistent region
+    let region; // optionally make a persistent region
     const lastRegion = props.currentRegion();
     if (lastRegion && lastRegion.assembly === props.assembly) {
         region = lastRegion.region;
@@ -1517,11 +1569,16 @@ const ResultBrowser = (props) => {
 };
 
 ResultBrowser.propTypes = {
-    files: PropTypes.array, // Array of files whose browser we're rendering
-    assembly: PropTypes.string, // Filter `files` by this assembly
-    datasets: PropTypes.array, // One or more '/dataset/ENCSRnnnXXX/' that files belong to
+    files: PropTypes.array.isRequired, // Array of files whose browser we're rendering
+    assembly: PropTypes.string.isRequired, // Filter `files` by this assembly
+    datasets: PropTypes.array.isRequired, // One or more '/dataset/ENCSRnnnXXX/' that files belong to
     limitFiles: PropTypes.bool, // True to limit browsing to 20 files
     currentRegion: PropTypes.func,
+};
+
+ResultBrowser.defaultProps = {
+    limitFiles: true,
+    currentRegion: null,
 };
 
 
@@ -1539,9 +1596,13 @@ const AssemblyChooser = (props) => {
 };
 
 AssemblyChooser.propTypes = {
-    assemblies: PropTypes.array, // Array of assemblies to include in the dropdown
+    assemblies: PropTypes.array.isRequired, // Array of assemblies to include in the dropdown
     currentAssembly: PropTypes.string, // Currently selected assembly
-    assemblyChange: PropTypes.func, // Function to call when the user chooses a new assembly
+    assemblyChange: PropTypes.func.isRequired, // Function to call when the user chooses a new assembly
+};
+
+AssemblyChooser.defaultProps = {
+    currentAssembly: 'default',
 };
 
 
@@ -1582,7 +1643,7 @@ class Search extends React.Component {
 }
 
 Search.propTypes = {
-    context: PropTypes.object,
+    context: PropTypes.object.isRequired,
 };
 
 Search.contextTypes = {

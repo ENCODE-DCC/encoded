@@ -43,6 +43,7 @@ HTTPNotFound.propTypes = {
 globals.contentViews.register(HTTPNotFound, 'HTTPNotFound');
 
 
+/* eslint-disable react/prefer-stateless-function */
 class HTTPForbidden extends React.Component {
     render() {
         const context = this.props.context;
@@ -61,6 +62,8 @@ class HTTPForbidden extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
+
 
 HTTPForbidden.propTypes = {
     context: PropTypes.object.isRequired,
@@ -84,8 +87,10 @@ const LoginDenied = (props) => {
                     <p>The email address you have provided us does not match any user of the ENCODE Portal.</p>
                     <p>As you know, we have recently changed our login system.</p>
 
-                    <p>The ENCODE Portal now uses a variety of common identity providers to verify you are who say you are.<br />
-                        The email address you use as your &ldquot;id&rdquot; must match exactly the email address in our system.</p>
+                    <p>
+                        The ENCODE Portal now uses a variety of common identity providers to verify you are who say you are.<br />
+                        The email address you use as your &ldquot;id&rdquot; must match exactly the email address in our system.
+                    </p>
 
                     <p>Please be aware that login access (to unreleased data) is available only to ENCODE Consortium members.</p>
                     <p>Please contact <a href="mailto:encode-help@lists.stanford.edu">Help Desk</a> if you need an account, or if your old account is not working.</p>

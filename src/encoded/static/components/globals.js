@@ -1,6 +1,7 @@
 import _ from 'underscore';
 import ga from 'google-analytics';
 import Registry from '../libs/registry';
+import DataColors from './datacolors';
 
 // Item pages
 export const contentViews = new Registry();
@@ -128,12 +129,13 @@ export function atIdToAccession(atId) {
 }
 
 
-/* eslint no-extend-native: ["error", { "exceptions": ["String"] }]*/
 // Make the first character of the given string uppercase. Can be less fiddly than CSS text-transform.
 // http://stackoverflow.com/questions/1026069/capitalize-the-first-letter-of-string-in-javascript#answer-1026087
+/* eslint-disable no-extend-native */
 String.prototype.uppercaseFirstChar = function uppercaseFirstChar() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 };
+/* eslint-enable no-extend-native */
 
 // Convert a string to a 32-bit hash.
 // http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
@@ -282,3 +284,39 @@ export const dbxrefPrefixMap = {
     FlyBase: 'http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context=',
     WormBase: 'http://www.wormbase.org/species/c_elegans/strain/',
 };
+
+
+// Keep lists of currently known project and biosample_type. As new project and biosample_type
+// enter the system, these lists must be updated. Used mostly to keep chart and matrix colors
+// consistent.
+export const projectList = [
+    'ENCODE',
+    'Roadmap',
+    'modENCODE',
+    'modERN',
+    'GGR',
+];
+
+export const biosampleTypeList = [
+    'cell line',
+    'tissue',
+    'primary cell',
+    'whole organisms',
+    'stem cell',
+    'in vitro differentiated cells',
+    'induced pluripotent stem cell line',
+    'single cell',
+    'cell-free sample',
+];
+
+export const replicateTypeList = [
+    'unreplicated',
+    'isogenic',
+    'anisogenic',
+];
+
+
+// Make `project` and `biosample_type` color mappings for downstream modules to use.
+export const projectColors = new DataColors(projectList);
+export const biosampleTypeColors = new DataColors(biosampleTypeList);
+export const replicateTypeColors = new DataColors(replicateTypeList);

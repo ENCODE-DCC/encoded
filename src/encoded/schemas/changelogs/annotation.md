@@ -1,5 +1,14 @@
 ## Changelog for annotation.json
 
+
+### Schema version 18
+
+* Replace started status with in progress.
+
+### Minor changes since schema version 17
+
+* Added *single cell* to biosample_type enums
+
 ### Schema version 17
 
 * Replace *immortalized cell line* with *cell line* in biosample_type enum

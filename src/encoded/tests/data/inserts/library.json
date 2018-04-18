@@ -734,5 +734,27 @@
         "uuid": "bbadf7f4-40ca-4440-b6c2-3003f98b49fe",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "award": "U54HG007010"
+    },
+    {
+        "_test": "single cell barcodes",
+        "accession": "ENCLB001SCL",
+        "strand_specificity": false,
+        "biosample": "ENCBS804RUL",
+        "lab": "john-stamatoyannopoulos",
+        "status": "released",
+        "barcode_details": [
+            {
+                "barcode": "ABCDEFG1"
+            },
+            {
+                "barcode": "ABCDEFG12",
+                "plate_id": "plate_1",
+                "plate_location": "A11"
+            }
+        ],
+        "nucleic_acid_term_name": "DNA",
+        "uuid": "bbadf7f4-41ca-4410-b6c2-3003f98b41fe",
+        "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+        "award": "U54HG007010"
     }
 ]

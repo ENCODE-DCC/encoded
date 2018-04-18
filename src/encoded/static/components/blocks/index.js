@@ -9,5 +9,5 @@ export {
     FallbackBlockEdit,
     RichTextBlockView,
     ItemBlockView,
-    SearchBlockEdit
+    SearchBlockEdit,
 };

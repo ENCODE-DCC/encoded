@@ -116,9 +116,6 @@ class Item(snovault.Item):
         'current': ALLOW_CURRENT,
         'disabled': ONLY_ADMIN_VIEW,
 
-        # file
-        'obsolete': ONLY_ADMIN_VIEW,
-
         # antibody_characterization
         'compliant': ALLOW_CURRENT,
         'not compliant': ALLOW_CURRENT,
@@ -134,8 +131,6 @@ class Item(snovault.Item):
         'revoked': ALLOW_CURRENT,
         'in review': ALLOW_CURRENT_AND_SUBMITTER_EDIT,
 
-        # pipeline
-        'active': ALLOW_CURRENT,
         'archived': ALLOW_CURRENT,
     }
 

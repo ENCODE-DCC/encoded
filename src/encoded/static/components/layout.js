@@ -159,6 +159,7 @@ class Block extends React.Component {
         this.context.remove(this.props.value, this.props.pos);
     }
 
+    /* eslint-disable jsx-a11y/anchor-is-valid */
     renderToolbar() {
         const modal = (<BlockEditModal
             ref={(c) => { this.modal = c; }}
@@ -173,12 +174,16 @@ class Block extends React.Component {
                 {modal}
                 {' '}
                 <button
-                    type="button" className="remove"
+                    type="button"
+                    className="remove"
                     onClick={this.remove}
-                ><i className="icon icon-trash-o" /></button>
+                >
+                    <i className="icon icon-trash-o" />
+                </button>
             </div>
         );
     }
+    /* eslint-enable jsx-a11y/anchor-is-valid */
 
     render() {
         const block = this.props.value;
@@ -204,22 +209,24 @@ class Block extends React.Component {
             classes[`drop-${this.context.dst_quad}`] = true;
         }
         const classStr = Object.keys(classes).join(' ');
-        return (<div
-            className={`${block['@type'][0]} ${classStr}`}
-            data-pos={this.props.pos}
-            draggable={this.context.editable && !this.state.focused}
-            onDragStart={this.dragStart}
-            onDragOver={this.dragOver}
-            onDragEnd={this.context.dragEnd}
-            onMouseEnter={this.mouseEnter}
-            onMouseLeave={this.mouseLeave}
-            onFocus={this.focus}
-            onBlur={this.blur}
-            ref={(comp) => { this.domNode = comp; }}
-        >
-            {this.context.editable ? this.renderToolbar() : ''}
-            <BlockView value={block} onChange={this.onChange} />
-        </div>);
+        return (
+            <div
+                className={`${block['@type'][0]} ${classStr}`}
+                data-pos={this.props.pos}
+                draggable={this.context.editable && !this.state.focused}
+                onDragStart={this.dragStart}
+                onDragOver={this.dragOver}
+                onDragEnd={this.context.dragEnd}
+                onMouseEnter={this.mouseEnter}
+                onMouseLeave={this.mouseLeave}
+                onFocus={this.focus}
+                onBlur={this.blur}
+                ref={(comp) => { this.domNode = comp; }}
+            >
+                {this.context.editable ? this.renderToolbar() : ''}
+                <BlockView value={block} onChange={this.onChange} />
+            </div>
+        );
     }
 }
 
@@ -264,7 +271,9 @@ class BlockAddButton extends React.Component {
                 <button
                     className="btn btn-primary navbar-btn btn-sm"
                     onClick={BlockAddButton.click}
-                    draggable="true" onDragStart={this.dragStart} onDragEnd={this.context.dragEnd}
+                    draggable="true"
+                    onDragStart={this.dragStart}
+                    onDragEnd={this.context.dragEnd}
                     title={this.props.blockprops.label}
                 >
                     <span className={classes} />
@@ -309,25 +318,26 @@ class LayoutToolbar extends React.Component {
     }
 
     render() {
+        /* eslint-disable jsx-a11y/anchor-is-valid */
         const blocks = globals.blocks.getAll();
         const toolbar = (
             <div className={'layout-toolbar navbar navbar-default'} ref={(comp) => { this.domNode = comp; }}>
-              <div className="container-fluid">
-                <div className="navbar-left">
-                    {Object.keys(blocks).map((b) => {
-                        const blockprops = blocks[b];
-                        if (blockprops.edit !== null) {
-                            return <BlockAddButton key={b} blocktype={b} blockprops={blocks[b]} />;
-                        }
-                        return null;
-                    })}
+                <div className="container-fluid">
+                    <div className="navbar-left">
+                        {Object.keys(blocks).map((b) => {
+                            const blockprops = blocks[b];
+                            if (blockprops.edit !== null) {
+                                return <BlockAddButton key={b} blocktype={b} blockprops={blocks[b]} />;
+                            }
+                            return null;
+                        })}
+                    </div>
+                    <div className="navbar-right">
+                        <a href="" className="btn btn-default navbar-btn">Cancel</a>
+                        {' '}
+                        <button onClick={this.context.onTriggerSave} disabled={!this.context.canSave()} className="btn btn-success navbar-btn">Save</button>
+                    </div>
                 </div>
-                <div className="navbar-right">
-                    <a href="" className="btn btn-default navbar-btn">Cancel</a>
-                    {' '}
-                    <button onClick={this.context.onTriggerSave} disabled={!this.context.canSave()} className="btn btn-success navbar-btn">Save</button>
-                </div>
-              </div>
             </div>
         );
         if (this.state.fixed) {
@@ -341,6 +351,7 @@ class LayoutToolbar extends React.Component {
             );
         }
         return toolbar;
+        /* eslint-enable jsx-a11y/anchor-is-valid */
     }
 }
 
@@ -380,7 +391,8 @@ class Col extends React.Component {
         const classStr = Object.keys(classes).join(' ');
         return (
             <div
-                className={classStr} onDragOver={this.dragOver}
+                className={classStr}
+                onDragOver={this.dragOver}
                 ref={(comp) => { this.domNode = comp; }}
             >
                 {blocks.map((blockId, k) => this.renderBlock(blockId, k))}
@@ -390,9 +402,13 @@ class Col extends React.Component {
 }
 
 Col.propTypes = {
-    pos: PropTypes.array,
+    pos: PropTypes.array.isRequired,
     className: PropTypes.string,
-    value: PropTypes.any,
+    value: PropTypes.any.isRequired,
+};
+
+Col.defaultProps = {
+    className: '',
 };
 
 Col.contextTypes = LAYOUT_CONTEXT;
@@ -430,12 +446,15 @@ class Row extends React.Component {
         }
         return (
             <div
-                className={classStr} onDragOver={this.dragOver}
+                className={classStr}
+                onDragOver={this.dragOver}
                 ref={(comp) => { this.domNode = comp; }}
             >
                 {cols.map((col, j) => <Col
-                    value={col} className={col.className || colClass}
-                    key={j} pos={this.props.pos.concat([j])}
+                    value={col}
+                    className={col.className || colClass}
+                    key={j}
+                    pos={this.props.pos.concat([j])}
                 />)}
             </div>
         );
@@ -443,8 +462,8 @@ class Row extends React.Component {
 }
 
 Row.propTypes = {
-    pos: PropTypes.array,
-    value: PropTypes.any,
+    pos: PropTypes.array.isRequired,
+    value: PropTypes.any.isRequired,
 };
 
 Row.contextTypes = LAYOUT_CONTEXT;
@@ -728,9 +747,9 @@ export default class Layout extends React.Component {
 
     filter(objs) {
         return objs.filter((obj) => {
-            if (obj === 'CUT') {  // block
+            if (obj === 'CUT') { // block
                 return false;
-            } else if (obj.blocks !== undefined) {  // col
+            } else if (obj.blocks !== undefined) { // col
                 delete obj.droptarget;
                 obj.blocks = this.filter(obj.blocks);
                 if (obj.blocks.length === 1 && obj.blocks[0].cols !== undefined && obj.blocks[0].cols.length === 1) {
@@ -785,6 +804,5 @@ Layout.childContextTypes = LAYOUT_CONTEXT;
 
 Layout.defaultProps = {
     editable: false,
-    pos: [],
+    onChange: null,
 };
-

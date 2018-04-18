@@ -1,5 +1,9 @@
 ## Changelog for publication_data.json
 
+### Schema version 14
+
+* Replace started status with in progress.
+
 ### Schema version 13
 
 * Remove *proposed* from status enum (dataset mixin).

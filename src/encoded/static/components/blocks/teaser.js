@@ -127,9 +127,11 @@ RichEditor.childContextTypes = {
 
 
 const displayModeSelect = (
-    <div><select>
-        <option value="">default</option>
-    </select></div>
+    <div>
+        <select>
+            <option value="">default</option>
+        </select>
+    </div>
 );
 const imagePicker = <ObjectPicker searchBase={'?mode=picker&type=image'} />;
 

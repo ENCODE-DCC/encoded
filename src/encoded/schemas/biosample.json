@@ -32,12 +32,24 @@
             "comment": "The phase property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "properties": {
                 "biosample_type": {
-                    "enum": ["primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
                 }
             }
         },
         "biosample_term_id":{
             "oneOf": [
+                { 
+                    "properties": {
+                        "biosample_type": {
+                            "enum" : [
+                                "single cell"
+                            ]
+                        },
+                        "biosample_term_id":{
+                            "pattern": "^(CL|EFO|UBERON|NTR):[0-9]{2,8}$"
+                        }
+                    }
+                },
                 { 
                     "properties": {
                         "biosample_type": {
@@ -164,7 +176,7 @@
             "comment": "The culture_harvest_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "properties": {
                 "biosample_type": {
-                    "enum": ["primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
                 }
             }
         },
@@ -172,7 +184,7 @@
             "comment": "The culture_start_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
             "properties": {
                 "biosample_type": {
-                    "enum": ["primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
                 }
             }
         },
@@ -248,7 +260,8 @@
                                         "tissue",
                                         "in vitro differentiated cells",
                                         "induced pluripotent stem cell line",
-                                        "stem cell"
+                                        "stem cell",
+                                        "single cell"
                                     ]
                                 },
                                 "organism": {

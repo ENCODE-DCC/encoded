@@ -1,7 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import _ from 'underscore';
-import url from 'url';
 
 // Import test component and data.
 import Experiment from '../experiment';

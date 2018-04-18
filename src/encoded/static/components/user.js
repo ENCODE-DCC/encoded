@@ -180,12 +180,14 @@ class AccessKeyActions extends React.Component {
     }
 
     render() {
+        /* eslint-disable jsx-a11y/anchor-is-valid */
         return (
             <td>
                 <a href="" onClick={this.doActionReset}>reset</a>
                 {' '}<a href="" onClick={this.doActionDelete}>delete</a>
             </td>
         );
+        /* eslint-enable jsx-a11y/anchor-is-valid */
     }
 }
 

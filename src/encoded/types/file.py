@@ -150,6 +150,9 @@ class File(Item):
             # Ensure no files have multiple reverse paired_with
             if 'paired_with' in properties:
                 keys.setdefault('file:paired_with', []).append(properties['paired_with'])
+            if 'external_accession' in properties:
+                keys.setdefault('external_accession', []).append(
+                    properties['external_accession'])
         return keys
 
     @calculated_property(schema={
