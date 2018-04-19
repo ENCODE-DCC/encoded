@@ -8,9 +8,14 @@ describe('Statuses', () => {
             expect(statuses).toHaveLength(3);
             statuses = getObjectStatuses('Experiment', 'consortium');
             expect(statuses).toHaveLength(6);
-            statuses = getObjectStatuses('Experiment', 'admin');
+            statuses = getObjectStatuses('Experiment', 'administrator');
             expect(statuses).toHaveLength(8);
             statuses = getObjectStatuses('Experiment');
+            expect(statuses).toHaveLength(8);
+
+            statuses = getObjectStatuses('AntibodyCharacterization', 'external');
+            expect(statuses).toHaveLength(5);
+            statuses = getObjectStatuses('AntibodyCharacterization');
             expect(statuses).toHaveLength(8);
         });
     });
