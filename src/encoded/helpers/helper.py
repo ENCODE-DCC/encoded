@@ -1,4 +1,3 @@
-from snovault import TYPES
 from encoded.vis_defines import vis_format_url
 
 
