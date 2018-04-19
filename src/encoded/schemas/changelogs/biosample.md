@@ -3,6 +3,7 @@
 ### Minor changes since schema version 20
 
 * Added *single cell* to biosample_type enums
+* Added *cell_isolation_method* property for specification of cell isolation method, it could be one of the followings enums: micropippeting, microfluidic cell sorting, dilution, laser capture microdissection or fluorescence activated cell sorting. The property can not be used with biosample_type whole organisms or tissue
 
 ### Schema version 20
 

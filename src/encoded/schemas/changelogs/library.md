@@ -3,6 +3,7 @@
 ### Minor changes since schema version 8
 
 * *barcode_details* property is added, the property contains barcode details of single cell samples.
+* *construction_platform* property is added, the property contains link to platform used to prepare the library.
 
 ### Schema version 8
 
