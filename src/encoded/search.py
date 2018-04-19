@@ -1,6 +1,15 @@
-import copy
 import re
+import copy
+from urllib.parse import urlencode
+from collections import OrderedDict
 from pyramid.view import view_config
+from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.security import effective_principals
+from elasticsearch.helpers import scan
+from encoded.helpers.helper import (
+    format_results,
+    search_result_actions
+)
 from snovault import (
     AbstractCollection,
     TYPES,
@@ -8,13 +17,21 @@ from snovault import (
 from snovault.elasticsearch import ELASTIC_SEARCH
 from snovault.elasticsearch.create_mapping import TEXT_FIELDS
 from snovault.resource_views import collection_view_listing_db
-from elasticsearch.helpers import scan
-from pyramid.httpexceptions import HTTPBadRequest
-from pyramid.security import effective_principals
-from urllib.parse import urlencode
-from collections import OrderedDict
-from .vis_defines import vis_format_url
-from collections import OrderedDict
+from snovault.helpers.helper import (
+    sort_query,
+    get_pagination,
+    get_filtered_query,
+    prepare_search_term,
+    set_sort_order,
+    get_search_fields,
+    list_visible_columns_for_schemas,
+    list_result_fields,
+    set_filters,
+    set_facets,
+    format_facets,
+    normalize_query,
+    iter_long_json
+)
 
 
 CHAR_COUNT = 32

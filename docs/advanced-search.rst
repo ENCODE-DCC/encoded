@@ -21,7 +21,7 @@ via the searchTerm query. Either by constructing urls, or entering the
 query into the search box.
 
 The function that parses the advanced query is called
-prepare_search_term() and is found in src/encoded/search.py 
+prepare_search_term() and is found in src/snovault/helpers/helper.py
 
 It uses a parser written in a dependency called "lucenequery" 
 which is available at: https://github.com/lrowe/lucenequery

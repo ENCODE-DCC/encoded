@@ -228,7 +228,7 @@ def main(global_config, **local_config):
 
     if 'elasticsearch.server' in config.registry.settings:
         config.include('snovault.elasticsearch')
-        config.include('.search')
+        config.include('encoded.viewconfigs.views')
         config.include('.vis_indexer')
 
     if 'snp_search.server' in config.registry.settings:
