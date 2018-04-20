@@ -12,26 +12,6 @@ from os.path import expanduser
 import boto3
 
 
-BDM = [
-    {
-        'DeviceName': '/dev/sda1',
-        'Ebs': {
-            'VolumeSize': 200,
-            'VolumeType': 'gp2',
-            'DeleteOnTermination': True
-        }
-    },
-    {
-        'DeviceName': '/dev/sdb',
-        'NoDevice': "",
-    },
-    {
-        'DeviceName': '/dev/sdc',
-        'NoDevice': "",
-    },
-]
-
-
 class SpotClient(object):
     error_list = [
         'capacity-not-available',
@@ -82,7 +62,7 @@ class SpotClient(object):
                     code_status = item
         return code_status
 
-    def request_spot_instance(self, iam_role, spot_price, user_data):
+    def request_spot_instance(self, iam_role, spot_price, user_data, bdm):
         instance = self.client.request_spot_instances(
             DryRun=False,
             SpotPrice=spot_price,
@@ -96,7 +76,7 @@ class SpotClient(object):
                 'Placement': {
                     'AvailabilityZone': 'us-west-2c'
                 },
-                'BlockDeviceMappings': BDM,
+                'BlockDeviceMappings': bdm,
                 'IamInstanceProfile': {
                     "Name": iam_role,
                 }
@@ -228,6 +208,27 @@ def read_ssh_key():
     return None
 
 
+def _get_bdm(main_args):
+    return [
+        {
+            'DeviceName': '/dev/sda1',
+            'Ebs': {
+                'VolumeSize': main_args.volume_size,
+                'VolumeType': 'gp2',
+                'DeleteOnTermination': True
+            }
+        },
+        {
+            'DeviceName': '/dev/sdb',
+            'NoDevice': "",
+        },
+        {
+            'DeviceName': '/dev/sdc',
+            'NoDevice': "",
+        },
+    ]
+
+
 def get_user_data(commit, config_file, data_insert, profile_name):
     cmd_list = ['git', 'show', commit + config_file]
     config_template = subprocess.check_output(cmd_list).decode('utf-8')
@@ -301,17 +302,20 @@ def _get_ec2_client(main_args, instances_tag_data):
 
 def _get_run_args(main_args, instances_tag_data):
     if not main_args.elasticsearch == 'yes':
-        if main_args.cluster_name:
-            config_file = ':cloud-config-cluster.yml'
-        else:
-            config_file = ':cloud-config.yml'
         data_insert = {
             'WALE_S3_PREFIX': main_args.wale_s3_prefix,
             'COMMIT': instances_tag_data['commit'],
             'ROLE': main_args.role,
+            'REGION_INDEX': 'False'
         }
         if main_args.cluster_name:
+            config_file = ':cloud-config-cluster.yml'
             data_insert['CLUSTER_NAME'] = main_args.cluster_name
+            data_insert['REGION_INDEX'] = 'True'
+        else:
+            config_file = ':cloud-config.yml'
+        if main_args.set_region_index_to:
+            data_insert['REGION_INDEX'] = main_args.set_region_index_to
         user_data = get_user_data(instances_tag_data['commit'], config_file, data_insert, main_args.profile_name)
         security_groups = ['ssh-http-https']
         iam_role = 'encoded-instance'
@@ -390,11 +394,18 @@ def main():
             run_args['security_groups']
         )
         print("security_groups: %s" % run_args['security_groups'])
-        instances = spot_client.request_spot_instance(run_args['iam_role'], main_args.spot_price, run_args['user_data'])
+        bdm = _get_bdm(main_args)
+        instances = spot_client.request_spot_instance(
+            run_args['iam_role'],
+            main_args.spot_price,
+            run_args['user_data'],
+            bdm,
+        )
         _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances)
         spot_client.tag_spot_instance(instances_tag_data, main_args.elasticsearch, main_args.cluster_name)
         print("Spot instance request had been completed, please check to be sure it was fufilled")
     else:
+        bdm = _get_bdm(main_args)
         instances = ec2_client.create_instances(
             ImageId=main_args.image_id,
             MinCount=run_args['count'],
@@ -402,7 +413,7 @@ def main():
             InstanceType=main_args.instance_type,
             SecurityGroups=run_args['security_groups'],
             UserData=run_args['user_data'],
-            BlockDeviceMappings=BDM,
+            BlockDeviceMappings=bdm,
             InstanceInitiatedShutdownBehavior='terminate',
             IamInstanceProfile={
                 "Name": run_args['iam_role'],
@@ -412,6 +423,35 @@ def main():
 
 
 def parse_args():
+
+    def check_region_index(value):
+        lower_value = value.lower()
+        allowed_values = [
+            'true', 't',
+            'false', 'f'
+        ]
+        if value.lower() not in allowed_values:
+            raise argparse.ArgumentTypeError(
+                "Noncase sensitive argument '%s' is not in [%s]." % (
+                    str(value),
+                    ', '.join(allowed_values),
+                )
+            )
+        if lower_value[0] == 't':
+            return 'True'
+        return 'False'
+
+    def check_volume_size(value):
+        allowed_values = ['120', '200', '500']
+        if not value.isdigit() or value not in allowed_values:
+            raise argparse.ArgumentTypeError(
+                "%s' is not in [%s]." % (
+                    str(value),
+                    ', '.join(allowed_values),
+                )
+            )
+        return value
+
     def hostname(value):
         if value != nameify(value):
             raise argparse.ArgumentTypeError(
@@ -435,10 +475,14 @@ def parse_args():
     parser.add_argument('--instance-type', default='c5.9xlarge',
                         help="c5.9xlarge for indexing. Switch to a smaller instance (m5.xlarge or c5.xlarge).")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
+    parser.add_argument('--set-region-index-to', type=check_region_index,
+                        help="Override region index in yaml to 'True' or 'False'")
     parser.add_argument('--spot-instance', action='store_true', help="Launch as spot instance")
     parser.add_argument('--spot-price', default='0.70', help="Set price or keep default price of 0.70")
     parser.add_argument('--teardown-cluster', default=None,
                         help="Takes down all the cluster launched from the branch")
+    parser.add_argument('--volume-size', default=200, type=check_volume_size,
+                        help="Size of disk. Allowed values 120, 200, and 500")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups-prod/production')
     # Set Role
     parser.add_argument(
