@@ -19,6 +19,37 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/submitter_comment" }
     ],
+    "dependencies": {
+        "status": {
+            "oneOf": [
+                {
+                    "required": ["date_released", "date_submitted"],
+                    "properties": {
+                        "status": {
+                            "enum": ["released", "revoked"]
+                        }
+                    }
+                },
+                {
+                    "required": ["date_submitted"],
+                    "properties": {
+                        "status": {
+                            "enum": ["submitted"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "status": {
+                                "enum": ["released", "revoked", "submitted"]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
     "properties": {
         "schema_version": {
             "hidden comment": "Bump the default in the subclasses."

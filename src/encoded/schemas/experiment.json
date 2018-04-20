@@ -133,35 +133,7 @@
                 }
             ]
         },
-        "status": {
-            "oneOf": [
-                {
-                    "required": ["date_released"],
-                    "properties": {
-                        "status": {
-                            "enum": ["released", "revoked"]
-                        }
-                    }
-                },
-                {
-                    "required": ["date_submitted"],
-                    "properties": {
-                        "status": {
-                            "enum": ["submitted"]
-                        }
-                    }
-                },
-                {
-                    "not": {
-                        "properties": {
-                            "status": {
-                                "enum": ["released", "revoked", "submitted"]
-                            }
-                        }
-                    }
-                }
-            ]
-        },
+       
         "internal_status": {
             "oneOf": [
                 {
