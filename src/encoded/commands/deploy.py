@@ -301,14 +301,19 @@ def _get_ec2_client(main_args, instances_tag_data):
 
 
 def _get_run_args(main_args, instances_tag_data):
+    master_user_data = None
     if not main_args.elasticsearch == 'yes':
         data_insert = {
             'WALE_S3_PREFIX': main_args.wale_s3_prefix,
             'COMMIT': instances_tag_data['commit'],
             'ROLE': main_args.role,
-            'REGION_INDEX': 'False'
+            'REGION_INDEX': 'False',
+            'ES_IP': main_args.es_ip,
+            'ES_PORT': main_args.es_port,
         }
-        if main_args.cluster_name:
+        if main_args.no_es:
+            config_file = ':cloud-config-no-es.yml'
+        elif main_args.cluster_name:
             config_file = ':cloud-config-cluster.yml'
             data_insert['CLUSTER_NAME'] = main_args.cluster_name
             data_insert['REGION_INDEX'] = 'True'
@@ -327,27 +332,46 @@ def _get_run_args(main_args, instances_tag_data):
         config_file = ':cloud-config-elasticsearch.yml'
         data_insert = {
             'CLUSTER_NAME': main_args.cluster_name,
+            'ES_DATA': 'true',
+            'ES_MASTER': 'false',
         }
         user_data = get_user_data(instances_tag_data['commit'], config_file, data_insert, main_args.profile_name)
+        master_data_insert = {
+            'CLUSTER_NAME': main_args.cluster_name,
+            'ES_DATA': 'false',
+            'ES_MASTER': 'true',
+        }
+        master_user_data = get_user_data(
+            instances_tag_data['commit'],
+            config_file,
+            master_data_insert,
+            main_args.profile_name,
+        )
         security_groups = ['elasticsearch-https']
         iam_role = 'elasticsearch-instance'
         count = int(main_args.cluster_size)
     run_args = {
         'count': count,
         'iam_role': iam_role,
+        'master_user_data': master_user_data,
         'user_data': user_data,
         'security_groups': security_groups,
     }
     return run_args
 
 
-def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances):
+def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, cluster_master=False):
     tmp_name = instances_tag_data['name']
     domain = 'production' if main_args.profile_name == 'production' else 'instance'
     for i, instance in enumerate(instances):
         if main_args.elasticsearch == 'yes' and run_args['count'] > 1:
-            print('Creating Elasticsearch cluster')
-            instances_tag_data['name'] = "{}{}".format(tmp_name, i)
+            if cluster_master and run_args['master_user_data']:
+                print('Creating Elasticsearch Master Node for cluster')
+                # Hack: current tmp_name was the last data cluster, so remove '4'
+                instances_tag_data['name'] = "{}{}".format(tmp_name[0:-1], 'master')
+            else:
+                print('Creating Elasticsearch cluster')
+                instances_tag_data['name'] = "{}{}".format(tmp_name, i)
         else:
             instances_tag_data['name'] = tmp_name
         if not main_args.spot_instance:
@@ -355,8 +379,7 @@ def _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances):
             instance.wait_until_exists()
             tag_ec2_instance(instance, instances_tag_data, main_args.elasticsearch, main_args.cluster_name)
             print('ssh %s.%s.encodedcc.org' % (instances_tag_data['name'], domain))
-            if domain == 'instance':
-                print('https://%s.demo.encodedcc.org' % instances_tag_data['name'])
+            print('https://%s.demo.encodedcc.org' % instances_tag_data['name'])
 
 
 def main():
@@ -420,6 +443,22 @@ def main():
             }
         )
         _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances)
+        # ES MASTER instance when deploying elasticsearch data clusters
+        if run_args['master_user_data'] and run_args['count'] > 1 and main_args.elasticsearch == 'yes':
+            instances = ec2_client.create_instances(
+                ImageId='ami-2133bc59',
+                MinCount=1,
+                MaxCount=1,
+                InstanceType='c5.9xlarge',
+                SecurityGroups=['ssh-http-https'],
+                UserData=run_args['master_user_data'],
+                BlockDeviceMappings=bdm,
+                InstanceInitiatedShutdownBehavior='terminate',
+                IamInstanceProfile={
+                    "Name": 'encoded-instance',
+                }
+            )
+            _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, cluster_master=True)
 
 
 def parse_args():
@@ -467,6 +506,8 @@ def parse_args():
     parser.add_argument('--cluster-name', default=None, help="Name of the cluster")
     parser.add_argument('--cluster-size', default=2, help="Elasticsearch cluster size")
     parser.add_argument('--elasticsearch', default=None, help="Launch an Elasticsearch instance")
+    parser.add_argument('--es-ip', default='localhost', help="ES Master ip address")
+    parser.add_argument('--es-port', default='9201', help="ES Master ip port")
     parser.add_argument('--image-id', default='ami-2133bc59',
                         help=(
                             "https://us-west-2.console.aws.amazon.com/ec2/home"
@@ -475,6 +516,7 @@ def parse_args():
     parser.add_argument('--instance-type', default='c5.9xlarge',
                         help="c5.9xlarge for indexing. Switch to a smaller instance (m5.xlarge or c5.xlarge).")
     parser.add_argument('--profile-name', default=None, help="AWS creds profile")
+    parser.add_argument('--no-es', action='store_true', help="Use non ES cloud condfig")
     parser.add_argument('--set-region-index-to', type=check_region_index,
                         help="Override region index in yaml to 'True' or 'False'")
     parser.add_argument('--spot-instance', action='store_true', help="Launch as spot instance")
