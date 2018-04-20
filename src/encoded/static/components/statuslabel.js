@@ -8,47 +8,79 @@ import * as globals from './globals';
 // property has a name matching the @type of each kind of object. Within that property are objects of
 // arrays; each array defining the statuses available at each logged-in level represented by that
 // object.
+
+const datasetObjectStatuses = {
+    external: [
+        'released',
+        'archived',
+        'revoked',
+    ],
+    consortium: [
+        'proposed',
+        'started',
+        'submitted',
+    ],
+    administrator: [
+        'deleted',
+        'replaced',
+    ],
+};
+
 const objectStatuses = {
-    Experiment: {
+    AntibodyCharacterization: {
         external: [
-            'released',
-            'archived',
-            'revoked',
+            'compliant',
+            'exempt from standards',
+            'not compliant',
+            'not reviewed',
+            'not submitted for review by lab',
         ],
         consortium: [
-            'proposed',
-            'started',
-            'submitted',
+            'in progress',
+            'pending dcc review',
         ],
-        admin: [
+        administrator: [
             'deleted',
-            'replaced',
         ],
     },
+    Experiment: datasetObjectStatuses,
 };
 
 
-// Defines the order of the viewing access of the different logged-in states, and has to match the
-// order of arrays in each @type property in `objectStatuses`.
-const objectStatusLevelOrder = ['external', 'consortium', 'admin'];
+// Defines the order of the viewing access of the different logged-in states.
+const objectStatusLevels = ['external', 'consortium', 'administrator'];
 
 
 /**
- * Given an object @id and login level, get an array of all possible statuses for that object at
+ * Maps the current session information from the <App> React context to an access level from the
+ * objectStatusLevels array.
+ *
+ * @param {object} session - From encoded session context
+ * @param {object} sessionProperties - From encoded session_properties context
+ */
+export const sessionToAccessLevel = (session, sessionProperties) => {
+    const loggedIn = !!(session && session['auth.userid']);
+    const administrativeUser = loggedIn && !!(sessionProperties && sessionProperties.admin);
+    return loggedIn ? (administrativeUser ? 'administrator' : 'consortium') : 'external';
+};
+
+
+/**
+ * Given an object @type and login level, get an array of all possible statuses for that object at
  * that login level.
  *
  * @param {string} objectType - Retrieve possible statuses for this @type.
- * @param {string} level - Level of statuses to get (external, consortium, admin). If nothing is
- *         passed in this parameter, then 'admin' is assumed.
+ * @param {string} accessLevel - Level of statuses to get (external, consortium, administrator).
+ *         If nothing is passed in this parameter, then 'administrator' is assumed.
  * @return (array) - Returns array of possible statuses for the given object and access level.
  */
-export function getObjectStatuses(objectType, level = 'admin') {
-    const maxLevelIndex = objectStatusLevelOrder.indexOf(level);
+export function getObjectStatuses(objectType, accessLevel = 'administrator') {
+    const maximumLevelIndex = objectStatusLevels.indexOf(accessLevel);
     const objectStatusGroups = objectStatuses[objectType];
-    if (maxLevelIndex !== -1 && objectStatusGroups) {
+    if (maximumLevelIndex !== -1 && objectStatusGroups) {
         let statuses = [];
-        for (let levelIndex = 0; levelIndex <= maxLevelIndex; levelIndex += 1) {
-            statuses = statuses.concat(objectStatusGroups[objectStatusLevelOrder[levelIndex]]);
+        for (let levelIndex = 0; levelIndex <= maximumLevelIndex; levelIndex += 1) {
+            statuses = statuses.concat(objectStatusGroups[objectStatusLevels[levelIndex]]);
         }
         return statuses;
     }
