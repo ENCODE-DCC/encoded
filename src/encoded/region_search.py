@@ -21,7 +21,8 @@ from .region_indexer import (
     FOR_REGULOME_DB,
     FOR_MULTIPLE_USES,
     ENCODED_ALLOWED_STATUSES,
-    REGULOME_ALLOWED_STATUSES
+    REGULOME_ALLOWED_STATUSES,
+    REGULOME_DATASET_INDICES
 )
 from .vis_defines import (
     vis_format_url,
@@ -345,8 +346,8 @@ def regulome_score(datasets):
     characterize = set()
     targets = { 'ChIP-seq': [], 'PWM': [], 'Footprint': []}
     for dataset in datasets.values():
-        #collection_type = dataset.get('collection_type',dataset.get('assay_term_name',dataset.get('annotation_type')))
-        collection_type = dataset.get('collection_type')
+        #collection_type = region_indexer::regulome_collection_type(dataset)  # full dataset
+        collection_type = dataset.get('collection_type')  # resident_regionset dataset
         if collection_type is None:
             continue
 
@@ -546,7 +547,7 @@ def region_search(context, request):
         facets = _FACETS
         if regulome:
             set_type = ['Dataset']
-            set_indices = ['experiment','annotation']  # TODO: REGULOME_PRIORITIZED_TYPES ? lowercase
+            set_indices = REGULOME_DATASET_INDICES
             allowed_status = REGULOME_ALLOWED_STATUSES
             facets = _REGULOME_FACETS
 
