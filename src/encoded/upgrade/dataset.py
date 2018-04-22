@@ -367,17 +367,6 @@ def dataset_17_18(value, system):
 
 
 @upgrade_step('experiment', '18', '19')
-@upgrade_step('annotation', '18', '19')
-@upgrade_step('reference', '15', '16')
-@upgrade_step('project', '14', '15')
-@upgrade_step('matched_set', '14', '15')
-@upgrade_step('publication_data', '14', '15')
-@upgrade_step('ucsc_browser_composite', '14', '15')
-@upgrade_step('organism_development_series', '14', '15')
-@upgrade_step('reference_epigenome', '14', '15')
-@upgrade_step('replication_timing_series', '14', '15')
-@upgrade_step('treatment_time_series', '15', '16')
-@upgrade_step('treatment_concentration_series', '14', '15')
 def dataset_18_19(value, system):
     if (value['status'] == "submitted" and
         not value.get("date_submitted")):

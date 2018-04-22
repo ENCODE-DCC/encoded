@@ -8,7 +8,8 @@ def base_reference_epigenome(testapp, lab, award):
         'lab': lab['uuid'],
         'status': 'submitted'
     }
-    return testapp.post_json('/reference-epigenomes', item, status=201).json['@graph'][0]
+    print (testapp.post_json('/reference_epigenome', item))
+    return testapp.post_json('/reference_epigenome', item, status=201).json['@graph'][0]
 
 
 @pytest.fixture

@@ -118,7 +118,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "19"
+            "default": "18"
         },
         "annotation_type": {
             "title": "Type",

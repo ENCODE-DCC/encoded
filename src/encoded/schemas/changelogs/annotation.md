@@ -1,9 +1,5 @@
 ## Changelog for annotation.json
 
-### Schema version 19
-
-* Make *date_submitted* value a required property for objects in status *submitted*
-
 ### Schema version 18
 
 * Replace started status with in progress.
