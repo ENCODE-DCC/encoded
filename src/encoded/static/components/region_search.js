@@ -200,7 +200,13 @@ class AdvSearch extends React.Component {
         const region = id.query.region || '';
 
         if (this.state.genome === '') {
-            this.setState({ genome: context.assembly || regionGenomes[0].value });
+            let assembly = regionGenomes[0].value;
+            if (context.assembly) {
+                assembly = regionGenomes.find(el =>
+                    context.assembly === el.value || context.assembly === el.display
+                ).value;
+            }
+            this.setState({ genome: assembly });
         }
 
         return (
