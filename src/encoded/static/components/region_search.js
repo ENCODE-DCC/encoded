@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
-import DropdownButton from '../libs/bootstrap/button';
-import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
+import { BrowserSelector } from './objectutils';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { FacetList, Listing } from './search';
 import { FetchedData, Param } from './fetched';
@@ -135,7 +134,8 @@ class AdvSearch extends React.Component {
             disclosed: false,
             showAutoSuggest: false,
             searchTerm: '',
-            genome: regionGenomes[0].value,
+            coordinates: '',
+            genome: '',
             terms: {},
         };
         /* eslint-enable react/no-unused-state */
@@ -145,6 +145,7 @@ class AdvSearch extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleAutocompleteClick = this.handleAutocompleteClick.bind(this);
         this.handleAssemblySelect = this.handleAssemblySelect.bind(this);
+        this.closeAutocompleteBox = this.closeAutocompleteBox.bind(this);
         this.tick = this.tick.bind(this);
     }
 
@@ -183,6 +184,10 @@ class AdvSearch extends React.Component {
         this.setState({ genome: event.target.value });
     }
 
+    closeAutocompleteBox() {
+        this.setState({ showAutoSuggest: false });
+    }
+
     tick() {
         if (this.newSearchTerm !== this.state.searchTerm) {
             this.setState({ searchTerm: this.newSearchTerm });
@@ -194,10 +199,20 @@ class AdvSearch extends React.Component {
         const id = url.parse(this.context.location_href, true);
         const region = id.query.region || '';
 
+        if (this.state.genome === '') {
+            let assembly = regionGenomes[0].value;
+            if (context.assembly) {
+                assembly = regionGenomes.find(el =>
+                    context.assembly === el.value || context.assembly === el.display
+                ).value;
+            }
+            this.setState({ genome: assembly });
+        }
+
         return (
             <Panel>
                 <PanelBody>
-                    <form id="panel1" className="adv-search-form" autoComplete="off" aria-labelledby="tab1">
+                    <form id="panel1" className="adv-search-form" autoComplete="off" aria-labelledby="tab1" onSubmit={this.closeAutocompleteBox} >
                         <input type="hidden" name="annotation" value={this.state.terms.annotation} />
                         <div className="form-group">
                             <label htmlFor="annotation">Enter any one of human Gene name, Symbol, Synonyms, Gene ID, HGNC ID, coordinates, rsid, Ensemble ID</label>
@@ -210,7 +225,7 @@ class AdvSearch extends React.Component {
                                     </FetchedData>
                                 : null}
                                 <div className="input-group-addon input-group-select-addon">
-                                    <select value={this.state.genome} name="genome" onChange={this.handleAssemblySelect}>
+                                    <select value={this.state.genome} name="genome" onFocus={this.closeAutocompleteBox} onChange={this.handleAssemblySelect}>
                                         {regionGenomes.map(genomeId =>
                                             <option key={genomeId.value} value={genomeId.value}>{genomeId.display}</option>
                                         )}
@@ -329,18 +344,12 @@ class RegionSearch extends React.Component {
                                             </span>
                                         }
 
-                                        {visualizeKeys ?
-                                            <DropdownButton disabled={visualizeDisabled} title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'} label="batchhubs" wrapperClasses="results-table-button">
-                                                <DropdownMenu>
-                                                    {visualizeKeys.map(assembly =>
-                                                        Object.keys(context.visualize_batch[assembly]).sort().map(browser =>
-                                                            <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize_batch[assembly][browser]}>
-                                                                {assembly} {browser}
-                                                            </a>
-                                                        )
-                                                    )}
-                                                </DropdownMenu>
-                                            </DropdownButton>
+                                        {visualizeKeys && context.visualize_batch ?
+                                            <BrowserSelector
+                                                visualizeCfg={context.visualize_batch}
+                                                disabled={visualizeDisabled}
+                                                title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'}
+                                            />
                                         : null}
 
                                     </div>

@@ -291,6 +291,7 @@ def region_search(context, request):
         region = '*'
 
     assembly = request.params.get('genome', '*')
+    result['assembly'] = _GENOME_TO_ALIAS.get(assembly,'GRCh38')
     annotation = request.params.get('annotation', '*')
     chromosome, start, end = ('', '', '')
 
