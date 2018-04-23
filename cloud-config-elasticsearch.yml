@@ -77,15 +77,35 @@ runcmd:
 # Ideally this would build as a different user so encoded only has read
 # permissions
 - MEMGIGS=$(awk '/MemTotal/{printf int($2 / 1024**2)}' /proc/meminfo)
-- if [ "$MEMGIGS" -gt 12 ];
+- if test "%(ES_MASTER)s" = "true"
 - then
--    echo "-Xms8g" >> /etc/elasticsearch/jvm.options
--    echo "-Xmx8g" >> /etc/elasticsearch/jvm.options
+-   if [ "$MEMGIGS" -gt 32 ]
+-   then
+-      echo "-Xms16g" >> /etc/elasticsearch/jvm.options
+-      echo "-Xmx16g" >> /etc/elasticsearch/jvm.options
+-   else
+-     if [ "$MEMGIGS" -gt 12 ]
+-     then
+-       echo "-Xms8g" >> /etc/elasticsearch/jvm.options
+-       echo "-Xmx8g" >> /etc/elasticsearch/jvm.options
+-     else
+-       echo "-Xms4g" >> /etc/elasticsearch/jvm.options
+-       echo "-Xmx4g" >> /etc/elasticsearch/jvm.options
+-       sysctl "vm.swappiness=1"
+-       swapon /swapfile
+-     fi
+-   fi
 - else
--    echo "-Xms4g" >> /etc/elasticsearch/jvm.options
--    echo "-Xmx4g" >> /etc/elasticsearch/jvm.options
--    sysctl "vm.swappiness=1"
--    swapon /swapfile
+-   if [ "$MEMGIGS" -gt 12 ]
+-   then
+-      echo "-Xms8g" >> /etc/elasticsearch/jvm.options
+-      echo "-Xmx8g" >> /etc/elasticsearch/jvm.options
+-   else
+-      echo "-Xms4g" >> /etc/elasticsearch/jvm.options
+-      echo "-Xmx4g" >> /etc/elasticsearch/jvm.options
+-      sysctl "vm.swappiness=1"
+-      swapon /swapfile
+-   fi
 - fi
 - set -ex
 - update-rc.d elasticsearch defaults
@@ -146,8 +166,8 @@ write_files:
     network.host: 0.0.0.0
     http.port: 9201
     transport.tcp.port: 9299
-    node.master: false
-    node.data: true
+    node.master: %(ES_MASTER)s
+    node.data: %(ES_DATA)s
     discovery.zen.minimum_master_nodes: 1
     discovery.type: ec2
 

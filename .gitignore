@@ -16,6 +16,8 @@
 /node_modules/
 /ontology.json
 /parts/
+/base.ini
+/development.ini
 /production.ini
 /session-secret.b64
 /src/encoded/static/css/
