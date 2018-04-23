@@ -111,12 +111,15 @@ def test_experiment_invalid_statuses(status, testapp, experiment):
         testapp.patch_json(experiment['@id'], {'status': status})
 
 
-def test_submission_date_dependency(testapp, experiment_no_error):
+def test_experiment_submission_date_dependency(testapp, experiment_no_error):
     expt = testapp.post_json('/experiment', experiment_no_error).json['@graph'][0]
-    res = testapp.patch_json(expt['@id'], {
-        'status': 'submitted'}, expect_errors=True)
-    assert res.status_code == 422
-    res = testapp.patch_json(expt['@id'], {
+    testapp.patch_json(
+        expt['@id'], {
+        'status': 'submitted'},
+        status=422)
+    testapp.patch_json(
+        expt['@id'], {
         'status': 'submitted',
-        'date_submitted': '2000-10-10'}, expect_errors=True)
-    assert res.status_code == 200
+        'date_submitted': '2000-10-10'},
+        status=200)
+    

@@ -8,7 +8,6 @@ def base_reference_epigenome(testapp, lab, award):
         'lab': lab['uuid'],
         'status': 'submitted'
     }
-    print (testapp.post_json('/reference_epigenome', item))
     return testapp.post_json('/reference_epigenome', item, status=201).json['@graph'][0]
 
 

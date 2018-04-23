@@ -368,6 +368,6 @@ def dataset_17_18(value, system):
 
 @upgrade_step('experiment', '18', '19')
 def dataset_18_19(value, system):
-    if (value['status'] == "submitted" and
-        not value.get("date_submitted")):
-        value['status'] = "in progress"
+    if (value['status'] == 'submitted' and
+        not value.get('date_submitted')):
+        value['status'] = 'in progress'
