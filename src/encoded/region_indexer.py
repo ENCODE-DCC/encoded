@@ -13,7 +13,10 @@ from shutil import copyfileobj
 from elasticsearch.exceptions import (
     NotFoundError
 )
-from elasticsearch.helpers import scan
+from elasticsearch.helpers import (
+    scan,
+    bulk
+)
 from snovault import DBSESSION, COLLECTIONS
 #from snovault.storage import (
 #    TransactionRecord,
@@ -44,10 +47,11 @@ log = logging.getLogger(__name__)
 #       4) If file passes required tests (e.g. bed, released, ...) AND not in regions_es, put in regions_es
 #       5) If file does not pass tests                             AND     IN regions_es, remove from regions_es
 
-#SUPPORTED_CHROMOSOMES = [
-#    'chr1',  'chr2',  'chr3',  'chr4',  'chr5',  'chr6',  'chr7',  'chr8',  'chr9',  'chr10',
-#    'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20',
-#    'chr21', 'chr22', 'chrx',  'chry']  # chroms are lower case
+# TEMPORARY: limit SNPs to major chroms
+SUPPORTED_CHROMOSOMES = [
+    'chr1',  'chr2',  'chr3',  'chr4',  'chr5',  'chr6',  'chr7',  'chr8',  'chr9',  'chr10',
+    'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20',
+    'chr21', 'chr22', 'chrx',  'chry']  # chroms are lower case
 
 ALLOWED_FILE_FORMATS = ['bed']
 RESIDENT_REGIONSET_KEY = 'resident_regionsets'  # in regions_es, keeps track of what datsets are resident in one place
@@ -112,6 +116,10 @@ SNP_FILES = [
     's3://regulomedb/snp141/snp141_GRCh38.bed.gz'
 ]
 
+# If files are too large then they will be copied locally and read
+MAX_IN_MEMORY_FILE_SIZE = (100 * 1024 * 1024)
+TEMPORARY_REGIONS_FILE = '/tmp/region_temp.bed.gz'
+
 # On local instance, these are the only files that can be downloaded and regionalizable.  Currently only one is!
 TESTABLE_FILES = ['ENCFF002COS']  # '/static/test/peak_indexer/ENCFF002COS.bed.gz']
                                   # '/static/test/peak_indexer/ENCFF296FFD.tsv',     # tsv's some day?
@@ -124,11 +132,6 @@ def includeme(config):
     config.add_route('_regionindexer_state', '/_regionindexer_state')
     registry = config.registry
     registry['region'+INDEXER] = RegionIndexer(registry)
-
-def tsvreader(file):
-    reader = csv.reader(file, delimiter='\t')
-    for row in reader:
-        yield row
 
 # Region mapping: index: chr*, doc_type: assembly, _id=uuid
 def get_chrom_index_mapping(assembly_name='hg19'):
@@ -259,6 +262,64 @@ def regulome_collection_type(dataset):
         if prop in dataset:
             return dataset[prop]
     return None
+
+
+class RemoteReader(object):
+    # Tools for reading remote files
+
+    def __init__(self, test_instance=False):
+        self.temp_file = TEMPORARY_REGIONS_FILE
+        self.max_memory = MAX_IN_MEMORY_FILE_SIZE
+        self.test_instance = test_instance
+
+    def readable_file(self, request, afile):
+        '''returns either an in memory file or a temp file'''
+
+        # Special case local instance so that tests can work...
+        if self.test_instance:
+            href = 'http://www.encodeproject.org' + afile['href']  # test files are read from production
+        else:
+            href = request.host_url + afile['href']
+
+        # Note: this reads the file into an in-memory byte stream.  If files get too large,
+        # We could replace this with writing a temp file, then reading it via gzip and tsvreader.
+        urllib3.disable_warnings()
+        http = urllib3.PoolManager()
+
+        # use afile.get(file_size) to decide between in mem file or temp file
+        self.readable_file = None
+        if afile.get('file_size', 0) > self.max_memory:
+            with http.request('GET',href, preload_content=False) as r, open(self.temp_file, 'wb') as out_file:
+                copyfileobj(r, out_file)
+            self.readable_file = self.temp_file
+            log.warn('Wrote %s to %s', href, self.readable_file)
+        else:
+            r = http.request('GET', href)
+            if r.status != 200:
+                log.warn("File (%s or %s) not found" % (afile['@id'], href))
+                return False
+            file_in_mem = io.BytesIO()
+            file_in_mem.write(r.data)
+            file_in_mem.seek(0)
+            self.readable_file = file_in_mem
+        r.release_conn()
+
+        return self.readable_file
+
+    def tsv(self, file_handle):
+        reader = csv.reader(file_handle, delimiter='\t')
+        for row in reader:
+            yield row
+
+    def region(self, row):
+        '''Read a region from an in memory row and returns chrom and document to index.'''
+        chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
+        return (chrom, {'start': start + 1, 'end': end})
+
+    def snp(self, row):
+        '''Read a SNP from an in memory row and returns chrom and document to index.'''
+        chrom, start, end, rsid = row[0].lower(), int(row[1]), int(row[2]), row[3]
+        return (chrom, {'rsid': rsid, 'start': start + 1, 'end': end})
 
 
 class RegionIndexerState(IndexerState):
@@ -492,6 +553,7 @@ class RegionIndexer(Indexer):
         self.residents_index = RESIDENT_REGIONSET_KEY
         self.state = RegionIndexerState(self.encoded_es,self.encoded_INDEX)  # WARNING, race condition is avoided because there is only one worker
         self.test_instance = registry.settings.get('testing',False)
+        self.reader = RemoteReader(self.test_instance)
 
     def update_object(self, request, dataset_uuid, force):
         request.datastore = 'elasticsearch'  # Let's be explicit
@@ -529,7 +591,7 @@ class RegionIndexer(Indexer):
             file_doc = self.candidate_file(afile, dataset, dataset_region_uses)
             if file_doc:
 
-                #log.warn("file is a candidate: %s", afile['accession'])  # DEBUG
+                log.warn("file is a candidate: %s", afile['accession'])  # DEBUG
                 using = ""
                 if force:
                     using = "with FORCE"
@@ -730,8 +792,10 @@ class RegionIndexer(Indexer):
 
         return True
 
-    def add_to_residence(self, uuid, file_doc):
+    def add_to_residence(self, file_doc):
         '''Adds a file into residence index.'''
+        uuid = file_doc['uuid']
+
         # Only splitting on doc_type=use in order to easily count them
         use_type = FOR_MULTIPLE_USES
         if len(file_doc['uses']) == 1:
@@ -748,10 +812,14 @@ class RegionIndexer(Indexer):
         self.regions_es.index(index=self.residents_index, doc_type=use_type, body=file_doc, id=str(uuid))
         return True
 
-    def add_to_regions_es(self, afile, assembly, regions, file_doc):
+    def index_regions(self, assembly, regions, file_doc, one_chrom=None):
         '''Given regions from some source (most likely encoded file) loads the data into region search es'''
-        uuid = str(afile['uuid'])
+        uuid = file_doc['uuid']
 
+        if one_chrom is None:
+            chroms = list(regions.keys())
+        else:
+            chroms = [one_chrom]
         for chrom in list(regions.keys()):
             doc = {
                 'uuid': uuid,
@@ -767,94 +835,40 @@ class RegionIndexer(Indexer):
 
             self.regions_es.index(index=chrom, doc_type=assembly, body=doc, id=uuid)
 
-        # Now add dataset to residency list
-        file_doc['chroms'] = list(regions.keys())
+        return True
 
-        return self.add_to_residence(uuid, file_doc)
+    def snps_bulk_iterator(self, snp_index, chrom, snps_for_chrom):
+        '''Given SNPs yields snps packaged for bulk indexing'''
+        for snp in snps_for_chrom:
+            yield {'_index': snp_index, '_type': chrom, '_id': snp['rsid'], '_source': snp}
 
-    def add_snps_to_regions_es(self, afile, assembly, regions, file_doc):
+    def index_snps(self, assembly, snp_docs, file_doc, one_chrom=None):
         '''Given SNPs from file loads the data into region search es'''
-        uuid = str(afile['uuid'])
         snp_index = snp_index_key(assembly)
 
         if not self.regions_es.indices.exists(snp_index):
             self.regions_es.indices.create(index=snp_index, body=index_settings())
 
-        for chrom in list(regions.keys()):
+        if one_chrom is None:
+            chroms = list(snp_docs.keys())
+        else:
+            chroms = [one_chrom]
+        for chrom in chroms:
             if not self.regions_es.indices.exists_type(index=snp_index, doc_type=chrom):
                 mapping = get_snp_index_mapping(chrom)
                 self.regions_es.indices.put_mapping(index=snp_index, doc_type=chrom, body=mapping)
+            # indexing in bulk 1M snps at a time...
+            bulk(self.regions_es, self.snps_bulk_iterator(snp_index, chrom, snp_docs[chrom]), chunk_size=1048576)
 
-            #self.regions_es.bulk(snp_index, doc_type=chrom, body=regions[chrom])
-            for doc in regions[chrom]:
-                self.regions_es.index(snp_index, doc_type=chrom, body=doc, id=doc['rsid'])
+            try:  # likely millions per chrom, so
+                self.regions_es.indices.flush_synced(index=snp_index)
+            except:
+                pass
 
-        # Now add dataset to residency list
-        file_doc['chroms'] = list(regions.keys())
         file_doc['index'] = snp_index
 
-        return self.add_to_residence(uuid, file_doc)
-
-    def add_a_snp_to_regions_es(self, assembly, chrom, snp_doc):
-        '''Given SNPs from file loads the data into region search es'''
-        snp_index = snp_index_key(assembly)
-
-        if not self.regions_es.indices.exists(snp_index):
-            self.regions_es.indices.create(index=snp_index, body=index_settings())
-
-        if not self.regions_es.indices.exists_type(index=snp_index, doc_type=chrom):
-            mapping = get_snp_index_mapping(chrom)
-            self.regions_es.indices.put_mapping(index=snp_index, doc_type=chrom, body=mapping)
-
-        try:
-            self.regions_es.index(snp_index, doc_type=chrom, body=snp_doc, id=doc['rsid'])
-        except:
-            return False
-
+        log.warn('Added %s/%s %d docs', snp_index, chrom, len(snp_docs[chrom]))
         return True
-
-    def read_region(self, row):
-        '''Read a region from an in memory row and returns chrom and document to index.'''
-        chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
-        return (chrom, {'start': start + 1, 'end': end})
-
-    def read_snp(self, row):
-        '''Read a SNP from an in memory row and returns chrom and document to index.'''
-        chrom, start, end, rsid = row[0].lower(), int(row[1]), int(row[2]), row[3]
-        return (chrom, {'rsid': rsid, 'start': start + 1, 'end': end})
-
-    def get_readable_file(self, afile):
-        '''returns either an in memory file or a temp file'''
-
-        # Special case local instace so that tests can work...
-        if self.test_instance:
-            href = 'http://www.encodeproject.org' + afile['href']  # test files are read from production
-        else:
-            href = request.host_url + afile['href']
-
-        # Note: this reads the file into an in-memory byte stream.  If files get too large,
-        # We could replace this with writing a temp file, then reading it via gzip and tsvreader.
-        urllib3.disable_warnings()
-        http = urllib3.PoolManager()
-
-        # use afile.get(file_size) to decide between in mem file or temp file
-        readable_file = None
-        if afile.get(file_size, 0) > 100000000:
-            with http.request('GET',href, preload_content=False) as r, open('/tmp/region_temp.bed.gz', 'wb') as out_file:
-                copyfileobj(r, out_file)
-            readable_file = '/tmp/region_temp.bed.gz'
-        else:
-            r = http.request('GET', href)
-            if r.status != 200:
-                log.warn("File (%s or %s) not found" % (afile['@id'], href))
-                return False
-            file_in_mem = io.BytesIO()
-            file_in_mem.write(r.data)
-            file_in_mem.seek(0)
-            readable_file = file_in_mem
-        r.release_conn()
-
-        return file_in_mem
 
     def add_file_to_regions_es(self, request, afile, file_doc, snp=False):
         '''Given an encoded file object, reads the file to create regions data then loads that into region search es.'''
@@ -862,76 +876,47 @@ class RegionIndexer(Indexer):
         assembly = file_doc['file']['assembly']
         snps = file_doc.get('snps', False)
 
-        ## Special case local instace so that tests can work...
-        #if self.test_instance:
-        #    href = 'http://www.encodeproject.org' + afile['href']  # test files are read from production
-        #else:
-        #    href = request.host_url + afile['href']
-        #
-        ## TODO: use afile.get(file_size) to decide between in mem file or temp file
-        #
-        ## Note: this reads the file into an in-memory byte stream.  If files get too large,
-        ## We could replace this with writing a temp file, then reading it via gzip and tsvreader.
-        #urllib3.disable_warnings()
-        #http = urllib3.PoolManager()
-        #r = http.request('GET', href)
-        #if r.status != 200:
-        #    log.warn("File (%s or %s) not found" % (afile['@id'], href))
-        #    return False
-        #file_in_mem = io.BytesIO()
-        #file_in_mem.write(r.data)
-        #file_in_mem.seek(0)
-        #r.release_conn()
-
-        readable_file = self.get_readable_file(afile)
+        readable_file = self.reader.readable_file(request, afile)
         if not readable_file:
             return False
 
         file_data = {}
         chroms = []
-        if afile['file_format'] == 'bed':
+        if afile['file_format'] == 'bed':  #else:  TODO: bigBeds? Other file types?
             # NOTE: requests doesn't require gzip but http.request does.
-            with gzip.open(readable_file, mode='rt') as file:  # localhost:8000 would not require localhost
-                for row in tsvreader(file):
+            with gzip.open(readable_file, mode='rt') as file_handle:  # localhost:8000 would not require localhost
+                for row in self.reader.tsv(file_handle):
                     if row[0].startswith('#'):
                         continue
                     try:
                         if snps:
-                            (chrom, doc) = self.read_snp(row)
+                            (chrom, doc) = self.reader.snp(row)
                         else:
-                            (chrom, doc) = self.read_region(row)
+                            (chrom, doc) = self.reader.region(row)
                     except:
                             log.error('Failure to parse row %s:%s:%s, skipping row' % \
                                                                 row[0], row[1], row[2])
                             continue
-                    #if chrom not in SUPPORTED_CHROMOSOMES:
-                    #    continue
-                    if snps:
-                        # this does not tax memory as much.
-                        if self.add_a_snp_to_regions_es(assembly, chrom, doc):
-                            if chrom not in chroms:
-                                try:
-                                    self.regions_es.indices.flush_synced(index=snp_index_key(assembly))
-                                except:
-                                    pass
-                                chroms.append(chrom)
-                    else:
-                        if chrom in file_data:
-                            file_data[chrom].append(doc)
-                        else:
-                            file_data[chrom] = [doc]
-        #else:  TODO: bigBeds? Other file types?
+                    if snps and chrom not in SUPPORTED_CHROMOSOMES:
+                        continue   # TEMPORARY: limit SNPs to major chroms
+                    if chrom not in chroms:
+                        # 1 chrom at a time saves memory (but assumes the files are in sort order!)
+                        if file_data and len(chroms) > 0:
+                            if snps:
+                                self.index_snps(assembly, file_data, file_doc, chroms[-1])
+                            else:
+                                self.index_regions(assembly, file_data, file_doc, chroms[-1])
+                        file_data = {chrom: []}
+                        chroms.append(chrom)
+                    file_data[chrom].append(doc)
 
-        if file_data:
-            if snps:
-                if len(chroms) == 0:
-                    return False
-                uuid = str(afile['uuid'])
-                file_doc['chroms'] = chroms
-                file_doc['index'] = snp_index_key(assembly)
-                return self.add_to_residence(uuid, file_doc)
-                #return self.add_snps_to_regions_es(afile, assembly, file_data, file_doc)
-            else:
-                return self.add_to_regions_es(afile, assembly, file_data, file_doc)
+        if len(chroms) == 0 or not file_data:
+            return False
 
-        return False
+        if snps:
+            self.index_snps(assembly, file_data, file_doc, chroms[-1])
+        else:
+            self.index_regions(assembly, file_data, file_doc, chroms[-1])
+
+        file_doc['chroms'] = list(set(chroms))
+        return self.add_to_residence(file_doc)
