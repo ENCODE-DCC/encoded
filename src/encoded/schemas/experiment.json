@@ -144,10 +144,18 @@
                     }
                 },
                 {
+                    "required": ["date_submitted"],
+                    "properties": {
+                        "status": {
+                            "enum": ["submitted"]
+                        }
+                    }
+                },
+                {
                     "not": {
                         "properties": {
                             "status": {
-                                "enum": ["released", "revoked"]
+                                "enum": ["released", "revoked", "submitted"]
                             }
                         }
                     }
@@ -190,7 +198,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "18"
+            "default": "19"
         },
         "date_submitted": {
             "title": "Date submitted" ,

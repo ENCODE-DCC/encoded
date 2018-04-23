@@ -1,6 +1,5 @@
 ## Changelog for annotation.json
 
-
 ### Schema version 18
 
 * Replace started status with in progress.
