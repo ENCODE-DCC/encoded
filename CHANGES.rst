@@ -1,23 +1,7 @@
 Changes
 =======
 
-69.0 (unreleased)
------------------
-01. REG-9 Fix vis button for region search (#2210)
-02. ENCD-3986 Update to snovault 1.0.7 (#2229)
-03. ENCD-3950 Require date_submitted in submitted experiments (#2224)
-04. ENCD-3923 Allow es to deploy separately from encoded
-05. ENCD-3620 Update deploy options for region search
-06. ENCD-3621 Refactor deploy script
-07. ENCD-3980 Organize ini files and vars
-08. ENCD-3216 Hide antibody characterizations via user access level (#2225)
-09. ENCD-3726 adding platform to library (#2223)
-10. ENCD-3959 Add int and bool to displayed QC types (#2212)
-11. ENCD-3973 Redo how GM characterization documents get displayed (#2219)
-12. ENCD-3979 Fix zc buildout for pypi update (#2221)
-13. ENCD-3961 eslint AirBnB npm package updates (#2214)
-
-68.0 (released)
+68.0 (unreleased)
 -----------------
 01. ENCD-3965 Update to snovault 1.0.6 (#2209)
 02. ENCD-3934 fix plate location in library (#2208)
