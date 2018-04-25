@@ -1,5 +1,9 @@
 ## Change log for antibody_characterization.json
 
+### Schema version 13
+
+* Added *organoid* to biosample_type enums in characterization_reviews.
+
 ### Schema version 12
 
 * Replace *immortalized cell line* with *cell line* for biosample_type in characterization_reviews

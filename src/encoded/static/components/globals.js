@@ -307,6 +307,7 @@ export const biosampleTypeList = [
     'induced pluripotent stem cell line',
     'single cell',
     'cell-free sample',
+    'organoid',
 ];
 
 export const replicateTypeList = [

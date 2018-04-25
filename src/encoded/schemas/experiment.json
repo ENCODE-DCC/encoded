@@ -200,7 +200,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "19"
+            "default": "20"
         },
         "date_submitted": {
             "title": "Date submitted" ,
