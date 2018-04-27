@@ -44,7 +44,6 @@ _tsv_mapping = OrderedDict([
     ('Biosample treatments duration', ['replicates.library.biosample.treatments.duration',
                                        'replicates.library.biosample.treatments.duration_units']),
     ('Experiment target', ['target.name']),
-    ('Antibody accession', ['replicates.antibody.accession']),
     ('Library made from', ['replicates.library.nucleic_acid_term_name']),
     ('Library depleted in', ['replicates.library.depleted_in_term_name']),
     ('Library extraction method', ['replicates.library.extraction_method']),
