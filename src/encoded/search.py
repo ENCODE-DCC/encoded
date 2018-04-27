@@ -1,6 +1,15 @@
-import copy
 import re
+import copy
+from urllib.parse import urlencode
+from collections import OrderedDict
 from pyramid.view import view_config
+from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.security import effective_principals
+from elasticsearch.helpers import scan
+from encoded.helpers.helper import (
+    format_results,
+    search_result_actions
+)
 from snovault import (
     AbstractCollection,
     TYPES,
@@ -38,9 +47,9 @@ def includeme(config):
     config.scan(__name__)
 
 
-sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
+SANITIZE_SEARCH_STRING_RE = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 
-audit_facets = [
+AUDIT_FACETS = [
     ('audit.ERROR.category', {'title': 'Audit category: ERROR'}),
     ('audit.NOT_COMPLIANT.category', {'title': 'Audit category: NOT COMPLIANT'}),
     ('audit.WARNING.category', {'title': 'Audit category: WARNING'}),
@@ -84,14 +93,13 @@ def search(context, request, search_type=None, return_generator=False):
     es_index = '_all'
     search_audit = request.has_permission('search_audit')
 
-
     # extract from/size from query parameters
     from_, size = get_pagination(request)
 
     # looks at searchTerm query parameter, sets to '*' if none, and creates antlr/lucene query for fancy stuff
     search_term = prepare_search_term(request)
 
-    ## converts type= query parameters to list of doc_types to search, "*" becomes super class Item
+    # converts type= query parameters to list of doc_types to search, "*" becomes super class Item
     if search_type is None:
         doc_types = request.params.getall('type')
         if '*' in doc_types:
@@ -135,15 +143,16 @@ def search(context, request, search_type=None, return_generator=False):
         # Probably this is why filtering Items with subclasses doesn't work right
         # i.e., search/?type=Dataset   Type is not a regular filter/facet.
         for item_type in doc_types:
-            ti = types[item_type]
-            qs = urlencode([
+            it_type = types[item_type]
+            query_string = urlencode([
                 (k.encode('utf-8'), v.encode('utf-8'))
-                for k, v in request.params.items() if not (k == 'type' and types['Item' if v == '*' else v] is ti)
+                for k, v in request.params.items() if not (k == 'type' and types['Item' if v == '*'
+                                                                                 else v] is it_type)
             ])
             result['filters'].append({
                 'field': 'type',
-                'term': ti.name,
-                'remove': '{}?{}'.format(request.path, qs)
+                'term': it_type.name,
+                'remove': '{}?{}'.format(request.path, query_string)
             })
 
         # Add special views like Report and Matrix if search is a single type
@@ -155,13 +164,13 @@ def search(context, request, search_type=None, return_generator=False):
                 'icon': 'table',
             })
             # matrix is encoded in schema for type
-            if hasattr(ti.factory, 'matrix'):
+            if hasattr(it_type.factory, 'matrix'):
                 views.append({
                     'href': request.route_path('matrix', slash='/') + search_base,
                     'title': 'View summary matrix',
                     'icon': 'th',
                 })
-            if hasattr(ti.factory, 'summary_data'):
+            if hasattr(it_type.factory, 'summary_data'):
                 views.append({
                     'href': request.route_path('summary', slash='/') + search_base,
                     'title': 'View summary report',
@@ -193,7 +202,6 @@ def search(context, request, search_type=None, return_generator=False):
         # del query['query']['bool']['must']['multi_match']['fields']
         query['query']['query_string']['fields'].extend(['_all', '*.uuid', '*.md5sum', '*.submitted_file_name'])
 
-
     # Set sort order
     set_sort_order(request, search_term, types, doc_types, query, result)
 
@@ -208,7 +216,7 @@ def search(context, request, search_type=None, return_generator=False):
         facets.extend(types[doc_types[0]].schema['facets'].items())
 
     # Display all audits if logged in, or all but INTERNAL_ACTION if logged out
-    for audit_facet in audit_facets:
+    for audit_facet in AUDIT_FACETS:
         if search_audit and 'group.submitter' in principals or 'INTERNAL_ACTION' not in audit_facet[0]:
             facets.append(audit_facet)
 
@@ -232,7 +240,6 @@ def search(context, request, search_type=None, return_generator=False):
     else:
         es_results = es.search(body=query, index=es_index, from_=from_, size=size, request_cache=True)
 
-
     result['total'] = total = es_results['hits']['total']
 
     schemas = (types[item_type].schema for item_type in doc_types)
@@ -241,7 +248,6 @@ def search(context, request, search_type=None, return_generator=False):
 
     # Add batch actions
     result.update(search_result_actions(request, doc_types, es_results))
-
 
     # Add all link for collections
     if size is not None and size < result['total']:
@@ -262,9 +268,8 @@ def search(context, request, search_type=None, return_generator=False):
         graph = format_results(request, es_results['hits']['hits'], result)
         if return_generator:
             return graph
-        else:
-            result['@graph'] = list(graph)
-            return result
+        result['@graph'] = list(graph)
+        return result
 
     # Scan large result sets.
     del query['aggs']
@@ -280,9 +285,8 @@ def search(context, request, search_type=None, return_generator=False):
     if request.__parent__ is not None or return_generator:
         if return_generator:
             return graph
-        else:
-            result['@graph'] = list(graph)
-            return result
+        result['@graph'] = list(graph)
+        return result
 
     # Stream response using chunked encoding.
     # XXX BeforeRender event listeners not called.
@@ -335,8 +339,7 @@ def report(context, request):
     # Ignore large limits, which make `search` return a Response
     # -- UNLESS we're being embedded by the download_report view
     from_, size = get_pagination(request)
-    if ('limit' in request.GET and request.__parent__ is None
-            and (size is None or size > 1000)):
+    if ('limit' in request.GET and request.__parent__ is None and (size is None or size > 1000)):
         del request.GET['limit']
     # Reuse search view
     res = search(context, request)
@@ -452,7 +455,7 @@ def matrix(context, request):
               field in matrix['x']['facets'] or field in matrix['y']['facets']]
 
     # Display all audits if logged in, or all but INTERNAL_ACTION if logged out
-    for audit_facet in audit_facets:
+    for audit_facet in AUDIT_FACETS:
         if search_audit and 'group.submitter' in principals or 'INTERNAL_ACTION' not in audit_facet[0]:
             facets.append(audit_facet)
 
@@ -542,6 +545,7 @@ def matrix(context, request):
 
     return result
 
+
 @view_config(route_name='news', request_method='GET', permission='search')
 def news(context, request):
     """
@@ -625,6 +629,7 @@ def news(context, request):
     result['facets'] = format_facets(es_results, facets, used_filters, schemas, total, principals)
 
     return result
+
 
 @view_config(route_name='audit', request_method='GET', permission='search')
 def audit(context, request):
@@ -720,7 +725,7 @@ def audit(context, request):
               field in matrix['x']['facets'] or field in matrix['y']['facets']]
 
     # Display all audits if logged in, or all but INTERNAL_ACTION if logged out
-    for audit_facet in audit_facets:
+    for audit_facet in AUDIT_FACETS:
         if search_audit and 'group.submitter' in principals or 'INTERNAL_ACTION' not in audit_facet[0]:
             facets.append(audit_facet)
 
@@ -734,9 +739,9 @@ def audit(context, request):
     audit_field_list_copy = audit_field_list.copy()
 
     # Gets just the fields from the tuples from facet data
-    for item in audit_field_list_copy: # for each audit label
+    for item in audit_field_list_copy:  # for each audit label
         temp = item[0]
-        audit_field_list[audit_field_list.index(item)] = temp #replaces list with just audit field
+        audit_field_list[audit_field_list.index(item)] = temp  # replaces list with just audit field
 
     query['aggs'] = set_facets(facets, used_filters, principals, doc_types)
 
@@ -801,8 +806,8 @@ def audit(context, request):
         # If not the last element in no_audits_groupings then add the inner query
         # inside the next category query. Therefore, as temp is updated, it sets the old temp,
         # which is now temp_copy, within itself. This creates the nested structure.
-        if (no_audits_groupings.index(group)+1) < len(no_audits_groupings):
-            temp["aggs"][no_audits_groupings[(no_audits_groupings.index(group)+1)]] = temp_copy
+        if (no_audits_groupings.index(group) + 1) < len(no_audits_groupings):
+            temp["aggs"][no_audits_groupings[(no_audits_groupings.index(group) + 1)]] = temp_copy
         temp_copy = copy.deepcopy(temp)
 
     # This adds the outermost grouping label to temp.
@@ -816,7 +821,7 @@ def audit(context, request):
     # both: 1) an audit category row for Internal Action and 2) the no audits row as innermost
     # level of nested query to create a no audits at all row within no audits.
     # Additionally, add it to the no_audits_groupings list to be used in summarize_no_audits later.
-    if "audit.INTERNAL_ACTION.category" in facets[len(facets)-1]:
+    if "audit.INTERNAL_ACTION.category" in facets[len(facets) - 1]:
         aggs['audit.INTERNAL_ACTION.category'] = {
             'aggs': {
                 x_grouping: x_agg
@@ -826,12 +831,8 @@ def audit(context, request):
             }
         }
         aggs['no.audit.error']['aggs']['no.audit.not_compliant']['aggs']['no.audit.warning']['aggs']['no.audit.internal_action'] = {
-                            "missing": {
-                                "field": "audit.INTERNAL_ACTION.category"
-                            },
-                            "aggs": {
-                                x_grouping: x_agg
-                            }
+            "missing": {"field": "audit.INTERNAL_ACTION.category"},
+            "aggs": {x_grouping: x_agg}
         }
         no_audits_groupings.append("no.audit.internal_action")
 
@@ -875,7 +876,7 @@ def audit(context, request):
 
     def summarize_buckets(matrix, x_buckets, outer_bucket, grouping_fields):
         # Loop through each audit category and get proper search result data and format it
-        for category in grouping_fields: # for each audit category
+        for category in grouping_fields:  # for each audit category
             counts = {}
             # Go through each bucket
             for bucket in outer_bucket[category]['buckets']:
@@ -962,7 +963,6 @@ def audit(context, request):
         aggregations[group_by].pop("buckets", None)
         aggregations[group_by].pop("sum_other_doc_count", None)
         aggregations[group_by].pop("doc_count_error_upper_bound", None)
-
 
     summarize_buckets(
         result['matrix'],
