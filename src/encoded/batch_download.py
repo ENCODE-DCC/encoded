@@ -9,8 +9,8 @@ from urllib.parse import (
     parse_qs,
     urlencode,
 )
-from .search import iter_search_results
-from .search import list_visible_columns_for_schemas
+from encoded.search import iter_search_results
+from snovault.helpers.helper import list_visible_columns_for_schemas
 import csv
 import io
 import json
