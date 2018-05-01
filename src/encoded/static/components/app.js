@@ -782,6 +782,7 @@ class App extends React.Component {
                         window.location.reload();
                     }
                 }
+                return null;
             }
             // The URL may have redirected
             const responseUrl = (response.url || mutatableHref) + fragment;
