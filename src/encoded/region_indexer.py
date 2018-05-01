@@ -38,6 +38,13 @@ from snovault.elasticsearch.interfaces import (
 
 log = logging.getLogger(__name__)
 
+# ##################################
+# TODO:
+# Add snp 'suggest' to regulome-search (not real useful)
+# Further migrate code to RemoteFile and RegionAtlas
+# Add score to snp indexing
+# Add nearby snps (with scores) to regulome-search, and means to select them!
+# ##################################
 
 # Region indexer 2.0
 # What it does:
@@ -51,7 +58,7 @@ log = logging.getLogger(__name__)
 SUPPORTED_CHROMOSOMES = [
     'chr1',  'chr2',  'chr3',  'chr4',  'chr5',  'chr6',  'chr7',  'chr8',  'chr9',  'chr10',
     'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20',
-    'chr21', 'chr22', 'chrx',  'chry']  # chroms are lower case
+    'chr21', 'chr22', 'chrX',  'chrY']  # chroms are lower case
 
 ALLOWED_FILE_FORMATS = ['bed']
 RESIDENT_REGIONSET_KEY = 'resident_regionsets'  # in regions_es, keeps track of what datsets are resident in one place
@@ -117,7 +124,7 @@ SNP_FILES = [
 ]
 
 # If files are too large then they will be copied locally and read
-MAX_IN_MEMORY_FILE_SIZE = (100 * 1024 * 1024)
+MAX_IN_MEMORY_FILE_SIZE = (700 * 1024 * 1024)  # most files will be below this and index faster
 TEMPORARY_REGIONS_FILE = '/tmp/region_temp.bed.gz'
 
 # On local instance, these are the only files that can be downloaded and regionalizable.  Currently only one is!
@@ -213,6 +220,9 @@ def get_snp_index_mapping(chrom='chr1'):
                 'rsid': {
                     'type': 'keyword'
                 },
+                'chrom': {
+                    'type': 'keyword'
+                },
                 'start': {
                     'type': 'long'
                 },
@@ -222,6 +232,10 @@ def get_snp_index_mapping(chrom='chr1'):
             }
         }
     }
+# This results in too much stress on elasticsearch: it crashes doring indexing of 60M rsids
+#                'suggest' : {
+#                    'type' : 'completion'
+#                },
 
 SNP_INDEX_PREFIX = 'snp141_'
 def snp_index_key(assembly):
@@ -287,12 +301,12 @@ class RemoteReader(object):
         http = urllib3.PoolManager()
 
         # use afile.get(file_size) to decide between in mem file or temp file
-        self.readable_file = None
+        file_to_read = None
         if afile.get('file_size', 0) > self.max_memory:
             with http.request('GET',href, preload_content=False) as r, open(self.temp_file, 'wb') as out_file:
                 copyfileobj(r, out_file)
-            self.readable_file = self.temp_file
-            log.warn('Wrote %s to %s', href, self.readable_file)
+            file_to_read = self.temp_file
+            log.warn('Wrote %s to %s', href, file_to_read)
         else:
             r = http.request('GET', href)
             if r.status != 200:
@@ -301,10 +315,10 @@ class RemoteReader(object):
             file_in_mem = io.BytesIO()
             file_in_mem.write(r.data)
             file_in_mem.seek(0)
-            self.readable_file = file_in_mem
+            file_to_read = file_in_mem
         r.release_conn()
 
-        return self.readable_file
+        return file_to_read
 
     def tsv(self, file_handle):
         reader = csv.reader(file_handle, delimiter='\t')
@@ -313,13 +327,283 @@ class RemoteReader(object):
 
     def region(self, row):
         '''Read a region from an in memory row and returns chrom and document to index.'''
-        chrom, start, end = row[0].lower(), int(row[1]), int(row[2])
+        chrom, start, end = row[0], int(row[1]), int(row[2])
         return (chrom, {'start': start + 1, 'end': end})
 
     def snp(self, row):
         '''Read a SNP from an in memory row and returns chrom and document to index.'''
-        chrom, start, end, rsid = row[0].lower(), int(row[1]), int(row[2]), row[3]
-        return (chrom, {'rsid': rsid, 'start': start + 1, 'end': end})
+        chrom, start, end, rsid = row[0], int(row[1]), int(row[2]), row[3]
+        return (chrom, {'rsid': rsid, 'chrom': chrom, 'start': start + 1, 'end': end})
+
+
+class RegionAtlas(object):
+    '''Methods for getting stuff out of the region_index.'''
+
+    def __init__(self, region_es):
+        self.region_es = region_es
+
+    def snp_index_key(self, assembly):
+        '''SNP indexes are based on assembly, with 'chrom' as doc_type'''
+        return SNP_INDEX_PREFIX + assembly.lower()
+
+    def snp(self, assembly, rsid):
+        '''Return single SNP by rsid and assembly'''
+        try:
+            res = self.region_es.get(index=self.snp_index_key(assembly), doc_type='_all', id=rsid)
+        except Exception:
+            return None
+
+        return res['_source']
+
+    def _range_query(self, start, end, snps=False, with_inner_hits=False):
+        '''return peak query'''
+        # get all peaks that overlap requested region:
+        #     peak.start <= requested.end and peak.end >= requested.start
+        prefix = 'positions.'
+        if snps:
+            prefix = ''
+
+        range_clause = {
+            'bool': {
+                'must': [
+                    {'range': {prefix + 'start': {'lte': end  }}},
+                    {'range': {prefix + 'end':   {'gte': start}}}
+                ]
+            }
+        }
+        if snps:
+            filter = {'bool': {'should': [ range_clause ]}}
+        else:
+            filter = {
+                'nested': {
+                    'path': 'positions',
+                    'query': {
+                        'bool': {'should': [ range_clause ]}
+                    }
+                }
+            }
+
+        query = {
+            'query': {
+                'bool': {
+                    'filter': filter
+                }
+            },
+            '_source': snps,  # True is snps, False if regions
+        }
+        # special SLOW query will return inner_hits positions
+        if with_inner_hits:
+            query['query']['bool']['filter']['nested']['inner_hits'] = {'size': 99999}
+        return query
+
+    def find_snps(self, assembly, chrom, start, end):
+        '''Return all SNPs in a region.'''
+        range_query = self._range_query(start, end, snps=True)
+
+        try:
+            results = self.region_es.search(index=self.snp_index_key(assembly), doc_type=chrom,
+                                            _source=True, body=range_query, size=99999)
+        except NotFoundError:
+            return []
+        except Exception as e:
+            return []  # TODO: andle errors?
+        #log.warn('Find SNPS in %s:%d-%d found %d', chrom, start, end, len(results['hits']['hits']))
+
+        return [ hit['_source'] for hit in results['hits']['hits'] ]
+
+    def nearby_snps(self, assembly, chrom, pos, rsid=None, max_snps=None):
+        '''Return SNPs nearby to the chosen SNP.'''
+        if max_snps is None:
+            max_snps = 40
+        if rsid:
+            max_snps += 1
+
+        range_start = pos - 800
+        range_end = pos + 800
+        if range_start < 0:
+            range_end += 0 - range_start
+            range_start = 0
+
+        snps = self.find_snps(assembly, chrom, range_start, range_end)
+
+        if len(snps) > max_snps + 1:
+
+            # find ix of rsid NOTE: luckily these are sorted on start!
+            ix = 0
+            for snp in snps:
+                if rsid:
+                    if rsid == snp['rsid']:
+                        break
+                else:
+                    if snp['start'] >= pos:
+                        break
+                ix += 1
+
+            first_ix = int(ix - (max_snps / 2))
+            if first_ix > 0:
+                snps = snps[first_ix:]
+            snps = snps[:max_snps]
+
+        return snps
+
+    #def snp_suggest(self, assembly, text):
+    # Using suggest with 60M of rsids leads to es crashing during SNP indexing
+
+    def find_peaks(self, assembly, chrom, start, end, peaks_too=False):
+        '''Return all peaks in a region.'''
+        range_query = self._range_query(start, end, False, peaks_too)
+
+        try:
+            results = self.region_es.search(index=chrom.lower(), doc_type=assembly, _source=False,
+                                        body=range_query, size=99999)
+        except NotFoundError:
+            return None
+        except Exception as e:
+            return None
+
+        return list(results['hits']['hits'])
+
+    def resident_details(self, uuids, use=None):
+        '''Returns dict of resident docs keyed on uuids returned from peak search'''
+        use_types = [FOR_MULTIPLE_USES]
+        if use is not None:
+            use_types.append(use)
+        try:
+            id_query = {"query": {"ids": {"values": uuids}}}
+            res = self.region_es.search(index=RESIDENT_REGIONSET_KEY, body=id_query, doc_type=use_types, size=99999)
+        except Exception:
+            return None
+
+        details = {}
+        hits = res.get("hits", {}).get("hits", [])
+        for hit in hits:
+            details[hit["_id"]] = hit["_source"]
+
+        return details
+
+    def residents_breakdown(self, resident_details, uuids=None):
+        '''Return dataset and file dicts from resident details dicts.'''
+        file_dets = {}
+        dataset_dets = {}
+        if uuids is None:
+            uuids = resident_details.keys()
+        for uuid in uuids:
+            if uuid not in resident_details:
+                continue
+            afile = resident_details[uuid]['file']
+            file_dets[afile['@id']] = afile
+            dataset = resident_details[uuid]['dataset']
+            dataset_dets[dataset['@id']] = dataset
+        return (dataset_dets, file_dets)
+
+    def regulome_score(self, datasets):
+        '''Calculate RegulomeDB score based upon hits and voodoo'''
+        characterize = set()
+        targets = { 'ChIP-seq': [], 'PWM': [], 'Footprint': []}
+        for dataset in datasets.values():
+            #collection_type = region_indexer::regulome_collection_type(dataset)  # full dataset
+            collection_type = dataset.get('collection_type')  # resident_regionset dataset
+            if collection_type is None:
+                continue
+
+            target = dataset.get('target')
+            if target and collection_type in ['ChIP-seq', 'PWM', 'Footprint']:
+                targets[collection_type].append(target)
+
+            if collection_type == 'ChIP-seq':
+                characterize.add('ChIP')
+            elif collection_type in ['DNase-seq', 'FAIRE-seq']:  # TODO: confirm FAIRE is lumped in
+                characterize.add('DNase')                        #       aka Chromatin_Structure
+            if collection_type == 'PWM':                         # TODO: Figure out Position Weight Matrix
+                characterize.add('PWM')                          #       From motifs
+            if collection_type == 'Footprint':                   # TODO: Figure out how to recognize Footptrints
+                characterize.add('Footprint')                    #       Also in Motifs?
+            if collection_type in ['eQTLs','dsQTLs']:
+                characterize.add('eQTL')
+
+        # Targets... For each ChIP target, there should be a PWM and/or Footprint to match
+        for target in targets['ChIP-seq']:
+            if target in targets['PWM']:
+                characterize.add('PWM_matched')
+            if target in targets['Footprint']:
+                characterize.add('Footprint_matched')
+
+        # Now the scoring
+        # score_rules = [ ('1a', {'eQTL','ChIP', 'DNase', 'PWM_matched', 'Footprint_matched'}), ... ]
+        #for (score, rule) in regulome_score_rules:
+        #    if characterize == rule:
+        #        return score
+        # Unfortunately, comparing set to set is less efficient than ifs and is prone to <= bugs...
+        if 'eQTL' in characterize:
+            if 'ChIP' in characterize:
+                if 'DNase':
+                    if 'PWM_matched' in characterize and 'Footprint_matched' in characterize:
+                        return '1a'
+                    if 'PWM' in characterize and 'Footprint' in characterize:
+                        return '1b'
+                    if 'PWM_matched' in characterize:
+                        return '1c'
+                    if 'PWM' in characterize:
+                        return '1d'
+                elif 'PWM_matched' in characterize:
+                    return '1e'
+                return '1f'
+            if 'DNase' in characterize:
+                return '1f'
+        if 'ChIP' in characterize:
+            if 'DNase':
+                if 'PWM_matched' in characterize and 'Footprint_matched' in characterize:
+                    return '2a'
+                if 'PWM' in characterize and 'Footprint' in characterize:
+                    return '2b'
+                if 'PWM_matched' in characterize:
+                    return '2c'
+                if 'PWM' in characterize:
+                    return '3a'
+            elif 'PWM_matched' in characterize:
+                return '3b'
+            if 'DNase' in characterize:
+                return '4'
+            return '5'
+        if 'DNase' in characterize:
+            return '5'
+        if 'PWM' in characterize or 'Footprint' in characterize or 'eQTL' in characterize:
+            return '6'
+
+        return None  # "Found: " + str(characterize)
+
+    def live_score(self, assembly, chrom, pos):
+        '''Returns score for loading into the snp index'''
+        peaks = self.find_peaks(assembly, chrom, pos, pos)
+        if not peaks:
+            return None
+        uuids = list(set([ peak['_id'] for peak in peaks ]))
+        details = self.resident_details(uuids, FOR_REGULOME_DB)
+        (datasets, files) = self.residents_breakdown(details)
+        return self.regulome_score(datasets)
+
+    def counts(self, assemblies=None):
+        '''returns counts (region files, regulome files, snp files and all files)'''
+        counts = {'all_files': 0}
+        for use in [FOR_REGION_SEARCH, FOR_REGULOME_DB, FOR_MULTIPLE_USES]:
+            try:
+                counts[use] = self.region_es.count(index=RESIDENT_REGIONSET_KEY, doc_type=use).get('count',0)
+            except:
+                counts[use] = 0
+            counts['all_files'] += counts[use]
+        counts[FOR_REGION_SEARCH] += counts[FOR_MULTIPLE_USES]
+        counts[FOR_REGULOME_DB] += counts[FOR_MULTIPLE_USES]
+        counts.pop(FOR_MULTIPLE_USES, None)
+
+        if assemblies:
+            counts['SNPs'] = {}
+            for assembly in assemblies:
+                try:
+                    counts['SNPs'][assembly] = self.region_es.count(index=self.snp_index_key(assembly)).get('count',0)
+                except:
+                    counts['SNPs'][assembly] = 0
+
+        return counts
 
 
 class RegionIndexerState(IndexerState):
@@ -481,23 +765,12 @@ def regionindexer_state_show(request):
     # curl -XDELETE http://localhost:9201/chr*/
 
     display = state.display(uuids=request.params.get("uuids"))
-
-    try:
-        rs_count = regions_es.count(index=RESIDENT_REGIONSET_KEY, doc_type=FOR_REGION_SEARCH).get('count',0)
-    except:
-        rs_count = 0
-    try:
-        rdb_count = regions_es.count(index=RESIDENT_REGIONSET_KEY, doc_type=FOR_REGULOME_DB).get('count',0)
-    except:
-        rdb_count = 0
-    try:
-        mixed_count = regions_es.count(index=RESIDENT_REGIONSET_KEY, doc_type=FOR_MULTIPLE_USES).get('count',0)
-    except:
-        mixed_count = 0
-
-    display['files_for_region_search'] = rs_count + mixed_count
-    display['files_for_regulomedb'] = rdb_count + mixed_count
-    display['files_in_index'] = rs_count + rdb_count + mixed_count
+    atlas = RegionAtlas(regions_es)
+    counts = atlas.counts(REGULOME_SUPPORTED_ASSEMBLIES)
+    display['files_for_region_search'] = counts.get(FOR_REGION_SEARCH,0)
+    display['files_for_regulomedb'] = counts.get(FOR_REGULOME_DB,0)
+    display['files_in_index'] = counts.get('all_files',0)
+    display['snps_in_index'] = counts.get('SNPs',0)
 
     if not request.registry.settings.get('testing',False):  # NOTE: _indexer not working on local instances
         try:
@@ -554,6 +827,7 @@ class RegionIndexer(Indexer):
         self.state = RegionIndexerState(self.encoded_es,self.encoded_INDEX)  # WARNING, race condition is avoided because there is only one worker
         self.test_instance = registry.settings.get('testing',False)
         self.reader = RemoteReader(self.test_instance)
+        self.atlas = RegionAtlas(self.regions_es)
 
     def update_object(self, request, dataset_uuid, force):
         request.datastore = 'elasticsearch'  # Let's be explicit
@@ -591,7 +865,7 @@ class RegionIndexer(Indexer):
             file_doc = self.candidate_file(afile, dataset, dataset_region_uses)
             if file_doc:
 
-                log.warn("file is a candidate: %s", afile['accession'])  # DEBUG
+                log.info("file is a candidate: %s", afile['accession'])  # DEBUG
                 using = ""
                 if force:
                     using = "with FORCE"
@@ -779,10 +1053,11 @@ class RegionIndexer(Indexer):
         else:
             for chrom in doc['chroms']:  # Could just try index='chr*'
                 try:
-                    self.regions_es.delete(index=chrom, doc_type=doc['assembly'], id=str(id))
+                    self.regions_es.delete(index=chrom.lower(), doc_type=doc['assembly'], id=str(id))
                 except:
-                    log.error("Region indexer failed to remove %s regions of %s" % (chrom,id))  #, exc_info=True)
-                    return False # Will try next full cycle
+                    #log.error("Region indexer failed to remove %s regions of %s" % (chrom, id))  #, exc_info=True)
+                    #return False # Will try next full cycle
+                    pass
 
         try:
             self.regions_es.delete(index=self.residents_index, doc_type=use_type, id=str(id))
@@ -812,28 +1087,30 @@ class RegionIndexer(Indexer):
         self.regions_es.index(index=self.residents_index, doc_type=use_type, body=file_doc, id=str(uuid))
         return True
 
-    def index_regions(self, assembly, regions, file_doc, one_chrom=None):
+    def index_regions(self, assembly, regions, file_doc, chroms):
         '''Given regions from some source (most likely encoded file) loads the data into region search es'''
         uuid = file_doc['uuid']
 
-        if one_chrom is None:
+        if chroms is None:
             chroms = list(regions.keys())
-        else:
-            chroms = [one_chrom]
         for chrom in list(regions.keys()):
+            if len(regions[chrom]) == 0:
+                continue
             doc = {
                 'uuid': uuid,
                 'positions': regions[chrom]
             }
+            chrom_lc = chrom.lower()
             # Could be a chrom never seen before!
-            if not self.regions_es.indices.exists(chrom):
-                self.regions_es.indices.create(index=chrom, body=index_settings())
+            if not self.regions_es.indices.exists(chrom_lc):
+                self.regions_es.indices.create(index=chrom_lc, body=index_settings())
 
-            if not self.regions_es.indices.exists_type(index=chrom, doc_type=assembly):
+            if not self.regions_es.indices.exists_type(index=chrom_lc, doc_type=assembly):
                 mapping = get_chrom_index_mapping(assembly)
-                self.regions_es.indices.put_mapping(index=chrom, doc_type=assembly, body=mapping)
+                self.regions_es.indices.put_mapping(index=chrom_lc, doc_type=assembly, body=mapping)
 
-            self.regions_es.index(index=chrom, doc_type=assembly, body=doc, id=uuid)
+            self.regions_es.index(index=chrom_lc, doc_type=assembly, body=doc, id=uuid)
+            file_doc['chroms'].append(chrom)
 
         return True
 
@@ -842,39 +1119,41 @@ class RegionIndexer(Indexer):
         for snp in snps_for_chrom:
             yield {'_index': snp_index, '_type': chrom, '_id': snp['rsid'], '_source': snp}
 
-    def index_snps(self, assembly, snp_docs, file_doc, one_chrom=None):
+    def index_snps(self, assembly, snps, file_doc, chroms=None):
         '''Given SNPs from file loads the data into region search es'''
         snp_index = snp_index_key(assembly)
+        file_doc['index'] = snp_index
 
         if not self.regions_es.indices.exists(snp_index):
             self.regions_es.indices.create(index=snp_index, body=index_settings())
 
-        if one_chrom is None:
-            chroms = list(snp_docs.keys())
-        else:
-            chroms = [one_chrom]
+        if chroms is None:
+            chroms = list(snps.keys())
         for chrom in chroms:
+            if len(snps[chrom]) == 0:
+                continue
             if not self.regions_es.indices.exists_type(index=snp_index, doc_type=chrom):
                 mapping = get_snp_index_mapping(chrom)
                 self.regions_es.indices.put_mapping(index=snp_index, doc_type=chrom, body=mapping)
-            # indexing in bulk 1M snps at a time...
-            bulk(self.regions_es, self.snps_bulk_iterator(snp_index, chrom, snp_docs[chrom]), chunk_size=1048576)
+            # indexing in bulk 500K snps at a time...
+            bulk(self.regions_es, self.snps_bulk_iterator(snp_index, chrom, snps[chrom]), chunk_size=500000)
+            file_doc['chroms'].append(chrom)
 
             try:  # likely millions per chrom, so
                 self.regions_es.indices.flush_synced(index=snp_index)
             except:
                 pass
+            log.warn('Added %s/%s %d docs', snp_index, chrom, len(snps[chrom]))
 
-        file_doc['index'] = snp_index
-
-        log.warn('Added %s/%s %d docs', snp_index, chrom, len(snp_docs[chrom]))
         return True
 
     def add_file_to_regions_es(self, request, afile, file_doc, snp=False):
         '''Given an encoded file object, reads the file to create regions data then loads that into region search es.'''
 
         assembly = file_doc['file']['assembly']
-        snps = file_doc.get('snps', False)
+        snp_set = file_doc.get('snps', False)
+        big_file = (afile.get('file_size', 0) > MAX_IN_MEMORY_FILE_SIZE)
+        file_doc['chroms'] = []
 
         readable_file = self.reader.readable_file(request, afile)
         if not readable_file:
@@ -889,34 +1168,39 @@ class RegionIndexer(Indexer):
                     if row[0].startswith('#'):
                         continue
                     try:
-                        if snps:
+                        if snp_set:
                             (chrom, doc) = self.reader.snp(row)
                         else:
                             (chrom, doc) = self.reader.region(row)
                     except:
-                            log.error('Failure to parse row %s:%s:%s, skipping row' % \
-                                                                row[0], row[1], row[2])
-                            continue
-                    if snps and chrom not in SUPPORTED_CHROMOSOMES:
+                        log.error('%s - failure to parse row %s:%s:%s, skipping row', \
+                                                        afile['href'], row[0], row[1], row[2])
+                        continue
+                    if snp_set and chrom not in SUPPORTED_CHROMOSOMES:
                         continue   # TEMPORARY: limit SNPs to major chroms
-                    if chrom not in chroms:
-                        # 1 chrom at a time saves memory (but assumes the files are in sort order!)
-                        if file_data and len(chroms) > 0:
-                            if snps:
-                                self.index_snps(assembly, file_data, file_doc, chroms[-1])
+                    if chrom not in file_data:
+                        # 1 chrom at a time saves memory (but assumes the files are in chrom order!)
+                        if big_file and file_data and len(chroms) > 0:
+                            if snp_set:
+                                self.index_snps(assembly, file_data, file_doc, list(file_data.keys()))
                             else:
-                                self.index_regions(assembly, file_data, file_doc, chroms[-1])
-                        file_data = {chrom: []}
+                                self.index_regions(assembly, file_data, file_doc, list(file_data.keys()))
+                            file_data = {}  # Don't hold onto data already indexed
+                        file_data[chrom] = []
                         chroms.append(chrom)
                     file_data[chrom].append(doc)
 
         if len(chroms) == 0 or not file_data:
             return False
 
-        if snps:
-            self.index_snps(assembly, file_data, file_doc, chroms[-1])
+        # Note that if indexing by chrom (snp_set or big_file) then file_data will only have one chrom
+        if snp_set:
+            self.index_snps(assembly, file_data, file_doc, list(file_data.keys()))
         else:
-            self.index_regions(assembly, file_data, file_doc, chroms[-1])
+            self.index_regions(assembly, file_data, file_doc, list(file_data.keys()))
 
-        file_doc['chroms'] = list(set(chroms))
+        if big_file and file_doc['chroms'] != chroms:
+            log.error('%s chromosomes %s indexed out of order!', file_doc['file']['@id'],
+                                                        ('SNPs' if snp_set else 'regions') )
+        #file_doc['chroms'] = list(set(chroms))
         return self.add_to_residence(file_doc)

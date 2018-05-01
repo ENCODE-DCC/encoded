@@ -1,4 +1,5 @@
 from pyramid.view import view_config
+from pyramid.compat import bytes_
 from snovault import TYPES
 from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 from snovault.elasticsearch.indexer import MAX_CLAUSES_FOR_ES
@@ -16,13 +17,13 @@ from .search import (
 )
 from .batch_download import get_peak_metadata_links
 from .region_indexer import (
-    RESIDENT_REGIONSET_KEY,
+    RegionAtlas,
     FOR_REGION_SEARCH,
     FOR_REGULOME_DB,
-    FOR_MULTIPLE_USES,
     ENCODED_ALLOWED_STATUSES,
     REGULOME_ALLOWED_STATUSES,
-    REGULOME_DATASET_INDICES
+    REGULOME_DATASET_INDICES,
+    SNP_INDEX_PREFIX
 )
 from .vis_defines import (
     vis_format_url,
@@ -98,83 +99,22 @@ def includeme(config):
     config.add_route('region-search', '/region-search{slash:/?}')
     config.add_route('regulome-search', '/regulome-search{slash:/?}')
     config.add_route('suggest', '/suggest{slash:/?}')
+    config.add_route('jbrest', '/jbrest/snp141/{assembly}/{cmd}/{chrom}{slash:/?}')
     config.scan(__name__)
 
 
-def get_bool_query(start, end):
-    must_clause = {
-        'bool': {
-            'must': [
-                {
-                    'range': {
-                        'positions.start': {
-                            'lte': start,
-                        }
-                    }
-                },
-                {
-                    'range': {
-                        'positions.end': {
-                            'gte': end,
-                        }
-                    }
-                }
-            ]
-        }
-    }
-    return must_clause
-
-
-
-def get_peak_query(start, end, with_inner_hits=False):
-    """
-    return peak query
-    """
-    # get all peaks that overlap requested region:
-    #     peak.start <= requested.end and peak.end >= requested.start
-    range_clause = [ get_bool_query(end, start) ]
-    query = {
-        'query': {
-            'bool': {
-                'filter': {
-                    'nested': {
-                        'path': 'positions',
-                        'query': {
-                            'bool': {
-                                'should': range_clause
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        '_source': False,
-    }
-    # special SLOW query will return inner_hits positions
-    if with_inner_hits:
-        query['query']['bool']['filter']['nested']['inner_hits'] = {'size': 99999}
-    return query
-
-
-def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, use=None):
+def region_get_hits(atlas, assembly, chrom, start, end, peaks_too=False, use=None):
     '''Returns a list of file uuids AND dataset paths for chromosome location'''
 
     all_hits = {}  #{ 'dataset_paths': [], 'files': {}, 'datasets': {}, 'peaks': [], 'message': ''}
 
-    region_query = get_peak_query(start, end, peaks_too)
-
     begin = time.time()  # DEBUG: timing
-    try:
-        results = region_es.search(body=region_query, index=chrom.lower(), _source=False,
-                                    doc_type=_GENOME_TO_ALIAS[assembly], size=99999)
-    except NotFoundError:
+    peaks = atlas.find_peaks(_GENOME_TO_ALIAS[assembly], chrom, start, end, peaks_too)
+    if not peaks:
         return {'message': 'No hits found in this location'}
-    except Exception as e:
-        return {'message': 'Error during region search: ' + str(e)}
+    all_hits['peak_count'] = len(peaks)
     timing1 = time.time() - begin  # DEBUG: timing
 
-    peaks = list(results['hits']['hits'])
-    all_hits['peak_count'] = len(peaks)
     if peaks_too:
         all_hits['peaks'] = peaks  # For "download_elements", contains 'inner_hits' with positions
     # NOTE: peak['inner_hits']['positions']['hits']['hits'] may exist with uuids but to same file
@@ -184,35 +124,14 @@ def region_get_hits(region_es, assembly, chrom, start, end, peaks_too=False, use
         return {'message': 'No uuids found in region'}
     uuids = list(uuids)
 
-    resident_details = {}
-    use_types = [FOR_MULTIPLE_USES]
-    if use is not None:
-        use_types.append(use)
-
     begin = time.time()  # DEBUG: timing
-    try:
-        id_query = {"query": {"ids": {"values": uuids}}}
-        res = region_es.search(body=id_query, index=RESIDENT_REGIONSET_KEY, doc_type=use_types, size=99999)
-    except Exception:
+    resident_details = atlas.resident_details(uuids, use)
+    if not resident_details:
         return {'message': 'Error during resident_details search'}
     all_hits['timing_es'] = [timing1, (time.time() - begin)]  # DEBUG: timing
 
-    hits = res.get("hits", {}).get("hits", [])
-    for hit in hits:
-        resident_details[hit["_id"]] = hit["_source"]
-
-    dataset_ids = set()
-    all_hits['files'] = {}
-    all_hits['datasets'] = {}
-    for uuid in uuids:
-        if uuid not in resident_details:
-            continue
-        all_hits['files'][uuid] = resident_details[uuid]['file']
-        dataset = resident_details[uuid]['dataset']
-        all_hits['datasets'][dataset['uuid']] = dataset
-        dataset_ids.add(dataset['@id'])
-
-    all_hits['dataset_paths'] = list(dataset_ids)
+    (all_hits['datasets'], all_hits['files']) = atlas.residents_breakdown(resident_details)
+    all_hits['dataset_paths'] = list(all_hits['datasets'].keys())
     all_hits['file_count'] = len(all_hits['files'].keys())
     all_hits['dataset_count'] = len(all_hits['datasets'].keys())
 
@@ -279,7 +198,12 @@ def assembly_mapper(location, species, input_assembly, output_assembly):
         return(chromosome, start, end)
 
 
-def get_rsid_coordinates(id, assembly):
+def get_rsid_coordinates(id, assembly, atlas=None):
+    if atlas and assembly in ['GRCh38','hg19','GRCh37']:
+        snp = atlas.snp(_GENOME_TO_ALIAS[assembly], id)
+        if snp:
+            return (snp['chrom'], snp.get('start',''), snp.get('end',''))
+
     species = _GENOME_TO_SPECIES.get(assembly, 'homo_sapiens')
     ensembl_url = _ENSEMBL_URL
     if assembly == 'GRCh37':
@@ -341,82 +265,6 @@ def format_position(position, resolution):
     end = int(end) + resolution
     return '{}:{}-{}'.format(chromosome, start, end)
 
-def regulome_score(datasets):
-    '''Calculate RegulomeDB score based upon hits and voodoo'''
-    characterize = set()
-    targets = { 'ChIP-seq': [], 'PWM': [], 'Footprint': []}
-    for dataset in datasets.values():
-        #collection_type = region_indexer::regulome_collection_type(dataset)  # full dataset
-        collection_type = dataset.get('collection_type')  # resident_regionset dataset
-        if collection_type is None:
-            continue
-
-        target = dataset.get('target')
-        if target and collection_type in ['ChIP-seq', 'PWM', 'Footprint']:
-            targets[collection_type].append(target)
-
-        if collection_type == 'ChIP-seq':
-            characterize.add('ChIP')
-        elif collection_type in ['DNase-seq', 'FAIRE-seq']:  # TODO: confirm FAIRE is lumped in
-            characterize.add('DNase')                        #       aka Chromatin_Structure
-        if collection_type == 'PWM':                         # TODO: Figure out Position Weight Matrix
-            characterize.add('PWM')                          #       From motifs
-        if collection_type == 'Footprint':                   # TODO: Figure out how to recognize Footptrints
-            characterize.add('Footprint')                    #       Also in Motifs?
-        if collection_type in ['eQTLs','dsQTLs']:
-            characterize.add('eQTL')
-
-    # Targets... For each ChIP target, there should be a PWM and/or Footprint to match
-    for target in targets['ChIP-seq']:
-        if target in targets['PWM']:
-            characterize.add('PWM_matched')
-        if target in targets['Footprint']:
-            characterize.add('Footprint_matched')
-
-    # Now the scoring
-    # score_rules = [ ('1a', {'eQTL','ChIP', 'DNase', 'PWM_matched', 'Footprint_matched'}), ... ]
-    #for (score, rule) in regulome_score_rules:
-    #    if characterize == rule:
-    #        return score
-    # Unfortunately, comparing set to set is less efficient than ifs and is prone to <= bugs...
-    if 'eQTL' in characterize:
-        if 'ChIP' in characterize:
-            if 'DNase':
-                if 'PWM_matched' in characterize and 'Footprint_matched' in characterize:
-                    return '1a'
-                if 'PWM' in characterize and 'Footprint' in characterize:
-                    return '1b'
-                if 'PWM_matched' in characterize:
-                    return '1c'
-                if 'PWM' in characterize:
-                    return '1d'
-            elif 'PWM_matched' in characterize:
-                return '1e'
-            return '1f'
-        if 'DNase' in characterize:
-            return '1f'
-    if 'ChIP' in characterize:
-        if 'DNase':
-            if 'PWM_matched' in characterize and 'Footprint_matched' in characterize:
-                return '2a'
-            if 'PWM' in characterize and 'Footprint' in characterize:
-                return '2b'
-            if 'PWM_matched' in characterize:
-                return '2c'
-            if 'PWM' in characterize:
-                return '3a'
-        elif 'PWM_matched' in characterize:
-            return '3b'
-        if 'DNase' in characterize:
-            return '4'
-        return '5'
-    if 'DNase' in characterize:
-        return '5'
-    if 'PWM' in characterize or 'Footprint' in characterize or 'eQTL' in characterize:
-        return '6'
-
-    return "Found: " + str(characterize)
-
 def update_viusalize(result, assembly, dataset_paths, file_statuses):
     '''Restrict visualize to assembly and add Quick View if possible.'''
     # TODO: figure out why arxhived files are failing in biodaliance
@@ -468,7 +316,7 @@ def region_search(context, request):
     }
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    snp_es = request.registry['snp_search']
+    atlas = RegionAtlas(request.registry['snp_search'])
     region = request.params.get('region', '*')
 
     # handling limit
@@ -488,6 +336,9 @@ def region_search(context, request):
     annotation = request.params.get('annotation', '*')
     chromosome, start, end = ('', '', '')
 
+    result['timing'].append(('preamble',time.time() - begin))       # DEBUG: timing
+    begin = time.time()                                             # DEBUG: timing
+    rsid=None
     if annotation != '*':
         if annotation.lower().startswith('ens'):
             chromosome, start, end = get_ensemblid_coordinates(annotation, assembly)
@@ -497,7 +348,8 @@ def region_search(context, request):
         region = region.lower()
         if region.startswith('rs'):
             sanitized_region = sanitize_rsid(region)
-            chromosome, start, end = get_rsid_coordinates(sanitized_region, assembly)
+            chromosome, start, end = get_rsid_coordinates(sanitized_region, assembly, atlas)
+            rsid = sanitized_region
         elif region.startswith('ens'):
             chromosome, start, end = get_ensemblid_coordinates(region, assembly)
         elif region.startswith('chr'):
@@ -512,15 +364,15 @@ def region_search(context, request):
         result['coordinates'] = '{chr}:{start}-{end}'.format(
             chr=chromosome, start=start, end=end
         )
+    result['timing'].append(('get_coords',time.time() - begin))  # DEBUG: timing
+    begin = time.time()                                          # DEBUG: timing
 
     # Search for peaks for the coordinates we got
     peaks_too = ('peak_metadata' in request.query_string)
     use = FOR_REGION_SEARCH
     if regulome:
         use = FOR_REGULOME_DB
-    result['timing'].append(('preamble',time.time() - begin))       # DEBUG: timing
-    begin = time.time()                                             # DEBUG: timing
-    all_hits = region_get_hits(snp_es, assembly, chromosome, start, end,
+    all_hits = region_get_hits(atlas, assembly, chromosome, start, end,
                                                 peaks_too=peaks_too, use=use)
     if 'timing_es' in all_hits:                                     # DEBUG: timing
         result['timing'].append(('hits_es',all_hits['timing_es']))  # DEBUG: timing
@@ -589,9 +441,12 @@ def region_search(context, request):
 
         if regulome:
             # score regulome SNPs or point locations
-            if (region.startswith('rs') or (int(end) - int(start)) <= 5):
+            if (rsid is not None or (int(end) - int(start)) <= 1):
+                result['nearby_snps'] = atlas.nearby_snps(result['assembly'], chromosome, start, rsid)
+                result['timing'].append(('nearby_snps',time.time() - begin))  # DEBUG: timing
+                begin = time.time()                                           # DEBUG: timing
                 # NOTE: Needs all hits rather than 'released' or set reduced by facet selection
-                regdb_score = regulome_score(all_hits['datasets'])
+                regdb_score = atlas.regulome_score(all_hits['datasets'])
                 if regdb_score:
                     result['regulome_score'] = regdb_score
             result['timing'].append(('scoring',time.time() - begin))  # DEBUG: timing
@@ -601,6 +456,56 @@ def region_search(context, request):
 
     return result
 
+#@view_config(route_name='jbrest', request_method='GET', permission='search')
+
+@view_config(route_name='jbrest')
+def jbrest(context, request):
+    '''Limited JBrowse REST API support for select region sets'''
+    # This allows including SNPs in biodalliance straight from es index and without bigBeds
+    #    jbQuery: 'type=HTMLFeatures'
+    #    jbURI: .../jbrest/snp141/hg19/features/chr19?start=234&end=5678
+    # or jbURI: .../jbrest/snp141/GRCh38/stats/global or
+
+    parts = request.path.split('/')
+    parts.pop(0)  # Domain
+    parts.pop(0)  # page: jbrest
+    region_set = parts.pop(0)
+    assembly = parts.pop(0)
+    if region_set != 'snp141' or assembly not in ['GRCh38', 'hg19']:
+        log.error('jbrest: unsupported request %s', request.url)
+        return response
+
+    atlas = RegionAtlas(request.registry['snp_search'])
+    what = parts.pop(0)
+    if what == 'features':
+        chrom = parts.pop(0)
+        if not chrom.startswith('chr'):
+            chrom = 'chr' + chrom
+        start = int(request.params.get('start', '-1'))
+        end = int(request.params.get('end', '-1'))
+        if start < 0 or end < 0 or end < start:
+            log.error('jbrest: invalid coordinates %s', request.url)
+            return response
+        snps = atlas.find_snps(assembly, chrom, start, end)
+        features = []
+        for snp in snps:
+            features.append({'start': snp['start'], 'end': snp['end'], \
+                             'name': snp['rsid'], 'uniqueID': snp['rsid']})
+        request.response.content_type = 'application/json'
+        request.query_string += "&format=json"
+        return {'features': features}
+    #elif what == 'stats':
+    #    if parts[0] != 'global':
+    #        log.error('jbrest: only global stats supported %s', request.url)
+    #        return response
+    #    counts = atlas.counts(assembly)
+    #    stats = {}
+    #    stats['featureCount'] = counts['SNPs'][assembly]
+    #    stats['featureDensity'] = 0.02  # counts['SNPs'][assembly] / 3000000000.0
+    #    response.body = bytes_(json.dumps(stats), 'utf-8')
+
+    log.error('jbrest unknown command: %s', request.url)
+    return response
 
 @view_config(route_name='suggest', request_method='GET', permission='search')
 def suggest(context, request):
@@ -616,6 +521,8 @@ def suggest(context, request):
         'title': 'Suggest',
         '@graph': [],
     }
+    # NOTE: attempt to use suggest on SNPs in es led to es failure during indexing
+    #if text.startswith('rs'):
     es = request.registry[ELASTIC_SEARCH]
     query = {
         "suggest": {
@@ -623,7 +530,7 @@ def suggest(context, request):
                 "text": text,
                 "completion": {
                     "field": "suggest",
-                    "size": 100
+                    "size": 20
                 }
             }
         }
@@ -633,8 +540,6 @@ def suggest(context, request):
     except:
         return result
     else:
-        result['@id'] = '/suggest/?' + urlencode({'genome': requested_genome, 'q': text}, ['q','genome'])
-        result['@graph'] = []
         for item in results['suggest']['default-suggest'][0]['options']:
             if _GENOME_TO_SPECIES.get(requested_genome,'homo_sapiens').replace('_', ' ') == item['_source']['payload']['species']:
                 result['@graph'].append(item)
