@@ -102,6 +102,13 @@ function rAssemblyToSources(assembly, region) {
                 trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/GRCh38/gencode.v24.annotation.ix',
             },
             {
+                name: 'SNPs',
+                desc: 'dbSNP v141',
+                jbURI: '/jbrest/snp141/GRCh38',
+                jbQuery: 'type=HTMLFeatures',
+                style: [{ style: { HEIGHT: 10 } }],
+            },
+            {
                 name: 'Repeats',
                 desc: 'Repeat annotation from RepeatMasker',
                 bwgURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/GRCh38/repeats_GRCh38.bb',
@@ -132,6 +139,13 @@ function rAssemblyToSources(assembly, region) {
                 stylesheet_uri: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/gencode_v19.xml',
                 collapseSuperGroups: true,
                 trixURI: 'https://s3-us-west-1.amazonaws.com/encoded-build/browser/hg19/gencode.v19.annotation.ix',
+            },
+            {
+                name: 'SNPs',
+                desc: 'dbSNP v141',
+                jbURI: '/jbrest/snp141/hg19',
+                jbQuery: 'type=HTMLFeatures',
+                style: [{ style: { HEIGHT: 10 } }],
             },
             {
                 name: 'Repeats',
