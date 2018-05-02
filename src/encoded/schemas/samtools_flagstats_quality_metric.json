@@ -62,7 +62,7 @@
             "description": "flagstats: mapped - percent"
         },
         "mapped_qc_failed": {
-            "title": "% reads mapped failing QC",
+            "title": "# reads mapped failing QC",
             "type": "number",
             "description": "flagstats: mapped - qc failed"
         },
