@@ -18,12 +18,7 @@ from .search import (
 from .batch_download import get_peak_metadata_links
 from .region_indexer import (
     RegionAtlas,
-    FOR_REGION_SEARCH,
-    FOR_REGULOME_DB,
-    ENCODED_ALLOWED_STATUSES,
-    REGULOME_ALLOWED_STATUSES,
-    REGULOME_DATASET_INDICES,
-    SNP_INDEX_PREFIX
+    RegulomeAtlas
 )
 from .vis_defines import (
     vis_format_url,
@@ -103,7 +98,7 @@ def includeme(config):
     config.scan(__name__)
 
 
-def region_get_hits(atlas, assembly, chrom, start, end, peaks_too=False, use=None):
+def region_get_hits(atlas, assembly, chrom, start, end, peaks_too=False):
     '''Returns a list of file uuids AND dataset paths for chromosome location'''
 
     all_hits = {}  #{ 'dataset_paths': [], 'files': {}, 'datasets': {}, 'peaks': [], 'message': ''}
@@ -118,19 +113,16 @@ def region_get_hits(atlas, assembly, chrom, start, end, peaks_too=False, use=Non
     if peaks_too:
         all_hits['peaks'] = peaks  # For "download_elements", contains 'inner_hits' with positions
     # NOTE: peak['inner_hits']['positions']['hits']['hits'] may exist with uuids but to same file
-    uuids = set()
-    uuids.update( [ peak['_id'] for peak in peaks ] )
-    if not uuids:
-        return {'message': 'No uuids found in region'}
-    uuids = list(uuids)
 
     begin = time.time()  # DEBUG: timing
-    resident_details = atlas.resident_details(uuids, use)
-    if not resident_details:
+    peak_details = atlas.peak_details(peaks)
+    if peak_details is None:
         return {'message': 'Error during resident_details search'}
+    if not peak_details:
+        return {'message': 'No %s sources found' % atlas.type()}
     all_hits['timing_es'] = [timing1, (time.time() - begin)]  # DEBUG: timing
 
-    (all_hits['datasets'], all_hits['files']) = atlas.residents_breakdown(resident_details)
+    (all_hits['datasets'], all_hits['files']) = atlas.details_breakdown(peak_details)
     all_hits['dataset_paths'] = list(all_hits['datasets'].keys())
     all_hits['file_count'] = len(all_hits['files'].keys())
     all_hits['dataset_count'] = len(all_hits['datasets'].keys())
@@ -316,7 +308,10 @@ def region_search(context, request):
     }
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    atlas = RegionAtlas(request.registry['snp_search'])
+    if regulome:
+        atlas = RegulomeAtlas(request.registry['snp_search'])
+    else:
+        atlas = RegionAtlas(request.registry['snp_search'])
     region = request.params.get('region', '*')
 
     # handling limit
@@ -369,11 +364,8 @@ def region_search(context, request):
 
     # Search for peaks for the coordinates we got
     peaks_too = ('peak_metadata' in request.query_string)
-    use = FOR_REGION_SEARCH
-    if regulome:
-        use = FOR_REGULOME_DB
     all_hits = region_get_hits(atlas, assembly, chromosome, start, end,
-                                                peaks_too=peaks_too, use=use)
+                                                peaks_too=peaks_too)
     if 'timing_es' in all_hits:                                     # DEBUG: timing
         result['timing'].append(('hits_es',all_hits['timing_es']))  # DEBUG: timing
     result['timing'].append(('hits',time.time() - begin))           # DEBUG: timing
@@ -394,16 +386,13 @@ def region_search(context, request):
     if dataset_count:
 
         set_type = ['Experiment']
-        set_indices = 'experiment'
-        allowed_status = ENCODED_ALLOWED_STATUSES
+        set_indices = atlas.set_indices()
+        allowed_status = atlas.allowed_statuses()
         facets = _FACETS
         if regulome:
-            set_type = ['Dataset']
-            set_indices = REGULOME_DATASET_INDICES
-            allowed_status = REGULOME_ALLOWED_STATUSES
             facets = _REGULOME_FACETS
 
-        query = get_filtered_query('Dataset', [], set(), principals, set_type)
+        query = get_filtered_query('Dataset', [], set(), principals, atlas.set_type())
         del query['query']
         query['post_filter']['bool']['must'].append({'terms': {'embedded.@id': all_hits['dataset_paths']}})
         query['post_filter']['bool']['must'].append({'terms': {'embedded.status': allowed_status}})

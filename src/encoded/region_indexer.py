@@ -66,9 +66,13 @@ RESIDENT_REGIONSET_KEY = 'resident_regionsets'  # in regions_es, keeps track of 
 FOR_REGION_SEARCH = 'region_search'
 FOR_REGULOME_DB = 'RegulomeDB'
 FOR_MULTIPLE_USES = 'multiple'  # Only used for residence doc_type to aid accounting
+# TODO: requires deleting indexes and then full reindexing
+#FOR_REGULOME_DB = 'regulomedb'
+#FOR_MULTIPLE_USES = 'region_regulomedb'  # doc_type = region*  or *regulomedb
 
 ENCODED_SUPPORTED_ASSEMBLIES = ['hg19', 'mm10', 'mm9', 'GRCh38']
 ENCODED_ALLOWED_STATUSES = ['released']
+ENCODED_DATASET_INDICES = ['experiment']
 ENCODED_REGION_REQUIREMENTS = {
     'ChIP-seq': {
         'output_type': ['optimal idr thresholded peaks'],
@@ -341,10 +345,23 @@ class RegionAtlas(object):
 
     def __init__(self, region_es):
         self.region_es = region_es
+        self.expected_use=FOR_REGULOME_DB
 
     def snp_index_key(self, assembly):
         '''SNP indexes are based on assembly, with 'chrom' as doc_type'''
         return SNP_INDEX_PREFIX + assembly.lower()
+
+    def type(self):
+        return 'region search'
+
+    def allowed_statuses(self):
+        return ENCODED_ALLOWED_STATUSES
+
+    def set_type(self):
+        return ['Experiment']
+
+    def set_indices(self):
+        return ENCODED_DATASET_INDICES
 
     def snp(self, assembly, rsid):
         '''Return single SNP by rsid and assembly'''
@@ -411,41 +428,6 @@ class RegionAtlas(object):
 
         return [ hit['_source'] for hit in results['hits']['hits'] ]
 
-    def nearby_snps(self, assembly, chrom, pos, rsid=None, max_snps=None):
-        '''Return SNPs nearby to the chosen SNP.'''
-        if max_snps is None:
-            max_snps = 40
-        if rsid:
-            max_snps += 1
-
-        range_start = pos - 800
-        range_end = pos + 800
-        if range_start < 0:
-            range_end += 0 - range_start
-            range_start = 0
-
-        snps = self.find_snps(assembly, chrom, range_start, range_end)
-
-        if len(snps) > max_snps + 1:
-
-            # find ix of rsid NOTE: luckily these are sorted on start!
-            ix = 0
-            for snp in snps:
-                if rsid:
-                    if rsid == snp['rsid']:
-                        break
-                else:
-                    if snp['start'] >= pos:
-                        break
-                ix += 1
-
-            first_ix = int(ix - (max_snps / 2))
-            if first_ix > 0:
-                snps = snps[first_ix:]
-            snps = snps[:max_snps]
-
-        return snps
-
     #def snp_suggest(self, assembly, text):
     # Using suggest with 60M of rsids leads to es crashing during SNP indexing
 
@@ -463,11 +445,25 @@ class RegionAtlas(object):
 
         return list(results['hits']['hits'])
 
+    def _peak_uuids_in_overlap(self, peaks, chrom, start, end=None):
+        '''returns the only the uuids for peaks that overlap a given location'''
+        if end is None:
+            end = start
+
+        overlap = []
+        for peak in peaks:
+            for hit in peak['inner_hits']['positions']['hits']['hits']:
+                if chrom == peak['_index'] and start <= hit['_source']['end'] and end >= hit['_source']['start']:
+                    overlap.append(peak)
+                    break
+
+        return list(set([ peak['_id'] for peak in overlap ]))
+
     def resident_details(self, uuids, use=None):
         '''Returns dict of resident docs keyed on uuids returned from peak search'''
-        use_types = [FOR_MULTIPLE_USES]
-        if use is not None:
-            use_types.append(use)
+        if use is None:
+            use = self.expected_use
+        use_types = [FOR_MULTIPLE_USES, use]
         try:
             id_query = {"query": {"ids": {"values": uuids}}}
             res = self.region_es.search(index=RESIDENT_REGIONSET_KEY, body=id_query, doc_type=use_types, size=99999)
@@ -481,20 +477,84 @@ class RegionAtlas(object):
 
         return details
 
-    def residents_breakdown(self, resident_details, uuids=None):
+    def peak_details(self, peaks, use=None):
+        '''Returns dict of resident docs keyed on uuids returned from peak search'''
+        uuids = list(set([ peak['_id'] for peak in peaks ]))
+        return self.resident_details(uuids, use)
+
+    def _filter_details(self, details, uuids=None, peaks=None):
+        '''returns only the details that match the uuids'''
+        if uuids is None:
+            assert(peaks is not None)
+            uuids = list(set([ peak['_id'] for peak in peaks ]))
+        filtered = {}
+        for uuid in uuids:
+            if uuid in details:  # region peaks may not be in regulome only details
+                filtered[uuid] = details[uuid]
+        return filtered
+
+    def details_breakdown(self, details, uuids=None):
         '''Return dataset and file dicts from resident details dicts.'''
+        if not details:
+            return (None, None)
         file_dets = {}
         dataset_dets = {}
         if uuids is None:
-            uuids = resident_details.keys()
+            uuids = details.keys()
         for uuid in uuids:
-            if uuid not in resident_details:
+            if uuid not in details:
                 continue
-            afile = resident_details[uuid]['file']
+            afile = details[uuid]['file']
             file_dets[afile['@id']] = afile
-            dataset = resident_details[uuid]['dataset']
+            dataset = details[uuid]['dataset']
             dataset_dets[dataset['@id']] = dataset
         return (dataset_dets, file_dets)
+
+    def counts(self, assemblies=None):
+        '''returns counts (region files, regulome files, snp files and all files)'''
+        counts = {'all_files': 0}
+        for use in [FOR_REGION_SEARCH, FOR_REGULOME_DB, FOR_MULTIPLE_USES]:
+            try:
+                counts[use] = self.region_es.count(index=RESIDENT_REGIONSET_KEY, doc_type=use).get('count',0)
+            except:
+                counts[use] = 0
+            counts['all_files'] += counts[use]
+        counts[FOR_REGION_SEARCH] += counts[FOR_MULTIPLE_USES]
+        counts[FOR_REGULOME_DB] += counts[FOR_MULTIPLE_USES]
+        counts.pop(FOR_MULTIPLE_USES, None)
+
+        if assemblies:
+            counts['SNPs'] = {}
+            for assembly in assemblies:
+                try:
+                    counts['SNPs'][assembly] = self.region_es.count(index=self.snp_index_key(assembly)).get('count',0)
+                except:
+                    counts['SNPs'][assembly] = 0
+
+        return counts
+
+
+class RegulomeAtlas(RegionAtlas):
+    '''Methods for getting stuff out of the region_index.'''
+
+    def __init__(self, region_es):
+        super(RegulomeAtlas, self).__init__(region_es)
+        self.expected_use=FOR_REGULOME_DB
+
+    def type(self):
+        return 'regulome'
+
+    def allowed_statuses(self):
+        return REGULOME_ALLOWED_STATUSES
+
+    def set_type(self):
+        return ['Dataset']
+
+    def set_indices(self):
+        return REGULOME_DATASET_INDICES
+
+    #def snp_suggest(self, assembly, text):
+    # Using suggest with 60M of rsids leads to es crashing during SNP indexing
 
     def regulome_score(self, datasets):
         '''Calculate RegulomeDB score based upon hits and voodoo'''
@@ -572,38 +632,83 @@ class RegionAtlas(object):
 
         return None  # "Found: " + str(characterize)
 
+    def _snp_window(self, snps, window, center_pos=None):
+        '''Reduce a list of snps to a set number of snps centered around position'''
+        if len(snps) <= window:
+            return snps
+
+        # find ix of pos NOTE: luckily these are sorted on start!
+        ix = 0
+        for snp in snps:
+            if snp['start'] >= center_pos:
+                break
+            ix += 1
+
+        first_ix = int(ix - (window / 2))
+        if first_ix > 0:
+            snps = snps[first_ix:]
+        return snps[:window]
+
+
+    def scored_snps(self, assembly, chrom, start, end, window=-1, center_pos=None):
+        '''For a region, get all SNPs with scores'''
+        snps = self.find_snps(assembly, chrom, start, end)
+        if not snps:
+            snps
+        if window > 0:
+            snps = self._snp_window(snps, window, center_pos)
+        peaks = self.find_peaks(assembly, chrom, snps[0]['start'], snps[-1]['end'], peaks_too=True)  # must do SLOW peaks_too
+        if not peaks:
+            for snp in snps:
+                snp['score'] = None
+            return snps
+        details = self.peak_details(peaks, FOR_REGULOME_DB)
+
+        for snp in snps:
+            snp_uuids = self._peak_uuids_in_overlap(peaks, snp['chrom'], snp['start'])
+            if len(snp_uuids) == 0:
+                snp['score'] = None  # 'no overlap'
+                continue
+            snp_details = self._filter_details(details, uuids=snp_uuids)
+            if not snp_details:
+                log.warn('Unexpected empty details for SNP: %s', snp['rsid'])
+                snp['score'] = None
+                continue
+            (snp_datasets, snp_files) = self.details_breakdown(snp_details)
+            if not snp_datasets:
+                log.warn('Unexpected failure to breakdown snp details for SNP: %s', snp['rsid'])
+                snp['score'] = None
+                continue
+            snp['score'] = self.regulome_score(snp_datasets)
+        return snps
+
+    def nearby_snps(self, assembly, chrom, pos, rsid=None, max_snps=10, scores=False):
+        '''Return SNPs nearby to the chosen SNP.'''
+        if rsid:
+            max_snps += 1
+
+        range_start = pos - 800
+        range_end = pos + 800
+        if range_start < 0:
+            range_end += 0 - range_start
+            range_start = 0
+
+        if scores:
+            snps = self.scored_snps(assembly, chrom, range_start, range_end, max_snps, pos)
+        else:
+            snps = self.find_snps(assembly, chrom, range_start, range_end)
+            snps = self._snp_window(snps, max_snps, pos)
+
+        return snps
+
     def live_score(self, assembly, chrom, pos):
-        '''Returns score for loading into the snp index'''
+        '''Returns score knowing single position and nothing more.'''
         peaks = self.find_peaks(assembly, chrom, pos, pos)
         if not peaks:
             return None
-        uuids = list(set([ peak['_id'] for peak in peaks ]))
-        details = self.resident_details(uuids, FOR_REGULOME_DB)
-        (datasets, files) = self.residents_breakdown(details)
+        details = self.peak_details(peaks, FOR_REGULOME_DB)
+        (datasets, files) = self.details_breakdown(details)
         return self.regulome_score(datasets)
-
-    def counts(self, assemblies=None):
-        '''returns counts (region files, regulome files, snp files and all files)'''
-        counts = {'all_files': 0}
-        for use in [FOR_REGION_SEARCH, FOR_REGULOME_DB, FOR_MULTIPLE_USES]:
-            try:
-                counts[use] = self.region_es.count(index=RESIDENT_REGIONSET_KEY, doc_type=use).get('count',0)
-            except:
-                counts[use] = 0
-            counts['all_files'] += counts[use]
-        counts[FOR_REGION_SEARCH] += counts[FOR_MULTIPLE_USES]
-        counts[FOR_REGULOME_DB] += counts[FOR_MULTIPLE_USES]
-        counts.pop(FOR_MULTIPLE_USES, None)
-
-        if assemblies:
-            counts['SNPs'] = {}
-            for assembly in assemblies:
-                try:
-                    counts['SNPs'][assembly] = self.region_es.count(index=self.snp_index_key(assembly)).get('count',0)
-                except:
-                    counts['SNPs'][assembly] = 0
-
-        return counts
 
 
 class RegionIndexerState(IndexerState):
