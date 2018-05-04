@@ -103,24 +103,19 @@ def region_get_hits(atlas, assembly, chrom, start, end, peaks_too=False):
 
     all_hits = {}  #{ 'dataset_paths': [], 'files': {}, 'datasets': {}, 'peaks': [], 'message': ''}
 
-    begin = time.time()  # DEBUG: timing
-    peaks = atlas.find_peaks(_GENOME_TO_ALIAS[assembly], chrom, start, end, peaks_too)
+    (peaks, peak_details) = atlas.find_peaks_filtered(_GENOME_TO_ALIAS[assembly], chrom, start, end, peaks_too)
     if not peaks:
         return {'message': 'No hits found in this location'}
-    all_hits['peak_count'] = len(peaks)
-    timing1 = time.time() - begin  # DEBUG: timing
+    if peak_details is None:
+        return {'message': 'Error during peak filtering'}
+    if not peak_details:
+        return {'message': 'No %s sources found' % atlas.type()}
 
+    all_hits['peak_count'] = len(peaks)
     if peaks_too:
         all_hits['peaks'] = peaks  # For "download_elements", contains 'inner_hits' with positions
     # NOTE: peak['inner_hits']['positions']['hits']['hits'] may exist with uuids but to same file
 
-    begin = time.time()  # DEBUG: timing
-    peak_details = atlas.peak_details(peaks)
-    if peak_details is None:
-        return {'message': 'Error during resident_details search'}
-    if not peak_details:
-        return {'message': 'No %s sources found' % atlas.type()}
-    all_hits['timing_es'] = [timing1, (time.time() - begin)]  # DEBUG: timing
 
     (all_hits['datasets'], all_hits['files']) = atlas.details_breakdown(peak_details)
     all_hits['dataset_paths'] = list(all_hits['datasets'].keys())
@@ -331,7 +326,7 @@ def region_search(context, request):
     annotation = request.params.get('annotation', '*')
     chromosome, start, end = ('', '', '')
 
-    result['timing'].append(('preamble',time.time() - begin))       # DEBUG: timing
+    result['timing'].append({'preamble': (time.time() - begin)})    # DEBUG: timing
     begin = time.time()                                             # DEBUG: timing
     rsid=None
     if annotation != '*':
@@ -359,16 +354,14 @@ def region_search(context, request):
         result['coordinates'] = '{chr}:{start}-{end}'.format(
             chr=chromosome, start=start, end=end
         )
-    result['timing'].append(('get_coords',time.time() - begin))  # DEBUG: timing
-    begin = time.time()                                          # DEBUG: timing
+    result['timing'].append({'get_coords': (time.time() - begin)})  # DEBUG: timing
+    begin = time.time()                                             # DEBUG: timing
 
     # Search for peaks for the coordinates we got
     peaks_too = ('peak_metadata' in request.query_string)
     all_hits = region_get_hits(atlas, assembly, chromosome, start, end,
                                                 peaks_too=peaks_too)
-    if 'timing_es' in all_hits:                                     # DEBUG: timing
-        result['timing'].append(('hits_es',all_hits['timing_es']))  # DEBUG: timing
-    result['timing'].append(('hits',time.time() - begin))           # DEBUG: timing
+    result['timing'].append({'peaks': (time.time() - begin)})       # DEBUG: timing
     begin = time.time()                                             # DEBUG: timing
     result['notification'] = all_hits['message']
     if all_hits.get('dataset_count',0) == 0:
@@ -413,32 +406,32 @@ def region_search(context, request):
 
         if peaks_too:
             result['peaks'] = all_hits['peaks']
-        result['download_elements'] = get_peak_metadata_links(request)
+        result['download_elements'] = get_peak_metadata_links(request, result['assembly'], chromosome, start, end)
         if result['total'] > 0:
             result['notification'] = 'Success: ' + result['notification']
             position_for_browser = format_position(result['coordinates'], 200)
             result.update(search_result_actions(request, ['Experiment'], es_results, position=position_for_browser))
         result.pop('batch_download', None)  # not desired for region OR regulome
 
-        result['timing'].append(('graph',time.time() - begin))  # DEBUG: timing
-        begin = time.time()                                     # DEBUG: timing
+        result['timing'].append({'datasets': (time.time() - begin)})  # DEBUG: timing
+        begin = time.time()                                           # DEBUG: timing
         vis = update_viusalize(result, assembly, all_hits['dataset_paths'], allowed_status)
         if vis is not None:
             result['visualize_batch'] = vis
-        result['timing'].append(('visualize',time.time() - begin))  # DEBUG: timing
-        begin = time.time()                                         # DEBUG: timing
+        result['timing'].append({'visualize': (time.time() - begin)})  # DEBUG: timing
+        begin = time.time()                                            # DEBUG: timing
 
         if regulome:
             # score regulome SNPs or point locations
             if (rsid is not None or (int(end) - int(start)) <= 1):
                 result['nearby_snps'] = atlas.nearby_snps(result['assembly'], chromosome, start, rsid)
-                result['timing'].append(('nearby_snps',time.time() - begin))  # DEBUG: timing
-                begin = time.time()                                           # DEBUG: timing
+                result['timing'].append({'nearby_snps': (time.time() - begin)})  # DEBUG: timing
+                begin = time.time()                                              # DEBUG: timing
                 # NOTE: Needs all hits rather than 'released' or set reduced by facet selection
                 regdb_score = atlas.regulome_score(all_hits['datasets'])
                 if regdb_score:
                     result['regulome_score'] = regdb_score
-            result['timing'].append(('scoring',time.time() - begin))  # DEBUG: timing
+            result['timing'].append({'scoring': (time.time() - begin)})  # DEBUG: timing
         else:  # not regulome then clean up message
             if result['notification'].startswith('Success'):
                 result['notification']= 'Success'

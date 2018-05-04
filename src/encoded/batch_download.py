@@ -15,6 +15,10 @@ import csv
 import io
 import json
 import datetime
+from .region_indexer import RegulomeAtlas
+
+import logging
+log = logging.getLogger(__name__)
 
 currenttime = datetime.datetime.now()
 
@@ -23,6 +27,7 @@ def includeme(config):
     config.add_route('batch_download', '/batch_download/{search_params}')
     config.add_route('metadata', '/metadata/{search_params}/{tsv}')
     config.add_route('peak_metadata', '/peak_metadata/{search_params}/{tsv}')
+    config.add_route('regulome_evidence', '/regulome_evidence/{search_params}/{tsv}')
     config.add_route('report_download', '/report.tsv')
     config.scan(__name__)
 
@@ -114,15 +119,38 @@ def get_biosample_accessions(file_json, experiment_json):
             pass
     return ', '.join(list(accessions))
 
-def get_peak_metadata_links(request):
+def get_regulome_evidence_links(request, assembly, chrom, start, end):
+    # Add search params?
+    #if request.matchdict.get('search_params'):
+    #    search_params = request.matchdict['search_params']
+    #else:
+    #    search_params = request.query_string
+    page = request.path.split('/')[1]
+    search_params = 'assembly=%s&chrom=%s&start=%d&end=%d' % (assembly, chrom, start, end)
+
+    regulome_bed_link = '{host_url}/regulome_evidence/{search_params}/regulomeDB_{assembly}.bed'.format(
+        host_url=request.host_url,
+        search_params=search_params,
+        assembly=assembly
+    )
+    regulome_json_link = '{host_url}/regulome_evidence/{search_params}/regulomeDB_{assembly}.json'.format(
+        host_url=request.host_url,
+        search_params=search_params,
+        assembly=assembly
+    )
+    return [regulome_bed_link, regulome_json_link]
+
+def get_peak_metadata_links(request, assembly, chrom, start, end):
+    page = request.path.split('/')[1]
+    if page.startswith('regulome'):
+        return get_regulome_evidence_links(request, assembly, chrom, start, end)
+
     if request.matchdict.get('search_params'):
         search_params = request.matchdict['search_params']
     else:
         search_params = request.query_string
-    page = request.path.split('/')[1]
-    regulome = page.startswith('regulome')
-    if regulome:
-        search_params += '&regulome=1'
+    #if regulome:
+    #    search_params += '&regulome=1'
 
     peak_metadata_tsv_link = '{host_url}/peak_metadata/{search_params}/peak_metadata.tsv'.format(
         host_url=request.host_url,
@@ -173,6 +201,7 @@ def make_audit_cell(header_column, experiment_json, file_json):
 
 @view_config(route_name='peak_metadata', request_method='GET')
 def peak_metadata(context, request):
+    # TODO: make regulome version using atlas.scored_snps
     param_list = parse_qs(request.matchdict['search_params'])
     regulome = param_list.pop('regulome',None)
     target_page = 'region-search'
@@ -227,6 +256,94 @@ def peak_metadata(context, request):
         content_type='text/tsv',
         body=fout.getvalue(),
         content_disposition='attachment;filename="%s"' % 'peak_metadata.tsv'
+    )
+
+
+def make_a_case(snp_evidence_category):
+    case = []
+    for dataset in snp_evidence_category:
+        evidence = ''
+        biosample = dataset.get('biosample_term_name',dataset.get('biosample_summary'))
+        if biosample:
+            evidence = biosample.replace(' ', '') + ':'
+        target = dataset.get('target')
+        if target:
+            evidence += target.replace(' ', '') + ':'
+        try:
+            evidence += dataset.get('@id', '').split('/')[-2]
+        except:
+            pass
+        case.append(evidence)
+    return ','.join(case)
+
+
+@view_config(route_name='regulome_evidence', request_method='GET')
+def regulome_evidence(context, request):
+    atlas = RegulomeAtlas(request.registry['snp_search'])
+    params = {}
+    params.update(parse_qs(request.matchdict['search_params']))
+    assembly = params.get('assembly',[None])[0]  # TODO normalize?
+    chrom = params.get('chrom',[None])[0]
+    start = int(params.get('start', [0])[0])
+    end = int(params.get('end', [0])[0])
+    if assembly is None or chrom is None or start == 0 or end == 0:
+        log.error('Requesting regulome_evidence without assembly, chrom, start, end')
+        return
+    else:
+        snps = atlas.scored_snps(assembly, chrom, start, end)
+    if snps is None:
+        snps = {}
+        log.error('Requesting regulome_evidence: no SNPs in region')
+    # from snps list make:
+    # { rsid: {
+    #       'chrom':
+    #       'start':
+    #       'end':
+    #       'score':
+    #       'evidence':
+    #           'ChIP': [ { 'uuid': , '@id': , 'biosample': GM, 'target': CTCF }, ... ],
+    #           'DNase': [ { 'uuid': , '@id': , 'biosample': }, ... ],
+    #           'PWM':
+    #           'Footprint':
+    #           'eQTL':
+    # }
+    # bed 5 +
+    header = ['#chrom', 'start', 'end', 'rsid', 'num_score', 'score']
+    header.extend(atlas.evidence_categories())
+    rows = []
+    json_doc = {}
+    for snp in snps:
+        snp['assembly'] = assembly
+        coordinates = '{}:{}-{}'.format(snp['chrom'], snp['start'], snp['end'])
+        json_doc[snp.get('rsid', coordinates)] = snp  # json is the straight up snp beast!
+        score = snp.get('score','')
+        num_score = atlas.numeric_score(score)
+        data_row = [snp['chrom'], snp['start'], snp['end'], snp.get('rsid',coordinates),
+                                 num_score, score]
+        evidence = {}
+        if 'evidence' in snp:
+            for category in snp['evidence'].keys():
+                if category.endswith('_matched'):
+                    evidence[category] = ','.join(snp['evidence'][category])
+                else:
+                    evidence[category] = make_a_case(snp['evidence'][category])
+        for category in atlas.evidence_categories():
+            data_row.append(evidence.get(category,''))
+        rows.append(data_row)
+    if request.url.endswith('.json'):
+        return Response(
+            content_type='text/plain',
+            body=json.dumps(json_doc),
+            content_disposition='attachment;filename="regulomeDB_%s.json"' % assembly
+        )
+    fout = io.StringIO()
+    writer = csv.writer(fout, delimiter='\t')
+    writer.writerow(header)
+    writer.writerows(rows)
+    return Response(
+        content_type='text/tsv',
+        body=fout.getvalue(),
+        content_disposition='attachment;filename="regulomeDB_%s.bed"' % assembly
     )
 
 
