@@ -58,9 +58,9 @@ def test_batch_download_report_download(testapp, workbook):
     assert lines[1].split(b'\t') == [
         b'ID', b'Accession', b'Assay Type', b'Assay Nickname', b'Target label',
         b'Target gene', b'Biosample summary', b'Biosample', b'Description', b'Lab',
-        b'Project', b'Status', b'Biological replicate', b'Technical replicate',
-        b'Linked Antibody', b'Species', b'Life stage', b'Age', b'Age Units',
-        b'Treatment', b'Term ID', b'Concentration', b'Concentration units',
+        b'Project', b'Status', b'Biosample accession', b'Biological replicate',
+        b'Technical replicate', b'Linked Antibody', b'Species', b'Life stage', b'Age',
+        b'Age Units', b'Treatment', b'Term ID', b'Concentration', b'Concentration units',
         b'Duration', b'Duration units', b'Synchronization',
         b'Post-synchronization time', b'Post-synchronization time units',
         b'Replicates',

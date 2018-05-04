@@ -433,6 +433,9 @@
         "status": {
             "title": "Status"
         },
+        "replicates.library.biosample.accession": {
+            "title": "Biosample accession"
+        },
         "replicates.biological_replicate_number": {
             "title": "Biological replicate"
         },
