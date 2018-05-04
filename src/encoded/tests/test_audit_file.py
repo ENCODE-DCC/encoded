@@ -252,6 +252,32 @@ def test_audit_file_mismatched_paired_with(testapp, file1, file4):
                'inconsistent paired_with' for error in errors_list)
 
 
+def test_audit_file_inconsistent_read_count_paired_with(testapp, file1, file4):
+    testapp.patch_json(file1['@id'], {
+                       'run_type': 'paired-ended',
+                       'read_count': 20,
+                       'paired_end': '2',
+                       'paired_with': file4['uuid']})
+    testapp.patch_json(file4['@id'], {
+                       'read_count': 21})                   
+    res = testapp.get(file1['@id'] + '@@index-data')
+    errors = res.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert any(error['category'] ==
+               'inconsistent read count' for error in errors_list)
+    testapp.patch_json(file4['@id'], {
+                       'read_count': 20})                   
+    res2 = testapp.get(file1['@id'] + '@@index-data')
+    errors = res2.json['audit']
+    errors_list = []
+    for error_type in errors:
+        errors_list.extend(errors[error_type])
+    assert all(error['category'] !=
+               'inconsistent read count' for error in errors_list)
+
+
 def test_audit_file_missing_controlled_by(testapp, file3):
     res = testapp.get(file3['@id'] + '@@index-data')
     errors = res.json['audit']
