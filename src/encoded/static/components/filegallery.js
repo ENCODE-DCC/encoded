@@ -48,6 +48,12 @@ function fileAccessionSort(a, b) {
 }
 
 
+// Calculate a string representation of the given replication_type.
+const replicationDisplay = replicationType => (
+    replicationType === 'unreplicated' ? 'Replicate' : `${`${replicationType.charAt(0).toUpperCase()}${replicationType.slice(1)}`} replicate`
+);
+
+
 export class FileTable extends React.Component {
     static rowClasses() {
         return '';
@@ -114,13 +120,13 @@ export class FileTable extends React.Component {
 
     render() {
         const {
+            context,
             items,
             graphedFiles,
             filePanelHeader,
             encodevers,
             selectedFilterValue,
             filterOptions,
-            anisogenic,
             showFileCount,
             session,
             adminUser,
@@ -172,7 +178,7 @@ export class FileTable extends React.Component {
                             files={files.raw}
                             meta={{
                                 encodevers,
-                                anisogenic,
+                                replicationType: context.replication_type,
                                 fileClick: this.fileClick,
                                 graphedFiles,
                                 session,
@@ -184,7 +190,7 @@ export class FileTable extends React.Component {
                             files={files.rawArray}
                             meta={{
                                 encodevers,
-                                anisogenic,
+                                replicationType: context.replication_type,
                                 fileClick: this.fileClick,
                                 graphedFiles,
                                 session,
@@ -207,7 +213,7 @@ export class FileTable extends React.Component {
                             sortColumn="biological_replicates"
                             meta={{
                                 encodevers,
-                                anisogenic,
+                                replicationType: context.replication_type,
                                 hoverDL: this.hoverDL,
                                 restrictedTip: this.state.restrictedTip,
                                 fileClick: this.fileClick,
@@ -230,7 +236,7 @@ export class FileTable extends React.Component {
                             columns={FileTable.refTableColumns}
                             meta={{
                                 encodevers,
-                                anisogenic,
+                                replicationType: context.replication_type,
                                 hoverDL: this.hoverDL,
                                 restrictedTip: this.state.restrictedTip,
                                 fileClick: this.fileClick,
@@ -248,13 +254,13 @@ export class FileTable extends React.Component {
 }
 
 FileTable.propTypes = {
+    context: PropTypes.object.isRequired, // Dataset-type object being rendered
     items: PropTypes.array.isRequired, // Array of files to appear in the table
     graphedFiles: PropTypes.object, // Specifies which files are in the graph
     filePanelHeader: PropTypes.object, // Table header component
     encodevers: PropTypes.string, // ENCODE version of the experiment
     selectedFilterValue: PropTypes.string, // Selected filter from popup menu
     filterOptions: PropTypes.array, // Array of assambly/annotation from file array
-    anisogenic: PropTypes.bool, // True if experiment is anisogenic
     showFileCount: PropTypes.bool, // True to show count of files in table
     setInfoNodeId: PropTypes.func, // Function to call to set the currently selected node ID
     setInfoNodeVisible: PropTypes.func, // Function to call to set the visibility of the node's modal
@@ -270,7 +276,6 @@ FileTable.defaultProps = {
     encodevers: '',
     selectedFilterValue: 'default',
     filterOptions: [],
-    anisogenic: false,
     showFileCount: false,
     setInfoNodeId: null,
     setInfoNodeVisible: null,
@@ -300,7 +305,7 @@ FileTable.procTableColumns = {
     file_type: { title: 'File type' },
     output_type: { title: 'Output type' },
     biological_replicates: {
-        title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
+        title: (list, columns, meta) => <span>{replicationDisplay(meta.replicationType)}</span>,
         getValue: item => (item.biological_replicates ? item.biological_replicates.sort((a, b) => a - b).join(', ') : ''),
     },
     mapped_read_length: {
@@ -547,7 +552,7 @@ class RawSequencingTable extends React.Component {
 
                         {!this.state.collapsed ?
                             <tr>
-                                <th>Biological replicate</th>
+                                <th>{replicationDisplay(meta.replicationType)}</th>
                                 <th>Library</th>
                                 <th>Accession</th>
                                 <th>File type</th>
@@ -725,7 +730,7 @@ class RawFileTable extends React.Component {
 
                         {!this.state.collapsed ?
                             <tr>
-                                <th>Biological replicate</th>
+                                <th>{replicationDisplay(meta.replicationType)}</th>
                                 <th>Library</th>
                                 <th>Accession</th>
                                 <th>File type</th>
@@ -867,33 +872,23 @@ DatasetFiles.defaultProps = {
 // This component only triggers the data retrieval, which is done with a search for files associated
 // with the given experiment (in this.props.context). An odd thing is we specify query-string parameters
 // to the experiment URL, but they apply to the file search -- not the experiment itself.
-/* eslint-disable react/prefer-stateless-function */
-export class FileGallery extends React.Component {
-    render() {
-        const { context, encodevers, anisogenic, hideGraph, altFilterDefault } = this.props;
-
-        return (
-            <FetchedData>
-                <Param name="data" url={`/search/?limit=all&type=File&dataset=${context['@id']}`} />
-                <Param name="schemas" url="/profiles/" />
-                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
-            </FetchedData>
-        );
-    }
-}
-/* eslint-enable react/prefer-stateless-function */
+export const FileGallery = ({ context, encodevers, hideGraph, altFilterDefault }, reactContext) => (
+    <FetchedData>
+        <Param name="data" url={`/search/?limit=all&type=File&dataset=${context['@id']}`} />
+        <Param name="schemas" url="/profiles/" />
+        <FileGalleryRenderer context={context} session={reactContext.session} encodevers={encodevers} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
+    </FetchedData>
+);
 
 FileGallery.propTypes = {
     context: PropTypes.object.isRequired, // Dataset object whose files we're rendering
     encodevers: PropTypes.string, // ENCODE version number
-    anisogenic: PropTypes.bool, // True if anisogenic experiment
     hideGraph: PropTypes.bool, // T to hide graph display
     altFilterDefault: PropTypes.bool, // T to default to All Assemblies and Annotations
 };
 
 FileGallery.defaultProps = {
     encodevers: '',
-    anisogenic: false,
     hideGraph: false,
     altFilterDefault: false,
 };
