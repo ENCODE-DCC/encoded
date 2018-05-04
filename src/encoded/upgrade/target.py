@@ -139,3 +139,10 @@ def target_3_4(value, system):
 def target_5_6(value, system):
     if value['status'] == 'proposed':
         value['status'] = 'current'
+
+
+@upgrade_step('target', '6', '7')
+def target_6_7(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3981
+    if 'histone modification' in value['investigated_as']:
+        value['investigated_as'].remove('histone modification')
