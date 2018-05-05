@@ -181,7 +181,8 @@
                 "GGR",
                 "modENCODE",
                 "modERN",
-                "Roadmap"
+                "Roadmap",
+                "ENCORE"
             ]
         },
         "project": {
@@ -206,7 +207,8 @@
                 "ENCODE3",
                 "ENCODE4",
                 "GGR",
-                "REMC"
+                "REMC",
+                "ENCORE"
             ]
         }
     },
