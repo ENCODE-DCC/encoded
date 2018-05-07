@@ -1900,10 +1900,12 @@ def test_audit_experiment_chip_seq_control_standards(
                                              'dataset': experiment['@id']})
     testapp.patch_json(file_bam_1_1['@id'], {'step_run': analysis_step_run_bam['@id'],
                                              'status': 'in progress',
+                                             'mapped_read_length': 120,
                                              'assembly': 'mm10', 'dataset': base_experiment['@id'],
                                              'derived_from': [file_fastq_3['@id']]})
     testapp.patch_json(file_bam_2_1['@id'], {'step_run': analysis_step_run_bam['@id'],
                                              'status': 'in progress',
+                                             'mapped_read_length': 10,
                                              'assembly': 'mm10', 'dataset': experiment['@id'],
                                              'derived_from': [file_fastq_4['@id']]})
     testapp.patch_json(file_tsv_1_2['@id'], {'derived_from': [file_bam_2_1['@id'],
@@ -1936,6 +1938,8 @@ def test_audit_experiment_chip_seq_control_standards(
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] ==
                'control extremely low read depth' for error in collect_audit_errors(res))
+    assert any(error['category'] ==
+               'new inconsistent control read length' for error in collect_audit_errors(res))
 
 
 def test_audit_experiment_chip_seq_peaks_without_controls(

@@ -99,6 +99,29 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                     check_pipeline('ChIP-seq read mapping',
                                     derived_from.get('@id'),
                                     controls_files_structures[derived_from.get('dataset')])))
+            
+            derived_from_internal_bams_gen = (
+                derived_from for derived_from in
+                derived_from_files
+                if (derived_from.get('dataset') == value.get('@id')
+                    and
+                    check_pipeline('ChIP-seq read mapping',
+                                    derived_from.get('@id'),
+                                    files_structure)))
+          
+            internal_bam_run_type = None
+            internal_bam_read_length = None
+            internal_bam = None
+            multiple_internal_bams = False
+            internal_bams_counter = 0
+            for bam_file in derived_from_internal_bams_gen:
+                internal_bam_run_type = bam_file.get('mapped_run_type')
+                internal_bam_read_length = bam_file.get('mapped_read_length')                    
+                internal_bam = bam_file
+                internal_bams_counter += 1
+            if internal_bams_counter > 1:
+                multiple_internal_bams = True
+
             control_bam_details = []
             cumulative_read_depth = 0
             for bam_file in derived_from_external_bams_gen:
@@ -124,6 +147,39 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                         control_depth,
                         bam_file.get('dataset'))
                     control_bam_details.append(triple)
+                
+                # check mapped_read_length and mapped_run_type consistenty
+                external_bam_run_type = bam_file.get('mapped_run_type')
+                external_bam_read_length = bam_file.get('mapped_read_length')
+                if (not multiple_internal_bams and internal_bam_run_type and external_bam_run_type and
+                    internal_bam_run_type != external_bam_run_type):
+                    detail = (
+                        'Control {} file {} ' +
+                        'has mapped run type {} that does not match '
+                        'the mapped run type {} of the {} file {}.').format(
+                            bam_file['output_type'],
+                            bam_file['@id'],
+                            external_bam_run_type,
+                            internal_bam_run_type,
+                            internal_bam['output_type'],
+                            internal_bam['@id']
+                            )
+                    yield AuditFailure('new inconsistent control run_type', detail, level='WARNING')
+                if (not multiple_internal_bams and internal_bam_read_length and external_bam_read_length and
+                    internal_bam_read_length != external_bam_read_length):
+                    detail = (
+                        'Control {} file {} ' +
+                        'has mapped read length {} that does not match '
+                        'the mapped read length {} of the {} file {}.').format(
+                            bam_file['output_type'],
+                            bam_file['@id'],
+                            external_bam_read_length,
+                            internal_bam_read_length,
+                            internal_bam['output_type'],
+                            internal_bam['@id']
+                            )
+                    yield AuditFailure('new inconsistent control read length', detail, level='WARNING')
+
             yield from check_control_read_depth_standards(
                 peaks_file.get('@id'),
                 peaks_file.get('assembly'),
