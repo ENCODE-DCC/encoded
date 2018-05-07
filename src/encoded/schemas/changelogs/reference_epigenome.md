@@ -1,5 +1,9 @@
 ## Changelog for reference_epigenome.json
 
+### Schema version 15
+
+* Added supersedes property.
+
 ### Schema version 14
 
 * Replace started status with in progress.
