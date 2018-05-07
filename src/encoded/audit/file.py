@@ -147,7 +147,8 @@ def audit_paired_with(value, system):
                 paired_with
             )
             yield AuditFailure('multiple paired_with', detail, level='ERROR')
-    
+            return
+
     file_read_count = value.get('read_count')
     paired_with_read_count = value['paired_with'].get('read_count')
 
