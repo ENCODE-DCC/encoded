@@ -295,7 +295,8 @@ class Annotation(FileSet, CalculatedBiosampleSlims, CalculatedBiosampleSynonyms,
     ]
     rev = Dataset.rev.copy()
     rev.update({
-        'superseded_by': ('Annotation', 'supersedes')
+        'superseded_by': ('Annotation', 'supersedes'),
+        'superseded_by': ('ReferenceEpigenome', 'supersedes')
     })
 
     matrix = {
