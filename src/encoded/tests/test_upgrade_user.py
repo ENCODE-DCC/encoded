@@ -66,3 +66,10 @@ def test_user_upgrade_contact_info(upgrader, user_7):
     assert 'skype' not in value
     assert 'google' not in value
     assert 'timezone' not in value
+
+
+def test_user_upgrade_7_to_8(upgrader, user_3):
+    user_3['schema_version'] = '7'
+    value = upgrader.upgrade('user', user_3, current_version='7', target_version='8')
+    assert value['schema_version'] == '8'
+    assert 'community' in value['viewing_groups']
