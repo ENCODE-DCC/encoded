@@ -718,16 +718,17 @@ class App extends React.Component {
             mutatableHref = mutatableHref.slice(0, hrefHashPos);
         }
 
-        if (!this.constructor.historyEnabled()) {
-            if (mutatableOptions.replace) {
-                window.location.replace(mutatableHref + fragment);
-            } else {
-                const oldPath = (window.location.toString()).split('#')[0];
-                window.location.assign(mutatableHref + fragment);
-                if (oldPath === mutatableHref) {
-                    window.location.reload();
-                }
-            }
+        // Bypass loading and rendering from JSON if history is disabled
+        // or if the href looks like a download.
+        let decodedHref;
+        try {
+            decodedHref = decodeURIComponent(mutatableHref);
+        } catch (exc) {
+            decodedHref = mutatableHref;
+        }
+        const isDownload = decodedHref.includes('/@@download');
+        if (!this.constructor.historyEnabled() || isDownload) {
+            this.fallbackNavigate(mutatableHref, fragment, mutatableOptions);
             return null;
         }
 
@@ -773,15 +774,8 @@ class App extends React.Component {
 
             // navigate normally to URL of unexpected non-JSON response so back button works.
             if (!contentTypeIsJSON(response.headers.get('Content-Type'))) {
-                if (mutatableOptions.replace) {
-                    window.location.replace(mutatableHref + fragment);
-                } else {
-                    const oldPath = (window.location.toString()).split('#')[0];
-                    window.location.assign(mutatableHref + fragment);
-                    if (oldPath === mutatableHref) {
-                        window.location.reload();
-                    }
-                }
+                this.fallbackNavigate(mutatableHref, fragment, mutatableOptions);
+                return null;
             }
             // The URL may have redirected
             const responseUrl = (response.url || mutatableHref) + fragment;
@@ -807,6 +801,19 @@ class App extends React.Component {
             contextRequest: request,
         });
         return request;
+    }
+
+    fallbackNavigate(href, fragment, options) {
+        // Navigate using window.location
+        if (options.replace) {
+            window.location.replace(href + fragment);
+        } else {
+            const oldPath = (window.location.toString()).split('#')[0];
+            window.location.assign(href + fragment);
+            if (oldPath === href) {
+                window.location.reload();
+            }
+        }
     }
 
     receiveContextResponse(data) {
