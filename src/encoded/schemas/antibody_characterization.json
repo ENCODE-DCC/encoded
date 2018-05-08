@@ -96,7 +96,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "12"
+            "default": "13"
         },
         "reviewed_by": {
             "title": "Reviewed by",
@@ -161,7 +161,8 @@
                                     "biosample_type": {
                                         "enum" : [
                                             "tissue",
-                                            "whole organisms"
+                                            "whole organisms",
+                                            "organoid"
                                         ]
                                     },
                                     "biosample_term_id":{
@@ -257,7 +258,8 @@
                             "primary cell",
                             "stem cell",
                             "tissue",
-                            "whole organisms"
+                            "whole organisms",
+                            "organoid"
                         ]
                     }
                 }

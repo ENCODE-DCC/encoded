@@ -47,7 +47,8 @@
                                 "primary cell",
                                 "stem cell",
                                 "tissue",
-                                "whole organisms"
+                                "whole organisms",
+                                "organoid"
                             ]
                         }
                     }
@@ -73,7 +74,8 @@
                         "biosample_type": {
                             "enum" : [
                                 "tissue",
-                                "whole organisms"
+                                "whole organisms",
+                                "organoid"
                             ]
                         },
                         "biosample_term_id":{
@@ -198,7 +200,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "19"
+            "default": "20"
         },
         "date_submitted": {
             "title": "Date submitted" ,
@@ -228,7 +230,8 @@
                 "primary cell",
                 "stem cell",
                 "tissue",
-                "whole organisms"
+                "whole organisms",
+                "organoid"
             ]
         },
         "dbxrefs": {

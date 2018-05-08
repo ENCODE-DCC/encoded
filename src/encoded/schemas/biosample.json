@@ -55,7 +55,8 @@
                         "biosample_type": {
                             "enum" : [
                                 "tissue",
-                                "whole organisms"
+                                "whole organisms",
+                                "organoid"
                             ]
                         },
                         "biosample_term_id":{
@@ -173,18 +174,18 @@
             }
         },
         "culture_harvest_date":{
-            "comment": "The culture_harvest_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "comment": "The culture_harvest_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell, organoid].",
             "properties": {
                 "biosample_type": {
-                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line", "organoid"]
                 }
             }
         },
         "culture_start_date": {
-            "comment": "The culture_start_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "comment": "The culture_start_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell, organoid].",
             "properties": {
                 "biosample_type": {
-                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line", "organoid"]
                 }
             }
         },
@@ -222,7 +223,8 @@
                     "biosample_type": {
                         "enum": [
                             "whole organisms",
-                            "tissue"
+                            "tissue",
+                            "organoid"
                         ]
                     }
                 }
@@ -273,7 +275,8 @@
                                         "in vitro differentiated cells",
                                         "induced pluripotent stem cell line",
                                         "stem cell",
-                                        "single cell"
+                                        "single cell",
+                                        "organoid"
                                     ]
                                 },
                                 "organism": {
@@ -404,7 +407,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "20"
+            "default": "21"
         },
         "accession": {
             "accessionType": "BS"

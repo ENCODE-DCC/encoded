@@ -1,5 +1,9 @@
 ## Changelog for biosample.json
 
+### Schema version 21
+
+* Added *organoid* to biosample_type enums.
+
 ### Minor changes since schema version 20
 
 * Added *single cell* to biosample_type enums

@@ -245,7 +245,8 @@
                 "primary cell",
                 "stem cell",
                 "tissue",
-                "whole organisms"
+                "whole organisms",
+                "organoid"
             ]
         }
     },

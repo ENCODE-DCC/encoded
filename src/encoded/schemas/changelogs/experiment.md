@@ -1,5 +1,9 @@
 ## Changelog for experiment.json
 
+### Schema version 20
+
+* Added *organoid* to biosample_type enums.
+
 ### Schema version 19
 
 * Make *date_submitted* value a required property for objects in status *submitted*

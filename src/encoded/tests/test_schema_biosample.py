@@ -138,3 +138,9 @@ def test_biosample_tissue_cell_isolated_success(testapp, biosample):
     biosample['biosample_term_id'] = 'CL:349829'
     biosample['cell_isolation_method'] = 'micropipetting'
     testapp.post_json('/biosample', biosample, status=201)
+
+
+def test_biosample_organoid_success(testapp, biosample):
+    biosample['biosample_type'] = 'organoid'
+    biosample['biosample_term_id'] = 'UBERON:1234567'
+    testapp.post_json('/biosample', biosample, status=201)

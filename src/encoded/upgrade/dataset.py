@@ -371,3 +371,9 @@ def dataset_18_19(value, system):
     if (value['status'] == 'submitted' and
         not value.get('date_submitted')):
         value['status'] = 'in progress'
+
+@upgrade_step('annotation', '18', '19')
+@upgrade_step('experiment', '19', '20')
+def dataset_19_20(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3974
+    return
