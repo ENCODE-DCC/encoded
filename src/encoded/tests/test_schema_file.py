@@ -330,3 +330,16 @@ def test_revoke_detail(testapp, file_with_bad_revoke_detail):
     file_with_bad_revoke_detail.update({'status': 'revoked'})
     res = testapp.post_json('/file', file_with_bad_revoke_detail, expect_errors=True)
     assert res.status_code == 201
+
+
+def test_readname_details(testapp, file_no_error):
+    file = testapp.post_json('/file', file_no_error).json['@graph'][0]
+    testapp.patch_json(
+        file['@id'], {'readname_details': {
+            'flowcell_id_location': 2,
+            'barcode_location': 5}
+        },
+        status=200)
+    testapp.patch_json(
+        file['@id'], {'file_format': 'bam'},
+        status=422)
