@@ -259,7 +259,7 @@ def test_audit_file_inconsistent_read_count_paired_with(testapp, file1, file4):
                        'paired_end': '2',
                        'paired_with': file4['uuid']})
     testapp.patch_json(file4['@id'], {
-                       'read_count': 21})                   
+                       'read_count': 21})
     res = testapp.get(file1['@id'] + '@@index-data')
     errors = res.json['audit']
     errors_list = []
@@ -268,7 +268,7 @@ def test_audit_file_inconsistent_read_count_paired_with(testapp, file1, file4):
     assert any(error['category'] ==
                'inconsistent read count' for error in errors_list)
     testapp.patch_json(file4['@id'], {
-                       'read_count': 20})                   
+                       'read_count': 20})
     res2 = testapp.get(file1['@id'] + '@@index-data')
     errors = res2.json['audit']
     errors_list = []
