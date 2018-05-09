@@ -15,7 +15,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "dbxref": {
             "title": "External identifiers",
@@ -62,7 +62,6 @@
                     "broad histone mark",
                     "chromatin remodeller",
                     "control",
-                    "histone modification",
                     "histone",
                     "narrow histone mark",
                     "nucleotide modification",

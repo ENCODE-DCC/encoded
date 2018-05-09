@@ -130,7 +130,7 @@
         "label": "H3K4me3",
         "organism": "mouse",
         "status": "current",
-        "investigated_as": ["histone modification"],
+        "investigated_as": ["histone"],
         "uuid": "eb576cba-6071-4c28-bba6-3c16fdbce0c7"
     },
     {
@@ -141,14 +141,14 @@
         "label": "H3K9ac",
         "organism": "human",
         "status": "current",
-        "investigated_as": ["histone modification"],
+        "investigated_as": ["histone"],
         "uuid": "851ee528-4763-4dba-9191-7db1ef7566f7"
     },
     {
     "dbxref": [
         "UniProtKB:P84228"
     ],
-    "investigated_as": ["histone modification"],
+    "investigated_as": ["histone"],
     "label": "H3K9ac",
     "organism": "mouse",
     "status": "current",
@@ -328,7 +328,6 @@
         ],
         "gene_name": "HIST2H3C",
         "investigated_as": [
-            "histone modification",
             "histone"
         ],
         "label": "H3K4me3",
@@ -340,7 +339,6 @@
         "label": "H3K27ac",
         "organism": "human",
         "investigated_as": [
-            "histone modification",
             "histone"
         ],
         "dbxref": [
@@ -353,7 +351,6 @@
     {
         "label": "H3K36me3",
         "investigated_as": [
-            "histone modification",
             "histone"
         ],
         "dbxref": [
@@ -373,7 +370,6 @@
         "label": "H3K27me3",
         "status": "current",
         "investigated_as": [
-            "histone modification",
             "histone"
         ],
         "uuid": "9fdbd27b-4118-4851-b566-87d77d467d79"
@@ -384,7 +380,6 @@
         "gene_name": "HIST2H3C",
         "organism": "human",
         "investigated_as": [
-            "histone modification",
             "histone"
         ],
         "status": "current",
@@ -398,7 +393,6 @@
         "gene_name": "HIST2H3C",
         "organism": "human",
         "investigated_as": [
-            "histone modification",
             "histone"
         ],
         "status": "current",

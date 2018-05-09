@@ -148,13 +148,13 @@ def lot_reviews(characterizations, targets, request):
     target_organisms = {}
 
     is_control = False
-    is_histone_mod = False
+    is_histone = False
     for t in targets:
         target = request.embed(t, '@@object')
         if 'control' in target['investigated_as']:
             is_control = True
-        if 'histone modification' in target['investigated_as']:
-            is_histone_mod = True
+        if 'histone' in target['investigated_as']:
+            is_histone = True
 
         organism = target['organism']
         target_organisms = {'all': []}
@@ -248,7 +248,7 @@ def lot_reviews(characterizations, targets, request):
                                     secondary_status,
                                     status_ranking,
                                     review_targets,
-                                    is_histone_mod,
+                                    is_histone,
                                     char_organisms)
 
     return lot_reviews
@@ -258,7 +258,7 @@ def build_lot_reviews(primary_chars,
                       secondary_status,
                       status_ranking,
                       review_targets,
-                      is_histone_mod,
+                      is_histone,
                       char_organisms):
 
     # We have primary characterizatons
@@ -296,12 +296,12 @@ def build_lot_reviews(primary_chars,
                 lane_organism = lane_review['organism']
 
                 base_review['biosample_term_name'] = 'any cell type or tissue' \
-                    if is_histone_mod else lane_review['biosample_term_name']
+                    if is_histone else lane_review['biosample_term_name']
                 base_review['biosample_term_id'] = 'NTR:99999999' \
-                    if is_histone_mod else lane_review['biosample_term_id']
+                    if is_histone else lane_review['biosample_term_id']
                 base_review['organisms'] = [lane_organism]
                 base_review['targets'] = sorted(review_targets) \
-                    if is_histone_mod else [primary['target']]
+                    if is_histone else [primary['target']]
                 base_review['status'] = ab_states[(lane_review['lane_status'], secondary_status)] \
                     if primary['status'] in ['compliant',
                                              'not compliant',

@@ -58,8 +58,7 @@ def mouse_target_H3K9me3(testapp, mouse):
     item = {
         'label': 'H3K9me3',
         'organism': mouse['@id'],
-        'investigated_as': ['histone modification',
-                            'histone',
+        'investigated_as': ['histone',
                             'broad histone mark']
     }
     return testapp.post_json('/target', item).json['@graph'][0]

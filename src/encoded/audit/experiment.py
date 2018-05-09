@@ -2717,7 +2717,7 @@ def audit_experiment_antibody_characterized(value, system, excluded_types):
         # and if has not been characterized to standards. Otherwise, it doesn't apply and we
         # shouldn't raise a stink
 
-        if 'histone modification' in ab_targets_investigated_as:
+        if 'histone' in ab_targets_investigated_as:
             for lot_review in antibody['lot_reviews']:
                 if organism == lot_review['organisms'][0]:
                     sample_match = True

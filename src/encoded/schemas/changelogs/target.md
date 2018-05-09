@@ -1,5 +1,9 @@
 ## Changelog for target.json
 
+### Schema version 7
+
+* Remove *histone modification* from investigated_as enum.
+
 ### Schema version 6
 
 * Remove *proposed* from status enum.
