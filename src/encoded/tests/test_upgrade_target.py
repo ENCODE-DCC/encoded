@@ -88,3 +88,23 @@ def test_target_upgrade_remove_histone_modification_6_7(upgrader, target_6):
         'target', target_6, current_version='6', target_version='7')
     assert value['schema_version'] == '7'
     assert value['investigated_as'] == ['histone']
+
+
+@pytest.mark.parametrize(
+    'old_status, new_status',
+    [
+        ('current', 'released'),
+        ('deleted', 'deleted'),
+        ('replaced', 'deleted')
+    ]
+)
+def test_target_upgrade_move_to_standard_status_7_8(old_status, new_status, upgrader, target):
+    target.update({'status': old_status})
+    value = upgrader.upgrade(
+        'target',
+        target,
+        current_version='7',
+        target_version='8'
+    )
+    assert value['schema_version'] == '8'
+    assert value['status'] == new_status
