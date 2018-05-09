@@ -29,6 +29,13 @@ def experiment_no_error(testapp, lab, award):
     }
     return item
 
+@pytest.fixture
+def matched_set(testapp, lab, award):
+    item = {
+        'lab': lab['@id'],
+        'award': award['@id']
+    }
+    return item
 
 def test_not_pipeline_error_without_message_ok(testapp, experiment_no_error):
     # internal_status != pipeline error, so an error detail message is not required.
@@ -123,3 +130,10 @@ def test_experiment_submission_date_dependency(testapp, experiment_no_error):
         'date_submitted': '2000-10-10'},
         status=200)
     
+def test_experiment_possible_controls(testapp, experiment_no_error, matched_set):
+    expt = testapp.post_json('/experiment', experiment_no_error).json['@graph'][0]
+    matched_set_control = testapp.post_json('/matched_set', matched_set).json['@graph'][0]
+    testapp.patch_json(
+        expt['@id'], {
+        'possible_controls': [matched_set_control['@id']]},
+        status=200)
