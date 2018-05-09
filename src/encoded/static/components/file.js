@@ -14,6 +14,7 @@ import { QualityMetricsPanel } from './quality_metric';
 import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import { StatusLabel } from './statuslabel';
+import { Supersede } from './typeutils';
 
 
 // Columns to display in Deriving/Derived From file tables
@@ -354,18 +355,6 @@ class FileComponent extends React.Component {
         const datasetAccession = globals.atIdToAccession(context.dataset);
         const adminUser = !!this.context.session_properties.admin;
 
-        // Make array of superceded_by accessions.
-        let supersededBys = [];
-        if (context.superseded_by && context.superseded_by.length) {
-            supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
-        }
-
-        // Make array of supersedes accessions
-        let supersedes = [];
-        if (context.supersedes && context.supersedes.length) {
-            supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
-        }
-
         // Collect up relevant pipelines.
         let pipelines = [];
         if (context.analysis_step_version && context.analysis_step_version.analysis_step.pipelines && context.analysis_step_version.analysis_step.pipelines.length) {
@@ -379,8 +368,7 @@ class FileComponent extends React.Component {
                         <h2>File summary for {context.title} (<span className="sentence-case">{context.file_format}</span>)</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         {context.restricted ? <h4 className="superseded-acc">Restricted file</h4> : null}
-                        {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
-                        {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
+                        <Supersede context={context} />
                         <div className="status-line">
                             {context.status ?
                                 <div className="characterization-status-labels">

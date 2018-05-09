@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'underscore';
+import * as globals from './globals';
 import { SortTablePanel, SortTable } from './sorttable';
 
 
@@ -285,3 +286,33 @@ export function fileStatusList(session, sessionProperties) {
 
     return statuses.concat(['status unknown']);
 }
+
+
+// Display supersedes/superseded_by lists.
+export const Supersede = ({ context }) => {
+    // Make array of superseded_by accessions
+    let supersededBys = [];
+    if (context.superseded_by && context.superseded_by.length) {
+        supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
+    }
+
+    // Make array of supersedes accessions
+    let supersedes = [];
+    if (context.supersedes && context.supersedes.length) {
+        supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
+    }
+
+    if (supersededBys.length > 0 || supersedes.length > 0) {
+        return (
+            <div>
+                {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
+                {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
+            </div>
+        );
+    }
+    return null;
+};
+
+Supersede.propTypes = {
+    context: PropTypes.object.isRequired, // Object containing supersedes/superseded_by to display
+};

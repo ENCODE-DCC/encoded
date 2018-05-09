@@ -17,7 +17,7 @@ import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
 import { DocumentsPanelReq } from './doc';
 import { FileGallery, DatasetFiles } from './filegallery';
-import { AwardRef } from './typeutils';
+import { AwardRef, Supersede } from './typeutils';
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
 export function annotationBiosampleSummary(annotation) {
@@ -77,18 +77,6 @@ class AnnotationComponent extends React.Component {
             { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
         ];
 
-        // Make array of superseded_by accessions
-        let supersededBys = [];
-        if (context.superseded_by && context.superseded_by.length) {
-            supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
-        }
-
-        // Make array of supersedes accessions
-        let supersedes = [];
-        if (context.supersedes && context.supersedes.length) {
-            supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
-        }
-
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
 
@@ -105,8 +93,7 @@ class AnnotationComponent extends React.Component {
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for annotation file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
-                        {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
-                        {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
+                        <Supersede context={context} />
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -1309,6 +1296,7 @@ export class SeriesComponent extends React.Component {
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for {seriesTitle} {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
+                        <Supersede context={context} />
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
