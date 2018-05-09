@@ -99,7 +99,12 @@ def test_target_upgrade_remove_histone_modification_6_7(upgrader, target_6):
     ]
 )
 def test_target_upgrade_move_to_standard_status_7_8(old_status, new_status, upgrader, target):
-    target.update({'status': old_status})
+    target.update(
+        {
+            'status': old_status,
+            'schema_version': '7'
+        }
+    )
     value = upgrader.upgrade(
         'target',
         target,
