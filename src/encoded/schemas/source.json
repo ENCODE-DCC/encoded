@@ -32,7 +32,7 @@
             "pattern": "^(\\S+(\\s|\\S)*\\S+|\\S)$"
         },
         "name": {
-            "title": "Name",
+            "title": "Source name",
             "comment": "A short unique name for the source, current convention is lowercase and hyphen-delimited version of title (e.g. john-doe).",
             "type": "string",
             "pattern": "^[a-z0-9\\-]+$",
