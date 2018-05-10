@@ -50,7 +50,7 @@ function fileAccessionSort(a, b) {
 
 // Calculate a string representation of the given replication_type.
 const replicationDisplay = replicationType => (
-    replicationType === 'unreplicated' ? 'Replicate' : `${`${replicationType.charAt(0).toUpperCase()}${replicationType.slice(1)}`} replicate`
+    `${replicationType === 'anisogenic' ? 'Anisogenic' : 'Isogenic'} replicate`
 );
 
 

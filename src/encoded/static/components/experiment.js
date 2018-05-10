@@ -801,7 +801,7 @@ const replicateTableColumns = {
     },
 };
 
-// Display the table of replicates
+// Display the table of replicates.
 const ReplicateTable = (props) => {
     let tableTitle;
     const { condensedReplicates, replicationType } = props;
@@ -810,12 +810,9 @@ const ReplicateTable = (props) => {
     if (replicationType === 'anisogenic') {
         tableTitle = 'Anisogenic replicates';
         replicateTableColumns.biological_replicate_number.title = 'Anisogenic replicate';
-    } else if (replicationType === 'isogenic') {
+    } else {
         tableTitle = 'Isogenic replicates';
         replicateTableColumns.biological_replicate_number.title = 'Isogenic replicate';
-    } else {
-        tableTitle = 'Replicates';
-        replicateTableColumns.biological_replicate_number.title = 'Biological replicate';
     }
 
     return (
