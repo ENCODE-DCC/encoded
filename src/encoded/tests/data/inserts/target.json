@@ -9,35 +9,35 @@
         "gene_name": "ADNP",
         "label": "ADNP",
         "organism": "human",
-        "status": "current",
+        "status": "released",
         "investigated_as": ["transcription factor"],
         "uuid": "e310f899-8622-4aa7-8c48-8c2199dc8d15"
     },
     {
         "label": "Control",
         "organism": "mouse",
-        "status": "current",
+        "status": "released",
         "investigated_as": ["control"],
         "uuid": "87c25410-2ece-4335-b45b-eff245bb30bf"
     },
     {
         "label": "mouse-IgG-control",
         "organism": "human",
-        "status": "current",
+        "status": "released",
         "investigated_as": ["control"],
         "uuid": "2e19e501-8f32-4205-8469-2fb593a30595"
     },
     {
         "label": "mouse-IgG-control",
         "organism": "mouse",
-        "status": "current",
+        "status": "released",
         "investigated_as": ["control"],
         "uuid": "6fcd4ef8-9a84-4951-958a-828c41a5ffb0"
     },
     {
         "label": "Control",
         "organism": "human",
-        "status": "current",
+        "status": "released",
         "investigated_as": ["control"],
         "uuid": "89839f28-ad35-4bb4-a214-ee65d0a97d8d"
     },
@@ -50,7 +50,7 @@
         "gene_name": "CTCF",
         "label": "CTCF",
         "organism": "human",
-        "status": "current",
+        "status": "released",
         "investigated_as": ["transcription factor"],
         "uuid": "80f4c52e-c7bc-4afc-b159-89cb10367780"
     },
@@ -73,7 +73,7 @@
         "gene_name": "CXXC1",
         "label": "CXXC1",
         "organism": "human",
-        "status": "current",
+        "status": "released",
         "investigated_as": ["transcription factor"],
         "uuid": "aacec93d-d9dc-4f73-8edd-8ecce2debb43"
     },
@@ -88,7 +88,7 @@
         "gene_name": "E2F1",
         "label": "E2F1",
         "organism": "human",
-        "status": "current",
+        "status": "released",
         "investigated_as": ["transcription factor"],
         "uuid": "b39e16c2-b1d7-4690-b92c-e7006e5a8332"
     },
@@ -103,7 +103,7 @@
         "gene_name": "E2F1",
         "label": "eGFP-E2F1",
         "organism": "human",
-        "status": "current",
+        "status": "released",
         "investigated_as": ["transcription factor", "recombinant protein"],
         "uuid": "19afbc42-c08b-4b5b-a2b3-7f5c84db7d5d"
     },
@@ -118,7 +118,7 @@
         "gene_name": "E2F1",
         "label": "HA-E2F1",
         "organism": "human",
-        "status": "current",
+        "status": "released",
         "investigated_as": ["transcription factor", "recombinant protein"],
         "uuid": "8a1239ab-6171-4f59-a8b7-3527eec96fad"
     },
@@ -129,7 +129,7 @@
         "gene_name": "Hist2h3c1",
         "label": "H3K4me3",
         "organism": "mouse",
-        "status": "current",
+        "status": "released",
         "investigated_as": ["histone"],
         "uuid": "eb576cba-6071-4c28-bba6-3c16fdbce0c7"
     },
@@ -140,7 +140,7 @@
         "gene_name": "HIST2H3C",
         "label": "H3K9ac",
         "organism": "human",
-        "status": "current",
+        "status": "released",
         "investigated_as": ["histone"],
         "uuid": "851ee528-4763-4dba-9191-7db1ef7566f7"
     },
@@ -151,7 +151,7 @@
     "investigated_as": ["histone"],
     "label": "H3K9ac",
     "organism": "mouse",
-    "status": "current",
+    "status": "released",
     "uuid": "fc83db34-5810-4297-af82-b56cc0ef2521"
     },
     {
@@ -166,7 +166,7 @@
         "gene_name": "HNRNPA1",
         "label": "HNRNPA1",
         "organism": "human",
-        "status": "current",
+        "status": "released",
         "investigated_as": ["RNA binding protein"],
         "uuid": "6cd2beb9-e859-41c4-a019-98bf02e96b19"
     },
@@ -188,7 +188,7 @@
         "gene_name": "TAF1",
         "label": "TAF1",
         "organism": "human",
-        "status": "current",
+        "status": "released",
         "investigated_as": ["transcription factor"],
         "uuid": "993bd05d-a6bd-4718-b51b-abe99f14f8c3"
     },
@@ -212,7 +212,7 @@
         "gene_name": "TCF4",
         "label": "TCF4",
         "organism": "human",
-        "status": "current",
+        "status": "released",
         "investigated_as": ["transcription factor"],
         "uuid": "f26cc43c-884a-4aea-9b26-b3517ef6748d"
     },
@@ -232,7 +232,7 @@
         "gene_name": "NR2F1\u00c2",
         "label": "NR2F1\u00c2",
         "organism": "human",
-        "status": "current",
+        "status": "released",
         "investigated_as": ["transcription factor"],
         "uuid": "618b2122-2a97-44a8-bd6a-f473c1363dd2"
     },
@@ -247,7 +247,7 @@
         "organism": "celegans",
         "gene_name": "mes-4",
         "investigated_as": ["transcription factor"],
-        "status": "current"
+        "status": "released"
     },
     {
         "uuid": "79cbe489-930b-410e-8cc2-783e4c37d9f5",
@@ -262,28 +262,28 @@
         "organism": "celegans",
         "gene_name": "pab-1",
         "investigated_as": ["transcription factor", "recombinant protein"],
-        "status": "current"
+        "status": "released"
     },
     {
         "uuid": "d7e8b30a-5fde-4201-a287-be53814abca7",
         "label": "eGFP",
         "organism": "avictoria",
         "investigated_as": ["tag"],
-        "status": "current"
+        "status": "released"
     },
     {
         "uuid": "f2d60a72-7b9c-422a-a80e-9493640c1d58",
         "label": "FLAG",
         "organism": "synthetic",
         "investigated_as": ["tag"],
-        "status": "current"
+        "status": "released"
     },
     {
         "uuid": "77d56f5a-e445-4f2c-83ac-65e00ce50ac1",
         "label": "HA",
         "organism": "influenza",
         "investigated_as": ["tag"],
-        "status": "current"
+        "status": "released"
     },
     {
         "dbxref": [
@@ -299,7 +299,7 @@
         ],
         "label": "EBF1",
         "organism": "human",
-        "status": "current",
+        "status": "released",
         "uuid": "1fe12114-b9df-4626-a29f-78f3130eb5d2"
     },
     {
@@ -307,7 +307,7 @@
         "label": "cad",
         "organism": "dmelanogaster",
         "investigated_as": ["transcription factor"],
-        "status": "current"
+        "status": "released"
     },
     {
         "uuid": "bb5fc7cf-5909-4bf8-92d2-557477ce8646",
@@ -320,7 +320,7 @@
         "organism": "celegans",
         "gene_name": "fkh-10",
         "investigated_as": ["transcription factor"],
-        "status": "current"
+        "status": "released"
     },
     {
         "dbxref": [
@@ -332,7 +332,7 @@
         ],
         "label": "H3K4me3",
         "organism": "human",
-        "status": "current",
+        "status": "released",
         "uuid": "65b74663-aedd-46ae-b2c5-f3e37c834867"
     },
     {
@@ -344,7 +344,7 @@
         "dbxref": [
             "UniProtKB:Q71DI3"
         ],
-        "status": "current",
+        "status": "released",
         "gene_name": "HIST2H3C",
         "uuid": "a2cd45c9-f214-4af8-9051-87afc828c987"
     },
@@ -359,7 +359,7 @@
         "organism": "human",
         "uuid": "eade499f-c1da-41b2-abc3-f39baab2ee72",
         "gene_name": "HIST2H3C",
-        "status": "current"
+        "status": "released"
     },
     {
         "dbxref": [
@@ -368,7 +368,7 @@
         "gene_name": "HIST2H3C",
         "organism": "human",
         "label": "H3K27me3",
-        "status": "current",
+        "status": "released",
         "investigated_as": [
             "histone"
         ],
@@ -382,7 +382,7 @@
         "investigated_as": [
             "histone"
         ],
-        "status": "current",
+        "status": "released",
         "dbxref": [
             "UniProtKB:Q71DI3"
         ]
@@ -395,7 +395,7 @@
         "investigated_as": [
             "histone"
         ],
-        "status": "current",
+        "status": "released",
         "dbxref": [
             "UniProtKB:Q71DI3"
         ]
@@ -417,7 +417,7 @@
             "GeneID:79068",
             "UniProtKB:Q9C0B1"
         ],
-        "status": "current"
+        "status": "released"
     },
     {
         "uuid": "670a9892-e1b6-4c31-a79f-7db1919b07f9",
@@ -448,6 +448,6 @@
         ],
         "label": "eGFP-ab",
         "organism": "/organisms/dmelanogaster/",
-        "status": "current"
+        "status": "released"
     }
 ]
