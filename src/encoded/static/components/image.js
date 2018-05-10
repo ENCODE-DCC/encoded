@@ -262,4 +262,8 @@ ProjectBadge.projectMap = {
         imageClass: 'badge-community',
         alt: 'Community submission',
     },
+    ENCORE: {
+        imageClass: 'badge-encore',
+        alt: 'ENCORE project',
+    },
 };
