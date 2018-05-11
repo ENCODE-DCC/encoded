@@ -46,7 +46,19 @@
     },
     "properties": {
         "schema_version": {
-            "default": "14"
+            "default": "15"
+        },
+        "supersedes": {
+            "title": "Supersedes" ,
+            "description": "The reference epigenome set(s) that this reference epigenome set supersedes by virtue of being newer, better etc. than the one(s) it supersedes.",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                    "comment": "See reference_epigenome.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "ReferenceEpigenome"
+            }
         }
     },
     "facets": {

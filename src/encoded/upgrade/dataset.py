@@ -372,8 +372,15 @@ def dataset_18_19(value, system):
         not value.get('date_submitted')):
         value['status'] = 'in progress'
 
+
 @upgrade_step('annotation', '18', '19')
 @upgrade_step('experiment', '19', '20')
 def dataset_19_20(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3974
+    return
+
+
+@upgrade_step('reference_epigenome', '14', '15')
+def dataset_20_21(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3889
     return

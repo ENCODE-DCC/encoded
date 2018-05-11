@@ -596,7 +596,7 @@ PHASE1_PIPELINES = {
         remove_keys('related_datasets'),
     ],
     'reference_epigenome': [
-        remove_keys('related_datasets'),
+        remove_keys('related_datasets', 'supersedes'),
     ],
     'matched_set': [
         remove_keys('related_datasets'),
@@ -677,7 +677,7 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('related_datasets'),
     ],
     'reference_epigenome': [
-        skip_rows_missing_all_keys('related_datasets'),
+        skip_rows_missing_all_keys('related_datasets', 'supersedes'),
     ],
     'matched_set': [
         skip_rows_missing_all_keys('related_datasets'),

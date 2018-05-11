@@ -16,7 +16,7 @@ import { singleTreatment, AlternateAccession } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import { StatusLabel } from './statuslabel';
-import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef } from './typeutils';
+import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, Supersede } from './typeutils';
 
 
 const anisogenicValues = [
@@ -395,18 +395,6 @@ class ExperimentComponent extends React.Component {
             statuses.push({ status: context.internal_status, title: 'Internal' });
         }
 
-        // Make array of superseded_by accessions.
-        let supersededBys = [];
-        if (context.superseded_by && context.superseded_by.length) {
-            supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
-        }
-
-        // Make array of supersedes accessions.
-        let supersedes = [];
-        if (context.supersedes && context.supersedes.length) {
-            supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
-        }
-
         // Determine whether the experiment is isogenic or anisogenic. No replication_type
         // indicates isogenic.
         const anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
@@ -465,8 +453,7 @@ class ExperimentComponent extends React.Component {
                         <Breadcrumbs root="/search/?type=Experiment" crumbs={crumbs} />
                         <h2>Experiment summary for {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
-                        {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
-                        {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
+                        <Supersede context={context} />
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
