@@ -14,7 +14,9 @@ from .search import list_visible_columns_for_schemas
 import csv
 import io
 import json
+import time  # DEBUG: timing
 import datetime
+import zlib
 from .region_indexer import RegulomeAtlas
 
 import logging
@@ -27,7 +29,7 @@ def includeme(config):
     config.add_route('batch_download', '/batch_download/{search_params}')
     config.add_route('metadata', '/metadata/{search_params}/{tsv}')
     config.add_route('peak_metadata', '/peak_metadata/{search_params}/{tsv}')
-    config.add_route('regulome_evidence', '/regulome_evidence/{search_params}/{tsv}')
+    config.add_route('regulome_evidence', '/regulome_evidence/{tsv}')
     config.add_route('report_download', '/report.tsv')
     config.scan(__name__)
 
@@ -120,25 +122,14 @@ def get_biosample_accessions(file_json, experiment_json):
     return ', '.join(list(accessions))
 
 def get_regulome_evidence_links(request, assembly, chrom, start, end):
-    # Add search params?
-    #if request.matchdict.get('search_params'):
-    #    search_params = request.matchdict['search_params']
-    #else:
-    #    search_params = request.query_string
-    page = request.path.split('/')[1]
-    search_params = 'assembly=%s&chrom=%s&start=%d&end=%d' % (assembly, chrom, start, end)
-
-    regulome_bed_link = '{host_url}/regulome_evidence/{search_params}/regulomeDB_{assembly}.bed'.format(
+    regulome_link = '{host_url}/regulome_evidence/regulomeDB_{assembly}_{chrom}_{start}_{end}'.format(
         host_url=request.host_url,
-        search_params=search_params,
-        assembly=assembly
+        assembly=assembly,
+        chrom=chrom,
+        start=start,
+        end=end
     )
-    regulome_json_link = '{host_url}/regulome_evidence/{search_params}/regulomeDB_{assembly}.json'.format(
-        host_url=request.host_url,
-        search_params=search_params,
-        assembly=assembly
-    )
-    return [regulome_bed_link, regulome_json_link]
+    return [regulome_link + '.bed', regulome_link + '.json']
 
 def get_peak_metadata_links(request, assembly, chrom, start, end):
     page = request.path.split('/')[1]
@@ -258,93 +249,63 @@ def peak_metadata(context, request):
         content_disposition='attachment;filename="%s"' % 'peak_metadata.tsv'
     )
 
-
-def make_a_case(snp_evidence_category):
-    case = []
-    for dataset in snp_evidence_category:
-        evidence = ''
-        biosample = dataset.get('biosample_term_name',dataset.get('biosample_summary'))
-        if biosample:
-            evidence = biosample.replace(' ', '') + ':'
-        target = dataset.get('target')
-        if target:
-            evidence += target.replace(' ', '') + ':'
-        try:
-            evidence += dataset.get('@id', '').split('/')[-2]
-        except:
-            pass
-        case.append(evidence)
-    return ','.join(case)
-
-
 @view_config(route_name='regulome_evidence', request_method='GET')
 def regulome_evidence(context, request):
+    begin = time.time()  # DEBUG: timing
+    format_json = request.url.endswith('.json')
     atlas = RegulomeAtlas(request.registry['snp_search'])
-    params = {}
-    params.update(parse_qs(request.matchdict['search_params']))
-    assembly = params.get('assembly',[None])[0]  # TODO normalize?
-    chrom = params.get('chrom',[None])[0]
-    start = int(params.get('start', [0])[0])
-    end = int(params.get('end', [0])[0])
+    try:
+        page_parts = request.url.split('/')[-1].split('.')[0].split('_')
+        assembly = page_parts[1]
+        chrom = page_parts[2]
+        start = int(page_parts[3])
+        end = int(page_parts[4])
+    except:
+        log.error('Could not parse: ' + request.url)
+        return None
     if assembly is None or chrom is None or start == 0 or end == 0:
         log.error('Requesting regulome_evidence without assembly, chrom, start, end')
         return
+
+    def iter_snps(format_json):
+        if format_json:
+            yield bytes('{\n', 'utf-8')
+        else:
+            header = ['#chrom', 'start', 'end', 'rsid', 'num_score', 'score']  # bed 5 +
+            header.extend(atlas.evidence_categories())
+            yield bytes('\t'.join(header) + '\n', 'utf-8')
+        count = 0
+        for snp in atlas.iter_scored_snps(assembly, chrom, start, end):
+            count += 1
+            coordinates = '{}:{}-{}'.format(snp['chrom'], snp['start'], snp['end'])
+            if format_json:
+                format_snp = json.dumps({snp.get('rsid', coordinates): snp},sort_keys=True)[1:-1] + ','
+            else:
+                score = snp.get('score','')
+                num_score = atlas.numeric_score(score)
+                format_snp = "%s\t%d\t%d\t%s\t%d\t%s" % (snp['chrom'], snp['start'], snp['end'], \
+                                                  snp.get('rsid',coordinates), num_score, score)
+                case = atlas.make_a_case(snp)
+                for category in atlas.evidence_categories():  # in order
+                    format_snp += '\t%s' % case.get(category,'')
+            yield bytes(format_snp + '\n', 'utf-8')
+        took = '%.3f' % (time.time() - begin)    # DEBUG: timing
+        if format_json:
+            yield bytes('"took": %s,\n"count": %d\n}\n' % (took, count), 'utf-8')
+        else:
+            yield bytes('# took: %s, count: %d\n' % (took, count), 'utf-8')
+
+    file_root = 'regulomeDB_%s_%s_%d_%d' % (assembly, chrom, start, end)
+
+    # Stream response using chunked encoding.
+    if format_json:
+        request.response.content_type = 'text/plain' # ?? 'application/json'
+        request.response.content_disposition = 'attachment;filename="%s.json"' % (file_root)
     else:
-        snps = atlas.scored_snps(assembly, chrom, start, end)
-    if snps is None:
-        snps = {}
-        log.error('Requesting regulome_evidence: no SNPs in region')
-    # from snps list make:
-    # { rsid: {
-    #       'chrom':
-    #       'start':
-    #       'end':
-    #       'score':
-    #       'evidence':
-    #           'ChIP': [ { 'uuid': , '@id': , 'biosample': GM, 'target': CTCF }, ... ],
-    #           'DNase': [ { 'uuid': , '@id': , 'biosample': }, ... ],
-    #           'PWM':
-    #           'Footprint':
-    #           'eQTL':
-    # }
-    # bed 5 +
-    header = ['#chrom', 'start', 'end', 'rsid', 'num_score', 'score']
-    header.extend(atlas.evidence_categories())
-    rows = []
-    json_doc = {}
-    for snp in snps:
-        snp['assembly'] = assembly
-        coordinates = '{}:{}-{}'.format(snp['chrom'], snp['start'], snp['end'])
-        json_doc[snp.get('rsid', coordinates)] = snp  # json is the straight up snp beast!
-        score = snp.get('score','')
-        num_score = atlas.numeric_score(score)
-        data_row = [snp['chrom'], snp['start'], snp['end'], snp.get('rsid',coordinates),
-                                 num_score, score]
-        evidence = {}
-        if 'evidence' in snp:
-            for category in snp['evidence'].keys():
-                if category.endswith('_matched'):
-                    evidence[category] = ','.join(snp['evidence'][category])
-                else:
-                    evidence[category] = make_a_case(snp['evidence'][category])
-        for category in atlas.evidence_categories():
-            data_row.append(evidence.get(category,''))
-        rows.append(data_row)
-    if request.url.endswith('.json'):
-        return Response(
-            content_type='text/plain',
-            body=json.dumps(json_doc),
-            content_disposition='attachment;filename="regulomeDB_%s.json"' % assembly
-        )
-    fout = io.StringIO()
-    writer = csv.writer(fout, delimiter='\t')
-    writer.writerow(header)
-    writer.writerows(rows)
-    return Response(
-        content_type='text/tsv',
-        body=fout.getvalue(),
-        content_disposition='attachment;filename="regulomeDB_%s.bed"' % assembly
-    )
+        request.response.content_type = 'text/tsv'
+        request.response.content_disposition = 'attachment;filename="%s.bed"' % (file_root)
+    request.response.app_iter = iter_snps(format_json)
+    return request.response
 
 
 @view_config(route_name='metadata', request_method='GET')

@@ -26,8 +26,7 @@ from snovault.elasticsearch.indexer import (
 )
 from snovault.elasticsearch.indexer_state import (
     SEARCH_MAX,
-    IndexerState,
-    all_uuids
+    IndexerState
 )
 
 from snovault.elasticsearch.interfaces import (
@@ -128,8 +127,8 @@ SNP_FILES = [
     's3://regulomedb/snp141/snp141_GRCh38.bed.gz'
 ]
 # scores for bigWig (bedGraph) are converted to numeric and can be converted back
-SNP_STR_SCORES = [  '1a', '1b', '1c', '1d', '1e', '1f', '2a', '2b', '2c', '3a', '3b',  '4',  '5',  '6']
-SNP_NUM_SCORES = ['1000','950','900','850','800','750','600','550','500','450','400','300','200','100']
+SNP_STR_SCORES = ['1a','1b','1c','1d','1e','1f','2a','2b','2c','3a','3b','4','5','6']
+SNP_NUM_SCORES = [1000, 950, 900, 850, 800, 750, 600, 550, 500, 450, 400,300,200,100]
 
 # If files are too large then they will be copied locally and read
 MAX_IN_MEMORY_FILE_SIZE = (700 * 1024 * 1024)  # most files will be below this and index faster
@@ -578,10 +577,12 @@ class RegulomeAtlas(RegionAtlas):
 
     def evidence_categories(self):
         '''Returns a list of regulome evidence categories'''
+        # TODO: Fix ategories to be collection_types!!!
         return ['eQTL', 'ChIP', 'DNase', 'PWM', 'Footprint', 'PWM_matched', 'Footprint_matched']
 
     def _category(self, dataset):
         '''private: returns one of the regulome categories of evidence for this dataset detail.'''
+        # TODO: Fix ategories to be collection_types!!!
         collection_type = dataset.get('collection_type')  # resident_regionset dataset
         if collection_type == 'ChIP-seq':
             return 'ChIP'
@@ -594,6 +595,19 @@ class RegulomeAtlas(RegionAtlas):
         if collection_type in ['eQTLs','dsQTLs']:
             return 'eQTL'
         return None
+
+    def _category_regulomeV1(self, collection_type):
+        '''private: returns a general category for specific category.'''
+        #collection_type = dataset.get('collection_type')  # resident_regionset dataset
+        if collection_type == 'ChIP-seq':
+            return 'Protein_Binding'
+        if collection_type in ['DNase-seq', 'FAIRE-seq']:
+            return 'Chromatin_Structure'
+        if collection_type in ['PWM','Footprinting']:
+            return 'Motifs'
+        if collection_type in ['eQTLs','dsQTLs']:
+            return 'Single_Nucleotides'
+        return '???'
 
     def regulome_evidence(self, datasets):
         '''Returns evidence for scoring: datasets in a characterized dict'''
@@ -622,6 +636,50 @@ class RegulomeAtlas(RegionAtlas):
                 evidence['Footprint_matched'].append(target)
 
         return evidence
+
+    def _write_a_brief(self, category, snp_evidence):
+        '''private: given evidence for a category make a string that summarizes it'''
+        snp_evidence_category = snp_evidence[category]
+
+        # What do we want the brief to look like?
+        # Regulome: Chromatin_Structure|DNase-seq|Chorion|, Chromatin_Structure|DNase-seq|Adultcd4th1|, Protein_Binding|ChIP-seq|E2F1|MCF-7|, ...
+        # Us: Chromatin_Structure:DNase-seq:|ENCSR...|Chorion|,|ENCSR...|Adultcd4th1| (tab) Protein_Binding/ChIP-seq:|ENCSR...|E2F1|MCF-7|,|ENCSR...|SP4|H1-hESC|
+        brief = ''
+        cur_collection_type = ''
+        cur_rv1_category = ''
+        for dataset in snp_evidence_category:
+            if cur_collection_type != dataset['collection_type']:
+                cur_collection_type = dataset['collection_type']
+                new_rv1_category = self._category_regulomeV1(cur_collection_type)
+                if cur_rv1_category != new_rv1_category:
+                    cur_rv1_category = new_rv1_category
+                    if brief != '':
+                        brief += ';'
+                    brief += '%s:' % cur_rv1_category
+                brief += '%s:|' % cur_collection_type
+            try:
+                brief += dataset.get('@id', '').split('/')[-2] + '|'  # accession is buried in @id
+            except:
+                brief += '|'
+            target = dataset.get('target')
+            if target:
+                brief += target.replace(' ', '') + '|'
+            biosample = dataset.get('biosample_term_name',dataset.get('biosample_summary'))
+            if biosample:
+                brief += biosample.replace(' ', '') + '|'
+            brief += ','
+        return brief[:-1] # remove last comma
+
+    def make_a_case(self, snp):
+        '''Convert evidence json to list of evidence strings for bed batch downloads.'''
+        case = {}
+        if 'evidence' in snp:
+            for category in snp['evidence'].keys():
+                if category.endswith('_matched'):
+                    case[category] = ','.join(snp['evidence'][category])
+                else:
+                    case[category] = self._write_a_brief(category, snp['evidence'])
+        return case
 
     def _score(self, charactization):
         '''private: returns regulome score from characterization set'''
@@ -689,12 +747,11 @@ class RegulomeAtlas(RegionAtlas):
             snps = snps[first_ix:]
         return snps[:window]
 
-
-    def scored_snps(self, assembly, chrom, start, end, window=-1, center_pos=None):
+    def _scored_snps(self, assembly, chrom, start, end, window=-1, center_pos=None):
         '''For a region, get all SNPs with scores'''
         snps = self.find_snps(assembly, chrom, start, end)
         if not snps:
-            snps
+            return snps
         if window > 0:
             snps = self._snp_window(snps, window, center_pos)
 
@@ -707,6 +764,7 @@ class RegulomeAtlas(RegionAtlas):
             return snps
 
         for snp in snps:
+            snp['assembly'] = assembly
             snp_uuids = self._peak_uuids_in_overlap(peaks, snp['chrom'], snp['start'])
             if len(snp_uuids) == 0:
                 snp['score'] = None  # 'no overlap'
@@ -743,7 +801,7 @@ class RegulomeAtlas(RegionAtlas):
             range_start = 0
 
         if scores:
-            snps = self.scored_snps(assembly, chrom, range_start, range_end, max_snps, pos)
+            snps = self._scored_snps(assembly, chrom, range_start, range_end, max_snps, pos)
             for snp in snps:
                 snp.pop('evidence', None)  # don't need this much detail
         else:
@@ -751,6 +809,28 @@ class RegulomeAtlas(RegionAtlas):
             snps = self._snp_window(snps, max_snps, pos)
 
         return snps
+
+    def iter_scored_snps(self, assembly, chrom, start, end):
+        '''For a region, iteratively get all SNPs with scores'''
+        if end < start:
+            return
+        chunk_size = 100000
+        chunk_start = start
+        #all_snps = []
+        while chunk_start <= end:
+            chunk_end = chunk_start + chunk_size
+            if chunk_end > end:
+                chunk_end = end
+            snps = self._scored_snps(assembly, chrom, chunk_start, chunk_end)
+            if snps:
+                for snp in snps:
+                    yield snp      # yeild yielded a 504 gateway timeout!
+                #if all_snps:
+                #    all_snps.extend(snps)
+                #else:
+                #    all_snps = snps
+            chunk_start += chunk_size
+        #return all_snps
 
     def live_score(self, assembly, chrom, pos):
         '''Returns score knowing single position and nothing more.'''
@@ -1384,5 +1464,4 @@ class RegionIndexer(Indexer):
         if big_file and file_doc['chroms'] != chroms:
             log.error('%s chromosomes %s indexed out of order!', file_doc['file']['@id'],
                                                         ('SNPs' if snp_set else 'regions') )
-        #file_doc['chroms'] = list(set(chroms))
         return self.add_to_residence(file_doc)

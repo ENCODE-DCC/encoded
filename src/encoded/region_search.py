@@ -424,8 +424,8 @@ def region_search(context, request):
         if regulome:
             # score regulome SNPs or point locations
             if (rsid is not None or (int(end) - int(start)) <= 1):
-                result['nearby_snps'] = atlas.nearby_snps(result['assembly'], chromosome, start, rsid)
-                result['timing'].append({'nearby_snps': (time.time() - begin)})  # DEBUG: timing
+                #result['nearby_snps'] = atlas.nearby_snps(result['assembly'], chromosome, int(start), rsid)
+                #result['timing'].append({'nearby_snps': (time.time() - begin)})  # DEBUG: timing
                 begin = time.time()                                              # DEBUG: timing
                 # NOTE: Needs all hits rather than 'released' or set reduced by facet selection
                 regdb_score = atlas.regulome_score(all_hits['datasets'])
