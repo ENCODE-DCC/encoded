@@ -55,6 +55,7 @@ const Item = (props) => {
                 <div className="col-sm-12">
                     {context.description ? <p className="description">{context.description}</p> : null}
                 </div>
+                <br />
                 <ItemPanel {...props} />
             </div>
         </div>
