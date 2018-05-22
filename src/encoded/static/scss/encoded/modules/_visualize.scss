@@ -46,7 +46,6 @@
     }
 
     @at-root #{&}__assembly {
-        flex: 0 0 40%;
         text-align: right;
         line-height: 30px;
         font-weight: bold;
@@ -59,7 +58,6 @@
     }
 
     @at-root #{&}__browsers {
-        flex: 1 0 auto;
         padding-left: 20px;
         line-height: 30px;
     }
