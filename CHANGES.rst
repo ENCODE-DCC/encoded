@@ -1,7 +1,28 @@
 Changes
 =======
 
-69.0 (unreleased)
+70.0 (unreleased)
+-----------------
+01. ENCD-4037 Update snovault 1.0.9 (#2258)
+02. ENCD-4029 Update to snovault 1.0.8 (#2254)
+03. ENCD-3889 supersedes refepi (#2247)
+04. ENCD-3871-target-standard-status (#2252)
+05. ENCD-4011 Fix wrong vars in buildout candidate config file (#2241)
+06. ENCD-3867 Display proper replicate_type string (#2249)
+07. ENCD-4015 adding an audit for read_count and test for it (#2242)
+08. ENCD-4010 fixing a typo in the samtools flagstat quality metric (#2238)
+09. ENCD-3995 Update file output_type (#2239)
+10. ENCD-4016 adding community to users (#2243)
+11. ENCD-3957 Add biosample accession to report columns (#2250)
+12. ENCD-3970 Add encore badge (#2251)
+13. ENCD-4008-fix-source-title (#2253)
+14. ENCD-4007-nginx-proxy-header (#2244)
+15. ENCD-3981 remove histone modification (#2240)
+16. ENCD-3963 Remove antibody accession column (#2233)
+17. ENCD-3974 Update biosample organoid (#2234)
+18. ENCD-3641 fix navigate to file download URI (#2237)
+
+69.0 (released)
 -----------------
 01. REG-9 Fix vis button for region search (#2210)
 02. ENCD-3986 Update to snovault 1.0.7 (#2229)
@@ -147,7 +168,7 @@ Changes
     26. ENCD-3566 Fix JS FileInput add document (#2076)
     27. ENCD-3597 Use obj picker for user impersonation (#2068)
     28. ENCD-3721 Allow 'in vitro sample' to have biosample_term_name (#2067)
-    29. ENCD-3734 file audit escalation (#2066) 
+    29. ENCD-3734 file audit escalation (#2066)
 
 0.1 (unreleased)
 ----------------
