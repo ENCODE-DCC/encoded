@@ -50,11 +50,14 @@
         line-height: 30px;
         font-weight: bold;
         font-size: 1.1rem;
+        width: 100px;
+        word-wrap: break-word;
     }
 
     @at-root #{&}__assembly-title {
         @extend .browser-selector__assembly;
         font-size: 1.3rem;
+
     }
 
     @at-root #{&}__browsers {
