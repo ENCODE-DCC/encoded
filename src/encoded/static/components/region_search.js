@@ -1,14 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import url from 'url';
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-// import DropdownButton from '../libs/bootstrap/button';
-// import { DropdownMenu } from '../libs/bootstrap/dropdown-menu';
->>>>>>> Changes to handle regulome annotations and archived experiments.  Also work on region/regulome-search and 'quick view'.
-=======
->>>>>>> Fix rebase issues.
 import { BrowserSelector } from './objectutils';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
 import { FacetList, Listing } from './search';
@@ -208,17 +200,7 @@ class AdvSearch extends React.Component {
         const region = id.query.region || '';
 
         if (this.state.genome === '') {
-<<<<<<< HEAD
-            let assembly = regionGenomes[0].value;
-            if (context.assembly) {
-                assembly = regionGenomes.find(el =>
-                    context.assembly === el.value || context.assembly === el.display
-                ).value;
-            }
-            this.setState({ genome: assembly });
-=======
             this.setState({ genome: context.assembly || regionGenomes[0].value });
->>>>>>> Fix rebase issues.
         }
 
         return (
@@ -355,10 +337,6 @@ class RegionSearch extends React.Component {
                                                         >
                                                             View 25
                                                         </a>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> Fix rebase issues.
                                                 : null}
                                             </span>
                                         }
@@ -371,24 +349,6 @@ class RegionSearch extends React.Component {
                                             />
                                         : null}
 
-<<<<<<< HEAD
-=======
-                                                    : null}
-                                                </span>
-                                            }
-
-                                            {visualizeKeys && context.visualize_batch ?
-                                                <BrowserSelector
-                                                    visualizeCfg={context.visualize_batch}
-                                                    disabled={visualizeDisabled}
-                                                    title={visualizeDisabled ? `Filter to ${visualizeLimit} to visualize` : 'Visualize'}
-                                                />
-                                            : null}
-
-                                        </div>
->>>>>>> Changes to handle regulome annotations and archived experiments.  Also work on region/regulome-search and 'quick view'.
-=======
->>>>>>> Fix rebase issues.
                                     </div>
                                 </div>
 
