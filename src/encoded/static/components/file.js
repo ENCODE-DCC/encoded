@@ -39,7 +39,7 @@ const derivingCols = {
     assembly: { title: 'Mapping assembly' },
     status: {
         title: 'File status',
-        display: item => <Status item={item} size="small" inline />,
+        display: item => <Status item={item} badgeSize="small" inline />,
     },
 };
 
@@ -692,7 +692,7 @@ class ListingComponent extends React.Component {
                     <div className="pull-right search-meta">
                         <p className="type meta-title">File</p>
                         <p className="type">{` ${result.title}`}</p>
-                        <Status item={result.status} size="small" css="result-table__status" />
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession"><a href={result['@id']}>{`${result.file_format}${result.file_format_type ? ` (${result.file_format_type})` : ''}`}</a></div>

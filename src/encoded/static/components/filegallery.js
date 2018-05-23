@@ -343,7 +343,7 @@ FileTable.procTableColumns = {
     },
     status: {
         title: 'File status',
-        display: item => <Status item={item} size="small" css="status__table-cell" />,
+        display: item => <Status item={item} badgeSize="small" css="status__table-cell" />,
     },
 };
 
@@ -394,7 +394,7 @@ FileTable.refTableColumns = {
     },
     status: {
         title: 'File status',
-        display: item => <Status item={item} size="small" css="status__table-cell" />,
+        display: item => <Status item={item} badgeSize="small" css="status__table-cell" />,
     },
 };
 
@@ -592,7 +592,7 @@ class RawSequencingTable extends React.Component {
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
-                                            <td className={pairClass}><Status item={file} size="small" css="status__table-cell" /></td>
+                                            <td className={pairClass}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
                                 });
@@ -626,7 +626,7 @@ class RawSequencingTable extends React.Component {
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
-                                        <td><Status item={file} size="small" css="status__table-cell" /></td>
+                                        <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
                             })}
@@ -770,7 +770,7 @@ class RawFileTable extends React.Component {
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
-                                            <td className={pairClass}><Status item={file} size="small" css="status__table-cell" /></td>
+                                            <td className={pairClass}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
                                 });
@@ -798,7 +798,7 @@ class RawFileTable extends React.Component {
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
-                                        <td><Status item={file} size="small" css="status__table-cell" /></td>
+                                        <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
                             })}
@@ -2201,7 +2201,7 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
             },
             status: {
                 title: 'Status',
-                display: item => <Status item={item} size="small" />,
+                display: item => <Status item={item} badgeSize="small" />,
             },
         };
 

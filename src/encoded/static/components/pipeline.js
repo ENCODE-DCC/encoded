@@ -563,7 +563,7 @@ class ListingComponent extends React.Component {
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Pipeline</p>
                         <p className="type">{` ${result.accession}`}</p>
-                        <Status item={result.status} size="small" css="result-table__status" />
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession">

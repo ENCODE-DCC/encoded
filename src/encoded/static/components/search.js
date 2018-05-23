@@ -207,7 +207,7 @@ class BiosampleComponent extends React.Component {
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Biosample</p>
                         <p className="type">{` ${result.accession}`}</p>
-                        <Status item={result.status} size="small" css="result-table__status" />
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession">
@@ -288,7 +288,7 @@ class ExperimentComponent extends React.Component {
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Experiment</p>
                         <p className="type">{` ${result.accession}`}</p>
-                        <Status item={result.status} size="small" css="result-table__status" />
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession">
@@ -409,7 +409,7 @@ class DatasetComponent extends React.Component {
                     <div className="pull-right search-meta">
                         <p className="type meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</p>
                         <p className="type">{` ${result.accession}`}</p>
-                        <Status item={result.status} size="small" css="result-table__status" />
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession">
@@ -647,7 +647,7 @@ const Term = (props) => {
 
     return (
         <li className={`facet-term${negated ? ' negated-selected' : (selected ? ' selected' : '')}`}>
-            {statusFacet ? <Status item={term} size="small" css="facet-term__status" noLabel /> : null}
+            {statusFacet ? <Status item={term} badgeSize="small" css="facet-term__status" noLabel /> : null}
             <a className="facet-term__item" href={href} onClick={href ? onFilter : null}>
                 <div className="facet-term__text">
                     {em ? <em>{title}</em> : <span>{title}</span>}

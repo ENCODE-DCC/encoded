@@ -177,7 +177,7 @@ const GraphLegend = (props, context) => {
                 <Status
                     key={status}
                     item={status}
-                    size="small"
+                    badgeSize="small"
                     css={'file-status-legend__status'}
                 />
             ))}

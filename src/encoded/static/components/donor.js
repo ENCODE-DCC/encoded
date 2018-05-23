@@ -177,7 +177,7 @@ const donorTableColumns = {
     sex: { title: 'Sex' },
     status: {
         title: 'Status',
-        display: donor => <Status item={donor} size="small" inline />,
+        display: donor => <Status item={donor} badgeSize="small" inline />,
     },
 };
 
@@ -692,7 +692,7 @@ const DonorListingComponent = (props, reactContext) => {
                 <div className="pull-right search-meta">
                     <p className="type meta-title">{organismTitle}</p>
                     <p className="type">{` ${result.accession}`}</p>
-                    <Status item={result.status} size="small" css="result-table__status" />
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
                     {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
                 </div>
                 <div className="accession">

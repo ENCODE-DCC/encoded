@@ -2231,7 +2231,7 @@ const Listing = (props) => {
                 <div className="pull-right search-meta">
                     <p className="type meta-title">Award</p>
                     <p className="type">{` ${result.name}`}</p>
-                    <Status item={result.status} size="small" css="result-table__status" />
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
                 </div>
                 <div className="accession">
                     <a href={result['@id']}>{result.title}</a>

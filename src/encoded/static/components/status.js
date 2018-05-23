@@ -297,13 +297,13 @@ export const getObjectStatuses = (item, accessLevel = 'external') => {
 
 // Display an object status or a status from a string. The "released" icon gets displayed if the
 // given status isn't defined.
-const Status = ({ item, size, title, css, noLabel, noIcon, inline }) => {
+const Status = ({ item, badgeSize, title, css, noLabel, noIcon, inline }) => {
     const status = typeof item === 'string' ? item : item.status;
     const classElement = globals.statusToClassElement(status);
 
     return (
         <div className={`${inline ? 'status--inline' : ''}${css ? ` ${css}` : ''}`}>
-            <div className={`status status--${size} status--${classElement}`} {...(title ? { title } : {})}>
+            <div className={`status status--${badgeSize} status--${classElement}`} {...(title ? { title } : {})}>
                 {!noIcon ? <div className={`status__icon${!noLabel ? ' status__icon--spacer' : ''}`}>{statusIcons[classElement] || statusIcons.released}</div> : null}
                 {!noLabel ? <div className="status__label">{status}</div> : null}
             </div>
@@ -316,7 +316,7 @@ Status.propTypes = {
         PropTypes.string,
         PropTypes.object,
     ]).isRequired, // Object with status property to display, or the status itself
-    size: PropTypes.oneOf([
+    badgeSize: PropTypes.oneOf([
         'small',
         'standard',
         'large',
@@ -329,7 +329,7 @@ Status.propTypes = {
 };
 
 Status.defaultProps = {
-    size: 'standard',
+    badgeSize: 'standard',
     title: '',
     css: '',
     noLabel: false,

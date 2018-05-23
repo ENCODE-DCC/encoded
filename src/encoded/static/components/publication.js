@@ -252,7 +252,7 @@ const ListingComponent = (props, context) => {
                 <PickerActions {...props} />
                 <div className="pull-right search-meta">
                     <p className="type meta-title">Publication</p>
-                    <Status item={result.status} size="small" css="result-table__status" />
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
                     {props.auditIndicators(result.audit, result['@id'], { session: context.session, search: true })}
                 </div>
                 <div className="accession"><a href={result['@id']}>{result.title}</a></div>

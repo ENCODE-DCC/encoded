@@ -373,7 +373,7 @@ const CharacterizationFile = (props) => {
 
     return (
         <div className="document__file">
-            <div className="document__characterization-badge"><Status item={doc} size="small" inline /></div>
+            <div className="document__characterization-badge"><Status item={doc} badgeSize="small" inline /></div>
             {detailSwitch ?
                 <button onClick={detailSwitch} className="document__file-detail-switch">
                     {collapseIcon(!detailOpen)}
@@ -558,7 +558,7 @@ class StatusIndicator extends React.Component {
         return (
             <span className="tooltip-status-trigger">
                 <span ref={(indicator) => { this.indicator = indicator; }} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
-                    <Status item={this.props.status} size="small" noLabel inline />
+                    <Status item={this.props.status} badgeSize="small" noLabel inline />
                 </span>
                 <div className={classes} style={this.state.tipStyles}>
                     {this.props.status}<br /><span>{this.props.terms.join(', ')}</span>
@@ -638,7 +638,7 @@ const ListingComponent = (props, reactContext) => {
                 <div className="pull-right search-meta">
                     <p className="type meta-title">Antibody</p>
                     <p className="type">{` ${result.accession}`}</p>
-                    <Status item={result.status} size="small" css="result-table__status" />
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
                     {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
                 </div>
                 <div className="accession">

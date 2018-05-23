@@ -625,7 +625,7 @@ const ListingComponent = (props, reactContext) => {
                 <div className="pull-right search-meta">
                     <p className="type meta-title">Genetic modification</p>
                     <p className="type">{` ${result.accession}`}</p>
-                    <Status item={result.status} size="small" css="result-table__status" />
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
                     {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
                 </div>
                 <div className="accession"><a href={result['@id']}>{result.category} &mdash; {result.purpose} &mdash; {result.method}</a></div>

@@ -1016,7 +1016,7 @@ const basicTableColumns = {
     },
     status: {
         title: 'Status',
-        display: experiment => <Status item={experiment} size="small" />,
+        display: experiment => <Status item={experiment} badgeSize="small" />,
     },
 };
 
@@ -1059,7 +1059,7 @@ const treatmentSeriesTableColumns = {
 
     status: {
         title: 'Status',
-        display: experiment => <Status item={experiment} size="small" />,
+        display: experiment => <Status item={experiment} badgeSize="small" />,
     },
 };
 
@@ -1116,7 +1116,7 @@ const replicationTimingSeriesTableColumns = {
 
     status: {
         title: 'Status',
-        display: experiment => <Status item={experiment} size="small" />,
+        display: experiment => <Status item={experiment} badgeSize="small" />,
     },
 };
 
@@ -1203,7 +1203,7 @@ const organismDevelopmentSeriesTableColumns = {
 
     status: {
         title: 'Status',
-        display: experiment => <Status item={experiment} size="small" />,
+        display: experiment => <Status item={experiment} badgeSize="small" />,
     },
 };
 
