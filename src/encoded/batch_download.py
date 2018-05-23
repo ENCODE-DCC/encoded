@@ -5,6 +5,7 @@ from pyramid.view import view_config
 from pyramid.response import Response
 from snovault import TYPES
 from snovault.util import simple_path_ids
+from snovault.elasticsearch.interfaces import SNP_SEARCH_ES
 from urllib.parse import (
     parse_qs,
     urlencode,
@@ -17,7 +18,7 @@ import json
 import time  # DEBUG: timing
 import datetime
 import zlib
-from .region_indexer import RegulomeAtlas
+from .region_atlas import RegulomeAtlas
 
 import logging
 log = logging.getLogger(__name__)
@@ -253,7 +254,7 @@ def peak_metadata(context, request):
 def regulome_evidence(context, request):
     begin = time.time()  # DEBUG: timing
     format_json = request.url.endswith('.json')
-    atlas = RegulomeAtlas(request.registry['snp_search'])
+    atlas = RegulomeAtlas(request.registry[SNP_SEARCH_ES])
     try:
         page_parts = request.url.split('/')[-1].split('.')[0].split('_')
         assembly = page_parts[1]
@@ -269,11 +270,12 @@ def regulome_evidence(context, request):
 
     def iter_snps(format_json):
         if format_json:
-            yield bytes('{\n', 'utf-8')
+            header = '{\n'
         else:
-            header = ['#chrom', 'start', 'end', 'rsid', 'num_score', 'score']  # bed 5 +
-            header.extend(atlas.evidence_categories())
-            yield bytes('\t'.join(header) + '\n', 'utf-8')
+            columns = ['#chrom', 'start', 'end', 'rsid', 'num_score', 'score']  # bed 5 +
+            columns.extend(atlas.evidence_categories())
+            header = '\t'.join(columns) + '\n'
+        yield bytes(header, 'utf-8')
         count = 0
         for snp in atlas.iter_scored_snps(assembly, chrom, start, end):
             count += 1
