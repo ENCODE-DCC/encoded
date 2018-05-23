@@ -1,7 +1,10 @@
 from pyramid.view import view_config
 from pyramid.compat import bytes_
 from snovault import TYPES
-from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
+from snovault.elasticsearch.interfaces import (
+    ELASTIC_SEARCH,
+    SNP_SEARCH_ES
+)
 from snovault.elasticsearch.indexer import MAX_CLAUSES_FOR_ES
 from elasticsearch.exceptions import (
     NotFoundError
@@ -16,7 +19,7 @@ from .search import (
     search_result_actions
 )
 from .batch_download import get_peak_metadata_links
-from .region_indexer import (
+from .region_atlas import (
     RegionAtlas,
     RegulomeAtlas
 )
@@ -304,9 +307,9 @@ def region_search(context, request):
     principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
     if regulome:
-        atlas = RegulomeAtlas(request.registry['snp_search'])
+        atlas = RegulomeAtlas(request.registry[SNP_SEARCH_ES])
     else:
-        atlas = RegionAtlas(request.registry['snp_search'])
+        atlas = RegionAtlas(request.registry[SNP_SEARCH_ES])
     region = request.params.get('region', '*')
 
     # handling limit
