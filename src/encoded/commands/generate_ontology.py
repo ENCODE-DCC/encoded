@@ -131,7 +131,8 @@ assay_slims = {
     'OBI:0000435': 'Genotyping',
     'OBI:0000615': 'Proteomics',
     'OBI:0000626': 'DNA sequencing',
-    'OBI:0000845': 'RNA structure'
+    'OBI:0000845': 'RNA structure',
+    'OBI:0002082': 'Characterization'
 }
 
 slim_shims = {
@@ -154,6 +155,14 @@ slim_shims = {
         'OBI:0001862': ['DNA methylation'],  # RRBS
         'OBI:0001861': ['DNA methylation'],  # MRE-seq
         'OBI:0002086': ['DNA methylation']  # TAB-seq
+        # MPRA episomal
+        # MPRA integrated (lentiviral)
+        # STARR-seq OBI:0002041
+        # eSTARR-seq
+        # CRISPRi screen
+        # CRISPRk screen
+        # single guide CRISPR
+        # double guide CRISPR
     },
     'organ': {
         'UBERON:0001871': ['brain'],
