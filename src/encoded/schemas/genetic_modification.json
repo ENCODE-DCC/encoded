@@ -57,7 +57,7 @@
                     ],
                     "properties": {
                         "purpose": {
-                                "enum": ["repression", "activation", "overexpression", "validation"]
+                                "enum": ["repression", "activation", "overexpression", "characterization", "screening"]
                         }
                     }
                 },
@@ -396,7 +396,8 @@
                 "overexpression",
                 "repression",
                 "tagging",
-                "validation"
+                "characterization", 
+                "screening"
             ]
         },
         "zygosity":{
