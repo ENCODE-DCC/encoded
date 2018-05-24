@@ -11,6 +11,21 @@ from pyramid.traversal import (
     find_root,
     traverse,
 )
+from pyramid.view import (
+    view_config,
+)
+from snovault.crud_views import (
+    update_item,
+    item_edit
+)
+from snovault.resource_views import item_view_object
+from snovault.interfaces import (
+    COLLECTIONS,
+    CONNECTION,
+    Created,
+    BeforeModified,
+    AfterModified,
+)
 import snovault
 
 
@@ -171,6 +186,11 @@ class Item(snovault.Item):
             keys['accession'].append(properties['accession'])
         return keys
 
+    def set_property(self, field, value):
+        import logging
+        logging.warn('Setting prop')
+        pass
+
 
 class SharedItem(Item):
     ''' An Item visible to all authenticated users while "in progress".
@@ -216,3 +236,23 @@ def edit_json(context, request):
             'profile': '/profiles/{ti.name}.json'.format(ti=context.type_info),
             'href': '{item_uri}#!edit-json'.format(item_uri=request.resource_path(context)),
         }
+
+from snovault.schema_utils import schema_validator
+@view_config(context=Item, permission='edit', request_method='PATCH',
+             name='release', validators=[schema_validator({"type": "object"})])
+def item_release_object(context, request):
+    import logging
+    logging.warn('releasing object')
+    logging.warn(str(context.uuid))
+    props = context.upgrade_properties()
+    props['status'] = 'released'
+    request.registry.notify(BeforeModified(context, request))
+    context.update(props)
+    request.registry.notify(AfterModified(context, request))
+    rendered = context.upgrade_properties()
+    result = {
+        'status': 'success',
+        '@type': ['result'],
+        '@graph': [rendered],
+    }
+    return result
