@@ -179,3 +179,9 @@ def genetic_modification_5_6(value, system):
         # so let's just set it to something we know we don't have yet annotated in the data so
         # we can identify any special cases we might need to deal with
         value['purpose'] = 'analysis'
+
+@upgrade_step('genetic_modification', '6', '7')
+def genetic_modification_5_6(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-4042
+    if value['purpose'] == 'validation':
+        value['purpose'] = 'characterization'
