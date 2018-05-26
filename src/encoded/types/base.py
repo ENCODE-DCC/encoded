@@ -1,3 +1,4 @@
+import logging
 from functools import lru_cache
 from pyramid.security import (
     ALL_PERMISSIONS,
@@ -18,11 +19,7 @@ from snovault.crud_views import (
     update_item,
     item_edit
 )
-from snovault.resource_views import item_view_object
 from snovault.interfaces import (
-    COLLECTIONS,
-    CONNECTION,
-    Created,
     BeforeModified,
     AfterModified,
 )
@@ -238,21 +235,59 @@ def edit_json(context, request):
         }
 
 from snovault.schema_utils import schema_validator
+from snovault.validators import validate_item_content_patch
 @view_config(context=Item, permission='edit', request_method='PATCH',
-             name='release', validators=[schema_validator({"type": "object"})])
+             name='release', validators=[validate_item_content_patch])
 def item_release_object(context, request):
-    import logging
-    logging.warn('releasing object')
-    logging.warn(str(context.uuid))
-    props = context.upgrade_properties()
-    props['status'] = 'released'
-    request.registry.notify(BeforeModified(context, request))
-    context.update(props)
-    request.registry.notify(AfterModified(context, request))
-    rendered = context.upgrade_properties()
+    logging.warn('releasing object {}'.format(str(context.uuid)))
+    #props = context.properties.copy()
+    #props['status'] = 'released'
+    #request.registry.notify(BeforeModified(context, request))
+    #context.update(props)
+    #request.registry.notify(AfterModified(context, request))
+    ##rendered = context.upgrade_properties()
+    #logging.warn(request.validated)
+    if not context.properties.get('status'):
+        from snovault.validation import ValidationFailure
+        raise ValidationFailure('status', [context.item_type], 'Status property not found')
+    res = item_edit(context, request)
+    logging.warn(request._linked_uuids)
+    related = request._linked_uuids.union(request._embedded_uuids)
+    logging.warn(related)
+    uuids_to_release = []
+    ignore_assembly = True
+    if request.params.get('assembly'):
+        ignore_assembly = False
+    for uuid in related:
+        logging.warn(uuid)
+        r = request.embed('/{}'.format(uuid), '@@page', as_user=True)
+        if ((r.get('status') == 'in progress' and (ignore_assembly or r.get('assembly') == request.params.get('assembly', False))) or (r.get('status') == 'in progress' and r.get('output_type') == 'reads')):
+            uuids_to_release.append(r.get('@id'))
+    related = set(
+        [(str(x), request.registry['storage'].write.get_by_uuid(x).item_type) for x in request._linked_uuids] +
+        [(str(x), request.registry['storage'].write.get_by_uuid(x).item_type) for x in request._embedded_uuids]
+    )
+    related.discard(context.uuid)
+    logging.warn(related)
+    for uuid, name in related:
+        logging.warn(uuid)
+        r = request.embed('/{}'.format(uuid), '@@page', as_user=True)
+        logging.warn('{}, {}'.format(name, r.get('status')))
+        if ((r.get('status') == 'in progress' and (ignore_assembly or r.get('assembly') == request.params.get('assembly', False))) or (r.get('status') == 'in progress' and r.get('output_type') == 'reads')):
+            uuids_to_release.append(r.get('@id'))
+    logging.warn(set(uuids_to_release))
+    for uuid in set(uuids_to_release):
+        logging.warn('releasing {}'.format(uuid))
+        from pyramid.traversal import traverse
+        context = traverse(request.registry['root'], uuid)['context']
+        props = context.properties.copy()
+        props['status'] = 'released'
+        request.registry.notify(BeforeModified(context, request))
+        context.update(props)
+        request.registry.notify(AfterModified(context, request))
     result = {
         'status': 'success',
         '@type': ['result'],
-        '@graph': [rendered],
+        '@graph': [context.properties],
     }
-    return result
+    return res
