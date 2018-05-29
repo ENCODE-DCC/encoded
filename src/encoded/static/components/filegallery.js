@@ -708,16 +708,16 @@ class RawFileTable extends React.Component {
             });
 
             // Split library/file groups into paired and non-paired library/file groups.
-            const pairedGroups = {};
-            const nonpairedFiles = [];
+            const grouped = {};
+            const nonGrouped = [];
             Object.keys(libGroups).forEach((libGroupKey) => {
                 if (libGroups[libGroupKey].length > 1) {
-                    pairedGroups[libGroupKey] = libGroups[libGroupKey];
+                    grouped[libGroupKey] = libGroups[libGroupKey];
                 } else {
-                    nonpairedFiles.push(libGroups[libGroupKey][0]);
+                    nonGrouped.push(libGroups[libGroupKey][0]);
                 }
             });
-            const pairedKeys = Object.keys(pairedGroups).sort();
+            const pairedKeys = Object.keys(grouped).sort();
 
             return (
                 <table className="table table-sortable table-raw">
@@ -749,7 +749,7 @@ class RawFileTable extends React.Component {
                         <tbody>
                             {pairedKeys.map((pairedKey, j) => {
                                 // groupFiles is an array of files under a bioreplicate/library
-                                const groupFiles = pairedGroups[pairedKey];
+                                const groupFiles = grouped[pairedKey];
                                 const bottomClass = j < (pairedKeys.length - 1) ? 'merge-bottom' : '';
                                 const groupFilesLength = groupFiles.length;
 
@@ -789,7 +789,7 @@ class RawFileTable extends React.Component {
                                     );
                                 });
                             })}
-                            {nonpairedFiles.sort(sortBioReps).map((file, i) => {
+                            {nonGrouped.sort(sortBioReps).map((file, i) => {
                                 // Prepare for run_type display
                                 const rowClasses = [
                                     pairedKeys.length && i === 0 ? 'table-raw-separator' : null,
