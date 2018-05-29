@@ -43,17 +43,17 @@
             padding-left: 10px;
             padding-right: 10px;
         }
-        a {
+        a, button {
             display: inline;
             margin: 0;
             padding: 0;
             background-color: transparent;   
         }
-        a:hover { 
+        a:hover, button:hover { 
             text-decoration: underline;
             background-color: transparent; 
         }
-        a:active { background-color: transparent; }
+        a:active, button:active { background-color: transparent; }
     }
     
     .footer-logos {

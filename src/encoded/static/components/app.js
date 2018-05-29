@@ -543,7 +543,8 @@ class App extends React.Component {
         const nativeEvent = event.nativeEvent;
 
         // SVG anchor elements have tagName == 'a' while HTML anchor elements have tagName == 'A'
-        while (target && (target.tagName.toLowerCase() !== 'a' || target.getAttribute('data-href'))) {
+        const tagName = target && (target.tagName.toLowerCase());
+        while (target && ((tagName !== 'a' && tagName !== 'button') || target.getAttribute('data-href'))) {
             target = target.parentElement;
         }
         if (!target) {
@@ -803,6 +804,7 @@ class App extends React.Component {
         return request;
     }
 
+    /* eslint-disable class-methods-use-this */
     fallbackNavigate(href, fragment, options) {
         // Navigate using window.location
         if (options.replace) {
@@ -815,6 +817,7 @@ class App extends React.Component {
             }
         }
     }
+    /* eslint-enable class-methods-use-this */
 
     receiveContextResponse(data) {
         // title currently ignored by browsers
