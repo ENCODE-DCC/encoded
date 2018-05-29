@@ -756,7 +756,7 @@ class RawFileTable extends React.Component {
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
                                 return groupFiles.sort((a, b) => (a.title < b.title ? -1 : 1)).map((file, i) => {
-                                    const pairBottom = (i === groupFiles.length - 1) ? '' : ' pair-bottom';
+                                    const pairBottom = i === (groupFiles.length - 1) ? '' : ' pair-bottom';
                                     const pairClass = i !== (groupFilesLength - 1) ? 'align-pair1' : `align-pair2 ${pairBottom}`;
 
                                     // Determine if the accession should be a button or not.
