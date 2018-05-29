@@ -150,8 +150,7 @@ def audit_biosample_donor(value, system):
         yield AuditFailure('inconsistent mutated_gene organism', detail, level='ERROR')
 
     for i in donor['mutated_gene'].get('investigated_as'):
-        if i in ['histone modification',
-                 'tag',
+        if i in ['tag',
                  'control',
                  'recombinant protein',
                  'nucleotide modification',

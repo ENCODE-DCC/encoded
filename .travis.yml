@@ -43,9 +43,9 @@ before_install:
   - node --version
   - npm config set python /usr/bin/python2.7
   - curl -O  ${ES_DOWNLOAD_URL} && sudo dpkg -i --force-confnew elasticsearch-${ES_VERSION}.deb && sudo service elasticsearch stop
-  - pip install setuptools==18.5
+  - pip install -U zc.buildout setuptools
 install:
-  - python bootstrap.py --buildout-version 2.9.5 --setuptools-version 18.5
+  - buildout bootstrap
   - bin/buildout -c buildout-travis.cfg || (echo "Retrying buildout" && bin/buildout -c buildout-travis.cfg)
   - sudo chown -R travis /etc/elasticsearch
 before_script:

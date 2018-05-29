@@ -217,7 +217,6 @@ class SummaryHorizontalFacets extends React.Component {
 
     render() {
         const { context } = this.props;
-        const { location_href } = this.context;
         const allFacets = context.facets;
 
         // Get the array of facet field values to display in the horizontal facet area.
@@ -229,7 +228,7 @@ class SummaryHorizontalFacets extends React.Component {
 
         // Calculate the searchBase, which is the current search query string fragment that can have
         // terms added to it.`
-        const searchBase = `${url.parse(location_href).search}&` || '?';
+        const searchBase = `${url.parse(this.context.location_href).search}&` || '?';
 
         return (
             <div className="summary-header__facets-horizontal">

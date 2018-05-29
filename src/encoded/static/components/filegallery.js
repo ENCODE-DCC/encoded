@@ -48,6 +48,12 @@ function fileAccessionSort(a, b) {
 }
 
 
+// Calculate a string representation of the given replication_type.
+const replicationDisplay = replicationType => (
+    `${replicationType === 'anisogenic' ? 'Anisogenic' : 'Isogenic'} replicate`
+);
+
+
 export class FileTable extends React.Component {
     static rowClasses() {
         return '';
@@ -58,7 +64,6 @@ export class FileTable extends React.Component {
 
         // Initialize component state.
         this.state = {
-            maxWidth: 'auto', // Width of widest table
             collapsed: { // Keeps track of which tables are collapsed
                 raw: false,
                 rawArray: false,
@@ -81,15 +86,17 @@ export class FileTable extends React.Component {
     }
 
     fileClick(file) {
-        const node = {
-            '@type': ['File'],
-            metadata: {
-                ref: file,
-            },
-            schemas: this.props.schemas,
-        };
-        this.props.setInfoNodeId(node);
-        this.props.setInfoNodeVisible(true);
+        if (this.props.setInfoNodeId && this.props.setInfoNodeVisible) {
+            const node = {
+                '@type': ['File'],
+                metadata: {
+                    ref: file,
+                },
+                schemas: this.props.schemas,
+            };
+            this.props.setInfoNodeId(node);
+            this.props.setInfoNodeVisible(true);
+        }
     }
 
     handleCollapse(table) {
@@ -113,13 +120,13 @@ export class FileTable extends React.Component {
 
     render() {
         const {
+            context,
             items,
             graphedFiles,
             filePanelHeader,
             encodevers,
             selectedFilterValue,
             filterOptions,
-            anisogenic,
             showFileCount,
             session,
             adminUser,
@@ -171,7 +178,7 @@ export class FileTable extends React.Component {
                             files={files.raw}
                             meta={{
                                 encodevers,
-                                anisogenic,
+                                replicationType: context.replication_type,
                                 fileClick: this.fileClick,
                                 graphedFiles,
                                 session,
@@ -183,7 +190,7 @@ export class FileTable extends React.Component {
                             files={files.rawArray}
                             meta={{
                                 encodevers,
-                                anisogenic,
+                                replicationType: context.replication_type,
                                 fileClick: this.fileClick,
                                 graphedFiles,
                                 session,
@@ -194,7 +201,8 @@ export class FileTable extends React.Component {
                         <SortTable
                             title={
                                 <CollapsingTitle
-                                    title="Processed data" collapsed={this.state.collapsed.proc}
+                                    title="Processed data"
+                                    collapsed={this.state.collapsed.proc}
                                     handleCollapse={this.handleCollapseProc}
                                 />
                             }
@@ -205,7 +213,7 @@ export class FileTable extends React.Component {
                             sortColumn="biological_replicates"
                             meta={{
                                 encodevers,
-                                anisogenic,
+                                replicationType: context.replication_type,
                                 hoverDL: this.hoverDL,
                                 restrictedTip: this.state.restrictedTip,
                                 fileClick: this.fileClick,
@@ -228,7 +236,7 @@ export class FileTable extends React.Component {
                             columns={FileTable.refTableColumns}
                             meta={{
                                 encodevers,
-                                anisogenic,
+                                replicationType: context.replication_type,
                                 hoverDL: this.hoverDL,
                                 restrictedTip: this.state.restrictedTip,
                                 fileClick: this.fileClick,
@@ -246,13 +254,13 @@ export class FileTable extends React.Component {
 }
 
 FileTable.propTypes = {
+    context: PropTypes.object.isRequired, // Dataset-type object being rendered
     items: PropTypes.array.isRequired, // Array of files to appear in the table
     graphedFiles: PropTypes.object, // Specifies which files are in the graph
     filePanelHeader: PropTypes.object, // Table header component
     encodevers: PropTypes.string, // ENCODE version of the experiment
     selectedFilterValue: PropTypes.string, // Selected filter from popup menu
     filterOptions: PropTypes.array, // Array of assambly/annotation from file array
-    anisogenic: PropTypes.bool, // True if experiment is anisogenic
     showFileCount: PropTypes.bool, // True to show count of files in table
     setInfoNodeId: PropTypes.func, // Function to call to set the currently selected node ID
     setInfoNodeVisible: PropTypes.func, // Function to call to set the visibility of the node's modal
@@ -260,6 +268,21 @@ FileTable.propTypes = {
     adminUser: PropTypes.bool, // True if user is an admin user
     schemas: PropTypes.object, // Object from /profiles/ containing all schemas
     noDefaultClasses: PropTypes.bool, // True to strip SortTable panel of default CSS classes
+};
+
+FileTable.defaultProps = {
+    graphedFiles: null,
+    filePanelHeader: null,
+    encodevers: '',
+    selectedFilterValue: 'default',
+    filterOptions: [],
+    showFileCount: false,
+    setInfoNodeId: null,
+    setInfoNodeVisible: null,
+    session: null,
+    adminUser: false,
+    schemas: null,
+    noDefaultClasses: false,
 };
 
 FileTable.contextTypes = {
@@ -282,7 +305,7 @@ FileTable.procTableColumns = {
     file_type: { title: 'File type' },
     output_type: { title: 'Output type' },
     biological_replicates: {
-        title: (list, columns, meta) => <span>{meta.anisogenic ? 'Anisogenic' : 'Biological'} replicate</span>,
+        title: (list, columns, meta) => <span>{replicationDisplay(meta.replicationType)}</span>,
         getValue: item => (item.biological_replicates ? item.biological_replicates.sort((a, b) => a - b).join(', ') : ''),
     },
     mapped_read_length: {
@@ -432,21 +455,15 @@ class RawSequencingTable extends React.Component {
         // Initialize React state variables.
         this.state = {
             collapsed: false, // Collapsed/uncollapsed state of table
-            restrictedTip: '', // UUID of file with tooltip showing
         };
 
         // Bind `this` to non-React methods.
         this.handleCollapse = this.handleCollapse.bind(this);
-        this.hoverDL = this.hoverDL.bind(this);
     }
 
     handleCollapse() {
         // Handle a click on a collapse button by toggling the corresponding tableCollapse state var
         this.setState({ collapsed: !this.state.collapsed });
-    }
-
-    hoverDL(hovering, fileUuid) {
-        this.setState({ restrictedTip: hovering ? fileUuid : '' });
     }
 
     render() {
@@ -535,7 +552,7 @@ class RawSequencingTable extends React.Component {
 
                         {!this.state.collapsed ?
                             <tr>
-                                <th>Biological replicate</th>
+                                <th>{replicationDisplay(meta.replicationType)}</th>
                                 <th>Library</th>
                                 <th>Accession</th>
                                 <th>File type</th>
@@ -650,7 +667,11 @@ class RawSequencingTable extends React.Component {
 
 RawSequencingTable.propTypes = {
     files: PropTypes.array, // Raw files to display
-    meta: PropTypes.object, // Extra metadata in the same format passed to SortTable
+    meta: PropTypes.object.isRequired, // Extra metadata in the same format passed to SortTable
+};
+
+RawSequencingTable.defaultProps = {
+    files: null,
 };
 
 
@@ -661,21 +682,15 @@ class RawFileTable extends React.Component {
         // Initialize React state variables.
         this.state = {
             collapsed: false, // Collapsed/uncollapsed state of table
-            restrictedTip: '', // UUID of file with tooltip showing
         };
 
         // Bind `this` to non-React methods.
         this.handleCollapse = this.handleCollapse.bind(this);
-        this.hoverDL = this.hoverDL.bind(this);
     }
 
     handleCollapse() {
         // Handle a click on a collapse button by toggling the corresponding tableCollapse state var
         this.setState({ collapsed: !this.state.collapsed });
-    }
-
-    hoverDL(hovering, fileUuid) {
-        this.setState({ restrictedTip: hovering ? fileUuid : '' });
     }
 
     render() {
@@ -715,7 +730,7 @@ class RawFileTable extends React.Component {
 
                         {!this.state.collapsed ?
                             <tr>
-                                <th>Biological replicate</th>
+                                <th>{replicationDisplay(meta.replicationType)}</th>
                                 <th>Library</th>
                                 <th>Accession</th>
                                 <th>File type</th>
@@ -824,7 +839,11 @@ class RawFileTable extends React.Component {
 
 RawFileTable.propTypes = {
     files: PropTypes.array, // Raw sequencing files to display
-    meta: PropTypes.object, // Extra metadata in the same format passed to SortTable
+    meta: PropTypes.object.isRequired, // Extra metadata in the same format passed to SortTable
+};
+
+RawFileTable.defaultProps = {
+    files: null,
 };
 
 
@@ -844,31 +863,34 @@ DatasetFiles.propTypes = {
     items: PropTypes.array, // Array of files retrieved
 };
 
+DatasetFiles.defaultProps = {
+    items: null,
+};
+
 
 // File display widget, showing a facet list, a table, and a graph (and maybe a BioDalliance).
 // This component only triggers the data retrieval, which is done with a search for files associated
 // with the given experiment (in this.props.context). An odd thing is we specify query-string parameters
 // to the experiment URL, but they apply to the file search -- not the experiment itself.
-export class FileGallery extends React.Component {
-    render() {
-        const { context, encodevers, anisogenic, hideGraph, altFilterDefault } = this.props;
-
-        return (
-            <FetchedData>
-                <Param name="data" url={`/search/?limit=all&type=File&dataset=${context['@id']}`} />
-                <Param name="schemas" url="/profiles/" />
-                <FileGalleryRenderer context={context} session={this.context.session} encodevers={encodevers} anisogenic={anisogenic} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
-            </FetchedData>
-        );
-    }
-}
+export const FileGallery = ({ context, encodevers, hideGraph, altFilterDefault }, reactContext) => (
+    <FetchedData>
+        <Param name="data" url={`/search/?limit=all&type=File&dataset=${context['@id']}`} />
+        <Param name="schemas" url="/profiles/" />
+        <FileGalleryRenderer context={context} session={reactContext.session} encodevers={encodevers} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
+    </FetchedData>
+);
 
 FileGallery.propTypes = {
-    context: PropTypes.object, // Dataset object whose files we're rendering
+    context: PropTypes.object.isRequired, // Dataset object whose files we're rendering
     encodevers: PropTypes.string, // ENCODE version number
-    anisogenic: PropTypes.bool, // True if anisogenic experiment
     hideGraph: PropTypes.bool, // T to hide graph display
     altFilterDefault: PropTypes.bool, // T to default to All Assemblies and Annotations
+};
+
+FileGallery.defaultProps = {
+    encodevers: '',
+    hideGraph: false,
+    altFilterDefault: false,
 };
 
 FileGallery.contextTypes = {
@@ -995,10 +1017,9 @@ function qcAbbr(qc) {
         CpgCorrelationQualityMetric: 'CC',
         DuplicatesQualityMetric: 'DS',
         EdwbamstatsQualityMetric: 'EB',
-        EdwcomparepeaksQualityMetric: 'EP',
-        Encode2ChipSeqQualityMetric: 'EC',
         FilteringQualityMetric: 'FG',
         GenericQualityMetric: 'GN',
+        HistoneChipSeqQualityMetric: 'HC',
         HotspotQualityMetric: 'HS',
         IDRQualityMetric: 'ID',
         IdrSummaryQualityMetric: 'IS',
@@ -1643,11 +1664,8 @@ class FileGalleryRendererComponent extends React.Component {
         // Initialize React state variables.
         this.state = {
             selectedFilterValue: 'default', // <select> value of selected filter
-            meta: null, // @id of node whose info panel is open
-            infoModalOpen: false, // True if info modal is open
             relatedFiles: [],
             inclusionOn: adminUser, // True to exclude files with certain statuses
-            contributingFiles: [], // Cache for contributing files retrieved from the DB
         };
 
         // Bind `this` to non-React methods.
@@ -1871,13 +1889,20 @@ FileGalleryRendererComponent.inclusionStatuses = [
 ];
 
 FileGalleryRendererComponent.propTypes = {
-    context: PropTypes.object, // Dataset whose files we're rendering
+    context: PropTypes.object.isRequired, // Dataset whose files we're rendering
     data: PropTypes.object, // File data retrieved from search request
     schemas: PropTypes.object, // Schemas for the entire system; used for QC property titles
     hideGraph: PropTypes.bool, // T to hide graph display
     altFilterDefault: PropTypes.bool, // T to default to All Assemblies and Annotations
-    auditIndicators: PropTypes.func, // Inherited from auditDecor HOC
-    auditDetail: PropTypes.func, // Inherited from auditDecor HOC
+    auditIndicators: PropTypes.func.isRequired, // Inherited from auditDecor HOC
+    auditDetail: PropTypes.func.isRequired, // Inherited from auditDecor HOC
+};
+
+FileGalleryRendererComponent.defaultProps = {
+    data: null,
+    schemas: null,
+    hideGraph: false,
+    altFilterDefault: false,
 };
 
 FileGalleryRendererComponent.contextTypes = {
@@ -1905,6 +1930,10 @@ CollapsingTitle.propTypes = {
     collapsed: PropTypes.bool, // T if the panel this is over has been collapsed
 };
 
+CollapsingTitle.defaultProps = {
+    collapsed: false,
+};
+
 
 // Display a filtering <select>. `filterOptions` is an array of objects with two properties:
 // `assembly` and `annotation`. Both are strings that get concatenated to form each menu item. The
@@ -1917,7 +1946,7 @@ const FilterMenu = (props) => {
             <option value="default">All Assemblies and Annotations</option>
             <option disabled="disabled" />
             {filterOptions.map((option, i) =>
-                <option key={`${option.assembly}${option.annotation}`} value={i}>{`${option.assembly + (option.annotation ? ` ${option.annotation}` : '')}`}</option>,
+                <option key={`${option.assembly}${option.annotation}`} value={i}>{`${option.assembly + (option.annotation ? ` ${option.annotation}` : '')}`}</option>
             )}
         </select>
     );
@@ -1927,6 +1956,10 @@ FilterMenu.propTypes = {
     selectedFilterValue: PropTypes.string, // Currently selected filter
     filterOptions: PropTypes.array.isRequired, // Contents of the filtering menu
     handleFilterChange: PropTypes.func.isRequired, // Call when a filtering option changes
+};
+
+FilterMenu.defaultProps = {
+    selectedFilterValue: 'default',
 };
 
 
@@ -2111,7 +2144,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                             <dt>File quality metrics</dt>
                             <dd className="file-qc-buttons">
                                 {selectedFile.quality_metrics.map(qc =>
-                                    <FileQCButton key={qc['@id']} qc={qc} file={selectedFile} schemas={node.schemas} handleClick={qcClick} />,
+                                    <FileQCButton key={qc['@id']} qc={qc} file={selectedFile} schemas={node.schemas} handleClick={qcClick} />
                                 )}
                             </dd>
                         </div>

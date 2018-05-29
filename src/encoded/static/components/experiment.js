@@ -16,7 +16,7 @@ import { singleTreatment, AlternateAccession } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
 import { StatusLabel } from './statuslabel';
-import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef } from './typeutils';
+import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, Supersede } from './typeutils';
 
 
 const anisogenicValues = [
@@ -395,18 +395,6 @@ class ExperimentComponent extends React.Component {
             statuses.push({ status: context.internal_status, title: 'Internal' });
         }
 
-        // Make array of superseded_by accessions.
-        let supersededBys = [];
-        if (context.superseded_by && context.superseded_by.length) {
-            supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
-        }
-
-        // Make array of supersedes accessions.
-        let supersedes = [];
-        if (context.supersedes && context.supersedes.length) {
-            supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
-        }
-
         // Determine whether the experiment is isogenic or anisogenic. No replication_type
         // indicates isogenic.
         const anisogenic = context.replication_type ? (anisogenicValues.indexOf(context.replication_type) !== -1) : false;
@@ -465,15 +453,14 @@ class ExperimentComponent extends React.Component {
                         <Breadcrumbs root="/search/?type=Experiment" crumbs={crumbs} />
                         <h2>Experiment summary for {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
-                        {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
-                        {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
+                        <Supersede context={context} />
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
                             </div>
                             {this.props.auditIndicators(context.audit, 'experiment-audit', { session: this.context.session })}
                         </div>
-                   </div>
+                    </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'experiment-audit', { session: this.context.session, except: context['@id'] })}
                 <Panel addClasses="data-display">
@@ -801,7 +788,7 @@ const replicateTableColumns = {
     },
 };
 
-// Display the table of replicates
+// Display the table of replicates.
 const ReplicateTable = (props) => {
     let tableTitle;
     const { condensedReplicates, replicationType } = props;
@@ -810,12 +797,9 @@ const ReplicateTable = (props) => {
     if (replicationType === 'anisogenic') {
         tableTitle = 'Anisogenic replicates';
         replicateTableColumns.biological_replicate_number.title = 'Anisogenic replicate';
-    } else if (replicationType === 'isogenic') {
+    } else {
         tableTitle = 'Isogenic replicates';
         replicateTableColumns.biological_replicate_number.title = 'Isogenic replicate';
-    } else {
-        tableTitle = 'Replicates';
-        replicateTableColumns.biological_replicate_number.title = 'Biological replicate';
     }
 
     return (
@@ -828,6 +812,10 @@ const ReplicateTable = (props) => {
 ReplicateTable.propTypes = {
     condensedReplicates: PropTypes.array.isRequired, // Condensed 'array' of replicate objects
     replicationType: PropTypes.string, // Type of replicate so we can tell what's isongenic/anisogenic/whatnot
+};
+
+ReplicateTable.defaultProps = {
+    replicationType: '',
 };
 
 
@@ -940,6 +928,7 @@ class RelatedSeriesItem extends React.Component {
     render() {
         const { series, detailOpen } = this.props;
 
+        /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
         return (
             <span>
                 <a href={series['@id']} title={`View page for series dataset ${series.accession}`}>{series.accession}</a>&nbsp;
@@ -960,12 +949,17 @@ class RelatedSeriesItem extends React.Component {
                 </div>
             </span>
         );
+        /* eslint-enable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
     }
 }
 
 RelatedSeriesItem.propTypes = {
     series: PropTypes.object.isRequired, // Series object to display
     detailOpen: PropTypes.bool, // TRUE to open the series' detail tooltip
-    handleInfoClick: PropTypes.func, // Function to call to handle click in info icon
-    handleInfoHover: PropTypes.func, // Function to call when mouse enters or leaves info icon
+    handleInfoClick: PropTypes.func.isRequired, // Function to call to handle click in info icon
+    handleInfoHover: PropTypes.func.isRequired, // Function to call when mouse enters or leaves info icon
+};
+
+RelatedSeriesItem.defaultProps = {
+    detailOpen: false,
 };

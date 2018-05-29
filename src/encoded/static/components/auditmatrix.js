@@ -141,7 +141,7 @@ class AuditMatrix extends React.Component {
         });
     }
 
-/* eslint no-loop-func: 0 */
+    /* eslint-disable no-loop-func */
     render() {
         const context = this.props.context;
         const matrix = context.matrix;
@@ -272,7 +272,7 @@ class AuditMatrix extends React.Component {
                                             <tr style={{ borderBottom: 'solid 1px #ddd' }}>
                                                 <th style={{ textAlign: 'center', width: 200 }}>
                                                     <h3>
-                                                      {matrix.doc_count} results
+                                                        {matrix.doc_count} results
                                                     </h3>
                                                     <div className="btn-attached">
                                                         {matrix.doc_count && context.views ? context.views.map(view => <a href={view.href} key={view.icon} className="btn btn-info btn-sm btn-svgicon" title={view.title}>{svgIcon(view2svg[view.icon])}</a>) : ''}
@@ -315,11 +315,13 @@ class AuditMatrix extends React.Component {
                                                 // color.
                                                 const rowColor = seriesColor.clone();
                                                 const categoryTextColor = rowColor.luminosity() > 0.5 ? '#000' : '#fff';
-                                                const rows = [<tr key={group.key}>
-                                                    <th colSpan={colCount + 1} style={{ textAlign: 'left', backgroundColor: groupColor }}>
-                                                        <a href={groupHref} style={{ color: categoryTextColor }}>{group.title}</a>
-                                                    </th>
-                                                </tr>];
+                                                const rows = [
+                                                    <tr key={group.key}>
+                                                        <th colSpan={colCount + 1} style={{ textAlign: 'left', backgroundColor: groupColor }}>
+                                                            <a href={groupHref} style={{ color: categoryTextColor }}>{group.title}</a>
+                                                        </th>
+                                                    </tr>,
+                                                ];
                                                 const groupBuckets = group[secondaryYGrouping].buckets;
                                                 const yLimit = matrix.y.limit || groupBuckets.length;
 
@@ -399,7 +401,7 @@ class AuditMatrix extends React.Component {
                                         </tbody>
                                     </table>
                                 </div>
-                                <div className="hubs-controls" ref="hubscontrols">
+                                <div className="hubs-controls" ref={(div) => { this.hubscontrols = div; }}>
                                     {context.batch_download ?
                                         <BatchDownload context={context} />
                                     : null}
@@ -420,6 +422,7 @@ class AuditMatrix extends React.Component {
         }
         return <h4>{notification}</h4>;
     }
+    /* eslint-enable no-loop-func */
 }
 
 AuditMatrix.propTypes = {

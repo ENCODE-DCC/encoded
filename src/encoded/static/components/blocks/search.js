@@ -92,10 +92,12 @@ SearchBlock.defaultProps = {
 
 
 const displayModeSelect = (
-    <div><select>
-      <option value="search">search results</option>
-      <option value="table">table</option>
-    </select></div>
+    <div>
+        <select>
+            <option value="search">search results</option>
+            <option value="table">table</option>
+        </select>
+    </div>
 );
 
 

@@ -358,7 +358,7 @@ export class Modal extends React.Component {
                     </div>
                     : null}
             </div>,
-            this.modalEl,
+            this.modalEl
         );
     }
 

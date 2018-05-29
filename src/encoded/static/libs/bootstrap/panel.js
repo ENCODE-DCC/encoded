@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 
+/* eslint-disable react/prefer-stateless-function */
 class Panel extends React.Component {
     render() {
         const { addClasses, noDefaultClasses, ...other } = this.props;
@@ -13,6 +14,7 @@ class Panel extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 Panel.propTypes = {
     addClasses: PropTypes.string, // Classes to add to outer panel div
@@ -27,6 +29,7 @@ Panel.defaultProps = {
 };
 
 
+/* eslint-disable react/prefer-stateless-function */
 class PanelBody extends React.Component {
     render() {
         return (
@@ -36,6 +39,7 @@ class PanelBody extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 PanelBody.propTypes = {
     addClasses: PropTypes.string, // Classes to add to outer panel div
@@ -48,6 +52,7 @@ PanelBody.defaultProps = {
 };
 
 
+/* eslint-disable react/prefer-stateless-function */
 class PanelHeading extends React.Component {
     render() {
         return (
@@ -57,6 +62,7 @@ class PanelHeading extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 PanelHeading.propTypes = {
     addClasses: PropTypes.string, // Classes to add to outer panel div
@@ -76,7 +82,7 @@ const PanelFooter = props => (
 
 PanelFooter.propTypes = {
     addClasses: PropTypes.string, // Classes to add to outer panel div
-    children: PropTypes.null,
+    children: PropTypes.node,
 };
 
 PanelFooter.defaultProps = {
@@ -143,7 +149,7 @@ class TabPanel extends React.Component {
     // Handle a click on a tab
     handleClick(tab) {
         if (this.props.handleTabClick) {
-            this.props.handleTabClick(tab);  // must keep parent aware of selectedTab.
+            this.props.handleTabClick(tab); // must keep parent aware of selectedTab.
         }
         if (tab !== this.state.currentTab) {
             this.setState({ currentTab: tab });
@@ -266,5 +272,5 @@ export {
     PanelHeading,
     PanelFooter,
     TabPanel,
-    TabPanelPane
+    TabPanelPane,
 };

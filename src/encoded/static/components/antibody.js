@@ -12,14 +12,17 @@ import { DbxrefList } from './dbxref';
 import { DocumentsPanel, Document, DocumentPreview, CharacterizationDocuments } from './doc';
 import { RelatedItems } from './item';
 import { AlternateAccession } from './objectutils';
-import { StatusLabel } from './statuslabel';
+import { StatusLabel, getObjectStatuses, sessionToAccessLevel } from './statuslabel';
 
 
 const LotComponent = (props, reactContext) => {
     const context = props.context;
 
-    // Sort characterization arrays
-    const characterizations = _(context.characterizations).sortBy(characterization => (
+    // Sort characterization arrays, filtering for the current logged-in and administrative status.
+    const accessLevel = sessionToAccessLevel(reactContext.session, reactContext.session_properties);
+    const viewableStatuses = getObjectStatuses('AntibodyCharacterization', accessLevel);
+    let characterizations = context.characterizations.filter(characterization => viewableStatuses.indexOf(characterization.status) !== -1);
+    characterizations = _(characterizations).sortBy(characterization => (
         [characterization.target.label, characterization.target.organism.name]
     ));
 
@@ -84,10 +87,12 @@ const LotComponent = (props, reactContext) => {
                     <AlternateAccession altAcc={context.alternate_accessions} />
                     <h3>
                         {targetKeys.length ?
-                            <span>Antibody against {Object.keys(targets).map((target, i) => {
-                                const targetObj = targets[target];
-                                return <span key={i}>{i !== 0 ? ', ' : ''}<em>{targetObj.organism.scientific_name}</em>{` ${targetObj.label}`}</span>;
-                            })}</span>
+                            <span>
+                                Antibody against {Object.keys(targets).map((target, i) => {
+                                    const targetObj = targets[target];
+                                    return <span key={i}>{i !== 0 ? ', ' : ''}<em>{targetObj.organism.scientific_name}</em>{` ${targetObj.label}`}</span>;
+                                })}
+                            </span>
                         :
                             <span>Antibody</span>
                         }
@@ -207,7 +212,7 @@ const LotComponent = (props, reactContext) => {
             </Panel>
 
             <RelatedItems
-                title={'Experiments using this antibody'}
+                title="Experiments using this antibody"
                 url={`/search/?type=Experiment&replicates.antibody.accession=${context.accession}`}
                 Component={ExperimentTable}
             />
@@ -225,6 +230,7 @@ LotComponent.propTypes = {
 
 LotComponent.contextTypes = {
     session: PropTypes.object, // Login session information
+    session_properties: PropTypes.object, // Logged-in user information
 };
 
 const Lot = auditDecor(LotComponent);
@@ -240,9 +246,9 @@ const AntibodyStatus = (props) => {
 
     // Sort the lot reviews by their status according to our predefined order
     // given in the statusOrder array we imported from globals.js.
-    const lotReviews = _.sortBy(context.lot_reviews, lotReview =>
-        globals.statusOrder.indexOf(lotReview.status) // Use underscore indexOf so that this works in IE8
-    );
+    const lotReviews = _.sortBy(context.lot_reviews, (lotReview =>
+        globals.statusOrder.indexOf(lotReview.status)
+    ));
 
     // Build antibody display object as a hierarchy: status=>organism=>biosample_term_name
     const statusTree = {};

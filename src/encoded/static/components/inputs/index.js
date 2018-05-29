@@ -4,5 +4,5 @@ import { ObjectPicker, ItemPreview } from './object';
 export {
     FileInput,
     ObjectPicker,
-    ItemPreview
+    ItemPreview,
 };

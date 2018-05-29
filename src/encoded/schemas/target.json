@@ -11,11 +11,12 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/standard_status" }
     ],
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "8"
         },
         "dbxref": {
             "title": "External identifiers",
@@ -62,7 +63,6 @@
                     "broad histone mark",
                     "chromatin remodeller",
                     "control",
-                    "histone modification",
                     "histone",
                     "narrow histone mark",
                     "nucleotide modification",
@@ -74,16 +74,6 @@
                     "transcription factor"
                 ]
             }
-        },
-        "status": {
-            "title": "Status",
-            "type": "string",
-            "default": "current",
-            "enum": [
-                "current",
-                "deleted",
-                "replaced"
-            ]
         }
     },
     "facets": {

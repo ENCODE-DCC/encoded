@@ -105,7 +105,7 @@ def mouse_H3K9me3(testapp, mouse):
     item = {
         'organism': mouse['@id'],
         'label': 'H3K9me3',
-        'investigated_as': ['histone modification', 'histone', 'broad histone mark']
+        'investigated_as': ['histone', 'broad histone mark']
     }
     return testapp.post_json('/target', item, status=201).json['@graph'][0]
 
@@ -1930,6 +1930,7 @@ def test_audit_experiment_chip_seq_control_standards(
                                            'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(base_experiment['@id'], {'target': target_H3K9me3['@id'],
                                                 'status': 'submitted',
+                                                'date_submitted': '2015-01-01',
                                                 'possible_controls': [experiment['@id']],
                                                 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -2003,6 +2004,7 @@ def test_audit_experiment_chip_seq_peaks_without_controls(
                                            'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(base_experiment['@id'], {'target': target_H3K9me3['@id'],
                                                 'status': 'submitted',
+                                                'date_submitted': '2015-01-01',
                                                 'possible_controls': [experiment['@id']],
                                                 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')

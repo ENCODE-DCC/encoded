@@ -11,7 +11,8 @@ $projects:
     (modern,      'badge-modern.svg',      'badge-modern.png'),
     (ggr,         'badge-ggr.png',         'badge-ggr.png'),
     (mouseencode, 'badge-mouseencode.svg', 'badge-mouseencode.png'),
-    (community,   'badge-community.svg',   'badge-community.png');
+    (community,   'badge-community.svg',   'badge-community.png'),
+    (encore,      'badge-encore.svg',      'badge-encore.png');
 
 @each $project, $badgefile, $badgefilenosvg in $projects {
     .badge-#{$project} {

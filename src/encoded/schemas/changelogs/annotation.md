@@ -1,5 +1,8 @@
 ## Changelog for annotation.json
 
+### Schema version 19
+
+* Added *organoid* to biosample_type enums.
 
 ### Schema version 18
 

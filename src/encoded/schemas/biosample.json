@@ -55,7 +55,8 @@
                         "biosample_type": {
                             "enum" : [
                                 "tissue",
-                                "whole organisms"
+                                "whole organisms",
+                                "organoid"
                             ]
                         },
                         "biosample_term_id":{
@@ -173,18 +174,18 @@
             }
         },
         "culture_harvest_date":{
-            "comment": "The culture_harvest_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "comment": "The culture_harvest_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell, organoid].",
             "properties": {
                 "biosample_type": {
-                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line", "organoid"]
                 }
             }
         },
         "culture_start_date": {
-            "comment": "The culture_start_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell].",
+            "comment": "The culture_start_date property is restricted to biosamples with biosample_type that belongs to [primary cell, cell line, in vitro differentiated cells, induced pluripotent stem cell line, stem cell, organoid].",
             "properties": {
                 "biosample_type": {
-                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line"]
+                    "enum": ["single cell", "primary cell", "cell line", "in vitro differentiated cells", "stem cell", "induced pluripotent stem cell line", "organoid"]
                 }
             }
         },
@@ -213,6 +214,19 @@
                 "biosample_type": {
                     "comment": "The PMI_units property is restricted to biosamples with biosample_type = tissue.",
                     "enum": ["tissue"]
+                }
+            }
+        },
+        "cell_isolation_method": {
+            "not": {
+                "properties": {
+                    "biosample_type": {
+                        "enum": [
+                            "whole organisms",
+                            "tissue",
+                            "organoid"
+                        ]
+                    }
                 }
             }
         },
@@ -261,7 +275,8 @@
                                         "in vitro differentiated cells",
                                         "induced pluripotent stem cell line",
                                         "stem cell",
-                                        "single cell"
+                                        "single cell",
+                                        "organoid"
                                     ]
                                 },
                                 "organism": {
@@ -392,7 +407,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "20"
+            "default": "21"
         },
         "accession": {
             "accessionType": "BS"
@@ -676,6 +691,19 @@
             "enum": [
                 "cryopreservation",
                 "flash-freezing"
+            ]
+        },
+        "cell_isolation_method": {
+            "title": "Cell isolation method",
+            "description": "The method by which the cell(s) in the sampe were isolated.",
+            "comment": "Indicate the method used to isolate cell(s) in the sample. For example Fluidigm C1 cell isolation should specify: microfluidic cell sorting.", 
+            "type": "string",
+            "enum": [
+                "micropipetting",
+                "microfluidic cell sorting",
+                "dilution",
+                "laser capture microdissection",
+                "fluorescence activated cell sorting"
             ]
         },
         "model_organism_sex": {

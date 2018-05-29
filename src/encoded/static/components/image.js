@@ -35,6 +35,7 @@ class Lightbox extends React.Component {
         const lightboxClass = `lightbox${lightboxVisible ? ' active' : ''}`;
         const imgStyle = { maxHeight: this.state.imgHeight };
 
+        /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
         return (
             <div className={lightboxClass} onClick={this.props.clearLightbox} aria-label="Close" ref={(div) => { this.lightbox = div; }}>
                 <div className="lightbox-img">
@@ -45,6 +46,7 @@ class Lightbox extends React.Component {
                 </div>
             </div>
         );
+        /* eslint-enable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
     }
 }
 
@@ -259,5 +261,9 @@ ProjectBadge.projectMap = {
     community: {
         imageClass: 'badge-community',
         alt: 'Community submission',
+    },
+    ENCORE: {
+        imageClass: 'badge-encore',
+        alt: 'ENCORE project',
     },
 };

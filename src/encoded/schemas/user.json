@@ -13,7 +13,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "7"
+            "default": "8"
         },
         "email": {
             "title": "Email",
@@ -77,7 +77,8 @@
                     "ENCODE3",
                     "ENCODE4",
                     "GGR",
-                    "REMC"
+                    "REMC",
+                    "ENCORE"
                 ]
             }
         },

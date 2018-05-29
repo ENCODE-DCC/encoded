@@ -133,6 +133,7 @@ packages:
 - pv
 - python2.7-dev
 - python3.4-dev
+- python3-pip
 - python-software-properties
 - python-virtualenv
 - ruby-dev
@@ -197,13 +198,21 @@ runcmd:
 - sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-fetch /var/lib/postgresql/9.3/main LATEST
 - sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
 - /etc/init.d/postgresql start
-- sudo -u encoded python3.4 bootstrap.py --buildout-version 2.9.5 --setuptools-version 18.5
-- sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg
+- sudo pip3 install -U zc.buildout setuptools
+- sudo -u encoded buildout bootstrap
+- sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg buildout:es-ip=%(ES_IP)s buildout:es-port=%(ES_PORT)s
 - sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
 - sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
 - sudo -u encoded bin/create-mapping production.ini --app-name app
 - sudo -u encoded bin/index-annotations production.ini --app-name app
+- if test "%(REGION_INDEX)s" = "False"
+- then
+-    sudo -u encoded cp /srv/encoded/etc/encoded-apache.conf /srv/encoded/etc/encoded-apache.conf.original
+-    sudo -u encoded sh -c "grep -v encoded\-regionindexer /srv/encoded/etc/encoded-apache.conf.original | grep -v _region > /srv/encoded/etc/encoded-apache.conf"
+-    sudo -u encoded cp /srv/encoded/base.ini /srv/encoded/base.ini.original
+-    sudo -u encoded sh -c "sed 's/vis_indexer, region_indexer/vis_indexer/' /srv/encoded/base.ini.original > /srv/encoded/base.ini"
+- fi
 - ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
 - ln -s /srv/encoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
 - a2enmod headers

@@ -127,3 +127,20 @@ def test_alt_accession_ENCBS_regex(testapp, biosample):
         {'status': 'replaced', 'alternate_accessions': ['ENCBS123ABC']})
     assert res.status_code == 200
 
+
+def test_biosample_tissue_cell_isolated_fail(testapp, biosample):
+    biosample['cell_isolation_method'] = 'micropipetting'
+    testapp.post_json('/biosample', biosample, status=422)
+
+
+def test_biosample_tissue_cell_isolated_success(testapp, biosample):
+    biosample['biosample_type'] = 'primary cell'
+    biosample['biosample_term_id'] = 'CL:349829'
+    biosample['cell_isolation_method'] = 'micropipetting'
+    testapp.post_json('/biosample', biosample, status=201)
+
+
+def test_biosample_organoid_success(testapp, biosample):
+    biosample['biosample_type'] = 'organoid'
+    biosample['biosample_term_id'] = 'UBERON:1234567'
+    testapp.post_json('/biosample', biosample, status=201)

@@ -1,5 +1,13 @@
 ## Changelog for target.json
 
+### Schema version 8
+
+* Move status property to standard_status mixin.
+
+### Schema version 7
+
+* Remove *histone modification* from investigated_as enum.
+
 ### Schema version 6
 
 * Remove *proposed* from status enum.

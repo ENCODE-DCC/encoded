@@ -1,5 +1,9 @@
 ## Changelog for user.json
 
+### Schema version 8
+
+* all users were upgraded to include *community* in their viewing_groups property
+
 ### Schema version 7
 
 * unused/detailed user properties *phone1*, *phone2*, *fax*, *skype*, and *google* were removed

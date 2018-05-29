@@ -17,7 +17,7 @@ import { SortTablePanel, SortTable } from './sorttable';
 import { ProjectBadge } from './image';
 import { DocumentsPanelReq } from './doc';
 import { FileGallery, DatasetFiles } from './filegallery';
-import { AwardRef } from './typeutils';
+import { AwardRef, Supersede } from './typeutils';
 
 // Return a summary of the given biosamples, ready to be displayed in a React component.
 export function annotationBiosampleSummary(annotation) {
@@ -34,7 +34,7 @@ export function annotationBiosampleSummary(annotation) {
                 {summaryStrings.map((summaryString, i) =>
                     <span key={i}>
                         {i > 0 ? <span>{', '}{summaryString}</span> : <span>{summaryString}</span>}
-                    </span>,
+                    </span>
                 )}
             </span>
         );
@@ -50,6 +50,7 @@ function breakSetName(name) {
 
 
 // Display Annotation page, a subtype of Dataset.
+/* eslint-disable react/prefer-stateless-function */
 class AnnotationComponent extends React.Component {
     render() {
         const context = this.props.context;
@@ -76,18 +77,6 @@ class AnnotationComponent extends React.Component {
             { id: breakSetName(filesetType), uri: `/search/?type=${filesetType}`, wholeTip: `Search for ${filesetType}` },
         ];
 
-        // Make array of superseded_by accessions
-        let supersededBys = [];
-        if (context.superseded_by && context.superseded_by.length) {
-            supersededBys = context.superseded_by.map(supersededBy => globals.atIdToAccession(supersededBy));
-        }
-
-        // Make array of supersedes accessions
-        let supersedes = [];
-        if (context.supersedes && context.supersedes.length) {
-            supersedes = context.supersedes.map(supersede => globals.atIdToAccession(supersede));
-        }
-
         // Get a list of reference links, if any
         const references = pubReferenceList(context.references);
 
@@ -104,8 +93,7 @@ class AnnotationComponent extends React.Component {
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for annotation file set {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
-                        {supersededBys.length ? <h4 className="superseded-acc">Superseded by {supersededBys.join(', ')}</h4> : null}
-                        {supersedes.length ? <h4 className="superseded-acc">Supersedes {supersedes.join(', ')}</h4> : null}
+                        <Supersede context={context} />
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -246,9 +234,10 @@ class AnnotationComponent extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 AnnotationComponent.propTypes = {
-    context: PropTypes.object, // Annotation being displayed
+    context: PropTypes.object.isRequired, // Annotation being displayed
     auditIndicators: PropTypes.func.isRequired, // From audit decorator
     auditDetail: PropTypes.func.isRequired, // From audit decorator
 };
@@ -264,6 +253,7 @@ globals.contentViews.register(Annotation, 'Annotation');
 
 
 // Display Annotation page, a subtype of Dataset.
+/* eslint-disable react/prefer-stateless-function */
 class PublicationDataComponent extends React.Component {
     render() {
         const context = this.props.context;
@@ -407,9 +397,10 @@ class PublicationDataComponent extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 PublicationDataComponent.propTypes = {
-    context: PropTypes.object, // PublicationData object to display
+    context: PropTypes.object.isRequired, // PublicationData object to display
     auditIndicators: PropTypes.func.isRequired, // From audit decorator
     auditDetail: PropTypes.func.isRequired, // From audit decorator
 };
@@ -425,6 +416,7 @@ globals.contentViews.register(PublicationData, 'PublicationData');
 
 
 // Display Annotation page, a subtype of Dataset.
+/* eslint-disable react/prefer-stateless-function */
 class ReferenceComponent extends React.Component {
     render() {
         const context = this.props.context;
@@ -568,9 +560,10 @@ class ReferenceComponent extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 ReferenceComponent.propTypes = {
-    context: PropTypes.object, // Reference object to display
+    context: PropTypes.object.isRequired, // Reference object to display
     auditIndicators: PropTypes.func.isRequired, // From audit decorator
     auditDetail: PropTypes.func.isRequired, // From audit decorator
 };
@@ -586,6 +579,7 @@ globals.contentViews.register(Reference, 'Reference');
 
 
 // Display Annotation page, a subtype of Dataset.
+/* eslint-disable react/prefer-stateless-function */
 class ProjectComponent extends React.Component {
     render() {
         const context = this.props.context;
@@ -753,9 +747,10 @@ class ProjectComponent extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 ProjectComponent.propTypes = {
-    context: PropTypes.object, // Project object to display
+    context: PropTypes.object.isRequired, // Project object to display
     auditIndicators: PropTypes.func.isRequired, // From audit decorator
     auditDetail: PropTypes.func.isRequired, // From audit decorator
 };
@@ -771,6 +766,7 @@ globals.contentViews.register(Project, 'Project');
 
 
 // Display Annotation page, a subtype of Dataset.
+/* eslint-disable react/prefer-stateless-function */
 class UcscBrowserCompositeComponent extends React.Component {
     render() {
         const context = this.props.context;
@@ -924,9 +920,10 @@ class UcscBrowserCompositeComponent extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 UcscBrowserCompositeComponent.propTypes = {
-    context: PropTypes.object, // UCSC browser composite object to display
+    context: PropTypes.object.isRequired, // UCSC browser composite object to display
     auditIndicators: PropTypes.func.isRequired, // From audit decorator
     auditDetail: PropTypes.func.isRequired, // From audit decorator
 };
@@ -953,8 +950,8 @@ export const FilePanelHeader = (props) => {
                             {Object.keys(context.visualize).sort().map(assembly =>
                                 Object.keys(context.visualize[assembly]).sort().map(browser =>
                                     <a key={[assembly, '_', browser].join()} data-bypass="true" target="_blank" rel="noopener noreferrer" href={context.visualize[assembly][browser]}>
-                                    {assembly} {browser}
-                                    </a>,
+                                        {assembly} {browser}
+                                    </a>
                                 )
                             )}
                         </DropdownMenu>
@@ -967,7 +964,7 @@ export const FilePanelHeader = (props) => {
 };
 
 FilePanelHeader.propTypes = {
-    context: PropTypes.object, // Object being displayed
+    context: PropTypes.object.isRequired, // Object being displayed
 };
 
 
@@ -983,7 +980,7 @@ function displayPossibleControls(item, adminUser) {
                         :
                             <span>{control.accession}</span>
                         }
-                    </span>,
+                    </span>
                 )}
             </span>
         );
@@ -1172,7 +1169,7 @@ const organismDevelopmentSeriesTableColumns = {
                     {synchronizationBiosample ?
                         <span>{`${synchronizationBiosample.synchronization} + ${synchronizationBiosample.age_display}`}</span>
                     :
-                        <span>{ages.length ? <span>{ages.join(', ')}</span> : null}</span>
+                        <span>{ages && ages.length ? <span>{ages.join(', ')}</span> : null}</span>
                     }
                 </span>
             );
@@ -1228,6 +1225,7 @@ const seriesComponents = {
     AggregateSeries: { title: 'aggregate series', table: basicTableColumns },
 };
 
+/* eslint-disable react/prefer-stateless-function */
 export class SeriesComponent extends React.Component {
     render() {
         const context = this.props.context;
@@ -1272,7 +1270,7 @@ export class SeriesComponent extends React.Component {
                         <span key={i}>
                             {i > 0 ? <span> and </span> : null}
                             <i>{species}</i>
-                        </span>,
+                        </span>
                     )}
                 </span>
             );
@@ -1298,6 +1296,7 @@ export class SeriesComponent extends React.Component {
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>Summary for {seriesTitle} {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
+                        <Supersede context={context} />
                         <div className="status-line">
                             <div className="characterization-status-labels">
                                 <StatusLabel status={statuses} />
@@ -1431,6 +1430,7 @@ export class SeriesComponent extends React.Component {
         );
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 SeriesComponent.propTypes = {
     context: PropTypes.object.isRequired, // Series object to display
@@ -1461,9 +1461,13 @@ const ExperimentTableFooter = (props) => {
 };
 
 ExperimentTableFooter.propTypes = {
-    items: PropTypes.array, // Array of experiments that were displayed in the table
+    items: PropTypes.array.isRequired, // Array of experiments that were displayed in the table
     total: PropTypes.number, // Total number of experiments
-    url: PropTypes.string, // URL to link to equivalent experiment search results
+    url: PropTypes.string.isRequired, // URL to link to equivalent experiment search results
+};
+
+ExperimentTableFooter.defaultProps = {
+    total: 0,
 };
 
 
@@ -1519,12 +1523,18 @@ export const ExperimentTable = (props) => {
 };
 
 ExperimentTable.propTypes = {
-    items: PropTypes.array, // List of experiments to display in the table
+    items: PropTypes.array.isRequired, // List of experiments to display in the table
     limit: PropTypes.number, // Maximum number of experiments to display in the table
     total: PropTypes.number, // Total number of experiments
-    url: PropTypes.string, // URI to go to equivalent search results
+    url: PropTypes.string.isRequired, // URI to go to equivalent search results
     title: PropTypes.oneOfType([ // Title for the table of experiments; can be string or component
         PropTypes.string,
         PropTypes.node,
     ]),
+};
+
+ExperimentTable.defaultProps = {
+    limit: 0,
+    total: 0,
+    title: '',
 };

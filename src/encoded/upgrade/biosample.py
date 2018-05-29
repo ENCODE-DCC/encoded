@@ -326,3 +326,8 @@ def biosample_19_20(value, system):
     # https://encodedcc.atlassian.net/browse/ENCD-3848
     if value.get('biosample_type') == 'immortalized cell line':
         value['biosample_type'] = "cell line"
+
+@upgrade_step('biosample', '20', '21')
+def biosample_20_21(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3974
+    return

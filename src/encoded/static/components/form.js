@@ -154,7 +154,7 @@ class RepeatingItem extends React.Component {
         // Called when the remove button is clicked.
 
         e.preventDefault();
-        // eslint-disable-next-line no-alert
+        // eslint-disable-next-line no-alert, no-restricted-globals
         if (!confirm('Are you sure you want to remove this item?')) {
             return;
         }
@@ -172,23 +172,26 @@ class RepeatingItem extends React.Component {
     render() {
         const { path, schema, value } = this.props;
         return (
-          <div className="rf-RepeatingFieldset__item">
-            <Field
-                path={path} schema={schema}
-                value={value} updateChild={this.updateChild}
-                hideLabel
-            />
-            {!this.context.readonly ?
-                <button
-                    onClick={this.handleRemove}
-                    type="button"
-                    className="rf-RepeatingFieldset__remove"
-                >&times;</button>
-            : ''}
-          </div>
+            <div className="rf-RepeatingFieldset__item">
+                <Field
+                    path={path}
+                    schema={schema}
+                    value={value}
+                    updateChild={this.updateChild}
+                    hideLabel
+                />
+                {!this.context.readonly ?
+                    <button
+                        onClick={this.handleRemove}
+                        type="button"
+                        className="rf-RepeatingFieldset__remove"
+                    >
+                        &times;
+                    </button>
+                : ''}
+            </div>
         );
     }
-
 }
 
 RepeatingItem.propTypes = {
@@ -281,6 +284,7 @@ class RepeatingFieldset extends UpdateChildMixin(React.Component) {
     }
 
     render() {
+        /* eslint-disable jsx-a11y/anchor-is-valid */
         const { path, value, schema } = this.props;
         const schemas = this.context.schemas;
         const linkFrom = schema.items.linkFrom;
@@ -293,10 +297,13 @@ class RepeatingFieldset extends UpdateChildMixin(React.Component) {
                         <DropdownMenu>
                             {subtypes.map(subtype =>
                                 <a
-                                    href="#" key={subtype}
+                                    href="#"
+                                    key={subtype}
                                     data-subtype={subtype}
                                     onClick={this.handleAdd}
-                                >{schemas[subtype].title}</a>)}
+                                >
+                                    {schemas[subtype].title}
+                                </a>)}
                         </DropdownMenu>
                     </DropdownButton>
                 );
@@ -307,7 +314,9 @@ class RepeatingFieldset extends UpdateChildMixin(React.Component) {
                         onClick={this.handleAdd}
                         data-subtype={subtypes.length === 1 ? subtypes[0] : null}
                         className="rf-RepeatingFieldset__add"
-                    >Add</button>
+                    >
+                        Add
+                    </button>
                 );
             }
         }
@@ -331,7 +340,7 @@ class RepeatingFieldset extends UpdateChildMixin(React.Component) {
             </div>
         );
     }
-
+    /* eslint-enable jsx-a11y/anchor-is-valid */
 }
 
 RepeatingFieldset.propTypes = {
@@ -349,6 +358,7 @@ RepeatingFieldset.contextTypes = {
 };
 
 
+/* eslint-disable react/prefer-stateless-function */
 class ObjectField extends React.Component {
     // Wrapper to determine which schema to use for an object,
     // then render a Field with that schema. Used after ChildObject
@@ -360,6 +370,7 @@ class ObjectField extends React.Component {
         return <Field {...this.props} schema={schema} />;
     }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 ObjectField.propTypes = {
     value: PropTypes.any,
@@ -444,28 +455,28 @@ class ChildObject extends React.Component {
             const schema = this.context.schemas[value['@type'][0]];
             preview = (
                 <ul className="nav result-table">
-                  <li>
-                    <div className="accession">{`New ${schema.title}`}</div>
-                  </li>
+                    <li>
+                        <div className="accession">{`New ${schema.title}`}</div>
+                    </li>
                 </ul>
             );
             // When expanded, render form fields (but there's no form frame to fetch)
-            fieldset = (<ObjectField
-                path={path} value={value} updateChild={this.updateChild}
-            />);
+            fieldset = (<ObjectField path={path} value={value} updateChild={this.updateChild} />);
         }
 
         return (
             <div className="collapsible">
                 <button
-                    type="button" className="collapsible-trigger"
+                    type="button"
+                    className="collapsible-trigger"
                     onClick={this.toggleCollapsed}
-                >{this.state.collapsed ? '▶ ' : '▼ '}</button>
+                >
+                    {this.state.collapsed ? '▶ ' : '▼ '}
+                </button>
                 {this.state.collapsed ? preview : fieldset}
             </div>
         );
     }
-
 }
 
 ChildObject.propTypes = {
@@ -616,8 +627,11 @@ export class Field extends UpdateChildMixin(React.Component) {
             }
         } else if (schema.linkFrom) {
             input = (<ChildObject
-                name={this.props.name} path={path} schema={schema}
-                value={value} updateChild={this.props.updateChild}
+                name={this.props.name}
+                path={path}
+                schema={schema}
+                value={value}
+                updateChild={this.props.updateChild}
             />);
         } else if (type === 'object') {
             input = [];
@@ -632,16 +646,22 @@ export class Field extends UpdateChildMixin(React.Component) {
                 if (subschema.items && subschema.items.linkFrom && !this.context.id) return;
                 const required = _.contains((schema.required || []), key);
                 input.push(<Field
-                    key={key} name={key} path={`${path}.${key}`}
-                    schema={subschema} value={value && value[key]}
+                    key={key}
+                    name={key}
+                    path={`${path}.${key}`}
+                    schema={subschema}
+                    value={value && value[key]}
                     updateChild={this.updateChild}
                     className={required ? 'required' : ''}
                 />);
             });
         } else if (type === 'array') {
             input = (<RepeatingFieldset
-                name={this.props.name} path={path} schema={schema}
-                value={value} updateChild={this.props.updateChild}
+                name={this.props.name}
+                path={path}
+                schema={schema}
+                value={value}
+                updateChild={this.props.updateChild}
             />);
         } else if (schema.enum) {
             let options = schema.enum.map(v => <option key={v} value={v}>{v}</option>);
@@ -687,7 +707,6 @@ export class Field extends UpdateChildMixin(React.Component) {
             </div>
         );
     }
-
 }
 
 Field.propTypes = {
@@ -893,16 +912,16 @@ export class Form extends React.Component {
         request.then((response) => {
             if (!response.ok) throw response;
             return response.json();
-        })
-        .catch(parseAndLogError.bind(undefined, 'putRequest'))
-        .then(this.receive.bind(this, button));
+        }).catch(parseAndLogError.bind(undefined, 'putRequest')).then(this.receive.bind(this, button));
         // Set `communicating` to true so the Save button becomes disabled.
+        /* eslint-disable react/no-unused-state */
         this.setState({
             message: null,
             error: null,
             communicating: true,
             putRequest: request,
         });
+        /* eslint-enable react/no-unused-state */
     }
 
     receive(button, data) {
@@ -950,6 +969,7 @@ export class Form extends React.Component {
         // errors are the same as the last attempted submission.
         this.setState({ errors: {} });
 
+        /* eslint-disable react/no-unused-state */
         this.setState({
             data,
             error,
@@ -957,6 +977,7 @@ export class Form extends React.Component {
             submitted: true,
             communicating: false,
         });
+        /* eslint-enable react/no-unused-state */
     }
 
     finish(button, data) {
@@ -986,6 +1007,7 @@ export class Form extends React.Component {
     }
 
     render() {
+        /* eslint-disable jsx-a11y/anchor-is-valid */
         return (
             <form
                 className="rf-Form"
@@ -1004,7 +1026,9 @@ export class Form extends React.Component {
                         className="btn btn-success"
                         onClick={this.save}
                         disabled={!this.canSave()}
-                    >{this.props.submitLabel}</button>
+                    >
+                        {this.props.submitLabel}
+                    </button>
                     {' '}
                     {this.props.showSaveAndAdd ?
                         <button
@@ -1012,14 +1036,16 @@ export class Form extends React.Component {
                             className="btn btn-success"
                             onClick={this.save}
                             disabled={!this.canSave()}
-                        >Save & Add Another</button>
+                        >
+                            Save & Add Another
+                        </button>
                     : ''}
                 </div>
                 {this.state.error ? <div className="alert alert-danger">{this.state.error}</div> : ''}
             </form>
         );
+        /* eslint-enable jsx-a11y/anchor-is-valid */
     }
-
 }
 
 Form.propTypes = {
@@ -1087,14 +1113,18 @@ export class JSONSchemaForm extends React.Component {
 
     render() {
         return (<Form
-            action={this.props.action} method={this.props.method} etag={this.props.etag}
-            schemas={this.props.schemas} schema={this.state.schema}
-            defaultValue={this.state.value} showReadOnly={this.props.showReadOnly}
+            action={this.props.action}
+            method={this.props.method}
+            etag={this.props.etag}
+            schemas={this.props.schemas}
+            schema={this.state.schema}
+            defaultValue={this.state.value}
+            showReadOnly={this.props.showReadOnly}
             showSaveAndAdd={this.props.showSaveAndAdd}
-            id={this.props.id} onFinish={this.props.onFinish}
+            id={this.props.id}
+            onFinish={this.props.onFinish}
         />);
     }
-
 }
 
 JSONSchemaForm.propTypes = {

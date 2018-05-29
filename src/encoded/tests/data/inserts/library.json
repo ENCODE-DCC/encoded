@@ -742,6 +742,7 @@
         "biosample": "ENCBS804RUL",
         "lab": "john-stamatoyannopoulos",
         "status": "released",
+        "construction_platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "barcode_details": [
             {
                 "barcode": "ABCDEFG1"

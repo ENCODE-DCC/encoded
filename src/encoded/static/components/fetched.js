@@ -52,25 +52,19 @@ export class Param extends React.Component {
             request.then((response) => {
                 if (!response.ok) throw response;
                 return response.json();
-            })
-            .catch(globals.parseAndLogError.bind(undefined, 'fetchedRequest'))
-            .then(this.receive);
+            }).catch(globals.parseAndLogError.bind(undefined, 'fetchedRequest')).then(this.receive);
         } else if (this.props.type === 'text') {
             request = this.context.fetch(url);
             request.then((response) => {
                 if (!response.ok) throw response;
                 return response.text();
-            })
-            .catch(globals.parseAndLogError.bind(undefined, 'fetchedRequest'))
-            .then(this.receive);
+            }).catch(globals.parseAndLogError.bind(undefined, 'fetchedRequest')).then(this.receive);
         } else if (this.props.type === 'blob') {
             request = this.context.fetch(url);
             request.then((response) => {
                 if (!response.ok) throw response;
                 return response.blob();
-            })
-            .catch(globals.parseAndLogError.bind(undefined, 'fetchedRequest'))
-            .then(this.receive);
+            }).catch(globals.parseAndLogError.bind(undefined, 'fetchedRequest')).then(this.receive);
         } else {
             throw new Error(`Unsupported type: ${this.props.type}`);
         }

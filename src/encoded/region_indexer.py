@@ -284,7 +284,8 @@ def regionindexer_state_show(request):
     encoded_INDEX = request.registry.settings['snovault.elasticsearch.index']
     regions_es    = request.registry[SNP_SEARCH_ES]
     state = RegionIndexerState(encoded_es,encoded_INDEX)  # Consider putting this in regions es instead of encoded es
-
+    if not state.get():
+        return "%s is not in service." % (state.state_id)
     # requesting reindex
     reindex = request.params.get("reindex")
     if reindex is not None:

@@ -522,12 +522,14 @@ class ColumnItem extends React.Component {
     render() {
         const { column } = this.props;
 
+        /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
         return (
             <div className="column-selector__selector-item">
                 <input type="checkbox" onChange={this.toggleColumn} checked={column.visible} />&nbsp;
                 <span onClick={this.toggleColumn} style={{ cursor: 'pointer' }}>{column.title}</span>
             </div>
         );
+        /* eslint-enable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
     }
 }
 
@@ -612,9 +614,7 @@ class Report extends React.Component {
         request.then((response) => {
             if (!response.ok) throw response;
             return response.json();
-        })
-        .catch(globals.parseAndLogError.bind(undefined, 'loadMore'))
-        .then((data) => {
+        }).catch(globals.parseAndLogError.bind(undefined, 'loadMore')).then((data) => {
             this.setState({
                 more: this.state.more.concat(data['@graph']),
                 loading: false,
@@ -641,7 +641,7 @@ class Report extends React.Component {
 
     render() {
         const parsedUrl = url.parse(this.context.location_href, true);
-        if (parsedUrl.pathname.indexOf('/report') !== 0) return false;  // avoid breaking on re-render when navigate changes href before context is changed
+        if (parsedUrl.pathname.indexOf('/report') !== 0) return false; // avoid breaking on re-render when navigate changes href before context is changed
         const context = this.props.context;
         let searchBase = parsedUrl.search || '';
         searchBase += searchBase ? '&' : '?';
@@ -661,6 +661,7 @@ class Report extends React.Component {
             summary: 'summary',
         };
 
+        /* eslint-disable jsx-a11y/anchor-is-valid, jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
         return (
             <div>
                 <div className="panel data-display main-panel">
@@ -710,12 +711,17 @@ class Report extends React.Component {
                 : null}
             </div>
         );
+        /* eslint-enable jsx-a11y/anchor-is-valid, jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
     }
 }
 
 Report.propTypes = {
-    context: PropTypes.object,
-    schemas: PropTypes.object,
+    context: PropTypes.object.isRequired,
+    schemas: PropTypes.object, // Actually required, but comes from a GET request.
+};
+
+Report.defaultProps = {
+    schemas: null,
 };
 
 Report.contextTypes = {
@@ -733,7 +739,7 @@ const ReportLoader = props => (
 );
 
 ReportLoader.propTypes = {
-    context: PropTypes.object,
+    context: PropTypes.object.isRequired,
 };
 
 globals.contentViews.register(ReportLoader, 'Report');

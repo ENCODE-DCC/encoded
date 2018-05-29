@@ -172,7 +172,7 @@ def target_H3K27me3(testapp, organism):
     item = {
         'label': 'H3K27me3',
         'organism': organism['@id'],
-        'investigated_as': ['histone modification']
+        'investigated_as': ['histone']
     }
     return testapp.post_json('/target', item).json['@graph'][0]
 
@@ -182,7 +182,7 @@ def target_H3K36me3(testapp, organism):
     item = {
         'label': 'H3K36me3',
         'organism': organism['@id'],
-        'investigated_as': ['histone modification']
+        'investigated_as': ['histone']
     }
     return testapp.post_json('/target', item).json['@graph'][0]
 
@@ -192,7 +192,7 @@ def target_H3K4me1(testapp, organism):
     item = {
         'label': 'H3K4me1',
         'organism': organism['@id'],
-        'investigated_as': ['histone modification']
+        'investigated_as': ['histone']
     }
     return testapp.post_json('/target', item).json['@graph'][0]
 
@@ -202,7 +202,7 @@ def target_H3K4me3(testapp, organism):
     item = {
         'label': 'H3K4me3',
         'organism': organism['@id'],
-        'investigated_as': ['histone modification']
+        'investigated_as': ['histone']
     }
     return testapp.post_json('/target', item).json['@graph'][0]
 
@@ -212,7 +212,7 @@ def target_H3K27ac(testapp, organism):
     item = {
         'label': 'H3K27ac',
         'organism': organism['@id'],
-        'investigated_as': ['histone modification']
+        'investigated_as': ['histone']
     }
     return testapp.post_json('/target', item).json['@graph'][0]
 
@@ -222,7 +222,7 @@ def target_H3K9me3(testapp, organism):
     item = {
         'label': 'H3K9me3',
         'organism': organism['@id'],
-        'investigated_as': ['histone modification']
+        'investigated_as': ['histone']
     }
     return testapp.post_json('/target', item).json['@graph'][0]
 

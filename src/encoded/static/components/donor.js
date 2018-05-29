@@ -7,7 +7,7 @@ import { auditDecor } from './audit';
 import { ExperimentTable } from './dataset';
 import { DbxrefList } from './dbxref';
 import { DocumentsPanel, DocumentsSubpanels } from './doc';
-import { GeneticModificationSummary } from './genetic_modification';
+import GeneticModificationSummary from './genetic_modification';
 import * as globals from './globals';
 import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
@@ -341,8 +341,12 @@ const MouseDonor = (props) => {
 };
 
 MouseDonor.propTypes = {
-    context: PropTypes.object, // Mouse donor object being rendered
+    context: PropTypes.object.isRequired, // Mouse donor object being rendered
     biosample: PropTypes.object, // Biosample object this donor belongs to
+};
+
+MouseDonor.defaultProps = {
+    biosample: null,
 };
 
 globals.panelViews.register(MouseDonor, 'MouseDonor');
@@ -470,8 +474,12 @@ const FlyWormDonor = (props) => {
 };
 
 FlyWormDonor.propTypes = {
-    context: PropTypes.object, // Mouse donor object being rendered
+    context: PropTypes.object.isRequired, // Mouse donor object being rendered
     biosample: PropTypes.object, // Biosample object this donor belongs to
+};
+
+FlyWormDonor.defaultProps = {
+    biosample: null,
 };
 
 globals.panelViews.register(FlyWormDonor, 'FlyDonor');
@@ -484,7 +492,7 @@ class Donor extends React.Component {
         super();
         this.state = {
             parentDonors: [],
-            childDOnors: [],
+            childDonors: [],
         };
 
         // Bind `this` to non-React methods.
@@ -636,7 +644,7 @@ class Donor extends React.Component {
 }
 
 Donor.propTypes = {
-    context: PropTypes.object, // Donor being rendered
+    context: PropTypes.object.isRequired, // Donor being rendered
 };
 
 Donor.contextTypes = {

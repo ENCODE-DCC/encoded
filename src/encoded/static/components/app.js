@@ -491,8 +491,9 @@ class App extends React.Component {
             }
         }, (err) => {
             globals.parseError(err).then((data) => {
-                data.title = `Logout failure: ${data.title}`;
-                this.setState({ context: data });
+                const newContext = Object.assign({}, data);
+                newContext.title = `Logout failure: ${data.title}`;
+                this.setState({ context: newContext });
             });
         });
     }
@@ -670,7 +671,7 @@ class App extends React.Component {
                 this.requestCurrent = false;
             }
             this.setState({
-                href,  // href should be consistent with context
+                href, // href should be consistent with context
                 context: event.state,
             });
         }
@@ -717,16 +718,17 @@ class App extends React.Component {
             mutatableHref = mutatableHref.slice(0, hrefHashPos);
         }
 
-        if (!this.constructor.historyEnabled()) {
-            if (mutatableOptions.replace) {
-                window.location.replace(mutatableHref + fragment);
-            } else {
-                const oldPath = (window.location.toString()).split('#')[0];
-                window.location.assign(mutatableHref + fragment);
-                if (oldPath === mutatableHref) {
-                    window.location.reload();
-                }
-            }
+        // Bypass loading and rendering from JSON if history is disabled
+        // or if the href looks like a download.
+        let decodedHref;
+        try {
+            decodedHref = decodeURIComponent(mutatableHref);
+        } catch (exc) {
+            decodedHref = mutatableHref;
+        }
+        const isDownload = decodedHref.includes('/@@download');
+        if (!this.constructor.historyEnabled() || isDownload) {
+            this.fallbackNavigate(mutatableHref, fragment, mutatableOptions);
             return null;
         }
 
@@ -772,15 +774,8 @@ class App extends React.Component {
 
             // navigate normally to URL of unexpected non-JSON response so back button works.
             if (!contentTypeIsJSON(response.headers.get('Content-Type'))) {
-                if (mutatableOptions.replace) {
-                    window.location.replace(mutatableHref + fragment);
-                } else {
-                    const oldPath = (window.location.toString()).split('#')[0];
-                    window.location.assign(mutatableHref + fragment);
-                    if (oldPath === mutatableHref) {
-                        window.location.reload();
-                    }
-                }
+                this.fallbackNavigate(mutatableHref, fragment, mutatableOptions);
+                return null;
             }
             // The URL may have redirected
             const responseUrl = (response.url || mutatableHref) + fragment;
@@ -796,9 +791,7 @@ class App extends React.Component {
                 throw response;
             }
             return response.json();
-        })
-        .catch(globals.parseAndLogError.bind(undefined, 'contextRequest'))
-        .then(this.receiveContextResponse);
+        }).catch(globals.parseAndLogError.bind(undefined, 'contextRequest')).then(this.receiveContextResponse);
 
         if (!mutatableOptions.replace) {
             promise.then(this.constructor.scrollTo);
@@ -808,6 +801,19 @@ class App extends React.Component {
             contextRequest: request,
         });
         return request;
+    }
+
+    fallbackNavigate(href, fragment, options) {
+        // Navigate using window.location
+        if (options.replace) {
+            window.location.replace(href + fragment);
+        } else {
+            const oldPath = (window.location.toString()).split('#')[0];
+            window.location.assign(href + fragment);
+            if (oldPath === href) {
+                window.location.reload();
+            }
+        }
     }
 
     receiveContextResponse(data) {
@@ -932,6 +938,7 @@ class App extends React.Component {
             this.constructor.historyEnabled = false;
         }
 
+        /* eslint-disable jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */
         return (
             <html lang="en" ref={this.props.domReader ? node => this.props.domReader(node) : null}>
                 <head>
@@ -956,9 +963,7 @@ class App extends React.Component {
                     />
                     <div id="slot-application">
                         <div id="application" className={appClass}>
-
-                        <div className="loading-spinner" />
-
+                            <div className="loading-spinner" />
                             <div id="layout">
                                 <Navigation isHomePage={isHomePage} />
                                 <div id="content" className={containerClass} key={key}>
@@ -973,6 +978,7 @@ class App extends React.Component {
                 </body>
             </html>
         );
+        /* eslint-enable jsx-a11y/click-events-have-key-events */
     }
 }
 

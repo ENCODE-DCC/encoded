@@ -5,7 +5,6 @@ from snovault import (
 
 from .item import STATUS_LEVEL
 
-
 def audit_file_processed_derived_from(value, system):
     if value['output_category'] in ['raw data',
                                     'reference']:
@@ -131,16 +130,13 @@ def audit_paired_with(value, system):
             value['@id'],
             value['paired_end'])
         yield AuditFailure('missing replicate', detail, level='INTERNAL_ACTION')
-        return
-
-    if value['replicate'].get('@id') != value['paired_with']['replicate']:
+    elif value['replicate'].get('@id') != value['paired_with']['replicate']:
         detail = 'File {} has replicate {}. It is paired_with file {} with replicate {}'.format(
             value['@id'],
             value['replicate'].get('@id'),
             value['paired_with']['@id'],
             value['paired_with'].get('replicate'))
         yield AuditFailure('inconsistent paired_with', detail, level='ERROR')
-        return
 
     if value['paired_end'] == '1':
         context = system['context']
@@ -153,6 +149,17 @@ def audit_paired_with(value, system):
             yield AuditFailure('multiple paired_with', detail, level='ERROR')
             return
 
+    file_read_count = value.get('read_count')
+    paired_with_read_count = value['paired_with'].get('read_count')
+
+    if (file_read_count and paired_with_read_count) and (file_read_count != paired_with_read_count):
+        detail = ('File {} has {} reads. It is'
+                  ' paired_with file {} that has {} reads').format(
+                      value['@id'],
+                      file_read_count,
+                      value['paired_with']['@id'],
+                      paired_with_read_count)
+        yield AuditFailure('inconsistent read count', detail, level='ERROR')
 
 def audit_file_format_specifications(value, system):
     for doc in value.get('file_format_specifications', []):

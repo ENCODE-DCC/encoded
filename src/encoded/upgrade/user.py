@@ -32,3 +32,13 @@ def user_6_7(value, system):
         del value['google']
     if 'timezone' in value:
         del value['timezone']
+
+
+@upgrade_step('user', '7', '8')
+def user_7_8(value, system):
+    groups = value.get('viewing_groups')
+    if groups:
+        if 'community' not in groups:
+            value['viewing_groups'].append('community')
+    else:
+        value['viewing_groups'] = ['community']

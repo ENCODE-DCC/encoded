@@ -127,10 +127,16 @@ source ~/.bash_profile
 >Uninstall and re-install openssl using the following command when you install pyenv
 >- `brew uninstall --ignore-dependencies openssl && brew install openssl && CFLAGS="-I$(brew --prefix openssl)/include" LDFLAGS="-L$(brew --prefix openssl)/lib" pyenv install <VERSION>`
 
+**Set the correct Python for the current directory:**
+```bash
+pyenv local 3.4.3
+```
 
 ### **4. Run buildout:**
 
-- `python3 bootstrap.py --buildout-version 2.9.5 --setuptools-version 18.5`
+- `pip3 install -U zc.buildout setuptools`
+- `pyenv rehash`
+- `buildout bootstrap`
 - `bin/buildout`
 
 > :star: _Note_: If you have issues with postgres or the python interface to it (psycogpg2) you probably need to install postgresql via homebrew (as above)  
@@ -141,7 +147,7 @@ source ~/.bash_profile
 
 
 >:star: _Note_: **Clean ALL the Things!** If you wish to **completely rebuild** the application or **cleanly reload** dependencies (:warning: long re-build time!):  
->- `make clean && python3 bootstrap.py --buildout-version 2.9.5 --setuptools-version 18.5 && bin/buildout`
+>- `make clean && buildout bootstrap && bin/buildout`
 
 
 ### **5. Start the application locally**

@@ -1,7 +1,7 @@
 module.exports = {
     "@id":"/targets/HNRNPA1-human/",
     "@type":["Target", "Item"],
-    "status": "current",
+    "status": "released",
     "uuid": "6cd2beb9-e859-41c4-a019-98bf02e96b19",
     "title": "HNRNPA1 (Homo sapiens)",
     "organism": {},
