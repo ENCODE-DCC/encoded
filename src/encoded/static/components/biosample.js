@@ -120,6 +120,15 @@ class BiosampleComponent extends React.Component {
                                         </div>
                                     : null}
 
+                                    {context.PMI ?
+                                        <div data-test="pmi">
+                                            <dt>Post-mortem interval</dt>
+                                            <dd>
+                                                <dd>{context.PMI} {context.PMI_units}</dd>
+                                            </dd>
+                                        </div>
+                                    : null}
+
                                     {synchText ?
                                         <div data-test="biosample-synchronization">
                                             <dt>Synchronization timepoint</dt>
@@ -235,23 +244,6 @@ class BiosampleComponent extends React.Component {
                                                         <a href={biosample['@id']}>{biosample.accession}</a>
                                                     </span>
                                                 )}
-                                            </dd>
-                                        </div>
-                                    : null}
-                                    { context.PMI ?
-                                        <div data-test="pmi">
-                                            <dt>Post-mortem interval</dt>
-                                            <dd>
-                                                <dd>{context.PMI}</dd>
-                                            </dd>
-                                        </div>
-                                    : null}
-
-                                    { context.PMI_units ?
-                                        <div data-test="pmi_units">
-                                            <dt>Post-mortem interval Units</dt>
-                                            <dd>
-                                                <dd>{context.PMI_units}</dd>
                                             </dd>
                                         </div>
                                     : null}
