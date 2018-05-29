@@ -46,11 +46,12 @@
     }
 
     @at-root #{&}__assembly {
-        flex: 0 0 40%;
         text-align: right;
         line-height: 30px;
         font-weight: bold;
         font-size: 1.1rem;
+        width: 100px;
+        word-wrap: break-word;
     }
 
     @at-root #{&}__assembly-title {
@@ -59,7 +60,6 @@
     }
 
     @at-root #{&}__browsers {
-        flex: 1 0 auto;
         padding-left: 20px;
         line-height: 30px;
     }
