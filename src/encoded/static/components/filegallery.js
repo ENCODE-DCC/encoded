@@ -751,16 +751,13 @@ class RawFileTable extends React.Component {
                                 // groupFiles is an array of files under a bioreplicate/library
                                 const groupFiles = pairedGroups[pairedKey];
                                 const bottomClass = j < (pairedKeys.length - 1) ? 'merge-bottom' : '';
+                                const groupFilesLength = groupFiles.length;
 
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
                                 return groupFiles.sort((a, b) => (a.title < b.title ? -1 : 1)).map((file, i) => {
-                                    let pairClass;
-                                    if (i === 1) {
-                                        pairClass = `align-pair2${(i === groupFiles.length - 1) && (j === pairedKeys.length - 1) ? '' : ' pair-bottom'}`;
-                                    } else {
-                                        pairClass = 'align-pair1';
-                                    }
+                                    const pairBottom = (i === groupFiles.length - 1) ? '' : ' pair-bottom';
+                                    const pairClass = i !== (groupFilesLength - 1) ? 'align-pair1' : `align-pair2 ${pairBottom}`;
 
                                     // Determine if the accession should be a button or not.
                                     const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
