@@ -89,7 +89,7 @@ ENCODED_REGION_REQUIREMENTS = {
 }
 
 REGULOME_SUPPORTED_ASSEMBLIES = ['hg19', 'GRCh38']
-REGULOME_ALLOWED_STATUSES = ['released', 'archived', 'in progress']
+REGULOME_ALLOWED_STATUSES = ['released', 'archived', 'in progress']  # in progress NOT for files: permission
 REGULOME_DATASET_TYPES   = ['Experiment', 'Annotation', 'Reference']
 REGULOME_COLLECTION_TYPES = ['assay_term_name', 'annotation_type', 'reference_type']
 # NOTE: regDB requirements keyed on "collection_type": assay_term_name or else annotation_type
@@ -627,7 +627,7 @@ class RegionIndexer(Indexer):
 
             file_uuid = afile['uuid']
 
-            file_doc = self.candidate_file(afile, dataset, dataset_region_uses)
+            file_doc = self.candidate_file(request, afile, dataset, dataset_region_uses)
             if file_doc:
 
                 #log.warn("file is a candidate: %s", afile['accession'])  # DEBUG
@@ -656,6 +656,33 @@ class RegionIndexer(Indexer):
         except:
             pass
         # TODO: gather and return errors
+
+    def check_embedded_target(self, request, dataset):
+        '''Make sure taget or targets is embedded.'''
+        # Not all datasets will have a target but if they do it must be embeeded
+        target = dataset.get('target')
+        if target is not None:
+            if not isinstance(target, str):
+                return target
+            else:
+                try:
+                    return request.embed(target, as_user=True)
+                except:
+                    log.warn("Target is not found for: %s", dataset['@id'])
+                    return None
+        else:
+            targets = dataset.get('targets',[])
+            if len(targets) > 0:
+                if not isinstance(targets[0], str):
+                    return targets[0]  # WARNING: Only the first is taken!
+                else:
+                    try:
+                        return request.embed(targets[0], as_user=True)
+                    except:
+                        log.warn("Target is not found for: %s", dataset['@id'])
+                        return None
+
+        return None
 
     def candidate_dataset(self, dataset):
         '''returns None, or a list of uses which may include region search and/or regulome.'''
@@ -701,12 +728,6 @@ class RegionIndexer(Indexer):
                 if 'collection_type' not in meta_doc['dataset']:
                     meta_doc['dataset']['collection_type'] = prop_value
         target = dataset.get('target',{}).get('label')
-        if not target:
-            targets = dataset.get('targets',[])
-            for targ in targets:
-                if 'label' in targ:
-                    target = targ['label']  # WARNING: if multiple targes then first one with a label wins.
-                    break
         if target:
             meta_doc['dataset']['target'] = target
         biosample = dataset.get('biosample_term_name')  # TODO: tighten the screws
@@ -722,7 +743,7 @@ class RegionIndexer(Indexer):
         #log.error(json.dumps(meta_doc))
         return meta_doc
 
-    def candidate_file(self, afile, dataset, dataset_uses):
+    def candidate_file(self, request, afile, dataset, dataset_uses):
         '''returns None or a document with file details to save in the residence index'''
         if afile.get('href') is None:
             return None
@@ -739,7 +760,7 @@ class RegionIndexer(Indexer):
             assembly = 'mm10'
 
         # dataset passed in can be file's dataset OR file_set, with each file pointing elsewhere
-        if isinstance(afile['dataset'],dict):
+        if isinstance(afile['dataset'],dict) and afile['dataset']['@id'] != dataset['@id']:
             dataset = afile['dataset']
         elif isinstance(afile['dataset'],str) and afile['dataset'] != dataset['@id']:
             try:
@@ -747,6 +768,9 @@ class RegionIndexer(Indexer):
             except:
                 log.warn("dataset is not found for uuid: %s",dataset_uuid)
                 return None
+        target = self.check_embedded_target(request, dataset)
+        if target is not None:
+            dataset['target'] = target
 
         assay_term_name = dataset.get('assay_term_name')
 

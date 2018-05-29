@@ -37,7 +37,7 @@ class RegionAtlas(object):
 
     def __init__(self, region_es):
         self.region_es = region_es
-        self.expected_use=FOR_REGULOME_DB
+        self.expected_use=FOR_REGION_SEARCH
 
     def type(self):
         return 'region search'
