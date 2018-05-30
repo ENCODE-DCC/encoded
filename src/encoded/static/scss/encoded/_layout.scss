@@ -37,13 +37,14 @@
 	background-color: #a4afb8; // for IE8
 	background-color: $footerBackground; // overwrite previous line for CSS3 browsers
 	//height: $footerHeight;
-	text-shadow: 0 1px rgba(0, 0, 0, 0.3);
 	//line-height: 0;
 	text-align: center;
 	overflow: hidden;
-	a { 
+	a, button { 
 		color: rgb(255, 255, 255); 
-		font-weight: bold;
+        font-weight: bold;
+        text-shadow: 0 1px rgba(0, 0, 0, 0.3);
+        border: none;
 	}
 	ul {
 	    list-style: none;
@@ -64,18 +65,18 @@
         }
     }
 
-    a {
+    a, button {
         display: block;
         margin: 0 0 8px;
         padding: 10px 15px;
         background-color: darken($footerBackground, 0.1%);
         border-radius: 3px;
     }
-    a:hover { 
+    a:hover, button:hover { 
         text-decoration: none; 
         background-color: darken($footerBackground, 6%);   
     }
-    a:active {
+    a:active button:active {
         background-color: darken($footerBackground, 15%);
     }
 }
