@@ -719,6 +719,8 @@ class RawFileTable extends React.Component {
             });
             const pairedKeys = Object.keys(grouped).sort();
 
+            let stripped = '';
+
             return (
                 <table className="table table-sortable table-raw">
                     <thead>
@@ -753,7 +755,7 @@ class RawFileTable extends React.Component {
                                 const bottomClass = j < (pairedKeys.length - 1) ? 'merge-bottom' : '';
                                 const groupFilesLength = groupFiles.length;
 
-                                let stripped = '';
+                                stripped = !stripped ? 'table-highlighted' : '';
 
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
@@ -762,10 +764,6 @@ class RawFileTable extends React.Component {
 
                                     // Determine if the accession should be a button or not.
                                     const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
-
-                                    if (i === (groupFilesLength - 1)) {
-                                        stripped = !stripped ? 'table-highlighted' : '';
-                                    }
 
                                     // Prepare for run_type display
                                     return (
