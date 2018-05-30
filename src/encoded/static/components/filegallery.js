@@ -753,7 +753,7 @@ class RawFileTable extends React.Component {
                                 const bottomClass = j < (pairedKeys.length - 1) ? 'merge-bottom' : '';
                                 const groupFilesLength = groupFiles.length;
 
-                                let stripped = 'table-hightlighted';
+                                let stripped = '';
 
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
