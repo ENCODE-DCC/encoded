@@ -719,8 +719,6 @@ class RawFileTable extends React.Component {
             });
             const pairedKeys = Object.keys(grouped).sort();
 
-            let library = '';
-
             return (
                 <table className="table table-sortable table-raw">
                     <thead>
@@ -755,6 +753,8 @@ class RawFileTable extends React.Component {
                                 const bottomClass = j < (pairedKeys.length - 1) ? 'merge-bottom' : '';
                                 const groupFilesLength = groupFiles.length;
 
+                                let stripped = 'table-hightlighted';
+
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
                                 return groupFiles.sort((a, b) => (a.title < b.title ? -1 : 1)).map((file, i) => {
@@ -762,16 +762,8 @@ class RawFileTable extends React.Component {
 
                                     // Determine if the accession should be a button or not.
                                     const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
-                                    let stripped = 'table-hightlighted';
 
-                                    if (groupFiles[0].replicate && groupFiles[0].replicate.library !== library) {
-                                        library = groupFiles[0].replicate.library;
-                                        stripped = !!stripped === '' ? 'table-hightlighted' : '';
-                                    }// } else if (!groupFiles[0].replicate || !groupFiles[0].replicate.library) {
-                                    //     console.warn('groupFiles[0].replicate has no library. This is unexpected')
-                                    //     library = '';
-                                    //     stripped = !!stripped === '' ? 'table-hightlighted' : '';
-                                    // }
+                                    stripped = !stripped ? 'table-highlighted' : '';
 
                                     // Prepare for run_type display
                                     return (
