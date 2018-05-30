@@ -24,6 +24,7 @@ requires = [
     'humanfriendly',
     'jsonschema_serialize_fork',
     'loremipsum',
+    'moto',
     'netaddr',
     'passlib',
     'psutil',
