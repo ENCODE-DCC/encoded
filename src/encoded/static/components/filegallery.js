@@ -719,8 +719,6 @@ class RawFileTable extends React.Component {
             });
             const pairedKeys = Object.keys(grouped).sort();
 
-            let stripped = '';
-
             return (
                 <table className="table table-sortable table-raw">
                     <thead>
@@ -755,8 +753,6 @@ class RawFileTable extends React.Component {
                                 const bottomClass = j < (pairedKeys.length - 1) ? 'merge-bottom' : '';
                                 const groupFilesLength = groupFiles.length;
 
-                                stripped = stripped ? '' : 'row-highlighted';
-
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
                                 return groupFiles.sort((a, b) => (a.title < b.title ? -1 : 1)).map((file, i) => {
@@ -767,14 +763,14 @@ class RawFileTable extends React.Component {
 
                                     // Prepare for run_type display
                                     return (
-                                        <tr key={file['@id']} className={stripped}>
+                                        <tr key={file['@id']}>
                                             {i === 0 ?
-                                                <td rowSpan={groupFiles.length} className={`${bottomClass} ${stripped} merge-right table-raw-merged table-raw-biorep`}>
+                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
                                                     {groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
                                                 </td>
                                             : null}
                                             {i === 0 ?
-                                                <td rowSpan={groupFiles.length} className={`${bottomClass} ${stripped} merge-right table-raw-merged`}>
+                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged`}>
                                                     {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
                                                 </td>
                                             : null}
@@ -801,10 +797,9 @@ class RawFileTable extends React.Component {
 
                                 // Determine if accession should be a button or not.
                                 const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
-                                stripped = stripped ? '' : 'row-highlighted';
 
                                 return (
-                                    <tr key={file['@id']} className={`${rowClasses.join(' ')} ${stripped}}`>
+                                    <tr key={file['@id']} className={rowClasses.join(' ')}>
                                         <td className="table-raw-biorep">{(file.biological_replicates && file.biological_replicates.length) ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>

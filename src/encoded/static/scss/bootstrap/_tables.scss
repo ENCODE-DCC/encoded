@@ -113,15 +113,6 @@ th {
   }
 }
 
-// highlight a specfic entry or row of a table
-.row-highlighted {
-  background-color: $table-bg-accent;
-}
-
-.table-hightlighted {
-  background-color: $table-bg-accent;
-}
-
 // Hover effect
 //
 // Placed here since it has to come after the potential zebra striping
