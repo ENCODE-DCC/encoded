@@ -763,7 +763,9 @@ class RawFileTable extends React.Component {
                                     // Determine if the accession should be a button or not.
                                     const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
 
-                                    stripped = !stripped ? 'table-highlighted' : '';
+                                    if (i === (groupFilesLength - 1)) {
+                                        stripped = !stripped ? 'table-highlighted' : '';
+                                    }
 
                                     // Prepare for run_type display
                                     return (
