@@ -764,9 +764,17 @@ class RawFileTable extends React.Component {
 
                                     // Determine if the accession should be a button or not.
                                     const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
-                                    const stripped = pairedKey.replicate.library === library ?
-                                      'table-hightlighted' :
-                                      '';
+                                    let stripped = '';
+
+
+                                    if (groupFiles[0].replicate && groupFiles[0].replicate.library !== library) {
+                                        library = groupFiles[0].replicate.library;
+                                        stripped = !!stripped === '' ? 'table-hightlighted' : '';
+                                    } else if (!groupFiles[0].replicate || !groupFiles[0].replicate.library) {
+                                        console.warn('groupFiles[0].replicate has no library. This is unexpected')
+                                        library = '';
+                                        stripped = !!stripped === '' ? 'table-hightlighted' : '';
+                                    }
 
                                     // Prepare for run_type display
                                     return (
