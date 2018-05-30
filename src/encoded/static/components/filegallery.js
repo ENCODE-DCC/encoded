@@ -767,22 +767,22 @@ class RawFileTable extends React.Component {
                                     if (groupFiles[0].replicate && groupFiles[0].replicate.library !== library) {
                                         library = groupFiles[0].replicate.library;
                                         stripped = !!stripped === '' ? 'table-hightlighted' : '';
-                                    } else if (!groupFiles[0].replicate || !groupFiles[0].replicate.library) {
-                                        console.warn('groupFiles[0].replicate has no library. This is unexpected')
-                                        library = '';
-                                        stripped = !!stripped === '' ? 'table-hightlighted' : '';
-                                    }
+                                    }// } else if (!groupFiles[0].replicate || !groupFiles[0].replicate.library) {
+                                    //     console.warn('groupFiles[0].replicate has no library. This is unexpected')
+                                    //     library = '';
+                                    //     stripped = !!stripped === '' ? 'table-hightlighted' : '';
+                                    // }
 
                                     // Prepare for run_type display
                                     return (
                                         <tr key={file['@id']} className={stripped}>
                                             {i === 0 ?
-                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
+                                                <td rowSpan={groupFiles.length} className={`${bottomClass} ${stripped} merge-right table-raw-merged table-raw-biorep`}>
                                                     {groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
                                                 </td>
                                             : null}
                                             {i === 0 ?
-                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged`}>
+                                                <td rowSpan={groupFiles.length} className={`${bottomClass} ${stripped} merge-right table-raw-merged`}>
                                                     {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
                                                 </td>
                                             : null}
