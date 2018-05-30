@@ -801,9 +801,10 @@ class RawFileTable extends React.Component {
 
                                 // Determine if accession should be a button or not.
                                 const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
+                                stripped = stripped ? '' : 'row-highlighted';
 
                                 return (
-                                    <tr key={file['@id']} className={rowClasses.join(' ')}>
+                                    <tr key={file['@id']} className={`${rowClasses.join(' ')} ${stripped}}`>
                                         <td className="table-raw-biorep">{(file.biological_replicates && file.biological_replicates.length) ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
