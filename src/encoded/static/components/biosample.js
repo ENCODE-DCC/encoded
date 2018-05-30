@@ -124,7 +124,7 @@ class BiosampleComponent extends React.Component {
                                         <div data-test="pmi">
                                             <dt>Post-mortem interval</dt>
                                             <dd>
-                                                <dd>{context.PMI} {context.PMI_units}</dd>
+                                                {context.PMI} {context.PMI_units}
                                             </dd>
                                         </div>
                                     : null}
