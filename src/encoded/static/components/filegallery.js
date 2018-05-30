@@ -719,6 +719,10 @@ class RawFileTable extends React.Component {
             });
             const pairedKeys = Object.keys(grouped).sort();
 
+            let library = pairedKeys && pairedKeys.length > 0 ?
+                  pairedKeys[0].replicate.library :
+                  '';
+
             return (
                 <table className="table table-sortable table-raw">
                     <thead>
@@ -760,10 +764,13 @@ class RawFileTable extends React.Component {
 
                                     // Determine if the accession should be a button or not.
                                     const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
+                                    const stripped = pairedKey.replicate.library === library ?
+                                      'table-hightlighted' :
+                                      '';
 
                                     // Prepare for run_type display
                                     return (
-                                        <tr key={file['@id']}>
+                                        <tr key={file['@id']} className={stripped}>
                                             {i === 0 ?
                                                 <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
                                                     {groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
