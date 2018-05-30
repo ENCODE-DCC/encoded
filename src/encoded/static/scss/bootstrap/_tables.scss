@@ -113,6 +113,11 @@ th {
   }
 }
 
+// highlight a specfic entry or row of a table
+.row-highlighted {
+  background-color: $table-bg-accent;
+}
+
 .table-hightlighted {
   background-color: $table-bg-accent;
 }
