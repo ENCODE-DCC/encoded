@@ -719,9 +719,7 @@ class RawFileTable extends React.Component {
             });
             const pairedKeys = Object.keys(grouped).sort();
 
-            let library = pairedKeys && pairedKeys.length > 0 ?
-                  pairedKeys[0].replicate.library :
-                  '';
+            let library = '';
 
             return (
                 <table className="table table-sortable table-raw">
@@ -764,8 +762,7 @@ class RawFileTable extends React.Component {
 
                                     // Determine if the accession should be a button or not.
                                     const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
-                                    let stripped = '';
-
+                                    let stripped = 'table-hightlighted';
 
                                     if (groupFiles[0].replicate && groupFiles[0].replicate.library !== library) {
                                         library = groupFiles[0].replicate.library;
