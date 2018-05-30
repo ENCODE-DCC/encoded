@@ -2,7 +2,7 @@
 
 ### Minor changes since schema version 13
 
-* *readname_details* property is added to the schema. This property can be specified for FASTQ files only, and it could be posted by DCC only. 
+* *read_name_details* property is added to the schema. This property can be specified for FASTQ files only, and it could be posted by DCC only. 
 
 ### Schema version 13
 

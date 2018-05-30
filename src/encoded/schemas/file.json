@@ -834,37 +834,41 @@
                 "paired-ended"
             ]
         },
-        "readname_details": {
+        "read_name_details": {
             "title": "Fastq readname details",
-            "description": "For high-throughput sequencing FASTQ files, details of the readname structure",
-            "comment":"Position of flowcell, lane, etc. information within FASTQ readnames splitted using space and : as delimiters",
+            "description": "For high-throughput sequencing FASTQ files, details of the read name structure",
+            "comment":"Zero-based position of flowcell, lane, etc. information within FASTQ read names splitted using space and : as delimiters",
             "type": "object",
             "permission": "import_items",
             "additionalProperties": false,
             "properties": {
                 "flowcell_id_location": {
                     "title": "Flowcell identifier location",
-                    "description": "Location of the flowcell identifier in the readname",
-                    "comment": "Location of the flowcell identifier in the readname, if you split readname using space and : as delimiters",
-                    "type": "integer"
+                    "description": "Location of the flowcell identifier in the read name",
+                    "comment": "Zero-based location of the flowcell identifier in the readname, if you split read name using space and : as delimiters",
+                    "type": "integer",
+                    "minimum": 0
                 },
                 "lane_id_location": {
                     "title": "Lane identifier location",
-                    "description": "Location of the lane identifier in the readname",
-                    "comment": "Location of the lane identifier in the readname, if you split the readname using space and : as delimiters",
-                    "type": "integer"
+                    "description": "Location of the lane identifier in the read name",
+                    "comment": "Zero-based location of the lane identifier in the readname, if you split the read name using space and : as delimiters",
+                    "type": "integer",
+                    "minimum": 0
                 },
                 "read_number_location": {
                     "title": "Read number (1 or 2) identifier location",
-                    "description": "Location of the read number in the readname",
-                    "comment": "Location of the read number in the readname, if you split the readname using space and : as delimiters",
-                    "type": "integer"
+                    "description": "Location of the read number in the read name",
+                    "comment": "Zero-based location of the read number in the readname, if you split the read name using space and : as delimiters",
+                    "type": "integer",
+                    "minimum": 0
                 },
                 "barcode_location": {
                     "title": "Barcode location",
-                    "description": "Location of the barcode in the readname",
-                    "comment": "Location of the barcode in the readname, if you split the readname using space and : as delimiters",
-                    "type": "integer"
+                    "description": "Location of the barcode in the read name",
+                    "comment": "Zero-based location of the barcode in the readname, if you split the read name using space and : as delimiters",
+                    "type": "integer",
+                    "minimum": 0
                 }
             }
         },
