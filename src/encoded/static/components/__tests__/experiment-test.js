@@ -36,12 +36,6 @@ describe('Experiment Page', () => {
             const desc = item.find('dd');
             expect(desc.at(0).text()).toEqual('October 29, 2011');
         });
-
-        test('has one experiment status element in header', () => {
-            const statusList = experiment.find('.status-list');
-            expect(statusList.children().exists()).toBeTruthy();
-            expect(statusList.children()).toHaveLength(1);
-        });
     });
 
     describe('Replicate Panels', () => {

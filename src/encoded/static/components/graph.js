@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import { svgIcon } from '../libs/svg-icons';
 import { BrowserFeat } from './browserfeat';
-import * as globals from './globals';
 import { requestFiles } from './objectutils';
-import { fileStatusList } from './typeutils';
+import Status, { sessionToAccessLevel, getObjectStatuses } from './status';
 
 
 // Zoom slider constants
@@ -169,21 +168,19 @@ export function GraphException(message, file0, file1) {
 const GraphLegend = (props, context) => {
     // Get array of all possible file status strings given the current login state, i.e. logged
     // out, logged in, and logged in as admin.
-    const statusList = fileStatusList(context.session, context.session_properties);
+    const accessLevel = sessionToAccessLevel(context.session, context.session_properties);
+    const statusList = getObjectStatuses('File', accessLevel).concat(['status unknown']);
 
     return (
         <div className="file-status-legend">
-            {statusList.map((status) => {
-                // Get a CSS class for the current status to render.
-                const statusClass = globals.statusClass(status, 'file-status-legend__item file-status-legend__item--', true);
-
-                return (
-                    <div key={status} className={statusClass}>
-                        <i className="icon icon-circle file-status-legend__icon" />
-                        {status}
-                    </div>
-                );
-            })}
+            {statusList.map(status => (
+                <Status
+                    key={status}
+                    item={status}
+                    badgeSize="small"
+                    css={'file-status-legend__status'}
+                />
+            ))}
         </div>
     );
 };

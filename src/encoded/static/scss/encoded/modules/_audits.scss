@@ -1,12 +1,17 @@
 $audit-group-height: 40px;
 
 
-.audit-indicators {
+.btn.btn-info.audit-indicators {
     margin-top: 5px;
     vertical-align: top;
     padding: 0 5px;
     background: #fff;
     font-size: 1rem;
+    background-color: #fff;
+
+    &:hover, &:active, &:focus {
+        background-color: #fff;
+    }
 
     @media screen and (min-width: $screen-sm-min) {
         display: inline-block;

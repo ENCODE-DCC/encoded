@@ -9,7 +9,7 @@ import * as globals from './globals';
 import { ProjectBadge } from './image';
 import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
-import { StatusLabel } from './statuslabel';
+import Status from './status';
 
 const labChartId = 'lab-chart'; // Lab chart <div> id attribute
 const categoryChartId = 'category-chart'; // Assay chart <div> id attribute
@@ -2131,7 +2131,6 @@ class Award extends React.Component {
     render() {
         // const { award } = this.props;
         const { context } = this.props;
-        const statuses = [{ status: context.status, title: 'Status' }];
         const loggedIn = !!(this.context.session && this.context.session['auth.userid']);
 
         return (
@@ -2143,11 +2142,6 @@ class Award extends React.Component {
                             :
                             <h2>AWARD SUMMARY for ({context.name})</h2>
                         }
-                        <div className="status-line">
-                            <div className="characterization-status-labels">
-                                <StatusLabel status={statuses} />
-                            </div>
-                        </div>
                     </div>
                 </header>
                 <AwardCharts award={context} />
@@ -2168,20 +2162,22 @@ class Award extends React.Component {
                             <div className="description__columnone">
                                 <dl className="key-value">
                                     <div data-test="projectinfo">
+                                        <dt>Status</dt>
+                                        <dd><Status item={context} inline /></dd>
+                                    </div>
+
+                                    <div data-test="projectinfo">
                                         <dt>NIH Grant</dt>
                                         <dd><a href={context.url} title={`${context.name} NIH Grant`}>{context.name}</a></dd>
                                     </div>
-                                </dl>
-                                {context.pi && context.pi.lab ?
-                                    <dl className="key-value">
+
+                                    {context.pi && context.pi.lab ?
                                         <div data-test="pi">
-                                            <dt>Primary Investigator</dt><dd>{context.pi.lab.title}</dd>
+                                            <dt>Primary Investigator</dt>
+                                            <dd>{context.pi.lab.title}</dd>
                                         </div>
-                                    </dl>
-                                :
-                                    null
-                                }
-                                <dl className="key-value">
+                                    : null}
+
                                     <div data-test="labs">
                                         <dt>Affiliated Labs</dt>
                                         <dd><AffiliatedLabs award={context} /> </dd>
@@ -2194,8 +2190,7 @@ class Award extends React.Component {
                                         <dt>Dates</dt>
                                         <dd>{moment(context.start_date).format('MMMM DD, YYYY')} - {moment(context.end_date).format('MMMM DD, YYYY')}</dd>
                                     </div>
-                                </dl>
-                                <dl className="key-value">
+
                                     <div data-test="rfa">
                                         <dt>Award RFA</dt>
                                         <dd>{context.rfa}</dd>
@@ -2236,7 +2231,7 @@ const Listing = (props) => {
                 <div className="pull-right search-meta">
                     <p className="type meta-title">Award</p>
                     <p className="type">{` ${result.name}`}</p>
-                    <p className="type meta-status">{` ${result.status}`}</p>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
                 </div>
                 <div className="accession">
                     <a href={result['@id']}>{result.title}</a>
