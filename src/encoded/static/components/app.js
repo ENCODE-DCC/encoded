@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Auth0Lock from 'auth0-lock';
 import serialize from 'form-serialize';
 import ga from 'google-analytics';
 import _ from 'underscore';
@@ -259,10 +260,11 @@ class App extends React.Component {
         };
         const logoUrl = url.format(logoHrefInfo);
 
-        const lock_ = require('auth0-lock');
-        this.lock = new lock_.default('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
+        this.lock = new Auth0Lock('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
             auth: {
+                responseType: 'token',
                 redirect: false,
+                redirectUrl: `${hrefInfo.protocol}//${hrefInfo.host}/callback`,
             },
             theme: {
                 logo: logoUrl,
