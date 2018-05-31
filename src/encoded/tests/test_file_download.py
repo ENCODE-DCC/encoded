@@ -50,7 +50,7 @@ def test_file_download_view_redirect(testapp, uploading_file, dummy_request):
     )
     assert '307 Temporary Redirect' in str(res.body)
     assert 'X-Accel-Redirect' not in res.headers
-    assert 'test_upload_bucket.s3.amazonaws.com' in res.headers['Location']
+    assert 'https://s3.us-west-2.amazonaws.com/test_upload_bucket/' in res.headers['Location']
 
 
 @mock_s3
