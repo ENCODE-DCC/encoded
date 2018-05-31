@@ -69,7 +69,7 @@ def genetic_modification_5(lab, award, crispr):
 
 @pytest.fixture
 def genetic_modification_6(lab, award, crispr, source):
-    return {   
+    return {
         'purpose': 'validation',
         'category': 'deeltion',
         'award': award['uuid'],
@@ -82,7 +82,7 @@ def genetic_modification_6(lab, award, crispr, source):
                 "identifier": "placeholder_id",
                 "source": source['uuid']
             }
-        ]  
+        ]
     }
 
 
