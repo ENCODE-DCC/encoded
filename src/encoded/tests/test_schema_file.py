@@ -332,10 +332,10 @@ def test_revoke_detail(testapp, file_with_bad_revoke_detail):
     assert res.status_code == 201
 
 
-def test_readname_details(testapp, file_no_error):
+def test_read_name_details(testapp, file_no_error):
     file = testapp.post_json('/file', file_no_error).json['@graph'][0]
     testapp.patch_json(
-        file['@id'], {'readname_details': {
+        file['@id'], {'read_name_details': {
             'flowcell_id_location': 2,
             'barcode_location': 5}
         },
