@@ -61,6 +61,18 @@ def test_file_download_view_proxy_range(testapp, uploading_file, dummy_request):
     res = testapp.get(
         posted_file['href'],
         headers=dict(Range='bytes=0-4444'),
-        extra_environ=dict(HTTP_X_FORWARDED_FOR='13.32.0.0/15')
+        extra_environ=dict(HTTP_X_FORWARDED_FOR='100.100.100.100')
     )
     assert 'X-Accel-Redirect' in res.headers
+
+
+@mock_s3
+def test_file_download_view_soft_redirect(testapp, uploading_file, dummy_request):
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
+    res = testapp.post_json('/file', uploading_file)
+    posted_file = res.json['@graph'][0]
+    res = testapp.get(
+        posted_file['href'] + '?soft=True',
+        extra_environ=dict(HTTP_X_FORWARDED_FOR='100.100.100.100')
+    )
+    assert res.json['@type'][0] == 'SoftRedirect'
