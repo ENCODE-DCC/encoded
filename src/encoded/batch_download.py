@@ -30,7 +30,7 @@ def includeme(config):
     config.add_route('batch_download', '/batch_download/{search_params}')
     config.add_route('metadata', '/metadata/{search_params}/{tsv}')
     config.add_route('peak_metadata', '/peak_metadata/{search_params}/{tsv}')
-    config.add_route('regulome_evidence', '/regulome_evidence/{tsv}')
+    config.add_route('regulome_download', '/regulome_download/{tsv}')
     config.add_route('report_download', '/report.tsv')
     config.scan(__name__)
 
@@ -123,7 +123,7 @@ def get_biosample_accessions(file_json, experiment_json):
     return ', '.join(list(accessions))
 
 def get_regulome_evidence_links(request, assembly, chrom, start, end):
-    regulome_link = '{host_url}/regulome_evidence/regulomeDB_{assembly}_{chrom}_{start}_{end}'.format(
+    regulome_link = '{host_url}/regulome_download/regulome_evidence_{assembly}_{chrom}_{start}_{end}'.format(
         host_url=request.host_url,
         assembly=assembly,
         chrom=chrom,
@@ -250,22 +250,23 @@ def peak_metadata(context, request):
         content_disposition='attachment;filename="%s"' % 'peak_metadata.tsv'
     )
 
-@view_config(route_name='regulome_evidence', request_method='GET')
-def regulome_evidence(context, request):
+@view_config(route_name='regulome_download', request_method='GET')
+def regulome_download(context, request):
     begin = time.time()  # DEBUG: timing
     format_json = request.url.endswith('.json')
     atlas = RegulomeAtlas(request.registry[SNP_SEARCH_ES])
     try:
         page_parts = request.url.split('/')[-1].split('.')[0].split('_')
-        assembly = page_parts[1]
-        chrom = page_parts[2]
-        start = int(page_parts[3])
-        end = int(page_parts[4])
+        reg_format = page_parts[1]
+        assembly = page_parts[2]
+        chrom = page_parts[3]
+        start = int(page_parts[4])
+        end = int(page_parts[5])
     except:
         log.error('Could not parse: ' + request.url)
         return None
     if assembly is None or chrom is None or start == 0 or end == 0:
-        log.error('Requesting regulome_evidence without assembly, chrom, start, end')
+        log.error('Requesting regulome_download without assembly, chrom, start, end')
         return
 
     def iter_snps(format_json):
@@ -297,7 +298,28 @@ def regulome_evidence(context, request):
         else:
             yield bytes('# took: %s, count: %d\n' % (took, count), 'utf-8')
 
-    file_root = 'regulomeDB_%s_%s_%d_%d' % (assembly, chrom, start, end)
+    def iter_regions(format_json):
+        if format_json:
+            header = '{\n'
+        else:
+            header = '\t'.join(['#chrom', 'start', 'end', 'num_score']) + '\n'  # bedGraph
+        yield bytes(header, 'utf-8')
+        count = 0
+        for (region_start, region_end, region_score) in atlas.iter_scored_snps(assembly, chrom, start, end, base_level=True):
+            count += 1
+            if format_json:
+                region_json = {'chrom': chrom, 'start': region_start, 'end': region_end, 'num_score': region_score}
+                format_region = json.dumps(region_json,sort_keys=True)[1:-1] + ','
+            else:
+                format_region = "%s\t%d\t%d\t%d" % (chrom, region_start, region_end, region_score)
+            yield bytes(format_region + '\n', 'utf-8')
+        took = '%.3f' % (time.time() - begin)    # DEBUG: timing
+        if format_json:
+            yield bytes('"took": %s,\n"count": %d\n}\n' % (took, count), 'utf-8')
+        else:
+            yield bytes('# took: %s, count: %d\n' % (took, count), 'utf-8')
+
+    file_root = 'regulome_%s_%s_%s_%d_%d' % (reg_format, assembly, chrom, start, end)
 
     # Stream response using chunked encoding.
     if format_json:
@@ -306,7 +328,10 @@ def regulome_evidence(context, request):
     else:
         request.response.content_type = 'text/tsv'
         request.response.content_disposition = 'attachment;filename="%s.bed"' % (file_root)
-    request.response.app_iter = iter_snps(format_json)
+    if reg_format == 'signal':
+        request.response.app_iter = iter_regions(format_json)
+    else:  # reg_format == 'evidence'
+        request.response.app_iter = iter_snps(format_json)
     return request.response
 
 

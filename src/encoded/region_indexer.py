@@ -309,6 +309,11 @@ class RemoteReader(object):
         else:
             href = request.host_url + afile['href']
 
+        # TODO: support for remote access for big files (could do bam and vcf as well)
+        #if afile.get('file_format') in ['bigBed', 'bigWig']:
+        #    return href
+        #assert(afile.get('file_format') == 'bed')
+
         # Note: this reads the file into an in-memory byte stream.  If files get too large,
         # We could replace this with writing a temp file, then reading it via gzip and tsvreader.
         urllib3.disable_warnings()
@@ -348,6 +353,23 @@ class RemoteReader(object):
         '''Read a SNP from an in memory row and returns chrom and document to index.'''
         chrom, start, end, rsid = row[0], int(row[1]), int(row[2]), row[3]
         return (chrom, {'rsid': rsid, 'chrom': chrom, 'start': start + 1, 'end': end})  # bed loc 'half-open'
+
+    # TODO: support bigBeds
+    #def bb_region(self, row):
+    #    '''Read a region from a bigBed file read with "pyBigWig" and returns document to index.'''
+    #    start, end = int(row[0]), int(row[1])
+    #    return {'start': start + 1, 'end': end}  # bed loc 'half-open', but we will close it
+
+    # TODO: support bigBeds
+    #def bb_snp(self, row):
+    #    '''Read a SNP from a bigBed file read with "pyBigWig"  and returns document to index.'''
+    #    start, end = int(row[0]), int(row[1])
+    #    extras = row[3].split('\t')
+    #    rsid = extras[0]
+    #    num_score = int(extras[1])
+    #    score = extras[2]
+    #    start, end, rsid = row[0], int(row[0]), int(row[2]), row[3]
+    #    return {'rsid': rsid, 'chrom': chrom, 'start': start + 1, 'end': end, 'num_score': num_score, 'score': score}
 
 
 class RegionIndexerState(IndexerState):
@@ -997,6 +1019,23 @@ class RegionIndexer(Indexer):
                         file_data[chrom] = []
                         chroms.append(chrom)
                     file_data[chrom].append(doc)
+        # TODO: Handle bigBeds...
+        #elif afile['file_format'] == 'bedBed':  # Use pyBigWig?
+        #    import pyBigWig  # https://github.com/deeptools/pyBigWig
+        #    with pyBigWig.open(readable_file) as bb:  # reader.readable_file must return remote url for bb files
+        #        chroms = bb.chroms()
+        #        for chrom in chroms.keys():  # should sort
+        #            for row in bb.entries(chrom, 0, chroms[chrom], withString=snp_set):
+        #                try:
+        #                    if snp_set:
+        #                        doc = self.reader.bb_snp(row)
+        #                    else:
+        #                        doc = self.reader.bb_region(row)
+        #                except:
+        #                    log.error('%s - failure to parse row %s:%s:%s, skipping row', \
+        #                                                    afile['href'], chrom, row[0], row[1])
+        # Could redesign with reader class, so this function is entirely ignorant of bed v. bigBed
+        # However, probably not worth as much as just abstracting the file_data building/indexing
 
         if len(chroms) == 0 or not file_data:
             return False

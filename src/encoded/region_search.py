@@ -427,8 +427,8 @@ def region_search(context, request):
         if regulome:
             # score regulome SNPs or point locations
             if (rsid is not None or (int(end) - int(start)) <= 1):
-                #result['nearby_snps'] = atlas.nearby_snps(result['assembly'], chromosome, int(start), rsid)
-                #result['timing'].append({'nearby_snps': (time.time() - begin)})  # DEBUG: timing
+                result['nearby_snps'] = atlas.nearby_snps(result['assembly'], chromosome, int(start), rsid)
+                result['timing'].append({'nearby_snps': (time.time() - begin)})  # DEBUG: timing
                 begin = time.time()                                              # DEBUG: timing
                 # NOTE: Needs all hits rather than 'released' or set reduced by facet selection
                 regdb_score = atlas.regulome_score(all_hits['datasets'])
@@ -473,8 +473,8 @@ def jbrest(context, request):
             return response
         snps = atlas.find_snps(assembly, chrom, start, end)
         features = []
-        for snp in snps:
-            features.append({'start': snp['start'], 'end': snp['end'], \
+        for snp in snps:                         # quick view expects half open
+            features.append({'start': snp['start'] - 1, 'end': snp['end'], \
                              'name': snp['rsid'], 'uniqueID': snp['rsid']})
         request.response.content_type = 'application/json'
         request.query_string += "&format=json"
