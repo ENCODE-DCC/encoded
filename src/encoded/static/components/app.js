@@ -279,7 +279,7 @@ class App extends React.Component {
 
         // Add privacy link to auth0 login modal.
         this.lock.on('signin ready', () => {
-            const lockElements = document.getElementsByClassName('auth0-lock-content');
+            const lockElements = document.getElementsByClassName('auth0-lock-form');
             if (lockElements && lockElements.length) {
                 const privacyDiv = document.createElement('div');
                 const privacyLink = document.createElement('a');
