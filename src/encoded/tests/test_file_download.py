@@ -1,6 +1,8 @@
 import pytest
-from moto import mock_s3
-from moto import mock_sts
+from moto import (
+    mock_s3,
+    mock_sts
+)
 
 
 @pytest.fixture
@@ -27,10 +29,6 @@ def test_external_creds():
     assert creds['bucket'] == 'mock_bucket'
 
 
-def test_file_download(testapp, uploading_file, dummy_request):
-    pass
-
-
 def test_uploading_file_credentials(testapp, uploading_file, dummy_request):
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
     res = testapp.post_json('/file', uploading_file)
@@ -39,3 +37,17 @@ def test_uploading_file_credentials(testapp, uploading_file, dummy_request):
     res = testapp.patch_json(posted_file['@id'], {'status': 'in progress'})
     updated_file = res.json['@graph'][0]
     assert 'upload_credentials' not in updated_file
+
+
+@mock_s3
+def test_file_download_view(testapp, uploading_file, dummy_request):
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
+    res = testapp.post_json('/file', uploading_file)
+    posted_file = res.json['@graph'][0]
+    res = testapp.get(
+        posted_file['href'],
+        extra_environ=dict(HTTP_X_FORWARDED_FOR='100.100.100.100')
+    )
+    assert '307 Temporary Redirect' in str(res.body)
+    assert 'X-Accel-Redirect' not in res.headers
+    assert 'test_upload_bucket.s3.amazonaws.com' in res.headers['Location']
