@@ -54,15 +54,18 @@ def external_creds(bucket, key, name, profile_name=None):
         Policy=json.dumps(policy)
     )
     # 'access_key' 'secret_key' 'expiration' 'session_token'
-    credentials = token.get('Credentials', {})
-    credentials.update({
+    creds = token.get('Credentials', {})
+    # Maintain boto field names.
+    credentials = {
+        'session_token': creds.get('SessionToken'),
+        'access_key': creds.get('AccessKeyId'),
+        'expiration': creds.get('Expiration').isoformat(),
+        'secret_key': creds.get('SecretAccessKey'),
         'upload_url': 's3://{bucket}/{key}'.format(bucket=bucket, key=key),
         'federated_user_arn': token.get('FederatedUser', {}).get('Arn'),
         'federated_user_id': token.get('FederatedUser', {}).get('FederatedUserId'),
         'request_id': token.get('ResponseMetadata', {}).get('RequestId')
-    })
-    # SQLAlchemy model doesn't like the datetime object returned by boto3.
-    credentials['Expiration'] = credentials['Expiration'].isoformat()
+    }
     return {
         'service': 's3',
         'bucket': bucket,
