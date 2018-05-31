@@ -2,7 +2,7 @@
 
 ### Schema version 7
 
-* *purpose* property validation was renamed to characterization, and screening was added to the list of enums
+* *purpose* property "validation" was renamed to "characterization", and "screening" was also added to the list of enums
 
 ### Schema version 6
 
