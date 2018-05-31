@@ -131,9 +131,7 @@ def test_experiment_submission_date_dependency(testapp, experiment_no_error):
         status=200)
     
 def test_experiment_possible_controls(testapp, experiment_no_error, matched_set):
-    expt = testapp.post_json('/experiment', experiment_no_error).json['@graph'][0]
+    exp = testapp.post_json('/experiment', experiment_no_error).json['@graph'][0]
     matched_set_control = testapp.post_json('/matched_set', matched_set).json['@graph'][0]
     testapp.patch_json(
-        expt['@id'], {
-        'possible_controls': [matched_set_control['@id']]},
-        status=200)
+        exp['@id'], {'possible_controls': [matched_set_control['@id']]}, status=200)
