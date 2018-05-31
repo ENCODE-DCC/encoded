@@ -145,12 +145,12 @@
 .description {
     display: block;
 
-    @at-root #{&}__columnone {
-        display: block;
-        float: left;
-        width: 50%
+    @media screen and (min-width: $screen-sm-min) {
+        @at-root #{&}__columnone {
+            float: left;
+            width: 50%;
+        }
     }
-
 }
 
 .legend-title {

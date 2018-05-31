@@ -15,7 +15,7 @@ import { Breadcrumbs } from './navigation';
 import { singleTreatment, AlternateAccession } from './objectutils';
 import pubReferenceList from './reference';
 import { SortTablePanel, SortTable } from './sorttable';
-import { StatusLabel } from './statuslabel';
+import Status from './status';
 import { BiosampleSummaryString, BiosampleOrganismNames, CollectBiosampleDocs, AwardRef, Supersede } from './typeutils';
 
 
@@ -454,12 +454,7 @@ class ExperimentComponent extends React.Component {
                         <h2>Experiment summary for {context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         <Supersede context={context} />
-                        <div className="status-line">
-                            <div className="characterization-status-labels">
-                                <StatusLabel status={statuses} />
-                            </div>
-                            {this.props.auditIndicators(context.audit, 'experiment-audit', { session: this.context.session })}
-                        </div>
+                        {this.props.auditIndicators(context.audit, 'experiment-audit', { session: this.context.session })}
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'experiment-audit', { session: this.context.session, except: context['@id'] })}
@@ -467,8 +462,20 @@ class ExperimentComponent extends React.Component {
                     <PanelBody addClasses="panel-body-with-header">
                         <div className="flexrow">
                             <div className="flexcol-sm-6">
-                                <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
+                                <div className="flexcol-heading experiment-heading">
+                                    <h4>Summary</h4>
+                                </div>
                                 <dl className="key-value">
+                                    <div data-test="status">
+                                        <dt>Status</dt>
+                                        <dd>
+                                            <Status item={context} css="dd-status" title="Experiment status" inline />
+                                            {adminUser && context.internal_status ?
+                                                <Status item={context.internal_status} title="Internal status" inline />
+                                            : null}
+                                        </dd>
+                                    </div>
+
                                     <div data-test="assay">
                                         <dt>Assay</dt>
                                         <dd>

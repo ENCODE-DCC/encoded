@@ -46,20 +46,12 @@ documentViews.detail = new Registry();
 // Report-page cell components
 export const reportCell = new Registry();
 
-export function statusClass(status, htmlClass, supressSpace) {
-    let localHtmlClass = htmlClass || '';
-    if (typeof status === 'string') {
-        localHtmlClass += `${supressSpace ? '' : ' '}status-${status.toLowerCase().replace(/ /g, '-').replace(/\(|\)/g, '')}`;
-    }
-    return localHtmlClass;
-}
-
 export function itemClass(context, htmlClass) {
     let localHtmlClass = htmlClass || '';
     (context['@type'] || []).forEach((type) => {
         localHtmlClass += ` type-${type}`;
     });
-    return statusClass(context.status, localHtmlClass);
+    return localHtmlClass;
 }
 
 export function truncateString(str, len) {
@@ -158,15 +150,9 @@ export function zeroFill(n, digits) {
     return filled.substr(filled.length - digits);
 }
 
-// Order that antibody statuses should be displayed
-export const statusOrder = [
-    'characterized to standards',
-    'characterized to standards with exemption',
-    'awaiting characterization',
-    'partially characterized',
-    'not pursued',
-    'not characterized to standards',
-];
+// Convert a status string to a string suitable to build a CSS class name.
+export const statusToClassElement = status => status.toLowerCase().replace(/ /g, '-').replace(/\(|\)/g, '');
+
 
 export const productionHost = { 'www.encodeproject.org': 1, 'encodeproject.org': 1, 'www.encodedcc.org': 1 };
 
