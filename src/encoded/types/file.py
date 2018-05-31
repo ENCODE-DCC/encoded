@@ -61,6 +61,7 @@ def external_creds(bucket, key, name, profile_name=None):
         'federated_user_id': token.get('FederatedUser', {}).get('FederatedUserId'),
         'request_id': token.get('ResponseMetadata', {}).get('RequestId')
     })
+    # SQLAlchemy model doesn't like the datetime object returned by boto3.
     credentials['Expiration'] = credentials['Expiration'].isoformat()
     return {
         'service': 's3',
