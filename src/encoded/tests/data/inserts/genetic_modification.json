@@ -119,7 +119,7 @@
         "uuid": "b9264c83-2222-4678-a82f-4915af941fa4",
         "submitted_by": "amet.fusce@est.fermentum",
         "category": "replacement",
-        "purpose": "validation",
+        "purpose": "characterization",
         "zygosity": "heterozygous",
         "reagents": [{
             "source": "/sources/gregory-crawford/",
