@@ -14,7 +14,6 @@ requires = [
     'SQLAlchemy>=1.0.0b1',
     'WSGIProxy2',
     'WebTest',
-    'boto',
     'botocore',
     'jmespath',
     'boto3',
