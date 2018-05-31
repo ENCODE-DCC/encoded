@@ -277,6 +277,22 @@ class App extends React.Component {
         });
         this.lock.on('authenticated', this.handleAuth0Login);
 
+        // Add privacy link to auth0 login modal.
+        this.lock.on('signin ready', () => {
+            const lockElements = document.getElementsByClassName('auth0-lock-content');
+            if (lockElements && lockElements.length) {
+                const privacyDiv = document.createElement('div');
+                const privacyLink = document.createElement('a');
+                const privacyLinkText = document.createTextNode('Privacy policy');
+                privacyLink.appendChild(privacyLinkText);
+                privacyDiv.className = 'auth0__privacy-notice';
+                privacyLink.href = 'https://www.stanford.edu/site/privacy/';
+                privacyLink.title = 'View Stanford University privacy policy';
+                privacyDiv.appendChild(privacyLink);
+                lockElements[0].appendChild(privacyDiv);
+            }
+        });
+
         // Initialize browesr history mechanism
         if (this.constructor.historyEnabled()) {
             const data = this.props.context;
