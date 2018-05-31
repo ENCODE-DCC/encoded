@@ -40,7 +40,7 @@ def test_uploading_file_credentials(testapp, uploading_file, dummy_request):
 
 
 @mock_s3
-def test_file_download_view(testapp, uploading_file, dummy_request):
+def test_file_download_view_redirect(testapp, uploading_file, dummy_request):
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
     res = testapp.post_json('/file', uploading_file)
     posted_file = res.json['@graph'][0]
@@ -51,3 +51,16 @@ def test_file_download_view(testapp, uploading_file, dummy_request):
     assert '307 Temporary Redirect' in str(res.body)
     assert 'X-Accel-Redirect' not in res.headers
     assert 'test_upload_bucket.s3.amazonaws.com' in res.headers['Location']
+
+
+@mock_s3
+def test_file_download_view_proxy(testapp, uploading_file, dummy_request):
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
+    res = testapp.post_json('/file', uploading_file)
+    posted_file = res.json['@graph'][0]
+    dummy_request.registry['aws_ipset'] = ['13.32.0.0/15']
+    res = testapp.get(
+        posted_file['href'],
+        extra_environ=dict(HTTP_X_FORWARDED_FOR='13.32.0.0/15')
+    )
+    assert 'X-Accel-Redirect' in res.headers
