@@ -29,6 +29,7 @@ def test_external_creds():
     assert creds['bucket'] == 'mock_bucket'
 
 
+@mock_sts
 def test_uploading_file_credentials(testapp, uploading_file, dummy_request):
     dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
     res = testapp.post_json('/file', uploading_file)
@@ -50,7 +51,7 @@ def test_file_download_view_redirect(testapp, uploading_file, dummy_request):
     )
     assert '307 Temporary Redirect' in str(res.body)
     assert 'X-Accel-Redirect' not in res.headers
-    assert 'https://s3.us-west-2.amazonaws.com/test_upload_bucket/' in res.headers['Location']
+    assert all([x in res.headers['Location'] for x in ['s3', 'amazonaws', 'test_upload_bucket']])
 
 
 @mock_s3
