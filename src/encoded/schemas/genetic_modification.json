@@ -57,7 +57,7 @@
                     ],
                     "properties": {
                         "purpose": {
-                                "enum": ["repression", "activation", "overexpression", "validation"]
+                                "enum": ["repression", "activation", "overexpression", "characterization", "screening"]
                         }
                     }
                 },
@@ -346,7 +346,7 @@
     },    
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "accession": {
             "accessionType": "GM"
@@ -396,7 +396,8 @@
                 "overexpression",
                 "repression",
                 "tagging",
-                "validation"
+                "characterization", 
+                "screening"
             ]
         },
         "zygosity":{
