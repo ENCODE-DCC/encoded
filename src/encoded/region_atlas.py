@@ -23,7 +23,8 @@ log = logging.getLogger(__name__)
 # ##################################
 
 # when iterating scored snps or bases, chunk calls to index for efficiency
-REGDB_SCORE_CHUNK_SIZE = 100000
+# NOTE: failures seen when chunking is too large
+REGDB_SCORE_CHUNK_SIZE = 30000
 
 # RegulomeDB scores for bigWig (bedGraph) are converted to numeric and can be converted back
 REGDB_STR_SCORES = ['1a','1b','1c','1d','1e','1f','2a','2b','2c','3a','3b','4','5','6']
@@ -176,18 +177,18 @@ class RegionAtlas(object):
         return self._filter_peaks_by_use(peaks, use=use)
 
     def _peak_uuids_in_overlap(self, peaks, chrom, start, end=None):
-        '''private: returns the only the uuids for peaks that overlap a given location'''
+        '''private: returns set of only the uuids for peaks that overlap a given location'''
         if end is None:
             end = start
 
-        overlap = []
+        overlap = set()
         for peak in peaks:
             for hit in peak['inner_hits']['positions']['hits']['hits']:
                 if chrom == peak['_index'] and start <= hit['_source']['end'] and end >= hit['_source']['start']:
-                    overlap.append(peak)
+                    overlap.add(peak['_id'])
                     break
 
-        return list(set([ peak['_id'] for peak in overlap ]))
+        return overlap
 
     def _filter_details(self, details, uuids=None, peaks=None):
         '''private: returns only the details that match the uuids'''
@@ -292,7 +293,11 @@ class RegulomeAtlas(RegionAtlas):
             evidence[character].append(dataset)
             target = dataset.get('target')
             if target and character in ['ChIP', 'PWM', 'Footprint']:
-                targets[character].append(target)
+                if isinstance(target, str):
+                    targets[character].append(target)
+                elif isinstance(target, list):  # rare but PWM targets might be list
+                    for targ in target:
+                        targets[character].append(targ)
 
         # Targets... For each ChIP target, there could be a PWM and/or Footprint to match
         for target in targets['ChIP']:
@@ -334,6 +339,8 @@ class RegulomeAtlas(RegionAtlas):
                 brief += '|'
             target = dataset.get('target')
             if target:
+                if isinstance(target, list):
+                    target = '/'.join(target)
                 brief += target.replace(' ', '') + '|'
             biosample = dataset.get('biosample_term_name',dataset.get('biosample_summary'))
             if biosample:
@@ -419,10 +426,10 @@ class RegulomeAtlas(RegionAtlas):
         return snps[:window]
 
     def _scored_snps(self, assembly, chrom, start, end, window=-1, center_pos=None):
-        '''For a region, return all SNPs with scores'''
+        '''For a region, yields all SNPs with scores'''
         snps = self.find_snps(assembly, chrom, start, end)
         if not snps:
-            return snps
+            return
         if window > 0:
             snps = self._snp_window(snps, window, center_pos)
 
@@ -432,62 +439,62 @@ class RegulomeAtlas(RegionAtlas):
         if not peaks or not details:
             for snp in snps:
                 snp['score'] = None
-            return snps
+                yield snp
+                return
 
         last_uuids = {}
         last_snp = {}
         for snp in snps:
+            snp['score'] = None  # default
             snp['assembly'] = assembly
             snp_uuids = self._peak_uuids_in_overlap(peaks, snp['chrom'], snp['start'])
-            if len(snp_uuids) == 0:
-                snp['score'] = None  # 'no overlap'
-                continue
-            if last_snp and set(snp_uuids) == last_uuids:  # good chance evidence hasn't changed
-                snp['score'] = last_snp['score']
-                snp['evidence'] = last_snp.get('evidence')
-                continue
-            snp_details = self._filter_details(details, uuids=snp_uuids)
-            if not snp_details:
-                log.warn('Unexpected empty details for SNP: %s', snp['rsid'])
-                snp['score'] = None
-                continue
-            (snp_datasets, snp_files) = self.details_breakdown(snp_details)
-            if not snp_datasets:
-                log.warn('Unexpected failure to breakdown snp details for SNP: %s', snp['rsid'])
-                snp['score'] = None
-                continue
-            snp_evidence = self.regulome_evidence(snp_datasets)
-            if not snp_evidence:
-                snp['score'] = None  # 'no overlap'
-                continue
-            snp['score'] = self.regulome_score(snp_datasets, snp_evidence)
-            snp['evidence'] = snp_evidence
-            #snp['datasets'] = snp_datasets
-            #snp['files'] = snp_files
-            last_snp = snp
-            last_uuids = set(snp_uuids)
-        return snps
+            if snp_uuids:
+                if snp_uuids == last_uuids:  # good chance evidence hasn't changed
+                    if last_snp:
+                        snp['score'] = last_snp['score']
+                        if 'evidence' in last_snp:
+                            snp['evidence'] = last_snp['evidence']
+                    yield snp
+                    continue
+                else:
+                    last_uuids = snp_uuids
+                    snp_details = self._filter_details(details, uuids=list(snp_uuids))
+                    if snp_details:
+                        (snp_datasets, snp_files) = self.details_breakdown(snp_details)
+                        if snp_datasets:
+                            snp_evidence = self.regulome_evidence(snp_datasets)
+                            if snp_evidence:
+                                snp['score'] = self.regulome_score(snp_datasets, snp_evidence)
+                                snp['evidence'] = snp_evidence
+                                #snp['datasets'] = snp_datasets
+                                #snp['files'] = snp_files
+                                last_snp = snp
+                                yield snp
+                                continue
+            # if we are here this snp had no score
+            last_snp = {}
+            yield snp
 
     def _scored_regions(self, assembly, chrom, start, end):
-        '''For a region, return sub-regions of contiguous numeric score > 0'''
+        '''For a region, yields sub-regions (start, end, score) of contiguous numeric score > 0'''
         (peaks, details) = self.find_peaks_filtered(assembly, chrom, start, end, peaks_too=True)
         if not peaks or not details:
-            return []
+            return
 
-        regions = []  # contains tuples of regins of contiguous score: (1, 1500, 300),...
-        last_uuids = {}
+        last_uuids = set()
         region_start = 0
         region_end = 0
         region_score = 0
         num_score = 0
         for base in range(start, end):
             base_uuids = self._peak_uuids_in_overlap(peaks, chrom, base)
-            if len(base_uuids) != 0:
-                if set(base_uuids) == last_uuids:
+            if base_uuids:
+                if base_uuids == last_uuids:
                     region_end = base  # extend region
                     continue
                 else:
-                    base_details = self._filter_details(details, uuids=base_uuids)
+                    last_uuids = base_uuids
+                    base_details = self._filter_details(details, uuids=list(base_uuids))
                     if base_details:
                         (base_datasets, base_files) = self.details_breakdown(base_details)
                         if base_datasets:
@@ -500,21 +507,20 @@ class RegulomeAtlas(RegionAtlas):
                                         region_end = base
                                         continue
                                     if region_score > 0:  # end previous region?
-                                        regions.append((region_start, region_end, region_score))
+                                        yield (region_start - 1, region_end, region_score)
                                     # start new region
+                                    region_score = num_score
                                     region_start = base
                                     region_end = base
-                                    region_score = num_score
-                                    last_uuids = set(base_uuids)
                                     continue
             # if we are here this base had no score
             if region_score > 0:  # end previous region?
-                regions.append((region_start, region_end, region_score))
+                yield (region_start - 1, region_end, region_score)
                 region_score = 0
+                last_uuids = base_uuids  # zero score so don't try these uuids again!
 
         if region_score > 0:  # end previous region?
-            regions.append((region_start, region_end, region_score))
-        return regions
+            yield (region_start - 1, region_end, region_score)
 
     def nearby_snps(self, assembly, chrom, pos, rsid=None, max_snps=10, scores=False):
         '''Return SNPs nearby to the chosen SNP.'''
@@ -538,7 +544,7 @@ class RegulomeAtlas(RegionAtlas):
         return snps
 
     def iter_scored_snps(self, assembly, chrom, start, end, base_level=False):
-        '''For a region, iteratively get all SNPs with scores'''
+        '''For a region, iteratively yields all SNPs with scores.'''
         if end < start:
             return
         chunk_size = REGDB_SCORE_CHUNK_SIZE
@@ -547,13 +553,20 @@ class RegulomeAtlas(RegionAtlas):
             chunk_end = chunk_start + chunk_size
             if chunk_end > end:
                 chunk_end = end
-            if base_level:
-                positions = self._scored_regions(assembly, chrom, chunk_start, chunk_end)
-            else:
-                positions = self._scored_snps(assembly, chrom, chunk_start, chunk_end)
-            if positions:
-                for pos in positions:
-                    yield pos      # yeild yielded a 504 gateway timeout!
+            yield from self._scored_snps(assembly, chrom, chunk_start, chunk_end)
+            chunk_start += chunk_size
+
+    def iter_scored_signal(self, assembly, chrom, start, end):
+        '''For a region, iteratively yields all bedGraph styled regions of contiguous numeric score.'''
+        if end < start:
+            return
+        chunk_size = REGDB_SCORE_CHUNK_SIZE
+        chunk_start = start
+        while chunk_start <= end:
+            chunk_end = chunk_start + chunk_size
+            if chunk_end > end:
+                chunk_end = end
+            yield from self._scored_regions(assembly, chrom, chunk_start, chunk_end)
             chunk_start += chunk_size
 
     def live_score(self, assembly, chrom, pos):

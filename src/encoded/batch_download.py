@@ -282,16 +282,16 @@ def regulome_download(context, request):
             count += 1
             coordinates = '{}:{}-{}'.format(snp['chrom'], snp['start'], snp['end'])
             if format_json:
-                format_snp = json.dumps({snp.get('rsid', coordinates): snp},sort_keys=True)[1:-1] + ','
+                formatted_snp = json.dumps({snp.get('rsid', coordinates): snp},sort_keys=True)[1:-1] + ','
             else:
                 score = snp.get('score','')
-                num_score = atlas.numeric_score(score)
-                format_snp = "%s\t%d\t%d\t%s\t%d\t%s" % (snp['chrom'], snp['start'], snp['end'], \
+                num_score = atlas.numeric_score(score)           # - 1 because bed format is 'half open'
+                formatted_snp = "%s\t%d\t%d\t%s\t%d\t%s" % (snp['chrom'], snp['start'] - 1, snp['end'], \
                                                   snp.get('rsid',coordinates), num_score, score)
                 case = atlas.make_a_case(snp)
                 for category in atlas.evidence_categories():  # in order
-                    format_snp += '\t%s' % case.get(category,'')
-            yield bytes(format_snp + '\n', 'utf-8')
+                    formatted_snp += '\t%s' % case.get(category,'')
+            yield bytes(formatted_snp + '\n', 'utf-8')
         took = '%.3f' % (time.time() - begin)    # DEBUG: timing
         if format_json:
             yield bytes('"took": %s,\n"count": %d\n}\n' % (took, count), 'utf-8')
@@ -305,14 +305,14 @@ def regulome_download(context, request):
             header = '\t'.join(['#chrom', 'start', 'end', 'num_score']) + '\n'  # bedGraph
         yield bytes(header, 'utf-8')
         count = 0
-        for (region_start, region_end, region_score) in atlas.iter_scored_snps(assembly, chrom, start, end, base_level=True):
+        for (sig_start, sig_end, sig_score) in atlas.iter_scored_signal(assembly, chrom, start, end):
             count += 1
             if format_json:
-                region_json = {'chrom': chrom, 'start': region_start, 'end': region_end, 'num_score': region_score}
-                format_region = json.dumps(region_json,sort_keys=True)[1:-1] + ','
-            else:
-                format_region = "%s\t%d\t%d\t%d" % (chrom, region_start, region_end, region_score)
-            yield bytes(format_region + '\n', 'utf-8')
+                sig_json = {'chrom': chrom, 'start': sig_start, 'end': sig_end, 'num_score': sig_score}
+                formatted_sig = json.dumps(sig_json,sort_keys=True)[1:-1] + ','
+            else:                                          # - 1 because bed format is 'half open'
+                formatted_sig = "%s\t%d\t%d\t%d" % (chrom, sig_start - 1, sig_end, sig_score)
+            yield bytes(formatted_sig + '\n', 'utf-8')
         took = '%.3f' % (time.time() - begin)    # DEBUG: timing
         if format_json:
             yield bytes('"took": %s,\n"count": %d\n}\n' % (took, count), 'utf-8')

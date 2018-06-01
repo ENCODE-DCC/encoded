@@ -212,7 +212,7 @@ def get_resident_mapping(use_type=FOR_MULTIPLE_USES):
     #                     'annotation_type': {'type': 'keyword'},  # - only one of these three will appear
     #                     'reference_type':  {'type': 'keyword'},  # /
     #                     'collection_type': {'type': 'keyword'},  # assay or else annotation
-    #                     'target':          {'type': 'keyword'},
+    #                     'target':          {'type': 'keyword'},  # could be array (e.g. PWM targets)
     #                     'dataset_type':    {'type': 'keyword'}   # 1st @type of *_PRIORITIZED_TYPES
     #                 }
     #             }
@@ -679,7 +679,7 @@ class RegionIndexer(Indexer):
             pass
         # TODO: gather and return errors
 
-    def check_embedded_target(self, request, dataset):
+    def check_embedded_targets(self, request, dataset):
         '''Make sure taget or targets is embedded.'''
         # Not all datasets will have a target but if they do it must be embeeded
         target = dataset.get('target')
@@ -695,14 +695,16 @@ class RegionIndexer(Indexer):
         else:
             targets = dataset.get('targets',[])
             if len(targets) > 0:
-                if not isinstance(targets[0], str):
-                    return targets[0]  # WARNING: Only the first is taken!
-                else:
-                    try:
-                        return request.embed(targets[0], as_user=True)
-                    except:
-                        log.warn("Target is not found for: %s", dataset['@id'])
-                        return None
+                if isinstance(targets[0], dict):
+                    return targets
+                target_objects = []
+                for targ in targets:
+                    if isinstance(targets[0], str):
+                        try:
+                            target_objects.append(request.embed(targ, as_user=True))
+                        except:
+                            log.warn("Target %s is not found for: %s" % (targ, dataset['@id']))
+                return target_objects
 
         return None
 
@@ -749,9 +751,18 @@ class RegionIndexer(Indexer):
                 meta_doc['dataset'][prop] = prop_value
                 if 'collection_type' not in meta_doc['dataset']:
                     meta_doc['dataset']['collection_type'] = prop_value
-        target = dataset.get('target',{}).get('label')
-        if target:
-            meta_doc['dataset']['target'] = target
+        target = dataset.get('target',{})
+        if target:  # overloaded target with potential list of target objects
+            if isinstance(target, dict):
+                target = [ target ]
+            if isinstance(target, list):
+                target_labels = []
+                for targ in target:
+                    label = targ.get('label')
+                    if label:
+                        target_labels.append(label)
+                if len(target_labels) > 0:
+                    meta_doc['dataset']['target'] = target_labels
         biosample = dataset.get('biosample_term_name')  # TODO: tighten the screws
         if biosample:
             meta_doc['dataset']['biosample_term_name'] = biosample
@@ -790,7 +801,7 @@ class RegionIndexer(Indexer):
             except:
                 log.warn("dataset is not found for uuid: %s",dataset_uuid)
                 return None
-        target = self.check_embedded_target(request, dataset)
+        target = self.check_embedded_targets(request, dataset)
         if target is not None:
             dataset['target'] = target
 
