@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Auth0Lock from 'auth0-lock';
 import serialize from 'form-serialize';
 import ga from 'google-analytics';
 import _ from 'underscore';
@@ -259,10 +260,11 @@ class App extends React.Component {
         };
         const logoUrl = url.format(logoHrefInfo);
 
-        const lock_ = require('auth0-lock');
-        this.lock = new lock_.default('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
+        this.lock = new Auth0Lock('WIOr638GdDdEGPJmABPhVzMn6SYUIdIH', 'encode.auth0.com', {
             auth: {
+                responseType: 'token',
                 redirect: false,
+                redirectUrl: `${hrefInfo.protocol}//${hrefInfo.host}/callback`,
             },
             theme: {
                 logo: logoUrl,
@@ -274,6 +276,22 @@ class App extends React.Component {
             allowedConnections: ['github', 'google-oauth2', 'facebook', 'linkedin'],
         });
         this.lock.on('authenticated', this.handleAuth0Login);
+
+        // Add privacy link to auth0 login modal.
+        this.lock.on('signin ready', () => {
+            const lockElements = document.getElementsByClassName('auth0-lock-form');
+            if (lockElements && lockElements.length) {
+                const privacyDiv = document.createElement('div');
+                const privacyLink = document.createElement('a');
+                const privacyLinkText = document.createTextNode('Privacy policy');
+                privacyLink.appendChild(privacyLinkText);
+                privacyDiv.className = 'auth0__privacy-notice';
+                privacyLink.href = 'https://www.stanford.edu/site/privacy/';
+                privacyLink.title = 'View Stanford University privacy policy';
+                privacyDiv.appendChild(privacyLink);
+                lockElements[0].appendChild(privacyDiv);
+            }
+        });
 
         // Initialize browesr history mechanism
         if (this.constructor.historyEnabled()) {
