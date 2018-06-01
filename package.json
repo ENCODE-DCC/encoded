@@ -59,7 +59,7 @@
     "webpack": "^1.14.0"
   },
   "dependencies": {
-    "auth0-lock": "^10.4.0",
+    "auth0-lock": "^11.7.0",
     "babel-polyfill": "^6.20.0",
     "brace": "^0.3.0",
     "chart.js": "^2.5.0",
