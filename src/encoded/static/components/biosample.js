@@ -120,6 +120,15 @@ class BiosampleComponent extends React.Component {
                                         </div>
                                     : null}
 
+                                    {context.PMI ?
+                                        <div data-test="pmi">
+                                            <dt>Post-mortem interval</dt>
+                                            <dd>
+                                                {context.PMI} {context.PMI_units}
+                                            </dd>
+                                        </div>
+                                    : null}
+
                                     {synchText ?
                                         <div data-test="biosample-synchronization">
                                             <dt>Synchronization timepoint</dt>
