@@ -18,6 +18,23 @@ import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable } from './
 
 /* eslint-disable react/prefer-stateless-function */
 class BiosampleComponent extends React.Component {
+    static formatMeasurement(magnitude, unit) {
+        // parseFloat used because parseInt only keeps integer
+        const magnitudeAsFloat = parseFloat(magnitude);
+
+        if (Number.isNaN(magnitudeAsFloat)) {
+            return 'N/A';
+        }
+
+        if (magnitudeAsFloat === 0) {
+            return '0';
+        }
+
+        const measurement = `${magnitudeAsFloat} ${unit}`.trim();
+
+        return magnitudeAsFloat === 1 ? measurement : `${measurement}s`;
+    }
+
     render() {
         const context = this.props.context;
         const itemClass = globals.itemClass(context, 'view-item');
@@ -116,7 +133,9 @@ class BiosampleComponent extends React.Component {
                                     {context.donor && context.donor.organism.name !== 'human' && context.age ?
                                         <div data-test="age">
                                             <dt>Age</dt>
-                                            <dd className="sentence-case">{context.age}{context.age_units ? ` ${context.age_units}` : null}</dd>
+                                            <dd className="sentence-case">
+                                                formatMeasurement({context.age}{context.age_units ? ` ${context.age_units}` : null})
+                                            </dd>
                                         </div>
                                     : null}
 
@@ -124,7 +143,7 @@ class BiosampleComponent extends React.Component {
                                         <div data-test="pmi">
                                             <dt>Post-mortem interval</dt>
                                             <dd>
-                                                {context.PMI} {context.PMI_units}
+                                                formatMeasurement({context.PMI}, {context.PMI_units})
                                             </dd>
                                         </div>
                                     : null}
@@ -132,7 +151,7 @@ class BiosampleComponent extends React.Component {
                                     {synchText ?
                                         <div data-test="biosample-synchronization">
                                             <dt>Synchronization timepoint</dt>
-                                            <dd className="sentence-case">{synchText}</dd>
+                                            <dd className="sentence-case">formatMeasurement({synchText})</dd>
                                         </div>
                                     : null}
 
