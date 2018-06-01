@@ -1,7 +1,25 @@
 Changes
 =======
+71.0 (unreleased)
+-----------------
+01. ENCD-4046 Update snovault 1.0.10 (#2275)
+02. ENCD-4048-update-publication-data-raw-file-table (#2273)
+03. ENCD-3306-fix-line-in-table (#2271)
+04. ENCD-4045 gdpr auth0 (#2274)
+05. ENCD-3695-upgrade-to-boto3 (#2272
+06. ENCD-3883-add-pmi-data (#2263)
+07. ENCD-4020 updating possible_controls in experiment (#2248)
+08. ENCD-3727 added hypen for long words (#2270)
+09. added adenekan as a test user. This has no effect on prod (#2269)
+10. ENCD-4019 adding readname_details field to the file.json (#2260)
+11. ENCD-4042 Update genetic mods for functional characterization experiments (#2262)
+12. ENCD-4045 Add privacy link to footer (#2267)
+13. ENCD-3629 Refactor and redesign status displays. (#2246)
+14. ENCD-4034 SVG tooltip and minor JS clean up (#2255)
+15. ENCD-3911 Added a break above document box (#2256)
+16. ENCD-3364  fixed text and link button misalignment (#2257)
 
-70.0 (unreleased)
+70.0 (released)
 -----------------
 01. ENCD-4037 Update snovault 1.0.9 (#2258)
 02. ENCD-4029 Update to snovault 1.0.8 (#2254)
