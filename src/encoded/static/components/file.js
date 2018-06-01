@@ -13,7 +13,7 @@ import { ProjectBadge } from './image';
 import { QualityMetricsPanel } from './quality_metric';
 import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
-import { StatusLabel } from './statuslabel';
+import Status from './status';
 import { Supersede } from './typeutils';
 
 
@@ -39,7 +39,7 @@ const derivingCols = {
     assembly: { title: 'Mapping assembly' },
     status: {
         title: 'File status',
-        display: item => <div className="characterization-meta-data"><StatusLabel status={item.status} fileStatus /></div>,
+        display: item => <Status item={item} badgeSize="small" inline />,
     },
 };
 
@@ -369,14 +369,7 @@ class FileComponent extends React.Component {
                         <AlternateAccession altAcc={context.alternate_accessions} />
                         {context.restricted ? <h4 className="superseded-acc">Restricted file</h4> : null}
                         <Supersede context={context} />
-                        <div className="status-line">
-                            {context.status ?
-                                <div className="characterization-status-labels">
-                                    <StatusLabel title="Status" status={context.status} fileStatus />
-                                </div>
-                            : null}
-                            {this.props.auditIndicators(context.audit, 'file-audit', { session: this.context.session })}
-                        </div>
+                        {this.props.auditIndicators(context.audit, 'file-audit', { session: this.context.session })}
                         {this.props.auditDetail(context.audit, 'file-audit', { session: this.context.session, except: context['@id'] })}
                     </div>
                 </header>
@@ -386,6 +379,11 @@ class FileComponent extends React.Component {
                             <div className="split-panel__heading"><h4>Summary</h4></div>
                             <div className="split-panel__content">
                                 <dl className="key-value">
+                                    <div data-test="status">
+                                        <dt>Status</dt>
+                                        <dd><Status item={context} inline /></dd>
+                                    </div>
+
                                     <div data-test="term-name">
                                         <dt>Dataset</dt>
                                         <dd><a href={context.dataset} title={`View page for dataset ${datasetAccession}`}>{datasetAccession}</a></dd>
@@ -694,7 +692,7 @@ class ListingComponent extends React.Component {
                     <div className="pull-right search-meta">
                         <p className="type meta-title">File</p>
                         <p className="type">{` ${result.title}`}</p>
-                        <p className="type meta-status">{` ${result.status}`}</p>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession"><a href={result['@id']}>{`${result.file_format}${result.file_format_type ? ` (${result.file_format_type})` : ''}`}</a></div>

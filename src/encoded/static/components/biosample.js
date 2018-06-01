@@ -12,7 +12,7 @@ import { RelatedItems } from './item';
 import { Breadcrumbs } from './navigation';
 import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession } from './objectutils';
 import pubReferenceList from './reference';
-import { StatusLabel } from './statuslabel';
+import Status from './status';
 import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable } from './typeutils';
 
 
@@ -69,12 +69,7 @@ class BiosampleComponent extends React.Component {
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
                         </h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
-                        <div className="status-line">
-                            <div className="characterization-status-labels">
-                                <StatusLabel title="Status" status={context.status} />
-                            </div>
-                            {this.props.auditIndicators(context.audit, 'biosample-audit', { session: this.context.session })}
-                        </div>
+                        {this.props.auditIndicators(context.audit, 'biosample-audit', { session: this.context.session })}
                     </div>
                 </header>
                 {this.props.auditDetail(context.audit, 'biosample-audit', { session: this.context.session, except: context['@id'] })}
@@ -84,6 +79,11 @@ class BiosampleComponent extends React.Component {
                             <div className="flexcol-sm-6">
                                 <div className="flexcol-heading experiment-heading"><h4>Summary</h4></div>
                                 <dl className="key-value">
+                                    <div data-test="status">
+                                        <dt>Status</dt>
+                                        <dd><Status item={context} inline /></dd>
+                                    </div>
+
                                     <div data-test="term-name">
                                         <dt>Term name</dt>
                                         <dd>{context.biosample_term_name}</dd>
@@ -117,6 +117,15 @@ class BiosampleComponent extends React.Component {
                                         <div data-test="age">
                                             <dt>Age</dt>
                                             <dd className="sentence-case">{context.age}{context.age_units ? ` ${context.age_units}` : null}</dd>
+                                        </div>
+                                    : null}
+
+                                    {context.PMI ?
+                                        <div data-test="pmi">
+                                            <dt>Post-mortem interval</dt>
+                                            <dd>
+                                                {context.PMI} {context.PMI_units}
+                                            </dd>
                                         </div>
                                     : null}
 

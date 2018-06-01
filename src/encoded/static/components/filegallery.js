@@ -13,6 +13,7 @@ import { requestFiles, DownloadableAccession, BrowserSelector } from './objectut
 import { qcIdToDisplay } from './quality_metric';
 import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
+import Status from './status';
 
 
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
@@ -46,13 +47,6 @@ function fileAccessionSort(a, b) {
     const bTitle = b.title.toLowerCase();
     return aTitle > bTitle ? 1 : (aTitle < bTitle ? -1 : 0);
 }
-
-
-// Calculate a string representation of the given replication_type.
-const replicationDisplay = replicationType => (
-    `${replicationType === 'anisogenic' ? 'Anisogenic' : 'Isogenic'} replicate`
-);
-
 
 export class FileTable extends React.Component {
     static rowClasses() {
@@ -210,7 +204,7 @@ export class FileTable extends React.Component {
                             collapsed={this.state.collapsed.proc}
                             list={files.proc}
                             columns={FileTable.procTableColumns}
-                            sortColumn="biological_replicates"
+                            sortColumn="accession"
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -304,10 +298,6 @@ FileTable.procTableColumns = {
     },
     file_type: { title: 'File type' },
     output_type: { title: 'Output type' },
-    biological_replicates: {
-        title: (list, columns, meta) => <span>{replicationDisplay(meta.replicationType)}</span>,
-        getValue: item => (item.biological_replicates ? item.biological_replicates.sort((a, b) => a - b).join(', ') : ''),
-    },
     mapped_read_length: {
         title: 'Mapped read length',
         hide: list => _(list).all(file => file.mapped_read_length === undefined),
@@ -342,7 +332,7 @@ FileTable.procTableColumns = {
     },
     status: {
         title: 'File status',
-        display: item => <div className="characterization-meta-data"><FileStatusLabel file={item} /></div>,
+        display: item => <Status item={item} badgeSize="small" css="status__table-cell" />,
     },
 };
 
@@ -393,58 +383,8 @@ FileTable.refTableColumns = {
     },
     status: {
         title: 'File status',
-        display: item => <div className="characterization-meta-data"><FileStatusLabel file={item} /></div>,
+        display: item => <Status item={item} badgeSize="small" css="status__table-cell" />,
     },
-};
-
-
-function sortBioReps(a, b) {
-    // Sorting function for biological replicates of the given files.
-    let result; // Ends sorting loop once it has a value
-    let i = 0;
-    let repA = (a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
-    let repB = (b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
-    while (result === undefined) {
-        if (repA !== undefined && repB !== undefined) {
-            // Both biological replicates have a value
-            if (repA !== repB) {
-                // We got a real sorting result
-                result = repA - repB;
-            } else {
-                // They both have values, but they're equal; go to next
-                // biosample replicate array elements
-                i += 1;
-                repA = a.biological_replicates[i];
-                repB = b.biological_replicates[i];
-            }
-        } else if (repA !== undefined || repB !== undefined) {
-            // One and only one replicate empty; sort empty one after
-            result = repA ? 1 : -1;
-        } else {
-            // Both empty; sorting result same
-            result = 0;
-        }
-    }
-    return result;
-}
-
-
-const FileStatusLabel = (props) => {
-    const { file } = props;
-    const status = file.status;
-    const statusClass = globals.statusClass(status, 'status-indicator status-indicator--', true);
-
-    // Display simple string and optional title in badge
-    return (
-        <div key={status} className={statusClass}>
-            <i className="icon icon-circle status-indicator__icon" />
-            <div className="status-indicator__label">{status}</div>
-        </div>
-    );
-};
-
-FileStatusLabel.propTypes = {
-    file: PropTypes.object.isRequired, // File whose status we're displaying
 };
 
 
@@ -552,7 +492,6 @@ class RawSequencingTable extends React.Component {
 
                         {!this.state.collapsed ?
                             <tr>
-                                <th>{replicationDisplay(meta.replicationType)}</th>
                                 <th>Library</th>
                                 <th>Accession</th>
                                 <th>File type</th>
@@ -595,9 +534,6 @@ class RawSequencingTable extends React.Component {
                                     return (
                                         <tr key={file['@id']}>
                                             {i === 0 ?
-                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>{groupFiles[0].biological_replicates[0]}</td>
-                                            : null}
-                                            {i === 0 ?
                                                 <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right + table-raw-merged`}>{(groupFiles[0].replicate && groupFiles[0].replicate.library) ? groupFiles[0].replicate.library.accession : null}</td>
                                             : null}
                                             <td className={pairClass}>
@@ -610,12 +546,12 @@ class RawSequencingTable extends React.Component {
                                             <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
                                             <td className={pairClass}>{fileAuditStatus(file)}</td>
-                                            <td className={`${pairClass} characterization-meta-data`}><FileStatusLabel file={file} /></td>
+                                            <td className={pairClass}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
                                 });
                             })}
-                            {nonpairedFiles.sort(sortBioReps).map((file, i) => {
+                            {nonpairedFiles.map((file, i) => {
                                 // Prepare for run_type display
                                 let runType;
                                 if (file.run_type === 'single-ended') {
@@ -632,7 +568,6 @@ class RawSequencingTable extends React.Component {
 
                                 return (
                                     <tr key={file['@id']} className={rowClasses.join(' ')}>
-                                        <td className="table-raw-biorep">{file.biological_replicates && file.biological_replicates.length ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
                                             <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
@@ -644,7 +579,7 @@ class RawSequencingTable extends React.Component {
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
-                                        <td className="characterization-meta-data"><FileStatusLabel file={file} /></td>
+                                        <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
                             })}
@@ -730,7 +665,6 @@ class RawFileTable extends React.Component {
 
                         {!this.state.collapsed ?
                             <tr>
-                                <th>{replicationDisplay(meta.replicationType)}</th>
                                 <th>Library</th>
                                 <th>Accession</th>
                                 <th>File type</th>
@@ -765,11 +699,6 @@ class RawFileTable extends React.Component {
                                     return (
                                         <tr key={file['@id']}>
                                             {i === 0 ?
-                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
-                                                    {groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
-                                                </td>
-                                            : null}
-                                            {i === 0 ?
                                                 <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged`}>
                                                     {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
                                                 </td>
@@ -789,7 +718,7 @@ class RawFileTable extends React.Component {
                                     );
                                 });
                             })}
-                            {nonGrouped.sort(sortBioReps).map((file, i) => {
+                            {nonGrouped.map((file, i) => {
                                 // Prepare for run_type display
                                 const rowClasses = [
                                     pairedKeys.length && i === 0 ? 'table-raw-separator' : null,
@@ -800,7 +729,6 @@ class RawFileTable extends React.Component {
 
                                 return (
                                     <tr key={file['@id']} className={rowClasses.join(' ')}>
-                                        <td className="table-raw-biorep">{(file.biological_replicates && file.biological_replicates.length) ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
                                             <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
@@ -812,7 +740,7 @@ class RawFileTable extends React.Component {
                                         <td>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                         <td>{globals.humanFileSize(file.file_size)}</td>
                                         <td>{fileAuditStatus(file)}</td>
-                                        <td className="characterization-meta-data"><FileStatusLabel file={file} /></td>
+                                        <td><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                     </tr>
                                 );
                             })}
@@ -1162,6 +1090,20 @@ function collectDerivedFroms(file, fileDataset, selectedAssembly, selectedAnnota
 }
 
 
+/**
+ * Generate a string of CSS classes for a file node. Plass the result into a `className` property of a component.
+ *
+ * @param {object-required} file - File we're generating the statuses for.
+ * @param {bool} active - True if the file is active and should be highlighted as such.
+ * @param (bool) colorize - True to colorize the nodes according to their status by adding a CSS class for their status
+ * @param {string} addClasses - CSS classes to add in addition to the ones generated by the file statuses.
+ */
+const fileCssClassGen = (file, active, colorizeNode, addClasses) => {
+    const statusClass = colorizeNode ? ` graph-node--${globals.statusToClassElement(file.status)}` : '';
+    return `pipeline-node-file${active ? ' active' : ''}${statusClass}${addClasses ? ` ${addClasses}` : ''}`;
+};
+
+
 // Assembly a graph of files, the QC objects that belong to them, and the steps that connect them.
 export function assembleGraph(files, dataset, options) {
     // Calculate a step ID from a file's derived_from array.
@@ -1175,22 +1117,6 @@ export function assembleGraph(files, dataset, options) {
     // Calculate a QC node ID.
     function rGenQcId(metric, file) {
         return `qc:${metric['@id'] + file['@id']}`;
-    }
-
-    /**
-     * Generate a string of CSS classes for a file node. Plass the result into a `className` property of a component.
-     *
-     * @param {object-required} file - File we're generating the statuses for.
-     * @param {bool} active - True if the file is active and should be highlighted as such.
-     * @param (bool) colorize - True to colorize the nodes according to their status by adding a CSS class for their status
-     * @param {string} addClasses - CSS classes to add in addition to the ones generated by the file statuses.
-     */
-    function fileCssClassGen(file, active, colorizeNode, addClasses) {
-        let statusClass;
-        if (colorizeNode) {
-            statusClass = file.status.replace(/ /g, '-');
-        }
-        return `pipeline-node-file${active ? ' active' : ''}${colorizeNode ? ` ${statusClass}` : ''}${addClasses ? ` ${addClasses}` : ''}`;
     }
 
     const { infoNode, selectedAssembly, selectedAnnotation, colorize } = options;
@@ -2024,7 +1950,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                 <dl className="key-value">
                     <div data-test="status">
                         <dt>Status</dt>
-                        <dd><FileStatusLabel file={selectedFile} /></dd>
+                        <dd><Status item={selectedFile} inline /></dd>
                     </div>
 
                     {selectedFile.output_type ?
@@ -2217,7 +2143,7 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
             },
             status: {
                 title: 'Status',
-                display: item => <div className="characterization-meta-data"><FileStatusLabel file={item} /></div>,
+                display: item => <Status item={item} badgeSize="small" />,
             },
         };
 
