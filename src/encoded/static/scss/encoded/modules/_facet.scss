@@ -94,13 +94,13 @@
 
 .facet-term {
   display: flex;
-  line-height: 1;
   position: relative;
   align-items: center;
   margin: 1px 0;
   padding: 2px 0 2px 10px;
   border-radius: 3px;
   font-size: 0.9rem;
+  line-height: 1;
 
   &:hover {
     background-color: lighten(#4183c4, 40%);
