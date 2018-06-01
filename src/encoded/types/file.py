@@ -24,7 +24,7 @@ from urllib.parse import (
     parse_qs,
     urlparse,
 )
-import boto
+import boto3
 import datetime
 import json
 import pytz
@@ -48,16 +48,24 @@ def external_creds(bucket, key, name, profile_name=None):
             }
         ]
     }
-    conn = boto.connect_sts(profile_name=profile_name)
-    token = conn.get_federation_token(name, policy=json.dumps(policy))
+    conn = boto3.Session(profile_name=profile_name).client('sts')
+    token = conn.get_federation_token(
+        Name=name,
+        Policy=json.dumps(policy)
+    )
     # 'access_key' 'secret_key' 'expiration' 'session_token'
-    credentials = token.credentials.to_dict()
-    credentials.update({
+    creds = token.get('Credentials', {})
+    # Maintain boto field names.
+    credentials = {
+        'session_token': creds.get('SessionToken'),
+        'access_key': creds.get('AccessKeyId'),
+        'expiration': creds.get('Expiration').isoformat(),
+        'secret_key': creds.get('SecretAccessKey'),
         'upload_url': 's3://{bucket}/{key}'.format(bucket=bucket, key=key),
-        'federated_user_arn': token.federated_user_arn,
-        'federated_user_id': token.federated_user_id,
-        'request_id': token.request_id,
-    })
+        'federated_user_arn': token.get('FederatedUser', {}).get('Arn'),
+        'federated_user_id': token.get('FederatedUser', {}).get('FederatedUserId'),
+        'request_id': token.get('ResponseMetadata', {}).get('RequestId')
+    }
     return {
         'service': 's3',
         'bucket': bucket,
@@ -460,12 +468,16 @@ def download(context, request):
 
     external = context.propsheets.get('external', {})
     if external.get('service') == 's3':
-        conn = boto.connect_s3()
-        location = conn.generate_url(
-            36*60*60, request.method, external['bucket'], external['key'],
-            force_http=proxy or use_download_proxy, response_headers={
-                'response-content-disposition': "attachment; filename=" + filename,
-            })
+        conn = boto3.client('s3')
+        location = conn.generate_presigned_url(
+            ClientMethod='get_object',
+            Params={
+                'Bucket': external['bucket'],
+                'Key': external['key'],
+                'ResponseContentDisposition': 'attachment; filename=' + filename
+            },
+            ExpiresIn=36*60*60
+        )
     else:
         raise ValueError(external.get('service'))
 
