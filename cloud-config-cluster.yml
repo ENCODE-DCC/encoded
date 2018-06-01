@@ -125,7 +125,7 @@ packages:
 - python2.7-dev
 - python3.6-dev
 - python3-pip
-- python-software-properties
+- software-properties-common
 - python-virtualenv
 - ruby-dev
 - unattended-upgrades
