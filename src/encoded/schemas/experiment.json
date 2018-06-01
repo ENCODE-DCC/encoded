@@ -254,16 +254,16 @@
         },
         "possible_controls": {
             "title": "Controls",
-            "description": "Experiments that contain files that can serve as scientific controls for this experiment.",
+            "description": "Dataset that contain files that can serve as scientific controls for this experiment.",
             "type": "array",
             "default": [],
             "uniqueItems": true,
             "items": {
                 "title": "Control",
-                "description": "An experiment that contains files that can serve as a scientific control for this experiment.",
-                "comment": "See experiment.json for a list of available identifiers. Exact pairing of data files with their controls is done using file relationships.",
+                "description": "A dataset that contains files that can serve as a scientific control for this experiment.",
+                "comment": "See dataset.json for a list of available identifiers. Exact pairing of data files with their controls is done using file relationships.",
                 "type": "string",
-                "linkTo": "Experiment"
+                "linkTo": "Dataset"
             }
         },
         "supersedes": {
