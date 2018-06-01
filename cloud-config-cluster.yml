@@ -185,7 +185,7 @@ runcmd:
 - sudo -u postgres virtualenv --python=python2.7 /opt/wal-e
 - sudo -u postgres /opt/wal-e/bin/pip install -r wal-e-requirements.txt
 - /etc/init.d/postgresql stop
-- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/10/main/wale_s3_prefix)" backup-fetch /var/lib/postgresql/10/main LATEST
+- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-fetch /var/lib/postgresql/10/main LATEST
 - sudo -u postgres ln -s /etc/postgresql/10/main/recovery.conf /var/lib/postgresql/10/main/
 - /etc/init.d/postgresql start
 - sudo pip3 install -U zc.buildout setuptools
@@ -308,11 +308,11 @@ write_files:
     archive_mode = off
 - path: /etc/postgresql/10/main/master.conf
   content: |
-    archive_command = '/opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/10/main/wale_s3_prefix)" wal-push "%%p"'
+    archive_command = '/opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" wal-push "%%p"'
 - path: /etc/postgresql/10/main/recovery.conf
   content: |
     recovery_target_timeline = 'latest'
-    restore_command = '/opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/10/main/wale_s3_prefix)" wal-fetch "%%f" "%%p"'
+    restore_command = '/opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" wal-fetch "%%f" "%%p"'
     standby_mode = on
 - path: /etc/postgresql/10/main/wale_s3_prefix
   content: "%(WALE_S3_PREFIX)s"
