@@ -652,7 +652,7 @@ class RawFileTable extends React.Component {
                     nonGrouped.push(libGroups[libGroupKey][0]);
                 }
             });
-            const pairedKeys = Object.keys(grouped).sort();
+            const groupKeys = Object.keys(grouped).sort();
 
             return (
                 <table className="table table-sortable table-raw">
@@ -681,10 +681,10 @@ class RawFileTable extends React.Component {
 
                     {!this.state.collapsed ?
                         <tbody>
-                            {pairedKeys.map((pairedKey, j) => {
+                            {groupKeys.map((groupKey, j) => {
                                 // groupFiles is an array of files under a bioreplicate/library
-                                const groupFiles = grouped[pairedKey];
-                                const bottomClass = j < (pairedKeys.length - 1) ? 'merge-bottom' : '';
+                                const groupFiles = grouped[groupKey];
+                                const bottomClass = j < (groupKeys.length - 1) ? 'merge-bottom' : '';
                                 const groupFilesLength = groupFiles.length;
 
                                 // Render each file's row, with the biological replicate and library
@@ -721,7 +721,7 @@ class RawFileTable extends React.Component {
                             {nonGrouped.map((file, i) => {
                                 // Prepare for run_type display
                                 const rowClasses = [
-                                    pairedKeys.length && i === 0 ? 'table-raw-separator' : null,
+                                    groupKeys.length && i === 0 ? 'table-raw-separator' : null,
                                 ];
 
                                 // Determine if accession should be a button or not.
