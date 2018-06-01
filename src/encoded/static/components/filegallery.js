@@ -204,7 +204,7 @@ export class FileTable extends React.Component {
                             collapsed={this.state.collapsed.proc}
                             list={files.proc}
                             columns={FileTable.procTableColumns}
-                            sortColumn="biological_replicates"
+                            sortColumn="accession"
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
