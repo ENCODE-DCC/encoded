@@ -48,13 +48,6 @@ function fileAccessionSort(a, b) {
     return aTitle > bTitle ? 1 : (aTitle < bTitle ? -1 : 0);
 }
 
-
-// Calculate a string representation of the given replication_type.
-const replicationDisplay = replicationType => (
-    `${replicationType === 'anisogenic' ? 'Anisogenic' : 'Isogenic'} replicate`
-);
-
-
 export class FileTable extends React.Component {
     static rowClasses() {
         return '';
@@ -211,7 +204,7 @@ export class FileTable extends React.Component {
                             collapsed={this.state.collapsed.proc}
                             list={files.proc}
                             columns={FileTable.procTableColumns}
-                            sortColumn="biological_replicates"
+                            sortColumn="accession"
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -305,10 +298,6 @@ FileTable.procTableColumns = {
     },
     file_type: { title: 'File type' },
     output_type: { title: 'Output type' },
-    biological_replicates: {
-        title: (list, columns, meta) => <span>{replicationDisplay(meta.replicationType)}</span>,
-        getValue: item => (item.biological_replicates ? item.biological_replicates.sort((a, b) => a - b).join(', ') : ''),
-    },
     mapped_read_length: {
         title: 'Mapped read length',
         hide: list => _(list).all(file => file.mapped_read_length === undefined),
@@ -397,37 +386,6 @@ FileTable.refTableColumns = {
         display: item => <Status item={item} badgeSize="small" css="status__table-cell" />,
     },
 };
-
-
-function sortBioReps(a, b) {
-    // Sorting function for biological replicates of the given files.
-    let result; // Ends sorting loop once it has a value
-    let i = 0;
-    let repA = (a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
-    let repB = (b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
-    while (result === undefined) {
-        if (repA !== undefined && repB !== undefined) {
-            // Both biological replicates have a value
-            if (repA !== repB) {
-                // We got a real sorting result
-                result = repA - repB;
-            } else {
-                // They both have values, but they're equal; go to next
-                // biosample replicate array elements
-                i += 1;
-                repA = a.biological_replicates[i];
-                repB = b.biological_replicates[i];
-            }
-        } else if (repA !== undefined || repB !== undefined) {
-            // One and only one replicate empty; sort empty one after
-            result = repA ? 1 : -1;
-        } else {
-            // Both empty; sorting result same
-            result = 0;
-        }
-    }
-    return result;
-}
 
 
 class RawSequencingTable extends React.Component {
@@ -534,7 +492,6 @@ class RawSequencingTable extends React.Component {
 
                         {!this.state.collapsed ?
                             <tr>
-                                <th>{replicationDisplay(meta.replicationType)}</th>
                                 <th>Library</th>
                                 <th>Accession</th>
                                 <th>File type</th>
@@ -577,9 +534,6 @@ class RawSequencingTable extends React.Component {
                                     return (
                                         <tr key={file['@id']}>
                                             {i === 0 ?
-                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>{groupFiles[0].biological_replicates[0]}</td>
-                                            : null}
-                                            {i === 0 ?
                                                 <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right + table-raw-merged`}>{(groupFiles[0].replicate && groupFiles[0].replicate.library) ? groupFiles[0].replicate.library.accession : null}</td>
                                             : null}
                                             <td className={pairClass}>
@@ -597,7 +551,7 @@ class RawSequencingTable extends React.Component {
                                     );
                                 });
                             })}
-                            {nonpairedFiles.sort(sortBioReps).map((file, i) => {
+                            {nonpairedFiles.map((file, i) => {
                                 // Prepare for run_type display
                                 let runType;
                                 if (file.run_type === 'single-ended') {
@@ -614,7 +568,6 @@ class RawSequencingTable extends React.Component {
 
                                 return (
                                     <tr key={file['@id']} className={rowClasses.join(' ')}>
-                                        <td className="table-raw-biorep">{file.biological_replicates && file.biological_replicates.length ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
                                             <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
@@ -690,16 +643,16 @@ class RawFileTable extends React.Component {
             });
 
             // Split library/file groups into paired and non-paired library/file groups.
-            const pairedGroups = {};
-            const nonpairedFiles = [];
+            const grouped = {};
+            const nonGrouped = [];
             Object.keys(libGroups).forEach((libGroupKey) => {
                 if (libGroups[libGroupKey].length > 1) {
-                    pairedGroups[libGroupKey] = libGroups[libGroupKey];
+                    grouped[libGroupKey] = libGroups[libGroupKey];
                 } else {
-                    nonpairedFiles.push(libGroups[libGroupKey][0]);
+                    nonGrouped.push(libGroups[libGroupKey][0]);
                 }
             });
-            const pairedKeys = Object.keys(pairedGroups).sort();
+            const groupKeys = Object.keys(grouped).sort();
 
             return (
                 <table className="table table-sortable table-raw">
@@ -712,7 +665,6 @@ class RawFileTable extends React.Component {
 
                         {!this.state.collapsed ?
                             <tr>
-                                <th>{replicationDisplay(meta.replicationType)}</th>
                                 <th>Library</th>
                                 <th>Accession</th>
                                 <th>File type</th>
@@ -729,20 +681,16 @@ class RawFileTable extends React.Component {
 
                     {!this.state.collapsed ?
                         <tbody>
-                            {pairedKeys.map((pairedKey, j) => {
+                            {groupKeys.map((groupKey, j) => {
                                 // groupFiles is an array of files under a bioreplicate/library
-                                const groupFiles = pairedGroups[pairedKey];
-                                const bottomClass = j < (pairedKeys.length - 1) ? 'merge-bottom' : '';
+                                const groupFiles = grouped[groupKey];
+                                const bottomClass = j < (groupKeys.length - 1) ? 'merge-bottom' : '';
+                                const groupFilesLength = groupFiles.length;
 
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
                                 return groupFiles.sort((a, b) => (a.title < b.title ? -1 : 1)).map((file, i) => {
-                                    let pairClass;
-                                    if (i === 1) {
-                                        pairClass = `align-pair2${(i === groupFiles.length - 1) && (j === pairedKeys.length - 1) ? '' : ' pair-bottom'}`;
-                                    } else {
-                                        pairClass = 'align-pair1';
-                                    }
+                                    const groupClass = i !== (groupFilesLength - 1) ? 'align-pair1' : 'align-pair2 group-bottom';
 
                                     // Determine if the accession should be a button or not.
                                     const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
@@ -751,34 +699,29 @@ class RawFileTable extends React.Component {
                                     return (
                                         <tr key={file['@id']}>
                                             {i === 0 ?
-                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
-                                                    {groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
-                                                </td>
-                                            : null}
-                                            {i === 0 ?
                                                 <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged`}>
                                                     {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
                                                 </td>
                                             : null}
-                                            <td className={pairClass}>
+                                            <td className={groupClass}>
                                                 <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                             </td>
-                                            <td className={pairClass}>{file.file_type}</td>
-                                            <td className={pairClass}>{file.output_type}</td>
-                                            <td className={pairClass}>{file.assembly}</td>
-                                            <td className={pairClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
-                                            <td className={pairClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                            <td className={pairClass}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={pairClass}>{fileAuditStatus(file)}</td>
-                                            <td className={pairClass}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
+                                            <td className={groupClass}>{file.file_type}</td>
+                                            <td className={groupClass}>{file.output_type}</td>
+                                            <td className={groupClass}>{file.assembly}</td>
+                                            <td className={groupClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
+                                            <td className={groupClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                            <td className={groupClass}>{globals.humanFileSize(file.file_size)}</td>
+                                            <td className={groupClass}>{fileAuditStatus(file)}</td>
+                                            <td className={groupClass}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
                                 });
                             })}
-                            {nonpairedFiles.sort(sortBioReps).map((file, i) => {
+                            {nonGrouped.map((file, i) => {
                                 // Prepare for run_type display
                                 const rowClasses = [
-                                    pairedKeys.length && i === 0 ? 'table-raw-separator' : null,
+                                    groupKeys.length && i === 0 ? 'table-raw-separator' : null,
                                 ];
 
                                 // Determine if accession should be a button or not.
@@ -786,7 +729,6 @@ class RawFileTable extends React.Component {
 
                                 return (
                                     <tr key={file['@id']} className={rowClasses.join(' ')}>
-                                        <td className="table-raw-biorep">{(file.biological_replicates && file.biological_replicates.length) ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
                                             <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
