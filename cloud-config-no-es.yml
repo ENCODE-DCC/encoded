@@ -70,7 +70,6 @@ bootcmd:
 package_upgrade: true
 
 packages:
-- apache2-mpm-worker
 - awscli
 - bsdtar
 - build-essential
