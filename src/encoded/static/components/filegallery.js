@@ -784,7 +784,7 @@ class RawFileTable extends React.Component {
                                             <td className={groupClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
                                             <td className={groupClass}>{globals.humanFileSize(file.file_size)}</td>
                                             <td className={groupClass}>{fileAuditStatus(file)}</td>
-                                            <td className={`${groupClass} characterization-meta-data`}><FileStatusLabel file={file} /></td>
+                                            <td className={groupClass}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
                                 });
