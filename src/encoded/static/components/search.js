@@ -13,6 +13,7 @@ import * as globals from './globals';
 import { Attachment } from './image';
 import { BrowserSelector } from './objectutils';
 import { DbxrefList } from './dbxref';
+import Status from './status';
 import { BiosampleSummaryString, BiosampleOrganismNames } from './typeutils';
 
 
@@ -157,189 +158,6 @@ const Item = auditDecor(ItemComponent);
 globals.listingViews.register(Item, 'Item');
 
 
-// Display one antibody status indicator
-class StatusIndicator extends React.Component {
-    constructor() {
-        super();
-
-        // Set initial React component state.
-        this.state = {
-            tipOpen: false,
-            tipStyles: {},
-        };
-
-        // Bind `this` to non-React methods.
-        this.onMouseEnter = this.onMouseEnter.bind(this);
-        this.onMouseLeave = this.onMouseLeave.bind(this);
-    }
-
-    // Display tooltip on hover
-    onMouseEnter() {
-        function getNextElementSibling(el) {
-            // IE8 doesn't support nextElementSibling
-            return el.nextElementSibling ? el.nextElementSibling : el.nextSibling;
-        }
-
-        // Get viewport bounds of result table and of this tooltip
-        let whiteSpace = 'nowrap';
-        const resultBounds = document.getElementById('result-table').getBoundingClientRect();
-        const resultWidth = resultBounds.right - resultBounds.left;
-        const tipBounds = _.clone(getNextElementSibling(this.indicator).getBoundingClientRect());
-        const tipWidth = tipBounds.right - tipBounds.left;
-        let width = tipWidth;
-        if (tipWidth > resultWidth) {
-            // Tooltip wider than result table; set tooltip to result table width and allow text to wrap
-            tipBounds.right = (tipBounds.left + resultWidth) - 2;
-            whiteSpace = 'normal';
-            width = tipBounds.right - tipBounds.left - 2;
-        }
-
-        // Set an inline style to move the tooltip if it runs off right edge of result table
-        const leftOffset = resultBounds.right - tipBounds.right;
-        if (leftOffset < 0) {
-            // Tooltip goes outside right edge of result table; move it to the left
-            this.setState({ tipStyles: { left: `${leftOffset + 10}px`, maxWidth: `${resultWidth}px`, whiteSpace, width: `${width}px` } });
-        } else {
-            // Tooltip fits inside result table; move it to native position
-            this.setState({ tipStyles: { left: '10px', maxWidth: `${resultWidth}px`, whiteSpace, width: `${width}px` } });
-        }
-
-        this.setState({ tipOpen: true });
-    }
-
-    // Close tooltip when not hovering
-    onMouseLeave() {
-        this.setState({ tipStyles: { maxWidth: 'none', whiteSpace: 'nowrap', width: 'auto', left: '15px' } }); // Reset position and width
-        this.setState({ tipOpen: false });
-    }
-
-    render() {
-        const classes = `tooltip-status sentence-case${this.state.tipOpen ? ' tooltipopen' : ''}`;
-
-        return (
-            <span className="tooltip-status-trigger">
-                <i className={globals.statusClass(this.props.status, 'indicator icon icon-circle')} ref={(indicator) => { this.indicator = indicator; }} onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave} />
-                <div className={classes} style={this.state.tipStyles}>
-                    {this.props.status}<br /><span>{this.props.terms.join(', ')}</span>
-                </div>
-            </span>
-        );
-    }
-}
-
-StatusIndicator.propTypes = {
-    status: PropTypes.string,
-    terms: PropTypes.array.isRequired,
-};
-
-StatusIndicator.defaultProps = {
-    status: '',
-};
-
-
-// Display the status indicators for one target
-const StatusIndicators = (props) => {
-    const { targetTree, target } = props;
-
-    return (
-        <span className="status-indicators">
-            {Object.keys(targetTree[target]).map((status, i) => {
-                if (status !== 'target') {
-                    return <StatusIndicator key={i} status={status} terms={targetTree[target][status]} />;
-                }
-                return null;
-            })}
-        </span>
-    );
-};
-
-StatusIndicators.propTypes = {
-    targetTree: PropTypes.object.isRequired,
-    target: PropTypes.string.isRequired,
-};
-
-
-/* eslint-disable react/prefer-stateless-function */
-class AntibodyComponent extends React.Component {
-    render() {
-        const result = this.props.context;
-
-        // Sort the lot reviews by their status according to our predefined order
-        // given in the statusOrder array.
-        const lotReviews = _.sortBy(result.lot_reviews, lotReview => _.indexOf(globals.statusOrder, lotReview.status)); // Use underscore indexOf so that this works in IE8
-
-        // Build antibody display object as a hierarchy: target=>status=>biosample_term_names
-        const targetTree = {};
-        lotReviews.forEach((lotReview) => {
-            lotReview.targets.forEach((target) => {
-                // If we haven't seen this target, save it in targetTree along with the
-                // corresponding target and organism structures.
-                if (!targetTree[target.name]) {
-                    targetTree[target.name] = { target };
-                }
-                const targetNode = targetTree[target.name];
-
-                // If we haven't seen the status, save it in the targetTree target
-                if (!targetNode[lotReview.status]) {
-                    targetNode[lotReview.status] = [];
-                }
-                const statusNode = targetNode[lotReview.status];
-
-                // If we haven't seen the biosample term name, save it in the targetTree target status
-                if (statusNode.indexOf(lotReview.biosample_term_name) === -1) {
-                    statusNode.push(lotReview.biosample_term_name);
-                }
-            });
-        });
-
-        return (
-            <li>
-                <div className="clearfix">
-                    <PickerActions {...this.props} />
-                    <div className="pull-right search-meta">
-                        <p className="type meta-title">Antibody</p>
-                        <p className="type">{` ${result.accession}`}</p>
-                        <p className="type meta-status">{` ${result.status}`}</p>
-                        {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
-                    </div>
-                    <div className="accession">
-                        {Object.keys(targetTree).map(target =>
-                            <div key={target}>
-                                <a href={result['@id']}>
-                                    {targetTree[target].target.label}
-                                    {targetTree[target].target.organism ? <span>{' ('}<i>{targetTree[target].target.organism.scientific_name}</i>{')'}</span> : ''}
-                                </a>
-                                <StatusIndicators targetTree={targetTree} target={target} />
-                            </div>
-                        )}
-                    </div>
-                    <div className="data-row">
-                        <div><strong>Source: </strong>{result.source.title}</div>
-                        <div><strong>Product ID / Lot ID: </strong>{result.product_id} / {result.lot_id}</div>
-                    </div>
-                </div>
-                {this.props.auditDetail(result.audit, result['@id'], { session: this.context.session, except: result['@id'], forcedEditLink: true })}
-            </li>
-        );
-    }
-}
-/* eslint-enable react/prefer-stateless-function */
-
-AntibodyComponent.propTypes = {
-    context: PropTypes.object.isRequired, // Antibody search results
-    auditIndicators: PropTypes.func.isRequired, // Audit decorator function
-    auditDetail: PropTypes.func.isRequired, // Audit decorator function
-};
-
-AntibodyComponent.contextTypes = {
-    session: PropTypes.object, // Login information from <App>
-};
-
-const Antibody = auditDecor(AntibodyComponent);
-
-globals.listingViews.register(Antibody, 'AntibodyLot');
-
-
 /* eslint-disable react/prefer-stateless-function */
 class BiosampleComponent extends React.Component {
     render() {
@@ -389,7 +207,7 @@ class BiosampleComponent extends React.Component {
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Biosample</p>
                         <p className="type">{` ${result.accession}`}</p>
-                        <p className="type meta-status">{` ${result.status}`}</p>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession">
@@ -470,7 +288,7 @@ class ExperimentComponent extends React.Component {
                     <div className="pull-right search-meta">
                         <p className="type meta-title">Experiment</p>
                         <p className="type">{` ${result.accession}`}</p>
-                        <p className="type meta-status">{` ${result.status}`}</p>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession">
@@ -591,7 +409,7 @@ class DatasetComponent extends React.Component {
                     <div className="pull-right search-meta">
                         <p className="type meta-title">{haveSeries ? 'Series' : (haveFileSet ? 'FileSet' : 'Dataset')}</p>
                         <p className="type">{` ${result.accession}`}</p>
-                        <p className="type meta-status">{` ${result.status}`}</p>
+                        <Status item={result.status} badgeSize="small" css="result-table__status" />
                         {this.props.auditIndicators(result.audit, result['@id'], { session: this.context.session, search: true })}
                     </div>
                     <div className="accession">
@@ -794,7 +612,7 @@ function countSelectedTerms(terms, facet, filters) {
 
 // Display one term within a facet.
 const Term = (props) => {
-    const { filters, facet, total, canDeselect, searchBase, onFilter } = props;
+    const { filters, facet, total, canDeselect, searchBase, onFilter, statusFacet } = props;
     const term = props.term.key;
     const count = props.term.doc_count;
     const title = props.title || term;
@@ -827,24 +645,20 @@ const Term = (props) => {
         negationHref = `${searchBase}${field}!=${globals.encodedURIComponent(term)}`;
     }
 
-    // Based on `selected` and `negated` come up with a CSS class for the <li> and <a> for the term
-    // to show it's either selected, or selected as a NOT term.
-    const selectedCss = negated ? 'negated-selected' : (selected ? 'selected' : '');
-
     return (
-        <div className="facet-term">
-            {(selected || negated || exists) ? null : <a href={negationHref} className="negated-trigger" title={'Do not include items with this term'}><i className="icon icon-minus-circle" /></a>}
-            <li className={selectedCss} key={term}>
-                {(selected || negated) ? null : <span className="bar" style={barStyle} />}
-                {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')} /> : null}
-                <a className={selectedCss} href={href} onClick={href ? onFilter : null}>
-                    {negated ? null : <span className="pull-right">{count}</span>}
-                    <span className="facet-item">
-                        {em ? <em>{title}</em> : <span>{title}</span>}
-                    </span>
-                </a>
-            </li>
-        </div>
+        <li className={`facet-term${negated ? ' negated-selected' : (selected ? ' selected' : '')}`}>
+            {statusFacet ? <Status item={term} badgeSize="small" css="facet-term__status" noLabel /> : null}
+            <a className="facet-term__item" href={href} onClick={href ? onFilter : null}>
+                <div className="facet-term__text">
+                    {em ? <em>{title}</em> : <span>{title}</span>}
+                </div>
+                {negated ? null : <div className="facet-term__count">{count}</div>}
+            </a>
+            <div className="facet-term__negator">
+                {(selected || negated || exists) ? null : <a href={negationHref} title={'Do not include items with this term'}><i className="icon icon-minus-circle" /></a>}
+            </div>
+            {(selected || negated) ? null : <div className="facet-term__bar" style={barStyle} />}
+        </li>
     );
 };
 
@@ -857,12 +671,14 @@ Term.propTypes = {
     canDeselect: PropTypes.bool,
     searchBase: PropTypes.string.isRequired, // Base URI for the search
     onFilter: PropTypes.func,
+    statusFacet: PropTypes.bool, // True if the facet displays statuses
 };
 
 Term.defaultProps = {
     title: '',
     canDeselect: true,
     onFilter: null,
+    statusFacet: false,
 };
 
 
@@ -935,6 +751,7 @@ class Facet extends React.Component {
         const canDeselect = (!facet.restrictions || selectedTermCount >= 2);
         const moreSecClass = `collapse${(moreTermSelected || this.state.facetOpen) ? ' in' : ''}`;
         const seeMoreClass = `btn btn-link${(moreTermSelected || this.state.facetOpen) ? '' : ' collapsed'}`;
+        const statusFacet = field === 'status' || field === 'lot_reviews.status';
 
         // Audit facet titles get mapped to a corresponding icon.
         let titleComponent = title;
@@ -960,11 +777,11 @@ class Facet extends React.Component {
             return (
                 <div className="facet">
                     <h5>{titleComponent}</h5>
-                    <ul className="facet-list nav">
+                    <ul className={`facet-list nav${statusFacet ? ' facet-status' : ''}`}>
                         <div>
                             {/* Display the first five terms of the facet */}
                             {terms.slice(0, 5).map(term =>
-                                <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />
+                                <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
                             )}
                         </div>
                         {terms.length > 5 ?
@@ -972,7 +789,7 @@ class Facet extends React.Component {
                                 {/* If the user has expanded the "+ See more" button, then display
                                      the rest of the terms beyond 5 */}
                                 {moreTerms.map(term =>
-                                    <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} />
+                                    <TermComponent {...this.props} key={term.key} term={term} filters={filters} total={total} canDeselect={canDeselect} statusFacet={statusFacet} />
                                 )}
                             </div>
                         : null}
