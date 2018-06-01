@@ -32,9 +32,9 @@ env:
     - ES_JAVA_OPTS="-Xms2g -Xmx2g"
 matrix:
   include:
-    - python: "3.6.5"
+    - python: "3.6.4"
       env: BROWSER=Chrome
-    - python: "3.6.5"
+    - python: "3.6.4"
       env: BROWSER=
 before_install:
   - postgres --version
