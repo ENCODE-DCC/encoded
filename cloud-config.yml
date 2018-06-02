@@ -152,9 +152,10 @@ runcmd:
 - sudo tar xzf Python-3.6.4.tgz
 - cd Python-3.6.4
 - sudo ./configure
-- sudo make altinstall
-- echo alias python3='python3.6' >>  ~/.bashrc
-- echo alias pip3='python3.6 -m pip' >>  ~/.bashrc
+- sudo make
+- sudo make install
+#- echo alias python3='python3.6' >>  ~/.bashrc
+#- echo alias pip3='python3.6 -m pip' >>  ~/.bashrc
 - sudo -u ubuntu mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
 - sudo -u ubuntu aws s3 cp --region=us-west-2 %(S3_AUTH_KEYS)s /home/ubuntu/.ssh/authorized_keys
 # Ideally this would build as a different user so encoded only has read
