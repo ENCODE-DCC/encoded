@@ -150,6 +150,7 @@ output:
 runcmd:
 - sudo wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
 - export NVM_DIR="$HOME/.nvm"
+- [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 - nvm install 6
 - nvm use 6
 - sudo add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -sc)-pgdg main"
@@ -161,7 +162,7 @@ runcmd:
 - sudo wget https://www.python.org/ftp/python/3.6.4/Python-3.6.4.tgz
 - sudo tar xzf Python-3.6.4.tgz
 - cd Python-3.6.4
-- sudo ./configure
+- sudo ./configure --enable-shared
 - sudo make
 - sudo make install
 - sudo python3.6 -m pip install mod_wsgi
