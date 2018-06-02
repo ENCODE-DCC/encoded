@@ -252,9 +252,10 @@ runcmd:
 - sudo mv /etc/mailname /etc/mailname.OLD
 - sudo echo "$PUBLIC_DNS_NAME" | sudo tee --append /etc/mailname
 - sudo service postfix reload
+- sudo pip3 install psycopg2-binary
 - sudo service elasticsearch stop
 - sudo service elasticsearch start
-- sudo apachectl restart
+- sudo systemctl reload apache2
 
 users:
 - default
