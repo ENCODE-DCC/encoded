@@ -1,6 +1,3 @@
-#cloud-config
-
-# Instance
 ssh_authorized_keys:
   - %(LOCAL_SSH_KEY)s
 
@@ -152,10 +149,7 @@ runcmd:
 - cd /usr/src
 - sudo wget https://www.python.org/ftp/python/3.6.4/Python-3.6.4.tgz
 - sudo tar xzf Python-3.6.4.tgz
-- cd Python-3.6.4
-- sudo ./configure
-- sudo make
-- sudo make install
+- cd Python-3.6.4 && sudo ./configure && sudo make && sudo make install
 - sudo -u ubuntu mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
 - sudo -u ubuntu aws s3 cp --region=us-west-2 %(S3_AUTH_KEYS)s /home/ubuntu/.ssh/authorized_keys
 # Ideally this would build as a different user so encoded only has read
