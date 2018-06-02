@@ -110,6 +110,7 @@ packages:
 - elasticsearch
 - git
 - graphviz
+- apache2
 - libapache2-mod-wsgi-py3
 - libevent-dev
 - libfreetype6-dev
