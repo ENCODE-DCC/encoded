@@ -247,7 +247,7 @@ runcmd:
 - sudo echo "127.0.0.0 $PUBLIC_DNS_NAME" | sudo tee --append /etc/hosts
 - sudo mv /etc/mailname /etc/mailname.OLD
 - sudo echo "$PUBLIC_DNS_NAME" | sudo tee --append /etc/mailname
-- sudo service postfix restart
+- sudo service postfix reload
 
 users:
 - default
