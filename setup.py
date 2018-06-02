@@ -42,6 +42,7 @@ requires = [
     'subprocess_middleware',
     'xlrd',
     'zope.sqlalchemy',
+    'psycopg2-binary',
 ]
 
 if sys.version_info.major == 2:
