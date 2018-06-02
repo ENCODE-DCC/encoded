@@ -1,5 +1,5 @@
-#cloud-config	
-	
+#cloud-config
+
 # Instance
 ssh_authorized_keys:
   - %(LOCAL_SSH_KEY)s
@@ -149,7 +149,13 @@ output:
   all: '| tee -a /var/log/cloud-init-output.log'
 
 runcmd:
-- cd /usr/src && sudo wget https://www.python.org/ftp/python/3.6.4/Python-3.6.4.tgz && sudo tar xzf Python-3.6.4.tgz && cd Python-3.6.4 && sudo ./configure && sudo make && sudo make install
+- cd /usr/src
+- sudo wget https://www.python.org/ftp/python/3.6.4/Python-3.6.4.tgz
+- sudo tar xzf Python-3.6.4.tgz
+- cd Python-3.6.4
+- sudo ./configure
+- sudo make
+- sudo make install
 - sudo -u ubuntu mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
 - sudo -u ubuntu aws s3 cp --region=us-west-2 %(S3_AUTH_KEYS)s /home/ubuntu/.ssh/authorized_keys
 - MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
@@ -196,7 +202,10 @@ runcmd:
 - sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/10/main/wale_s3_prefix)" backup-fetch /var/lib/postgresql/9.3/main LATEST
 - sudo -u postgres ln -s /etc/postgresql/10/main/recovery.conf /var/lib/postgresql/10/main/
 - /etc/init.d/postgresql start
-- wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash && source ~/.bashrc && nvm install 6 && nvm use 6
+- wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+- source ~/.bashrc
+- nvm install 6
+- nvm use 6
 - sudo python3.6 -m pip install -U zc.buildout setuptools
 - sudo -u encoded buildout bootstrap
 - sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg buildout:es-ip=%(ES_IP)s buildout:es-port=%(ES_PORT)s
