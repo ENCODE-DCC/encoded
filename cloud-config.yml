@@ -100,6 +100,12 @@ bootcmd:
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
+- sudo cd /usr/src
+- sudo wget https://www.python.org/ftp/python/3.6.4/Python-3.6.4.tgz
+- sudo tar xzf Python-3.6.4.tgz
+- cd Python-3.6.4
+- sudo ./configure --enable-optimizations
+- sudo make
 
 
 package_upgrade: true
@@ -131,7 +137,6 @@ packages:
 - postgresql-10
 - pv
 - python2.7-dev
-- python3.6-dev
 - python3-pip
 - software-properties-common
 - python-virtualenv
