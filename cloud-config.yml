@@ -150,13 +150,15 @@ output:
 
 runcmd:
 - sudo wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-- source ~/.bashrc
+- export NVM_DIR="$HOME/.nvm"
+- [ -s "$NVM_DIR/nvm.sh" ]
+- \. "$NVM_DIR/nvm.sh"
 - nvm install 6
 - nvm use 6
 - sudo add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -sc)-pgdg main"
-- wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+- sudo wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 - sudo apt-get update
-- sudo apt-get install postgresql-9.6
+- sudo apt-get --yes --force-yes install postgresql-9.6
 - sudo add-apt-repository --remove "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -sc)-pgdg main"
 - cd /usr/src
 - sudo wget https://www.python.org/ftp/python/3.6.4/Python-3.6.4.tgz
