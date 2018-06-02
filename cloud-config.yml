@@ -204,13 +204,10 @@ runcmd:
 - sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/10/main/wale_s3_prefix)" backup-fetch /var/lib/postgresql/9.3/main LATEST
 - sudo -u postgres ln -s /etc/postgresql/10/main/recovery.conf /var/lib/postgresql/10/main/
 - /etc/init.d/postgresql start
-- wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-- source ~/.bashrc
-- nvm install 6
-- nvm use 6
+- wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash && source ~/.bashrc && nvm install 6 && nvm use 6
 - sudo python3.6 -m pip install -U zc.buildout setuptools
 - sudo -u encoded buildout bootstrap
-- sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg buildout:es-ip=%(ES_IP)s buildout:es-port=%(ES_PORT)s
+- Sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg buildout:es-ip=%(ES_IP)s buildout:es-port=%(ES_PORT)s
 - sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
 - sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
