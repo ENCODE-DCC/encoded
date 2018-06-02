@@ -111,6 +111,7 @@ packages:
 - git
 - graphviz
 - apache2-dev
+- libapache2-mod-wsgi-py3
 - libevent-dev
 - libfreetype6-dev
 - libjpeg-dev
@@ -166,7 +167,6 @@ runcmd:
 - sudo ./configure --enable-shared
 - sudo make
 - sudo make install
-- sudo python3.6 -m pip install mod_wsgi
 - sudo python3.6 -m pip install psycopg2-binary
 - sudo -u ubuntu mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
 - sudo -u ubuntu aws s3 cp --region=us-west-2 %(S3_AUTH_KEYS)s /home/ubuntu/.ssh/authorized_keys
@@ -257,7 +257,7 @@ runcmd:
 - sudo service postfix reload
 - sudo service elasticsearch stop
 - sudo service elasticsearch start
-- sudo systemctl reload apache2
+- sudo service apache2 restart
 
 users:
 - default
