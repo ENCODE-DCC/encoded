@@ -130,7 +130,6 @@ packages:
 - ntp
 - oracle-java8-installer
 - oracle-java8-set-default
-- postgresql-10
 - pv
 - python2.7-dev
 - python3-pip
@@ -154,6 +153,10 @@ runcmd:
 - source ~/.bashrc
 - nvm install 6
 - nvm use 6
+- sudo add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -sc)-pgdg main"
+- wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+- sudo apt-get update
+- sudo apt-get install postgresql-9.6
 - cd /usr/src
 - sudo wget https://www.python.org/ftp/python/3.6.4/Python-3.6.4.tgz
 - sudo tar xzf Python-3.6.4.tgz
@@ -205,7 +208,7 @@ runcmd:
 - sudo -u postgres /opt/wal-e/bin/pip install -r wal-e-requirements.txt
 - sudo service postgresql stop
 - sudo systemctl stop postgresql.service
-- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/10/main/wale_s3_prefix)" backup-fetch /var/lib/postgresql/10/main LATEST
+- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/10/main/wale_s3_prefix)" backup-fetch /var/lib/postgresql/9.3/main LATEST
 - sudo -u postgres ln -s /etc/postgresql/10/main/recovery.conf /var/lib/postgresql/10/main/
 - sudo systemctl start postgresql.service
 - sudo service postgresql start
