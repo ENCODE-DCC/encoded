@@ -181,12 +181,12 @@ runcmd:
 - set -ex
 - update-rc.d elasticsearch defaults
 - service elasticsearch restart
-- chown postgres:postgres /etc/postgresql/10/main/*.conf
-- echo "include 'custom.conf'" >> /etc/postgresql/10/main/postgresql.conf
+- chown postgres:postgres /etc/postgresql/9.3/main/*.conf
+- echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 - if test "%(ROLE)s" = "demo"
 - then
--   echo "standby_mode = off" >> /etc/postgresql/10/main/recovery.conf
--   echo "include 'demo.conf'" >> /etc/postgresql/10/main/postgresql.conf
+-   echo "standby_mode = off" >> /etc/postgresql/9.3/main/recovery.conf
+-   echo "include 'demo.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 - fi
 - sudo -u postgres createuser encoded
 - sudo -u postgres createdb --owner=encoded encoded
@@ -204,8 +204,8 @@ runcmd:
 - sudo -u postgres virtualenv --python=python2.7 /opt/wal-e
 - sudo -u postgres /opt/wal-e/bin/pip install -r wal-e-requirements.txt
 - /etc/init.d/postgresql stop
-- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/10/main/wale_s3_prefix)" backup-fetch /var/lib/postgresql/9.3/main LATEST
-- sudo -u postgres ln -s /etc/postgresql/10/main/recovery.conf /var/lib/postgresql/10/main/
+- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-fetch /var/lib/postgresql/9.3/main LATEST
+- sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
 - /etc/init.d/postgresql start
 - sudo python3.6 -m pip install -U zc.buildout setuptools
 - sudo -u encoded buildout bootstrap
@@ -236,6 +236,7 @@ runcmd:
 - a2disconf localized-error-pages
 - a2disconf other-vhosts-access-log
 - a2disconf serve-cgi-bin
+- sudo systemctl reload apache2
 - if test "%(ROLE)s" = "demo"
 - then
 -   sudo -i -u encoded bin/batchupgrade production.ini --app-name app
@@ -337,7 +338,7 @@ write_files:
     -XX:+HeapDumpOnOutOfMemoryError
 
 
-- path: /etc/postgresql/10/main/custom.conf
+- path: /etc/postgresql/9.3/main/custom.conf
   content: |
     hot_standby = on
     max_standby_archive_delay = -1
@@ -347,20 +348,20 @@ write_files:
     # http://www.postgresql.org/message-id/CAOycyLTm6X3mVLz+sLCex+W==WSMgu9giteV7efPoPXYDhPtzQ@mail.gmail.com
     checkpoint_timeout = 1h
 
-- path: /etc/postgresql/10/main/demo.conf
+- path: /etc/postgresql/9.3/main/demo.conf
   content: |
     archive_mode = off
 
-- path: /etc/postgresql/10/main/master.conf
+- path: /etc/postgresql/9.3/main/master.conf
   content: |
-    archive_command = '/opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/10/main/wale_s3_prefix)" wal-push "%%p"'
+    archive_command = '/opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" wal-push "%%p"'
 
-- path: /etc/postgresql/10/main/recovery.conf
+- path: /etc/postgresql/9.3/main/recovery.conf
   content: |
     # recovery.conf must be linked into data dir to do anything
     recovery_target_timeline = 'latest'
     restore_command = '/opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" wal-fetch "%%f" "%%p"'
     standby_mode = on
 
-- path: /etc/postgresql/10/main/wale_s3_prefix
+- path: /etc/postgresql/9.3/main/wale_s3_prefix
   content: "%(WALE_S3_PREFIX)s"
