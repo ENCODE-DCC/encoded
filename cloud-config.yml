@@ -124,6 +124,7 @@ packages:
 - libxslt1-dev
 - lzop
 - nodejs
+- npm
 - ntp
 - oracle-java8-installer
 - oracle-java8-set-default
