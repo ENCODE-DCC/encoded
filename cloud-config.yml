@@ -252,6 +252,9 @@ runcmd:
 - sudo mv /etc/mailname /etc/mailname.OLD
 - sudo echo "$PUBLIC_DNS_NAME" | sudo tee --append /etc/mailname
 - sudo service postfix reload
+- sudo service elasticsearch stop
+- sudo service elasticsearch start
+- sudo apachectl restart
 
 users:
 - default
