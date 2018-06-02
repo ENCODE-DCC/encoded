@@ -204,6 +204,7 @@ runcmd:
 - sudo -u postgres virtualenv --python=python2.7 /opt/wal-e
 - sudo -u postgres /opt/wal-e/bin/pip install -r wal-e-requirements.txt
 - /etc/init.d/postgresql stop
+- sudo /etc/init.d/postgresql stop
 - sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/10/main/wale_s3_prefix)" backup-fetch /var/lib/postgresql/10/main LATEST
 - sudo -u postgres ln -s /etc/postgresql/10/main/recovery.conf /var/lib/postgresql/10/main/
 - /etc/init.d/postgresql start
