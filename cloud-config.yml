@@ -100,12 +100,13 @@ bootcmd:
 - cloud-init-per once fallocate-swapfile fallocate -l 4G /swapfile
 - cloud-init-per once chmod-swapfile chmod 600 /swapfile
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
-- sudo cd /usr/src
+- cd /usr/src
 - sudo wget https://www.python.org/ftp/python/3.6.4/Python-3.6.4.tgz
 - sudo tar xzf Python-3.6.4.tgz
 - cd Python-3.6.4
 - sudo ./configure --enable-optimizations
 - sudo make
+- echo alias python3='python3.6.4'
 
 
 package_upgrade: true
