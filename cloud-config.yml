@@ -152,7 +152,7 @@ runcmd:
 - sudo tar xzf Python-3.6.4.tgz
 - cd Python-3.6.4
 - sudo ./configure
-- sudo make
+- sudo make altinstall
 - echo alias python3='python3.6.4'
 - sudo -u ubuntu mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
 - sudo -u ubuntu aws s3 cp --region=us-west-2 %(S3_AUTH_KEYS)s /home/ubuntu/.ssh/authorized_keys
