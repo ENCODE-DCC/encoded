@@ -146,14 +146,9 @@ output:
   all: '| tee -a /var/log/cloud-init-output.log'
 
 runcmd:
-- cd /usr/src
-- sudo wget https://www.python.org/ftp/python/3.6.4/Python-3.6.4.tgz
-- sudo tar xzf Python-3.6.4.tgz
-- cd Python-3.6.4 && sudo ./configure && sudo make && sudo make install
+- cd /usr/src && sudo wget https://www.python.org/ftp/python/3.6.4/Python-3.6.4.tgz && sudo tar xzf Python-3.6.4.tgz && cd Python-3.6.4 && sudo ./configure && sudo make && sudo make install
 - sudo -u ubuntu mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
 - sudo -u ubuntu aws s3 cp --region=us-west-2 %(S3_AUTH_KEYS)s /home/ubuntu/.ssh/authorized_keys
-# Ideally this would build as a different user so encoded only has read
-# permissions
 - MEMGIGS=$(awk '/MemTotal/{printf "%%.0f", $2 / 1024**2}' /proc/meminfo)
 - if [ "$MEMGIGS" -gt 32 ]
 - then
@@ -239,17 +234,6 @@ runcmd:
 - sudo mv /etc/mailname /etc/mailname.OLD
 - sudo echo "$PUBLIC_DNS_NAME" | sudo tee --append /etc/mailname
 - sudo service postfix restart
-# - sleep 10
-# - sudo -u postgres echo "include 'master.conf'" >> /etc/postgresql/10/main/postgresql.conf
-# - pg_ctlcluster 10 main reload
-# - pg_ctlcluster 10 main promote
-# - sudo -u encoded bin/update-keys-links production.ini --app-name app
-# - sudo -u encoded bin/upgrade production.ini --app-name app
-# - sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/10/main/wale_s3_prefix)" backup-push /var/lib/postgresql/10/main
-# - sleep 60
-# - sudo -i -u encoded PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/10/bin:$PATH" bin/test -m "not bdd" > tests.out
-# - sudo echo "00 7 * * * sudo -i -u postgres /opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/10/main/wale_s3_prefix)" backup-push /var/lib/postgresql/10/main" > /home/ubuntu/wal-e-backup
-# - sudo crontab /home/ubuntu/wal-e-backup
 
 users:
 - default
