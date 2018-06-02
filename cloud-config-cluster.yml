@@ -6,7 +6,6 @@ apt_sources:
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
-
     mQENBFI3HsoBCADXDtbNJnxbPqB1vDNtCsqhe49vFYsZN9IOZsZXgp7aHjh6CJBD
     A+bGFOwyhbd7at35jQjWAw1O3cfYsKAmFy+Ar3LHCMkV3oZspJACTIgCrwnkic/9
     CUliQe324qvObU2QRtP4Fl0zWcfb/S8UYzWXWIFuJqMvE9MaRY1bwUBvzoqavLGZ
@@ -40,7 +39,6 @@ apt_sources:
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v1
     Comment: GPGTools - https://gpgtools.org
-
     mQINBFObJLYBEADkFW8HMjsoYRJQ4nCYC/6Eh0yLWHWfCh+/9ZSIj4w/pOe2V6V+
     W6DHY3kK3a+2bxrax9EqKe7uxkSKf95gfns+I9+R+RJfRpb1qvljURr54y35IZgs
     fMG22Np+TmM2RLgdFCZa18h0+RbH9i0b+ZrB9XPZmLb/h9ou7SowGqQ3wwOtT3Vy
@@ -97,6 +95,7 @@ bootcmd:
 - cloud-init-per once mkswap-swapfile mkswap /swapfile
 package_upgrade: true
 packages:
+- apache2-mpm-worker
 - awscli
 - bsdtar
 - build-essential
@@ -120,12 +119,12 @@ packages:
 - ntp
 - oracle-java8-installer
 - oracle-java8-set-default
-- postgresql-10
+- postgresql-9.3
 - pv
 - python2.7-dev
-- python3.6-dev
+- python3.4-dev
 - python3-pip
-- software-properties-common
+- python-software-properties
 - python-virtualenv
 - ruby-dev
 - unattended-upgrades
@@ -162,12 +161,12 @@ runcmd:
 - sudo bash /etc/elasticsearch/cluster.sh %(CLUSTER_NAME)s
 - sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install discovery-ec2
 - service elasticsearch restart
-- chown postgres:postgres /etc/postgresql/10/main/*.conf
-- echo "include 'custom.conf'" >> /etc/postgresql/10/main/postgresql.conf
+- chown postgres:postgres /etc/postgresql/9.3/main/*.conf
+- echo "include 'custom.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 - if test "%(ROLE)s" = "demo"
 - then
--   echo "standby_mode = off" >> /etc/postgresql/10/main/recovery.conf
--   echo "include 'demo.conf'" >> /etc/postgresql/10/main/postgresql.conf
+-   echo "standby_mode = off" >> /etc/postgresql/9.3/main/recovery.conf
+-   echo "include 'demo.conf'" >> /etc/postgresql/9.3/main/postgresql.conf
 - fi
 - sudo -u postgres createuser encoded
 - sudo -u postgres createdb --owner=encoded encoded
@@ -185,8 +184,8 @@ runcmd:
 - sudo -u postgres virtualenv --python=python2.7 /opt/wal-e
 - sudo -u postgres /opt/wal-e/bin/pip install -r wal-e-requirements.txt
 - /etc/init.d/postgresql stop
-- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/10/main/wale_s3_prefix)" backup-fetch /var/lib/postgresql/9.3/main LATEST
-- sudo -u postgres ln -s /etc/postgresql/10/main/recovery.conf /var/lib/postgresql/10/main/
+- sudo -u postgres /opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" backup-fetch /var/lib/postgresql/9.3/main LATEST
+- sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
 - /etc/init.d/postgresql start
 - sudo pip3 install -U zc.buildout setuptools
 - sudo -u encoded buildout bootstrap
@@ -295,7 +294,7 @@ write_files:
     -Dlog4j2.disable.jmx=true
     -Dlog4j.skipJansi=true
     -XX:+HeapDumpOnOutOfMemoryError
-- path: /etc/postgresql/10/main/custom.conf
+- path: /etc/postgresql/9.3/main/custom.conf
   content: |
     hot_standby = on
     max_standby_archive_delay = -1
@@ -303,16 +302,16 @@ write_files:
     archive_mode = on
     archive_timeout = 60
     checkpoint_timeout = 1h
-- path: /etc/postgresql/10/main/demo.conf
+- path: /etc/postgresql/9.3/main/demo.conf
   content: |
     archive_mode = off
-- path: /etc/postgresql/10/main/master.conf
+- path: /etc/postgresql/9.3/main/master.conf
   content: |
-    archive_command = '/opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/10/main/wale_s3_prefix)" wal-push "%%p"'
-- path: /etc/postgresql/10/main/recovery.conf
+    archive_command = '/opt/wal-e/bin/envfile --config ~postgres/.aws/credentials --section default --upper -- /opt/wal-e/bin/wal-e --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" wal-push "%%p"'
+- path: /etc/postgresql/9.3/main/recovery.conf
   content: |
     recovery_target_timeline = 'latest'
-    restore_command = '/opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/10/main/wale_s3_prefix)" wal-fetch "%%f" "%%p"'
+    restore_command = '/opt/wal-e/bin/wal-e --aws-instance-profile --s3-prefix="$(cat /etc/postgresql/9.3/main/wale_s3_prefix)" wal-fetch "%%f" "%%p"'
     standby_mode = on
-- path: /etc/postgresql/10/main/wale_s3_prefix
+- path: /etc/postgresql/9.3/main/wale_s3_prefix
   content: "%(WALE_S3_PREFIX)s"

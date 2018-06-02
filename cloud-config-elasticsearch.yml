@@ -10,7 +10,6 @@ apt_sources:
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
-
     mQENBFI3HsoBCADXDtbNJnxbPqB1vDNtCsqhe49vFYsZN9IOZsZXgp7aHjh6CJBD
     A+bGFOwyhbd7at35jQjWAw1O3cfYsKAmFy+Ar3LHCMkV3oZspJACTIgCrwnkic/9
     CUliQe324qvObU2QRtP4Fl0zWcfb/S8UYzWXWIFuJqMvE9MaRY1bwUBvzoqavLGZ
@@ -39,7 +38,6 @@ apt_sources:
     qPDlGRlOgVTd9xUfHFkzB52c70E=
     =92oX
     -----END PGP PUBLIC KEY BLOCK-----
-
 bootcmd:
 - set -ex
 - cloud-init-per once accepted-oracle-license-v1-1 echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
@@ -57,8 +55,8 @@ packages:
 - oracle-java8-installer
 - oracle-java8-set-default
 - python2.7-dev
-- python3.6-dev
-- software-properties-common
+- python3.4-dev
+- python-software-properties
 - python-virtualenv
 - unattended-upgrades
 - bsd-mailx
@@ -148,7 +146,6 @@ write_files:
   content: |
     APT::Periodic::Update-Package-Lists "1";
     APT::Periodic::Unattended-Upgrade "1";
-
 - path: /etc/apt/apt.conf.d/50unattended-upgrades
   content: |
     Unattended-Upgrade::Allowed-Origins {
@@ -156,11 +153,9 @@ write_files:
     };
     Unattended-Upgrade::Mail "encode-devops@lists.stanford.edu";
     Unattended-Upgrade::Automatic-Reboot "false";
-
 - path: /etc/cron.d/cloudwatchmon
   content: |
     */5 * * * * nobody /opt/cloudwatchmon/bin/mon-put-instance-stats.py --mem-util --swap-util --disk-space-util --disk-path=/ --from-cron
-
 - path: /etc/elasticsearch/elasticsearch.yml
   content: |
     network.host: 0.0.0.0
@@ -170,13 +165,9 @@ write_files:
     node.data: %(ES_DATA)s
     discovery.zen.minimum_master_nodes: 1
     discovery.type: ec2
-
     cloud.aws.region: us-west-2
-
     discovery.ec2.groups: elasticsearch-https, ssh-http-https
-
     indices.query.bool.max_clause_count: 8192
-
 - path: /etc/elasticsearch/cluster.sh
   content: |
     #!/bin/bash
@@ -187,48 +178,36 @@ write_files:
     else
         echo "argument error"
     fi
-
 - path: /etc/elasticsearch/jvm.options
   content: |
     ## GC configuration
     -XX:+UseConcMarkSweepGC
     -XX:CMSInitiatingOccupancyFraction=75
     -XX:+UseCMSInitiatingOccupancyOnly
-
     # disable calls to System#gc
     -XX:+DisableExplicitGC
-
     # pre-touch memory pages used by the JVM during initialization
     -XX:+AlwaysPreTouch
-
     # force the server VM (remove on 32-bit client JVMs)
     -server
-
     # explicitly set the stack size (reduce to 320k on 32-bit client JVMs)
     -Xss1m
-
     # set to headless, just in case
     -Djava.awt.headless=true
-
     # ensure UTF-8 encoding by default (e.g. filenames)
     -Dfile.encoding=UTF-8
-
     # use our provided JNA always versus the system one
     -Djna.nosys=true
-
     # use old-style file permissions on JDK9
     -Djdk.io.permissionsUseCanonicalPath=true
-
     # flags to configure Netty
     -Dio.netty.noUnsafe=true
     -Dio.netty.noKeySetOptimization=true
     -Dio.netty.recycler.maxCapacityPerThread=0
-
     # log4j 2
     -Dlog4j.shutdownHookEnabled=false
     -Dlog4j2.disable.jmx=true
     -Dlog4j.skipJansi=true
-
     # generate a heap dump when an allocation from the Java heap fails
     # heap dumps are created in the working directory of the JVM
     -XX:+HeapDumpOnOutOfMemoryError
