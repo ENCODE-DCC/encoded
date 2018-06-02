@@ -110,7 +110,7 @@ packages:
 - elasticsearch
 - git
 - graphviz
-- apache2
+- apache2-dev
 - libevent-dev
 - libfreetype6-dev
 - libjpeg-dev
