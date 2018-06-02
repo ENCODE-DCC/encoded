@@ -151,6 +151,7 @@ runcmd:
 - sudo wget https://www.python.org/ftp/python/3.6.4/Python-3.6.4.tgz
 - sudo tar xzf Python-3.6.4.tgz
 - cd Python-3.6.4
+- sudo ./configure
 - sudo make
 - echo alias python3='python3.6.4'
 - sudo -u ubuntu mv /home/ubuntu/.ssh/authorized_keys /home/ubuntu/.ssh/authorized_keys2
