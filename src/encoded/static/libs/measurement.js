@@ -1,6 +1,5 @@
 
 export default class Measurement {
-
     /**
     * Takes a magnitude and unit (singular form) and returns the measurement
     * with the proper unit in singular or plural, depending on magnitude.
