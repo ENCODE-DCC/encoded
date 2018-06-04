@@ -16,77 +16,64 @@ b) files that created those peaks (bed)
 c) experments with facets ("aggegrations" in ES lingo) that those files belong to (via a secondary query on list of files).
 
 This search functionality is in src/encode/region_search.py and is relatively compact and straightforward.
-The process by which the BED files get into Elasticsearch is handled by the fileindexer system.
+The process by which the BED files get into Elasticsearch is handled by the "region indexer" system.
+
+
+Automatic Region Indexing
+-----------------------
+
+The "peaks" which are essentially intervals in a BED file are kept in a separate index per chromosome (including scaffolds).   In the apache config there is a seperate indexing listener:
+
+.. code::
+    # regionindexer. Configure first to avoid catchall '/'
+    WSGIDaemonProcess encoded-regionindexer user=encoded group=encoded processes=1 threads=1 display-name=encoded-regionindexer
+    WSGIScriptAlias /_regionindexer /srv/encoded/parts/production-regionindexer/wsgi process-group=encoded-indexer application-group=%{GLOBAL}
+
+Which is an instance of snovault.elasticsearch.indexer with path=index_region.   As a "follow up" indexer (see indexer.rst) the region_indexer never queries postgres and relies entirely on encodeD objects in elasticsearch.  The listener wakes every 60 seconds when idle and queries es for uuids staged by the primary encodeD indexer (/snovault/meta/staged_for_region_indexer) as having just been indexed. These uuids are filtered down to datasets that are likely to contain bed files to be added to the region indexer.  Each dataset is then verified to be of interest and its list of files is filtered down to candidate files to be added.  If a candidate file is NOT already resident in the regions index it is then added. The file are accessed via io.BytesIO() on the file download URL, and each peak (line of BED file) is indexed as {file-uuid, start, stop}.  The region indexes consist of one index per chromosome (e.g. 'chrx') (or scaffold), document type is the assembly (e.g. 'hg19') and key is the file's uuid.  A small amount of file specific information is then added to the "resident_regionsets" index.
+
+Analogous to the primary (encodeD metadata) indexer, the indexing state is stored in the Elasticsearch object snovault/meta/region_indexer.  Unlike the primary indexer, work of the region indexer is not multi-threaded, using only 1 process.
+
+Full indexing takes ~4 hours on ~5000 files.  Currently region indexes are only used for "region search" functionality described above.  However "Regulome DB" files are going to be added to the region indexes.
+
 
 TrackHub generation
 -----------------------
 
-UCSC trackhubs are large blocks ASCII/YAML that we provide a URL for.  The UCSC genome browser URL uses @@hub and /batch_hub/ endpoints as callbacks to generate 3 "files": hub.txt, genomes.txt and trackDb.txt.  The code for these views/endpoints is in visualization.py.
+UCSC trackhubs are large blocks of ASCII text that we provide a URL for.  The UCSC genome browser URL uses @@hub and /batch_hub/ endpoints as callbacks to generate 3 "files": hub.txt, genomes.txt and trackDb.txt.  The code for these views/endpoints is in visualization.py and vis_defines.py.
 
 The big output is the trackDb.txt which contains all the information to display each file (with metadata) at a browser that consumes it.
 The hub.txt lists the genomes available (genomes.txt) and genomes.txt are just "pointers" to the correct trackDb.txt per assembly (genome).
 
-Each visualizable ENCSR (Experiment or Dataset that contains one or more output files that are browser compliant, i.e., bigBed or bigWig) has the information for it's trackDb cached in Elasticsearch independent of the encodeD application.
+Ensembl should support the UCSC hub formatting and our hubs have worked in the past.  However, recently our hubs were failing at Ensembl, possibly due to a bug at their site.
 
-The "acc_composites" aka "viz_blobs" are stored in a separate ES index called vis_composites as JSON, keyed on ENCSRxxx_assembly.
-When a trackHub or other visualization query comes it, it's looked for by accession in the cache, otherwise it is created (there is a ?regenvis parameter to force recalculation).   
+Each visualizable ENCSR (Experiment or Dataset that contains one or more output files that are browser compliant, i.e., bigBed or bigWig) has the information for it's trackDb cached in Elasticsearch independent of the encodeD application.  While this would not be necessary if trackhubs only contained one or two experiments, batch_hubs can contain as many a 100 experiments and can only be efficiently generated if much of the reformatting for visualization is already cached.
 
-You can see the JSON with: 
-.. code::
-   
-    https://www.encodeproject.org/experiments/ENCSR778UBR/@@hub/hg38/jsonout/trackDb.txt
+The "vis_datasets" aka "vis_blobs" are stored in a separate ES index called vis_cache as JSON, keyed on ENCSRxxx_assembly.
+When a trackHub or other visualization query comes it, it's looked for by accession in the cache, otherwise it is created.  For batch_hubs, if at least one vis_blob is found in the cache then any missing ones will not be regenerated. It is possible to force the (re)creation of vis_blobs for any hub request by adding 'regen' to the trackDb request (e.g. ../trackDb.regen.txt).
 
-The individual acc_composites get remodeled (JSON transformed) to put into a batch hub or they can be exported as IHEC JSON with another query parameter "ihecjson".
-
-
-Automatic Peak Indexing
------------------------
-
-The "peaks" which is essentially an interval in a BED file are kept in a separate index per chromosome (including scaffolds).   In the apache config there is a seperate indexing listener:
-
-.. code::
-    #fileindexer. Configure first to avoid catchall '/'
-    WSGIDaemonProcess encoded-fileindexer user=encoded group=encoded processes=1 threads=1 display-name=encoded-fileindexer
-    WSGIScriptAlias /_fileindexer /srv/encoded/parts/production-fileindexer/wsgi process-group=encoded-indexer application-group=%{GLOBAL}
-
-Which is an instance of encoded.commands.es_file_index_listener (snovault.elasticsearch.indexer with path=index_file).   The listener polls postgres every 60 seconds for new transactions and responds to the API /_fileindexer/ with status.   It POSTs to the /index_file endpoint (defined in encoded.peak_indexer), in a parallel manner to the primary snovault ES indexer.  It is not multi-threaded, just using 1 process.
-
-Analogous to the metadata indexer, the indexing status is contained in the Elasticsearch object snovault/meta/peak_indexing - this object is read/written by fileindexer listener.
-
-The peak indexer (/index_file) compares the list of all invalidated uuids to all BED file uuids and UNION is passed to the BED file parser, the files are accessed via io.BytesIO() on the file download URL, and each peak (line of BED file) is indexed as {file-uuid, start, stop}.  
-
+You can see the raw JSON used to generate the trackDb.txt by requesting json instead of text (e.g. ../trackDb.json).  Further, since batch_hubs are reorganized from a list of vis_blobs to a set of assay based composites, the json for the vis_blobs themselves can be seen by requesting 'vis_blob.json'. (For single experiment hubs, trackDb.json and vis_blob.json are identical requests.)  Finally any trackDb.txt request can be transfomed to the IHEC JSON equivalent by requesting ihec.json.  (Note that IHEC JSON is an unreleased feature so far and the contents need to be verified by IHEC).
 
 
 Viz Caching and Priming
 -----------------------
 
-The caching of visualization JSON is linked to the fileindexer.  Generally, when the peak_indexer is done, it raises a semaphore with the list of UUIDs which is subscribed to by visualization.prime_vis_es_cache().   This triggers when main indexer is free (because the trackHub JSON depends on having up-to-date metadata in Elasticsearch).
+The caching of visualization JSON is handled by a "follow up" indexer (see indexer.rst), just as region indexing described above.  In the apache config there is a seperate indexing listener:
 
-So, when a (clustered) instance is started, all objects are new and each dataset will get passed to visualize.prime_viz_es_cache().  NOte that it short-circuits waiting for the file_indexer to finish if there are more than 100 files invalidated.
+.. code::
+    # visindexer. Configure first to avoid catchall '/'
+    WSGIDaemonProcess encoded-visindexer user=encoded group=encoded processes=1 threads=1 display-name=encoded-visindexer
+    WSGIScriptAlias /_visindexer /srv/encoded/parts/production-visindexer/wsgi process-group=encoded-indexer application-group=%{GLOBAL}
 
-Due to quirks in how the peak indexer functions, this will get triggered whenever a dataset is invalidated (even if none of the files or peak files changed) and will re-cache the visualization JSON for those experiments.
+The listener wakes every 60 seconds when idle and queries es for uuids staged by the primary encodeD indexer (/snovault/meta/staged_for_vis_indexer) as having just been indexed. These uuids are filtered down to datasets that are likely to be visualizable.  The embedded object is retrieved for each likely dataset and reformatted to one or more vis_blobs (one for each relevant assembly) which is then added to the on index named "vis_cache".  To support IHEC JSON, each dataset may require one or more additional queries of encodeD metadata from elasticsearch.
 
-The whole indexing takes around 100ms per Dataset.
+Analogous to the primary (encodeD metadata) indexer, the indexing state is stored in the Elasticsearch object snovault/meta/vis_indexer.  Unlike the primary indexer, work of the vis indexer uses only 1 process.
+
+The whole indexing of all visualizable datasets takes ~30 minutes for ~25K of vis_blobs.
+
 
 Differences between clustered and non-clustered deployments
 -----------------------------------------------------------
 
-To conserver resources on unclustered demo machines (Postgres/Pyramid/ES all on the same machine), the fileindexer is turned off.   Region-search is redirected to a "permanent" machine (configured as region_search_instance in buildout.cfg and gets copied to snp_search.server in production.ini (development.ini, for local instances us localhost:9200 although they have no ability to index files or do region search because they have no BED files.  
+Currently the region indexes are contained in the same elasticsearch instance as encodeD metadata, for all flavors of the encodeD application including local.  In the future it is expected that unclustered demo's will not have region indexes, and under some circumstances the region indexes will be migrated to their own instance of elasticsearch.  It is not anticipated that the vis_cache index will ever be separated from the encodeD elasticsearch instance, nor will it be turned off in unclustered demos.
 
-The machine specified in region_search_instance is a stable elasticsearch-only machine that gets new data from various unclustered demos.  Port 9200 is used (default elasticsearch), and should be accessible to IP addresses in the correct range (*.instance.encodedcc.org)
-
-Demos generally do not get files posted to them (BED or otherewise), so it's rare for new peaks to get reindexed.  When a new demo is created it checks the region-search-test machine and updates it with newly invalidated BED files (DB transactions since the xmin property of snovault/meta/peak_indexing (because it's snp_search.server is set to the common one).
-
-This is overridden by the following line in cloud-config-cluster.yml:
-.. code::
-    - sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg production-ini:region_search_instance=localhost:9200
-
-Since this is only used when a clustered instance is built, the default region-search ES instance will be the one in production.ini
-This is set in encoded.__init__() as config.registry['snp_search'], a Elasticsearch connnection object (aka registry[SNP_SEARCH_ES])
-
-In the clustered case, each master has it's own peak_indexer process and it's own snovault/meta/peak_indexing so it will re-index everything from scratch.
-
-Because of the (current) interaction between the visualization caching and the file indexer, if you need to reset the vis cache on an unclustered demo machine, you will have to:
-.. code::
-    > curl -XDELETE localhost:9200/snovault/meta/peak_indexing ON the current demo region search machine.
 
