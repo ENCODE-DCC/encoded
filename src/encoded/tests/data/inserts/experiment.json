@@ -376,7 +376,8 @@
         "date_released": "2016-01-01",
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "EBF1-human",
-        "uuid": "d9161058-d8c4-4b17-b03b-bfaeabe75e02"
+        "uuid": "d9161058-d8c4-4b17-b03b-bfaeabe75e02",
+        "internal_tags": ["RegulomeDB"]
     },
     {
         "_test": "treatment control",
