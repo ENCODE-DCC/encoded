@@ -707,7 +707,7 @@ class RawFileTable extends React.Component {
                                 // Render each file's row, with the biological replicate and library
                                 // cells only on the first row.
                                 return groupFiles.sort((a, b) => (a.title < b.title ? -1 : 1)).map((file, i) => {
-                                    const groupClass = i !== (groupFilesLength - 1) ? 'align-pair1' : 'align-pair2 group-bottom';
+                                    const groupBottom = i === (groupFilesLength - 1) ? 'group-bottom' : '';
 
                                     // Determine if the accession should be a button or not.
                                     const buttonEnabled = !!(meta.graphedFiles && meta.graphedFiles[file['@id']]);
@@ -720,17 +720,17 @@ class RawFileTable extends React.Component {
                                                     {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
                                                 </td>
                                             : null}
-                                            <td className={groupClass}>
+                                            <td className={groupBottom}>
                                                 <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
                                             </td>
-                                            <td className={groupClass}>{file.file_type}</td>
-                                            <td className={groupClass}>{file.output_type}</td>
-                                            <td className={groupClass}>{file.assembly}</td>
-                                            <td className={groupClass}>{file.lab && file.lab.title ? file.lab.title : null}</td>
-                                            <td className={groupClass}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
-                                            <td className={groupClass}>{globals.humanFileSize(file.file_size)}</td>
-                                            <td className={groupClass}>{fileAuditStatus(file)}</td>
-                                            <td className={groupClass}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
+                                            <td className={groupBottom}>{file.file_type}</td>
+                                            <td className={groupBottom}>{file.output_type}</td>
+                                            <td className={groupBottom}>{file.assembly}</td>
+                                            <td className={groupBottom}>{file.lab && file.lab.title ? file.lab.title : null}</td>
+                                            <td className={groupBottom}>{moment.utc(file.date_created).format('YYYY-MM-DD')}</td>
+                                            <td className={groupBottom}>{globals.humanFileSize(file.file_size)}</td>
+                                            <td className={groupBottom}>{fileAuditStatus(file)}</td>
+                                            <td className={groupBottom}><Status item={file} badgeSize="small" css="status__table-cell" /></td>
                                         </tr>
                                     );
                                 });
