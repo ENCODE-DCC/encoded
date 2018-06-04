@@ -343,6 +343,8 @@ class VisCollections(object):
                     return json.dumps(vis_by_types, indent=4, sort_keys=True)
                 else:
                     return self.ucsc_trackDb()
+        if json_out:
+            return "{}"
         return ""
 
 class VisDataset(object):
@@ -1397,11 +1399,14 @@ def generate_batch_hubs(context, request):
     results = {}
     (page, suffix, cmd) = urlpage(request.url)
     log.debug('Requesting %s.%s#%s' % (page,suffix,cmd))
+    content_mime = 'text/plain'
+    if suffix == 'json':
+        content_mime = 'application/json'
 
     if (suffix == 'txt' and page == 'trackDb') or \
          (suffix == 'json' and page in ['trackDb','ihec','vis_blob']):
 
-        return generate_batch_trackDb(request)
+        return (generate_batch_trackDb(request), content_mime)
 
     elif page == 'hub' and suffix == 'txt':
         terms = request.matchdict['search_params'].replace(',,', '&')
@@ -1411,7 +1416,7 @@ def generate_batch_hubs(context, request):
             (var, val) = pair.split('=')
             if var not in ["type", "assembly", "status", "limit"]:
                 label += " %s" % val.replace('+', ' ')
-        return '\n'.join(get_hub(label, request.url))
+        return ('\n'.join(get_hub(label, request.url)), content_mime)
     elif page == 'genomes' and suffix == 'txt':
         search_params = request.matchdict['search_params']
         if search_params.find('bed6+') > -1:
@@ -1456,13 +1461,14 @@ def generate_batch_hubs(context, request):
                 else:
                     g_text = json.dumps(results, indent=4)
                     log.debug('Found 0 ASSEMBLIES !!!')
-        return g_text
+        return (g_text, content_mime)
 
     else:
         # Should generate a HTML page for requests other than those supported
         data_policy = ('<br /><a href="http://encodeproject.org/ENCODE/terms.html">'
                        'ENCODE data use policy</p>')
-        return generate_html(context, request) + data_policy
+        content_mime = 'text/html'
+        return (generate_html(context, request) + data_policy, content_mime)
 
 def respond_with_text(request, text, content_mime):
     '''Resonse that can handle range requests.'''
@@ -1497,6 +1503,8 @@ def hub(context, request):
 
     (page,suffix,cmd) = urlpage(request.url)
     content_mime = 'text/plain'
+    if suffix == 'json':
+        content_mime = 'application/json'
     if page == 'hub' and suffix == 'txt':
         typeof = embedded.get("assay_title")
         if typeof is None:
@@ -1531,5 +1539,6 @@ def hub(context, request):
 def batch_hub(context, request):
     ''' View for batch track hubs '''
 
-    text = generate_batch_hubs(context, request)
-    return respond_with_text(request, text, 'text/plain')
+    (content, content_mime) = generate_batch_hubs(context, request)
+
+    return respond_with_text(request, content, content_mime)
