@@ -5,6 +5,7 @@ from pyramid.view import view_config
 from pyramid.response import Response
 from snovault import TYPES
 from snovault.util import simple_path_ids
+from snovault.elasticsearch.interfaces import SNP_SEARCH_ES
 from urllib.parse import (
     parse_qs,
     urlencode,
@@ -14,7 +15,13 @@ from .search import list_visible_columns_for_schemas
 import csv
 import io
 import json
+import time  # DEBUG: timing
 import datetime
+import zlib
+from .region_atlas import RegulomeAtlas
+
+import logging
+log = logging.getLogger(__name__)
 
 currenttime = datetime.datetime.now()
 
@@ -23,6 +30,7 @@ def includeme(config):
     config.add_route('batch_download', '/batch_download/{search_params}')
     config.add_route('metadata', '/metadata/{search_params}/{tsv}')
     config.add_route('peak_metadata', '/peak_metadata/{search_params}/{tsv}')
+    config.add_route('regulome_download', '/regulome_download/{tsv}')
     config.add_route('report_download', '/report.tsv')
     config.scan(__name__)
 
@@ -98,22 +106,43 @@ def get_file_uuids(result_dict):
     return list(set(file_uuids))
 
 def get_biosample_accessions(file_json, experiment_json):
+    bio_reps = None
     for f in experiment_json['files']:
         if file_json['uuid'] == f['uuid']:
-            accession = f.get('replicate', {}).get('library', {}).get('biosample', {}).get('accession')
-            if accession:
-                return accession
-    accessions = []
+            bio_reps = f.get('biological_replicates')
+    accessions = set()
     for replicate in experiment_json.get('replicates', []):
-        accession = replicate['library']['biosample']['accession']
-        accessions.append(accession)
-    return ', '.join(list(set(accessions)))
+        if bio_reps and replicate.get('biological_replicate_number',0) not in bio_reps:
+            continue
+        try:
+            accession = replicate['library']['biosample']['accession']
+            if accession:
+                accessions.add(accession)
+        except:
+            pass
+    return ', '.join(list(accessions))
 
-def get_peak_metadata_links(request):
+def get_regulome_evidence_links(request, assembly, chrom, start, end):
+    regulome_link = '{host_url}/regulome_download/regulome_evidence_{assembly}_{chrom}_{start}_{end}'.format(
+        host_url=request.host_url,
+        assembly=assembly,
+        chrom=chrom,
+        start=start,
+        end=end
+    )
+    return [regulome_link + '.bed', regulome_link + '.json']
+
+def get_peak_metadata_links(request, assembly, chrom, start, end):
+    page = request.path.split('/')[1]
+    if page.startswith('regulome'):
+        return get_regulome_evidence_links(request, assembly, chrom, start, end)
+
     if request.matchdict.get('search_params'):
         search_params = request.matchdict['search_params']
     else:
         search_params = request.query_string
+    #if regulome:
+    #    search_params += '&regulome=1'
 
     peak_metadata_tsv_link = '{host_url}/peak_metadata/{search_params}/peak_metadata.tsv'.format(
         host_url=request.host_url,
@@ -164,11 +193,17 @@ def make_audit_cell(header_column, experiment_json, file_json):
 
 @view_config(route_name='peak_metadata', request_method='GET')
 def peak_metadata(context, request):
+    # TODO: make regulome version using atlas.scored_snps
     param_list = parse_qs(request.matchdict['search_params'])
+    regulome = param_list.pop('regulome',None)
+    target_page = 'region-search'
+    if regulome:
+        target_page = 'regulome-search'
+
     param_list['field'] = []
     header = ['assay_term_name', 'coordinates', 'target.label', 'biosample.accession', 'file.accession', 'experiment.accession']
     param_list['limit'] = ['all']
-    path = '/region-search/?{}&{}'.format(urlencode(param_list, True),'referrer=peak_metadata')
+    path = '/{}/?{}&{}'.format(target_page,urlencode(param_list, True),'referrer=peak_metadata')
     results = request.embed(path, as_user=True)
     uuids_in_results = get_file_uuids(results)
     rows = []
@@ -182,8 +217,10 @@ def peak_metadata(context, request):
                 coordinates = '{}:{}-{}'.format(row['_index'], hit['_source']['start'], hit['_source']['end'])
                 file_accession = file_json['accession']
                 experiment_accession = experiment_json['accession']
-                assay_name = experiment_json['assay_term_name']
-                target_name = experiment_json.get('target', {}).get('label') # not all experiments have targets
+                assay_name = experiment_json.get('assay_term_name','')
+                if assay_name == '' and regulome:
+                    assay_name = experiment_json.get('annotation_type','')
+                target_name = experiment_json.get('target', {}).get('label','') # not all experiments have targets
                 biosample_accession = get_biosample_accessions(file_json, experiment_json)
                 data_row.extend([assay_name, coordinates, target_name, biosample_accession, file_accession, experiment_accession])
                 rows.append(data_row)
@@ -212,6 +249,90 @@ def peak_metadata(context, request):
         body=fout.getvalue(),
         content_disposition='attachment;filename="%s"' % 'peak_metadata.tsv'
     )
+
+@view_config(route_name='regulome_download', request_method='GET')
+def regulome_download(context, request):
+    begin = time.time()  # DEBUG: timing
+    format_json = request.url.endswith('.json')
+    atlas = RegulomeAtlas(request.registry[SNP_SEARCH_ES])
+    try:
+        page_parts = request.url.split('/')[-1].split('.')[0].split('_')
+        reg_format = page_parts[1]
+        assembly = page_parts[2]
+        chrom = page_parts[3]
+        start = int(page_parts[4])
+        end = int(page_parts[5])
+    except:
+        log.error('Could not parse: ' + request.url)
+        return None
+    if assembly is None or chrom is None or start == 0 or end == 0:
+        log.error('Requesting regulome_download without assembly, chrom, start, end')
+        return
+
+    def iter_snps(format_json):
+        if format_json:
+            header = '{\n'
+        else:
+            columns = ['#chrom', 'start', 'end', 'rsid', 'num_score', 'score']  # bed 5 +
+            columns.extend(atlas.evidence_categories())
+            header = '\t'.join(columns) + '\n'
+        yield bytes(header, 'utf-8')
+        count = 0
+        for snp in atlas.iter_scored_snps(assembly, chrom, start, end):
+            count += 1
+            coordinates = '{}:{}-{}'.format(snp['chrom'], snp['start'], snp['end'])
+            if format_json:
+                formatted_snp = json.dumps({snp.get('rsid', coordinates): snp},sort_keys=True)[1:-1] + ','
+            else:
+                score = snp.get('score','')
+                num_score = atlas.numeric_score(score)           # - 1 because bed format is 'half open'
+                formatted_snp = "%s\t%d\t%d\t%s\t%d\t%s" % (snp['chrom'], snp['start'] - 1, snp['end'], \
+                                                  snp.get('rsid',coordinates), num_score, score)
+                case = atlas.make_a_case(snp)
+                for category in atlas.evidence_categories():  # in order
+                    formatted_snp += '\t%s' % case.get(category,'')
+            yield bytes(formatted_snp + '\n', 'utf-8')
+        took = '%.3f' % (time.time() - begin)    # DEBUG: timing
+        if format_json:
+            yield bytes('"took": %s,\n"count": %d\n}\n' % (took, count), 'utf-8')
+        else:
+            yield bytes('# took: %s, count: %d\n' % (took, count), 'utf-8')
+
+    def iter_regions(format_json):
+        if format_json:
+            header = '{\n'
+        else:
+            header = '\t'.join(['#chrom', 'start', 'end', 'num_score']) + '\n'  # bedGraph
+        yield bytes(header, 'utf-8')
+        count = 0
+        for (sig_start, sig_end, sig_score) in atlas.iter_scored_signal(assembly, chrom, start, end):
+            count += 1
+            if format_json:
+                sig_json = {'chrom': chrom, 'start': sig_start, 'end': sig_end, 'num_score': sig_score}
+                formatted_sig = json.dumps(sig_json,sort_keys=True)[1:-1] + ','
+            else:                                          # - 1 because bed format is 'half open'
+                formatted_sig = "%s\t%d\t%d\t%d" % (chrom, sig_start - 1, sig_end, sig_score)
+            yield bytes(formatted_sig + '\n', 'utf-8')
+        took = '%.3f' % (time.time() - begin)    # DEBUG: timing
+        if format_json:
+            yield bytes('"took": %s,\n"count": %d\n}\n' % (took, count), 'utf-8')
+        else:
+            yield bytes('# took: %s, count: %d\n' % (took, count), 'utf-8')
+
+    file_root = 'regulome_%s_%s_%s_%d_%d' % (reg_format, assembly, chrom, start, end)
+
+    # Stream response using chunked encoding.
+    if format_json:
+        request.response.content_type = 'text/plain' # ?? 'application/json'
+        request.response.content_disposition = 'attachment;filename="%s.json"' % (file_root)
+    else:
+        request.response.content_type = 'text/tsv'
+        request.response.content_disposition = 'attachment;filename="%s.bed"' % (file_root)
+    if reg_format == 'signal':
+        request.response.app_iter = iter_regions(format_json)
+    else:  # reg_format == 'evidence'
+        request.response.app_iter = iter_snps(format_json)
+    return request.response
 
 
 @view_config(route_name='metadata', request_method='GET')
@@ -388,7 +509,7 @@ def report_download(context, request):
     def format_header(seq):
         newheader="%s\t%s%s?%s\r\n" % (currenttime, request.host_url, '/report/', request.query_string)
         return(bytes(newheader, 'utf-8'))
-       
+
 
     # Work around Excel bug; can't open single column TSV with 'ID' header
     if len(columns) == 1 and '@id' in columns:
