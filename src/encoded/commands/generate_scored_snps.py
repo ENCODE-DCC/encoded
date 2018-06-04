@@ -43,7 +43,7 @@ def run(app, format_json=False, chosen_assembly=None, chosen_chrom=None, signal=
             header = '{\n'
         else:
             if signal:
-                columns = '#chrom', 'start', 'end', 'num_score']  # bedGraph
+                columns = ['#chrom', 'start', 'end', 'num_score']  # bedGraph
             else:
                 columns = ['#chrom', 'start', 'end', 'rsid', 'num_score', 'score']  # bed 5 +
                 columns.extend(atlas.evidence_categories())
