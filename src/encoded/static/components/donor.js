@@ -17,6 +17,7 @@ import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 import { BiosampleTable } from './typeutils';
+import Measurement from './../libs/measurement';
 
 
 const HumanDonor = (props) => {
@@ -78,7 +79,7 @@ const HumanDonor = (props) => {
                         {context.age ?
                             <div data-test="age">
                                 <dt>Age</dt>
-                                <dd className="sentence-case">{context.age}{context.age_units ? ` ${context.age_units}` : null}</dd>
+                                <dd className="sentence-case">{Measurement.format(context.age, context.age_units)}</dd>
                             </div>
                         : null}
 
@@ -164,8 +165,7 @@ const donorTableColumns = {
             if (donor.age) {
                 return (
                     <span>
-                        {donor.age}
-                        {donor.age_units ? ` ${donor.age_units}` : null}
+                        {Measurement.format(donor.age, donor.age_units)}
                     </span>
                 );
             }
@@ -682,7 +682,7 @@ const DonorListingComponent = (props, reactContext) => {
         result.strain_background ? (result.strain_background !== 'unknown' ? result.strain_background : 'unknown strain background') : null,
         result.sex ? (result.sex !== 'unknown' ? result.sex : 'unknown sex') : null,
         result.life_stage ? (result.life_stage !== 'unknown' ? result.life_stage : 'unknown life stage') : null,
-        result.age ? (result.age !== 'unknown' ? `${result.age} ${result.age_units}` : 'unknown age') : null,
+        Measurement.format(result.age, result.age_units),
     ].filter(Boolean);
 
     return (
