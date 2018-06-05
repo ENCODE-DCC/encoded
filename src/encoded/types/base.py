@@ -11,7 +11,11 @@ from pyramid.traversal import (
     find_root,
     traverse,
 )
+from pyramid.view import (
+    view_config
+)
 import snovault
+from snovault.validators import validate_item_content_patch
 
 
 @lru_cache()
@@ -170,7 +174,10 @@ class Item(snovault.Item):
         return keys
 
     def set_status(self, new_status, parent=True):
-        pass
+        import logging
+        logging.warn(self.__name__)
+        logging.warn('in set_status')
+        logging.warn(new_status)
 
 
 class SharedItem(Item):
@@ -217,3 +224,10 @@ def edit_json(context, request):
             'profile': '/profiles/{ti.name}.json'.format(ti=context.type_info),
             'href': '{item_uri}#!edit-json'.format(item_uri=request.resource_path(context)),
         }
+
+
+@view_config(context=Item, permission='edit', request_method='PATCH',
+             name='release', validators=[validate_item_content_patch])
+def item_release(context, request):
+    new_status = 'released'
+    context.set_status(new_status)

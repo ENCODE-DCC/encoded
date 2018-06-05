@@ -318,7 +318,7 @@ class TestingEncodeItem(EncodedItem):
                 'format': 'accession',
                 'serverDefault': 'accession',
                 'permission': 'import_items',
-                'accessionType': 'FK'
+                'accessionType': 'FF',
             },
             'status': {
                 'title': 'Status',
