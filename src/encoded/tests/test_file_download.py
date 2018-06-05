@@ -3,7 +3,6 @@ from moto import (
     mock_s3,
     mock_sts
 )
-from pyramid.httpexceptions import HTTPNotFound
 
 
 @pytest.fixture
