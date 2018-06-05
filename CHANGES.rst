@@ -1,5 +1,9 @@
 Changes
 =======
+This is the commit starting the regulome-master branch, rebased off v72.
+This is a long running feature branch for RegulomeDB.  This will be kept
+up to date with origin/dev.
+
 
 72.0 (released)
 -----------------
