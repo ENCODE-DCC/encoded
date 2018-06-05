@@ -406,7 +406,6 @@ def post_upload(context, request):
 
     accession_or_external = properties.get('accession') or properties['external_accession']
     external = context.propsheets.get('external', None)
-
     if external is None:
         # Handle objects initially posted as another state.
         bucket = request.registry.settings['file_upload_bucket']
@@ -421,7 +420,9 @@ def post_upload(context, request):
         bucket = external['bucket']
         key = external['key']
     else:
-        raise ValueError(external.get('service'))
+        raise HTTPNotFound(
+            detail='External service {} not expected'.format(external.get('service'))
+        )
 
     name = 'up{time:.6f}-{accession_or_external}'.format(
         accession_or_external=accession_or_external,
@@ -479,7 +480,9 @@ def download(context, request):
             ExpiresIn=36*60*60
         )
     else:
-        raise ValueError(external.get('service'))
+        raise HTTPNotFound(
+            detail='External service {} not expected'.format(external.get('service'))
+        )
 
     if asbool(request.params.get('soft')):
         expires = int(parse_qs(urlparse(location).query)['Expires'][0])

@@ -3,6 +3,7 @@ from moto import (
     mock_s3,
     mock_sts
 )
+from pyramid.httpexceptions import HTTPNotFound
 
 
 @pytest.fixture
@@ -80,3 +81,31 @@ def test_file_download_view_soft_redirect(testapp, uploading_file, dummy_request
         extra_environ=dict(HTTP_X_FORWARDED_FOR='100.100.100.100')
     )
     assert res.json['@type'][0] == 'SoftRedirect'
+
+
+@mock_sts
+def test_regen_creds_uploading_file_not_found(testapp, uploading_file, dummy_request, root):
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
+    res = testapp.post_json('/file', uploading_file)
+    posted_file = res.json['@graph'][0]
+    item = root.get_by_uuid(posted_file['uuid'])
+    properties = item.upgrade_properties()
+    # Clear the external sheet.
+    item.update(properties, sheets={'external': {}})
+    res = testapp.post_json(posted_file['@id'] + '@@upload', {}, status=404)
+
+
+@mock_s3
+def test_download_file_not_found(testapp, uploading_file, dummy_request, root):
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
+    res = testapp.post_json('/file', uploading_file)
+    posted_file = res.json['@graph'][0]
+    item = root.get_by_uuid(posted_file['uuid'])
+    properties = item.upgrade_properties()
+    # Clear the external sheet.
+    item.update(properties, sheets={'external': {}})
+    res = testapp.get(
+        posted_file['href'],
+        extra_environ=dict(HTTP_X_FORWARDED_FOR='100.100.100.100'),
+        status=404
+    )
