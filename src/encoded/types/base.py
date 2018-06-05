@@ -67,7 +67,7 @@ ALLOW_SUBMITTER_ADD = [
     (Allow, 'group.submitter', ['add']),
 ]
 
-
+# New status must contain current status in list to be valid transition.
 STATUS_TRANSITION_TABLE = {
     'released': ['in progress'],
     'in progress': ['released', 'archived', 'deleted', 'revoked']
@@ -180,9 +180,7 @@ class Item(snovault.Item):
 
     def set_status(self, new_status, parent=True):
         # Not implemented by default.
-        import logging
-        logging.warn('In Item.set_status')
-        logging.warn(STATUS_TRANSITION_TABLE[new_status])
+        pass
 
 
 class SharedItem(Item):
