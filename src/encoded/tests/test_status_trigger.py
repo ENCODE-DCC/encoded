@@ -70,6 +70,7 @@ def test_item_unrelease_endpoint_calls_set_status(testapp, content, mocker):
     Item.set_status.assert_called_once_with('in progress')
 
 
+@mock_s3
 def test_file_release_endpoint_calls_file_set_status(testapp, file, mocker):
     from encoded.types.file import File
     mocker.patch('encoded.types.file.File.set_status')
@@ -98,3 +99,33 @@ def test_file_get_external_sheet_not_found(testapp, uploading_file, dummy_reques
     file_item.update(properties, sheets={'external': {}})
     with pytest.raises(HTTPNotFound):
         file_item._get_external_sheet()
+
+
+@mock_s3
+def test_file_release_in_progress_file(testapp, file):
+    assert file['status'] == 'in progress'
+    testapp.patch_json(file['@id'] + '@@release', {})
+    res = testapp.get(file['@id'])
+    assert res.json['status'] == 'released'
+
+
+def test_set_public_s3_calls_boto(mocker, testapp, uploading_file, dummy_request, root):
+    import boto3
+    mocker.patch('boto3.resource')
+    # Must have external sheet.
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
+    res = testapp.post_json('/file', uploading_file)
+    file_item = root.get_by_uuid(res.json['@graph'][0]['uuid'])
+    file_item.set_public_s3()
+    boto3.resource.assert_called_once()
+
+
+def test_set_private_s3_calls_boto(mocker, testapp, uploading_file, dummy_request, root):
+    import boto3
+    mocker.patch('boto3.resource')
+    # Must have external sheet.
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
+    res = testapp.post_json('/file', uploading_file)
+    file_item = root.get_by_uuid(res.json['@graph'][0]['uuid'])
+    file_item.set_private_s3()
+    boto3.resource.assert_called_once()

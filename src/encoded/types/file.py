@@ -10,6 +10,7 @@ from snovault.schema_utils import schema_validator
 from .base import (
     Item,
     paths_filtered_by_status,
+    STATUS_TRANSITION_TABLE
 )
 from pyramid.httpexceptions import (
     HTTPForbidden,
@@ -379,8 +380,6 @@ class File(Item):
         return super(File, cls).create(registry, uuid, properties, sheets)
 
     def _get_external_sheet(self):
-        import logging
-        logging.warn('in _get_external_sheet')
         external = self.propsheets.get('external', {})
         if external.get('service') == 's3':
             return external
@@ -388,21 +387,32 @@ class File(Item):
             raise HTTPNotFound()
 
     def set_public_s3(self):
-        external = _get_external_sheet()
+        external = self._get_external_sheet()
+        boto3.resource('s3').ObjectAcl(
+            external['bucket'],
+            external['key']
+        ).put(ACL='public-read')
 
     def set_private_s3(self):
-        external = _get_external_sheet()
-
-
+        external = self._get_external_sheet()
+        boto3.resource('s3').ObjectAcl(
+            external['bucket'],
+            external['key']
+        ).put(ACL='private')
 
     def set_status(self, new_status, parent=True):
-        import logging
-        logging.warn('In file set_status')
+        properties = self.upgrade_properties()
+        status = properties.get('status')
+        # Is valid transition?
+        if status not in STATUS_TRANSITION_TABLE[new_status]:
+            pass
+        properties['status'] = new_status
+        self.update(properties)
+        # Change permission in S3.
         if new_status == 'released':
             self.set_public_s3
-        else:
+        elif new_status == 'in progress':
             self.set_private_s3
-        super(File, self).set_status(new_status, parent)
 
 
 @view_config(name='upload', context=File, request_method='GET',
