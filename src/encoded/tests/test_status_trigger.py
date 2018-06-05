@@ -109,6 +109,18 @@ def test_file_release_in_progress_file(testapp, file):
     assert res.json['status'] == 'released'
 
 
+@mock_s3
+def test_file_unrelease_released_file(testapp, file):
+    # Manually release.
+    testapp.patch_json(file['@id'], {'status': 'released'})
+    res = testapp.get(file['@id'])
+    assert res.json['status'] == 'released'
+    # Go through unrelease trigger.
+    testapp.patch_json(file['@id'] + '@@unrelease', {})
+    res = testapp.get(file['@id'])
+    assert res.json['status'] == 'in progress'
+
+
 def test_set_public_s3_calls_boto(mocker, testapp, uploading_file, dummy_request, root):
     import boto3
     mocker.patch('boto3.resource')
