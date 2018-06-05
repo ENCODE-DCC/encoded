@@ -39,7 +39,7 @@ class BiosampleComponent extends React.Component {
 
             synchText = context.synchronization +
                 (context.post_synchronization_time ?
-                    synchronizationTime
+                    ` + ${synchronizationTime}`
                 : '');
         }
 
