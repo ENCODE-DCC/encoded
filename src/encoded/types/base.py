@@ -68,6 +68,11 @@ ALLOW_SUBMITTER_ADD = [
 ]
 
 
+STATUS_TRANSITION_TABLE = {
+    'released': ['in progress'],
+    'in progress': ['released', 'archived', 'deleted', 'revoked']
+}
+
 
 def paths_filtered_by_status(request, paths, exclude=('deleted', 'replaced'), include=None):
     if include is not None:
@@ -174,10 +179,10 @@ class Item(snovault.Item):
         return keys
 
     def set_status(self, new_status, parent=True):
+        # Not implemented by default.
         import logging
-        logging.warn(self.__name__)
-        logging.warn('in set_status')
-        logging.warn(new_status)
+        logging.warn('In Item.set_status')
+        logging.warn(STATUS_TRANSITION_TABLE[new_status])
 
 
 class SharedItem(Item):
@@ -230,4 +235,11 @@ def edit_json(context, request):
              name='release', validators=[validate_item_content_patch])
 def item_release(context, request):
     new_status = 'released'
+    context.set_status(new_status)
+
+
+@view_config(context=Item, permission='edit', request_method='PATCH',
+             name='unrelease', validators=[validate_item_content_patch])
+def item_unrelease(context, request):
+    new_status = 'in progress'
     context.set_status(new_status)
