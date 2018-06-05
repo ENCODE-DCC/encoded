@@ -410,9 +410,9 @@ class File(Item):
         self.update(properties)
         # Change permission in S3.
         if new_status == 'released':
-            self.set_public_s3
+            self.set_public_s3()
         elif new_status == 'in progress':
-            self.set_private_s3
+            self.set_private_s3()
 
 
 @view_config(name='upload', context=File, request_method='GET',
