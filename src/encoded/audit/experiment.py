@@ -2514,18 +2514,19 @@ def audit_experiment_ChIP_control(value, system, files_structure):
         return
 
     num_IgG_controls = 0
-    for control in value['possible_controls']:
-        if ('target' not in control) or ('control' not in control['target']['investigated_as']):
+
+    for control_dataset in value['possible_controls']:
+        if is_control_dataset(control_dataset):
             detail = 'Experiment {} is ChIP-seq but its control {} is not linked to a target with investigated.as = control'.format(
                 value['@id'],
-                control['@id'])
+                control_dataset['@id'])
             yield AuditFailure('invalid possible_control', detail, level='ERROR')
             return
 
-        if not control.get('replicates'):
+        if not control_dataset.get('replicates'):
             continue
 
-        if 'antibody' in control.get('replicates')[0]:
+        if 'antibody' in control_dataset.get('replicates')[0]:
             num_IgG_controls += 1
 
     # If all of the possible_control experiments are mock IP control experiments
@@ -2534,10 +2535,22 @@ def audit_experiment_ChIP_control(value, system, files_structure):
             # The binding group agreed that ChIP-seqs all should have an input control.
             detail = 'Experiment {} is ChIP-seq and requires at least one input control, as agreed upon by the binding group. {} is not an input control'.format(
                 value['@id'],
-                control['@id'])
+                control_dataset['@id'])
             yield AuditFailure('missing input control', detail, level='NOT_COMPLIANT')
     return
 
+
+def is_control_dataset(dataset):
+    if 'target' not in dataset:
+        return False
+    if (dataset['@type'] == 'Experiment'):
+        return 'control' in dataset['target']['investigated_as']
+    else:
+        for target_of_related_dataset in dataset['target']:
+            if 'control' not in target_of_related_dataset['investigated_as']:
+                return False
+    return True
+    
 
 def audit_experiment_spikeins(value, system, excluded_types):
     if not check_award_condition(value, [
