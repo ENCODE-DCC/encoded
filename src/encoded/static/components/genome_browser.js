@@ -55,6 +55,8 @@ function rAssemblyToSources(assembly, region) {
 
     if (region) {
         // console.log('region provided: %s', region);
+        // if a region was set (in region_search or regulome_search), then
+        // parse the 'chr:start-end' format and set the browser window at the region
         const reg = region.split(':');
         browserCfg.chr = reg[0].substring(3, reg[0].length);
         const positions = reg[1].split('-');
@@ -64,13 +66,14 @@ function rAssemblyToSources(assembly, region) {
         if (positions.length === 1) {
             positions[1] = positions[0];
         }
+        // If region is small (e.g. SNP location), then expand the browser window
         if ((positions[1] - positions[0]) < 10) {
-            if (positions[0] > 10000) {
-                positions[0] -= 10000;
+            if (positions[0] > 1000) {
+                positions[0] -= 1000;
             } else {
                 positions[0] = 1;
             }
-            positions[1] += 10000;
+            positions[1] += 1000;
         }
         browserCfg.viewStart = positions[0];
         browserCfg.viewEnd = positions[1];
@@ -462,7 +465,7 @@ class GenomeBrowser extends React.Component {
                 maxWorkers: 4,
                 noHelp: true,
                 noExport: true,
-                rulerLocation: 'right',
+                rulerLocation: 'none',
                 chr: browserCfg.chr,
                 viewStart: browserCfg.viewStart,
                 viewEnd: browserCfg.viewEnd,
@@ -471,6 +474,7 @@ class GenomeBrowser extends React.Component {
                 sources: browserCfg.sources,
                 noTitle: true,
                 disablePoweredBy: true,
+                maxViewWidth: Math.min((browserCfg.viewEnd - browserCfg.viewStart) * 10, 100000),
             });
             this.browser.addViewListener(this.locationChange);
         });
