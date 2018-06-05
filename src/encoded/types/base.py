@@ -169,6 +169,9 @@ class Item(snovault.Item):
             keys['accession'].append(properties['accession'])
         return keys
 
+    def set_status(self, new_status, parent=True):
+        pass
+
 
 class SharedItem(Item):
     ''' An Item visible to all authenticated users while "in progress".
