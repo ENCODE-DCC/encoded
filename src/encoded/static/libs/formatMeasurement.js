@@ -6,7 +6,7 @@
 * @param {number} magnitude - Measured value
 * @param {string} unit - Measurement system in singular form
 */
-export default function formatMeasurement(magnitude, unit) {
+const formatMeasurement = (magnitude, unit) => {
     // parseFloat used because parseInt only keeps integer
     const magnitudeAsFloat = parseFloat(magnitude);
 
@@ -23,4 +23,6 @@ export default function formatMeasurement(magnitude, unit) {
     return magnitudeAsFloat === 1
           ? measurement
           : `${measurement}s`;
-}
+};
+
+export default formatMeasurement;
