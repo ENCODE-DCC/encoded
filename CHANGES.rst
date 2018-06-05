@@ -1,5 +1,11 @@
 Changes
 =======
+
+This is the initial commit creating the regulome-master branch.
+A long running feature branch for RegulomeDB.  This will be kept
+up to date with origin/dev.
+
+
 71.0 (unreleased)
 -----------------
 01. ENCD-4046 Update snovault 1.0.10 (#2275)
