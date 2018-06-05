@@ -507,7 +507,7 @@ class RegulomeAtlas(RegionAtlas):
                                         region_end = base
                                         continue
                                     if region_score > 0:  # end previous region?
-                                        yield (region_start - 1, region_end, region_score)
+                                        yield (region_start, region_end, region_score)
                                     # start new region
                                     region_score = num_score
                                     region_start = base
@@ -515,12 +515,12 @@ class RegulomeAtlas(RegionAtlas):
                                     continue
             # if we are here this base had no score
             if region_score > 0:  # end previous region?
-                yield (region_start - 1, region_end, region_score)
+                yield (region_start, region_end, region_score)
                 region_score = 0
                 last_uuids = base_uuids  # zero score so don't try these uuids again!
 
         if region_score > 0:  # end previous region?
-            yield (region_start - 1, region_end, region_score)
+            yield (region_start, region_end, region_score)
 
     def nearby_snps(self, assembly, chrom, pos, rsid=None, max_snps=10, scores=False):
         '''Return SNPs nearby to the chosen SNP.'''

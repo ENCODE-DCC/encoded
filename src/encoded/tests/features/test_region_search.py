@@ -52,12 +52,11 @@ def test_one_regulome(testapp, workbook):
 
     assert 'region-search' in res.json['@type']
 
-    # If running all tests '0 files' is expected.  If running this test alone 'No uuids' is expected.
     assert 'Success: 1 peaks in 1 files belonging to 1 datasets in this region' in res.json['notification']
     assert '5' == res.json['regulome_score']
     assert 'ENCSR000DZQ' == res.json['@graph'][0]['accession']
 
-    expected = 'http://0.0.0.0:6543/regulome_evidence/regulomeDB_hg19_chrx_107514356_107514356.bed'
+    expected = 'http://0.0.0.0:6543/regulome_download/regulome_evidence_hg19_chrx_107514356_107514356.bed'
     assert expected in res.json['download_elements']
 
 

@@ -1099,7 +1099,6 @@ export class ResultTable extends React.Component {
         const trimmedSearchBase = searchBase.replace(/[?|&]limit=all/, '');
         let browseAllFiles = true; // True to pass all files to browser
         let browserAssembly = ''; // Assembly to pass to ResultsBrowser component
-        let browserRegion = '';  // Region that may be passed to browser
         let browserDatasets = []; // Datasets will be used to get vis_json blobs
         let browserFiles = []; // Files to pass to ResultsBrowser component
         let assemblyChooser;
@@ -1204,9 +1203,8 @@ export class ResultTable extends React.Component {
                     </div>
                 );
             }
-            browserRegion = this.props.region;
-            if (browserRegion) {
-                this.props.currentRegion(browserAssembly, browserRegion);
+            if (this.props.region) {
+                this.props.currentRegion(browserAssembly, this.props.region);
             }
         }
 
@@ -1281,7 +1279,7 @@ export class ResultTable extends React.Component {
                                         </TabPanelPane>
                                         <TabPanelPane key="browserpane">
                                             {assemblyChooser}
-                                            <ResultBrowser files={results} assembly={browserAssembly} region={browserRegion} datasets={browserDatasets} limitFiles={!browseAllFiles} currentRegion={this.props.currentRegion} />
+                                            <ResultBrowser files={results} assembly={browserAssembly} region={this.props.region} datasets={browserDatasets} limitFiles={!browseAllFiles} currentRegion={this.props.currentRegion} />
                                         </TabPanelPane>
                                     </TabPanel>
                                 :
@@ -1313,6 +1311,7 @@ ResultTable.defaultProps = {
     restrictions: {},
     searchBase: '',
     currentRegion: null,
+    region: null,
 };
 
 ResultTable.childContextTypes = {
@@ -1356,7 +1355,7 @@ ResultTableList.defaultProps = {
 const ResultBrowser = (props) => {
     let visUrl = '';
     const datasetCount = props.datasets.length;
-    let region = props.region;  // optionally make a persistent region
+    let region = props.region; // optionally make a persistent region
     const lastRegion = props.currentRegion();
     if (lastRegion && lastRegion.assembly === props.assembly) {
         region = lastRegion.region;
@@ -1389,15 +1388,16 @@ const ResultBrowser = (props) => {
 };
 
 ResultBrowser.propTypes = {
-    files: PropTypes.array, // Array of files whose browser we're rendering
-    assembly: PropTypes.string, // Filter `files` by this assembly
+    files: PropTypes.array.isRequired, // Array of files whose browser we're rendering
+    assembly: PropTypes.string.isRequired, // Filter `files` by this assembly
     region: PropTypes.string, // Filter `files` by this assembly
-    datasets: PropTypes.array, // One or more '/dataset/ENCSRnnnXXX/' that files belong to
+    datasets: PropTypes.array.isRequired, // One or more '/dataset/ENCSRnnnXXX/' that files belong to
     limitFiles: PropTypes.bool, // True to limit browsing to 20 files
     currentRegion: PropTypes.func,
 };
 
 ResultBrowser.defaultProps = {
+    region: null,
     limitFiles: true,
     currentRegion: null,
 };

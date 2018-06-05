@@ -233,8 +233,8 @@ class AdvSearch extends React.Component {
                         <input type="submit" value="Search" className="btn btn-sm btn-info pull-right" />
                     </form>
                     {context.coordinates ?
-                            <p>Searched coordinates: <strong>{context.coordinates}</strong></p>
-                        : null}
+                        <p>Searched coordinates: <strong>{context.coordinates}</strong></p>
+                    : null}
                     {context.regulome_score ?
                         <p><strong>RegulomeDB score: {context.regulome_score}</strong></p>
                     : null}
