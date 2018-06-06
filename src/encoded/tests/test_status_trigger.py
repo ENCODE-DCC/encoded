@@ -101,16 +101,47 @@ def test_file_get_external_sheet_not_found(testapp, uploading_file, dummy_reques
         file_item._get_external_sheet()
 
 
+@mock_sts
 @mock_s3
-def test_file_release_in_progress_file(testapp, file):
-    assert file['status'] == 'in progress'
+def test_file_release_in_progress_file(testapp, file, dummy_request, root):
+    # Create mock bucket.
+    import boto3
+    client = boto3.client('s3')
+    client.create_bucket(Bucket='test_upload_bucket')
+    # Generate creds.
+    testapp.patch_json(file['@id'], {'status': 'uploading'})
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
+    testapp.post_json(file['@id'] + '@@upload', {})
+    # Get bucket name and key.
+    file_item = root.get_by_uuid(file['uuid'])
+    external = file_item._get_external_sheet()
+    # Pub mock object in bucket.
+    client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
+    # Set to in progress.
+    testapp.patch_json(file['@id'], {'status': 'in progress'})
+    res = testapp.get(file['@id'])
+    assert res.json['status'] == 'in progress'
     testapp.patch_json(file['@id'] + '@@release', {})
     res = testapp.get(file['@id'])
     assert res.json['status'] == 'released'
 
 
+@mock_sts
 @mock_s3
-def test_file_unrelease_released_file(testapp, file):
+def test_file_unrelease_released_file(testapp, file, dummy_request, root):
+    # Create mock bucket.
+    import boto3
+    client = boto3.client('s3')
+    client.create_bucket(Bucket='test_upload_bucket')
+    # Generate creds.
+    testapp.patch_json(file['@id'], {'status': 'uploading'})
+    dummy_request.registry.settings['file_upload_bucket'] = 'test_upload_bucket'
+    testapp.post_json(file['@id'] + '@@upload', {})
+    # Get bucket name and key.
+    file_item = root.get_by_uuid(file['uuid'])
+    external = file_item._get_external_sheet()
+    # Pub mock object in bucket.
+    client.put_object(Body=b'ABCD', Key=external['key'], Bucket=external['bucket'])
     # Manually release.
     testapp.patch_json(file['@id'], {'status': 'released'})
     res = testapp.get(file['@id'])
