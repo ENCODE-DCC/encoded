@@ -174,3 +174,21 @@ def test_set_private_s3_calls_boto(mocker, testapp, uploading_file, dummy_reques
     file_item = root.get_by_uuid(res.json['@graph'][0]['uuid'])
     file_item.set_private_s3()
     boto3.resource.assert_called_once()
+
+
+def test_set_status_parent_validation_failure(file, root, testapp):
+    # Can't go from deleted to released.
+    from snovault.validation import ValidationFailure
+    testapp.patch_json(file['@id'], {'status': 'deleted'}, status=200)
+    file_item = root.get_by_uuid(file['uuid'])
+    with pytest.raises(ValidationFailure) as e:
+        file_item.set_status('released')
+    e.value.detail['description'] == 'Status transition deleted to released not allowed'
+
+
+def test_set_status_child_return(file, root, testapp):
+    # Can't go from deleted to released.
+    testapp.patch_json(file['@id'], {'status': 'deleted'}, status=200)
+    file_item = root.get_by_uuid(file['uuid'])
+    res = file_item.set_status('released', parent=False)
+    assert not res

@@ -7,6 +7,7 @@ from snovault import (
     load_schema,
 )
 from snovault.schema_utils import schema_validator
+from snovault.validation import ValidationFailure
 from .base import (
     Item,
     paths_filtered_by_status,
@@ -405,7 +406,16 @@ class File(Item):
         status = properties.get('status')
         # Is valid transition?
         if status not in STATUS_TRANSITION_TABLE[new_status]:
-            pass
+            # Raise failure if this is primary object.
+            if parent:
+                msg = 'Status transition {} to {} not allowed'.format(
+                    status,
+                    new_status
+                )
+                raise ValidationFailure('body', ['status'], msg)
+            # Do nothing if this is child object.
+            else:
+                return
         properties['status'] = new_status
         self.update(properties)
         # Change permission in S3.
