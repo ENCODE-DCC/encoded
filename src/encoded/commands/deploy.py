@@ -333,8 +333,10 @@ def _get_run_args(main_args, instances_tag_data):
         data_insert = {
             'CLUSTER_NAME': main_args.cluster_name,
             'ES_DATA': 'true',
-            'ES_MASTER': 'false',
+            'ES_MASTER': 'true',
         }
+        if main_args.single_data_master:
+            data_insert['ES_MASTER'] = 'false'
         user_data = get_user_data(instances_tag_data['commit'], config_file, data_insert, main_args.profile_name)
         if main_args.single_data_master:
             master_data_insert = {
