@@ -152,6 +152,7 @@ def test_file_unrelease_released_file(testapp, file, dummy_request, root):
     assert res.json['status'] == 'in progress'
 
 
+@mock_sts
 def test_set_public_s3_calls_boto(mocker, testapp, uploading_file, dummy_request, root):
     import boto3
     mocker.patch('boto3.resource')
@@ -163,6 +164,7 @@ def test_set_public_s3_calls_boto(mocker, testapp, uploading_file, dummy_request
     boto3.resource.assert_called_once()
 
 
+@mock_sts
 def test_set_private_s3_calls_boto(mocker, testapp, uploading_file, dummy_request, root):
     import boto3
     mocker.patch('boto3.resource')
