@@ -427,6 +427,7 @@ class File(Item):
             elif new_status == 'in progress':
                 self.set_private_s3()
         except ClientError as e:
+            # Demo trying to set ACL on production object?
             if e.response['Error']['Code'] == 'AccessDenied':
                 logging.warn(e)
             else:
