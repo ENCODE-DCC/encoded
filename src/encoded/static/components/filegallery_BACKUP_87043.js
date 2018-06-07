@@ -15,7 +15,6 @@ import { softwareVersionList } from './software';
 import { SortTablePanel, SortTable } from './sorttable';
 import Status from './status';
 
-
 const MINIMUM_COALESCE_COUNT = 5; // Minimum number of files in a coalescing group
 
 
@@ -175,22 +174,12 @@ export class FileTable extends React.Component {
               FileTable.procTableColumns :
               _.omit(FileTable.procTableColumns, 'biological_replicates');
 
-            // filesRaw should be falsy if files.raw is
-            const filesRaw = showReplicateNumber || !files.raw ?
-              files.raw :
-              _.omit(files.raw, 'biological_replicates');
-
-            // filesRawArray should be falsy if files.rawArray is
-            const filesRawArray = showReplicateNumber || !files.rawArray ?
-              files.rawArray :
-              _.omit(files.rawArray, 'biological_replicates');
-
             return (
                 <div>
                     {showFileCount ? <div className="file-gallery-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
                         <RawSequencingTable
-                            files={filesRaw}
+                            files={files.raw}
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -202,7 +191,7 @@ export class FileTable extends React.Component {
                             }}
                         />
                         <RawFileTable
-                            files={filesRawArray}
+                            files={files.rawArray}
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -225,7 +214,7 @@ export class FileTable extends React.Component {
                             collapsed={this.state.collapsed.proc}
                             list={files.proc}
                             columns={procTableColumns}
-                            sortColumn={showReplicateNumber ? 'biological_replicates' : 'date_created'}
+                            sortColumn="accession"
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -414,14 +403,12 @@ FileTable.refTableColumns = {
     },
 };
 
-
-const sortBioReps = (a, b) => {
+function sortBioReps(a, b) {
     // Sorting function for biological replicates of the given files.
     let result; // Ends sorting loop once it has a value
     let i = 0;
-    let repA = (a && a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
-    let repB = (b && b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
-
+    let repA = (a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
+    let repB = (b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
     while (result === undefined) {
         if (repA !== undefined && repB !== undefined) {
             // Both biological replicates have a value
@@ -444,7 +431,8 @@ const sortBioReps = (a, b) => {
         }
     }
     return result;
-};
+}
+
 
 const FileStatusLabel = (props) => {
     const { file } = props;
@@ -570,7 +558,8 @@ class RawSequencingTable extends React.Component {
                             <tr>
                                 {showReplicateNumber ?
                                     <th>{replicationDisplay(meta.replicationType)}</th> :
-                                    null}
+                                    null
+                                }
                                 <th>Library</th>
                                 <th>Accession</th>
                                 <th>File type</th>
@@ -633,7 +622,7 @@ class RawSequencingTable extends React.Component {
                                     );
                                 });
                             })}
-                            {nonpairedFiles.sort(sortBioReps).map((file, i) => {
+                            {nonpairedFiles.map((file, i) => {
                                 // Prepare for run_type display
                                 let runType;
                                 if (file.run_type === 'single-ended') {
@@ -650,10 +639,7 @@ class RawSequencingTable extends React.Component {
 
                                 return (
                                     <tr key={file['@id']} className={rowClasses.join(' ')}>
-                                        { showReplicateNumber ?
-                                          <td className="table-raw-biorep">{file.biological_replicates && file.biological_replicates.length ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td> :
-                                          null
-                                        }
+                                        <td className="table-raw-biorep">{file.biological_replicates && file.biological_replicates.length ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
                                             <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
@@ -814,8 +800,7 @@ class RawFileTable extends React.Component {
                                     );
                                 });
                             })}
-
-                            {nonGrouped.sort(sortBioReps).map((file, i) => {
+                            {nonGrouped.map((file, i) => {
                                 // Prepare for run_type display
                                 const rowClasses = [
                                     groupKeys.length && i === 0 ? 'table-raw-separator' : null,
@@ -826,10 +811,7 @@ class RawFileTable extends React.Component {
 
                                 return (
                                     <tr key={file['@id']} className={rowClasses.join(' ')}>
-                                        { showReplicateNumber ?
-                                            <td className="table-raw-biorep">{(file.biological_replicates && file.biological_replicates.length) ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td> :
-                                            null
-                                        }
+                                        <td className="table-raw-biorep">{(file.biological_replicates && file.biological_replicates.length) ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td>
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
                                             <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
@@ -2060,7 +2042,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                 <dl className="key-value">
                     <div data-test="status">
                         <dt>Status</dt>
-                        <dd><Status item={selectedFile} inline /></dd>
+                        <dd><FileStatusLabel file={selectedFile} /></dd>
                     </div>
 
                     {selectedFile.output_type ?
@@ -2253,7 +2235,7 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
             },
             status: {
                 title: 'Status',
-                display: item => <Status item={item} badgeSize="small" />,
+                display: item => <div className="characterization-meta-data"><FileStatusLabel file={item} /></div>,
             },
         };
 
