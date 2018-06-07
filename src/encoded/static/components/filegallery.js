@@ -414,7 +414,6 @@ FileTable.refTableColumns = {
     },
 };
 
-
 const sortBioReps = (a, b) => {
     // Sorting function for biological replicates of the given files.
     let result; // Ends sorting loop once it has a value
