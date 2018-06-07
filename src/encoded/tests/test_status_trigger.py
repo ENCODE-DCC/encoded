@@ -192,3 +192,47 @@ def test_set_status_child_return(file, root, testapp):
     file_item = root.get_by_uuid(file['uuid'])
     res = file_item.set_status('released', parent=False)
     assert not res
+
+
+def test_set_status_catch_access_denied_error(mocker, testapp, file):
+    from botocore.exceptions import ClientError
+    from encoded.types.file import File
+    from encoded.types.file import logging
+    import boto3
+    mocker.patch('boto3.resource')
+    boto3.resource.side_effect = ClientError(
+        {
+            'Error': {
+                'Code': 'AccessDenied',
+                'Message': 'Access Denied'
+            }
+        },
+        'PutObjectAcl'
+    )
+    mocker.patch('encoded.types.file.File._get_external_sheet')
+    File._get_external_sheet.return_value = {}
+    mocker.patch('encoded.types.file.logging.warn')
+    testapp.patch_json(file['@id'] + '@@release', {})
+    # Should log AccessDenied error but shouldn't raise error.
+    assert logging.warn.assert_called_once()
+
+
+def test_set_status_raise_other_error(mocker, testapp, file):
+    from botocore.exceptions import ClientError
+    from encoded.types.file import File
+    import boto3
+    mocker.patch('boto3.resource')
+    boto3.resource.side_effect = ClientError(
+        {
+            'Error': {
+                'Code': 'NoSuchBucket',
+                'Message': 'The specified bucket does not exist'
+            }
+        },
+        'ListBucket'
+    )
+    mocker.patch('encoded.types.file.File._get_external_sheet')
+    File._get_external_sheet.return_value = {}
+    # Should raise error.
+    with pytest.raises(ClientError):
+        testapp.patch_json(file['@id'] + '@@release', {})

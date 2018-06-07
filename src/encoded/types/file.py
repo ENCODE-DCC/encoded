@@ -1,3 +1,4 @@
+from botocore.exceptions import ClientError
 from snovault import (
     AfterModified,
     BeforeModified,
@@ -28,6 +29,7 @@ from urllib.parse import (
 )
 import boto3
 import datetime
+import logging
 import json
 import pytz
 import time
@@ -419,10 +421,16 @@ class File(Item):
         properties['status'] = new_status
         self.update(properties)
         # Change permission in S3.
-        if new_status == 'released':
-            self.set_public_s3()
-        elif new_status == 'in progress':
-            self.set_private_s3()
+        try:
+            if new_status == 'released':
+                self.set_public_s3()
+            elif new_status == 'in progress':
+                self.set_private_s3()
+        except ClientError as e:
+            if e.response['Error']['Code'] == 'AccessDenied':
+                logging.warn(e)
+            else:
+                raise e
 
 
 @view_config(name='upload', context=File, request_method='GET',
