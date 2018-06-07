@@ -175,12 +175,22 @@ export class FileTable extends React.Component {
               FileTable.procTableColumns :
               _.omit(FileTable.procTableColumns, 'biological_replicates');
 
+            // filesRaw should be falsy if files.raw is
+            const filesRaw = showReplicateNumber || !files.raw ?
+              files.raw :
+              _.omit(files.raw, 'biological_replicates');
+
+            // filesRawArray should be falsy if files.rawArray is
+            const filesRawArray = showReplicateNumber || !files.rawArray ?
+              files.rawArray :
+              _.omit(files.rawArray, 'biological_replicates');
+
             return (
                 <div>
                     {showFileCount ? <div className="file-gallery-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
                         <RawSequencingTable
-                            files={files.raw}
+                            files={filesRaw}
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -192,7 +202,7 @@ export class FileTable extends React.Component {
                             }}
                         />
                         <RawFileTable
-                            files={files.rawArray}
+                            files={filesRawArray}
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -405,6 +415,37 @@ FileTable.refTableColumns = {
 };
 
 
+const sortBioReps = (a, b) => {
+    // Sorting function for biological replicates of the given files.
+    let result; // Ends sorting loop once it has a value
+    let i = 0;
+    let repA = (a && a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
+    let repB = (b && b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
+
+    while (result === undefined) {
+        if (repA !== undefined && repB !== undefined) {
+            // Both biological replicates have a value
+            if (repA !== repB) {
+                // We got a real sorting result
+                result = repA - repB;
+            } else {
+                // They both have values, but they're equal; go to next
+                // biosample replicate array elements
+                i += 1;
+                repA = a.biological_replicates[i];
+                repB = b.biological_replicates[i];
+            }
+        } else if (repA !== undefined || repB !== undefined) {
+            // One and only one replicate empty; sort empty one after
+            result = repA ? 1 : -1;
+        } else {
+            // Both empty; sorting result same
+            result = 0;
+        }
+    }
+    return result;
+}
+
 const FileStatusLabel = (props) => {
     const { file } = props;
     const status = file.status;
@@ -592,7 +633,7 @@ class RawSequencingTable extends React.Component {
                                     );
                                 });
                             })}
-                            {nonpairedFiles.map((file, i) => {
+                            {nonpairedFiles.sort(sortBioReps).map((file, i) => {
                                 // Prepare for run_type display
                                 let runType;
                                 if (file.run_type === 'single-ended') {
@@ -774,7 +815,7 @@ class RawFileTable extends React.Component {
                                 });
                             })}
 
-                            {nonGrouped.map((file, i) => {
+                            {nonGrouped.sort(sortBioReps).map((file, i) => {
                                 // Prepare for run_type display
                                 const rowClasses = [
                                     groupKeys.length && i === 0 ? 'table-raw-separator' : null,
