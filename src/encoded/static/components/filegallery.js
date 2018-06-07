@@ -405,37 +405,6 @@ FileTable.refTableColumns = {
 };
 
 
-function sortBioReps(a, b) {
-    // Sorting function for biological replicates of the given files.
-    let result; // Ends sorting loop once it has a value
-    let i = 0;
-    let repA = (a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
-    let repB = (b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
-    while (result === undefined) {
-        if (repA !== undefined && repB !== undefined) {
-            // Both biological replicates have a value
-            if (repA !== repB) {
-                // We got a real sorting result
-                result = repA - repB;
-            } else {
-                // They both have values, but they're equal; go to next
-                // biosample replicate array elements
-                i += 1;
-                repA = a.biological_replicates[i];
-                repB = b.biological_replicates[i];
-            }
-        } else if (repA !== undefined || repB !== undefined) {
-            // One and only one replicate empty; sort empty one after
-            result = repA ? 1 : -1;
-        } else {
-            // Both empty; sorting result same
-            result = 0;
-        }
-    }
-    return result;
-}
-
-
 const FileStatusLabel = (props) => {
     const { file } = props;
     const status = file.status;
