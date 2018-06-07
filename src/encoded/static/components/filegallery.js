@@ -444,7 +444,7 @@ const sortBioReps = (a, b) => {
         }
     }
     return result;
-}
+};
 
 const FileStatusLabel = (props) => {
     const { file } = props;
