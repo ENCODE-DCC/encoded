@@ -2014,7 +2014,7 @@ const FileDetailView = function FileDetailView(node, qcClick, auditIndicators, a
                 <dl className="key-value">
                     <div data-test="status">
                         <dt>Status</dt>
-                        <dd><FileStatusLabel file={selectedFile} /></dd>
+                        <dd><Status item={selectedFile} inline /></dd>
                     </div>
 
                     {selectedFile.output_type ?
@@ -2207,7 +2207,7 @@ export const CoalescedDetailsView = function CoalescedDetailsView(node) {
             },
             status: {
                 title: 'Status',
-                display: item => <div className="characterization-meta-data"><FileStatusLabel file={item} /></div>,
+                display: item => <Status item={item} badgeSize="small" />,
             },
         };
 
