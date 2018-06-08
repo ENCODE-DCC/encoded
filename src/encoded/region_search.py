@@ -1,14 +1,10 @@
 from pyramid.view import view_config
-from pyramid.compat import bytes_
 from snovault import TYPES
 from snovault.elasticsearch.interfaces import (
     ELASTIC_SEARCH,
     SNP_SEARCH_ES
 )
 from snovault.elasticsearch.indexer import MAX_CLAUSES_FOR_ES
-from elasticsearch.exceptions import (
-    NotFoundError
-)
 from pyramid.security import effective_principals
 from .search import (
     format_results,
@@ -24,8 +20,7 @@ from .region_atlas import (
     RegulomeAtlas
 )
 from .vis_defines import (
-    vis_format_url,
-    ASSEMBLY_TO_UCSC_ID
+    vis_format_url
 )
 from collections import OrderedDict
 import requests
@@ -33,7 +28,6 @@ from urllib.parse import urlencode
 
 import logging
 import re
-import json
 import time
 
 log = logging.getLogger(__name__)
@@ -104,9 +98,10 @@ def includeme(config):
 def region_get_hits(atlas, assembly, chrom, start, end, peaks_too=False):
     '''Returns a list of file uuids AND dataset paths for chromosome location'''
 
-    all_hits = {}  #{ 'dataset_paths': [], 'files': {}, 'datasets': {}, 'peaks': [], 'message': ''}
+    all_hits = {}  # { 'dataset_paths': [], 'files': {}, 'datasets': {}, 'peaks': [], 'message': ''}
 
-    (peaks, peak_details) = atlas.find_peaks_filtered(_GENOME_TO_ALIAS[assembly], chrom, start, end, peaks_too)
+    (peaks, peak_details) = atlas.find_peaks_filtered(_GENOME_TO_ALIAS[assembly], chrom, start, end,
+                                                      peaks_too)
     if not peaks:
         return {'message': 'No hits found in this location'}
     if peak_details is None:
@@ -119,14 +114,13 @@ def region_get_hits(atlas, assembly, chrom, start, end, peaks_too=False):
         all_hits['peaks'] = peaks  # For "download_elements", contains 'inner_hits' with positions
     # NOTE: peak['inner_hits']['positions']['hits']['hits'] may exist with uuids but to same file
 
-
     (all_hits['datasets'], all_hits['files']) = atlas.details_breakdown(peak_details)
     all_hits['dataset_paths'] = list(all_hits['datasets'].keys())
     all_hits['file_count'] = len(all_hits['files'].keys())
     all_hits['dataset_count'] = len(all_hits['datasets'].keys())
 
     all_hits['message'] = '%d peaks in %d files belonging to %s datasets in this region' % \
-                (all_hits['peak_count'], all_hits['file_count'], all_hits['dataset_count'])
+        (all_hits['peak_count'], all_hits['file_count'], all_hits['dataset_count'])
 
     return all_hits
 
@@ -148,6 +142,7 @@ def sanitize_coordinates(term):
         return (chromosome, start, end)
     return ('', '', '')
 
+
 def sanitize_rsid(rsid):
     return 'rs' + ''.join([a for a in filter(str.isdigit, rsid)])
 
@@ -157,7 +152,7 @@ def get_annotation_coordinates(es, id, assembly):
     chromosome, start, end = '', '', ''
     try:
         es_results = es.get(index='annotations', doc_type='default', id=id)
-    except:
+    except Exception:
         return (chromosome, start, end)
     else:
         annotations = es_results['_source']['annotations']
@@ -169,6 +164,7 @@ def get_annotation_coordinates(es, id, assembly):
         else:
             return (chromosome, start, end)
 
+
 def assembly_mapper(location, species, input_assembly, output_assembly):
     # maps location on GRCh38 to hg19 for example
     new_url = _ENSEMBL_URL + 'map/' + species + '/' \
@@ -176,7 +172,7 @@ def assembly_mapper(location, species, input_assembly, output_assembly):
         + '/?content-type=application/json'
     try:
         new_response = requests.get(new_url).json()
-    except:
+    except Exception:
         return('', '', '')
     else:
         if 'mappings' not in new_response or len(new_response['mappings']) < 1:
@@ -189,10 +185,10 @@ def assembly_mapper(location, species, input_assembly, output_assembly):
 
 
 def get_rsid_coordinates(id, assembly, atlas=None):
-    if atlas and assembly in ['GRCh38','hg19','GRCh37']:
+    if atlas and assembly in ['GRCh38', 'hg19', 'GRCh37']:
         snp = atlas.snp(_GENOME_TO_ALIAS[assembly], id)
         if snp:
-            return (snp['chrom'], snp.get('start',''), snp.get('end',''))
+            return (snp['chrom'], snp.get('start', ''), snp.get('end', ''))
 
     species = _GENOME_TO_SPECIES.get(assembly, 'homo_sapiens')
     ensembl_url = _ENSEMBL_URL
@@ -205,21 +201,20 @@ def get_rsid_coordinates(id, assembly, atlas=None):
     )
     try:
         response = requests.get(url).json()
-    except:
+    except Exception:
         return('', '', '')
     else:
         if 'mappings' not in response:
             return('', '', '')
         for mapping in response['mappings']:
             if 'PATCH' not in mapping['location']:
-                #location = mapping['location']
                 if mapping['assembly_name'] == assembly:
                     chromosome, start, end = re.split(':|-', mapping['location'])
                     return('chr' + chromosome, start, end)
                 elif assembly == 'GRCh37':
-                    return assembly_mapper(location, species, 'GRCh38', assembly)
+                    return assembly_mapper(mapping['location'], species, 'GRCh38', assembly)
                 elif assembly == 'GRCm37':
-                    return assembly_mapper(location, species, 'GRCm38', 'NCBIM37')
+                    return assembly_mapper(mapping['location'], species, 'GRCm38', 'NCBIM37')
         return ('', '', '',)
 
 
@@ -231,7 +226,7 @@ def get_ensemblid_coordinates(id, assembly):
     )
     try:
         response = requests.get(url).json()
-    except:
+    except Exception:
         return('', '', '')
     else:
         location = '{chr}:{start}-{end}'.format(
@@ -249,15 +244,16 @@ def get_ensemblid_coordinates(id, assembly):
         else:
             return ('', '', '')
 
+
 def format_position(position, resolution):
     chromosome, start, end = re.split(':|-', position)
     start = int(start) - resolution
     end = int(end) + resolution
     return '{}:{}-{}'.format(chromosome, start, end)
 
+
 def update_viusalize(result, assembly, dataset_paths, file_statuses):
     '''Restrict visualize to assembly and add Quick View if possible.'''
-    # TODO: figure out why arxhived files are failing in biodaliance
     vis = result.get('visualize_batch')
     if vis is None:
         vis = {}
@@ -270,8 +266,9 @@ def update_viusalize(result, assembly, dataset_paths, file_statuses):
     for path in dataset_paths:
         datasets += '&dataset=' + path
         count += 1
-        if count > 25:    # NOTE: only first 25 datasets
-            break
+        # WARNING: Quick View of 100 datasets is probably of little benefit, but who are we to judge
+        # if count > 25:    # NOTE: only first 25 datasets
+        #    break
     if count >= 1:
         datasets = datasets[9:]  # first '&dataset=' will be redundant in vis_format_url
         pos = result.get('coordinates')
@@ -280,7 +277,7 @@ def update_viusalize(result, assembly, dataset_paths, file_statuses):
             vis_assembly['Quick View'] = quickview_url
     if not vis_assembly:
         return None
-    return { assembly: vis_assembly }
+    return {assembly: vis_assembly}
 
 
 @view_config(route_name='regulome-search', request_method='GET', permission='search')
@@ -294,7 +291,8 @@ def region_search(context, request):
     page = request.path.split('/')[1]
     regulome = page.startswith('regulome')
     result = {
-        '@id': '/' + page + '/' + ('?' + request.query_string.split('&referrer')[0] if request.query_string else ''),
+        '@id': '/' + page + '/' + ('?' + request.query_string.split('&referrer')[0]
+                                   if request.query_string else ''),
         '@type': ['region-search'],
         'title': ('Regulome search' if regulome else 'Region search'),
         'facets': [],
@@ -325,13 +323,13 @@ def region_search(context, request):
         region = '*'
 
     assembly = request.params.get('genome', '*')
-    result['assembly'] = _GENOME_TO_ALIAS.get(assembly,'GRCh38')
+    result['assembly'] = _GENOME_TO_ALIAS.get(assembly, 'GRCh38')
     annotation = request.params.get('annotation', '*')
     chromosome, start, end = ('', '', '')
 
     result['timing'].append({'preamble': (time.time() - begin)})    # DEBUG: timing
     begin = time.time()                                             # DEBUG: timing
-    rsid=None
+    rsid = None
     if annotation != '*':
         if annotation.lower().startswith('ens'):
             chromosome, start, end = get_ensemblid_coordinates(annotation, assembly)
@@ -363,25 +361,24 @@ def region_search(context, request):
     # Search for peaks for the coordinates we got
     peaks_too = ('peak_metadata' in request.query_string)
     all_hits = region_get_hits(atlas, assembly, chromosome, start, end,
-                                                peaks_too=peaks_too)
+                               peaks_too=peaks_too)
     result['timing'].append({'peaks': (time.time() - begin)})       # DEBUG: timing
     begin = time.time()                                             # DEBUG: timing
     result['notification'] = all_hits['message']
-    if all_hits.get('dataset_count',0) == 0:
+    if all_hits.get('dataset_count', 0) == 0:
         return result
-
 
     # if more than one peak found return the experiments with those peak files
     dataset_count = all_hits['dataset_count']
     if dataset_count > MAX_CLAUSES_FOR_ES:
-        log.error("REGION_SEARCH WARNING: region covered by %d datasets is being restricted to %d" % \
-                                                            (dataset_count, MAX_CLAUSES_FOR_ES))
+        log.error("REGION_SEARCH WARNING: region covered by %d datasets is being restricted to %d"
+                  % (dataset_count, MAX_CLAUSES_FOR_ES))
         all_hits['dataset_paths'] = all_hits['dataset_paths'][:MAX_CLAUSES_FOR_ES]
         dataset_count = len(all_hits['dataset_paths'])
 
     if dataset_count:
 
-        set_type = ['Experiment']
+        # set_type = ['Experiment']
         set_indices = atlas.set_indices()
         allowed_status = atlas.allowed_statuses()
         facets = _FACETS
@@ -390,12 +387,13 @@ def region_search(context, request):
 
         query = get_filtered_query('Dataset', [], set(), principals, atlas.set_type())
         del query['query']
-        query['post_filter']['bool']['must'].append({'terms': {'embedded.@id': all_hits['dataset_paths']}})
+        query['post_filter']['bool']['must'].append({'terms':
+                                                    {'embedded.@id': all_hits['dataset_paths']}})
         query['post_filter']['bool']['must'].append({'terms': {'embedded.status': allowed_status}})
 
         used_filters = set_filters(request, query, result)
         used_filters['@id'] = all_hits['dataset_paths']
-        used_filters['status'] = allowed_status  # TODO: force regulome to show this facet
+        used_filters['status'] = allowed_status
         query['aggs'] = set_facets(facets, used_filters, principals, ['Dataset'])
         schemas = (types[item_type].schema for item_type in ['Experiment'])
         es_results = es.search(
@@ -403,17 +401,20 @@ def region_search(context, request):
         )
         result['@graph'] = list(format_results(request, es_results['hits']['hits']))
         result['total'] = total = es_results['hits']['total']
-        result['facets'] = format_facets(es_results, facets, used_filters, schemas, total, principals)
+        result['facets'] = format_facets(es_results, facets, used_filters, schemas, total,
+                                         principals)
         if len(result['@graph']) < dataset_count:  # paths should be the chosen few
-            all_hits['dataset_paths'] = [ dataset['@id'] for dataset in result['@graph'] ]
+            all_hits['dataset_paths'] = [dataset['@id'] for dataset in result['@graph']]
 
         if peaks_too:
             result['peaks'] = all_hits['peaks']
-        result['download_elements'] = get_peak_metadata_links(request, result['assembly'], chromosome, start, end)
+        result['download_elements'] = get_peak_metadata_links(request, result['assembly'],
+                                                              chromosome, start, end)
         if result['total'] > 0:
             result['notification'] = 'Success: ' + result['notification']
             position_for_browser = format_position(result['coordinates'], 200)
-            result.update(search_result_actions(request, ['Experiment'], es_results, position=position_for_browser))
+            result.update(search_result_actions(request, ['Experiment'], es_results,
+                          position=position_for_browser))
         result.pop('batch_download', None)  # not desired for region OR regulome
 
         result['timing'].append({'datasets': (time.time() - begin)})  # DEBUG: timing
@@ -427,7 +428,8 @@ def region_search(context, request):
         if regulome:
             # score regulome SNPs or point locations
             if (rsid is not None or (int(end) - int(start)) <= 1):
-                result['nearby_snps'] = atlas.nearby_snps(result['assembly'], chromosome, int(start), rsid)
+                result['nearby_snps'] = atlas.nearby_snps(result['assembly'], chromosome,
+                                                          int(start), rsid)
                 result['timing'].append({'nearby_snps': (time.time() - begin)})  # DEBUG: timing
                 begin = time.time()                                              # DEBUG: timing
                 # NOTE: Needs all hits rather than 'released' or set reduced by facet selection
@@ -437,12 +439,12 @@ def region_search(context, request):
             result['timing'].append({'scoring': (time.time() - begin)})  # DEBUG: timing
         else:  # not regulome then clean up message
             if result['notification'].startswith('Success'):
-                result['notification']= 'Success'
+                result['notification'] = 'Success'
 
     return result
 
-#@view_config(route_name='jbrest', request_method='GET', permission='search')
 
+# @view_config(route_name='jbrest', request_method='GET', permission='search')
 @view_config(route_name='jbrest')
 def jbrest(context, request):
     '''Limited JBrowse REST API support for select region sets'''
@@ -458,7 +460,7 @@ def jbrest(context, request):
     assembly = parts.pop(0)
     if region_set != 'snp141' or assembly not in ['GRCh38', 'hg19']:
         log.error('jbrest: unsupported request %s', request.url)
-        return response
+        return request.response
 
     atlas = RegionAtlas(request.registry['snp_search'])
     what = parts.pop(0)
@@ -470,16 +472,16 @@ def jbrest(context, request):
         end = int(request.params.get('end', '-1'))
         if start < 0 or end < 0 or end < start:
             log.error('jbrest: invalid coordinates %s', request.url)
-            return response
+            return request.response
         snps = atlas.find_snps(assembly, chrom, start, end)
         features = []
         for snp in snps:                         # quick view expects half open
-            features.append({'start': snp['start'] - 1, 'end': snp['end'], \
+            features.append({'start': snp['start'] - 1, 'end': snp['end'],
                              'name': snp['rsid'], 'uniqueID': snp['rsid']})
         request.response.content_type = 'application/json'
         request.query_string += "&format=json"
         return {'features': features}
-    #elif what == 'stats':
+    # elif what == 'stats':
     #    if parts[0] != 'global':
     #        log.error('jbrest: only global stats supported %s', request.url)
     #        return response
@@ -490,7 +492,8 @@ def jbrest(context, request):
     #    response.body = bytes_(json.dumps(stats), 'utf-8')
 
     log.error('jbrest unknown command: %s', request.url)
-    return response
+    return request.response
+
 
 @view_config(route_name='suggest', request_method='GET', permission='search')
 def suggest(context, request):
@@ -507,7 +510,7 @@ def suggest(context, request):
         '@graph': [],
     }
     # NOTE: attempt to use suggest on SNPs in es led to es failure during indexing
-    #if text.startswith('rs'):
+    # if text.startswith('rs'):
     es = request.registry[ELASTIC_SEARCH]
     query = {
         "suggest": {
@@ -522,11 +525,12 @@ def suggest(context, request):
     }
     try:
         results = es.search(index='annotations', body=query)
-    except:
+    except Exception:
         return result
     else:
         for item in results['suggest']['default-suggest'][0]['options']:
-            if _GENOME_TO_SPECIES.get(requested_genome,'homo_sapiens').replace('_', ' ') == item['_source']['payload']['species']:
+            if _GENOME_TO_SPECIES.get(requested_genome, 'homo_sapiens').replace('_', ' ') \
+               == item['_source']['payload']['species']:
                 result['@graph'].append(item)
         result['@graph'] = result['@graph'][:10]
         return result

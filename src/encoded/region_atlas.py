@@ -1,21 +1,19 @@
-import logging
-import json
 from elasticsearch.exceptions import (
     NotFoundError
 )
+from snovault.elasticsearch.indexer_state import SEARCH_MAX
+
 from .region_indexer import (
     snp_index_key,
     RESIDENT_REGIONSET_KEY,
     FOR_REGION_SEARCH,
     FOR_REGULOME_DB,
-    FOR_MULTIPLE_USES,
+    FOR_DUAL_USE,
     ENCODED_ALLOWED_STATUSES,
     ENCODED_DATASET_TYPES,
     REGULOME_ALLOWED_STATUSES,
     REGULOME_DATASET_TYPES
 )
-
-log = logging.getLogger(__name__)
 
 # ##################################
 # RegionAtlas and RegulomeAtlas classes encapsulate the methods
@@ -27,20 +25,23 @@ log = logging.getLogger(__name__)
 REGDB_SCORE_CHUNK_SIZE = 30000
 
 # RegulomeDB scores for bigWig (bedGraph) are converted to numeric and can be converted back
-REGDB_STR_SCORES = ['1a','1b','1c','1d','1e','1f','2a','2b','2c','3a','3b','4','5','6']
-REGDB_NUM_SCORES = [1000, 950, 900, 850, 800, 750, 600, 550, 500, 450, 400,300,200,100]
+REGDB_STR_SCORES = ['1a', '1b', '1c', '1d', '1e', '1f', '2a', '2b', '2c', '3a', '3b', '4', '5', '6']
+REGDB_NUM_SCORES = [1000, 950, 900, 850, 800, 750, 600, 550, 500, 450, 400, 300, 200, 100]
 
-#def includeme(config):
+NEARBY_SNP_WINDOW = 1600
+
+# def includeme(config):
 #    config.scan(__name__)
 #    registry = config.registry
 #    registry['region'+INDEXER] = RegionIndexer(registry)
+
 
 class RegionAtlas(object):
     '''Methods for getting stuff out of the region_index.'''
 
     def __init__(self, region_es):
         self.region_es = region_es
-        self.expected_use=FOR_REGION_SEARCH
+        self.expected_use = FOR_REGION_SEARCH
 
     def type(self):
         return 'region search'
@@ -52,7 +53,7 @@ class RegionAtlas(object):
         return ENCODED_DATASET_TYPES
 
     def set_indices(self):
-        indices = [ set_type.lower() for set_type in ENCODED_DATASET_TYPES ]
+        indices = [set_type.lower() for set_type in ENCODED_DATASET_TYPES]
         return indices
 
     def snp(self, assembly, rsid):
@@ -64,7 +65,7 @@ class RegionAtlas(object):
 
         return res['_source']
 
-    def _range_query(self, start, end, snps=False, with_inner_hits=False):
+    def _range_query(self, start, end, snps=False, with_inner_hits=False, max_results=SEARCH_MAX):
         '''private: return peak query'''
         # get all peaks that overlap requested region:
         #     peak.start <= requested.end and peak.end >= requested.start
@@ -75,19 +76,19 @@ class RegionAtlas(object):
         range_clause = {
             'bool': {
                 'must': [
-                    {'range': {prefix + 'start': {'lte': end  }}},
+                    {'range': {prefix + 'start': {'lte': end}}},
                     {'range': {prefix + 'end':   {'gte': start}}}
                 ]
             }
         }
         if snps:
-            filter = {'bool': {'should': [ range_clause ]}}
+            filter = {'bool': {'should': [range_clause]}}
         else:
             filter = {
                 'nested': {
                     'path': 'positions',
                     'query': {
-                        'bool': {'should': [ range_clause ]}
+                        'bool': {'should': [range_clause]}
                     }
                 }
             }
@@ -102,34 +103,33 @@ class RegionAtlas(object):
         }
         # special SLOW query will return inner_hits positions
         if with_inner_hits:
-            query['query']['bool']['filter']['nested']['inner_hits'] = {'size': 99999}
+            query['query']['bool']['filter']['nested']['inner_hits'] = {'size': max_results}
         return query
 
-    def find_snps(self, assembly, chrom, start, end):
+    def find_snps(self, assembly, chrom, start, end, max_results=SEARCH_MAX):
         '''Return all SNPs in a region.'''
         range_query = self._range_query(start, end, snps=True)
 
         try:
             results = self.region_es.search(index=snp_index_key(assembly), doc_type=chrom,
-                                            _source=True, body=range_query, size=99999)
+                                            _source=True, body=range_query, size=max_results)
         except NotFoundError:
             return []
         except Exception as e:
-            return []  # TODO: andle errors?
-        #log.warn('Find SNPS in %s:%d-%d found %d', chrom, start, end, len(results['hits']['hits']))
+            return []
 
-        return [ hit['_source'] for hit in results['hits']['hits'] ]
+        return [hit['_source'] for hit in results['hits']['hits']]
 
-    #def snp_suggest(self, assembly, text):
+    # def snp_suggest(self, assembly, text):
     # Using suggest with 60M of rsids leads to es crashing during SNP indexing
 
-    def find_peaks(self, assembly, chrom, start, end, peaks_too=False):
+    def find_peaks(self, assembly, chrom, start, end, peaks_too=False, max_results=SEARCH_MAX):
         '''Return all peaks in a region.  NOTE: peaks are not filtered by use.'''
-        range_query = self._range_query(start, end, False, peaks_too)
+        range_query = self._range_query(start, end, False, peaks_too, max_results)
 
         try:
             results = self.region_es.search(index=chrom.lower(), doc_type=assembly, _source=False,
-                                        body=range_query, size=99999)
+                                            body=range_query, size=max_results)
         except NotFoundError:
             return None
         except Exception as e:
@@ -137,14 +137,15 @@ class RegionAtlas(object):
 
         return list(results['hits']['hits'])
 
-    def _resident_details(self, uuids, use=None):
+    def _resident_details(self, uuids, use=None, max_results=SEARCH_MAX):
         '''private: returns resident details filtered by use.'''
         if use is None:
             use = self.expected_use
-        use_types = [FOR_MULTIPLE_USES, use]
+        use_types = [FOR_DUAL_USE, use]
         try:
             id_query = {"query": {"ids": {"values": uuids}}}
-            res = self.region_es.search(index=RESIDENT_REGIONSET_KEY, body=id_query, doc_type=use_types, size=99999)
+            res = self.region_es.search(index=RESIDENT_REGIONSET_KEY, body=id_query,
+                                        doc_type=use_types, size=max_results)
         except Exception:
             return None
 
@@ -157,7 +158,7 @@ class RegionAtlas(object):
 
     def _filter_peaks_by_use(self, peaks, use=None):
         '''private: returns peaks and resident details, both filtered by use'''
-        uuids = list(set([ peak['_id'] for peak in peaks ]))
+        uuids = list(set([peak['_id'] for peak in peaks]))
         details = self._resident_details(uuids, use)
         if not details:
             return ([], details)
@@ -184,7 +185,8 @@ class RegionAtlas(object):
         overlap = set()
         for peak in peaks:
             for hit in peak['inner_hits']['positions']['hits']['hits']:
-                if chrom == peak['_index'] and start <= hit['_source']['end'] and end >= hit['_source']['start']:
+                if chrom == peak['_index'] and start <= hit['_source']['end'] \
+                   and end >= hit['_source']['start']:
                     overlap.add(peak['_id'])
                     break
 
@@ -194,7 +196,7 @@ class RegionAtlas(object):
         '''private: returns only the details that match the uuids'''
         if uuids is None:
             assert(peaks is not None)
-            uuids = list(set([ peak['_id'] for peak in peaks ]))
+            uuids = list(set([peak['_id'] for peak in peaks]))
         filtered = {}
         for uuid in uuids:
             if uuid in details:  # region peaks may not be in regulome only details
@@ -224,7 +226,7 @@ class RegulomeAtlas(RegionAtlas):
 
     def __init__(self, region_es):
         super(RegulomeAtlas, self).__init__(region_es)
-        self.expected_use=FOR_REGULOME_DB
+        self.expected_use = FOR_REGULOME_DB
 
     def type(self):
         return 'regulome'
@@ -236,15 +238,14 @@ class RegulomeAtlas(RegionAtlas):
         return ['Dataset']
 
     def set_indices(self):
-        indices = [ set_type.lower() for set_type in REGULOME_DATASET_TYPES ]
+        indices = [set_type.lower() for set_type in REGULOME_DATASET_TYPES]
         return indices
 
-    #def snp_suggest(self, assembly, text):
+    # def snp_suggest(self, assembly, text):
     # Using suggest with 60M of rsids leads to es crashing during SNP indexing
 
     def evidence_categories(self):
         '''Returns a list of regulome evidence categories'''
-        # TODO: Fix ategories to be collection_types!!!
         return ['eQTL', 'ChIP', 'DNase', 'PWM', 'Footprint', 'PWM_matched', 'Footprint_matched']
 
     def _score_category(self, dataset):
@@ -254,12 +255,12 @@ class RegulomeAtlas(RegionAtlas):
         if collection_type == 'ChIP-seq':
             return 'ChIP'
         if collection_type in ['DNase-seq', 'FAIRE-seq']:  # TODO: confirm FAIRE is lumped in
-            return 'DNase'                                 #       aka Chromatin_Structure
+            return 'DNase'                                       # aka Chromatin_Structure
         if collection_type == 'transcription factor motifs':
             return 'PWM'
         if collection_type == 'representative DNase hypersensitivity sites':
-             return 'Footprint'
-        if collection_type in ['eQTLs','dsQTLs']:
+            return 'Footprint'
+        if collection_type in ['eQTLs', 'dsQTLs']:
             return 'eQTL'
         return None
 
@@ -317,8 +318,11 @@ class RegulomeAtlas(RegionAtlas):
         snp_evidence_category = snp_evidence[category]
 
         # What do we want the brief to look like?
-        # Regulome: Chromatin_Structure|DNase-seq|Chorion|, Chromatin_Structure|DNase-seq|Adultcd4th1|, Protein_Binding|ChIP-seq|E2F1|MCF-7|, ...
-        # Us: Chromatin_Structure:DNase-seq:|ENCSR...|Chorion|,|ENCSR...|Adultcd4th1| (tab) Protein_Binding/ChIP-seq:|ENCSR...|E2F1|MCF-7|,|ENCSR...|SP4|H1-hESC|
+        # Regulome: Chromatin_Structure|DNase-seq|Chorion|,
+        #           Chromatin_Structure|DNase-seq|Adultcd4th1|,
+        #           Protein_Binding|ChIP-seq|E2F1|MCF-7|, ...
+        # Us: Chromatin_Structure:DNase-seq:|ENCSR...|Chorion|,|ENCSR...|Adultcd4th1| (tab)
+        #           Protein_Binding/ChIP-seq:|ENCSR...|E2F1|MCF-7|,|ENCSR...|SP4|H1-hESC|
         brief = ''
         cur_score_category = ''
         cur_regdb_category = ''
@@ -335,18 +339,18 @@ class RegulomeAtlas(RegionAtlas):
                 brief += '%s:|' % cur_score_category
             try:
                 brief += dataset.get('@id', '').split('/')[-2] + '|'  # accession is buried in @id
-            except:
+            except Exception:
                 brief += '|'
             target = dataset.get('target')
             if target:
                 if isinstance(target, list):
                     target = '/'.join(target)
                 brief += target.replace(' ', '') + '|'
-            biosample = dataset.get('biosample_term_name',dataset.get('biosample_summary'))
+            biosample = dataset.get('biosample_term_name', dataset.get('biosample_summary'))
             if biosample:
                 brief += biosample.replace(' ', '') + '|'
             brief += ','
-        return brief[:-1] # remove last comma
+        return brief[:-1]   # remove last comma
 
     def make_a_case(self, snp):
         '''Convert evidence json to list of evidence strings for bed batch downloads.'''
@@ -398,7 +402,6 @@ class RegulomeAtlas(RegionAtlas):
             return '6'
 
         return None  # "Found: " + str(characterize)
-
 
     def regulome_score(self, datasets, evidence=None):
         '''Calculate RegulomeDB score based upon hits and voodoo'''
@@ -466,8 +469,8 @@ class RegulomeAtlas(RegionAtlas):
                             if snp_evidence:
                                 snp['score'] = self.regulome_score(snp_datasets, snp_evidence)
                                 snp['evidence'] = snp_evidence
-                                #snp['datasets'] = snp_datasets
-                                #snp['files'] = snp_files
+                                # snp['datasets'] = snp_datasets
+                                # snp['files'] = snp_files
                                 last_snp = snp
                                 yield snp
                                 continue
@@ -527,8 +530,8 @@ class RegulomeAtlas(RegionAtlas):
         if rsid:
             max_snps += 1
 
-        range_start = pos - 800
-        range_end = pos + 800
+        range_start = pos - int(NEARBY_SNP_WINDOW / 2)
+        range_end = pos + int(NEARBY_SNP_WINDOW / 2)
         if range_start < 0:
             range_end += 0 - range_start
             range_start = 0
@@ -557,7 +560,8 @@ class RegulomeAtlas(RegionAtlas):
             chunk_start += chunk_size
 
     def iter_scored_signal(self, assembly, chrom, start, end):
-        '''For a region, iteratively yields all bedGraph styled regions of contiguous numeric score.'''
+        '''For a region, iteratively yields all bedGraph styled regions
+           of contiguous numeric score.'''
         if end < start:
             return
         chunk_size = REGDB_SCORE_CHUNK_SIZE
@@ -581,12 +585,12 @@ class RegulomeAtlas(RegionAtlas):
         '''converst str score to numeric representation (for bedGraph)'''
         try:
             return REGDB_NUM_SCORES[REGDB_STR_SCORES.index(alpha_score)]
-        except:
+        except Exception:
             return 0
 
     def str_score(self, int_score):
         '''converst numeric representation of score to standard string score'''
         try:
             return REGDB_STR_SCORES[REGDB_NUM_SCORES.index(int_score)]
-        except:
+        except Exception:
             return ''
