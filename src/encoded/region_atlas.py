@@ -43,13 +43,16 @@ class RegionAtlas(object):
         self.region_es = region_es
         self.expected_use = FOR_REGION_SEARCH
 
-    def type(self):
+    @staticmethod
+    def type():
         return 'region search'
 
-    def allowed_statuses(self):
+    @staticmethod
+    def allowed_statuses():
         return ENCODED_ALLOWED_STATUSES
 
-    def set_type(self):
+    @staticmethod
+    def set_type():
         return ENCODED_DATASET_TYPES
 
     def set_indices(self):
@@ -65,7 +68,8 @@ class RegionAtlas(object):
 
         return res['_source']
 
-    def _range_query(self, start, end, snps=False, with_inner_hits=False, max_results=SEARCH_MAX):
+    @staticmethod
+    def _range_query(start, end, snps=False, with_inner_hits=False, max_results=SEARCH_MAX):
         '''private: return peak query'''
         # get all peaks that overlap requested region:
         #     peak.start <= requested.end and peak.end >= requested.start
@@ -82,9 +86,9 @@ class RegionAtlas(object):
             }
         }
         if snps:
-            filter = {'bool': {'should': [range_clause]}}
+            filter_fish = {'bool': {'should': [range_clause]}}
         else:
-            filter = {
+            filter_fish = {
                 'nested': {
                     'path': 'positions',
                     'query': {
@@ -96,7 +100,7 @@ class RegionAtlas(object):
         query = {
             'query': {
                 'bool': {
-                    'filter': filter
+                    'filter': filter_fish
                 }
             },
             '_source': snps,  # True is snps, False if regions
@@ -115,7 +119,7 @@ class RegionAtlas(object):
                                             _source=True, body=range_query, size=max_results)
         except NotFoundError:
             return []
-        except Exception as e:
+        except Exception:
             return []
 
         return [hit['_source'] for hit in results['hits']['hits']]
@@ -177,7 +181,8 @@ class RegionAtlas(object):
             return (peaks, None)
         return self._filter_peaks_by_use(peaks, use=use)
 
-    def _peak_uuids_in_overlap(self, peaks, chrom, start, end=None):
+    @staticmethod
+    def _peak_uuids_in_overlap(peaks, chrom, start, end=None):
         '''private: returns set of only the uuids for peaks that overlap a given location'''
         if end is None:
             end = start
@@ -192,7 +197,8 @@ class RegionAtlas(object):
 
         return overlap
 
-    def _filter_details(self, details, uuids=None, peaks=None):
+    @staticmethod
+    def _filter_details(details, uuids=None, peaks=None):
         '''private: returns only the details that match the uuids'''
         if uuids is None:
             assert(peaks is not None)
@@ -203,7 +209,8 @@ class RegionAtlas(object):
                 filtered[uuid] = details[uuid]
         return filtered
 
-    def details_breakdown(self, details, uuids=None):
+    @staticmethod
+    def details_breakdown(details, uuids=None):
         '''Return dataset and file dicts from resident details dicts.'''
         if not details:
             return (None, None)
@@ -244,11 +251,13 @@ class RegulomeAtlas(RegionAtlas):
     # def snp_suggest(self, assembly, text):
     # Using suggest with 60M of rsids leads to es crashing during SNP indexing
 
-    def evidence_categories(self):
+    @staticmethod
+    def evidence_categories():
         '''Returns a list of regulome evidence categories'''
         return ['eQTL', 'ChIP', 'DNase', 'PWM', 'Footprint', 'PWM_matched', 'Footprint_matched']
 
-    def _score_category(self, dataset):
+    @staticmethod
+    def _score_category(dataset):
         '''private: returns one of the categories of evidence that are needed for scoring.'''
         # score categories are slighly different from regulome categories
         collection_type = dataset.get('collection_type')  # resident_regionset dataset
@@ -363,7 +372,8 @@ class RegulomeAtlas(RegionAtlas):
                     case[category] = self._write_a_brief(category, snp['evidence'])
         return case
 
-    def _score(self, charactization):
+    @staticmethod
+    def _score(charactization):
         '''private: returns regulome score from characterization set'''
         if 'eQTL' in charactization:
             if 'ChIP' in charactization:
@@ -411,7 +421,8 @@ class RegulomeAtlas(RegionAtlas):
                 return None
         return self._score(set(evidence.keys()))
 
-    def _snp_window(self, snps, window, center_pos=None):
+    @staticmethod
+    def _snp_window(snps, window, center_pos=None):
         '''Reduce a list of snps to a set number of snps centered around position'''
         if len(snps) <= window:
             return snps
@@ -463,7 +474,7 @@ class RegulomeAtlas(RegionAtlas):
                     last_uuids = snp_uuids
                     snp_details = self._filter_details(details, uuids=list(snp_uuids))
                     if snp_details:
-                        (snp_datasets, snp_files) = self.details_breakdown(snp_details)
+                        (snp_datasets, _snp_files) = self.details_breakdown(snp_details)
                         if snp_datasets:
                             snp_evidence = self.regulome_evidence(snp_datasets)
                             if snp_evidence:
@@ -499,7 +510,7 @@ class RegulomeAtlas(RegionAtlas):
                     last_uuids = base_uuids
                     base_details = self._filter_details(details, uuids=list(base_uuids))
                     if base_details:
-                        (base_datasets, base_files) = self.details_breakdown(base_details)
+                        (base_datasets, _base_files) = self.details_breakdown(base_details)
                         if base_datasets:
                             base_evidence = self.regulome_evidence(base_datasets)
                             if base_evidence:
@@ -578,17 +589,19 @@ class RegulomeAtlas(RegionAtlas):
         (peaks, details) = self.find_peaks_filtered(assembly, chrom, pos, pos)
         if not peaks or not details:
             return None
-        (datasets, files) = self.details_breakdown(details)
+        (datasets, _files) = self.details_breakdown(details)
         return self.regulome_score(datasets)
 
-    def numeric_score(self, alpha_score):
+    @staticmethod
+    def numeric_score(alpha_score):
         '''converst str score to numeric representation (for bedGraph)'''
         try:
             return REGDB_NUM_SCORES[REGDB_STR_SCORES.index(alpha_score)]
         except Exception:
             return 0
 
-    def str_score(self, int_score):
+    @staticmethod
+    def str_score(int_score):
         '''converst numeric representation of score to standard string score'''
         try:
             return REGDB_STR_SCORES[REGDB_NUM_SCORES.index(int_score)]

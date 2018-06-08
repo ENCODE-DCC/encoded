@@ -116,11 +116,12 @@ def region_get_hits(atlas, assembly, chrom, start, end, peaks_too=False):
 
     (all_hits['datasets'], all_hits['files']) = atlas.details_breakdown(peak_details)
     all_hits['dataset_paths'] = list(all_hits['datasets'].keys())
-    all_hits['file_count'] = len(all_hits['files'].keys())
-    all_hits['dataset_count'] = len(all_hits['datasets'].keys())
+    all_hits['file_count'] = len(all_hits['files'])
+    all_hits['dataset_count'] = len(all_hits['datasets'])
 
-    all_hits['message'] = '%d peaks in %d files belonging to %s datasets in this region' % \
-        (all_hits['peak_count'], all_hits['file_count'], all_hits['dataset_count'])
+    all_hits['message'] = ('%d peaks in %d files belonging to %s datasets in this region' %
+                           (all_hits['peak_count'], all_hits['file_count'],
+                            all_hits['dataset_count']))
 
     return all_hits
 
@@ -147,11 +148,11 @@ def sanitize_rsid(rsid):
     return 'rs' + ''.join([a for a in filter(str.isdigit, rsid)])
 
 
-def get_annotation_coordinates(es, id, assembly):
+def get_annotation_coordinates(es, aid, assembly):
     ''' Gets annotation coordinates from annotation index in ES '''
     chromosome, start, end = '', '', ''
     try:
-        es_results = es.get(index='annotations', doc_type='default', id=id)
+        es_results = es.get(index='annotations', doc_type='default', id=aid)
     except Exception:
         return (chromosome, start, end)
     else:
@@ -167,9 +168,9 @@ def get_annotation_coordinates(es, id, assembly):
 
 def assembly_mapper(location, species, input_assembly, output_assembly):
     # maps location on GRCh38 to hg19 for example
-    new_url = _ENSEMBL_URL + 'map/' + species + '/' \
-        + input_assembly + '/' + location + '/' + output_assembly \
-        + '/?content-type=application/json'
+    new_url = (_ENSEMBL_URL + 'map/' + species + '/'
+               + input_assembly + '/' + location + '/' + output_assembly
+               + '/?content-type=application/json')
     try:
         new_response = requests.get(new_url).json()
     except Exception:
@@ -184,9 +185,9 @@ def assembly_mapper(location, species, input_assembly, output_assembly):
         return(chromosome, start, end)
 
 
-def get_rsid_coordinates(id, assembly, atlas=None):
+def get_rsid_coordinates(rsid, assembly, atlas=None):
     if atlas and assembly in ['GRCh38', 'hg19', 'GRCh37']:
-        snp = atlas.snp(_GENOME_TO_ALIAS[assembly], id)
+        snp = atlas.snp(_GENOME_TO_ALIAS[assembly], rsid)
         if snp:
             return (snp['chrom'], snp.get('start', ''), snp.get('end', ''))
 
@@ -197,7 +198,7 @@ def get_rsid_coordinates(id, assembly, atlas=None):
     url = '{ensembl}variation/{species}/{id}?content-type=application/json'.format(
         ensembl=ensembl_url,
         species=species,
-        id=id
+        id=rsid
     )
     try:
         response = requests.get(url).json()
@@ -218,11 +219,11 @@ def get_rsid_coordinates(id, assembly, atlas=None):
         return ('', '', '',)
 
 
-def get_ensemblid_coordinates(id, assembly):
+def get_ensemblid_coordinates(eid, assembly):
     species = _GENOME_TO_SPECIES.get(assembly, 'homo_sapiens')
     url = '{ensembl}lookup/id/{id}?content-type=application/json'.format(
         ensembl=_ENSEMBL_URL,
-        id=id
+        id=eid
     )
     try:
         response = requests.get(url).json()
@@ -272,7 +273,8 @@ def update_viusalize(result, assembly, dataset_paths, file_statuses):
     if count >= 1:
         datasets = datasets[9:]  # first '&dataset=' will be redundant in vis_format_url
         pos = result.get('coordinates')
-        quickview_url = vis_format_url("quickview", datasets, assembly, pos, file_statuses)
+        quickview_url = vis_format_url("quickview", datasets, assembly, position=pos,
+                                       file_statuses=file_statuses)
         if quickview_url is not None:
             vis_assembly['Quick View'] = quickview_url
     if not vis_assembly:
@@ -529,8 +531,8 @@ def suggest(context, request):
         return result
     else:
         for item in results['suggest']['default-suggest'][0]['options']:
-            if _GENOME_TO_SPECIES.get(requested_genome, 'homo_sapiens').replace('_', ' ') \
-               == item['_source']['payload']['species']:
+            species = _GENOME_TO_SPECIES.get(requested_genome, 'homo_sapiens').replace('_', ' ')
+            if species == item['_source']['payload']['species']:
                 result['@graph'].append(item)
         result['@graph'] = result['@graph'][:10]
         return result

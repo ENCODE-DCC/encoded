@@ -335,17 +335,20 @@ class RemoteReader(object):
 
         return file_to_read
 
-    def tsv(self, file_handle):
+    @staticmethod
+    def tsv(file_handle):
         reader = csv.reader(file_handle, delimiter='\t')
         for row in reader:
             yield row
 
-    def region(self, row):
+    @staticmethod
+    def region(row):
         '''Read a region from an in memory row and returns chrom and document to index.'''
         chrom, start, end = row[0], int(row[1]), int(row[2])
         return (chrom, {'start': start + 1, 'end': end})  # bed loc 'half-open', but we close it !
 
-    def snp(self, row):
+    @staticmethod
+    def snp(row):
         '''Read a SNP from an in memory row and returns chrom and document to index.'''
         chrom, start, end, rsid = row[0], int(row[1]), int(row[2]), row[3]
         return (chrom, {'rsid': rsid, 'chrom': chrom, 'start': start + 1, 'end': end})
@@ -388,7 +391,8 @@ class RegionIndexerState(IndexerState):
     def file_dropped(self, uuid):
         self.list_extend(self.files_added_set, [uuid])
 
-    def all_indexable_uuids_set(self, request):
+    @staticmethod
+    def all_indexable_uuids_set(request):
         '''returns set of uuids. allowing intersections.'''
         assays = list(ENCODED_REGION_REQUIREMENTS.keys())
         uuids = set(encoded_regionable_datasets(request, assays))
@@ -494,7 +498,8 @@ class RegionIndexerState(IndexerState):
 
         return state
 
-    def counts(self, region_es, assemblies=None):
+    @staticmethod
+    def counts(region_es, assemblies=None):
         '''returns counts (region files, regulome files, snp files and all files)'''
         counts = {'all_files': 0}
         for use in [FOR_REGION_SEARCH, FOR_REGULOME_DB, FOR_DUAL_USE]:
@@ -601,7 +606,7 @@ def index_regions(request):
         result = state.finish_cycle(result, errors)
         if result['indexed'] == 0:
             log.warn("Region indexer added %d file(s) from %d dataset uuids",
-                     (result['indexed'], uuid_count))
+                     result['indexed'], uuid_count)
 
     state.send_notices()
     return result
@@ -679,7 +684,8 @@ class RegionIndexer(Indexer):
             pass
         # TODO: gather and return errors
 
-    def check_embedded_targets(self, request, dataset):
+    @staticmethod
+    def check_embedded_targets(request, dataset):
         '''Make sure taget or targets is embedded.'''
         # Not all datasets will have a target but if they do it must be embeeded
         target = dataset.get('target')
@@ -708,7 +714,8 @@ class RegionIndexer(Indexer):
 
         return None
 
-    def candidate_dataset(self, dataset):
+    @staticmethod
+    def candidate_dataset(dataset):
         '''returns None, or a list of uses which may include region search and/or regulome.'''
         if 'Experiment' not in dataset['@type'] and 'FileSet' not in dataset['@type']:
             return None
@@ -728,7 +735,8 @@ class RegionIndexer(Indexer):
 
         return dataset_uses
 
-    def metadata_doc(self, afile, dataset, assembly, uses):
+    @staticmethod
+    def metadata_doc(afile, dataset, assembly, uses):
         '''returns file and dataset metadata document'''
         meta_doc = {
             'uuid': str(afile['uuid']),
@@ -849,14 +857,14 @@ class RegionIndexer(Indexer):
 
         return self.metadata_doc(afile, dataset, assembly, file_uses)
 
-    def in_regions_es(self, id, use_type=None):
-        '''returns True if an id is in regions es'''
+    def in_regions_es(self, uuid, use_type=None):
+        '''returns True if a uuid is in regions es'''
         try:
             if use_type is not None:
                 doc = self.regions_es.get(index=self.residents_index, doc_type=use_type,
-                                          id=str(id)).get('_source', {})
+                                          id=str(uuid)).get('_source', {})
             else:
-                doc = self.regions_es.get(index=self.residents_index, id=str(id)).get('_source', {})
+                doc = self.regions_es.get(index=self.residents_index, id=str(uuid)).get('_source', {})
             if doc:
                 return True
         except NotFoundError:
@@ -866,14 +874,14 @@ class RegionIndexer(Indexer):
 
         return False
 
-    def remove_from_regions_es(self, id):
-        '''Removes all traces of an id (usually uuid) from region search elasticsearch index.'''
+    def remove_from_regions_es(self, uuid):
+        '''Removes all traces of a uuid (from file) from region search elasticsearch index.'''
         try:
-            result = self.regions_es.get(index=self.residents_index, id=str(id))
+            result = self.regions_es.get(index=self.residents_index, id=str(uuid))
             doc = result.get('_source', {})
             use_type = result.get('_type', FOR_DUAL_USE)
             if not doc:
-                log.warn("Trying to drop file: %s  NOT FOUND", id)
+                log.warn("Trying to drop file: %s  NOT FOUND", uuid)
                 return False
         except Exception:
             return False  # Not an error: remove may be called without looking first
@@ -888,16 +896,16 @@ class RegionIndexer(Indexer):
             for chrom in doc['chroms']:  # Could just try index='chr*'
                 try:
                     self.regions_es.delete(index=chrom.lower(), doc_type=doc['assembly'],
-                                           id=str(id))
+                                           id=str(uuid))
                 except Exception:
-                    # log.error("Region indexer failed to remove %s regions of %s" % (chrom, id))
+                    # log.error("Region indexer failed to remove %s regions of %s" % (chrom, uuid))
                     # return False # Will try next full cycle
                     pass
 
         try:
-            self.regions_es.delete(index=self.residents_index, doc_type=use_type, id=str(id))
+            self.regions_es.delete(index=self.residents_index, doc_type=use_type, id=str(uuid))
         except Exception:
-            log.error("Region indexer failed to remove %s from %s" % (id, self.residents_index))
+            log.error("Region indexer failed to remove %s from %s" % (uuid, self.residents_index))
             return False  # Will try next full cycle
 
         return True
@@ -952,7 +960,8 @@ class RegionIndexer(Indexer):
 
         return True
 
-    def snps_bulk_iterator(self, snp_index, chrom, snps_for_chrom):
+    @staticmethod
+    def snps_bulk_iterator(snp_index, chrom, snps_for_chrom):
         '''Given SNPs yields snps packaged for bulk indexing'''
         for snp in snps_for_chrom:
             yield {'_index': snp_index, '_type': chrom, '_id': snp['rsid'], '_source': snp}

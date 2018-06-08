@@ -1629,13 +1629,13 @@ def vis_format_url(browser, path, assembly, position=None, file_statuses=None):
     elif browser == "quickview":
         file_formats = '&file_format=bigBed&file_format=bigWig'
         file_inclusions = '&status=released&status=in+progress'
-        if file_statuses is not None:
+        if file_statuses:
             file_inclusions = ''
             for status in file_statuses:
                 file_inclusions += '&status=' + status.replace(' ', '+')
 
         region = ''
-        if position is not None:
+        if position:
             region = '&region=' + position
         return ('/search/?type=File&assembly=%s%s&dataset=%s%s%s#browser' %
                 (assembly, region, path, file_formats, file_inclusions))
