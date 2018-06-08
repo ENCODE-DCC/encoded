@@ -25,13 +25,14 @@ Regulome-Search
 Access to the RegulomeDB feature is through the URL regulome-search/ (in production: https://www.encodeproject.org/regulome-search).
 This is near identical to region-search and is served by the same function defined in region_search.py.
 The set of files that are indexed for regulome and region_search are not identical but are overlapping.
-Regulome is primarily focuses on SNPs and calculates a 'regulome score' for each single-base position.
+Regulome is primarily focuses on SNPs and calculates a 'regulome score' for each single-base position, based on the types of regions the SNP intersects.
 Most of the subtle differences between region and regulome are defined in the two classes RegionAtlas and RegulomeAtlas found in region_atlas.py.
 
 Automatic Region Indexing
 -----------------------
 
-The "peaks" which are essentially intervals in a BED file are kept in a separate index per chromosome (including scaffolds).   In the apache config there is a seperate indexing listener:
+The "peaks" which are essentially intervals in a BED file, are kept in a separate index per chromosome (including scaffolds).
+In the apache config there is a seperate indexing listener:
 
 .. code::
     # regionindexer. Configure first to avoid catchall '/'
@@ -44,21 +45,23 @@ The listener wakes every 60 seconds when idle and queries es for uuids staged by
 These uuids are filtered down to datasets that are likely to contain bed files to be added to the region indexes.
 Each dataset is then verified to be of interest and its list of files is filtered down to candidate files to be added.
 If a candidate file is NOT already resident in the regions index it is then added.
+While examining a candidate dataset, if a member file is no longer a candidate but is found in the index, it will be removed.
 Most files are accessed via io.BytesIO() on the file download URL, and each peak (line of BED file) is indexed as {file-uuid, start, stop}.
-(Large files can be downloaded to the server as a temp file and then gunzip read line by line to accomplish the same thing as the in-memory byte-stream does.)
+Very large files may cause memory allocations errors if read as a byte-stream, so they are downloaded to the server as a temporary file and then read line by line to accomplish the same thing as the in-memory byte-stream does.
 The region indexes consist of one index per chromosome (e.g. 'chrx') (or scaffold), document type is the assembly (e.g. 'hg19') and key is the file's uuid.
 A single document contains all the positions for that assembly/chromosome found in the file.  Positions are a "nested" array (in ES terminology).
 A small amount of file specific information is then added to the "resident_regionsets" index, including whether the file was indexed for region search, regulome, or both.
 
 In addition to the peak positions, the region_indexer also holds dbSNP variants in a slightly different arrangement.
 There is a need to look up SNPs not only by position but also by rsid.  To do this requires a separate document per SNP, keyed on rsid.
-Unlike peaks, which have chromosome based indexes, SNPs have assembly based indexes and chromosome based document types.
-A small amount of information for each the entire SNP file is added to the "resident_regionsets" index, just like for peak files.
-A primary reason of the resident_regionsets index index is to avoid reindexing a file once it has been added to the index.
+Unlike peaks, which have chromosome based indexes, SNPs have assembly based indexes, to avoid duplicate rsid keys in an index holding more than one assembly.
+To aid queries by position, the document type is the chromosome.
+A small amount of information for the entire SNP file is added to the "resident_regionsets" index, just as for peak files.
+A primary purpose for the resident_regionsets index is to quickly determine if a file has already been indexed, as its contents will not change.
 This is especially important for SNP files which contain more than 60 million SNPs each and take a *very long time* to index.
 
 Analogous to the primary (encodeD metadata) indexer, the indexing state is stored in the Elasticsearch object snovault/meta/region_indexer.
-Unlike the primary indexer, work of the region indexer is not multi-threaded, using only 1 process.
+Unlike the primary indexer, work of the region indexer is not multi-threaded, using only 1 process at this time.
 
 Full indexing takes ~4 hours on ~6000 region search files.
 This expands to ~8 hours with regulome and dbSNP files.
@@ -110,7 +113,7 @@ The embedded object is retrieved for each likely dataset and reformatted to one 
 To support IHEC JSON, each dataset may require one or more additional queries of encodeD metadata from elasticsearch.
 
 Analogous to the primary (encodeD metadata) indexer, the indexing state is stored in the Elasticsearch object snovault/meta/vis_indexer.
-Unlike the primary indexer, work of the vis indexer uses only 1 process.
+Unlike the primary indexer, work of the vis indexer uses only 1 process at this time.
 
 The whole indexing of all visualizable datasets takes ~30 minutes for ~25K of vis_blobs.
 
@@ -121,9 +124,7 @@ Differences between clustered and non-clustered deployments
 Currently the region indexes are contained in the same elasticsearch instance as encodeD metadata, for all flavors of the encodeD application including local.
 By default, unclustered demo's will not have region indexes, while clustered deployments will.
 (This arrangement can be overridden using deploy.py option: --set-region-index-to 'True' or 'False'.)
-It is possible in the future (as in the past) that the region indexes will be separated from the primary indexes.
-This would be desirable because the region indexes could grow to be massive, take a very long time to index and have very low turnover.
+It is possible in the future (as in the past) that the region indexes will be separated from the primary indexes into their own elasticsearch instance.
+This might be desirable because the region indexes could grow to be massive, take a very long time to index and have very low turnover.
 The region indexes may not change at all between releases of the encodeD portal, so recreating them each release would be of little value.
 It is not anticipated that the vis_cache index will ever be separated from the encodeD elasticsearch instance, nor will it be turned off in unclustered demos.
-
-

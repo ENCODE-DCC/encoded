@@ -1,25 +1,16 @@
-from pyramid.response import Response
-from pyramid.view import view_config
-from pyramid.compat import bytes_
-from snovault import Item
-from collections import OrderedDict
-from copy import deepcopy
 import json
 import os
-from urllib.parse import (
-    parse_qs,
-    urlencode,
-)
 from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
+from snovault.elasticsearch.indexer_state import SEARCH_MAX
 import time
 from pkg_resources import resource_filename
 
 import logging
 
 log = logging.getLogger(__name__)
-#log.setLevel(logging.DEBUG)
 log.setLevel(logging.INFO)
 
+VIS_CACHE_SHARDS = 2
 IHEC_DEEP_DIG = True  # ihec requires pipeline and aligner information which is not easy to get
 
 ASSEMBLY_DETAILS = {
@@ -230,7 +221,7 @@ SUPPORTED_TRACK_SETTINGS = [
     "scoreFilter", "spectrum", "minGrayLevel", "itemRgb", "viewLimits",
     "autoScale", "negateValues", "maxHeightPixels", "windowingFunction", "transformFunc",
     "signalFilter", "signalFilterLimits", "pValueFilter", "pValueFilterLimits",
-    "qValueFilter", "qValueFilterLimits" ]
+    "qValueFilter", "qValueFilterLimits"]
 VIEW_SETTINGS = SUPPORTED_TRACK_SETTINGS
 
 # UCSC trackDb settings that are supported
@@ -241,7 +232,7 @@ TRACK_SETTINGS = ["bigDataUrl", "longLabel", "shortLabel", "type", "color", "alt
 
 # This dataset terms (among others) are needed in vis_dataset formatting
 ENCODED_DATASET_TERMS = ['biosample_term_name', 'biosample_term_id', 'biosample_summary',
-                    'biosample_type', 'assay_term_id', 'assay_term_name']
+                         'biosample_type', 'assay_term_id', 'assay_term_name']
 
 # This dataset terms (among others) are needed in vis_dataset formatting
 ENCODED_DATASET_EMBEDDED_TERMS = {
@@ -394,8 +385,8 @@ class Sanitize(object):
     # Tools for sanitizing labels
 
     def escape_char(self, c, exceptions=['_'], htmlize=False, numeralize=False):
-        '''Pass through for 0-9,A-Z.a-z,_, but then either html encodes, numeralizes or removes special
-        characters.'''
+        '''Pass through for 0-9,A-Z.a-z,_, but then either html encodes, numeralizes
+        or removes special characters.'''
         n = ord(c)
         if n >= 47 and n <= 57:  # 0-9
             return c
@@ -447,6 +438,7 @@ class Sanitize(object):
             new_s += self.escape_char(c)
         return new_s
 
+
 sanitize = Sanitize()
 
 
@@ -468,7 +460,7 @@ class VisDefines(object):
 
     def load_vis_defs(self):
         '''Loads 'vis_defs' (visualization definitions by assay type) from a static files.'''
-        #global VIS_DEFS_FOLDER
+        # global VIS_DEFS_FOLDER
         global VIS_DEFS_BY_TYPE
         global VIS_DEFS_DEFAULT
         folder = resource_filename(__name__, VIS_DEFS_FOLDER)
@@ -483,7 +475,7 @@ class VisDefines(object):
                         VIS_DEFS_BY_TYPE.update(vis_def)
 
         self.vis_defs = VIS_DEFS_BY_TYPE
-        VIS_DEFS_DEFAULT = self.vis_defs.get("opaque",{})
+        VIS_DEFS_DEFAULT = self.vis_defs.get("opaque", {})
         self.vis_def_default = VIS_DEFS_DEFAULT
 
     def get_vis_type(self):
@@ -496,7 +488,7 @@ class VisDefines(object):
                 assay = assay[0]
             else:
                 log.debug("assay_term_name for %s is unexpectedly a list %s" %
-                        (self.dataset['accession'], str(assay)))
+                          (self.dataset['accession'], str(assay)))
                 return "opaque"
 
         # simple rule defined in most vis_defs
@@ -511,16 +503,17 @@ class VisDefines(object):
 
         # Ugly rules:
         vis_type = None
-        if assay in ["RNA-seq", "PAS-seq", "microRNA-seq", \
-                     "shRNA knockdown followed by RNA-seq", \
-                     "CRISPR genome editing followed by RNA-seq", \
-                     "CRISPRi followed by RNA-seq", \
-                     "single cell isolation followed by RNA-seq", \
+        if assay in ["RNA-seq", "PAS-seq", "microRNA-seq",
+                     "shRNA knockdown followed by RNA-seq",
+                     "CRISPR genome editing followed by RNA-seq",
+                     "CRISPRi followed by RNA-seq",
+                     "single cell isolation followed by RNA-seq",
                      "siRNA knockdown followed by RNA-seq"]:
             reps = self.dataset.get("replicates", [])  # NOTE: overly cautious
             if len(reps) < 1:
-                log.debug("Could not distinguish between long and short RNA for %s because there are "
-                        "no replicates.  Defaulting to short." % (self.dataset.get("accession")))
+                log.debug("Could not distinguish between long and short RNA for %s because there "
+                          "are no replicates. Defaulting to short." %
+                          (self.dataset.get("accession")))
                 vis_type = "SRNA"  # this will be more noticed if there is a mistake
             else:
                 size_range = reps[0].get("library", {}).get("size_range", "")
@@ -528,17 +521,17 @@ class VisDefines(object):
                     try:
                         min_size = int(size_range[1:])
                         max_size = min_size
-                    except:
+                    except Exception:
                         log.debug("Could not distinguish between long and short RNA for %s.  "
-                                "Defaulting to short." % (self.dataset.get("accession")))
+                                  "Defaulting to short." % (self.dataset.get("accession")))
                         vis_type = "SRNA"  # this will be more noticed if there is a mistake
                 elif size_range.startswith('<'):
                     try:
                         max_size = int(size_range[1:]) - 1
                         min_size = 0
-                    except:
+                    except Exception:
                         log.debug("Could not distinguish between long and short RNA for %s.  "
-                                "Defaulting to short." % (self.dataset.get("accession")))
+                                  "Defaulting to short." % (self.dataset.get("accession")))
                         self.vis_type = "SRNA"  # this will be more noticed if there is a mistake
                         return self.vis_type
                 else:
@@ -546,19 +539,20 @@ class VisDefines(object):
                         sizes = size_range.split('-')
                         min_size = int(sizes[0])
                         max_size = int(sizes[1])
-                    except:
+                    except Exception:
                         log.debug("Could not distinguish between long and short RNA for %s.  "
-                                "Defaulting to short." % (self.dataset.get("accession")))
+                                  "Defaulting to short." % (self.dataset.get("accession")))
                         vis_type = "SRNA"  # this will be more noticed if there is a mistake
 
                 if vis_type is None:
-                    if min_size == 120 and max_size == 200: # Another ugly exception!
+                    if min_size == 120 and max_size == 200:  # Another ugly exception!
                         vis_type = "LRNA"
                     elif max_size <= 200 and max_size != min_size:
                         vis_type = "SRNA"
                     elif min_size >= 150:
                         vis_type = "LRNA"
-                    elif (min_size + max_size)/2 >= 235: # This is some wicked voodoo (SRNA:108-347=227; LRNA:155-315=235)
+                    # This is some wicked voodoo (SRNA:108-347=227; LRNA:155-315=235)
+                    elif (min_size + max_size)/2 >= 235:
                         vis_type = "SRNA"
 
         if vis_type is None:
@@ -611,7 +605,7 @@ class VisDefines(object):
                     biosample_term = biosample_term[0]
                 else:
                     log.debug("%s has biosample_type %s that is unexpectedly a list" %
-                            (self.dataset['accession'], str(biosample_term)))
+                              (self.dataset['accession'], str(biosample_term)))
                     biosample_term = "unknown"  # really only seen in test data!
             coloring = BIOSAMPLE_COLOR.get(biosample_term, {})
         if not coloring:
@@ -622,7 +616,7 @@ class VisDefines(object):
                         biosample_term = biosample_term[0]
                     else:
                         log.debug("%s has biosample_term_name %s that is unexpectedly a list" %
-                                (self.dataset['accession'], str(biosample_term)))
+                                  (self.dataset['accession'], str(biosample_term)))
                         biosample_term = "unknown"  # really only seen in test data!
                 coloring = BIOSAMPLE_COLOR.get(biosample_term, {})
         if not coloring:
@@ -709,7 +703,7 @@ class VisDefines(object):
             cur_obj = cur_obj.get(term)
             if len(terms) == 0 or cur_obj is None:
                 return cur_obj
-            if isinstance(cur_obj,list):
+            if isinstance(cur_obj, list):
                 if len(cur_obj) == 0:
                     return None
                 cur_obj = cur_obj[0]  # Can't presume to use any but first
@@ -727,12 +721,13 @@ class VisDefines(object):
             term = dataset.get(token[1:-1])
             if term is None:
                 return "Unknown " + token[1:-1].split('_')[0].capitalize()
-            elif isinstance(term,list) and len(term) > 3:
-                return "Collection of %d %ss" % (len(term),token[1:-1].split('_')[0].capitalize())
+            elif isinstance(term, list) and len(term) > 3:
+                return "Collection of %d %ss" % (len(term), token[1:-1].split('_')[0].capitalize())
             return term
         elif token == "{experiment.accession}":
             return dataset['accession']
-        elif token in ["{target}", "{target.label}", "{target.name}", "{target.title}", "{target.investigated_as}"]:
+        elif token in ["{target}", "{target.label}", "{target.name}", "{target.title}",
+                       "{target.investigated_as}"]:
             if token == '{target}':
                 token = '{target.label}'
             term = self.lookup_embedded_token(token, dataset)
@@ -744,7 +739,7 @@ class VisDefines(object):
                 return term
             return "Unknown Target"
         elif token in ["{replicates.library.biosample.summary}",
-                    "{replicates.library.biosample.summary|multiple}"]:
+                       "{replicates.library.biosample.summary|multiple}"]:
             term = self.lookup_embedded_token('{replicates.library.biosample.summary}', dataset)
             if term is None:
                 term = dataset.get("{biosample_term_name}")
@@ -767,7 +762,7 @@ class VisDefines(object):
         elif a_file is not None:
             if token == "{file.accession}":
                 return a_file['accession']
-            #elif token == "{output_type}":
+            # elif token == "{output_type}":
             #    return a_file['output_type']
             elif token == "{output_type_short_label}":
                 output_type = a_file['output_type']
@@ -839,7 +834,8 @@ class VisDefines(object):
         return working_on
 
     def ucsc_single_composite_trackDb(self, vis_format, title):
-        '''Given a single vis_format (vis_dataset or vis_by_type dict, returns single UCSC trackDb composite text'''
+        '''Given a single vis_format (vis_dataset or vis_by_type dict,
+           returns single UCSC trackDb composite text'''
         if vis_format is None or len(vis_format) == 0:
             return "# Empty composite for %s.  It cannot be visualized at this time.\n" % title
 
@@ -861,7 +857,7 @@ class VisDefines(object):
             blob += '\n'
         dimA_checked = vis_format.get("dimensionAchecked", "all")
         dimA_tag = ""
-        if dimA_checked == "first":  # All will leave dimA_tag & dimA_checked empty, default to all on
+        if dimA_checked == "first":  # All will leave dimA_tag & dimA_checked empty, default all on
             dimA_tag = vis_format.get("dimensions", {}).get("dimA", "")
         dimA_checked = None
         subgroup_ix = 2
@@ -889,7 +885,7 @@ class VisDefines(object):
                 blob += " %s=+" % sort_tag
             blob += '\n'
         # dimensions
-        actual_group_tags = ["view"]  # Not all groups will be used in composite, depending upon content
+        actual_group_tags = ["view"]  # Not all groups used in composite, depends upon content
         dimensions = vis_format.get("dimensions", {})
         if dimensions:
             pairs = ""
@@ -922,7 +918,7 @@ class VisDefines(object):
             filterfish = ""
             for filter_tag in sorted(filter_composite.keys()):
                 group = vis_format["groups"].get(filter_composite[filter_tag])
-                if group is None or len(group.get("groups", {})) <= 1:  # e.g. "Targets" may not exist
+                if group is None or len(group.get("groups", {})) <= 1:  # "Targets" may not exist
                     continue
                 filterfish += " %s" % filter_tag
                 if filter_composite[filter_tag] == "one":
@@ -992,9 +988,9 @@ class IhecDefines(object):
         self.samples = {}
         self.vis_defines = None
 
-
     def molecule(self, dataset):
-        # ["total RNA", "polyA RNA", "cytoplasmic RNA", "nuclear RNA", "genomic DNA", "protein", "other"]
+        # ["total RNA", "polyA RNA", "cytoplasmic RNA", "nuclear RNA", "genomic DNA", "protein",
+        #  "other"]
         replicates = dataset.get("replicates", [])
         if len(replicates) == 0:
             return None
@@ -1005,10 +1001,10 @@ class IhecDefines(object):
             return "genomic DNA"
         if molecule == "RNA":
             # TODO: Can/should we distinguish "cytoplasmic RNA" and "nuclear RNA"
-            #descr = dataset.get('assay_term_name', '').lower()
-            #if 'nuclear' in descr:
+            # descr = dataset.get('assay_term_name', '').lower()
+            # if 'nuclear' in descr:
             #    return "nuclear RNA"
-            #if 'cyto' in descr:
+            # if 'cyto' in descr:
             #    return "cytoplasmic RNA"
             return "total RNA"
         if molecule == "polyadenylated mRNA":
@@ -1021,22 +1017,24 @@ class IhecDefines(object):
 
     def lineage(self, biosample, default=None):
         # TODO: faking lineage
-        dev_slims = biosample.get("developmental_slims",[])
+        dev_slims = biosample.get("developmental_slims", [])
         if len(dev_slims) > 0:
             return ','.join(dev_slims)
         return default
 
     def differentiation(self, biosample, default=None):
         # TODO: faking differentiation
-        diff_slims = biosample.get("organ_slims",[])
+        diff_slims = biosample.get("organ_slims", [])
         if len(diff_slims) > 0:
             return '.'.join(diff_slims)
         return default
 
     def exp_type(self, vis_type, dataset):
         # For IHEC, a simple experiment type is needed:
-        # TODO: EpiRR experiment type: ChIP-Seq Input, Histone H3K27ac, mRNA-Seq, total-RNA-Seq, Stranded Total RNA-Seq
-        # /Ihec_metadata_specification.md: Chromatin Accessibility, Bisulfite-Seq, MeDIP-Seq, MRE-Seq, ChIP-Seq, mRNA-Seq, smRNA-Seq
+        # TODO: EpiRR experiment type: ChIP-Seq Input, Histone H3K27ac, mRNA-Seq, total-RNA-Seq,
+        #                              Stranded Total RNA-Seq
+        # /Ihec_metadata_specification.md: Chromatin Accessibility, Bisulfite-Seq, MeDIP-Seq,
+        #                                  MRE-Seq, ChIP-Seq, mRNA-Seq, smRNA-Seq
 
         # DNA Methylation --> DNA Methylation
         # DNA accessibility --> Chromatin Accessibility
@@ -1047,11 +1045,13 @@ class IhecDefines(object):
         # microRNA-seq/transcription profiling by array assay/microRNA counts/ - I have to ask them
         # if assay_slims=DNA Binding, then get the target.label
         # control --> ChIP-Seq Input
-        # if not control, then look at target.investigated_as to contain 'histone' or 'transcription factor'
-        # Then either 'Histone <target.label>' or 'Transcription Factor <target.label>' (example: 'Histone H3K4me3')
+        # if not control, then look at target.investigated_as to contain 'histone'
+        #    or 'transcription factor'
+        # Then either 'Histone <target.label>' or 'Transcription Factor <target.label>'
+        #    (example: 'Histone H3K4me3')
 
         if vis_type in ["ChIP", "GGRChIP", "HIST"]:
-            target = dataset.get('target',{}).get('label','unknown')
+            target = dataset.get('target', {}).get('label', 'unknown')
             # Controls have no visualizable files so we shouldn't see them, however...
             # Chip-seq Controls would have target.investigated_as=Control
             if target.lower() == 'control':
@@ -1076,17 +1076,17 @@ class IhecDefines(object):
             return "Chromatin Accessibility"  # TODO Confirm
         if vis_type == "WGBS":
             return "DNA Methylation"
-        #if vis_type == "ChIA":
+        # if vis_type == "ChIA":
         #    return "ChIA-pet"
-        #if vis_type == "HiC":
+        # if vis_type == "HiC":
         #    return "Hi-C"
-        #if vis_type == "TSS":
+        # if vis_type == "TSS":
         #    return "Rampage"
-        #if vis_type == "eCLIP":
+        # if vis_type == "eCLIP":
         #    return "e-CLIP"
-        #if vis_type == "ANNO":
+        # if vis_type == "ANNO":
         #    return "Annotation"
-        return None  # vis_dataset.get('assay_term_name','Unknown')
+        return None  # vis_dataset.get('assay_term_name', 'Unknown')
 
     def experiment_attributes(self, vis_dataset):
         assay_id = vis_dataset.get('assay_term_id')
@@ -1097,7 +1097,8 @@ class IhecDefines(object):
         if experiment_type is None:
             return {}
         attributes["experiment_type"] = experiment_type
-        attributes["experiment_ontology_uri"] = 'http://purl.obolibrary.org/obo/' + assay_id.replace(':','_')
+        attributes["experiment_ontology_uri"] = 'http://purl.obolibrary.org/obo/' + \
+                                                assay_id.replace(':', '_')
         assay_name = vis_dataset.get('assay_term_name')
         if assay_name:
             attributes["assay_type"] = assay_name
@@ -1110,12 +1111,11 @@ class IhecDefines(object):
         # WARNING: This could go crazy!
         # NOTE: single pipeline version AND single aligner only allowed for the whole exp!
         # NOTE: Ugly defaults
-        attributes = { "analysis_software": 'ENCODE',
-                       "analysis_group": 'ENCODE DCC',
-                       "analysis_software_version": '1',
-                       "alignment_software": 'unknown',
-                       "alignment_software_version": '1'
-                     }
+        attributes = {"analysis_software": 'ENCODE',
+                      "analysis_group": 'ENCODE DCC',
+                      "analysis_software_version": '1',
+                      "alignment_software": 'unknown',
+                      "alignment_software_version": '1'}
         if IHEC_DEEP_DIG:
             pipeline = vis_dataset.get('pipeline')
             if pipeline and 'title' in pipeline:
@@ -1129,12 +1129,14 @@ class IhecDefines(object):
         return attributes
 
     def biomaterial_type(self, biosample_type):
-        # For IHEC, biomaterial type: "Cell Line", "Primary Cell" "Primary Cell Culture" "Primary Tissue"
+        # For IHEC, biomaterial type: "Cell Line", "Primary Cell" "Primary Cell Culture"
+        #                             "Primary Tissue"
         if biosample_type:
             biosample_type = biosample_type.lower()
-            if biosample_type in ["tissue", "whole organism"]:  # "whole organism" (but really they should add another enum) - hitz
+            if biosample_type in ["tissue", "whole organism"]:
+                # "whole organism" (but really they should add another enum) - hitz
                 return "Primary Tissue"
-            if biosample_type in ["primary cell", "stem cell"]: # "stem cell" (I think) = hitz
+            if biosample_type in ["primary cell", "stem cell"]:  # "stem cell" (I think) = hitz
                 return "Primary Cell Culture"
             return "Cell Line"
 
@@ -1163,47 +1165,54 @@ class IhecDefines(object):
         if biosample_term_id:
             sample["sample_ontology_uri"] = biosample_term_id
 
-        sample["biomaterial_type"] = self.biomaterial_type(biosample.get('biosample_type')) # ["Cell Line","Primary Cell", ...
+        sample["biomaterial_type"] = self.biomaterial_type(biosample.get('biosample_type'))
+        #                            ["Cell Line", "Primary Cell", ...
         sample["line"] = biosample.get('biosample_term_name', 'none')
-        sample["medium"] = "unknown"                                                    # We don't have
-        sample["disease"] = biosample.get('health_status',"Healthy").capitalize()  #  assume all samples are healthy - hitz
+        sample["medium"] = "unknown"  # We don't have
+        sample["disease"] = biosample.get('health_status', "Healthy").capitalize()
+        #                      assume all samples are healthy - hitz
         if sample["disease"] == "Healthy":
-            sample["disease_ontology_uri"] = "http://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=NCI_Thesaurus&code=C115935&ns=NCI_Thesaurus"
+            sample["disease_ontology_uri"] = \
+                "http://ncit.nci.nih.gov/ncitbrowser/ConceptReport.jsp?dictionary=" + \
+                "NCI_Thesaurus&code=C115935&ns=NCI_Thesaurus"
         else:
             # Note only term for disease ontology is healthy=C115935.  No search url syntax known
-            sample["disease_ontology_uri"] = "https://ncit.nci.nih.gov/ncitbrowser/pages/multiple_search.jsf?nav_type=terminologies"
-        sample["sex"] = biosample.get('sex','unknown').capitalize()
+            sample["disease_ontology_uri"] = "https://ncit.nci.nih.gov/ncitbrowser/pages/" + \
+                                             "multiple_search.jsf?nav_type=terminologies"
+        sample["sex"] = biosample.get('sex', 'unknown').capitalize()
 
         if sample["biomaterial_type"] in ["Primary Tissue", "Primary Cell Culture"]:
             sample["donor_sex"] = sample["sex"]
             donor = biosample.get('donor')
             if donor is not None:
-                ids = [ donor['accession'] ]
+                ids = [donor['accession']]
                 if 'external_ids' in donor:
                     ids.extend(donor['external_ids'])
                     sample["donor_id"] = ','.join(ids)
                 else:
                     sample["donor_id"] = ids[0]
-                sample["donor_age"] = donor.get('age','NA')  # unknwn is not supported
-                sample["donor_age_unit"] = donor.get('age_units','year')  # unknwn is not supported
-                sample["donor_life_stage"] = donor.get('life_stage','unknown')
+                sample["donor_age"] = donor.get('age', 'NA')  # unknwn is not supported
+                sample["donor_age_unit"] = donor.get('age_units', 'year')  # unknwn is not supported
+                sample["donor_life_stage"] = donor.get('life_stage', 'unknown')
                 sample["donor_health_status"] = sample["disease"]
-                if donor.get('organism',{}).get('name','unknown') == 'human':
-                    sample["donor_ethnicity"] = donor.get('ethnicity','unknown')
+                if donor.get('organism', {}).get('name', 'unknown') == 'human':
+                    sample["donor_ethnicity"] = donor.get('ethnicity', 'unknown')
             if sample["biomaterial_type"] == "Primary Tissue":
                 sample["tissue_type"] = sample["line"]
-                sample["tissue_depot"] = biosample.get('source',{}).get('description','unknown')
+                sample["tissue_depot"] = biosample.get('source', {}).get('description', 'unknown')
             elif sample["biomaterial_type"] == "Primary Cell Culture":
                 sample["cell_type"] = sample["line"]
-                sample["culture_conditions"] = "unknwon" # applied_modifications=[], treatments=[], genetic_modifications=[], characterizations=[]
+                sample["culture_conditions"] = "unknwon"  # applied_modifications=[], treatments=[],
+                #                                    genetic_modifications=[], characterizations=[]
         self.samples[sample_id] = sample
         return sample
 
     def view_type(self, view, track):
-        # For IHEC, dataset track view type needed: signal_unstranded, peak_calls, methylation_profile, signal_forward, signal_reverse,
-        #            rpkm_forward, rpkm_reverse, rpkm_unstranded, reads_per_million_ miRNA_mapped, copy_number_variation
+        # For IHEC, dataset track view type needed: signal_unstranded, peak_calls,
+        #     methylation_profile, signal_forward, signal_reverse, rpkm_forward, rpkm_reverse,
+        #     rpkm_unstranded, reads_per_million_ miRNA_mapped, copy_number_variation
         # https://github.com/IHEC/ihec-ecosystems/blob/master/docs/minimum_required_track_types.md
-        track_type = track.get('type','').split()[0]
+        track_type = track.get('type', '').split()[0]
         if track_type in ['bigBed', 'bigNarrowPeak']:
             return 'peak_calls'
         view_title = view.get('title').lower()
@@ -1233,12 +1242,12 @@ class IhecDefines(object):
         hub_description["publishing_group"] = "ENCODE"
         hub_description["email"] = "encode-help@lists.stanford.edu"
         hub_description["date"] = time.strftime('%Y-%m-%d', time.gmtime())
-        hub_description["description"] = "ENCODE: Encyclopedia of DNA Elements"  # (optional?)  # something better?
-        hub_description["description_url"] = host_url # "https://www.encodeproject.org/"
+        hub_description["description"] = "ENCODE: Encyclopedia of DNA Elements"  # something better?
+        hub_description["description_url"] = host_url  # "https://www.encodeproject.org/"
         # }
         ihec_json["hub_description"] = hub_description
 
-        self.samples = {}  # Start this empty, just in case it was used in making samples from datasets
+        self.samples = {}  # Start this empty, in case it was used in making samples from datasets
         # "samples": {             one per biosample
         #     "sample_id_1": {                   biosample_term_name, molecule
         #         "sample_ontology_uri": "...",  UBERON or CL
@@ -1246,8 +1255,8 @@ class IhecDefines(object):
         #                                         "nuclear RNA", "genomic DNA", "protein", "other"]
         #         "disease": "...",              optional?  # TODO
         #         "disease_ontology_uri": "...", optional?  # TODO
-        #         "biomaterial_type": "...",     ["Cell Line", "Primary Cell", "Primary Cell Culture",
-        #                                         "Primary Tissue"]
+        #         "biomaterial_type": "...",     ["Cell Line", "Primary Cell",
+        #                                         "Primary Cell Culture", "Primary Tissue"]
         #         "line":                        biosample_term_name
         #         "lineage":                     ??? HELPME: Where do I get this?
         #         "differentiation_stage":       ??? HELPME: Where do I get this?
@@ -1274,7 +1283,8 @@ class IhecDefines(object):
         #            "analysis_software": "...",           pipeline
         #            "analysis_software_version": "..."    pipeline version
         #            "analysis_group": "...",              pipeline laboratory
-        #            "alignment_software": "...",          software ugly lookup. Single for whole experiment!
+        #            "alignment_software": "...",          software ugly lookup.
+        #                                                  Single for whole experiment!
         #            "alignment_software_version": "...",  software_version
         #        },
         #        "browser": {
@@ -1332,7 +1342,7 @@ class IhecDefines(object):
                 continue
             sample_id = biosample_accession
             if sample_id not in self.samples:
-                sample = vis_dataset.get('ihec_sample',{})
+                sample = vis_dataset.get('ihec_sample', {})
                 if not sample:
                     log.warn("vis_dataset %s is missing sample", accession)
                     continue
@@ -1360,12 +1370,12 @@ class IhecDefines(object):
                 tracks = view.get("tracks", [])
                 if len(tracks) == 0:
                     continue
-                ihec_view = []
 
                 for track in tracks:
-                    ihec_track = {}
-                    ihec_track["big_data_url"] = host_url + track["bigDataUrl"]  # contains ?proxy=true
-                    path = '/experiments/%s/@@hub/%s/%s.html' % (accession, vis_dataset.get('ucsc_assembly'), accession)
+                    ihec_track = {}                         # contains ?proxy=true
+                    ihec_track["big_data_url"] = host_url + track["bigDataUrl"]
+                    path = '/experiments/%s/@@hub/%s/%s.html' % \
+                           (accession, vis_dataset.get('ucsc_assembly'), accession)
                     ihec_track["description_url"] = host_url + path
                     md5sum = track.get('md5sum')
                     if md5sum:
@@ -1383,7 +1393,7 @@ class IhecDefines(object):
                     for term in ["type", "color", "altColor"]:
                         if term in track:
                             ihec_track[term] = track[term]
-                    ihec_track["view"] = self.view_type(view,track)
+                    ihec_track["view"] = self.view_type(view, track)
                     metadata_pairs = track.get("metadata_pairs", {})
                     for meta_key in metadata_pairs:
                         ihec_track[meta_key.replace('&#32;', ' ')] = metadata_pairs[meta_key][1:-1]
@@ -1413,7 +1423,8 @@ class VisCache(object):
         if not self.es:
             return None
         if not self.es.indices.exists(self.index):
-            one_shard = {'index': {'number_of_shards': 1, 'max_result_window': 99999 }}
+            one_shard = {'index': {'number_of_shards': VIS_CACHE_SHARDS,
+                                   'max_result_window': SEARCH_MAX}}
             mapping = {'default': {"enabled": False}}
             self.es.indices.create(index=self.index, body=one_shard, wait_for_active_shards=1)
             self.es.indices.put_mapping(index=self.index, doc_type='default', body=mapping)
@@ -1436,7 +1447,7 @@ class VisCache(object):
             try:
                 result = self.es.get(index=self.index, doc_type='default', id=vis_id)
                 return result['_source']
-            except:
+            except Exception:
                 pass  # Missing index will return None
         return None
 
@@ -1447,14 +1458,15 @@ class VisCache(object):
             vis_ids = [accession + "_" + ucsc_assembly for accession in accessions]
             try:
                 query = {"query": {"ids": {"values": vis_ids}}}
-                res = self.es.search(body=query, index=self.index, doc_type='default', size=99999)  # size=200?
+                res = self.es.search(body=query, index=self.index, doc_type='default',
+                                     size=SEARCH_MAX)  # size=200?
                 hits = res.get("hits", {}).get("hits", [])
                 results = {}
                 for hit in hits:
-                    results[hit["_id"]] = hit["_source"]  # make this a generator? No... len(results)
+                    results[hit["_id"]] = hit["_source"]  # make a generator? No... len(results)
                 log.debug("ids found: %d" % (len(results)))
                 return results
-            except:
+            except Exception:
                 pass
         return {}
 
@@ -1553,9 +1565,9 @@ def object_is_visualizable(
     if 'accession' not in obj:
         return False
     if assembly is not None:
-        assemblies = [ assembly ]
+        assemblies = [assembly]
     else:
-        assemblies = obj.get('assembly',[])
+        assemblies = obj.get('assembly', [])
     files = None
     if check_files:
         # Returning [] instead of None is important
@@ -1586,23 +1598,33 @@ def vis_format_url(browser, path, assembly, position=None, file_statuses=None):
         ensembl_host = mapped_assembly.get('ensembl_host')
         if ensembl_host is not None:
             external_url = 'http://' + ensembl_host + '/Trackhub?url='
-            external_url += path + ';species=' + mapped_assembly.get('species').replace(' ','_')
-            ### TODO: remove redirect=no when Ensembl fixes their mirrors
-            #external_url += ';redirect=no'
-            ### TODO: remove redirect=no when Ensembl fixes their mirrors
+            external_url += path + ';species=' + mapped_assembly.get('species').replace(' ', '_')
+            # ## TODO: remove redirect=no when Ensembl fixes their mirrors
+            # external_url += ';redirect=no'
+            # ## TODO: remove redirect=no when Ensembl fixes their mirrors
 
             if position is not None:
                 if position.startswith('chr'):
                     position = position[3:]  # ensembl position r=19:7069444-7087968
                 external_url += '&r={}'.format(position)
-            # GRCh38:   http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR596NOF/@@hub/hub.txt
-            # GRCh38:   http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR596NOF/@@hub/hub.txt;species=Homo_sapiens
-            # hg19/GRCh37:     http://grch37.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR596NOF/@@hub/hub.txt;species=Homo_sapiens
-            # mm10/GRCm38:     http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR475TDY@@hub/hub.txt;species=Mus_musculus
-            # mm9/NCBIM37:      http://may2012.archive.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR000CNV@@hub/hub.txt;species=Mus_musculus
-            # BDGP6:    http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR040UNE@@hub/hub.txt;species=Drosophila_melanogaster
-            # BDGP5:    http://dec2014.archive.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR040UNE@@hub/hub.txt;species=Drosophila_melanogaster
-            # ce11/WBcel235: http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/experiments/ENCSR475TDY@@hub/hub.txt;species=Caenorhabditis_elegans
+            # GRCh38:   http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/
+            #               experiments/ENCSR596NOF/@@hub/hub.txt
+            # GRCh38:   http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/
+            #               experiments/ENCSR596NOF/@@hub/hub.txt;species=Homo_sapiens
+            # hg19/GRCh37:     http://grch37.ensembl.org/Trackhub?url=https://www.encodeproject.org/
+            #                   experiments/ENCSR596NOF/@@hub/hub.txt;species=Homo_sapiens
+            # mm10/GRCm38:     http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/
+            #                           experiments/ENCSR475TDY@@hub/hub.txt;species=Mus_musculus
+            # mm9/NCBIM37:      http://may2012.archive.ensembl.org/Trackhub?url=
+            #                       https://www.encodeproject.org/
+            #                           experiments/ENCSR000CNV@@hub/hub.txt;species=Mus_musculus
+            # BDGP6:    http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/
+            #               experiments/ENCSR040UNE@@hub/hub.txt;species=Drosophila_melanogaster
+            # BDGP5:    http://dec2014.archive.ensembl.org/Trackhub?url=
+            #               https://www.encodeproject.org/
+            #                   experiments/ENCSR040UNE@@hub/hub.txt;species=Drosophila_melanogaster
+            # ce11/WBcel235: http://www.ensembl.org/Trackhub?url=https://www.encodeproject.org/
+            #                   experiments/ENCSR475TDY@@hub/hub.txt;species=Caenorhabditis_elegans
             return external_url
     elif browser == "quickview":
         file_formats = '&file_format=bigBed&file_format=bigWig'
@@ -1610,13 +1632,13 @@ def vis_format_url(browser, path, assembly, position=None, file_statuses=None):
         if file_statuses is not None:
             file_inclusions = ''
             for status in file_statuses:
-                file_inclusions += '&status=' + status.replace(' ','+')
+                file_inclusions += '&status=' + status.replace(' ', '+')
 
         region = ''
         if position is not None:
             region = '&region=' + position
-        return ('/search/?type=File&assembly=%s%s&dataset=%s%s%s#browser' % (assembly,region,path,file_formats,file_inclusions))
-    #else:
+        return ('/search/?type=File&assembly=%s%s&dataset=%s%s%s#browser' %
+                (assembly, region, path, file_formats, file_inclusions))
+    # else:
         # ERROR: not supported at this time
     return None
-
