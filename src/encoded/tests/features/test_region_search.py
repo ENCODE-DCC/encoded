@@ -1,4 +1,3 @@
-import pytest
 
 
 def test_one_region(testapp, workbook):
@@ -11,12 +10,13 @@ def test_one_region(testapp, workbook):
     res = testapp.post_json('/index_region', {'record': True})
     assert res.json['cycle_took']
     assert res.json['title'] == 'region_indexer'
-    #assert res.json['indexed'] > 0  # will be 0 if running all test
+    # assert res.json['indexed'] > 0  # will be 0 if running all test
     time.sleep(1)  # For some reason testing fails without some winks
 
     res = testapp.get('http://0.0.0.0:6543/region-search/?region=chr9%3A1-136133506&genome=GRCh37')
     assert 'Region search' in res.json['title']
-    #assert 'Success: 1 peaks in 1 files belonging to 1 datasets in this region' in res.json['notification']
+    # assert ('Success: 1 peaks in 1 files belonging to 1 datasets in this region'
+    #         in res.json['notification'])
     assert 'Success' in res.json['notification']
     assert 'chr9:1-136133506' in res.json['coordinates']
 
@@ -44,7 +44,7 @@ def test_one_regulome(testapp, workbook):
     # Call to /index_region needed if running only 'test_one_regulome', else harmless
     res = testapp.post_json('/index_region', {'record': True})
     assert res.json['title'] == 'region_indexer'
-    #assert res.json['indexed'] > 0  # will be 0 unless runninging only 'test_one_regulome'
+    # assert res.json['indexed'] > 0  # will be 0 unless runninging only 'test_one_regulome'
     time.sleep(1)  # For some reason testing fails without some winks
 
     res = testapp.get('http://0.0.0.0:6543/regulome-search/?region=chrX%3A107514356-107514356&genome=GRCh37')
@@ -58,5 +58,3 @@ def test_one_regulome(testapp, workbook):
 
     expected = 'http://0.0.0.0:6543/regulome_download/regulome_evidence_hg19_chrx_107514356_107514356.bed'
     assert expected in res.json['download_elements']
-
-
