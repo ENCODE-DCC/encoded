@@ -14,6 +14,10 @@ from pyramid.traversal import (
 from pyramid.view import (
     view_config
 )
+from snovault import (
+    AfterModified,
+    BeforeModified
+)
 import snovault
 from snovault.validators import validate_item_content_patch
 
@@ -178,7 +182,7 @@ class Item(snovault.Item):
             keys['accession'].append(properties['accession'])
         return keys
 
-    def set_status(self, new_status, parent=True):
+    def set_status(self, new_status, request, parent=True):
         # Not implemented by default.
         pass
 
@@ -233,11 +237,11 @@ def edit_json(context, request):
              name='release', validators=[validate_item_content_patch])
 def item_release(context, request):
     new_status = 'released'
-    context.set_status(new_status)
+    context.set_status(new_status, request)
 
 
 @view_config(context=Item, permission='edit', request_method='PATCH',
              name='unrelease', validators=[validate_item_content_patch])
 def item_unrelease(context, request):
     new_status = 'in progress'
-    context.set_status(new_status)
+    context.set_status(new_status, request)

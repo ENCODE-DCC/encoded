@@ -403,7 +403,7 @@ class File(Item):
             external['key']
         ).put(ACL='private')
 
-    def set_status(self, new_status, parent=True):
+    def set_status(self, new_status, request, parent=True):
         properties = self.upgrade_properties()
         status = properties.get('status')
         # Is valid transition?
@@ -419,7 +419,9 @@ class File(Item):
             else:
                 return
         properties['status'] = new_status
+        request.registry.notify(BeforeModified(self, request))
         self.update(properties)
+        request.registry.notify(AfterModified(self, request))
         # Change permission in S3.
         try:
             if new_status == 'released':

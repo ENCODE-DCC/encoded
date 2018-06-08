@@ -49,7 +49,7 @@ def test_item_release_endpoint_calls_set_status(testapp, content, mocker):
     encode_item_id = res.json['@graph'][0]['@id']
     mocker.patch('encoded.types.base.Item.set_status')
     testapp.patch_json(encode_item_id + '@@release', {})
-    Item.set_status.assert_called_once_with('released')
+    Item.set_status.assert_called_once()
 
 
 def test_item_release_endpoint_triggers_set_status(testapp, content, mocker):
@@ -67,7 +67,7 @@ def test_item_unrelease_endpoint_calls_set_status(testapp, content, mocker):
     encode_item_id = res.json['@graph'][0]['@id']
     mocker.patch('encoded.types.base.Item.set_status')
     testapp.patch_json(encode_item_id + '@@unrelease', {})
-    Item.set_status.assert_called_once_with('in progress')
+    Item.set_status.assert_called_once()
 
 
 @mock_s3
@@ -75,7 +75,7 @@ def test_file_release_endpoint_calls_file_set_status(testapp, file, mocker):
     from encoded.types.file import File
     mocker.patch('encoded.types.file.File.set_status')
     testapp.patch_json(file['@id'] + '@@release', {})
-    File.set_status.assert_called_once_with('released')
+    File.set_status.assert_called_once()
 
 
 @mock_sts
@@ -176,21 +176,21 @@ def test_set_private_s3_calls_boto(mocker, testapp, uploading_file, dummy_reques
     boto3.resource.assert_called_once()
 
 
-def test_set_status_parent_validation_failure(file, root, testapp):
+def test_set_status_parent_validation_failure(file, root, testapp, request):
     # Can't go from deleted to released.
     from snovault.validation import ValidationFailure
     testapp.patch_json(file['@id'], {'status': 'deleted'}, status=200)
     file_item = root.get_by_uuid(file['uuid'])
     with pytest.raises(ValidationFailure) as e:
-        file_item.set_status('released')
+        file_item.set_status('released', request)
     e.value.detail['description'] == 'Status transition deleted to released not allowed'
 
 
-def test_set_status_child_return(file, root, testapp):
+def test_set_status_child_return(file, root, testapp, request):
     # Can't go from deleted to released.
     testapp.patch_json(file['@id'], {'status': 'deleted'}, status=200)
     file_item = root.get_by_uuid(file['uuid'])
-    res = file_item.set_status('released', parent=False)
+    res = file_item.set_status('released', request, parent=False)
     assert not res
 
 
