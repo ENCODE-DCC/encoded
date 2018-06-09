@@ -1448,7 +1448,7 @@ class VisCache(object):
                 result = self.es.get(index=self.index, doc_type='default', id=vis_id)
                 return result['_source']
             except Exception:
-                pass  # Missing index will return None
+                return None
         return None
 
     def search(self, accessions, assembly):
@@ -1467,7 +1467,7 @@ class VisCache(object):
                 log.debug("ids found: %d" % (len(results)))
                 return results
             except Exception:
-                pass
+                return {}
         return {}
 
 

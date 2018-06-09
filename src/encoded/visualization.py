@@ -713,7 +713,7 @@ class VisDataset(object):
             group = other_groups["Replicates"]
             subgroups = group["groups"]
             if "replicate" in subgroups:
-                (repgroup_tag, repgroup) = self.format_groups("replicate", subgroups["replicate"],
+                (_repgroup_tag, repgroup) = self.format_groups("replicate", subgroups["replicate"],
                                                               rep_tags)
                 # Now to hook them into the vis_dataset structure
                 self.vis_dataset["groups"]["REP"]["groups"] = repgroup.get("groups", {})
@@ -1238,7 +1238,7 @@ def generate_set_trackDb(request, accession, dataset, assembly, hide=False, rege
             try:
                 related_datasets = [file['dataset'] for file in files]
             except Exception:
-                pass  # caught below
+                related_datasets = []  # pass  # caught below
             # Note: should be able to get
     elif 'Series' in dataset['@type'] and 'related_datasets' in dataset:
         # Note that 'Series' don't actually reach here yet because they are rejected higher up
@@ -1250,7 +1250,7 @@ def generate_set_trackDb(request, accession, dataset, assembly, hide=False, rege
             else:
                 sub_accessions = [related.split('/')[1] for related in related_datasets]
         except Exception:
-            pass  # caught below
+            sub_accessions = []  # pass  # caught below
     sub_accessions = list(set(sub_accessions))   # Only unique accessions need apply
     if len(sub_accessions) == 0:
         log.error("failed to find true datasets for files in collection %s" % accession)
@@ -1412,7 +1412,7 @@ def generate_html(context, request):
             search_link = '<a href=%s>Original search<a><BR>' % search_url
             page += search_link
         except Exception:
-            pass
+            page += '<!-- Failed to parse original search --><BR>'
 
     details = vis_def.get("html_detail")
     if details is not None:

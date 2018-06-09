@@ -55,7 +55,8 @@ class RegionAtlas(object):
     def set_type():
         return ENCODED_DATASET_TYPES
 
-    def set_indices(self):
+    @staticmethod
+    def set_indices():
         indices = [set_type.lower() for set_type in ENCODED_DATASET_TYPES]
         return indices
 
@@ -136,7 +137,7 @@ class RegionAtlas(object):
                                             body=range_query, size=max_results)
         except NotFoundError:
             return None
-        except Exception as e:
+        except Exception:
             return None
 
         return list(results['hits']['hits'])
