@@ -120,7 +120,7 @@ def get_biosample_accessions(file_json, experiment_json):
             if accession:
                 accessions.add(accession)
         except Exception:
-            pass
+            accessions = set()  # pass
     return ', '.join(list(accessions))
 
 
