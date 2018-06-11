@@ -239,8 +239,17 @@ class RegionIndexerState(IndexerState):
             # There is an efficiency trade off examining many non-dataset uuids
             # # vs. the cost of eliminating those uuids from the list ahead of time.
             assays = list(ENCODED_REGION_REQUIREMENTS.keys())
-            uuids = list(set(encoded_regionable_datasets(request, assays)).intersection(uuids))
-            uuid_count = len(uuids)
+            filtered_uuids = list(set(encoded_regionable_datasets(request, assays)).intersection(uuids))
+            uuid_count = len(filtered_uuids)
+            # Initial hand-off of uuids from the primary_indexer is failing.
+            if uuid_count < 5000:
+                log.warn("Found only %d 'regionable' datasets.  Syncing and trying again.", uuid_count)
+                self.es.indices.flush_synced(index='_all')
+                filtered_uuids = list(set(encoded_regionable_datasets(request, assays)).intersection(uuids))
+                uuid_count = len(filtered_uuids)
+                log.warn("Now found %d 'regionable' datasets.", uuid_count)
+            uuids = filtered_uuids
+
 
         return (list(set(uuids)),False)  # Only unique uuids
 
