@@ -14,10 +14,6 @@ from pyramid.traversal import (
 from pyramid.view import (
     view_config
 )
-from snovault import (
-    AfterModified,
-    BeforeModified
-)
 import snovault
 from snovault.validators import validate_item_content_patch
 

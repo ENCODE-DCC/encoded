@@ -183,7 +183,7 @@ def test_set_status_parent_validation_failure(file, root, testapp, request):
     file_item = root.get_by_uuid(file['uuid'])
     with pytest.raises(ValidationFailure) as e:
         file_item.set_status('released', request)
-    e.value.detail['description'] == 'Status transition deleted to released not allowed'
+    assert e.value.detail['description'] == 'Status transition deleted to released not allowed'
 
 
 def test_set_status_child_return(file, root, testapp, request):
