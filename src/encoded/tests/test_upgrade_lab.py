@@ -39,7 +39,7 @@ def test_lab_upgrade_5_6(upgrader, lab_5):
     assert value['schema_version'] == '6'
     assert value['status'] == 'released'
     lab_5['status'] = 'disabled'
-    lab_5['schema_version'] == '5'
+    lab_5['schema_version'] = '5'
     value = upgrader.upgrade('lab', lab_5, current_version='5', target_version='6')
     assert value['schema_version'] == '6'
     assert value['status'] == 'deleted'

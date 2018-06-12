@@ -59,7 +59,7 @@ def test_platform_upgrade_6_7(upgrader, platform_6):
     assert value['schema_version'] == '7'
     assert value['status'] == 'released'
     platform_6['status'] = 'disabled'
-    platform_6['schema_version'] == '6'
+    platform_6['schema_version'] = '6'
     value = upgrader.upgrade('platform', platform_6, current_version='6', target_version='7')
     assert value['schema_version'] == '7'
     assert value['status'] == 'deleted'
