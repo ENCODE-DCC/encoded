@@ -2436,14 +2436,26 @@ def audit_experiment_control(value, system, excluded_types):
         return
 
     for control in value['possible_controls']:
-        if control.get('biosample_term_id') != value.get('biosample_term_id'):
-            detail = 'The specified control {} for this experiment is on {}, '.format(
-                control['@id'],
-                control.get('biosample_term_name')) + \
-                'but this experiment is done on {}.'.format(
-                    value['biosample_term_name'])
+        if not is_matching_biosample_control(control, value.get('biosample_term_id')):
+            detail = ('The specified control {} '
+                      'for this experiment is on {}, '
+                      'but this experiment is done on {}.').format(
+                        control['@id'],
+                        control.get('biosample_term_name'),
+                        value['biosample_term_name']
+                      )
             yield AuditFailure('inconsistent control', detail, level='ERROR')
     return
+
+
+def is_matching_biosample_control(dataset, biosample_term_id):
+    if (dataset['@type'][0] == 'Experiment'):
+        return dataset.get('biosample_term_id') == value.get('biosample_term_id')
+    else:
+        for term in dataset.get('biosample_term_id'):
+            if term != biosample_term_id:
+                return False
+    return True
 
 
 def audit_experiment_platforms_mismatches(value, system, files_structure):
