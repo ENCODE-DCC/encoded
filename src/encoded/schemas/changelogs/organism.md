@@ -1,5 +1,14 @@
 ## Changelog for organism.json
 
+### Schema version 5
+
+* *status* property was restricted to one of  
+    "enum" : [
+        "released",
+        "deleted",
+        "in progress"
+    ]
+
 ### Schema version 4
 
 * *status* property was restricted to one of  
