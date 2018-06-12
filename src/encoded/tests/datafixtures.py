@@ -810,7 +810,7 @@ def encode_lab(testapp):
     item = {
         'name': 'encode-processing-pipeline',
         'title': 'ENCODE Processing Pipeline',
-        'status': 'current'
+        'status': 'released'
         }
     return testapp.post_json('/lab', item, status=201).json['@graph'][0]
 
