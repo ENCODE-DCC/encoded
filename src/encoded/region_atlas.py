@@ -266,9 +266,9 @@ class RegulomeAtlas(RegionAtlas):
             return 'ChIP'
         if collection_type in ['DNase-seq', 'FAIRE-seq']:  # TODO: confirm FAIRE is lumped in
             return 'DNase'                                       # aka Chromatin_Structure
-        if collection_type == 'transcription factor motifs':
+        if collection_type == 'PWMs':
             return 'PWM'
-        if collection_type == 'representative DNase hypersensitivity sites':
+        if collection_type == 'Footprints':
             return 'Footprint'
         if collection_type in ['eQTLs', 'dsQTLs']:
             return 'eQTL'
