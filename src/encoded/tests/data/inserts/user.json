@@ -835,6 +835,21 @@
         "uuid": "7e95dcd6-9c35-4082-9c53-09d14c5752be"
     },
     {
+        "email": "toyunhai@gmail.com",
+        "first_name": "Yunhai",
+        "groups": [
+            "admin"
+        ],
+        "job_title": "Data Wrangler",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Luo",
+        "status": "current",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "uuid": "76091563-a959-4a9c-929c-9acfa1a0a078"
+    },
+    {
         "email": "kritijn21@gmail.com",
         "first_name": "Kriti",
         "groups": [
