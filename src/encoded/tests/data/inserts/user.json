@@ -878,5 +878,20 @@
             "/labs/j-michael-cherry/"
         ],
         "uuid": "56ad466b-8711-4b82-8f2c-8db3dc5862fd"
+    },
+    {
+        "email": "weiwei.zhong@stanford.edu",
+        "first_name": "Weiwei",
+         "groups": [
+             "admin"
+         ],
+         "job_title": "Data Wrangler",
+         "lab": "/labs/j-michael-cherry/",
+         "last_name": "Zhong",
+         "status": "current",
+         "submits_for": [
+             "/labs/j-michael-cherry/"
+         ],
+         "uuid": "97d2dfcd-0919-4a27-9797-a6ef25f470a2"
     }
 ]
