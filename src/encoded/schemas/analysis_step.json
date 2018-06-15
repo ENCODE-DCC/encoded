@@ -93,6 +93,7 @@
                     "alignments",
                     "base overlap signal",
                     "bed",
+                    "bigBed",
                     "blacklisted regions",
                     "candidate enhancers",
                     "candidate promoters",
@@ -233,6 +234,7 @@
                 "enum": [
                     "alignments",
                     "base overlap signal",
+                    "bed",
                     "bigBed",
                     "blacklisted regions",
                     "candidate enhancers",
