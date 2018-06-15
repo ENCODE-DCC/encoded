@@ -918,7 +918,7 @@ class FacetDate extends React.Component {
         const seeMoreClass = `btn btn-link${(moreTermSelected || this.state.facetOpen) ? '' : ' collapsed'}`;
         const statusFacet = field === 'status' || field === 'lot_reviews.status';
         const months = [
-            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'
         ];
 
         // Audit facet titles get mapped to a corresponding icon.
