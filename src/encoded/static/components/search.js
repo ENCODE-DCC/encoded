@@ -922,7 +922,7 @@ class FacetDate extends React.Component {
         ];
 
         // Audit facet titles get mapped to a corresponding icon.
-        const format = 'MMM D YYYY';
+        const format = 'MMM D, YYYY';
         let titleComponent = title;
 
         if (field.substr(0, 6) === 'audit.') {
