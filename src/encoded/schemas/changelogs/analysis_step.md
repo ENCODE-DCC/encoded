@@ -1,5 +1,10 @@
 ## Changelog for analysis_step.json
 
+### Schema version 7
+
+* *input_file_types*, *output_file_types* enum now include all items from enum in output_type in the File schema
+
+
 ### Schema version 6
 
 * *status* property was restricted to one of  
