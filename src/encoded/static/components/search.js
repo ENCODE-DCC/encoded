@@ -4,6 +4,10 @@ import queryString from 'query-string';
 import _ from 'underscore';
 import url from 'url';
 import { svgIcon } from '../libs/svg-icons';
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import { formatDate, parseDate } from 'react-day-picker/moment';
+
+import moment from 'moment';
 import { Modal, ModalHeader, ModalBody, ModalFooter } from '../libs/bootstrap/modal';
 import { TabPanel, TabPanelPane } from '../libs/bootstrap/panel';
 import { auditDecor } from './audit';
@@ -821,6 +825,183 @@ Facet.defaultProps = {
 };
 
 
+class FacetDate extends React.Component {
+    constructor() {
+        super();
+
+        this.handleFromChange = this.handleFromChange.bind(this);
+        this.handleToChange = this.handleToChange.bind(this);
+        this.search = this.search.bind(this);
+        this.clear = this.clear.bind(this);
+        this.showFromMonth = this.showFromMonth.bind(this);
+
+        this.state = {
+            from: undefined,
+            to: undefined,
+        };
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timeout);
+    }
+
+    focusTo() {
+        // Focus to `to` field. A timeout is required here because the overlays
+        // already set timeouts to work well with input fields
+        this.timeout = setTimeout(() => this.to.getInput().focus(), 0);
+    }
+
+    showFromMonth() {
+        const { from, to } = this.state;
+
+        if (!from) {
+            return;
+        }
+
+        if (moment(to).diff(moment(from), 'months') < 2) {
+            this.to.getDayPicker().showMonth(from);
+        }
+
+        this.search();
+    }
+
+    handleFromChange(from) {
+        // Change the from date and focus the "to" input field
+        this.setState({ from });
+    }
+
+    handleToChange(to) {
+        this.setState({ to }, this.showFromMonth);
+    }
+
+    search() {
+        const { from, to } = this.state;
+    }
+
+    clear() {
+        let i = this.a;
+
+        // this.setState({ to: undefined }, { from: undefined });
+    }
+
+    render() {
+        const { facet, filters } = this.props;
+        const title = facet.title;
+        const field = facet.field;
+        const total = facet.total;
+        const termID = title.replace(/\s+/g, '');
+
+        // Make a list of terms for this facet that should appear, by filtering out terms that
+        // shouldn't. Any terms with a zero doc_count get filtered out, unless the term appears in
+        // the search result filter list.
+        const terms = facet.terms.filter((term) => {
+            if (term.key) {
+                // See if the facet term also exists in the search result filters (i.e. the term
+                // exists in the URL query string).
+                const found = filters.some(filter => filter.field === facet.field && filter.term === term.key);
+
+                // If the term wasn't in the filters list, allow its display only if it has a non-
+                // zero doc_count. If the term *does* exist in the filters list, display it
+                // regardless of its doc_count.
+                return found || term.doc_count > 0;
+            }
+
+            // The term exists, but without a key, so don't allow its display.'
+            return false;
+        });
+        const moreTerms = terms.slice(5);
+        const TermComponent = field === 'type' ? TypeTerm : Term;
+        const selectedTermCount = countSelectedTerms(moreTerms, facet, filters);
+        const moreTermSelected = selectedTermCount > 0;
+        const canDeselect = (!facet.restrictions || selectedTermCount >= 2);
+        const moreSecClass = `collapse${(moreTermSelected || this.state.facetOpen) ? ' in' : ''}`;
+        const seeMoreClass = `btn btn-link${(moreTermSelected || this.state.facetOpen) ? '' : ' collapsed'}`;
+        const statusFacet = field === 'status' || field === 'lot_reviews.status';
+        const months = [
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'
+        ];
+
+        // Audit facet titles get mapped to a corresponding icon.
+        const format = 'MMM D YYYY';
+        let titleComponent = title;
+
+        if (field.substr(0, 6) === 'audit.') {
+            // Get the human-readable part of the audit facet title.
+            const titleParts = title.split(': ');
+
+            // Get the non-human-readable part so we can generate a corresponding CSS class name.
+            const fieldParts = field.match(/^audit.(.+).category$/i);
+            if (fieldParts && fieldParts.length === 2 && titleParts) {
+                // We got something that looks like an audit title. Generate a CSS class name for
+                // the corresponding audit icon, and generate the title.
+                const iconClass = `icon audit-activeicon-${fieldParts[1].toLowerCase()}`;
+                titleComponent = <span>{titleParts[0]}: <i className={iconClass} /></span>;
+            } else {
+                // Something about the audit facet title doesn't match expectations, so just
+                // display the given non-human-readable audit title.
+                titleComponent = <span>{title}</span>;
+            }
+        }
+
+        if ((terms.length && terms.some(term => term.doc_count)) || (field.charAt(field.length - 1) === '!')) {
+            const { from, to } = this.state;
+            const modifiers = { start: from, end: to };
+
+            return (
+                <div className="facet">
+                    <h5>{titleComponent}</h5>
+                    <div className="InputFromTo">
+                        <DayPickerInput
+                            value={from}
+                            placeholder="From"
+                            format={format}
+                            formatDate={formatDate}
+                            parseDate={parseDate}
+                            dayPickerProps={{
+                                selectedDays: [from, { from, to }],
+                                disabledDays: { after: to },
+                                toMonth: to,
+                                months,
+                                modifiers,
+                                numberOfMonths: 2,
+                                onDayClick: () => this.to.getInput().focus()
+                            }}
+                            onDayChange={this.handleFromChange}
+                        />
+                        {' '}-{' '}
+                        <span className="InputFromTo-to">
+                            <DayPickerInput
+                                ref={el => (this.to = el)}
+                                value={to}
+                                placeholder="To"
+                                format={format}
+                                formatDate={formatDate}
+                                parseDate={parseDate}
+                                dayPickerProps={{
+                                    selectedDays: [from, { from, to }],
+                                    disabledDays: { before: from },
+                                    months,
+                                    modifiers,
+                                    month: from,
+                                    fromMonth: from,
+                                    numberOfMonths: 2
+                                }}
+                                onDayChange={this.handleToChange}
+                            />
+                        </span>
+                    </div>
+
+                    <a href={'http://www.google.com'}>Clear</a>
+                </div>
+            );
+        }
+
+        // Facet had all zero terms and was not a "not" facet.
+        return null;
+    }
+}
+
+
 // Entry field for filtering the results list when search results appear in edit forms.
 export class TextFilter extends React.Component {
     static onChange(e) {
@@ -948,6 +1129,20 @@ export class FacetList extends React.Component {
                         if (hideTypes && facet.field === 'type') {
                             return <span key={facet.field} />;
                         }
+
+                        if (facet.field === 'date_submitted') {
+                            return (
+                                <FacetDate
+                                    {...this.props}
+                                    key={facet.field}
+                                    facet={facet}
+                                    filters={filters}
+                                    width={width}
+                                    negationFilters={negationFilters}
+                                />
+                            );
+                        }
+
                         return (
                             <Facet
                                 {...this.props}

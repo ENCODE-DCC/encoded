@@ -80,6 +80,7 @@
     "prop-types": "^15.5.6",
     "query-string": "^4.1.0",
     "react": "^15.5.3",
+    "react-day-picker": "^7.1.9",
     "react-dom": "^15.5.3",
     "scriptjs": "^2.5.7",
     "source-map-support": "^0.4.11",

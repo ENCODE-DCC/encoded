@@ -78,6 +78,7 @@ $brand-info: #4F689E;
 @import "encoded/base";
 @import "encoded/math";
 @import "encoded/layout";
+@import "encoded/datepicker";
 @import "encoded/bootstrap-lib";
 @import "encoded/modules/breadcrumbs",
         "encoded/modules/pager",
@@ -116,7 +117,7 @@ $brand-info: #4F689E;
         "encoded/modules/layout-editor",
         "encoded/modules/schema";
 @import "encoded/state";
-@import "encoded/theme"; 
+@import "encoded/theme";
 
 // Utility classes - Bootstrap 3, keep last
 @import "bootstrap/utilities";
