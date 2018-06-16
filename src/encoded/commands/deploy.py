@@ -449,7 +449,7 @@ def main():
                 ImageId='ami-2133bc59',
                 MinCount=1,
                 MaxCount=1,
-                InstanceType='c5.9xlarge',
+                InstanceType='m5.xlarge',
                 SecurityGroups=['ssh-http-https'],
                 UserData=run_args['master_user_data'],
                 BlockDeviceMappings=bdm,
