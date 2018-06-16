@@ -1,16 +1,13 @@
-from pyramid.response import Response
 from pyramid.view import view_config
 from pyramid.compat import bytes_
 from snovault import Item
 from collections import OrderedDict
 from copy import deepcopy
 import json
-import os
 from urllib.parse import (
     parse_qs,
     urlencode,
 )
-from snovault.elasticsearch.interfaces import ELASTIC_SEARCH
 from .vis_defines import (
     ASSEMBLY_TO_UCSC_ID,
     VISIBLE_DATASET_STATUSES,
@@ -23,18 +20,18 @@ from .vis_defines import (
     object_is_visualizable
 )
 import time
-from pkg_resources import resource_filename
 
 import logging
 
 log = logging.getLogger(__name__)
-#log.setLevel(logging.DEBUG)
 log.setLevel(logging.INFO)
+
 
 def includeme(config):
     config.add_route('batch_hub', '/batch_hub/{search_params}/{txt}')
     config.add_route('batch_hub:trackdb', '/batch_hub/{search_params}/{assembly}/{txt}')
     config.scan(__name__)
+
 
 PROFILE_START_TIME = 0  # For profiling within this module
 
@@ -63,13 +60,14 @@ ASSEMBLY_FAMILIES = {
 
 sanitize = Sanitize()
 
+
 def urlpage(url):
     '''returns (page,suffix,cmd) from url: as ('track','json','regen') from ./../track.regen.json'''
     url_end = url.split('/')[-1]
     parts = url_end.split('.')
     page = parts[0]
     suffix = parts[-1] if len(parts) > 1 else 'txt'
-    cmd = parts[1]     if len(parts) > 2 else ''
+    cmd = parts[1] if len(parts) > 2 else ''
     return (page, suffix, cmd)
 
 
@@ -127,13 +125,15 @@ class VisCollections(object):
             if self.found > 0:
                 accessions = []
             # Don't bother if cache is primed.
-            # if self.found < (len(accessions) * 3 / 4):  # some heuristic to decide when too few means regenerate
+            # some heuristic to decide when too few means regenerate
+            # if self.found < (len(accessions) * 3 / 4):
             #     missing = list(set(accs) - set(self.vis_datasets.keys()))
 
-        if len(accessions) > 0:  # accessions not found in cache... try generating (for pre-primed-cache access)
+        if len(accessions) > 0:  # accessions not found in cache... try generating
             vis_factory = VisDataset(self.request)
             for accession in accessions:
-                vis_dataset = vis_factory.find_or_build(accession, assembly, dataset=None, hide=hide, must_build=True)
+                vis_dataset = vis_factory.find_or_build(accession, assembly, dataset=None,
+                                                        hide=hide, must_build=True)
                 # vis_dataset could legitimately be {}... no visualizable files.
                 if vis_factory.built:
                     self.built += 1
@@ -149,7 +149,8 @@ class VisCollections(object):
         return "%d gathered: %d found, %d built" % (len(self.vis_datasets), self.found, self.built)
 
     def insert_live_group(self, live_groups, new_tag, new_group):
-        '''Inserts new group into a set of live groups during remodelling to vis_asset coolections.'''
+        '''Inserts new group into a set of live groups during remodelling
+           to vis_asset coolections.'''
         old_groups = live_groups.get("groups", {})
         preferred_order = live_groups.get("preferred_order")
         # Note: all cases where group is dynamically added should be in sort order!
@@ -172,7 +173,6 @@ class VisCollections(object):
 
         old_groups[new_tag] = new_group
         live_groups["groups"] = old_groups
-        # log.debug("Added %s to %s in preferred order" % (new_tag,live_groups.get("tag","a group")))
         return live_groups
 
     def remodel_to_type_collections(self, hide_after=None, prefix=None):
@@ -271,7 +271,8 @@ class VisCollections(object):
                         for subgroup_tag in acc_subgroups.keys():
                             if subgroup_tag not in set_group.get("groups", {}).keys():
                                 # Adding biosamples, targets, and reps
-                                self.insert_live_group(set_group, subgroup_tag, acc_subgroups[subgroup_tag])
+                                self.insert_live_group(set_group, subgroup_tag,
+                                                       acc_subgroups[subgroup_tag])
 
                 # dimensions and filterComposite should not need any extra care:
                 # they get dynamically scaled down during printing
@@ -293,9 +294,11 @@ class VisCollections(object):
         for vis_type in self.vis_by_types.keys():
             vis_by_type = self.vis_by_types[vis_type]
             if vis_by_type:  # could be {}
-                vis_by_type['longLabel']  = "%s %s" % (prefix, vis_by_type['longLabel'])
+                vis_by_type['longLabel'] = "%s %s" % (prefix, vis_by_type['longLabel'])
                 if vis_by_type['shortLabel'].startswith('ENCODE '):
-                    vis_by_type['shortLabel'] = "ENCODE %s %s" % (prefix, vis_by_type['shortLabel'].split(None,1)[1])
+                    vis_by_type['shortLabel'] = ("ENCODE %s %s" %
+                                                 (prefix, vis_by_type['shortLabel'].split(None,
+                                                                                          1)[1]))
                 else:
                     vis_by_type['shortLabel'] = "%s %s" % (prefix, vis_by_type['shortLabel'])
         return self.vis_by_types
@@ -315,10 +318,12 @@ class VisCollections(object):
 
         if self.vis_by_types:
             for tag in sorted(self.vis_by_types.keys()):
-                trackdb_txt += vis_defines.ucsc_single_composite_trackDb(self.vis_by_types[tag], tag)
+                trackdb_txt += vis_defines.ucsc_single_composite_trackDb(self.vis_by_types[tag],
+                                                                         tag)
         else:
             for tag in sorted(self.vis_datasets.keys()):
-                trackdb_txt += vis_defines.ucsc_single_composite_trackDb(self.vis_datasets[tag], tag)
+                trackdb_txt += vis_defines.ucsc_single_composite_trackDb(self.vis_datasets[tag],
+                                                                         tag)
         return trackdb_txt
 
     def stringify(self, prepend_label=None):
@@ -343,7 +348,10 @@ class VisCollections(object):
                     return json.dumps(vis_by_types, indent=4, sort_keys=True)
                 else:
                     return self.ucsc_trackDb()
+        elif json_out:
+            return "{}"
         return ""
+
 
 class VisDataset(object):
     # Finds, builds, stores, remodels vis_blobs
@@ -504,7 +512,8 @@ class VisDataset(object):
                 tag_order = []
                 for subgroup_title in group_order:
                     subgroup = groups.get(subgroup_title, {})
-                    (subgroup_tag, subgroup) = self.format_groups(subgroup_title, subgroup)  # recursive
+                    (subgroup_tag, subgroup) = self.format_groups(subgroup_title, subgroup)
+                    #                               recursive
                     subgroup["tag"] = subgroup_tag
                     if isinstance(preferred_order, list):
                         preferred_order.append(subgroup_tag)
@@ -516,7 +525,7 @@ class VisDataset(object):
                 # assert(len(live_group["groups"]) == len(groups))
                 if len(live_group['groups']) != len(groups):
                     log.debug("len(live_group['groups']):%d != len(groups):%d" %
-                            (len(live_group['groups']), len(groups)))
+                              (len(live_group['groups']), len(groups)))
                     log.debug(json.dumps(live_group, indent=4))
                 live_group["group_order"] = tag_order
                 live_group["preferred_order"] = preferred_order
@@ -550,14 +559,14 @@ class VisDataset(object):
                     continue
                 assert(subgroup_title in self.vis_defines.supported_subgroups())
                 (subgroup_tag, subgroup) = self.format_groups(subgroup_title,
-                                                                groups[subgroup_title])
+                                                              groups[subgroup_title])
                 if isinstance(preferred_order, list):
                     preferred_order.append(subgroup_tag)
                 if "groups" in subgroup and len(subgroup["groups"]) > 0:
                     title_to_tag[subgroup_title] = subgroup_tag
                     groupings["groups"][subgroup_tag] = subgroup
                     groupings["group_order"].append(subgroup_tag)
-                if "dimensions" in self.vis_def["other_groups"]:  # (empty) "Targets" dim will be included
+                if "dimensions" in self.vis_def["other_groups"]:
                     dimension = self.vis_def["other_groups"]["dimensions"].get(subgroup_title)
                     if dimension is not None:
                         new_dimensions[dimension] = subgroup_tag
@@ -586,7 +595,7 @@ class VisDataset(object):
         '''Returns a dict of biosamples for file.'''
         biosamples = {}
         replicates = file_dataset.get("replicates")
-        if replicates is None or not isinstance(replicates[0],dict):
+        if replicates is None or not isinstance(replicates[0], dict):
             return []
 
         for bio_rep in a_file.get("biological_replicates", []):
@@ -639,7 +648,8 @@ class VisDataset(object):
         return (rep_key, rep_val)
 
     def gather_files_and_reps(self):
-        '''Returns visulaizable files and replicate tags from a first pass through dataset's files.'''
+        '''Returns visulaizable files and replicate tags from a
+           first pass through dataset's files.'''
         files = []
         rep_techs = {}
         ucsc_assembly = self.vis_dataset['ucsc_assembly']
@@ -651,26 +661,27 @@ class VisDataset(object):
             file_format_types = view.get("file_format_type", [])
             file_format = view["type"].split()[0]
             if file_format == "bigBed":
-                format_type = view.get('file_format_type','')
+                format_type = view.get('file_format_type', '')
                 if format_type == 'bedMethyl' or "itemRgb" in view:
                     view["type"] = "bigBed 9 +"  # itemRgb implies at least 9 +
-                elif format_type  == 'narrowPeak':
+                elif format_type == 'narrowPeak':
                     view["type"] = "bigNarrowPeak"
                 elif format_type == 'broadPeak' or "scoreFilter" in view:
                     view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
-            #log.debug("%d files looking for type %s" % (len(dataset["files"]),view["type"]))
             for a_file in self.dataset["files"]:
                 if a_file['status'] not in self.vis_defines.visible_file_statuses():
                     continue
                 if file_format != a_file['file_format']:
                     continue
-                if len(output_types) > 0 and a_file.get('output_type', 'unknown') not in output_types:
+                if len(output_types) > 0 and a_file.get('output_type',
+                                                        'unknown') not in output_types:
                     continue
-                if len(file_format_types) > 0 and \
-                a_file.get('file_format_type', 'unknown') not in file_format_types:
+                if len(file_format_types) > 0 and a_file.get('file_format_type',
+                                                             'unknown') not in file_format_types:
                     continue
-                if 'assembly' not in a_file or \
-                    ASSEMBLY_TO_UCSC_ID.get(a_file['assembly'], a_file['assembly']) != ucsc_assembly:
+                if ('assembly' not in a_file or
+                    ASSEMBLY_TO_UCSC_ID.get(a_file['assembly'],
+                                            a_file['assembly']) != ucsc_assembly):
                     continue
                 if "rep_tech" not in a_file:
                     rep_tech = self.vis_defines.rep_for_file(a_file)
@@ -680,7 +691,8 @@ class VisDataset(object):
                 rep_techs[rep_tech] = rep_tech
                 files.append(a_file)
         if len(files) == 0:
-            log.debug("No visualizable files for %s %s" % (self.dataset["accession"], self.vis_dataset["vis_type"]))
+            log.debug("No visualizable files for %s %s" % (self.dataset["accession"],
+                                                           self.vis_dataset["vis_type"]))
             return (None, None)
 
         # convert rep_techs to simple reps
@@ -699,10 +711,10 @@ class VisDataset(object):
         other_groups = self.vis_def.get("other_groups", []).get("groups", [])
         if "Replicates" in other_groups:
             group = other_groups["Replicates"]
-            group_tag = group["tag"]
             subgroups = group["groups"]
             if "replicate" in subgroups:
-                (repgroup_tag, repgroup) = self.format_groups("replicate", subgroups["replicate"], rep_tags)
+                (repgroup_tag, repgroup) = self.format_groups("replicate", subgroups["replicate"],
+                                                              rep_tags)
                 # Now to hook them into the vis_dataset structure
                 self.vis_dataset["groups"]["REP"]["groups"] = repgroup.get("groups", {})
                 self.vis_dataset["groups"]["REP"]["group_order"] = repgroup.get("group_order", [])
@@ -732,10 +744,11 @@ class VisDataset(object):
             for a_file in files:
                 if a_file['file_format'] not in [file_format, "bed"]:
                     continue
-                if len(output_types) > 0 and a_file.get('output_type', 'unknown') not in output_types:
+                if len(output_types) > 0 and a_file.get('output_type',
+                                                        'unknown') not in output_types:
                     continue
                 if len(file_format_types) > 0 and a_file.get('file_format_type',
-                                                            'unknown') not in file_format_types:
+                                                             'unknown') not in file_format_types:
                     continue
                 rep_tech = a_file["rep_tech"]
                 rep_tag = rep_techs[rep_tech]
@@ -745,13 +758,13 @@ class VisDataset(object):
                     view["tracks"] = []
                 track = {}
                 files_dataset = self.dataset
-                if 'dataset' in a_file and isinstance(a_file['dataset'],dict):
+                if 'dataset' in a_file and isinstance(a_file['dataset'], dict):
                     files_dataset = a_file['dataset']
                 track["name"] = a_file['accession']
-                format_type = a_file.get('file_format_type','?')
+                format_type = a_file.get('file_format_type', '?')
                 if format_type == 'bedMethyl' or "itemRgb" in view:
                     view["type"] = "bigBed 9 +"  # itemRgb implies at least 9 +
-                elif format_type  == 'narrowPeak':
+                elif format_type == 'narrowPeak':
                     view["type"] = "bigNarrowPeak"
                 elif format_type == 'broadPeak' or "scoreFilter" in view:
                     view["type"] = "bigBed 6 +"  # scoreFilter implies score so 6 +
@@ -760,10 +773,13 @@ class VisDataset(object):
                 longLabel = self.vis_def.get('file_defs', {}).get('longLabel')
                 if longLabel is None:
                     longLabel = ("{assay_title} of {biosample_term_name} {output_type} "
-                                "{biological_replicate_number}")
-                longLabel += " {experiment.accession} - {file.accession}"  # Always add the accessions
-                track["longLabel"] = sanitize.label(self.vis_defines.convert_mask(longLabel, files_dataset, a_file))
-                # Specialized addendum comments because subtle details alway get in the way of elegance.
+                                 "{biological_replicate_number}")
+                longLabel += " {experiment.accession} - {file.accession}"  # Always add accessions
+                track["longLabel"] = sanitize.label(self.vis_defines.convert_mask(longLabel,
+                                                                                  files_dataset,
+                                                                                  a_file))
+                # Specialized addendum comments because
+                # subtle details alway get in the way of elegance.
                 addendum = ""
                 submitted_name = a_file.get('submitted_file_name', "none")
                 if "_tophat" in submitted_name:
@@ -774,31 +790,34 @@ class VisDataset(object):
                     track["longLabel"] = track["longLabel"] + " (" + addendum[0:-1] + ")"
 
                 metadata_pairs = {}
-                metadata_pairs['file&#32;download'] = ( \
-                    '"<a href=\'%s%s\' title=\'Download this file from the ENCODE portal\'>%s</a>"' %
-                    (self.host, a_file["href"], a_file["accession"]))
+                metadata_pairs['file&#32;download'] = (
+                    '"<a href=\'%s%s\' title=\'Download this file from the ENCODE portal\'>%s</a>"'
+                    % (self.host, a_file["href"], a_file["accession"]))
                 lab = self.vis_defines.convert_mask("{lab.title}")
                 if len(lab) > 0 and not lab.startswith('unknown'):
-                    metadata_pairs['laboratory'] = '"' + sanitize.label(lab) + '"'  # 'lab' is UCSC word
+                    metadata_pairs['laboratory'] = '"' + sanitize.label(lab) + '"'
                 (rep_key, rep_val) = self.replicates_pair(a_file)
                 if rep_key != "":
                     metadata_pairs[rep_key] = '"' + rep_val + '"'
 
                 # Expecting short label to change when making assay based vis formats
-                shortLabel = self.vis_def.get('file_defs', {}).get('shortLabel',
-                                                            "{replicate} {output_type_short_label}")
-                track["shortLabel"] = sanitize.label(self.vis_defines.convert_mask(shortLabel, files_dataset, a_file))
+                shortLabel = self.vis_def.get('file_defs',
+                                              {}).get('shortLabel',
+                                                      "{replicate} {output_type_short_label}")
+                track["shortLabel"] = sanitize.label(self.vis_defines.convert_mask(shortLabel,
+                                                                                   files_dataset,
+                                                                                   a_file))
 
                 # How about subgroups!
                 membership = {}
                 membership["view"] = view["tag"]
                 view["tracks"].append(track)  # <==== This is how we connect them to the views
                 if view['type'] == 'bigNarrowPeak':
-                    view.pop('scoreFilter',None)  # TODO The vis_defs should be changed
-                    # TODO indivudual vis_defs should have signalFilter, pValueFilter and qValueFilter added as appropriate
-                    if 'signalFilter' not in view:  # NOTE: UCSC is giving warning if no signalFilter!
+                    view.pop('scoreFilter', None)  # TODO The vis_defs should be changed
+                    # TODO individual vis_defs should have signalFilter, pValueFilter and
+                    #      qValueFilter added as appropriate
+                    if 'signalFilter' not in view:  # NOTE: UCSC gives warning if no signalFilter!
                         view['signalFilter'] = "0"
-                    #view['signalFilterLimits'] = "0:18241"  # DEBUG DEBUG
 
                 for (group_tag, group) in self.vis_dataset["groups"].items():
                     # "Replicates", "Biosample", "Targets", "Assay", ... member?
@@ -822,20 +841,20 @@ class VisDataset(object):
                         for (subgroup_tag, subgroup) in subgroups.items():
                             membership[group_tag] = subgroup["tag"]
                             if "url" in subgroup:
-                                metadata_pairs[group_title] = ( \
-                                    '"<a href=\'%s/%s/\' TARGET=\'_blank\' title=\'%s details at the ENCODE portal\'>%s</a>"' %
-                                    (self.host, subgroup["url"], group_title, subgroup["title"]))
+                                metadata_pairs[group_title] = ('"<a href=\'%s/%s/\' TARGET=\'_blank\' title=\'%s details at the ENCODE portal\'>%s</a>"' %
+                                                               (self.host, subgroup["url"],
+                                                                group_title, subgroup["title"]))
                             elif group_title == "Biosample":
-                                bs_value = sanitize.label(files_dataset.get("biosample_summary", ""))
+                                bs_value = sanitize.label(files_dataset.get("biosample_summary",
+                                                                            ""))
                                 if len(bs_value) == 0:
                                     bs_value = subgroup["title"]
                                 biosamples = self.biosamples_for_file(a_file, files_dataset)
                                 if len(biosamples) > 0:
                                     for bs_acc in sorted(biosamples.keys()):
-                                        bs_value += ( \
-                                            " <a href=\'%s%s\' TARGET=\'_blank\' title=\' %s details at the ENCODE portal\'>%s</a>" %
-                                            (self.host, biosamples[bs_acc]["@id"], group_title,
-                                                    bs_acc))
+                                        bs_value += (" <a href=\'%s%s\' TARGET=\'_blank\' title=\' %s details at the ENCODE portal\'>%s</a>" %
+                                                     (self.host, biosamples[bs_acc]["@id"],
+                                                      group_title, bs_acc))
                                 metadata_pairs[group_title] = '"%s"' % (bs_value)
                             else:
                                 metadata_pairs[group_title] = '"%s"' % (subgroup["title"])
@@ -865,10 +884,9 @@ class VisDataset(object):
             if a_file['status'] not in self.vis_defines.visible_file_statuses():
                 continue
             if 'assembly' not in a_file or \
-                ASSEMBLY_TO_UCSC_ID.get(a_file['assembly'], a_file['assembly']) != ucsc_assembly:
+               ASSEMBLY_TO_UCSC_ID.get(a_file['assembly'], a_file['assembly']) != ucsc_assembly:
                 continue
             step_ver = a_file.get("analysis_step_version")  # this embedding could evaporate
-            file_acc = a_file['accession']
             if not step_ver:
                 continue  # can't tell anything without step versions!
             if isinstance(step_ver, str):
@@ -883,31 +901,31 @@ class VisDataset(object):
                         a_file["rep_tech"] = rep_tech
                     for swv_key in sw_versions:
                         if swv_key not in software_files:
-                            software_files[swv_key] = { a_file['@id']: a_file["rep_tech"] }
+                            software_files[swv_key] = {a_file['@id']: a_file["rep_tech"]}
                         else:
                             software_files[swv_key][a_file['@id']] = a_file["rep_tech"]
             if a_file['file_format'] in VISIBLE_FILE_FORMATS:
                 # Looking for pipeline details
                 a_step = step_ver['analysis_step']
                 if not isinstance(a_step, dict):
-                    continue # TODO: Lookup analysis_step?
+                    continue  # TODO: Lookup analysis_step?
                 pipes = a_step.get("pipelines")
                 if not pipes or not isinstance(pipes, list) or len(pipes) == 0:
-                    continue # TODO: Lookup pipeline?
+                    continue  # TODO: Lookup pipeline?
                 for a_pipe in pipes:
                     pipe_key = a_pipe['@id']
                     pipe = {}
                     if pipe_key not in pipeline_files:
                         pipe['title'] = a_pipe.get('title')
                         pipe['version'] = '1'
-                        pipe['lab'] = a_file.get('lab',{}).get('title','unknown')
-                        #pipe['lab'] = a_pipe.get("lab",'unknown')
-                        #if pipe['lab'].startswith('/labs/'):
+                        pipe['lab'] = a_file.get('lab', {}).get('title', 'unknown')
+                        # pipe['lab'] = a_pipe.get("lab",'unknown')
+                        # if pipe['lab'].startswith('/labs/'):
                         #    pipe['lab'] = pipe['lab'][6:-1]
                         if pipe['title']:
                             if 'version' in pipe['title'].lower():  # REALLY LESS THAN IDEAL
                                 pipe['version'] = pipe['title'].lower().split('version')[-1].strip()
-                        pipe['files'] = [ a_file['@id'] ]
+                        pipe['files'] = [a_file['@id']]
                         pipeline_files[pipe_key] = pipe
                     else:
                         pipeline_files[pipe_key]['files'].append(a_file['@id'])
@@ -915,20 +933,22 @@ class VisDataset(object):
         if software_files:
             aligners = {'files': {}, 'rep_techs': {}}
             # TODO: software_type='aligner' is weakly associated!
-            # Note: lab!=/labs/encode-processing-pipeline/ should eliminate analysis_steps themselves
-            params = { 'type': 'SoftwareVersion', 'software.software_type': 'aligner', '@id': software_files.keys() }
-            path = '/search/?%s&software.lab!=/labs/encode-processing-pipeline/&frame=embedded' % (urlencode(params, True))
+            # Note: lab!=/labs/encode-processing-pipeline/ should eliminate analysis_steps
+            params = {'type': 'SoftwareVersion', 'software.software_type': 'aligner',
+                      '@id': software_files.keys()}
+            path = ('/search/?%s&software.lab!=/labs/encode-processing-pipeline/&frame=embedded' %
+                    (urlencode(params, True)))
             results = self.request.embed(path, as_user=True)['@graph']
             # More than one for some: LRNA (star v. tophat)
             for sw_version in results:
                 swv_key = sw_version['@id']
-                #sw_files = software_files[swv_key].keys()
-                aligner = { 'name':sw_version['software']['name'], 'version': sw_version['version']}
+                # sw_files = software_files[swv_key].keys()
+                aligner = {'name': sw_version['software']['name'], 'version': sw_version['version']}
                 aligner_key = aligner['name'].lower()
                 if 'default' not in aligners:
-                    aligners['default'] = { aligner_key: aligner }
-                elif aligner_key not in aligners['default'] or \
-                     aligners['default'][aligner_key]['version'] < aligner['version']:
+                    aligners['default'] = {aligner_key: aligner}
+                elif (aligner_key not in aligners['default'] or
+                      aligners['default'][aligner_key]['version'] < aligner['version']):
                     aligners['default'][aligner_key] = aligner
                 for file_id in software_files[swv_key].keys():
                     rep_tech = software_files[swv_key][file_id]
@@ -937,24 +957,26 @@ class VisDataset(object):
                     elif aligners['files'][file_id]['name'] == aligner['name']:
                         if aligners['files'][file_id]['version'] < aligner['version']:
                             aligners['files'][file_id] = aligner
-                    #else:  # one bam file 2 aligners, not likely
+                    # else:  # one bam file 2 aligners, not likely
                     if rep_tech not in aligners['rep_techs']:
-                        aligners['rep_techs'][rep_tech] = { aligner_key: aligner }
-                    elif aligner_key not in aligners['rep_techs'][rep_tech] or \
-                         aligners['rep_techs'][rep_tech][aligner_key]['version'] < aligner['version']:
+                        aligners['rep_techs'][rep_tech] = {aligner_key: aligner}
+                    elif (aligner_key not in aligners['rep_techs'][rep_tech] or
+                          aligners['rep_techs'][rep_tech][aligner_key]['version']
+                          < aligner['version']):
                         aligners['rep_techs'][rep_tech][aligner_key] = aligner
 
             self.aligners = aligners
-            #aligners = { 'file': {ENCFF000AAA: {name:'STAR': version:'2.5.1a'},..., 'rep_tech': rep1_1: {'star': {'STAR': '2.5.1a'},'tophat':...} }
+            # aligners = { 'file': {ENCFF000AAA: {name:'STAR': version:'2.5.1a'},...,
+            #             'rep_tech': rep1_1: {'star': {'STAR': '2.5.1a'},'tophat':...} }
         if pipeline_files:
-            pipelines =  {}
+            pipelines = {}
             for pipe_key in pipeline_files.keys():
                 pipe = pipeline_files[pipe_key]
                 pipe_files = pipe.pop('files')
                 for file_id in pipe_files:
                     if file_id not in pipelines or pipe['version'] > pipelines[file_id]['version']:
                         pipelines[file_id] = pipe
-            #pipelines = {ENCFF000AAA: {title: 'RNA pipeline', version: 2, lab:'ENCODE DCC'},...}
+            # pipelines = {ENCFF000AAA: {title: 'RNA pipeline', version: 2, lab:'ENCODE DCC'},...}
             self.pipelines = pipelines
 
     def add_pipeline_details(self, a_file, track):
@@ -962,7 +984,7 @@ class VisDataset(object):
         # plumbing for ihec
         if self.aligners:
             # go through derived_from to find aligner, if not found then hope rep_tech works
-            for file_id in a_file.get('derived_from',[]):
+            for file_id in a_file.get('derived_from', []):
                 # easy way: when bam is in derived_from and aligner is associated with bam
                 if file_id in self.aligners['files']:
                     track['aligner'] = self.aligners['files'][file_id]
@@ -983,16 +1005,16 @@ class VisDataset(object):
                 # after all this: IHEC only allows one aligner per experiment!
                 self.vis_dataset['aligner'] = track['aligner']
             if 'aligner' not in self.vis_dataset and 'default' in self.aligners \
-                and len(self.aligners['default'].keys()) >= 1:
-                    track['aligner'] = self.aligners['default'][self.aligners['default'].keys()[0]]
+               and len(self.aligners['default'].keys()) >= 1:
+                track['aligner'] = self.aligners['default'][self.aligners['default'].keys()[0]]
 
         if self.pipelines:
             for file_id in self.pipelines.keys():
                 pipe = self.pipelines[file_id]
                 if file_id == a_file['@id']:
                     track['pipeline'] = pipe
-                if 'pipeline' not in self.vis_dataset or \
-                    pipe['version'] > self.vis_dataset['pipeline']['version']:
+                if 'pipeline' not in self.vis_dataset \
+                   or pipe['version'] > self.vis_dataset['pipeline']['version']:
                     self.vis_dataset['pipeline'] = pipe
 
         # Use step_ver to get at pipeline, but different files may be from different steps!
@@ -1004,14 +1026,14 @@ class VisDataset(object):
             return
 
         # Use analysis_step to get at pipeline, but different files may be from different steps!
-        track['step_version'] = step_ver.get('name','')
+        track['step_version'] = step_ver.get('name', '')
         analysis_step = step_ver.get("analysis_step")
         if not analysis_step:
             return  # oh well
         if not isinstance(analysis_step, dict):
             track['analysis_step'] = analysis_step.split('/')[1]
         else:
-            track['analysis_step'] = analysis_step.get('title','')
+            track['analysis_step'] = analysis_step.get('title', '')
         return
 
     def build(self, hide):
@@ -1019,14 +1041,14 @@ class VisDataset(object):
 
         if self.dataset["status"] not in VISIBLE_DATASET_STATUSES:
             log.debug("%s can't be visualized because it's not unreleased status:%s." %
-                    (self.dataset["accession"], self.dataset["status"]))
+                      (self.dataset["accession"], self.dataset["status"]))
             return {}
         self.vis_defines = VisDefines(self.dataset)
         vis_type = self.vis_defines.get_vis_type()
         self.vis_def = self.vis_defines.get_vis_def(vis_type)
         if self.vis_def is None:
             log.debug("%s (vis_type: %s) has undiscoverable vis_defs." %
-                    (self.dataset["accession"], vis_type))
+                      (self.dataset["accession"], vis_type))
             return {}
         self.vis_dataset = {}
         # log.debug("%s has vis_type: %s." % (self.dataset["accession"],vis_type))
@@ -1035,7 +1057,7 @@ class VisDataset(object):
 
         self.vis_dataset['assembly'] = self.assembly
         self.vis_dataset['ucsc_assembly'] = self.ucsc_assembly
-        self.vis_dataset["vis_id"]  = self.vis_id
+        self.vis_dataset["vis_id"] = self.vis_id
 
         for term in self.vis_defines.encoded_dataset_terms():
             val = self.vis_defines.lookup_embedded_token(term, self.dataset)
@@ -1048,9 +1070,10 @@ class VisDataset(object):
         if ihec_exp_type is not None:
             self.vis_dataset['ihec_exp_type'] = ihec_exp_type
             self.vis_dataset['ihec_sample'] = self.ihec.sample(self.dataset, self.vis_defines)
-        #self.vis_dataset['molecule'] = self.ihec.molecule(self.dataset)
-        #biosample = self.vis_defines.lookup_embedded_token('replicates.library.biosample', self.dataset)
-        #if biosample is not None:
+        # self.vis_dataset['molecule'] = self.ihec.molecule(self.dataset)
+        # biosample = self.vis_defines.lookup_embedded_token('replicates.library.biosample',
+        #                                                    self.dataset)
+        # if biosample is not None:
         #    lineage = self.ihec.lineage(biosample)
         #    if lineage is not None:
         #        self.vis_dataset['lineage'] = lineage
@@ -1058,7 +1081,8 @@ class VisDataset(object):
         #    if differentiation is not None:
         #        self.vis_dataset['differentiation'] = differentiation
 
-        longLabel = self.vis_def.get('longLabel','{assay_term_name} of {biosample_term_name} - {accession}')
+        longLabel = self.vis_def.get('longLabel',
+                                     '{assay_term_name} of {biosample_term_name} - {accession}')
         self.vis_dataset['longLabel'] = sanitize.label(self.vis_defines.convert_mask(longLabel))
         shortLabel = self.vis_def.get('shortLabel', '{accession}')
         self.vis_dataset['shortLabel'] = sanitize.label(self.vis_defines.convert_mask(shortLabel))
@@ -1097,7 +1121,8 @@ class VisDataset(object):
     def as_collection(self):
         # formats the single vis_dataset dict as a collection dict
         if self.vis_dataset is not None:
-            return {self.accession: self.vis_dataset} # NOTE: accession not vis_id, collections are always  one assembly
+            return {self.accession: self.vis_dataset}
+            #       NOTE: accession not vis_id, collections are always  one assembly
         return {}
 
     def remodel_to_ihec_json(self):
@@ -1113,8 +1138,8 @@ class VisDataset(object):
         if self.vis_defines is None:
             self.vis_defines = VisDefines()
         return self.vis_defines.ucsc_single_composite_trackDb(self.vis_dataset, self.accession)
-        #vis_collection = VisCollections(self.request, {self.accession: self.vis_dataset})
-        #return vis_collection.ucsc_trackDb()
+        # vis_collection = VisCollections(self.request, {self.accession: self.vis_dataset})
+        # return vis_collection.ucsc_trackDb()
 
     def stringify(self):
         '''returns string of trakDb.txt or json as appropriate.'''
@@ -1135,7 +1160,8 @@ class VisDataset(object):
 
 
 def vis_cache_add(request, dataset):
-    '''For a single embedded dataset, builds and adds vis_dataset to es cache for each relevant assembly.'''
+    '''For a single embedded dataset, builds and adds vis_dataset
+       to es cache for each relevant assembly.'''
     if not object_is_visualizable(dataset, exclude_quickview=True):
         return []
 
@@ -1149,7 +1175,7 @@ def vis_cache_add(request, dataset):
         if vis_dataset:  # Don't bother caching empties (e.g. {} == no visualizable files).
             vis_datasets.append(vis_dataset)
             log.debug("primed vis_cache with vis_dataset %s '%s'" %
-                        (vis_factory.vis_id, vis_factory.vis_type))
+                      (vis_factory.vis_id, vis_factory.vis_type))
 
     return vis_datasets
 
@@ -1164,16 +1190,17 @@ def generate_trackDb(request, dataset, assembly, hide=False, regen=False):
     accession = dataset['accession']
 
     # If we could detect this as a series dataset, then we could treat this as a batch_trackDb
-    if set(['Experiment', 'Annotation']).isdisjoint(dataset['@type']) and \
-          not set(['Series', 'FileSet']).isdisjoint(dataset['@type']):
+    if set(['Experiment', 'Annotation']).isdisjoint(dataset['@type']) \
+       and not set(['Series', 'FileSet']).isdisjoint(dataset['@type']):
         return generate_set_trackDb(request, accession, dataset, assembly, hide, regen)
 
     vis_factory = VisDataset(request)
-    vis_dataset = vis_factory.find_or_build(accession, assembly, dataset, hide, must_build=regen)
+    vis_factory.find_or_build(accession, assembly, dataset, hide, must_build=regen)
 
-    msg = "%s vis_dataset %s %s len(json):%d %.3f" % (vis_factory.found_or_built(accession, assembly),
-                 vis_factory.vis_id, vis_factory.vis_type, vis_factory.len(),
-                 (time.time() - PROFILE_START_TIME))
+    msg = "%s vis_dataset %s %s len(json):%d %.3f" % (
+                vis_factory.found_or_built(accession, assembly),
+                vis_factory.vis_id, vis_factory.vis_type, vis_factory.len(),
+                (time.time() - PROFILE_START_TIME))
     if vis_factory.regen_requested:  # Want to see message if regen was requested
         log.info(msg)
     else:
@@ -1186,12 +1213,12 @@ def generate_by_accessions(request, accessions, assembly, hide, regen, prepend_l
     '''Actual generation of trackDb for collections (batch and file_sets).'''
 
     vis_collection = VisCollections(request)
-    vis_datasets = vis_collection.find_or_build(accessions, assembly, hide, must_build=regen)
+    vis_collection.find_or_build(accessions, assembly, hide, must_build=regen)
 
     blob = vis_collection.stringify(prepend_label)
 
-    msg = "%s. len(txt):%s  %.3f secs" % \
-                 (vis_collection.found_or_built(), len(blob), (time.time() - PROFILE_START_TIME))
+    msg = ("%s. len(txt):%s  %.3f secs" %
+           (vis_collection.found_or_built(), len(blob), (time.time() - PROFILE_START_TIME)))
     if vis_collection.regen_requested:  # Want to see message if regen was requested
         log.info(msg)
     else:
@@ -1207,34 +1234,38 @@ def generate_set_trackDb(request, accession, dataset, assembly, hide=False, rege
     related_datasets = []
     if 'FileSet' in dataset['@type'] and 'files' in dataset:
         files = dataset['files']
-        if len(files) > 0 and not isinstance(files[0],str):
+        if len(files) > 0 and not isinstance(files[0], str):
             try:
-                related_datasets = [ file['dataset'] for file in files ]
-            except:
-                pass # caught below
+                related_datasets = [file['dataset'] for file in files]
+            except Exception:
+                pass  # caught below
             # Note: should be able to get
     elif 'Series' in dataset['@type'] and 'related_datasets' in dataset:
-        # Note that 'Series' don't actually reach here yet because they are rejected higher up for having no files.
+        # Note that 'Series' don't actually reach here yet because they are rejected higher up
         related_datasets = dataset['related_datasets']
     if len(related_datasets) > 0:
         try:
-            if isinstance(related_datasets[0],dict):
-                sub_accessions = [ related['accession'] for related in related_datasets ]
+            if isinstance(related_datasets[0], dict):
+                sub_accessions = [related['accession'] for related in related_datasets]
             else:
-                sub_accessions = [ related.split('/')[1] for related in related_datasets ]
-        except:
-            pass # caught below
-    sub_accessions = list(set(sub_accessions)) # Only unique accessions need apply
+                sub_accessions = [related.split('/')[1] for related in related_datasets]
+        except Exception:
+            pass  # caught below
+    sub_accessions = list(set(sub_accessions))   # Only unique accessions need apply
     if len(sub_accessions) == 0:
         log.error("failed to find true datasets for files in collection %s" % accession)
         return ""
 
-    return generate_by_accessions(request, sub_accessions, assembly, hide, regen, prepend_label=accession)
+    return generate_by_accessions(request, sub_accessions, assembly, hide, regen,
+                                  prepend_label=accession)
 
 
 def generate_batch_trackDb(request, hide=False, regen=False):
     '''Returns string content for a requested multi-experiment trackDb.txt.'''
-    # local test: RNA-seq: curl https://../batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
+    # local test: RNA-seq:
+    # curl https://../batch_hub/type=Experiment,,assay_title=RNA-seq,,award.rfa=ENCODE3,,
+    #              status=released,,assembly=GRCh38,,replicates.library.biosample.biosample_type=
+    #              induced+pluripotent+stem+cell+line/GRCh38/trackDb.txt
 
     assembly = str(request.matchdict['assembly'])
     log.debug("Request for %s trackDb begins   %.3f secs" %
@@ -1266,7 +1297,7 @@ def generate_batch_trackDb(request, hide=False, regen=False):
     return generate_by_accessions(request, accessions, assembly, hide, regen)
 
 
-#def readable_time(secs_float):
+# def readable_time(secs_float):
 #    '''Return string of days, hours, minutes, seconds'''
 #    intervals = [1, 60, 60*60, 60*60*24]
 #    terms = [('second', 'seconds'), ('minute', 'minutes'), ('hour', 'hours'), ('day', 'days')]
@@ -1346,14 +1377,15 @@ def generate_html(context, request):
     if html_requested.startswith('ENCSR'):
         embedded = request.embed(request.resource_path(context))
         accession = embedded['accession']
-        log.debug("generate_html for %s   %.3f secs" % (accession, (time.time() - PROFILE_START_TIME)))
+        log.debug("generate_html for %s   %.3f secs" %
+                  (accession, (time.time() - PROFILE_START_TIME)))
         assert(html_requested == accession)
 
         vis_defines = VisDefines(embedded)
         vis_type = vis_defines.get_vis_type()
         vis_def = vis_defines.get_vis_def(vis_type)
         longLabel = vis_def.get('longLabel',
-                                 '{assay_term_name} of {biosample_term_name} - {accession}')
+                                '{assay_term_name} of {biosample_term_name} - {accession}')
         longLabel = sanitize.label(vis_defines.convert_mask(longLabel))
 
         link = request.host_url + '/experiments/' + accession + '/'
@@ -1368,7 +1400,7 @@ def generate_html(context, request):
         vis_type = html_requested
         vis_def = VisDefines().get_vis_def(vis_type)
         longLabel = vis_def.get('assay_composite', {}).get('longLabel',
-                                                            "Unknown collection of experiments")
+                                                           "Unknown collection of experiments")
         page = '<h2>%s</h2>' % longLabel
 
         # TO IMPROVE: limit the search url to this assay only.
@@ -1379,7 +1411,7 @@ def generate_html(context, request):
             # search_url = (request.url).split('@@hub')[0]
             search_link = '<a href=%s>Original search<a><BR>' % search_url
             page += search_link
-        except:
+        except Exception:
             pass
 
     details = vis_def.get("html_detail")
@@ -1396,12 +1428,14 @@ def generate_batch_hubs(context, request):
 
     results = {}
     (page, suffix, cmd) = urlpage(request.url)
-    log.debug('Requesting %s.%s#%s' % (page,suffix,cmd))
+    log.debug('Requesting %s.%s#%s' % (page, suffix, cmd))
+    content_mime = 'text/plain'
+    if suffix == 'json':
+        content_mime = 'application/json'
 
     if (suffix == 'txt' and page == 'trackDb') or \
-         (suffix == 'json' and page in ['trackDb','ihec','vis_blob']):
-
-        return generate_batch_trackDb(request)
+       (suffix == 'json' and page in ['trackDb', 'ihec', 'vis_blob']):
+        return (generate_batch_trackDb(request), content_mime)
 
     elif page == 'hub' and suffix == 'txt':
         terms = request.matchdict['search_params'].replace(',,', '&')
@@ -1411,13 +1445,13 @@ def generate_batch_hubs(context, request):
             (var, val) = pair.split('=')
             if var not in ["type", "assembly", "status", "limit"]:
                 label += " %s" % val.replace('+', ' ')
-        return '\n'.join(get_hub(label, request.url))
+        return ('\n'.join(get_hub(label, request.url)), content_mime)
     elif page == 'genomes' and suffix == 'txt':
         search_params = request.matchdict['search_params']
         if search_params.find('bed6+') > -1:
-            search_params = search_params.replace('bed6+,,','bed6%2B,,')
+            search_params = search_params.replace('bed6+,,', 'bed6%2B,,')
         log.debug('search_params: %s' % (search_params))
-        #param_list = parse_qs(request.matchdict['search_params'].replace(',,', '&'))
+        # param_list = parse_qs(request.matchdict['search_params'].replace(',,', '&'))
         param_list = parse_qs(search_params.replace(',,', '&'))
         log.debug('parse_qs: %s' % (param_list))
 
@@ -1456,13 +1490,15 @@ def generate_batch_hubs(context, request):
                 else:
                     g_text = json.dumps(results, indent=4)
                     log.debug('Found 0 ASSEMBLIES !!!')
-        return g_text
+        return (g_text, content_mime)
 
     else:
         # Should generate a HTML page for requests other than those supported
         data_policy = ('<br /><a href="http://encodeproject.org/ENCODE/terms.html">'
                        'ENCODE data use policy</p>')
-        return generate_html(context, request) + data_policy
+        content_mime = 'text/html'
+        return (generate_html(context, request) + data_policy, content_mime)
+
 
 def respond_with_text(request, text, content_mime):
     '''Resonse that can handle range requests.'''
@@ -1474,7 +1510,6 @@ def respond_with_text(request, text, content_mime):
     response.accept_ranges = "bytes"
     response.last_modified = time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.gmtime())
     if 'Range' in request.headers:
-        range_request = True
         range = request.headers['Range']
         if range.startswith('bytes'):
             range = range.split('=')[1]
@@ -1482,10 +1517,12 @@ def respond_with_text(request, text, content_mime):
         # One final present... byterange '0-' with no end in sight
         if range[1] == '':
             range[1] = len(response.body) - 1
-        response.content_range = 'bytes %d-%d/%d' % (int(range[0]),int(range[1]),len(response.body))
-        response.app_iter = request.response.app_iter_range(int(range[0]),int(range[1]) + 1)
+        response.content_range = ('bytes %d-%d/%d' % (int(range[0]), int(range[1]),
+                                  len(response.body)))
+        response.app_iter = request.response.app_iter_range(int(range[0]), int(range[1]) + 1)
         response.status_code = 206
     return response
+
 
 @view_config(name='hub', context=Item, request_method='GET', permission='view')
 def hub(context, request):
@@ -1495,8 +1532,10 @@ def hub(context, request):
 
     embedded = request.embed(request.resource_path(context))
 
-    (page,suffix,cmd) = urlpage(request.url)
+    (page, suffix, cmd) = urlpage(request.url)
     content_mime = 'text/plain'
+    if suffix == 'json':
+        content_mime = 'application/json'
     if page == 'hub' and suffix == 'txt':
         typeof = embedded.get("assay_title")
         if typeof is None:
@@ -1513,7 +1552,7 @@ def hub(context, request):
         text = get_genomes_txt(assemblies)
 
     elif (suffix == 'txt' and page == 'trackDb') or \
-         (suffix == 'json' and page in ['trackDb','ihec','vis_blob']):
+         (suffix == 'json' and page in ['trackDb', 'ihec', 'vis_blob']):
         url_ret = (request.url).split('@@hub')
         url_end = url_ret[1][1:]
         text = generate_trackDb(request, embedded, url_end.split('/')[0])
@@ -1531,5 +1570,6 @@ def hub(context, request):
 def batch_hub(context, request):
     ''' View for batch track hubs '''
 
-    text = generate_batch_hubs(context, request)
-    return respond_with_text(request, text, 'text/plain')
+    (content, content_mime) = generate_batch_hubs(context, request)
+
+    return respond_with_text(request, content, content_mime)
