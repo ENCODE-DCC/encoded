@@ -333,30 +333,34 @@ def _get_run_args(main_args, instances_tag_data):
         data_insert = {
             'CLUSTER_NAME': main_args.cluster_name,
             'ES_DATA': 'true',
-            'ES_MASTER': 'false',
-        }
-        user_data = get_user_data(instances_tag_data['commit'], config_file, data_insert, main_args.profile_name)
-        master_data_insert = {
-            'CLUSTER_NAME': main_args.cluster_name,
-            'ES_DATA': 'false',
             'ES_MASTER': 'true',
         }
-        master_user_data = get_user_data(
-            instances_tag_data['commit'],
-            config_file,
-            master_data_insert,
-            main_args.profile_name,
-        )
+        if main_args.single_data_master:
+            data_insert['ES_MASTER'] = 'false'
+        user_data = get_user_data(instances_tag_data['commit'], config_file, data_insert, main_args.profile_name)
+        if main_args.single_data_master:
+            master_data_insert = {
+                'CLUSTER_NAME': main_args.cluster_name,
+                'ES_DATA': 'false',
+                'ES_MASTER': 'true',
+            }
+            master_user_data = get_user_data(
+                instances_tag_data['commit'],
+                config_file,
+                master_data_insert,
+                main_args.profile_name,
+            )
         security_groups = ['elasticsearch-https']
         iam_role = 'elasticsearch-instance'
         count = int(main_args.cluster_size)
     run_args = {
         'count': count,
         'iam_role': iam_role,
-        'master_user_data': master_user_data,
         'user_data': user_data,
         'security_groups': security_groups,
     }
+    if 'master_user_data':
+        run_args['master_user_data'] = master_user_data
     return run_args
 
 
@@ -443,22 +447,23 @@ def main():
             }
         )
         _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances)
-        # ES MASTER instance when deploying elasticsearch data clusters
-        if run_args['master_user_data'] and run_args['count'] > 1 and main_args.elasticsearch == 'yes':
-            instances = ec2_client.create_instances(
-                ImageId='ami-2133bc59',
-                MinCount=1,
-                MaxCount=1,
-                InstanceType='c5.9xlarge',
-                SecurityGroups=['ssh-http-https'],
-                UserData=run_args['master_user_data'],
-                BlockDeviceMappings=bdm,
-                InstanceInitiatedShutdownBehavior='terminate',
-                IamInstanceProfile={
-                    "Name": 'encoded-instance',
-                }
-            )
-            _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, cluster_master=True)
+        if 'master_user_data' in run_args and main_args.single_data_master:
+            # ES MASTER instance when deploying elasticsearch data clusters
+            if run_args['master_user_data'] and run_args['count'] > 1 and main_args.elasticsearch == 'yes':
+                instances = ec2_client.create_instances(
+                    ImageId='ami-2133bc59',
+                    MinCount=1,
+                    MaxCount=1,
+                    InstanceType='c5.9xlarge',
+                    SecurityGroups=['ssh-http-https'],
+                    UserData=run_args['master_user_data'],
+                    BlockDeviceMappings=bdm,
+                    InstanceInitiatedShutdownBehavior='terminate',
+                    IamInstanceProfile={
+                        "Name": 'encoded-instance',
+                    }
+                )
+                _wait_and_tag_instances(main_args, run_args, instances_tag_data, instances, cluster_master=True)
 
 
 def parse_args():
@@ -502,6 +507,7 @@ def parse_args():
     )
     parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', type=hostname, help="Instance name")
+    parser.add_argument('--single-data-master', action='store_true', help="Create a single data masetr node.")
     parser.add_argument('--check-price', action='store_true', help="Check price on spot instances")
     parser.add_argument('--cluster-name', default=None, help="Name of the cluster")
     parser.add_argument('--cluster-size', default=2, help="Elasticsearch cluster size")
