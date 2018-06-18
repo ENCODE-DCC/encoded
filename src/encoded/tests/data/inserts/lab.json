@@ -17,7 +17,8 @@
         "postal_code": "92697-2300",
         "state": "CA",
         "title": "Ali Mortazavi, UCI",
-        "uuid": "828cd4fe-ebb0-4b36-a94a-d2e3a36cc987"
+        "uuid": "828cd4fe-ebb0-4b36-a94a-d2e3a36cc987",
+        "status": "released"
     },
     {
         "address1": "Department of Biochemistry and Molecular Biophysics",
@@ -37,7 +38,8 @@
         "postal_code": "91125",
         "state": "CA",
         "title": "Barbara Wold, Caltech",
-        "uuid": "72d5666a-a361-4f7b-ab66-a88e11280937"
+        "uuid": "72d5666a-a361-4f7b-ab66-a88e11280937",
+        "status": "released"
     },
     {
         "address1": "Department of Cellular and Molecular Medicine",
@@ -58,7 +60,8 @@
         "pi": "tristique.sem@faucibus.semper",
         "state": "CA",
         "title": "Bing Ren, UCSD",
-        "uuid": "2f706386-9534-4e36-918d-a0f6b46d9071"
+        "uuid": "2f706386-9534-4e36-918d-a0f6b46d9071",
+        "status": "released"
     },
     {
         "address1": "Massachusetts General Hospital Simches Research Building, CPZN 8234",
@@ -80,7 +83,8 @@
         "postal_code": "2114",
         "state": "MA",
         "title": "Bradley Bernstein, Broad",
-        "uuid": "b83215c3-3960-4085-b220-614a122eea01"
+        "uuid": "b83215c3-3960-4085-b220-614a122eea01",
+        "status": "released"
     },
     {
         "address1": "Department of Genetics and Developmental Biology",
@@ -100,7 +104,8 @@
         "postal_code": "06030-6403",
         "state": "CT",
         "title": "Brenton Graveley, UConn",
-        "uuid": "308baeae-c7f8-481b-b7c5-e364593ac7af"
+        "uuid": "308baeae-c7f8-481b-b7c5-e364593ac7af",
+        "status": "released"
     },
     {
         "address1": "Department of Biology",
@@ -120,7 +125,8 @@
         "postal_code": "02139-4307",
         "state": "MA",
         "title": "Chris Burge, MIT",
-        "uuid": "bc8e3211-c653-4ae1-92e8-112336199ec7"
+        "uuid": "bc8e3211-c653-4ae1-92e8-112336199ec7",
+        "status": "released"
     },
     {
         "awards": [
@@ -134,7 +140,8 @@
         "phone2": "000-000-0000",
         "pi": "vestibulum.tortor@vitae.nec",
         "title": "ENCODE2 Project, UCSC",
-        "uuid": "582d980f-664f-48f5-9e75-5fe60032d4a3"
+        "uuid": "582d980f-664f-48f5-9e75-5fe60032d4a3",
+        "status": "released"
     },
     {
         "address1": "Sanford Consortium for Regenerative Medicine",
@@ -154,7 +161,8 @@
         "postal_code": "92037",
         "state": "CA",
         "title": "Gene Yeo, UCSD",
-        "uuid": "7cc89de8-2276-4072-87fe-7685b34b754e"
+        "uuid": "7cc89de8-2276-4072-87fe-7685b34b754e",
+        "status": "released"
     },
     {
         "address1": "601 Genome Way Northwest",
@@ -173,7 +181,8 @@
         "postal_code": "35806",
         "state": "AL",
         "title": "Greg Cooper, HAIB",
-        "uuid": "eb829e34-ff1c-432b-b42c-3d77ecd064b1"
+        "uuid": "eb829e34-ff1c-432b-b42c-3d77ecd064b1",
+        "status": "released"
     },
     {
         "address1": "CIEMAS, 2363B",
@@ -193,7 +202,8 @@
         "postal_code": "27708",
         "state": "NC",
         "title": "Gregory Crawford, Duke",
-        "uuid": "c03602fb-aab1-44fd-8558-865964472ebe"
+        "uuid": "c03602fb-aab1-44fd-8558-865964472ebe",
+        "status": "released"
     },
     {
         "address1": "Department of Genetics",
@@ -213,7 +223,8 @@
         "postal_code": "94304-5577",
         "state": "CA",
         "title": "J. Michael Cherry, Stanford",
-        "uuid": "cfb789b8-46f3-4d59-a2b3-adc39e7df93a"
+        "uuid": "cfb789b8-46f3-4d59-a2b3-adc39e7df93a",
+        "status": "released"
     },
     {
         "address1": "Department of Biology",
@@ -230,7 +241,8 @@
         "postal_code": "27599-3280",
         "state": "NC",
         "title": "Jason Lieb, UNC",
-        "uuid": "7d7b4a13-6e53-47ee-b3aa-0538029a1bdf"
+        "uuid": "7d7b4a13-6e53-47ee-b3aa-0538029a1bdf",
+        "status": "released"
     },
     {
         "address1": "Department of Biochemistry & Molecular Pharmacology",
@@ -270,7 +282,8 @@
         "postal_code": "92037",
         "state": "CA",
         "title": "Joe Ecker, Salk",
-        "uuid": "2e4c9c04-f537-4279-9318-4b46a8037dec"
+        "uuid": "2e4c9c04-f537-4279-9318-4b46a8037dec",
+        "status": "released"
     },
     {
         "address1": "7 Divinity Ave / Rm 205",
@@ -290,7 +303,8 @@
         "postal_code": "02138",
         "state": "MA",
         "title": "John Rinn, Broad",
-        "uuid": "356a3aa4-7544-492e-951c-6d7b4bea1cb1"
+        "uuid": "356a3aa4-7544-492e-951c-6d7b4bea1cb1",
+        "status": "released"
     },
     {
         "address1": "Department of Genome Sciences and Medicine",
@@ -312,7 +326,8 @@
         "postal_code": "98195",
         "state": "WA",
         "title": "John Stamatoyannopoulos, UW",
-        "uuid": "ea0352a9-8c9b-4987-934e-c1688a17cbcd"
+        "uuid": "ea0352a9-8c9b-4987-934e-c1688a17cbcd",
+        "status": "released"
     },
     {
         "address1": "Department of Human Genetics",
@@ -332,7 +347,8 @@
         "postal_code": "60637",
         "state": "IL",
         "title": "Kevin White, UChicago",
-        "uuid": "4df3fa0b-93c3-4142-a9d8-23a5379808af"
+        "uuid": "4df3fa0b-93c3-4142-a9d8-23a5379808af",
+        "status": "released"
     },
     {
         "address1": "2800 Mitchell Drive",
@@ -352,7 +368,8 @@
         "postal_code": "94598",
         "state": "CA",
         "title": "Len Pennacchio, JGI",
-        "uuid": "5d5c1531-1af6-4534-b05a-6b2a927444eb"
+        "uuid": "5d5c1531-1af6-4534-b05a-6b2a927444eb",
+        "status": "released"
     },
     {
         "address1": "Department of Genetics",
@@ -374,7 +391,8 @@
         "postal_code": "94305-5120",
         "state": "CA",
         "title": "Michael Snyder, Stanford",
-        "uuid": "72a9c49a-4e17-4df1-96d1-fd19aa46b175"
+        "uuid": "72a9c49a-4e17-4df1-96d1-fd19aa46b175",
+        "status": "released"
     },
     {
         "address1": "Department of Biochemistry & Molecular Biology",
@@ -394,7 +412,8 @@
         "postal_code": "90033",
         "state": "CA",
         "title": "Peggy Farnham, USC",
-        "uuid": "bd811762-e814-451f-a0b0-dce2ee2e73df"
+        "uuid": "bd811762-e814-451f-a0b0-dce2ee2e73df",
+        "status": "released"
     },
     {
         "address1": "601 Genome Way",
@@ -414,7 +433,8 @@
         "postal_code": "35806",
         "state": "AL",
         "title": "Richard Myers, HAIB",
-        "uuid": "c0a3540e-8ef0-4d4d-a449-ae47c2475838"
+        "uuid": "c0a3540e-8ef0-4d4d-a449-ae47c2475838",
+        "status": "released"
     },
     {
         "awards": [
@@ -427,7 +447,8 @@
         "phone2": "000-000-0000",
         "pi": "felis.senectus@hymenaeos.nibh",
         "title": "Roadmap Epigenomics, Baylor",
-        "uuid": "0f386478-c902-4509-8daa-1f88f11238bc"
+        "uuid": "0f386478-c902-4509-8daa-1f88f11238bc",
+        "status": "released"
     },
     {
         "address1": "Dr. Aiguader, 88",
@@ -446,7 +467,8 @@
         "postal_code": "8003",
         "state": "Catalonia",
         "title": "Roderic Guigo, CRG",
-        "uuid": "3a3ffb78-7f16-4135-87d6-5a7ad1246dcb"
+        "uuid": "3a3ffb78-7f16-4135-87d6-5a7ad1246dcb",
+        "status": "released"
     },
     {
         "address1": "304 Wartik Laboratory",
@@ -466,7 +488,8 @@
         "postal_code": "16802",
         "state": "PA",
         "title": "Ross Hardison, PennState",
-        "uuid": "6ce94e0e-c10b-44e5-95e6-31e2db8645a2"
+        "uuid": "6ce94e0e-c10b-44e5-95e6-31e2db8645a2",
+        "status": "released"
     },
     {
         "address1": "Department of Genetics",
@@ -506,7 +529,8 @@
         "postal_code": "11797",
         "state": "NY",
         "title": "Thomas Gingeras, CSHL",
-        "uuid": "dfc72c8c-d45c-4acd-979b-49fc93cf3c62"
+        "uuid": "dfc72c8c-d45c-4acd-979b-49fc93cf3c62",
+        "status": "released"
     },
     {
         "address1": "CIEMAS, Room 2347",
@@ -543,7 +567,8 @@
         "postal_code": "78712-0159",
         "state": "TX",
         "title": "Vishwanath Iyer, UTA",
-        "uuid": "2a0c4f53-cb9d-49da-937a-1118adcb3c12"
+        "uuid": "2a0c4f53-cb9d-49da-937a-1118adcb3c12",
+        "status": "released"
     },
     {
         "address1": "Baskin School of Engineering",
@@ -564,7 +589,8 @@
         "postal_code": "95064",
         "state": "CA",
         "title": "W. James Kent, UCSC",
-        "uuid": "fb0af3d0-3a4c-4e96-b67a-f273fe527b04"
+        "uuid": "fb0af3d0-3a4c-4e96-b67a-f273fe527b04",
+        "status": "released"
     },
     {
         "address1": "Department of Cellular and Molecular Medicine",
@@ -584,7 +610,8 @@
         "postal_code": "92093-0651",
         "state": "CA",
         "title": "Xiang-Dong Fu, UCSD",
-        "uuid": "17e5f9cf-d429-4794-87a6-cac083e3b275"
+        "uuid": "17e5f9cf-d429-4794-87a6-cac083e3b275",
+        "status": "released"
     },
     {
         "address1": "Department of Genome Sciences",
@@ -604,7 +631,8 @@
         "postal_code": "98195-5065",
         "state": "WA",
         "title": "Robert Waterston, UW",
-        "uuid": "44324de6-c057-451f-a8f1-1d9a6cb2762c"
+        "uuid": "44324de6-c057-451f-a8f1-1d9a6cb2762c",
+        "status": "released"
     },
     {
         "address1": "DNA Nexus",
@@ -616,7 +644,7 @@
         "phone1": "000-000-0000",
         "phone2": "000-000-0000",
         "pi": "uskuf.shyec@doton.danona",
-        "status": "current",
+        "status": "released",
         "title": "ENCODE Processing Pipeline",
         "uuid": "44324de6-c057-451f-a8f1-1d9a6cb9875d"
     }
