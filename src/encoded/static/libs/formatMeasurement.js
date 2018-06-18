@@ -7,20 +7,18 @@
 * @param {string} unit - Measurement system in singular form
 */
 const formatMeasurement = (magnitude, unit) => {
-    // parseFloat used because parseInt only keeps integer
-    const magnitudeAsFloat = parseFloat(magnitude);
-
-    if (Number.isNaN(magnitudeAsFloat)) {
+    if (magnitude.toLowerCase && magnitude.toLowerCase() === 'unknown') {
         return 'Unknown';
     }
 
-    if (magnitudeAsFloat === 0) {
-        return '0';
-    }
+    // parseFloat used because parseInt only keeps integer
+    const magnitudeAsFloat = parseFloat(magnitude);
+    const isMagnitudeNumeric = !Number.isNaN(magnitudeAsFloat);
+    const isUnitSingular = !isMagnitudeNumeric || magnitudeAsFloat === 1;
 
-    const measurement = `${magnitudeAsFloat} ${unit || ''}`.trim();
+    const measurement = `${magnitude} ${unit || ''}`.trim();
 
-    return magnitudeAsFloat === 1
+    return isUnitSingular
           ? measurement
           : `${measurement}s`;
 };
