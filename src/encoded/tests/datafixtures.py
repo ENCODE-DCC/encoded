@@ -153,6 +153,7 @@ def source(testapp):
         'name': 'sigma',
         'title': 'Sigma-Aldrich',
         'url': 'http://www.sigmaaldrich.com',
+        'status': 'released'
     }
     return testapp.post_json('/source', item).json['@graph'][0]
 
@@ -164,6 +165,7 @@ def human(testapp):
         'name': 'human',
         'scientific_name': 'Homo sapiens',
         'taxon_id': '9606',
+        'status': 'released'
     }
     return testapp.post_json('/organism', item).json['@graph'][0]
 
@@ -175,6 +177,7 @@ def mouse(testapp):
         'name': 'mouse',
         'scientific_name': 'Mus musculus',
         'taxon_id': '10090',
+        'status': 'released'
     }
     return testapp.post_json('/organism', item).json['@graph'][0]
 
@@ -186,6 +189,7 @@ def fly(testapp):
         'name': 'dmelanogaster',
         'scientific_name': 'Drosophila melanogaster',
         'taxon_id': '7227',
+        'status': 'released'
     }
     return testapp.post_json('/organism', item).json['@graph'][0]
 
@@ -810,7 +814,7 @@ def encode_lab(testapp):
     item = {
         'name': 'encode-processing-pipeline',
         'title': 'ENCODE Processing Pipeline',
-        'status': 'current'
+        'status': 'released'
         }
     return testapp.post_json('/lab', item, status=201).json['@graph'][0]
 
