@@ -2925,6 +2925,26 @@ def test_audit_experiment_with_biosample_not_missing_nih_consent(testapp, experi
     )
 
 
+def test_is_matching_biosample_control(testapp, biosample, ctrl_experiment, treatment_time_series):
+    from encoded.audit.experiment import is_matching_biosample_control
+    exp = testapp.get(ctrl_experiment['@id'] + '@@index-data')
+    exp_embedded = exp.json['embedded']
+    bio = testapp.get(biosample['@id'] + '@@index-data')
+    bio_embedded = bio.json['embedded']
+    assert is_matching_biosample_control(exp_embedded, bio_embedded['biosample_term_id']) == False
+    testapp.patch_json(biosample['@id'], {'biosample_term_id': ctrl_experiment['biosample_term_id']})
+    bio = testapp.get(biosample['@id'] + '@@index-data')
+    bio_embedded = bio.json['embedded']
+    assert is_matching_biosample_control(exp_embedded, bio_embedded['biosample_term_id']) == True
+    series = testapp.get(treatment_time_series['@id'] + '@@index-data')
+    series_embedded = series.json['embedded']
+    assert is_matching_biosample_control(series_embedded, bio_embedded['biosample_term_id']) == False
+    testapp.patch_json(treatment_time_series['@id'], {'related_datasets': [ctrl_experiment['@id']]})
+    series = testapp.get(treatment_time_series['@id'] + '@@index-data')
+    series_embedded = series.json['embedded']
+    assert is_matching_biosample_control(series_embedded, bio_embedded['biosample_term_id']) == True
+
+
 def test_is_control_dataset(testapp, control_target, ctrl_experiment, publication_data, treatment_time_series):
     from encoded.audit.experiment import is_control_dataset
     exp = testapp.get(ctrl_experiment['@id'] + '@@index-data')
