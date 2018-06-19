@@ -7,7 +7,7 @@
 * @param {string} unit - Measurement system in singular form
 */
 const formatMeasurement = (magnitude, unit) => {
-    if (magnitude.toLowerCase && magnitude.toLowerCase() === 'unknown') {
+    if (!magnitude || (magnitude.toLowerCase && magnitude.toLowerCase()) === 'unknown') {
         return 'Unknown';
     }
 
