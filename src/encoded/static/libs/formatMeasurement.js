@@ -12,9 +12,10 @@ const formatMeasurement = (magnitude, unit) => {
     }
 
     // parseFloat used because parseInt only keeps integer
-    const magnitudeAsFloat = parseFloat(magnitude);
-    const isMagnitudeNumeric = !Number.isNaN(magnitudeAsFloat);
-    const isUnitSingular = !isMagnitudeNumeric || magnitudeAsFloat === 1;
+    // remember, in JavaScript, 1 === 1.0 returns true
+    const magnitudeValue = parseFloat(magnitude);
+    const isMagnitudeNumeric = !Number.isNaN(magnitudeValue);
+    const isUnitSingular = !isMagnitudeNumeric || magnitudeValue === 1;
 
     const measurement = `${magnitude} ${unit || ''}`.trim();
 
