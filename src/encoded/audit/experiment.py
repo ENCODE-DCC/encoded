@@ -2553,7 +2553,7 @@ def audit_experiment_ChIP_control(value, system, files_structure):
 def is_control_dataset(dataset):
     if 'target' not in dataset:
         return False
-    if (dataset['@type'][0] == 'Experiment'):
+    if dataset['@type'][0] == 'Experiment':
         return 'control' in dataset['target']['investigated_as']
     else:
         for target_of_related_dataset in dataset['target']:
