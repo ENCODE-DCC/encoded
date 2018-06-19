@@ -50,6 +50,7 @@ const loaders = [
         include: [
             PATHS.static,
             path.resolve(__dirname, 'node_modules/dalliance'),
+            path.resolve(__dirname, 'node_modules/superagent'),
         ],
         loader: 'babel',
     },
