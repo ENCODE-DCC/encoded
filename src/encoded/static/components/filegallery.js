@@ -446,24 +446,6 @@ const sortBioReps = (a, b) => {
     return result;
 };
 
-const FileStatusLabel = (props) => {
-    const { file } = props;
-    const status = file.status;
-    const statusClass = globals.statusClass(status, 'status-indicator status-indicator--', true);
-
-    // Display simple string and optional title in badge
-    return (
-        <div key={status} className={statusClass}>
-            <i className="icon icon-circle status-indicator__icon" />
-            <div className="status-indicator__label">{status}</div>
-        </div>
-    );
-};
-
-FileStatusLabel.propTypes = {
-    file: PropTypes.object.isRequired, // File whose status we're displaying
-};
-
 class RawSequencingTable extends React.Component {
     constructor() {
         super();
