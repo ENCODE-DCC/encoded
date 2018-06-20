@@ -170,6 +170,7 @@ export class FileTable extends React.Component {
                 return 'proc';
             });
 
+            /*
             const procTableColumns = showReplicateNumber ?
                   FileTable.procTableColumns :
                   _.omit(FileTable.procTableColumns, 'biological_replicates');
@@ -183,6 +184,13 @@ export class FileTable extends React.Component {
             const filesRawArray = showReplicateNumber ?
                           files.rawArray :
                             _.omit(files.rawArray, 'biological_replicates');
+
+            */
+
+            // testing a potential fix that happens only on test encodeVersion
+            const procTableColumns = FileTable.procTableColumns;
+            const filesRaw = files.raw
+            const filesRawArray = files.rawArray;
 
             return (
                 <div>
