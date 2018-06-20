@@ -48,12 +48,10 @@ function fileAccessionSort(a, b) {
     return aTitle > bTitle ? 1 : (aTitle < bTitle ? -1 : 0);
 }
 
-
 // Calculate a string representation of the given replication_type.
 const replicationDisplay = replicationType => (
     `${replicationType === 'anisogenic' ? 'Anisogenic' : 'Isogenic'} replicate`
 );
-
 
 export class FileTable extends React.Component {
     static rowClasses() {
@@ -136,6 +134,7 @@ export class FileTable extends React.Component {
         let selectedAssembly;
         let selectedAnnotation;
         const loggedIn = !!(session && session['auth.userid']);
+
         let datasetFiles = _((items && items.length) ? items : []).uniq(file => file['@id']);
 
         if (datasetFiles.length) {
@@ -172,18 +171,18 @@ export class FileTable extends React.Component {
             });
 
             const procTableColumns = showReplicateNumber ?
-              FileTable.procTableColumns :
-              _.omit(FileTable.procTableColumns, 'biological_replicates');
+                  FileTable.procTableColumns :
+                  _.omit(FileTable.procTableColumns, 'biological_replicates');
 
             // filesRaw should be falsy if files.raw is
-            const filesRaw = showReplicateNumber || !files.raw ?
+            const filesRaw = showReplicateNumber ?
               files.raw :
-              _.omit(files.raw, 'biological_replicates');
+                _.omit(files.raw, 'biological_replicates');
 
-            // filesRawArray should be falsy if files.rawArray is
-            const filesRawArray = showReplicateNumber || !files.rawArray ?
-              files.rawArray :
-              _.omit(files.rawArray, 'biological_replicates');
+                // filesRawArray should be falsy if files.rawArray is
+            const filesRawArray = showReplicateNumber ?
+                          files.rawArray :
+                            _.omit(files.rawArray, 'biological_replicates');
 
             return (
                 <div>
@@ -550,9 +549,7 @@ class RawSequencingTable extends React.Component {
 
                         {!this.state.collapsed ?
                             <tr>
-                                {showReplicateNumber ?
-                                    <th>{replicationDisplay(meta.replicationType)}</th> :
-                                    null}
+                                {showReplicateNumber ? <th>{replicationDisplay(meta.replicationType)}</th> : null}
                                 <th>Library</th>
                                 <th>Accession</th>
                                 <th>File type</th>
@@ -596,7 +593,7 @@ class RawSequencingTable extends React.Component {
                                         <tr key={file['@id']}>
                                             {showReplicateNumber && i === 0 ?
                                               <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>{groupFiles[0].biological_replicates[0]}</td>
-                                            : null}
+                                              : null}
                                             {i === 0 ?
                                                 <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right + table-raw-merged`}>{(groupFiles[0].replicate && groupFiles[0].replicate.library) ? groupFiles[0].replicate.library.accession : null}</td>
                                             : null}
@@ -632,7 +629,8 @@ class RawSequencingTable extends React.Component {
 
                                 return (
                                     <tr key={file['@id']} className={rowClasses.join(' ')}>
-                                        { showReplicateNumber ?
+                                        {
+                                          showReplicateNumber ?
                                           <td className="table-raw-biorep">{file.biological_replicates && file.biological_replicates.length ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td> :
                                           null
                                         }
@@ -772,9 +770,9 @@ class RawFileTable extends React.Component {
                                     return (
                                         <tr key={file['@id']}>
                                             {showReplicateNumber && i === 0 ?
-                                                <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
-                                                    {groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
-                                                </td>
+                                              <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
+                                                  {groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
+                                              </td>
                                             : null}
                                             {i === 0 ?
                                                 <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged`}>
@@ -796,7 +794,6 @@ class RawFileTable extends React.Component {
                                     );
                                 });
                             })}
-
                             {nonGrouped.sort(sortBioReps).map((file, i) => {
                                 // Prepare for run_type display
                                 const rowClasses = [
@@ -808,10 +805,9 @@ class RawFileTable extends React.Component {
 
                                 return (
                                     <tr key={file['@id']} className={rowClasses.join(' ')}>
-                                        { showReplicateNumber ?
-                                            <td className="table-raw-biorep">{(file.biological_replicates && file.biological_replicates.length) ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td> :
-                                            null
-                                        }
+                                        {showReplicateNumber ?
+                                          <td className="table-raw-biorep">{(file.biological_replicates && file.biological_replicates.length) ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td> :
+                                          null}
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
                                             <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
@@ -893,7 +889,7 @@ FileGallery.propTypes = {
     context: PropTypes.object.isRequired, // Dataset object whose files we're rendering
     encodevers: PropTypes.string, // ENCODE version number
     hideGraph: PropTypes.bool, // T to hide graph display
-    altFilterDefault: PropTypes.bool, // T to default to All Assemblies and Annotations,
+    altFilterDefault: PropTypes.bool, // T to default to All Assemblies and Annotations
     showReplicateNumber: PropTypes.bool, // True to show replicate number
 };
 
@@ -1177,6 +1173,20 @@ function collectDerivedFroms(file, fileDataset, selectedAssembly, selectedAnnota
 }
 
 
+/**
+ * Generate a string of CSS classes for a file node. Plass the result into a `className` property of a component.
+ *
+ * @param {object-required} file - File we're generating the statuses for.
+ * @param {bool} active - True if the file is active and should be highlighted as such.
+ * @param (bool) colorize - True to colorize the nodes according to their status by adding a CSS class for their status
+ * @param {string} addClasses - CSS classes to add in addition to the ones generated by the file statuses.
+ */
+const fileCssClassGen = (file, active, colorizeNode, addClasses) => {
+    const statusClass = colorizeNode ? ` graph-node--${globals.statusToClassElement(file.status)}` : '';
+    return `pipeline-node-file${active ? ' active' : ''}${statusClass}${addClasses ? ` ${addClasses}` : ''}`;
+};
+
+
 // Assembly a graph of files, the QC objects that belong to them, and the steps that connect them.
 export function assembleGraph(files, dataset, options) {
     // Calculate a step ID from a file's derived_from array.
@@ -1190,22 +1200,6 @@ export function assembleGraph(files, dataset, options) {
     // Calculate a QC node ID.
     function rGenQcId(metric, file) {
         return `qc:${metric['@id'] + file['@id']}`;
-    }
-
-    /**
-     * Generate a string of CSS classes for a file node. Plass the result into a `className` property of a component.
-     *
-     * @param {object-required} file - File we're generating the statuses for.
-     * @param {bool} active - True if the file is active and should be highlighted as such.
-     * @param (bool) colorize - True to colorize the nodes according to their status by adding a CSS class for their status
-     * @param {string} addClasses - CSS classes to add in addition to the ones generated by the file statuses.
-     */
-    function fileCssClassGen(file, active, colorizeNode, addClasses) {
-        let statusClass;
-        if (colorizeNode) {
-            statusClass = file.status.replace(/ /g, '-');
-        }
-        return `pipeline-node-file${active ? ' active' : ''}${colorizeNode ? ` ${statusClass}` : ''}${addClasses ? ` ${addClasses}` : ''}`;
     }
 
     const { infoNode, selectedAssembly, selectedAnnotation, colorize } = options;
