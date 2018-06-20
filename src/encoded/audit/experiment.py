@@ -2451,7 +2451,7 @@ def audit_experiment_control(value, system, excluded_types):
 def is_matching_biosample_control(dataset, biosample_term_id):
     if dataset['@type'][0] == 'Experiment':
         return dataset.get('biosample_term_id') == biosample_term_id
-    elif (not dataset.get('biosample_term_id') or  
+    elif (not dataset.get('biosample_term_id') or
          any([term != biosample_term_id for term in dataset.get('biosample_term_id')])):
             return False
     return True
