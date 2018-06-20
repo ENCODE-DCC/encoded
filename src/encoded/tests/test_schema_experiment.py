@@ -134,6 +134,6 @@ def test_experiment_possible_controls(testapp, experiment_no_error, matched_set)
     exp = testapp.post_json('/experiment', experiment_no_error).json['@graph'][0]
     matched_set_control = testapp.post_json('/matched_set', matched_set).json['@graph'][0]
     testapp.patch_json(
-        exp['@id'], 
+        exp['@id'],
         {'possible_controls': [matched_set_control['@id']]},
         status=200)
