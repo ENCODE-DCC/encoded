@@ -180,6 +180,7 @@ export class FileTable extends React.Component {
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
                         <RawSequencingTable
                             files={files.raw}
+                            showReplicateNumber
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -188,11 +189,11 @@ export class FileTable extends React.Component {
                                 session,
                                 loggedIn,
                                 adminUser,
-                                showReplicateNumber,
                             }}
                         />
                         <RawFileTable
                             files={files.rawArray}
+                            showReplicateNumber
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -201,7 +202,6 @@ export class FileTable extends React.Component {
                                 session,
                                 loggedIn,
                                 adminUser,
-                                showReplicateNumber,
                             }}
                         />
                         <SortTable
