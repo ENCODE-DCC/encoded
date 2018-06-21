@@ -14,6 +14,7 @@ import { singleTreatment, treatmentDisplay, PanelLookup, AlternateAccession } fr
 import pubReferenceList from './reference';
 import Status from './status';
 import { BiosampleSummaryString, CollectBiosampleDocs, BiosampleTable } from './typeutils';
+import formatMeasurement from './../libs/formatMeasurement';
 
 
 /* eslint-disable react/prefer-stateless-function */
@@ -34,9 +35,11 @@ class BiosampleComponent extends React.Component {
         // Build the text of the synchronization string
         let synchText;
         if (context.synchronization) {
+            const synchronizationTime = formatMeasurement(context.post_synchronization_time, context.post_synchronization_time_units);
+
             synchText = context.synchronization +
                 (context.post_synchronization_time ?
-                    ` + ${context.post_synchronization_time}${context.post_synchronization_time_units ? ` ${context.post_synchronization_time_units}` : ''}`
+                    ` + ${synchronizationTime}`
                 : '');
         }
 
@@ -116,7 +119,9 @@ class BiosampleComponent extends React.Component {
                                     {context.donor && context.donor.organism.name !== 'human' && context.age ?
                                         <div data-test="age">
                                             <dt>Age</dt>
-                                            <dd className="sentence-case">{context.age}{context.age_units ? ` ${context.age_units}` : null}</dd>
+                                            <dd className="sentence-case">
+                                                {formatMeasurement(context.age, context.age_units)}
+                                            </dd>
                                         </div>
                                     : null}
 
@@ -124,7 +129,7 @@ class BiosampleComponent extends React.Component {
                                         <div data-test="pmi">
                                             <dt>Post-mortem interval</dt>
                                             <dd>
-                                                {context.PMI} {context.PMI_units}
+                                                {formatMeasurement(context.PMI, context.PMI_units)}
                                             </dd>
                                         </div>
                                     : null}
