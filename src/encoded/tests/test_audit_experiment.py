@@ -210,6 +210,15 @@ def IgG_ctrl_rep(testapp, ctrl_experiment, IgG_antibody):
 
 
 @pytest.fixture
+def treatment_time_series(testapp, lab, award):
+    item = {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+    }
+    return testapp.post_json('/treatment_time_series', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
 def library_1(testapp, lab, award, base_biosample):
     item = {
         'award': award['uuid'],
@@ -2915,3 +2924,43 @@ def test_audit_experiment_with_biosample_not_missing_nih_consent(testapp, experi
         ]
     )
 
+
+def test_is_matching_biosample_control(testapp, biosample, ctrl_experiment, treatment_time_series):
+    from encoded.audit.experiment import is_matching_biosample_control
+    exp = testapp.get(ctrl_experiment['@id'] + '@@index-data')
+    exp_embedded = exp.json['embedded']
+    bio = testapp.get(biosample['@id'] + '@@index-data')
+    bio_embedded = bio.json['embedded']
+    assert is_matching_biosample_control(exp_embedded, bio_embedded['biosample_term_id']) == False
+    testapp.patch_json(biosample['@id'], {'biosample_term_id': ctrl_experiment['biosample_term_id']})
+    bio = testapp.get(biosample['@id'] + '@@index-data')
+    bio_embedded = bio.json['embedded']
+    assert is_matching_biosample_control(exp_embedded, bio_embedded['biosample_term_id']) == True
+    series = testapp.get(treatment_time_series['@id'] + '@@index-data')
+    series_embedded = series.json['embedded']
+    assert is_matching_biosample_control(series_embedded, bio_embedded['biosample_term_id']) == False
+    testapp.patch_json(treatment_time_series['@id'], {'related_datasets': [ctrl_experiment['@id']]})
+    series = testapp.get(treatment_time_series['@id'] + '@@index-data')
+    series_embedded = series.json['embedded']
+    assert is_matching_biosample_control(series_embedded, bio_embedded['biosample_term_id']) == True
+
+
+def test_is_control_dataset(testapp, control_target, ctrl_experiment, publication_data, treatment_time_series):
+    from encoded.audit.experiment import is_control_dataset
+    exp = testapp.get(ctrl_experiment['@id'] + '@@index-data')
+    exp_embedded = exp.json['embedded']
+    assert is_control_dataset(exp_embedded) == False
+    testapp.patch_json(ctrl_experiment['@id'], {'target': control_target['@id']})
+    exp = testapp.get(ctrl_experiment['@id'] + '@@index-data')
+    exp_embedded = exp.json['embedded']
+    assert is_control_dataset(exp_embedded) == True
+    series = testapp.get(treatment_time_series['@id'] + '@@index-data')
+    series_embedded = series.json['embedded']
+    assert is_control_dataset(series_embedded) == False
+    testapp.patch_json(treatment_time_series['@id'], {'related_datasets': [ctrl_experiment['@id']]})
+    series = testapp.get(treatment_time_series['@id'] + '@@index-data')
+    series_embedded = series.json['embedded']
+    assert is_control_dataset(series_embedded) == True
+    file_set = testapp.get(publication_data['@id'] + '@@index-data')
+    file_set_embedded = file_set.json['embedded']
+    assert is_control_dataset(file_set_embedded) == False
