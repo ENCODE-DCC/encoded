@@ -175,12 +175,12 @@ export class FileTable extends React.Component {
               _.omit(FileTable.procTableColumns, 'biological_replicates');
 
             // filesRaw should be falsy if files.raw is
-            const filesRaw = showReplicateNumber || !files.raw ?
+            const filesRaw = showReplicateNumber ?
               files.raw :
               _.omit(files.raw, 'biological_replicates');
 
             // filesRawArray should be falsy if files.rawArray is
-            const filesRawArray = showReplicateNumber || !files.rawArray ?
+            const filesRawArray = showReplicateNumber ?
                 files.rawArray :
                 _.omit(files.rawArray, 'biological_replicates');
 
@@ -415,11 +415,15 @@ FileTable.refTableColumns = {
 
 
 const sortBioReps = (a, b) => {
+    if (!a || !b || !a.biological_replicates || !b.biological_replicates) {
+        return 0;
+    }
+
     // Sorting function for biological replicates of the given files.
     let result; // Ends sorting loop once it has a value
     let i = 0;
-    let repA = (a && a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
-    let repB = (b && b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
+    let repA = (a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
+    let repB = (b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
 
     while (result === undefined) {
         if (repA !== undefined && repB !== undefined) {
@@ -706,7 +710,7 @@ class RawFileTable extends React.Component {
             const libGroups = _(files).groupBy((file) => {
                 // Groups have a 4-digit zero-filled biological replicate number concatenated with
                 // the library accession, e.g. 0002ENCLB158ZZZ.
-                const bioRep = globals.zeroFill(file.biological_replicates[0], 4);
+                const bioRep = file.biological_replicates ? globals.zeroFill(file.biological_replicates[0], 4) : '';
                 return bioRep + (file.replicate && file.replicate.library && file.replicate.library.accession ? file.replicate.library.accession : 'Z');
             });
 
