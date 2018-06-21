@@ -172,6 +172,8 @@ export class FileTable extends React.Component {
 
             // showReplicateNumber matches with show-functionality. It has to
             // be NOT (!)-ed to match with hide-functionality
+            // TODO: (1)Move .hide to FileTable.procTableColumns declaration
+            // (2) move showReplicateNumber to meta
             FileTable.procTableColumns.biological_replicates.hide = () => !showReplicateNumber;
 
             return (
