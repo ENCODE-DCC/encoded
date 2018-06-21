@@ -48,6 +48,11 @@ function fileAccessionSort(a, b) {
     return aTitle > bTitle ? 1 : (aTitle < bTitle ? -1 : 0);
 }
 
+// Calculate a string representation of the given replication_type.
+const replicationDisplay = replicationType => (
+    `${replicationType === 'anisogenic' ? 'Anisogenic' : 'Isogenic'} replicate`
+);
+
 export class FileTable extends React.Component {
     static rowClasses() {
         return '';
@@ -124,6 +129,7 @@ export class FileTable extends React.Component {
             showFileCount,
             session,
             adminUser,
+            showReplicateNumber,
         } = this.props;
         let selectedAssembly;
         let selectedAnnotation;
@@ -164,12 +170,17 @@ export class FileTable extends React.Component {
                 return 'proc';
             });
 
+            // showReplicateNumber matches with show-functionality. It has to
+            // be NOT (!)-ed to match with hide-functionality
+            FileTable.procTableColumns.biological_replicates.hide = () => !showReplicateNumber;
+
             return (
                 <div>
                     {showFileCount ? <div className="file-gallery-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
                         <RawSequencingTable
                             files={files.raw}
+                            showReplicateNumber={showReplicateNumber}
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -182,6 +193,7 @@ export class FileTable extends React.Component {
                         />
                         <RawFileTable
                             files={files.rawArray}
+                            showReplicateNumber={showReplicateNumber}
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -204,7 +216,7 @@ export class FileTable extends React.Component {
                             collapsed={this.state.collapsed.proc}
                             list={files.proc}
                             columns={FileTable.procTableColumns}
-                            sortColumn="accession"
+                            sortColumn={showReplicateNumber ? 'biological_replicates' : 'date_created'}
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -262,6 +274,7 @@ FileTable.propTypes = {
     adminUser: PropTypes.bool, // True if user is an admin user
     schemas: PropTypes.object, // Object from /profiles/ containing all schemas
     noDefaultClasses: PropTypes.bool, // True to strip SortTable panel of default CSS classes
+    showReplicateNumber: PropTypes.bool, // True to show replicate number
 };
 
 FileTable.defaultProps = {
@@ -277,6 +290,7 @@ FileTable.defaultProps = {
     adminUser: false,
     schemas: null,
     noDefaultClasses: false,
+    showReplicateNumber: true,
 };
 
 FileTable.contextTypes = {
@@ -298,6 +312,10 @@ FileTable.procTableColumns = {
     },
     file_type: { title: 'File type' },
     output_type: { title: 'Output type' },
+    biological_replicates: {
+        title: (list, columns, meta) => <span>{replicationDisplay(meta.replicationType)}</span>,
+        getValue: item => (item.biological_replicates ? item.biological_replicates.sort((a, b) => a - b).join(', ') : ''),
+    },
     mapped_read_length: {
         title: 'Mapped read length',
         hide: list => _(list).all(file => file.mapped_read_length === undefined),
@@ -388,6 +406,41 @@ FileTable.refTableColumns = {
 };
 
 
+const sortBioReps = (a, b) => {
+    if (!a || !b || !a.biological_replicates || !b.biological_replicates) {
+        return 0;
+    }
+
+    // Sorting function for biological replicates of the given files.
+    let result; // Ends sorting loop once it has a value
+    let i = 0;
+    let repA = (a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
+    let repB = (b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
+
+    while (result === undefined) {
+        if (repA !== undefined && repB !== undefined) {
+            // Both biological replicates have a value
+            if (repA !== repB) {
+                // We got a real sorting result
+                result = repA - repB;
+            } else {
+                // They both have values, but they're equal; go to next
+                // biosample replicate array elements
+                i += 1;
+                repA = a.biological_replicates[i];
+                repB = b.biological_replicates[i];
+            }
+        } else if (repA !== undefined || repB !== undefined) {
+            // One and only one replicate empty; sort empty one after
+            result = repA ? 1 : -1;
+        } else {
+            // Both empty; sorting result same
+            result = 0;
+        }
+    }
+    return result;
+};
+
 class RawSequencingTable extends React.Component {
     constructor() {
         super();
@@ -407,7 +460,7 @@ class RawSequencingTable extends React.Component {
     }
 
     render() {
-        const { files, meta } = this.props;
+        const { files, meta, showReplicateNumber } = this.props;
         const { loggedIn, adminUser } = meta;
 
         if (files && files.length) {
@@ -492,6 +545,7 @@ class RawSequencingTable extends React.Component {
 
                         {!this.state.collapsed ?
                             <tr>
+                                {showReplicateNumber ? <th>{replicationDisplay(meta.replicationType)}</th> : null}
                                 <th>Library</th>
                                 <th>Accession</th>
                                 <th>File type</th>
@@ -533,6 +587,9 @@ class RawSequencingTable extends React.Component {
 
                                     return (
                                         <tr key={file['@id']}>
+                                            {showReplicateNumber && i === 0 ?
+                                              <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>{groupFiles[0].biological_replicates[0]}</td>
+                                              : null}
                                             {i === 0 ?
                                                 <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right + table-raw-merged`}>{(groupFiles[0].replicate && groupFiles[0].replicate.library) ? groupFiles[0].replicate.library.accession : null}</td>
                                             : null}
@@ -551,7 +608,7 @@ class RawSequencingTable extends React.Component {
                                     );
                                 });
                             })}
-                            {nonpairedFiles.map((file, i) => {
+                            {nonpairedFiles.sort(sortBioReps).map((file, i) => {
                                 // Prepare for run_type display
                                 let runType;
                                 if (file.run_type === 'single-ended') {
@@ -568,6 +625,11 @@ class RawSequencingTable extends React.Component {
 
                                 return (
                                     <tr key={file['@id']} className={rowClasses.join(' ')}>
+                                        {
+                                          showReplicateNumber ?
+                                          <td className="table-raw-biorep">{file.biological_replicates && file.biological_replicates.length ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td> :
+                                          null
+                                        }
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
                                             <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
@@ -603,10 +665,12 @@ class RawSequencingTable extends React.Component {
 RawSequencingTable.propTypes = {
     files: PropTypes.array, // Raw files to display
     meta: PropTypes.object.isRequired, // Extra metadata in the same format passed to SortTable
+    showReplicateNumber: PropTypes.bool,
 };
 
 RawSequencingTable.defaultProps = {
     files: null,
+    showReplicateNumber: true,
 };
 
 
@@ -629,7 +693,7 @@ class RawFileTable extends React.Component {
     }
 
     render() {
-        const { files, meta } = this.props;
+        const { files, meta, showReplicateNumber } = this.props;
         const { loggedIn, adminUser } = meta;
 
         if (files && files.length) {
@@ -638,7 +702,7 @@ class RawFileTable extends React.Component {
             const libGroups = _(files).groupBy((file) => {
                 // Groups have a 4-digit zero-filled biological replicate number concatenated with
                 // the library accession, e.g. 0002ENCLB158ZZZ.
-                const bioRep = globals.zeroFill(file.biological_replicates[0], 4);
+                const bioRep = file.biological_replicates ? globals.zeroFill(file.biological_replicates[0], 4) : '';
                 return bioRep + (file.replicate && file.replicate.library && file.replicate.library.accession ? file.replicate.library.accession : 'Z');
             });
 
@@ -665,6 +729,9 @@ class RawFileTable extends React.Component {
 
                         {!this.state.collapsed ?
                             <tr>
+                                {showReplicateNumber ?
+                                  <th>{replicationDisplay(meta.replicationType)}</th> :
+                                  null}
                                 <th>Library</th>
                                 <th>Accession</th>
                                 <th>File type</th>
@@ -698,6 +765,11 @@ class RawFileTable extends React.Component {
                                     // Prepare for run_type display
                                     return (
                                         <tr key={file['@id']}>
+                                            {showReplicateNumber && i === 0 ?
+                                              <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged table-raw-biorep`}>
+                                                  {groupFiles[0].biological_replicates.length ? <span>{groupFiles[0].biological_replicates[0]}</span> : <i>N/A</i>}
+                                              </td>
+                                            : null}
                                             {i === 0 ?
                                                 <td rowSpan={groupFiles.length} className={`${bottomClass} merge-right table-raw-merged`}>
                                                     {groupFiles[0].replicate && groupFiles[0].replicate.library ? <span>{groupFiles[0].replicate.library.accession}</span> : <i>N/A</i>}
@@ -718,7 +790,7 @@ class RawFileTable extends React.Component {
                                     );
                                 });
                             })}
-                            {nonGrouped.map((file, i) => {
+                            {nonGrouped.sort(sortBioReps).map((file, i) => {
                                 // Prepare for run_type display
                                 const rowClasses = [
                                     groupKeys.length && i === 0 ? 'table-raw-separator' : null,
@@ -729,6 +801,9 @@ class RawFileTable extends React.Component {
 
                                 return (
                                     <tr key={file['@id']} className={rowClasses.join(' ')}>
+                                        {showReplicateNumber ?
+                                          <td className="table-raw-biorep">{(file.biological_replicates && file.biological_replicates.length) ? file.biological_replicates.sort((a, b) => a - b).join(', ') : 'N/A'}</td> :
+                                          null}
                                         <td>{(file.replicate && file.replicate.library) ? file.replicate.library.accession : 'N/A'}</td>
                                         <td>
                                             <DownloadableAccession file={file} buttonEnabled={buttonEnabled} clickHandler={meta.fileClick ? meta.fileClick : null} loggedIn={loggedIn} adminUser={adminUser} />
@@ -764,10 +839,12 @@ class RawFileTable extends React.Component {
 RawFileTable.propTypes = {
     files: PropTypes.array, // Raw sequencing files to display
     meta: PropTypes.object.isRequired, // Extra metadata in the same format passed to SortTable
+    showReplicateNumber: PropTypes.bool, // True to show replicate number
 };
 
 RawFileTable.defaultProps = {
     files: null,
+    showReplicateNumber: true,
 };
 
 
@@ -796,11 +873,11 @@ DatasetFiles.defaultProps = {
 // This component only triggers the data retrieval, which is done with a search for files associated
 // with the given experiment (in this.props.context). An odd thing is we specify query-string parameters
 // to the experiment URL, but they apply to the file search -- not the experiment itself.
-export const FileGallery = ({ context, encodevers, hideGraph, altFilterDefault }, reactContext) => (
+export const FileGallery = ({ context, encodevers, hideGraph, altFilterDefault, showReplicateNumber }, reactContext) => (
     <FetchedData>
         <Param name="data" url={`/search/?limit=all&type=File&dataset=${context['@id']}`} />
         <Param name="schemas" url="/profiles/" />
-        <FileGalleryRenderer context={context} session={reactContext.session} encodevers={encodevers} hideGraph={hideGraph} altFilterDefault={altFilterDefault} />
+        <FileGalleryRenderer context={context} session={reactContext.session} encodevers={encodevers} hideGraph={hideGraph} altFilterDefault={altFilterDefault} showReplicateNumber={showReplicateNumber} />
     </FetchedData>
 );
 
@@ -809,12 +886,14 @@ FileGallery.propTypes = {
     encodevers: PropTypes.string, // ENCODE version number
     hideGraph: PropTypes.bool, // T to hide graph display
     altFilterDefault: PropTypes.bool, // T to default to All Assemblies and Annotations
+    showReplicateNumber: PropTypes.bool, // True to show replicate number
 };
 
 FileGallery.defaultProps = {
     encodevers: '',
     hideGraph: false,
     altFilterDefault: false,
+    showReplicateNumber: true,
 };
 
 FileGallery.contextTypes = {
@@ -1686,7 +1765,7 @@ class FileGalleryRendererComponent extends React.Component {
     }
 
     render() {
-        const { context, data, schemas, hideGraph } = this.props;
+        const { context, data, schemas, hideGraph, showReplicateNumber } = this.props;
         let selectedAssembly = '';
         let selectedAnnotation = '';
         let allGraphedFiles;
@@ -1723,6 +1802,7 @@ class FileGalleryRendererComponent extends React.Component {
                 showFileCount
                 noDefaultClasses
                 adminUser={!!(this.context.session_properties && this.context.session_properties.admin)}
+                showReplicateNumber={showReplicateNumber}
             />
         );
 
@@ -1818,6 +1898,7 @@ FileGalleryRendererComponent.propTypes = {
     altFilterDefault: PropTypes.bool, // T to default to All Assemblies and Annotations
     auditIndicators: PropTypes.func.isRequired, // Inherited from auditDecor HOC
     auditDetail: PropTypes.func.isRequired, // Inherited from auditDecor HOC
+    showReplicateNumber: PropTypes.bool, // True to show replicate number
 };
 
 FileGalleryRendererComponent.defaultProps = {
@@ -1825,6 +1906,7 @@ FileGalleryRendererComponent.defaultProps = {
     schemas: null,
     hideGraph: false,
     altFilterDefault: false,
+    showReplicateNumber: true,
 };
 
 FileGalleryRendererComponent.contextTypes = {
