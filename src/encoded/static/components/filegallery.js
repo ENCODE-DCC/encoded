@@ -170,8 +170,8 @@ export class FileTable extends React.Component {
                 return 'proc';
             });
 
-            // showReplicateNumber matches with show-functionality. To match
-            // it with hide, it has to be NOT(!) -ed
+            // showReplicateNumber matches with show-functionality. It has to
+            // be NOT (!)-ed to match with hide-functionality
             FileTable.procTableColumns.biological_replicates.hide = () => !showReplicateNumber;
 
             return (
@@ -180,7 +180,7 @@ export class FileTable extends React.Component {
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
                         <RawSequencingTable
                             files={files.raw}
-                            showReplicateNumber
+                            showReplicateNumber={showReplicateNumber}
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -193,7 +193,7 @@ export class FileTable extends React.Component {
                         />
                         <RawFileTable
                             files={files.rawArray}
-                            showReplicateNumber
+                            showReplicateNumber={showReplicateNumber}
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
