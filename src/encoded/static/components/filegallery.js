@@ -170,12 +170,26 @@ export class FileTable extends React.Component {
                 return 'proc';
             });
 
+            const procTableColumns = showReplicateNumber ?
+              FileTable.procTableColumns :
+              _.omit(FileTable.procTableColumns, 'biological_replicates');
+
+            // filesRaw should be falsy if files.raw is
+            const filesRaw = showReplicateNumber || !files.raw ?
+              files.raw :
+              _.omit(files.raw, 'biological_replicates');
+
+            // filesRawArray should be falsy if files.rawArray is
+            const filesRawArray = showReplicateNumber || !files.rawArray ?
+                files.rawArray :
+                _.omit(files.rawArray, 'biological_replicates');
+
             return (
                 <div>
                     {showFileCount ? <div className="file-gallery-counts">Displaying {filteredCount} of {unfilteredCount} files</div> : null}
                     <SortTablePanel header={filePanelHeader} noDefaultClasses={this.props.noDefaultClasses}>
                         <RawSequencingTable
-                            files={files.raw}
+                            files={filesRaw}
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -187,7 +201,7 @@ export class FileTable extends React.Component {
                             }}
                         />
                         <RawFileTable
-                            files={files.rawArray}
+                            files={filesRawArray}
                             meta={{
                                 encodevers,
                                 replicationType: context.replication_type,
@@ -209,7 +223,7 @@ export class FileTable extends React.Component {
                             rowClasses={this.rowClasses}
                             collapsed={this.state.collapsed.proc}
                             list={files.proc}
-                            columns={FileTable.procTableColumns}
+                            columns={procTableColumns}
                             sortColumn={showReplicateNumber ? 'biological_replicates' : 'date_created'}
                             meta={{
                                 encodevers,
