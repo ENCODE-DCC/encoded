@@ -170,7 +170,8 @@ export class FileTable extends React.Component {
                 return 'proc';
             });
 
-            // showReplicateNumber is NOT(!) -ed so it is in harmony with hide function
+            // showReplicateNumber matches with show-functionality. To match
+            // it with hide, it has to be NOT(!) -ed
             FileTable.procTableColumns.biological_replicates.hide = () => !showReplicateNumber;
 
             return (
@@ -187,6 +188,7 @@ export class FileTable extends React.Component {
                                 session,
                                 loggedIn,
                                 adminUser,
+                                showReplicateNumber,
                             }}
                         />
                         <RawFileTable
@@ -199,6 +201,7 @@ export class FileTable extends React.Component {
                                 session,
                                 loggedIn,
                                 adminUser,
+                                showReplicateNumber,
                             }}
                         />
                         <SortTable
