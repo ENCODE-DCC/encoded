@@ -168,7 +168,8 @@ write_files:
     transport.tcp.port: 9299
     node.master: %(ES_MASTER)s
     node.data: %(ES_DATA)s
-    discovery.zen.minimum_master_nodes: 3  # (5/2) + 1
+    # if 5 nodes then MIN_MASTER_NODES=3 since (5/2) + 1
+    discovery.zen.minimum_master_nodes: %(MIN_MASTER_NODES)s
     discovery.type: ec2
 
     cloud.aws.region: us-west-2

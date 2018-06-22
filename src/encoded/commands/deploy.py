@@ -303,6 +303,9 @@ def _get_ec2_client(main_args, instances_tag_data):
 def _get_run_args(main_args, instances_tag_data):
     master_user_data = None
     if not main_args.elasticsearch == 'yes':
+        security_groups = ['ssh-http-https']
+        iam_role = 'encoded-instance'
+        count = 1
         data_insert = {
             'WALE_S3_PREFIX': main_args.wale_s3_prefix,
             'COMMIT': instances_tag_data['commit'],
@@ -322,21 +325,23 @@ def _get_run_args(main_args, instances_tag_data):
         if main_args.set_region_index_to:
             data_insert['REGION_INDEX'] = main_args.set_region_index_to
         user_data = get_user_data(instances_tag_data['commit'], config_file, data_insert, main_args.profile_name)
-        security_groups = ['ssh-http-https']
-        iam_role = 'encoded-instance'
-        count = 1
     else:
         if not main_args.cluster_name:
             print("Cluster must have a name")
             sys.exit(1)
+        count = int(main_args.cluster_size)
+        security_groups = ['elasticsearch-https']
+        iam_role = 'elasticsearch-instance'
         config_file = ':cloud-config-elasticsearch.yml'
         data_insert = {
             'CLUSTER_NAME': main_args.cluster_name,
             'ES_DATA': 'true',
             'ES_MASTER': 'true',
+            'MIN_MASTER_NODES': int(count/2 + 1),
         }
         if main_args.single_data_master:
             data_insert['ES_MASTER'] = 'false'
+            data_insert['MIN_MASTER_NODES'] = 1
         user_data = get_user_data(instances_tag_data['commit'], config_file, data_insert, main_args.profile_name)
         if main_args.single_data_master:
             master_data_insert = {
@@ -350,9 +355,6 @@ def _get_run_args(main_args, instances_tag_data):
                 master_data_insert,
                 main_args.profile_name,
             )
-        security_groups = ['elasticsearch-https']
-        iam_role = 'elasticsearch-instance'
-        count = int(main_args.cluster_size)
     run_args = {
         'count': count,
         'iam_role': iam_role,
