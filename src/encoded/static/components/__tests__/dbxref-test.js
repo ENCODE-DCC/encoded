@@ -175,8 +175,10 @@ describe('Test individual dbxref types', () => {
 
         it('has the correct links for Targets', () => {
             expect(dbxLinksTarget.length).toBe(2);
-            expect(dbxLinksTarget.at(0).prop('href')).toEqual('http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context=CG43860');
-            expect(dbxLinksTarget.at(1).prop('href')).toEqual('http://flybase.org/cgi-bin/quicksearch_solr.cgi?caller=quicksearch&tab=basic_tab&data_class=FBgn&species=Dmel&search_type=all&context=FBtr0332562');
+            const flybaseSearchUrl = 'http://flybase.org/search/symbol/';
+
+            expect(dbxLinksTarget.at(0).prop('href')).toEqual(`${flybaseSearchUrl}CG43860`);
+            expect(dbxLinksTarget.at(1).prop('href')).toEqual(`${flybaseSearchUrl}FBtr0332562`);
         });
     });
 
