@@ -408,11 +408,15 @@ FileTable.refTableColumns = {
 };
 
 const sortBioReps = (a, b) => {
+    if ((!a || !b) || (!a.biological_replicates && !b.biological_replicates)) {
+        return 0;
+    }
+
     // Sorting function for biological replicates of the given files.
     let result; // Ends sorting loop once it has a value
     let i = 0;
-    let repA = (a && a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
-    let repB = (b && b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
+    let repA = (a.biological_replicates && a.biological_replicates.length) ? a.biological_replicates[i] : undefined;
+    let repB = (b.biological_replicates && b.biological_replicates.length) ? b.biological_replicates[i] : undefined;
 
     while (result === undefined) {
         if (repA !== undefined && repB !== undefined) {
