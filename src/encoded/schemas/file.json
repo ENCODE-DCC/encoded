@@ -573,7 +573,7 @@
             "permission": "import_items"
         },
         "schema_version": {
-            "default": "13"
+            "default": "14"
         },
         "accession": {
             "accessionType": "FF"
