@@ -218,7 +218,7 @@
     position: relative;
     font-size: 1.2rem;
     font-weight: bold;
-    z-index: 0;
+    z-index: 1000;
 
     a {
         &:hover {
