@@ -359,7 +359,7 @@ def _get_run_args(main_args, instances_tag_data):
         'user_data': user_data,
         'security_groups': security_groups,
     }
-    if 'master_user_data':
+    if master_user_data:
         run_args['master_user_data'] = master_user_data
     return run_args
 
