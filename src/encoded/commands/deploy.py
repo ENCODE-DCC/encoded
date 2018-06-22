@@ -348,6 +348,7 @@ def _get_run_args(main_args, instances_tag_data):
                 'CLUSTER_NAME': main_args.cluster_name,
                 'ES_DATA': 'false',
                 'ES_MASTER': 'true',
+                'MIN_MASTER_NODES': 1,
             }
             master_user_data = get_user_data(
                 instances_tag_data['commit'],
