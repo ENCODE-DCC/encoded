@@ -25,19 +25,19 @@
             "title": "# of reads",
             "type": "integer",
             "description": "# of starting reads in the pool (if replicated) or experiment (if unreplicated)",
-            "minimum": 1
+            "minimum": 0
         },
         "nreads_in_peaks": {
             "title": "# of reads in peaks",
             "type": "integer",
             "description": "# of reads that fall within peaks.",
-            "minimum": 1
+            "minimum": 0
         },
         "npeak_overlap": {
             "title": "# of overlapping peaks",
             "type": "integer",
             "description": "# peaks overlapping with true replicate or pooled pseudoreplicate peaks",
-            "minimum": 1
+            "minimum": 0
         },
         "Fp": {
             "title": "FRiP score from pooled pseudoreplicate peaks",

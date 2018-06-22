@@ -55,12 +55,12 @@
                 "width": {
                     "title": "Image width",
                     "type": "integer",
-                    "minimum": 1
+                    "minimum": 0
                 },
                 "height": {
                     "title": "Image height",
                     "type": "integer",
-                    "minimum": 1
+                    "minimum": 0
                 }
             }
         },

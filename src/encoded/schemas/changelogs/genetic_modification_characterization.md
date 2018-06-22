@@ -2,7 +2,7 @@
 
 ### Schema version 5
 
-* *size*, *width*, and *height* in *attachment* were set to have a minimum of 0, 1, 1, respectively.
+* *size*, *width*, and *height* in *attachment* were set to have a minimum of 0.
 
 ### Schema version 4
 
