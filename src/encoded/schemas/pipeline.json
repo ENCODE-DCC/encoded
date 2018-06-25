@@ -188,6 +188,7 @@
             "description": "The pipeline version.",
             "comment": "Please increment as whole numbers starting from 1.",
             "type": "integer",
+            "pattern": "^[1-9]\\d*$",
             "minimum": 1
         }
     },
