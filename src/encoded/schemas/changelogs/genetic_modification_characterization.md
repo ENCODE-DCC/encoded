@@ -1,8 +1,8 @@
 ## Changelog for genetic_modification_characterization.json
 
-### Schema version 5
+### Minor change
 
-* *size*, *width*, and *height* in *attachment* were set to have a minimum of 0, 1, 1, respectively.
+* *size*, *width*, and *height* in *attachment* were set to have a minimum of 0.
 
 ### Schema version 4
 

@@ -1,6 +1,6 @@
 ## Changelog for file.json
 
-### Schema version 14
+### Minor change
 
 * *read_count*, *file _size*, *read_length*, *mapped_read_length*, and *barcode_position* in  *flowcell_details* were set to have a minimum of 0.
 

@@ -1,6 +1,6 @@
 ## Change log for antibody_characterization.json
 
-### Schema version 14
+### Minor change
 
 * *lane* in *characterization_reviews* was set to have a minimum of 0.
 

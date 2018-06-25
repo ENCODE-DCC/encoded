@@ -1,6 +1,6 @@
 ## Changelog for analysis_step_version.json
 
-### Schema version 5
+### Minor change
 
 * *minor_version* was set to have a minimum of 0.
 

@@ -1,6 +1,6 @@
 ## Changelog for quality_metric.json
 
-### Schema version 2
+### Minor change
 
-* *size*, *width*, and *height* in *attachment* were set to have a minimum of 0, 1, 1, respectively.
+* *size*, *width*, and *height* in *attachment* were set to have a minimum of 0.
    

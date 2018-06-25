@@ -1,6 +1,6 @@
 ## Changelog for genetic_modification.json
 
-### Schema version 8
+### Minor change
 
 * *start* and *end* in *modified_site_by_coordinates* were set to have a minimum of 0.
 

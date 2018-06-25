@@ -1,8 +1,8 @@
 ## Changelog for generic_quality_metric.json
 
-### Schema version 8
+### Minor change
 
-* *size*, *width*, and *height* in *attachment* were set to have a minimum of 0, 1, 1, respectively.
+* *size*, *width*, and *height* in *attachment* were set to have a minimum of 0.
 
 ### Schema version 7
 

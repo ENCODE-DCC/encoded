@@ -1,6 +1,6 @@
 ## Changelog for chipseq_filter_quality_metric.json
 
-### Schema version 8
+### Minor change
 
 * *size* in *cross_correlation_plot* was set to have a minimum of 0.
 
