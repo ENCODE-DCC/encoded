@@ -5,6 +5,7 @@ import moment from 'moment';
 import { FetchedData, FetchedItems, Param } from './fetched';
 import * as globals from './globals';
 import { Panel, PanelBody } from '../libs/bootstrap/panel';
+import Tooltip from '../libs/bootstrap/tooltip';
 
 
 const newsUri = '/search/?type=Page&news=true&status=released';
@@ -35,6 +36,473 @@ function generateQuery(selectedOrganisms, selectedAssayCategory) {
 
     return query;
 }
+
+
+// Buttons to introduce people to ENCODE.
+const IntroControls = () => (
+    <div className="intro-controls">
+        <a href="/about/contributors/" role="button" className="intro-controls__element intro-controls__element--33-width">About</a>
+        <a href="/help/getting-started/" role="button" className="intro-controls__element intro-controls__element--33-width">Get Started</a>
+        <a href="/help/rest-api/" role="button" className="intro-controls__element intro-controls__element--33-width">REST API</a>
+        <a href="/matrix/?type=Experiment&status=released" role="button" className="intro-controls__element intro-controls__element--50-width">Data Matrix</a>
+        <a href="/matrix/?type=Annotation&encyclopedia_version=4" role="button" className="intro-controls__element intro-controls__element--50-width">Encyclopedia Matrix</a>
+    </div>
+);
+
+
+// Home-page-only ENCODE search form.
+class EncodeSearch extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            inputText: '', // Text value in controlled <input>
+            disabledSearch: true, // True to disable search button
+        };
+        this.handleOnChange = this.handleOnChange.bind(this);
+    }
+
+    handleOnChange(e) {
+        // Called when user changes the contents of the input field.
+        const newInputText = e.target.value;
+        this.setState({ inputText: newInputText, disabledSearch: newInputText.length === 0 });
+    }
+
+    render() {
+        return (
+            <form action="/search/">
+                <fieldset className="site-search__encode">
+                    <legend className="sr-only">Encode search</legend>
+                    <div className="site-search__input">
+                        <label htmlFor="encode-search">Search ENCODE portal</label>
+                        <Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="search-encode" css="tooltip-home-info">
+                            Search the entire ENCODE portal by using terms like &ldquo;skin,&rdquo; &ldquo;ChIP-seq,&rdquo; or &ldquo;CTCF.&rdquo;
+                        </Tooltip>
+                        <input id="encode-search" className="form-control" value={this.state.inputText} name="searchTerm" type="text" onChange={this.handleOnChange} />
+                    </div>
+                    <div className="site-search__submit">
+                        <button type="submit" aria-label="ENCODE portal search" title="ENCODE portal search" disabled={this.state.disabledSearch} className="btn btn-info">ENCODE <i className="icon icon-search" /></button>
+                    </div>
+                </fieldset>
+            </form>
+        );
+    }
+}
+
+
+// Display one term in the SCREEN search suggestions list. If the user clicks on this item or moves
+// the mouse into it, this component alerts the parent list component so it can react. This
+// component's purpose is to tie specific list items to events that select it.
+class SearchSuggestionsItem extends React.Component {
+    constructor() {
+        super();
+        this.itemClickHandler = this.itemClickHandler.bind(this);
+        this.itemMouseEnter = this.itemMouseEnter.bind(this);
+    }
+
+    itemClickHandler(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.props.listClickHandler(this.props.item);
+    }
+
+    itemMouseEnter() {
+        this.props.listMouseEnter(this.props.item);
+    }
+
+    render() {
+        return <li><button className={this.props.selected ? 'site-search__suggested-results--selected' : ''} onMouseDown={this.itemClickHandler} onMouseEnter={this.itemMouseEnter}>{this.props.item}</button></li>;
+    }
+}
+
+SearchSuggestionsItem.propTypes = {
+    item: PropTypes.string.isRequired, // Suggestion item to display
+    selected: PropTypes.bool, // True to display selected
+    listClickHandler: PropTypes.func.isRequired, // Click handler for entire suggestion list
+    listMouseEnter: PropTypes.func.isRequired, // Handler for mouseenter event for this item
+};
+
+SearchSuggestionsItem.defaultProps = {
+    selected: false,
+};
+
+
+// Display a list of search suggestions from SCREEN in a drop-down list below the search field.
+class SearchSuggestionsPicker extends React.Component {
+    constructor() {
+        super();
+        this.listClickHandler = this.listClickHandler.bind(this);
+        this.listMouseEnter = this.listMouseEnter.bind(this);
+    }
+
+    listClickHandler(term) {
+        if (this.props.itemSelectHandler) {
+            this.props.itemSelectHandler(term);
+        }
+    }
+
+    listMouseEnter(term) {
+        if (this.props.itemMouseEnterHandler) {
+            this.props.itemMouseEnterHandler(term);
+        }
+    }
+
+    render() {
+        return (
+            <ul className="site-search__suggested-results" id={this.props.controlId}>
+                {this.props.suggestedSearchItems.map((item, i) => (
+                    <SearchSuggestionsItem key={item} item={item} selected={i === this.props.selectedItemIndex} listClickHandler={this.listClickHandler} listMouseEnter={this.listMouseEnter} />
+                ))}
+            </ul>
+        );
+    }
+}
+
+SearchSuggestionsPicker.propTypes = {
+    suggestedSearchItems: PropTypes.array.isRequired, // Array of terms to display and choose from
+    selectedItemIndex: PropTypes.number, // Item to display as selected
+    controlId: PropTypes.string, // HTML ID to assign to <ul>; for arias
+    itemSelectHandler: PropTypes.func, // Callback when user chooses a suggested term
+    itemMouseEnterHandler: PropTypes.func, // Callback when mouse enters a suggested term
+};
+
+SearchSuggestionsPicker.defaultProps = {
+    selectedItemIndex: -1,
+    controlId: 'site-search-suggestions-picker',
+    itemSelectHandler: null,
+    itemMouseEnterHandler: null,
+};
+
+
+// https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
+const KEYCODE_UP_ARROW = 38;
+const KEYCODE_DOWN_ARROW = 40;
+const KEYCODE_ENTER = 13;
+const KEYCODE_ESC = 27;
+
+
+// Combination input and drop-down suggestions form control. Handles both mouse and keyboard
+// control of the suggestions list.
+class InputSuggest extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            inputText: props.value, // Current contents of <input>
+            selectedItemIndex: -1, // Index of currently selected item in `item` array
+            hideSuggestions: false, // True to hide items even if parent passes items in
+        };
+        this.handleOnChange = this.handleOnChange.bind(this);
+        this.handleOnClick = this.handleOnClick.bind(this);
+        this.handleItemSelectClick = this.handleItemSelectClick.bind(this);
+        this.handleOnBlur = this.handleOnBlur.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.handleMouseEnter = this.handleMouseEnter.bind(this);
+    }
+
+    componentDidUpdate(prevProps) {
+        // React to new <input> text contents controlled by parent form component.
+        if (prevProps.value !== this.props.value) {
+            this.setState({
+                inputText: this.props.value,
+                selectedItemIndex: -1,
+                hideSuggestions: false,
+            });
+        }
+    }
+
+    handleOnChange(e) {
+        // Called when user changes the contents of the controlled <input> field.
+        const newInputText = e.target.value;
+        this.setState({ inputText: newInputText });
+        if (this.props.inputChangeHandler) {
+            this.props.inputChangeHandler(newInputText);
+        }
+    }
+
+    handleOnClick() {
+        // Called when user clicks in the <input> field.
+        if (this.props.inputClickHandler) {
+            this.props.inputClickHandler();
+        }
+    }
+
+    handleItemSelectClick(selectedItem) {
+        // Called when the user clicks on an item on the suggestion list.
+        if (this.props.itemSelectHandler) {
+            this.props.itemSelectHandler(selectedItem);
+        }
+    }
+
+    handleOnBlur() {
+        // Called when the user moves focus outside the <input> field.
+        if (this.props.inputBlurHandler) {
+            this.props.inputBlurHandler();
+        }
+    }
+
+    handleKeyDown(e) {
+        // Handle keyboard usage of the suggestion list.
+        if (e.keyCode === KEYCODE_UP_ARROW) {
+            e.preventDefault();
+            this.setState((prevState) => {
+                let newIndex = -1;
+                if (prevState.selectedItemIndex > 0) {
+                    // Select item above the currently selected one.
+                    newIndex = prevState.selectedItemIndex - 1;
+                } else if (prevState.selectedItemIndex === -1) {
+                    // No item selected, so select the last item.
+                    newIndex = this.props.items.length - 1;
+                } else if (prevState.selectedItemIndex === 0) {
+                    // First item selected, so stay on that item.
+                    newIndex = prevState.selectedItemIndex;
+                }
+                return { selectedItemIndex: newIndex };
+            });
+        } else if (e.keyCode === KEYCODE_DOWN_ARROW) {
+            e.preventDefault();
+
+            // Select the next item in the list, or stay on the item if the current item is the
+            // last one.
+            this.setState(prevState => ({ selectedItemIndex: prevState.selectedItemIndex < this.props.items.length - 1 ? prevState.selectedItemIndex + 1 : prevState.selectedItemIndex }));
+        } else if (e.keyCode === KEYCODE_ENTER && this.state.selectedItemIndex > -1 && this.props.itemSelectHandler) {
+            this.props.itemSelectHandler(this.props.items[this.state.selectedItemIndex]);
+        } else if (e.keyCode === KEYCODE_ESC) {
+            // Hide the suggestions list even if the parent component sends items to display. That
+            // way the parent doesn't need to handle the ESC key itself.
+            e.preventDefault();
+            this.setState({ hideSuggestions: true });
+        }
+    }
+
+    handleMouseEnter(term) {
+        // Mouse entering a suggestion item selects it, and deselects anything else.
+        const termIndex = this.props.items.indexOf(term);
+        if (termIndex > -1) {
+            this.setState({ selectedItemIndex: termIndex });
+        }
+    }
+
+    render() {
+        const { items, inputId, placeholder } = this.props;
+        const controlId = `${inputId}-list`;
+        const activeDescendant = (this.props.items.length && this.state.selectedItemIndex > -1) ? this.props.items[this.state.selectedItemIndex] : '';
+        return (
+            <div className="site-search__input-field" role="combobox" aria-haspopup="listbox" aria-expanded={items.length > 0} aria-controls={controlId} aria-owns={controlId}>
+                <input
+                    id={inputId}
+                    className="form-control"
+                    placeholder={placeholder}
+                    type="text"
+                    autoComplete="off"
+                    aria-autocomplete="list"
+                    aria-activedescendant={activeDescendant}
+                    aria-labelledby={this.props.labelledById}
+                    value={this.state.inputText}
+                    onChange={this.handleOnChange}
+                    onClick={this.handleOnClick}
+                    onBlur={this.handleOnBlur}
+                    onKeyDown={this.handleKeyDown}
+                />
+                {items.length > 0 && !this.state.hideSuggestions ?
+                    <SearchSuggestionsPicker
+                        suggestedSearchItems={this.props.items}
+                        selectedItemIndex={this.state.selectedItemIndex}
+                        controlId={controlId}
+                        itemSelectHandler={this.handleItemSelectClick}
+                        itemMouseEnterHandler={this.handleMouseEnter}
+                    />
+                : null}
+            </div>
+        );
+    }
+}
+
+InputSuggest.propTypes = {
+    items: PropTypes.array, // Array of strings to display in menu
+    value: PropTypes.string, // Initial value of text in <input>
+    inputId: PropTypes.string.isRequired, // HTML id to assign to <input>
+    labelledById: PropTypes.string, // ID of label for <input>
+    placeholder: PropTypes.string, // Placeholder text for <input>
+    inputChangeHandler: PropTypes.func, // Callback to handle <input> text content change
+    inputClickHandler: PropTypes.func, // Callback to handle clicks in <input>
+    inputBlurHandler: PropTypes.func, // Callback to handle <input> blurring
+    itemSelectHandler: PropTypes.func, // Callback to handle click in dropdown item
+};
+
+InputSuggest.defaultProps = {
+    items: [],
+    value: '',
+    placeholder: '',
+    labelledById: '',
+    inputChangeHandler: null,
+    inputClickHandler: null,
+    inputBlurHandler: null,
+    itemSelectHandler: null,
+};
+
+
+// URLS to work the SCREEN site, both for a suggestion list and searches.
+const screenSuggestionsUrl = 'https://api.wenglab.org/screenv10_python_beta/autows/suggestions';
+const screenSearchUrl = 'http://screen.encodeproject.org/api/autows/search';
+
+
+// Render the search form for SCREEN searches, including the search field, search buttons, and
+// drop-down suggestions from the SCREEN server. To prevent fast typers from overwhelming the
+// SCREEN server with suggestion requests, a timer prevents more than one suggestion request per
+// second.
+class ScreenSearch extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            currSearchTerm: '', // Text currently entered in SCREEN search field
+            suggestedSearchTerms: [], // Suggested search terms from SCREEN
+        };
+
+        this.lastSearchTerm = ''; // Last text we requested suggestions for
+        this.throttlingTimer = null; // Tracks delay timer; null when not running
+
+        this.getScreenSuggestions = this.getScreenSuggestions.bind(this);
+        this.handleTimerExpiry = this.handleTimerExpiry.bind(this);
+        this.startDelayTimer = this.startDelayTimer.bind(this);
+        this.searchTermChange = this.searchTermChange.bind(this);
+        this.searchTermClick = this.searchTermClick.bind(this);
+        this.submitScreenSearch = this.submitScreenSearch.bind(this);
+        this.termSelectHandler = this.termSelectHandler.bind(this);
+        this.inputBlur = this.inputBlur.bind(this);
+    }
+
+    componentWillUnmount() {
+        if (this.throttlingTimer) {
+            clearTimeout(this.throttlingTimer);
+            this.throttlingTimer = null;
+        }
+    }
+
+    getScreenSuggestions(newSearchTerm) {
+        // Retrieve a list of term suggestions from the SCREEN REST API based on `newSearchTerm`.
+        this.startDelayTimer();
+        this.lastSearchTerm = newSearchTerm;
+        fetch(screenSuggestionsUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userQuery: newSearchTerm.trim() }),
+        }).then(response => (
+            // If we get an error response from the SCREEN server, just don't display a suggestions
+            // drop down.
+            response.ok ? response.json() : []
+        )).then((results) => {
+            let dedupedSearchTerms = [];
+            if (results.length > 0) {
+                dedupedSearchTerms = _.chain(results.map(term => term.trim())).uniq().compact().value();
+            }
+            this.setState({ suggestedSearchTerms: dedupedSearchTerms });
+            return results;
+        });
+    }
+
+    handleTimerExpiry() {
+        // Called when the timer expires. If the last term requested for suggestions is different
+        // from what's in the input field, request new suggestions.
+        this.throttlingTimer = null;
+        if (this.state.currSearchTerm !== this.lastSearchTerm) {
+            this.getScreenSuggestions(this.state.currSearchTerm);
+        }
+    }
+
+    startDelayTimer() {
+        this.throttlingTimer = setTimeout(this.handleTimerExpiry, 1000);
+    }
+
+    searchTermChange(newSearchTerm) {
+        // Called when user changed the contents of the search input field.
+        if (newSearchTerm !== this.currSearchTerm) {
+            this.setState({ currSearchTerm: newSearchTerm });
+
+            // Only request a search suggestion if the timer isn't running.
+            if (!this.throttlingTimer) {
+                this.getScreenSuggestions(newSearchTerm);
+            }
+        }
+    }
+
+    submitScreenSearch() {
+        // Request search results from SCREEN.
+        fetch(screenSearchUrl, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                assembly: 'hg19',
+                userQuery: this.state.currSearchTerm,
+                uuid: '0',
+            }),
+        }).then(response => (
+            response.ok ? response.json() : null
+        ));
+    }
+
+    termSelectHandler(term) {
+        // Called when user clicks on a term in the drop-down suggestion list.
+        this.setState({ currSearchTerm: term, suggestedSearchTerms: [] });
+    }
+
+    searchTermClick() {
+        // Called when the user clicks in the SCREEN search edit field so that the drop-down
+        // suggestion list disappears so that we don't hide the search buttons.
+        this.setState({ suggestedSearchTerms: [] });
+    }
+
+    inputBlur() {
+        // Called input focus moves away from the search input component.
+        this.setState({ suggestedSearchTerms: [] });
+    }
+
+    render() {
+        const disabledSearch = this.state.currSearchTerm.length === 0;
+        return (
+            <form>
+                <fieldset className="site-search__screen">
+                    <legend className="sr-only">Screen search</legend>
+                    <div className="site-search__input">
+                        <label htmlFor="screen-search" id="screen-search-label">
+                            Search for Candidate Regulatory Elements
+                            <Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="search-screen" css="tooltip-home-info">
+                                Search for candidate regulatory elements by entering a gene name or alias, SNP rsID, ccRE accession, or genomic region in the form chr:start-end; or enter a cell type to filter results e.g. &ldquo;chr11:5226493-5403124&rdquo; or &ldquo;rs4846913.&rdquo;
+                            </Tooltip>
+                            <br />
+                            <span className="site-search__note">Hosted by <a href="http://screen.encodeproject.org/">SCREEN</a></span>
+                        </label>
+                        <InputSuggest
+                            value={this.state.currSearchTerm}
+                            items={this.state.suggestedSearchTerms}
+                            inputId="screen-search"
+                            labelledById="screen-search-label"
+                            inputChangeHandler={this.searchTermChange}
+                            inputClickHandler={this.searchTermClick}
+                            inputBlurHandler={this.inputBlur}
+                            itemSelectHandler={this.termSelectHandler}
+                        />
+                    </div>
+                    <div className="site-search__submit">
+                        <a disabled={disabledSearch} aria-label="Human hg19 search" title="Human hg19 search" className="btn btn-info" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=hg19`}>Human hg19 <i className="icon icon-search" /></a>
+                        <a disabled={disabledSearch} aria-label="Mouse mm10 search" title="Mouse mm10 search" className="btn btn-info" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=mm10`}>Mouse mm10 <i className="icon icon-search" /></a>
+                    </div>
+                </fieldset>
+            </form>
+        );
+    }
+}
+
+
+const SiteSearch = () => (
+    <div className="site-search">
+        <EncodeSearch />
+        <ScreenSearch />
+    </div>
+);
 
 
 // Main page component to render the home page
@@ -129,7 +597,10 @@ export default class Home extends React.Component {
 const ChartGallery = props => (
     <PanelBody>
         <div className="view-all">
-            <a href={`/matrix/${props.query}`} className="view-all-button btn btn-info btn-sm" role="button">View Assay Matrix</a>
+            <a href={`/matrix/${props.query}`} className="view-all-button btn btn-info btn-sm" role="button">
+                {props.assayCategory !== '' || props.organisms.length > 0 ? 'Filtered ' : ''}
+                Data Matrix
+            </a>
         </div>
         <div className="chart-gallery">
             <div className="chart-single">
@@ -146,10 +617,14 @@ const ChartGallery = props => (
 );
 
 ChartGallery.propTypes = {
+    assayCategory: PropTypes.string, // Selected assay cateogry from classic image buttons
+    organisms: PropTypes.array, // Contains selected organism strings
     query: PropTypes.string, // Query string to add to /matrix/ URI
 };
 
 ChartGallery.defaultProps = {
+    assayCategory: '',
+    organisms: [],
     query: null,
 };
 
@@ -216,10 +691,8 @@ class AssayClicking extends React.Component {
 
                         <div className="site-banner-intro">
                             <div className="site-banner-intro-content">
-                                <p>The ENCODE (Encyclopedia of DNA Elements) Consortium is an international collaboration of research groups funded by the National Human Genome Research Institute (NHGRI). The goal of ENCODE is to build a comprehensive parts list of functional elements in the human genome, including elements that act at the protein and RNA levels, and regulatory elements that control cells and circumstances in which a gene is active.</p>
-                                <div className="getting-started-button">
-                                    <a href="/matrix/?type=Experiment&status=released" className="btn btn-info" role="button">Get Started</a>
-                                </div>
+                                <IntroControls />
+                                <SiteSearch />
                             </div>
                         </div>
                     </div>

@@ -78,10 +78,6 @@
     position: relative;
 
     @media screen and (min-width: $screen-md-min) {
-        flex: 0 1 70%;
-    }
-
-    @media screen and (min-width: $screen-lg-min) {
         flex: 0 1 60%;
     }
 
@@ -92,19 +88,16 @@
 }
 
 .site-banner-intro {
-    padding: 10px 20px;
+    padding: 10px 10px;
     line-height: 1.8;
     font-size: 1.2rem;
     line-height: 1.8;
 
-    @media screen and (min-width: $screen-md-min) {
-        flex: 0 1 30%;
-        font-size: 1.1rem;
-        line-height: 1.6;
-        border-left: 1px solid #e0e0e0;
+    @media screen and (min-width: $screen-sm-min) {
+        padding: 10px 20px;
     }
 
-    @media screen and (min-width: $screen-lg-min) {
+    @media screen and (min-width: $screen-md-min) {
         flex: 0 1 40%;
         font-size: 1.2rem;
         line-height: 1.8;
@@ -387,4 +380,111 @@
 .news-header {
     @extend .twitter-header;
     border-bottom: 1px solid #e0e0e0;
+}
+
+.intro-controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 0 -5px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        margin: 0;
+    }
+
+    @at-root #{&}__element {
+        @extend .btn;
+        @extend .btn-info;
+        margin: 5px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        flex: 1 1 auto;
+
+        @media screen and (min-width: $screen-sm-min) {
+            margin: 5px 0;
+
+            &--33-width {
+                flex: 0 0 31%;
+            }
+
+            &--50-width {
+                flex: 0 0 48%;
+            }
+        }
+    }
+}
+
+
+.site-search {
+    width: 100%;
+
+    @at-root #{&}__screen {
+        a {
+            margin-right: 5px;
+
+            &:after {
+                content: "" !important;
+            }
+        }
+    }
+
+    @at-root #{&}__suggested-results {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        z-index: 2;
+        background-color: white;
+        border: 1px solid #a0a0a0;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        li {
+            margin: 0;
+            padding: 0;
+
+            button {
+                display: block;
+                width: 100%;
+                font-size: 1rem;
+                text-align: left;
+                background: none;
+                border: none;
+
+                &.site-search__suggested-results--selected {
+                    background-color: #0a253d;
+                    color: #fff;
+                }
+            }
+        }
+    }
+
+    @at-root #{&}__input {
+        margin-bottom: 10px;
+
+        label {
+            line-height: 1;
+        }
+    }
+
+    @at-root #{&}__input-field {
+        position: relative;
+    }
+
+    @at-root #{&}__note {
+        font-size: 0.9rem;
+        font-weight: normal;
+        font-style: italic;
+    }
+}
+
+// Info icons with tooltips.
+.tooltip-home-info {
+    margin-left: 5px;
+    width: 16px;
+    height: 16px;
+    line-height: 1;
+    vertical-align: baseline;
 }

@@ -34,8 +34,11 @@ const portal = {
             title: 'Encyclopedia',
             children: [
                 { id: 'aboutannotations', title: 'About', url: '/data/annotations/' },
+                { id: 'sep-mm-1' },
+                { id: 'annotationvisualize', title: 'Visualize (SCREEN)', url: 'http://screen.encodeproject.org/' },
                 { id: 'annotationmatrix', title: 'Matrix', url: '/matrix/?type=Annotation&encyclopedia_version=4' },
                 { id: 'annotationsearch', title: 'Search', url: '/search/?type=Annotation&encyclopedia_version=4' },
+                { id: 'annotationmethods', title: 'Methods', url: 'http://screen.encodeproject.org/index/about' },
             ],
         },
         {
@@ -821,6 +824,7 @@ class App extends React.Component {
         return request;
     }
 
+    /* eslint-disable class-methods-use-this */
     fallbackNavigate(href, fragment, options) {
         // Navigate using window.location
         if (options.replace) {
@@ -833,6 +837,7 @@ class App extends React.Component {
             }
         }
     }
+    /* eslint-enable class-methods-use-this */
 
     receiveContextResponse(data) {
         // title currently ignored by browsers
