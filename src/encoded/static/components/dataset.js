@@ -225,7 +225,7 @@ class AnnotationComponent extends React.Component {
                 </Panel>
 
                 {/* Display the file widget with the facet, graph, and tables */}
-                <FileGallery context={context} encodevers={encodevers} />
+                <FileGallery context={context} encodevers={encodevers} showReplicateNumber={false}  />
 
                 <DocumentsPanelReq documents={datasetDocuments} />
             </div>
