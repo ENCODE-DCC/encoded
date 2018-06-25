@@ -17,7 +17,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "hidden comment": "Bump the default in the subclasses."
         },
         "step_run": {
             "title": "Analysis Step",

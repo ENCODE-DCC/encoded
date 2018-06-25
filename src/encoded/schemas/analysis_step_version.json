@@ -17,7 +17,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "5"
+            "default": "4"
         },
         "minor_version": {
             "title": "Minor version",

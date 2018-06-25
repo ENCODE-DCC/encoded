@@ -96,7 +96,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "14"
+            "default": "13"
         },
         "reviewed_by": {
             "title": "Reviewed by",
