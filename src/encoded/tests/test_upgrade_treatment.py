@@ -130,7 +130,7 @@ def test_treatment_upgrade_9_10(upgrader, treatment_9):
     assert value['schema_version'] == '10'
     assert value['status'] == 'released'
     treatment_9['status'] = 'disabled'
-    treatment_9['schema_version'] == '9'
+    treatment_9['schema_version'] = '9'
     value = upgrader.upgrade('treatment', treatment_9, current_version='9', target_version='10')
     assert value['schema_version'] == '10'
     assert value['status'] == 'deleted'
