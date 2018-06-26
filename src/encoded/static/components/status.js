@@ -122,7 +122,7 @@ const objectStatuses = {
     },
     FileSet: accessionedStatuses,
     Image: standardStatuses,
-    Lab: standardStatuses,
+    Lab: sharedStatuses,
     Library: accessionedStatuses,
     Organism: standardStatuses,
     Page: standardStatuses,
