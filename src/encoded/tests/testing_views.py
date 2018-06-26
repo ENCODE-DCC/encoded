@@ -79,7 +79,7 @@ class TestingDownload(ItemWithAttachment):
         'title': 'Test keys',
         'description': 'Testing. Testing. 1, 2, 3.',
     },
-    unique_key='testing_accession',
+    unique_key='testing_alias',
 )
 class TestingKey(Item):
     item_type = 'testing_key'
@@ -90,9 +90,9 @@ class TestingKey(Item):
                 'type': 'string',
                 'uniqueKey': True,
             },
-            'accession': {
+            'alias': {
                 'type': 'string',
-                'uniqueKey': 'testing_accession',
+                'uniqueKey': 'testing_alias',
             },
         }
     }
