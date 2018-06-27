@@ -25,3 +25,12 @@ def source_2_3(value, system):
     # http://redmine.encodedcc.org/issues/3063
     if 'aliases' in value:
         value['aliases'] = list(set(value['aliases']))
+
+
+@upgrade_step('source', '5', '6')
+def source_5_6(value, system):
+    # https://encodedcc.atlassian.net/browse/ENCD-3776
+    if value.get('status') == 'current':
+        value['status'] = 'released'
+    elif value.get('status') == 'disabled':
+        value['status'] = 'deleted'
