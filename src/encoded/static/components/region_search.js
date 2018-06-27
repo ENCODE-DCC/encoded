@@ -200,13 +200,7 @@ class AdvSearch extends React.Component {
         const region = id.query.region || '';
 
         if (this.state.genome === '') {
-            let assembly = regionGenomes[0].value;
-            if (context.assembly) {
-                assembly = regionGenomes.find(el =>
-                    context.assembly === el.value || context.assembly === el.display
-                ).value;
-            }
-            this.setState({ genome: assembly });
+            this.setState({ genome: context.assembly || regionGenomes[0].value });
         }
 
         return (
@@ -240,6 +234,9 @@ class AdvSearch extends React.Component {
                     </form>
                     {context.coordinates ?
                         <p>Searched coordinates: <strong>{context.coordinates}</strong></p>
+                    : null}
+                    {context.regulome_score ?
+                        <p><strong>RegulomeDB score: {context.regulome_score}</strong></p>
                     : null}
                 </PanelBody>
             </Panel>
@@ -301,9 +298,9 @@ class RegionSearch extends React.Component {
 
         return (
             <div>
-                <h2>Region search</h2>
+                <h2>{context.title}</h2>
                 <AdvSearch {...this.props} />
-                {notification === 'Success' ?
+                {notification.startsWith('Success') ?
                     <div className="panel data-display main-panel">
                         <div className="row">
                             <div className="col-sm-5 col-md-4 col-lg-3">
