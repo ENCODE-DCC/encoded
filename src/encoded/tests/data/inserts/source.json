@@ -2,7 +2,7 @@
     {
         "description": "Abcam",
         "name": "abcam",
-        "status": "released",
+        "status": "current",
         "title": "Abcam",
         "url": "http://www.abcam.com",
         "uuid": "b40f24ee-8803-4937-9223-1df3a6bf3cd9"
@@ -10,7 +10,7 @@
     {
         "description": "American Type Culture Collection (ATCC)",
         "name": "atcc",
-        "status": "released",
+        "status": "current",
         "title": "ATCC",
         "url": "http://www.atcc.org/",
         "uuid": "eadabaf1-d5b6-4b48-8847-e86461f12101"
@@ -18,7 +18,7 @@
     {
         "description": "Aviva Systems Biology",
         "name": "aviva",
-        "status": "released",
+        "status": "current",
         "title": "Aviva",
         "url": "http://www.avivasysbio.com",
         "uuid": "fa701215-07e6-4ffe-a8f4-20356d66f3e0"
@@ -26,7 +26,7 @@
     {
         "description": "Barbara Wold at California Institute of Technology",
         "name": "barbara-wold",
-        "status": "released",
+        "status": "current",
         "title": "Barbara Wold",
         "url": "http://woldlab.caltech.edu/",
         "uuid": "82fc89e4-81a0-42af-b30e-fb5943b97b31"
@@ -34,7 +34,7 @@
     {
         "description": "Coriell Institute for Medical Research",
         "name": "coriell",
-        "status": "released",
+        "status": "current",
         "title": "Coriell",
         "url": "http://www.coriell.org/",
         "uuid": "409d724e-067e-4744-8d5b-c8f806136d80"
@@ -42,7 +42,7 @@
     {
         "description": "Covance",
         "name": "covance",
-        "status": "released",
+        "status": "current",
         "title": "Covance",
         "url": "https://store.crpinc.com",
         "uuid": "d53c77c6-0300-421e-8884-42aca9d53e78"
@@ -50,7 +50,7 @@
     {
         "description": "Dana Levasseur at University of Iowa",
         "name": "dana-levasseur",
-        "status": "released",
+        "status": "current",
         "title": "Dana Levasseur",
         "url": "http://www.int-med.uiowa.edu/Divisions/Immunology/Directory/DanaLevasseur.html",
         "uuid": "b3e069d1-ea98-4b05-a3bb-46f44024392c"
@@ -58,7 +58,7 @@
     {
         "description": "ENCODE Project",
         "name": "encode",
-        "status": "released",
+        "status": "current",
         "title": "ENCODE",
         "url": "http://encodeproject.org",
         "uuid": "be960dc7-1912-4ff5-8b1a-a7e2e1b2533e"
@@ -66,7 +66,7 @@
     {
         "description": "Gregory Crawford at Duke University",
         "name": "gregory-crawford",
-        "status": "released",
+        "status": "current",
         "title": "Gregory Crawford",
         "url": "http://www.genome.duke.edu/labs/crawford/",
         "uuid": "6bf39a01-cb18-407c-b984-05fc83d7d73b"
@@ -74,7 +74,7 @@
     {
         "description": "Health Protection Agency Culture Collections",
         "name": "ecacc",
-        "status": "released",
+        "status": "current",
         "title": "ECACC",
         "url": "http://www.hpacultures.org.uk",
         "uuid": "e5262635-e4c8-4cf7-bfab-ad7e8959f648"
@@ -82,7 +82,7 @@
     {
         "description": "John Stamatoyannopoulos at University of Washington",
         "name": "john-stamatoyannopoulos",
-        "status": "released",
+        "status": "current",
         "title": "John Stamatoyannopoulos",
         "url": "http://www.gs.washington.edu/faculty/stamj.htm",
         "uuid": "cbf9ba55-2e91-4718-808b-28aa219980d1"
@@ -90,7 +90,7 @@
     {
         "description": "Kevin White at University of Chicago",
         "name": "kevin-white",
-        "status": "released",
+        "status": "current",
         "title": "Kevin White",
         "url": "http://www.genes.uchicago.edu/white.html",
         "uuid": "f060244e-1d31-4633-ae4a-b06d21a90568"
@@ -98,7 +98,7 @@
     {
         "description": "Len Pennacchio at Joint Genome Institute",
         "name": "len-pennacchio",
-        "status": "released",
+        "status": "current",
         "title": "Len Pennacchio",
         "url": "http://www.jgi.doe.gov/whoweare/pennacchio.html",
         "uuid": "30091cf1-cdd9-4f2f-b1d7-bf709b8afa49"
@@ -106,7 +106,7 @@
     {
         "description": "Lonza Group Ltd.",
         "name": "lonza",
-        "status": "released",
+        "status": "current",
         "title": "Lonza",
         "url": "http://www.lonza.com/",
         "uuid": "f00336ec-6bf3-48fe-8898-2a017f50b948"
@@ -114,7 +114,7 @@
     {
         "description": "Michael Bender at Fred Hutchinson Cancer Research Center",
         "name": "michael-bender",
-        "status": "released",
+        "status": "current",
         "title": "Michael Bender",
         "url": "http://www.seattlechildrens.org/medical-staff/michael-a-bender/",
         "uuid": "d83a9d9a-70e7-4469-b96d-abcc379e4eaf"
@@ -122,7 +122,7 @@
     {
         "description": "Michael Snyder at Stanford University",
         "name": "michael-snyder",
-        "status": "released",
+        "status": "current",
         "title": "Michael Snyder",
         "url": "http://snyderlab.stanford.edu",
         "uuid": "45be6f13-5346-4952-ad74-141540384381"
@@ -130,7 +130,7 @@
     {
         "description": "Millipore",
         "name": "millipore",
-        "status": "released",
+        "status": "current",
         "title": "Millipore",
         "url": "http://www.millipore.com",
         "uuid": "ede69357-7024-440e-979a-cdc926c69bff"
@@ -138,7 +138,7 @@
     {
         "description": "National Disease Research Interchange (NDRI)",
         "name": "ndri",
-        "status": "released",
+        "status": "current",
         "title": "NDRI",
         "url": "http://ndriresource.org/",
         "uuid": "0dba62cd-803d-40a3-b5eb-8cd23a54da68"
@@ -146,7 +146,7 @@
     {
         "description": "Peggy Farnham at University of Southern California",
         "name": "peggy-farnham",
-        "status": "released",
+        "status": "current",
         "title": "Peggy Farnham",
         "url": "http://pibbs.usc.edu/faculty/profile/?fid=205",
         "uuid": "1fd2cfd5-95f3-4731-a839-033a06b4a2dd"
@@ -154,7 +154,7 @@
     {
         "description": "PromoCell GmbH",
         "name": "promocell",
-        "status": "released",
+        "status": "current",
         "title": "PromoCell",
         "url": "http://www.promocell.com",
         "uuid": "b8e804f7-04f2-4042-8aca-eeeb12bdc6f1"
@@ -162,7 +162,7 @@
     {
         "description": "Santa Cruz Biotechnology",
         "name": "santa-cruz-biotech",
-        "status": "released",
+        "status": "current",
         "title": "Santa Cruz Biotech",
         "url": "http://www.scbt.com",
         "uuid": "017b0807-3dfa-4f9c-a632-81a57c873350"
@@ -170,7 +170,7 @@
     {
         "description": "Sherman Weissman at Yale University",
         "name": "sherman-weissman",
-        "status": "released",
+        "status": "current",
         "title": "Sherman Weissman",
         "url": "http://bbs.yale.edu/people/sherman_weissman.profile",
         "uuid": "62d2ba10-75a2-42eb-895c-a213fe9b59df"
@@ -178,7 +178,7 @@
     {
         "description": "Sigma-Aldrich",
         "name": "sigma",
-        "status": "released",
+        "status": "current",
         "title": "Sigma",
         "url": "http://www.sigmaaldrich.com",
         "uuid": "f13c90dd-1b51-439a-8d78-ca033c6aef23"

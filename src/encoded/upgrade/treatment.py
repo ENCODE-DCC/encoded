@@ -82,12 +82,3 @@ def treatment_8_9(value, system):
         namespace = parts[0]
         if namespace == 'UniprotKB':
             value['treatment_term_id'] = 'UniProtKB:' + parts[1]
-
-
-@upgrade_step('treatment', '9', '10')
-def treatment_9_10(value, system):
-    # https://encodedcc.atlassian.net/browse/ENCD-3776
-    if value.get('status') == 'current':
-        value['status'] = 'released'
-    elif value.get('status') == 'disabled':
-        value['status'] = 'deleted'

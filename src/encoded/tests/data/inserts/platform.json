@@ -117,7 +117,7 @@
             "GEO:GPL16791",
             "GEO:GPL17021"
         ],
-        "status": "released",
+        "status": "current",
         "term_id": "OBI:0002002",
         "term_name": "HiSeq 2500",
         "url": "http://res.illumina.com/documents/products/datasheets/datasheet_hiseq2500.pdf",
@@ -126,7 +126,7 @@
     {
         "url": "http://www.illumina.com/documents/products/datasheets/datasheet_miseq.pdf",
         "term_name": "MiSeq",
-        "status": "released",
+        "status": "current",
         "aliases": ["encode:MiSeq"],
         "uuid": "bab144b6-97b5-4dfb-b307-ff2997b73550",
         "dbxrefs": [
@@ -137,7 +137,7 @@
     },
     {
         "aliases": ["encode:PacBioRSII"],
-        "status": "released",
+        "status": "current",
         "term_id": "OBI:0002012",
         "term_name": "Pacific Biosciences RS II",
         "url": "http://www.pacb.com/products-and-services/pacbio-systems/rsii/",

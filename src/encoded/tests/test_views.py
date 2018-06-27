@@ -168,7 +168,6 @@ def test_collection_post(testapp):
         'name': 'human',
         'scientific_name': 'Homo sapiens',
         'taxon_id': '9606',
-        'status': 'released'
     }
     return testapp.post_json('/organism', item, status=201)
 
