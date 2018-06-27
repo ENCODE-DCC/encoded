@@ -14,6 +14,9 @@ from .region_indexer import (
     REGULOME_ALLOWED_STATUSES,
     REGULOME_DATASET_TYPES
 )
+import logging
+
+log = logging.getLogger(__name__)
 
 # ##################################
 # RegionAtlas and RegulomeAtlas classes encapsulate the methods
@@ -30,10 +33,32 @@ REGDB_NUM_SCORES = [1000, 950, 900, 850, 800, 750, 600, 550, 500, 450, 400, 300,
 
 NEARBY_SNP_WINDOW = 1600
 
-# def includeme(config):
-#    config.scan(__name__)
-#    registry = config.registry
-#    registry['region'+INDEXER] = RegionIndexer(registry)
+CHROM_SIZES = {
+    'chr1':  {'hg19': 249250621, 'GRCh38': 248956422},
+    'chr2':  {'hg19': 243199373, 'GRCh38': 242193529},
+    'chr3':	 {'hg19': 198022430, 'GRCh38': 198295559},
+    'chr4':  {'hg19': 191154276, 'GRCh38': 190214555},
+    'chr5':  {'hg19': 180915260, 'GRCh38': 181538259},
+    'chr6':  {'hg19': 171115067, 'GRCh38': 170805979},
+    'chr7':  {'hg19': 159138663, 'GRCh38': 159345973},
+    'chr8':  {'hg19': 146364022, 'GRCh38': 145138636},
+    'chr9':  {'hg19': 141213431, 'GRCh38': 138394717},
+    'chr10': {'hg19': 135534747, 'GRCh38': 133797422},
+    'chr11': {'hg19': 135006516, 'GRCh38': 135086622},
+    'chr12': {'hg19': 133851895, 'GRCh38': 133275309},
+    'chr13': {'hg19': 115169878, 'GRCh38': 114364328},
+    'chr14': {'hg19': 107349540, 'GRCh38': 107043718},
+    'chr15': {'hg19': 102531392, 'GRCh38': 101991189},
+    'chr16': {'hg19': 90354753,  'GRCh38': 90338345},
+    'chr17': {'hg19': 81195210,  'GRCh38': 83257441},
+    'chr18': {'hg19': 78077248,  'GRCh38': 80373285},
+    'chr19': {'hg19': 59128983,  'GRCh38': 58617616},
+    'chr20': {'hg19': 63025520,  'GRCh38': 64444167},
+    'chr21': {'hg19': 48129895,  'GRCh38': 46709983},
+    'chr22': {'hg19': 51304566,  'GRCh38': 50818468},
+    'chrX':  {'hg19': 155270560, 'GRCh38': 156040895},
+    'chrY':  {'hg19': 59373566,  'GRCh38': 57227415}
+}
 
 
 class RegionAtlas(object):
@@ -59,6 +84,19 @@ class RegionAtlas(object):
     def set_indices():
         indices = [set_type.lower() for set_type in ENCODED_DATASET_TYPES]
         return indices
+
+    @staticmethod
+    def chrom_size(assembly, chrom):
+        '''Return the size of a chrom.'''
+        return CHROM_SIZES[chrom][assembly]
+
+    @staticmethod
+    def cap_at_chrom_size(assembly, chrom, pos):
+        '''Return the lessor of pos or end of chrom.'''
+        chrom_size = CHROM_SIZES[chrom][assembly]
+        if pos < 0 or pos > chrom_size:
+            return chrom_size
+        return pos
 
     def snp(self, assembly, rsid):
         '''Return single SNP by rsid and assembly'''
@@ -121,6 +159,7 @@ class RegionAtlas(object):
         except NotFoundError:
             return []
         except Exception:
+            log.error('Error: find_snps()', exc_info=True)
             return []
 
         return [hit['_source'] for hit in results['hits']['hits']]
@@ -138,6 +177,7 @@ class RegionAtlas(object):
         except NotFoundError:
             return None
         except Exception:
+            log.error('Error: find_peaks()', exc_info=True)
             return None
 
         return list(results['hits']['hits'])
@@ -152,6 +192,7 @@ class RegionAtlas(object):
             res = self.region_es.search(index=RESIDENT_REGIONSET_KEY, body=id_query,
                                         doc_type=use_types, size=max_results)
         except Exception:
+            log.error('Error: _resident_details()', exc_info=True)
             return None
 
         details = {}
@@ -214,6 +255,7 @@ class RegionAtlas(object):
     def details_breakdown(details, uuids=None):
         '''Return dataset and file dicts from resident details dicts.'''
         if not details:
+            log.warn('Warning: details_breakdown(), no details provided.')
             return (None, None)
         file_dets = {}
         dataset_dets = {}
@@ -236,16 +278,20 @@ class RegulomeAtlas(RegionAtlas):
         super(RegulomeAtlas, self).__init__(region_es)
         self.expected_use = FOR_REGULOME_DB
 
-    def type(self):
+    @staticmethod
+    def type():
         return 'regulome'
 
-    def allowed_statuses(self):
+    @staticmethod
+    def allowed_statuses():
         return REGULOME_ALLOWED_STATUSES
 
-    def set_type(self):
+    @staticmethod
+    def set_type():
         return ['Dataset']
 
-    def set_indices(self):
+    @staticmethod
+    def set_indices():
         indices = [set_type.lower() for set_type in REGULOME_DATASET_TYPES]
         return indices
 
@@ -279,6 +325,7 @@ class RegulomeAtlas(RegionAtlas):
         # regulome category 'Motifs' contains score categories 'PWM' and 'Footprint'
         if score_category is None:
             if dataset is None:
+                log.warn('Warning: _regulome_category(), no score_category or dataset provided.')
                 return '???'
             score_category = self._score_category(dataset)
         if score_category == 'ChIP':
@@ -494,6 +541,7 @@ class RegulomeAtlas(RegionAtlas):
         '''For a region, yields sub-regions (start, end, score) of contiguous numeric score > 0'''
         (peaks, details) = self.find_peaks_filtered(assembly, chrom, start, end, peaks_too=True)
         if not peaks or not details:
+            # Not an unexpected case
             return
 
         last_uuids = set()
@@ -542,8 +590,8 @@ class RegulomeAtlas(RegionAtlas):
         if rsid:
             max_snps += 1
 
-        range_start = pos - int(NEARBY_SNP_WINDOW / 2)
-        range_end = pos + int(NEARBY_SNP_WINDOW / 2)
+        range_end = self.cap_at_chrom_size(assembly, chrom, (pos + int(NEARBY_SNP_WINDOW / 2)))
+        range_start = range_end - NEARBY_SNP_WINDOW
         if range_start < 0:
             range_end += 0 - range_start
             range_start = 0
@@ -560,7 +608,10 @@ class RegulomeAtlas(RegionAtlas):
 
     def iter_scored_snps(self, assembly, chrom, start, end, base_level=False):
         '''For a region, iteratively yields all SNPs with scores.'''
+        end = self.cap_at_chrom_size(assembly, chrom, end)
         if end < start:
+            log.warn('Warning: iter_scored_snps() called for invalid region %s %s:%d-%d' %
+                     (assembly, chrom, start, end))
             return
         chunk_size = REGDB_SCORE_CHUNK_SIZE
         chunk_start = start
@@ -574,7 +625,10 @@ class RegulomeAtlas(RegionAtlas):
     def iter_scored_signal(self, assembly, chrom, start, end):
         '''For a region, iteratively yields all bedGraph styled regions
            of contiguous numeric score.'''
+        end = self.cap_at_chrom_size(assembly, chrom, end)
         if end < start:
+            log.warn('Warning: iter_scored_signal() called for invalid region %s %s:%d-%d' %
+                     (assembly, chrom, start, end))
             return
         chunk_size = REGDB_SCORE_CHUNK_SIZE
         chunk_start = start
