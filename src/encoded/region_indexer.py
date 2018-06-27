@@ -410,7 +410,10 @@ class RegionIndexerState(IndexerState):
         # Not yet started?
         initialized = self.get_obj("indexing")  # http://localhost:9200/snovault/meta/indexing
         if not initialized:
-            self.delete_objs([self.override, self.staged_for_regions_list])
+            self.delete_objs([self.override])
+            staged_count = self.get_count(self.staged_for_regions_list)
+            if staged_count > 0:
+                log.warn('Initial indexing handoff almost dropped %d staged uuids' % (staged_count))
             state = self.get()
             state['status'] = 'uninitialized'
             self.put(state)

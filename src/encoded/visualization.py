@@ -595,7 +595,7 @@ class VisDataset(object):
         '''Returns a dict of biosamples for file.'''
         biosamples = {}
         replicates = file_dataset.get("replicates")
-        if replicates is None or not isinstance(replicates[0], dict):
+        if not replicates or not isinstance(replicates[0], dict):
             return []
 
         for bio_rep in a_file.get("biological_replicates", []):
