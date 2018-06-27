@@ -1290,6 +1290,9 @@ export class ResultTable extends React.Component {
                     </div>
                 );
             }
+            if (this.props.region) {
+                this.props.currentRegion(browserAssembly, this.props.region);
+            }
         }
 
         return (
@@ -1365,7 +1368,7 @@ export class ResultTable extends React.Component {
                                         </TabPanelPane>
                                         <TabPanelPane key="browserpane">
                                             {assemblyChooser}
-                                            <ResultBrowser files={results} assembly={browserAssembly} datasets={browserDatasets} limitFiles={!browseAllFiles} currentRegion={this.props.currentRegion} />
+                                            <ResultBrowser files={results} assembly={browserAssembly} region={this.props.region} datasets={browserDatasets} limitFiles={!browseAllFiles} currentRegion={this.props.currentRegion} />
                                         </TabPanelPane>
                                     </TabPanel>
                                 :
@@ -1389,6 +1392,7 @@ ResultTable.propTypes = {
     searchBase: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     currentRegion: PropTypes.func,
+    region: PropTypes.string,
 };
 
 ResultTable.defaultProps = {
@@ -1396,6 +1400,7 @@ ResultTable.defaultProps = {
     restrictions: {},
     searchBase: '',
     currentRegion: null,
+    region: null,
 };
 
 ResultTable.childContextTypes = {
@@ -1440,7 +1445,7 @@ ResultTableList.defaultProps = {
 const ResultBrowser = (props) => {
     let visUrl = '';
     const datasetCount = props.datasets.length;
-    let region; // optionally make a persistent region
+    let region = props.region; // optionally make a persistent region
     const lastRegion = props.currentRegion();
     if (lastRegion && lastRegion.assembly === props.assembly) {
         region = lastRegion.region;
@@ -1455,7 +1460,7 @@ const ResultBrowser = (props) => {
             const accession = props.datasets[ix].split('/')[2];
             visUrl += `%2C%2Caccession=${accession}`;
         }
-        visUrl = `/batch_hub/type=Experiment${visUrl}/${props.assembly}/vis_blob.json`;
+        visUrl = `/batch_hub/type=Dataset${visUrl}/${props.assembly}/vis_blob.json`;
     }
     if (datasetCount > 0) {
         return (
@@ -1475,12 +1480,14 @@ const ResultBrowser = (props) => {
 ResultBrowser.propTypes = {
     files: PropTypes.array.isRequired, // Array of files whose browser we're rendering
     assembly: PropTypes.string.isRequired, // Filter `files` by this assembly
+    region: PropTypes.string, // Filter `files` by this assembly
     datasets: PropTypes.array.isRequired, // One or more '/dataset/ENCSRnnnXXX/' that files belong to
     limitFiles: PropTypes.bool, // True to limit browsing to 20 files
     currentRegion: PropTypes.func,
 };
 
 ResultBrowser.defaultProps = {
+    region: null,
     limitFiles: true,
     currentRegion: null,
 };
@@ -1533,12 +1540,21 @@ export class Search extends React.Component {
         const notification = context.notification;
         const searchBase = url.parse(this.context.location_href).search || '';
         const facetdisplay = context.facets && context.facets.some(facet => facet.total > 0);
+        const queryParsed = this.context.location_href && url.parse(this.context.location_href, true).query;
+        let region = '';
+
+        if (queryParsed && Object.keys(queryParsed).length) {
+            const regionKey = _(Object.keys(queryParsed)).find(key => key === 'region');
+            if (regionKey) {
+                region = queryParsed.region;
+            }
+        }
 
         return (
             <div>
                 {facetdisplay ?
                     <div className="panel data-display main-panel">
-                        <ResultTable {...this.props} searchBase={searchBase} onChange={this.context.navigate} currentRegion={this.currentRegion} />
+                        <ResultTable {...this.props} searchBase={searchBase} region={region} onChange={this.context.navigate} currentRegion={this.currentRegion} />
                     </div>
                 : <h4>{notification}</h4>}
             </div>
