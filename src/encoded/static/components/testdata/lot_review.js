@@ -4,7 +4,7 @@
             "biosample_term_name":"HeLa-S3",
             "organisms":[  
                 {  
-                    "status":"released",
+                    "status":"current",
                     "name":"human",
                     "scientific_name":"Homo sapiens",
                     "schema_version":"2",
@@ -26,7 +26,7 @@
 
                     ],
                     "organism":{  
-                        "status":"released",
+                        "status":"current",
                         "name":"human",
                         "scientific_name":"Homo sapiens",
                         "schema_version":"2",

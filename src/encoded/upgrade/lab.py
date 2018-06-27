@@ -15,12 +15,3 @@ def lab_2_3(value, system):
     # http://redmine.encodedcc.org/issues/3063
     if 'awards' in value:
         value['awards'] = list(set(value['awards']))
-
-
-@upgrade_step('lab', '5', '6')
-def lab_5_6(value, system):
-    # https://encodedcc.atlassian.net/browse/ENCD-3776
-    if value.get('status') == 'current':
-        value['status'] = 'released'
-    elif value.get('status') == 'disabled':
-        value['status'] = 'deleted'

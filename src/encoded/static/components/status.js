@@ -122,9 +122,9 @@ const objectStatuses = {
     },
     FileSet: accessionedStatuses,
     Image: standardStatuses,
-    Lab: standardStatuses,
+    Lab: sharedStatuses,
     Library: accessionedStatuses,
-    Organism: standardStatuses,
+    Organism: sharedStatuses,
     Page: standardStatuses,
     Pipeline: {
         external: [
@@ -140,7 +140,7 @@ const objectStatuses = {
             'replaced',
         ],
     },
-    Platform: standardStatuses,
+    Platform: sharedStatuses,
     Publication: standardStatuses,
     QualityMetric: standardStatuses,
     Replicate: {
@@ -158,7 +158,7 @@ const objectStatuses = {
     },
     Software: standardStatuses,
     SoftwareVersion: standardStatuses,
-    Source: standardStatuses,
+    Source: sharedStatuses,
     Target: {
         external: [
             'current',
@@ -168,7 +168,7 @@ const objectStatuses = {
             'replaced',
         ],
     },
-    Treatment: standardStatuses,
+    Treatment: sharedStatuses,
     User: sharedStatuses,
 };
 

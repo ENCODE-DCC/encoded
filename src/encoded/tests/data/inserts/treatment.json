@@ -154,7 +154,7 @@
         "biosamples_used": [],
         "dbxrefs": [],
         "documents": [],
-        "status": "released",
+        "status": "current",
         "submitted_by": "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
         "treatment_term_id": "UniProtKB:Q9T221",
         "treatment_term_name": "Integrase",

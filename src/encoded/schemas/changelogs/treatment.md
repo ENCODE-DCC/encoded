@@ -1,14 +1,5 @@
 ## Changelog for treatment.json
 
-### Schema version 10
-
-* *status* property was restricted to one of  
-    "enum" : [
-        "released",
-        "deleted",
-        "in progress"
-    ]
-
 ### Schema version 9
 
 * The regex for *treatment_term_name* will now accept the namespace "UniProtKB" rather than "UniprotKB".
