@@ -3602,6 +3602,7 @@ function_dispatcher_with_files = {
         'replicates.antibody.lot_reviews',
         'possible_controls',
         'possible_controls.original_files',
+        'possible_controls.original_files.quality_metrics',
         'possible_controls.original_files.platform',
         'possible_controls.original_files.analysis_step_version',
         'possible_controls.original_files.analysis_step_version.analysis_step',
