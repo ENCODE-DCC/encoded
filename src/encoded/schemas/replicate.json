@@ -35,14 +35,14 @@
             "description": "Data collection under the same methods using a different biological source, measuring the variability in the biological source.",
             "type": "integer",
             "default": 1,
-            "minimum": 0
+            "minimum": 1
         },
         "technical_replicate_number": {
             "title": "Technical replicate",
             "description": "Data collection under the same methods using the same biological source, measuring the variability in the method.",
             "type": "integer",
             "default": 1,
-            "minimum": 0
+            "minimum": 1
         },
         "experiment": {
             "title": "Experiment",

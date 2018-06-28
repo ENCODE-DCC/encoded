@@ -1,6 +1,6 @@
 ## Changelog for biosample.json
 
-### Minor change
+### Minor changes since schema version 21
 
 * *passage_number* and *PMI* were set to have a minimum of 0.
 

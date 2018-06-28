@@ -1,6 +1,6 @@
 ## Changelog for idr_quality_metric.json
 
-### Minor change
+### Minor changes since schema version 6
 
 * *size*, *width*, and *height* in *IDR_plot_true* were set to have a minimum of 0.
 * *size*, *width*, and *height* in *IDR_plot_rep1_pr* were set to have a minimum of 0.

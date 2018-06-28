@@ -1,6 +1,6 @@
 ## Changelog for idr_summary_quality_metric.json
 
-### Minor change
+### Minor changes since schema version 7
 
 * *size*, *width*, and *height* in *attachment* were set to have a minimum of 0.
 

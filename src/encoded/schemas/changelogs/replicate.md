@@ -1,8 +1,9 @@
 ## Changelog for replicate.json
 
-### Minor change
+### Minor changes since schema version 9
 
-* *biological_replicate_number*, *technical_replicate_number*, and *rbns_protein_concentration* were set to have a minimum of 0.
+* *biological_replicate_number* and *technical_replicate_number* were set to have a minimum of 1.
+* *rbns_protein_concentration* was set to have a minimum of 0.
 
 ### Schema version 9
 

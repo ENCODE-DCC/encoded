@@ -1,6 +1,6 @@
 ## Changelog for histone_chipseq_quality_metric.json
 
-### Minor change
+### Minor changes since schema version 1
 
 * *nreads*, *nreads_in_peaks*, *npeak_overlap* were set to have a minimum of 0.
 

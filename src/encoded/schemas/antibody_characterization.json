@@ -221,7 +221,7 @@
                     "lane": {
                         "title": "Lane",
                         "type": "integer",
-                        "minimum": 0
+                        "minimum": 1
                     },
                     "lane_status": {
                         "title": "Characterization status",

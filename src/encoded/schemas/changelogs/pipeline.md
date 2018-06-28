@@ -1,6 +1,6 @@
 ## Changelog for pipeline.json
 
-### Minor change
+### Minor changes since schema version 9
 
 * *pipeline_version* was set to have a minimum of 1.
 

@@ -1,11 +1,8 @@
 ## Changelog for file.json
 
-### Minor change
-
-* *read_count*, *file _size*, *read_length*, *mapped_read_length*, and *barcode_position* in  *flowcell_details* were set to have a minimum of 0.
-
 ### Minor changes since schema version 13
 
+* *read_count*, *file _size*, *read_length*, *mapped_read_length*, and *barcode_position* in  *flowcell_details* were set to have a minimum of 0.
 * *read_name_details* property is added to the schema. This property can be specified for FASTQ files only, and it could be posted by DCC only. 
 
 ### Schema version 13
