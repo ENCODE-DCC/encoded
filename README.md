@@ -1,3 +1,6 @@
+REMOVE or integrate with a different readme.
+bin/deploy --set-region-index-to True --volume-size 500
+
 # ENCODE Metadata Database
 -------------------------------------------------------
 
