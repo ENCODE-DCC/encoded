@@ -229,12 +229,12 @@ class RegionAtlas(object):
         if end is None:
             end = start
 
-        overlap = set()
+        overlap = []  # for comparisons below: list in deterministic order and faster than a set
         for peak in peaks:
             for hit in peak['inner_hits']['positions']['hits']['hits']:
                 if chrom == peak['_index'] and start <= hit['_source']['end'] \
                    and end >= hit['_source']['start']:
-                    overlap.add(peak['_id'])
+                    overlap.append(peak['_id'])
                     break
 
         return overlap
@@ -504,14 +504,14 @@ class RegulomeAtlas(RegionAtlas):
                 yield snp
                 return
 
-        last_uuids = {}
+        last_uuids = tuple()  # for comparison below: list in deterministic order and faster than a set
         last_snp = {}
         for snp in snps:
             snp['score'] = None  # default
             snp['assembly'] = assembly
-            snp_uuids = self._peak_uuids_in_overlap(peaks, snp['chrom'], snp['start'])
+            snp_uuids = tuple(self._peak_uuids_in_overlap(peaks, snp['chrom'], snp['start']))
             if snp_uuids:
-                if snp_uuids == last_uuids:  # good chance evidence hasn't changed
+                if snp_uuids == last_uuids:  # evidence hasn't changed since last snp
                     if last_snp:
                         snp['score'] = last_snp['score']
                         if 'evidence' in last_snp:
@@ -544,15 +544,15 @@ class RegulomeAtlas(RegionAtlas):
             # Not an unexpected case
             return
 
-        last_uuids = set()
+        last_uuids = tuple()  # for comparison below: list in deterministic order and faster than a set
         region_start = 0
         region_end = 0
         region_score = 0
         num_score = 0
         for base in range(start, end):
-            base_uuids = self._peak_uuids_in_overlap(peaks, chrom, base)
+            base_uuids = tuple(self._peak_uuids_in_overlap(peaks, chrom, base))
             if base_uuids:
-                if base_uuids == last_uuids:
+                if base_uuids == last_uuids:  # set() == set() Is there a more efficient way?
                     region_end = base  # extend region
                     continue
                 else:

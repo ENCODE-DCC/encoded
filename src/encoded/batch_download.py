@@ -125,14 +125,33 @@ def get_biosample_accessions(file_json, experiment_json):
 
 
 def get_regulome_evidence_links(request, assembly, chrom, start, end):
-    regulome_link = '{host_url}/regulome_download/regulome_evidence_{assembly}_{chrom}_{start}_{end}'.format(
+    '''returns list of regulome download links (with small regions expanded by 2K).'''
+    region_start = int(start)
+    region_end = int(end)
+    if (region_end - region_start) < 100:
+        region_start = max(region_start - 1000, 0)
+        try:
+            region_end = min(region_end + 1000, CHROM_SIZES[chrom][assembly])
+        except Exception:
+            region_end = end
+    evidence_link = '{host_url}/regulome_download/regulome_evidence_{assembly}_{chrom}_{start}_{end}'.format(
         host_url=request.host_url,
         assembly=assembly,
         chrom=chrom,
-        start=start,
-        end=end
+        start=region_start,
+        end=region_end
     )
-    return [regulome_link + '.bed', regulome_link + '.json']
+    signal_link = '{host_url}/regulome_download/regulome_signal_{assembly}_{chrom}_{start}_{end}'.format(
+        host_url=request.host_url,
+        assembly=assembly,
+        chrom=chrom,
+        start=region_start,
+        end=region_end
+    )
+    return [evidence_link + '.bed',
+            evidence_link + '.json',
+            signal_link + '.bed',
+            signal_link + '.json']
 
 
 def get_peak_metadata_links(request, assembly, chrom, start, end):
