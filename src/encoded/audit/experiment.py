@@ -96,9 +96,15 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                     and
                     derived_from.get('dataset') in controls_files_structures
                     and
-                    check_pipeline('ChIP-seq read mapping',
-                                    derived_from.get('@id'),
-                                    controls_files_structures[derived_from.get('dataset')])))
+                    (check_pipeline(
+                        'ChIP-seq read mapping',
+                        derived_from.get('@id'),
+                        controls_files_structures[derived_from.get('dataset')])
+                        or 
+                        check_pipeline(
+                        'Pool and subsample alignments',
+                        derived_from.get('@id'),
+                        controls_files_structures[derived_from.get('dataset')]))))
             control_bam_details = []
             cumulative_read_depth = 0
 
@@ -160,11 +166,11 @@ def check_control_target(control_id, control_objects, bam_id, bam_type):
         for target_of_related_dataset in control['target']:
             if target_of_related_dataset['name'] not in ['Control-human', 'Control-mouse']:
                 detail = (
-                'Control {} file {} ' +
-                'has a target {} that is neither ' +
-                'Control-human nor Control-mouse.').format(
-                    bam_type, bam_id, target_of_related_dataset['name'])
-            target_failures.append(AuditFailure('inconsistent target of control experiment', detail, level='WARNING'))
+                    'Control {} file {} ' +
+                    'has a target {} that is neither ' +
+                    'Control-human nor Control-mouse.').format(
+                        bam_type, bam_id, target_of_related_dataset['name'])
+                target_failures.append(AuditFailure('inconsistent target of control experiment', detail, level='WARNING'))
     return target_failures
 
 
