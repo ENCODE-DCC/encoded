@@ -122,6 +122,8 @@ REGULOME_REGION_REQUIREMENTS = {
         'file_format': ['bed']
     }
 }
+#### TODO: Remove Switchgear which was ONLY added to test bigBed
+
 # Less than ideal way to recognize the SNP files by submitted_file_name
 # SNP_DATASET_UUID = 'ff8dff4e-1de5-446b-8a13-bb6243bc64aa'  # works on demo, but...
 SNP_FILES = [
