@@ -101,12 +101,31 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                                     controls_files_structures[derived_from.get('dataset')])))
             control_bam_details = []
             cumulative_read_depth = 0
+
             for bam_file in derived_from_external_bams_gen:
                 control_depth = get_chip_seq_bam_read_depth(bam_file)
+                if not control_depth:
+                    detail = (
+                        'Control {} file {} ' +
+                        'has no associated quality metric, preventing calculation of the read depth.').format(
+                            bam_file['output_type'],
+                            bam_file['@id'],
+                            control_target)
+                    yield AuditFailure('missing control quality metric', detail, level='WARNING')
+                    return
                 control_target = get_control_target_name(
                     bam_file.get('dataset'),
                     control_objects)
-                    
+
+
+#                def is_matching_biosample_control(dataset, biosample_term_id):
+#+    if dataset['@type'][0] == 'Experiment':
+#+        return dataset.get('biosample_term_id') == biosample_term_id
+#+    elif (not dataset.get('biosample_term_id') or
+#+         any([term != biosample_term_id for term in dataset.get('biosample_term_id')])):
+#+            return False
+#+    return True
+
                 if control_target not in ['Control-human', 'Control-mouse']:
                     detail = (
                         'Control {} file {} ' +
