@@ -2092,13 +2092,13 @@ def test_audit_experiment_chip_seq_peaks_with_controls_but_no_qc(
                                                 'assay_term_name': 'ChIP-seq'})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert any(error['category'] ==
-               'missing control alignments' for error in collect_audit_errors(res))
+               'missing control quality metric' for error in collect_audit_errors(res))
     testapp.patch_json(chip_seq_quality_metric['@id'], {'quality_metric_of': [
         file_bam_1_1['@id'],
         file_bam_2_1['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     assert all(error['category'] !=
-               'missing control alignments' for error in collect_audit_errors(res))
+               'missing control quality metric' for error in collect_audit_errors(res))
 
 def test_audit_experiment_chip_seq_standards(testapp,
                                              base_experiment,
