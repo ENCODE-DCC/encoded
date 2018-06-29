@@ -103,46 +103,29 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
             cumulative_read_depth = 0
 
             for bam_file in derived_from_external_bams_gen:
-                control_depth = get_chip_seq_bam_read_depth(bam_file)
-                if not control_depth:
-                    detail = (
-                        'Control {} file {} ' +
-                        'has no associated quality metric, preventing calculation of the read depth.').format(
-                            bam_file['output_type'],
-                            bam_file['@id'],
-                            control_target)
-                    yield AuditFailure('missing control quality metric', detail, level='WARNING')
-                    return
-                control_target = get_control_target_name(
-                    bam_file.get('dataset'),
-                    control_objects)
-
-
-#                def is_matching_biosample_control(dataset, biosample_term_id):
-#+    if dataset['@type'][0] == 'Experiment':
-#+        return dataset.get('biosample_term_id') == biosample_term_id
-#+    elif (not dataset.get('biosample_term_id') or
-#+         any([term != biosample_term_id for term in dataset.get('biosample_term_id')])):
-#+            return False
-#+    return True
-
-                if control_target not in ['Control-human', 'Control-mouse']:
-                    detail = (
-                        'Control {} file {} ' +
-                        'has a target {} that is neither ' +
-                        'Control-human nor Control-mouse.').format(
-                            bam_file['output_type'],
-                            bam_file['@id'],
-                            control_target)
-                    yield AuditFailure('inconsistent target of control experiment', detail, level='WARNING')
-                    return
-                if control_depth and control_target:
-                    cumulative_read_depth += control_depth
-                    triple = (
-                        bam_file.get('@id'),
-                        control_depth,
-                        bam_file.get('dataset'))
-                    control_bam_details.append(triple)
+                failures = check_control_target(bam_file.get('dataset'),
+                    control_objects, bam_file['@id'],
+                    bam_file['output_type'])
+                if failures:
+                    for f in failures:
+                        yield f
+                else:
+                    control_depth = get_chip_seq_bam_read_depth(bam_file)
+                    if not control_depth:
+                        detail = (
+                            'Control {} file {} ' +
+                            'has no associated quality metric, preventing calculation of the read depth.').format(
+                                bam_file['output_type'],
+                                bam_file['@id'])
+                        yield AuditFailure('missing control quality metric', detail, level='WARNING')
+                        return
+                    else:
+                        cumulative_read_depth += control_depth
+                        triple = (
+                            bam_file.get('@id'),
+                            control_depth,
+                            bam_file.get('dataset'))
+                        control_bam_details.append(triple)
             yield from check_control_read_depth_standards(
                 peaks_file.get('@id'),
                 peaks_file.get('assembly'),
@@ -152,12 +135,37 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                 target_investigated_as)
 
 
-def get_control_target_name(control_id, control_objects):
+def check_control_target(control_id, control_objects, bam_id, bam_type):
     control = control_objects.get(control_id)
-    if (control and 
-        'target' in control and
-        'name' in control['target']):
-        return control['target']['name']
+    if not control:
+        return
+    target_failures = []
+    if 'target' not in control:
+        detail = (
+            'Control {} file {} ' +
+            'has no target specified.').format(
+                bam_type, bam_id)
+        target_failures.append(AuditFailure('missing target of control experiment', detail, level='WARNING'))
+        return target_failures
+    if control['@type'][0] == 'Experiment':
+        if control['target']['name'] not in ['Control-human', 'Control-mouse']:
+            detail = (
+                'Control {} file {} ' +
+                'has a target {} that is neither ' +
+                'Control-human nor Control-mouse.').format(
+                    bam_type, bam_id, control['target']['name'])
+            target_failures.append(AuditFailure('inconsistent target of control experiment', detail, level='WARNING'))
+            return target_failures
+    else:
+        for target_of_related_dataset in control['target']:
+            if target_of_related_dataset['name'] not in ['Control-human', 'Control-mouse']:
+                detail = (
+                'Control {} file {} ' +
+                'has a target {} that is neither ' +
+                'Control-human nor Control-mouse.').format(
+                    bam_type, bam_id, target_of_related_dataset['name'])
+            target_failures.append(AuditFailure('inconsistent target of control experiment', detail, level='WARNING'))
+    return target_failures
 
 
 def check_pipeline(pipeline_title, control_file_id, file_structure):
