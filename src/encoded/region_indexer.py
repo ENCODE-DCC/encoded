@@ -7,6 +7,7 @@ import json
 import requests
 from pyramid.view import view_config
 from shutil import copyfileobj
+import pyBigWig
 from elasticsearch.exceptions import (
     NotFoundError
 )
@@ -54,7 +55,7 @@ SUPPORTED_CHROMOSOMES = [
     'chr11', 'chr12', 'chr13', 'chr14', 'chr15', 'chr16', 'chr17', 'chr18', 'chr19', 'chr20',
     'chr21', 'chr22', 'chrX', 'chrY']  # chroms are lower case
 
-ALLOWED_FILE_FORMATS = ['bed']
+ALLOWED_FILE_FORMATS = ['bed', 'bigBed']
 RESIDENT_REGIONSET_KEY = 'resident_regionsets'  # keeps track of what datsets are resident
 FOR_REGION_SEARCH = 'region_search'
 FOR_REGULOME_DB = 'regulomedb'
@@ -113,6 +114,9 @@ REGULOME_REGION_REQUIREMENTS = {
     'dsQTLs': {
         'file_format': ['bed']
     },
+    'Switchgear': {
+        'file_format': ['bigBed']
+    },
     'index': {  # TODO: reference of variant calls doesn't yet exist.  'index' is temporary
         'output_type': ['variant calls'],
         'file_format': ['bed']
@@ -128,7 +132,7 @@ SNP_INDEX_PREFIX = 'snp141_'
 
 # If files are too large then they will be copied locally and read
 MAX_IN_MEMORY_FILE_SIZE = (700 * 1024 * 1024)  # most files will be below this and index faster
-TEMPORARY_REGIONS_FILE = '/tmp/region_temp.bed.gz'
+TEMPORARY_REGIONS_FILE_PREFIX = '/tmp/region_temp'
 
 # On local instance, these are the only files that can be downloaded and regionalizable.
 # '/static/test/peak_indexer/ENCFF002COS.bed.gz']
@@ -288,13 +292,25 @@ def regulome_collection_type(dataset):
     return None
 
 
-class RemoteReader(object):
+class RemoteBedReader(object):
     # Tools for reading remote files
 
-    def __init__(self, test_instance=False):
-        self.temp_file = TEMPORARY_REGIONS_FILE
+    def __init__(self, request, afile, test_instance=False):
+        self.temp_file = TEMPORARY_REGIONS_FILE_PREFIX + '.bed.gz'
         self.max_memory = MAX_IN_MEMORY_FILE_SIZE
         self.test_instance = test_instance
+        self.file_abstract = self.readable_file(request, afile)
+        self.file_handle = None
+
+    def _copy_to_local(self, http, href, local_name=None):
+        '''Copies the file locally and returns the local name'''
+        if local_name is None:
+            local_name = self.temp_file
+        with http.request('GET', href, preload_content=False) \
+                as r, open(local_name, 'wb') as out_file:
+            copyfileobj(r, out_file)
+        log.warn('Wrote %s to %s', href, local_name)
+        return local_name
 
     def readable_file(self, request, afile):
         '''returns either an in memory file or a temp file'''
@@ -306,24 +322,20 @@ class RemoteReader(object):
             href = request.host_url + afile['href']
 
         # TODO: support for remote access for big files (could do bam and vcf as well)
-        # if afile.get('file_format') in ['bigBed', 'bigWig']:
-        #     return href
-        # assert(afile.get('file_format') == 'bed')
+        if afile['file_format'] != 'bed':
+            log.error("Can't make RemoteBedReader without a 'bed' file.  Format found: '%s'" %
+                      (afile['file_format']))
+        raise Exception
 
-        # Note: this reads the file into an in-memory byte stream.  If files get too large,
-        # We could replace this with writing a temp file, then reading it via gzip and tsvreader.
         urllib3.disable_warnings()
         http = urllib3.PoolManager()
 
         # use afile.get(file_size) to decide between in mem file or temp file
         file_to_read = None
         if afile.get('file_size', 0) > self.max_memory:
-            with http.request('GET', href, preload_content=False) \
-                    as r, open(self.temp_file, 'wb') as out_file:
-                copyfileobj(r, out_file)
-            file_to_read = self.temp_file
-            log.warn('Wrote %s to %s', href, file_to_read)
+            file_to_read = self._copy_to_local(http, href)
         else:
+            # Note: this reads the file into an in-memory byte stream.
             r = http.request('GET', href)
             if r.status != 200:
                 log.warn("File (%s or %s) not found" % (afile['@id'], href))
@@ -336,10 +348,18 @@ class RemoteReader(object):
 
         return file_to_read
 
-    @staticmethod
-    def tsv(file_handle):
-        reader = csv.reader(file_handle, delimiter='\t')
+    def open(self):
+        self.file_handle = gzip.open(self.file_abstract, mode='rt')
+        return self.file_handle
+
+    def read(self, with_details=False):
+        # TODO: support with_details like BigBedReader
+        if not self.file_handle:
+            self.open()
+        reader = csv.reader(self.file_handle, delimiter='\t')
         for row in reader:
+            if row[0].startswith('#'):
+                continue
             yield row
 
     @staticmethod
@@ -354,23 +374,93 @@ class RemoteReader(object):
         chrom, start, end, rsid = row[0], int(row[1]), int(row[2]), row[3]
         return (chrom, {'rsid': rsid, 'chrom': chrom, 'start': start + 1, 'end': end})
 
-    # TODO: support bigBeds
-    # def bb_region(self, row):
-    #     '''Read a region from a bigBed file read with "pyBigWig" and returns document to index.'''
-    #     start, end = int(row[0]), int(row[1])
-    #     return {'start': start + 1, 'end': end}  # bed loc 'half-open', but we will close it
+    def close(self, file_handle=None):
+        assert(file_handle is None or file_handle == self.file_handle)
+        if self.file_handle:
+            self.file_handle.close()
+        self.file_handle = None
 
-    # TODO: support bigBeds
-    # def bb_snp(self, row):
-    #     '''Read a SNP from a bigBed file read with "pyBigWig"  and returns document to index.'''
-    #     start, end = int(row[0]), int(row[1])
-    #     extras = row[3].split('\t')
-    #     rsid = extras[0]
-    #     num_score = int(extras[1])
-    #     score = extras[2]
-    #     start, end, rsid = row[0], int(row[0]), int(row[2]), row[3]
-    #     return {'rsid': rsid, 'chrom': chrom, 'start': start + 1, 'end': end,
-    #             'num_score': num_score, 'score': score}
+    def __del__(self):
+        self.close()
+
+
+class BigBedReader(RemoteBedReader):
+    # Tools for reading remote files
+    # TESTING with: ?reindex=95b7249a-45a5-4e06-b4f6-e76dd3461ddc
+    # non-bb/bw:    ?reindex=130ddfef-c03c-4391-b3c2-588e24fbd3f1
+
+    def __init__(self, request, afile, test_instance=False):
+        super(BigBedReader, self).__init__(request, afile, test_instance)
+
+    def readable_file(self, request, afile):
+        '''returns a URL to the bigBed or bigWig file'''
+
+        # Special case local instance so that tests can work...
+        if self.test_instance:
+            href = 'http://www.encodeproject.org' + afile['href']  # test files read from production
+        else:
+            href = request.host_url + afile['href']
+
+        # TODO: support for remote access for big files (could do bam and vcf as well)
+        if afile['file_format'] not in ['bigBed', 'bigWig']:
+            log.error("Can't make BigBedReader without a bigBed or bigWig")
+            raise Exception
+
+        urllib3.disable_warnings()
+        http = urllib3.PoolManager()
+
+        #return href
+        # WARNING: pyBigWig is not reading remote files like advertised
+        #          open will saturate and hangs the apache threads, then cause a strange restart
+        #          of all indexers.  TODO: TO BE INVESTIGATED
+
+        # AWLAYS copying bigBed loacally.
+        self.temp_file = TEMPORARY_REGIONS_FILE_PREFIX + '.bigBed'
+        return self._copy_to_local(http, href)
+
+    def open(self):
+        self.file_handle = pyBigWig.open(self.file_abstract)
+        if not self.file_handle:
+            log.warn('Failure to pyBigWig.open: %s' % self.file_abstract)
+            raise Exception
+        return self.file_handle
+
+    def _read_one_chrom(self, chrom, with_details):
+        self.cur_chrom = chrom
+        chrom_end = self.file_chroms[chrom]
+        chunk_size = 1000000  # chunks in bases... because bb.entries does not yield
+        start = 0
+        while start < chrom_end:
+            end = min(start + chunk_size, chrom_end)
+            rows = self.file_handle.entries(chrom, start, end, withString=with_details)
+            if isinstance(rows,list):
+                for row in rows:
+                    yield row
+            start += chunk_size
+
+    def read(self, with_details=False):
+        if not self.file_handle:
+            self.open()
+        self.file_chroms = self.file_handle.chroms()
+        for chrom in self.file_chroms.keys():
+            yield from self._read_one_chrom(chrom, with_details)
+
+    def region(self, row):
+        '''Read a region from a bigBed file read with "pyBigWig" and returns document to index.'''
+        start, end = int(row[0]), int(row[1])
+        #                                 bed loc 'half-open', but we will close it
+        return (self.cur_chrom, {'start': start + 1, 'end': end})
+
+    def snp(self, row):
+        '''Read a SNP from a bigBed file read with "pyBigWig"  and returns document to index.'''
+        start, end = int(row[0]), int(row[1])
+        extras = row[3].split('\t')
+        rsid = extras[0]
+        num_score = int(extras[1])
+        score = extras[2]
+        start, end, rsid = row[0], int(row[0]), int(row[2]), row[3]
+        return (self.cur_chrom, {'rsid': rsid, 'chrom': chrom, 'start': start + 1, 'end': end,
+                'num_score': num_score, 'score': score})
 
 
 class RegionIndexerState(IndexerState):
@@ -410,7 +500,10 @@ class RegionIndexerState(IndexerState):
         # Not yet started?
         initialized = self.get_obj("indexing")  # http://localhost:9200/snovault/meta/indexing
         if not initialized:
-            self.delete_objs([self.override, self.staged_for_regions_list])
+            self.delete_objs([self.override])
+            staged_count = self.get_count(self.staged_for_regions_list)
+            if staged_count > 0:
+                log.warn('Initial indexing handoff almost dropped %d staged uuids' % (staged_count))
             state = self.get()
             state['status'] = 'uninitialized'
             self.put(state)
@@ -631,7 +724,7 @@ class RegionIndexer(Indexer):
         # WARNING: updating 'state' could lead to race conditions if more than 1 worker
         self.state = RegionIndexerState(self.encoded_es, self.encoded_INDEX)
         self.test_instance = registry.settings.get('testing', False)
-        self.reader = RemoteReader(self.test_instance)
+        #self.reader = RemoteBedReader(self.test_instance)
 
     def update_object(self, request, dataset_uuid, force):
         request.datastore = 'elasticsearch'  # Let's be explicit
@@ -647,6 +740,7 @@ class RegionIndexer(Indexer):
         dataset_region_uses = self.candidate_dataset(dataset)
         if not dataset_region_uses:
             return  # Note if dataset is NO LONGER a candidate its files won't get removed.
+        # log.warn('Candidate dataset: %s' % (dataset['@id']))
 
         files = dataset.get('files', [])
         for afile in files:
@@ -666,6 +760,7 @@ class RegionIndexer(Indexer):
 
             file_doc = self.candidate_file(request, afile, dataset, dataset_region_uses)
             if file_doc:
+                # log.warn('Candidate file: %s' % (afile['@id']))
 
                 using = ""
                 if force:
@@ -1002,82 +1097,65 @@ class RegionIndexer(Indexer):
         '''Given an encoded file object, reads the file to create regions data
            then loads that into region search es.'''
 
+        # log.warn('add_file_to_regions_es(%s)' % (afile['@id']))
         assembly = file_doc['file']['assembly']
         snp_set = file_doc.get('snps', False)
-        # ############### TEMPORARY  because snps take so long!
-        # if snp_set:
-        #     file_doc['chroms'] = SUPPORTED_CHROMOSOMES
-        #     file_doc['index'] = snp_index_key(assembly)
-        #     return self.add_to_residence(file_doc)
-        # ############### TEMPORARY
-        big_file = (afile.get('file_size', 0) > MAX_IN_MEMORY_FILE_SIZE)
+        large_file = (afile.get('file_size', 0) > MAX_IN_MEMORY_FILE_SIZE)
         file_doc['chroms'] = []
 
-        readable_file = self.reader.readable_file(request, afile)
-        if not readable_file:
-            return False
+        if afile['file_format'] == 'bed':
+            reader = RemoteBedReader(request, afile, self.test_instance)
+        elif afile['file_format'] == 'bigBed':  # Use pyBigWig?
+            reader = BigBedReader(request, afile, self.test_instance)
+            large_file = True
+        else:
+            log.warn('unknown file_format: %s' % (afile['file_format']))
+            raise Exception
 
         file_data = {}
         chroms = []
-        if afile['file_format'] == 'bed':
-            # NOTE: requests doesn't require gzip but http.request does.
-            with gzip.open(readable_file, mode='rt') as file_handle:
-                for row in self.reader.tsv(file_handle):
-                    if row[0].startswith('#'):
-                        continue
-                    try:
-                        if snp_set:
-                            (chrom, doc) = self.reader.snp(row)
-                        else:
-                            (chrom, doc) = self.reader.region(row)
-                    except Exception:
-                        log.error('%s - failure to parse row %s:%s:%s, skipping row',
-                                  afile['href'], row[0], row[1], row[2])
-                        continue
-                    if snp_set and chrom not in SUPPORTED_CHROMOSOMES:
-                        continue   # TEMPORARY: limit SNPs to major chroms
-                    if chrom not in file_data:
-                        # 1 chrom at a time saves memory (but assumes the files are in chrom order!)
-                        if big_file and file_data and len(chroms) > 0:
-                            if snp_set:
-                                self.index_snps(assembly, file_data, file_doc,
-                                                list(file_data.keys()))
-                            else:
-                                self.index_regions(assembly, file_data, file_doc,
-                                                   list(file_data.keys()))
-                            file_data = {}  # Don't hold onto data already indexed
-                        file_data[chrom] = []
-                        chroms.append(chrom)
-                    file_data[chrom].append(doc)
-        # TODO: Handle bigBeds...
-        # elif afile['file_format'] == 'bedBed':  # Use pyBigWig?
-        #    import pyBigWig  # https://github.com/deeptools/pyBigWig
-        #    with pyBigWig.open(readable_file) as bb:
-        #              # reader.readable_file must return remote url for bb files
-        #        chroms = bb.chroms()
-        #        for chrom in chroms.keys():  # should sort
-        #            for row in bb.entries(chrom, 0, chroms[chrom], withString=snp_set):
-        #                try:
-        #                    if snp_set:
-        #                        doc = self.reader.bb_snp(row)
-        #                    else:
-        #                        doc = self.reader.bb_region(row)
-        #                except Exception:
-        #                    log.error('%s - failure to parse row %s:%s:%s, skipping row', \
-        #                                                    afile['href'], chrom, row[0], row[1])
-        # Could redesign with reader class, so this function is entirely ignorant of bed v. bigBed
-        # However, probably not worth as much as just abstracting the file_data building/indexing
+        try:
+            reader.open()
+        except Exception:
+            log.warn("Unable to open reader for file: " % (afile['@id']))
+            return False
+
+        for row in reader.read(with_details=snp_set):
+            try:
+                if snp_set:
+                    (chrom, doc) = reader.snp(row)
+                else:
+                    (chrom, doc) = reader.region(row)
+            except Exception:
+                log.error('%s - failure to parse row: <%s>, skipping row', afile['href'], str(row))
+                continue
+            if snp_set and chrom not in SUPPORTED_CHROMOSOMES:
+                continue   # TEMPORARY: limit SNPs to major chroms
+            if chrom not in file_data:
+                # 1 chrom at a time saves memory (but assumes the files are in chrom order!)
+                if large_file and file_data and len(chroms) > 0:
+                    if snp_set:
+                        self.index_snps(assembly, file_data, file_doc,
+                                        list(file_data.keys()))
+                    else:
+                        self.index_regions(assembly, file_data, file_doc,
+                                        list(file_data.keys()))
+                    file_data = {}  # Don't hold onto data already indexed
+                file_data[chrom] = []
+                chroms.append(chrom)
+            file_data[chrom].append(doc)
+        reader.close()
 
         if len(chroms) == 0 or not file_data:
             return False
 
-        # Note if indexing by chrom (snp_set or big_file) then file_data will only have one chrom
+        # Note if indexing by chrom (snp_set or large_file) then file_data will only have one chrom
         if snp_set:
             self.index_snps(assembly, file_data, file_doc, list(file_data.keys()))
         else:
             self.index_regions(assembly, file_data, file_doc, list(file_data.keys()))
 
-        if big_file and file_doc['chroms'] != chroms:
+        if large_file and file_doc['chroms'] != chroms:
             log.error('%s chromosomes %s indexed out of order!', file_doc['file']['@id'],
                       ('SNPs' if snp_set else 'regions'))
         return self.add_to_residence(file_doc)
