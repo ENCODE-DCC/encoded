@@ -190,6 +190,8 @@ runcmd:
 - sudo -u postgres ln -s /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main/
 - /etc/init.d/postgresql start
 - sudo pip3 install -U zc.buildout setuptools
+- sudo apt-get install libcurl4-openssl-dev
+- sudo pip3 install pyBigWig
 - sudo -u encoded buildout bootstrap
 - sudo -u encoded LANG=en_US.UTF-8 bin/buildout -c %(ROLE)s.cfg buildout:es-ip=%(ES_IP)s buildout:es-port=%(ES_PORT)s
 - sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf-prod/.aws .aws

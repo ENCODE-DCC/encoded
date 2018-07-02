@@ -327,7 +327,7 @@ class RemoteBedReader(object):
         if afile['file_format'] != 'bed':
             log.error("Can't make RemoteBedReader without a 'bed' file.  Format found: '%s'" %
                       (afile['file_format']))
-        raise Exception
+            raise Exception
 
         urllib3.disable_warnings()
         http = urllib3.PoolManager()
@@ -346,7 +346,7 @@ class RemoteBedReader(object):
             file_in_mem.write(r.data)
             file_in_mem.seek(0)
             file_to_read = file_in_mem
-        r.release_conn()
+            r.release_conn()
 
         return file_to_read
 
@@ -403,7 +403,7 @@ class BigBedReader(RemoteBedReader):
         else:
             href = request.host_url + afile['href']
 
-        # TODO: support for remote access for big files (could do bam and vcf as well)
+        # TODO: add support for bam and vcf files?
         if afile['file_format'] not in ['bigBed', 'bigWig']:
             log.error("Can't make BigBedReader without a bigBed or bigWig")
             raise Exception
@@ -726,7 +726,6 @@ class RegionIndexer(Indexer):
         # WARNING: updating 'state' could lead to race conditions if more than 1 worker
         self.state = RegionIndexerState(self.encoded_es, self.encoded_INDEX)
         self.test_instance = registry.settings.get('testing', False)
-        #self.reader = RemoteBedReader(self.test_instance)
 
     def update_object(self, request, dataset_uuid, force):
         request.datastore = 'elasticsearch'  # Let's be explicit
@@ -1119,7 +1118,7 @@ class RegionIndexer(Indexer):
         try:
             reader.open()
         except Exception:
-            log.warn("Unable to open reader for file: " % (afile['@id']))
+            log.warn("Unable to open reader for file: %s" % (afile['@id']))
             return False
 
         for row in reader.read(with_details=snp_set):
