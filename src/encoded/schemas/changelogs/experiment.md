@@ -1,5 +1,9 @@
 ## Changelog for experiment.json
 
+### Minor changes since schema version 20
+
+* *possible_controls* property allows specification of any type of Dataset as possible control
+
 ### Schema version 20
 
 * Added *organoid* to biosample_type enums.

@@ -15,8 +15,9 @@ import { requestObjects, AlternateAccession } from './objectutils';
 import pubReferenceList from './reference';
 import { PickerActions } from './search';
 import { SortTablePanel, SortTable } from './sorttable';
-import { StatusLabel } from './statuslabel';
+import Status from './status';
 import { BiosampleTable } from './typeutils';
+import formatMeasurement from './../libs/formatMeasurement';
 
 
 const HumanDonor = (props) => {
@@ -37,6 +38,11 @@ const HumanDonor = (props) => {
                 </PanelHeading>
                 <PanelBody>
                     <dl className="key-value">
+                        <div data-test="status">
+                            <dt>Status</dt>
+                            <dd><Status item={context} inline /></dd>
+                        </div>
+
                         <div data-test="accession">
                             <dt>Accession</dt>
                             <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
@@ -73,7 +79,7 @@ const HumanDonor = (props) => {
                         {context.age ?
                             <div data-test="age">
                                 <dt>Age</dt>
-                                <dd className="sentence-case">{context.age}{context.age_units ? ` ${context.age_units}` : null}</dd>
+                                <dd className="sentence-case">{formatMeasurement(context.age, context.age_units)}</dd>
                             </div>
                         : null}
 
@@ -159,8 +165,7 @@ const donorTableColumns = {
             if (donor.age) {
                 return (
                     <span>
-                        {donor.age}
-                        {donor.age_units ? ` ${donor.age_units}` : null}
+                        {formatMeasurement(donor.age, donor.age_units)}
                     </span>
                 );
             }
@@ -172,7 +177,7 @@ const donorTableColumns = {
     sex: { title: 'Sex' },
     status: {
         title: 'Status',
-        display: donor => <div className="characterization-meta-data"><StatusLabel status={donor.status} /></div>,
+        display: donor => <Status item={donor} badgeSize="small" inline />,
     },
 };
 
@@ -221,6 +226,11 @@ const MouseDonor = (props) => {
                 </PanelHeading>
                 <PanelBody>
                     <dl className="key-value">
+                        <div data-test="status">
+                            <dt>Status</dt>
+                            <dd><Status item={context} inline /></dd>
+                        </div>
+
                         <div data-test="accession">
                             <dt>Accession</dt>
                             <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
@@ -370,6 +380,11 @@ const FlyWormDonor = (props) => {
                 </PanelHeading>
                 <PanelBody>
                     <dl className="key-value">
+                        <div data-test="status">
+                            <dt>Status</dt>
+                            <dd><Status item={context} inline /></dd>
+                        </div>
+
                         <div data-test="accession">
                             <dt>Accession</dt>
                             <dd>{biosample ? <a href={context['@id']}>{context.accession}</a> : context.accession}</dd>
@@ -487,7 +502,7 @@ globals.panelViews.register(FlyWormDonor, 'WormDonor');
 
 
 // This component activates for any donors that aren't any of the above registered types.
-class Donor extends React.Component {
+class DonorComponent extends React.Component {
     constructor() {
         super();
         this.state = {
@@ -601,11 +616,8 @@ class Donor extends React.Component {
                         <Breadcrumbs crumbs={crumbs} />
                         <h2>{context.accession}</h2>
                         <AlternateAccession altAcc={context.alternate_accessions} />
-                        <div className="status-line">
-                            <div className="characterization-status-labels">
-                                <StatusLabel title="Status" status={context.status} />
-                            </div>
-                        </div>
+                        {this.props.auditIndicators(context.audit, 'donor-audit', { session: this.context.session })}
+                        {this.props.auditDetail(context.audit, 'donor-audit', { session: this.context.session, except: context['@id'] })}
                     </div>
                 </header>
 
@@ -643,13 +655,17 @@ class Donor extends React.Component {
     }
 }
 
-Donor.propTypes = {
+DonorComponent.propTypes = {
     context: PropTypes.object.isRequired, // Donor being rendered
+    auditIndicators: PropTypes.func.isRequired, // Audit indicator rendering function from auditDecor
+    auditDetail: PropTypes.func.isRequired, // Audit detail rendering function from auditDecor
 };
 
-Donor.contextTypes = {
+DonorComponent.contextTypes = {
     session: PropTypes.object, // Login information
 };
+
+const Donor = auditDecor(DonorComponent);
 
 globals.contentViews.register(Donor, 'Donor');
 
@@ -666,7 +682,7 @@ const DonorListingComponent = (props, reactContext) => {
         result.strain_background ? (result.strain_background !== 'unknown' ? result.strain_background : 'unknown strain background') : null,
         result.sex ? (result.sex !== 'unknown' ? result.sex : 'unknown sex') : null,
         result.life_stage ? (result.life_stage !== 'unknown' ? result.life_stage : 'unknown life stage') : null,
-        result.age ? (result.age !== 'unknown' ? `${result.age} ${result.age_units}` : 'unknown age') : null,
+        formatMeasurement(result.age, result.age_units),
     ].filter(Boolean);
 
     return (
@@ -676,7 +692,7 @@ const DonorListingComponent = (props, reactContext) => {
                 <div className="pull-right search-meta">
                     <p className="type meta-title">{organismTitle}</p>
                     <p className="type">{` ${result.accession}`}</p>
-                    <p className="type meta-status">{` ${result.status}`}</p>
+                    <Status item={result.status} badgeSize="small" css="result-table__status" />
                     {props.auditIndicators(result.audit, result['@id'], { session: reactContext.session, search: true })}
                 </div>
                 <div className="accession">

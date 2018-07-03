@@ -8,16 +8,16 @@ CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 
 requires = [
     'alembic',
+    'botocore',
+    'boto3',
+    'moto',
     'snovault',
     'Pillow',
     'PyBrowserID',
     'SQLAlchemy>=1.0.0b1',
     'WSGIProxy2',
     'WebTest',
-    'boto',
-    'botocore',
     'jmespath',
-    'boto3',
     'elasticsearch',
     'lucenequery',
     'future',
@@ -60,7 +60,7 @@ tests_require = [
 
 setup(
     name='encoded',
-    version='70.0',
+    version='71.0',
     description='Metadata database for ENCODE',
     long_description=README + '\n\n' + CHANGES,
     packages=find_packages('src'),

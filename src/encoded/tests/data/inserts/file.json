@@ -1187,6 +1187,12 @@
         "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
         "restricted": true,
         "output_type": "reads",
+        "read_name_details": {
+            "read_number_location": 2,
+            "flowcell_id_location": 3,
+            "lane_id_location": 4,
+            "barcode_location": 1
+        },
         "read_length": 50,
         "md5sum": "ee4dcf28c1a69557228da9a8c17fd1ea",
         "status": "in progress",

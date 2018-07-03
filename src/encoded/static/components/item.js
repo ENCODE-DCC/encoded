@@ -54,8 +54,8 @@ const Item = (props) => {
             <div className="row item-row">
                 <div className="col-sm-12">
                     {context.description ? <p className="description">{context.description}</p> : null}
+                    <ItemPanel {...props} />
                 </div>
-                <ItemPanel {...props} />
             </div>
         </div>
     );

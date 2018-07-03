@@ -1,0 +1,200 @@
+// All status indicator colors. As statuses change in the schemas, should see if corresponding
+// changes are needed here.
+$status-colors: (
+    // External
+    released: $brand-success,
+    current: $brand-success,
+    compliant: $brand-success,
+    not-compliant: $brand-danger,
+    not-reviewed: #a0a0a0,
+    not-submitted-for-review-by-lab: #a0a0a0,
+    exempt-from-standards: #fff712,
+    archived: #a0a0a0,
+    revoked: $brand-danger,
+
+    // Consortium
+    in-progress: $brand-info,
+    pending-dcc-review: $brand-info,
+    submitted: $brand-info,
+    uploading: $brand-info,
+    upload-failed: $brand-danger,
+    content-error: $brand-danger,
+
+    // Admin
+    deleted: $brand-warning,
+    replaced: #a0a0a0,
+    disabled: #a0a0a0,
+
+    // Experiment internal_status
+    unreviewed: #a0a0a0,
+    pipeline-ready: $brand-info,
+    processing: $brand-info,
+    pipeline-completed: $brand-info,
+    release-ready: $brand-success,
+    requires-lab-review: $brand-danger,
+    no-available-pipeline: #a0a0a0,
+    pipeline-error: $brand-danger,
+    unrunnable: $brand-danger,
+
+    // Antibody lot_review status
+    awaiting-characterization: $brand-info,
+    characterized-to-standards: $brand-success,
+    partially-characterized: $brand-warning,
+    characterized-to-standards-with-exemption: #fff712,
+    not-characterized-to-standards: $brand-danger,
+    not-pursued: #a0a0a0,
+);
+
+
+// Sets the sizes of the font and icons within statuses.
+$large-size: 16px;
+$large-font-size: 1.2rem;
+$standard-size: 12px;
+$standard-font-size: 1rem;
+$small-size: 10px;
+$small-font-size: 0.8rem;
+
+
+.status {
+    padding: 4px;
+    font-size: 0;
+    white-space: nowrap;
+    border: 1px solid #666;
+
+    &--large {
+        .status__icon {
+            width: $large-size;
+            height: $large-size;
+        }
+
+        .status__label {
+            font-size: $large-font-size;
+            line-height: $large-size;
+        }
+    }
+
+    &--standard {
+        .status__icon {
+            width: $standard-size;
+            height: $standard-size;
+        }
+
+        .status__label {
+            font-size: $standard-font-size;
+            line-height: $standard-size;
+        }
+    }
+
+    &--small {
+        .status__icon {
+            width: $small-size;
+            height: $small-size;
+        }
+
+        .status__label {
+            font-size: $small-font-size;
+            line-height: $small-size;
+        }
+    }
+
+    &--inline {
+        display: inline-block;
+    }
+
+    @at-root #{&}__icon {
+        display: inline-block;
+
+        @at-root #{&}--spacer {
+            margin-right: 5px;
+        }
+    }
+
+    @at-root #{&}__label {
+        display: inline-block;
+        vertical-align: top;
+        font-weight: bold;
+    }
+
+    @at-root #{&}__table-cell {
+        text-align: center;
+    }
+}
+
+
+// Calculate the label color based on the lightness of the given color, for contrast.
+@function label-color($color) {
+    @if (brightness($color) > 50) {
+        @return #404040; // Lighter background, return dark color
+    } @else {
+        @return #ffffff; // Darker background, return light color
+    }
+}
+
+
+// Defines colors for each type of status.
+@each $status, $color in $status-colors {
+    .status--#{$status} {
+        color: label-color($color);
+        fill: label-color($color);
+        background-color: $color;
+        box-shadow: inset 0 0 0 1px lighten($color, 20%);
+    }
+
+    // File graph node colors.
+    g.pipeline-node-file.graph-node--#{$status} {
+        fill: $color;
+
+        & g.label {
+            fill: label-color($color);
+        }
+    }
+}
+
+// Status display for definition lists.
+.dd-status {
+    margin-right: 5px;
+}
+
+
+// Antibody Status Panels
+.antibody-status {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-top: 1px solid #e0e0e0;
+
+    &:first-child {
+        border-top: none;
+    }
+
+    @at-root #{&}__group {
+        display: block;
+        margin: 10px 0;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: flex;
+            margin: 0;
+        }
+    }
+
+    @at-root #{&}__organism {
+        font-style: italic;
+        font-weight: bold;
+
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 1 20%;
+        }
+    }
+
+    @at-root #{&}__terms {
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 1 45%;
+        }
+    }
+
+    @at-root #{&}__status {
+        @media screen and (min-width: $screen-sm-min) {
+            flex: 0 1 35%;
+            text-align: right;
+        }
+    }
+}

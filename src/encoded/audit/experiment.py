@@ -2436,14 +2436,25 @@ def audit_experiment_control(value, system, excluded_types):
         return
 
     for control in value['possible_controls']:
-        if control.get('biosample_term_id') != value.get('biosample_term_id'):
-            detail = 'The specified control {} for this experiment is on {}, '.format(
-                control['@id'],
-                control.get('biosample_term_name')) + \
-                'but this experiment is done on {}.'.format(
-                    value['biosample_term_name'])
+        if not is_matching_biosample_control(control, value.get('biosample_term_id')):
+            detail = ('The specified control {} '
+                      'for this experiment is on {}, '
+                      'but this experiment is done on {}.').format(
+                        control['@id'],
+                        control.get('biosample_term_name'),
+                        value['biosample_term_name']
+                      )
             yield AuditFailure('inconsistent control', detail, level='ERROR')
     return
+
+
+def is_matching_biosample_control(dataset, biosample_term_id):
+    if dataset['@type'][0] == 'Experiment':
+        return dataset.get('biosample_term_id') == biosample_term_id
+    elif (not dataset.get('biosample_term_id') or
+         any([term != biosample_term_id for term in dataset.get('biosample_term_id')])):
+            return False
+    return True
 
 
 def audit_experiment_platforms_mismatches(value, system, files_structure):
@@ -2514,18 +2525,19 @@ def audit_experiment_ChIP_control(value, system, files_structure):
         return
 
     num_IgG_controls = 0
-    for control in value['possible_controls']:
-        if ('target' not in control) or ('control' not in control['target']['investigated_as']):
+
+    for control_dataset in value['possible_controls']:
+        if not is_control_dataset(control_dataset):
             detail = 'Experiment {} is ChIP-seq but its control {} is not linked to a target with investigated.as = control'.format(
                 value['@id'],
-                control['@id'])
+                control_dataset['@id'])
             yield AuditFailure('invalid possible_control', detail, level='ERROR')
             return
 
-        if not control.get('replicates'):
+        if not control_dataset.get('replicates'):
             continue
 
-        if 'antibody' in control.get('replicates')[0]:
+        if 'antibody' in control_dataset.get('replicates')[0]:
             num_IgG_controls += 1
 
     # If all of the possible_control experiments are mock IP control experiments
@@ -2534,10 +2546,22 @@ def audit_experiment_ChIP_control(value, system, files_structure):
             # The binding group agreed that ChIP-seqs all should have an input control.
             detail = 'Experiment {} is ChIP-seq and requires at least one input control, as agreed upon by the binding group. {} is not an input control'.format(
                 value['@id'],
-                control['@id'])
+                control_dataset['@id'])
             yield AuditFailure('missing input control', detail, level='NOT_COMPLIANT')
     return
 
+
+def is_control_dataset(dataset):
+    if 'target' not in dataset:
+        return False
+    if dataset['@type'][0] == 'Experiment':
+        return 'control' in dataset['target']['investigated_as']
+    else:
+        for target_of_related_dataset in dataset['target']:
+            if 'control' not in target_of_related_dataset['investigated_as']:
+                return False
+    return True
+    
 
 def audit_experiment_spikeins(value, system, excluded_types):
     if not check_award_condition(value, [

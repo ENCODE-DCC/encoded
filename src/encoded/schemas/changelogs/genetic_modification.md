@@ -1,5 +1,9 @@
 ## Changelog for genetic_modification.json
 
+### Schema version 7
+
+* *purpose* property "validation" was renamed to "characterization", and "screening" was also added to the list of enums
+
 ### Schema version 6
 
 * Genetic modifications are now accessioned objects with accessions starting with "ENCGM"

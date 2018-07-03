@@ -16,6 +16,11 @@ const PATHS = {
 const plugins = [];
 // don't include momentjs locales (large)
 plugins.push(new webpack.IgnorePlugin(/^\.\/locale$/, [/moment$/]));
+
+// To get auth0 v11 to build correctly:
+// https://github.com/felixge/node-formidable/issues/337#issuecomment-183388869
+plugins.push(new webpack.DefinePlugin({ 'global.GENTLY': false }));
+
 let chunkFilename = '[name].js';
 let styleFilename = './css/[name].css';
 
@@ -44,7 +49,9 @@ const loaders = [
         test: /\.js$/,
         include: [
             PATHS.static,
+            path.resolve(__dirname, 'node_modules/dagre-d3'),
             path.resolve(__dirname, 'node_modules/dalliance'),
+            path.resolve(__dirname, 'node_modules/superagent'),
         ],
         loader: 'babel',
     },
