@@ -114,10 +114,10 @@ REGULOME_REGION_REQUIREMENTS = {
     'dsQTLs': {
         'file_format': ['bed']
     },
-    'Switchgear': {
-        'file_format': ['bigBed']
-    },
-    'index': {  # TODO: reference of variant calls doesn't yet exist.  'index' is temporary
+    'Switchgear': {                ### TEMPORARY: ONLY FOR TESTING pyBigBed.  It works!
+        'file_format': ['bigBed']  ### TEMPORARY: ONLY FOR TESTING pyBigBed.
+    },                             ### TEMPORARY: ONLY FOR TESTING pyBigBed.
+    'index': {
         'output_type': ['variant calls'],
         'file_format': ['bed']
     }
@@ -130,7 +130,19 @@ SNP_FILES = [
     's3://regulomedb/snp141/snp141_hg19.bed.gz',
     's3://regulomedb/snp141/snp141_GRCh38.bed.gz'
 ]
+# Indexes have assembly.lower() appended to this prefix
 SNP_INDEX_PREFIX = 'snp141_'
+
+### TEMPORARY: This is only for testing pyBigWig bigWig reading!
+### TEMPORARY: This is only for testing pyBigWig bigWig reading!
+### TEMPORARY: This is only for testing pyBigWig bigWig reading!
+REGULOME_SCORE_FILE = '/tmp/ENCFF315EWM.bigWig'
+### TEMPORARY: This is only for testing pyBigWig bigWig reading!
+### TEMPORARY: This is only for testing pyBigWig bigWig reading!
+### TEMPORARY: This is only for testing pyBigWig bigWig reading!
+
+# Indexes have assembly.lower() appended to this prefix
+REGULOME_SCORE_INDEX_PREFIX = 'reg_score_'
 
 # If files are too large then they will be copied locally and read
 MAX_IN_MEMORY_FILE_SIZE = (700 * 1024 * 1024)  # most files will be below this and index faster
@@ -153,6 +165,9 @@ def includeme(config):
 
 
 # Region mapping: index: chr*, doc_type: assembly, _id=uuid
+# NOTE: the chrom, based indexes allows having single doc per file per chrom keyed on uuid
+#       ES searches focus on numeric position, as assembly/chrom are already determined
+# ALSO: nested positions allow quick search of any hit to get uuid, while pos details take longer
 def get_chrom_index_mapping(assembly_name='hg19'):
     return {
         assembly_name: {
@@ -252,8 +267,40 @@ def get_snp_index_mapping(chrom='chr1'):
 #                },
 
 
+# REG score mapping index: rdb_score_hg19, doc_type: chr*, _id=str(start)
+def get_reg_score_index_mapping(chrom='chr1'):
+    return {
+        chrom: {
+            '_all': {
+                'enabled': False
+            },
+            '_source': {
+                'enabled': True
+            },
+            'properties': {
+                'interval_id': {
+                    'type': 'keyword'  # For lack of anything better this is the start position
+                },
+                'start': {
+                    'type': 'long'
+                },
+                'end': {
+                    'type': 'long'
+                },
+                'score': {
+                    'type': 'integer'  # bigWigs might have double but this is for reg scores!
+                }
+            }
+        }
+    }
+
+
 def snp_index_key(assembly):
     return SNP_INDEX_PREFIX + assembly.lower()
+
+def reg_score_index_key(assembly):
+    # TODO: make a genome-wide regulome score signal bigWig and try loading it into index
+    return REGULOME_SCORE_INDEX_PREFIX + assembly.lower()
 
 
 def index_settings():
@@ -355,7 +402,7 @@ class RemoteBedReader(object):
         return self.file_handle
 
     def read(self, with_details=False):
-        # TODO: support with_details like BigBedReader
+        # TODO: support with_details like BigBedOrWigReader
         if not self.file_handle:
             self.open()
         reader = csv.reader(self.file_handle, delimiter='\t')
@@ -386,13 +433,11 @@ class RemoteBedReader(object):
         self.close()
 
 
-class BigBedReader(RemoteBedReader):
-    # Tools for reading remote files
-    # TESTING with: ?reindex=95b7249a-45a5-4e06-b4f6-e76dd3461ddc
-    # non-bb/bw:    ?reindex=130ddfef-c03c-4391-b3c2-588e24fbd3f1
+class BigBedOrWigReader(RemoteBedReader):
+    # Tools for reading 'bigBed' and 'bigWig' files
 
     def __init__(self, request, afile, test_instance=False):
-        super(BigBedReader, self).__init__(request, afile, test_instance)
+        super(BigBedOrWigReader, self).__init__(request, afile, test_instance)
 
     def readable_file(self, request, afile):
         '''returns a URL to the bigBed or bigWig file'''
@@ -405,13 +450,22 @@ class BigBedReader(RemoteBedReader):
 
         # TODO: add support for bam and vcf files?
         if afile['file_format'] not in ['bigBed', 'bigWig']:
-            log.error("Can't make BigBedReader without a bigBed or bigWig")
+            log.error("Can't make BigBedOrWigReader without a bigBed or bigWig")
             raise Exception
+
+        ### TEMPORARY: test biWig signal loading
+        ### TEMPORARY: test biWig signal loading
+        ### TEMPORARY: test biWig signal loading
+        if afile['accession'] == 'ENCFF000VCE':
+            return REGULOME_SCORE_FILE
+        ### TEMPORARY: test biWig signal loading
+        ### TEMPORARY: test biWig signal loading
+        ### TEMPORARY: test biWig signal loading
 
         urllib3.disable_warnings()
         http = urllib3.PoolManager()
 
-        #return href
+        # return href + '?proxy=true' # TODO: This does not work with or without proxy=true
         # WARNING: pyBigWig is not reading remote files like advertised
         #          open will saturate and hangs the apache threads, then cause a strange restart
         #          of all indexers.  TODO: TO BE INVESTIGATED
@@ -434,17 +488,22 @@ class BigBedReader(RemoteBedReader):
         start = 0
         while start < chrom_end:
             end = min(start + chunk_size, chrom_end)
-            rows = self.file_handle.entries(chrom, start, end, withString=with_details)
-            if isinstance(rows,list):
+            if self.bigWig:
+                rows = self.file_handle.intervals(chrom, start, end)
+            else:
+                rows = self.file_handle.entries(chrom, start, end, withString=with_details)
+            if rows:
                 for row in rows:
                     yield row
             start += chunk_size
 
     def read(self, with_details=False):
+        '''Yields all regions in 'bigBed' or 'bigWig' file. Include details by request.'''
         if not self.file_handle:
             self.open()
         self.file_chroms = self.file_handle.chroms()
-        for chrom in self.file_chroms.keys():
+        self.bigWig = self.file_handle.isBigWig()
+        for chrom in sorted(self.file_chroms.keys()):
             yield from self._read_one_chrom(chrom, with_details)
 
     def region(self, row):
@@ -452,6 +511,12 @@ class BigBedReader(RemoteBedReader):
         start, end = int(row[0]), int(row[1])
         #                                 bed loc 'half-open', but we will close it
         return (self.cur_chrom, {'start': start + 1, 'end': end})
+
+    def score_interval(self, row):
+        '''Read score interval from bigWig file read with "pyBigWig" and returns doc to index.'''
+        start, end, score = int(row[0]) + 1, int(row[1]), int(row[2])
+        return (self.cur_chrom,       # bed loc 'half-open', but we will close it
+                {'interval_id': str(start), 'start': start, 'end': end, 'score': score})
 
     def snp(self, row):
         '''Read a SNP from a bigBed file read with "pyBigWig"  and returns document to index.'''
@@ -611,12 +676,18 @@ class RegionIndexerState(IndexerState):
 
         if assemblies:
             counts['SNPs'] = {}
+            counts['score_intervals'] = {}
             for assembly in assemblies:
                 try:
                     counts['SNPs'][assembly] = \
                         region_es.count(index=snp_index_key(assembly)).get('count', 0)
                 except Exception:
                     counts['SNPs'][assembly] = 0
+                try:
+                    counts['score_intervals'][assembly] = \
+                        region_es.count(index=reg_score_index_key(assembly)).get('count', 0)
+                except Exception:
+                    counts['score_intervals'][assembly] = 0
 
         return counts
 
@@ -661,6 +732,7 @@ def regionindexer_state_show(request):
     display['files_for_regulomedb'] = counts.get(FOR_REGULOME_DB, 0)
     display['files_in_index'] = counts.get('all_files', 0)
     display['snps_in_index'] = counts.get('SNPs', 0)
+    display['score_intervals_in_index'] = counts.get('score_intervals', 0)
 
     if not request.registry.settings.get('testing', False):  # NOTE: _indexer not working on local
         try:
@@ -880,6 +952,16 @@ class RegionIndexer(Indexer):
                 break
         if afile['submitted_file_name'] in SNP_FILES:
             meta_doc['snps'] = True
+        ### TEMPORARY: test biWig signal loading
+        ### TEMPORARY: test biWig signal loading
+        ### TEMPORARY: test biWig signal loading
+        if afile['accession'] == 'ENCFF000VCE':
+            log.warn('Calling %s a score set' % (afile['accession']))  ### DEBUG
+            meta_doc['regulome_scores'] = True
+        ### TEMPORARY: test biWig signal loading
+        ### TEMPORARY: test biWig signal loading
+        ### TEMPORARY: test biWig signal loading
+
         return meta_doc
 
     def candidate_file(self, request, afile, dataset, dataset_uses):
@@ -1060,10 +1142,10 @@ class RegionIndexer(Indexer):
         return True
 
     @staticmethod
-    def snps_bulk_iterator(snp_index, chrom, snps_for_chrom):
-        '''Given SNPs yields snps packaged for bulk indexing'''
-        for snp in snps_for_chrom:
-            yield {'_index': snp_index, '_type': chrom, '_id': snp['rsid'], '_source': snp}
+    def bulk_item_iterator(target_index, chrom, items_for_chrom, item_key):
+        '''Given many items (SNPs or score intervals) yields doc packaged for bulk indexing'''
+        for item in items_for_chrom:
+            yield {'_index': target_index, '_type': chrom, '_id': item[item_key], '_source': item}
 
     def index_snps(self, assembly, snps, file_doc, chroms=None):
         '''Given SNPs from file loads the data into region search es'''
@@ -1083,14 +1165,47 @@ class RegionIndexer(Indexer):
                 self.regions_es.indices.put_mapping(index=snp_index, doc_type=chrom, body=mapping)
             # indexing in bulk 500K snps at a time...
             bulk(self.regions_es,
-                 self.snps_bulk_iterator(snp_index, chrom, snps[chrom]), chunk_size=500000)
+                 self.bulk_item_iterator(snp_index, chrom, snps[chrom], 'rsid'),
+                 chunk_size=500000)
             file_doc['chroms'].append(chrom)
 
             try:  # likely millions per chrom, so
                 self.regions_es.indices.flush_synced(index=snp_index)
             except Exception:
                 pass
-            log.warn('Added %s/%s %d docs', snp_index, chrom, len(snps[chrom]))
+            log.warn('Added %s/%s %d snps', snp_index, chrom, len(snps[chrom]))
+
+        return True
+
+    def index_scores(self, assembly, scores, file_doc, chroms=None):
+        '''Given signal intervals from file loads the data into region search es'''
+        # TODO: make a genome-wide regulome score signal bigWig and try loading it into index
+        score_index = reg_score_index_key(assembly)
+        file_doc['index'] = score_index
+
+        if not self.regions_es.indices.exists(score_index):
+            self.regions_es.indices.create(index=score_index, body=index_settings())
+
+        if chroms is None:
+            chroms = list(scores.keys())
+        for chrom in chroms:
+            if len(scores[chrom]) == 0:
+                continue
+            if not self.regions_es.indices.exists_type(index=score_index, doc_type=chrom):
+                mapping = get_reg_score_index_mapping(chrom)
+                self.regions_es.indices.put_mapping(index=score_index, doc_type=chrom,
+                                                    body=mapping)
+            # indexing in bulk 500K snps at a time...
+            bulk(self.regions_es,
+                 self.bulk_item_iterator(score_index, chrom, scores[chrom], 'interval_id'),
+                 chunk_size=500000)
+            file_doc['chroms'].append(chrom)
+
+            try:  # likely hundeds of thousands per chrom, so
+                self.regions_es.indices.flush_synced(index=score_index)
+            except Exception:
+                pass
+            log.warn('Added %s/%s %d score intervals', score_index, chrom, len(scores[chrom]))
 
         return True
 
@@ -1101,14 +1216,15 @@ class RegionIndexer(Indexer):
         # log.warn('add_file_to_regions_es(%s)' % (afile['@id']))
         assembly = file_doc['file']['assembly']
         snp_set = file_doc.get('snps', False)
-        large_file = (afile.get('file_size', 0) > MAX_IN_MEMORY_FILE_SIZE)
+        reg_scores = file_doc.get('regulome_scores', False)
+        chrom_by_chrom = (afile.get('file_size', 0) > MAX_IN_MEMORY_FILE_SIZE)
         file_doc['chroms'] = []
 
         if afile['file_format'] == 'bed':
             reader = RemoteBedReader(request, afile, self.test_instance)
-        elif afile['file_format'] == 'bigBed':  # Use pyBigWig?
-            reader = BigBedReader(request, afile, self.test_instance)
-            large_file = True
+        elif afile['file_format'] in ['bigBed', 'bigWig']:
+            reader = BigBedOrWigReader(request, afile, self.test_instance)
+            chrom_by_chrom = True
         else:
             log.warn('unknown file_format: %s' % (afile['file_format']))
             raise Exception
@@ -1125,22 +1241,24 @@ class RegionIndexer(Indexer):
             try:
                 if snp_set:
                     (chrom, doc) = reader.snp(row)
+                elif reg_scores:
+                    (chrom, doc) = reader.score_interval(row)
                 else:
                     (chrom, doc) = reader.region(row)
             except Exception:
                 log.error('%s - failure to parse row: <%s>, skipping row', afile['href'], str(row))
                 continue
-            if snp_set and chrom not in SUPPORTED_CHROMOSOMES:
+            if (snp_set or reg_scores) and chrom not in SUPPORTED_CHROMOSOMES:
                 continue   # TEMPORARY: limit SNPs to major chroms
             if chrom not in file_data:
                 # 1 chrom at a time saves memory (but assumes the files are in chrom order!)
-                if large_file and file_data and len(chroms) > 0:
+                if chrom_by_chrom and file_data and len(chroms) > 0:
                     if snp_set:
-                        self.index_snps(assembly, file_data, file_doc,
-                                        list(file_data.keys()))
+                        self.index_snps(assembly, file_data, file_doc, list(file_data.keys()))
+                    elif reg_scores:
+                        self.index_scores(assembly, file_data, file_doc, list(file_data.keys()))
                     else:
-                        self.index_regions(assembly, file_data, file_doc,
-                                        list(file_data.keys()))
+                        self.index_regions(assembly, file_data, file_doc, list(file_data.keys()))
                     file_data = {}  # Don't hold onto data already indexed
                 file_data[chrom] = []
                 chroms.append(chrom)
@@ -1150,13 +1268,15 @@ class RegionIndexer(Indexer):
         if len(chroms) == 0 or not file_data:
             return False
 
-        # Note if indexing by chrom (snp_set or large_file) then file_data will only have one chrom
+        # Note if indexing chrom_by_chrom, file_data only has last chrom, yet to be indexed
         if snp_set:
             self.index_snps(assembly, file_data, file_doc, list(file_data.keys()))
+        elif reg_scores:
+            self.index_scores(assembly, file_data, file_doc, list(file_data.keys()))
         else:
             self.index_regions(assembly, file_data, file_doc, list(file_data.keys()))
 
-        if large_file and file_doc['chroms'] != chroms:
-            log.error('%s chromosomes %s indexed out of order!', file_doc['file']['@id'],
-                      ('SNPs' if snp_set else 'regions'))
+        if chrom_by_chrom and file_doc['chroms'] != chroms:
+            log.error('%s chromosomes %s indexed out of order!  Indexing requires sorted file.',
+                      file_doc['file']['@id'], ('SNPs' if snp_set else 'regions'))
         return self.add_to_residence(file_doc)
