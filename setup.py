@@ -95,6 +95,7 @@ setup(
         profile = encoded.commands.profile:main
         spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
         generate-annotations = encoded.commands.generate_annotations:main
+        generate-scored-snps = encoded.commands.generate_scorred_snps:main
         index-annotations = encoded.commands.index_annotations:main
         migrate-attachments-aws = encoded.commands.migrate_attachments_aws:main
         migrate-dataset-type = encoded.commands.migrate_dataset_type:main
