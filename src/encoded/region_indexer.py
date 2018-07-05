@@ -99,11 +99,12 @@ REGULOME_REGION_REQUIREMENTS = {
     'chromatin state': {
         'file_format': ['bed']
     },
-    'transcription factor motifs': {  # AKA PWMs
-        'output_type': ['motif model'],
+    'PWMs': {
+        'output_type': ['PWMs'],
         'file_format': ['bed']
     },
-    'representative DNase hypersensitivity sites': {  # AKA Footprints
+    'Footprints': {
+        'output_type': ['Footprints'],
         'file_format': ['bed']
     },
     'eQTLs': {
@@ -604,9 +605,17 @@ def index_regions(request):
         result = state.start_cycle(uuids, result)
         errors = indexer.update_objects(request, uuids, force)
         result = state.finish_cycle(result, errors)
-        if result['indexed'] == 0:
+        if result['indexed'] == 0:  # not unexpected, but worth logging otherwise silent cycle
             log.warn("Region indexer added %d file(s) from %d dataset uuids",
                      result['indexed'], uuid_count)
+        else:
+            regions_es = request.registry[SNP_SEARCH_ES]
+            try:
+                regions_es.indices.flush_synced(index='chr*')
+                regions_es.indices.flush_synced(index=SNP_INDEX_PREFIX + '*')
+                regions_es.indices.flush_synced(index=RESIDENT_REGIONSET_KEY)
+            except Exception:
+                pass
 
     state.send_notices()
     return result
@@ -676,12 +685,6 @@ class RegionIndexer(Indexer):
                     log.warn("dropped file: %s %s", dataset['accession'], afile['@id'])
                     self.state.file_dropped(file_uuid)
 
-        try:
-            self.regions_es.indices.flush_synced(index='chr*')
-            self.regions_es.indices.flush_synced(index=SNP_INDEX_PREFIX + '*')
-            self.regions_es.indices.flush_synced(index=self.residents_index)
-        except Exception:
-            pass
         # TODO: gather and return errors
 
     @staticmethod
@@ -1078,3 +1081,4 @@ class RegionIndexer(Indexer):
             log.error('%s chromosomes %s indexed out of order!', file_doc['file']['@id'],
                       ('SNPs' if snp_set else 'regions'))
         return self.add_to_residence(file_doc)
+

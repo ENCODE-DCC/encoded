@@ -9,14 +9,14 @@
             "required": ["dataset", "file_format", "output_type", "award", "lab", "md5sum"]
         },
         {
-            "required": ["dataset", "file_format", "output_type", "award", "lab", "no_file_available"]   
-        }  
-    ],    
+            "required": ["dataset", "file_format", "output_type", "award", "lab", "no_file_available"]
+        }
+    ],
     "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/submitted" },     
+        { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/accessioned_status" },
         { "$ref": "mixins.json#/schema_version" },
@@ -68,7 +68,7 @@
                 {
                     "allOf": [
                         {
-                            "required": ["md5sum"],       
+                            "required": ["md5sum"],
                             "properties": {
                                 "no_file_available": {
                                     "enum": [false]
@@ -80,13 +80,13 @@
                                 {
                                     "not": {
                                         "required": ["status"]
-                                    },                                   
-                                    "properties": {                                        
+                                    },
+                                    "properties": {
                                         "no_file_available": {
                                             "enum": [false]
                                         }
                                     }
-                                },                                    
+                                },
                                 {
                                     "required": ["file_size", "status"],
                                     "properties": {
@@ -110,10 +110,10 @@
                                     }
                                 }
                             ]
-                            
+
                         }
                     ]
-                   
+
                 }
             ]
         },
@@ -131,7 +131,7 @@
                                     "c7564b38-ab4f-4c42-a401-3de48689a998"
                                 ]
                             }
-                        }                    
+                        }
                     }
                 },
                 {
@@ -145,7 +145,7 @@
         },
         "run_type": {
             "comment": "run_type should not be specified for PacBio platform FASTQ files. Illumina produced paired-ended files should have paired_end value specified.",
-            "required": ["platform"], 
+            "required": ["platform"],
             "allOf": [
                 {
                     "not": {
@@ -157,7 +157,7 @@
                                     "c7564b38-ab4f-4c42-a401-3de48689a998"
                                 ]
                             }
-                        }                    
+                        }
                     }
                 },
                 {
@@ -166,7 +166,7 @@
                             "properties": {
                                 "run_type": {
                                     "enum": ["single-ended"]
-                                }                        
+                                }
                             }
                         },
                         {
@@ -182,7 +182,7 @@
                         }
                     ]
                 }
-            ]           
+            ]
         },
         "external_accession": {
             "comment": "A file with an external accession should not get an ENCODE accession.",
@@ -287,7 +287,7 @@
                                         "c7564b38-ab4f-4c42-a401-3de48689a998"
                                     ]
                                 }
-                                
+
                             }
                         },
                         {
@@ -301,10 +301,10 @@
                                 "platform": {
                                     "linkTo": "Platform",
                                     "linkEnum": [
-                                        "ced61406-dcc6-43c4-bddd-4c977cc676e8"                                        
+                                        "ced61406-dcc6-43c4-bddd-4c977cc676e8"
                                     ]
                                 }
-                                
+
                             }
                         },
                         {
@@ -368,7 +368,7 @@
                             "c7564b38-ab4f-4c42-a401-3de48689a998"
                         ]
                     }
-                }  
+                }
             }
         },
         "read_length": {
@@ -388,10 +388,10 @@
                                     "c7564b38-ab4f-4c42-a401-3de48689a998"
                                 ]
                             }
-                        }  
+                        }
                     }
                 }
-            ]            
+            ]
         },
         "file_format":{
             "comment": "Fastq and sra files require run_type and replicate but should not have assembly. Raw data files require platform to be specified. Processed files require assembly to be specified.",
@@ -506,13 +506,13 @@
                                         }
                                     },
                                     {
-                                        "required": ["file_size"],   
+                                        "required": ["file_size"],
                                         "properties": {
                                             "status": {
                                                 "enum": ["in progress",  "revoked", "archived", "released"]
                                             }
                                         }
-                                    }                                   
+                                    }
                             ]
                         },
 
@@ -998,7 +998,7 @@
                         "replication timing profile",
                         "reporter code counts",
                         "representative dnase hypersensitivity sites",
-                        "RNA-binding protein associated mRNAs",           
+                        "RNA-binding protein associated mRNAs",
                         "rRNA reference",
                         "semi-automated genome annotation",
                         "signal of all reads",
@@ -1018,7 +1018,7 @@
                         "variant calls",
                         "eQTLs",
                         "dsQTLs",
-                        "footprints",
+                        "Footprints",
                         "PWMs"
                     ]
                 },
@@ -1446,10 +1446,10 @@
 
         "enhancer validation": "validation",
         "validation": "validation",
-        
+
         "HMM predicted chromatin state": "annotation",
         "semi-automated genome annotation": "annotation"
-        
+
     },
     "file_format_file_extension": {
         "2bit": ".2bit",
@@ -1483,3 +1483,4 @@
     },
     "changelog": "/profiles/changelogs/file.md"
 }
+
