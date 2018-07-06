@@ -2,7 +2,8 @@
 
 ### Minor changes since schema version 21
 
-* *passage_number* and *PMI* were set to have a minimum of 0.
+* *passage_number* was set to have a minimum of 0.
+* *PMI* was set to have a minimum of 1.
 
 ### Schema version 21
 

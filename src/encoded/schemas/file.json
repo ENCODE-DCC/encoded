@@ -915,7 +915,7 @@
                          "title": "Barcode position",
                          "description": "The 1-based start position of the barcode in 5->3 orientation.",
                          "type": "integer",
-                         "minimum": 0
+                         "minimum": 1
                     },
                     "chunk": {
                         "title": "Chunk",

@@ -670,7 +670,7 @@
             "description": "The amount of time elapsed since death.",
             "comment": "Post-mortem interval for tissues should be reported, if known. Use for other biosample_types currently not allowed.",
             "type": "integer",
-            "minimum": 0
+            "minimum": 1
         },
         "PMI_units": {
             "title": "Post-mortem interval units",
