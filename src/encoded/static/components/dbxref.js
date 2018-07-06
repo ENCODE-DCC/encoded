@@ -181,6 +181,9 @@ export const dbxrefPrefixMap = {
     TRiP: {
         pattern: 'http://www.flyrnai.org/cgi-bin/DRSC_gene_lookup.pl?gname={0}',
     },
+    DGGR: {
+        pattern: 'https://kyotofly.kit.jp/cgi-bin/stocks/search_res_det.cgi?DB_NUM=1&DG_NUM={0}',
+    },
 };
 
 
