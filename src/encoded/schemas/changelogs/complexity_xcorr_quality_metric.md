@@ -1,5 +1,9 @@
 ## Changelog for complexity_xcorr_quality_metric.json
 
+### Schema version 8
+
+* *size* in *cross_correlation_plot* was set to have a minimum of 0.
+
 ### Schema version 7
 
 * *status* property was restricted to one of  

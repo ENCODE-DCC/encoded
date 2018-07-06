@@ -220,7 +220,8 @@
                     },
                     "lane": {
                         "title": "Lane",
-                        "type": "integer"
+                        "type": "integer",
+                        "minimum": 0
                     },
                     "lane_status": {
                         "title": "Characterization status",

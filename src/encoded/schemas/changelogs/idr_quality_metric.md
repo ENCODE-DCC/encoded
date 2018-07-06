@@ -1,5 +1,14 @@
 ## Changelog for idr_quality_metric.json
 
+### Schema version 7
+
+* *size*, *width*, and *height* in *IDR_plot_true* were set to have a minimum of 0, 1, 1, respectively.
+* *size*, *width*, and *height* in *IDR_plot_rep1_pr* were set to have a minimum of 0, 1, 1, respectively.
+* *size*, *width*, and *height* in *IDR_plot_rep2_pr* were set to have a minimum of 0, 1, 1, respectively.
+* *size*, *width*, and *height* in *IDR_plot_pool_pr* were set to have a minimum of 0, 1, 1, respectively.
+* *size* in *IDR_parameters_true*, *IDR_parameters_rep1_pr*, *IDR_parameters_rep2_pr*, *IDR_parameters_pool_pr* were set to have a minimum of 0.
+
+
 ### Schema version 6
 
 * *status* property was restricted to one of  

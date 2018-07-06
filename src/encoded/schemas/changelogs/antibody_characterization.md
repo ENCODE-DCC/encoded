@@ -1,5 +1,9 @@
 ## Change log for antibody_characterization.json
 
+### Schema version 14
+
+* *lane* in *characterization_reviews* was set to have a minimum of 0.
+
 ### Schema version 13
 
 * Added *organoid* to biosample_type enums in characterization_reviews.

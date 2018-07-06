@@ -607,7 +607,8 @@
             "description": "Number of reads in fastq file.",
             "comment": "Do not submit. This value is calculated and posted by checkfiles script upon submission.",
             "permission": "import_items",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 0
         },
         "file_format": {
             "title": "File format",
@@ -772,7 +773,8 @@
             "title": "File size",
             "description": "File size specified in bytes.",
             "comment": "Required.",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 0
         },
         "platform": {
             "title": "Platform",
@@ -785,7 +787,8 @@
             "title": "Read length",
             "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
             "comment": "This field is required for fastq, fasta, csfasta, csqual and sra file formats containing sequencing reads.",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 0
         },
         "run_type": {
             "title": "Run type for sequencing files",
@@ -820,7 +823,8 @@
             "permission": "import_items",
             "description": "The length of the reads actually mapped, if the original read length was clipped.",
             "comment": "This is used when the original sequenced read length needed to be adjusted to match a replicate, or to match experiments and controls.",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 0
         },
         "mapped_run_type": {
             "title": "Mapped run type for bam files",
@@ -910,7 +914,8 @@
                     "barcode_position": {
                          "title": "Barcode position",
                          "description": "The 1-based start position of the barcode in 5->3 orientation.",
-                         "type": "integer"
+                         "type": "integer",
+                         "minimum": 0
                     },
                     "chunk": {
                         "title": "Chunk",

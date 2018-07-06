@@ -45,7 +45,8 @@
                 },
                 "size": {
                     "title": "File size",
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0
                 },
                 "md5sum": {
                     "format": "md5sum",
@@ -54,11 +55,13 @@
                 },
                 "width": {
                     "title": "Image width",
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1
                 },
                 "height": {
                     "title": "Image height",
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1
                 }
             }
         },

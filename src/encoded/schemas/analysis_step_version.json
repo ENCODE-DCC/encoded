@@ -23,7 +23,8 @@
             "title": "Minor version",
             "description": "The minor version of the analysis step",
             "type": "integer",
-            "pattern": "\\d+"
+            "pattern": "\\d+",
+            "minimum": 0
         },
         "analysis_step": {
             "title": "Analysis Step",

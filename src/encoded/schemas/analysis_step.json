@@ -38,7 +38,8 @@
             "description": "The major version of the analysis step.",
             "comment": "Please increment as whole numbers starting from 1.",
             "type": "integer",
-            "pattern": "^[1-9]\\d*$"
+            "pattern": "^[1-9]\\d*$",
+            "minimum": 1
         },
         "analysis_step_types": {
             "title": "Types",

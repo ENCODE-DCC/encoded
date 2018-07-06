@@ -498,7 +498,8 @@
             "title": "Passage number",
             "description": "Number of passages including the passages from the source.",
             "comment": "In calculating passage number, include passages from the source.",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 0
         },
         "depleted_in_term_name": {
             "title": "Depleted in term",
@@ -668,7 +669,8 @@
             "title": "Post-mortem interval",
             "description": "The amount of time elapsed since death.",
             "comment": "Post-mortem interval for tissues should be reported, if known. Use for other biosample_types currently not allowed.",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 0
         },
         "PMI_units": {
             "title": "Post-mortem interval units",

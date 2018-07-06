@@ -1,5 +1,9 @@
 ## Changelog for idr_summary_quality_metric.json
 
+### Schema version 8
+
+* *size*, *width*, and *height* in *attachment* were set to have a minimum of 0, 1, 1, respectively.
+
 ### Schema version 7
 
 * *status* property was restricted to one of  

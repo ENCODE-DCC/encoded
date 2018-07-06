@@ -34,13 +34,15 @@
             "title": "Biological replicate",
             "description": "Data collection under the same methods using a different biological source, measuring the variability in the biological source.",
             "type": "integer",
-            "default": 1
+            "default": 1,
+            "minimum": 0
         },
         "technical_replicate_number": {
             "title": "Technical replicate",
             "description": "Data collection under the same methods using the same biological source, measuring the variability in the method.",
             "type": "integer",
-            "default": 1
+            "default": 1,
+            "minimum": 0
         },
         "experiment": {
             "title": "Experiment",
@@ -60,7 +62,8 @@
             "title": "RBNS protein concentration",
             "description": "For use only with RNA Bind-n-Seq replicates to indicate the protein concentration.",
             "comment": "Only for use with RBNS replicates.",
-            "type": "integer"
+            "type": "integer",
+            "minimum": 0
         },
         "rbns_protein_concentration_units": {
             "title": "RBNS protein concentration units",
