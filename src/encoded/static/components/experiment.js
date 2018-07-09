@@ -693,10 +693,7 @@ const replicateTableColumns = {
 
     technical_replicate_number: {
         title: 'Technical replicate',
-        getValue: (condensedReplicate) => {
-            const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
-            return condensedReplicate.map(replicate => replicate.technical_replicate_number).sort(collator.compare).join();
-        },
+        getValue: condensedReplicate => condensedReplicate.map(replicate => replicate.technical_replicate_number).sort().join(),
     },
 
     summary: {
