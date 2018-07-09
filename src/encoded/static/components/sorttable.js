@@ -244,13 +244,15 @@ export class SortTable extends React.Component {
                 bVal = b[columnId];
             }
 
+            const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+
             // If we have a custom sorting function, call it with the cell values to handle sorting. Otherwise
             if (sorter) {
                 result = sorter(aVal, bVal);
             } else if (objSorter) {
                 result = objSorter(a, b);
             } else if (aVal && bVal) {
-                result = aVal > bVal ? 1 : -1;
+                result = collator.compare(aVal, bVal);
             } else {
                 result = aVal ? -1 : (bVal ? 1 : 0);
             }
