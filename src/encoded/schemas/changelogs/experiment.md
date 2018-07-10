@@ -2,6 +2,7 @@
 
 ### Minor changes since schema version 20
 
+* Add *experiment_class* property with enum "ground level annotation", "functional characterization"
 * *possible_controls* property allows specification of any type of Dataset as possible control
 
 ### Schema version 20
