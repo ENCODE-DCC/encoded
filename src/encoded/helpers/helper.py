@@ -1,4 +1,4 @@
-from encoded.vis_defines import vis_format_url
+from snovault.vis_defines import vis_format_url
 
 
 def format_results(request, hits, result=None):
