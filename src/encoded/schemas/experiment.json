@@ -239,8 +239,8 @@
             "description": "The categorization of the experiment.",
             "type": "string",
             "enum" : [
-                "ground level annotation",
-                "functional characterization"
+                "functional genomics assay",
+                "functional characterization assay"
             ]
         },
         "dbxrefs": {
