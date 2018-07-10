@@ -119,7 +119,8 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                             'has no associated quality metric, preventing calculation of the read depth.').format(
                                 bam_file['output_type'],
                                 bam_file['@id'])
-                        return AuditFailure('missing control quality metric', detail, level='WARNING')
+                        yield AuditFailure('missing control quality metric', detail, level='WARNING')
+                        return
                     else:
                         cumulative_read_depth += control_depth
                         control_bam_details.append(

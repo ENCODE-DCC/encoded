@@ -2091,10 +2091,6 @@ def test_audit_experiment_chip_seq_peaks_with_matched_set(
                                                 'assay_term_name': 'ChIP-seq'})
     testapp.patch_json(file_bam_2_1['@id'], {'step_run': analysis_step_run_bam['@id'],
                                              'status': 'in progress',
-                                             'assembly': 'mm10', 'dataset': base_experiment['@id'],
-                                             'derived_from': [file_fastq_4['@id']]})
-    testapp.patch_json(file_bam_2_1['@id'], {'step_run': analysis_step_run_bam['@id'],
-                                             'status': 'in progress',
                                              'assembly': 'mm10', 'dataset': treatment_time_series['@id'],
                                              'derived_from': [file_fastq_4['@id']]})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
