@@ -1,6 +1,9 @@
 from elasticsearch.exceptions import (
-    NotFoundError
+    ConnectionError,
+    NotFoundError,
+    TransportError,
 )
+from urllib3.exceptions import ReadTimeoutError
 from snovault.elasticsearch.indexer_state import SEARCH_MAX
 
 from .region_indexer import (
@@ -14,6 +17,7 @@ from .region_indexer import (
     REGULOME_ALLOWED_STATUSES,
     REGULOME_DATASET_TYPES
 )
+import time
 import logging
 
 log = logging.getLogger(__name__)
@@ -25,7 +29,7 @@ log = logging.getLogger(__name__)
 
 # when iterating scored snps or bases, chunk calls to index for efficiency
 # NOTE: failures seen when chunking is too large
-REGDB_SCORE_CHUNK_SIZE = 30000
+REGDB_SCORE_CHUNK_SIZE = 25000
 
 # RegulomeDB scores for bigWig (bedGraph) are converted to numeric and can be converted back
 REGDB_STR_SCORES = ['1a', '1b', '1c', '1d', '1e', '1f', '2a', '2b', '2c', '3a', '3b', '4', '5', '6']
@@ -153,15 +157,24 @@ class RegionAtlas(object):
         '''Return all SNPs in a region.'''
         range_query = self._range_query(start, end, snps=True)
 
-        try:
-            results = self.region_es.search(index=snp_index_key(assembly), doc_type=chrom,
-                                            _source=True, body=range_query, size=max_results)
-        except NotFoundError:
-            return []
-        except Exception:
-            log.error('Error: find_snps()', exc_info=True)
-            return []
+        for backoff in [0, 2, 4, 16, 32]:
+            time.sleep(backoff)
+            try:
+                results = self.region_es.search(index=snp_index_key(assembly), doc_type=chrom,
+                                                _source=True, body=range_query, size=max_results)
+                break
+            except (ConnectionError, ReadTimeoutError, TransportError) as e:
+                log.warning('Retryable(%d) error find_snps %s %s:%d-%d: %r' %
+                            (backoff, assembly, chrom, start, end, e))
+                results = {}
+            except NotFoundError:
+                return []
+            except Exception:
+                log.error('Error: find_snps()', exc_info=True)
+                return []
 
+        if not results:
+            return []
         return [hit['_source'] for hit in results['hits']['hits']]
 
     # def snp_suggest(self, assembly, text):
@@ -171,15 +184,24 @@ class RegionAtlas(object):
         '''Return all peaks in a region.  NOTE: peaks are not filtered by use.'''
         range_query = self._range_query(start, end, False, peaks_too, max_results)
 
-        try:
-            results = self.region_es.search(index=chrom.lower(), doc_type=assembly, _source=False,
-                                            body=range_query, size=max_results)
-        except NotFoundError:
-            return None
-        except Exception:
-            log.error('Error: find_peaks()', exc_info=True)
-            return None
+        for backoff in [0, 2, 4, 16, 32]:
+            time.sleep(backoff)
+            try:
+                results = self.region_es.search(index=chrom.lower(), doc_type=assembly,
+                                                _source=False, body=range_query, size=max_results)
+                break
+            except (ConnectionError, ReadTimeoutError, TransportError) as e:
+                log.warning('Retryable(%d) error find_peaks %s %s:%d-%d: %r' %
+                            (backoff, assembly, chrom, start, end, e))
+                results = {}
+            except NotFoundError:
+                return None
+            except Exception:
+                log.error('Error: find_peaks()', exc_info=True)
+                return None
 
+        if not results:
+            return None
         return list(results['hits']['hits'])
 
     def _resident_details(self, uuids, use=None, max_results=SEARCH_MAX):
@@ -187,16 +209,25 @@ class RegionAtlas(object):
         if use is None:
             use = self.expected_use
         use_types = [FOR_DUAL_USE, use]
-        try:
-            id_query = {"query": {"ids": {"values": uuids}}}
-            res = self.region_es.search(index=RESIDENT_REGIONSET_KEY, body=id_query,
-                                        doc_type=use_types, size=max_results)
-        except Exception:
-            log.error('Error: _resident_details()', exc_info=True)
-            return None
+        for backoff in [0, 2, 4, 16, 32]:
+            time.sleep(backoff)
+            try:
+                id_query = {"query": {"ids": {"values": uuids}}}
+                results = self.region_es.search(index=RESIDENT_REGIONSET_KEY, body=id_query,
+                                                doc_type=use_types, size=max_results)
+                break
+            except (ConnectionError, ReadTimeoutError, TransportError) as e:
+                log.warning('Retryable(%d) error _resident_details uuid count: %d: %r' %
+                            (backoff, len(uuids), e))
+                results = {}
+            except Exception:
+                log.error('Error: _resident_details()', exc_info=True)
+                return None
 
+        if not results:
+            return None
         details = {}
-        hits = res.get("hits", {}).get("hits", [])
+        hits = results.get("hits", {}).get("hits", [])
         for hit in hits:
             details[hit["_id"]] = hit["_source"]
 

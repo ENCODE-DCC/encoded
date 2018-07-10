@@ -223,8 +223,8 @@ def run_multiprocess(args):
         for i, pos in enumerate(pool.imap_unordered(run_in_processes, tasks, chunkiness)):
             #log.info('Finished task %d: %s' % (i + 1, pos))
             continue  # TMI... just keep it to yourself
-    except:
-        log.info('Failed to launch tasks')
+    except Exception as e:
+        log.info('Failed to launch tasks: %r' % (e))
 
     try:
         pool.terminate()
