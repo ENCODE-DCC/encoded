@@ -241,6 +241,7 @@
                     "ground level annotation",
                     "functional characterization"
                 ]
+            }
         },
         "dbxrefs": {
             "@type": "@id",
