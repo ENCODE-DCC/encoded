@@ -79,8 +79,8 @@ export default class Tooltip extends React.Component {
     }
 
     render() {
-        const { trigger, direction, tooltipId, css } = this.props;
-        const tooltipCss = `tooltip ${direction}`;
+        const { trigger, position, tooltipId, css } = this.props;
+        const tooltipCss = `tooltip ${position}`;
         const wrapperCss = `tooltip-container${css ? ` ${css}` : ''}`;
         return (
             <div className={wrapperCss}>
@@ -108,13 +108,13 @@ export default class Tooltip extends React.Component {
 Tooltip.propTypes = {
     trigger: PropTypes.element.isRequired, // Visible tooltip triggering component
     tooltipId: PropTypes.string.isRequired, // HTML ID of tooltip <div>; unique within page
-    direction: PropTypes.oneOf(['left', 'top', 'bottom', 'right']), // Direction of bootstrap tooltip location
+    position: PropTypes.oneOf(['left', 'top', 'bottom', 'right']), // Position of bootstrap tooltip location
     css: PropTypes.string, // CSS classes to add to tooltip-container wrapper class
     children: PropTypes.node,
 };
 
 Tooltip.defaultProps = {
-    direction: 'bottom',
+    position: 'bottom',
     css: '',
     children: null,
 };
