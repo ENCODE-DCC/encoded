@@ -232,16 +232,16 @@
                 "tissue",
                 "whole organisms",
                 "organoid"
-            ],
-            "experiment_class": {
-                "title": "Experiment class",
-                "description": "The categorization of the experiment.",
-                "type": "string",
-                "enum" : [
-                    "ground level annotation",
-                    "functional characterization"
-                ]
-            }
+            ]
+        },
+        "experiment_class": {
+            "title": "Experiment class",
+            "description": "The categorization of the experiment.",
+            "type": "string",
+            "enum" : [
+                "ground level annotation",
+                "functional characterization"
+            ]
         },
         "dbxrefs": {
             "@type": "@id",
