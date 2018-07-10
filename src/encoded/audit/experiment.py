@@ -84,6 +84,7 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                 len(peaks_file.get('biological_replicates')) == 1)
         )
 
+        pipelines_to_check = ['ChIP-seq read mapping', 'Pool and subsample alignments']
         for peaks_file in peaks_file_gen:
             derived_from_files = get_derived_from_files_set([peaks_file],
                                                             files_structure,
@@ -96,20 +97,15 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                     and
                     derived_from.get('dataset') in controls_files_structures
                     and
-                    (check_pipeline(
-                        'ChIP-seq read mapping',
+                    check_for_any_pipelines(
+                        pipelines_to_check,
                         derived_from.get('@id'),
-                        controls_files_structures[derived_from.get('dataset')])
-                        or 
-                        check_pipeline(
-                        'Pool and subsample alignments',
-                        derived_from.get('@id'),
-                        controls_files_structures[derived_from.get('dataset')]))))
+                        controls_files_structures[derived_from.get('dataset')])))
             control_bam_details = []
             cumulative_read_depth = 0
 
             for bam_file in derived_from_external_bams_gen:
-                failures = check_control_target(bam_file.get('dataset'),
+                failures = check_control_target_failures(bam_file.get('dataset'),
                     control_objects, bam_file['@id'],
                     bam_file['output_type'])
                 if failures:
@@ -123,15 +119,11 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                             'has no associated quality metric, preventing calculation of the read depth.').format(
                                 bam_file['output_type'],
                                 bam_file['@id'])
-                        yield AuditFailure('missing control quality metric', detail, level='WARNING')
-                        return
+                        return AuditFailure('missing control quality metric', detail, level='WARNING')
                     else:
                         cumulative_read_depth += control_depth
-                        triple = (
-                            bam_file.get('@id'),
-                            control_depth,
-                            bam_file.get('dataset'))
-                        control_bam_details.append(triple)
+                        control_bam_details.append(
+                            (bam_file.get('@id'), control_depth, bam_file.get('dataset')))
             yield from check_control_read_depth_standards(
                 peaks_file.get('@id'),
                 peaks_file.get('assembly'),
@@ -141,7 +133,7 @@ def audit_experiment_chipseq_control_read_depth(value, system, files_structure):
                 target_investigated_as)
 
 
-def check_control_target(control_id, control_objects, bam_id, bam_type):
+def check_control_target_failures(control_id, control_objects, bam_id, bam_type):
     control = control_objects.get(control_id)
     if not control:
         return
@@ -172,6 +164,13 @@ def check_control_target(control_id, control_objects, bam_id, bam_type):
                         bam_type, bam_id, target_of_related_dataset['name'])
                 target_failures.append(AuditFailure('inconsistent target of control experiment', detail, level='WARNING'))
     return target_failures
+
+
+def check_for_any_pipelines(pipeline_titles, control_file_id, file_structure):
+    for pipeline_title in pipeline_titles:
+        if check_pipeline(pipeline_title, control_file_id, file_structure):
+            return True
+    return False
 
 
 def check_pipeline(pipeline_title, control_file_id, file_structure):
