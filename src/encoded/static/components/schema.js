@@ -586,7 +586,7 @@ const SchemaPage = (props) => {
     // If schemaName happened to be null (which it realistically can't), <BreadCrumbs> would
     // harmlessly display nothing in the second element.
     const crumbs = [
-        { id: 'Profiles', uri: '/profiles/', wholeTip: 'All schemas' },
+        { id: 'Schemas', uri: '/profiles/', wholeTip: 'All schemas' },
         { id: schemaName },
     ];
 
@@ -640,6 +640,21 @@ const AllSchemasPage = (props, reactContext) => {
     return (
         <Panel>
             <PanelBody>
+                <div className="row">
+                    <div className="col-md-12">
+                        <p>
+                            Schemas, or profiles, are the <a href="http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf" title="&ldquo;The JSON Data Interchange Syntax&rdquo; PDF">JSON</a> format
+                            structures for each object housed in <a href="https://github.com/ENCODE-DCC/encoded" title="encodeD GitHub repo">encodeD</a>.
+                            To support ENCODE Project submitters and public users alike,
+                            we&rsquo;ve provided a user-friendly method to visualize our schemas
+                            in hopes others might understand how the DCC organizes each object.
+                        </p>
+                        <p>
+                            The links below lead to pages describing each schema ENCODE supports.
+                        </p>
+                    </div>
+                </div>
+                <hr />
                 <div className="schema-list">
                     {objectNames.map((objectName) => {
                         // `objectName` is the @type of each objects e.g. GeneticModification
