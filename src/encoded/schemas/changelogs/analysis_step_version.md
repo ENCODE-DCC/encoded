@@ -1,5 +1,9 @@
 ## Changelog for analysis_step_version.json
 
+### Minor changes since schema version 4
+
+* *minor_version* was set to have a minimum of 0.
+
 ### Schema version 4
 
 * *status* property was restricted to one of  

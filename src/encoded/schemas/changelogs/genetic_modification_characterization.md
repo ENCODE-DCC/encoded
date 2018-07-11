@@ -1,5 +1,9 @@
 ## Changelog for genetic_modification_characterization.json
 
+### Minor changes since schema version 4 
+
+* *size*, *width*, and *height* in *attachment* were set to have a minimum of 0.
+
 ### Schema version 4
 
 * *comment* has been replaced with *submitter_comment*
