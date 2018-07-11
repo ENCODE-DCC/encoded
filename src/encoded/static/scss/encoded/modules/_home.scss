@@ -382,34 +382,32 @@
     border-bottom: 1px solid #e0e0e0;
 }
 
-.intro-controls {
+
+// Contains buttons for the home page site search.
+.site-search__controls {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     margin: 0 -5px;
+}
 
-    @media screen and (min-width: $screen-sm-min) {
-        margin: 0;
-    }
 
-    @at-root #{&}__element {
-        @extend .btn;
-        @extend .btn-info;
-        margin: 5px;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        flex: 1 1 auto;
+// Buttons within site-search__controls.
+.site-search__control-element {
+    @extend .btn;
+    @extend .btn-info;
+    margin: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    flex: 1 1 auto;
 
-        @media screen and (min-width: $screen-sm-min) {
-            margin: 5px 0;
+    @media screen and (min-width: $screen-lg-min) {
+        &--33-width {
+            flex: 0 0 30%;
+        }
 
-            &--33-width {
-                flex: 0 0 31%;
-            }
-
-            &--50-width {
-                flex: 0 0 48%;
-            }
+        &--50-width {
+            flex: 0 0 47.5%;
         }
     }
 }

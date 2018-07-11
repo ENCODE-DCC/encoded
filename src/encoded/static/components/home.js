@@ -38,18 +38,6 @@ function generateQuery(selectedOrganisms, selectedAssayCategory) {
 }
 
 
-// Buttons to introduce people to ENCODE.
-const IntroControls = () => (
-    <div className="intro-controls">
-        <a href="/about/contributors/" role="button" className="intro-controls__element intro-controls__element--33-width">About</a>
-        <a href="/help/getting-started/" role="button" className="intro-controls__element intro-controls__element--33-width">Get Started</a>
-        <a href="/help/rest-api/" role="button" className="intro-controls__element intro-controls__element--33-width">REST API</a>
-        <a href="/matrix/?type=Experiment&status=released" role="button" className="intro-controls__element intro-controls__element--50-width">Data Matrix</a>
-        <a href="/matrix/?type=Annotation&encyclopedia_version=4" role="button" className="intro-controls__element intro-controls__element--50-width">Encyclopedia Matrix</a>
-    </div>
-);
-
-
 // Home-page-only ENCODE search form.
 class EncodeSearch extends React.Component {
     constructor() {
@@ -69,21 +57,28 @@ class EncodeSearch extends React.Component {
 
     render() {
         return (
-            <form action="/search/">
-                <fieldset className="site-search__encode">
-                    <legend className="sr-only">Encode search</legend>
-                    <div className="site-search__input">
-                        <label htmlFor="encode-search">Search ENCODE portal</label>
-                        <Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="search-encode" css="tooltip-home-info">
-                            Search the entire ENCODE portal by using terms like &ldquo;skin,&rdquo; &ldquo;ChIP-seq,&rdquo; or &ldquo;CTCF.&rdquo;
-                        </Tooltip>
-                        <input id="encode-search" className="form-control" value={this.state.inputText} name="searchTerm" type="text" onChange={this.handleOnChange} />
-                    </div>
-                    <div className="site-search__submit">
-                        <button type="submit" aria-label="ENCODE portal search" title="ENCODE portal search" disabled={this.state.disabledSearch} className="btn btn-info">ENCODE <i className="icon icon-search" /></button>
-                    </div>
-                </fieldset>
-            </form>
+            <div className="site-search__encode">
+                <div className="site-search__controls">
+                    <a href="/about/contributors/" role="button" className="site-search__control-element site-search__control-element--33-width">About ENCODE</a>
+                    <a href="/help/getting-started/" role="button" className="site-search__control-element site-search__control-element--33-width">Get Started</a>
+                    <a href="/matrix/?type=Experiment&status=released" role="button" className="site-search__control-element site-search__control-element--33-width">Experiment Data</a>
+                </div>
+                <form action="/search/">
+                    <fieldset className="site-search__encode">
+                        <legend className="sr-only">Encode search</legend>
+                        <div className="site-search__input">
+                            <label htmlFor="encode-search">Search ENCODE portal</label>
+                            <Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="search-encode" css="tooltip-home-info">
+                                Search the entire ENCODE portal by using terms like &ldquo;skin,&rdquo; &ldquo;ChIP-seq,&rdquo; or &ldquo;CTCF.&rdquo;
+                            </Tooltip>
+                            <input id="encode-search" className="form-control" value={this.state.inputText} name="searchTerm" type="text" onChange={this.handleOnChange} />
+                        </div>
+                        <div className="site-search__submit">
+                            <button type="submit" aria-label="ENCODE portal search" title="ENCODE portal search" disabled={this.state.disabledSearch} className="btn btn-info">ENCODE <i className="icon icon-search" /></button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
         );
     }
 }
@@ -463,46 +458,44 @@ class ScreenSearch extends React.Component {
     render() {
         const disabledSearch = this.state.currSearchTerm.length === 0;
         return (
-            <form>
-                <fieldset className="site-search__screen">
-                    <legend className="sr-only">Screen search</legend>
-                    <div className="site-search__input">
-                        <label htmlFor="screen-search" id="screen-search-label">
-                            Search for Candidate Regulatory Elements
-                            <Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="search-screen" css="tooltip-home-info">
-                                Search for candidate regulatory elements by entering a gene name or alias, SNP rsID, ccRE accession, or genomic region in the form chr:start-end; or enter a cell type to filter results e.g. &ldquo;chr11:5226493-5403124&rdquo; or &ldquo;rs4846913.&rdquo;
-                            </Tooltip>
-                            <br />
-                            <span className="site-search__note">Hosted by <a href="http://screen.encodeproject.org/">SCREEN</a></span>
-                        </label>
-                        <InputSuggest
-                            value={this.state.currSearchTerm}
-                            items={this.state.suggestedSearchTerms}
-                            inputId="screen-search"
-                            labelledById="screen-search-label"
-                            inputChangeHandler={this.searchTermChange}
-                            inputClickHandler={this.searchTermClick}
-                            inputBlurHandler={this.inputBlur}
-                            itemSelectHandler={this.termSelectHandler}
-                        />
-                    </div>
-                    <div className="site-search__submit">
-                        <a disabled={disabledSearch} aria-label="Human hg19 search" title="Human hg19 search" className="btn btn-info" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=hg19`}>Human hg19 <i className="icon icon-search" /></a>
-                        <a disabled={disabledSearch} aria-label="Mouse mm10 search" title="Mouse mm10 search" className="btn btn-info" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=mm10`}>Mouse mm10 <i className="icon icon-search" /></a>
-                    </div>
-                </fieldset>
-            </form>
+            <div className="site-search__screen">
+                <div className="site-search__controls">
+                    <a href="/data/annotations/" role="button" className="site-search__control-element site-search__control-element--50-width">About Encyclopedia</a>
+                    <a href="/matrix/?type=Annotation&encyclopedia_version=4&annotation_type=candidate+regulatory+elements" role="button" className="site-search__control-element site-search__control-element--50-width">Encyclopedia Data</a>
+                </div>
+                <form>
+                    <fieldset className="site-search__screen">
+                        <legend className="sr-only">Screen search</legend>
+                        <div className="site-search__input">
+                            <label htmlFor="screen-search" id="screen-search-label">
+                                Search for Candidate Regulatory Elements
+                                <Tooltip trigger={<i className="icon icon-info-circle" />} tooltipId="search-screen" css="tooltip-home-info">
+                                    Search for candidate regulatory elements by entering a gene name or alias, SNP rsID, ccRE accession, or genomic region in the form chr:start-end; or enter a cell type to filter results e.g. &ldquo;chr11:5226493-5403124&rdquo; or &ldquo;rs4846913.&rdquo;
+                                </Tooltip>
+                                <br />
+                                <span className="site-search__note">Hosted by <a href="http://screen.encodeproject.org/">SCREEN</a></span>
+                            </label>
+                            <InputSuggest
+                                value={this.state.currSearchTerm}
+                                items={this.state.suggestedSearchTerms}
+                                inputId="screen-search"
+                                labelledById="screen-search-label"
+                                inputChangeHandler={this.searchTermChange}
+                                inputClickHandler={this.searchTermClick}
+                                inputBlurHandler={this.inputBlur}
+                                itemSelectHandler={this.termSelectHandler}
+                            />
+                        </div>
+                        <div className="site-search__submit">
+                            <a disabled={disabledSearch} aria-label="Human hg19 search" title="Human hg19 search" className="btn btn-info" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=hg19`}>Human hg19 <i className="icon icon-search" /></a>
+                            <a disabled={disabledSearch} aria-label="Mouse mm10 search" title="Mouse mm10 search" className="btn btn-info" role="button" href={`http://screen.encodeproject.org/search/?q=${this.state.currSearchTerm}&uuid=0&assembly=mm10`}>Mouse mm10 <i className="icon icon-search" /></a>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
         );
     }
 }
-
-
-const SiteSearch = () => (
-    <div className="site-search">
-        <EncodeSearch />
-        <ScreenSearch />
-    </div>
-);
 
 
 // Main page component to render the home page
@@ -691,8 +684,11 @@ class AssayClicking extends React.Component {
 
                         <div className="site-banner-intro">
                             <div className="site-banner-intro-content">
-                                <IntroControls />
-                                <SiteSearch />
+                                <div className="site-search">
+                                    <EncodeSearch />
+                                    <hr />
+                                    <ScreenSearch />
+                                </div>
                             </div>
                         </div>
                     </div>
